@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 
 /**
@@ -17,12 +18,12 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 @Data
 public class CompanyEventDto {
 
-	private int date;
+	private GeneralDate date;
 
 	private String name;
 
 	public static CompanyEventDto fromDomain(CompanyEvent domain) {
-		return new CompanyEventDto(domain.getDate().intValue(), domain.getEventName().v());
+		return new CompanyEventDto(domain.getDate(), domain.getEventName().v());
 	}
 
 }

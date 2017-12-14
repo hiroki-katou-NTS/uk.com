@@ -51,7 +51,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
 		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
-				entity.workTypeCode, entity.workTimeCode);
+				entity.workTypeCode, entity.workTimeCode, entity.confirmedAtr);
 	}
 
 	private static BasicScheduleScreenDto toBasicScheduleScreenDto(KscdtWorkScheduleTimeZone entity) {

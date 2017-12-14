@@ -32,4 +32,10 @@ public class NewLayoutWebservices extends WebService {
 	public void addMaintenanceLayout(NewLayoutCommand command) {
 		this.commandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("get-layout-can-null")
+	public NewLayoutDto getLayoutCanNull() {
+		return nLayoutFinder.getLayoutCanNull();
+	}
 }

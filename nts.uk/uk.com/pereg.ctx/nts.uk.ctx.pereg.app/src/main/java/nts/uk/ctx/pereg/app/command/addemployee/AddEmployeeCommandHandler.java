@@ -25,6 +25,8 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
@@ -68,6 +70,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	@Inject
 	private AffCompanyHistRepository companyHistRepo;
+
+	@Inject
+	private AffCompanyInfoRepository companyInfoRepo;
 
 	@Inject
 	private EmployeeDataMngInfoRepository empDataRepo;
@@ -149,8 +154,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Transactional
 	private void inputsProcess() {
 
-		List<SettingItemDto> dataServer = this.layoutFinder.itemListByCreateType(command.getCreateType(),
-				command.getInitSettingId(), command.getHireDate(), command.getEmployeeCopyId());
+		List<SettingItemDto> dataServer = this.layoutFinder.getItemListByCreateType(command);
 
 		// merge data from client with dataServer
 		mergeData(dataServer, command.getInputs());
@@ -177,12 +181,14 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		});
 
 		// update data
-		List<ItemsByCategory> updateInputs = inputs.stream().filter(x -> fixedCtgList.indexOf(x.getCategoryCd()) != -1)
+		List<ItemsByCategory> fixedInputs = inputs.stream().filter(x -> fixedCtgList.indexOf(x.getCategoryCd()) != -1)
 				.collect(Collectors.toList());
 
-		if (!CollectionUtil.isEmpty(updateInputs)) {
+		if (!CollectionUtil.isEmpty(fixedInputs)) {
 
-			PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
+			addOptinalInputs(fixedInputs);
+
+			PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, fixedInputs);
 
 			this.commandFacade.update(updateContainer);
 
@@ -195,6 +201,20 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		this.commandFacade.add(addContainer);
 	}
 
+	@Transactional
+	private void addOptinalInputs(List<ItemsByCategory> fixedInputs) {
+		List<ItemsByCategory> addInputs = new ArrayList<ItemsByCategory>();
+		addInputs = fixedInputs;
+
+		addInputs.forEach(ctg -> ctg.setItems(
+				ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O').collect(Collectors.toList())));
+
+		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, addInputs);
+
+		this.commandFacade.add(addContainer);
+
+	}
+
 	private void addEmployeeDataMngInfo() {
 		// check duplicate employeeCode
 		List<EmployeeDataMngInfo> infoList = this.empDataRepo
@@ -203,7 +223,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		if (!CollectionUtil.isEmpty(infoList)) {
 			throw new BusinessException("Msg_345");
 		}
-
+		// add system data
 		this.empDataRepo.add(EmployeeDataMngInfo.createFromJavaType(companyId, personId, employeeId,
 				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, GeneralDateTime.min(), "", ""));
 
@@ -214,14 +234,19 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		List<AffCompanyHistItem> comHistItemList = new ArrayList<AffCompanyHistItem>();
 
-		comHistItemList.add(new AffCompanyHistItem(comHistId, false,
-				new DatePeriod(command.getHireDate(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"))));
+		comHistItemList.add(
+				new AffCompanyHistItem(comHistId, false, new DatePeriod(command.getHireDate(), GeneralDate.max())));
 
 		comHistList.add(new AffCompanyHistByEmployee(employeeId, comHistItemList));
 
 		AffCompanyHist newComHist = new AffCompanyHist(personId, comHistList);
 
 		this.companyHistRepo.add(newComHist);
+
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, "", GeneralDate.max(),
+				GeneralDate.max());
+
+		this.companyInfoRepo.add(newComInfo);
 
 	}
 
@@ -260,7 +285,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
 		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), false, false, "",
+				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 0, 0, "",
 				command.getEmployeeName(), employeeId);
 
 		this.userRepository.addNewUser(newUser);
@@ -271,14 +296,17 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		dataList.forEach(x -> {
 
-			x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
-					getItemValueById(inputs, x.getItemCode())));
+			String StringData = getItemValueById(inputs, x.getItemCode());
+
+			if (StringData != null) {
+				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value, StringData));
+			}
 		});
 
 	}
 
 	private String getItemValueById(List<ItemsByCategory> inputs, String itemCode) {
-		String returnString = "";
+		String returnString = null;
 
 		for (ItemsByCategory ctg : inputs) {
 
@@ -308,7 +336,12 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		}
 		String recordId = null;
 
-		if (categoryCd == "CS00002" || categoryCd == "CS00001") {
+		if (categoryCd == "CS00001") {
+
+			recordId = employeeId;
+		}
+
+		if (categoryCd == "CS00002") {
 			recordId = personId;
 		}
 

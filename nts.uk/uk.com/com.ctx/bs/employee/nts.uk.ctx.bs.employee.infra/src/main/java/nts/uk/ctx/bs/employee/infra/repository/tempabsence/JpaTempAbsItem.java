@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.AfterChildbirth;
@@ -22,11 +23,25 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 @Transactional
 public class JpaTempAbsItem extends JpaRepository implements TempAbsItemRepository {
 	
+	private final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
+			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
+			+ " WHERE h.sid = :sid AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
+	
 	@Override
 	public Optional<TempAbsenceHisItem> getItemByHitoryID(String historyId) {
 		Optional<BsymtTempAbsHisItem> option = this.queryProxy().find(historyId, BsymtTempAbsHisItem.class);
 		if (option.isPresent()) {
 			return Optional.of(toDomain(option.get()));
+		}
+		return Optional.empty();
+	}
+	
+	@Override
+	public Optional<TempAbsenceHisItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		Optional<BsymtTempAbsHisItem> optionData = this.queryProxy().query(GET_BY_SID_DATE, BsymtTempAbsHisItem.class)
+				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
+		if ( optionData.isPresent()) {
+			return Optional.of(toDomain(optionData.get()));
 		}
 		return Optional.empty();
 	}
@@ -130,35 +145,61 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	 */
 	private void updateEntity(TempAbsenceHisItem domain, BsymtTempAbsHisItem entity) {
 		// Common value
-		entity.histId = domain.getHistoryId();
-		entity.tempAbsFrameNo = domain.getTempAbsenceFrNo().v().intValue();
-		entity.remarks = domain.getRemarks().v();
-		entity.soInsPayCategory = domain.getSoInsPayCategory();
+//		entity.histId = domain.getHistoryId();
+		if (domain.getTempAbsenceFrNo() != null){
+			entity.tempAbsFrameNo = domain.getTempAbsenceFrNo().v().intValue();
+		}
+		if (domain.getRemarks() != null){
+			entity.remarks = domain.getRemarks().v();
+		}
+		if (domain.getSoInsPayCategory() != null){
+			entity.soInsPayCategory = domain.getSoInsPayCategory();
+		}
 
 		switch (domain.getTempAbsenceFrNo().v().intValue()) {
 		case 1:
 			break;
 		case 2:
 			MidweekClosure midweek = (MidweekClosure) domain;
-			entity.multiple = midweek.getMultiple() ? 1 : 0;
+			if (midweek.getMultiple() != null){
+				entity.multiple = midweek.getMultiple() ? 1 : 0;
+			}
 			break;
 		case 3:
 			AfterChildbirth childBirth = (AfterChildbirth) domain;
-			entity.familyMemberId = childBirth.getFamilyMemberId();
+			if (childBirth.getFamilyMemberId() != null){
+				entity.familyMemberId = childBirth.getFamilyMemberId();
+			}
 			break;
 		case 4:
 			ChildCareHoliday childCare = (ChildCareHoliday) domain;
-			entity.sameFamily = childCare.getSameFamily() ? 1 : 0;
-			entity.childType = childCare.getChildType();
-			entity.familyMemberId = childCare.getFamilyMemberId();
-			entity.createDate = childCare.getCreateDate();
-			entity.spouseIsLeave = childCare.getSpouseIsLeave() ? 1 : 0;
+			if (childCare.getSameFamily() != null){
+				entity.sameFamily = childCare.getSameFamily() ? 1 : 0;
+			}
+			if (childCare.getChildType() != null){
+				entity.childType = childCare.getChildType();
+			}
+			if (childCare.getFamilyMemberId() != null){
+				entity.familyMemberId = childCare.getFamilyMemberId();
+			}
+			if (childCare.getCreateDate() != null){
+				entity.createDate = childCare.getCreateDate();
+			}
+			if (childCare.getSpouseIsLeave() != null){
+				entity.spouseIsLeave = childCare.getSpouseIsLeave() ? 1 : 0;
+			}
 			break;
 		case 5:
 			CareHoliday careLeave = (CareHoliday) domain;
-			entity.sameFamily = careLeave.getSameFamily() ? 1 : 0;
-			entity.sameFamilyDays = careLeave.getSameFamilyDays();
-			entity.familyMemberId = careLeave.getFamilyMemberId();
+			if (careLeave.getSameFamily() != null){
+				entity.sameFamily = careLeave.getSameFamily() ? 1 : 0;
+			}
+			if (careLeave.getSameFamilyDays() != null){
+				entity.sameFamilyDays = careLeave.getSameFamilyDays();
+			}
+			if (careLeave.getFamilyMemberId() != null){
+				entity.familyMemberId = careLeave.getFamilyMemberId();
+			}
 			break;
 		case 6:
 			break;

@@ -24,9 +24,9 @@ public class DepartmentConfigInfo extends AggregateRoot {
 	// 履歴ID
 	private String historyId;
 
-	/** The wkp hierarchy. */
+	/** The dep hierarchy. */
 	// 階層
-	private List<DeapartmentHierarchy> depHierarchy;
+	private List<DepartmentHierarchy> depHierarchy;
 
 	/*
 	 * (non-Javadoc)

@@ -20,8 +20,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -46,8 +48,8 @@ public class EmployeeInDesignatedFinder {
 
 	/** The temporary absence repo. */
 	@Inject
-	private TempAbsItemRepository temporaryAbsenceRepo;
-
+	private TempAbsItemRepository temporaryAbsenceItemRepo;
+	
 	/** The workplace info repo. */
 	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepo;
@@ -253,21 +255,23 @@ public class EmployeeInDesignatedFinder {
 					// BaseDate <= RetirementDate) is not empty
 
 				// Get TemporaryAbsence By employee ID and BaseDate
-				Optional<TempAbsenceHisItem> temporaryAbsOpt = Optional.empty();
-				if (temporaryAbsOpt.isPresent()) {
+				Optional<TempAbsenceHisItem> tempAbsItemDomain = temporaryAbsenceItemRepo
+						.getByEmpIdAndStandardDate(employee.getSId(), referenceDate);
+				if (tempAbsItemDomain.isPresent()) {
 					// Domain TemporaryAbsence is Present
-					TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsOpt.get();
 					// set LeaveHolidayType
-//					statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
-//
-//					// Check if TempAbsenceType = TEMP_LEAVE
-//					if (temporaryAbsenceDomain.getTempAbsenceType().value == TempAbsenceType.TEMP_LEAVE.value) {
-//						// StatusOfEmployment = LEAVE_OF_ABSENCE
-//						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
-//					} else {
-//						// StatusOfEmployment = HOLIDAY
-//						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.HOLIDAY.value);
-//					}
+					int tempAbsNo = tempAbsItemDomain.get().getTempAbsenceFrNo().v().intValue();
+					int tempAbsenceType = tempAbsNo <= 6 ? tempAbsNo : 7;
+					statusOfEmploymentExport.setLeaveHolidayType(tempAbsenceType);
+
+					// Check if TempAbsenceType = TEMP_LEAVE
+					if (tempAbsenceType == LeaveHolidayType.LEAVE_OF_ABSENCE.value) {
+						// StatusOfEmployment = LEAVE_OF_ABSENCE
+						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
+					} else {
+						// StatusOfEmployment = HOLIDAY
+						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.HOLIDAY.value);
+					}
 				} else {
 					// StatusOfEmployment = INCUMBENT 在籍
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.INCUMBENT.value);

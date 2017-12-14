@@ -2,6 +2,7 @@ __viewContext.ready(function () {
     class ScreenModel {
         contextMenu: Array<any>;
         source: KnockoutObservableArray<any>;
+        selected: KnockoutObservable<any>;
         constructor(){  
             let self = this;
             
@@ -16,6 +17,15 @@ __viewContext.ready(function () {
                     {id: "delete", text: "削除", action: self.remove, style: "icon icon-close"}
                 ];
             $("#test2").ntsButtonTable("init", {row: 3, column: 10, source: self.source(), contextMenu: self.contextMenu, disableMenuOnDataNotSet: [1,2], mode: "normal"});
+            self.selected = ko.observable({});
+            self.selected.subscribe(function(value){  
+                console.log(value);
+            });
+        }
+        
+        selectFirst(){
+            let self = this;
+            self.selected({column: 0, row: 0});            
         }
         
         clear(){

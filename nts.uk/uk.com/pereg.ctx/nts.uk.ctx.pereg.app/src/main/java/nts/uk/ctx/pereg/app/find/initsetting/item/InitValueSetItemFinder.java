@@ -44,42 +44,83 @@ public class InitValueSetItemFinder {
 	GeneralDate baseDate;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItemByCtgCode(String settingId, String categoryCd, GeneralDate baseDate) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(findInitItemDto command) {
 
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
-		this.categoryCd = categoryCd;
+		this.categoryCd = command.getCategoryCd();
 
-		this.baseDate = baseDate;
+		this.baseDate = command.getBaseDate();
 
 		employeeId = AppContexts.user().employeeId();
 
-		itemList = this.settingItemRepo.getAllInitItem(settingId, categoryCd);
+		itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(), categoryCd);
 
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
-		if (isHaveItemSameAsLogin(itemList)) {
+		// set item SAMEASLOGIN
+		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
 
 			if (categoryCd.charAt(1) == 'S') {
 
-				setSystemData(result);
+				setSystemLoginData(result);
 
 			}
 
-			setOptinalData(result);
+			setOptinalLoginData(result);
 
 		}
+		// set item
+
+		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYEECODE, command.getEmployeeCode());
+
+		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASNAME, command.getEmployeeName());
+
+		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
 
 		return result;
 	}
 
-	private void setOptinalData(List<SettingItemDto> result) {
+	private void setDataByRefType(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result,
+			ReferenceMethodType methodType, String value) {
+		if (isHaveItemRefType(itemList, methodType)) {
+			itemList.stream().filter(x -> x.getRefMethodType().equals(methodType)).collect(Collectors.toList())
+					.forEach(x -> {
+
+						Optional<SettingItemDto> itemDtoOpt = result.stream()
+								.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+						if (itemDtoOpt.isPresent()) {
+							itemDtoOpt.get().setData(value);
+						}
+
+					});
+		}
+
+	}
+
+	private void setDataByRefType(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result,
+			ReferenceMethodType methodType, GeneralDate value) {
+		if (isHaveItemRefType(itemList, methodType)) {
+			itemList.stream().filter(x -> x.getRefMethodType().equals(methodType)).collect(Collectors.toList())
+					.forEach(x -> {
+
+						Optional<SettingItemDto> itemDtoOpt = result.stream()
+								.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+						if (itemDtoOpt.isPresent()) {
+							itemDtoOpt.get().setData(value);
+						}
+
+					});
+		}
+	}
+
+	private void setOptinalLoginData(List<SettingItemDto> result) {
 
 		result.addAll(
 				this.infoItemDataFinder.loadInfoItemDataList(categoryCd, AppContexts.user().companyId(), employeeId));
 	}
 
-	private void setSystemData(List<SettingItemDto> result) {
+	private void setSystemLoginData(List<SettingItemDto> result) {
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
@@ -88,7 +129,8 @@ public class InitValueSetItemFinder {
 
 		dataMap.forEach((k, v) -> {
 
-			Optional<PerInfoInitValueSetItem> itemInfoOpt = itemList.stream().filter(x -> x.getItemCode() == k)
+			Optional<PerInfoInitValueSetItem> itemInfoOpt = itemList.stream().filter(
+					x -> x.getItemCode().equals(k) && x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
 					.findFirst();
 
 			if (itemInfoOpt.isPresent()) {
@@ -112,11 +154,10 @@ public class InitValueSetItemFinder {
 				domain.getStringValue().v(), domain.getDataType());
 	}
 
-	private boolean isHaveItemSameAsLogin(List<PerInfoInitValueSetItem> listItem) {
+	private boolean isHaveItemRefType(List<PerInfoInitValueSetItem> listItem, ReferenceMethodType methodType) {
 		if (!listItem.isEmpty()) {
 
-			return listItem.stream().filter(obj -> obj.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
-					.findFirst().isPresent();
+			return listItem.stream().filter(obj -> obj.getRefMethodType().equals(methodType)).findFirst().isPresent();
 
 		} else {
 

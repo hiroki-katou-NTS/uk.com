@@ -15,9 +15,6 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class JobTitleImport {
 
-	/** The company id. */
-	private String companyId;
-
 	/** The position id. */
 	private String positionId;
 

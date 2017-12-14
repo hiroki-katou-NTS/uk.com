@@ -7,7 +7,7 @@ module cps002.a.service {
         paths: any = {
             getEmployeeCode: 'basic/organization/employee/getGenerateEmplCode',
             getCardNumber: 'basic/organization/employee/getGenerateCardNo',
-            getLayout: 'person/newlayout/get',
+            getLayout: 'person/newlayout/get-layout-can-null',
             getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
             getSelfRoleAuth: 'roles/auth/get-self-auth',
             getUserSetting: 'usersetting/getUserSetting',
@@ -17,7 +17,7 @@ module cps002.a.service {
             getCopySetting: 'copysetting/setting/getCopySetting',
             getAllCopySettingItem: 'copysetting/item/getAll/{0}/{1}/{2}',
             getAllInitValueCtgSetting: 'initsetting/category/findAllBySetId/{0}',
-            getAllInitValueItemSetting: 'initsetting/item/findInit/{0}/{1}/{2}',
+            getAllInitValueItemSetting: 'initsetting/item/findInit',
             getLayoutByCreateType: 'layout/getByCreateType',
             addNewEmployee: 'addemployee/addNewEmployee'
         };
@@ -35,7 +35,7 @@ module cps002.a.service {
     }
 
     export function getEmployeeCode(employeeLetter) {
-        return ajax(paths.getEmployeeCode, employeeLetter);
+        return ajax("com", paths.getEmployeeCode, employeeLetter);
     }
 
     export function getCardNumber(cardLetter) {
@@ -67,8 +67,8 @@ module cps002.a.service {
 
     }
 
-    export function getAllInitValueItemSetting(settingId, categoryCd, baseDate) {
-        return ajax(format(regpath + paths.getAllInitValueItemSetting, settingId, categoryCd, baseDate));
+    export function getAllInitValueItemSetting(command) {
+        return ajax(regpath + paths.getAllInitValueItemSetting, command);
     }
 
     export function getSelfRoleAuth() {

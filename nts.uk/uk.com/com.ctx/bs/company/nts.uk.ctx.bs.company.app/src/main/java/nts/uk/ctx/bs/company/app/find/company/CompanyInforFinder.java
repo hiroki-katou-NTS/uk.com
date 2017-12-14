@@ -54,10 +54,10 @@ public class CompanyInforFinder {
 							.map(x -> {
 								return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),
 															x.getCompanyId(), x.getStartMonth().value,
-															x.getIsAbolition().value, x.getRepname().v(),
-															x.getRepjob().v(), x.getComNameKana().v(),
+															x.getIsAbolition().value, x.getRepname() != null ? x.getRepname().v() : null,
+															x.getRepjob() != null ? x.getRepjob().v() : null, x.getComNameKana().v(),
 															x.getShortComName().v(), contractCd, 
-															x.getTaxNo().v(), fromDomainAdd(x.getAddInfor()));
+															x.getTaxNo() != null ? x.getTaxNo().v() : null, fromDomainAdd(x.getAddInfor()));
 							}).collect(Collectors.toList());
 	}
 	
@@ -70,10 +70,13 @@ public class CompanyInforFinder {
 		return this.comRep.find(companyId).map(x -> {
 			return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),
 					x.getCompanyId(), x.getStartMonth().value,
-					x.getIsAbolition().value, x.getRepname().v(),
-					x.getRepjob().v(), x.getComNameKana().v(),
-					x.getShortComName().v(), x.getContractCd().v(), 
-					x.getTaxNo().v(), fromDomainAdd(x.getAddInfor()));
+					x.getIsAbolition().value, x.getRepname() != null ? x.getRepname().v() : null,
+					x.getRepjob() != null ? x.getRepjob().v() : null, 
+					x.getComNameKana() != null? x.getComNameKana().v():null,
+					x.getShortComName() != null ? x.getShortComName().v() : null, 
+					x.getContractCd().v(), 
+					x.getTaxNo() != null ? x.getTaxNo().v() : null, 
+					fromDomainAdd(x.getAddInfor()));
 		}).orElse(null);
 	}
 }

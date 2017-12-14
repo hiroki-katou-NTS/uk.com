@@ -54,7 +54,8 @@
 
 				<div class="mt-10">
 					<button id="bt-clear" data-bind="click: clear">#{i18n.getText('KSU001_907')}</button>
-					<div id="test2"></div>
+					<div id="test2"
+						data-bind="ntsTableButton: {source: source, row: 3, column: 10, contextMenu: contextMenu, click: self.openDialogJB, mode: 'master'}"></div>
 				</div>
 
 			</div>

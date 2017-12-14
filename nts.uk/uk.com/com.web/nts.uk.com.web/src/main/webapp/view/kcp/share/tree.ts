@@ -462,7 +462,8 @@ module kcp.share.tree {
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
                 self.itemList(subItemList);
                 self.initSelectedValue(self.itemList());
-                self.loadTreeGrid();
+                ko.cleanNode($('#' + self.getComIdSearchBox())[0]);
+                ko.applyBindings(self, $('#' + self.getComIdSearchBox())[0]);
             }
         }
 

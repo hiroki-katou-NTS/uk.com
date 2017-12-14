@@ -28,7 +28,7 @@ module nts.uk.at.view.cdl024.viewmodel {
 
             items.removeAll();
             service.getAll().done((data: Array<IItemModel>) => {
-                data = _.sortBy(data, ["code"]);
+                data = _.orderBy(data, ["code"], ['asc']);
                 items(data);
                 let parameter: InputParam = nts.uk.ui.windows.getShared("CDL024");
                 if (parameter != null && parameter.codeList != null) {

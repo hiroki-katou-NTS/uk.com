@@ -495,8 +495,8 @@ module nts.uk.com.view.cps005.b {
         constructor(data: ISelectionItem) {
             let self = this;
             if (!data) return;
-            self.selectionItemRefType(data.selectionItemRefType || undefined);
-            self.selectionItemRefCode(data.typeCode || undefined);
+            self.selectionItemRefType(data.selectionItemRefType ||  data.referenceType || undefined );
+            self.selectionItemRefCode(data.typeCode || data.enumName ||undefined);
             self.selectionItemId(data.selectionItemId || undefined);
             self.selectionItemName(data.selectionItemName || undefined);
             if (!nts.uk.util.isNullOrUndefined(self.selectionItemId())) {

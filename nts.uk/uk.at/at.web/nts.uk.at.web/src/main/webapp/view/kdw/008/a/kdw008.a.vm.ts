@@ -238,7 +238,7 @@ module nts.uk.at.view.kdw008.a {
                         } else {
                             self.authorityFormatDailyValue([]);
                         }
-
+                        $("#currentName").focus();
                     } else {
                         self.currentBusinessType([]);
                     }
@@ -265,6 +265,7 @@ module nts.uk.at.view.kdw008.a {
                     .ifYes(() => {
                         new service.Service().removeAuthorityDailyFormat(removeAuthorityDto).done(function() {
                             nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                            $("#currentName").focus();
                         }).fail(function(error) {
                         });;
                         self.reloadData(removeAuthorityDto.dailyPerformanceFormatCode, true);
@@ -318,8 +319,9 @@ module nts.uk.at.view.kdw008.a {
                 nts.uk.ui.block.invisible();
                 if (self.isUpdate() == true) {
                     new service.Service().updateDailyDetail(addOrUpdateDailyFormat).done(function() {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(self.currentDailyFormatCode());
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        $("#currentName").focus();
                     }).always(function() {
                         nts.uk.ui.block.clear();
                     }).fail(function(error) {
@@ -327,8 +329,9 @@ module nts.uk.at.view.kdw008.a {
                     });
                 } else {
                     new service.Service().addDailyDetail(addOrUpdateDailyFormat).done(function() {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(self.currentDailyFormatCode());
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        $("#currentName").focus();
                     }).always(function() {
                         nts.uk.ui.block.clear();
                     }).fail(function(error) {

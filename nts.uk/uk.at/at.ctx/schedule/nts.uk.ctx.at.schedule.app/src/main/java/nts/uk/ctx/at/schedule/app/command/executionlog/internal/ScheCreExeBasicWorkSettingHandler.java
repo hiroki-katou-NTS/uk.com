@@ -92,7 +92,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 			// find calendar work place by id
 			Optional<CalendarWorkplace> optionalCalendarWorkplace = this.calendarWorkPlaceRepository
 					.findCalendarWorkplaceByDate(workplaceId,
-							this.toYearMonthDate(command.getBaseGetter().getToDate()));
+							command.getBaseGetter().getToDate());
 
 			// check exist data calendar work place
 			if (optionalCalendarWorkplace.isPresent()) {
@@ -102,7 +102,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 		// find calendar company by id
 		Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository.findCalendarCompanyByDate(
-				command.getBaseGetter().getCompanyId(), this.toYearMonthDate(command.getBaseGetter().getToDate()));
+				command.getBaseGetter().getCompanyId(), command.getBaseGetter().getToDate());
 
 		// check exist data calendar company
 		if (optionalCalendarCompany.isPresent()) {
@@ -283,7 +283,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 		// find calendar classification by id
 		Optional<CalendarClass> optionalCalendarClass = this.calendarClassRepository.findCalendarClassByDate(
 				command.getBaseGetter().getCompanyId(), command.getClassificationCode(),
-				this.toYearMonthDate(command.getBaseGetter().getToDate()));
+				command.getBaseGetter().getToDate());
 
 		// check exist data
 		if (optionalCalendarClass.isPresent()) {
@@ -293,7 +293,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 			// find calendar company by id
 			Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
 					.findCalendarCompanyByDate(command.getBaseGetter().getCompanyId(),
-							this.toYearMonthDate(command.getBaseGetter().getToDate()));
+							command.getBaseGetter().getToDate());
 
 			// check exits data
 			if (optionalCalendarCompany.isPresent()) {

@@ -31,7 +31,7 @@
 
 #step1_content_top_right {
 	float: left;
-	width: 350px;
+	width: 370px;
 	background-color: #F2F2F2;
 	padding: 10px;
 }
@@ -84,6 +84,15 @@
 .step1_bot_col2 {
 	float: left;
 	width: 200px;
+}
+
+.lastHistName {
+	margin-left: 10px;
+	white-space: nowrap;
+	width: 75px;
+	overflow: hidden;
+	display: inline-block;
+	text-overflow: ellipsis;
 }
 
 .step1_bot_col2 .div_line:NTH-CHILD(1) {
@@ -199,11 +208,14 @@
 }
 /* step 3 start */
 #employeeAvatar {
-	cursor: pointer;
 	border: 1px solid #B1B1B1;
 	width: 100px;
 	height: 130px;
 	border-radius: 5px;
+}
+
+.isAllowUpload {
+	cursor: pointer;
 }
 
 .drag-panel {

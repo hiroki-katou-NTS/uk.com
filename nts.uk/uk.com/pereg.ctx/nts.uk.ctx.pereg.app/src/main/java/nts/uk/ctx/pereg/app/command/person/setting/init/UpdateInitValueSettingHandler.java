@@ -74,9 +74,10 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 		if (command.isSetting()) {
 
 			if (itemSetting.size() == 0 || itemSetting == null) {
+				this.ctgRepo.delete(command.getPerInfoCtgId(),command.getSettingId());
 				itemCommand.stream().forEach(c -> {
-					Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(
-							command.getSettingId(), command.getPerInfoCtgId(), c.getPerInfoItemDefId());
+					Optional<PerInfoInitValueSetItem> item_1 = this.itemRepo.getDetailItem(command.getSettingId(),
+							command.getPerInfoCtgId(), c.getPerInfoItemDefId());
 					if (item_1.isPresent()) {
 						this.itemRepo.delete(c.getPerInfoItemDefId(), command.getPerInfoCtgId(),
 								command.getSettingId());
@@ -422,7 +423,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 		}
 
 	}
-	
+
 	private BundledBusinessException businessList(List<UpdateItemInitValueSettingCommand> itemSetting) {
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 		for (UpdateItemInitValueSettingCommand c : itemSetting) {
@@ -460,7 +461,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 			}
 		}
 		return exceptions;
-		
+
 	}
 
 }

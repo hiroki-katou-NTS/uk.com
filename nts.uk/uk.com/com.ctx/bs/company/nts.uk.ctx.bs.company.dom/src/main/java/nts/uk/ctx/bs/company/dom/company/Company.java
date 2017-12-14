@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.primitive.ABName;
 import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
 import nts.uk.ctx.bs.company.dom.company.primitive.KNName;
@@ -86,9 +87,13 @@ public class Company extends AggregateRoot {
 			BigDecimal taxNo, AddInfor addInfor) {
 		return new Company(new CompanyCode(companyCode), new Name(companyName),
 				EnumAdaptor.valueOf(startMonth, MonthStr.class),
-				EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class), new RepName(repname), new RepJob(repjob),
-				new KNName(comNameKana), new ABName(shortComName), new ContractCd(contractCd), new TaxNo(taxNo),
-				addInfor);
+				EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class), 
+				!StringUtil.isNullOrEmpty(repname, true) ? new RepName(repname) : new RepName(""), 
+				!StringUtil.isNullOrEmpty(repjob, true) ? new RepJob(repjob) : new RepJob(""),
+				new KNName(comNameKana), 
+				new ABName(shortComName), new ContractCd(contractCd), 
+				taxNo != null ? new TaxNo(taxNo) : null,
+				addInfor != null ? addInfor : null);
 	}
 
 	/**
