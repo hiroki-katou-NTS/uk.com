@@ -33,8 +33,9 @@ import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame_;
 public class JpaWorkdayoffFrameRepository extends JpaRepository
 	implements WorkdayoffFrameRepository {
 
+	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository#findClassification(java.lang.String, java.lang.String)
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository#findWorkdayoffFrame(nts.uk.ctx.at.shared.dom.common.CompanyId, int)
 	 */
 	@Override
 	public Optional<WorkdayoffFrame> findWorkdayoffFrame(CompanyId companyId, int workdayoffFrameNo) {
@@ -43,16 +44,13 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 				.map(e -> this.toDomain(e));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.basic.dom.company.organization.category.
-	 * ManagementCategoryRepository#update(nts.uk.ctx.basic.dom.company.
-	 * organization.category.ManagementCategory)
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository#update(nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame)
 	 */
 	@Override
-	public void update(WorkdayoffFrame planYearHolidayFrame) {
-		this.commandProxy().update(this.toEntity(planYearHolidayFrame));
+	public void update(WorkdayoffFrame workdayoffFrame) {
+		this.commandProxy().update(this.toEntity(workdayoffFrame));
 	}
 	
 	/* (non-Javadoc)

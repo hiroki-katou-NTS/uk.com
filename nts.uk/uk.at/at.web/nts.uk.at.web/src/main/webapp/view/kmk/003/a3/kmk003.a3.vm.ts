@@ -24,13 +24,11 @@ module a3 {
         autoCalUseAttrs: KnockoutObservableArray<any>;
         selectedCodeAutoCalUse: KnockoutObservable<any>;
 
-        data: KnockoutObservable<any>;
         /**
         * Constructor.
         */
-        constructor(data: any, selectedSettingMethod: any, selectedTab: any, selectedWorkForm: any) {
+        constructor(selectedSettingMethod: any, selectedTab: any, selectedWorkForm: any) {
             let self = this;
-            self.data = ko.observable(data());
             self.selectedSettingMethod = selectedSettingMethod;
             self.selectedWorkForm = selectedWorkForm;
             self.selectedTab = selectedTab;
@@ -563,16 +561,14 @@ module a3 {
                 .mergeRelativePath('/view/kmk/003/a3/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
-            let data = input.data;
             let selectedSettingMethod = input.settingMethod;
             let selectedTab = input.settingTab;
             let selectedWorkForm = input.settingWorkFrom;
 
-            let screenModel = new ScreenModel(data, selectedSettingMethod, selectedTab, selectedWorkForm);
+            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab, selectedWorkForm);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
                 if (screenModel.isFlexWorkMode()) {
                     screenModel.updateViewByFlexMode();
                 }

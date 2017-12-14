@@ -45,6 +45,15 @@ module nts.uk.at.view.kmk003.sample {
                 let self = this;
                 let dfd = $.Deferred<any>();
 
+                self.dataSource.push({
+                    column1: ko.observable("23:00"), column2: ko.observable(false),
+                    column3: ko.observable({startTime:"13:00", endTime:"14:00"}), column4: ko.observable(3)
+                });
+                self.dataSource.push({
+                    column1: ko.observable("10:00"), column2: ko.observable(false),
+                    column3: ko.observable({startTime:"10:00", endTime:"12:00"}), column4: ko.observable(3)
+                });
+                
                 dfd.resolve();
                 return dfd.promise();
             }

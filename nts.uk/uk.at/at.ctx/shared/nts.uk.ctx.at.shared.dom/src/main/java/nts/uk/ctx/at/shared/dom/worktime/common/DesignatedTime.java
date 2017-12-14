@@ -29,7 +29,7 @@ public class DesignatedTime extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.oneDayTime.greaterThan(this.halfDayTime)) {
+		if (this.oneDayTime.lessThanOrEqualTo(this.halfDayTime)) {
 			throw new BusinessException("Msg_782");
 		}
 	}

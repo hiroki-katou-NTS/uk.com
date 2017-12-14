@@ -26,5 +26,9 @@ public class TimeActualStamp {
 		this.stamp = stamp;
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
-	
+	public void setPropertyTimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp){
+		this.actualStamp = actualStamp;
+		this.stamp = stamp;
+		this.numberOfReflectionStamp = numberOfReflectionStamp;
+	}
 }

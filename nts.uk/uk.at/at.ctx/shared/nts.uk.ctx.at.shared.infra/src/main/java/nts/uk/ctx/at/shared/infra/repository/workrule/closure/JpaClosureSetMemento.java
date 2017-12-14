@@ -7,11 +7,11 @@ package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
 import java.util.List;
 
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosurePK;
@@ -59,8 +59,8 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 	 * java.lang.Integer)
 	 */
 	@Override
-	public void setClosureId(Integer closureId) {
-		this.kclmtClosure.getKclmtClosurePK().setClosureId(closureId);
+	public void setClosureId(ClosureId closureId) {
+		this.kclmtClosure.getKclmtClosurePK().setClosureId(closureId.value);
 	}
 
 	/*

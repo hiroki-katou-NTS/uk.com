@@ -11,15 +11,15 @@ public enum Rounding {
 
 	/** The rounding down. */
 	// 切り捨て
-	ROUNDING_DOWN(0, "Enum_Rounding_Down", "切り捨て"),
+	ROUNDING_DOWN(0, "Enum_Rounding_Down"),
 
 	/** The rounding up. */
 	// 切り上げ
-	ROUNDING_UP(1, "Enum_Rounding_Up", "切り上げ"),
+	ROUNDING_UP(1, "Enum_Rounding_Up"),
 
 	/** The rounding lessthanorequal. */
 	// 未満切捨、以上切上
-	ROUNDING_LESSTHANOREQUAL(2, "Enum_Rounding_LessThanOrEqual", "未満切捨、以上切上");
+	ROUNDING_LESSTHANOREQUAL(2, "Enum_Rounding_LessThanOrEqual");
 
 	/** The value. */
 	public final int value;
@@ -27,9 +27,6 @@ public enum Rounding {
 	/** The name id. */
 	public final String nameId;
 
-	/** The description. */
-	public final String description;
-	
 	/** The Constant values. */
 	private final static Rounding[] values = Rounding.values();
 
@@ -41,10 +38,9 @@ public enum Rounding {
 	 * @param nameId
 	 *            the name id
 	 */
-	private Rounding(int value, String nameId, String description) {
+	private Rounding(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
-		this.description = description;
 	}
 
 	/**

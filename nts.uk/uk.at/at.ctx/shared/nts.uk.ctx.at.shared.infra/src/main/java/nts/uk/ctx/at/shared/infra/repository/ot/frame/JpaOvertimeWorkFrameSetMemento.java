@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.ot.frame;
 
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
@@ -18,13 +17,6 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
 public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemento{
 	
 	/** The kshst overtime frame. */
-	
-	/**
-	 * Sets the kshst overtime frame.
-	 *
-	 * @param kshstOvertimeFrame the new kshst overtime frame
-	 */
-	@Setter
 	private KshstOvertimeFrame kshstOvertimeFrame;
 	
 	/**
@@ -40,8 +32,9 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	}
 
 	
+	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationSetMemento#setCompanyId(nts.uk.ctx.bs.employee.dom.common.CompanyId)
+	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
@@ -49,8 +42,9 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	}
 
 
+	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameSetMemento#setUseClassification(nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr)
+	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento#setUseClassification(nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr)
 	 */
 	@Override
 	public void setUseClassification(NotUseAtr useAtr) {
@@ -58,6 +52,7 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	}
 
 
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento#setOvertimeWorkFrameNo(nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo)
 	 */
@@ -67,6 +62,7 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	}
 
 
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento#setTransferFrameName(nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName)
 	 */
@@ -76,6 +72,7 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	}
 
 
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento#setOvertimeWorkFrameName(nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName)
 	 */

@@ -42,6 +42,7 @@ module nts.uk.com.view.cmm007.c {
                             _self.mapModel.set(i.tempAbsenceFrNo , temp);
                         } else {
                             _self.mapModel.get(i.tempAbsenceFrNo).tempAbsenceFrName(i.tempAbsenceFrName);
+                            _self.mapModel.get(i.tempAbsenceFrNo).useClassification(i.useClassification);
                         }
                     }
                     

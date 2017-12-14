@@ -9,12 +9,15 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -34,7 +37,7 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	public WorkTimeDivisionDto workTimeDivision;
 
 	/** The abolish atr. */
-	public Integer abolishAtr;
+	public Boolean isAbolish;
 
 	/** The color code. */
 	public String colorCode;
@@ -80,7 +83,10 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	 */
 	@Override
 	public AbolishAtr getAbolishAtr() {
-		return AbolishAtr.valueOf(this.abolishAtr);
+		if(this.isAbolish){
+			return AbolishAtr.ABOLISH;
+		}
+		return AbolishAtr.NOT_ABOLISH;
 	}
 
 	/* (non-Javadoc)
@@ -96,7 +102,9 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	 */
 	@Override
 	public WorkTimeDisplayName getWorkTimeDisplayName() {
-		return WorkTimeDisplayName.builder().build();
+		return WorkTimeDisplayName.builder().workTimeName(new WorkTimeName(this.workTimeDisplayName.getWorkTimeName()))
+				.workTimeAbName(new WorkTimeAbName(this.workTimeDisplayName.getWorkTimeAbName()))
+				.workTimeSymbol(new WorkTimeSymbol(this.workTimeDisplayName.getWorkTimeSymbol())).build();
 	}
 
 	/* (non-Javadoc)

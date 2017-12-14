@@ -46,21 +46,6 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		entity.endDate = item.end();
 	}
 
-	/**
-	 * Convert from entity to domain
-	 * 
-	 * @param entity
-	 * @return
-	 */
-	private TempAbsenceHistory toDomain(BsymtTempAbsHistory entity) {
-		TempAbsenceHistory domain = new TempAbsenceHistory(entity.cid, entity.sid, new ArrayList<DateHistoryItem>());
-
-		DateHistoryItem dateItem = new DateHistoryItem(entity.histId, new DatePeriod(entity.startDate, entity.endDate));
-		domain.add(dateItem);
-
-		return domain;
-	}
-
 	@Override
 	public void add(String cid, String sid, DateHistoryItem item) {
 		this.commandProxy().insert(toEntity(cid, sid, item));
@@ -87,25 +72,24 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	}
 
 	@Override
-	public Optional<TempAbsenceHistory> getByHistId(String histId) {
+	public Optional<DateHistoryItem> getByHistId(String histId) {
 
 		Optional<BsymtTempAbsHistory> existItem = this.queryProxy().find(histId, BsymtTempAbsHistory.class);
 		if (existItem.isPresent()) {
-			return Optional.of(toDomain(existItem.get()));
+			BsymtTempAbsHistory entity = existItem.get();
+			return Optional.of(new DateHistoryItem(entity.histId, new DatePeriod(entity.startDate, entity.endDate)));
 		}
 		return Optional.empty();
 
 	}
-	
+
 	@Override
-	public Optional<TempAbsenceHistory> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-		Optional<BsymtTempAbsHistory> optionData = this.queryProxy()
-				.query(GET_BY_SID_DATE, BsymtTempAbsHistory.class)
-				.setParameter("sid", employeeId)
-				.setParameter("standardDate", standardDate)
-				.getSingle();
+	public Optional<DateHistoryItem> getItemByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+		Optional<BsymtTempAbsHistory> optionData = this.queryProxy().query(GET_BY_SID_DATE, BsymtTempAbsHistory.class)
+				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
 		if (optionData.isPresent()) {
-			return Optional.of(toDomain(optionData.get()));
+			BsymtTempAbsHistory entity = optionData.get();
+			return Optional.of(new DateHistoryItem(entity.histId, new DatePeriod(entity.startDate, entity.endDate)));
 		}
 		return Optional.empty();
 	}

@@ -9,11 +9,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -78,10 +78,15 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getByEmployeeId(query.getEmployeeId());
-		if (affDeptHist.isPresent())
-			return affDeptHist.get().getHistoryItems().stream()
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
-					.collect(Collectors.toList());
-		return new ArrayList<>();
+		if (!affDeptHist.isPresent())
+			return new ArrayList<>();
+		List<DateHistoryItem> historyItems = affDeptHist.get().getHistoryItems();
+		if(historyItems.size() == 0)
+			return new ArrayList<>();
+		return historyItems.stream()
+				.sorted((a, b) -> b.start().compareTo(a.end()))
+				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+				.collect(Collectors.toList());
+		
 	} 
 }
