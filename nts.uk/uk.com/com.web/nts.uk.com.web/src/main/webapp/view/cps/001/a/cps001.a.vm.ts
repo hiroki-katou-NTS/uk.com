@@ -537,11 +537,8 @@ module cps001.a.vm {
         // calc days of work process
         entire: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
-                days = self.numberOfWork();
-
-            let current = moment.utc(),
-                entire = moment.utc().add(-days, 'days'),
-                duration = moment.duration(current.diff(entire));
+                days = self.numberOfWork(),
+                duration = moment.duration(days, "days");
 
             return format("{0}{1}{2}{3}", duration.years(), text('CPS001_67'), duration.months(), text('CPS001_88'));
         });
@@ -722,13 +719,19 @@ module cps001.a.vm {
     }
 
     class MultiData {
+        // selected value on list data
         id: KnockoutObservable<string> = ko.observable(undefined);
 
+        // event action
         add = () => { };
         replace = () => { };
         remove = () => { };
 
+        // list data multiple or history
         data: KnockoutObservableArray<IMultiData> = ko.observableArray([]);
+
+        // object layout
+        layout: KnockoutObservable<Layout> = ko.observable(new Layout());
     }
 
     enum TABS {
@@ -775,6 +778,13 @@ module cps001.a.vm {
         items: Array<IPeregItemValueCommand>;
     }
 
+    interface IPeregItemValueCommand {
+        definitionId: string;
+        itemCode: string;
+        value: string;
+        'type': number;
+    }
+
     enum ITEM_SINGLE_TYPE {
         STRING = 1,
         NUMERIC = 2,
@@ -782,12 +792,5 @@ module cps001.a.vm {
         TIME = 4,
         TIMEPOINT = 5,
         SELECTION = 6
-    }
-
-    interface IPeregItemValueCommand {
-        definitionId: string;
-        itemCode: string;
-        value: string;
-        'type': number;
     }
 }

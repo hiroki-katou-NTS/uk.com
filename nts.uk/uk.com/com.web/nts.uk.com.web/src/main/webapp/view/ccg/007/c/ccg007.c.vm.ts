@@ -107,10 +107,10 @@ module nts.uk.pr.view.ccg007.c {
                     nts.uk.characteristics.remove("form2LoginInfo").done(function() {
                         if (self.isSaveLoginInfo()) {
                             nts.uk.characteristics.save("form2LoginInfo", { companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
-                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
                             });
                         } else {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
                         }
                     });
                     blockUI.clear();

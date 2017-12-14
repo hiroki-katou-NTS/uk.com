@@ -12,7 +12,7 @@ module nts.uk.com.view.cdl009.a {
             treeGrid: any;
             listComponentOpt: any;
             employeeList: KnockoutObservableArray<any>;
-            selectedEmployeeId: KnockoutObservable<string>;
+            selectedEmpCode: KnockoutObservable<string>;
             selectedEmps: KnockoutObservableArray<string>;
             
             isIncumbent: KnockoutObservable<boolean>;
@@ -32,7 +32,7 @@ module nts.uk.com.view.cdl009.a {
                 self.target = ko.observable(params.target ? params.target : TargetClassification.WORKPLACE);
 
                 self.employeeList = ko.observableArray<any>();
-                self.selectedEmployeeId = ko.observable('');
+                self.selectedEmpCode = ko.observable('');
                 self.selectedEmps = ko.observableArray([]);
                 // Initial listComponentOption
                 self.treeGrid = {
@@ -62,7 +62,7 @@ module nts.uk.com.view.cdl009.a {
                     self.listComponentOpt.selectedCode = self.selectedEmps;
                     self.listComponentOpt.isShowSelectAllButton = true;
                 } else {
-                    self.listComponentOpt.selectedCode = self.selectedEmployeeId;
+                    self.listComponentOpt.selectedCode = self.selectedEmpCode;
                 }
                 
                 self.enrollmentStatusList = ko.observableArray<number>();
@@ -152,22 +152,41 @@ module nts.uk.com.view.cdl009.a {
              */
             decideData(): void {
                 let self = this;
+                // Get Emp List 
+                let empList = $('#emp-component').getDataList();
+                
                 var isNoSelectRowSelected = $("#emp-component").isNoSelectRowSelected();
                 if (self.isMultiSelect()) {
                     if ((!self.selectedEmps() || self.selectedEmps().length == 0)) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
                     } else {
-                        setShared('CDL009Output', self.selectedEmps());
+                        let empIds = self.getEmpIds(empList, self.selectedEmps());
+                        setShared('CDL009Output', empIds);
                         close();
                     }
                     
-                } else if (!self.selectedEmployeeId() && !isNoSelectRowSelected) {
+                } else if (!self.selectedEmpCode() && !isNoSelectRowSelected) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
                 } else {
-                    setShared('CDL009Output', self.selectedEmployeeId());
+                    // Get Emp Id
+                    let emp: any = empList.filter((item) => {
+                        return item.code == self.selectedEmpCode();
+                    });
+                    setShared('CDL009Output', emp.id);
                     close();
                 }
                 
+            }
+            
+            private getEmpIds(empList: Array<any>, empCodes: Array<string>): Array<any> {
+                let data = [];
+                for (let empCode of empCodes) {
+                    let emp: any = empList.filter((item) => {
+                        return item.code == empCode;
+                    });
+                    data.push(emp.id);
+                }
+                return data;
             }
 
             /**

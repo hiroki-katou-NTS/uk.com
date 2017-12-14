@@ -30,6 +30,13 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet_
 @Stateless
 public class JpaPredetemineTimeSetRepository extends JpaRepository implements PredetemineTimeSettingRepository {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
+	 * PredetemineTimeSettingRepository#findByWorkTimeCode(java.lang.String,
+	 * java.lang.String)
+	 */
 	@Override
 	public PredetemineTimeSetting findByWorkTimeCode(String companyId, String workTimeCode) {
 		// get entity manager
@@ -75,6 +82,22 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		List<KshmtWorkTimeSheetSet> lstKshmtWorkTimeSheetSet = em2.createQuery(cq2).getResultList();
 
 		return new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(kwtstWorkTimeSet, lstKshmtWorkTimeSheetSet));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
+	 * PredetemineTimeSettingRepository#save(nts.uk.ctx.at.shared.dom.worktime.
+	 * predset.PredetemineTimeSetting)
+	 */
+	@Override
+	public void save(PredetemineTimeSetting domain) {
+		KshmtPredTimeSet entity = new KshmtPredTimeSet();
+		List<KshmtWorkTimeSheetSet> lstEntityTime = new ArrayList<>();
+		domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity, lstEntityTime));
+		this.commandProxy().update(entity);
+		this.commandProxy().updateAll(lstEntityTime);
 	}
 
 }

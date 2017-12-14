@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
@@ -74,7 +74,7 @@ public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezon
 	 * PrescribedTimezoneSettingSetMemento#setLstTimezone(java.util.List)
 	 */
 	@Override
-	public void setLstTimezone(List<Timezone> lstTimezone) {
+	public void setLstTimezone(List<TimezoneUse> lstTimezone) {
 		if (CollectionUtil.isEmpty(lstTimezone)) {
 			this.lstEntityTime = new ArrayList<>();
 		} else {

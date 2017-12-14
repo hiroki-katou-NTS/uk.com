@@ -70,7 +70,7 @@ public class WorkPlaceInfFinder {
 			return result;	
 		}
 		
-		DatePeriod currentPeriod = this.closureService.getClosurePeriod(listClosure.get(0).getClosureId(),
+		DatePeriod currentPeriod = this.closureService.getClosurePeriod(listClosure.get(0).getClosureId().value,
 				listClosure.get(0).getClosureMonth().getProcessingYm());
 
 		Optional<AffWorkplaceDto> opAffWorkPlaceDto = affWorkplaceAdapter.findBySid(employeeId,

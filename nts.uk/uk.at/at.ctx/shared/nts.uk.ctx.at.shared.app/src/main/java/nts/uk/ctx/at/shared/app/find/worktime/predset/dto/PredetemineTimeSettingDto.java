@@ -48,8 +48,8 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingSetMemen
 	 * @see nts.uk.ctx.at.shared.dom.predset.PredetemineTimeSetMemento#setCompanyID(java.lang.String)
 	 */
 	@Override
-	public void setCompanyId(String companyID) {
-		this.companyId = companyID;
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
 	}
 
 	/* (non-Javadoc)
@@ -73,6 +73,7 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingSetMemen
 	 */
 	@Override
 	public void setPredTime(PredetermineTime predTime) {
+		this.predTime = new PredetermineTimeDto();
 		predTime.saveToMemento(this.predTime);
 	}
 
@@ -93,6 +94,7 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingSetMemen
 	 */
 	@Override
 	public void setPrescribedTimezoneSetting(PrescribedTimezoneSetting prescribedTimezoneSetting) {
+		this.prescribedTimezoneSetting = new PrescribedTimezoneSettingDto();
 		prescribedTimezoneSetting.saveToMemento(this.prescribedTimezoneSetting);
 	}
 

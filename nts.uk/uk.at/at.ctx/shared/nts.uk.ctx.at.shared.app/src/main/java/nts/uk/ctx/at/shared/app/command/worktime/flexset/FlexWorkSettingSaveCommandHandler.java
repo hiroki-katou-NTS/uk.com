@@ -9,8 +9,13 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class FlexWorkSettingSaveCommandHandler.
@@ -21,6 +26,14 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 	/** The flex work setting repository. */
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepository;
+	
+	/** The work time setting repository. */
+	@Inject 
+	private WorkTimeSettingRepository workTimeSettingRepository; 
+	
+	/** The predetemine time setting repository. */
+	@Inject 
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository; 
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -34,11 +47,29 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		// get command
 		FlexWorkSettingSaveCommand command = context.getCommand();
 		
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		// get company id
+		String companyId = loginUserContext.companyId();
+		
 		// get domain flex work setting by client send
-		FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
+		//FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
+		
+		// get work time setting by client send
+		WorkTimeSetting workTimeSetting = command.toDomainWorkTimeSetting(companyId);
+		
+		// get pred setting by client send 
+		PredetemineTimeSetting predseting = command.toDomainPredetemineTimeSetting(companyId);
+		
+		// call repository save work time setting
+		this.workTimeSettingRepository.save(workTimeSetting);
+		
+		// call repository save pred setting
+		this.predetemineTimeSettingRepository.save(predseting);
 		
 		// call repository save flex work setting
-		this.flexWorkSettingRepository.saveFlexWorkSetting(flexWorkSetting);
+		//this.flexWorkSettingRepository.saveFlexWorkSetting(flexWorkSetting);
 	}
 
 }

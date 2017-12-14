@@ -115,10 +115,10 @@ module nts.uk.pr.view.ccg007.d {
                     nts.uk.characteristics.remove("form3LoginInfo").done(function() {
                         if (self.isSaveLoginInfo()) {
                             nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
-                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
                             });
                         } else {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
                         }
                     });
                     blockUI.clear();

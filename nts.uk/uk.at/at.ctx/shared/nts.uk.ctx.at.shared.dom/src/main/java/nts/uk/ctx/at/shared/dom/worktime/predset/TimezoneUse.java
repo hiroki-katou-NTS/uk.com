@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 //時間帯(使用区分付き)
 @Getter
-public class Timezone extends DomainObject {
+public class TimezoneUse extends TimeZone {
 
 	/** The use atr. */
 	//使用区分
@@ -22,16 +22,7 @@ public class Timezone extends DomainObject {
 	/** The work no. */
 	//勤務NO
 	private int workNo;
-	
-	/** The start. */
-	//開始
-	private TimeWithDayAttr start;
-	
-	/** The end. */
-	//終了
-	private TimeWithDayAttr end;
 
-	
 	public void updateStartTime(TimeWithDayAttr start) {
 		this.start = start;
 	}
@@ -50,11 +41,12 @@ public class Timezone extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public Timezone(TimezoneGetMemento memento) {
+	public TimezoneUse(TimezoneGetMemento memento) {
 		this.useAtr = memento.getUseAtr();
 		this.workNo = memento.getWorkNo();
 		this.start = memento.getStart();
 		this.end = memento.getEnd();
+		this.validate();
 	}
 	
 	/**
@@ -67,5 +59,14 @@ public class Timezone extends DomainObject {
 		memento.setWorkNo(this.workNo);
 		memento.setStart(this.start);
 		memento.setEnd(this.end);
+	}
+
+	/**
+	 * Checks if is used.
+	 *
+	 * @return true, if is used
+	 */
+	public boolean isUsed() {
+		return this.useAtr == UseSetting.USE ? true : false;
 	}
 }

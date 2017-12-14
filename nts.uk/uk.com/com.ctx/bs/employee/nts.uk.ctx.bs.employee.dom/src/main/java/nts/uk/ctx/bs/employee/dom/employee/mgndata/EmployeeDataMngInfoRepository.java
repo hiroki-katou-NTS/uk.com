@@ -91,6 +91,6 @@ public interface EmployeeDataMngInfoRepository {
 	 * @param sCd
 	 * @return
 	 */
-	List<EmployeeDataMngInfo> getListEmployeeByCidScd(String cId, String sCd);
+	Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd);
 
 }
