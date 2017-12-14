@@ -17,7 +17,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
@@ -27,8 +26,7 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 @Stateless
 public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
-	@Inject
-	private EmployeeRepository repo;
+	
 
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
