@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.i18n.custom.IInternationalization;
+import nts.arc.i18n.I18NResources;
 import nts.arc.scoped.request.RequestContextProvider;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
@@ -54,7 +54,7 @@ public class WebMenuFinder {
 	private StandardMenuRepository standardMenuRepository;
 	
 	@Inject
-	private IInternationalization internationalization;
+	private I18NResources internationalization;
 	
 	@Inject
 	private PersonalTyingRepository personalTyingRepository;
