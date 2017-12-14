@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -65,11 +65,11 @@ public class JpaPrescribedTimezoneSettingGetMemento implements PrescribedTimezon
 	 * @return the lst timezone
 	 */
 	@Override
-	public List<Timezone> getLstTimezone() {
+	public List<TimezoneUse> getLstTimezone() {
 		if (CollectionUtil.isEmpty(lstEntityTime)) {
 			return new ArrayList<>();
 		}
-		return this.lstEntityTime.stream().map(entity -> new Timezone(new JpaTimezoneGetMemento(entity)))
+		return this.lstEntityTime.stream().map(entity -> new TimezoneUse(new JpaTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
@@ -16,6 +17,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
@@ -47,13 +49,16 @@ public class AddAffCompanyHistoryCommandHandler extends CommandHandlerWithResult
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddAffCompanyHistoryCommand> context) {
 		val command = context.getCommand();
 		String newHistId = IdentifierUtil.randomUniqueId();
+		
+		
 		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(command.getSId());
 		
 		AffCompanyHistByEmployee itemToBeAdded = new AffCompanyHistByEmployee(command.getSId(), new ArrayList<>());
 		if (listHist != null){
 			itemToBeAdded = listHist.getAffCompanyHistByEmployee(command.getSId());
 		}
-		AffCompanyHistItem hist = new AffCompanyHistItem(newHistId, false, new DatePeriod(command.getStartDate(), command.getEndDate()));
+		// 所属期間．終了日が指定されない場合（＝退職していない）、所属期間．終了日＝9999/12/31を自動的に設定する。
+		AffCompanyHistItem hist = new AffCompanyHistItem(newHistId, false, new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD) ));
 		itemToBeAdded.add(hist);
 		
 		affCompanyHistService.add(itemToBeAdded,command.getPId());

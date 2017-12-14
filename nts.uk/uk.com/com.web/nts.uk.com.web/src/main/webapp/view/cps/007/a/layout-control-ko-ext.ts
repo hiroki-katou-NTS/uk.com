@@ -1224,137 +1224,157 @@ module nts.custombinding {
                 opts.sortable.isEditable.valueHasMutated();
                 _.each(data, (x, i) => {
                     // define common function for init new item value
-                    let modifitem = (def: any, item: any) => {
-                        def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
-                        def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
-                        def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
-                        def.required = _.has(def, "required") && def.required || !!item.isRequired;
+                    let isStr = (item: any) => {
+                        if (item && item.itemTypeState && item.itemTypeState.dataTypeState) {
+                            switch (item.itemTypeState.dataTypeState.dataTypeValue) {
+                                default:
+                                    return false;
+                                case ITEM_SINGLE_TYPE.STRING:
+                                case ITEM_SINGLE_TYPE.SELECTION:
+                                    return true;
+                            }
+                        } else {
+                            return false;
+                        }
+                    },
+                        modifitem = (def: any, item: any) => {
+                            def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
+                            def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
+                            def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
+                            def.required = _.has(def, "required") && def.required || !!item.isRequired;
 
-                        def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
+                            def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                        def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
-                        def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
+                            def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(item) ? String(def.value) : def.value);
+                            def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
 
-                        def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
-                        def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
-                        def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
+                            def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
+                            def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
+                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
 
-                        def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
-                        def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+                            def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
+                            def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
 
-                        def.value.subscribe(x => {
-                            let inputs = [],
-                                proc = function(data: any): any {
-                                    if (!data.item) {
-                                        return {
-                                            value: String(data.value),
-                                            typeData: 1
-                                        };
-                                    }
-
-                                    switch (data.item.dataTypeValue) {
-                                        default:
-                                        case ITEM_SINGLE_TYPE.STRING:
+                            def.value.subscribe(x => {
+                                let inputs = [],
+                                    proc = function(data: any): any {
+                                        if (!data.item) {
                                             return {
-                                                value: data.value ? String(data.value) : undefined,
+                                                value: String(data.value),
                                                 typeData: 1
                                             };
-                                        case ITEM_SINGLE_TYPE.TIME:
-                                        case ITEM_SINGLE_TYPE.NUMERIC:
-                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                            return {
-                                                value: data.value ? String(data.value).replace(/:/g, '') : undefined,
-                                                typeData: 2
-                                            };
-                                        case ITEM_SINGLE_TYPE.DATE:
-                                            return {
-                                                value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
-                                                typeData: 3
-                                            };
-                                        case ITEM_SINGLE_TYPE.SELECTION:
-                                            if (data.item.referenceType != ITEM_SELECT_TYPE.ENUM) {
+                                        }
+
+                                        switch (data.item.dataTypeValue) {
+                                            default:
+                                            case ITEM_SINGLE_TYPE.STRING:
                                                 return {
                                                     value: data.value ? String(data.value) : undefined,
                                                     typeData: 1
                                                 };
-                                            } else {
+                                            case ITEM_SINGLE_TYPE.TIME:
+                                            case ITEM_SINGLE_TYPE.NUMERIC:
+                                            case ITEM_SINGLE_TYPE.TIMEPOINT:
                                                 return {
-                                                    value: data.value ? String(data.value) : undefined,
+                                                    value: data.value ? String(data.value).replace(/:/g, '') : undefined,
                                                     typeData: 2
                                                 };
-                                            }
-                                    }
-                                };
+                                            case ITEM_SINGLE_TYPE.DATE:
+                                                return {
+                                                    value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
+                                                    typeData: 3
+                                                };
+                                            case ITEM_SINGLE_TYPE.SELECTION:
+                                                if (data.item.referenceType != ITEM_SELECT_TYPE.ENUM) {
+                                                    return {
+                                                        value: data.value ? String(data.value) : undefined,
+                                                        typeData: 1
+                                                    };
+                                                } else {
+                                                    return {
+                                                        value: data.value ? String(data.value) : undefined,
+                                                        typeData: 2
+                                                    };
+                                                }
+                                        }
+                                    };
 
-                            _(opts.sortable.data())
-                                .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                                .map(x => ko.toJS(x.items))
-                                .flatten()
-                                .map((x: any) => {
-                                    if (_.isArray(x)) {
-                                        return x.map((m: any) => {
-                                            let data = proc(m);
+                                _(opts.sortable.data())
+                                    .filter(x => _.has(x, "items") && _.isFunction(x.items))
+                                    .map(x => ko.toJS(x.items))
+                                    .flatten()
+                                    .filter((x: any) => _.has(x, "item") && !!x.item)
+                                    .map((x: any) => {
+                                        if (_.isArray(x)) {
+                                            return x.map((m: any) => {
+                                                let data = proc(m);
+                                                return {
+                                                    recordId: m.recordId,
+                                                    categoryCd: m.categoryCode,
+                                                    definitionId: m.itemDefId,
+                                                    itemCode: m.itemCode,
+                                                    value: data.value,
+                                                    'type': data.typeData
+                                                }
+                                            });
+                                        } else {
+                                            let data = proc(x);
                                             return {
-                                                recordId: m.recordId,
-                                                categoryCd: m.categoryCode,
-                                                definitionId: m.itemDefId,
-                                                itemCode: m.itemCode,
+                                                recordId: x.recordId,
+                                                categoryCd: x.categoryCode,
+                                                definitionId: x.itemDefId,
+                                                itemCode: x.itemCode,
                                                 value: data.value,
                                                 'type': data.typeData
-                                            }
-                                        });
-                                    } else {
-                                        let data = proc(x);
-                                        return {
-                                            recordId: x.recordId,
-                                            categoryCd: x.categoryCode,
-                                            definitionId: x.itemDefId,
-                                            itemCode: x.itemCode,
-                                            value: data.value,
-                                            'type': data.typeData
-                                        };
-                                    }
-                                })
-                                .groupBy((x: any) => x.categoryCd)
-                                .each(x => {
-                                    if (_.isArray(_.first(x))) {
-                                        _.each(x, k => {
-                                            let first: any = _.first(k);
-                                            inputs.push({
-                                                recordId: first.recordId,
-                                                categoryCd: first.categoryCd,
-                                                items: k.map(m => {
-                                                    return {
-                                                        definitionId: m.definitionId,
-                                                        itemCode: m.itemCode,
-                                                        value: m.value,
-                                                        'type': m.type
-                                                    };
-                                                })
+                                            };
+                                        }
+                                    })
+                                    .groupBy((x: any) => x.categoryCd)
+                                    .each(x => {
+                                        if (_.isArray(_.first(x))) {
+                                            _.each(x, k => {
+                                                let group = _.groupBy(k, (m: any) => !!m.recordId);
+                                                _.each(group, g => {
+                                                    let first: any = _.first(g);
+                                                    inputs.push({
+                                                        recordId: first.recordId,
+                                                        categoryCd: first.categoryCd,
+                                                        items: g.map(m => {
+                                                            return {
+                                                                definitionId: m.definitionId,
+                                                                itemCode: m.itemCode,
+                                                                value: m.value,
+                                                                'type': m.type
+                                                            };
+                                                        })
+                                                    });
+                                                });
                                             });
-                                        });
-                                    } else {
-                                        let first: any = _.first(x);
-                                        inputs.push({
-                                            recordId: first.recordId,
-                                            categoryCd: first.categoryCd,
-                                            items: x.map(m => {
-                                                return {
-                                                    definitionId: m.definitionId,
-                                                    itemCode: m.itemCode,
-                                                    value: m.value,
-                                                    'type': m.type
-                                                };
-                                            })
-                                        });
-                                    }
-                                });
-                            // change value
-                            opts.sortable.outData(inputs);
-                        });
-                        def.value.valueHasMutated();
-                    };
+                                        } else {
+                                            let group = _.groupBy(x, (m: any) => !!m.recordId);
+                                            _.each(group, g => {
+                                                let first: any = _.first(g);
+                                                inputs.push({
+                                                    recordId: first.recordId,
+                                                    categoryCd: first.categoryCd,
+                                                    items: g.map(m => {
+                                                        return {
+                                                            definitionId: m.definitionId,
+                                                            itemCode: m.itemCode,
+                                                            value: m.value,
+                                                            'type': m.type
+                                                        };
+                                                    })
+                                                });
+                                            });
+                                        }
+                                    });
+                                // change value
+                                opts.sortable.outData(inputs);
+                            });
+                            def.value.valueHasMutated();
+                        };
 
                     x.dispOrder = i + 1;
                     x.layoutID = random();

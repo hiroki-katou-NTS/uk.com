@@ -12,9 +12,8 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetMemento;
 
 /**
- * The Class FlowTimeSettingDto.
+ * The Class FlTimeSettingDto.
  */
-
 @Getter
 @Setter
 public class FlTimeSettingDto implements FlTimeSetMemento {
@@ -22,26 +21,30 @@ public class FlTimeSettingDto implements FlTimeSetMemento {
 	/** The rounding. */
 	private TimeRoundingSettingDto rounding;
 
-	/** The passage time. */
-	private Integer passageTime;
+	/** The elapsed time. */
+	private Integer elapsedTime;
 
-	/**
-	 * Sets the rouding.
-	 *
-	 * @param trSet the new rouding
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetMemento#setRouding(nts
+	 * .uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting)
 	 */
 	@Override
 	public void setRouding(TimeRoundingSetting trSet) {
 		this.rounding = new TimeRoundingSettingDto(trSet.getRoundingTime().value, trSet.getRounding().value);
 	}
 
-	/**
-	 * Sets the passage time.
-	 *
-	 * @param at the new passage time
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetMemento#setElapsedTime
+	 * (nts.uk.ctx.at.shared.dom.common.time.AttendanceTime)
 	 */
 	@Override
-	public void setPassageTime(AttendanceTime at) {
-		this.passageTime = at.v();
+	public void setElapsedTime(AttendanceTime at) {
+		this.elapsedTime = at.v();
 	}
 }

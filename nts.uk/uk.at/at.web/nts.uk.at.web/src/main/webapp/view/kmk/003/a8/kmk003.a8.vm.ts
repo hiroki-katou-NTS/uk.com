@@ -14,13 +14,11 @@ module a8 {
         timeoutSettingModel: GroubRoundingModel;
         deductionTimeSettingModel: GroubRoundingModel;
         publicSettingModel: GroubRoundingModel;
-        data: KnockoutObservable<any>;
         /**
         * Constructor.
         */
-        constructor(data: any) {
+        constructor() {
             let self = this;
-            self.data = ko.observable(data());
             self.roundingSettings = ko.observableArray([
                 { code: 1, name: nts.uk.resource.getText("KMK003_198") },
                 { code: 2, name: nts.uk.resource.getText("KMK003_199") }
@@ -136,13 +134,11 @@ module a8 {
                 .mergeRelativePath('/view/kmk/003/a8/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
-            let data = input.data;
 
-            let screenModel = new ScreenModel(data);
+            let screenModel = new ScreenModel();
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
             });
         }
 

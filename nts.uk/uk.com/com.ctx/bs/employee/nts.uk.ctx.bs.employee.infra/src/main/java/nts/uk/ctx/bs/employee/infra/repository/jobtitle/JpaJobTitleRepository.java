@@ -45,7 +45,8 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 				.map(jobTitleHistory -> {
 					BsymtJobHistPK pk = new BsymtJobHistPK(jobTitle.getCompanyId().v(),
 							jobTitleHistory.identifier(), jobTitle.getJobTitleId());
-					BsymtJobHist entity = this.queryProxy().find(pk, BsymtJobHist.class)
+					BsymtJobHist entity = this.queryProxy()
+							.find(pk, BsymtJobHist.class)
 							.orElse(new BsymtJobHist());
 					entity.setBsymtJobHistPK(pk);
 					entity.setStartDate(jobTitleHistory.span().start());
@@ -53,9 +54,7 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 					return entity;
 				}).collect(Collectors.toList());
 
-		JpaJobTitleSetMemento memento = new JpaJobTitleSetMemento(listEntity);
-		jobTitle.saveToMemento(memento);
-
+		jobTitle.saveToMemento(new JpaJobTitleSetMemento(listEntity));
 		return listEntity;
 	}
 

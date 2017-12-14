@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
- * The Class FlowTimeSetting.
+ * The Class FlTimeSetting.
  */
 //流動時間設定
 @Getter
@@ -20,18 +20,18 @@ public class FlTimeSetting extends DomainObject {
 	// 丸め
 	private TimeRoundingSetting rounding;
 
-	/** The passage time. */
+	/** The elapsed time. */
 	// 経過時間
-	private AttendanceTime passageTime;
+	private AttendanceTime elapsedTime;
 
 	/**
-	 * Instantiates a new flow time setting.
+	 * Instantiates a new fl time setting.
 	 *
 	 * @param memento the memento
 	 */
 	public FlTimeSetting(FlTimeGetMemento memento) {
 		this.rounding = memento.getRouding();
-		this.passageTime = memento.getPassageTime();
+		this.elapsedTime = memento.getElapsedTime();
 	}
 
 	/**
@@ -41,6 +41,6 @@ public class FlTimeSetting extends DomainObject {
 	 */
 	public void saveToMemento(FlTimeSetMemento memento) {
 		memento.setRouding(this.rounding);
-		memento.setPassageTime(this.passageTime);
+		memento.setElapsedTime(this.elapsedTime);
 	}
 }
