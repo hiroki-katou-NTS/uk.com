@@ -43,7 +43,7 @@ public class ItemValue {
 		case TIMEPOINT:
 			// In case of value is empty or null return default value
 			if (StringUtils.isEmpty(this.value)){
-				convertedValue = new BigDecimal(0);
+				convertedValue = null;
 			} else {
 				convertedValue = new BigDecimal(this.value);
 			}
