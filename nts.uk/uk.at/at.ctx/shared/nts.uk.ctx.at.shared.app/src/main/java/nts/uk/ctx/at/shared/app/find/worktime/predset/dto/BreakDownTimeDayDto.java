@@ -21,4 +21,20 @@ public class BreakDownTimeDayDto {
 
 	/** The afternoon. */
 	public Integer afternoon;
+
+	/**
+	 * Instantiates a new break down time day dto.
+	 *
+	 * @param oneDay the one day
+	 * @param morning the morning
+	 * @param afternoon the afternoon
+	 */
+	public BreakDownTimeDayDto(Integer oneDay, Integer morning, Integer afternoon) {
+		super();
+		this.oneDay = oneDay;
+		this.morning = morning;
+		this.afternoon = afternoon;
+	}
+	
+	
 }

@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,7 +17,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
@@ -30,16 +29,15 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet_;
 @Stateless
 public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexWorkSettingRepository{
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository#findAll(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository#
+	 * findById(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<FlexWorkSetting> findAll(String companyId) {
-		List<KshmtFlexWorkSet> entitys = this.findAllWorkSetting(companyId);
-		if (CollectionUtil.isEmpty(entitys)) {
-			return new ArrayList<>();
-		}
-		return entitys.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+	public Optional<FlexWorkSetting> findById(String companyId,String worktimeCode) {
+		return this.findWorkSetting(companyId, worktimeCode).map(entity->this.toDomain(entity));
 	}
 	
 	/*
@@ -63,13 +61,15 @@ public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexW
 	private FlexWorkSetting toDomain(KshmtFlexWorkSet entity) {
 		return new FlexWorkSetting(new JpaFlexWorkSettingGetMemento(entity, null, null));
 	}
+	
 	/**
-	 * Find all work setting.
+	 * Find work setting.
 	 *
 	 * @param companyId the company id
-	 * @return the list
+	 * @param worktimeCode the worktime code
+	 * @return the optional
 	 */
-	private List<KshmtFlexWorkSet> findAllWorkSetting(String companyId) {
+	private Optional<KshmtFlexWorkSet> findWorkSetting(String companyId, String worktimeCode) {
 		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -90,6 +90,10 @@ public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexW
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.cid), companyId));
+		
+		// equal work time code
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.worktimeCd), worktimeCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -98,7 +102,7 @@ public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexW
 		TypedQuery<KshmtFlexWorkSet> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList();
+		return query.getResultList().stream().findFirst();
 	}
 
 }

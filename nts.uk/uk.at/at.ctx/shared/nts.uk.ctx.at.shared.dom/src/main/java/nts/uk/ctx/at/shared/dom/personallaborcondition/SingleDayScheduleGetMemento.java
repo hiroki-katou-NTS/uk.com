@@ -13,28 +13,26 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * The Interface SingleDayScheduleGetMemento.
  */
 public interface SingleDayScheduleGetMemento {
-	
+
 	/**
 	 * Gets the work type code.
 	 *
 	 * @return the work type code
 	 */
-	public WorkTypeCode getWorkTypeCode();
-	
-	
+	WorkTypeCode getWorkTypeCode();
+
 	/**
 	 * Gets the working hours.
 	 *
 	 * @return the working hours
 	 */
-	public  List<TimeZone> getWorkingHours();
-	
-	
+	List<TimeZone> getWorkingHours();
+
 	/**
 	 * Gets the work time code.
 	 *
 	 * @return the work time code
 	 */
-	public Optional<WorkTimeCode> getWorkTimeCode();
-	
+	Optional<WorkTimeCode> getWorkTimeCode();
+
 }

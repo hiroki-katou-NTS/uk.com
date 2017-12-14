@@ -54,6 +54,9 @@ module nts.uk.at.view.ksm001.f {
 
                 /** The estimate number of days. */
                 estimateNumberOfDays: ReferenceConditionDto;
+                
+                /** The estimate comparison. */
+                estimateComparison: number;
             }
             
             export interface EstimateComparisonFindDto {
