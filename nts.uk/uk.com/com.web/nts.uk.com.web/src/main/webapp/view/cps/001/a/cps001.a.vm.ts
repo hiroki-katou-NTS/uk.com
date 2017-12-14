@@ -420,6 +420,8 @@ module cps001.a.vm {
                 emp = self.employee(),
                 person = emp.personInfo(),
                 layouts = self.layouts(),
+                tab = self.tabActive(),
+                cbid = self.currentCategory(),
                 inputs = _.flatten(layouts.map(x => x.outData())),
                 command: IPeregCommand = {
                     personId: person.personId(),
@@ -437,6 +439,11 @@ module cps001.a.vm {
                 self.start();
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();
+                    if (tab == TABS.CATEGORY) {
+                        cbid.id.valueHasMutated();
+                    } else {
+                        
+                    }
                 });
             }).fail((mes) => {
                 unblock();
@@ -511,7 +518,7 @@ module cps001.a.vm {
 
         numberOfWork?: number;
         numberOfTempHist?: number;
-        
+
         departmentCode?: string;
         departmentName?: string;
 
