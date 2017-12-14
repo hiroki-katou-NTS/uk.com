@@ -13,7 +13,6 @@ module cas009.b.viewmodel {
             let self = this;
             service.getPerMissingMenu().done(function(res){                    
                     self.listMenu(_.map(res,  x =>{return new model.Menu(x.code, x.displayName, x.screenId, x.programId, x.queryString)}));
-                    console.log(self.listMenu());
             });
         }
 
