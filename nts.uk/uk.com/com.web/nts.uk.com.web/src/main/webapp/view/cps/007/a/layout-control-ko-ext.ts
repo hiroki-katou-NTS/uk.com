@@ -1333,11 +1333,31 @@ module nts.custombinding {
                                     .each(x => {
                                         if (_.isArray(_.first(x))) {
                                             _.each(x, k => {
-                                                let first: any = _.first(k);
+                                                let group = _.groupBy(k, (m: any) => !!m.recordId);
+                                                _.each(group, g => {
+                                                    let first: any = _.first(g);
+                                                    inputs.push({
+                                                        recordId: first.recordId,
+                                                        categoryCd: first.categoryCd,
+                                                        items: g.map(m => {
+                                                            return {
+                                                                definitionId: m.definitionId,
+                                                                itemCode: m.itemCode,
+                                                                value: m.value,
+                                                                'type': m.type
+                                                            };
+                                                        })
+                                                    });
+                                                });
+                                            });
+                                        } else {
+                                            let group = _.groupBy(x, (m: any) => !!m.recordId);
+                                            _.each(group, g => {
+                                                let first: any = _.first(g);
                                                 inputs.push({
                                                     recordId: first.recordId,
                                                     categoryCd: first.categoryCd,
-                                                    items: k.map(m => {
+                                                    items: g.map(m => {
                                                         return {
                                                             definitionId: m.definitionId,
                                                             itemCode: m.itemCode,
@@ -1346,20 +1366,6 @@ module nts.custombinding {
                                                         };
                                                     })
                                                 });
-                                            });
-                                        } else {
-                                            let first: any = _.first(x);
-                                            inputs.push({
-                                                recordId: first.recordId,
-                                                categoryCd: first.categoryCd,
-                                                items: x.map(m => {
-                                                    return {
-                                                        definitionId: m.definitionId,
-                                                        itemCode: m.itemCode,
-                                                        value: m.value,
-                                                        'type': m.type
-                                                    };
-                                                })
                                             });
                                         }
                                     });
