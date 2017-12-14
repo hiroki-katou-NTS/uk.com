@@ -19,7 +19,8 @@ module cps002.a.service {
             getAllInitValueCtgSetting: 'initsetting/category/findAllBySetId/{0}',
             getAllInitValueItemSetting: 'initsetting/item/findInit',
             getLayoutByCreateType: 'layout/getByCreateType',
-            addNewEmployee: 'addemployee/addNewEmployee'
+            addNewEmployee: 'addemployee/addNewEmployee',
+            getEmployeeInfo: 'basic/organization/employee/getoffselect',
         };
 
     export function getLayout() {
@@ -81,6 +82,10 @@ module cps002.a.service {
 
     export function addNewEmployee(command) {
         return ajax(regpath + paths.addNewEmployee, command);
+    }
+    export function getEmployeeInfo(command) {
+
+        return ajax("com", paths.getEmployeeInfo, command);
     }
 
 }

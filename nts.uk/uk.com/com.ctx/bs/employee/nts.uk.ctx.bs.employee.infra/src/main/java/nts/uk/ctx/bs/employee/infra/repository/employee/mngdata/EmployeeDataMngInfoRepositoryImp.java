@@ -76,11 +76,13 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	/** The select by cid and pid. */
 
-	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM + " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
-	
+	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM
+			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
+
 	/** The select by cid and sid. */
-	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM + " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
-	
+	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM
+			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
+
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -93,10 +95,6 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getSingleOrNull();
 
 		if (entity != null) {
-
-			// entity.delDateTmp = domain.getDeleteDateTemporary();
-			// entity.delStatus = domain.getDeletedStatus().value;
-			// entity.removeReason = domain.getRemoveReason().v();
 			if (domain.getEmployeeCode() != null) {
 				entity.employeeCode = domain.getEmployeeCode().v();
 			}
