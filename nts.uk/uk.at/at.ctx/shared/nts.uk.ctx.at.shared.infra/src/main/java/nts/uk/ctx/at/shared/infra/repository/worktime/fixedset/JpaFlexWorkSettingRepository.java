@@ -27,7 +27,8 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet_;
  * The Class JpaFlexWorkSettingRepository.
  */
 @Stateless
-public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexWorkSettingRepository{
+public class JpaFlexWorkSettingRepository extends JpaRepository
+		implements FlexWorkSettingRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -36,10 +37,10 @@ public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexW
 	 * findById(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<FlexWorkSetting> findById(String companyId,String worktimeCode) {
-		return this.findWorkSetting(companyId, worktimeCode).map(entity->this.toDomain(entity));
+	public Optional<FlexWorkSetting> find(String companyId, String worktimeCode) {
+		return this.findWorkSetting(companyId, worktimeCode).map(entity -> this.toDomain(entity));
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -49,28 +50,31 @@ public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexW
 	 */
 	@Override
 	public void saveFlexWorkSetting(FlexWorkSetting domain) {
-		// TODO Auto-generated method stub
-		
+
 	}
+
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the flex work setting
 	 */
 	private FlexWorkSetting toDomain(KshmtFlexWorkSet entity) {
 		return new FlexWorkSetting(new JpaFlexWorkSettingGetMemento(entity, null, null));
 	}
-	
+
 	/**
 	 * Find work setting.
 	 *
-	 * @param companyId the company id
-	 * @param worktimeCode the worktime code
+	 * @param companyId
+	 *            the company id
+	 * @param worktimeCode
+	 *            the worktime code
 	 * @return the optional
 	 */
 	private Optional<KshmtFlexWorkSet> findWorkSetting(String companyId, String worktimeCode) {
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -88,12 +92,14 @@ public class JpaFlexWorkSettingRepository extends JpaRepository implements FlexW
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal company id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.cid), companyId));
-		
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.cid),
+				companyId));
+
 		// equal work time code
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.worktimeCd), worktimeCode));
+				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.worktimeCd),
+				worktimeCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

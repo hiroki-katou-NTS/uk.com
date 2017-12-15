@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 
 /**
@@ -14,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
  */
 public interface WorkTimeSettingService {
 
-	// 打刻反映時間帯を取得する (Lấy 打刻反映時間帯)
-	List<StampReflectTimezone> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode);
-	
+	// 打刻反映時間帯を取得する
+	List<StampReflectTimezone> getStampReflectTimezone(String companyId, String workTypeCode);
+
 }
