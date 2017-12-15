@@ -13,10 +13,11 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
+import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryService;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -62,10 +63,9 @@ public class AddAffiliationDepartmentCommandHandler
 		if (itemHist.isPresent()) {
 			itemToBeAdded = itemHist.get();
 		}
-		// startDate cũng cần có giá trị mặc định vì trong database not null
 		DateHistoryItem dateItem = new DateHistoryItem(newHistId,
-				new DatePeriod(command.getStartDate() != null ? command.getStartDate() : GeneralDate.min(),
-						command.getEndDate() != null ? command.getEndDate() : GeneralDate.max()));
+				new DatePeriod(command.getStartDate() != null ? command.getStartDate() : ConstantUtils.minDate(),
+						command.getEndDate() != null ? command.getEndDate() : ConstantUtils.maxDate()));
 		itemToBeAdded.add(dateItem);
 
 		affDepartmentHistoryService.add(itemToBeAdded);
