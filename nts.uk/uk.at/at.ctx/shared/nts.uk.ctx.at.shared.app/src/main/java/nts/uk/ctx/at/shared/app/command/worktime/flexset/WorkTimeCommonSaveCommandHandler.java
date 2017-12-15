@@ -40,8 +40,6 @@ public class WorkTimeCommonSaveCommandHandler{
 		// get company id
 		String companyId = loginUserContext.companyId();
 
-		// get domain flex work setting by client send
-		// FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
 
 		// get work time setting by client send
 		WorkTimeSetting workTimeSetting = command.toDomainWorkTimeSetting(companyId);

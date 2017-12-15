@@ -37,6 +37,8 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		// get command
 		FlexWorkSettingSaveCommand command = context.getCommand();
 		
+		// get domain flex work setting by client send
+		// FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
 		// common handler
 		this.commonHandler.handler(command);
 		
