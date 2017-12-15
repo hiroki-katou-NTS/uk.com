@@ -21,7 +21,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	private final String SELECT_ALL_COMPANY = SELECT_FROM_COMPANY
 			+ " WHERE c.ksmmtCalendarCompanyPK.companyId = :companyId";
 	private final String SELECT_COMPANY_BY_DATE = SELECT_ALL_COMPANY
-			+ " AND c.ksmmtCalendarCompanyPK.date = :dateId";
+			+ " AND c.ksmmtCalendarCompanyPK.date = :date";
 	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_COMPANY 
 			+ " AND c.ksmmtCalendarCompanyPK.date >= :startDate "
 			+ " AND c.ksmmtCalendarCompanyPK.date <= :endDate";
@@ -113,7 +113,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	public Optional<CalendarCompany> findCalendarCompanyByDate(String companyId, GeneralDate date) {
 		return this.queryProxy().query(SELECT_COMPANY_BY_DATE,KsmmtCalendarCompany.class)
 				.setParameter("companyId", companyId)
-				.setParameter("dateId", date)
+				.setParameter("date", date)
 				.getSingle(c->toDomainCalendarCompany(c));
 	}
 	/**

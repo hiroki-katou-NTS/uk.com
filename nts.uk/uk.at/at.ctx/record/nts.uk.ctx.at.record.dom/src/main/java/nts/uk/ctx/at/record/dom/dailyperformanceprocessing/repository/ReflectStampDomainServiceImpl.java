@@ -12,10 +12,12 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOnHolidayOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
+import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
@@ -31,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.MissingOfTempo
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.StampIncorrectOrderAlgorithm;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryDoubleStampChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStampOrderChecking;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -85,10 +88,11 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	
 	@Inject
 	private BreakTimeStampIncorrectOrderChecking breakTimeStampIncorrectOrderChecking;
-	
+	@Inject 
+	private ReflectEmbossingDomainService ReflectEmbossingDomainService;
 	@Override
 	public void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
-			WorkInfoOfDailyPerformance workInfoOfDailyPerformance, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID, ExecutionType reCreateAttr) {
 
 		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode();
 
@@ -121,8 +125,13 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		
 		
 		// part of Dung - param : stampReflectRangeOutput
-		
-		
+		   StampService stampService = new StampService();
+		   List<StampItem> lstStampItem = stampService.handleData(stampReflectRangeOutput, reCreateAttr, empCalAndSumExecLogID, processingDate, employeeID, companyID);
+		   ReflectStampOutput reflectStamp =null;
+		   if(lstStampItem !=null){
+			    reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance, timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID, companyID);
+		   }
+		   
 		// エラーチェック
 		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
 	}

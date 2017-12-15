@@ -261,11 +261,11 @@ public class DailyPerformanceSelectItemProcessor {
 		// アルゴリズム「就業確定情報を取得する」を実行する
 		/// アルゴリズム「日別実績のロックを取得する」を実行する (Tiến hành xử lý "Lấy về lock của thành
 		// tích theo ngày")
-		Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(),
-				closureDto.getClosureId());
-		// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
-		Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(closureDto.getClosureId(),
-				closureDto.getClosureMonth());
+//		Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(),
+//				closureDto.getClosureId());
+//		// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
+//		Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(closureDto.getClosureId(),
+//				closureDto.getClosureMonth());
 
 		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
 				correct, formatCodes);

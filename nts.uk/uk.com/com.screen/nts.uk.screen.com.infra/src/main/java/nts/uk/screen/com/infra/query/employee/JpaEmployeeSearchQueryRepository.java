@@ -7,14 +7,9 @@ package nts.uk.screen.com.infra.query.employee;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.infra.entity.department.BsymtDepartmentInfo;
-import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployee;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
-import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 
 /**
  * The Class JpaEmployeeSearchQueryRepository.
@@ -52,41 +47,41 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 	 */
 	@Override
 	public Optional<Kcp009EmployeeSearchData> findInAllEmployee(String code, System system, GeneralDate baseDate, String companyId) {
-		Object[] resultQuery = null;
-		try {
-			resultQuery = (Object[]) this.getEntityManager().createQuery(SEARCH_QUERY_STRING)
-				.setParameter("baseDate", baseDate)
-				.setParameter("empCode", code)
-				.setParameter("companyId", companyId)
-				.getSingleResult();
-		} catch (NoResultException e) {
+//		Object[] resultQuery = null;
+//		try {
+//			resultQuery = (Object[]) this.getEntityManager().createQuery(SEARCH_QUERY_STRING)
+//				.setParameter("baseDate", baseDate)
+//				.setParameter("empCode", code)
+//				.setParameter("companyId", companyId)
+//				.getSingleResult();
+//		} catch (NoResultException e) {
 			return Optional.empty();
-		}
-		
-		// Convert query data.
-		BsymtEmployee employee = (BsymtEmployee) resultQuery[0];
-		BpsmtPerson person = (BpsmtPerson) resultQuery[1];
-		BsymtWorkplaceInfo workplace = resultQuery[2] == null ? null : (BsymtWorkplaceInfo) resultQuery[2];
-		BsymtDepartmentInfo department = resultQuery[3] == null ? null : (BsymtDepartmentInfo) resultQuery[3];
-		
-		switch (system) {
-		case Employment:
-			// Get work place.
-			return Optional.of(Kcp009EmployeeSearchData.builder()
-					.employeeId(employee.bsymtEmployeePk.sId)
-					.employeeCode(employee.employeeCode)
-					.businessName(person.businessName)
-					.orgName(workplace != null ? workplace.getWkpName() : null)
-					.build());
-		default:
-			// Get department
-			return Optional.of(Kcp009EmployeeSearchData.builder()
-					.employeeId(employee.bsymtEmployeePk.sId)
-					.employeeCode(employee.employeeCode)
-					.businessName(person.businessName)
-					.orgName(department != null ? department.getName() : null)
-					.build());
-		}
+//		}
+//		
+//		// Convert query data.
+//		BsymtEmployee employee = (BsymtEmployee) resultQuery[0];
+//		BpsmtPerson person = (BpsmtPerson) resultQuery[1];
+//		BsymtWorkplaceInfo workplace = resultQuery[2] == null ? null : (BsymtWorkplaceInfo) resultQuery[2];
+//		BsymtDepartmentInfo department = resultQuery[3] == null ? null : (BsymtDepartmentInfo) resultQuery[3];
+//		
+//		switch (system) {
+//		case Employment:
+//			// Get work place.
+//			return Optional.of(Kcp009EmployeeSearchData.builder()
+//					.employeeId(employee.bsymtEmployeePk.sId)
+//					.employeeCode(employee.employeeCode)
+//					.businessName(person.businessName)
+//					.orgName(workplace != null ? workplace.getWkpName() : null)
+//					.build());
+//		default:
+//			// Get department
+//			return Optional.of(Kcp009EmployeeSearchData.builder()
+//					.employeeId(employee.bsymtEmployeePk.sId)
+//					.employeeCode(employee.employeeCode)
+//					.businessName(person.businessName)
+//					.orgName(department != null ? department.getName() : null)
+//					.build());
+//		}
 	}
 
 }
