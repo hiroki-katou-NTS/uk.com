@@ -163,7 +163,7 @@ module ksm002.a.viewmodel {
                                 arrId.push(comItem.specificDateItemNo);
                             };
                         });
-                        arrOptionaDates.push(new OptionalDate(moment(processDay).format(self.dateFormat), arrName, arrId));
+                        arrOptionaDates.push(new OptionalDate(moment(processDay).format("YYYY-MM-DD"), arrName, arrId));
                     };
                 }
                 //Return Array of Data in Month
@@ -173,7 +173,7 @@ module ksm002.a.viewmodel {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject();
             });
-            return dfd.promise();
+            return dfd.promise(); 
         }
 
         /**
@@ -252,7 +252,7 @@ module ksm002.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 nts.uk.ui.block.invisible();
                 //delete
-                service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
+                service.deleteComSpecificDate({ startDate:moment(self.yearMonthPicked(), "YYYYMM").startOf('month').format(self.dateFormat), endDate:moment(self.yearMonthPicked(), "YYYYMM").endOf('month').format(self.dateFormat) }).done(function(res: any) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                         //Set dataSource to Null
                         self.optionDates([]);

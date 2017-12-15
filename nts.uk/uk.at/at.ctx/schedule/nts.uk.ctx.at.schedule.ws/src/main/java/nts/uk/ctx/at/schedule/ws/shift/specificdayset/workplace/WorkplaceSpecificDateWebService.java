@@ -40,10 +40,9 @@ public class WorkplaceSpecificDateWebService extends WebService {
 	// }
 
 	@POST
-	@Path("getworkplacespecificdate/{workplaceId}/{processDate}")
-	public List<WokplaceSpecificDateDto> getworkplaceSpecificDateByworkplaceWithName(
-			@PathParam("workplaceId") String workplaceId, @PathParam("processDate") String processDate) {
-		return this.find.getWpSpecByDateWithName(workplaceId, processDate);
+	@Path("getworkplacespecificdate")
+	public List<WokplaceSpecificDateDto> getworkplaceSpecificDateByworkplaceWithName(WorkplaceSpectificParam param) {
+		return this.find.getWpSpecByDateWithName(param.getWorkPlaceId(), param.getWorkPlaceDate());
 	}
 
 	@POST

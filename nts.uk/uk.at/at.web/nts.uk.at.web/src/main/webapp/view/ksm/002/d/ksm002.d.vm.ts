@@ -217,7 +217,7 @@ module ksm002.d{
             lstTimeItemId: Array<number>;
             setUpdate: number;
             workplaceId: string;
-            constructor(util: number, strDate: number, endDate:number, dayofWeek: Array<number>, lstTimeItemId: Array<number>, setUpdate: number, workplaceId: string){
+            constructor(util: number, strDate: string, endDate: string, dayofWeek: Array<number>, lstTimeItemId: Array<number>, setUpdate: number, workplaceId: string){
                 this.util = util;
                 this.strDate = strDate;
                 this.endDate =endDate;
