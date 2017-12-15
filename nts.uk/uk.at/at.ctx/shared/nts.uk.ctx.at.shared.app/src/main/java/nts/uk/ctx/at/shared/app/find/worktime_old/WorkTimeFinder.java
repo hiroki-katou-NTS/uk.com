@@ -16,19 +16,23 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
-import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.TimeDayAtr;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -42,6 +46,12 @@ public class WorkTimeFinder {
 
 	@Inject
 	private WorkTimeRepository workTimeRepository;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 	@Inject
 	private WorkTimeSetRepository workTimeSetRepository;
@@ -77,8 +87,8 @@ public class WorkTimeFinder {
 	 */
 	public List<WorkTimeDto> findByCompanyID() {
 		String companyID = AppContexts.user().companyId();
-		List<WorkTime> workTimeItems = this.workTimeRepository.findByCompanyID(companyID);
-		List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCompanyID(companyID);
+		List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findAll(companyID);
+		List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository.findByCompanyID(companyID);
 		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
 	}
 
@@ -89,8 +99,8 @@ public class WorkTimeFinder {
 	 */
 	public List<WorkTimeDto> findAll() {
 		String companyID = AppContexts.user().companyId();
-		List<WorkTime> workTimeItems = this.workTimeRepository.findAll(companyID);
-		List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCompanyID(companyID);
+		List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findAll(companyID);
+		List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository.findByCompanyID(companyID);
 		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
 	}
 
@@ -105,8 +115,8 @@ public class WorkTimeFinder {
 		if (codes.isEmpty()) {
 			return Collections.emptyList();
 		} else {
-			List<WorkTime> workTimeItems = this.workTimeRepository.findByCodes(companyID, codes);
-			List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCodeList(companyID, codes);
+			List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codes);
+			List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository.findByCodeList(companyID, codes);
 			return getWorkTimeDtos(workTimeItems, workTimeSetItems);
 		}
 	}
@@ -123,8 +133,8 @@ public class WorkTimeFinder {
 		if (codeList.isEmpty()) {
 			return Collections.emptyList();
 		} else {
-			List<WorkTime> workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-			List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCodeList(companyID, codeList);
+			List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
+			List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository.findByCodeList(companyID, codeList);
 			return getWorkTimeDtos(workTimeItems, workTimeSetItems);
 		}
 	}
@@ -144,31 +154,28 @@ public class WorkTimeFinder {
 	 *            end time
 	 * @return list Work Time Dto
 	 */
-	public List<WorkTimeDto> findByTime(List<String> codeList, int startAtr, int startTime, int endAtr, int endTime) {
+	public List<WorkTimeDto> findByTime(List<String> codeList, Integer startTime, Integer endTime) {
 		if (codeList.isEmpty()) {
 			return Collections.emptyList();
 		} else {
 			String companyID = AppContexts.user().companyId();
-			List<WorkTime> workTimeItems = new ArrayList<>();
-			List<WorkTimeSet> workTimeSetItems = new ArrayList<>();
+			List<WorkTimeSetting> workTimeItems = new ArrayList<>();
+			List<PredetemineTimeSetting> workTimeSetItems = new ArrayList<>();
 			// when both start time and end time is valid
-			if ((startTime > -1) && (endTime > -1)) {
+			if ((startTime != null) && (endTime != null)) {
 				// compare start time and end time
-				if (((24 * 60 * startAtr) + startTime) > ((24 * 60 * endAtr) + endTime))
+				if (startTime > endTime)
 					throw new BusinessException("Msg_54");
-				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-				workTimeSetItems = this.workTimeSetRepository.findByStartAndEnd(companyID, codeList,
-						startAtr * 24 * 60 + startTime, endAtr * 24 * 60 + endTime);
+				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
+				workTimeSetItems = this.predetemineTimeSettingRepository.findByStartAndEnd(companyID, codeList,startTime,endTime);
 				// when only start time is select
-			} else if ((startTime > -1) && (endTime <= -1)) {
-				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-				workTimeSetItems = this.workTimeSetRepository.findByStart(companyID, codeList,
-						startAtr * 24 * 60 + startTime);
+			} else if ((startTime != null) && (endTime == null)) {
+				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
+				workTimeSetItems = this.predetemineTimeSettingRepository.findByStart(companyID, codeList,startTime);
 				// when only end time is select
-			} else if ((startTime <= -1) && (endTime > -1)) {
-				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-				workTimeSetItems = this.workTimeSetRepository.findByEnd(companyID, codeList,
-						endAtr * 24 * 60 + endTime);
+			} else if ((startTime == null) && (endTime != null)) {
+				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
+				workTimeSetItems = this.predetemineTimeSettingRepository.findByEnd(companyID, codeList,endTime);
 				// when both start time and end time is invalid
 			} else {
 				throw new BusinessException("Msg_53");
@@ -186,25 +193,25 @@ public class WorkTimeFinder {
 	 *            WorkTimeSet list
 	 * @return WorkTimeDto list
 	 */
-	private List<WorkTimeDto> getWorkTimeDtos(List<WorkTime> workTimeItems, List<WorkTimeSet> workTimeSetItems) {
+	private List<WorkTimeDto> getWorkTimeDtos(List<WorkTimeSetting> workTimeItems, List<PredetemineTimeSetting> workTimeSetItems) {
 		List<WorkTimeDto> workTimeDtos = new ArrayList<>();
-		if (workTimeItems.isEmpty() || workTimeSetItems.isEmpty()) {
+		if (CollectionUtil.isEmpty(workTimeItems) || CollectionUtil.isEmpty(workTimeSetItems)) {
 			workTimeDtos = Collections.emptyList();
 		} else {
-			for (WorkTimeSet item : workTimeSetItems) {
-				WorkTime currentWorkTime = workTimeItems.stream().filter(x -> x.getSiftCD().toString().equals(item.getSiftCD())).findAny().get();
-				if (item.getPrescribedTimezoneSetting().getTimezone().isEmpty()) {
+			for (PredetemineTimeSetting item : workTimeSetItems) {
+				WorkTimeSetting currentWorkTime = workTimeItems.stream().filter(x -> x.getWorktimeCode().toString().equals(item.getWorkTimeCode().toString())).findAny().get();
+				if (item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty()) {
 					continue;
 				} else if (this.checkNotUse(item)) {
 					continue;
 				} else {
-					Timezone timezone1 = item.getPrescribedTimezoneSetting().getTimezone().get(FIRST_ITEM);
-					Timezone timezone2 = null;
+					TimezoneUse timezone1 = item.getPrescribedTimezoneSetting().getLstTimezone().get(FIRST_ITEM);
+					TimezoneUse timezone2 = null;
 					//if have 2 timezone
-					if (item.getPrescribedTimezoneSetting().getTimezone().size() >= TWO_TIMEZONE) {
-						timezone2 = item.getPrescribedTimezoneSetting().getTimezone().get(TWO_ITEM);
+					if (item.getPrescribedTimezoneSetting().getLstTimezone().size() >= TWO_TIMEZONE) {
+						timezone2 = item.getPrescribedTimezoneSetting().getLstTimezone().get(TWO_ITEM);
 					}
-					workTimeDtos.add(new WorkTimeDto(currentWorkTime.getSiftCD().v(),
+					workTimeDtos.add(new WorkTimeDto(currentWorkTime.getWorktimeCode().v(),
 							currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(),
 							(timezone1 != null) ? createWorkTimeField(timezone1.getUseAtr(), timezone1.getStart(),
 									timezone1.getEnd()) : null,
@@ -219,9 +226,9 @@ public class WorkTimeFinder {
 		return workTimeDtos;
 	}
 	
-	private boolean checkNotUse(WorkTimeSet workTimeSet) {
-		for (Timezone timezone : workTimeSet.getPrescribedTimezoneSetting().getTimezone()) {
-			if (timezone.getUseAtr().equals(UseSetting.UseAtr_NotUse))
+	private boolean checkNotUse(PredetemineTimeSetting workTimeSet) {
+		for (TimezoneUse timezone : workTimeSet.getPrescribedTimezoneSetting().getLstTimezone()) {
+			if (timezone.getUseAtr().equals(UseSetting.NOT_USE))
 				return true;
 		}
 		return false;
@@ -242,9 +249,9 @@ public class WorkTimeFinder {
 	 * @return result string
 	 * @throws ParseException
 	 */
-	private String createWorkTimeField(UseSetting useAtr, TimeWithDayAttr start, TimeWithDayAttr end) {
-		if (useAtr.equals(UseSetting.UseAtr_Use)) {
-			return start.dayAttr().description+ start.getRawTimeWithFormat()+ " ~ " + end.dayAttr().description+ end.getRawTimeWithFormat();
+	private String createWorkTimeField(nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting useAtr, TimeWithDayAttr start, TimeWithDayAttr end) {
+		if (useAtr.equals(UseSetting.USE)) {
+			return start.dayAttr().description+ convert(start.v())+ " ~ " + end.dayAttr().description+ convert(end.v());
 		} else
 			return null;
 	}
@@ -272,5 +279,19 @@ public class WorkTimeFinder {
 			dto.setName(opWorkTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
 		}
 		return dto;
+	}
+	private String convert(int minute) {
+		String hourminute = "";
+		if (minute == -1) {
+			return null;
+		} else if (minute == 0) {
+			hourminute = "00:00";
+		} else {
+			int hour = minute / 60;
+			int hourInDay = hour % 24;
+			int minutes = minute % 60;
+			hourminute = (hourInDay) + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
+		}
+		return hourminute;
 	}
 }

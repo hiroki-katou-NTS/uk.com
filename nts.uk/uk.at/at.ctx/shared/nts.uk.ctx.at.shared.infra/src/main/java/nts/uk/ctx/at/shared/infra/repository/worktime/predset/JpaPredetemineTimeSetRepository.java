@@ -276,6 +276,71 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 				.collect(Collectors.groupingBy(sheet -> sheet.getKshmtWorkTimeSheetSetPK().getWorktimeCd()));
 	}
 
+	private Map<String, List<KshmtWorkTimeSheetSet>> findWorktimeSheetByCodes(String companyID,
+			List<String> workTimeCodes) {
+		// get CriteriaBuilder
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder sheetCb = em.getCriteriaBuilder();
+
+		// create CriteriaQuery
+		CriteriaQuery<KshmtWorkTimeSheetSet> sheetCquery = sheetCb.createQuery(KshmtWorkTimeSheetSet.class);
+		Root<KshmtWorkTimeSheetSet> sheetRoot = sheetCquery.from(KshmtWorkTimeSheetSet.class);
+
+		// select root
+		sheetCquery.select(sheetRoot);
+
+		// add predicates
+		List<Predicate> worktimeSheetPredicates = new ArrayList<>();
+
+		// worktime sheet predicates
+		worktimeSheetPredicates.add(sheetCb.equal(
+				sheetRoot.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.cid),
+				companyID));
+		worktimeSheetPredicates.add(sheetRoot.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK)
+				.get(KshmtWorkTimeSheetSetPK_.worktimeCd).in(workTimeCodes));
+
+		// set condition
+		sheetCquery.where(worktimeSheetPredicates.toArray(new Predicate[] {}));
+
+		// get results
+		List<KshmtWorkTimeSheetSet> lstKshmtWorkTimeSheetSet = em.createQuery(sheetCquery).getResultList();
+
+		// group by worktime code
+		return lstKshmtWorkTimeSheetSet.stream()
+				.collect(Collectors.groupingBy(sheet -> sheet.getKshmtWorkTimeSheetSetPK().getWorktimeCd()));
+	}
+
+	private Map<String, List<KshmtWorkTimeSheetSet>> findWorktimeSheetByComId(String companyID) {
+		// get CriteriaBuilder
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder sheetCb = em.getCriteriaBuilder();
+
+		// create CriteriaQuery
+		CriteriaQuery<KshmtWorkTimeSheetSet> sheetCquery = sheetCb.createQuery(KshmtWorkTimeSheetSet.class);
+		Root<KshmtWorkTimeSheetSet> sheetRoot = sheetCquery.from(KshmtWorkTimeSheetSet.class);
+
+		// select root
+		sheetCquery.select(sheetRoot);
+
+		// add predicates
+		List<Predicate> worktimeSheetPredicates = new ArrayList<>();
+
+		// worktime sheet predicates
+		worktimeSheetPredicates.add(sheetCb.equal(
+				sheetRoot.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.cid),
+				companyID));
+
+		// set condition
+		sheetCquery.where(worktimeSheetPredicates.toArray(new Predicate[] {}));
+
+		// get results
+		List<KshmtWorkTimeSheetSet> lstKshmtWorkTimeSheetSet = em.createQuery(sheetCquery).getResultList();
+
+		// group by worktime code
+		return lstKshmtWorkTimeSheetSet.stream()
+				.collect(Collectors.groupingBy(sheet -> sheet.getKshmtWorkTimeSheetSetPK().getWorktimeCd()));
+	}
+
 	/**
 	 * Find worktime sheet by start and end.
 	 *
@@ -329,6 +394,9 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	 * @return the list
 	 */
 	private List<KshmtPredTimeSet> findByListCodes(String companyID, Set<String> workTimeCodes) {
+		if(CollectionUtil.isEmpty(workTimeCodes)){
+			return Collections.emptyList();
+		}
 		// get CriteriaBuilder
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder predCb = em.getCriteriaBuilder();
@@ -369,5 +437,36 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 			List<KshmtWorkTimeSheetSet> sheets = sheetMap.get(worktime.getKshmtPredTimeSetPK().getWorktimeCd());
 			return new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(worktime, sheets));
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PredetemineTimeSetting> findByCompanyID(String companyID) {
+		// get worktime sheet map
+		Map<String, List<KshmtWorkTimeSheetSet>> sheetMap = this.findWorktimeSheetByComId(companyID);
+
+		// get filtered worktime codes
+		Set<String> filteredCodes = sheetMap.keySet();
+
+		// get list PredTimeSet
+		List<KshmtPredTimeSet> kwtstWorkTimeSets = this.findByListCodes(companyID, filteredCodes);
+
+		// return mapped list
+		return this.mapPredTimeWithWorktimeSheet(kwtstWorkTimeSets, sheetMap);
+	}
+
+	@Override
+	public List<PredetemineTimeSetting> findByCodeList(String companyID, List<String> worktimeCodes) {
+		// get worktime sheet map
+		Map<String, List<KshmtWorkTimeSheetSet>> sheetMap = this.findWorktimeSheetByCodes(companyID, worktimeCodes);
+
+		// get filtered worktime codes
+		Set<String> filteredCodes = sheetMap.keySet();
+
+		// get list PredTimeSet
+		List<KshmtPredTimeSet> kwtstWorkTimeSets = this.findByListCodes(companyID, filteredCodes);
+
+		// return mapped list
+		List<PredetemineTimeSetting> a = this.mapPredTimeWithWorktimeSheet(kwtstWorkTimeSets, sheetMap);
+		return a;
 	}
 }
