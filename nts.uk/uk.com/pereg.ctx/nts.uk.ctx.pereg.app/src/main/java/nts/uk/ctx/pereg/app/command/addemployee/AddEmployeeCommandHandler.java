@@ -349,7 +349,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				}
 			}
 
-			ItemValue itemVal = getItemById(inputs, x.getItemCode());
+			ItemValue itemVal = getItemById(inputs, x.getItemCode(), x.getCategoryCode());
 
 			if (itemVal != null) {
 				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
@@ -360,16 +360,17 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	}
 
-	private ItemValue getItemById(List<ItemsByCategory> inputs, String itemCode) {
+	private ItemValue getItemById(List<ItemsByCategory> inputs, String itemCode, String ctgCode) {
 
 		for (ItemsByCategory ctg : inputs) {
+			if (ctg.getCategoryCd().equals(ctgCode)) {
+				Optional<ItemValue> optItem = ctg.getItems().stream().filter(x -> x.itemCode().equals(itemCode))
+						.findFirst();
+				if (optItem.isPresent()) {
+					return optItem.get();
+				}
 
-			Optional<ItemValue> optItem = ctg.getItems().stream().filter(x -> x.itemCode().equals(itemCode))
-					.findFirst();
-			if (optItem.isPresent()) {
-				return optItem.get();
 			}
-
 		}
 		return null;
 

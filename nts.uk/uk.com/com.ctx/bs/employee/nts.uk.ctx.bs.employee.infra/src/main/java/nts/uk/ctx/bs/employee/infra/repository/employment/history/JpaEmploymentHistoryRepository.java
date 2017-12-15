@@ -97,7 +97,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
-		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, histId);
+		this.commandProxy().remove(BsymtEmploymentHist.class, histId);
 
 	}
 

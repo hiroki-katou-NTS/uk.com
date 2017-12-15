@@ -440,7 +440,15 @@ module nts.custombinding {
                     <div class="add-buttons">
                         <button id="cps007_btn_add"></button>
                     </div>
-                    <div class="drag-panel">
+                    <div class="drag-panel" data-bind="let: {
+                        catType: {  
+                            SINGLE : 1,
+                            MULTI: 2,
+                            CONTI: 3, /* continuos history hasn't end date */
+                            NODUP: 4,
+                            DUPLI: 5,
+                            CONTIWED: 6 /* continuos history has end date */
+                        } }">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification"
                                     data-bind="let: { 
