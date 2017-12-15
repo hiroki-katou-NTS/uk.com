@@ -521,7 +521,7 @@ module nts.uk.at.view.ksm004.a {
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataCompany)){
                             _.forEach(dataCompany,(companyItem)=>{
-                                a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
+                                a.push(new CalendarItem(companyItem.date,companyItem.workingDayAtr));
                             });   
                             self.calendarPanel.optionDates(a);
                             self.isUpdate(true);
@@ -550,7 +550,7 @@ module nts.uk.at.view.ksm004.a {
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataWorkPlace)){
                             _.forEach(dataWorkPlace,(workPlaceItem)=>{
-                                a.push(new CalendarItem(workPlaceItem.dateId,workPlaceItem.workingDayAtr));
+                                a.push(new CalendarItem(workPlaceItem.date,workPlaceItem.workingDayAtr));
                             });   
                             self.calendarPanel1.optionDates(a);
                             self.isUpdate(true); 
@@ -579,7 +579,7 @@ module nts.uk.at.view.ksm004.a {
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataClass)){
                             _.forEach(dataClass,(companyItem)=>{
-                                a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
+                                a.push(new CalendarItem(companyItem.date,companyItem.workingDayAtr));
                             });  
                             self.calendarPanel2.optionDates(a);
                             self.isUpdate(true); 
@@ -797,7 +797,7 @@ module nts.uk.at.view.ksm004.a {
                 if(!autoFill) {
                     _.forEach(inputArray, item => {
                         a.push({
-                            dateId: Number(moment(item.start).format('YYYYMMDD')),
+                            dateId: (moment(item.start).format('YYYY/MM/DD')),
                             workingDayAtr: self.convertEnumNametoNumber(item.listText[0]),
                             classId: self.currentCalendarClass().key(),
                             workPlaceId: self.currentCalendarWorkPlace().key()
@@ -809,14 +809,14 @@ module nts.uk.at.view.ksm004.a {
                         let result = _.find(inputArray, o => o.start == moment(indexDate).format('YYYY-MM-DD'));
                         if(result == null) {
                             a.push({
-                                dateId: Number(indexDate),
+                                dateId: moment(indexDate).format('YYYY/MM/DD'),
                                 workingDayAtr: 0,
                                 classId: self.currentCalendarClass().key(),
                                 workPlaceId: self.currentCalendarWorkPlace().key()
                             });        
                         } else {
                             a.push({
-                                dateId: Number(moment(result.start).format('YYYYMMDD')),
+                                dateId: (moment(result.start).format('YYYY/MM/DD')),
                                 workingDayAtr: self.convertEnumNametoNumber(result.listText[0]),
                                 classId: self.currentCalendarClass().key(),
                                 workPlaceId: self.currentCalendarWorkPlace().key()
