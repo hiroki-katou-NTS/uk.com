@@ -14,4 +14,8 @@ public @interface AttendanceItemValue {
 	ValueType type() default ValueType.STRING;
 	
 	int[] itemId();
+	
+	String idReferenceMethod() default "";
+	
+	boolean isReferenceParentLayout() default false;
 }
