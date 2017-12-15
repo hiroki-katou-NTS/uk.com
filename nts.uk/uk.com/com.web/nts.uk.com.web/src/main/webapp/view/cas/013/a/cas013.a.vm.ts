@@ -166,6 +166,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.selectedRoleIndividual('');
             self.userName('');
             self.dateValue({});
+            nts.uk.ui.dialog.info({ messageId: "Msg_3" });
             nts.uk.ui.errors.clearAll();
         }
         openBModal(): void {
