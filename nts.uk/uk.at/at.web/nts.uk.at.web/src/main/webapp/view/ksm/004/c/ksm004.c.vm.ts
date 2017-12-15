@@ -245,7 +245,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         year: number;
 
         constructor(date: string, holidayName: string) {
-            this.date = date;
+            this.date = moment(date).format('YYYY/MM/DD');
             this.holidayName = holidayName;
             this.displayDate = moment(date, 'YYYYMMDD').format('MM月DD日');
             this.year = Number(moment(date, 'YYYYMMDD').format('YYYY'));
