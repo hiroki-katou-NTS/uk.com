@@ -4,7 +4,7 @@ package nts.uk.ctx.workflow.dom.service;
  * @author Doan Duy Hung
  *
  */
-public interface ReleaseService {
+public interface ReleaseAllAtOnceService {
 	
 	/**
 	 * 一括解除する 

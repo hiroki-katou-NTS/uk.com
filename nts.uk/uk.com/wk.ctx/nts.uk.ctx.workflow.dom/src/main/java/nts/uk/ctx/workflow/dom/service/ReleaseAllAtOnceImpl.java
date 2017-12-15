@@ -18,7 +18,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateReposito
  *
  */
 @Stateless
-public class ReleaseImpl implements ReleaseService {
+public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 	
 	@Inject
 	private ApprovalRootStateRepository approvalRootStateRepository;
