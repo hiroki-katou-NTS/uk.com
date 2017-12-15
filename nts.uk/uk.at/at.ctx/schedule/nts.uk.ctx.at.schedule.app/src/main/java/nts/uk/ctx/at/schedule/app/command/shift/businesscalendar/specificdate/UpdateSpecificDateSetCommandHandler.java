@@ -139,19 +139,20 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	 * @param workplaceId
 	 */
 	private void UpdatebyDayforWorkPlace(GeneralDate strDate, GeneralDate endDate, List<Integer> dayofWeek, List<Integer> lstTimeItemId ,int setUpdate,String workplaceId){
-		GeneralDate sDate = GeneralDate.fromString(String.valueOf(strDate), "yyyyMMdd");
-		GeneralDate eDate = GeneralDate.fromString(String.valueOf(endDate), "yyyyMMdd");
-		GeneralDate date = sDate;
-		String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
-		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
-		int dateInt = Integer.valueOf(dateStr);
-		BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
+		//GeneralDate sDate = GeneralDate.fromString(String.valueOf(strDate), "yyyyMMdd");
+		//GeneralDate eDate = GeneralDate.fromString(String.valueOf(endDate), "yyyyMMdd");
+		GeneralDate date = strDate;
+		//String eDateStr = String.format("%04d%02d%02d", eDate.year(), eDate.month(),eDate.day());
+		//String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+		//int dateInt = Integer.valueOf(dateStr);
+		//BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
 		//check slected public holiday
 		List<PublicHoliday> lstHoliday = checkSelectedHoliday(dayofWeek, strDate, endDate);
 		while(strDate.beforeOrEquals(endDate)){
 			if(!checkSet(lstHoliday,date,dayofWeek)){//not setting
 				date = date.addDays(1);
-				dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+				//dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
+				strDate = date;
 				continue;
 			}
 			if(setUpdate==1){
