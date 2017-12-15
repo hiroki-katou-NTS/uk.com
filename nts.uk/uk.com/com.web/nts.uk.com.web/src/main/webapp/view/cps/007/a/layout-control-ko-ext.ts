@@ -276,7 +276,7 @@ module nts.custombinding {
 
                     .layout-control .item-classification .item-control textarea.nts-editor,
                     .layout-control .item-classification .item-controls textarea.nts-editor {
-                        width: 280px;
+                        width: 368px;
                         height: 70px;
                         overflow-y: scroll;
                     }
@@ -308,6 +308,11 @@ module nts.custombinding {
                         content: '▾';
                         display: block;
                         position: absolute;
+                    }
+
+                    .layout-control .item-classification .ui-igcombo-wrapper {
+                        width: auto;
+                        width: initial;                            
                     }
 
                     .layout-control .item-classification .form-label {
@@ -552,7 +557,8 @@ module nts.custombinding {
                 </div>
                 <script type="text/html" id="itemtemplate">
                     <div data-bind="if: item.dataTypeValue == 1" class="string">
-                        <div data-bind="if: item.stringItemType == 4 || item.stringItemLength < 40">
+                        <!--<div data-bind="text: item.stringItemType + '||' + item.stringItemLength"></div>-->
+                        <div data-bind="if: item.stringItemType == 4 || item.stringItemLength < 40 || ([1, 5].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
                             <input data-bind="attr: { title: itemName, id: itemCode },
                                 ntsTextEditor: {
                                     value: value,
@@ -567,7 +573,7 @@ module nts.custombinding {
                                     immediate: false
                                 }" />
                         </div>
-                        <div data-bind="if: item.stringItemType != 4 && item.stringItemLength >= 40">
+                        <div data-bind="if: item.stringItemType != 4 && (([1, 5].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([1, 5].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80))">
                             <textarea data-bind="ntsMultilineEditor: {
                                 value: value,
                                 constraint: itemDefId.replace(/-/g, ''),
@@ -1028,9 +1034,9 @@ module nts.custombinding {
                         .map((x: IItemClassification) => x.items && x.items())
                         .flatten()
                         .flatten()
-                        .filter((x: any) => !!x && !_.isEqual(x.item, {}))
+                        .filter((x: any) => !!x && !!x.item && !_.isEqual(x.item, {}))
                         .map((x: any) => {
-                            let dts = x.item,//(x.itemTypeState || <IItemTypeState>{}).dataTypeState,
+                            let dts = x.item,
                                 constraint: any = {
                                     itemName: x.itemName,
                                     itemCode: x.itemDefId.replace(/-/g, ""),

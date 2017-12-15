@@ -55,7 +55,7 @@ public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<Update
 		if (!itemToBeUpdate.isPresent()) {
 			throw new RuntimeException("invalid employmentHistory");
 		}
-		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		employmentHistoryService.update(existHist.get(), itemToBeUpdate.get());
 
 		// Update detail table

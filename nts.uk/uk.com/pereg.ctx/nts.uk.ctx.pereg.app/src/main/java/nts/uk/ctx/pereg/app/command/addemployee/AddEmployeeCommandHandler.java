@@ -169,9 +169,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	}
 
 	private void addNewPerson() {
-
 		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), BloodType.Unselected.value,
-				GenderPerson.Male.value, personId, "", "", command.getEmployeeName(), "", "", "", "", "", "", "", "",
+				GenderPerson.Male.value, personId, " ", "", command.getEmployeeName(), " ", "", "", "", "", "", "", "",
 				"", "", "");
 
 		this.personRepo.addNewPerson(newPerson);
@@ -291,7 +290,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		this.companyHistRepo.add(newComHist);
 
-		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, "", ConstantUtils.maxDate(),
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", ConstantUtils.maxDate(),
 				ConstantUtils.maxDate());
 
 		this.companyInfoRepo.add(newComInfo);

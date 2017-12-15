@@ -52,8 +52,8 @@ public class AddEmploymentHistoryCommandHandler
 		String newHistID = IdentifierUtil.randomUniqueId();
 		String companyId = AppContexts.user().companyId();
 		DateHistoryItem dateItem = new DateHistoryItem(newHistID,
-				new DatePeriod(command.getStartDate(), command.getEndDate() != null ? command.getEndDate()
-						: GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+				new DatePeriod(command.getStartDate()!=null? command.getStartDate() : ConstantUtils.minDate(), command.getEndDate() != null ? command.getEndDate()
+						: ConstantUtils.maxDate()));
 
 		Optional<EmploymentHistory> histBySid = employmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
 
