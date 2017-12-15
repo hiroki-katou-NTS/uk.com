@@ -97,7 +97,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             if (roleType != '') {
                 new service.Service().getRole(roleType).done(function(data: any) {
                     if (data != null && data.length > 0) {
-                        data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
+                        data = _.orderBy(data, ['roleCode', 'assignAtr'], ['asc', 'asc']);
                         self.listRole(data);
                         self.selectedRole(data[0].roleId);
                     }
