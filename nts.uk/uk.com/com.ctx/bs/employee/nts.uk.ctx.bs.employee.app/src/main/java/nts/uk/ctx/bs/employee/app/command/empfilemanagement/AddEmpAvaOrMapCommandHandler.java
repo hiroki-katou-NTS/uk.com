@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.empfilemanagement;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -22,9 +24,12 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 	@Override
 	protected void handle(CommandHandlerContext<EmpAvaOrMapCommand> context) {
 		EmpAvaOrMapCommand command = context.getCommand();
-		EmployeeDataMngInfo employee = emplRepo.findByEmpId(command.getEmployeeId()).get();
-		this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(employee.getPersonId(),
-				command.getFileId(), command.getFileType(), null));
+		Optional<EmployeeDataMngInfo> employee = emplRepo.findByEmpId(command.getEmployeeId());
+		if (employee.isPresent()) {
+			this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(employee.get().getPersonId(),
+					command.getFileId(), command.getFileType(), null));
+		}
+		
 	}
 
 }
