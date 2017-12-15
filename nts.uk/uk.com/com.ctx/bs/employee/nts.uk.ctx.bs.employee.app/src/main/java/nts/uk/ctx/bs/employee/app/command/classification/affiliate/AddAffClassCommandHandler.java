@@ -67,7 +67,7 @@ public class AddAffClassCommandHandler
 		if (historyOption.isPresent()) {
 			history = historyOption.get();
 		}
-		DateHistoryItem dateItem = new DateHistoryItem(newHistoryId, new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+		DateHistoryItem dateItem = new DateHistoryItem(newHistoryId, new DatePeriod(command.getStartDate() != null ? command.getStartDate() : ConstantUtils.minDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		history.add(dateItem);
 		affClassHistoryRepositoryService.add(history);
 		

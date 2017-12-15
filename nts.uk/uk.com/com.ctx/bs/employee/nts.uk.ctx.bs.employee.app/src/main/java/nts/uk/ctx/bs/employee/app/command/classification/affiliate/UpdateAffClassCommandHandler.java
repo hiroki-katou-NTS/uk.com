@@ -66,7 +66,7 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 		}
 
 		historyOption.get().changeSpan(itemToBeUpdateOpt.get(),
-				new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+				new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		affClassHistoryRepositoryService.update(historyOption.get(), itemToBeUpdateOpt.get());
 
 		// update history item

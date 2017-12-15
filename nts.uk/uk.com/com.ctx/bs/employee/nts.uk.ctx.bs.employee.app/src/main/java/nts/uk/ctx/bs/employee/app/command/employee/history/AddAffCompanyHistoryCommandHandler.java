@@ -62,8 +62,9 @@ public class AddAffCompanyHistoryCommandHandler
 		}
 		// 所属期間．終了日が指定されない場合（＝退職していない）、所属期間．終了日＝9999/12/31を自動的に設定する。
 		AffCompanyHistItem hist = new AffCompanyHistItem(newHistId, false,
-				new DatePeriod(command.getStartDate(), command.getEndDate() != null ? command.getEndDate()
-						: GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+				new DatePeriod(command.getStartDate() != null ? command.getStartDate() : ConstantUtils.minDate(),
+						command.getEndDate() != null ? command.getEndDate() : ConstantUtils.maxDate()));
+
 		itemToBeAdded.add(hist);
 
 		affCompanyHistService.add(itemToBeAdded, command.getPId());
