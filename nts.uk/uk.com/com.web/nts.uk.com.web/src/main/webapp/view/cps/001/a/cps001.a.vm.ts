@@ -75,18 +75,26 @@ module cps001.a.vm {
         person: KnockoutComputed<PersonInfo> = ko.computed(() => {
             let self = this,
                 employee = self.employee();
+
             return employee.personInfo();
         });
 
-        listLayout: KnockoutObservableArray<ILayout> = ko.observableArray([]);
+        // output data on category changed
+        multipleData: KnockoutObservableArray<MultiData> = ko.observableArray(_.fill(Array(10), 0).map(x => new MultiData()));
 
-        layouts: KnockoutObservableArray<Layout> = ko.observableArray(_.fill(Array(10), 0).map(x => new Layout()));
+        layouts: KnockoutComputed<Array<Layout>> = ko.computed(() => {
+            let self = this;
+
+            return _.map(self.multipleData(), x => x.layout());
+        });
 
         currentLayout: KnockoutComputed<Layout> = ko.computed(() => {
             let self = this;
 
             return _.first(self.layouts());
         });
+
+        listLayout: KnockoutObservableArray<ILayout> = ko.observableArray([]);
 
         // for case: combobox
         listCategory: KnockoutObservableArray<ICategory> = ko.observableArray([]);
@@ -113,9 +121,6 @@ module cps001.a.vm {
                     return text("CPS001_41");
             }
         });
-
-        // output data on category changed
-        multipleData: KnockoutObservableArray<MultiData> = ko.observableArray(_.fill(Array(10), 0).map(x => new MultiData()));
 
         constructor() {
             let self = this,
@@ -182,10 +187,6 @@ module cps001.a.vm {
                 }
             });
 
-            employee.employeeId.subscribe(id => {
-                //self.tabActive.valueHasMutated();
-            }, self, "beforeChange");
-
             employee.employeeId.valueHasMutated();
 
             layout.id.subscribe(id => {
@@ -200,13 +201,17 @@ module cps001.a.vm {
 
                     service.getCurrentLayout(query).done((data: ILayout) => {
                         if (data) {
-                            if (data.standardDate) {
+                            if (!data.standardDate) {
+                                layout.standardDate(undefined);
+                            } else {
                                 layout.standardDate(data.standardDate);
                             }
+
                             layout.listItemCls(data.classificationItems || []);
                         }
                     });
                 }
+
                 _.each(layouts(), (item, index) => {
                     if (index > 0) {
                         item.listItemCls([]);
@@ -269,7 +274,12 @@ module cps001.a.vm {
                                     }
                                 } else {
                                     source.data([]);
-                                    source.id(undefined);
+
+                                    if (source.id()) {
+                                        source.id(undefined);
+                                    } else {
+                                        source.id.valueHasMutated();
+                                    }
                                 }
                             });
                             break;
@@ -287,7 +297,8 @@ module cps001.a.vm {
             });
 
             _.each(list(), (item, index) => {
-                let lt = _.find(layouts(), (l, i) => i == index);
+                let events = item.events,
+                    lt = _.find(layouts(), (l, i) => i == index);
 
                 item.id.subscribe(v => {
                     let query = {
@@ -304,11 +315,15 @@ module cps001.a.vm {
                     });
                 });
 
-                item.add = () => {
-                    item.id(undefined);
+                events.add = () => {
+                    if (item.id()) {
+                        item.id(undefined);
+                    } else {
+                        item.id.valueHasMutated();
+                    }
                 };
 
-                item.remove = () => {
+                events.remove = () => {
                     let query = {
                         categoryId: category.categoryCode(),
                         personId: person.personId(),
@@ -734,9 +749,14 @@ module cps001.a.vm {
         id: KnockoutObservable<string> = ko.observable(undefined);
 
         // event action
-        add = () => { };
-        replace = () => { };
-        remove = () => { };
+        events: any = {
+            add: () => { },
+            remove: () => { },
+            replace: () => { }
+        }
+
+        // selected value on list data multiple/history
+        dataId: KnockoutObservable<string> = ko.observable(undefined);
 
         // list data multiple or history
         data: KnockoutObservableArray<IMultiData> = ko.observableArray([]);
