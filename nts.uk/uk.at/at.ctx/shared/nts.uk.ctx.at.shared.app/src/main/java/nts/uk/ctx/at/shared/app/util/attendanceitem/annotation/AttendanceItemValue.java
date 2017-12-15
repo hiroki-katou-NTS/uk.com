@@ -13,5 +13,5 @@ public @interface AttendanceItemValue {
 	
 	ValueType type() default ValueType.STRING;
 	
-	int itemId();
+	int[] itemId();
 }
