@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.workrecord.daily;
+package nts.uk.ctx.at.record.app.command.actualworkinghours;
 
 import javax.ejb.Stateless;
 
@@ -7,10 +7,10 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemCommand;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 
 @Stateless
-public class DailyWorkRecordCommandHandler extends CommandFacade<DailyWorkRecordCommand>{
+public class AttendanceTimeOfDailyPerformCommandHandler extends CommandFacade<AttendanceTimeOfDailyPerformCommand>{
 
 	@Override
-	protected void handle(CommandHandlerContext<DailyWorkRecordCommand> context) {
+	protected void handle(CommandHandlerContext<AttendanceTimeOfDailyPerformCommand> context) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -18,8 +18,7 @@ public class DailyWorkRecordCommandHandler extends CommandFacade<DailyWorkRecord
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends AttendanceItemCommand> T newCommand() {
-		// TODO Auto-generated method stub
-		return (T) new DailyWorkRecordCommand();
+		return (T) new AttendanceTimeOfDailyPerformCommand();
 	}
 
 }
