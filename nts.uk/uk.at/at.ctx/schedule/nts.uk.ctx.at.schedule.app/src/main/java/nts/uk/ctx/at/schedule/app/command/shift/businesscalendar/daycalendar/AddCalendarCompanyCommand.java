@@ -7,7 +7,7 @@ public class AddCalendarCompanyCommand {
 
 	private String companyId;
 	
-	private String dateId;
+	private String date;
 	
 	private int workingDayAtr;
 	

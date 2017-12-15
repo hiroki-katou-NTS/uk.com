@@ -797,7 +797,7 @@ module nts.uk.at.view.ksm004.a {
                 if(!autoFill) {
                     _.forEach(inputArray, item => {
                         a.push({
-                            dateId: (moment(item.start).format('YYYY/MM/DD')),
+                            date: (moment(item.start).format('YYYY/MM/DD')),
                             workingDayAtr: self.convertEnumNametoNumber(item.listText[0]),
                             classId: self.currentCalendarClass().key(),
                             workPlaceId: self.currentCalendarWorkPlace().key()
@@ -809,14 +809,14 @@ module nts.uk.at.view.ksm004.a {
                         let result = _.find(inputArray, o => o.start == moment(indexDate).format('YYYY-MM-DD'));
                         if(result == null) {
                             a.push({
-                                dateId: moment(indexDate).format('YYYY/MM/DD'),
+                                date: moment(indexDate).format('YYYY/MM/DD'),
                                 workingDayAtr: 0,
                                 classId: self.currentCalendarClass().key(),
                                 workPlaceId: self.currentCalendarWorkPlace().key()
                             });        
                         } else {
                             a.push({
-                                dateId: (moment(result.start).format('YYYY/MM/DD')),
+                                date: (moment(result.start).format('YYYY/MM/DD')),
                                 workingDayAtr: self.convertEnumNametoNumber(result.listText[0]),
                                 classId: self.currentCalendarClass().key(),
                                 workPlaceId: self.currentCalendarWorkPlace().key()
