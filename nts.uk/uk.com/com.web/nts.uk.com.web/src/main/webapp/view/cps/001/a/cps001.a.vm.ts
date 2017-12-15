@@ -310,14 +310,16 @@ module cps001.a.vm {
 
                 item.remove = () => {
                     let query = {
-                        categoryId: category.id(),
+                        categoryId: category.categoryCode(),
                         personId: person.personId(),
                         employeeId: employee.employeeId(),
                         recordId: item.id()
                     };
 
                     service.removeCurrentCategoryData(query).done(x => {
-                        category.categoryType.valueHasMutated();
+                        info({ messageId: "Msg_16" }).then(() => {
+                            category.categoryType.valueHasMutated();
+                        });
                     });
                 };
             });
@@ -442,7 +444,7 @@ module cps001.a.vm {
                     if (tab == TABS.CATEGORY) {
                         cbid.id.valueHasMutated();
                     } else {
-                        
+
                     }
                 });
             }).fail((mes) => {

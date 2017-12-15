@@ -35,6 +35,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -49,6 +50,7 @@ import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -160,16 +162,15 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		List<WorkplaceInfo> wplst = this.workPlaceInfoRepo.findAll(companyId, GeneralDate.today());
 		Random rnd = new Random();
 		WorkplaceInfo wp = wplst.get(rnd.nextInt(wplst.size()));
-		AffWorkplaceHistory newAffWork = AffWorkplaceHistory.createFromJavaType(wp.getWorkplaceId(), GeneralDate.min(),
-				GeneralDate.max(), employeeId);
+		AffWorkplaceHistory newAffWork = AffWorkplaceHistory.createFromJavaType(wp.getWorkplaceId(),
+				ConstantUtils.minDate(), ConstantUtils.maxDate(), employeeId);
 		this.workplaceHistRepo.addAffWorkplaceHistory(newAffWork);
 
 	}
 
 	private void addNewPerson() {
-
-		Person newPerson = Person.createFromJavaType(GeneralDate.min(), BloodType.Unselected.value,
-				GenderPerson.Male.value, personId, "", "", command.getEmployeeName(), "", "", "", "", "", "", "", "",
+		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), BloodType.Unselected.value,
+				GenderPerson.Male.value, personId, " ", "", command.getEmployeeName(), " ", "", "", "", "", "", "", "",
 				"", "", "");
 
 		this.personRepo.addNewPerson(newPerson);
@@ -213,7 +214,20 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 			addOptinalInputs(fixedInputs);
 
-			PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, fixedInputs);
+			List<ItemsByCategory> updateInputs = new ArrayList<ItemsByCategory>();
+
+			fixedInputs.forEach(ctg -> {
+				List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'S')
+						.collect(Collectors.toList());
+				if (!CollectionUtil.isEmpty(lstItem)) {
+					ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+					updateInputs.add(newItemCtg);
+
+				}
+
+			});
+
+			PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
 
 			this.commandFacade.update(updateContainer);
 
@@ -229,10 +243,18 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Transactional
 	private void addOptinalInputs(List<ItemsByCategory> fixedInputs) {
 		List<ItemsByCategory> addInputs = new ArrayList<ItemsByCategory>();
-		addInputs = fixedInputs;
 
-		addInputs.forEach(ctg -> ctg.setItems(
-				ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O').collect(Collectors.toList())));
+		fixedInputs.forEach(ctg -> {
+
+			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O')
+					.collect(Collectors.toList());
+			if (!CollectionUtil.isEmpty(lstItem)) {
+				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+				addInputs.add(newItemCtg);
+
+			}
+
+		});
 
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, addInputs);
 
@@ -259,8 +281,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		List<AffCompanyHistItem> comHistItemList = new ArrayList<AffCompanyHistItem>();
 
-		comHistItemList.add(
-				new AffCompanyHistItem(comHistId, false, new DatePeriod(command.getHireDate(), GeneralDate.max())));
+		comHistItemList.add(new AffCompanyHistItem(comHistId, false,
+				new DatePeriod(command.getHireDate(), ConstantUtils.maxDate())));
 
 		comHistList.add(new AffCompanyHistByEmployee(employeeId, comHistItemList));
 
@@ -268,8 +290,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		this.companyHistRepo.add(newComHist);
 
-		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, "", GeneralDate.max(),
-				GeneralDate.max());
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", ConstantUtils.maxDate(),
+				ConstantUtils.maxDate());
 
 		this.companyInfoRepo.add(newComInfo);
 
@@ -321,31 +343,35 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		dataList.forEach(x -> {
 
-			String StringData = getItemValueById(inputs, x.getItemCode());
+			if (x.getDataType() == ItemValueType.SELECTION.value) {
+				if (x.getSelectionItemRefType().intValue() == 3) {
+					x.setDataType(2);
+				}
+			}
 
-			if (StringData != null) {
-				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value, StringData));
+			ItemValue itemVal = getItemById(inputs, x.getItemCode());
+
+			if (itemVal != null) {
+				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
+						itemVal.value() != null ? itemVal.value().toString() : ""));
+
 			}
 		});
 
 	}
 
-	private String getItemValueById(List<ItemsByCategory> inputs, String itemCode) {
-		String returnString = null;
+	private ItemValue getItemById(List<ItemsByCategory> inputs, String itemCode) {
 
 		for (ItemsByCategory ctg : inputs) {
 
 			Optional<ItemValue> optItem = ctg.getItems().stream().filter(x -> x.itemCode().equals(itemCode))
 					.findFirst();
 			if (optItem.isPresent()) {
-				if (optItem.get().value() != null) {
-					returnString = optItem.get().value().toString();
-				}
-				break;
+				return optItem.get();
 			}
 
 		}
-		return returnString;
+		return null;
 
 	}
 

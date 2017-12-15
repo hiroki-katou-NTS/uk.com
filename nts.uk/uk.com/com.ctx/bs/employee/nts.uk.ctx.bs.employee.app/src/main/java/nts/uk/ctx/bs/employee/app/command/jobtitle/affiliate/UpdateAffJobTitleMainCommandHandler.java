@@ -59,7 +59,7 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 		if (!itemToBeUpdate.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory");
 		}
-		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		
 		affJobTitleHistoryService.update(existHist.get(), itemToBeUpdate.get());
 	

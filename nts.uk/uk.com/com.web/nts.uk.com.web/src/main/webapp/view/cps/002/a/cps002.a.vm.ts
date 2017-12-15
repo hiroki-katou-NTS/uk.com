@@ -224,8 +224,8 @@ module cps002.a.vm {
                     service.getUserSetting().done((result: IUserSetting) => {
                         if (result) {
 
-                            self.getEmployeeCode(result).done(() => {
-
+                            self.getEmployeeCode(result).done((empCode) => {
+                                self.currentEmployee().employeeCode(empCode);
                                 self.getCardNumber(result);
 
                             });
@@ -270,8 +270,8 @@ module cps002.a.vm {
 
             if (genType === 3 || genType === 1) {
                 service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
-                    self.currentEmployee().employeeCode(result);
-                    dfd.resolve();
+
+                    dfd.resolve(result);
                 });
             }
 
@@ -572,7 +572,6 @@ module cps002.a.vm {
                 block.grayout();
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
-                    block.clear();
 
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
@@ -588,6 +587,9 @@ module cps002.a.vm {
 
                     dialog({ messageId: error.message });
 
+                }).always(() => {
+
+                    block.clear();
                 });
             }
         }
@@ -600,7 +602,18 @@ module cps002.a.vm {
                 employee = self.currentEmployee();
 
             setShared("cardNoMode", isCardNoMode);
-            setShared("value", isCardNoMode ? employee.cardNo() : employee.employeeCode());
+            if (useSetting) {
+
+                if (!isCardNoMode) {
+                    self.getEmployeeCode(useSetting).done((employeeCode) => {
+
+                        setShared("textValue", employeeCode);
+                    });
+                } else {
+
+
+                }
+            }
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),
