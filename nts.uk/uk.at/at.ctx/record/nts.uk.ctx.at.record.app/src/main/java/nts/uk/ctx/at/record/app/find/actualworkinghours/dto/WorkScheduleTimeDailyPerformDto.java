@@ -10,16 +10,16 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class WorkScheduleTimeDailyPerformDto {
 
 	/** 勤務予定時間: 勤務予定時間 */
-	@AttendanceItemLayout(layout="A")
+	@AttendanceItemLayout(layout = "A")
 	private WorkScheduleTimeDto workSchedule;
-	
+
 	/** 実績所定労働時間: 勤怠時間 */
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=15, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer recordPrescribedLaborTime;
-	
+
 	/** 計画所定労働時間: 勤怠時間 */
-	@AttendanceItemLayout(layout="C")
-	@AttendanceItemValue(itemId=16, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "C")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer schedulePrescribedLaborTime;
 }

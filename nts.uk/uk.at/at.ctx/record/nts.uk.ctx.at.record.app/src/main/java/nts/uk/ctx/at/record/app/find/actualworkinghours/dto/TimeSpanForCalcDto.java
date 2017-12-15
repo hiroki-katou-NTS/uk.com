@@ -13,13 +13,14 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @Getter
 @Setter
 public class TimeSpanForCalcDto {
-	/** 終了時刻 */
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int end;
 
 	/** 開始時刻 */
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int start;
+	@AttendanceItemLayout(layout = "A")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer start;
+
+	/** 終了時刻 */
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer end;
 }
