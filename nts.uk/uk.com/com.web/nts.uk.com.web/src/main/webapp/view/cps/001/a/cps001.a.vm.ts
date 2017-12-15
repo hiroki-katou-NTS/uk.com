@@ -323,6 +323,8 @@ module cps001.a.vm {
                     }
                 };
 
+                events.replace = () => { self.saveData(); };
+
                 events.remove = () => {
                     let query = {
                         categoryId: category.categoryCode(),
@@ -749,7 +751,7 @@ module cps001.a.vm {
         id: KnockoutObservable<string> = ko.observable(undefined);
 
         // event action
-        events: any = {
+        events: Events = {
             add: () => { },
             remove: () => { },
             replace: () => { }
@@ -763,6 +765,12 @@ module cps001.a.vm {
 
         // object layout
         layout: KnockoutObservable<Layout> = ko.observable(new Layout());
+    }
+
+    interface Events {
+        add: () => void;
+        remove: () => void;
+        replace: () => void;
     }
 
     enum TABS {
