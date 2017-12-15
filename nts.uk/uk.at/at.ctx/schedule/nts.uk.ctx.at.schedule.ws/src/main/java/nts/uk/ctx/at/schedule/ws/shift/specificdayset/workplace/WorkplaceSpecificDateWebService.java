@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace.DeleteWorkplaceSpecificDateCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.specificdayset.workplace.DeleteWorkplaceSpecificDateCommandHandler;
@@ -62,4 +63,9 @@ public class WorkplaceSpecificDateWebService extends WebService {
 	public void DeleteworkplaceSpecificDate(DeleteWorkplaceSpecificDateCommand deleteCommand) {
 		this.deleteCommand.handle(deleteCommand);
 	}
+}
+@Value
+class WorkplaceSpectificParam{
+	String workPlaceId;
+	String workPlaceDate;
 }

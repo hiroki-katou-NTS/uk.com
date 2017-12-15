@@ -221,7 +221,7 @@ module ksm002.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             if(!nts.uk.util.isNullOrUndefined(self.currentWorkPlace().id())&&!nts.uk.util.isNullOrEmpty(self.currentWorkPlace().id())){
-                bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked()).done(data=>{
+                bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),moment(self.yearMonthPicked(), "YYYY/MM/01").toString()).done(data=>{
                     self.rootList = data;
                     self.calendarPanel.optionDates.removeAll();
                     let a = [];

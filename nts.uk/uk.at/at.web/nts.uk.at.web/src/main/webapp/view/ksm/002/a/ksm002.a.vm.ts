@@ -153,6 +153,7 @@ module ksm002.a.viewmodel {
                     self.isNew(false);
                     for (let j = 1; j < endOfMonth + 1; j++) {
                         let processDay: string = processMonth + _.padStart(j, 2, '0');
+                        processDay = moment(processDay).format(self.dateFormat);
                         arrName = [];
                         arrId = [];
                         //Loop in each Day
@@ -317,7 +318,7 @@ module ksm002.a.viewmodel {
                     });
                 } else {
                     let current = {
-                        specificDate: Number(moment(item.start, 'YYYYMMDD').format(self.dateFormat),
+                        specificDate: moment(item.start, 'YYYYMMDD').format(self.dateFormat),
                         specificDateItemNo: self.getSpecIdfromName(item.listText)
                     };
                     if (!_.isEqual(ko.mapping.toJSON(before), ko.mapping.toJSON(current))) {
@@ -409,7 +410,7 @@ module ksm002.a.viewmodel {
             nts.uk.ui.windows.setShared('KSM002_D_PARAM',
                 {
                     util: 1,
-                    startDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').startOf('month').format('YYYY/MM/DD')),
+                    startDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').startOf('month').format('YYYYMMDD')),
                     endDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').endOf('month').format('YYYYMMDD'))
                 });
             nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {

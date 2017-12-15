@@ -218,6 +218,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		while(strDate.beforeOrEquals(endDate)){
 			if(!checkSet(lstHoliday,date,dayofWeek)){//not setting
 				date = date.addDays(1);
+				strDate = date;
 				continue;
 			}
 			if(setUpdate==1){
