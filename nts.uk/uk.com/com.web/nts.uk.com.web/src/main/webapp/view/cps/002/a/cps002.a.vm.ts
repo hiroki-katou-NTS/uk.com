@@ -572,7 +572,6 @@ module cps002.a.vm {
                 block.grayout();
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
-                    block.clear();
 
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
@@ -588,6 +587,9 @@ module cps002.a.vm {
 
                     dialog({ messageId: error.message });
 
+                }).always(() => {
+
+                    block.clear();
                 });
             }
         }

@@ -35,6 +35,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -161,15 +162,15 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		List<WorkplaceInfo> wplst = this.workPlaceInfoRepo.findAll(companyId, GeneralDate.today());
 		Random rnd = new Random();
 		WorkplaceInfo wp = wplst.get(rnd.nextInt(wplst.size()));
-		AffWorkplaceHistory newAffWork = AffWorkplaceHistory.createFromJavaType(wp.getWorkplaceId(), GeneralDate.min(),
-				GeneralDate.max(), employeeId);
+		AffWorkplaceHistory newAffWork = AffWorkplaceHistory.createFromJavaType(wp.getWorkplaceId(),
+				ConstantUtils.minDate(), ConstantUtils.maxDate(), employeeId);
 		this.workplaceHistRepo.addAffWorkplaceHistory(newAffWork);
 
 	}
 
 	private void addNewPerson() {
 
-		Person newPerson = Person.createFromJavaType(GeneralDate.min(), BloodType.Unselected.value,
+		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), BloodType.Unselected.value,
 				GenderPerson.Male.value, personId, "", "", command.getEmployeeName(), "", "", "", "", "", "", "", "",
 				"", "", "");
 
@@ -281,8 +282,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		List<AffCompanyHistItem> comHistItemList = new ArrayList<AffCompanyHistItem>();
 
-		comHistItemList.add(
-				new AffCompanyHistItem(comHistId, false, new DatePeriod(command.getHireDate(), GeneralDate.max())));
+		comHistItemList.add(new AffCompanyHistItem(comHistId, false,
+				new DatePeriod(command.getHireDate(), ConstantUtils.maxDate())));
 
 		comHistList.add(new AffCompanyHistByEmployee(employeeId, comHistItemList));
 
@@ -290,8 +291,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		this.companyHistRepo.add(newComHist);
 
-		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, "", GeneralDate.max(),
-				GeneralDate.max());
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, "", ConstantUtils.maxDate(),
+				ConstantUtils.maxDate());
 
 		this.companyInfoRepo.add(newComInfo);
 
