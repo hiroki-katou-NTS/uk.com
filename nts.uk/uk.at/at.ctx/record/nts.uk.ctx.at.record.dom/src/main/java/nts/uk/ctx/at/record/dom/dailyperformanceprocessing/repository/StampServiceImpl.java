@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -20,8 +21,8 @@ import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
-
-public class StampService {
+@Stateless
+public class StampServiceImpl implements StampDomainService{
 	@Inject
 	private ErrMessageInfoRepository errRepo;
 	@Inject
@@ -29,27 +30,6 @@ public class StampService {
 	@Inject
 	private StampCardRepository stampCardRepo;
 
-	private List<String> stampNumber;
-
-	private List<StampItem> lstStampItem;
-
-	private List<StampItem> lstStampItemOutput = new ArrayList<StampItem>();
-
-	public List<StampItem> getLstStampItem() {
-		return lstStampItem;
-	}
-
-	public void setLstStampItem(List<StampItem> lstStampItem) {
-		this.lstStampItem = lstStampItem;
-	}
-
-	public List<String> getStampNumber() {
-		return stampNumber;
-	}
-
-	public void setStampNumber(List<String> stampNumber) {
-		this.stampNumber = stampNumber;
-	}
 
 	public List<StampItem> handleData(StampReflectRangeOutput s, ExecutionType reCreateAttr,
 			String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId) {
@@ -61,56 +41,58 @@ public class StampService {
 			return null;
 		}
 		List<StampCardItem> lstStampCardItem = this.stampCardRepo.findByEmployeeID(employeeId);
+		ArrayList<String> stampNumber = new ArrayList<String>();
 		if (lstStampCardItem != null) {
 			int stampCardSize = lstStampCardItem.size();
 			if (stampCardSize > 0) {
-				List<String> lstStampNum = new ArrayList<String>();
 				if (stampCardSize > 10) {
 					stampCardSize = 10;
 				}
 				for (int i = 0; i < stampCardSize; i++) {
-					lstStampNum.add(lstStampCardItem.get(i).getCardNumber().v());
+					stampNumber.add(lstStampCardItem.get(i).getCardNumber().v());
 				}
-				this.setStampNumber(lstStampNum);
+				
 			}
 		}
 
-		if (this.stampNumber == null || this.stampNumber.isEmpty()) {
+		if (stampNumber == null || stampNumber.isEmpty()) {
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(companyId, empCalAndSumExecLogID,
 					new ErrMessageResource("008"), EnumAdaptor.valueOf(0, ExecutionContent.class), date,
 					new ErrMessageContent("Msg_433"));
 			errRepo.add(employmentErrMes);
 			return null;
 		}
-		this.setLstStampItem(this.stampRepo.findByListCardNo(stampNumber));
+		
+		List<StampItem> lstStampItem = this.stampRepo.findByListCardNo(stampNumber);
+		List<StampItem> lstStampItemOutput = new ArrayList<StampItem>();
 		if (reCreateAttr.value == 0) {
-			this.lstStampItem.forEach(x -> {
+			lstStampItem.forEach(x -> {
 				int attendanceClock = x.getAttendanceTime().v();
 				TimeZoneOutput stampRange = s.getStampRange();
 				boolean reflectClass = false;
 				if (x.getDate().compareTo(date) == 0 && attendanceClock >= stampRange.getStart().v()
 						&& attendanceClock <= stampRange.getEnd().v() && reflectClass == false) {
-					this.lstStampItemOutput.add(x);
+					lstStampItemOutput.add(x);
 				}
 
 			});
-			this.lstStampItemOutput.sort(Comparator.comparing(StampItem::getDate));
-			this.lstStampItemOutput.sort(Comparator.comparing(StampItem::getAttendanceTime));
+			lstStampItemOutput.sort(Comparator.comparing(StampItem::getDate));
+			lstStampItemOutput.sort(Comparator.comparing(StampItem::getAttendanceTime));
 
-			return this.lstStampItemOutput;
+			return lstStampItemOutput;
 		}
 
-		this.lstStampItem.forEach(x -> {
+		lstStampItem.forEach(x -> {
 			int attendanceClock = x.getAttendanceTime().v();
 			TimeZoneOutput stampRange = s.getStampRange();
 			if (x.getDate().compareTo(date) == 0 && attendanceClock >= stampRange.getStart().v()
 					&& attendanceClock <= stampRange.getEnd().v()) {
-				this.lstStampItemOutput.add(x);
+				lstStampItemOutput.add(x);
 			}
 		});
-		this.lstStampItemOutput.sort(Comparator.comparing(StampItem::getDate));
-		this.lstStampItemOutput.sort(Comparator.comparing(StampItem::getAttendanceTime));
-		return this.lstStampItemOutput;
+		lstStampItemOutput.sort(Comparator.comparing(StampItem::getDate));
+		lstStampItemOutput.sort(Comparator.comparing(StampItem::getAttendanceTime));
+		return lstStampItemOutput;
 	}
 
 }
