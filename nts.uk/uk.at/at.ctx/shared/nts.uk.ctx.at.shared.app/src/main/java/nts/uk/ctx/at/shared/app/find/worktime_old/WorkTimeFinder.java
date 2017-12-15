@@ -282,12 +282,10 @@ public class WorkTimeFinder {
 	}
 	private String convert(int minute) {
 		String hourminute = "";
-		if (minute == -1) {
-			return null;
-		} else if (minute == 0) {
+		if (minute == 0) {
 			hourminute = "00:00";
 		} else {
-			int hour = minute / 60;
+			int hour = Math.abs(minute) / 60;
 			int hourInDay = hour % 24;
 			int minutes = minute % 60;
 			hourminute = (hourInDay) + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
