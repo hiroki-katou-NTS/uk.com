@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSetPK;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayTZRoundSetMemento;
 
 /**
  * The Class JpaFlexOffdayHDWTSheetSetMemento.
