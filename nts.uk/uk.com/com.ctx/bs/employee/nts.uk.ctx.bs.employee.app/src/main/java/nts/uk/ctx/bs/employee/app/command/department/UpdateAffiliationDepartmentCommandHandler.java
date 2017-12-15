@@ -57,7 +57,7 @@ public class UpdateAffiliationDepartmentCommandHandler extends CommandHandler<Up
 			throw new RuntimeException("Invalid AffDepartmentHistory");
 		}
 		
-		itemHist.get().changeSpan(itemToBeChanged.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+		itemHist.get().changeSpan(itemToBeChanged.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate(): ConstantUtils.maxDate()));
 		
 		affDepartmentHistoryService.update(itemHist.get(), itemToBeChanged.get());
 		
