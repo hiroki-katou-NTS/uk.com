@@ -25,6 +25,6 @@ public interface FlexWorkSettingRepository {
 	 *
 	 * @param domain the domain
 	 */
-	public void saveFlexWorkSetting(FlexWorkSetting domain);
+	public void save(FlexWorkSetting domain);
 
 }
