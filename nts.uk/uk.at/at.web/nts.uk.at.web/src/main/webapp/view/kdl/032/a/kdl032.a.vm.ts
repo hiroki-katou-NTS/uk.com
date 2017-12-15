@@ -30,7 +30,7 @@ module nts.uk.at.view.kdl032.a.viewmodel {
 
             if (parameter != null) {
                 service.getData(parameter.divergenceTimeID).done(function(deviationTimeList: Array<DeviationTime>) {
-                    deviationTimeList = _.orderBy(deviationTimeList, ["deviationTimeCD"], ["asc"]);
+                    deviationTimeList = _.orderBy(deviationTimeList, ["divReasonCode"], ["asc"]);
                     self.deviationTimeList(deviationTimeList);
                     self.deviationTimeList.unshift(new DeviationTime("", nts.uk.resource.getText("KDL032_7")));
                     self.selectCode(parameter.reasonCD);
