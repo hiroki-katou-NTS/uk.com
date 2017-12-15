@@ -45,7 +45,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		Optional<EmployeeDataMngInfo> empInfo = empDataMngRepo.getEmployeeByCidScd(companyId, employeeCode);
 
 		if (!empInfo.isPresent()) {
-			return null;
+			return Optional.empty();
 		} else {
 			EmployeeDataMngInfo emp = empInfo.get();
 			EmployeeInfoDtoExport result = new EmployeeInfoDtoExport(emp.getCompanyId(),
