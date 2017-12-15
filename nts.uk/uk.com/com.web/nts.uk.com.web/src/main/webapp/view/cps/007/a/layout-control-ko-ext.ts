@@ -609,22 +609,13 @@ module nts.custombinding {
                                     readonly: readonly
                                 }"></div>
                     </div>
-                    <div data-bind="if: item.dataTypeValue == 4" class="time">
+                    <div data-bind="if: [4, 5].indexOf(item.dataTypeValue) > -1" class="time timepoint">
                         <input data-bind="ntsTimeEditor: {
                             value: value,
                             constraint: itemDefId.replace(/-/g, ''),
-                            inputFormat: 'HH:mm',
+                            inputFormat: 'time',
                             enable: editable,
                             readonly: readonly }, attr: { placeholder: itemName, id: itemCode }" />
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 5" class="timepoint">
-                        <input data-bind="ntsTimeEditor: {
-                            value: value, 
-                            constraint: itemDefId.replace(/-/g, ''),
-                            inputFormat: 'HH:mm',
-                            enable: editable,
-                            readonly: readonly
-                        }, attr: { placeholder: itemName, id: itemCode }" />
                     </div>
                     <div data-bind="if: item.dataTypeValue == 6" class="selection">
                         <div data-bind="ntsComboBox: {
@@ -1243,7 +1234,11 @@ module nts.custombinding {
                             return false;
                         }
                     },
-                        modifitem = (def: any, item: any) => {
+                        modifitem = (def: any, item?: any) => {
+                            if (!item) {
+                                item = {};
+                            }
+
                             def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
                             def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
                             def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
@@ -1258,7 +1253,7 @@ module nts.custombinding {
                             def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
                             def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
 
-                            def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
+                            def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
 
@@ -1457,9 +1452,7 @@ module nts.custombinding {
                     switch (x.layoutItemType) {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
-                                $.extend(def, {
-                                    value: ko.isObservable(def.value) ? def.value : ko.observable(def.value)
-                                });
+                                modifitem(def);
                             });
                             break;
                         case IT_CLA_TYPE.LIST:
@@ -1476,9 +1469,7 @@ module nts.custombinding {
                                 x.items()[i] = row;
 
                                 _.each((x.items()), (def, j) => {
-                                    $.extend(def, {
-                                        value: ko.isObservable(def.value) ? def.value : ko.observable(def.value)
-                                    });
+                                    modifitem(def);
                                 });
                             });
                             break;
