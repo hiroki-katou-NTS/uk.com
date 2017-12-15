@@ -85,7 +85,9 @@ public class ClosureFinder {
 		// Map list Employment Dto and list EmployClosure Dom. 取得した雇用コードをもとにドメイン「雇用に紐づく就業締め」を取得する
 		empCdNameDtoList.stream().forEach(x->{
 			Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, x.getCode());
-			if(closureEmp.get().getClosureId()!= null){
+			if(!closureEmp.isPresent()){
+				x.setClosureId(null);
+			}else{
 				x.setClosureId(closureEmp.get().getClosureId());
 			}
 		});
