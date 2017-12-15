@@ -329,6 +329,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	@Override
 	public void addAffWorkplaceHistory(AffWorkplaceHistory domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	/**
