@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface FlStampReflectTzDto {
                     twoTimesWorkReflectBasicTime: number;
-                    stampReflectTimezone: common.StampReflectTimezoneDto[];
+                    stampReflectTimezones: common.StampReflectTimezoneDto[];
                 }
 
                 export interface FlWorkDedSettingDto {

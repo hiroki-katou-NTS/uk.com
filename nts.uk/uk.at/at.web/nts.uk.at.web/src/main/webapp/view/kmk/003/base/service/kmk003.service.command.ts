@@ -5,10 +5,13 @@ module nts.uk.at.view.kmk003.a {
     export module service {
         export module model {
             export module command {
-                export interface FlexWorkSettingSaveCommand {
-                    flexWorkSetting: flexset.FlexWorkSettingDto;
+
+                export interface WorkTimeCommonSaveCommand {
                     predseting: predset.PredetemineTimeSettingDto;
                     worktimeSetting: worktimeset.WorkTimeSettingDto;
+                }
+                export interface FlexWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
+                    flexWorkSetting: flexset.FlexWorkSettingDto;
                 }
             }
         }
