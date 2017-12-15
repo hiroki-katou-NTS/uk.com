@@ -598,13 +598,16 @@ module nts.uk.com.view.cmm021.a {
                         service.removeWindowAccount(_self.userIdBeChoosen()).done((data: any) => {
                             _self.loadUserInfo();
                             _self.newMode();
+                            _self.hostName1("");
+                            _self.userName1("");
+                            _self.enable_B1_1(true);
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     });
                 }).ifNo(() => {                  
                     nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                 });
-               
+              
             }
 
 
@@ -693,8 +696,10 @@ module nts.uk.com.view.cmm021.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(() => {
                         service.removeOtherSysAccount(_self.userIdBeChoosen()).done((data: any) => {
                             _self.loadUserInfo();
-                           // _self.unselectedMode();
                             _self.newMode();
+                            _self.companyCode6("");
+                            _self.userName6("");
+                            _self.enable_C1_1(true);
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     });
