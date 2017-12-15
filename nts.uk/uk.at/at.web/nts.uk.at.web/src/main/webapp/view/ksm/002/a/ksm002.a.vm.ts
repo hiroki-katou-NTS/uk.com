@@ -153,6 +153,7 @@ module ksm002.a.viewmodel {
                     self.isNew(false);
                     for (let j = 1; j < endOfMonth + 1; j++) {
                         let processDay: string = processMonth + _.padStart(j, 2, '0');
+                        processDay = moment(processDay).format(self.dateFormat);
                         arrName = [];
                         arrId = [];
                         //Loop in each Day
@@ -162,7 +163,7 @@ module ksm002.a.viewmodel {
                                 arrId.push(comItem.specificDateItemNo);
                             };
                         });
-                        arrOptionaDates.push(new OptionalDate(moment(processDay).format(self.dateFormat), arrName, arrId));
+                        arrOptionaDates.push(new OptionalDate(moment(processDay).format("YYYY-MM-DD"), arrName, arrId));
                     };
                 }
                 //Return Array of Data in Month
@@ -172,7 +173,7 @@ module ksm002.a.viewmodel {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject();
             });
-            return dfd.promise();
+            return dfd.promise(); 
         }
 
         /**
@@ -251,7 +252,7 @@ module ksm002.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                 nts.uk.ui.block.invisible();
                 //delete
-                service.deleteComSpecificDate({ yearMonth: self.yearMonthPicked().toString() }).done(function(res: any) {
+                service.deleteComSpecificDate({ startDate:moment(self.yearMonthPicked(), "YYYYMM").startOf('month').format(self.dateFormat), endDate:moment(self.yearMonthPicked(), "YYYYMM").endOf('month').format(self.dateFormat) }).done(function(res: any) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                         //Set dataSource to Null
                         self.optionDates([]);
@@ -317,7 +318,7 @@ module ksm002.a.viewmodel {
                     });
                 } else {
                     let current = {
-                        specificDate: Number(moment(item.start, 'YYYYMMDD').format(self.dateFormat),
+                        specificDate: moment(item.start, 'YYYYMMDD').format(self.dateFormat),
                         specificDateItemNo: self.getSpecIdfromName(item.listText)
                     };
                     if (!_.isEqual(ko.mapping.toJSON(before), ko.mapping.toJSON(current))) {
@@ -409,7 +410,7 @@ module ksm002.a.viewmodel {
             nts.uk.ui.windows.setShared('KSM002_D_PARAM',
                 {
                     util: 1,
-                    startDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').startOf('month').format('YYYY/MM/DD')),
+                    startDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').startOf('month').format('YYYYMMDD')),
                     endDate: Number(moment(self.yearMonthPicked().toString(), 'YYYYMM').endOf('month').format('YYYYMMDD'))
                 });
             nts.uk.ui.windows.sub.modal("/view/ksm/002/d/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {

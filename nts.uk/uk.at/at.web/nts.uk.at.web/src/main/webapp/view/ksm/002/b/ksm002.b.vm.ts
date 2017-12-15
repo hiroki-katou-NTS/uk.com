@@ -221,7 +221,11 @@ module ksm002.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             if(!nts.uk.util.isNullOrUndefined(self.currentWorkPlace().id())&&!nts.uk.util.isNullOrEmpty(self.currentWorkPlace().id())){
-                bService.getCalendarWorkPlaceByCode(self.currentWorkPlace().id(),self.yearMonthPicked()).done(data=>{
+                let workplaceParam = {
+                    workPlaceId: self.currentWorkPlace().id(),
+                    workPlaceDate: moment(self.yearMonthPicked(), "YYYY/MM/01").format("YYYY/MM/DD")
+                }
+                bService.getCalendarWorkPlaceByCode(workplaceParam).done(data=>{
                     self.rootList = data;
                     self.calendarPanel.optionDates.removeAll();
                     let a = [];
@@ -282,7 +286,8 @@ module ksm002.b.viewmodel {
             var dfd = $.Deferred();
             bService.deleteCalendarWorkPlace({
                 workPlaceId: self.currentWorkPlace().id(),
-                yearMonth: self.yearMonthPicked()   
+                startDate:moment(self.yearMonthPicked(), "YYYYMM").startOf('month').format('YYYY/MM/DD'), 
+                endDate:moment(self.yearMonthPicked(), "YYYYMM").endOf('month').format('YYYY/MM/DD')   
             }).done(data=>{
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 self.getCalendarWorkPlaceByCode().done(()=>{dfd.resolve();}).fail((res)=>{dfd.reject(res);});  
@@ -411,18 +416,18 @@ module ksm002.b.viewmodel {
             if(self.isUpdate()){
                 // update case
                 self.calendarPanel.optionDates().forEach(item => {
-                    let before = _.find(self.rootList, o => o.specificDate == Number(moment(item.start).format('YYYYMMDD')));
+                    let before = _.find(self.rootList, o => o.specificDate == moment(item.start).format('YYYY/MM/DD')); 
                     if(nts.uk.util.isNullOrUndefined(before)){
                         a.push({
                             workPlaceId: self.currentWorkPlace().id(),
-                            specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                            specificDate: moment(item.start).format('YYYY/MM/DD'),
                             specificDateItemNo: self.convertNameToNumber(item.listText),
                             isUpdate: false
                         });
                     } else {
                         let current = {
                             workPlaceId: self.currentWorkPlace().id(),
-                            specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                            specificDate: moment(item.start).format('YYYY/MM/DD'),
                             specificDateItemNo: self.convertNameToNumber(item.listText)
                         };   
                         if(!_.isEqual(ko.mapping.toJSON(before),ko.mapping.toJSON(current))) {
@@ -436,7 +441,7 @@ module ksm002.b.viewmodel {
                 self.calendarPanel.optionDates().forEach(item => {
                     a.push({
                         workPlaceId: self.currentWorkPlace().id(),
-                        specificDate: Number(moment(item.start).format('YYYYMMDD')),
+                        specificDate: moment(item.start).format('YYYY/MM/DD'),
                         specificDateItemNo: self.convertNameToNumber(item.listText)
                     })    
                 });  

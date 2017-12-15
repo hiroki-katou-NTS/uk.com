@@ -76,8 +76,29 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public List<WorkTimeSetting> findByCodes(String companyID, List<String> codes) {
-		// TODO Auto-generated method stub
-		return null;
+		// get entity manager
+				EntityManager em = this.getEntityManager();
+				CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+				CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
+				Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+
+				// select root
+				cq.select(root);
+
+				// add where
+				List<Predicate> lstpredicateWhere = new ArrayList<>();
+				lstpredicateWhere.add(criteriaBuilder
+						.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyID));
+				lstpredicateWhere.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(codes));
+				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+				List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
+
+				return lstKwtstWorkTimeSet.stream().map(item -> {
+					WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
+					return worktimeSetting;
+				}).collect(Collectors.toList());
 	}
 
 	/*

@@ -134,8 +134,8 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	public void deleteCalendarCompanyByYearMonth(String companyId, String yearMonth) {
 		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
 			.setParameter("companyId", companyId)
-			.setParameter("startDate", GeneralDate.fromString((yearMonth+"/01"),"yyyy/MM/dd"))
-			.setParameter("endDate", GeneralDate.fromString((yearMonth+"/31"),"yyyy/MM/dd")).executeUpdate();
+			.setParameter("startDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
+			.setParameter("endDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd")).executeUpdate();
 	}
 	
 
