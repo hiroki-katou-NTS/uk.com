@@ -27,10 +27,10 @@ public class AddCalendarCompanyCommandHandler extends CommandHandler<List<AddCal
 		List<AddCalendarCompanyCommand> calendarCompanyCommands = context.getCommand();
 		for(AddCalendarCompanyCommand calendarCompanyCommand: calendarCompanyCommands){
 			CalendarCompany calendarCompany = CalendarCompany.createFromJavaType(companyId, 
-					GeneralDate.fromString(calendarCompanyCommand.getDateId(), DATE_FORMAT),
+					GeneralDate.fromString(calendarCompanyCommand.getDate(), DATE_FORMAT),
 					calendarCompanyCommand.getWorkingDayAtr());
 			Optional<CalendarCompany> calendarCom =calendarCompanyRepo.findCalendarCompanyByDate(companyId,
-					GeneralDate.fromString(calendarCompanyCommand.getDateId(), DATE_FORMAT));
+					GeneralDate.fromString(calendarCompanyCommand.getDate(), DATE_FORMAT));
 			if (calendarCom.isPresent()) {
 				//do something
 			} else {
