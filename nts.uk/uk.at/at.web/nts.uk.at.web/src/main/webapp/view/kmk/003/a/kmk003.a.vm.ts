@@ -215,7 +215,7 @@ module nts.uk.at.view.kmk003.a {
                                 self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
                                 self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
                                 service.findByCodeFlexWorkSetting(worktime[0].worktimeCode).done(function(flexdata){
-                                    self.updateDataFlexMode(flexdata);
+                                    //self.updateDataFlexMode(flexdata);
                                     dfd.resolve();
                                 });
                             });
