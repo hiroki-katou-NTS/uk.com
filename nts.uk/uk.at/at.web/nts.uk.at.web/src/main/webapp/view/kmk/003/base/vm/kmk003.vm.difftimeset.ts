@@ -84,7 +84,7 @@ module nts.uk.at.view.kmk003.a {
                     for (var dataModel of this.restTimezones) {
                         restTimezones.push(dataModel.toDto());
                     }
-                    var dataDTO: DiffTimeDeductTimezoneModel = {
+                    var dataDTO: DiffTimeRestTimezoneDto = {
                         restTimezones: restTimezones
                     };
                     return dataDTO;
