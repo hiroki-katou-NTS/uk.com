@@ -29,8 +29,7 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	 * @param object
 	 * @return
 	 */
-	private static StampItem toDomainStampOnly(Object[] object) {
-		KwkdtStamp entity = (KwkdtStamp) object[0];
+	private StampItem toDomainStampOnly(KwkdtStamp entity) {
 		// Set empty value for 2 record not exist in Stamp Entity.
 		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,				
 				entity.kwkdtStampPK.attendanceTime, 
@@ -71,7 +70,7 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	 */
 	@Override
 	public List<StampItem> findByListCardNo(List<String> lstCardNumber) {
-		List<StampItem> list = this.queryProxy().query(SELECT_BY_LIST_CARD_NO, Object[].class)
+		List<StampItem> list = this.queryProxy().query(SELECT_BY_LIST_CARD_NO, KwkdtStamp.class)
 				.setParameter("lstCardNumber", lstCardNumber).getList(c -> toDomainStampOnly(c));
 		return list;
 	}

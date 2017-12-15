@@ -55,7 +55,8 @@ public class CopySettingItemFinder {
 
 		itemList.forEach(x -> {
 			result.add(new SettingItemDto(x.getCategoryCode(), x.getItemDefId(), x.getItemCode(), x.getItemName(),
-					x.getIsRequired().value, SettingItemDto.createSaveDataDto(1, ""), x.getDataType()));
+					x.getIsRequired().value, SettingItemDto.createSaveDataDto(1, ""), x.getDataType(),
+					x.getSelectionItemRefType()));
 		});
 
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);

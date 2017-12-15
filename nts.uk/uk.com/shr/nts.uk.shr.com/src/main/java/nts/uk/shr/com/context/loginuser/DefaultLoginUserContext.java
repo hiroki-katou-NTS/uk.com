@@ -40,7 +40,7 @@ public class DefaultLoginUserContext implements LoginUserContext, DeepClonable<D
 	
 	private final LoginUserRoles roles = new DefaultLoginUserRoles();
 	
-	private SelectedLanguage language;
+	private SelectedLanguage language = new SelectedLanguage();
 
 	@Override
 	public boolean hasLoggedIn() {

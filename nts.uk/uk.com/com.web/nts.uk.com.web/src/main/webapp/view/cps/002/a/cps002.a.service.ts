@@ -5,8 +5,8 @@ module cps002.a.service {
     let
         regpath = "ctx/pereg/",
         paths: any = {
-            getEmployeeCode: 'basic/organization/employee/getGenerateEmplCode',
-            getCardNumber: 'basic/organization/employee/getGenerateCardNo',
+            getEmployeeCode: 'employee/mngdata/getGenerateEmplCode',
+            getCardNumber: 'employee/mngdata/getGenerateCardNo',
             getLayout: 'person/newlayout/get-layout-can-null',
             getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
             getSelfRoleAuth: 'roles/auth/get-self-auth',
@@ -19,7 +19,8 @@ module cps002.a.service {
             getAllInitValueCtgSetting: 'initsetting/category/findAllBySetId/{0}',
             getAllInitValueItemSetting: 'initsetting/item/findInit',
             getLayoutByCreateType: 'layout/getByCreateType',
-            addNewEmployee: 'addemployee/addNewEmployee'
+            addNewEmployee: 'addemployee/addNewEmployee',
+            getEmployeeInfo: 'basic/organization/employee/getoffselect',
         };
 
     export function getLayout() {
@@ -35,15 +36,15 @@ module cps002.a.service {
     }
 
     export function getEmployeeCode(employeeLetter) {
-        return ajax("com", paths.getEmployeeCode, employeeLetter);
+        return ajax("com", regpath + paths.getEmployeeCode, employeeLetter);
     }
 
     export function getCardNumber(cardLetter) {
-        return ajax(paths.getCardNumber, cardLetter);
+        return ajax("com", regpath + paths.getCardNumber, cardLetter);
     }
 
     export function getEmployeeCodeAndComId(employeeLetter) {
-        return ajax(paths.getCardNumber, employeeLetter);
+        return ajax("com", regpath + paths.getCardNumber, employeeLetter);
     }
 
     export function validateEmpInfo(command) {
@@ -81,6 +82,10 @@ module cps002.a.service {
 
     export function addNewEmployee(command) {
         return ajax(regpath + paths.addNewEmployee, command);
+    }
+    export function getEmployeeInfo(command) {
+
+        return ajax("com", paths.getEmployeeInfo, command);
     }
 
 }

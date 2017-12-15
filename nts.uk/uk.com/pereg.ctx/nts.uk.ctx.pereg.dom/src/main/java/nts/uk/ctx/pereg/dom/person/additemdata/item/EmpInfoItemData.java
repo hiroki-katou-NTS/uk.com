@@ -38,8 +38,11 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	private int dataType;
 
+	private BigDecimal selectionItemRefType;
+
 	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
-			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType) {
+			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType
+			) {
 		super();
 		this.itemCode = itemCode;
 		this.perInfoDefId = perInfoDefId;
@@ -62,12 +65,13 @@ public class EmpInfoItemData extends AggregateRoot {
 	public static EmpInfoItemData createFromJavaType(String itemCode, String perInfoDefId, String recordId,
 			String perInfoCtgId, String perInfoCtgCd, String itemName, int isRequired, int dataStateType,
 			String stringValue, BigDecimal intValue, GeneralDate dateValue, int dataType) {
-
+		// initial dataTypeState
+		DataStateType dataTypeStateType = EnumAdaptor.valueOf(dataStateType, DataStateType.class);
+		DataState dataState = createDataState(dataTypeStateType, stringValue, intValue, dateValue);
+		IsRequired required = EnumAdaptor.valueOf(isRequired, IsRequired.class);
+		
 		return new EmpInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd, itemName,
-				EnumAdaptor.valueOf(isRequired, IsRequired.class),
-				createDataState(EnumAdaptor.valueOf(dataStateType, DataStateType.class), stringValue, intValue,
-						dateValue),
-				dataType);
+				required, dataState, dataType);
 
 	}
 
@@ -88,7 +92,7 @@ public class EmpInfoItemData extends AggregateRoot {
 
 		switch (dataStateType) {
 		case String:
-			resultState = DataState.createFromStringValue(stringValue.trim());
+			resultState = DataState.createFromStringValue(stringValue);
 			break;
 
 		case Numeric:

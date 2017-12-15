@@ -12,14 +12,19 @@ module cps002.e.vm {
         txtCardNo: KnockoutObservable<string> = ko.observable("");
         generateEmCode: KnockoutObservable<string> = ko.observable("");
         constructor() {
-            let self = this;
+            let self = this, textValue = getShared("textValue");
             self.cardNoMode = getShared("cardNoMode");
+
+
             if (self.cardNoMode) {
                 $("#txtCardNo").focus();
             } else {
                 $("#txtEmployeeCode").focus();
             }
-            self.generateEmCode(getShared("value"));
+            if (textValue) {
+                self.generateEmCode(textValue);
+
+            }
         }
 
         getCode() {

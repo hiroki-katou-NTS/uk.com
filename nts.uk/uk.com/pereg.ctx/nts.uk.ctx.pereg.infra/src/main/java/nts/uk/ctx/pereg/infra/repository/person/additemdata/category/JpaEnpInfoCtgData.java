@@ -72,7 +72,7 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	public void deleteEmpInfoCtgData(String recordId) {
 		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(recordId, PpemtEmpInfoCtgData.class);
 		if (!existItem.isPresent()) {
-			throw new RuntimeException("invalid EmpInfoCtgData");
+			return;
 		}
 		this.commandProxy().remove(PpemtEmpInfoCtgData.class, recordId);
 	}
