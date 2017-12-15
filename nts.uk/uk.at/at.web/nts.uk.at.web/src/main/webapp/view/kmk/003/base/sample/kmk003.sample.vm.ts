@@ -1,5 +1,7 @@
 module nts.uk.at.view.kmk003.sample {
 
+    import SimpleWorkTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.SimpleWorkTimeSettingDto;
+    
     export module viewModel {
 
         export class ScreenModel {
