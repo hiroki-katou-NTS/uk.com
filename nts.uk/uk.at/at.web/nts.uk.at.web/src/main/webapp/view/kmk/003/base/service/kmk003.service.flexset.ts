@@ -27,7 +27,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface FlexHalfDayWorkTimeDto {
-                    lstRestTimezone: common.FlowWorkRestTimezoneDto[];
+                    restTimezone: common.FlowWorkRestTimezoneDto;
                     workTimezone: FixedWorkTimezoneSetDto;
                     ampmAtr: number;
                 }

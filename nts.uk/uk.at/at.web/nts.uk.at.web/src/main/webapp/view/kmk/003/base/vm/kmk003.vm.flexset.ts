@@ -117,34 +117,25 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FlexHalfDayWorkTimeModel {
-                lstRestTimezone: FlowWorkRestTimezoneModel[];
+                restTimezone: FlowWorkRestTimezoneModel;
                 workTimezone: FixedWorkTimezoneSetModel;
                 ampmAtr: KnockoutObservable<number>;
 
                 constructor() {
-                    this.lstRestTimezone = [];
+                    this.restTimezone = new FlowWorkRestTimezoneModel();
                     this.workTimezone = new FixedWorkTimezoneSetModel();
                     this.ampmAtr = ko.observable(0);
                 }
 
                 updateData(data: FlexHalfDayWorkTimeDto) {
-                    this.lstRestTimezone = [];
-                    for (var dataDTO of data.lstRestTimezone) {
-                        var dataModel: FlowWorkRestTimezoneModel = new FlowWorkRestTimezoneModel();
-                        dataModel.updateData(dataDTO);
-                        this.lstRestTimezone.push(dataModel);
-                    }
+                    this.restTimezone.updateData(data.restTimezone);
                     this.workTimezone.updataData(data.workTimezone);
                     this.ampmAtr(data.ampmAtr);
                 }
 
                 toDto(): FlexHalfDayWorkTimeDto {
-                    var lstRestTimezone: FlowWorkRestTimezoneDto[] = [];
-                    for (var dataModel of this.lstRestTimezone) {
-                        lstRestTimezone.push(dataModel.toDto());
-                    }
                     var dataDTO: FlexHalfDayWorkTimeDto = {
-                        lstRestTimezone: lstRestTimezone,
+                        restTimezone: this.restTimezone.toDto(),
                         workTimezone: this.workTimezone.toDto(),
                         ampmAtr: this.ampmAtr()
                     };
