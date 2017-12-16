@@ -161,8 +161,9 @@ public class PeregProcessor {
 		}
 
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
-		// set fix data
-		setEmpMaintLayoutDto(empMaintLayoutDto, query, perInfoCtg, lstPerInfoItemDefForLayout);
+		
+		List<LayoutPersonInfoClsDto> classItemList = getClassItemList(query, perInfoCtg, lstPerInfoItemDefForLayout);
+		empMaintLayoutDto.setClassificationItems(classItemList);
 		
 		return empMaintLayoutDto;
 	}
@@ -175,32 +176,41 @@ public class PeregProcessor {
 	 * @param perInfoCtg
 	 * @param lstPerInfoItemDef
 	 */
-	private void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, PeregQuery query,
+	private List<LayoutPersonInfoClsDto> getClassItemList(PeregQuery query,
 			PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
-		
+
+		List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef);
 		if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
-			List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef);
-			// get domain data
+			// get peregDto
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
 			if (peregDto != null) {
-				// set data
+				// map data
 				MappingFactory.mapListItemClass(peregDto, classItemList);
 			}
-			empMaintLayoutDto.setClassificationItems(classItemList);
-			
 		} else {
-			List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef);
 			switch (perInfoCtg.getCategoryType()) {
 			case SINGLEINFO:
 				getOptionData(perInfoCtg, classItemList, query);
 				break;
 			case CONTINUOUSHISTORY:
 			case NODUPLICATEHISTORY:
+				String recordId = query.getInfoId();
+				if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
+					List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository
+							.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
+							.collect(Collectors.toList());
+					MappingFactory.matchEmpOptionData(recordId, classItemList, empOptionItemData);
+				} else {
+					List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepository
+							.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
+							.collect(Collectors.toList());
+					MappingFactory.matchPerOptionData(recordId, classItemList, perOptionItemData);
+				}
 			default:
 				break;
 			}
-			empMaintLayoutDto.setClassificationItems(classItemList);
 		}
+		return classItemList;
 	}
 	
 	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem) {
