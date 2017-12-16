@@ -81,7 +81,8 @@ public class MappingFactory {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				if ( valueItem.getValue() != null && valueItem.getItemCode().charAt(1) == 'O') {
+				boolean optionItemNoValue = valueItem.getValue() == null && valueItem.getItemCode().charAt(1) == 'O';
+				if ( !optionItemNoValue ) {
 					valueItem.setRecordId(recordId);
 				}
 			}
