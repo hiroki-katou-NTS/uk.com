@@ -39,7 +39,7 @@ __viewContext.ready(function() {
 
         upload() {
             var self = this;
-            $("#file-upload").ntsFileUpload({ stereoType: "samplepack" }).done(function(res) {
+            $("#file-upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
                 self.fileId(res[0].id);
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError(err);
