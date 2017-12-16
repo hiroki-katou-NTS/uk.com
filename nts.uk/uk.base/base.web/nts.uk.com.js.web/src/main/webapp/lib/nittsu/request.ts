@@ -332,6 +332,10 @@ module nts.uk.request {
             return dfd.promise();
         }
         
+        export function deleteFile(fileId: string) {
+            return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
+        }
+        
         export function isFileExist(fileId: string): boolean {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
         }

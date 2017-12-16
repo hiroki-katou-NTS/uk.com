@@ -10,9 +10,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import lombok.val;
+import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
+import nts.uk.shr.infra.file.storage.filetype.FileTypeDescriptionExtend;
 
 @Path("/shr/infra/file/storage")
 public class FileStorageWebService {
@@ -22,6 +24,9 @@ public class FileStorageWebService {
 
 	@Inject
 	private StoredFileStreamService fileStreamService;
+	
+	@Inject
+	private FileStorage fileStorage;
 
 	@GET
 	@Path("get/{fileid}")
@@ -32,18 +37,34 @@ public class FileStorageWebService {
 	}
 	
 	@GET
-	@Path("get/{fileid}/{entry}")
+	@Path("get/{fileid}/{entry: .+}")
 	public Response download(@PathParam("fileid") String fileId, @PathParam("entry") String entryName) {
 		return this.fileInfoRepository.findZipEntry(fileId, entryName)
-				.map(fileInfo -> this.buildFileResponse(fileInfo))
+				.map(fileInfo -> this.buildFileResponseOfEntry(fileInfo))
 				.orElseGet(() -> Response.status(404).build());
 	}
 
 	private Response buildFileResponse(StoredFileInfo fileInfo) {
+		
+		val fileInfoOpt = FileTypeDescriptionExtend.of(fileInfo.getFileType());
+		if (fileInfoOpt.isPresent()) {
+			if (fileInfoOpt.get().isPack()) {
+				return Response.status(404).build();
+			}
+		}
+		
 		return Response.ok()
 				.entity(new StreamingOutputFile(() -> this.getInputStream(fileInfo)))
 				.encoding("UTF-8")
 				.header("Content-Disposition", Helper.contentDisposition(fileInfo))
+				.build();
+	}
+
+	private Response buildFileResponseOfEntry(StoredFileInfo entryFileInfo) {
+		
+		return Response.ok()
+				.entity(new StreamingOutputFile(() -> this.getInputStream(entryFileInfo)))
+				.encoding("UTF-8")
 				.build();
 	}
 
@@ -106,4 +127,9 @@ public class FileStorageWebService {
 		return this.fileInfoRepository.findZipEntry(fileId, entryName).isPresent();
 	}
 
+	@POST
+	@Path("delete/{fileid}")
+	public void delete(@PathParam("fileid") String fileId) {
+		this.fileStorage.delete(fileId);
+	}
 }

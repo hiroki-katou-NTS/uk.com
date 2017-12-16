@@ -2,10 +2,13 @@ package nts.uk.shr.infra.file.storage.info.jpa;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.shr.infra.file.storage.info.StoredFileSecurityInfo;
 import nts.uk.shr.infra.file.storage.info.StoredFileSecurityInfoRepository;
 
+@Stateless
 public class JpaStoredFileSecurityInfoRepository extends JpaRepository implements StoredFileSecurityInfoRepository {
 
 	@Override

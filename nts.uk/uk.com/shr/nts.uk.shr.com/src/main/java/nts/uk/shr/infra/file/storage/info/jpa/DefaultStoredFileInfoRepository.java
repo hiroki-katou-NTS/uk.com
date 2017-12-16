@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
@@ -15,30 +14,29 @@ import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
  */
 @Stateless
 public class DefaultStoredFileInfoRepository extends JpaRepository implements StoredFileInfoRepository {
-
-	private static final String FIND_ZIP;
-	static {
-		StringBuilder findZipQb = new StringBuilder();
-		findZipQb.append("SELECT a FROM CisdtStoredFile a");
-		findZipQb.append(" WHERE a.originalName = :name");
-		FIND_ZIP = findZipQb.toString();
-	}
 	
 	@Override
 	public Optional<StoredFileInfo> find(String fileId) {
 		return this.queryProxy().find(fileId, CisdtStoredFile.class)
-				.map(e -> toDomain(e));
+				.map(e -> e.toDomain());
 	}
 	
 	@Override
-	public Optional<StoredFileInfo> findZipEntry(String fileId, String entryName) {
-		return this.queryProxy().query(FIND_ZIP, CisdtStoredFile.class).setParameter("name", fileId + "/" + entryName)
-				.getSingle(e -> toDomain(e));
+	public Optional<StoredFileInfo> findZipEntry(String packId, String entryName) {
+		String jpql = "SELECT i FROM CisdtStoredFile i"
+				+ " INNER JOIN CisdtStoredFilePack p ON i.fileId = p.packedEntryId"
+				+ " WHERE p.packId = :packId"
+				+ " AND p.entryName = :entryName";
+		
+		return this.queryProxy().query(jpql, CisdtStoredFile.class)
+				.setParameter("packId", packId)
+				.setParameter("entryName", entryName)
+				.getSingle(e -> e.toDomain());
 	}
 
 	@Override
 	public void add(StoredFileInfo fileInfo) {
-		this.commandProxy().insert(toEntity(fileInfo));
+		this.commandProxy().insert(CisdtStoredFile.of(fileInfo));
 	}
 
 	@Override
@@ -46,24 +44,5 @@ public class DefaultStoredFileInfoRepository extends JpaRepository implements St
 		this.commandProxy().remove(CisdtStoredFile.class, fileId);
 	}
 
-	private static StoredFileInfo toDomain(CisdtStoredFile entity) {
-		return new StoredFileInfo(
-				entity.fileId,
-				entity.originalName,
-				entity.fileType,
-				entity.mimeType,
-				entity.originalSizeBytes,
-				entity.storedAt);
-	}
 	
-	private static CisdtStoredFile toEntity(StoredFileInfo domain) {
-		val entity = new CisdtStoredFile();
-		entity.originalName = domain.getOriginalName();
-		entity.fileId = domain.getId();
-		entity.fileType = domain.getFileType();
-		entity.mimeType = domain.getMimeType();
-		entity.originalSizeBytes = domain.getOriginalSize();
-		entity.storedAt = domain.getStoredAt();
-		return entity;
-	}
 }

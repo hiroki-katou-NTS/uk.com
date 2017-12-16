@@ -2822,6 +2822,10 @@ var nts;
                     return dfd.promise();
                 }
                 specials.donwloadFile = donwloadFile;
+                function deleteFile(fileId) {
+                    return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
+                }
+                specials.deleteFile = deleteFile;
                 function isFileExist(fileId) {
                     return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
                 }
