@@ -505,7 +505,7 @@ module cps002.a.vm {
                     }));
 
                     if (self.initSettingSelectedCode() == '') {
-                        if (self.employeeBasicInfo()) {
+                        if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
                             self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
@@ -577,7 +577,7 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
-              
+
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
