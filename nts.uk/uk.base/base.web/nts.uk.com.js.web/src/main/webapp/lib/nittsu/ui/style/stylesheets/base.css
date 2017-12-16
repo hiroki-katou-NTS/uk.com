@@ -3611,7 +3611,7 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 222, ../sass/components/_ntsgrid.scss */
-.nts-image-container {
+.nts-image-container, .nts-fleximage-container {
   height: 100%;
   text-align: center;
 }
@@ -3657,11 +3657,6 @@ button.nts-switch-button[disabled]:hover {
   padding: 0px;
 }
 
-/* line 12, ../sass/components/_extable.scss */
-.extable div.highlight, .extable td.highlight, .xheader td.highlight {
-  background-color: aqua;
-}
-
 /* line 15, ../sass/components/_extable.scss */
 .extable div.xdet, .extable td.xdet {
   background-color: #D2B4DE;
@@ -3678,6 +3673,11 @@ button.nts-switch-button[disabled]:hover {
 
 .extable div.xseal, .extable td.xseal {
 	background-color: #CCC;
+}
+
+/* line 12, ../sass/components/_extable.scss */
+.extable div.highlight, .extable td.highlight, .xheader td.highlight {
+  background-color: aqua;
 }
 
 /* line 21, ../sass/components/_extable.scss */
@@ -3976,7 +3976,17 @@ div .ex-area-line.x-stay {
 .nts-fixed-table .nts-fixed-header-container {
   overflow: hidden; 
   border-right: 1px #CCC solid;
+	border-left: 1px #CCC solid;
 }
+.nts-fixed-table .nts-fixed-header-wrapper {
+		margin-left: -1px;
+	}
+.nts-fixed-table .scroll-header {
+		box-sizing: border-box;
+ 	}   
+.nts-fixed-table .nts-fixed-header-container thead  th:first-child {
+		    border-left: 0px !important;
+		}
 /* line 24, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-container {
   overflow: auto;
@@ -3985,8 +3995,20 @@ div .ex-area-line.x-stay {
   border-top: 0px;
 }
 /* line 30, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-header {
+  display: inline-block;
+}
+/* line 30, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .scroll-header{
+	background-color: #EDE9ED;
+}
+/* line 30, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-wrapper {
-  margin: -1px 0 0 -1px;
+  margin: -1px 0 0 -2px;
+border-left: 1px solid #CCC;
+}
+.nts-fixed-table .body-no-record{
+	margin-left: 0px;
 }
 
 /* line 2, ../sass/components/_fileupload.scss */
@@ -4259,6 +4281,7 @@ div .ex-area-line.x-stay {
   	border: 1px solid LightGrey;
   	margin-bottom: 0px;
 	position: unset;
+	color: LightGrey;
 }
 .ntsTable .ntsButtonTableButton:active {
 	position: unset;
@@ -4271,6 +4294,7 @@ div .ex-area-line.x-stay {
 }
 .ntsTable .ntsButtonCellData {
   	border: 1px solid black;
+	color: black;
 }
 .ntsTable .ntsButtonCellData:focus{
 	border: 1px solid black;

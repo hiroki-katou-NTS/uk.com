@@ -483,7 +483,7 @@ module nts.uk.ui {
 		 *			text information text
 		 * @returns handler
 		 */
-        export function alert(text) {
+        export function alert(text) {  
             var then = $.noop;
             var $dialog = parent.$('<div/>').hide();
             $(function() {
@@ -607,9 +607,41 @@ module nts.uk.ui {
                         tab = tab.parent().closest("[role='tabpanel']");
                     } 
                     element.focus();
+                    let $dialogContainer = errorBody.closest(".bundled-errors-alert").closest("[role='dialog']");
+                    let $self = nts.uk.ui.windows.getSelf();
+                    let additonalTop = 0;
+                    let additonalLeft = 0;
+                    if(!$self.isRoot) {
+                        let $currentDialog = $self.$dialog.closest("[role='dialog']");
+                        let $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                        let currentDialogOffset = $currentDialog.offset();
+                        additonalTop = currentDialogOffset.top+ $currentHeadBar.height();
+                        additonalLeft = currentDialogOffset.left;
+                    }
+                    
+                    let currentControlOffset = element.offset();
+                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
+                    let $errorDialogOffset = $dialogContainer.offset();
+                    let maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                    let maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                    if($errorDialogOffset.top < top && top < maxTop){
+                        $dialogContainer.css("top", top + 15);
+                    }
+                    if (($errorDialogOffset.left < left && left < maxLeft) ){
+                        $dialogContainer.css("left", left);
+                    }
                 });    
             }
             row.appendTo(errorBody);  
+        }
+        
+        function getRoot(): JQuery {
+            let self = nts.uk.ui.windows.getSelf();
+            while(!self.isRoot){
+                self = self.parent; 
+            }
+            return $(self.globalContext.document).find("body");
         }
         
         export function bundledErrors(errors) {
@@ -633,7 +665,7 @@ module nts.uk.ui {
             closeButton.appendTo(functionArea);
             functionArea.appendTo(container);
             errorBoard.appendTo(container);
-            container.appendTo($("body")); 
+            container.appendTo(getRoot()); 
             
             setTimeout(function() {
                 container.dialog({ 
@@ -651,7 +683,9 @@ module nts.uk.ui {
                             container.dialog("destroy");  
                             container.remove();
                             then();
-                        });   
+                        });
+                        
+                        container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
                     },
                     close: function(event) {
                     }

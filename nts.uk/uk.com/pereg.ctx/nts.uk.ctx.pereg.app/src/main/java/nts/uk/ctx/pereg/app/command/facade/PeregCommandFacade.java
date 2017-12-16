@@ -1,4 +1,4 @@
-package nts.uk.shr.pereg.app.command;
+package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,6 +10,12 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import lombok.val;
+import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
+import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
+import nts.uk.shr.pereg.app.command.PeregDeleteCommand;
+import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
+import nts.uk.shr.pereg.app.command.PeregInputContainer;
+import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommand;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefAddCommandHandler;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefDeleteCommand;
