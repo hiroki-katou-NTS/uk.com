@@ -38,20 +38,19 @@ public class MappingFactory {
 
 	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
 
-		// get dto value
-		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
+		// map data
+		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
 
-		// map fix value
-		mapFixDto(dtoValue, classItem);
-
-		// set option value
-		setOptionData(peregDto, classItem);
-
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+			valueItem.setValue(itemCodeValueMap.get(valueItem.getItemCode()));
+		}
+		
 		// map record ID
 		String recordId = peregDto.getDomainDto().getRecordId();
 		for (Object item : classItem.getItems()) {
 			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-			if ( valueItem.getValue() != null ) {
+			if ( valueItem.getValue() != null && valueItem.getItemCode().charAt(1) == 'O') {
 				valueItem.setRecordId(recordId);
 			}
 			
@@ -67,57 +66,27 @@ public class MappingFactory {
 	 */
 	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
 
-		// get DTO value
-		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
-
-		// map fix value
-		mapFixDto(dtoValue, classItemList);
-
-		// set option value
-		setOptionData(peregDto, classItemList);
+		// map data 
+		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
+		
+		for (LayoutPersonInfoClsDto classItem : classItemList) {
+			for (Object item : classItem.getItems()) {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				valueItem.setValue(itemCodeValueMap.get(valueItem.getItemCode()));
+			}
+		}
 
 		// map record ID
 		String recordId = peregDto.getDomainDto().getRecordId();
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				if ( valueItem.getValue() != null ) {
+				if ( valueItem.getValue() != null && valueItem.getItemCode().charAt(1) == 'O') {
 					valueItem.setRecordId(recordId);
 				}
 			}
 		}
 
-	}
-
-	public static void mapListClsDto(EmpMaintLayoutDto empMaintLayoutDto, PeregDto peregDto,
-			List<PerInfoItemDefForLayoutDto> lstClsItem) {
-		// get dto value
-		Map<String, Object> dtoValue = peregDto == null ? new HashMap<String, Object>()
-				: getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
-		
-		lstClsItem.forEach(item -> {
-			if (item.getItemCode().charAt(1) == 'S') {
-				LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
-				if (item.getItemDefType() == 2) {
-					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoValue);
-				} else {
-					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoValue);
-					item.getLstChildItemDef().forEach(x -> {
-						setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoValue);
-					});
-				}
-				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
-			}
-		});
-	}
-
-
-	private static void setLayoutPersonInfoClsDto(LayoutPersonInfoClsDto layoutPerInfoClsDto,
-			PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue) {
-		Object value = dtoFieldValue.get(item.getItemCode());
-		layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
-		layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, value));
-		layoutPerInfoClsDto.getListItemDf().add(item);
 	}
 
 	/**
@@ -140,34 +109,34 @@ public class MappingFactory {
 		});
 		return itemCodeValueMap;
 	}
-
-	/**
-	 * set optional data
-	 * 
-	 * @param peregDto
-	 * @param classItem
-	 */
-	private static void setOptionData(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
-		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
-			mapEmployeeOptionData(peregDto.getEmpOptionalData(), classItemList);
-		} else {
-			mapPersonOptionData(peregDto.getPerOptionalData(), classItemList);
+	
+	public static Map<String, Object> getFullDtoValue(PeregDto peregDto) {
+		// Map<itemcode, Object: value of field>
+		Map<String, Object> itemCodeValueMap = new HashMap<String, Object>();
+		
+		//	map from domain data
+		PeregDomainDto domainDto = peregDto.getDomainDto();
+		if ( domainDto == null){
+			return itemCodeValueMap;
 		}
+		
+		FieldsWorkerStream lstField = AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class);
+		lstField.forEach(field -> {
+			String itemCode = field.getAnnotation(PeregItem.class).value();
+			Object obj = ReflectionUtil.getFieldValue(field, domainDto);
+			itemCodeValueMap.put(itemCode, obj);
+		});
+		
+		// map from option data
+		if ( peregDto.getDataType() == DataClassification.EMPLOYEE) {
+			peregDto.getEmpOptionalData().forEach( empData -> itemCodeValueMap.put( empData.getItemCode(), empData.getValue()));
+		} else {
+			peregDto.getPerOptionalData().forEach( perData -> itemCodeValueMap.put( perData.getItemCode(), perData.getValue()));
+		}
+		
+		return itemCodeValueMap;
 	}
 
-	/**
-	 * set optional data
-	 * 
-	 * @param peregDto
-	 * @param classItem
-	 */
-	private static void setOptionData(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
-		if (peregDto.getDataType() == DataClassification.EMPLOYEE) {
-			mapEmployeeOptionData(peregDto.getEmpOptionalData(), classItem);
-		} else {
-			mapPersonOptionData(peregDto.getPerOptionalData(), classItem);
-		}
-	}
 
 	/**
 	 * match domain DTO with classItem list
