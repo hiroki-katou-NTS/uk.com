@@ -565,7 +565,6 @@ module nts.custombinding {
                 </div>
                 <script type="text/html" id="itemtemplate">
                     <div data-bind="if: item.dataTypeValue == 1" class="string">
-                        <!--<div data-bind="text: item.stringItemType + '||' + item.stringItemLength"></div>-->
                         <div data-bind="if: item.stringItemType == 4 || item.stringItemLength < 40 || ([1, 5].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
                             <input data-bind="attr: { title: itemName, id: itemCode },
                                 ntsTextEditor: {
@@ -631,9 +630,7 @@ module nts.custombinding {
                             optionsValue: 'optionValue',
                             visibleItemsCount: 5,
                             value: value,
-                            /*constraint: itemCode,*/
                             optionsText: 'optionText',
-                            /*editable: !editable,*/
                             enable: editable,
                             dropDownAttachedToBody: true,
                             columns: [{ prop: 'optionText', length: 10 }]}, attr: {id: itemCode}"></div>
