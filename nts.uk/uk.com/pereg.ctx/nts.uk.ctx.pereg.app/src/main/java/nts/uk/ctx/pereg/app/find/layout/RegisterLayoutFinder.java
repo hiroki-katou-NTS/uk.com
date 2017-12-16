@@ -221,10 +221,10 @@ public class RegisterLayoutFinder {
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
-
+		dataObject.setType(itemDef.getItemTypeState().getItemType());
 		switch (itemDef.getItemTypeState().getItemType()) {
 		case 1:
-		
+
 			break;
 		case 2:
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
