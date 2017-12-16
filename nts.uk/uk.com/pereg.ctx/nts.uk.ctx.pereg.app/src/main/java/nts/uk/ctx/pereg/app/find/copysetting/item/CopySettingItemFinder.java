@@ -63,7 +63,7 @@ public class CopySettingItemFinder {
 
 		PeregDto dto = this.layoutProc.findSingle(query);
 
-		Map<String, Object> dataMap = MappingFactory.getAllItem(dto);
+		Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
 
 		dataMap.forEach((k, v) -> {
 
