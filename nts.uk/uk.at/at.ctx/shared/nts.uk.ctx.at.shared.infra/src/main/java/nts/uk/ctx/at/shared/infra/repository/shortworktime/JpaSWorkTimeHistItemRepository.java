@@ -28,7 +28,23 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem_;
  */
 @Stateless
 public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWorkTimeHistItemRepository {
+	
+	private static final String DELETE_WORKTYPEHISTITEM;
+	private static final String DELETE_CHILDCAREITEM;
+	static {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("DELETE ");
+		stringBuilder.append("FROM BshmtWorktimeHistItem w ");
+		stringBuilder.append("WHERE w.bshmtWorktimeHistItemPK.histId = :histId");
+		DELETE_WORKTYPEHISTITEM = stringBuilder.toString();
+		
+		stringBuilder.setLength(0);
+		stringBuilder.append("DELETE ");
+		stringBuilder.append("FROM BshmtSchildCareFrame w ");
+		stringBuilder.append("WHERE w.bshmtWorktimeHistItemPK.histId = :histId");
+		DELETE_CHILDCAREITEM = stringBuilder.toString();
 
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -95,6 +111,12 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		JpaSWorkTimeHistItemSetMemento memento = new JpaSWorkTimeHistItemSetMemento(entity);
 		domain.saveToMemento(memento);
 		return entity;
+	}
+
+	@Override
+	public void delete(String hist) {
+		this.getEntityManager().createQuery(DELETE_WORKTYPEHISTITEM).setParameter("histId", hist).executeUpdate();
+		this.getEntityManager().createQuery(DELETE_CHILDCAREITEM).setParameter("histId", hist).executeUpdate();
 	}
 
 }
