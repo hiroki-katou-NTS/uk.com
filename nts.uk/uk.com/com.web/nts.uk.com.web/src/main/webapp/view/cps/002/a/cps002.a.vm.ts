@@ -511,7 +511,7 @@ module cps002.a.vm {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
                     }
-
+                    $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
                 dialog({ messageId: error.message }).then(() => {
@@ -581,7 +581,7 @@ module cps002.a.vm {
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
-                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "no-close", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
                             self.backtoStep1();

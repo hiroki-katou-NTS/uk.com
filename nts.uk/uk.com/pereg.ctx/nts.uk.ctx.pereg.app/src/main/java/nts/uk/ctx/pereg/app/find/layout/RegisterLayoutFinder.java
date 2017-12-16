@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
@@ -24,15 +23,10 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.ItemTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.SetItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
-import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -113,7 +107,7 @@ public class RegisterLayoutFinder {
 				return null;
 			}
 
-			setData(dataServer, listItemCls);
+			setData(dataServer, listItemCls, command.getCreateType());
 			if (command.getCreateType() == 1) {
 
 				return listItemCls;
@@ -121,8 +115,6 @@ public class RegisterLayoutFinder {
 			}
 
 			if (command.getCreateType() == 2) {
-
-				removeNotDefItem(listItemCls);
 
 				return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
 						.collect(Collectors.toList());
@@ -155,60 +147,43 @@ public class RegisterLayoutFinder {
 		return listItemCls;
 	}
 
-	private void removeNotDefItem(List<LayoutPersonInfoClsDto> listItemCls) {
+	private void setData(List<SettingItemDto> dataServer, List<LayoutPersonInfoClsDto> listItemCls, int createType) {
+
 		listItemCls.forEach(itemCls -> {
-			if (!CollectionUtil.isEmpty(itemCls.getItems())) {
-				itemCls.setItems(itemCls.getItems().stream().filter(item -> {
-
-					LayoutPersonInfoValueDto subItem = (LayoutPersonInfoValueDto) item;
-
-					return subItem.getValue() != null;
-				}).collect(Collectors.toList()));
-			}
+			createInfoValueDtoByItemCls(dataServer, itemCls, createType);
 		});
 
 	}
 
-	private void setData(List<SettingItemDto> dataServer, List<LayoutPersonInfoClsDto> listItemCls) {
+	private void createInfoValueDtoByItemCls(List<SettingItemDto> dataServer, LayoutPersonInfoClsDto itemCls,
+			int createType) {
+		List<PerInfoItemDefDto> itemDefList = itemCls.getListItemDf();
+		if (!CollectionUtil.isEmpty(itemDefList)) {
+			List<Object> itemDataList = new ArrayList<Object>();
+			itemDefList.forEach(itemDef -> {
+				Optional<SettingItemDto> setItemOpt = dataServer.stream()
+						.filter(item -> item.getItemDefId().equals(itemDef.getId())).findFirst();
 
-		dataServer.forEach(setItem -> {
+				LayoutPersonInfoValueDto infoValue = null;
+				if (setItemOpt.isPresent()) {
+					SettingItemDto setItem = setItemOpt.get();
+					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value);
+				} else {
+					if (itemDef.getItemTypeState().getItemType() == 1 || createType == 1) {
+						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value);
+					}
 
-			createInfoValueDtoByDefId(setItem, listItemCls);
-		});
+				}
 
-	}
+				if (infoValue != null) {
+					itemDataList.add(infoValue);
+				}
 
-	private void createInfoValueDtoByDefId(SettingItemDto setItem, List<LayoutPersonInfoClsDto> listItemCls) {
+			});
 
-		Optional<LayoutPersonInfoClsDto> clsOpt = listItemCls.stream()
-				.filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getListItemDf()))
-				.filter(itemCls -> itemCls.getListItemDf().stream()
-						.filter(itemDf -> itemDf.getId().equals(setItem.getItemDefId())).findFirst().isPresent())
-				.findFirst();
-
-		if (clsOpt.isPresent()) {
-			LayoutPersonInfoClsDto cls = clsOpt.get();
-			Optional<PerInfoItemDefDto> itemDef = cls.getListItemDf().stream()
-					.filter(itemDf -> itemDf.getId().equals(setItem.getItemDefId())).findFirst();
-			LayoutPersonInfoValueDto infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef.get(),
-					ActionRole.EDIT.value);
-			//
-			// PerInfoItemDefForLayoutDto newLayoutDto =
-			// createLayoutInfoDtoFromDef(setItem, itemDef.get(),
-			// ActionRole.EDIT.value);
-			// cls.getListItemDf().remove(itemDef);
-			// cls.getListItemDf().add(newLayoutDto);
-
-			if (CollectionUtil.isEmpty(cls.getItems())) {
-				List<Object> itemList = new ArrayList<Object>();
-				itemList.add(infoValue);
-				cls.setItems(itemList);
-			} else {
-
-				cls.getItems().add(infoValue);
-			}
-
+			itemCls.setItems(itemDataList);
 		}
+
 	}
 
 	private LayoutPersonInfoValueDto createPersonInfoValueDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
@@ -222,28 +197,21 @@ public class RegisterLayoutFinder {
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
-		switch (itemDef.getItemTypeState().getItemType()) {
-		case 1:
-
-			break;
-		case 2:
+		if (itemDef.getItemTypeState().getItemType() != 1) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
-			break;
-
+			int dataTypeValue = dataObject.getItem().getDataTypeValue();
+			if (dataTypeValue == 6) {
+				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
+				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
+						GeneralDate.today());
+				dataObject.setLstComboBoxValue(lstComboBox);
+			}
 		}
 		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
 		if (setItem != null) {
 			dataObject.setValue(setItem.getValueAsString());
 			dataObject.setCategoryCode(setItem.getCategoryCode());
-		}
-
-		int dataTypeValue = dataObject.getItem().getDataTypeValue();
-		if (dataTypeValue == 6) {
-			SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
-			List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-					GeneralDate.today());
-			dataObject.setLstComboBoxValue(lstComboBox);
 		}
 
 		return dataObject;
