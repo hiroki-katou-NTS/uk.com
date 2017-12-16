@@ -346,11 +346,14 @@ public class LayoutFinder {
 						matchPersDataForSingleClsItem(recordId, classItemList, dataItems);
 					}
 				} else {
-					String recordId = empInCtgDataRepo
-							.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId()).get()
-							.getRecordId();
-					List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId);
-					matchEmpDataForDefItems(recordId, classItemList, dataItems);
+					List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo
+							.getByEmpIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId());
+					if ( !empInfoCtgDatas.isEmpty()) {
+						String recordId = empInfoCtgDatas.get(0).getRecordId();
+						List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId);
+						matchEmpDataForDefItems(recordId, classItemList, dataItems);
+					}
+					
 				}
 				break;
 			case CONTINUOUSHISTORY:
