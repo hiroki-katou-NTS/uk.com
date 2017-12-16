@@ -34,5 +34,5 @@ public interface SWorkTimeHistItemRepository {
 	 */
 	Optional<ShortWorkTimeHistoryItem> findByKey(String empId, String histId);
 	
-	void delete(String hist);
+	void delete(String sid, String hist);
 }
