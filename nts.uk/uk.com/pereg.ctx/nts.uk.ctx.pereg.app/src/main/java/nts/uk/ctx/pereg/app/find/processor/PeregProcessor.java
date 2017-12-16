@@ -7,10 +7,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
@@ -24,6 +25,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -168,22 +170,22 @@ public class PeregProcessor {
 			PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 		
 		if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
+			List<LayoutPersonInfoClsDto> classItemList = creatClassItemList( lstPerInfoItemDef);
+			
 			if (perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO && query.getInfoId() == null) {
-				MappingFactory.mapListClsDto(empMaintLayoutDto, null, lstPerInfoItemDef);
 				// set optional data
 				setOptionalData(empMaintLayoutDto, null, perInfoCtg, lstPerInfoItemDef);
 			} else {
 				// get domain data
 				PeregDto peregDto = layoutingProcessor.findSingle(query);
-				// set record id
-				setRecordId(lstPerInfoItemDef, peregDto == null ? null : peregDto.getDomainDto().getRecordId());
-				// set fixed data
-				MappingFactory.mapListClsDto(empMaintLayoutDto, peregDto, lstPerInfoItemDef);
-				// set optional data
-				String recordId = query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId();
-				setOptionalData(empMaintLayoutDto, recordId, perInfoCtg, lstPerInfoItemDef);
+				if ( peregDto != null ) {
+					// set data
+					MappingFactory.mapListItemClass(peregDto, classItemList);
+				}
 			}
-
+			
+			empMaintLayoutDto.setClassificationItems(classItemList);
+			
 		} else {
 			if (perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO && query.getInfoId() == null)
 				// set optional data
@@ -193,6 +195,29 @@ public class PeregProcessor {
 						query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(),
 						perInfoCtg, lstPerInfoItemDef);
 		}
+	}
+	
+	private List<LayoutPersonInfoClsDto> creatClassItemList(List<PerInfoItemDefForLayoutDto> lstClsItem) {
+		List<LayoutPersonInfoClsDto> classItemList = new ArrayList<>();
+		lstClsItem.forEach(item -> {
+			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
+			layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
+			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
+			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
+			layoutPerInfoClsDto.setClassName(item.getItemName());
+			layoutPerInfoClsDto.getListItemDf().add(item);
+			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
+			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, null));
+			if (item.getItemDefType() != 2) {
+				item.getLstChildItemDef().forEach(childItem -> {
+					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
+					layoutPerInfoClsDto.getListItemDf().add(childItem);
+					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, null));
+				});
+			}
+			classItemList.add(layoutPerInfoClsDto);
+		});
+		return classItemList;
 	}
 	
 	/**
