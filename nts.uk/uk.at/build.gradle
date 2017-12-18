@@ -143,6 +143,8 @@ project (':at.ctx:at.auth:nts.uk.ctx.at.auth.ac') {
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.dom')
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
 		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2.1')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.6')
+		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.6.1')
 	}
 }
 project (':at.ctx:at.auth:nts.uk.ctx.at.auth.pub') {
