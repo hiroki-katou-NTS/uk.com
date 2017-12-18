@@ -10,22 +10,21 @@ import java.util.Optional;
  * The Interface FlexWorkSettingRepository.
  */
 public interface FlexWorkSettingRepository {
-	
+
 	/**
-	 * Find by id.
+	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @param worktimeCode the worktime code
+	 * @param workTimeCode the worktime code
 	 * @return the optional
 	 */
-	public Optional<FlexWorkSetting> findById(String companyId,String worktimeCode);
-	
-	
+	public Optional<FlexWorkSetting> find(String companyId,String workTimeCode);
+
 	/**
 	 * Save flex work setting.
 	 *
 	 * @param domain the domain
 	 */
-	public void saveFlexWorkSetting(FlexWorkSetting domain);
+	public void save(FlexWorkSetting domain);
 
 }

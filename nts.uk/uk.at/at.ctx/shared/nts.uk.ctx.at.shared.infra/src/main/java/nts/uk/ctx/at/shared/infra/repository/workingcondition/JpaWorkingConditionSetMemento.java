@@ -97,7 +97,7 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 
 		this.entities.stream().forEach(item -> {
 			KshmtWorkingCondPK kshmtWorkingCondPK = item.getKshmtWorkingCondPK();
-			histIds.add(kshmtWorkingCondPK.getHistoryId());
+			entityHistIds.add(kshmtWorkingCondPK.getHistoryId());
 			if (mapHistoryItems.keySet().contains(kshmtWorkingCondPK.getHistoryId())) {
 				item.setStrD(mapHistoryItems.get(kshmtWorkingCondPK.getHistoryId()).start());
 				item.setEndD(mapHistoryItems.get(kshmtWorkingCondPK.getHistoryId()).end());

@@ -17,5 +17,5 @@ public interface FlHalfDayWtzPolicy {
 	 * @param predTime the pred time
 	 * @param flowHalf the flow half
 	 */
-	void validate(PredetemineTimeSetting predTime, FlHalfDayWtz flowHalf);
+	void validate(PredetemineTimeSetting predTime, FlowHalfDayWorkTimezone flowHalf);
 }
