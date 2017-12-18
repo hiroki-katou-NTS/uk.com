@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.team.teamsetting.TeamSetFinder;
 
 @Path("at/schedule/shift/team/teamsetting")
 @Produces(MediaType.APPLICATION_JSON)
-public class TeamSetWs extends WebService {
+public class TeamSetWebService extends WebService {
 	@Inject
 	TeamSetFinder teamSetFinder;
 
