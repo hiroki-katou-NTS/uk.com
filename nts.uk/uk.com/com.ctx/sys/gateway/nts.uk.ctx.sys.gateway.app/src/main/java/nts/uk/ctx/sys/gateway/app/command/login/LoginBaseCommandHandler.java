@@ -43,12 +43,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	@Inject
 	private RoleIndividualGrantAdapter roleIndividualGrantAdapter;
 
+	/** The list company adapter. */
 	@Inject
 	private ListCompanyAdapter listCompanyAdapter;
 	
+	/** The manager. */
 	@Inject
 	private LoginUserContextManager manager;
 	
+	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
 	/*
 	 * (non-Javadoc)
@@ -69,12 +72,24 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 */
 	protected abstract void internalHanler(CommandHandlerContext<T> context);
 
+	/**
+	 * Sets the logged info.
+	 *
+	 * @param user the user
+	 * @param em the em
+	 * @param companyCode the company code
+	 */
 	protected void setLoggedInfo(User user,EmployeeImport em,String companyCode) {
 		//set info to session 
 		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode().v(), em.getCompanyId(),
 				companyCode, em.getEmployeeId(), em.getEmployeeCode());
 	}
 	
+	/**
+	 * Inits the session.
+	 *
+	 * @param user the user
+	 */
 	//init session 
 	protected void initSession(User user) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatedPersonId());
@@ -95,6 +110,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		this.setRoleId(user.getUserId());
 	}
 	
+	/**
+	 * Sets the role id.
+	 *
+	 * @param userId the new role id
+	 */
 	//set roll id into login user context 
 	protected void setRoleId(String userId)
 	{
@@ -136,6 +156,13 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		}
 	}
 
+	/**
+	 * Gets the role id.
+	 *
+	 * @param userId the user id
+	 * @param roleType the role type
+	 * @return the role id
+	 */
 	protected String getRoleId(String userId, RoleType roleType) {
 		RoleIndividualGrantImport roleImport = roleIndividualGrantAdapter.getByUserAndRole(userId, roleType);
 		if (roleImport == null) {

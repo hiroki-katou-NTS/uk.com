@@ -9,13 +9,13 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @Data
 public class ConstraintTimeDto {
 
-	/** 総拘束時間: 勤怠時間*/
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+	/** 総拘束時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = "A")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer totalConstraintTime;
 
 	/** 深夜拘束時間 : 勤怠時間 */
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer lateNightConstraintTime;
 }

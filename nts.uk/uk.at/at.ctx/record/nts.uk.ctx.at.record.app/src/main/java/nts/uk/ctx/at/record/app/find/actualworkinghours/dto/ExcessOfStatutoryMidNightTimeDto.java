@@ -9,11 +9,12 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @Data
 public class ExcessOfStatutoryMidNightTimeDto {
 
-	/** 時間: 計算付き時間*/
-	@AttendanceItemLayout(layout="A")
+	/** 時間: 計算付き時間 */
+	@AttendanceItemLayout(layout = "A")
 	private CalcAttachTimeDto time;
-	/** 事前申請時間: 勤怠時間*/
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int beforeApplicationTime;
+
+	/** 事前申請時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer beforeApplicationTime;
 }

@@ -5,15 +5,16 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLay
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
-/**  休出枠時間帯 */
+/** 休出枠時間帯 */
 @Data
 public class HolidayWorkFrameTimeSheetDto {
 
-	/**  時間帯: 計算用時間帯 */
-	@AttendanceItemLayout(layout="A")
+	/** 時間帯: 計算用時間帯 */
+	@AttendanceItemLayout(layout = "A")
 	private TimeSpanForCalcDto timeSheet;
-	/**  休出枠NO: 休出枠NO */
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int holidayWorkFrameNo;
+
+	/** 休出枠NO: 休出枠NO */
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer holidayWorkFrameNo;
 }

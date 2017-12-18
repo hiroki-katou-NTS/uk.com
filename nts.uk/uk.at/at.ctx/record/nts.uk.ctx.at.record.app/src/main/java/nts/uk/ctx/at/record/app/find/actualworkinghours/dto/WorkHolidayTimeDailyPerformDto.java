@@ -11,20 +11,20 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @Data
 public class WorkHolidayTimeDailyPerformDto {
 
-	/** 休出拘束時間: 勤怠時間 */
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int holidayTimeSpentAtWork;
-	
 	/** 休出枠時間帯: 休出枠時間帯 */
-	@AttendanceItemLayout(layout="B", isList=true)
+	@AttendanceItemLayout(layout = "A", isList = true)
 	private List<HolidayWorkFrameTimeSheetDto> holidyWorkFrameTimeSheet;
-	
-	/** 休出枠時間: 休出枠時間 */
-	@AttendanceItemLayout(layout="C", isList=true)
-	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
-	
+
 	/** 休出深夜: 休出深夜 */
-	@AttendanceItemLayout(layout="D")
+	@AttendanceItemLayout(layout = "B")
 	private HolidayMidnightWorkDto holidayMidnightWork;
+
+	/** 休出拘束時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = "C")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer holidayTimeSpentAtWork;
+
+	/** 休出枠時間: 休出枠時間 */
+	@AttendanceItemLayout(layout = "D", isList = true)
+	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
 }

@@ -18,11 +18,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.MenuBarDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TitleBarDetailDto;
-import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TreeMenuDetailDto;
-import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
+import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
-import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.JobPosition;
@@ -42,7 +41,6 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.program.Program;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
-import nts.uk.ctx.sys.portal.dom.enums.System;
 
 @Stateless
 public class WebMenuFinder {
@@ -291,7 +289,10 @@ public class WebMenuFinder {
 		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, internationalization);
 		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
-		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
+		int webMenuSetting = 1;
+		int menuAtr = 0;
+		//List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
+		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, webMenuSetting, menuAtr)
 				.stream().map(item -> StandardMenuDto.fromDomain(item))
 				.collect(Collectors.toList());
 		return new EditMenuBarDto(listSelectedAtr, listSystem, listMenuClassification, listStandardMenu);

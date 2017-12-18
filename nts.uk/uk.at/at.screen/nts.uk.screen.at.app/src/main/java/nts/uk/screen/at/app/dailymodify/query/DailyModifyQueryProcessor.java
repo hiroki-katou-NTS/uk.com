@@ -1,6 +1,8 @@
 package nts.uk.screen.at.app.dailymodify.query;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,7 +29,9 @@ public class DailyModifyQueryProcessor {
 		DailyModifyResult result = new DailyModifyResult();
 		AttendanceTimeDailyPerformDto itemDtos = this.attendanceItemFinder.find();
 		List<ItemValue> viewItems = AttendanceItemUtil.toItemValues(itemDtos);
-		result.setItems(viewItems);
+		Map<String, List<ItemValue>> items = new HashMap<>();
+		items.put("AttendanceTimeOfDailyPerformance", viewItems);
+		result.setItems(items);
 		
 		//TODO: get items format 
 		return result;
