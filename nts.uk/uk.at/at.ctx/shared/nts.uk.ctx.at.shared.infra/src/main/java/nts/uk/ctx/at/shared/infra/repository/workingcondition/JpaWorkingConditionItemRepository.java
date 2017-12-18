@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
@@ -80,9 +81,59 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		List<KshmtWorkingCondItem> result = query.getResultList();
 
+		// Check empty
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
 		// exclude select
 		return Optional.of(new WorkingConditionItem(
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * add(nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem)
+	 */
+	@Override
+	public void add(WorkingConditionItem item) {
+		KshmtWorkingCondItem entity = new KshmtWorkingCondItem();
+		item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
+		this.commandProxy().insert(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * update(nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem)
+	 */
+	@Override
+	public void update(WorkingConditionItem item) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(item.getHistoryId(),
+				KshmtWorkingCondItem.class);
+
+		KshmtWorkingCondItem entity = optEntity.get();
+
+		item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
+
+		this.commandProxy().insert(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * delete(java.lang.String)
+	 */
+	@Override
+	public void remove(String historyId) {
+		this.commandProxy().remove(KshmtWorkingCondItem.class, historyId);
 	}
 
 }

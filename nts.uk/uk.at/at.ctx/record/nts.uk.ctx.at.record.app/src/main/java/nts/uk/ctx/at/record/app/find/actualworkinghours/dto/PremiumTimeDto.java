@@ -13,7 +13,7 @@ public class PremiumTimeDto {
 	@AttendanceItemLayout(layout = "A")
 	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer premitumTime;
-	
+
 	/** 割増時間NO: 割増時間NO */
 	@AttendanceItemLayout(layout = "B")
 	@AttendanceItemValue(itemId = -1)

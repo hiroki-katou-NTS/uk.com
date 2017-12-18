@@ -10,19 +10,22 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class BreakTimeSheetDto {
 
 	/** 開始: 勤怠打刻 */
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int start;
+	@AttendanceItemLayout(layout = "A")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer start;
+
 	/** 終了: 勤怠打刻 */
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int end;
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer end;
+
 	/** 休憩時間: 勤怠打刻 */
-	@AttendanceItemLayout(layout="C")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int breakTime;
+	@AttendanceItemLayout(layout = "C")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer breakTime;
+
 	/** 休憩枠NO: 休憩枠NO */
-	@AttendanceItemLayout(layout="C")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int BreakFrameNo;
+	@AttendanceItemLayout(layout = "D")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer BreakFrameNo;
 }

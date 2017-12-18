@@ -10,14 +10,14 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class PersonFeeTimeDto {
 
 	/** The no. */
-	//NO
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=7, type=ValueType.INTEGER)
-	private int no;
-	
+	// NO
+	@AttendanceItemLayout(layout = "A")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer no;
+
 	/** The person fee time. */
-	//人件費時間
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=8, type=ValueType.INTEGER)
-	private Integer personFeeTime; 
+	// 人件費時間
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer personFeeTime;
 }

@@ -12,28 +12,28 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class ActualWorkTimeDailyPerformDto {
 
 	/** 割増時間: 日別実績の割増時間 */
-	@AttendanceItemLayout(layout="A", isList= true)
+	@AttendanceItemLayout(layout = "A", isList = true)
 	private List<PremiumTimeDto> premiumTimes;
 
 	/** 拘束差異時間: 勤怠時間 */
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer constraintDifferenceTime;
 
 	/** 拘束時間: 総拘束時間 */
-	@AttendanceItemLayout(layout="C")
+	@AttendanceItemLayout(layout = "C")
 	private ConstraintTimeDto constraintTime;
 
 	/** 時差勤務時間: 勤怠時間 */
-	@AttendanceItemLayout(layout="D")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "D")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer timeDifferenceWorkingHours;
 
 	/** 総労働時間: 日別実績の総労働時間 */
-	@AttendanceItemLayout(layout="E")
+	@AttendanceItemLayout(layout = "E")
 	private TotalWorkingTimeDto totalWorkingTime;
 
 	/** 乖離時間: 日別実績の乖離時間 */
-	@AttendanceItemLayout(layout="F")
-	private DivergenceTimeDailyPerformDto divTime;
+	@AttendanceItemLayout(layout = "F", isList = true)
+	private List<DivergenceTimeDto> divergenceTime;
 }

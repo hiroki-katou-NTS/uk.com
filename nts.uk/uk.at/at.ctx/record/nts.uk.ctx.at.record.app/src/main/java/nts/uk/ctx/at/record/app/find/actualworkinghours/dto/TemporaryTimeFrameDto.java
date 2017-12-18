@@ -10,17 +10,17 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class TemporaryTimeFrameDto {
 
 	/** 勤務NO */
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int workNo;
-	
+	@AttendanceItemLayout(layout = "A")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer workNo;
+
 	/** 臨時深夜時間 */
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer temporaryNightTime;
-	
+
 	/** 臨時時間 */
-	@AttendanceItemLayout(layout="C")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "C")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer temporaryTime;
 }
