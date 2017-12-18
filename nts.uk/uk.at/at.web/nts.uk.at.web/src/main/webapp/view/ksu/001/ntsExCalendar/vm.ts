@@ -1,4 +1,4 @@
-module ksu001.ntsExCalendar.viewmodel {
+module nts.uk.at.view.ksu001.ntsExCalendar.viewmodel {
     export class ScreenModel {
         startDate: KnockoutObservable<Date> = ko.observable(new Date('2017/06/01'));
         endDate: KnockoutObservable<Date> = ko.observable(new Date('2017/06/30'));

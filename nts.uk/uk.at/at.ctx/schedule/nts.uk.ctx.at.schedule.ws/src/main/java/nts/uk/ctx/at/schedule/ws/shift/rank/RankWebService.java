@@ -13,7 +13,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.rank.RankFinder;
 
 @Path("at/schedule/shift/rank")
 @Produces(MediaType.APPLICATION_JSON)
-public class RankWS {
+public class RankWebService {
 	@Inject
 	private RankFinder rankFinder;
 

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.team.TeamFinder;
 
 @Path("at/schedule/shift/team")
 @Produces(MediaType.APPLICATION_JSON)
-public class TeamWs extends WebService {
+public class TeamWebService extends WebService {
 	@Inject
 	private TeamFinder teamFinder;
 
