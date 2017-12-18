@@ -177,7 +177,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             if (self.currentCode() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     nts.uk.ui.block.invisible();
-                    service.deletePublicHoliday({ date: self.selectedPublicHoliday().date() }).done(() => {
+                    service.deletePublicHoliday({ date: moment(self.selectedPublicHoliday().date()).format('YYYY/MM/DD') }).done(() => {
                         var index = _.findIndex(self.filterHolidays(), (item) => {
                             return item.date == self.currentCode();
                         });
