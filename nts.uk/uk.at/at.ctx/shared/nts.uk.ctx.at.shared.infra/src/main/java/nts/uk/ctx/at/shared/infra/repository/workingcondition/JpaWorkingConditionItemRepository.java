@@ -91,4 +91,49 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * add(nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem)
+	 */
+	@Override
+	public void add(WorkingConditionItem item) {
+		KshmtWorkingCondItem entity = new KshmtWorkingCondItem();
+		item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
+		this.commandProxy().insert(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * update(nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem)
+	 */
+	@Override
+	public void update(WorkingConditionItem item) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(item.getHistoryId(),
+				KshmtWorkingCondItem.class);
+
+		KshmtWorkingCondItem entity = optEntity.get();
+
+		item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
+
+		this.commandProxy().update(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * delete(java.lang.String)
+	 */
+	@Override
+	public void remove(String historyId) {
+		this.commandProxy().remove(KshmtWorkingCondItem.class, historyId);
+	}
+
 }

@@ -4,12 +4,56 @@
 		<div class="tab-content-1">
 			<div id="part-1">
 				<div class="bg-green caret-background caret-bottom cf">
-					<a class="hyperlink" href="#">病棟用</a> <a class="hyperlink" href="#">グループ2</a>
-					<a class="hyperlink" href="#">グループ3</a> <a class="hyperlink"
-						href="#">グループ4</a> <a class="hyperlink" href="#">グループ5</a> <a
-						class="hyperlink" href="#">グループ6</a> <a class="hyperlink" href="#">グループ7</a>
-					<a class="hyperlink" href="#">グループ8</a> <a class="hyperlink"
-						href="#">グループ9</a> <a class="hyperlink" href="#">グループ10</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 0), text: text1Button1"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 1), text: text1Button2"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 2), text: text1Button3"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 3), text: text1Button4"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 4), text: text1Button5"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 5), text: text1Button6"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 6), text: text1Button7"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 7), text: text1Button8"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 8), text: text1Button9"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 9), text: text1Button10"></a>
+				</div>
+				<div
+					data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KSU001_1601')}' }"></div>
+				<button data-bind="click: openDialogJA">#{i18n.getText('KSU001_1602')}</button>
+			</div>
+			<div id="test1"></div>
+		</div>
+		<div class="tab-content-2">
+			<div id="part-1">
+				<div class="bg-green caret-background caret-bottom cf">
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 0), text: text2Button1"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 1), text: text2Button2"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 2), text: text2Button3"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 3), text: text2Button4"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 4), text: text2Button5"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 5), text: text2Button6"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 6), text: text2Button7"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 7), text: text2Button8"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 8), text: text2Button9"></a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 9), text: text2Button10"></a>
 				</div>
 				<div
 					data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KSU001_1601')}' }"></div>
@@ -17,14 +61,15 @@
 			</div>
 			<div id="test2"></div>
 		</div>
-		<div class="tab-content-2"></div>
 	</div>
 
 	<div id="popup-area" class="popup-area popup-panel">
 		<span>#{i18n.getText('KSU001_1701')}</span>
 		<div>
-			<input data-bind="ntsTextEditor: {value: textName, enable: true}" />
-			<button class="proceed" data-bind="click: decision">#{i18n.getText('KSU001_1703')}</button>
+			<input
+				data-bind="ntsTextEditor: {value: textName, constraint: 'WorkPairPatternName', enable: true, required: true}" />
+			<button class="proceed"
+				data-bind="enable: $root.errors.isEmpty, click: decision">#{i18n.getText('KSU001_1703')}</button>
 			<button data-bind="click: closePopup">#{i18n.getText('KSU001_1704')}</button>
 		</div>
 	</div>

@@ -164,6 +164,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     })
 
                 });
+                $("#selectionItemName").focus();
                 self.listItems.valueHasMutated();
                 self.perInfoSelectionItem().selectionItemId(selectId);
 
@@ -230,6 +231,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                                 self.registerDataSelectioItem();
                             }
                         });
+                        $("#selectionItemName").focus();
                         self.listItems.valueHasMutated();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });

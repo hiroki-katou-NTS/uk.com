@@ -1,7 +1,9 @@
 module a2 {
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
-    import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.EmTimeZoneSetModel;
+    import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
     import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
+    import TimeZoneRoundingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeZoneRoundingDto;
+    import TimeRoundingSettingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeRoundingSettingDto;
     class ScreenModel {
 
         fixTableOptionOneDay: any;
@@ -109,6 +111,15 @@ module a2 {
                 }
             });
             
+            self.dataSourceOneDay.subscribe(function(dataOneDay) {
+                self.dataModelOneDay = [];
+                var employmentTimeFrameNo: number = 0;
+                for (var dataModel of dataOneDay) {
+                    employmentTimeFrameNo++;
+                    self.dataModelOneDay.push(self.toModelDto(dataModel, employmentTimeFrameNo));
+                }
+            });
+            
              // Create Customs handle For event rened nts grid.
             
         }
@@ -160,10 +171,32 @@ module a2 {
          */
         private toModelColumnSetting(dataModel: EmTimeZoneSetDto): any {
             return {
-                columnOneDay1: ko.observable({ startTime: dataModel.timezone.start, endTime: dataModel.timezone.end }),
-                columnOneDay2: ko.observable(dataModel.timezone.rounding.roundingTime),
-                columnOneDay3: ko.observable(dataModel.timezone.rounding.rounding)
+                tab1_col_OneDay_time: ko.observable({ startTime: dataModel.timezone.start, endTime: dataModel.timezone.end }),
+                tab1_col_OneDay_roundingTime: ko.observable(dataModel.timezone.rounding.roundingTime),
+                tab1_col_OneDay_rounding: ko.observable(dataModel.timezone.rounding.rounding)
             }
+        }
+        
+        /**
+         * function convert data model of client to parent
+         */
+        private toModelDto(dataModel: any, employmentTimeFrameNo: number): EmTimeZoneSetModel {
+            var model: EmTimeZoneSetModel = new EmTimeZoneSetModel();
+            var rounding: TimeRoundingSettingDto = {
+                roundingTime: dataModel.tab1_col_OneDay_roundingTime(),
+                rounding: dataModel.tab1_col_OneDay_rounding(),
+            };
+            var timezone: TimeZoneRoundingDto = {
+                rounding: rounding,
+                start: dataModel.tab1_col_OneDay_time().startTime,
+                end: dataModel.tab1_col_OneDay_time().endTime
+            };
+            var dataDTO: EmTimeZoneSetDto = {
+                employmentTimeFrameNo: employmentTimeFrameNo,
+                timezone: timezone
+            };
+            model.updateData(dataDTO);
+            return model;
         }
         /**
          * init array setting column option one day
@@ -173,7 +206,7 @@ module a2 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"), 
-                    key: "columnOneDay1", 
+                    key: "tab1_col_OneDay_time", 
                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
                     width: 243, 
                     template: `<div data-bind="ntsTimeRangeEditor: { 
@@ -181,7 +214,7 @@ module a2 {
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_56"), 
-                    key: "columnOneDay2", 
+                    key: "tab1_col_OneDay_roundingTime", 
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0), 
                     width: 120, 
@@ -196,7 +229,7 @@ module a2 {
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_57"), 
-                    key: "columnOneDay3", 
+                    key: "tab1_col_OneDay_rounding", 
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0), 
                     width: 150,
