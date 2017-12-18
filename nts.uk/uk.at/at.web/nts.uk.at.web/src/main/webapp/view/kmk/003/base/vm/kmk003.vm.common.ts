@@ -41,6 +41,7 @@ module nts.uk.at.view.kmk003.a {
     import OverTimeOfTimeZoneSetDto = service.model.common.OverTimeOfTimeZoneSetDto;
     import FlowWorkRestTimezoneDto = service.model.common.FlowWorkRestTimezoneDto;
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
+    import FixedWorkRestSetDto = service.model.common.FixedWorkRestSetDto;
 
     export module viewmodel {
         export module common {
@@ -1217,9 +1218,6 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-
-
-
             export class StampReflectTimezoneModel {
                 workNo: KnockoutObservable<number>;
                 classification: KnockoutObservable<number>;
@@ -1246,6 +1244,29 @@ module nts.uk.at.view.kmk003.a {
                         classification: this.workNo(),
                         endTime: this.endTime(),
                         startTime: this.startTime()
+                    };
+                    return dataDTO;
+                }
+            }
+            
+            export class FixedWorkRestSetModel {
+                commonRestSet: CommonRestSettingModel;
+                fixedRestCalculateMethod: KnockoutObservable<number>;
+                
+                constructor() {
+                    this.commonRestSet = new CommonRestSettingModel();
+                    this.fixedRestCalculateMethod = ko.observable(0);
+                }
+                
+                updateData(data: FixedWorkRestSetDto) {
+                    this.commonRestSet.updateData(data.commonRestSet);
+                    this.fixedRestCalculateMethod(data.fixedRestCalculateMethod);
+                }
+                
+                toDto(): FixedWorkRestSetDto {
+                    let dataDTO: FixedWorkRestSetDto = {
+                        commonRestSet: this.commonRestSet.toDto(),
+                        fixedRestCalculateMethod: this.fixedRestCalculateMethod()
                     };
                     return dataDTO;
                 }

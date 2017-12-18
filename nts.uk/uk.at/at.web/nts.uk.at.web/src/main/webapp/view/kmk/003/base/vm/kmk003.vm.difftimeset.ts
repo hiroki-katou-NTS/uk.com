@@ -90,6 +90,22 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;
                 }
             }
+            
+            export class DiffWorkSettingModel {
+                //TODO
+                
+                constructor() {
+                    //TODO
+                }
+                
+                updateData(data: DiffWorkSettingDto) {
+                    //TODO
+                }
+                
+                toDto() {
+                    //TODO
+                }
+            }
         }
     }
 }

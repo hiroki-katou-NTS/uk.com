@@ -8,8 +8,11 @@ module nts.uk.at.view.kmk003.a {
     import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
     
     import WorkTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeSettingModel;
-
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
+    import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
+    import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlWorkSettingModel;
+    import DiffWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffWorkSettingModel;
+    import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
     
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
     
@@ -63,8 +66,12 @@ module nts.uk.at.view.kmk003.a {
             //data
             isClickSave: KnockoutObservable<boolean>;
             
+            mainSettingModel: MainSettingModel;
+            
             workTimeSettingModel: WorkTimeSettingModel;
             predetemineTimeSettingModel: PredetemineTimeSettingModel;
+            fixedWorkSettingModel: FixedWorkSettingModel;
+            
             settingEnum: WorkTimeSettingEnumDto;
             dataModelOneDay: EmTimeZoneSetModel[];
             constructor() {
@@ -144,8 +151,12 @@ module nts.uk.at.view.kmk003.a {
 
                 //data get from service
                 self.isClickSave = ko.observable(false);
+                
+                self.mainSettingModel = new MainSettingModel();
+                //TODO: xoa model khong dung den
                 self.workTimeSettingModel = new WorkTimeSettingModel();
                 self.predetemineTimeSettingModel = new PredetemineTimeSettingModel();
+                self.fixedWorkSettingModel = new FixedWorkSettingModel();
             }
 
             /**
@@ -250,6 +261,27 @@ module nts.uk.at.view.kmk003.a {
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+        
+        /**
+         * Store all Setting Model, use for tab data binding
+         */
+        export class MainSettingModel {
+            workTimeSetting: WorkTimeSettingModel;
+            predetemineTimeSetting: PredetemineTimeSettingModel;
+            fixedWorkSetting: FixedWorkSettingModel;
+            flowWorkSetting: FlowWorkSettingModel;
+            diffWorkSetting: DiffWorkSettingModel;
+            flexWorkSetting: FlexWorkSettingModel;
+            
+            constructor() {
+                this.workTimeSetting = new WorkTimeSettingModel();
+                this.predetemineTimeSetting = new PredetemineTimeSettingModel();
+                this.fixedWorkSetting = new FixedWorkSettingModel();
+                this.flowWorkSetting = new FlowWorkSettingModel();
+                this.diffWorkSetting = new DiffWorkSettingModel();
+                this.flexWorkSetting = new FlexWorkSettingModel();
             }
         }
     }
