@@ -123,13 +123,13 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		PesionInforImport pesionInforImport = employeeAdaptor.getEmployeeInfor(employeeID);
 		// 入社前をチェックする(Check trước khi vào cty)
 		// データが１件以上取得できた 且つ 申請対象日 < Imported(就業)「社員」．入社年月日
-		if(date.before(pesionInforImport.getEntryDate())) {
+		if(pesionInforImport.getEntryDate() != null && date.before(pesionInforImport.getEntryDate())) {
 			throw new BusinessException("Msg_235");
 		}
 		
 		// 退職後をチェックする(Check sau khi làm việc)
 		// データが１件以上取得できた 且つ 申請対象日 > Imported(就業)「社員」．退職年月日
-		if(date.after(pesionInforImport.getRetiredDate())) {
+		if(pesionInforImport.getRetiredDate() != null && date.after(pesionInforImport.getRetiredDate())) {
 			throw new BusinessException("Msg_391");
 		}
 	}
