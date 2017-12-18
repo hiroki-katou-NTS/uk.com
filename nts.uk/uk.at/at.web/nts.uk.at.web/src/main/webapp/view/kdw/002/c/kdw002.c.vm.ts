@@ -20,9 +20,8 @@ module nts.uk.at.view.kdw002.c {
 
                 self.currentRoleId = ko.observable('');
                 self.currentRoleId.subscribe(roleId => {
-
                     self.currentRoleId(roleId);
-
+                    _.defer(() => nts.uk.ui.block.invisible());
                     $.when(service.getListDailyServiceTypeControl(roleId), service.getAttendanceItems()).done(
                         (DailyServiceTypeControls, attendanceItems) => {
                             $('#useCheckAll').prop('checked', false);
@@ -49,6 +48,7 @@ module nts.uk.at.view.kdw002.c {
                                     }
                                 }
                             }
+                            nts.uk.ui.block.clear();
                         }
                     );
                 });

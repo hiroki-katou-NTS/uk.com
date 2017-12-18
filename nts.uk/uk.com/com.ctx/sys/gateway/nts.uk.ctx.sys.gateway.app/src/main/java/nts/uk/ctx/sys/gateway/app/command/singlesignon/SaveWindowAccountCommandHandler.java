@@ -39,7 +39,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		// Get command
 		SaveWindowAccountCommand command = context.getCommand();
 
-		// remove in special case
+		// remove in special case, when remove just only an item
 		if (command.getWinAcc1() == null && command.getWinAcc2() == null && command.getWinAcc3() == null
 				&& command.getWinAcc4() == null && command.getWinAcc5() == null) {
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
@@ -52,20 +52,13 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getWinAcc1().getUserId());
-
-			for (WindowAccount wd : listWindowAcc) {
-				windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
-			}
-			// listWinAccDto.forEach(wd ->
-			// this.windowAccountRepository.remove(wd.getUserId(),
-			// wd.getUserName(), wd.getHostName()));
-
+			
 			// TODO: need refactor
 			if (command.getWinAcc1() != null) {
 				if (command.getWinAcc1().getIsChange()) {
 					this.validate(command.getWinAcc1());
 				}
-
+				
 				listWinAccDto.add(command.getWinAcc1());
 			}
 			if (command.getWinAcc2() != null) {
@@ -96,9 +89,14 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 
 				listWinAccDto.add(command.getWinAcc5());
 			}
+			
+			// remove old domain 
+			for (WindowAccount windowAcc : listWindowAcc) {
+				windowAccountRepository.remove(windowAcc.getUserId(), windowAcc.getUserName(), windowAcc.getHostName());
+			}			
 
-			// Save domain
-				listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));
+			// Save new domain
+			listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));
 			
 		}
 	}
@@ -124,7 +122,8 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			exceptions.addMessage("Msg_616");
 		}
 
-		if (isError) {
+		if (isError) {			
+			//show error list
 			exceptions.throwExceptions();
 		}
 	}

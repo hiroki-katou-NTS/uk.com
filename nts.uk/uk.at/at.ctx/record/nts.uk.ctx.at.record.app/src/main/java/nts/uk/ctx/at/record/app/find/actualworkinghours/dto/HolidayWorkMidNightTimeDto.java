@@ -10,11 +10,11 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class HolidayWorkMidNightTimeDto {
 
 	/** 時間: 計算付き時間 */
-	@AttendanceItemLayout(layout="A")
+	@AttendanceItemLayout(layout = "A")
 	private CalcAttachTimeDto time;
-	
-	/** 法定区分: 休日出勤の法定区分*/
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int holidayWorkOfPrescribedAtr;
+
+	/** 法定区分: 休日出勤の法定区分 */
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer holidayWorkOfPrescribedAtr;
 }

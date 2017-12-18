@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.app.find.shortworktime;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
@@ -23,6 +24,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
  * @author danpv
  *
  */
+@Stateless
 public class ShortWorkTimeFinder implements PeregFinder<ShortWorkTimeDto> {
 
 	@Inject

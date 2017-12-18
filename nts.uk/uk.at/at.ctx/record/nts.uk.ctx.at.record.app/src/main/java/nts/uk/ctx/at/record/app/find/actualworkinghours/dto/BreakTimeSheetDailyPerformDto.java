@@ -22,7 +22,7 @@ public class BreakTimeSheetDailyPerformDto {
 	/** 勤務間時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "C")
 	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private int duringWork;
+	private Integer duringWork;
 
 	/** 補正後時間帯: 休憩時間帯 */
 	@AttendanceItemLayout(layout = "D", isList = true)
@@ -31,5 +31,5 @@ public class BreakTimeSheetDailyPerformDto {
 	/** 休憩回数: 休憩外出回数 */
 	@AttendanceItemLayout(layout = "E")
 	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private int breakTimes;
+	private Integer breakTimes;
 }

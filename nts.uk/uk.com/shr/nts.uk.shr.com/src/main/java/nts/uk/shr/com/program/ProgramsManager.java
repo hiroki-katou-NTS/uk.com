@@ -1211,6 +1211,10 @@ public class ProgramsManager {
 			"/view/ksu/007/a/index.xhtml");
 	public static final Program KSU007B = new Program(WebAppId.AT, ProgramIdConsts.KSU007B, "KSU007_23",
 			"/view/ksu/007/b/index.xhtml");
+	
+	
+	public static final Program CPS016A = new Program(WebAppId.COM, ProgramIdConsts.CPS016A, "CPS016_1",
+			"/view/cps/016/a/index.xhtml");
 
 	
 	

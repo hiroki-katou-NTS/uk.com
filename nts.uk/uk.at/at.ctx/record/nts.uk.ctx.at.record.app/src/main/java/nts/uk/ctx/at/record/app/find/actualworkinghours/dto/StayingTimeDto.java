@@ -9,23 +9,23 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @Data
 public class StayingTimeDto {
 
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=2, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "A")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer stayingTime;
 
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=3, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer beforePCLogOnTime;
 
-	@AttendanceItemLayout(layout="C")
-	@AttendanceItemValue(itemId=4, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "C")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer afterPCLogOffTime;
 
-	@AttendanceItemLayout(layout="D")
-	@AttendanceItemValue(itemId=5, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "D")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer beforeWoringTime;
 
-	@AttendanceItemLayout(layout="E")
-	@AttendanceItemValue(itemId=6, type=ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "E")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer afterLeaveTime;
 }

@@ -1,4 +1,4 @@
-module ksu001.a.service {
+module nts.uk.at.view.ksu001.a.service {
     var paths: any = {
         getDataBasicSchedule: "screen/at/schedule/basicschedule/getDataBasicSchedule",
         getDataWorkScheduleState: "screen/at/schedule/basicschedule/getDataWorkScheduleState",
@@ -8,7 +8,8 @@ module ksu001.a.service {
         checkStateWorkTypeCode: "screen/at/schedule/basicschedule/checkStateWorkTypeCode",
         getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
         getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
-        getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday"
+        getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
+        getDataWorkPairPattern: "at/schedule/shift/workpairpattern/findAllDataWorkPairPattern",
     }
 
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
@@ -43,5 +44,9 @@ module ksu001.a.service {
 
     export function getDataSpecDateAndHoliday(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataSpecDateAndHoliday, obj);
+    }
+
+    export function getDataWorkPairPattern(obj: string): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWorkPairPattern, obj);
     }
 }

@@ -8,14 +8,14 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLay
 public class TotalDeductionTimeDto {
 
 	/** 所定外合計時間 */
-	@AttendanceItemLayout(layout="A")
+	@AttendanceItemLayout(layout = "A")
 	private CalcAttachTimeDto excessOfStatutoryTotalTime;
-	
+
 	/** 所定内合計時間 */
-	@AttendanceItemLayout(layout="B")
+	@AttendanceItemLayout(layout = "B")
 	private CalcAttachTimeDto withinStatutoryTotalTime;
-	
+
 	/** 合計時間 */
-	@AttendanceItemLayout(layout="C")
+	@AttendanceItemLayout(layout = "C")
 	private CalcAttachTimeDto totalTime;
 }

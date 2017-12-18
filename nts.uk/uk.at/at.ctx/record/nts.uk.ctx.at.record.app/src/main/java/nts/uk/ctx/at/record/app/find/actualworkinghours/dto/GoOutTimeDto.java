@@ -9,28 +9,26 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @Data
 public class GoOutTimeDto {
 
-	/** 戻り: 勤怠打刻(実打刻付き)*/
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+	/** 戻り: 勤怠打刻(実打刻付き) */
+	@AttendanceItemLayout(layout = "A")
 	private ActualTimeStampDto comeBack;
-	
-	/** 外出: 勤怠打刻(実打刻付き)*/
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+
+	/** 外出: 勤怠打刻(実打刻付き) */
+	@AttendanceItemLayout(layout = "B")
 	private ActualTimeStampDto outing;
-	
-	/** 外出時間: 勤怠時間*/
-	@AttendanceItemLayout(layout="C")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
+
+	/** 外出時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = "C")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer outingTime;
-	
-	/** 外出枠NO: 外出枠NO*/
-	@AttendanceItemLayout(layout="D")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int outingFrameNo;
-	
-	/** 外出理由: 外出理由*/
-	@AttendanceItemLayout(layout="E")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int outingReason;
+
+	/** 外出枠NO: 外出枠NO */
+	@AttendanceItemLayout(layout = "D")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer outingFrameNo;
+
+	/** 外出理由: 外出理由 */
+	@AttendanceItemLayout(layout = "E")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer outingReason;
 }

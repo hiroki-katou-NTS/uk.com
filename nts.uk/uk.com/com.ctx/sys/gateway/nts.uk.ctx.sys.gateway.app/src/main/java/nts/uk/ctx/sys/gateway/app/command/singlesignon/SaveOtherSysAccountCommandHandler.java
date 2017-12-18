@@ -34,42 +34,46 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 		// Get command
 		SaveOtherSysAccountCommand command = context.getCommand();
 
+		Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(command.getUserId());
+
+		if (opOtherSysAcc.isPresent()) {
+			this.validate(command);				
+			// remove
+			this.otherSysAccountRepository.remove(opOtherSysAcc.get().getUserId(), opOtherSysAcc.get().getCompanyCode(),
+					opOtherSysAcc.get().getUserName());
+		}
+
+		// save domain
+		OtherSysAccount otherSysAccount = new OtherSysAccount(command);
+		this.otherSysAccountRepository.add(otherSysAccount);
+	}
+			
+	/**
+	 * Validate.
+	 *
+	 * @param dto the dto
+	 */
+	private void validate(SaveOtherSysAccountCommand dto) {
+		
 		// check error domain
 		boolean isError = false;
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
 		// check only company code and user name
-		Optional<OtherSysAccount> opOtherSysAccount = otherSysAccountRepository.findByCompanyCodeAndUserName(
-				command.getCompanyCode(), command.getUserName());
+		Optional<OtherSysAccount> opOtherSysAccount = otherSysAccountRepository
+				.findByCompanyCodeAndUserName(dto.getCompanyCode(), dto.getUserName());
 
-		// check condition
+		// Check condition
 		if (opOtherSysAccount.isPresent()) {
-			// Throw Exception
+			// Has error, throws message
 			isError = true;
 			exceptions.addMessage("Msg_616");
-			// Has error, throws message
 		}
-		if (isError) {
+
+		if (isError) {			
+			//show error list
 			exceptions.throwExceptions();
-		} else {
-						
-			Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(command.getUserId());
-
-			if(opOtherSysAcc.isPresent()){
-				// remove
-				this.otherSysAccountRepository.remove(opOtherSysAcc.get().getUserId(), opOtherSysAcc.get().getCompanyCode(), opOtherSysAcc.get().getUserName());
-			}
-			
-			// save domain
-			OtherSysAccount otherSysAccount = new OtherSysAccount(command);
-
-			this.otherSysAccountRepository.add(otherSysAccount);
 		}
 	}
 	
-	
-	
-	
-	
-
 }

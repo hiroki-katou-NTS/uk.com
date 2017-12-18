@@ -2,20 +2,27 @@ package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.criteria.Predicate;
 
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfoPK_;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo_;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -42,6 +49,9 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId ORDER BY c.startDate ");
 
+	private static final String SELECT_BY_EMPLOYEE_ID_LIST = String.join(" ", SELECT_NO_PARAM,
+			"WHERE c.bsymtAffCompanyHistPk.sId IN :sIdList  ORDER BY c.startDate ");
+	
 	private static final String SELECT_BY_EMPID_AND_BASE_DATE = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId", "AND c.startDate <= :baseDate", "AND c.endDate >= :baseDate",
 			"ORDER BY c.startDate ");
@@ -52,6 +62,9 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	private static final String SELECT_BY_HISTORY_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.historyId = :histId");
+	
+	/** The Constant MAX_ELEMENTS. */
+	private static final Integer MAX_ELEMENTS = 1000;
 
 	@Override
 	public void add(AffCompanyHist domain) {
@@ -231,6 +244,40 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 				.setParameter("histId", histId).getList();
 
 		return toDomain(existItem);
+	}
+
+	@Override
+	public List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds) {
+		// OutPut Data
+		List<AffCompanyHist> resultData = new ArrayList<>();
+		// CHECK EMPTY of employeeIds
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		// ResultList
+		List<BsymtAffCompanyHist> resultList = new ArrayList<>();
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
+			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", employeeIds).getList();
+			resultList.addAll(lstBsymtAffCompanyHist);
+		});
+		
+		// check empty ResultList
+		if (CollectionUtil.isEmpty(resultList)) {
+			return new ArrayList<>();
+		}
+		// Convert Result List to Map
+		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.stream()
+				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.pId));
+		
+		// Foreach Map: Convert to Domain then add to Output List
+		resultMap.entrySet().forEach(data -> {
+			AffCompanyHist affComHist = this.toDomain(data.getValue());
+			resultData.add(affComHist);
+		});
+		
+		return resultData;
 	}
 
 }

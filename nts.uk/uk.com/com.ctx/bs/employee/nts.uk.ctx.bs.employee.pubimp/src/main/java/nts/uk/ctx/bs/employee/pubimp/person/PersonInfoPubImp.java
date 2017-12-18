@@ -76,7 +76,7 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 		if (affComHistByEmp.items() != null) {
 
 			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+				return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
 			}).collect(Collectors.toList());
 
 			if (!filter.isEmpty()) {
