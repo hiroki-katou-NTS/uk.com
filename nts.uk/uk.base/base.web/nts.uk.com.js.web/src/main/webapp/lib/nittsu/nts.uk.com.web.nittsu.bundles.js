@@ -10090,9 +10090,9 @@ var nts;
                                 "<button class = 'ntsDateNextButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
                             $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" +
                                 "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
-                            var $nextButton = $container.find(".ntsDateNextButton");
-                            var $prevButton = $container.find(".ntsDatePrevButton");
-                            $nextButton.text("next").click(function (evt, ui) {
+                            var $nextButton = $container.find(".ntsDateNextButton").text("▶").css("margin-left", "3px");
+                            var $prevButton = $container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
+                            $nextButton.click(function (evt, ui) {
                                 var $startDate = $container.find(".ntsStartDatePicker");
                                 var $endDate = $container.find(".ntsEndDatePicker");
                                 var oldValue = value();
@@ -10122,7 +10122,7 @@ var nts;
                                 }
                                 value(oldValue);
                             });
-                            $prevButton.text("prev").click(function (evt, ui) {
+                            $prevButton.click(function (evt, ui) {
                                 var $startDate = $container.find(".ntsStartDatePicker");
                                 var $endDate = $container.find(".ntsEndDatePicker");
                                 var oldValue = value();
