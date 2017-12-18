@@ -129,61 +129,265 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   background-color: #F7EFD4;
 }
 
-.color-working-day {color: #31859C !important;}
-.color-non-working-day {color: #FF3B3B !important;}
-.color-attendance {color: #0000ff !important;}
-.color-holiday {color: #ff0000 !important;}
-.color-daily-holiday {color: #FF2D2D !important;}
-.color-daily-extra-holiday {color: #0086EA !important;}
-.bg-daily-alter-self {background-color:#94B7FE !important;}
-.bg-daily-alter-other {background-color:#CEE6FF !important;}
-.bg-daily-reflect-application {background-color:#92F29B !important;}
-.bg-daily-error {background-color:#FEC6C6 !important;}
-.bg-daily-alarm {background-color:#E3F385 !important;}
-.bg-daily-calculated {background-color:#E4C9FF !important;}
+/* line 7, ../sass/components/_color.scss */
+.color-working-day {
+  color: #31859C !important;
+}
 
-.color-schedule-performance {color:#92D050 !important;}
-.color-schedule-error {color:#FF0000 !important;}
-.color-schedule-saturday {color:#0000FF !important;}
-.color-schedule-sunday {color:#FF0000 !important;}
-.bg-schedule-support {background-color:#fedfe6 !important;}
-.bg-schedule-no-empl-insurance {background-color:#ef7f7f !important;}
-.bg-schedule-no-health-insurance {background-color:#acfe2f !important;}
-.bg-schedule-no-empl-health-insurance {background-color:#fea400 !important;}
-.bg-schedule-fixed {background-color:#eccefb !important;}
-.bg-schedule-uncorrectable {background-color:#ddddd2 !important;}
-.bg-schedule-work-by-dow {background-color:#FFFF69 !important;}
-.bg-schedule-shift-work {background-color:#FFE699 !important;}
-.bg-schedule-saturday {background-color:#8bd8ff !important;}
-.bg-schedule-sunday {background-color:#fabf8f !important;}
-.bg-schedule-specific-date {background-color:#ffc0cb !important;}
-.bg-schedule-that-day {background-color:#ffff00 !important;}
-.bg-schedule-focus {background-color:#ffffcc !important;}
+/* line 8, ../sass/components/_color.scss */
+.color-non-working-day {
+  color: #FF3B3B !important;
+}
 
-.bg-choice-row {background-color:#CEE6FF !important;}
-.bg-calendar-ym-set {background-color:#BFEA60 !important;}
-.bg-workinh-result-excess {background-color:#ffff00 !important;}
-.bg-pre-application-excess {background-color:#ffc0cb !important;}
-.bg-application-approved {background-color:#BFEA60 !important;}
-.bg-application-reflected {background-color:#CEE6FF !important;}
-.bg-denial-application {background-color:#FD4D4D !important;}
-.bg-unapproved-application {background-color:#ffffff !important;}
-.bg-remanded-application {background-color:#FD4D4D !important;}
-.bg-canceled-application {background-color:#F6F636 !important;}
+/* line 9, ../sass/components/_color.scss */
+.color-attendance {
+  color: #0000ff !important;
+}
 
-.color-operation-case-character {color: #ff0000 !important;}
-.color-working-schedule {color: #00cc00 !important;}
-.color-sunday {color: #FF2D2D !important;}
-.color-saturday {color: #0086EA !important;}
-.color-half-day-work {color: #FF7F27 !important;}
-.bg-weekdays {background-color:#D9D9D9 !important;}
-.color-weekdays {color: #404040 !important;}
-.bg-pasted {background-color:#F8CBAD !important;}
-.bg-updating-cell {background-color:#FFD966 !important;}
-.bg-selecting {background-color:#BDD7EE !important;}
-.bg-added-row {background-color:#AFEEEE !important;}
-.bg-actual-superior-unverified {background-color:#FF7F27 !important;}
-.bg-error-actual {background-color:#ffc0cb !important;}
+/* line 10, ../sass/components/_color.scss */
+.color-holiday {
+  color: #ff0000 !important;
+}
+
+/* line 11, ../sass/components/_color.scss */
+.color-daily-holiday {
+  color: #FF2D2D !important;
+}
+
+/* line 12, ../sass/components/_color.scss */
+.color-daily-extra-holiday {
+  color: #0086EA !important;
+}
+
+/* line 13, ../sass/components/_color.scss */
+.bg-daily-alter-self {
+  background-color: #94B7FE !important;
+}
+
+/* line 14, ../sass/components/_color.scss */
+.bg-daily-alter-other {
+  background-color: #CEE6FF !important;
+}
+
+/* line 15, ../sass/components/_color.scss */
+.bg-daily-reflect-application {
+  background-color: #92F29B !important;
+}
+
+/* line 16, ../sass/components/_color.scss */
+.bg-daily-error {
+  background-color: #FEC6C6 !important;
+}
+
+/* line 17, ../sass/components/_color.scss */
+.bg-daily-alarm {
+  background-color: #E3F385 !important;
+}
+
+/* line 18, ../sass/components/_color.scss */
+.bg-daily-calculated {
+  background-color: #E4C9FF !important;
+}
+
+/* line 20, ../sass/components/_color.scss */
+.color-schedule-performance {
+  color: #92D050 !important;
+}
+
+/* line 21, ../sass/components/_color.scss */
+.color-schedule-error {
+  color: #FF0000 !important;
+}
+
+/* line 22, ../sass/components/_color.scss */
+.color-schedule-saturday {
+  color: #0000FF !important;
+}
+
+/* line 23, ../sass/components/_color.scss */
+.color-schedule-sunday {
+  color: #FF0000 !important;
+}
+
+/* line 24, ../sass/components/_color.scss */
+.bg-schedule-support {
+  background-color: #fedfe6 !important;
+}
+
+/* line 25, ../sass/components/_color.scss */
+.bg-schedule-no-empl-insurance {
+  background-color: #ef7f7f !important;
+}
+
+/* line 26, ../sass/components/_color.scss */
+.bg-schedule-no-health-insurance {
+  background-color: #acfe2f !important;
+}
+
+/* line 27, ../sass/components/_color.scss */
+.bg-schedule-no-empl-health-insurance {
+  background-color: #fea400 !important;
+}
+
+/* line 28, ../sass/components/_color.scss */
+.bg-schedule-fixed {
+  background-color: #eccefb !important;
+}
+
+/* line 29, ../sass/components/_color.scss */
+.bg-schedule-uncorrectable {
+  background-color: #ddddd2 !important;
+}
+
+/* line 30, ../sass/components/_color.scss */
+.bg-schedule-work-by-dow {
+  background-color: #FFFF69 !important;
+}
+
+/* line 31, ../sass/components/_color.scss */
+.bg-schedule-shift-work {
+  background-color: #FFE699 !important;
+}
+
+/* line 32, ../sass/components/_color.scss */
+.bg-schedule-saturday {
+  background-color: #8bd8ff !important;
+}
+
+/* line 33, ../sass/components/_color.scss */
+.bg-schedule-sunday {
+  background-color: #fabf8f !important;
+}
+
+/* line 34, ../sass/components/_color.scss */
+.bg-schedule-specific-date {
+  background-color: #ffc0cb !important;
+}
+
+/* line 35, ../sass/components/_color.scss */
+.bg-schedule-that-day {
+  background-color: #ffff00 !important;
+}
+
+/* line 36, ../sass/components/_color.scss */
+.bg-schedule-focus {
+  background-color: #ffffcc !important;
+}
+
+/* line 38, ../sass/components/_color.scss */
+.bg-choice-row {
+  background-color: #CEE6FF !important;
+}
+
+/* line 39, ../sass/components/_color.scss */
+.bg-calendar-ym-set {
+  background-color: #BFEA60 !important;
+}
+
+/* line 40, ../sass/components/_color.scss */
+.bg-workinh-result-excess {
+  background-color: #ffff00 !important;
+}
+
+/* line 41, ../sass/components/_color.scss */
+.bg-pre-application-excess {
+  background-color: #ffc0cb !important;
+}
+
+/* line 42, ../sass/components/_color.scss */
+.bg-application-approved {
+  background-color: #BFEA60 !important;
+}
+
+/* line 43, ../sass/components/_color.scss */
+.bg-application-reflected {
+  background-color: #CEE6FF !important;
+}
+
+/* line 44, ../sass/components/_color.scss */
+.bg-denial-application {
+  background-color: #FD4D4D !important;
+}
+
+/* line 45, ../sass/components/_color.scss */
+.bg-unapproved-application {
+  background-color: #ffffff !important;
+}
+
+/* line 46, ../sass/components/_color.scss */
+.bg-remanded-application {
+  background-color: #FD4D4D !important;
+}
+
+/* line 47, ../sass/components/_color.scss */
+.bg-canceled-application {
+  background-color: #F6F636 !important;
+}
+
+/* line 49, ../sass/components/_color.scss */
+.color-operation-case-character {
+  color: #ff0000 !important;
+}
+
+/* line 50, ../sass/components/_color.scss */
+.color-working-schedule {
+  color: #00cc00 !important;
+}
+
+/* line 51, ../sass/components/_color.scss */
+.color-sunday {
+  color: #FF2D2D !important;
+}
+
+/* line 52, ../sass/components/_color.scss */
+.color-saturday {
+  color: #0086EA !important;
+}
+
+/* line 53, ../sass/components/_color.scss */
+.color-half-day-work {
+  color: #FF7F27 !important;
+}
+
+/* line 54, ../sass/components/_color.scss */
+.bg-weekdays {
+  background-color: #D9D9D9 !important;
+}
+
+/* line 55, ../sass/components/_color.scss */
+.color-weekdays {
+  color: #404040 !important;
+}
+
+/* line 56, ../sass/components/_color.scss */
+.bg-pasted {
+  background-color: #F8CBAD !important;
+}
+
+/* line 57, ../sass/components/_color.scss */
+.bg-updating-cell {
+  background-color: #FFD966 !important;
+}
+
+/* line 58, ../sass/components/_color.scss */
+.bg-selecting {
+  background-color: #BDD7EE !important;
+}
+
+/* line 59, ../sass/components/_color.scss */
+.bg-added-row {
+  background-color: #AFEEEE !important;
+}
+
+/* line 60, ../sass/components/_color.scss */
+.bg-actual-superior-unverified {
+  background-color: #FF7F27 !important;
+}
+
+/* line 61, ../sass/components/_color.scss */
+.bg-error-actual {
+  background-color: #ffc0cb !important;
+}
 
 /*****************************
   Overwrite JQueryUI
@@ -502,9 +706,12 @@ div.popup-panel {
 div.label {
   width: 100%;
 }
+
+/* line 225, ../sass/components/_commons.scss */
 .pre {
-    white-space: pre-wrap;
+  white-space: pre-wrap;
 }
+
 /*****************************
   Icon
 *****************************/
@@ -713,52 +920,54 @@ button .icon {
 /* line 183, ../sass/components/_icons.scss */
 .img-icon {
   display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center;
 }
-/* line 185, ../sass/components/_icons.scss */
+/* line 188, ../sass/components/_icons.scss */
 .img-icon.icon-arrow-up {
-  background: url("images/icons/arrow-up.png") no-repeat center;
+  background-image: url("images/icons/arrow-up.png");
   width: 24px;
   height: 24px;
 }
-/* line 189, ../sass/components/_icons.scss */
+/* line 192, ../sass/components/_icons.scss */
 .img-icon.icon-arrow-down {
-  background: url("images/icons/arrow-down.png") no-repeat center;
+  background-image: url("images/icons/arrow-down.png");
   width: 24px;
   height: 24px;
 }
-/* line 193, ../sass/components/_icons.scss */
+/* line 196, ../sass/components/_icons.scss */
 .img-icon.icon-download {
-  background: url("images/icons/download.png") no-repeat center;
+  background-image: url("images/icons/download.png");
   width: 17px;
   height: 16px;
 }
-/* line 197, ../sass/components/_icons.scss */
+/* line 200, ../sass/components/_icons.scss */
 .img-icon.icon-filter {
-  background: url("images/icons/filter.png") no-repeat center;
+  background-image: url("images/icons/filter.png");
   width: 30px;
   height: 28px;
 }
-/* line 202, ../sass/components/_icons.scss */
+/* line 205, ../sass/components/_icons.scss */
 .img-icon.icon-next {
-  background: url("images/icons/next-arrow.png") no-repeat center;
+  background-image: url("images/icons/next-arrow.png");
   width: 26px;
   height: 22px;
 }
-/* line 207, ../sass/components/_icons.scss */
+/* line 210, ../sass/components/_icons.scss */
 .img-icon.icon-next-all {
-  background: url("images/icons/next-all-arrow.png") no-repeat center;
+  background: url("images/icons/next-all-arrow.png");
   width: 44px;
   height: 22px;
 }
-/* line 212, ../sass/components/_icons.scss */
+/* line 215, ../sass/components/_icons.scss */
 .img-icon.icon-prev {
-  background: url("images/icons/prev-arrow.png") no-repeat center;
+  background-image: url("images/icons/prev-arrow.png");
   width: 26px;
   height: 22px;
 }
-/* line 217, ../sass/components/_icons.scss */
+/* line 220, ../sass/components/_icons.scss */
 .img-icon.icon-prev-all {
-  background: url("images/icons/prev-all-arrow.png") no-repeat center;
+  background-image: url("images/icons/prev-all-arrow.png");
   width: 44px;
   height: 22px;
 }
@@ -2961,10 +3170,10 @@ button.nts-switch-button[disabled]:hover {
   margin-left: 5px;
   min-width: 65px;
 }
-
+/* line 29, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
-	display: inline-block;
-	line-height: 32px;
+  display: inline-block;
+  line-height: 32px;
 }
 
 /*!
@@ -3616,22 +3825,24 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
 }
 
+/* line 227, ../sass/components/_ntsgrid.scss */
 .nts-editor-container {
-	height: 100%;
-	margin-left: -1px;
+  height: 100%;
+  margin-left: -1px;
 }
 
+/* line 232, ../sass/components/_ntsgrid.scss */
 .nts-editor-wrapper {
-	width: 100%;
-	margin: 1px;
+  width: 100%;
+  margin: 1px;
 }
 
-/* line 231, ../sass/components/_ntsgrid.scss */
+/* line 241, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
 }
 
-/* line 239, ../sass/components/_ntsgrid.scss */
+/* line 249, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }
@@ -3641,18 +3852,19 @@ button.nts-switch-button[disabled]:hover {
   position: relative;
 }
 
+/* line 4, ../sass/components/_extable.scss */
 .extable table th, .extable table td {
-	border: 1px solid #AAB7B8;
+  border: 1px solid #AAB7B8;
 }
 
-/* line 4, ../sass/components/_extable.scss */
+/* line 7, ../sass/components/_extable.scss */
 .extable .xheader td {
   color: #000;
   background-color: #D9D9D9;
   font-weight: bold;
 }
 
-/* line 9, ../sass/components/_extable.scss */
+/* line 12, ../sass/components/_extable.scss */
 .extable td.edit-cell {
   padding: 0px;
 }
@@ -3667,41 +3879,43 @@ button.nts-switch-button[disabled]:hover {
   background-color: #FAD7A0;
 }
 
+/* line 21, ../sass/components/_extable.scss */
 .extable div.xhidden, .extable td.xhidden {
-	background-color: #CCC;
+  background-color: #CCC;
 }
 
+/* line 24, ../sass/components/_extable.scss */
 .extable div.xseal, .extable td.xseal {
-	background-color: #CCC;
+  background-color: #CCC;
 }
 
-/* line 12, ../sass/components/_extable.scss */
+/* line 27, ../sass/components/_extable.scss */
 .extable div.highlight, .extable td.highlight, .xheader td.highlight {
   background-color: aqua;
 }
 
-/* line 21, ../sass/components/_extable.scss */
+/* line 30, ../sass/components/_extable.scss */
 .extable td.ex-round-go {
   cursor: pointer;
 }
 
-/* line 24, ../sass/components/_extable.scss */
+/* line 33, ../sass/components/_extable.scss */
 .extable div.x-cell-selected, .extable td.x-cell-selected {
   background-color: #3498DB;
   color: #FFF;
 }
 
-/* line 28, ../sass/components/_extable.scss */
+/* line 37, ../sass/components/_extable.scss */
 .extable tr.x-row-selected {
   background-color: #AED6F1;
 }
 
-/* line 31, ../sass/components/_extable.scss */
+/* line 40, ../sass/components/_extable.scss */
 .extable td.x-error, .extable div.x-error {
   border: solid 1px #FF6666 !important;
 }
 
-/* line 34, ../sass/components/_extable.scss */
+/* line 43, ../sass/components/_extable.scss */
 .extable td .column-icon {
   position: absolute;
   left: 6px;
@@ -3709,27 +3923,27 @@ button.nts-switch-button[disabled]:hover {
   margin-top: -8px;
 }
 
-/* line 40, ../sass/components/_extable.scss */
+/* line 49, ../sass/components/_extable.scss */
 .ex-editor input::-ms-clear {
   display: none;
 }
 
-/* line 43, ../sass/components/_extable.scss */
+/* line 52, ../sass/components/_extable.scss */
 .extable-crud {
   padding-bottom: 4px;
 }
 
-/* line 46, ../sass/components/_extable.scss */
+/* line 55, ../sass/components/_extable.scss */
 .extable-delete-rows {
   margin-left: 4px;
 }
 
-/* line 49, ../sass/components/_extable.scss */
+/* line 58, ../sass/components/_extable.scss */
 div .ex-area-line.x-stay {
   cursor: default !important;
 }
 
-/* line 53, ../sass/components/_extable.scss */
+/* line 62, ../sass/components/_extable.scss */
 .top-right-tooltip:before {
   width: 0;
   height: 0;
@@ -3744,7 +3958,7 @@ div .ex-area-line.x-stay {
   left: -14px;
 }
 
-/* line 66, ../sass/components/_extable.scss */
+/* line 75, ../sass/components/_extable.scss */
 .top-right-tooltip {
   background-color: #CACA1E;
   box-shadow: 2px 2px 2px #95A5A6;
@@ -3755,7 +3969,7 @@ div .ex-area-line.x-stay {
   padding-top: 4px;
 }
 
-/* line 76, ../sass/components/_extable.scss */
+/* line 85, ../sass/components/_extable.scss */
 .x-context-menu {
   position: absolute;
   display: inline-block;
@@ -3768,7 +3982,7 @@ div .ex-area-line.x-stay {
   z-index: 120050;
 }
 
-/* line 87, ../sass/components/_extable.scss */
+/* line 96, ../sass/components/_extable.scss */
 .x-context-menu:after {
   content: '';
   display: block;
@@ -3783,7 +3997,7 @@ div .ex-area-line.x-stay {
   z-index: 1;
 }
 
-/* line 101, ../sass/components/_extable.scss */
+/* line 110, ../sass/components/_extable.scss */
 .x-context-menu li {
   position: relative;
   display: block;
@@ -3794,19 +4008,19 @@ div .ex-area-line.x-stay {
   z-index: 2;
 }
 
-/* line 110, ../sass/components/_extable.scss */
+/* line 119, ../sass/components/_extable.scss */
 .x-context-menu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
 
-/* line 113, ../sass/components/_extable.scss */
+/* line 122, ../sass/components/_extable.scss */
 .x-context-menu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
 
-/* line 118, ../sass/components/_extable.scss */
+/* line 127, ../sass/components/_extable.scss */
 .x-context-menu li .menu-icon {
   position: absolute;
   left: 7px;
@@ -3814,7 +4028,7 @@ div .ex-area-line.x-stay {
   margin-top: -8px;
 }
 
-/* line 124, ../sass/components/_extable.scss */
+/* line 133, ../sass/components/_extable.scss */
 .x-context-menu .partition {
   height: 0;
   border-top: 1px solid #ccc;
@@ -3822,7 +4036,7 @@ div .ex-area-line.x-stay {
   margin: 5px 0;
 }
 
-/* line 131, ../sass/components/_extable.scss */
+/* line 140, ../sass/components/_extable.scss */
 .x-popup-panel {
   position: absolute;
   display: block;
@@ -3834,7 +4048,7 @@ div .ex-area-line.x-stay {
   padding: 5px;
 }
 
-/* line 142, ../sass/components/_extable.scss */
+/* line 151, ../sass/components/_extable.scss */
 .x-link {
   display: inline-block;
   color: #0D86D1;
@@ -3966,49 +4180,55 @@ div .ex-area-line.x-stay {
 .nts-fixed-table table.fixed-table > tbody > tr:hover > th {
   background-color: #C5F1F7;
 }
+/* line 18, ../sass/components/_fixedtable.scss */
 .nts-fixed-table table.fixed-table tbody td:last-child {
   border-right: 0px;
 }
+/* line 21, ../sass/components/_fixedtable.scss */
 .nts-fixed-table table.fixed-table thead th:last-child {
   border-right: 0px;
 }
-/* line 20, ../sass/components/_fixedtable.scss */
+/* line 27, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-header-container {
-  overflow: hidden; 
+  overflow: hidden;
   border-right: 1px #CCC solid;
-	border-left: 1px #CCC solid;
+  border-left: 1px #CCC solid;
 }
+/* line 32, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .nts-fixed-header-container thead th:first-child {
+  border-left: 0px !important;
+}
+/* line 37, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-header-wrapper {
-		margin-left: -1px;
-	}
+  margin-left: -1px;
+}
+/* line 40, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .scroll-header {
-		box-sizing: border-box;
- 	}   
-.nts-fixed-table .nts-fixed-header-container thead  th:first-child {
-		    border-left: 0px !important;
-		}
-/* line 24, ../sass/components/_fixedtable.scss */
+  box-sizing: border-box;
+}
+/* line 44, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-container {
   overflow: auto;
   float: left;
   border: 1px solid #CCC;
   border-top: 0px;
 }
-/* line 30, ../sass/components/_fixedtable.scss */
+/* line 51, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-header {
   display: inline-block;
 }
-/* line 30, ../sass/components/_fixedtable.scss */
-.nts-fixed-table .scroll-header{
-	background-color: #EDE9ED;
+/* line 55, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .scroll-header {
+  background-color: #EDE9ED;
 }
-/* line 30, ../sass/components/_fixedtable.scss */
+/* line 59, ../sass/components/_fixedtable.scss */
 .nts-fixed-table .nts-fixed-body-wrapper {
   margin: -1px 0 0 -2px;
-border-left: 1px solid #CCC;
+  border-left: 1px solid;
 }
-.nts-fixed-table .body-no-record{
-	margin-left: 0px;
+/* line 63, ../sass/components/_fixedtable.scss */
+.nts-fixed-table .body-no-record {
+  margin-left: 0px;
 }
 
 /* line 2, ../sass/components/_fileupload.scss */
@@ -4272,51 +4492,59 @@ border-left: 1px solid #CCC;
   outline: 1px solid red !important;
 }
 
-.ntsTable td{
-	border: 0px;
+/* line 2, ../sass/components/_buttontable.scss */
+.ntsTable td {
+  border: 0px;
 }
-	
+/* line 6, ../sass/components/_buttontable.scss */
 .ntsTable .ntsButtonTableButton {
-  	box-shadow: 0 0px rgba(0, 0, 0, 0.4);
-  	border: 1px solid LightGrey;
-  	margin-bottom: 0px;
-	position: unset;
-	color: LightGrey;
+  box-shadow: 0 0px rgba(0, 0, 0, 0.4);
+  border: 1px solid LightGrey;
+  margin-bottom: 0px;
+  color: LightGrey;
 }
-.ntsTable .ntsButtonTableButton:active {
-	position: unset;
+/* line 12, ../sass/components/_buttontable.scss */
+.ntsTable .ntsButtonTableButton :active {
+  position: unset;
 }
-.ntsTable .ntsButtonTableButton:hover {
-	background: #fff;
+/* line 15, ../sass/components/_buttontable.scss */
+.ntsTable .ntsButtonTableButton :hover {
+  background: #fff;
 }
-.ntsTable .ntsButtonTableButton:focus{
-	border: 1px solid LightGrey;
+/* line 18, ../sass/components/_buttontable.scss */
+.ntsTable .ntsButtonTableButton :focus {
+  border: 1px solid LightGrey;
 }
+/* line 22, ../sass/components/_buttontable.scss */
 .ntsTable .ntsButtonCellData {
-  	border: 1px solid black;
-	color: black;
+  border: 1px solid black;
+  color: black;
 }
-.ntsTable .ntsButtonCellData:focus{
-	border: 1px solid black;
+/* line 25, ../sass/components/_buttontable.scss */
+.ntsTable .ntsButtonCellData :focus {
+  border: 1px solid black;
 }
-.ntsTable .ntsButtonCellSelected{
-	background-color: #BDD7EE;
-  	border: 1px solid DodgerBlue;
+/* line 29, ../sass/components/_buttontable.scss */
+.ntsTable .ntsButtonCellSelected {
+  background-color: #BDD7EE;
+  border: 1px solid DodgerBlue;
 }
-.ntsTable .ntsButtonCellSelected:focus{
-  	border: 1px solid DodgerBlue;
+/* line 32, ../sass/components/_buttontable.scss */
+.ntsTable .ntsButtonCellSelected :focus {
+  border: 1px solid DodgerBlue;
 }
-.ntsTable .ntsButtonCellSelected:hover{
-	background-color: #BDD7EE;
-  	border: 1px solid DodgerBlue;
+/* line 35, ../sass/components/_buttontable.scss */
+.ntsTable .ntsButtonCellSelected :hover {
+  background: #BDD7EE;
+  border: 1px solid DodgerBlue;
 }
 
-/* line 49, ../sass/base.scss */
+/* line 50, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 53, ../sass/base.scss */
+/* line 54, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
