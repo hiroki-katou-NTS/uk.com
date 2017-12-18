@@ -180,7 +180,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	private void inputsProcess() {
 
-		List<SettingItemDto> dataServer = this.layoutFinder.getItemListByCreateType(command);
+		List<SettingItemDto> dataServer = new ArrayList<SettingItemDto>();
 
 		// merge data from client with dataServer
 		mergeData(dataServer, command.getInputs());
@@ -340,6 +340,11 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	}
 
 	private void mergeData(List<SettingItemDto> dataList, List<ItemsByCategory> inputs) {
+
+		if (command.getCreateType() == 2) {
+
+			dataList = this.layoutFinder.getAllInitItemBySetId(command);
+		}
 
 		dataList.forEach(x -> {
 
