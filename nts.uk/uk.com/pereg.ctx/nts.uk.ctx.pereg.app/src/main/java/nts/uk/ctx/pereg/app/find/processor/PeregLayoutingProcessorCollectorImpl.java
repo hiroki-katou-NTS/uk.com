@@ -48,7 +48,7 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>(){},
 			// CS00019 短時間勤務
 			// CS00020 労働条件
-			
+			//new TypeLiteral<PeregFinder<WorkingConditionDto>>(){},
 			// CS00021 勤務種別
 			new TypeLiteral<PeregFinder<BusinessTypeDto>>(){}
 			);

@@ -8,9 +8,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
-import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -52,25 +49,25 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 基本作成方法 予定作成方法.基本作成方法
 	 */
 	@PeregItem("IS00123")
-	private WorkScheduleBasicCreMethod basicCreateMethod;
+	private int basicCreateMethod;
 
 	/**
 	 * 営業日カレンダーのマスタ参照先 予定作成方法.営業日カレンダーによる勤務予定作成.営業日カレンダーの参照先
 	 */
 	@PeregItem("IS00124")
-	private WorkScheduleMasterReferenceAtr referenceBusinessDayCalendar;
+	private int referenceBusinessDayCalendar;
 
 	/**
 	 * 基本勤務のマスタ参照先 予定作成方法.営業日カレンダーによる勤務予定作成.基本勤務の参照先
 	 */
 	@PeregItem("IS00125")
-	private WorkScheduleMasterReferenceAtr referenceBasicWork;
+	private int referenceBasicWork;
 
 	/**
 	 * 就業時間帯の参照先 予定作成方法.月間パターンによる勤務予定作成.勤務種類と就業時間帯の参照先
 	 */
 	@PeregItem("IS00126")
-	private TimeZoneScheduledMasterAtr referenceType;
+	private int referenceType;
 
 	/**
 	 * 月間パターンCD
@@ -105,7 +102,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 平日時勤務時間1
 	 * 
 	 */
-	// @PeregItem("IS00132")
+	@PeregItem("IS00132")
+	private String weekDay1;
 
 	/**
 	 * 平日開始1 区分別勤務.平日時.勤務時間帯.開始 ※回数=1
@@ -122,7 +120,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 平日時勤務時間2
 	 */
-	// @PeregItem("IS00135")
+    @PeregItem("IS00135")
+    private String weekDay2;
 
 	/**
 	 * 平日開始2 区分別勤務.平日時.勤務時間帯.開始 ※回数=2
@@ -156,7 +155,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 休出時勤務時間1
 	 */
-	// @PeregItem("IS00141")
+	@PeregItem("IS00141")
+	private String workInHoliday1;
 
 	/**
 	 * 休出開始1 区分別勤務.休日出勤時.勤務時間帯.開始 ※回数=1
@@ -173,7 +173,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 休出時勤務時間2
 	 */
-	// @PeregItem("IS00144")
+	@PeregItem("IS00144")
+	private String workInHoliday2;
 
 	/**
 	 * 休出開始2 区分別勤務.休日出勤時.勤務時間帯.開始 ※回数=2
@@ -207,8 +208,9 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 公休時勤務時間1
 	 */
-	// @PeregItem("IS00150")
-
+	@PeregItem("IS00150")
+	private String workInPubliclicHoliday1;
+	
 	/**
 	 * 公休出開始1 区分別勤務.公休出勤時.勤務時間帯.開始 ※回数=1
 	 */
@@ -224,7 +226,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 公休時勤務時間2
 	 */
-	// @PeregItem("IS00153")
+	@PeregItem("IS00153")
+	private String workInPubliclicHoliday2;
 
 	/**
 	 * 公休出開始2 区分別勤務.公休出勤時.勤務時間帯.開始 ※回数=2
@@ -258,7 +261,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 法内休出時勤務時間1
 	 */
-	// @PeregItem("IS00159")
+	@PeregItem("IS00159")
+	private String inLawBreakTime1;
 
 	/**
 	 * 法内休出開始1 区分別勤務.法内休出時.勤務時間帯.開始 ※回数=1
@@ -275,7 +279,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 法内休出時勤務時間2
 	 */
-	// @PeregItem("IS00162")
+	@PeregItem("IS00162")
+	private String inLawBreakTime2;
 
 	/**
 	 * 法内休出開始2 区分別勤務.法内休出時.勤務時間帯.開始 ※回数=2
@@ -309,7 +314,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 法外休出時勤務時間1
 	 */
-	// @PeregItem("IS00168")
+	@PeregItem("IS00168")
+	private String outsideLawBreakTime1;
 
 	/**
 	 * 法外休出開始1 区分別勤務.法外休出時.勤務時間帯.開始 ※回数=1
@@ -326,7 +332,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 法外休出時勤務時間2
 	 */
-	// @PeregItem("IS00171")
+	@PeregItem("IS00171")
+	private String outsideLawBreakTime2;
 
 	/**
 	 * 法外休出開始2 区分別勤務.法外休出時.勤務時間帯.開始 ※回数=2
@@ -360,7 +367,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 法外祝日時勤務時間1
 	 */
-	// @PeregItem("IS00177")
+	@PeregItem("IS00177")
+	private String holidayAttendanceTime1;
 
 	/**
 	 * 法外祝日開始1 区分別勤務.祝日出勤時.勤務時間帯.開始 ※回数=1
@@ -377,7 +385,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 法外祝日時勤務時間2
 	 */
-	// @PeregItem("IS00180")
+	@PeregItem("IS00180")
+	private String holidayAttendanceTime2;
 
 	/**
 	 * 法外祝日開始2 区分別勤務.祝日出勤時.勤務時間帯.開始 ※回数=2
@@ -411,7 +420,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 日曜出勤時勤務時間1
 	 */
-	// @PeregItem("IS00186")
+	@PeregItem("IS00186")
+	private String sunday1;
 
 	/**
 	 * 日開始1 曜日別勤務.日曜日.勤務時間帯.開始 ※回数=1
@@ -428,7 +438,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 日曜出勤時勤務時間2
 	 */
-	// @PeregItem("IS00189")
+	@PeregItem("IS00189")
+	private String sunday2;
 
 	/**
 	 * 日開始2 曜日別勤務.日曜日.勤務時間帯.開始 ※回数=2
@@ -462,7 +473,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 月曜出勤時勤務時間1
 	 */
-	// @PeregItem("IS00195")
+	@PeregItem("IS00195")
+	private String monday1;
 
 	/**
 	 * 月開始1 曜日別勤務.月曜日.勤務時間帯.開始 ※回数=1
@@ -479,7 +491,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 月曜出勤時勤務時間2
 	 */
-	// @PeregItem("IS00198")
+	@PeregItem("IS00198")
+	private String monday2;
 
 	/**
 	 * 月開始2 曜日別勤務.月曜日.勤務時間帯.開始 ※回数=2
@@ -513,7 +526,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 火曜出勤時勤務時間1
 	 */
-	// @PeregItem("IS00204")
+	@PeregItem("IS00204")
+	private String tuesday1;
 
 	/**
 	 * 火開始1 曜日別勤務.火曜日.勤務時間帯.開始 ※回数=1
@@ -530,7 +544,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 火曜出勤時勤務時間2
 	 */
-	// @PeregItem("IS00207")
+	@PeregItem("IS00207")
+	private String tuesday2;
 
 	/**
 	 * 火開始2 曜日別勤務.火曜日.勤務時間帯.開始 ※回数=2
@@ -564,7 +579,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 水曜出勤時勤務時間1
 	 */
-	// @PeregItem("IS00213")
+	@PeregItem("IS00213")
+	private String wednesday1;
 
 	/**
 	 * 水開始1 曜日別勤務.水曜日.勤務時間帯.開始 ※回数=1
@@ -581,7 +597,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 水曜出勤時勤務時間2
 	 */
-	// @PeregItem("IS00216")
+	@PeregItem("IS00216")
+	private String wednesday2;
 
 	/**
 	 * 水開始2 曜日別勤務.水曜日.勤務時間帯.開始 ※回数=2
@@ -615,7 +632,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 木曜出勤時勤務時間1
 	 */
-	// @PeregItem("IS00222")
+	@PeregItem("IS00222")
+	private String thursday1;
 
 	/**
 	 * 木開始1 曜日別勤務.木曜日.勤務時間帯.開始 ※回数=1
@@ -632,7 +650,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 木曜出勤時勤務時間2
 	 */
-	// @PeregItem("IS00225")
+	@PeregItem("IS00225")
+	private String thursday2;
 
 	/**
 	 * 木開始2 曜日別勤務.木曜日.勤務時間帯.開始 ※回数=2
@@ -667,7 +686,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 金曜出勤時勤務時間1
 	 *
 	 */
-	// @PeregItem("IS00231")
+	@PeregItem("IS00231")
+	private String friday1;
 
 	/**
 	 * 金開始1 曜日別勤務.金曜日.勤務時間帯.開始 ※回数=1
@@ -684,7 +704,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 金曜出勤時勤務時間2
 	 */
-	// @PeregItem("IS00234")
+	@PeregItem("IS00234")
+	private String friday2;
 
 	/**
 	 * 金開始2 曜日別勤務.金曜日.勤務時間帯.開始 ※回数=2
@@ -718,7 +739,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 土曜出勤時勤務時間1
 	 */
-	// @PeregItem("IS00240")
+	@PeregItem("IS00240")
+	private String saturday1;
 
 	/**
 	 * 土開始1 曜日別勤務.土曜日.勤務時間帯.開始 ※回数=1
@@ -735,7 +757,8 @@ public class WorkingConditionDto extends PeregDomainDto {
 	/**
 	 * 土曜出勤時勤務時間2
 	 */
-	// @PeregItem("IS00243")
+	@PeregItem("IS00243")
+	private String saturday2;
 
 	/**
 	 * 土開始2 曜日別勤務.土曜日.勤務時間帯.開始 ※回数=2
@@ -892,10 +915,10 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setScheduleMethod(WorkingConditionDto dto, ScheduleMethod scheduleMethod) {
-		dto.setBasicCreateMethod(scheduleMethod.getBasicCreateMethod());
-		dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().getReferenceBusinessDayCalendar());
-		dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().getReferenceBasicWork());
-		dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().getReferenceType());
+		dto.setBasicCreateMethod(scheduleMethod.getBasicCreateMethod().value);
+		dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().getReferenceBusinessDayCalendar().value);
+		dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().getReferenceBasicWork().value);
+		dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().getReferenceType().value);
 	}
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {
