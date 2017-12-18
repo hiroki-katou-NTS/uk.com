@@ -12,10 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.junit.runners.Parameterized.Parameter;
-
+import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureEmpAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workrule.closure.ClousureEmpAddCommand;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
@@ -41,6 +41,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Path("ctx/at/shared/workrule/closure")
 @Produces("application/json")
 public class ClosureWs {
+	
+	@Inject
+	private ClosureEmpAddCommandHandler closureEmpAdd;
 
 	/** The finder. */
 	@Inject
@@ -63,6 +66,12 @@ public class ClosureWs {
 	/** The Constant TOTAL_MONTH_OF_YEAR. */
 	public static final int TOTAL_MONTH_OF_YEAR = 12;
 
+	@POST
+	@Path("addClousureEmp")
+	public void addClousureEmp(ClousureEmpAddCommand command) {
+		this.closureEmpAdd.handle(command);
+	}
+	
 	@POST
 	@Path("getClosureEmploy/{referDate}")
 	public ClosureEmployDto getClosureEmploy(@PathParam("referDate") int referDate) {

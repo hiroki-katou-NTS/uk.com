@@ -11748,12 +11748,14 @@ var nts;
                     }
                     function getSelectRow($grid) {
                         var row = null;
-                        var selectedRows = $grid.igGrid("selectedRows");
-                        if (selectedRows) {
-                            row = selectedRows[0];
-                        }
-                        else {
-                            row = $grid.igGrid("selectedRow");
+                        if ($grid.data("igGrid")) {
+                            var selectedRows = $grid.igGrid("selectedRows");
+                            if (selectedRows) {
+                                row = selectedRows[0];
+                            }
+                            else {
+                                row = $grid.igGrid("selectedRow");
+                            }
                         }
                         return row;
                     }

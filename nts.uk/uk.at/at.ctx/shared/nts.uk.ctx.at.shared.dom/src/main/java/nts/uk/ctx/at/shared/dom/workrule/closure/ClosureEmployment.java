@@ -33,5 +33,4 @@ public class ClosureEmployment extends AggregateRoot {
 	/** The closure id. */
 	// 締めＩＤ
 	private Integer closureId;
-
 }

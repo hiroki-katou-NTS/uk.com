@@ -7,9 +7,12 @@ module nts.uk.at.view.kmk012.e {
     import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
         export class ScreenModel {
+            //List clousureEmpAddDto to insert del all.
+            clousureEmpAddDto: ClousureEmpAddDto;
+
             //list items on grid.
             items: Array<any>;
-            
+
             //Param from KMK012E screen.
             startDate: number;
 
@@ -19,14 +22,44 @@ module nts.uk.at.view.kmk012.e {
             constructor() {
                 let self = this;
 
+                //List clousureEmpAddDto to insert del all.
+                self.clousureEmpAddDto = null;
+                
                 //Init list data on grid.
                 self.items = null;
-                
+
                 //Get startDate from KMK012E screen.
                 self.startDate = getShared("startDate");
-                
+
                 //Init data combobox
                 self.closureEmployDto = new ClosureEmployDto(null, null);
+            }
+
+            //Insert del in server.
+            insertDelArray() {
+                let self = this;
+                var dfd = $.Deferred();
+                
+                var source = $("#grid2").igGrid("option", "dataSource");
+                alert(source[0].name);
+                
+                //Only get item when closureId != -1
+                _.forEach(self.items, function(item) {
+                     if (item.closureId != -1) {
+                         self.clousureEmpAddDto.empCdNameList.push(item);
+                     }
+                });
+                
+                //Insert del in server.
+                service.insertDelArray(self.clousureEmpAddDto).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    dfd.resolve();
+
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });
+
+                return dfd.promise();
             }
 
             getClosureEmploy(startDate) {
@@ -37,9 +70,9 @@ module nts.uk.at.view.kmk012.e {
                 service.getClosureEmploy(startDate).done(function(data) {
                     self.closureEmployDto = new ClosureEmployDto(data.empCdNameList, data.closureCdNameList);
 
-                     //View data in ClousureEmploy
+                    //View data in ClousureEmploy
                     self.loadGrid(self.closureEmployDto);
-                    
+
                     dfd.resolve();
                 });
 
@@ -50,36 +83,21 @@ module nts.uk.at.view.kmk012.e {
                 let self = this;
                 //Init data for list item on grid.
                 self.items = closureEmployDto.empCdNameList;
-                //If closureID = null init value 0
+                //If closureID = null init value -1
                 self.items = _.map(self.items, function(item) {
                     if (item.closureId == null) {
-                        item.closureId = 0;
+                        item.closureId = -1;
                         return item;
-                    }else{
+                    } else {
                         return item;
                     }
                 });
-                
-//                self.items = (function() {
-//                    var list = [];
-//                    for (var i = 0; i < 15; i++) {
-//                        list.push(new GridItem(i));
-//                    }
-//                    return list;
-//                })();
-
-                //var model = new ScreenModel();
 
                 //Init data for combobox.
                 var comboItems = closureEmployDto.closureCdNameList;
                 //Insert comboColumns with value = 0;
-                var closureCdNameDto = new ClosureCdNameDto(0,'');
-                comboItems.add(closureCdNameDto);
-                
-//                var comboItems = [new ItemModel('1', '基本給'),
-//                    new ItemModel('2', '役職手当'),
-//                    new ItemModel('3', '基本給2')];
-
+                var closureCdNameDto = new ClosureCdNameDto(-1, '');
+                comboItems.unshift(closureCdNameDto);
                 var comboColumns = [{ prop: 'closureId', length: 4 },
                     { prop: 'closureName', length: 8 }];
 
@@ -91,7 +109,7 @@ module nts.uk.at.view.kmk012.e {
                     primaryKey: 'code',
                     virtualization: true,
                     virtualizationMode: 'continuous',
-                    
+
                     //columns on grid list.
                     columns: [
                         { headerText: 'ID', key: 'code', dataType: 'number', width: '50px', hidden: true },
@@ -102,8 +120,8 @@ module nts.uk.at.view.kmk012.e {
 
                     //Defind combobox and other control
                     ntsControls: [
-                       
-                        { name: 'Combobox', options: comboItems, optionsValue: 'closureId', optionsText: 'closureName', columns: comboColumns, controlType: 'ComboBox', enable: true }
+
+                        { name: 'Combobox', options: comboItems, optionsValue: 'closureId', optionsText: 'closureName', columns: comboColumns, controlType: 'ComboBox', enable: true }]
                         
                 });
             }
@@ -119,13 +137,19 @@ module nts.uk.at.view.kmk012.e {
                 //Get ClosureEmploy
                 self.getClosureEmploy(self.startDate);
 
-                //View data in ClousureEmploy
-                //self.loadGrid();
-
-
                 return dfd.promise();
             }
 
+        }
+
+        //Dto used to insertDelArray.
+        export class ClousureEmpAddDto {
+            //Employ data contain closure ID
+            empCdNameList: Array<EmpCdNameDto>;
+
+            constructor(empCdNameList: Array<EmpCdNameDto>) {
+                this.empCdNameList = empCdNameList;
+            }
         }
 
         //Main-Dto ClosureEmployDto
@@ -141,7 +165,7 @@ module nts.uk.at.view.kmk012.e {
             }
         }
 
-        //Sub-Dto EmpCdNameDto
+        //Gid data Sub-Dto EmpCdNameDto
         export class EmpCdNameDto {
             code: string;
             name: string;
@@ -154,7 +178,7 @@ module nts.uk.at.view.kmk012.e {
             }
         }
 
-        //Sub-Dto ClosureCdNameDto
+        //Combobox data Sub-Dto ClosureCdNameDto
         export class ClosureCdNameDto {
             closureId: number;
             closureName: string;
@@ -162,28 +186,6 @@ module nts.uk.at.view.kmk012.e {
             constructor(closureId: number, closureName: string) {
                 this.closureId = closureId;
                 this.closureName = closureName;
-            }
-        }
-
-        //Grid list data model
-        export class GridItem {
-            id: number;
-            combo: string;
-            text1: string;
-            constructor(index: number) {
-                this.id = index;
-                this.combo = String(index % 3 + 1);
-                this.text1 = "TEXT";
-            }
-        }
-        //Combo data model
-        export class ItemModel {
-            code: string;
-            name: string;
-
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
             }
         }
 
