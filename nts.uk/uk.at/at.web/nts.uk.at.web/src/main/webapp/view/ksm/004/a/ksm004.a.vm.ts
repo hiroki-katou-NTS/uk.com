@@ -325,7 +325,7 @@ module nts.uk.at.view.ksm004.a {
                     $(".yearMonthPicker").trigger("validate");
                     if (!nts.uk.ui.errors.hasError()) {
                         let dayOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").daysInMonth(); 
-                        let daySetnumber = self.calendarPanel1.optionDates().length;
+                        let daySetnumber = self.calendarPanel.optionDates().length;
                         if(daySetnumber<dayOfMonth){
                             // when at least 1 day is not select
                             // confirm auto fill data 
