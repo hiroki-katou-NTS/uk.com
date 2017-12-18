@@ -11,6 +11,9 @@ import javax.enterprise.util.TypeLiteral;
 
 import command.person.info.AddPersonCommand;
 import command.person.info.UpdatePersonCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.DeleteBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.DeleteAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.UpdateAffClassificationCommand;
@@ -53,7 +56,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddAffCompanyHistoryCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddPersonCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddEmployeeDataMngInfoCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){}
+			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){}
 			);
 	
 	/** Update handlers */
@@ -66,7 +70,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeDataMngInfoCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmploymentHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffCompanyHistoryCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>(){}
 			);
 	
 	/** Delete handlers */
@@ -76,7 +81,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmploymentHistoryCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){}
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteBusinessWorkTypeOfHistoryCommand>>(){}
 			);
 	
 	@Override

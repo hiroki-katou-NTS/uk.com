@@ -14,18 +14,16 @@ import nts.uk.ctx.at.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-
-
 @NoArgsConstructor
 @Entity
-@Table(name = "KACMT_WORKPLACE_MANAGER")
-public class KacmtWorkplaceManager extends UkJpaEntity implements Serializable {
+@Table(name = "SACMT_WORKPLACE_MANAGER")
+public class SacmtWorkplaceManager extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KacmtWorkplaceManagerPK  kacmtWorkplaceManagerPK;
+	public SacmtWorkplaceManagerPK  kacmtWorkplaceManagerPK;
 	
 	@Basic(optional = false)
-	@Column(name = "EMP_ID")
+	@Column(name = "SID")
 	public String employeeId;
 	
 	@Basic(optional = false)
@@ -45,7 +43,7 @@ public class KacmtWorkplaceManager extends UkJpaEntity implements Serializable {
 		return this.kacmtWorkplaceManagerPK;
 	}
 
-	public KacmtWorkplaceManager(KacmtWorkplaceManagerPK kacmtWorkplaceManagerPK, String employeeId, String workplaceId,
+	public SacmtWorkplaceManager(SacmtWorkplaceManagerPK kacmtWorkplaceManagerPK, String employeeId, String workplaceId,
 			GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.kacmtWorkplaceManagerPK = kacmtWorkplaceManagerPK;
@@ -55,9 +53,14 @@ public class KacmtWorkplaceManager extends UkJpaEntity implements Serializable {
 		this.endDate = endDate;
 	}
 	
-	public static KacmtWorkplaceManager toEntity(WorkplaceManager domain) {
-		return new  KacmtWorkplaceManager(
-					new KacmtWorkplaceManagerPK(domain.getWorkplaceManagerId()),
+	/**
+	 * Convert domain to entity
+	 * @param domain
+	 * @return SacmtWorkplaceManager object
+	 */
+	public static SacmtWorkplaceManager toEntity(WorkplaceManager domain) {
+		return new SacmtWorkplaceManager(
+					new SacmtWorkplaceManagerPK(domain.getWorkplaceManagerId()),
 					domain.getEmployeeId(),
 					domain.getWorkplaceId(),
 					domain.getHistoryPeriod().start(),
@@ -65,6 +68,10 @@ public class KacmtWorkplaceManager extends UkJpaEntity implements Serializable {
 				);
 	}
 	
+	/**
+	 * Convert entity to domain
+	 * @return WorkplaceManager object
+	 */
 	public WorkplaceManager toDomain() {
 		return new WorkplaceManager(
 				this.kacmtWorkplaceManagerPK.workplaceManagerId,
@@ -73,7 +80,4 @@ public class KacmtWorkplaceManager extends UkJpaEntity implements Serializable {
 				new DatePeriod(this.startDate, this.endDate)
 				);
 	}
-
-
-
 }
