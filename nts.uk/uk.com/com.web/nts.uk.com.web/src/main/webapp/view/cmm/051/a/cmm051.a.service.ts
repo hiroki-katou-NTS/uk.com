@@ -7,7 +7,7 @@ module nts.uk.com.view.cmm051.a {
             getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/",
         }
     
-        export function findAllWkpManagerByWkpId(wkpId : string): JQueryPromise<Array<base.IWorkplaceManager>> {
+        export function findAllWkpManagerByWkpId(wkpId : string): JQueryPromise<Array<base.WorkplaceManager>> {
             return nts.uk.request.ajax("at", paths.findAllWkpManager + wkpId);
         }
     
