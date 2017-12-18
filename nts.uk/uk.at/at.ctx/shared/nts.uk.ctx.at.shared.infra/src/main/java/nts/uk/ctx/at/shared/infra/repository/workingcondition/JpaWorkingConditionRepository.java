@@ -163,6 +163,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	public void update(WorkingCondition workingCondition) {
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(),
 				workingCondition.getEmployeeId(), null);
+		this.commandProxy().removeAll(entities);
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
 		this.commandProxy().updateAll(entities);
 	}
