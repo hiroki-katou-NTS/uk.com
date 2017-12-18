@@ -377,8 +377,12 @@ module ksm002.b.viewmodel {
         
             let dateData = self.calendarPanel.optionDates();
             let existItem = _.find(dateData, item => item.start == date);   
-            if(existItem!= undefined) {
+            if(existItem != undefined) {
                 existItem.changeListText(data);   
+            }else{
+                if(!nts.uk.util.isNullOrEmpty(data)){
+                    dateData.push(new CalendarItem(date, data));
+                }
             } 
             self.calendarPanel.optionDates.valueHasMutated();
            
