@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -24,7 +21,7 @@ public class FlexHalfDayWorkTime extends DomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
-	private List<FlowWorkRestTimezone> lstRestTimezone;
+	private FlowWorkRestTimezone restTimezone;
 	
 	/** The work timezone. */
 	// 勤務時間帯
@@ -40,15 +37,13 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.isNotFixRestTime() && this.hasNoNo1()) {
+		if (!this.restTimezone.isFixRestTime() && this.hasNoNo1()) {
 			throw new BusinessException("Msg_847");
 		}
 
-		this.getFixRestTime().forEach(restTime -> {
-			if (!this.isInFixedWork(restTime)) {
-				throw new BusinessException("Msg_755");
-			}
-		});
+		if (this.restTimezone.isFixRestTime() && !this.isInFixedWork(this.restTimezone)) {
+			throw new BusinessException("Msg_755");
+		}
 	}
 
 	/**
@@ -60,24 +55,6 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	private boolean isInFixedWork(FlowWorkRestTimezone flowRest) {
 		return flowRest.getFixedRestTimezone().getTimezones().stream().allMatch(
 				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
-	}
-
-	/**
-	 * Checks if is not fix rest time.
-	 *
-	 * @return true, if is not fix rest time
-	 */
-	private boolean isNotFixRestTime() {
-		return this.lstRestTimezone.stream().anyMatch(item -> !item.isFixRestTime());
-	}
-
-	/**
-	 * Gets the fix rest time.
-	 *
-	 * @return the fix rest time
-	 */
-	private List<FlowWorkRestTimezone> getFixRestTime() {
-		return this.lstRestTimezone.stream().filter(item -> item.isFixRestTime()).collect(Collectors.toList());
 	}
 
 	/**
@@ -97,7 +74,7 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public FlexHalfDayWorkTime(FlexHalfDayWorkTimeGetMemento memento) {
-		this.lstRestTimezone = memento.getLstRestTimezone();
+		this.restTimezone = memento.getRestTimezone();
 		this.workTimezone = memento.getWorkTimezone();
 		this.ampmAtr = memento.getAmpmAtr();
 	}
@@ -108,7 +85,7 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(FlexHalfDayWorkTimeSetMemento memento){
-		memento.setLstRestTimezone(this.lstRestTimezone);
+		memento.setRestTimezone(this.restTimezone);
 		memento.setWorkTimezone(this.workTimezone);
 		memento.setAmpmAtr(this.ampmAtr);
 	}

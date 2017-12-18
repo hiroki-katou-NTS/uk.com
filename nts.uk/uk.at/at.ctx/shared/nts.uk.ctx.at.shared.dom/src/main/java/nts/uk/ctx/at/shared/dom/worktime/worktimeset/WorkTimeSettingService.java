@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -27,8 +26,6 @@ public interface WorkTimeSettingService {
 	 * @param workTypeCode the work type code
 	 * @return the holiday work schedule
 	 */
-	// 打刻反映時間帯を取得する (Lấy 打刻反映時間帯)
-	List<StampReflectTimezone> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode);
 
 	/**
 	 * Rounding time.
@@ -47,7 +44,7 @@ public interface WorkTimeSettingService {
 	 * @param workNo the work no
 	 * @return the predetemine time setting
 	 */
-	//	所定時間帯を取得する
+	//	所定時間帯を取得す�
 	PredetemineTimeSetting getPredetemineTimeSetting(String companyId, WorkTypeCode workTypeCode, WorkNo workNo);
 
 }

@@ -19,29 +19,30 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class FlexWorkSettingFinder {
-	
+
 	/** The repository. */
 	@Inject
 	private FlexWorkSettingRepository repository;
-	
+
 	/**
 	 * Find by id.
 	 *
-	 * @param workTimeCode the work time code
+	 * @param workTimeCode
+	 *            the work time code
 	 * @return the optional
 	 */
-	public FlexWorkSettingDto findById(String workTimeCode){
-		
+	public FlexWorkSettingDto findById(String workTimeCode) {
+
 		// get company id
 		String companyId = AppContexts.user().companyId();
-		
+
 		// call repository find by id
-		Optional<FlexWorkSetting> flexWorkSetting = this.repository.findById(companyId,workTimeCode);
-		
-		if(flexWorkSetting.isPresent()){
+		Optional<FlexWorkSetting> flexWorkSetting = this.repository.find(companyId, workTimeCode);
+
+		if (flexWorkSetting.isPresent()) {
 			FlexWorkSettingDto dto = new FlexWorkSettingDto();
 			flexWorkSetting.get().saveToMemento(dto);
-			return dto; 
+			return dto;
 		}
 		return null;
 	}

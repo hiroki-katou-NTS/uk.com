@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTzSetMemento;
 
 /**
@@ -88,7 +88,7 @@ public class FlWorkHdTimeZoneDto implements FlWorkHdTzSetMemento {
 	 * .dom.worktime.flowset.FlowTimeSetting)
 	 */
 	@Override
-	public void setFlowTimeSetting(FlTimeSetting ftSet) {
+	public void setFlowTimeSetting(FlowTimeSetting ftSet) {
 		ftSet.saveToMemento(this.flowTimeSetting);
 	}
 }
