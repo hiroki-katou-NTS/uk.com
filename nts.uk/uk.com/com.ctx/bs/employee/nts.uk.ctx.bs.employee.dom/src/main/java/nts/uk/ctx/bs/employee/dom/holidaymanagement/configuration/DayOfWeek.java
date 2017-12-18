@@ -12,31 +12,31 @@ public enum DayOfWeek {
 	
 	/** The monday. */
 	// 月曜日
-	MONDAY(2, "Enum_DayOfWeek_Monday", "月曜日"),
+	MONDAY(0, "Enum_DayOfWeek_Monday", "月曜日"),
 	
 	/** The tuesday. */
 	// 火曜日
-	TUESDAY(3, "Enum_DayOfWeek_Tuesday", "火曜日"),
+	TUESDAY(1, "Enum_DayOfWeek_Tuesday", "火曜日"),
 	
 	/** The wednesday. */
 	// 水曜日
-	WEDNESDAY(4, "Enum_DayOfWeek_Wednesday", "水曜日"),
+	WEDNESDAY(2, "Enum_DayOfWeek_Wednesday", "水曜日"),
 		
 	/** The thursday. */
 	// 木曜日
-	THURSDAY(5, "Enum_DayOfWeek_Thursday", "木曜日"),
+	THURSDAY(3, "Enum_DayOfWeek_Thursday", "木曜日"),
 	
 	/** The friday. */
 	// 金曜日
-	FRIDAY(6, "Enum_DayOfWeek_Friday", "火曜日"),
+	FRIDAY(4, "Enum_DayOfWeek_Friday", "火曜日"),
 	
 	/** The saturday. */
 	// 土曜日
-	SATURDAY(7, "Enum_DayOfWeek_Saturday", "土曜日"),
+	SATURDAY(5, "Enum_DayOfWeek_Saturday", "土曜日"),
 
 	/** The sunday. */
 	// 日曜日
-	SUNDAY(8, "Enum_DayOfWeek_Sunday", "日曜日");
+	SUNDAY(6, "Enum_DayOfWeek_Sunday", "日曜日");
 
 
 	/** The value. */

@@ -21,4 +21,26 @@ public interface WorkingConditionItemRepository {
 	 * @return the optional
 	 */
 	Optional<WorkingConditionItem> findWorkingConditionItemByPersWorkCat(String employeeId, GeneralDate baseDate);
+
+	/**
+	 * Adds the.
+	 *
+	 * @param item the item
+	 */
+	void add(WorkingConditionItem item);
+
+	/**
+	 * Update.
+	 *
+	 * @param item the item
+	 */
+	void update(WorkingConditionItem item);
+
+	/**
+	 * Delete.
+	 *
+	 * @param historyId the history id
+	 */
+	void remove(String historyId);
+
 }
