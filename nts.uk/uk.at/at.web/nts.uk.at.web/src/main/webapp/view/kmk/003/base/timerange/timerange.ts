@@ -36,13 +36,15 @@ module kmk003.base.timerange {
                 if (!self.validTimeRange(newValue, self.endTime())) {
                     return;
                 }
-               self.value().startTime = newValue;
+                self.value().startTime = newValue;
+                self.value().endTime = self.endTime();
             });
             self.endTime.subscribe((newValue) => {
                 if (!self.validTimeRange(self.startTime(), newValue)) {
                     return;
                 }
-               self.value().endTime = newValue;
+                self.value().startTime = self.startTime();
+                self.value().endTime = newValue;
             });
         }
 

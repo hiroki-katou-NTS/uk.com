@@ -11,7 +11,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezoneSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 
 /**
  * The Class FlowOTTimezoneDto.
@@ -68,7 +68,7 @@ public class FlOTTimezoneDto implements FlOTTimezoneSetMemento {
 	 * FlowTimeSetting)
 	 */
 	@Override
-	public void setFlowTimeSetting(FlTimeSetting ftSet) {
+	public void setFlowTimeSetting(FlowTimeSetting ftSet) {
 		ftSet.saveToMemento(this.flowTimeSetting);
 	}
 

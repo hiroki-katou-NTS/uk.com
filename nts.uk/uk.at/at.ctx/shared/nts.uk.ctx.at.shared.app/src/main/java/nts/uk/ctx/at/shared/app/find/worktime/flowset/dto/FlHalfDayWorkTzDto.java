@@ -9,7 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 
 /**
  * The Class FlowHalfDayWorkTimezoneDto.
@@ -44,7 +44,7 @@ public class FlHalfDayWorkTzDto implements FlHalfDayWtzSetMemento {
 	 * dom.worktime.flowset.FlowWorkTimezoneSetting)
 	 */
 	@Override
-	public void setWorkTimeZone(FlWtzSetting tzone) {
+	public void setWorkTimeZone(FlowWorkTimezoneSetting tzone) {
 		tzone.saveToMemento(this.workTimeZone);
 	}
 }
