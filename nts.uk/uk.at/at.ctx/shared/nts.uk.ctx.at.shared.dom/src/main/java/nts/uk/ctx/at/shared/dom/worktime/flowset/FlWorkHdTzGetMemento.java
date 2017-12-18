@@ -65,5 +65,5 @@ public interface FlWorkHdTzGetMemento {
 	 *
 	 * @return the flow time setting
 	 */
- 	FlTimeSetting getFlowTimeSetting();
+ 	FlowTimeSetting getFlowTimeSetting();
 }

@@ -116,8 +116,8 @@ module cps002.a.vm {
                 });
                 if (InitSetting) {
                     service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                        self.categorySelectedCode("");
                         if (result.length) {
-                            self.categorySelectedCode("");
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
@@ -505,13 +505,13 @@ module cps002.a.vm {
                     }));
 
                     if (self.initSettingSelectedCode() == '') {
-                        if (self.employeeBasicInfo()) {
+                        if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
                             self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
                     }
-
+                    $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
                 dialog({ messageId: error.message }).then(() => {
@@ -577,11 +577,11 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
-              
+
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
-                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "no-close", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
                             self.backtoStep1();

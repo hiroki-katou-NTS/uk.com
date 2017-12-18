@@ -1,4 +1,4 @@
-module ksu001.common.viewmodel {
+module nts.uk.at.view.ksu001.common.viewmodel {
     export interface IWorkType {
         workTypeCode: string,
         sortOrder: number,

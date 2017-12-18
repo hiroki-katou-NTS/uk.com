@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleImport;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 /**
  * 
@@ -31,7 +32,7 @@ public interface TopPageSetFactory {
 	 * @param topPageJob
 	 * @return
 	 */
-	LayoutAllDto getTopPageForPosition(String fromScreen, JobPositionDto jobPosition,TopPageJobSet topPageJob);
+	LayoutAllDto getTopPageForPosition(String fromScreen, PortalJobTitleImport jobPosition,TopPageJobSet topPageJob);
 	/**
 	 * get top page not position
 	 * @param tpPerson

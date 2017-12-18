@@ -36,10 +36,111 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
+	 * getWorkingConditionHistory(java.lang.String, java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public Optional<WorkingCondition> getWorkingConditionHistory(String companyId, String sId,
+			String historyId) {
+
+		List<KshmtWorkingCond> result = this.findBy(companyId, sId, historyId);
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// exclude select
+		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
 	 * getAllWokingCondition(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<WorkingCondition> getAllWokingCondition(String companyId, String sId) {
+	public Optional<WorkingCondition> getBySid(String companyId, String sId) {
+
+		List<KshmtWorkingCond> result = this.findBy(companyId, sId, null);
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// exclude select
+		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
+	}
+
+	@Override
+	public Optional<WorkingCondition> getBySid(String sId) {
+
+		List<KshmtWorkingCond> result = this.findBy(null, sId, null);
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// exclude select
+		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#add(
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition)
+	 */
+	@Override
+	public void add(WorkingCondition workingCondition) {
+		List<KshmtWorkingCond> entities = new ArrayList<>();
+		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
+		this.commandProxy().insertAll(entities);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
+	 * update(nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition)
+	 */
+	@Override
+	public void update(WorkingCondition workingCondition) {
+		List<KshmtWorkingCond> entities = findBy(workingCondition.getCompanyId(),
+				workingCondition.getEmployeeId(), null);
+		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
+		this.commandProxy().updateAll(entities);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
+	 * remove(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void remove(String employeeId) {
+		List<KshmtWorkingCond> entities = findBy(null, employeeId, null);
+		this.commandProxy().removeAll(entities);
+	}
+
+	/**
+	 * Find by.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param sId
+	 *            the s id
+	 * @return the list
+	 */
+	private List<KshmtWorkingCond> findBy(String companyId, String sId, String historyId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -56,9 +157,22 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq company id
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.cid), companyId));
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid), sId));
+		if (companyId != null) {
+			lstpredicateWhere
+					.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.cid), companyId));
+		}
+
+		if (sId != null) {
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid),
+					sId));
+		}
+
+		if (historyId != null) {
+			lstpredicateWhere
+					.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.kshmtWorkingCondPK)
+							.get(KshmtWorkingCondPK_.historyId), historyId));
+		}
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -66,15 +180,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		// creat query
 		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
 
-		List<KshmtWorkingCond> result = query.getResultList();
-
-		// Check exist
-		if (CollectionUtil.isEmpty(result)) {
-			return Optional.empty();
-		}
-
-		// exclude select
-		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
+		return query.getResultList();
 	}
 
 }
