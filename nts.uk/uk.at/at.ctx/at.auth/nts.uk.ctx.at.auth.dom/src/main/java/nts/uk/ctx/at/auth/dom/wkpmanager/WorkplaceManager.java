@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.auth.dom.wkpmanager;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 public class WorkplaceManager extends AggregateRoot {
@@ -28,5 +30,21 @@ public class WorkplaceManager extends AggregateRoot {
 		this.employeeId = employeeId;
 		this.workplaceId = workplaceId;
 		this.historyPeriod = historyPeriod;
+	}
+	
+	public void validate() {
+		/*
+		 * 対象時間（開始日：終了日）大小チェック
+		 */
+		if (historyPeriod.start().after(historyPeriod.end())){
+			throw new BusinessException("Msg_136");
+		} else {
+			/*
+			 * 終了日はシステム日付と比較する
+			 */
+			if (historyPeriod.end().before(GeneralDate.today())) {
+				throw new BusinessException("Msg_11");
+			}
+		}
 	}
 }
