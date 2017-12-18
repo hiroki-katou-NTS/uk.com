@@ -94,28 +94,23 @@ public class MappingFactory {
 		// get dto value
 		Map<String, Object> dtoValue = peregDto == null ? new HashMap<String, Object>()
 				: getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
-		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem);
-	}
-
-	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, Map<String, Object> dtoFieldValue,
-			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
-
-		lstPerInfoItemDef.forEach(item -> {
+		
+		lstClsItem.forEach(item -> {
 			if (item.getItemCode().charAt(1) == 'S') {
 				LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
 				if (item.getItemDefType() == 2) {
-					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoValue);
 				} else {
-					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoValue);
 					item.getLstChildItemDef().forEach(x -> {
-						setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoFieldValue);
+						setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoValue);
 					});
 				}
 				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 			}
 		});
-
 	}
+
 
 	private static void setLayoutPersonInfoClsDto(LayoutPersonInfoClsDto layoutPerInfoClsDto,
 			PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue) {

@@ -154,6 +154,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         self.isDelete(true);
                     }
                 });
+            }else{
+                self.isDelete(false);    
             }
         }
         New(): void {
@@ -212,6 +214,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             block.invisible();
             new service.Service().insertRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
                 if (!nts.uk.util.isNullOrUndefined(data)) {
+                    self.selectedRoleIndividual("");
                     self.selectRole(roleId, data);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.isCreateMode(false);
@@ -250,6 +253,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     var userId = self.selectedRoleIndividual();
                     block.invisible();
                     new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
+                        self.selectedRoleIndividual('');
                         self.selectRole(self.selectedRole(), '');
                     }).always(() => {
                         block.clear();

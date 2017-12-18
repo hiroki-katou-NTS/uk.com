@@ -62,6 +62,8 @@ public class LayoutPersonInfoValueDto {
 
 	// contains some information of item for render control
 	private DataTypeStateDto item;
+	
+	private int type;
 
 	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
 			String itemCode, Integer row, Object value) {
@@ -87,6 +89,9 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		
+		dataObject.setType(itemDef.getItemTypeState().getItemType());
+		
 		if (itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
@@ -106,6 +111,9 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setRow(itemDef.getRow());
 		dataObject.setValue(value);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
+
+		dataObject.setType(itemDef.getItemTypeState().getItemType());
+		
 		if (itemDef.getItemDefType() == 2) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
