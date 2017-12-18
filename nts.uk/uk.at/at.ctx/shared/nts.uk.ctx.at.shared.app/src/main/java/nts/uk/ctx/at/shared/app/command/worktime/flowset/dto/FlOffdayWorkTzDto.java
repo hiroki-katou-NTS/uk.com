@@ -11,7 +11,7 @@ import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FlowWorkRestTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 
 /**
  * The Class FlOffdayWorkTzDto.
@@ -43,8 +43,8 @@ public class FlOffdayWorkTzDto implements FlOffdayWtzGetMemento {
 	 * getLstWorkTimezone()
 	 */
 	@Override
-	public List<FlWorkHdTimeZone> getLstWorkTimezone() {
-		return this.lstWorkTimezone.stream().map(item -> new FlWorkHdTimeZone(item)).collect(Collectors.toList());
+	public List<FlowWorkHolidayTimeZone> getLstWorkTimezone() {
+		return this.lstWorkTimezone.stream().map(item -> new FlowWorkHolidayTimeZone(item)).collect(Collectors.toList());
 	}
 
 }

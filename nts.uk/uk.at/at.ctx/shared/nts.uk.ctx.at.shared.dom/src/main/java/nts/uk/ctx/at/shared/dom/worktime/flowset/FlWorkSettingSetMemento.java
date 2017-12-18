@@ -40,7 +40,7 @@ public interface FlWorkSettingSetMemento {
 	 *
 	 * @param offDayWtz the new offday work timezone
 	 */
-	void setOffdayWorkTimezone(FlOffdayWtz offDayWtz);
+	void setOffdayWorkTimezone(FlowOffdayWorkTimezone offDayWtz);
 
 	/**
 	 * Sets the common setting.
@@ -54,14 +54,14 @@ public interface FlWorkSettingSetMemento {
 	 *
 	 * @param halfDayWtz the new half day work timezone
 	 */
-	void setHalfDayWorkTimezone(FlHalfDayWtz halfDayWtz);
+	void setHalfDayWorkTimezone(FlowHalfDayWorkTimezone halfDayWtz);
 
 	/**
 	 * Sets the stamp reflect timezone.
 	 *
 	 * @param stampRefTz the new stamp reflect timezone
 	 */
-	void setStampReflectTimezone(FlStampReflectTz stampRefTz);
+	void setStampReflectTimezone(FlowStampReflectTimezone stampRefTz);
 
 	/**
 	 * Sets the designated setting.
@@ -75,5 +75,5 @@ public interface FlWorkSettingSetMemento {
 	 *
 	 * @param flowSet the new flow setting
 	 */
-	void setFlowSetting(FlWorkDedSetting flowSet);
+	void setFlowSetting(FlowWorkDedicateSetting flowSet);
 }
