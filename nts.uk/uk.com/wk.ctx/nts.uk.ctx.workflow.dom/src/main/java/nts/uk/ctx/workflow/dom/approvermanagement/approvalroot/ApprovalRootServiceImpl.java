@@ -87,7 +87,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	public List<ApprovalRootOutput> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
 			int appType, GeneralDate baseDate) {
 		List<ApprovalRootOutput> result = new ArrayList<>();
-		// get 個人別就業承認ルート from workflow
+		/*// get 個人別就業承認ルート from workflow
 		List<PersonApprovalRoot> perAppRoots = this.perApprovalRootRepository.findByBaseDate(cid, sid, baseDate,
 				appType);
 		if (CollectionUtil.isEmpty(perAppRoots)) {
@@ -150,7 +150,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			result = perAppRoots.stream().map(x -> ApprovalRootOutput.convertFromPersonData(x))
 					.collect(Collectors.toList());
 			this.adjustmentData(cid, sid, baseDate, result);
-		}
+		}*/
 
 		return result;
 	}
