@@ -116,8 +116,8 @@ module cps002.a.vm {
                 });
                 if (InitSetting) {
                     service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                        self.categorySelectedCode("");
                         if (result.length) {
-                            self.categorySelectedCode("");
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
