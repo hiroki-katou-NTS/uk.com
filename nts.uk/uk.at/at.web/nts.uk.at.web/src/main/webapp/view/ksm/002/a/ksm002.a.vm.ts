@@ -396,7 +396,7 @@ module ksm002.a.viewmodel {
             var self = this;
             nts.uk.ui.windows.sub.modal('/view/ksm/002/c/index.xhtml',{ title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function(): any {
                 self.start().done(function(){
-                    $(".ntsCheckBox").attr("tabindex",5);
+                    
                     $(".chkBox ").find("label").eq(0).focus();
                 });
             })
