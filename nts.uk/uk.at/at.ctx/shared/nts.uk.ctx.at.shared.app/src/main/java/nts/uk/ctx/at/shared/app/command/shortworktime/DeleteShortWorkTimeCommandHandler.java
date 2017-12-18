@@ -52,7 +52,7 @@ public class DeleteShortWorkTimeCommandHandler extends CommandHandler<DeleteShor
 		}
 		existHist.get().remove(itemtoBeDeleted.get());
 		sWorkTimeHistoryRepository.delete(command.getEmployeeId(),command.getHistoryId());
-		sWorkTimeHistItemRepository.delete(command.getHistoryId());
+		sWorkTimeHistItemRepository.delete(command.getEmployeeId(),command.getHistoryId());
 	}
 
 }
