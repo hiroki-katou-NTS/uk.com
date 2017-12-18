@@ -70,7 +70,7 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository implements Business
 		if (entity.isPresent()) {
 			return Optional.of(toDomain(entity.get()));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 }

@@ -46,7 +46,6 @@ public class TimezoneUse extends TimeZone {
 		this.workNo = memento.getWorkNo();
 		this.start = memento.getStart();
 		this.end = memento.getEnd();
-		this.validate();
 	}
 	
 	/**
@@ -67,6 +66,6 @@ public class TimezoneUse extends TimeZone {
 	 * @return true, if is used
 	 */
 	public boolean isUsed() {
-		return this.useAtr == UseSetting.USE ? true : false;
+		return this.useAtr == UseSetting.USE;
 	}
 }

@@ -62,6 +62,9 @@ public class PersonInformationRoleFinder {
 	
 	public List<RoleDto> getListRoleByRoleType(int roleType ){
 		String companyId = AppContexts.user().companyId();
+		if(companyId == ""){
+			return null;
+		}
 		List<RoleDto> data =  roleRepo
 				.findByType(companyId,roleType)
 				.stream().map( c ->RoleDto.fromDomain(c) ).collect(Collectors.toList());

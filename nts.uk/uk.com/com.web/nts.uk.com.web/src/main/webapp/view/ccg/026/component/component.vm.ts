@@ -33,8 +33,12 @@ module nts.uk.com.view.ccg026.component {
                 var headerHeight: number = 23;
                 var heigth: number = (self.setting.maxRow) * 28 + headerHeight;
                 $("html").find("#table-permission").ntsFixedTable({ height: heigth });
-                $.when(self.getListOfFunctionPermission(), self.buildAvialabilityFunctionPermission()).done(() => {
-                    dfd.resolve();
+                self.getListOfFunctionPermission().done(() => {
+                    self.buildAvialabilityFunctionPermission().done(() => {
+                        dfd.resolve();
+                    }).fail(function(res: any) {
+                        dfd.reject();
+                    });
                 }).fail(function(res: any) {
                     dfd.reject();
                 });
@@ -59,7 +63,7 @@ module nts.uk.com.view.ccg026.component {
                                     displayName: dataDescriptions[i].displayName,
                                     displayOrder: dataDescriptions[i].displayOrder,
                                     description: dataDescriptions[i].description,
-                                    availability: (dataDescriptions[i].availability || false)
+                                    availability: (dataDescriptions[i].initialValue || false)
                                 }));
                         }
                         dfd.resolve();
@@ -82,13 +86,17 @@ module nts.uk.com.view.ccg026.component {
                         .done((dataAvailability: Array<model.IAvailabilityPermission>) => {
                             //process data
                             //filter get only function have availability permission
-                            dataAvailability = dataAvailability.filter(item => item.availability);
-                            //setting check for ListOfFunctionPermission and show
-                            for (var i = 0, len = self.listPermissions().length; i < len; i++) {
-                                var index = _.findIndex(dataAvailability, function(x: model.IAvailabilityPermission)
-                                { return x.functionNo == self.listPermissions()[i].functionNo });
-                                var isAvailability: boolean = (index > -1);
-                                self.listPermissions()[i].availability(isAvailability || false);
+                            if (dataAvailability && dataAvailability.length > 0) {
+                                dataAvailability = dataAvailability.filter(item => item.availability);
+                                //setting check for ListOfFunctionPermission and show
+                                for (var i = 0, len = self.listPermissions().length; i < len; i++) {
+                                    var index = _.findIndex(dataAvailability, function(x: model.IAvailabilityPermission)
+                                    { return x.functionNo == self.listPermissions()[i].functionNo });
+                                    var isAvailability: boolean = (index > -1);
+                                    self.listPermissions()[i].availability(isAvailability || false);
+                                }
+                            } else {
+                                self.resetFunctionPermissioṇ();
                             }
                             self.listPermissions.valueHasMutated();
                             dfd.resolve();
@@ -97,14 +105,19 @@ module nts.uk.com.view.ccg026.component {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                         });
                 } else {
-                    for (var i = 0, len = self.listPermissions().length; i < len; i++) {
-                        self.listPermissions()[i].availability(false);
-                    }
+                    self.resetFunctionPermissioṇ();
+                    self.listPermissions.valueHasMutated();
                     dfd.resolve();
                 }
                 return dfd.promise();
             }
 
+            private resetFunctionPermissioṇ()  {
+                let self = this;
+                for (var i = 0, len = self.listPermissions().length; i < len; i++) {
+                    self.listPermissions()[i].availability(self.listPermissions()[i].initialValue || false);
+                }
+            }
         }//end componentModel
     }//end viewmodel
 

@@ -12,10 +12,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtz;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtz;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTz;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingSetMemento;
 
 /**
@@ -91,7 +91,7 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 * FlowOffdayWorkTimezone)
 	 */
 	@Override
-	public void setOffdayWorkTimezone(FlOffdayWtz offDayWtz) {
+	public void setOffdayWorkTimezone(FlowOffdayWorkTimezone offDayWtz) {
 		offDayWtz.saveToMemento(this.offdayWorkTimezone);
 	}
 
@@ -115,7 +115,7 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 * FlowHalfDayWorkTimezone)
 	 */
 	@Override
-	public void setHalfDayWorkTimezone(FlHalfDayWtz halfDayWtz) {
+	public void setHalfDayWorkTimezone(FlowHalfDayWorkTimezone halfDayWtz) {
 		halfDayWtz.saveToMemento(this.halfDayWorkTimezone);
 	}
 
@@ -127,7 +127,7 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 * FlowStampReflectTimezone)
 	 */
 	@Override
-	public void setStampReflectTimezone(FlStampReflectTz stampRefTz) {
+	public void setStampReflectTimezone(FlowStampReflectTimezone stampRefTz) {
 		stampRefTz.saveToMemento(this.stampReflectTimezone);
 	}
 
@@ -151,7 +151,7 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 * FlowWorkDedicateSetting)
 	 */
 	@Override
-	public void setFlowSetting(FlWorkDedSetting flowSet) {
+	public void setFlowSetting(FlowWorkDedicateSetting flowSet) {
 		flowSet.saveToMemento(this.flowSetting);
 	}
 }

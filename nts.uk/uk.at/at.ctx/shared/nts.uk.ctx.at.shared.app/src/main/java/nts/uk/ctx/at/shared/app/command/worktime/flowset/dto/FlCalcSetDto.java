@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.command.worktime.flowset.dto;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlCalcGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWTCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 
 /**
  * The Class FlCalcSetDto.
@@ -24,8 +24,8 @@ public class FlCalcSetDto implements FlCalcGetMemento {
 	 * getCalcStartTimeSet()
 	 */
 	@Override
-	public PrePlanWTCalcMethod getCalcStartTimeSet() {
-		return PrePlanWTCalcMethod.valueOf(this.calcStartTimeSet);
+	public PrePlanWorkTimeCalcMethod getCalcStartTimeSet() {
+		return PrePlanWorkTimeCalcMethod.valueOf(this.calcStartTimeSet);
 	}
 
 }

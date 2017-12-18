@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
@@ -52,7 +53,7 @@ public class AddTemporaryAbsenceCommandHandler
 		String companyId = AppContexts.user().companyId();
 
 		String newHistID = IdentifierUtil.randomUniqueId();
-		DateHistoryItem dateItem = new DateHistoryItem(newHistID,new DatePeriod(command.getStartDate(), command.getEndDate()));
+		DateHistoryItem dateItem = new DateHistoryItem(newHistID,new DatePeriod(command.getStartDate()!=null?command.getStartDate():ConstantUtils.minDate(), command.getEndDate()!=null?command.getEndDate():ConstantUtils.maxDate()));
 
 		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(command.getEmployeeId());
 		

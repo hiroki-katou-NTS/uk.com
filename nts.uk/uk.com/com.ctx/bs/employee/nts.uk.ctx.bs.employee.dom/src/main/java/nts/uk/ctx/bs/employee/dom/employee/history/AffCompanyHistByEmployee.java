@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.dom.employee.history;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -49,9 +50,47 @@ public class AffCompanyHistByEmployee extends DomainEvent
 		lstAffCompanyHistoryItem.add(domain);
 		this.toBePublished();
 	}
-
+	
 	@Override
 	public List<AffCompanyHistItem> items() {
 		return lstAffCompanyHistoryItem;
 	}
+	
+	public Optional<AffCompanyHistItem> getHistoryWithReferDate(GeneralDate referenceDate) {
+		return this.lstAffCompanyHistoryItem.stream()
+				.filter(history -> history.getDatePeriod().start().beforeOrEquals(referenceDate)
+						&& history.getDatePeriod().end().afterOrEquals(referenceDate))
+				.findFirst();
+	}
+	
+	public Optional<AffCompanyHistItem> getHistoryBeforeReferDate(GeneralDate referenceDate) {
+		List<AffCompanyHistItem> matchedListEntryJobHist = this.lstAffCompanyHistoryItem.stream()
+				.filter(history -> history.getDatePeriod().end().before(referenceDate)).collect(Collectors.toList());
+		if (matchedListEntryJobHist.isEmpty()) {
+			return Optional.empty();
+		}
+		AffCompanyHistItem lastJobEntryHistory = matchedListEntryJobHist.get(0);
+		for (AffCompanyHistItem jobEntryHistory : matchedListEntryJobHist) {
+			if (jobEntryHistory.getDatePeriod().end().after(lastJobEntryHistory.getDatePeriod().end())) {
+				lastJobEntryHistory = jobEntryHistory;
+			}
+		}
+		return Optional.of(lastJobEntryHistory);
+	}
+	
+	public Optional<AffCompanyHistItem> getHistoryAfterReferDate(GeneralDate referenceDate) {
+		List<AffCompanyHistItem> matchedListEntryJobHist = this.lstAffCompanyHistoryItem.stream()
+				.filter(history -> history.getDatePeriod().start().after(referenceDate)).collect(Collectors.toList());
+		if (matchedListEntryJobHist.isEmpty()) {
+			return Optional.empty();
+		}
+		AffCompanyHistItem firstJobEntryHistory = matchedListEntryJobHist.get(0);
+		for (AffCompanyHistItem jobEntryHistory : matchedListEntryJobHist) {
+			if (jobEntryHistory.getDatePeriod().start().before(firstJobEntryHistory.getDatePeriod().start())) {
+				firstJobEntryHistory = jobEntryHistory;
+			}
+		}
+		return Optional.of(firstJobEntryHistory);
+	}
+	
 }

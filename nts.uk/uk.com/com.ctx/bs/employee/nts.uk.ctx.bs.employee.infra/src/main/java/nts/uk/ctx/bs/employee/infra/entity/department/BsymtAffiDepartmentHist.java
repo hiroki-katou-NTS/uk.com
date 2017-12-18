@@ -47,11 +47,11 @@ public class BsymtAffiDepartmentHist extends UkJpaEntity implements Serializable
 	@Column(name = "CID")
 	private String cid;
 	
-	@Basic(optional = true)
+	@Basic(optional = false)
 	@Column(name = "STR_DATE")
 	private GeneralDate strDate;
 	
-	@Basic(optional = true)
+	@Basic(optional = false)
 	@Column(name = "END_DATE")
 	private GeneralDate endDate;
 	

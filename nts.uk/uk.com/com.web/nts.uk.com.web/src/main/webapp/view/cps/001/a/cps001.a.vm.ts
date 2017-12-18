@@ -310,14 +310,16 @@ module cps001.a.vm {
 
                 item.remove = () => {
                     let query = {
-                        categoryId: category.id(),
+                        categoryId: category.categoryCode(),
                         personId: person.personId(),
                         employeeId: employee.employeeId(),
                         recordId: item.id()
                     };
 
                     service.removeCurrentCategoryData(query).done(x => {
-                        category.categoryType.valueHasMutated();
+                        info({ messageId: "Msg_16" }).then(() => {
+                            category.categoryType.valueHasMutated();
+                        });
                     });
                 };
             });
@@ -420,6 +422,8 @@ module cps001.a.vm {
                 emp = self.employee(),
                 person = emp.personInfo(),
                 layouts = self.layouts(),
+                tab = self.tabActive(),
+                cbid = self.currentCategory(),
                 inputs = _.flatten(layouts.map(x => x.outData())),
                 command: IPeregCommand = {
                     personId: person.personId(),
@@ -437,6 +441,11 @@ module cps001.a.vm {
                 self.start();
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();
+                    if (tab == TABS.CATEGORY) {
+                        cbid.id.valueHasMutated();
+                    } else {
+
+                    }
                 });
             }).fail((mes) => {
                 unblock();
@@ -510,6 +519,8 @@ module cps001.a.vm {
         employeeName?: string;
 
         numberOfWork?: number;
+        numberOfTempHist?: number;
+
         departmentCode?: string;
         departmentName?: string;
 
@@ -581,7 +592,7 @@ module cps001.a.vm {
                             self.employeeName(data.employeeName);
 
                             // set entire days with data receive
-                            self.numberOfWork(data.numberOfWork);
+                            self.numberOfWork(data.numberOfWork - data.numberOfTempHist);
 
                             self.position(data.position);
                             self.contractType(data.contractCodeType);
