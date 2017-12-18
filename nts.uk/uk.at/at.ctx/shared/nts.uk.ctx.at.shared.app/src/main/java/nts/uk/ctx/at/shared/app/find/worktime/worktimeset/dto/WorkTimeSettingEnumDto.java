@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -35,6 +36,12 @@ public class WorkTimeSettingEnumDto {
 	/** The rounding. */
 	private List<EnumConstant> rounding;
 	
+	/** The rounding - simple. */
+	private List<EnumConstant> roundingSimple;
+	
+	/** The lst late early atr. */
+	private List<EnumConstant> lstLateEarlyAtr;
+	
 	/**
 	 * Inits the.
 	 *
@@ -47,6 +54,10 @@ public class WorkTimeSettingEnumDto {
 		dto.setWorkTimeMethodSet(EnumAdaptor.convertToValueNameList(WorkTimeMethodSet.class, i18n));
 		dto.setRoundingTime(EnumAdaptor.convertToValueNameList(Unit.class, i18n));
 		dto.setRounding(EnumAdaptor.convertToValueNameList(Rounding.class, i18n));
+		List<EnumConstant> roundingSimple = EnumAdaptor.convertToValueNameList(Rounding.class, i18n);
+		roundingSimple.removeIf(enumConstant -> enumConstant.getValue() == Rounding.ROUNDING_DOWN_OVER.value);
+		dto.setRoundingSimple(roundingSimple);
+		dto.setLstLateEarlyAtr(EnumAdaptor.convertToValueNameList(LateEarlyAtr.class, i18n));
 		return dto;
 		
 	}

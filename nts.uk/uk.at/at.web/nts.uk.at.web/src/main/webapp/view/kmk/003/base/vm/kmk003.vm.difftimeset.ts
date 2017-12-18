@@ -98,7 +98,7 @@ module nts.uk.at.view.kmk003.a {
                     //TODO
                 }
                 
-                updateData(data: DiffWorkSettingDto) {
+                updateData() {
                     //TODO
                 }
                 

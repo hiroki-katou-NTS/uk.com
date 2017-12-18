@@ -9,13 +9,18 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../base/service/kmk003.service.common.js" />
+			<com:scriptfile path="../base/service/kmk003.service.fixedset.js" />
 			<com:scriptfile path="../base/service/kmk003.service.flexset.js" />
 			<com:scriptfile path="../base/service/kmk003.service.flowset.js" />
+			<com:scriptfile path="../base/service/kmk003.service.difftimeset.js" />
 			<com:scriptfile path="../base/service/kmk003.service.predset.js" />
 			<com:scriptfile path="../base/service/kmk003.service.worktimeset.js" />
 			<com:scriptfile path="../base/service/kmk003.service.command.js" />
 			<com:scriptfile path="../base/vm/kmk003.vm.common.js" />
+			<com:scriptfile path="../base/vm/kmk003.vm.fixedset.js" />
 			<com:scriptfile path="../base/vm/kmk003.vm.flexset.js" />
+			<com:scriptfile path="../base/vm/kmk003.vm.flowset.js" />
+			<com:scriptfile path="../base/vm/kmk003.vm.difftimeset.js" />
 			<com:scriptfile path="../base/vm/kmk003.vm.predset.js" />
 			<com:scriptfile path="../base/vm/kmk003.vm.worktimeset.js" />
 			<com:scriptfile path="../a1/kmk003.a1.vm.js" />
@@ -305,10 +310,11 @@
 												<div data-bind="ntsKMK003A8: {}">
 												</div>
 											</div>
-											<!--<div class="tab-a9">
+											<div class="tab-a9">
 												<div data-bind="ntsKMK003A9: { 
 													screenMode: tabMode,
-													model: mainSettingModel
+													model: mainSettingModel,
+													enum: settingEnum
 												}">
 												</div>
 											</div>
@@ -346,7 +352,7 @@
 													model: mainSettingModel
 												}">
 												</div>
-											</div>-->
+											</div>
 											<div class="tab-a15">
 												<span>Tab Content 1</span><br />
 											</div>

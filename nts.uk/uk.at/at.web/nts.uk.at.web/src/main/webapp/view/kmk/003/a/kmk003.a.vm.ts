@@ -70,7 +70,6 @@ module nts.uk.at.view.kmk003.a {
             
             workTimeSettingModel: WorkTimeSettingModel;
             predetemineTimeSettingModel: PredetemineTimeSettingModel;
-            fixedWorkSettingModel: FixedWorkSettingModel;
             
             settingEnum: WorkTimeSettingEnumDto;
             dataModelOneDay: EmTimeZoneSetModel[];
@@ -156,7 +155,6 @@ module nts.uk.at.view.kmk003.a {
                 //TODO: xoa model khong dung den
                 self.workTimeSettingModel = new WorkTimeSettingModel();
                 self.predetemineTimeSettingModel = new PredetemineTimeSettingModel();
-                self.fixedWorkSettingModel = new FixedWorkSettingModel();
             }
 
             /**
@@ -173,6 +171,8 @@ module nts.uk.at.view.kmk003.a {
                             service.findWorktimeSetingInfoByCode(worktime[0].worktimeCode).done(function(worktimeSettingInfo) {
                                 self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
                                 self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
+                                self.mainSettingModel.workTimeSetting = self.workTimeSettingModel;
+                                self.mainSettingModel.predetemineTimeSetting = self.predetemineTimeSettingModel;
                                 service.findByCodeFlexWorkSetting(worktime[0].worktimeCode).done(function(flexdata){
                                     if (flexdata) {
                                         self.updateDataFlexMode(flexdata);
