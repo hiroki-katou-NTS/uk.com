@@ -27,7 +27,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 	private JudgmentApprovalStatusService judgmentApprovalStatusService;
 
 	@Override
-	public void doRelease(String companyID, String rootStateID) {
+	public void doReleaseAllAtOnce(String companyID, String rootStateID) {
 		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(companyID, rootStateID);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);

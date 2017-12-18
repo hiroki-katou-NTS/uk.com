@@ -11,6 +11,6 @@ public interface ReleaseAllAtOnceService {
 	 * @param companyID 会社ID
 	 * @param rootStateID インスタンスID
 	 */
-	public void doRelease(String companyID, String rootStateID);
+	public void doReleaseAllAtOnce(String companyID, String rootStateID);
 	
 }
