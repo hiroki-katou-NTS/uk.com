@@ -14,5 +14,5 @@ public interface FlCalcSetMemento {
 	 *
 	 * @param method the new calc start time set
 	 */
-	void setCalcStartTimeSet(PrePlanWTCalcMethod method);
+	void setCalcStartTimeSet(PrePlanWorkTimeCalcMethod method);
 }

@@ -7,11 +7,10 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -60,7 +59,7 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
  * @author sonnlb
  *
  */
-@RequestScoped
+@Stateless
 public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmployeeCommand, String> {
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
@@ -131,7 +130,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	}
 
-	@Transactional
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private void addBasicData() {
 
@@ -242,7 +240,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		this.commandFacade.add(addContainer);
 	}
 
-	@Transactional
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private void addOptinalInputs(List<ItemsByCategory> fixedInputs) {
 		List<ItemsByCategory> addInputs = new ArrayList<ItemsByCategory>();

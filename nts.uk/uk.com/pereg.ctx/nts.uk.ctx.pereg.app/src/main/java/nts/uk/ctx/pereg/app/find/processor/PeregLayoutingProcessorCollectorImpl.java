@@ -47,7 +47,6 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00018 休職休業
 			new TypeLiteral<PeregFinder<TempAbsHisItemDto>>(){},
 			// CS00019 短時間勤務
-			new TypeLiteral<PeregFinder<ShortWorkTimeDto>>(){},
 			// CS00020 労働条件
 			
 			// CS00021 勤務種別
