@@ -2,7 +2,9 @@ package nts.uk.ctx.pereg.infra.repository.person.setting.selectionitem;
 
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
@@ -22,17 +24,38 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 			+ " WHERE si.contractCd = :contractCd " + " ORDER BY si.selectionItemName ";
 	private static final String SELECT_All_SELECTION_ITEM_NAME = SELECT_ALL
 			+ " WHERE si.selectionItemName = :selectionItemName";
-	private static final String SELECT_ALL_BY_PERSON_TYPE = SELECT_ALL + " WHERE si.selectionItemClsAtr =:selectionItemClsAtr"
-			+ " ORDER BY si.selectionItemName ";
+	private static final String SELECT_ALL_BY_PERSON_TYPE = SELECT_ALL
+			+ " WHERE si.selectionItemClsAtr =:selectionItemClsAtr" + " ORDER BY si.selectionItemName ";
 
 	@Override
 	public void add(PerInfoSelectionItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
+	private void updateEntity(PerInfoSelectionItem domain, PpemtSelectionItem entity) {
+		if (domain.getSelectionItemName() != null) {
+			entity.setSelectionItemName(domain.getSelectionItemName().v());
+		}
+
+		if (domain.getIntegrationCode() != null) {
+			entity.setIntegrationCd(domain.getIntegrationCode().v());
+		}
+
+		if (domain.getMemo() != null) {
+			entity.setMemo(domain.getMemo().v());
+		}
+	}
+
 	@Override
 	public void update(PerInfoSelectionItem domain) {
-		this.commandProxy().update(toEntity(domain));
+		Optional<PpemtSelectionItem> existSelItem = this.queryProxy()
+				.find(new PpemtSelectionItemPK(domain.getSelectionItemId()), PpemtSelectionItem.class);
+		if (!existSelItem.isPresent()) {
+			throw new RuntimeException("invalid PpemtSelectionItem!");
+		}
+		updateEntity(domain, existSelItem.get());
+
+		this.commandProxy().update(existSelItem.get());
 	}
 
 	@Override
@@ -76,14 +99,13 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 				domain.getFormatSelection().getSelectionCodeCharacter().value, domain.getMemo().v());
 
 	}
-	
-	//Lanlt
+
+	// Lanlt
 	@Override
 	public List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr) {
 		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionItem.class)
-				.setParameter("selectionItemClsAtr", selectionItemClsAtr)
-				.getList(c -> toDomain(c));
+				.setParameter("selectionItemClsAtr", selectionItemClsAtr).getList(c -> toDomain(c));
 	}
-	//Lanlt
+	// Lanlt
 
 }
