@@ -136,7 +136,7 @@
 								data-bind="ntsFormLabel: {constraint: 'SelectionExternalCDLength', required: true }">#{i18n.getText('CPS016_17')}</div>
 							<input style="width: 20px;"
 								data-bind="ntsNumberEditor : {
-									name: '#[CPS016_16]',
+									name: '#[CPS016_18]',
 									value: selectionExternalCode,
 									constraint: 'SelectionExternalCDLength',
 									option: '',
@@ -171,7 +171,7 @@
 								<label>#{i18n.getText('CPS016_21')}</label>
 							</div>
 							<textarea style="width: 450px; height: 90px;"
-								data-bind="ntsMultilineEditor: { value: memo , constraint: 'Memo',required: false}" />
+								data-bind="ntsMultilineEditor: { name: '#[CPS016_22]',value: memo , constraint: 'Memo',required: false}" />
 						</div>
 					</div>
 				</div>
