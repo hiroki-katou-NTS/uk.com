@@ -326,7 +326,7 @@ public class LayoutFinder {
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, List<LayoutPersonInfoClsDto> classItemList,
 			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
 
-		cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), classItemList);
+		cloneDefItemToValueItem(perInfoCategory, classItemList);
 
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
@@ -464,12 +464,13 @@ public class LayoutFinder {
 		}
 	}
 
-	private void cloneDefItemToValueItem(String categoryCode, List<LayoutPersonInfoClsDto> classItemList) {
+	private void cloneDefItemToValueItem(PersonInfoCategory perInfoCategory, List<LayoutPersonInfoClsDto> classItemList) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			List<Object> items = new ArrayList<>();
 			for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
-				items.add(LayoutPersonInfoValueDto.cloneFromItemDef(categoryCode, itemDef));
+				items.add(LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef));
 			}
+			classItem.setListItemDf(null);
 			classItem.setItems(items);
 		}
 	}
