@@ -853,7 +853,10 @@ module nts.uk.com.view.cmm011.a {
                     service.removeWorkplaceHistory(command).done(() => {
                         
                         // find workplace history
-                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
+                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId()).done(() => {
+                            // select item 
+                            self.setSelectionHistSuitable();
+                        });
                     }).fail((res: any) => {
                         nts.uk.ui.dialog.bundledErrors(res);
                     })
@@ -902,6 +905,37 @@ module nts.uk.com.view.cmm011.a {
                 self.lstWpkHistory([newHist]);
             }
 
+            /**
+             * After remove history, choose item in time range of workplace config history.
+             */
+            public setSelectionHistSuitable() {
+                let self = this;
+                
+                // list only a item.
+                if (self.lstWpkHistory().length == 1) {
+                    return;
+                }
+                let result: Array<IHistory> = self.lstWpkHistory()
+                    .filter(item => item.startDate <= self.parentModel.strDWorkplace()
+                        && item.endDate >= self.parentModel.strDWorkplace());
+                
+                if (result.length <= 0) {
+                    self.selectFirst();
+                } else {
+                    // sort start date ASC
+                    result.sort(function(a: IHistory, b: IHistory) {
+                        if (a.startDate < b.startDate) {
+                            return -1;
+                        } else if (a.startDate > b.startDate) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    self.selectedHistoryId(result[0].historyId);
+                }
+                
+            }
+            
             /**
              * loadWkpHistoryInfo
              */
