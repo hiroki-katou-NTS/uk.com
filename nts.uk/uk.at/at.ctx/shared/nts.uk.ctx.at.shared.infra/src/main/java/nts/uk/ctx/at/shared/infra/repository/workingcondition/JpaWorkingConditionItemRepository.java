@@ -121,7 +121,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
 
-		this.commandProxy().insert(entity);
+		this.commandProxy().update(entity);
 	}
 
 	/*
