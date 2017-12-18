@@ -38,8 +38,6 @@ public class DisplayMyPageFinder {
 	@Inject
 	private TopPageJobSetRepository topPageJobSet;
 	@Inject
-	private TopPageSelfSettingFinder topPageSelfSet;
-	@Inject
 	private PortalJobTitleAdapter jobTitleAdapter;
 
 	/**
