@@ -29,7 +29,6 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -60,9 +59,6 @@ public class RegisterLayoutFinder {
 	@Inject
 
 	private InitValueSetItemFinder initItemFinder;
-
-	@Inject
-	private I18NResourcesForUK ukResouce;
 
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
@@ -96,7 +92,7 @@ public class RegisterLayoutFinder {
 
 	private List<LayoutPersonInfoClsDto> getlistItemCls(AddEmployeeCommand command, NewLayout _layout) {
 
-		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
+		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDtoHasCtgCd(_layout.getLayoutID());
 
 		if (command.getCreateType() != 3) {
 
@@ -128,7 +124,7 @@ public class RegisterLayoutFinder {
 				if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
 					itemCls.getListItemDf().forEach(itemDef -> {
 						LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
-								ActionRole.EDIT.value);
+								ActionRole.EDIT.value, itemCls.getPersonInfoCategoryCD());
 
 						if (CollectionUtil.isEmpty(itemCls.getItems())) {
 							List<Object> itemList = new ArrayList<Object>();
@@ -167,10 +163,12 @@ public class RegisterLayoutFinder {
 				LayoutPersonInfoValueDto infoValue = null;
 				if (setItemOpt.isPresent()) {
 					SettingItemDto setItem = setItemOpt.get();
-					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value);
+					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value,
+							itemCls.getPersonInfoCategoryCD());
 				} else {
 					if (itemDef.getItemTypeState().getItemType() == 1 || createType == 1) {
-						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value);
+						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value,
+								itemCls.getPersonInfoCategoryCD());
 					}
 
 				}
@@ -187,7 +185,7 @@ public class RegisterLayoutFinder {
 	}
 
 	private LayoutPersonInfoValueDto createPersonInfoValueDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
-			int actionRole) {
+			int actionRole, String ctgCd) {
 
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
@@ -211,9 +209,8 @@ public class RegisterLayoutFinder {
 		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
 		if (setItem != null) {
 			dataObject.setValue(setItem.getValueAsString());
-			dataObject.setCategoryCode(setItem.getCategoryCode());
 		}
-
+		dataObject.setCategoryCode(ctgCd);
 		return dataObject;
 
 	}
