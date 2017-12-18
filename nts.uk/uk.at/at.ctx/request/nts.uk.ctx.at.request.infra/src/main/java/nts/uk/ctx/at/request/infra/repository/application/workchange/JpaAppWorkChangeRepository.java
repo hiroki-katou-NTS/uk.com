@@ -63,10 +63,6 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
 		
 		this.commandProxy().update(updateWorkChange);
     }
-    @Override
-    public void remove(AppWorkChange domain){
-        this.commandProxy().remove(toEntity(domain));
-    }
     
     @Override
     public void remove(String cid, String appId){
@@ -74,13 +70,14 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
     }
     
 	private static AppWorkChange toDomain(KrqdtAppWorkChange entity) {
-		AppWorkChange appWorkChange = AppWorkChange.createFromJavaType(entity.appWorkChangePk.cid, entity.appWorkChangePk.appId, entity.workTypeCd, entity.workTimeCd,
-				entity.excludeHolidayAtr, entity.workChangeAtr, entity.goWorkAtr1, entity.backHomeAtr1,
-				entity.breakTimeStart1, entity.breakTimeEnd1, entity.workTimeStart1, entity.workTimeEnd1,
-				entity.workTimeStart2, entity.workTimeEnd2, entity.goWorkAtr2, entity.backHomeAtr2);
+		AppWorkChange appWorkChange = AppWorkChange.createFromJavaType(entity.appWorkChangePk.cid,
+				entity.appWorkChangePk.appId, entity.workTypeCd, entity.workTimeCd, entity.excludeHolidayAtr,
+				entity.workChangeAtr, entity.goWorkAtr1, entity.backHomeAtr1, entity.breakTimeStart1,
+				entity.breakTimeEnd1, entity.workTimeStart1, entity.workTimeEnd1, entity.workTimeStart2,
+				entity.workTimeEnd2, entity.goWorkAtr2, entity.backHomeAtr2);
 		appWorkChange.setVersion(entity.version);
-		
-		return appWorkChange;		
+
+		return appWorkChange;
 	}
 
 	private KrqdtAppWorkChange toEntity(AppWorkChange domain) {
