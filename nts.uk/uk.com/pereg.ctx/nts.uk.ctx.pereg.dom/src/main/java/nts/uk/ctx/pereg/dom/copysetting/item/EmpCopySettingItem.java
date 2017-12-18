@@ -1,5 +1,7 @@
 package nts.uk.ctx.pereg.dom.copysetting.item;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -25,8 +27,10 @@ public class EmpCopySettingItem extends AggregateRoot {
 
 	private int dataType;
 
+	private BigDecimal selectionItemRefType;
+
 	public EmpCopySettingItem(String perInfoCtgId, String categoryCode, String itemDefId, String itemCode,
-			String itemName, IsRequired isRequired, int dataType) {
+			String itemName, IsRequired isRequired, int dataType, BigDecimal selectionItemRefType) {
 		super();
 		this.perInfoCtgId = perInfoCtgId;
 		this.categoryCode = categoryCode;
@@ -35,13 +39,14 @@ public class EmpCopySettingItem extends AggregateRoot {
 		this.itemName = itemName;
 		this.isRequired = isRequired;
 		this.dataType = dataType;
+		this.selectionItemRefType = selectionItemRefType;
 	}
 
 	public static EmpCopySettingItem createFromJavaType(String perInfoCtgId, String categoryCode, String itemDefId,
-			String itemCode, String itemName, int isRequired, int dataType) {
+			String itemCode, String itemName, int isRequired, int dataType, BigDecimal selectionItemRefType) {
 
 		return new EmpCopySettingItem(perInfoCtgId, categoryCode, itemDefId, itemCode, itemName,
-				EnumAdaptor.valueOf(isRequired, IsRequired.class), dataType);
+				EnumAdaptor.valueOf(isRequired, IsRequired.class), dataType, selectionItemRefType);
 
 	}
 

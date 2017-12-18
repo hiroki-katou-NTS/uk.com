@@ -41,7 +41,7 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 	 */
 	private List<BsymtJobHist> toEntity(JobTitle jobTitle) {
 
-		List<BsymtJobHist> listEntity = jobTitle.getJobTitleHistory().stream()
+		List<BsymtJobHist> listEntity = jobTitle.getJobTitleHistories().stream()
 				.map(jobTitleHistory -> {
 					BsymtJobHistPK pk = new BsymtJobHistPK(jobTitle.getCompanyId().v(),
 							jobTitleHistory.identifier(), jobTitle.getJobTitleId());

@@ -51,7 +51,7 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		String histId = IdentifierUtil.randomUniqueId();
-		DateHistoryItem dateItem = new DateHistoryItem(histId, new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+		DateHistoryItem dateItem = new DateHistoryItem(histId, new DatePeriod(command.getStartDate()!=null?command.getStartDate():ConstantUtils.minDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		
 		Optional<AffJobTitleHistory_ver1> existHist = affJobTitleHistoryRepository_ver1.getListBySid(companyId, command.getSid());
 		

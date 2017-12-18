@@ -173,9 +173,9 @@
 											]
 										},
 										event: {
-											add: multiple.add,
-											replication: function() {},
-											delete: multiple.remove
+											add: multiple.events.add,
+											replication: multiple.events.replace,
+											delete: multiple.events.remove
 										}
 									} }">
 								</div>

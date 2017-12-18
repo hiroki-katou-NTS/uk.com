@@ -17,9 +17,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 
 /**
@@ -55,6 +57,8 @@ public class JpaWorkingConditionRepository extends JpaRepository
 
 		// eq company id
 		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkingCond_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid), sId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -63,6 +67,11 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
 
 		List<KshmtWorkingCond> result = query.getResultList();
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
 
 		// exclude select
 		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));

@@ -91,6 +91,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 	@Override
 	public void add(EmpRegHistory domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 
 	}
 
@@ -104,6 +105,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 		if (optRegHist.isPresent()) {
 			this.commandProxy().update(optRegHist.get().updateFromDomain(newEmpRegHistory));
 		}
+		this.getEntityManager().flush();
 
 	}
 
