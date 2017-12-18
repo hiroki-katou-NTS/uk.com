@@ -88,8 +88,35 @@ module kcp.share.tree {
          * set tabIndex
          */
         tabindex?: number;
+        
+        /**
+         * system type
+         */
+        systemType: SystemType;
     }
 
+    /**
+     * System type ~ システム区分
+     *
+     */
+    export class SystemType {
+        
+        // なし
+        static NONE = 0;
+        
+        // 個人情報
+        static PERSONAL_INFORMATION = 1;
+        
+        // 人事
+        static HUMAN_RESOURCES = 2;
+        
+        // 給与
+        static SALRY = 3;
+        
+        // 就業
+        static EMPLOYMENT = 4;
+    }
+    
     export class TreeType {
         static WORK_PLACE = 1;
     }
