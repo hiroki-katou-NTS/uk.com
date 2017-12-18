@@ -182,40 +182,43 @@ button {
 
 .img-icon {
 	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: center;
+	
 	&.icon-arrow-up {
-		background: url('images/icons/arrow-up.png') no-repeat center;
+		background-image: url('images/icons/arrow-up.png');
 	    width: 24px; height: 24px;
 	}
 	&.icon-arrow-down {
-		background: url('images/icons/arrow-down.png') no-repeat center;
+		background-image: url('images/icons/arrow-down.png');
 	    width: 24px; height: 24px;
 	}
 	&.icon-download {
-		background: url('images/icons/download.png') no-repeat center;
+		background-image: url('images/icons/download.png');
 	    width: 17px; height: 16px;
 	}
 	&.icon-filter {
-		background: url('images/icons/filter.png') no-repeat center;
+		background-image: url('images/icons/filter.png');
 	    width: 30px; height: 28px;
 	}
 	
 	&.icon-next {
-		background: url('images/icons/next-arrow.png') no-repeat center;
+		background-image: url('images/icons/next-arrow.png');
 	    width: 26px; height: 22px;
 	}
 	
 	&.icon-next-all {
-		background: url('images/icons/next-all-arrow.png') no-repeat center;
+		background: url('images/icons/next-all-arrow.png');
 	    width: 44px; height: 22px;
 	}
 	
 	&.icon-prev {
-		background: url('images/icons/prev-arrow.png') no-repeat center;
+		background-image: url('images/icons/prev-arrow.png');
 	    width: 26px; height: 22px;
 	}
 	
 	&.icon-prev-all {
-		background: url('images/icons/prev-all-arrow.png') no-repeat center;
+		background-image: url('images/icons/prev-all-arrow.png');
 	    width: 44px; height: 22px;
 	}
 	
