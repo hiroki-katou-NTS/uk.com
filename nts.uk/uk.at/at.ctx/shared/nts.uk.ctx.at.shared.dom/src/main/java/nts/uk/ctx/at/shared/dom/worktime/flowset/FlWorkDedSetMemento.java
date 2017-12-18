@@ -14,12 +14,12 @@ public interface FlWorkDedSetMemento {
 	 *
 	 * @param otSet the new overtime setting
 	 */
-	void setOvertimeSetting(FlOTSet otSet);
+	void setOvertimeSetting(FlowOTSet otSet);
 
 	/**
 	 * Sets the calculate setting.
 	 *
 	 * @param fcSet the new calculate setting
 	 */
-	void setCalculateSetting(FlCalcSet fcSet);
+	void setCalculateSetting(FlowCalculateSet fcSet);
 }

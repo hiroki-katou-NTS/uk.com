@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingGetMemento;
 
 /**
@@ -43,8 +43,8 @@ public class FlWorkTzSettingDto implements FlWtzSettingGetMemento {
 	 * getLstOTTimezone()
 	 */
 	@Override
-	public List<FlOTTimezone> getLstOTTimezone() {
-		return this.lstOTTimezone.stream().map(item -> new FlOTTimezone(item)).collect(Collectors.toList());
+	public List<FlowOTTimezone> getLstOTTimezone() {
+		return this.lstOTTimezone.stream().map(item -> new FlowOTTimezone(item)).collect(Collectors.toList());
 	}
 
 }

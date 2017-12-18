@@ -26,20 +26,20 @@
 			</div>
 			<div id="contents-area">
 				<div>#{i18n.getText('CPS001_80')}</div>
- 				<div class="uploadfile" >
-				<div id="file-upload" data-bind="ntsFileUpload:{
+				<div class="uploadfile">
+					<div id="file-upload"
+						data-bind="ntsFileUpload:{
 					filename: filename,
 					accept: accept,
 					text: textId,
 					aslink: asLink,
 					enable: enable,
-					onchange: onchange,
-					onfilenameclick: onfilenameclick}"></div></div> 
+					onchange: onchangefileupload.bind($data, filename)}"></div>
+				</div>
 				<table id="grid2"></table>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: pushData">#{i18n.getText('CPS001_1')}</button>
-				<button data-bind="click: close">#{i18n.getText('CPS001_1')}</button>
+			<div style="float: left;" data-bind ="text: fileSize"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

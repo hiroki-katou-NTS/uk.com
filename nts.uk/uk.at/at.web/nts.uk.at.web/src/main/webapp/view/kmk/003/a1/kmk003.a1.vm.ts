@@ -1,5 +1,7 @@
 module a1 {
-    import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.PredetemineTimeSettingModel;
+    
+    import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
+    
     class ScreenModel {
 
         dayStartTime: KnockoutObservable<number>;

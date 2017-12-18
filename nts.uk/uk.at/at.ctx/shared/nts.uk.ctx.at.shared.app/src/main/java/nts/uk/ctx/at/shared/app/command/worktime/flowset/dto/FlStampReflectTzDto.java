@@ -11,7 +11,7 @@ import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTzGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectRefTwoWT;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
 
 /**
  * The Class FlStampReflectTzDto.
@@ -33,8 +33,8 @@ public class FlStampReflectTzDto implements FlStampReflectTzGetMemento {
 	 * getTwoTimesWorkReflectBasicTime()
 	 */
 	@Override
-	public ReflectRefTwoWT getTwoTimesWorkReflectBasicTime() {
-		return new ReflectRefTwoWT(this.twoTimesWorkReflectBasicTime);
+	public ReflectReferenceTwoWorkTime getTwoTimesWorkReflectBasicTime() {
+		return new ReflectReferenceTwoWorkTime(this.twoTimesWorkReflectBasicTime);
 	}
 
 	/*

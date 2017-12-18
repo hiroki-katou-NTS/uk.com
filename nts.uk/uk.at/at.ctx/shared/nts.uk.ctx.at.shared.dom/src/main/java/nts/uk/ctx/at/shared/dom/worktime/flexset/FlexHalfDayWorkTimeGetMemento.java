@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
@@ -16,21 +14,19 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 public interface FlexHalfDayWorkTimeGetMemento {
 
 	/**
-	 * Gets the lst rest timezone.
+	 * Gets the rest timezone.
 	 *
-	 * @return the lst rest timezone
+	 * @return the rest timezone
 	 */
-	List<FlowWorkRestTimezone> getLstRestTimezone();
-	
-	
+	FlowWorkRestTimezone getRestTimezone();
+
 	/**
 	 * Gets the work timezone.
 	 *
 	 * @return the work timezone
 	 */
 	FixedWorkTimezoneSet getWorkTimezone();
-	
-	
+
 	/**
 	 * Gets the ampm atr.
 	 *

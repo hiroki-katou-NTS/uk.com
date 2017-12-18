@@ -116,7 +116,7 @@ module nts.uk.ui.jqueryExtentions {
                     row = $grid.igGrid("selectedRow");
                 }    
             }
-                
+            
             return row;
         }
 
