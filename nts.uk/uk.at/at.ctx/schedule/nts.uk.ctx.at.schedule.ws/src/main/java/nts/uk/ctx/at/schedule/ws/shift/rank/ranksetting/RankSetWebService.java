@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.rank.ranksetting.RankSetFinder;
 
 @Path("at/schedule/shift/rank/ranksetting")
 @Produces(MediaType.APPLICATION_JSON)
-public class RankSetWs extends WebService {
+public class RankSetWebService extends WebService {
 	@Inject
 	RankSetAddCommandHandler rankSetAddCommand;
 
