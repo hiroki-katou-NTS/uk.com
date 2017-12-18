@@ -13,35 +13,45 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @Builder
 public class EmpBasicInfoImport {
-	/** The employee id. 社員ID */
-	private String employeeId;
-
-	/** The person id. 個人ID */
+	/** The p id. */
+	// 個人ID
 	private String pId;
 	
 	private String namePerson;
 
-	/** The EmployeeCode. 社員コード */
-	private String employeeCode;
+	/** The emp id. */
+	// 社員ID
+	private String employeeId;
 
-	/** The person name. 個人名 */
-	private String personName;
+	/** The p name. */
+	// 個人名
+	private String pName;
 
-	/** The PersonMailAddress 個人メールアドレス. */
-	private String personMailAddress;
+	/** The gender. */
+	// 性別
+	private int gender;
 
-	/** The companyMailAddress 会社メールアドレス */
-	private String companyMailAddress;
-
-	/** The entryDate 入社年月日 */
-	private GeneralDate entryDate;
-
-	/** The birthDay 生年月日 */
+	/** The birth day. */
+	// 生年月日
 	private GeneralDate birthDay;
 
-	/** The retiredDate 退職年月日 */
+	/** The p mail addr. */
+	// 個人メールアドレス
+	
+
+	/** The emp code. */
+	// 社員コード
+	private String employeeCode;
+
+	/** The entry date. */
+	// 入社年月日
+	private GeneralDate entryDate;
+
+	/** The retired date. */
+	// 退職年月日
 	private GeneralDate retiredDate;
 
-	/** The gender 性別 */
-	private int gender;
+	/** The company mail addr. */
+	// 会社メールアドレス
+	
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
@@ -17,6 +16,7 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 @RequiredArgsConstructor
 public class LayoutPersonInfoValueDto {
 	
+
 	private String recordId;
 
 	// categoryID
@@ -62,6 +62,8 @@ public class LayoutPersonInfoValueDto {
 
 	// contains some information of item for render control
 	private DataTypeStateDto item;
+	
+	private int type;
 
 	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
 			String itemCode, Integer row, Object value) {
@@ -87,30 +89,15 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setRow(0);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		if ( itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
+		
+		dataObject.setType(itemDef.getItemTypeState().getItemType());
+		
+		if (itemDef.getItemTypeState().getItemType() == ItemType.SINGLE_ITEM.value) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());
 		}
 		return dataObject;
 	}
-
-	// sonnlb code start
-	public static LayoutPersonInfoValueDto fromItemDef(String categoryCode, PerInfoItemDefDto itemDef, int actionRole) {
-		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
-		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
-		dataObject.setCategoryCode(categoryCode);
-		dataObject.setItemDefId(itemDef.getId());
-		dataObject.setItemName(itemDef.getItemName());
-		dataObject.setItemCode(itemDef.getItemCode());
-		dataObject.setRow(0);
-		dataObject.setRequired(itemDef.getIsRequired() == 1);
-		SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
-		dataObject.setItem(sigleItem.getDataTypeState());
-		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
-		return dataObject;
-	}
-
-	// sonnlb code end
 
 	public static LayoutPersonInfoValueDto initData(PerInfoItemDefForLayoutDto itemDef, Object value) {
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
@@ -124,6 +111,9 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setRow(itemDef.getRow());
 		dataObject.setValue(value);
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
+
+		dataObject.setType(itemDef.getItemTypeState().getItemType());
+		
 		if (itemDef.getItemDefType() == 2) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			dataObject.setItem(sigleItem.getDataTypeState());

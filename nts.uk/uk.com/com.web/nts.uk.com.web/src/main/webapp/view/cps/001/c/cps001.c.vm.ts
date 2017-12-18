@@ -81,6 +81,10 @@ module cps001.c.vm {
             let self = this,
                 emp: IEmployee = ko.toJS(self.currentEmployee),
                 listItem: Array<IEmployee> = ko.toJS(self.listEmployee);
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
 
             confirm({ messageId: "Msg_528" }).ifYes(() => {
                 let itemListLength = self.listEmployee().length,
@@ -113,6 +117,11 @@ module cps001.c.vm {
                 emp: IEmployee = ko.toJS(self.currentEmployee()),
                 listItem: Array<IEmployee> = ko.toJS(self.listEmployee());
 
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+
+            
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let sid = emp.id;
                 service.removedata(sid).done(() => {

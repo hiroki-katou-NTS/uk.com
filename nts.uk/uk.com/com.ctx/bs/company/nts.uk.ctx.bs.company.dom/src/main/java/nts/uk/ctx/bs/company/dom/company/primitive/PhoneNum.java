@@ -8,7 +8,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author yennth
  *
  */
-//@StringRegEx("^\\d{3}-\\d{4}-\\d{4}|(\\d{4}-\\d{4}-\\d{3}$)")
 @StringMaxLength(20)
 @StringCharType(CharType.ANY_HALF_WIDTH)
 public class PhoneNum extends StringPrimitiveValue<PhoneNum>{

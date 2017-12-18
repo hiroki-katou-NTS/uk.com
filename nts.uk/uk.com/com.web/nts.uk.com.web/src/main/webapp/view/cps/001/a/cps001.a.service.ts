@@ -13,8 +13,6 @@ module cps001.a.service {
             'getDetails': 'ctx/pereg/layout/find/gettabdetail',
             'getTabsInfo': 'ctx/pereg/layout/find/getctgtab/{0}', //categoryId
             'getHistData': '/ctx/pereg/employee/category/getlistinfocategory',
-            'add': 'facade/pereg/add',
-            'update': 'facade/pereg/update',
             'delete': 'facade/pereg/delete',
         },
         person: {
@@ -73,12 +71,12 @@ module cps001.a.service {
         return ajax(paths.layout.register, command);
     }
 
-    export function getData() {
-        return ajax(paths.getData);
+    export function removeCurrentCategoryData(command: any) {
+        return ajax(paths.category.delete, command);
     }
 
-    export function saveData(command) {
-        return ajax(paths.saveData, command);
+    export function getData() {
+        return ajax(paths.getData);
     }
 
     export function getFileInfo(id: string) {

@@ -1,4 +1,7 @@
 module a2 {
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
+    import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.EmTimeZoneSetModel;
+    import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
     class ScreenModel {
 
         fixTableOptionOneDay: any;
@@ -19,18 +22,19 @@ module a2 {
         selectedCodeRoundingProcess: KnockoutObservable<any>;
         selectedCodeCalMed: KnockoutObservable<any>;
         selectedCodeSetting: KnockoutObservable<any>;
-
-        data: KnockoutObservable<any>;
+        settingEnum: WorkTimeSettingEnumDto;
+        dataModelOneDay: EmTimeZoneSetModel[];
         /**
         * Constructor.
         */
-        constructor(data: any, selectedSettingMethod: any, selectedTab: any) {
+        constructor(selectedSettingMethod: any, selectedTab: any, settingEnum: WorkTimeSettingEnumDto) {
             let self = this;
             self.selectedSettingMethod = selectedSettingMethod;
             self.selectedTab = selectedTab;
+            self.settingEnum = settingEnum;
+            self.dataModelOneDay = [];
             self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
             self.isActiveTab = ko.observable(self.getActiveTabBySelected(self.selectedTab()));
-            self.data = ko.observable(data());
             self.dataSourceOneDay = ko.observableArray([]);
             self.dataSourceMorning = ko.observableArray([]);
             self.dataSourceAfternoon = ko.observableArray([]);
@@ -57,7 +61,7 @@ module a2 {
             self.selectedCodeCalMed = ko.observable('1');
             self.selectedCodeSetting = ko.observable('1');
             self.fixTableOptionOneDay = {
-                maxRow: 7,
+                maxRow: 5,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -66,6 +70,7 @@ module a2 {
                 columns: self.columnSettingOneDay(),
                 tabindex: -1
             };
+            
             self.fixTableOptionMorning = {
                 maxRow: 7,
                 minRow: 0,
@@ -151,6 +156,16 @@ module a2 {
         }
 
         /**
+         * function convert dto to model
+         */
+        private toModelColumnSetting(dataModel: EmTimeZoneSetDto): any {
+            return {
+                columnOneDay1: ko.observable({ startTime: dataModel.timezone.start, endTime: dataModel.timezone.end }),
+                columnOneDay2: ko.observable(dataModel.timezone.rounding.roundingTime),
+                columnOneDay3: ko.observable(dataModel.timezone.rounding.rounding)
+            }
+        }
+        /**
          * init array setting column option one day
          */
          private columnSettingOneDay(): Array<any> {
@@ -167,18 +182,32 @@ module a2 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_56"), 
                     key: "columnOneDay2", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 243, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    dataSource: self.settingEnum.roundingTime,
+                    defaultValue: ko.observable(0), 
+                    width: 120, 
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'value',
+                                    visibleItemsCount: 5,
+                                    optionsText: 'localizedName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'localizedName', length: 10 }]}">
+                                </div>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_57"), 
                     key: "columnOneDay3", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 243, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    dataSource: self.settingEnum.rounding,
+                    defaultValue: ko.observable(0), 
+                    width: 150,
+                   template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'value',
+                                    visibleItemsCount: 5,
+                                    optionsText: 'localizedName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'localizedName', length: 10 }]}">
+                                </div>`
                 }
             ];
         }
@@ -200,7 +229,7 @@ module a2 {
                     headerText: nts.uk.resource.getText("KMK003_56"), 
                     key: "columnMorning2", 
                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 243, 
+                    width: 50, 
                     template: `<div data-bind="ntsTimeRangeEditor: {
                         required: true, enable: true, inputFormat: 'time'}"/>`
                 },
@@ -285,19 +314,18 @@ module a2 {
                 .mergeRelativePath('/view/kmk/003/a2/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
-            let data = input.data;
             let selectedSettingMethod = input.settingMethod;
             let selectedTab = input.settingTab;
-
-            let screenModel = new ScreenModel(data, selectedSettingMethod, selectedTab);
+            var settingEnum: WorkTimeSettingEnumDto = input.enum;
+            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab, settingEnum);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
                 if(!screenModel.isFlowMode()){
                     screenModel.updateViewByFlowMode();
                 }
             });
+            
         }
 
     }

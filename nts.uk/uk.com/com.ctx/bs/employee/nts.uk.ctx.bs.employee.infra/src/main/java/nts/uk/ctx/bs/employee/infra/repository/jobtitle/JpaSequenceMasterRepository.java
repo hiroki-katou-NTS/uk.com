@@ -43,7 +43,10 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	 * @return the csqmt sequence master
 	 */
 	private BsymtJobSeqMaster toEntity(SequenceMaster domain) {
-		BsymtJobSeqMaster entity = new BsymtJobSeqMaster();
+		BsymtJobSeqMasterPK pk = new BsymtJobSeqMasterPK(domain.getCompanyId().v(), domain.getSequenceCode().v());
+		BsymtJobSeqMaster entity = this.queryProxy()
+				.find(pk, BsymtJobSeqMaster.class)
+				.orElse(new BsymtJobSeqMaster());
 		domain.saveToMemento(new JpaSequenceMasterSetMemento(entity));
 		return entity;
 	}
@@ -92,10 +95,9 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	 */
 	@Override
 	public void remove(String companyId, String sequenceCode) {
-		this.commandProxy().remove(BsymtJobSeqMaster.class,
-				new BsymtJobSeqMasterPK(companyId, sequenceCode));
+		this.commandProxy().remove(BsymtJobSeqMaster.class, new BsymtJobSeqMasterPK(companyId, sequenceCode));
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -115,60 +117,54 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<BsymtJobSeqMaster> cq = criteriaBuilder.createQuery(BsymtJobSeqMaster.class);
 		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
-		
+
 		// Build query
 		cq.select(root);
-		
+
 		// Add where conditions
 		List<Predicate> predicateList = new ArrayList<>();
-		Expression<String> exp = root
-				.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK)
-				.get(BsymtJobSeqMasterPK_.cid);
+		Expression<String> exp = root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.cid);
 		predicateList.add(exp.in(companyId));
-				
+
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root
-				.get(BsymtJobSeqMaster_.disporder)));
-		
-		return em.createQuery(cq).getResultList().stream()
-				.map(entity -> toDomain(entity))
-				.collect(Collectors.toList());
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobSeqMaster_.disporder)));
+
+		return em.createQuery(cq).getResultList().stream().map(entity -> toDomain(entity)).collect(Collectors.toList());
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository#findBySequenceCode(java.lang.String, java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository#
+	 * findBySequenceCode(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<SequenceMaster> findBySequenceCode(String companyId, String sequenceCode) {
-		
+
 		// Check empty
 		if (StringUtils.isEmpty(companyId)) {
 			return Optional.empty();
 		}
-		
+
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<BsymtJobSeqMaster> cq = criteriaBuilder.createQuery(BsymtJobSeqMaster.class);
 		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
-		
+
 		// Build query
 		cq.select(root);
-		
+
 		// Add where conditions
 		List<Predicate> predicateList = new ArrayList<>();
-		Expression<String> exp = root
-				.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK)
-				.get(BsymtJobSeqMasterPK_.cid);
-		predicateList.add(exp.in(companyId));		
-		predicateList.add(criteriaBuilder.equal(
-				root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.seqCd),
-				sequenceCode));
-				
+		Expression<String> exp = root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.cid);
+		predicateList.add(exp.in(companyId));
+		predicateList.add(criteriaBuilder
+				.equal(root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.seqCd), sequenceCode));
+
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root
-				.get(BsymtJobSeqMaster_.disporder)));
-		
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobSeqMaster_.disporder)));
+
 		List<BsymtJobSeqMaster> result = em.createQuery(cq).getResultList();
 		// Check empty
 		if (CollectionUtil.isEmpty(result)) {
@@ -177,29 +173,32 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		return Optional.of(toDomain(result.get(0)));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository#findMaxOrder()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository#
+	 * findMaxOrder()
 	 */
 	@Override
 	public int findMaxOrder() {
-		
+
 		// Check if sequence is empty
 		if (isEmpty()) {
 			return 1;
 		}
-		
+
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();		
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Integer> cq = criteriaBuilder.createQuery(Integer.class);
 		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
-		
+
 		// Build query
 		cq.select(criteriaBuilder.max(root.get(BsymtJobSeqMaster_.disporder)));
 
-		return em.createQuery(cq).getSingleResult();	
+		return em.createQuery(cq).getSingleResult();
 	}
-	
+
 	/**
 	 * Checks if is empty.
 	 *
@@ -208,13 +207,13 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	private boolean isEmpty() {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();		
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
 		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
-		
+
 		cq.select(criteriaBuilder.count(root));
 		Long count = em.createQuery(cq).getSingleResult();
-		
+
 		return count == 0;
 	}
 }

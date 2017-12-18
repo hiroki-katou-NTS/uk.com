@@ -34,6 +34,9 @@ public class RoleIndividualGrantAdapterImpl implements RoleIndividualGrantAdapte
 	@Override
 	public RoleIndividualGrantImport getByUserAndRole(String userId, RoleType roleType) {
 		RoleIndividualGrantExport export = roleIndividualGrantExportRepo.getByUserAndRoleType(userId, roleType.value);
+		if (export == null) {
+			return null;
+		}
 		return new RoleIndividualGrantImport(export.getRoleId());
 	}
 

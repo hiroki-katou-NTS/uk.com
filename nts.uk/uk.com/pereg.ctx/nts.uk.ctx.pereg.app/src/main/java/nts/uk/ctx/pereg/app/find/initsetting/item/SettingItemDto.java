@@ -29,8 +29,10 @@ public class SettingItemDto {
 
 	private int dataType;
 
+	private BigDecimal selectionItemRefType;
+
 	public SettingItemDto(String categoryCode, String itemDefId, String itemCode, String itemName, int isRequired,
-			SaveDataDto saveData, Integer dataType) {
+			SaveDataDto saveData, Integer dataType, BigDecimal selectionItemRefType) {
 		super();
 		this.categoryCode = categoryCode;
 		this.itemDefId = itemDefId;
@@ -39,6 +41,7 @@ public class SettingItemDto {
 		this.isRequired = isRequired;
 		this.saveData = saveData;
 		this.dataType = dataType;
+		this.selectionItemRefType = selectionItemRefType;
 	}
 
 	private static SaveDataDto createSaveDataDto(int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
@@ -69,14 +72,15 @@ public class SettingItemDto {
 
 		switch (saveDataType) {
 		case DATE:
-			resultDto = SaveDataDto.createDataDto(
-					value != "" && value !=null? GeneralDate.fromString(value.toString(), "ddMMyyyy") : GeneralDate.min());
+			resultDto = SaveDataDto.createDataDto(value != "" && value != null
+					? GeneralDate.fromString(value.toString(), "yyyy/MM/dd") : GeneralDate.min());
 			break;
 		case NUMBERIC:
-			resultDto = SaveDataDto.createDataDto(value != "" &&value !=null ? Integer.parseInt(value.toString()) : 0);
+			resultDto = SaveDataDto
+					.createDataDto(value != "" && value != null ? Integer.parseInt(value.toString()) : 0);
 			break;
 		case STRING:
-			resultDto = SaveDataDto.createDataDto(value!=null?value.toString():"");
+			resultDto = SaveDataDto.createDataDto(value != null ? value.toString() : "");
 			break;
 		}
 
@@ -85,9 +89,9 @@ public class SettingItemDto {
 
 	public static SettingItemDto createFromJavaType(String categoryCode, String itemDefId, String itemCode,
 			String itemName, int isRequired, int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
-			String stringValue, Integer dataType) {
+			String stringValue, Integer dataType, BigDecimal selectionItemRefType) {
 		SettingItemDto itemDto = new SettingItemDto(categoryCode, itemDefId, itemCode, itemName, isRequired,
-				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue),dataType);
+				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue), dataType, selectionItemRefType);
 		return itemDto;
 	}
 
@@ -108,7 +112,8 @@ public class SettingItemDto {
 		return SettingItemDto.createFromJavaType(domain.getPerInfoCtgCd(), domain.getPerInfoDefId(),
 				domain.getItemCode().v(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getDataState().getDataStateType().value, domain.getDataState().getDateValue(),
-				domain.getDataState().getNumberValue(), domain.getDataState().getStringValue(),domain.getDataType());
+				domain.getDataState().getNumberValue(), domain.getDataState().getStringValue(), domain.getDataType(),
+				domain.getSelectionItemRefType());
 
 	}
 

@@ -54,10 +54,13 @@ public class StandardMenu extends AggregateRoot {
 	private int logSettingDisplay;
 	
 	/** プログラムID **/
-	private int programId;
+	private String programId;
 	
 	/** 遷移先の画面ID **/
-	private int screenId;
+	private String screenId;
+	
+	/** Query string */
+	private String queryString;
 
 	/**
 	 * Instantiates a new Standard Menu.
@@ -77,7 +80,7 @@ public class StandardMenu extends AggregateRoot {
 	 */
 	public StandardMenu(String companyId, MenuCode code, String targetItems, MenuDisplayName displayName, int displayOrder,
 			MenuAtr menuAtr, String url, System system, MenuClassification classification, WebMenuSetting webMenuSetting,
-			int afterLoginDisplay, int logSettingDisplay) {
+			int afterLoginDisplay, int logSettingDisplay, String programId, String screenId, String queryString) {
 		
 		this.companyId = companyId;
 		this.code = code;
@@ -91,6 +94,9 @@ public class StandardMenu extends AggregateRoot {
 		this.webMenuSetting = webMenuSetting;
 		this.afterLoginDisplay = afterLoginDisplay;
 		this.logSettingDisplay = logSettingDisplay;
+		this.programId = programId;
+		this.screenId = screenId;
+		this.queryString = queryString;
 	}
 	
 	
@@ -135,13 +141,17 @@ public class StandardMenu extends AggregateRoot {
 	 * @param webMenuSetting the webMenuSetting
 	 * @param afterLoginDisplay the afterLoginDisplay
 	 * @param logSettingDisplay the logSettingDisplay
+	 * @param programId programId
+	 * @param screenId screenId
+	 * @param queryString query string
 	 */
 	public static StandardMenu createFromJavaType(String companyId, String code, String targetItems, String displayName, 
 			int displayOrder, int menuAtr, String url, int system, int classification, int webMenuSetting,
-			int afterLoginDisplay, int logSettingDisplay) {
+			int afterLoginDisplay, int logSettingDisplay, String programId, String screenId, String queryString) {
 		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName), displayOrder, EnumAdaptor.valueOf(menuAtr, MenuAtr.class), url,
 				EnumAdaptor.valueOf(system, System.class),EnumAdaptor.valueOf(classification, MenuClassification.class) , 
-				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, logSettingDisplay);
+				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, logSettingDisplay,
+				programId, screenId, queryString);
 	}	
 	
 	

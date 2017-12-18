@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.department.affiliate;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,11 +34,10 @@ public class AffDepartmentHistoryItem extends AggregateRoot {
 	// 所属履歴異動種類
 	private String affHistoryTranfsType;
 
-	/** The Employee Id. */
-	// 社員ID
+	// 分配率
 	private DistributionRatio distributionRatio;
 	
-	public static AffDepartmentHistoryItem createFromJavaType(String histId, String sId, String departmentId, String affHistTranfsType, String distributionRatio){
+	public static AffDepartmentHistoryItem createFromJavaType(String histId, String sId, String departmentId, String affHistTranfsType, BigDecimal distributionRatio){
 		return new AffDepartmentHistoryItem(histId,sId, departmentId, affHistTranfsType, new DistributionRatio(distributionRatio));
 	}
 

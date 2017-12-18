@@ -29,8 +29,9 @@ module cps001.e.vm {
                     self.empFileMn().fileType = 1;
                     if (self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
                         self.getImage();
+                    else self.isChange(true);
                     self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
-                }
+                }else self.isChange(true);
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
                         self.isChange(true);
@@ -51,8 +52,8 @@ module cps001.e.vm {
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
-                        self.empFileMn().employeeId = "000426a2-181b-4c7f-abc8-6fff9f4f983a";
                         self.empFileMn().fileId = data.id;
+                        self.oldEmpFileMn = {employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType};
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
                     });
                 } else self.close();
@@ -88,7 +89,12 @@ module cps001.e.vm {
         getImage() {
             let self = this;
             let id = self.empFileMn().fileId;
-            $("#test").ntsImageEditor("selectByFileId", id);
+            try{
+                 $("#test").ntsImageEditor("selectByFileId", id);
+            }catch(Error){
+                self.isChange(true);
+            }
+           
         }
         close() {
             close();

@@ -14,7 +14,7 @@ public class GetLayoutByCreateTypeDto {
 
 	private GeneralDate baseDate;
 
-	private String employeeId;
+	private String copyEmployeeId;
 
 	private String employeeName;
 

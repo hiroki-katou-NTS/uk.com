@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
@@ -65,18 +62,25 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 	public void validate() {
 		super.validate();
 
-		List<String> lstWorkTime = this.workTimezone.getLstWorkingTimezone().stream()
-				.map(item -> item.getTimezone().toString()).collect(Collectors.toList());
-		List<String> lstOTTTime = this.workTimezone.getLstOTTimezone().stream()
-				.map(item -> item.getTimezone().toString()).collect(Collectors.toList());
-
+		// Validate #Msg_755
 		this.restTimezone.getLstTimezone().forEach((timezone) -> {
-			// has in 就業時間帯.時間帯
-			boolean isHasWorkTime = lstWorkTime.contains(timezone.toString());
+			// Is timezone in WorkingTimezone - 就業時間帯.時間帯
+			boolean isHasWorkTime = this.workTimezone.getLstWorkingTimezone().stream()
+					.map(item -> item.getTimezone())
+					.anyMatch((timeZoneRounding) -> {
+						return timezone.getStart().greaterThanOrEqualTo(timeZoneRounding.getStart())
+								&& timezone.getEnd().lessThanOrEqualTo(timeZoneRounding.getEnd());
+					});
 
-			// has in 残業時間帯.時間帯
-			boolean isHasOTTTime = lstOTTTime.contains(timezone.toString());
+			// Is timezone in OTTimezone - 残業時間帯.時間帯
+			boolean isHasOTTTime = this.workTimezone.getLstOTTimezone().stream()
+					.map(item -> item.getTimezone())
+					.anyMatch((timeZoneRounding) -> {
+						return timezone.getStart().greaterThanOrEqualTo(timeZoneRounding.getStart())
+								&& timezone.getEnd().lessThanOrEqualTo(timeZoneRounding.getEnd());
+					});
 
+			// Throw exception if not match any condition
 			if (!isHasWorkTime && !isHasOTTTime) {
 				throw new BusinessException("Msg_755");
 			}

@@ -12,6 +12,11 @@
 			<com:scriptfile
 				path="../../../ccg/025/component/component.service.js" />
 			<com:scriptfile path="../../../ccg/025/component/component.vm.js" />
+			<!-- ccg026 -->
+			<com:stylefile path="../../../ccg/026/component/component.css" />
+			<com:scriptfile path="../../../ccg/026/component/component.service.js" />
+			<com:scriptfile path="../../../ccg/026/component/component.vm.js" />
+			
 			<com:stylefile path="cas005.a.main.css" />
 			<com:scriptfile path="cas005.a.start.js" />
 			<com:scriptfile path="cas005.a.vm.js" />
@@ -30,34 +35,34 @@
 		</ui:define>
 		
 			<ui:define name="content">
-				<div class="container">
-					<div id="functions-area">
+				<div id="functions-area">
+					<div class="container">
 						<!-- A1_001 -->
-						<button tabindex="1" class="large " data-bind="click :createButton ">#{i18n.getText('CAS005_10')}</button>
+						<button tabindex="1" class=" " data-bind="click :createButton ">#{i18n.getText('CAS005_10')}</button>
 						<!-- A1_002 -->
-						<button tabindex="2"  class="proceed large "  data-bind="click : registerButton ,enable : isRegister">#{i18n.getText('CAS005_11')}</button>
+						<button tabindex="2"  class="proceed  "  data-bind="click : registerButton ,enable : isRegister">#{i18n.getText('CAS005_11')}</button>
 						<!-- A1_003 -->
-						<button tabindex="3" class="danger large " data-bind="click : deleteButton ,enable : isDelete">#{i18n.getText('CAS005_12')}</button>
+						<button tabindex="3" class="danger  " data-bind="click : deleteButton , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
 						<!-- A1_004 -->
-						<button tabindex="4" class="large " data-bind="click : openDialogC ">#{i18n.getText('CAS005_13')}</button>
+						<button tabindex="4" class=" " data-bind="click : openDialogC ">#{i18n.getText('CAS005_13')}</button>
 						<!-- A1_005 -->
-						<button tabindex="5" class="large " data-bind="click : openDialogB ">#{i18n.getText('CAS005_14')}</button>
+						<button tabindex="5" class=" " data-bind="click : openDialogB , enable : isCopy	 ">#{i18n.getText('CAS005_14')}</button>
 						<!-- A1_006 -->
 						<span style="float: right; margin-top: 7px;">#{i18n.getText('CAS005_15')}</span>
 					</div>
 				</div>
-				<div class="container">
-					<div id="contents-area" style="margin-top: 30px; margin-left: 30px;overflow: hidden;">
+				<div id="contents-area">
+					<div class="container" style="margin-left: 30px;">
 						<div style="margin-bottom: 20px;">#{i18n.getText('CAS005_20')}</div>
 						<!-- body left  -->
 						<div style="width: 340px; float: left;" data-bind="with: component">
-							<div id="pannel-top" tabindex="6" data-bind="ntsPanel:{width: '340px', height: '530px', direction: '', showIcon: true, visible: true}">
+							<div id="pannel-top" tabindex="6" data-bind="ntsPanel:{width: '350px', height: '370px', direction: '', showIcon: true, visible: true}">
 								<ui:include src="../../../ccg/025/component/index.xhtml" />
 							</div>
 						</div>
 						<!-- body right -->
 						<div class=" body-right">
-							<table>
+							<table class="layout-table">
 								<!-- row 1 -->
 								<tr>
 									<td>
@@ -83,7 +88,7 @@
 														optionsValue: 'code',
 														optionsText: 'name',
 														value: assignAtr,
-														enable: true }">
+														enable: isCategoryAssign }">
 										</div>
 									</td>
 								</tr>
@@ -126,7 +131,7 @@
 									</td>
 								</tr>
 								<!-- row 5 -->
-								<tr data-bind=" visible : visibleWebmenu ">
+								<tr data-bind="css: {disappear: !visibleWebmenu()}">
 									<td>
 										<div style="padding-right: 20px;"
 											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_50')}</div>
@@ -160,7 +165,7 @@
 														value: bookingScreen,
 														optionsText: 'name',
 														editable: false,
-														enable: isEnable,
+														enable: enumEmployment,
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}">
@@ -181,7 +186,7 @@
 														value: scheduleScreen,
 														optionsText: 'name',
 														editable: false,
-														enable: isEnable,
+														enable: enumEmployment,
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}">
@@ -202,7 +207,7 @@
 														value: registeredInquiries,
 														optionsText: 'name',
 														editable: false,
-														enable: isEnable,
+														enable: enumEmployment,
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}">
@@ -223,7 +228,7 @@
 														value: specifyingAgent,
 														optionsText: 'name',
 														editable: false,
-														enable: isEnable,
+														enable: enumEmployment,
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}">
@@ -240,7 +245,10 @@
 								<!-- row 11 -->
 								<tr>
 									<td colspan="2">
-										<table id="table-infor">
+										<div data-bind="with: componentCcg026">
+											<ui:include src="/view/ccg/026/component/index.xhtml" />
+										</div>
+										<!-- <table id="table-infor">
 											<thead>
 												<tr class="bg-green">
 													<th style="width: 120px;">設定</th>
@@ -257,17 +265,6 @@
 													</tr>
 												</com:ko-foreach>
 											</tbody>
-										</table>
-										<!-- <table id="multi-list"
-											data-bind="ntsGridList: {
-												height: 320,
-												options: listWorkPlaceFunction ,
-												optionsValue: 'functionNo',
-												columns: columns,
-												multiple: true,
-												value: currentCodeList,
-												rows : 3
-											}">
 										</table> -->
 									</td>
 								</tr>

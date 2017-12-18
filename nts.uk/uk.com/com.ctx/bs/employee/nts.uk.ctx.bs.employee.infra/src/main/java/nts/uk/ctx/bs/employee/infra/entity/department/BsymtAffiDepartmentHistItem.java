@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.entity.department;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -52,7 +53,7 @@ public class BsymtAffiDepartmentHistItem extends UkJpaEntity implements Serializ
 	
 	@Basic(optional = false)
 	@Column(name = "DISTR_RATIO")
-	private String distrRatio;
+	private BigDecimal distrRatio;
 
 	/**
 	 * Instantiates a new cempt employment.

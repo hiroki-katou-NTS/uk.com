@@ -229,13 +229,33 @@ module cps008.a.viewmodel {
 
             data.action = LAYOUT_ACTION.REMOVE;
             let indexItemDelete = _.findIndex(ko.toJS(self.layouts), function(item: any) { return item.id == data.id; });
-            debugger;
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
 
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                var command: any = {
+                    id: data.id,
+                    code: data.code,
+                    name: data.name,
+                    action: data.action,
+                    classifications: (data.classifications || []).map((item, i) => {
+                        return {
+                            dispOrder: i + 1,
+                            personInfoCategoryID: item.personInfoCategoryID,
+                            layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
+                            listItemClsDf: (item.listItemDf || []).map((def, j) => {
+                                return {
+                                    dispOrder: j + 1,
+                                    personInfoItemDefinitionID: def.id
+                                };
+                            })
+                        };
+                    })
+                };
+                
+                debugger;
                 // call service remove
                 invisible();
                 let itemListLength = self.layouts().length;
-                service.saveData(data).done((data: any) => {
+                service.saveData(command).done((data: any) => {
 
                     if (itemListLength === 1) {
                         self.start().done(() => {

@@ -19,6 +19,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 	@Override
 	public void add(AffCompanyInfo domain) {
 		commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -26,9 +27,15 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 		BsymtAffCompanyInfo entity = this.queryProxy().query(SELECT_BY_HISTID, BsymtAffCompanyInfo.class)
 				.setParameter("histId", domain.getHistoryId()).getSingleOrNull();
 		if (entity != null) {
-			entity.adoptionDate = domain.getAdoptionDate();
-			entity.retirementAllowanceCalcStartDate = domain.getRetirementAllowanceCalcStartDate();
-			entity.recruitmentCategoryCode = domain.getRecruitmentClassification().v();
+			if (domain.getAdoptionDate() != null){
+				entity.adoptionDate = domain.getAdoptionDate();
+			}
+			if (domain.getRetirementAllowanceCalcStartDate() != null){
+				entity.retirementAllowanceCalcStartDate = domain.getRetirementAllowanceCalcStartDate();
+			}
+			if (domain.getRecruitmentClassification() != null){
+				entity.recruitmentCategoryCode = domain.getRecruitmentClassification().v();
+			}
 			
 			this.commandProxy().update(entity);
 		}

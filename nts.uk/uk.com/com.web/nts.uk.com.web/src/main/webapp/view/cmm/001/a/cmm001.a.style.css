@@ -4,10 +4,6 @@
 	outline: 1px solid #FF6138;
 }
 
-#contents-area {
-	width: 1300px;
-}
-
 #functions-area {
 	height: 50px;
 }
@@ -37,7 +33,7 @@
 }
 
 .nts-left-content {
-	margin-top: 20px;
+	margin-top: 10px;
 	width: 410px;
 	margin-left: 15px;
 }
@@ -72,7 +68,7 @@
 
 .nts-right-content {
 	float: left;
-	padding: 20px;
+	padding: 0 20px 0px 20px;
 	width: 700px;
 	margin-left: 15px;
 }

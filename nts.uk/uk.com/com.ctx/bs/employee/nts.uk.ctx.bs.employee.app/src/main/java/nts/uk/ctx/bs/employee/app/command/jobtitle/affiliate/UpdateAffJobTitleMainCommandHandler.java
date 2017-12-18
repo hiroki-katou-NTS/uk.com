@@ -8,11 +8,13 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryService;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -57,7 +59,7 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 		if (!itemToBeUpdate.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory");
 		}
-		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
+		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		
 		affJobTitleHistoryService.update(existHist.get(), itemToBeUpdate.get());
 	

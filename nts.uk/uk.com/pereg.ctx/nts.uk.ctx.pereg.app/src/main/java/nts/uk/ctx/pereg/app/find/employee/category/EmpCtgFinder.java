@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.ParamForGetPerItem;
@@ -67,7 +67,8 @@ public class EmpCtgFinder {
 	@Inject
 	private EmpInfoItemDataRepository empInfoItemDataRepository;
 	
-	@Inject EmployeeRepository employeeRepository;
+	@Inject 
+	private EmployeeDataMngInfoRepository employeeRepository;
 	
 	/**
 	 * Get all category by selected employee
@@ -161,9 +162,9 @@ public class EmpCtgFinder {
 	private List<ComboBoxObject> getHistInfoPersonType(List<String> timePerInfoItemDefIds, PeregQuery query){
 		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
 		
-		Employee employee = employeeRepository.getBySid(query.getEmployeeId()).get();
+		EmployeeDataMngInfo employee = employeeRepository.findByEmpId(query.getEmployeeId()).get();
 		// get EmpInfoCtgData to get record id
-		List<PerInfoCtgData> lstPerInfoCtgData = perInfoCtgDataRepository.getByPerIdAndCtgId(employee.getPId(), query.getCategoryId());
+		List<PerInfoCtgData> lstPerInfoCtgData = perInfoCtgDataRepository.getByPerIdAndCtgId(employee.getPersonId(), query.getCategoryId());
 		if(lstPerInfoCtgData.size() == 0) return lstComboBoxObject;
 		
 		//get lst item data and filter base on item def
@@ -203,7 +204,8 @@ public class EmpCtgFinder {
 					if(timePerInfoItemDefIds.contains(itemData.getPerInfoDefId()))
 						optionText.add(itemData.getDataState().getDateValue().toString());				
 				}
-				lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
+				if(optionText.size() > 0)
+					lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
 		}
 		return lstComboBoxObject;

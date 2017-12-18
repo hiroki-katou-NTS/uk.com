@@ -9,9 +9,12 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 
 /**
@@ -23,9 +26,18 @@ public class FlexWorkSettingPolicyImpl {
 	/** The service. */
 //	@Inject
 //	private PredeteminePolicyService service;
-	
-	/** The work no one. */
-	public static int WORK_NO_ONE = 1;
+
+	/** The flex half day policy. */
+	@Inject
+	private FlexHalfDayWorkTimePolicy flexHalfDayPolicy;
+
+	/** The flex offday policy. */
+	@Inject
+	private FlexOffdayWorkTimePolicy flexOffdayPolicy;
+
+	/** The wtz common set policy. */
+	@Inject
+	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -59,7 +71,7 @@ public class FlexWorkSettingPolicyImpl {
 		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.USE)){
 			
 			// get time zone 
-			Timezone timezone =  predetemineTimeSet.getPrescribedTimezoneSetting().getTimezone(WORK_NO_ONE);
+			TimezoneUse timezone =  predetemineTimeSet.getPrescribedTimezoneSetting().getTimezoneShiftOne();
 			
 			// 開始 = 勤務NO = 1の場合の 所定時間帯設定.時間帯.開始
 			int startTime = timezone.getStart().valueAsMinutes();
@@ -89,7 +101,16 @@ public class FlexWorkSettingPolicyImpl {
 		flexWorkSetting.getLstStampReflectTimezone().forEach(setting -> {
 //			this.service.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
 		});
-		
+
+		// valiadte FlexHalfDayWorkTime
+		flexWorkSetting.getLstHalfDayWorkTimezone()
+				.forEach(halfDay -> this.flexHalfDayPolicy.validate(halfDay, predetemineTimeSet));
+
+		// validate FlexOffdayWorkTime
+		this.flexOffdayPolicy.validate(predetemineTimeSet, flexWorkSetting.getOffdayWorkTime());
+
+		// validate WorkTimezoneCommonSet
+		this.wtzCommonSetPolicy.validate(predetemineTimeSet, flexWorkSetting.getCommonSetting());
 	}
 	
 

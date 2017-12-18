@@ -52,8 +52,8 @@ module kmk003.base.timerange {
         public bindDataToScreen(value: KnockoutObservable<TimePeriod>) {
             let self = this;
             
-            self.startTime(value().startTime);
-            self.endTime(value().endTime);
+            self.startTime(value().startTime ? value().startTime : null);
+            self.endTime(value().endTime ? value().endTime : null);
         }
 
         /**
@@ -95,10 +95,6 @@ module kmk003.base.timerange {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
             bindingContext: KnockoutBindingContext): void {
             
-        }
-
-        private getData() {
-            let self = this;
         }
 
         /**

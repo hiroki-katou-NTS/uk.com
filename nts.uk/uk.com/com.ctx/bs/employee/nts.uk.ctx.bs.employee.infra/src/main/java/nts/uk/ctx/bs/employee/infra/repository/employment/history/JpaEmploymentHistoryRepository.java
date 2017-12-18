@@ -37,7 +37,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		DateHistoryItem dateItem = null;
 		for (BsymtEmploymentHist item : listHist) {
 			dateItem = new DateHistoryItem(item.hisId, new DatePeriod(item.strDate, item.endDate));
-			empment.add(dateItem);
+			empment.getHistoryItems().add(dateItem);
 		}
 		return empment;
 	}
@@ -53,32 +53,27 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 	
 	@Override
-	public Optional<EmploymentHistory> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
+	public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		Optional<BsymtEmploymentHist> optionData = this.queryProxy().query(GET_BY_EMPID_AND_STD, BsymtEmploymentHist.class)
 				.setParameter("sid", employeeId).setParameter("stdDate", standardDate)
 				.getSingle();
 		if (optionData.isPresent()) {
-			return Optional.of(toDomain(optionData.get()));
+			BsymtEmploymentHist entity = optionData.get();
+			return Optional.of(new DateHistoryItem(entity.hisId, new DatePeriod(entity.strDate, entity.endDate)));
 		}
-		return null;
+		return Optional.empty();
 	}
 	
 	@Override
-	public Optional<EmploymentHistory> getByHistoryId(String historyId) {
+	public Optional<DateHistoryItem> getByHistoryId(String historyId) {
 		Optional<BsymtEmploymentHist> optionData = this.queryProxy().find(historyId, BsymtEmploymentHist.class);
 		if (optionData.isPresent()) {
-			return Optional.of(toDomain(optionData.get()));
+			BsymtEmploymentHist entity = optionData.get();
+			return Optional.of(new DateHistoryItem(historyId, new DatePeriod(entity.strDate, entity.endDate)));
 		}
-		return null;
+		return Optional.empty();
 	}
 	
-	private EmploymentHistory toDomain(BsymtEmploymentHist entity) {
-		EmploymentHistory domain = new EmploymentHistory(entity.companyId, entity.sid, new ArrayList<DateHistoryItem>());
-		DateHistoryItem dateItem = new DateHistoryItem(entity.hisId, new DatePeriod(entity.strDate, entity.endDate));
-		domain.add(dateItem);
-		return domain;
-	}
-
 	@Override
 	public void add(String sid, DateHistoryItem domain) {
 		this.commandProxy().insert(toEntity(sid, domain));
@@ -102,7 +97,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
-		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, histId);
+		this.commandProxy().remove(BsymtEmploymentHist.class, histId);
 
 	}
 

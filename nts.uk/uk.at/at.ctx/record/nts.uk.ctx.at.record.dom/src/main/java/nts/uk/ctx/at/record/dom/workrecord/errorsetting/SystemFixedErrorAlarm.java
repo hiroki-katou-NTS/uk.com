@@ -21,7 +21,7 @@ public enum SystemFixedErrorAlarm {
 	PRE_APPLICATION_EXCESS(5),
 
 	// 出退勤打刻漏れ
-	S001(6),
+	TIME_LEAVING_STAMP_LEAKAGE(6),
 
 	// 深夜時間超過
 	MIDNIGHT_EXCESS(7),

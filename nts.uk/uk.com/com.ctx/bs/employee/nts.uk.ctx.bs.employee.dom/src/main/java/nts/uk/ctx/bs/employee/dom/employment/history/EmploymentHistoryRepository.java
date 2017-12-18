@@ -20,14 +20,14 @@ public interface EmploymentHistoryRepository {
 	 * @param standardDate
 	 * @return
 	 */
-	Optional<EmploymentHistory> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate);
+	Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
 	/**
 	 * get with historyId
 	 * @param historyId
 	 * @return
 	 */
-	Optional<EmploymentHistory> getByHistoryId(String historyId);
+	Optional<DateHistoryItem> getByHistoryId(String historyId);
 	
 	/**
 	 * Add employment history

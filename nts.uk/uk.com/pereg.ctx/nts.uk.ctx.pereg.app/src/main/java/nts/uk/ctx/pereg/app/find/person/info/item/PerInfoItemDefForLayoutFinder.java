@@ -70,7 +70,9 @@ public class PerInfoItemDefForLayoutFinder {
 		perInfoItemDefForLayoutDto.setItemCode(itemDef.getItemCode().v());
 		perInfoItemDefForLayoutDto.setItemName(itemDef.getItemName().v());
 		perInfoItemDefForLayoutDto.setItemDefType(itemDef.getItemTypeState().getItemType().value);
-		perInfoItemDefForLayoutDto.setLstChildItemDef(getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder));
+		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId, itemDef.getItemTypeState(), perInfoCd, dispOrder);
+		if(lstChildren.size() == 0 && itemDef.getItemTypeState().getItemType().value == 1) return null;
+		perInfoItemDefForLayoutDto.setLstChildItemDef(lstChildren);
 		perInfoItemDefForLayoutDto.setIsRequired(itemDef.getIsRequired().value);
 		perInfoItemDefForLayoutDto.setDispOrder(dispOrder);
 		
@@ -188,9 +190,11 @@ public class PerInfoItemDefForLayoutFinder {
 			
 			// get itemId list of children
 			SetItem setItem = (SetItem) item;
+			List<String> items = setItem.getItems();
+			if(items.size() == 0) return lstResult;
 			// get children by itemId list
 			List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty
-					.getPerInfoItemDefByListId(setItem.getItems(), contractCode);
+					.getPerInfoItemDefByListId(items, contractCode);
 			for (int i = 0; i < lstDomain.size(); i++)
 				lstResult.add(createFromDomain(empId, lstDomain.get(i), perInfoCd, dispOrder));
 		}
@@ -199,7 +203,7 @@ public class PerInfoItemDefForLayoutFinder {
 	
 	
 	
-	private List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto){
+	public List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto){
 		SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
 		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, GeneralDate.today());
 	}

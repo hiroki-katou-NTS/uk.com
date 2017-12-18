@@ -53,9 +53,9 @@ public class CurrentClosureFinder {
 
 		for (Closure closure : listClosure) {
 			Optional<ClosureHistory> opClosureHistory = this.closureRepository.findByClosureIdAndCurrentMonth(
-					closure.getClosureId(), closure.getClosureMonth().getProcessingYm().v());
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().v());
 
-			DatePeriod currentPeriod = this.closureService.getClosurePeriod(closure.getClosureId(),
+			DatePeriod currentPeriod = this.closureService.getClosurePeriod(closure.getClosureId().value,
 					closure.getClosureMonth().getProcessingYm());
 
 			if (opClosureHistory.isPresent()) {

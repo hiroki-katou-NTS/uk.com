@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.app.find.classification.affiliate;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -41,18 +41,15 @@ public class AffClassificationDto extends PeregDomainDto {
 	@PeregItem("IS00028")
 	private String classificationCode;
 
-	public AffClassificationDto() {
-
+	public AffClassificationDto(String recordId) {
+		super(recordId);
 	}
 
-	public AffClassificationDto(String recordId, String employeeId) {
-		super(recordId, employeeId, null);
-	}
-
-	public static AffClassificationDto createFromDomain(AffClassHistItem_ver1 histItem, AffClassHistory_ver1 history) {
-		AffClassificationDto dto = new AffClassificationDto(histItem.getHistoryId(), histItem.getEmployeeId());
-		dto.setStartDate(history.getPeriods().get(0).start());
-		dto.setEndDate(history.getPeriods().get(0).end());
+	public static AffClassificationDto createFromDomain(AffClassHistItem_ver1 histItem,
+			DateHistoryItem dateHistoryItem) {
+		AffClassificationDto dto = new AffClassificationDto(histItem.getHistoryId());
+		dto.setStartDate(dateHistoryItem.start());
+		dto.setEndDate(dateHistoryItem.end());
 		dto.setClassificationCode(histItem.getClassificationCode().v());
 		return dto;
 	}

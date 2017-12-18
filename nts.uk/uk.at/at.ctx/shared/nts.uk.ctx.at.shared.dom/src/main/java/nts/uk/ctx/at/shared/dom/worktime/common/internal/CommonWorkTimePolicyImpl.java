@@ -6,38 +6,57 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonWorkTimePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+
 @Stateless
 public class CommonWorkTimePolicyImpl implements CommonWorkTimePolicy {
 
 	@Override
-	public void validateWorkTimeOfTimezoneSet(PredetemineTimeSetting pred) {
-
-		// TODO
-		// validate msg_515
-
-		// validate msg_773
-
-		// validate msg_774
-
-		// validate msg_770
+	public void validate(PredetemineTimeSetting pred, WorkTimezoneCommonSet workTimezoneCommonSet) {
+		//validate LateEarlySet
+		this.validateWorkTimezoneLateEarlySet(pred, workTimezoneCommonSet.getLateEarlySet());
+		//validate SubHolTransferSet
+		this.validateSubHolTransferSet(pred, workTimezoneCommonSet.getSubHolTimeSet().getSubHolTimeSet());
 	}
 
-	@Override
-	public void validateOverTimeHourSet(PredetemineTimeSetting pred) {
+	// validate 就業時間帯の遅刻・早退設定
+	public void validateWorkTimezoneLateEarlySet(PredetemineTimeSetting pred,
+			WorkTimezoneLateEarlySet workTimezoneLateEarlySet) {
+
+		// validate Msg_517
+		workTimezoneLateEarlySet.getOtherClassSets().stream().forEach(item -> {
+			if (item.getGraceTimeSet().getGraceTime().valueAsMinutes() > pred.getRangeTimeDay().valueAsMinutes()) {
+				throw new BusinessException("Msg_517");
+			}
+		});
+
 		// TODO Auto-generated method stub
-		// validate msg_515
+		// validate
 
-		// validate msg_519
-
-		// validate msg_780
-
-		// validate msg_770
-		
-		// validate msg_779
-		
-		// validate msg_516
 	}
 
+	// validate 代休振替設定
+	public void validateSubHolTransferSet(PredetemineTimeSetting pred, SubHolTransferSet subHolTransferSet) {
+
+		// validate Msg_781 for certainTime
+		if (subHolTransferSet.getCertainTime().valueAsMinutes() >= pred.getRangeTimeDay().valueAsMinutes()) {
+			throw new BusinessException("Msg_781");
+		}
+
+		// validate Msg_781 for Designated time
+
+		if (subHolTransferSet.getDesignatedTime().getHalfDayTime().valueAsMinutes() >= pred.getRangeTimeDay()
+				.valueAsMinutes()
+				|| subHolTransferSet.getDesignatedTime().getHalfDayTime().valueAsMinutes() >= pred.getRangeTimeDay()
+						.valueAsMinutes()) {
+			throw new BusinessException("Msg_781");
+		}
+
+		// TODO case no msg
+	}
 }

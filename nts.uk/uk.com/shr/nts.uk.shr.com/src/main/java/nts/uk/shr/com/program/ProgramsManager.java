@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * 
  */
 public class ProgramsManager {
-
+	
 	/**
 	 * CCG008A
 	 */
@@ -535,7 +535,6 @@ public class ProgramsManager {
 			"/view/ksm/001/a/index.xhtml");
 	
 	/** The Constant KMK009. */
-	// TODO: can check lai
 	public static final Program KMK009 = new Program(WebAppId.AT, ProgramIdConsts.KMK009, "KMK009_1",
 			"/view/kmk/009/a/index.xhtml");
 	
@@ -1131,7 +1130,89 @@ public class ProgramsManager {
 	
 	public static final Program CDL025 = new Program(WebAppId.COM, ProgramIdConsts.CDL025, "CDL025_1",
 			"/view/cdl/025/index.xhtml");
+	
+	public static final Program CMM007A = new Program(WebAppId.COM, ProgramIdConsts.CMM007A, "CMM007_1",
+			"/view/cmm/007/a/index.xhtml");
+	
+	public static final Program CMM007B = new Program(WebAppId.COM, ProgramIdConsts.CMM007B, "CMM007_1",
+			"/view/cmm/007/b/index.xhtml");
+	
+	public static final Program CMM007C = new Program(WebAppId.COM, ProgramIdConsts.CMM007C, "CMM007_1",
+			"/view/cmm/007/c/index.xhtml");
+	
+	public static final Program CMM007D = new Program(WebAppId.COM, ProgramIdConsts.CMM007D, "CMM007_1",
+			"/view/cmm/007/d/index.xhtml");
+	
+	public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.CMM007E, "CMM007_1",
+			"/view/cmm/007/e/index.xhtml");
+	
+	public static final Program CMM007G = new Program(WebAppId.COM, ProgramIdConsts.CMM007G, "CMM007_1",
+			"/view/cmm/007/g/index.xhtml");
 
+	public static final Program CCG026 = new Program(WebAppId.COM, ProgramIdConsts.CCG026, "CCG025_2",
+			"/view/ccg/026/component/index.xhtml");
+	
+	public static final Program CMM021A = new Program(WebAppId.COM, ProgramIdConsts.CMM021A, "CMM021_1",
+			"/view/cmm/021/a/index.xhtml");
+	
+	public static final Program CMM021B = new Program(WebAppId.COM, ProgramIdConsts.CMM021B, "CMM021_1",
+			"/view/cmm/021/b/index.xhtml");
+	
+	public static final Program CMM021C = new Program(WebAppId.COM, ProgramIdConsts.CMM021C, "CMM021_1",
+			"/view/cmm/021/c/index.xhtml");
+	
+	public static final Program CDL023A = new Program(WebAppId.COM, ProgramIdConsts.CDL023A, "CDL023_1",
+			"/view/cdl/023/a/index.xhtml");
+	
+	public static final Program KMF002A = new Program(WebAppId.AT, ProgramIdConsts.KMF002A, null,
+			"/view/kmf/002/a/index.xhtml");
+	
+	public static final Program KMF002B = new Program(WebAppId.AT, ProgramIdConsts.KMF002B, "KMF002_1",
+			"/view/kmf/002/b/index.xhtml");
+	
+	public static final Program KMF002C = new Program(WebAppId.AT, ProgramIdConsts.KMF002C, "KMF002_1",
+			"/view/kmf/002/c/index.xhtml");
+	
+	public static final Program KMF002D = new Program(WebAppId.AT, ProgramIdConsts.KMF002D, "KMF002_1",
+			"/view/kmf/002/d/index.xhtml");
+	
+	public static final Program KMF002E = new Program(WebAppId.AT, ProgramIdConsts.KMF002E, "KMF002_1",
+			"/view/kmf/002/e/index.xhtml");
+	
+	public static final Program KMF002F = new Program(WebAppId.AT, ProgramIdConsts.KMF002F, "KMF002_26",
+			"/view/kmf/002/f/index.xhtml");
+	
+	public static final Program KMK003A = new Program(WebAppId.AT, ProgramIdConsts.KMK003A, "KMK003_1",
+			"/view/kmk/003/a/index.xhtml");
+	public static final Program KMK003B = new Program(WebAppId.AT, ProgramIdConsts.KMK003B, "KMK003_1",
+			"/view/kmk/003/b/index.xhtml");
+	public static final Program KMK003C = new Program(WebAppId.AT, ProgramIdConsts.KMK003C, "KMK003_1",
+			"/view/kmk/003/c/index.xhtml");
+	public static final Program KMK003D = new Program(WebAppId.AT, ProgramIdConsts.KMK003D, "KMK003_1",
+			"/view/kmk/003/d/index.xhtml");
+	public static final Program KMK003E = new Program(WebAppId.AT, ProgramIdConsts.KMK003E, null,
+			"/view/kmk/003/e/index.xhtml");
+	public static final Program KMK003F = new Program(WebAppId.AT, ProgramIdConsts.KMK003F, null,
+			"/view/kmk/003/f/index.xhtml");
+	public static final Program KMK003G = new Program(WebAppId.AT, ProgramIdConsts.KMK003G, null,
+			"/view/kmk/003/g/index.xhtml");
+	public static final Program KMK003H = new Program(WebAppId.AT, ProgramIdConsts.KMK003H, null,
+			"/view/kmk/003/h/index.xhtml");
+	public static final Program KMK003I = new Program(WebAppId.AT, ProgramIdConsts.KMK003I, null,
+			"/view/kmk/003/i/index.xhtml");
+	public static final Program KMK003J = new Program(WebAppId.AT, ProgramIdConsts.KMK003J, null,
+			"/view/kmk/003/j/index.xhtml");
+	public static final Program KMK003K = new Program(WebAppId.AT, ProgramIdConsts.KMK003K, null,
+			"/view/kmk/003/k/index.xhtml");
+	public static final Program KMK003L = new Program(WebAppId.AT, ProgramIdConsts.KMK003L, null,
+			"/view/kmk/003/l/index.xhtml");
+	
+	public static final Program KSU007A = new Program(WebAppId.AT, ProgramIdConsts.KSU007A, "KSU007_8",
+			"/view/ksu/007/a/index.xhtml");
+	public static final Program KSU007B = new Program(WebAppId.AT, ProgramIdConsts.KSU007B, "KSU007_23",
+			"/view/ksu/007/b/index.xhtml");
+
+	
 	
 	// TODO: Define new programs here.
 
@@ -1172,6 +1253,21 @@ public class ProgramsManager {
 			return Optional.empty();
 		return programsOpt.get().stream().filter(a -> path.equals(a.getPPath())).findFirst();
 	}
+	
+	/**
+	 * Finds program by Id.
+	 * @param appId appId
+	 * @param programId programId
+	 * @return optional program
+	 */
+	public static Optional<Program> findById(WebAppId appId, String programId) {
+		if (appId == null || programId == null) 
+			return Optional.empty();
+		Optional<Set<Program>> programsOpt = getSet(appId);
+		if (!programsOpt.isPresent())
+			return Optional.empty();
+		return programsOpt.get().stream().filter(a -> programId.equals(a.getPId())).findFirst();
+	}
 
 	/**
 	 * Finds program Id.
@@ -1197,6 +1293,16 @@ public class ProgramsManager {
 	 */
 	public static Optional<String> nameOf(WebAppId appId, String path) {
 		return Optional.ofNullable(find(appId, path).orElse(new Program()).getPName());
+	}
+	
+	/**
+	 * Finds program name by Id.
+	 * @param appId appId
+	 * @param programId programId
+	 * @return optional program name.
+	 */
+	public static Optional<String> nameById(WebAppId appId, String programId) {
+		return Optional.ofNullable(findById(appId, programId).orElse(new Program()).getPName());
 	}
 
 	/**

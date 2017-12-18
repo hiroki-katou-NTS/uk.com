@@ -8,11 +8,11 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.CareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.ChildCareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -106,17 +106,16 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 
 	}
 
-	public TempAbsHisItemDto(String recordId, String employeeId) {
-		super(recordId, employeeId, null);
+	public TempAbsHisItemDto(String recordId) {
+		super(recordId);
 	}
 
-	public static TempAbsHisItemDto createFromDomain(TempAbsenceHistory history, TempAbsenceHisItem histItem) {
-		TempAbsHisItemDto dto = new TempAbsHisItemDto(histItem.getHistoryId(), histItem.getEmployeeId());
+	public static TempAbsHisItemDto createFromDomain(DateHistoryItem history, TempAbsenceHisItem histItem) {
+		TempAbsHisItemDto dto = new TempAbsHisItemDto(histItem.getHistoryId());
 		dto.setRemarks(histItem.getRemarks().v());
 		dto.setSoInsPayCategory(histItem.getSoInsPayCategory());
-		// dto.setDateHistoryItem(history.getDateHistoryItems().get(0));
-		dto.setStartDate(history.getDateHistoryItems().get(0).start());
-		dto.setEndDate(history.getDateHistoryItems().get(0).end());
+		dto.setStartDate(history.start());
+		dto.setEndDate(history.end());
 		LeaveHolidayType leaveHolidayType;
 		if (histItem.getTempAbsenceFrNo().v().intValue() <= 6) {
 			leaveHolidayType = EnumAdaptor.valueOf(histItem.getTempAbsenceFrNo().v().intValue(),

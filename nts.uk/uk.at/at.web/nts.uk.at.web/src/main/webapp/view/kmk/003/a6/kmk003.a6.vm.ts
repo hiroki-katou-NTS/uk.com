@@ -10,13 +10,11 @@ module a6 {
         dataSourceLeavetime: KnockoutObservableArray<any>;
         dataSourceClosework: KnockoutObservableArray<any>;
 
-        data: KnockoutObservable<any>;
         /**
         * Constructor.
         */
-        constructor(data: any, selectedSettingMethod: any, selectedTab: any) {
+        constructor(selectedSettingMethod: any, selectedTab: any) {
             let self = this;
-            self.data = ko.observable(data());
             self.selectedSettingMethod = selectedSettingMethod;
             self.selectedTab = selectedTab;
             self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
@@ -274,15 +272,13 @@ module a6 {
                 .mergeRelativePath('/view/kmk/003/a6/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
-            let data = input.data;
             let selectedSettingMethod = input.settingMethod;
             let selectedTab = input.settingTab;
 
-            let screenModel = new ScreenModel(data, selectedSettingMethod, selectedTab);
+            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
                 if (!screenModel.isFlowMode()) {
                     screenModel.updateViewByNotFlowMode();
                 } else {

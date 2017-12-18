@@ -15,6 +15,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -52,18 +53,17 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 	@Override
 	public AffClassificationDto getSingleData(PeregQuery query) {
 		Optional<AffClassHistItem_ver1> histItem;
-		Optional<AffClassHistory_ver1> history;
+		Optional<DateHistoryItem> history;
 		if (query.getInfoId() != null) {
 			history = affClassHistRepo.getByHistoryId(query.getInfoId());
 		} else {
 			history = affClassHistRepo.getByEmpIdAndStandardDate(query.getEmployeeId(), query.getStandardDate());
 		}
 		if (history.isPresent()) {
-			histItem = affClassHistItemRepo.getByHistoryId(history.get().getPeriods().get(0).identifier());
+			histItem = affClassHistItemRepo.getByHistoryId(history.get().identifier());
 			if ( histItem.isPresent()) {
 				return AffClassificationDto.createFromDomain(histItem.get(), history.get());
 			}
-			
 		}
 		return null;
 	}
@@ -84,11 +84,16 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		Optional<AffClassHistory_ver1> affClassHistory = affClassHistRepo.getByEmployeeId(query.getEmployeeId());
-		if (affClassHistory.isPresent())
-			return affClassHistory.get().getPeriods().stream()
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
-					.collect(Collectors.toList());
-		return new ArrayList<>();
+		if (!affClassHistory.isPresent())
+			return new ArrayList<>();
+		List<DateHistoryItem> periods = affClassHistory.get().getPeriods();
+		if(periods.size() == 0)
+			return new ArrayList<>();
+		return periods.stream()
+				.sorted((a, b) -> b.start().compareTo(a.start()))
+				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+				.collect(Collectors.toList());
+		
 	}
 
 }

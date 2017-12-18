@@ -48,7 +48,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 //	private final String SELECT_ADD = SELECT_ADD_NO_WHERE + "WHERE c.bcmmtAddInforPK.companyId = :companyId AND c.bcmmtAddInforPK.companyCode = :companyCode AND c.bcmmtAddInforPK.contractCd = :contractCd";
 
 	
-	private final String GET_BY_CID = SELECT_NO_WHERE + " WHERE c.bcmmtAddInforPK.companyId = :cid AND c.isAbolition = 0 ";
+	private final String GET_BY_CID = SELECT_NO_WHERE + " WHERE c.bcmmtCompanyInforPK.companyId = :cid AND c.isAbolition = 0 ";
 	
 //	/**
 //	 * @param entity
@@ -149,7 +149,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.shortComName = domain.getShortComName().v();
 		entity.isAbolition = domain.getIsAbolition().value;
 		entity.startMonth = domain.getStartMonth().value;
-		entity.taxNo = domain.getTaxNo().v();
+		entity.taxNo = domain.getTaxNo() != null ? domain.getTaxNo().v() : null;
 		if (domain.getAddInfor() != null) {
 			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor());
 		}
@@ -170,7 +170,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.add_2 = domain.getAdd_2().v();
 		entity.addKana_1 = domain.getAddKana_1().v();
 		entity.addKana_2 = domain.getAddKana_2().v();
-		entity.postCd = domain.getPostCd().v();
+		entity.postCd = domain.getPostCd().v() != null ? domain.getPostCd().v() : null;
 		entity.phoneNum = domain.getPhoneNum().v();
 		return entity;
 	}
