@@ -190,22 +190,12 @@ public class PeregProcessor {
 		} else {
 			switch (perInfoCtg.getCategoryType()) {
 			case SINGLEINFO:
-				getOptionData(perInfoCtg, classItemList, query);
+				setOptionData(perInfoCtg, classItemList, query);
 				break;
 			case CONTINUOUSHISTORY:
 			case NODUPLICATEHISTORY:
 				String recordId = query.getInfoId();
-				if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
-					List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository
-							.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
-							.collect(Collectors.toList());
-					MappingFactory.matchEmpOptionData(recordId, classItemList, empOptionItemData);
-				} else {
-					List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepository
-							.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
-							.collect(Collectors.toList());
-					MappingFactory.matchPerOptionData(recordId, classItemList, perOptionItemData);
-				}
+				setOptionalDataByRecordId(recordId, perInfoCtg.getPersonEmployeeType(), classItemList);
 			default:
 				break;
 			}
@@ -236,7 +226,7 @@ public class PeregProcessor {
 		return classItemList;
 	}
 	
-	private void getOptionData(PersonInfoCategory perInfoCtg, List<LayoutPersonInfoClsDto> classItemList,
+	private void setOptionData(PersonInfoCategory perInfoCtg, List<LayoutPersonInfoClsDto> classItemList,
 			PeregQuery query) {
 		if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
@@ -258,6 +248,21 @@ public class PeregProcessor {
 			}
 		}
 
+	}
+	
+	private void setOptionalDataByRecordId(String recordId, PersonEmployeeType type, 
+			List<LayoutPersonInfoClsDto> classItemList ){
+		if (type == PersonEmployeeType.EMPLOYEE) {
+			List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository
+					.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
+					.collect(Collectors.toList());
+			MappingFactory.matchEmpOptionData(recordId, classItemList, empOptionItemData);
+		} else {
+			List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepository
+					.getAllInfoItemByRecordId(recordId).stream().map(x -> x.genToPeregDto())
+					.collect(Collectors.toList());
+			MappingFactory.matchPerOptionData(recordId, classItemList, perOptionItemData);
+		}
 	}
 	
 }
