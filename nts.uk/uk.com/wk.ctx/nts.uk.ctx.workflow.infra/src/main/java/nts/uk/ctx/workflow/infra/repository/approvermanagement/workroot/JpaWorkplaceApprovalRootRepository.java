@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpApprovalRoot;
@@ -40,7 +42,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	private final String FIND_BY_BASEDATE = FIND_BY_WKPID
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
-			+ " AND c.employmentRootAtr IN (1,2,3)" 
+			+ " AND c.employmentRootAtr = :rootAtr" 
 			+ " AND c.applicationType = :appType";
 	private final String FIND_BY_BASEDATE_OF_COM = FIND_BY_WKPID
 			+ " AND c.startDate <= :baseDate"
@@ -138,13 +140,14 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> findByBaseDate(String cid, String workplaceId, GeneralDate baseDate, int appType) {
+	public Optional<WorkplaceApprovalRoot> findByBaseDate(String companyID, String workplaceID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAtr) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtWpApprovalRoot.class)
-				.setParameter("companyId", cid)
-				.setParameter("workplaceId", workplaceId)
-				.setParameter("baseDate", baseDate)
-				.setParameter("appType", appType)
-				.getList(c->toDomainWpApR(c));
+				.setParameter("companyId", companyID)
+				.setParameter("workplaceId", workplaceID)
+				.setParameter("baseDate", date)
+				.setParameter("appType", appType.value)
+				.setParameter("rootAtr", rootAtr.value)
+				.getSingle(c->toDomainWpApR(c));
 	}
 	
 	/**
@@ -156,11 +159,11 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String cid, String workplaceId, GeneralDate baseDate) {
+	public List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtWpApprovalRoot.class)
-				.setParameter("companyId", cid)
-				.setParameter("workplaceId", workplaceId)
-				.setParameter("baseDate", baseDate)
+				.setParameter("companyId", companyID)
+				.setParameter("workplaceId", workplaceID)
+				.setParameter("baseDate", date)
 				.getList(c->toDomainWpApR(c));
 	}
 	

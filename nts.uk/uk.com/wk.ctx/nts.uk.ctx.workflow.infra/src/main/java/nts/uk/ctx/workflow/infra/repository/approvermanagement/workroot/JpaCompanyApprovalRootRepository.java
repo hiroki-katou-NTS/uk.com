@@ -9,8 +9,10 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRoot;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtComApprovalRootPK;
 /**
@@ -39,7 +41,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	private final String FIND_BY_BASEDATE = FIND_BY_CID
 				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
-				+ " AND c.employmentRootAtr IN (1,2,3)" 
+				+ " AND c.employmentRootAtr = :rootAtr" 
 				+ " AND c.applicationType = :appType";
 	private final String FIND_BY_BASEDATE_OF_COM = FIND_BY_CID
 				+ " AND c.startDate <= :baseDate"
@@ -127,12 +129,13 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate, int appType) {
+	public Optional<CompanyApprovalRoot> findByBaseDate(String companyID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAt) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtComApprovalRoot.class)
-				.setParameter("companyId", cid)
-				.setParameter("baseDate", baseDate)
-				.setParameter("appType", appType)
-				.getList(c->toDomainComApR(c));
+				.setParameter("companyId", companyID)
+				.setParameter("baseDate", date)
+				.setParameter("appType", appType.value)
+				.setParameter("rootAtr", rootAt.value)
+				.getSingle(c->toDomainComApR(c));
 	}
 	
 	/**
@@ -144,10 +147,10 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<CompanyApprovalRoot> findByBaseDateOfCommon(String cid, GeneralDate baseDate) {
+	public List<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtComApprovalRoot.class)
-				.setParameter("companyId", cid)
-				.setParameter("baseDate", baseDate)
+				.setParameter("companyId", companyID)
+				.setParameter("baseDate", date)
 				.getList(c->toDomainComApR(c));
 	}
 	
