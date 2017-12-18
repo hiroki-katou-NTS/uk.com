@@ -358,11 +358,13 @@ module ksm002.b.viewmodel {
                     selecteds: self.convertNameToNumber(item.listText)
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksm/002/e/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                    let param = nts.uk.ui.windows.getShared('KSM002E_VALUES');   
-                    self.setListText(
-                        moment(param.date.toString()).format('YYYY-MM-DD'),
-                        self.convertNumberToName(param.selecteds)    
-                    );
+                    let param = nts.uk.ui.windows.getShared('KSM002E_VALUES');
+                    if(param != undefined){
+                        self.setListText(
+                            moment(param.date.toString()).format('YYYY-MM-DD'),
+                            self.convertNumberToName(param.selecteds)    
+                        );
+                    }  
                 });  
             }
         }
@@ -372,16 +374,14 @@ module ksm002.b.viewmodel {
          */
         setListText(date, data){
             var self = this;
-            if(!nts.uk.util.isNullOrEmpty(data)) {
-                let dateData = self.calendarPanel.optionDates();
-                let existItem = _.find(dateData, item => item.start == date);   
-                if(existItem!=null) {
-                    existItem.changeListText(data);   
-                } else {
-                    dateData.push(new CalendarItem(date, data));    
-                }
-                self.calendarPanel.optionDates.valueHasMutated();
-            }
+        
+            let dateData = self.calendarPanel.optionDates();
+            let existItem = _.find(dateData, item => item.start == date);   
+            if(existItem!= undefined) {
+                existItem.changeListText(data);   
+            } 
+            self.calendarPanel.optionDates.valueHasMutated();
+           
         }
         
         /**
