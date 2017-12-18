@@ -120,8 +120,6 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 			KrcmtBusinessTypeOfHistory entity = optional.get();
 			entity.startDate = startDate;
 			entity.endDate = endDate;
-			entity.sId = employeeId;
-			entity.cID = companyId;
 			this.commandProxy().update(entity);
 		}
 		

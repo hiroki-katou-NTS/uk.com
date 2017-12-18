@@ -52,7 +52,7 @@ public class AddAffWorkplaceHistoryCommandHandler extends CommandHandlerWithResu
 		String companyId = AppContexts.user().companyId();
 		
 		String newHistID = IdentifierUtil.randomUniqueId();
-		DateHistoryItem dateItem = new DateHistoryItem(newHistID, new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+		DateHistoryItem dateItem = new DateHistoryItem(newHistID, new DatePeriod(command.getStartDate()!=null?command.getStartDate():ConstantUtils.minDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getAffWorkplaceHistByEmployeeId(companyId, command.getEmployeeId());
 		
 		AffWorkplaceHistory_ver1 itemtoBeAdded = new AffWorkplaceHistory_ver1(companyId, command.getEmployeeId(),new ArrayList<>());

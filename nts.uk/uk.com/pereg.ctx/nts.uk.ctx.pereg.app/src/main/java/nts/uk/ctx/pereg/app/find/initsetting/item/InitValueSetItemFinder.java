@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.find.initsetting.item;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -163,7 +164,8 @@ public class InitValueSetItemFinder {
 		return SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
 				domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
-				domain.getStringValue().v(), domain.getDataType());
+				domain.getStringValue().v(), domain.getDataType(),
+				BigDecimal.valueOf(domain.getSelectionItemRefType()));
 	}
 
 	private boolean isHaveItemRefType(List<PerInfoInitValueSetItem> listItem, ReferenceMethodType methodType) {

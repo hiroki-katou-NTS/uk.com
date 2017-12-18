@@ -52,7 +52,8 @@ public class AddEmploymentHistoryCommandHandler
 		String newHistID = IdentifierUtil.randomUniqueId();
 		String companyId = AppContexts.user().companyId();
 		DateHistoryItem dateItem = new DateHistoryItem(newHistID,
-				new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.fromString(ConstantUtils.MAX_DATE, ConstantUtils.FORMAT_DATE_YYYYMMDD)));
+				new DatePeriod(command.getStartDate()!=null? command.getStartDate() : ConstantUtils.minDate(), command.getEndDate() != null ? command.getEndDate()
+						: ConstantUtils.maxDate()));
 
 		Optional<EmploymentHistory> histBySid = employmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
 
@@ -64,10 +65,10 @@ public class AddEmploymentHistoryCommandHandler
 		itemtoBeAdded.add(dateItem);
 
 		employmentHistoryService.add(itemtoBeAdded);
-
+		// phải set Segment mặc định là 1 vì Enum value từ 1-> 4
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(),
 				command.getEmploymentCode(),
-				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : 0);
+				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : 1);
 		employmentHistoryItemRepository.add(histItem);
 
 		return new PeregAddCommandResult(newHistID);

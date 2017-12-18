@@ -50,9 +50,13 @@ public class RoleIndividualFinder {
 			companyID = COMPANY_ID_SYSADMIN;
 		
 		List<RoleIndividualGrant> listRoleIndividualGrant = roleIndividualGrantRepo.findByCompanyIdAndRoleType(companyID, roleType);
+		if (listRoleIndividualGrant.isEmpty()) {
+			return new RoleIndividualDto(COMPANY_ID_SYSADMIN, new ArrayList<RoleIndividualGrantDto>());
+		}
 
 		// Get list User information
 		List<String> listUserID = listRoleIndividualGrant.stream().map(c -> c.getUserId()).distinct().collect(Collectors.toList());
+		
 		List<User> listUser = userRepo.getByListUser(listUserID);
 		List<String> listAssPersonID = listUser.stream().map(c -> c.getAssociatedPersonID()).distinct().collect(Collectors.toList());
 		List<PersonImport> listPerson = personAdapter.findByPersonIds(listAssPersonID);
@@ -61,7 +65,7 @@ public class RoleIndividualFinder {
 		List<RoleIndividualGrantDto> listRoleIndividualGrantDto = new ArrayList<>();
 		for (RoleIndividualGrant roleIndividualGrant: listRoleIndividualGrant) {
 			// Filter get User
-			User user = listUser.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst().get();
+ 			User user = listUser.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst().get();
 			String userName = user.getUserName().v();
 			String loginID = user.getLoginID().v();
 			// Filter get Person

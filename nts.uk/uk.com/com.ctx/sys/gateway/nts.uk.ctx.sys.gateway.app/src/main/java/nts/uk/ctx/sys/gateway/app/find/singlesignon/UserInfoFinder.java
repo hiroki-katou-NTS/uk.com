@@ -73,9 +73,6 @@ public class UserInfoFinder {
 		
 		List<String> listPersonId = new ArrayList<>();
 		List<UserDto> listUserMap = new ArrayList<>();
-
-		// Set<UserDto> listUserDto = new HashSet<>();
-
 		List<User> listUser = new ArrayList<>();
 		List<UserDto> listUserAccount = new ArrayList<>();
 		
@@ -95,8 +92,6 @@ public class UserInfoFinder {
 		listPersonId.addAll(list);
 
 		// Step 2 - add person info
-		
-
 		List<PersonInfoImport> listPerson = this.personInfoAdapter.getListPersonInfo(listPersonId);
 		Map<String, PersonInfoImport> mapPerson = listPerson.stream()
 				.collect(Collectors.toMap(PersonInfoImport::getPersonId, Function.identity()));
@@ -106,7 +101,6 @@ public class UserInfoFinder {
 			if (personInfoImport != null) {
 				item.setPersonName(personInfoImport.getPersonName());
 			}
-
 		});
 
 		// Step 3 - add user info

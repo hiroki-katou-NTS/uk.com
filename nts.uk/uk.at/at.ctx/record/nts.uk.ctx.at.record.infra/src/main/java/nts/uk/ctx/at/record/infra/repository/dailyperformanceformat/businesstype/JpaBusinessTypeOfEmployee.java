@@ -43,8 +43,14 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository implements Business
 
 	@Override
 	public void update(BusinessTypeOfEmployee businessTypeOfEmployee) {
-		this.commandProxy().update(toEntity(businessTypeOfEmployee));
-
+		// Hop.NT update
+		KrcmtBusinessTypeOfEmployeePK pk = new KrcmtBusinessTypeOfEmployeePK(businessTypeOfEmployee.getHistoryId());
+		Optional<KrcmtBusinessTypeOfEmployee> bTypeOfEmp = this.queryProxy().find(pk, KrcmtBusinessTypeOfEmployee.class);
+		
+		if (bTypeOfEmp.isPresent()){
+			updateEntities(businessTypeOfEmployee, bTypeOfEmp.get());
+			this.commandProxy().update(bTypeOfEmp.get());
+		}
 	}
 
 	@Override
@@ -52,7 +58,17 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository implements Business
 		this.commandProxy().remove(KrcmtBusinessTypeOfEmployee.class, new KrcmtBusinessTypeOfEmployeePK(historyId));
 
 	}
-
+	/**
+	 * Update entity
+	 * @param domain
+	 * @param entity
+	 * @author hop.nt
+	 */
+	private void updateEntities(BusinessTypeOfEmployee domain, KrcmtBusinessTypeOfEmployee entity ){
+		entity.businessTypeCode = domain.getBusinessTypeCode().v();
+		
+	}
+	
 	private static KrcmtBusinessTypeOfEmployee toEntity(BusinessTypeOfEmployee domain) {
 		KrcmtBusinessTypeOfEmployeePK pk = new KrcmtBusinessTypeOfEmployeePK(domain.getHistoryId());
 		return new KrcmtBusinessTypeOfEmployee(pk, domain.getSId(), domain.getBusinessTypeCode().v());
