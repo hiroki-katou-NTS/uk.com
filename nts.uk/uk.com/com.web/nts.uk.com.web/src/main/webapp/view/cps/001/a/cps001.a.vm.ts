@@ -82,6 +82,14 @@ module cps001.a.vm {
         // output data on category changed
         multipleData: KnockoutObservableArray<MultiData> = ko.observableArray([new MultiData()]);
 
+        categories: KnockoutComputed<Array<IListData>> = ko.computed(() => {
+            let self = this,
+                categories = self.multipleData().map(x => x.categories());
+            
+            return [{ optionValue: 'cat1', optionText: 'Category First' }, { optionValue: 'cat2', optionText: 'Category Second' }];
+            //return categories[0] || [{ optionValue: 'cat1', optionText: 'Category First' }, { optionValue: 'cat1', optionText: 'Category First' }];
+        });
+
         // resource id for title in category mode
         titleResource: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
@@ -189,108 +197,6 @@ module cps001.a.vm {
             });
 
             employee.employeeId.valueHasMutated();
-
-            /*
-            category.categoryType.subscribe(t => {
-                if (t) {
-                    let query = {
-                        categoryId: category.id(),
-                        employeeId: employee.employeeId(),
-                        standardDate: moment.utc(),
-                        categoryCode: category.categoryCode(),
-                        personId: person.personId(),
-                        infoId: undefined
-                    };
-                    switch (t) {
-                        case IT_CAT_TYPE.SINGLE:
-                        case IT_CAT_TYPE.NODUPLICATE:
-                            service.getCatData(query).done(data => {
-                                layout.listItemCls(data.classificationItems);
-                            });
-                            break;
-                        case IT_CAT_TYPE.MULTI:
-                            service.getCatData(query).done(data => {
-                                layout.listItemCls(data.classificationItems);
-                            });
-                            break;
-                        case IT_CAT_TYPE.CONTINU:
-                            service.getHistData(query).done((data: Array<any>) => {
-                                let source: MultiData = _.first(list());
-                                if (data && data.length) {
-                                    source.data(data);
-                                    if (source.id() == data[0].optionValue) {
-                                        source.id.valueHasMutated();
-                                    } else {
-                                        source.id(data[0].optionValue);
-                                    }
-                                } else {
-                                    source.data([]);
-
-                                    if (source.id()) {
-                                        source.id(undefined);
-                                    } else {
-                                        source.id.valueHasMutated();
-                                    }
-                                }
-                            });
-                            break;
-                        case IT_CAT_TYPE.DUPLICATE:
-                            service.getCatData(query).done(data => {
-                                debugger;
-                                layout.listItemCls(data.classificationItems);
-                            });
-                            break;
-                        case IT_CAT_TYPE.CONTINUWED:
-                            debugger;
-                            break;
-                    }
-                }
-            });*/
-
-            /*_.each(list(), (item, index) => {
-                let events = item.events,
-                    lt = _.find(layouts(), (l, i) => i == index);
-
-                item.id.subscribe(v => {
-                    let query = {
-                        categoryId: category.id(),
-                        employeeId: employee.employeeId(),
-                        standardDate: moment.utc(),
-                        categoryCode: category.categoryCode(),
-                        personId: person.personId(),
-                        infoId: v
-                    };
-
-                    service.getCatData(query).done(data => {
-                        lt.listItemCls(data.classificationItems);
-                    });
-                });
-
-                events.add = () => {
-                    if (item.id()) {
-                        item.id(undefined);
-                    } else {
-                        item.id.valueHasMutated();
-                    }
-                };
-
-                events.replace = () => { self.saveData(); };
-
-                events.remove = () => {
-                    let query = {
-                        categoryId: category.categoryCode(),
-                        personId: person.personId(),
-                        employeeId: employee.employeeId(),
-                        recordId: item.id()
-                    };
-
-                    service.removeCurrentCategoryData(query).done(x => {
-                        info({ messageId: "Msg_16" }).then(() => {
-                            category.categoryType.valueHasMutated();
-                        });
-                    });
-                };
-            });*/
 
             self.start();
         }
@@ -434,13 +340,13 @@ module cps001.a.vm {
     interface IListData {
         optionText: string;
         optionValue: string;
-        item: any;
+        item?: any;
     }
 
     interface Events {
-        add: () => void;
-        remove: () => void;
-        replace: () => void;
+        add: (callback?: void) => void;
+        remove: (callback?: void) => void;
+        replace: (callback?: void) => void;
     }
 
     class Layout {
@@ -501,15 +407,18 @@ module cps001.a.vm {
 
         // event action
         events: Events = {
-            add: () => {
+            add: (callback?: void) => {
                 let self = this;
                 if (self.infoId()) {
                     self.infoId(undefined);
                 } else {
                     self.infoId.valueHasMutated();
                 }
+                if (callback) {
+                    callback;
+                }
             },
-            remove: () => {
+            remove: (callback?: void) => {
                 let self = this,
                     category = self.category();
 
@@ -527,7 +436,11 @@ module cps001.a.vm {
                     });
                 });
             },
-            replace: () => { }
+            replace: (callback?: void) => {
+                if (callback) {
+                    callback;
+                }
+            }
         }
 
         combobox: KnockoutObservableArray<IListData> = ko.observableArray([]);
@@ -541,7 +454,7 @@ module cps001.a.vm {
             let self = this,
                 layout = self.layout,
                 category = self.category();
-
+            
             if (data) {
                 self.personId(data.personId);
                 self.employeeId(data.employeeId);
