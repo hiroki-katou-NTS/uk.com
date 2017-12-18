@@ -45,7 +45,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		Optional<EmployeeDataMngInfo> empInfo = empDataMngRepo.getEmployeeByCidScd(companyId, employeeCode);
 
 		if (!empInfo.isPresent()) {
-			return null;
+			return Optional.empty();
 		} else {
 			EmployeeDataMngInfo emp = empInfo.get();
 			EmployeeInfoDtoExport result = new EmployeeInfoDtoExport(emp.getCompanyId(),
@@ -61,15 +61,19 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
 
-		EmployeeInfoDtoExport result = null;
 
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
-
-		return listEmpDomain.stream().map(employee -> {
-
+		
+		List<EmployeeInfoDtoExport> result = new ArrayList<>();
+		
+		for (EmployeeDataMngInfo employee: listEmpDomain) {
 			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
 
+			if (affComHist == null)
+				continue;
+			
+			EmployeeInfoDtoExport employeeInfo = new EmployeeInfoDtoExport();
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
 			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
@@ -86,19 +90,20 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 					Optional<Person> personOpt = this.personRepo.getByPersonId(affComHist.getPId());
 					if (personOpt.isPresent()) {
 						Person person = personOpt.get();
-						result.setPersonId(person.getPersonId());
-						result.setPerName(person.getPersonNameGroup().getBusinessName() == null ? null
+						employeeInfo.setPersonId(person.getPersonId());
+						employeeInfo.setPerName(person.getPersonNameGroup().getBusinessName() == null ? null
 								: person.getPersonNameGroup().getBusinessName().v());
 					}
 				}
 			}
 
-			result.setCompanyId(employee.getCompanyId());
-			result.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
-			result.setEmployeeId(employee.getEmployeeId());
-
-			return result;
-		}).collect(Collectors.toList());
+			employeeInfo.setCompanyId(employee.getCompanyId());
+			employeeInfo.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+			employeeInfo.setEmployeeId(employee.getEmployeeId());
+			result.add(employeeInfo);
+		}
+		
+		return result;
 	}
 
 	/*

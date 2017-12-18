@@ -66,7 +66,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
             self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             self.accept = ko.observableArray([".png"]); //supported extension
-            self.textId = ko.observable(""); // file browser button text id
+            self.textId = ko.observable("CCG013_42"); // file browser button text id
             self.fileID = ko.observable('');
             self.fileID.subscribe(function(id) {
                 if (id) {

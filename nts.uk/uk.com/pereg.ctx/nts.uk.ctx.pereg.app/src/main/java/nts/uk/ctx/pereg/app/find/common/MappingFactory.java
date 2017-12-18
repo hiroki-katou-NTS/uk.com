@@ -37,12 +37,6 @@ public class MappingFactory {
 	I18NResourcesForUK ukResouce;
 
 	public static void mapItemClass(PeregDto peregDto, LayoutPersonInfoClsDto classItem) {
-		// map record ID
-		String recordId = peregDto.getDomainDto().getRecordId();
-		for (Object item : classItem.getItems()) {
-			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-			valueItem.setRecordId(recordId);
-		}
 
 		// get dto value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
@@ -53,6 +47,16 @@ public class MappingFactory {
 		// set option value
 		setOptionData(peregDto, classItem);
 
+		// map record ID
+		String recordId = peregDto.getDomainDto().getRecordId();
+		for (Object item : classItem.getItems()) {
+			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+			if ( valueItem.getValue() != null ) {
+				valueItem.setRecordId(recordId);
+			}
+			
+		}
+
 	}
 
 	/**
@@ -62,14 +66,6 @@ public class MappingFactory {
 	 * @param classItemList
 	 */
 	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
-		// map record ID
-		String recordId = peregDto.getDomainDto().getRecordId();
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				valueItem.setRecordId(recordId);
-			}
-		}
 
 		// get DTO value
 		Map<String, Object> dtoValue = getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
@@ -80,6 +76,17 @@ public class MappingFactory {
 		// set option value
 		setOptionData(peregDto, classItemList);
 
+		// map record ID
+		String recordId = peregDto.getDomainDto().getRecordId();
+		for (LayoutPersonInfoClsDto classItem : classItemList) {
+			for (Object item : classItem.getItems()) {
+				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				if ( valueItem.getValue() != null ) {
+					valueItem.setRecordId(recordId);
+				}
+			}
+		}
+
 	}
 
 	public static void mapListClsDto(EmpMaintLayoutDto empMaintLayoutDto, PeregDto peregDto,
@@ -87,28 +94,23 @@ public class MappingFactory {
 		// get dto value
 		Map<String, Object> dtoValue = peregDto == null ? new HashMap<String, Object>()
 				: getDtoValue(peregDto.getDomainDto(), peregDto.getDtoClass());
-		setEmpMaintLayoutDto(empMaintLayoutDto, dtoValue, lstClsItem);
-	}
-
-	private static void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, Map<String, Object> dtoFieldValue,
-			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
-
-		lstPerInfoItemDef.forEach(item -> {
+		
+		lstClsItem.forEach(item -> {
 			if (item.getItemCode().charAt(1) == 'S') {
 				LayoutPersonInfoClsDto layoutPerInfoClsDto = newClsDtoInstanceForTypeItem(item);
 				if (item.getItemDefType() == 2) {
-					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoValue);
 				} else {
-					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoFieldValue);
+					setLayoutPersonInfoClsDto(layoutPerInfoClsDto, item, dtoValue);
 					item.getLstChildItemDef().forEach(x -> {
-						setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoFieldValue);
+						setLayoutPersonInfoClsDto(layoutPerInfoClsDto, x, dtoValue);
 					});
 				}
 				empMaintLayoutDto.getClassificationItems().add(layoutPerInfoClsDto);
 			}
 		});
-
 	}
+
 
 	private static void setLayoutPersonInfoClsDto(LayoutPersonInfoClsDto layoutPerInfoClsDto,
 			PerInfoItemDefForLayoutDto item, Map<String, Object> dtoFieldValue) {
@@ -349,6 +351,7 @@ public class MappingFactory {
 		Optional<PersonOptionalDto> perOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
 			return data.getItemCode().equals(item.getItemCode());
 		}).findFirst();
+		if(!perOptionalDto.isPresent()) item.setRecordId(null);
 		Object value = perOptionalDto.isPresent() ? perOptionalDto.get().getValue() : null;
 		setOptionValueToClsDto(layoutPerInfoClsDto, item, value);
 	}
@@ -358,6 +361,7 @@ public class MappingFactory {
 		Optional<EmpOptionalDto> empOptionalDto = lstCtgItemOptionalDto.stream().filter(data -> {
 			return data.getItemCode().equals(item.getItemCode());
 		}).findFirst();
+		if(!empOptionalDto.isPresent())item.setRecordId(null);
 		Object value = empOptionalDto.isPresent() ? empOptionalDto.get().getValue() : null;
 		setOptionValueToClsDto(layoutPerInfoClsDto, item, value);
 	}

@@ -3,12 +3,12 @@ module cps002.a.vm {
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
     import subModal = nts.uk.ui.windows.sub.modal;
     import jump = nts.uk.request.jump;
     import liveView = nts.uk.request.liveView;
     import character = nts.uk.characteristics;
+    import block = nts.uk.ui.block;
 
     export class ViewModel {
 
@@ -90,7 +90,7 @@ module cps002.a.vm {
                     self.createTypeId(data.employeeCreationMethod);
 
 
-                    if (data.copyEmployeeId != "") {
+                    if (data.copyEmployeeId != "" && self.employeeBasicInfo().copyEmployeeId != data.copyEmployeeId) {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
@@ -219,15 +219,18 @@ module cps002.a.vm {
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
             });
+            block.invisible();
             service.getLayout().done((layout) => {
                 if (layout) {
                     service.getUserSetting().done((result: IUserSetting) => {
                         if (result) {
-
-                            self.getEmployeeCode(result).done(() => {
-
+                            block.invisible();
+                            self.getEmployeeCode(result).done((empCode) => {
+                                self.currentEmployee().employeeCode(empCode);
                                 self.getCardNumber(result);
 
+                            }).always(() => {
+                                block.clear();
                             });
                         }
 
@@ -242,6 +245,8 @@ module cps002.a.vm {
                         jump('/view/cps/007/a/index.xhtml');
                     });
                 }
+            }).always(() => {
+                block.clear();
             });
 
         }
@@ -251,12 +256,15 @@ module cps002.a.vm {
                 showHistory = !userSetting ? true : userSetting.recentRegistrationType === 1 ? true : false;
 
             if (showHistory) {
+                block.invisible();
                 service.getLastRegHistory().done((result: IEmpRegHistory) => {
                     if (result) {
 
                         self.empRegHistory(new EmpRegHistory(result));
                     }
-                });
+                }).always(() => {
+                    block.clear();
+                });;
             } else {
                 self.empRegHistory(null);
 
@@ -270,8 +278,8 @@ module cps002.a.vm {
 
             if (genType === 3 || genType === 1) {
                 service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
-                    self.currentEmployee().employeeCode(result);
-                    dfd.resolve();
+
+                    dfd.resolve(result);
                 });
             }
 
@@ -360,6 +368,8 @@ module cps002.a.vm {
             let self = this;
 
             self.currentStep(0);
+
+            self.start();
         }
 
         gotoStep3() {
@@ -567,9 +577,9 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
+              
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
-
 
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
@@ -585,7 +595,7 @@ module cps002.a.vm {
 
                     dialog({ messageId: error.message });
 
-                });
+                })
             }
         }
 
@@ -597,7 +607,18 @@ module cps002.a.vm {
                 employee = self.currentEmployee();
 
             setShared("cardNoMode", isCardNoMode);
-            setShared("value", isCardNoMode ? employee.cardNo() : employee.employeeCode());
+            if (useSetting) {
+
+                if (!isCardNoMode) {
+                    self.getEmployeeCode(useSetting).done((employeeCode) => {
+
+                        setShared("textValue", employeeCode);
+                    });
+                } else {
+
+
+                }
+            }
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),

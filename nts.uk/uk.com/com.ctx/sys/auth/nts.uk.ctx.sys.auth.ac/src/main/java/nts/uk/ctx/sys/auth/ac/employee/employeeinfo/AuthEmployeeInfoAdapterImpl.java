@@ -25,7 +25,7 @@ public class AuthEmployeeInfoAdapterImpl implements EmployeeInfoAdapter {
 		
 		List<EmployeeInfoImport> result = new ArrayList<EmployeeInfoImport>();
 		for (EmployeeInfoDtoExport exportData : listEmployeeInfoExport) {
-			result.add(new EmployeeInfoImport(exportData.getCompanyId(), exportData.getEmployeeCode(), exportData.getEmployeeId(), "", exportData.getPersonId()));
+			result.add(new EmployeeInfoImport(exportData.getCompanyId(), exportData.getEmployeeCode(), exportData.getEmployeeId(), exportData.getPerName(), exportData.getPersonId()));
 		}
 		
 		return result;

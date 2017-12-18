@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
@@ -79,6 +80,11 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
 
 		List<KshmtWorkingCondItem> result = query.getResultList();
+
+		// Check empty
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
 
 		// exclude select
 		return Optional.of(new WorkingConditionItem(

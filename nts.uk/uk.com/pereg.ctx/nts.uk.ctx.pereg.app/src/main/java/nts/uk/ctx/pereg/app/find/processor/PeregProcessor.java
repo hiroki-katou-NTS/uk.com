@@ -107,46 +107,52 @@ public class PeregProcessor {
 	 * @param isMainDetail - to detect detail tab or sub detail in tab
 	 * @return EmpMaintLayoutDto
 	 */
-	private EmpMaintLayoutDto getCategoryDetail(PeregQuery query, boolean isMainDetail){
+	private EmpMaintLayoutDto getCategoryDetail(PeregQuery query, boolean isMainDetail) {
 		// app context
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forCompanyAdmin();
 
-		// get Employee
-		EmployeeDataMngInfo employee = empRepo.findByEmpId(query.getEmployeeId()).get();
-		query.setPersonId(employee.getPersonId());
-		
-		// get ctgCd
+		// get Person ID
+		query.setPersonId(empRepo.findByEmpId(query.getEmployeeId()).get().getPersonId());
+
+		// get category
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
 				.get();
-		String ctgCode = perInfoCtg.getCategoryCode().v();
-		if(!isMainDetail) ctgCode = perInfoCtg.getCategoryCode().v() + "SD";
-		query.setCategoryCode(ctgCode);
+
+		if (!isMainDetail) {
+			query.setCategoryCode(perInfoCtg.getCategoryCode().v() + "SD");
+		}
 
 		// get PerInfoItemDefForLayoutDto
 		// check per info auth
-		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), perInfoCtg.getPersonInfoCategoryId()))
+		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), perInfoCtg.getPersonInfoCategoryId())) {
 			return new EmpMaintLayoutDto();
+		}
 
-		// get item def
-		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
-				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
-													companyId, contractCode, loginEmpId.equals(query.getEmployeeId())));
-		if (lstItemDef.size() == 0)
+		// get item definition
+		ParamForGetPerItem getItemDefParam = new ParamForGetPerItem(perInfoCtg, query.getInfoId(),
+				roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(query.getEmployeeId()));
+		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService.getPerItemDef(getItemDefParam);
+		
+		if (lstItemDef.size() == 0) {
 			return new EmpMaintLayoutDto();
+		}
+		
+		// map PersonInfoItemDefinition →→ PerInfoItemDefForLayoutDto
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = new ArrayList<>();
-		for (int i = 0; i < lstItemDef.size(); i++){
-			PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = perInfoItemDefForLayoutFinder.createFromDomain(query.getEmployeeId(),
-					lstItemDef.get(i), query.getCategoryCode(), i);
-			if(perInfoItemDefForLayoutDto != null)
+		for (int i = 0; i < lstItemDef.size(); i++) {
+			PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = perInfoItemDefForLayoutFinder
+					.createFromDomain(query.getEmployeeId(), lstItemDef.get(i), query.getCategoryCode(), i);
+			if (perInfoItemDefForLayoutDto != null)
 				lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutDto);
 		}
 
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
-		//set fix data
+		// set fix data
 		setEmpMaintLayoutDto(empMaintLayoutDto, query, perInfoCtg, lstPerInfoItemDefForLayout);
+		
 		return empMaintLayoutDto;
 	}
 	
@@ -158,31 +164,34 @@ public class PeregProcessor {
 	 * @param perInfoCtg
 	 * @param lstPerInfoItemDef
 	 */
-	
-	private void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, PeregQuery query, PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
-		if(perInfoCtg.getIsFixed() == IsFixed.FIXED){
-			if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO && query.getInfoId() == null){
+	private void setEmpMaintLayoutDto(EmpMaintLayoutDto empMaintLayoutDto, PeregQuery query,
+			PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
+		
+		if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
+			if (perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO && query.getInfoId() == null) {
 				MappingFactory.mapListClsDto(empMaintLayoutDto, null, lstPerInfoItemDef);
 				// set optional data
 				setOptionalData(empMaintLayoutDto, null, perInfoCtg, lstPerInfoItemDef);
-			}
-			else{
-				//get domain data
+			} else {
+				// get domain data
 				PeregDto peregDto = layoutingProcessor.findSingle(query);
-				//set record id
+				// set record id
 				setRecordId(lstPerInfoItemDef, peregDto == null ? null : peregDto.getDomainDto().getRecordId());
-				//set fixed data	
+				// set fixed data
 				MappingFactory.mapListClsDto(empMaintLayoutDto, peregDto, lstPerInfoItemDef);
 				// set optional data
-				setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
+				String recordId = query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId();
+				setOptionalData(empMaintLayoutDto, recordId, perInfoCtg, lstPerInfoItemDef);
 			}
-			
-		}else{
-			if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO && query.getInfoId() == null)
+
+		} else {
+			if (perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO && query.getInfoId() == null)
 				// set optional data
 				setOptionalData(empMaintLayoutDto, null, perInfoCtg, lstPerInfoItemDef);
 			else
-				setOptionalData(empMaintLayoutDto, query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(), perInfoCtg, lstPerInfoItemDef);
+				setOptionalData(empMaintLayoutDto,
+						query.getInfoId() == null ? perInfoCtg.getPersonInfoCategoryId() : query.getInfoId(),
+						perInfoCtg, lstPerInfoItemDef);
 		}
 	}
 	
@@ -194,11 +203,12 @@ public class PeregProcessor {
 	 * @param perInfoCtg
 	 * @param lstPerInfoItemDef
 	 */
-	private void setOptionalData(EmpMaintLayoutDto empMaintLayoutDto, String recordId, PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef){
-		if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
+	private void setOptionalData(EmpMaintLayoutDto empMaintLayoutDto, String recordId, PersonInfoCategory perInfoCtg,
+			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
+		if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE)
 			setEmpInfoItemData(empMaintLayoutDto, recordId, lstPerInfoItemDef);
-		else 
-			setPerInfoItemData(empMaintLayoutDto, recordId, lstPerInfoItemDef);;
+		else
+			setPerInfoItemData(empMaintLayoutDto, recordId, lstPerInfoItemDef);
 	}
 	
 	/**
@@ -213,7 +223,7 @@ public class PeregProcessor {
 		if(recordId != null)
 			lstCtgItemOptionalDto = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-		setRecordId(lstPerInfoItemDef, recordId);
+	    setRecordId(lstPerInfoItemDef, lstCtgItemOptionalDto.size() > 0 ? recordId: null);
 		MappingFactory.mapEmpOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 	
@@ -229,16 +239,14 @@ public class PeregProcessor {
 		if(recordId != null)
 			lstCtgItemOptionalDto = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
 				.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-		setRecordId(lstPerInfoItemDef, recordId);
+		setRecordId(lstPerInfoItemDef, lstCtgItemOptionalDto.size() > 0 ? recordId: null);
 		MappingFactory.mapPerOptionalDto(empMaintLayoutDto, lstCtgItemOptionalDto, lstPerInfoItemDef);
 	}
 	
 	private void setRecordId(List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef, String recordId){
 		lstPerInfoItemDef.forEach(item -> {
-			if(item.getItemDefType() == 2)
-				item.setRecordId(recordId);
-			else{
-				item.setRecordId(recordId);
+			item.setRecordId(recordId);
+			if(item.getItemDefType() != 2) {
 				item.getLstChildItemDef().forEach(i -> i.setRecordId(recordId));
 			}
 		});
