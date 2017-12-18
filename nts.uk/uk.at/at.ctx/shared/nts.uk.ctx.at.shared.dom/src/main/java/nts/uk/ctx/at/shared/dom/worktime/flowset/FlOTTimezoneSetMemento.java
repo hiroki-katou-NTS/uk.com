@@ -38,7 +38,7 @@ public interface FlOTTimezoneSetMemento {
 	 *
 	 * @param ftSet the new flow time setting
 	 */
-	 void setFlowTimeSetting(FlTimeSetting ftSet);
+	 void setFlowTimeSetting(FlowTimeSetting ftSet);
 
 	/**
 	 * Sets the in legal OT frame no.

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
@@ -21,7 +21,7 @@ public class FlTimeSettingPolicyImpl implements FlTimeSettingPolicy {
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSettingPolicy#validate(nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting, nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, FlTimeSetting flTimeSetting) {
+	public void validate(PredetemineTimeSetting predTime, FlowTimeSetting flTimeSetting) {
 		
 		// Validate #Msg_718
 		if (flTimeSetting.getElapsedTime().greaterThanOrEqualTo(predTime.getRangeTimeDay())) {

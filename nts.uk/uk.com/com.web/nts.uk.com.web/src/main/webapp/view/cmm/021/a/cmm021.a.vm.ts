@@ -213,11 +213,9 @@ module nts.uk.com.view.cmm021.a {
                     
                     if (_self.isScreenBSelected()) {
                         _self.findListWindowAccByUserId(newValue);
-                        _self.checkSettingWinAccChoosen(newValue);
                     }
                     if (_self.isScreenCSelected()) {
                         _self.findFirstOtherAcc(newValue);
-                        _self.checkSettingOtherAccChoosen(newValue);
                     }
                 });
 
@@ -228,6 +226,7 @@ module nts.uk.com.view.cmm021.a {
                         _self.loadUserUnsetting();
                     }
                 });
+                
 
                 _self.listUserUnsetting = [];
 
@@ -235,16 +234,23 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenCSelected = ko.observable(false);
                 _self.isScreenBSelected.subscribe((newValue) => {
                     if (newValue) {
-                        _self.userId(null);
+                        _self.userId("");
                         _self.userId(_self.listUserDto[0].userId);
-                        _self.findListWindowAccByUserId(_self.userId());
+                        
+                        // show first item in list item
+                        _self.selectedEmployeeId("");
+                        _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
                     }
                 });
                 _self.isScreenCSelected.subscribe((newValue) => {
                     if (newValue) {
-                        _self.userId(null);
+                        _self.userId("");
                         _self.userId(_self.listUserDto[0].userId);
                         _self.findFirstOtherAcc(_self.userId());
+                        
+                        // show first item in list item
+                        _self.selectedEmployeeId("");
+                        _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
                     }
                 });
 
@@ -276,6 +282,8 @@ module nts.uk.com.view.cmm021.a {
                         _self.listUserDto = data;
                         _self.loadUserDto();
                         _self.onSelectScreenB();
+                        
+                        // show first item in list item
                         _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
                         _self.addLockIcon();
                         dfd.resolve();
@@ -310,65 +318,73 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 service.findListWindowAccByUserIdAndUseAtr(userId).done((data: any) => {
-                    if (data[0]) {
-                        _self.hostName1(data[0].hostName);
-                        _self.userName1(data[0].userName);
-                        _self.enable_B1_1(true);
-                        _self.windowAcc1.isChange = false;
-                    } else {
-                        _self.hostName1("");
-                        _self.userName1("");
-                        _self.enable_B1_1(false);
-                        _self.windowAcc1.isChange = true;
-                    }
+                    
+                    // check data null or empty
+                    if (data && data.length) {
+                        if (data[0]) {
+                            _self.hostName1(data[0].hostName);
+                            _self.userName1(data[0].userName);
+                            _self.enable_B1_1(true);
+                            _self.windowAcc1.isChange = false;
+                        } else {
+                            _self.hostName1("");
+                            _self.userName1("");
+                            _self.enable_B1_1(false);
+                            _self.windowAcc1.isChange = true;
+                        }
 
-                    if (data[1]) {
-                        _self.hostName2(data[1].hostName);
-                        _self.userName2(data[1].userName);
-                        _self.enable_B2_1(true);
-                        _self.windowAcc2.isChange = false;
-                    } else {
-                        _self.hostName2("");
-                        _self.userName2("");
-                        _self.enable_B2_1(false);
-                        _self.windowAcc2.isChange = true;
-                    }
+                        if (data[1]) {
+                            _self.hostName2(data[1].hostName);
+                            _self.userName2(data[1].userName);
+                            _self.enable_B2_1(true);
+                            _self.windowAcc2.isChange = false;
+                        } else {
+                            _self.hostName2("");
+                            _self.userName2("");
+                            _self.enable_B2_1(false);
+                            _self.windowAcc2.isChange = true;
+                        }
 
-                    if (data[2]) {
-                        _self.hostName3(data[2].hostName);
-                        _self.userName3(data[2].userName);
-                        _self.enable_B3_1(true);
-                        _self.windowAcc3.isChange = false;
-                    } else {
-                        _self.hostName3("");
-                        _self.userName3("");
-                        _self.enable_B3_1(false);
-                        _self.windowAcc3.isChange = true;
-                    }
+                        if (data[2]) {
+                            _self.hostName3(data[2].hostName);
+                            _self.userName3(data[2].userName);
+                            _self.enable_B3_1(true);
+                            _self.windowAcc3.isChange = false;
+                        } else {
+                            _self.hostName3("");
+                            _self.userName3("");
+                            _self.enable_B3_1(false);
+                            _self.windowAcc3.isChange = true;
+                        }
 
-                    if (data[3]) {
-                        _self.hostName4(data[3].hostName);
-                        _self.userName4(data[3].userName);
-                        _self.enable_B4_1(true);
-                        _self.windowAcc4.isChange = false;
-                    } else {
-                        _self.hostName4("");
-                        _self.userName4("");
-                        _self.enable_B4_1(false);
-                        _self.windowAcc4.isChange = true;
-                    }
+                        if (data[3]) {
+                            _self.hostName4(data[3].hostName);
+                            _self.userName4(data[3].userName);
+                            _self.enable_B4_1(true);
+                            _self.windowAcc4.isChange = false;
+                        } else {
+                            _self.hostName4("");
+                            _self.userName4("");
+                            _self.enable_B4_1(false);
+                            _self.windowAcc4.isChange = true;
+                        }
 
-                    if (data[4]) {
-                        _self.hostName5(data[4].hostName);
-                        _self.userName5(data[4].userName);
-                        _self.enable_B5_1(true);
-                        _self.windowAcc5.isChange = false;
+                        if (data[4]) {
+                            _self.hostName5(data[4].hostName);
+                            _self.userName5(data[4].userName);
+                            _self.enable_B5_1(true);
+                            _self.windowAcc5.isChange = false;
+                        } else {
+                            _self.hostName5("");
+                            _self.userName5("");
+                            _self.enable_B5_1(false);
+                            _self.windowAcc5.isChange = true;
+                        }
+                        _self.updateMode();
                     } else {
-                        _self.hostName5("");
-                        _self.userName5("");
-                        _self.enable_B5_1(false);
-                        _self.windowAcc5.isChange = true;
-                    }
+                        _self.newMode();
+                        _self.loadNewWindowAccount();
+                    }                                                                      
                     dfd.resolve();
                 }).fail((res: any) => {
                     dfd.reject(res);
@@ -476,6 +492,32 @@ module nts.uk.com.view.cmm021.a {
                 return dfd.promise();
 
             }
+            
+            // load new mode
+            private loadNewWindowAccount(){
+                let _self = this;
+                
+                _self.hostName1("");
+                _self.userName1("");
+                _self.enable_B1_1(true);
+                
+                 _self.hostName2("");
+                _self.userName2("");
+                _self.enable_B2_1(false);
+                
+                 _self.hostName3("");
+                _self.userName3("");
+                _self.enable_B3_1(false);
+                
+                 _self.hostName4("");
+                _self.userName4("");
+                _self.enable_B4_1(false);
+                
+                 _self.hostName5("");
+                _self.userName5("");
+                _self.enable_B5_1(false);
+                              
+            }
 
             public addLockIcon() {
                 var iconLink = nts.uk.request.location.siteRoot
@@ -507,7 +549,12 @@ module nts.uk.com.view.cmm021.a {
                     if (!userDto.isSetting) {
                         _self.listUserUnsetting.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, userDto.other));
                     }
+
                 }
+                // select first item in list unsetting
+                _self.selectedEmployeeId("");
+                _self.selectedEmployeeId(_self.listUserUnsetting[0].employeeId);
+
                 _self.items(_self.listUserUnsetting);
                 if (_self.listUserUnsetting.length = 0) {
                     _self.unselectedMode();
@@ -517,6 +564,10 @@ module nts.uk.com.view.cmm021.a {
             private loadUserSetting() {
                 let _self = this;
                 _self.loadUserInfo();
+                
+                // select first item in list setting
+                _self.selectedEmployeeId("");
+                _self.selectedEmployeeId(_self.listUserDto[0].employeeId);
 
             }
 
@@ -532,13 +583,11 @@ module nts.uk.com.view.cmm021.a {
                 _self.enable_B4_1(false);
                 _self.enable_B5_1(false);
 
-                _self.loadUserInfo();
             }
 
             // update mode
             private updateMode() {
                 let _self = this;
-                _self.loadUserInfo();
                 _self.enable_A2_1(true);
                 _self.enable_A2_2(true);
             }
@@ -556,7 +605,6 @@ module nts.uk.com.view.cmm021.a {
                 _self.enable_B4_1(false);
                 _self.enable_B5_1(false);
 
-                _self.loadUserInfo();
             }
 
             private deleteAccount() {
@@ -587,13 +635,16 @@ module nts.uk.com.view.cmm021.a {
                         service.removeWindowAccount(_self.userIdBeChoosen()).done((data: any) => {
                             _self.loadUserInfo();
                             _self.newMode();
+                            _self.hostName1("");
+                            _self.userName1("");
+                            _self.enable_B1_1(true);
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     });
                 }).ifNo(() => {                  
                     nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                 });
-               
+              
             }
 
 
@@ -602,11 +653,12 @@ module nts.uk.com.view.cmm021.a {
 
                 _self.isScreenBSelected(true);
                 _self.isScreenCSelected(false);
+                _self.selectUse(1);
             }
 
             public onSelectScreenC() {
                 let _self = this;
-
+                _self.selectUse(1);
                 _self.isScreenBSelected(false);
                 _self.isScreenCSelected(true);
             }
@@ -616,16 +668,21 @@ module nts.uk.com.view.cmm021.a {
                 let dfd = $.Deferred<any>();
 
                 service.findOtherSysAccByUserId(userId).done((data: any) => {
-                    if (data) {
-                        _self.companyCode6(data.companyCode);
-                        _self.userName6(data.userName);
-                        _self.enable_C1_1(true);
-                    }else{
-                        _self.companyCode6("");
-                        _self.userName6("");
-                        _self.enable_C1_1(true); 
+                    if (data != null) {
+                        if (data) {
+                            _self.companyCode6(data.companyCode);
+                            _self.userName6(data.userName);
+                            _self.enable_C1_1(true);
+                        } else {
+                            _self.companyCode6("");
+                            _self.userName6("");
+                            _self.enable_C1_1(true);
+                        }
+                        _self.updateMode();
+                    } else {
+                        _self.newMode();
                     }
-                    
+
                     dfd.resolve();
                 })
                     .fail((res: any) => {
@@ -666,6 +723,8 @@ module nts.uk.com.view.cmm021.a {
                 service.saveOtherSysAccount(otherAcc)
                     .done((data: any) => {
                         _self.loadUserInfo();
+                        _self.updateMode();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     })
                     .fail((res: any) => {
                         dfd.reject(res);
@@ -680,104 +739,18 @@ module nts.uk.com.view.cmm021.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(() => {
                         service.removeOtherSysAccount(_self.userIdBeChoosen()).done((data: any) => {
                             _self.loadUserInfo();
-                           // _self.unselectedMode();
                             _self.newMode();
+                            _self.companyCode6("");
+                            _self.userName6("");
+                            _self.enable_C1_1(true);
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     });
                 }).ifNo(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                 });
-            }
-
-            // choose element
-            private checkSettingWinAccChoosen(newValue: string) {
-                let _self = this;
-
-                service.findListWindowAccByUserIdAndUseAtr(newValue).done((data: any) => {
-                    // check data null or empty
-                    if (data && data.length) {
-                        if (data[0]) {
-                            _self.hostName1(data[0].hostName);
-                            _self.userName1(data[0].userName);
-                            _self.enable_B1_1(true);
-                            _self.windowAcc1.isChange = false;
-                        } else {
-                            _self.hostName1("");
-                            _self.userName1("");
-                            _self.enable_B1_1(false);
-                            _self.windowAcc1.isChange = true;
-                        }
-
-                        if (data[1]) {
-                            _self.hostName2(data[1].hostName);
-                            _self.userName2(data[1].userName);
-                            _self.enable_B2_1(true);
-                            _self.windowAcc2.isChange = false;
-                        } else {
-                            _self.hostName2("");
-                            _self.userName2("");
-                            _self.enable_B2_1(false);
-                            _self.windowAcc2.isChange = true;
-                        }
-
-                        if (data[2]) {
-                            _self.hostName3(data[2].hostName);
-                            _self.userName3(data[2].userName);
-                            _self.enable_B3_1(true);
-                            _self.windowAcc3.isChange = false;
-                        } else {
-                            _self.hostName3("");
-                            _self.userName3("");
-                            _self.enable_B3_1(false);
-                            _self.windowAcc3.isChange = true;
-                        }
-
-                        if (data[3]) {
-                            _self.hostName4(data[3].hostName);
-                            _self.userName4(data[3].userName);
-                            _self.enable_B4_1(true);
-                            _self.windowAcc4.isChange = false;
-                        } else {
-                            _self.hostName4("");
-                            _self.userName4("");
-                            _self.enable_B4_1(false);
-                            _self.windowAcc4.isChange = true;
-                        }
-
-                        if (data[4]) {
-                            _self.hostName5(data[4].hostName);
-                            _self.userName5(data[4].userName);
-                            _self.enable_B5_1(true);
-                            _self.windowAcc5.isChange = false;
-                        } else {
-                            _self.hostName5("");
-                            _self.userName5("");
-                            _self.enable_B5_1(false);
-                            _self.windowAcc5.isChange = true;
-                        }
-                        _self.updateMode();
-                    } else {
-                        _self.newMode();
-                    }
-                });
-            }
-
-            private checkSettingOtherAccChoosen(newValue: string) {
-                let _self = this;
-
-                service.findOtherSysAccByUserId(newValue).done((data: any) => {
-                    //_self.loadUserInfo();
-                    if (data) {
-                        _self.companyCode6(data.companyCode);
-                        _self.userName6(data.userName);
-                        _self.enable_C1_1(true);
-                        _self.updateMode();
-                    } else {
-                        _self.newMode();
-                    }
-                 });
-            }
+            }                                    
+            
         }
     }
 

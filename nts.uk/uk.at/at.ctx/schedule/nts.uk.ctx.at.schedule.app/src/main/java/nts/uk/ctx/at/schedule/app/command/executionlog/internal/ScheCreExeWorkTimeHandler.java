@@ -181,7 +181,7 @@ public class ScheCreExeWorkTimeHandler {
 	public Optional<WorkingConditionItem> getLaborConditionItem(String companyId, String employeeId,
 			GeneralDate baseDate) {
 		Optional<WorkingCondition> optionalWorkingCondition = this.workingConditionRepository
-				.getAllWokingCondition(companyId, employeeId);
+				.getBySid(companyId, employeeId);
 		if (!optionalWorkingCondition.isPresent()) {
 			return Optional.empty();
 		}

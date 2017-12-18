@@ -49,3 +49,11 @@
 #table-date td {
 	font-size: 14px;
 }
+
+#pairPatternName {
+	vertical-align: middle;
+}
+
+#color-red {
+	color: red
+}

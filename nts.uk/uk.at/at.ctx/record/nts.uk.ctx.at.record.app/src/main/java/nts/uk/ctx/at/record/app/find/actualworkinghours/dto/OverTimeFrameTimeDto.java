@@ -9,18 +9,26 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @Data
 public class OverTimeFrameTimeDto {
 
-	/** 振替時間: 計算付き時間*/
-	@AttendanceItemLayout(layout="A")
+	/** 振替時間: 計算付き時間 */
+	@AttendanceItemLayout(layout = "A")
 	private CalcAttachTimeDto transferTime;
-	/** 残業時間: 計算付き時間*/
-	@AttendanceItemLayout(layout="B")
+
+	/** 残業時間: 計算付き時間 */
+	@AttendanceItemLayout(layout = "B")
 	private CalcAttachTimeDto overtime;
-	/** 事前申請時間: 勤怠時間*/
-	@AttendanceItemLayout(layout="C")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int beforeApplicationTime;
-	/** 残業枠NO: 残業枠NO*/
-	@AttendanceItemLayout(layout="D")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int overtimeFrameNo;
+
+	/** 事前申請時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = "C")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer beforeApplicationTime;
+
+	/** 指示時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = "D")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer orderTime;
+
+	/** 残業枠NO: 残業枠NO */
+	@AttendanceItemLayout(layout = "E")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer overtimeFrameNo;
 }

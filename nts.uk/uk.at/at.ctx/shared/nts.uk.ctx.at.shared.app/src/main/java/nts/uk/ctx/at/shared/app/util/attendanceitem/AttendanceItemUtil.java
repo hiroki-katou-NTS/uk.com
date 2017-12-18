@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
 public class AttendanceItemUtil {
 
 	public static List<ItemValue> toItemValues(ConvertibleAttendanceItem attendanceItems) {
-		return getItemFromField(attendanceItems, "");
+		return getItemFromField(attendanceItems, "", 0);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> T toConvertibleAttendanceItem(Class<T> classType,
@@ -64,8 +64,10 @@ public class AttendanceItemUtil {
 		if (attendanceItems.size() > 1) {
 			throw new RuntimeException("Layout Code is not correct");
 		}
-		int itemId = getItemValueAnnotation(field).itemId();
-		return attendanceItems.stream().filter(ivl -> ivl.getItemId() == itemId).findFirst()
+		List<Integer> itemIds = Arrays.stream(getItemValueAnnotation(field).itemId()).boxed()
+				.collect(Collectors.toList());
+		
+		return attendanceItems.stream().filter(ivl -> itemIds.contains(ivl.getItemId())).findFirst()
 				.orElseThrow(() -> new RuntimeException("Item Id is not consistent")).value();
 	}
 
@@ -90,50 +92,50 @@ public class AttendanceItemUtil {
 		return mergeToObject(ReflectionUtil.newInstance(classType), attendanceItems, layoutIdx);
 	}
 
-	private static List<ItemValue> getItemFromField(Object attendanceItems, String currentLayout) {
+	private static List<ItemValue> getItemFromField(Object attendanceItems, String currentLayout, int idx) {
 
 		return getItemLayouFields(attendanceItems.getClass()).map(field -> {
-			return propertiesToItemValues(attendanceItems, currentLayout, field);
+			return propertiesToItemValues(attendanceItems, currentLayout, field, idx);
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
-	private static List<ItemValue> propertiesToItemValues(Object attendanceItems, String currentLayout, Field field) {
+	private static List<ItemValue> propertiesToItemValues(Object attendanceItems, String currentLayout, Field field, int idx) {
 		AttendanceItemLayout layoutAnno = getLayoutAnnotation(field);
-		return processProperty(field, attendanceItems, currentLayout, layoutAnno.layout(), layoutAnno.isList());
+		return processProperty(field, attendanceItems, currentLayout, layoutAnno.layout(), layoutAnno.isList(), idx);
 	}
 
 	@SuppressWarnings("unchecked")
 	private static <T> List<ItemValue> processProperty(Field field, Object attendanceItems, String currentLayout,
-			String layoutCode, boolean isList) {
+			String layoutCode, boolean isList, int idx) {
 		T values = ReflectionUtil.getFieldValue(field, attendanceItems);
 		if (values != null) {
 			if (isList) {
 				return processList(currentLayout, layoutCode, (List<T>) values);
 			}
-			return processOne(currentLayout, field, layoutCode, values);
+			return processOne(currentLayout, field, layoutCode, values, idx);
 		}
 		return Collections.emptyList();
 	}
 
-	private static <T> List<ItemValue> processOne(String currentLayout, Field field, String layoutCode, T value) {
+	private static <T> List<ItemValue> processOne(String currentLayout, Field field, String layoutCode, T value, int idx) {
 		if (isItemValue(field)) {
-			ItemValue itv = newItemValue(currentLayout, field, layoutCode);
+			ItemValue itv = newItemValue(currentLayout, field, layoutCode, idx);
 			itv.value(value);
 			return Arrays.asList(itv);
 		} else {
-			return getItemFromField(value, mergeLayout(currentLayout, layoutCode));
+			return getItemFromField(value, mergeLayout(currentLayout, layoutCode), idx);
 		}
 	}
 
 	private static <T> List<ItemValue> processList(String currentLayout, String layoutCode, List<T> values) {
 		return IntStream.range(0, values.size()).mapToObj(idx -> {
-			return getItemFromField(values.get(idx), mergeLayout(currentLayout, layoutCode + idx));
+			return getItemFromField(values.get(idx), mergeLayout(currentLayout, layoutCode + idx), idx);
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
-	private static ItemValue newItemValue(String currentLayout, Field field, String layoutCode) {
+	private static ItemValue newItemValue(String currentLayout, Field field, String layoutCode, int idx) {
 		AttendanceItemValue valueType = getItemValueAnnotation(field);
-		return new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), valueType.itemId());
+		return new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), valueType.itemId()[idx]);
 	}
 
 	@SuppressWarnings("unchecked")

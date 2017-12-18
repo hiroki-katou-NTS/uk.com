@@ -7,9 +7,10 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -58,7 +59,7 @@ import nts.uk.shr.pereg.app.command.PeregInputContainer;
  * @author sonnlb
  *
  */
-@RequestScoped
+@Stateless
 public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmployeeCommand, String> {
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
@@ -129,7 +130,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	}
 
-	@Transactional
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private void addBasicData() {
 
 		// add newPerson
@@ -177,7 +178,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	}
 
-	@Transactional
 	private void inputsProcess() {
 
 		List<SettingItemDto> dataServer = this.layoutFinder.getItemListByCreateType(command);
@@ -206,7 +206,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		});
 
-		// update data
+		// update fixed data
 		List<ItemsByCategory> fixedInputs = inputs.stream().filter(x -> fixedCtgList.indexOf(x.getCategoryCd()) != -1)
 				.collect(Collectors.toList());
 
@@ -240,7 +240,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		this.commandFacade.add(addContainer);
 	}
 
-	@Transactional
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private void addOptinalInputs(List<ItemsByCategory> fixedInputs) {
 		List<ItemsByCategory> addInputs = new ArrayList<ItemsByCategory>();
 

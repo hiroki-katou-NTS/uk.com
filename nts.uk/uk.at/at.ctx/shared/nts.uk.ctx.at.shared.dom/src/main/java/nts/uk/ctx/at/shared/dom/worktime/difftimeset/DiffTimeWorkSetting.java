@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 /**
  * The Class TimeDiffWorkSetting.
  */
-
 @Getter
 // 時差勤務設定
 public class DiffTimeWorkSetting extends AggregateRoot {

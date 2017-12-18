@@ -131,7 +131,7 @@ module nts.uk.at.view.kdw008.a {
                     self.isRemove(true);
                     nts.uk.ui.errors.clearAll();
                     self.getDetail(self.currentDailyFormatCode(), 1);
-//                    self.selectedTab('tab-1');
+                    //                    self.selectedTab('tab-1');
                 });
 
             }
@@ -163,10 +163,11 @@ module nts.uk.at.view.kdw008.a {
                 self.currentDailyFormatCode(null);
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
-                self.getDetail(self.selectedCode());
+                self.getDetail(self.selectedCode()).done(() => {
+                    _.defer(() => { $("#currentCode").focus(); });
+                });
                 self.checked(false);
                 self.showCode(true);
-                _.defer(() => {$("#currentCode").focus();});
                 self.isUpdate(false);
                 self.isRemove(false);
             }
@@ -178,7 +179,7 @@ module nts.uk.at.view.kdw008.a {
                     self.selectedSheetNo(selectedSheetNo);
                 }
                 new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
-                    
+
                     if (data) {
                         if (data.isDefaultInitial == 1) {
                             self.checked(true);
@@ -238,7 +239,9 @@ module nts.uk.at.view.kdw008.a {
                         } else {
                             self.authorityFormatDailyValue([]);
                         }
-                        $("#currentName").focus();
+                        if (!self.newMode()) {
+                            $("#currentName").focus();
+                        }
                     } else {
                         self.currentBusinessType([]);
                     }
@@ -351,7 +354,7 @@ module nts.uk.at.view.kdw008.a {
                     if (data && data.length > 0) {
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentDailyFormatCode(dailyPerformanceFormatCode);
-//                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
+                        //                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
                         //                        self.selectedCode(dailyPerformanceFormatCode);
                         self.selectedSheetNo(1);
                         self.getDetail(dailyPerformanceFormatCode);
