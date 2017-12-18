@@ -40,11 +40,34 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * getByHistoryId(java.lang.String)
+	 */
+	@Override
+	public Optional<WorkingConditionItem> getByHistoryId(String historyId) {
+		// Query
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(historyId,
+				KshmtWorkingCondItem.class);
+
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
+
+		// Return
+		return Optional.of(
+				new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(optEntity.get())));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
 	 * findWorkingConditionItemByPersWorkCat(java.lang.String,
 	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<WorkingConditionItem> findWorkingConditionItemByPersWorkCat(String employeeId,
+	public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId,
 			GeneralDate baseDate) {
 
 		// get entity manager
@@ -89,6 +112,51 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// exclude select
 		return Optional.of(new WorkingConditionItem(
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * add(nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem)
+	 */
+	@Override
+	public void add(WorkingConditionItem item) {
+		KshmtWorkingCondItem entity = new KshmtWorkingCondItem();
+		item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
+		this.commandProxy().insert(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * update(nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem)
+	 */
+	@Override
+	public void update(WorkingConditionItem item) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(item.getHistoryId(),
+				KshmtWorkingCondItem.class);
+
+		KshmtWorkingCondItem entity = optEntity.get();
+
+		item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
+
+		this.commandProxy().update(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * delete(java.lang.String)
+	 */
+	@Override
+	public void delete(String historyId) {
+		this.commandProxy().remove(KshmtWorkingCondItem.class, historyId);
 	}
 
 }

@@ -25,5 +25,5 @@ public interface FlOffdayWtzSetMemento {
 	 *
 	 * @param listHdtz the new lst work timezone
 	 */
-	void setLstWorkTimezone(List<FlWorkHdTimeZone> listHdtz);
+	void setLstWorkTimezone(List<FlowWorkHolidayTimeZone> listHdtz);
 }

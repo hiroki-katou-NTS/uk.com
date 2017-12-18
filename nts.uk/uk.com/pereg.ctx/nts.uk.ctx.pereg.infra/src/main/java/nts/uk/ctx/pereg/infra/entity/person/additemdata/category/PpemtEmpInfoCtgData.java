@@ -10,14 +10,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 // 社員情報カテゴリデータ
 @Table(name = "PPEMT_EMP_INFO_CTG_DATA")
-public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
+public class PpemtEmpInfoCtgData extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

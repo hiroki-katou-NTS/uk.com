@@ -43,6 +43,10 @@
 	min-width: 120px;
 }
 
+#content-area #layout .ntsSearchBox.nts-editor {
+	width: 178px;
+}
+
 .avatar-group, .person-group, .action-group {
 	float: left;
 	padding: 0 1px;

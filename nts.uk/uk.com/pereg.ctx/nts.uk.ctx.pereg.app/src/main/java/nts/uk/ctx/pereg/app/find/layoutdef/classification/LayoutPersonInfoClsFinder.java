@@ -38,6 +38,17 @@ public class LayoutPersonInfoClsFinder {
 		List<LayoutPersonInfoClsDto> listItemCls = itemClsRepo.getAllByLayoutId(layoutId).stream()
 				.map(item -> LayoutPersonInfoClsDto.fromDomain(item)).collect(Collectors.toList());
 
+		return mapItemCls(listItemCls);
+	}
+
+	public List<LayoutPersonInfoClsDto> getListClsDtoHasCtgCd(String layoutId) {
+		List<LayoutPersonInfoClsDto> listItemCls = itemClsRepo.getAllWithCtdCdByLayoutId(layoutId).stream()
+				.map(item -> LayoutPersonInfoClsDto.fromDomainWithCtgCD(item)).collect(Collectors.toList());
+
+		return mapItemCls(listItemCls);
+	}
+
+	private List<LayoutPersonInfoClsDto> mapItemCls(List<LayoutPersonInfoClsDto> listItemCls) {
 		if (listItemCls.size() > 0) {
 			for (LayoutPersonInfoClsDto classDto : listItemCls) {
 				switch (classDto.getLayoutItemType()) {

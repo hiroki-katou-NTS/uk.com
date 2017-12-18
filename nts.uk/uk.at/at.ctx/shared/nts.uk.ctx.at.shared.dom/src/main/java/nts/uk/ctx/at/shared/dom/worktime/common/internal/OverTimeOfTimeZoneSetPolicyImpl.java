@@ -43,8 +43,8 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		this.tzrPolicy.validateRange(predTime, otSet.getTimezone());
 
 		// validate msg_519
-		// TODO: trong ea chua mo ta truong hop khong co shift timezone
-		if (otTimezone.isBetweenOrEqual(shift1Timezone) || otTimezone.isBetweenOrEqual(shift2Timezone)) {
+		if (!predTime.isPredetermine() && predTime.getPrescribedTimezoneSetting().getLstTimezone().stream()
+				.anyMatch(shift -> otTimezone.isBetweenOrEqual(shift))) {
 			throw new BusinessException("Msg_519");
 		}
 

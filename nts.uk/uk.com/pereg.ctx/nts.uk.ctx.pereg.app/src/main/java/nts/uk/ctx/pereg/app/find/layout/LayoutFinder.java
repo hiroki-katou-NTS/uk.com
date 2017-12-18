@@ -61,7 +61,9 @@ import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
+import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 
 @Stateless
 public class LayoutFinder {
@@ -342,15 +344,20 @@ public class LayoutFinder {
 							perInfoCategory.getPersonInfoCategoryId());
 					if (!perInfoCtgDatas.isEmpty()) {
 						String recordId = perInfoCtgDatas.get(0).getRecordId();
-						List<PersonInfoItemData> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId);
-						matchPersDataForSingleClsItem(recordId, classItemList, dataItems);
+						List<PersonOptionalDto> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId)
+								.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
+						MappingFactory.matchPerOptionData(recordId, classItemList, dataItems);
 					}
 				} else {
-					String recordId = empInCtgDataRepo
-							.getEmpInfoCtgDataBySIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId()).get()
-							.getRecordId();
-					List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId);
-					matchEmpDataForDefItems(recordId, classItemList, dataItems);
+					List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo
+							.getByEmpIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId());
+					if ( !empInfoCtgDatas.isEmpty()) {
+						String recordId = empInfoCtgDatas.get(0).getRecordId();
+						List<EmpOptionalDto> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId).stream()
+								.map(x -> x.genToPeregDto()).collect(Collectors.toList());
+						MappingFactory.matchEmpOptionData(recordId, classItemList, dataItems);
+					}
+					
 				}
 				break;
 			case CONTINUOUSHISTORY:
@@ -385,55 +392,6 @@ public class LayoutFinder {
 
 	}
 
-	/**
-	 * Target: map optional data with definition item. Person case
-	 * @param recordId
-	 * @param classItemList
-	 * @param dataItems
-	 */
-	private void matchPersDataForSingleClsItem(String recordId, List<LayoutPersonInfoClsDto> classItemList,
-			List<PersonInfoItemData> dataItems) {
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				
-				// recordId
-				valueItem.setRecordId(recordId);
-				
-				// data
-				for (PersonInfoItemData dataItem : dataItems) {
-					if (valueItem.getItemCode().equals(dataItem.getItemCode().v())) {
-						valueItem.setValue(dataItem.getDataState().getValue());
-					}
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Target: map optional data with definition item. employee case
-	 * @param recordId
-	 * @param classItemList
-	 * @param dataItems
-	 */
-	private void matchEmpDataForDefItems(String recordId, List<LayoutPersonInfoClsDto> classItemList, List<EmpInfoItemData> dataItems) {
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				
-				// recordId
-				valueItem.setRecordId(recordId);
-				
-				// data
-				for (EmpInfoItemData dataItem : dataItems) {
-					if (valueItem.getItemCode().equals(dataItem.getItemCode().v())) {
-						valueItem.setValue(dataItem.getDataState().getValue());
-					}
-				}
-			}
-		}
-	}
 
 	/**
 	 * @param perInfoCategoryId
@@ -451,18 +409,19 @@ public class LayoutFinder {
 		for (PerInfoCtgData perInfoCtgData : perInfoCtgDatas) {
 			String recordId = perInfoCtgData.getRecordId();
 
-			List<PersonInfoItemData> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId);
+			List<PersonOptionalDto> dataItems = perInItemDataRepo.getAllInfoItemByRecordId(recordId).stream()
+					.map(x -> x.genToPeregDto()).collect(Collectors.toList());
 
-			Optional<PersonInfoItemData> startDateOpt = dataItems.stream()
+			Optional<PersonOptionalDto> startDateOpt = dataItems.stream()
 					.filter(column -> column.getPerInfoItemDefId().equals(startDateId)).findFirst();
 
-			Optional<PersonInfoItemData> endDateOpt = dataItems.stream()
+			Optional<PersonOptionalDto> endDateOpt = dataItems.stream()
 					.filter(column -> column.getPerInfoItemDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.after(startDateOpt.get().getDataState().getDateValue())
-						&& stardardDate.before(endDateOpt.get().getDataState().getDateValue())) {
-					matchPersDataForSingleClsItem(recordId, classItemList, dataItems);
+				if (stardardDate.after((GeneralDate) startDateOpt.get().getValue())
+						&& stardardDate.before((GeneralDate) endDateOpt.get().getValue())) {
+					MappingFactory.matchPerOptionData(recordId, classItemList, dataItems);
 					break;
 				}
 			}
@@ -486,17 +445,18 @@ public class LayoutFinder {
 
 		for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
 			String recordId = empInfoCtgData.getRecordId();
-			List<EmpInfoItemData> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId);
-
-			Optional<EmpInfoItemData> startDateOpt = dataItems.stream()
+			List<EmpOptionalDto> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId)
+					.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
+					
+			Optional<EmpOptionalDto> startDateOpt = dataItems.stream()
 					.filter(column -> column.getPerInfoDefId().equals(startDateId)).findFirst();
-			Optional<EmpInfoItemData> endDateOpt = dataItems.stream()
+			Optional<EmpOptionalDto> endDateOpt = dataItems.stream()
 					.filter(column -> column.getPerInfoDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.after(startDateOpt.get().getDataState().getDateValue())
-						&& stardardDate.before(endDateOpt.get().getDataState().getDateValue())) {
-					matchEmpDataForDefItems(recordId, classItemList, dataItems);
+				if (stardardDate.after((GeneralDate)startDateOpt.get().getValue())
+						&& stardardDate.before( (GeneralDate) endDateOpt.get().getValue())) {
+					MappingFactory.matchEmpOptionData(recordId, classItemList, dataItems);
 					break;
 				}
 			}
