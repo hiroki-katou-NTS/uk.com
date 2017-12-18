@@ -102,6 +102,7 @@ public class EmployeeInfoFinder {
 				char [] arr = value.toCharArray();
 				char [] resultArr = new char[arr.length];
 				boolean con = true;
+				boolean beforeLast = false;
 				for(int i = arr.length -1; i >= 0; i--){
 					char curChar = arr[i];
 					if(con){
@@ -113,27 +114,43 @@ public class EmployeeInfoFinder {
 								break;
 							case '9':
 								increaseLetter = '0';
+								beforeLast = true;
 								con = true;
 								break;
 							// nếu ký tự tăng là z
 							case 'z':
 								increaseLetter = 'a';
+								beforeLast = true;
 								con = true;
 								break;
 							// nếu ký tự tăng là Z
 							case 'Z':
 								increaseLetter = 'A';
+								beforeLast = true;
 								con = true;
 								break;
 							default:
 								increaseLetter = (char)((int) curChar + 1);								
 								break;
 						}
-						if(i != 0)
+						if(i != 0){
+							if(beforeLast && increaseLetter == ' '){
+								increaseLetter = '1';
+								beforeLast = false;
+								con = false;
+							}
 							resultArr[i] = increaseLetter;
+						}
 						else {
-							resultArr[0] = '1';
-							resultArr[1] = increaseLetter;
+							if(con){
+								resultArr[i] = increaseLetter;
+								for(int j = resultArr.length - 2; j > 0; j--){
+									char c = resultArr[j-1];
+									resultArr[j] = c;
+								}
+								if(beforeLast)
+									resultArr[0] = '1';
+							}else resultArr[i] = increaseLetter;
 						}
 					}else {
 						resultArr[i] = arr[i];
