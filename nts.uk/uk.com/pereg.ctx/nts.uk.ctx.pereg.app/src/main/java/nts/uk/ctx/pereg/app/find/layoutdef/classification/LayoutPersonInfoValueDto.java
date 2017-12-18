@@ -64,6 +64,7 @@ public class LayoutPersonInfoValueDto {
 	private DataTypeStateDto item;
 	
 	private int type;
+	private int ctgType;
 
 	public LayoutPersonInfoValueDto(String categoryId, String categoryCode, String itemDefId, String itemName,
 			String itemCode, Integer row, Object value) {
@@ -110,6 +111,7 @@ public class LayoutPersonInfoValueDto {
 		dataObject.setItemCode(itemDef.getItemCode());
 		dataObject.setRow(itemDef.getRow());
 		dataObject.setValue(value);
+		dataObject.setCtgType(itemDef.getCtgType());
 		dataObject.setRequired(itemDef.getIsRequired() == 1);
 
 		dataObject.setType(itemDef.getItemTypeState().getItemType());
