@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk003.a {
     import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
     import StampReflectTimezoneDto = nts.uk.at.view.kmk003.a.service.model.common.StampReflectTimezoneDto;
     import InstantRoundingDto = nts.uk.at.view.kmk003.a.service.model.common.InstantRoundingDto;
+    import FixedWorkRestSetDto = nts.uk.at.view.kmk003.a.service.model.common.FixedWorkRestSetDto;
+    import WorkTimezoneCommonSetDto = nts.uk.at.view.kmk003.a.service.model.common.WorkTimezoneCommonSetDto;
 
     export module service {
         export module model {
@@ -53,6 +55,19 @@ module nts.uk.at.view.kmk003.a {
                     aheadChange: number;
                     unit: InstantRoundingDto;
                     behindChange: number;
+                }
+                
+                export interface DiffTimeWorkSettingDto {
+                    companyId: string;
+                    workTimeCode: string;
+                    restSet: FixedWorkRestSetDto;
+                    dayoffWorkTimezone: DiffTimeDayOffWorkTimezoneDto;
+                    commonSet: WorkTimezoneCommonSetDto;
+                    isUseHalfDayShift: boolean;
+                    changeExtent: EmTimezoneChangeExtentDto;
+                    halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[];
+                    stampReflectTimezone: DiffTimeWorkStampReflectTimezoneDto;
+                    overtimeSetting: number;
                 }
 
             }

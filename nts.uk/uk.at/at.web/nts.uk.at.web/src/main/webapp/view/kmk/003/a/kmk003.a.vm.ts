@@ -11,7 +11,7 @@ module nts.uk.at.view.kmk003.a {
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
     import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
     import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlWorkSettingModel;
-    import DiffWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffWorkSettingModel;
+    import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
     import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
     
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
@@ -272,7 +272,7 @@ module nts.uk.at.view.kmk003.a {
             predetemineTimeSetting: PredetemineTimeSettingModel;
             fixedWorkSetting: FixedWorkSettingModel;
             flowWorkSetting: FlowWorkSettingModel;
-            diffWorkSetting: DiffWorkSettingModel;
+            diffWorkSetting: DiffTimeWorkSettingModel;
             flexWorkSetting: FlexWorkSettingModel;
             
             constructor() {
@@ -280,7 +280,7 @@ module nts.uk.at.view.kmk003.a {
                 this.predetemineTimeSetting = new PredetemineTimeSettingModel();
                 this.fixedWorkSetting = new FixedWorkSettingModel();
                 this.flowWorkSetting = new FlowWorkSettingModel();
-                this.diffWorkSetting = new DiffWorkSettingModel();
+                this.diffWorkSetting = new DiffTimeWorkSettingModel();
                 this.flexWorkSetting = new FlexWorkSettingModel();
             }
         }
