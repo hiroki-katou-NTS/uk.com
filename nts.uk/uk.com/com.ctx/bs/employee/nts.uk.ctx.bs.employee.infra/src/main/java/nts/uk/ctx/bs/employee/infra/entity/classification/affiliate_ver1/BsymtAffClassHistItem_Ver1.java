@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * @author danpv
@@ -20,7 +20,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Table(name = "BSYMT_AFF_CLASS_HIS_ITEM")
 @NoArgsConstructor
 @AllArgsConstructor
-public class BsymtAffClassHistItem_Ver1 extends JpaEntity {
+public class BsymtAffClassHistItem_Ver1 extends UkJpaEntity {
 
 	@Id
 	@Column(name = "HISTORY_ID")

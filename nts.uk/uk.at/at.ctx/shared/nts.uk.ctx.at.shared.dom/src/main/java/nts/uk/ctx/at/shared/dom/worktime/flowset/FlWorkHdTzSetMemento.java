@@ -65,5 +65,5 @@ public interface FlWorkHdTzSetMemento {
 	 *
 	 * @param ftSet the new flow time setting
 	 */
- 	void setFlowTimeSetting(FlTimeSetting ftSet);
+ 	void setFlowTimeSetting(FlowTimeSetting ftSet);
 }

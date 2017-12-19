@@ -1,4 +1,4 @@
-module ksu001.o1.viewmodel {
+module nts.uk.at.view.ksu001.o1.viewmodel {
     import getShare = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {

@@ -40,5 +40,12 @@ public interface EmployeeInfoPub {
 	 * @return
 	 */
 	List<EmpInfoExport> getEmpInfoByPid(String pid);
+	
+	
+	/**
+	 * Find Employee by companyId,Pid
+	 * RequestList No. 
+	 */
+	Optional<EmployeeInfoDto> getEmployeeInfoByCidPid(String companyId, String personId);
 
 }

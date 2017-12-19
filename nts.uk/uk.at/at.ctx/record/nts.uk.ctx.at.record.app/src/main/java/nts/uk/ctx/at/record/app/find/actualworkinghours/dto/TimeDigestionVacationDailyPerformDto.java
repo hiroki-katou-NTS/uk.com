@@ -9,13 +9,13 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @Data
 public class TimeDigestionVacationDailyPerformDto {
 
-	/** 不足時間:　勤怠時間*/
-	@AttendanceItemLayout(layout="A")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int shortageTime;
-	
-	/** 使用時間:　勤怠時間*/
-	@AttendanceItemLayout(layout="B")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int useTime;
+	/** 不足時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = "A")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer shortageTime;
+
+	/** 使用時間: 勤怠時間 */
+	@AttendanceItemLayout(layout = "B")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer useTime;
 }

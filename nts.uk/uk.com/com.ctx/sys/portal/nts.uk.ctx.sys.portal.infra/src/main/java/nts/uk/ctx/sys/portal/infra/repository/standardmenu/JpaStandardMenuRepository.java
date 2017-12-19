@@ -23,7 +23,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1";	
 	private final String GET_ALL_STANDARD_MENU_DISPLAY = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
-			+ "AND s.menuAtr = 1 AND s.webMenuSetting = 1 ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";	
+			+ "AND s.webMenuSetting = 1 ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";	
 	private final String FIND_BY_AFTER_LOGIN_DISPLAY = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.afterLoginDisplay = :afterLoginDisplay ";
 	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "

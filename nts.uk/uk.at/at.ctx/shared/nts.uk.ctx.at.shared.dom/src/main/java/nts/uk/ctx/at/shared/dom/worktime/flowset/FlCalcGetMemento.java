@@ -14,5 +14,5 @@ public interface FlCalcGetMemento {
 	 *
 	 * @return the calc start time set
 	 */
-	PrePlanWTCalcMethod getCalcStartTimeSet();
+	PrePlanWorkTimeCalcMethod getCalcStartTimeSet();
 }

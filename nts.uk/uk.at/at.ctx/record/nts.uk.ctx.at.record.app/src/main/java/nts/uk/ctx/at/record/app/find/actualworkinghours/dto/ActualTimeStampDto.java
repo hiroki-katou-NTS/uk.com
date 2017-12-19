@@ -10,15 +10,15 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class ActualTimeStampDto {
 
 	/** 打刻: 勤怠打刻 */
-	@AttendanceItemLayout(layout="A")
+	@AttendanceItemLayout(layout = "A")
 	private TimeStampDto stamp;
-	
+
 	/** 実打刻: 勤怠打刻 */
-	@AttendanceItemLayout(layout="B")
+	@AttendanceItemLayout(layout = "B")
 	private TimeStampDto actualStamp;
-	
+
 	/** 打刻反映回数 */
-	@AttendanceItemLayout(layout="C")
-	@AttendanceItemValue(itemId=-1, type=ValueType.INTEGER)
-	private int numberOfReflectionStamp;
+	@AttendanceItemLayout(layout = "C")
+	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	private Integer numberOfReflectionStamp;
 }

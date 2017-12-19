@@ -23,5 +23,5 @@ public interface FlHalfDayWtzGetMemento {
 	 *
 	 * @return the work time zone
 	 */
-	 FlWtzSetting getWorkTimeZone();
+	 FlowWorkTimezoneSetting getWorkTimeZone();
 }

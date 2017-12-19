@@ -18,7 +18,7 @@ public interface FlStampReflectTzSetMemento {
 	 *
 	 * @param rtwt the new two times work reflect basic time
 	 */
-	void setTwoTimesWorkReflectBasicTime(ReflectRefTwoWT rtwt);
+	void setTwoTimesWorkReflectBasicTime(ReflectReferenceTwoWorkTime rtwt);
 
 	/**
 	 * Sets the stamp reflect timezone.
