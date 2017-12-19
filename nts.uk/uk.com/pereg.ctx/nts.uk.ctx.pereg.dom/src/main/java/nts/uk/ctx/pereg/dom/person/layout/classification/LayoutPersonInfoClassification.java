@@ -20,10 +20,10 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 public class LayoutPersonInfoClassification extends AggregateRoot {
 
-	private String layoutID;
-	private DispOrder dispOrder;
-	private String personInfoCategoryID;
-	private LayoutItemType layoutItemType;
+	protected String layoutID;
+	protected DispOrder dispOrder;
+	protected String personInfoCategoryID;
+	protected LayoutItemType layoutItemType;
 
 	public static LayoutPersonInfoClassification createFromJaveType(String layoutID, int dispOrder,
 			String personInfoCategoryID, int layoutItemType) {

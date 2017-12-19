@@ -46,6 +46,11 @@ module cps001.d.vm {
         upload(){
             let self = this;
             nts.uk.ui.block.grayout();
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
             if($("#test").data("cropper") == undefined) {
                 self.close();

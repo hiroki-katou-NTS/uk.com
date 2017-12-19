@@ -97,4 +97,10 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		return entity;
 	}
 
+	@Override
+	public void delete(String sid, String hist) {
+		BshmtWorktimeHistItemPK key = new BshmtWorktimeHistItemPK(sid, hist);
+		this.commandProxy().remove(BshmtWorktimeHistItem.class,key);
+	}
+
 }

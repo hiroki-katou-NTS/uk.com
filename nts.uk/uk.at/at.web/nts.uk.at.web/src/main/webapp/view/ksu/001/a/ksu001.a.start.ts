@@ -1,4 +1,4 @@
-module ksu001.a {
+module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
 
     __viewContext.ready(function() {

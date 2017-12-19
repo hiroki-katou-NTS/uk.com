@@ -12,4 +12,6 @@ public class OperationOfDailyPerformanceDto {
 	private String companyId;
 
 	private SettingUnit settingUnit;
+	
+	private String comment;
 }
