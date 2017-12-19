@@ -82,7 +82,10 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 		List<DateHistoryItem> historyItems = affDeptHist.get().getHistoryItems();
 		if(historyItems.size() == 0)
 			return new ArrayList<>();
-		return historyItems.stream()
+		List<DateHistoryItem> containItemHists = historyItems.stream().filter(x -> {
+			return affDeptHistItemRepo.getByHistId(x.identifier()).isPresent();
+		}).collect(Collectors.toList());
+		return containItemHists.stream()
 				.sorted((a, b) -> b.start().compareTo(a.end()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 				.collect(Collectors.toList());

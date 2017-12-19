@@ -85,7 +85,11 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		List<DateHistoryItem> historyItems = affWrkplcHist.get().getHistoryItems();
 		if(historyItems.size() == 0) 
 			return new ArrayList<>();
-		return historyItems.stream()
+		List<DateHistoryItem> containItemHists = historyItems.stream().filter(x -> {
+			return affWrkplcHistItemRepo.getByHistId(x.identifier()).isPresent();
+		}).collect(Collectors.toList());
+		return containItemHists.stream()
+				.sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 				.collect(Collectors.toList());
 	
