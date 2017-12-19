@@ -14,6 +14,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
 @Stateless
@@ -41,8 +42,9 @@ public class DeleteAffCompanyHistoryCommandHandler extends CommandHandler<Delete
 	@Override
 	protected void handle(CommandHandlerContext<DeleteAffCompanyHistoryCommand> context) {
 		val command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		
-		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(command.getSId());
+		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(companyId, command.getSId());
 		if (listHist == null){
 			throw new RuntimeException("Invalid AffCompanyHist");
 		}
