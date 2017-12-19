@@ -20,6 +20,8 @@
 			<com:stylefile path="cps001.a.style.css" />
 			<com:scriptfile path="/view/cps/007/a/layout-control-ko-ext.js"
 				of="/nts.uk.com.web" />
+
+			<com:scriptfile path="cbx-control-ko-ext.js" />
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
 			<com:scriptfile path="cps001.a.start.js" />
@@ -121,19 +123,19 @@
 								<div data-bind="if: !$index()">
 									<div class="form-group search-box">
 										<button type="button"
-											data-bind="click: function() { id.valueHasMutated() }">#{i18n.getText('CPS001_27')}</button>
+											data-bind="click: function() { multiple.id.valueHasMutated() }">#{i18n.getText('CPS001_27')}</button>
 										<div id="combo-box"
-											data-bind="ntsComboBox: {
-											options: multiple.combobox,
-											visibleItemsCount: 5,
-											value: multiple.id,
-											optionsText: 'optionText',
-											optionsValue: 'optionValue',
-											editable: false,
-											enable: true,
-											columns: [{ prop: 'optionText', length: 10 }]}"></div>
+											data-bind="ntsDropDownList: {
+												value: multiple.id,
+												dataSource: multiple.combobox,
+												textKey: 'optionText',
+												valueKey: 'optionValue',
+												visibleItemsCount: 5,
+												autoComplete: false
+										 }"></div>
 									</div>
-									<div data-bind="let: { catType: multiple.category().categoryType() }">
+									<div
+										data-bind="let: { catType: multiple.category().categoryType() }">
 										<div data-bind="text: catType"></div>
 										<div data-bind="if: catType == CAT_TYPE.SINGLE">
 											<div
@@ -168,7 +170,8 @@
 												} }">
 											</div>
 										</div>
-										<div data-bind="if: [CAT_TYPE.CONTI, CAT_TYPE.CONTIWED, CAT_TYPE.DUPLI, CAT_TYPE.NODUP].indexOf(catType) > -1">
+										<div
+											data-bind="if: [CAT_TYPE.CONTI, CAT_TYPE.CONTIWED, CAT_TYPE.DUPLI, CAT_TYPE.NODUP].indexOf(catType) > -1">
 											<div
 												data-bind="template: { name: 'list-history', data: {
 												list: {
