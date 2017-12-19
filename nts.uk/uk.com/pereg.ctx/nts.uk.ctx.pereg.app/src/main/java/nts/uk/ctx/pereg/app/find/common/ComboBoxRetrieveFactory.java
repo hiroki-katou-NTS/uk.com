@@ -125,7 +125,7 @@ public class ComboBoxRetrieveFactory {
 			
 			case "M00002":
 				//職場マスタ
-				break;
+				return getWorkPlace(companyId);
 			
 			case "M00003":
 				//雇用マスタ
@@ -187,6 +187,15 @@ public class ComboBoxRetrieveFactory {
 		List<ComboBoxObject> comboBoxList = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
 			comboBoxList.add(new ComboBoxObject(i + "", "Job Title " + i));
+
+		}
+		return comboBoxList;
+	}
+	
+	private List<ComboBoxObject> getWorkPlace(String companyId) {
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			comboBoxList.add(new ComboBoxObject(i + "", "Work Place " + i));
 
 		}
 		return comboBoxList;
