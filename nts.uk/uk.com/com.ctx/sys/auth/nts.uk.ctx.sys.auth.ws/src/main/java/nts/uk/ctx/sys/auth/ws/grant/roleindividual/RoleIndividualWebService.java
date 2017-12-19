@@ -7,16 +7,21 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommand;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandResult;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteRoleIndividualGrantCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.DeleteSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.RoleIndividualCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantDto;
@@ -34,12 +39,21 @@ public class RoleIndividualWebService extends WebService {
 
 	@Inject
 	private CreateSysRoleIndividualGrantCommandHandler createHandler;
-
-	@Inject
-	private UpdateRoleIndividualGrantCommandHandler updateHandler;
 	
 	@Inject
-	private DeleteRoleIndividualGrantCommandHandler deleteHandler;
+	private CreateRoleIndividualGrantCommandHandler createRoleGrantHandler;
+
+	@Inject
+	UpdateRoleIndividualGrantCommandHandler updateRoleGrant;
+	
+	@Inject
+	private UpdateSysRoleIndividualGrantCommandHandler updateHandler;
+	
+	@Inject
+	private DeleteSysRoleIndividualGrantCommandHandler deleteHandler;
+	
+	@Inject
+	private DeleteRoleIndividualGrantCommandHandler deleteRoleGrant;
 	
 	@Inject
 	private PersonInformationRoleFinder personInforRoleFinder;
@@ -101,9 +115,20 @@ public class RoleIndividualWebService extends WebService {
 	
 	@POST
 	@Path("insertRoleGrant")
-	public String InsertRoleGrant(){
-		return null;
+	public JavaTypeResult<String> InsertRoleGrant(CreateRoleIndividualGrantCommand roleGrant){
+		return new JavaTypeResult<String>(createRoleGrantHandler.InsertRoleGrant(roleGrant));
 	}
 	
+	@POST
+	@Path("upDateRoleGrant")
+	public JavaTypeResult<String> UpDateRoleGrant(UpdateRoleIndividualGrantCommand roleGrant){
+		return new JavaTypeResult<String>(updateRoleGrant.UpDateRoleGrant(roleGrant));
+	}
+	
+	@POST
+	@Path("deleteRoleGrant")
+	public void DeleteRoleGrant(DeleteRoleIndividualGrantCommand roleGrant){
+		this.deleteRoleGrant.deleteRoleGrant(roleGrant);
+	}
 	
 }

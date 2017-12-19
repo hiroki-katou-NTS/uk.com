@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
-import java.util.stream.Collectors;
-
 import lombok.Getter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -53,10 +52,9 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	private boolean predetermine;
 
 	/**
-	 * Instantiates a new predetemine time set.
+	 * Instantiates a new predetemine time setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public PredetemineTimeSetting(PredetemineTimeSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
@@ -69,6 +67,11 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		this.predetermine = memento.isPredetermine();
 	}
 
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
 	public void saveToMemento(PredetemineTimeSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setRangeTimeDay(this.rangeTimeDay);
@@ -80,27 +83,49 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		memento.setPredetermine(this.predetermine);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
 	@Override
 	public void validate() {
 		super.validate();
 		
-		// valid case greater than 23:59
-		if (this.startDateClock.greaterThanOrEqualTo(TimeWithDayAttr.THE_NEXT_DAY_0000)) {
+		// validate startDateClock in -12:00 ~ 23:59
+		if ((this.startDateClock.valueAsMinutes() < TimeWithDayAttr.THE_PREVIOUS_DAY_1200.valueAsMinutes())
+				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {
 			throw new BusinessException("Msg_785");
 		}
 		
-		/** Valid timezone
-		 * 開始←所定時間設定．日付開始時刻, 終了← 所定時間設定．１日の範囲時間　経過後
-		 * 開始～終了の間であること。
-		 */
-		int startMinutes = this.startDateClock.v();
-		int endMinutes = this.rangeTimeDay.v();
-		boolean isInValidTimezone = this.prescribedTimezoneSetting.getLstTimezone().stream()
-				.filter(timezone -> timezone.getStart().v() >= startMinutes && timezone.getStart().v() <= endMinutes
-						&& timezone.getEnd().v() >= startMinutes && timezone.getEnd().v() <= endMinutes)
-				.collect(Collectors.toList())
-				.isEmpty();
-		if (isInValidTimezone) {
+		this.validatePrescribedTimezone();
+	}
+
+	/**
+	 * Gets the end date clock.
+	 *
+	 * @return the end date clock
+	 */
+	public TimeWithDayAttr getEndDateClock() {
+		return this.startDateClock.forwardByMinutes(this.rangeTimeDay.valueAsMinutes());
+	}
+
+	/**
+	 * Validate prescribed timezone.
+	 */
+	private void validatePrescribedTimezone() {
+		val endDateClock = this.getEndDateClock();
+		val morningEnd = this.prescribedTimezoneSetting.getMorningEndTime();
+		val afternoonStart = this.prescribedTimezoneSetting.getAfternoonStartTime();
+		val timezones = this.prescribedTimezoneSetting.getLstTimezone();
+
+		// validate list time zone
+		if (timezones.stream()
+				.anyMatch(tz -> tz.getStart().greaterThan(endDateClock) || tz.getEnd().lessThan(this.startDateClock))) {
+			throw new BusinessException("Msg_516");
+		}
+
+		// validate morning End time and afternoon start time
+		if (morningEnd.lessThan(this.startDateClock) || morningEnd.greaterThan(endDateClock)
+				|| afternoonStart.lessThan(this.startDateClock) || afternoonStart.greaterThan(endDateClock)) {
 			throw new BusinessException("Msg_516");
 		}
 	}

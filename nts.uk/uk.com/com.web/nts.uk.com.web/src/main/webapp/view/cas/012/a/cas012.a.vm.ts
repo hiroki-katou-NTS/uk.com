@@ -28,8 +28,8 @@ module nts.uk.com.view.cas012.a.viewmodel {
             var self = this;
             self.columns = ko.observableArray([
                 { headerText: 'GUID', key: 'GUID', width: 100, hidden: true },
-                { headerText: 'コード', key: 'loginID', width: 100 },
-                { headerText: '名称', key: 'userName', width: 150 },
+                { headerText: 'コード', key: 'loginID', width: 120 ,columnCssClass: "colStyle"},
+                { headerText: '名称', key: 'userName', width: 150 ,columnCssClass: "colStyle"},
                 { headerText: '説明', key: 'datePeriod', width: 230 }
             ]);
             self.selectRoleIndividual = ko.observable(self.buildNewRoleIndividual());
@@ -103,6 +103,8 @@ module nts.uk.com.view.cas012.a.viewmodel {
             let self = this;
             self.isCreate(true);
             self.currentCode("");
+            self.selectRoleIndividual().userName("");
+            self.datePeriod({});
             nts.uk.ui.errors.clearAll();
         }
 

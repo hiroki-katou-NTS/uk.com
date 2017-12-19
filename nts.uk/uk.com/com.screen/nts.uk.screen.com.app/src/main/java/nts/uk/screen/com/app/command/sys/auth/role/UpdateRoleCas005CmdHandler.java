@@ -11,8 +11,10 @@ import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.UpdateWorkPlaceAuth
 import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.UpdateWorkPlaceAuthorityCmdHandler;
 import nts.uk.ctx.sys.auth.app.command.role.UpdateRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.role.UpdateRoleCommandHandler;
+import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.RoleByRoleTiesCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.UpdateRoleByRoleTiesCommandHandler;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command> {
@@ -40,33 +42,38 @@ public class UpdateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
 				data.getName(),
 				data.getContractCode(),
 				data.getAssignAtr(),
-				data.getCompanyId()
+				AppContexts.user().companyId()
 				);
 		updateRoleCommandHandler.handle(updateRoleCommand);
 		//update RoleByRoleTies
-		RoleByRoleTiesCommand roleByRoleTiesCommand = new RoleByRoleTiesCommand(
-				data.getWebMenuCd(),
-				data.getRoleId()
-				);
-		updateRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
-		//update EmploymentRole
+		if(data.getAssignAtr() == RoleAtr.INCHARGE.value) {
+			RoleByRoleTiesCommand roleByRoleTiesCommand = new RoleByRoleTiesCommand(
+					data.getRoleId(),
+					data.getWebMenuCd()
+					
+					);
+			updateRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
+		}else {
+			//update EmploymentRole
+			
+			UpdateEmploymentRoleCmd updateEmploymentRoleCmd = new UpdateEmploymentRoleCmd(
+					AppContexts.user().companyId(),
+					data.getRoleId(),
+					data.getScheduleEmployeeRef(),
+					data.getBookEmployeeRef(),
+					data.getEmployeeRefSpecAgent(),
+					data.getPresentInqEmployeeRef(),
+					data.getFutureDateRefPermit()
+					);
+			updateEmploymentRoleCmdHandler.handle(updateEmploymentRoleCmd);
+		}
 		
-		UpdateEmploymentRoleCmd updateEmploymentRoleCmd = new UpdateEmploymentRoleCmd(
-				data.getCompanyId(),
-				data.getRoleId(),
-				data.getScheduleEmployeeRef(),
-				data.getBookEmployeeRef(),
-				data.getEmployeeRefSpecAgent(),
-				data.getPresentInqEmployeeRef(),
-				data.getFutureDateRefPermit()
-				);
-		updateEmploymentRoleCmdHandler.handle(updateEmploymentRoleCmd);
 		
 		//update WorkPlaceAuthority
 		for(WorkPlaceAuthorityCommand workPlaceAuthorityCommand :data.getListWorkPlaceAuthority()) {
 			UpdateWorkPlaceAuthorityCmd updateWorkPlaceAuthorityCmd = new UpdateWorkPlaceAuthorityCmd(
-					workPlaceAuthorityCommand.getRoleId(),
-					workPlaceAuthorityCommand.getCompanyId(),
+					data.getRoleId(),
+					AppContexts.user().companyId(),
 					workPlaceAuthorityCommand.getFunctionNo(),
 					workPlaceAuthorityCommand.isAvailability()
 					);

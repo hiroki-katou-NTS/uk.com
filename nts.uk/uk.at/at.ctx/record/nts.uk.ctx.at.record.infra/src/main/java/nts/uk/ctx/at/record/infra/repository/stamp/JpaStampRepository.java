@@ -29,13 +29,20 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	 * @param object
 	 * @return
 	 */
-	private static StampItem toDomainStampOnly(Object[] object) {
-		KwkdtStamp entity = (KwkdtStamp) object[0];
+	private StampItem toDomainStampOnly(KwkdtStamp entity) {
 		// Set empty value for 2 record not exist in Stamp Entity.
-		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,
-				entity.kwkdtStampPK.attendanceTime, entity.stampCombinationAtr, entity.siftCd, entity.stampMethod,
-				entity.kwkdtStampPK.stampAtr, entity.workLocationCd, "", entity.stampReason,
-				entity.kwkdtStampPK.stampDate, "");
+		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,				
+				entity.kwkdtStampPK.attendanceTime, 
+				entity.stampCombinationAtr, 
+				entity.siftCd, 
+				entity.stampMethod,
+				entity.kwkdtStampPK.stampAtr, 
+				entity.workLocationCd, 
+				"", 
+				entity.goOutReason,
+				entity.kwkdtStampPK.stampDate, 
+				"",
+				entity.reflectedAtr);
 		return domain;
 	}
 
@@ -44,9 +51,17 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 		String workLocationName = (String) object[1];
 		KwkdtStamp entity = (KwkdtStamp) object[2];
 		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,
-				entity.kwkdtStampPK.attendanceTime, entity.stampCombinationAtr, entity.siftCd, entity.stampMethod,
-				entity.kwkdtStampPK.stampAtr, entity.workLocationCd, workLocationName, entity.stampReason,
-				entity.kwkdtStampPK.stampDate, personId);
+				entity.kwkdtStampPK.attendanceTime, 
+				entity.stampCombinationAtr, 
+				entity.siftCd, 
+				entity.stampMethod,
+				entity.kwkdtStampPK.stampAtr, 
+				entity.workLocationCd, 
+				workLocationName, 
+				entity.goOutReason,
+				entity.kwkdtStampPK.stampDate, 
+				personId,
+				entity.reflectedAtr);
 		return domain;
 	}
 
@@ -55,7 +70,7 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	 */
 	@Override
 	public List<StampItem> findByListCardNo(List<String> lstCardNumber) {
-		List<StampItem> list = this.queryProxy().query(SELECT_BY_LIST_CARD_NO, Object[].class)
+		List<StampItem> list = this.queryProxy().query(SELECT_BY_LIST_CARD_NO, KwkdtStamp.class)
 				.setParameter("lstCardNumber", lstCardNumber).getList(c -> toDomainStampOnly(c));
 		return list;
 	}

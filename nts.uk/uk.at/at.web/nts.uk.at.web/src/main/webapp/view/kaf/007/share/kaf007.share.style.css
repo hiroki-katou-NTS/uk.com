@@ -10,7 +10,7 @@
 }
 /* 勤務種類*/
 .work-select-margin{
-	margin: 5px 0px 0px 35px;
+	margin: 5px 0px 0px 29px;
 }
 
 .valign-center.control-group-kaf007 {
@@ -23,7 +23,7 @@ button.nts-switch-button {
 	width: 92px;
 }
 
-input#inputdate.nts-editor.nts-input.reset-element {
+input#inputdatestart.inputdateend.nts-editor.nts-input.reset-element {
 	width: 85px;
 }
 /*Set Width*/
@@ -105,7 +105,7 @@ div.form-label.broken {
 .panel.panel-gray-bg.panel-kaf007 {
 	float: right;
 	height: 580px;
-	width: 250px;
+	min-width: 230px;
 }
 
 .left-contents-kaf007 {
@@ -132,7 +132,7 @@ div.form-label.broken {
 }
 
 #label-1 {
-	margin-left: 20px;
+	
 }
 
 .lstApprover {
@@ -144,4 +144,15 @@ div.form-label.broken {
 }
 .right-content-kaf007 {
 	text-align: center !important;
+}
+.mode-style{
+	display: inline-block;
+}
+.label-right{
+	width: 80px; 
+	display: inline-block;
+}
+.cell.valign-center.colon-margin{
+	margin-right: 5px; 
+	display: inline-block;
 }

@@ -33,14 +33,14 @@ module cps008.a.viewmodel {
 
                             // remove all sibling sperators
                             let maps = _(data.listItemClsDto)
-                                .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                                .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
                                 .filter(x => x != -1).value();
 
                             _.each(maps, (t, i) => {
                                 if (maps[i + 1] == t + 1) {
                                     _.remove(data.listItemClsDto, (m: IItemClassification) => {
                                         let item: IItemClassification = ko.unwrap(data.listItemClsDto)[maps[i + 1]];
-                                        return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                                        return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
                                     });
                                 }
                             });
@@ -116,7 +116,7 @@ module cps008.a.viewmodel {
                         return {
                             dispOrder: i + 1,
                             personInfoCategoryID: item.personInfoCategoryID,
-                            layoutItemType: item.layoutItemType,
+                            layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
                             listItemClsDf: _(item.listItemDf || []).map((def, j) => {
                                 return {
                                     dispOrder: j + 1,
@@ -178,7 +178,7 @@ module cps008.a.viewmodel {
                             return {
                                 dispOrder: i + 1,
                                 personInfoCategoryID: item.personInfoCategoryID,
-                                layoutItemType: item.layoutItemType,
+                                layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
                                 listItemClsDf: (item.listItemDf || []).map((def, j) => {
                                     return {
                                         dispOrder: j + 1,
@@ -229,13 +229,33 @@ module cps008.a.viewmodel {
 
             data.action = LAYOUT_ACTION.REMOVE;
             let indexItemDelete = _.findIndex(ko.toJS(self.layouts), function(item: any) { return item.id == data.id; });
-            debugger;
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
 
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                var command: any = {
+                    id: data.id,
+                    code: data.code,
+                    name: data.name,
+                    action: data.action,
+                    classifications: (data.classifications || []).map((item, i) => {
+                        return {
+                            dispOrder: i + 1,
+                            personInfoCategoryID: item.personInfoCategoryID,
+                            layoutItemType: _(IT_CLA_TYPE).map(x => x).indexOf(item.layoutItemType),
+                            listItemClsDf: (item.listItemDf || []).map((def, j) => {
+                                return {
+                                    dispOrder: j + 1,
+                                    personInfoItemDefinitionID: def.id
+                                };
+                            })
+                        };
+                    })
+                };
+                
+                debugger;
                 // call service remove
                 invisible();
                 let itemListLength = self.layouts().length;
-                service.saveData(data).done((data: any) => {
+                service.saveData(command).done((data: any) => {
 
                     if (itemListLength === 1) {
                         self.start().done(() => {
@@ -289,7 +309,7 @@ module cps008.a.viewmodel {
         dispOrder?: number;
         className?: string;
         personInfoCategoryID?: string;
-        layoutItemType: number;
+        layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>;
     }
 
@@ -337,5 +357,12 @@ module cps008.a.viewmodel {
         COPY = 2,
         OVERRIDE = 3,
         REMOVE = 4
+    }
+
+    // define ITEM_CLASSIFICATION_TYPE
+    enum IT_CLA_TYPE {
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 }

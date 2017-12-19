@@ -1,4 +1,4 @@
-module ksu001.common.viewmodel {
+module nts.uk.at.view.ksu001.common.viewmodel {
     export interface IWorkType {
         workTypeCode: string,
         sortOrder: number,
@@ -103,6 +103,19 @@ module ksu001.common.viewmodel {
             this.symbolName = params.symbolName;
             this.startTime = params.startTime;
             this.endTime = params.endTime;
+        }
+    }
+
+    export class CellColor {
+        columnKey: any;
+        rowId: any;
+        innerIdx: any;
+        clazz: any;
+        constructor(columnKey: any, rowId: any, clazz: any, innerIdx?: any) {
+            this.columnKey = columnKey;
+            this.rowId = rowId;
+            this.innerIdx = innerIdx;
+            this.clazz = clazz;
         }
     }
 }

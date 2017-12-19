@@ -10,15 +10,14 @@
 <!-- 			<title>#{i18n.getText('CPS008_1')}</title> -->
 			<script>var dialogSize = { width: 1300, height: 750 };</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionItemName
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionCodeLength
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IntegrationCode
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionNameLength
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionExternalCDLength
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.Memo
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionCodeLength
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.IntegrationCode
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionNameLength
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionExternalCDLength
+					nts.uk.ctx.pereg.dom.person.setting.selectionitem.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 			<com:stylefile path="cps016.a.style.css" />
 			<com:scriptfile path="cps016.a.service.js" />
 			<com:scriptfile path="cps016.a.vm.js" />
@@ -137,7 +136,7 @@
 								data-bind="ntsFormLabel: {constraint: 'SelectionExternalCDLength', required: true }">#{i18n.getText('CPS016_17')}</div>
 							<input style="width: 20px;"
 								data-bind="ntsNumberEditor : {
-									name: '#[CPS016_16]',
+									name: '#[CPS016_18]',
 									value: selectionExternalCode,
 									constraint: 'SelectionExternalCDLength',
 									option: '',
@@ -172,7 +171,7 @@
 								<label>#{i18n.getText('CPS016_21')}</label>
 							</div>
 							<textarea style="width: 450px; height: 90px;"
-								data-bind="ntsMultilineEditor: { value: memo , constraint: 'Memo',required: false}" />
+								data-bind="ntsMultilineEditor: { name: '#[CPS016_22]',value: memo , constraint: 'Memo',required: false}" />
 						</div>
 					</div>
 				</div>

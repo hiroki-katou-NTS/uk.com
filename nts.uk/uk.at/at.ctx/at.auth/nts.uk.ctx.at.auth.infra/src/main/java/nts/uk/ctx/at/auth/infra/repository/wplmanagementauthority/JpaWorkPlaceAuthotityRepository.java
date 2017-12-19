@@ -2,6 +2,7 @@ package nts.uk.ctx.at.auth.infra.repository.wplmanagementauthority;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -9,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.ctx.at.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthority;
+import nts.uk.ctx.at.auth.infra.entity.wplmanagementauthority.KacmtWorkPlaceAuthorityPK;
 
 @Stateless
 public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements WorkPlaceAuthorityRepository {
@@ -66,12 +68,9 @@ public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements W
 
 	@Override
 	public void deleteWorkPlaceAuthority(String companyId, String roleId) {
-		this.queryProxy().query(DELETE_FROM_AUTHORITY,KacmtWorkPlaceAuthority.class)
-		.setParameter("roleId", roleId)
-		.setParameter("companyId", companyId);
-		
+		List<KacmtWorkPlaceAuthorityPK> deleteListPK = getAllWorkPlaceAuthorityByRoleId(companyId, roleId)
+				.stream().map(c -> KacmtWorkPlaceAuthority.toEntity(c).kacmtWorkPlaceAuthorityPK).collect(Collectors.toList());
+		this.commandProxy().removeAll(KacmtWorkPlaceAuthority.class, deleteListPK);
 	}
-	
-	
 
 }

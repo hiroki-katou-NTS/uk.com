@@ -16,4 +16,4 @@ public class PostCd extends StringPrimitiveValue<PostCd>{
 	public PostCd (String rawValue){
 		super(rawValue);
 	}
-}
+}   

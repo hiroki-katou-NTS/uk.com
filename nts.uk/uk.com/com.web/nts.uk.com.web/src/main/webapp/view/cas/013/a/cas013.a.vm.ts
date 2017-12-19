@@ -1,14 +1,18 @@
 module nts.uk.com.view.cas013.a.viewmodel {
 
-    export class screenModel {
+    import block = nts.uk.ui.block;
+    import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
+
+    export class ScreenModel {
         // Metadata
         isCreateMode: KnockoutObservable<boolean> = ko.observable(false);
         isSelectedUser: KnockoutObservable<boolean> = ko.observable(false);
-        
+        isDelete: KnockoutObservable<boolean> = ko.observable(false);
 
         //ComboBOx RollType
         listRoleType: KnockoutObservableArray<RollType>;
         selectedRoleType: KnockoutObservable<string>;
+
         //list Roll
         listRole: KnockoutObservableArray<Role>;
         selectedRole: KnockoutObservable<string>;
@@ -20,7 +24,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
         columnsIndividual: KnockoutObservableArray<NtsGridListColumn>;
 
         userName: KnockoutObservable<string>;
-        userId: KnockoutObservable<string>;
 
         //Date pick
         dateValue: KnockoutObservable<any>;
@@ -33,50 +36,60 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.selectedRole = ko.observable('');
             self.listRoleIndividual = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'roleId', hidden: true },
-                { headerText: 'コード', key: 'roleCode', width: 80 },
-                { headerText: '名称', key: 'name', width: 160 }
+                { headerText: '', key: 'roleId', hidden: true },
+                { headerText: nts.uk.resource.getText("CAS013_11"), key: 'roleCode', width: 80 },
+                { headerText: nts.uk.resource.getText("CAS013_12"), key: 'name', width: 160 },
             ]);
             self.columnsIndividual = ko.observableArray([
                 { headerText: '', key: 'userId', hidden: true },
-                { headerText: 'コード', key: 'loginId', width: 80 },
-                { headerText: '名称', key: 'name', width: 70 },
-                { headerText: '期間', key: 'datePeriod', width: 190 },
+                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 100 },
+                { headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 120 },
+                { headerText: nts.uk.resource.getText("CAS013_17"), key: 'datePeriod', width: 210 },
             ]);
             self.selectedRoleIndividual = ko.observable('');
             self.userName = ko.observable('');
-            self.userId = ko.observable('');
             self.dateValue = ko.observable({});
 
 
-            self.selectedRoleType.subscribe((code: string) => {
-                self.getRoles(code.toString());
+            self.selectedRoleType.subscribe((roleType: string) => {
+                self.getRoles(roleType.toString());
                 self.isCreateMode(false);
                 self.isSelectedUser(false);
+                self.isDelete(false);
             });
 
-            self.selectedRole.subscribe((code: string) => {
-                self.selectRole(code.toString());
-                self.isCreateMode(false);
+            self.selectedRole.subscribe((roleId: string) => {
+                self.selectRole(roleId.toString(), '');
                 self.isSelectedUser(false);
+                self.isDelete(false);
             });
-            self.selectedRoleIndividual.subscribe((code: string) => {
-                self.selectRoleGrant(code.toString());
+            self.selectedRoleIndividual.subscribe((userId: string) => {
+                self.selectRoleGrant(userId.toString());
             });
-
-
         }
 
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            dfd.resolve();
-            new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
-                self.listRoleType(data);
-            });
+            if (!__viewContext.user) {
+                self.backToTopPage();
+                dfd.resolve();
+            } else {
+                // initial screen
+                new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
+                    self.listRoleType(data);
+                    dfd.resolve();
+                });
+            }
             return dfd.promise();
+        }
 
+        /**
+         * back to top page - トップページに戻る
+         */
+        backToTopPage() {
+            nts.uk.ui.windows.sub.modeless("/view/ccg/008/a/index.xhtml");
         }
 
         private getRoles(roleType: string): void {
@@ -84,6 +97,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             if (roleType != '') {
                 new service.Service().getRole(roleType).done(function(data: any) {
                     if (data != null && data.length > 0) {
+                        data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
                         self.listRole(data);
                         self.selectedRole(data[0].roleId);
                     }
@@ -98,7 +112,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             }
         }
 
-        private selectRole(roleId: string): void {
+        private selectRole(roleId: string, userIdSelected: string): void {
             var self = this;
             if (roleId != '') {
                 new service.Service().getRoleGrants(roleId).done(function(data: any) {
@@ -108,7 +122,11 @@ module nts.uk.com.view.cas013.a.viewmodel {
                             items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod))
                         }
                         self.listRoleIndividual(items);
-                        self.selectedRoleIndividual(items[0].userId);
+                        if (nts.uk.text.isNullOrEmpty(userIdSelected)) {
+                            self.selectedRoleIndividual(items[0].userId);
+                        } else {
+                            self.selectedRoleIndividual(userIdSelected);
+                        }
                     } else {
                         self.listRoleIndividual([]);
                         self.selectedRoleIndividual('');
@@ -131,15 +149,20 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     if (data != null) {
                         self.userName(data.userName);
                         self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
-                        self.selectedRoleIndividual(UserId);
                         self.isCreateMode(false);
-                    } 
+                        self.isSelectedUser(false);
+                        self.isDelete(true);
+                    }
                 });
-            } 
+            }else{
+                self.isDelete(false);    
+            }
         }
         New(): void {
             var self = this;
             self.isCreateMode(true);
+            self.isDelete(false);
+            self.isSelectedUser(false);
             self.selectedRoleIndividual('');
             self.userName('');
             self.dateValue({});
@@ -156,44 +179,86 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 let data = nts.uk.ui.windows.getShared("UserInfo");
                 if (data != null) {
                     self.userName(data.decisionName);
-                    self.userId(data.decisionUserID);
                     self.isSelectedUser(true);
-                    self.selectRoleGrant(data.decisionUserID);
+                    self.selectedRoleIndividual(data.decisionUserID);
                 }
             });
         }
-        save(): void{
+        save(): void {
             var self = this;
-            if(!nts.uk.util.isNullOrUndefined(self.selectedRoleType()) 
-                    && !nts.uk.util.isNullOrUndefined(self.selectedRole())
-                    && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
-                    && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)
-                    && self.userName() != ''){
-                if(self.isSelectedUser()){
-                    console.log('save');
-                    self.insert();
-                }else{
-                    console.log('upDate');
-                }
-            }else if(self.selectedRole() == ''){
-                console.log('Chua Chon Role');
-            }else if(self.userName() == ''){
-                console.log('Chua Chon user');
-            }else if(nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)){
-                console.log('Chua Chon Ngay Thang');
-            }else{
-                console.log('Chua Chon day du thong tin');
-            }
-                
-        }
-        private insert(): void{
-            var self = this;
-            if((self.userId() != '') 
+            if (!nts.uk.text.isNullOrEmpty(self.selectedRoleType())
+                && !nts.uk.text.isNullOrEmpty(self.selectedRole())
                 && !nts.uk.util.isNullOrUndefined(self.dateValue().startDate)
                 && !nts.uk.util.isNullOrUndefined(self.dateValue().endDate)
-                && self.selectedRole() != ''
-                && self.selectedRoleType() != ''){
-                
+                && self.userName() != ''
+                && !nts.uk.ui.errors.hasError()) {
+                if (self.isSelectedUser() && self.isCreateMode()) {
+                    self.insert();
+                } else {
+                    self.upDate();
+                }
+            } else if (nts.uk.text.isNullOrEmpty(self.userName())) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: ['ユーザー '] });
+            } else if (nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)) {
+                $(".nts-input").trigger("validate");
+            }
+
+        }
+        private insert(): void {
+            var self = this;
+            var roleTpye = self.selectedRoleType();
+            var roleId = self.selectedRole();
+            var userId = self.selectedRoleIndividual();
+            var start = nts.uk.time.parseMoment(self.dateValue().startDate).format();
+            var end = nts.uk.time.parseMoment(self.dateValue().endDate).format();
+            block.invisible();
+            new service.Service().insertRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
+                if (!nts.uk.util.isNullOrUndefined(data)) {
+                    self.selectedRoleIndividual("");
+                    self.selectRole(roleId, data);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.isCreateMode(false);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                }
+            }).always(() => {
+                block.clear();
+            });
+        }
+        private upDate(): void {
+            var self = this;
+            var roleTpye = self.selectedRoleType();
+            var roleId = self.selectedRole();
+            var userId = self.selectedRoleIndividual();
+            var start = nts.uk.time.parseMoment(self.dateValue().startDate).format();
+            var end = nts.uk.time.parseMoment(self.dateValue().endDate).format();
+            block.invisible();
+            new service.Service().upDateRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
+                if (!nts.uk.util.isNullOrUndefined(data)) {
+                    self.selectRole(roleId, data);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                }
+                self.isCreateMode(false);
+            }).always(() => {
+                block.clear();
+            });
+        }
+        Delete(): void {
+            if (!nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    var self = this;
+                    var roleTpye = self.selectedRoleType();
+                    var userId = self.selectedRoleIndividual();
+                    block.invisible();
+                    new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
+                        self.selectedRoleIndividual('');
+                        self.selectRole(self.selectedRole(), '');
+                    }).always(() => {
+                        block.clear();
+                    });
+                });
             }
         }
 
@@ -216,11 +281,13 @@ module nts.uk.com.view.cas013.a.viewmodel {
         roleId: string;
         roleCode: string;
         name: string;
+        assignAtr: string;
 
-        constructor(roleId: string, roleCode: string, name: string) {
+        constructor(roleId: string, roleCode: string, name: string, assignAtr: string) {
             this.roleId = roleId;
             this.roleCode = roleCode;
             this.name = name;
+            this.assignAtr = assignAtr;
         }
     }
     class RoleIndividual {

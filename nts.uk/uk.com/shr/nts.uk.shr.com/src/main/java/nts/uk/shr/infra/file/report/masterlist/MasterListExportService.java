@@ -26,30 +26,34 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 import nts.uk.shr.infra.i18n.loading.LanguageMasterRepository;
 
 @Stateless
-public class MasterListExportService extends ExportService<MasterListExportQuery>{
-	
+public class MasterListExportService extends ExportService<MasterListExportQuery> {
+
 	@Inject
 	private MasterListReportGenerator generator;
-	
+
 	@Inject
 	private LanguageMasterRepository languageRepo;
-	
+
 	@Inject
 	private CompanyAdapter company;
 
 	@Override
 	protected void handle(ExportServiceContext<MasterListExportQuery> context) {
-		
+
 		MasterListExportQuery query = context.getQuery();
-		
+
 		try {
-			MasterListData domainData = CDI.current().select(MasterListData.class, new NamedAnnotation(query.getDomainId())).get();
-			
+			MasterListData domainData = CDI.current()
+					.select(MasterListData.class, new NamedAnnotation(query.getDomainId())).get();
+
 			List<MasterHeaderColumn> columns = domainData.getHeaderColumns(query);
 			List<MasterData> datas = domainData.getMasterDatas(query);
+			Map<String, List<MasterHeaderColumn>> extraColumns = domainData.getExtraHeaderColumn(query);
+			Map<String, List<MasterData>> extraDatas = domainData.getExtraMasterData(query);
 			Map<String, String> headers = this.getHeaderInfor(query);
-			
-			this.generator.generate(context.getGeneratorContext(), new MasterListExportSource(headers, columns, datas, query.getReportType()));
+
+			this.generator.generate(context.getGeneratorContext(), new MasterListExportSource(headers, columns, datas,
+					extraColumns, extraDatas, query.getReportType()));
 		} catch (UnsatisfiedResolutionException ex) {
 			throw new RuntimeException(ex);
 		} catch (Exception e) {
@@ -57,22 +61,22 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
 	private Map<String, String> getHeaderInfor(MasterListExportQuery query) {
-		Map<String, String> headers = new LinkedHashMap<>(); 
-		
+		Map<String, String> headers = new LinkedHashMap<>();
+
 		LoginUserContext context = AppContexts.user();
 		String companyname = this.company.getCurrentCompany()
 				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
-		
-		String createReportDate = GeneralDateTime.now().localDateTime().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+
+		String createReportDate = GeneralDateTime.now().localDateTime()
+				.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
 		String language = languageRepo.getSystemLanguage(query.getLanguageId()).get().getLanguageName();
 		headers.put("【会社】", context.companyCode() + " " + companyname);
 		headers.put("【種類】", query.getDomainType());
 		headers.put("【日時】", createReportDate);
 		headers.put("【選択言語】 ", language);
-		
+
 		return headers;
 	}
 

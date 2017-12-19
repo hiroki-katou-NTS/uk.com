@@ -2,6 +2,8 @@ module a9 {
     
     /**
      * Screen Model - Tab 9
+     * 就業時間帯の共通設定 -> 遅刻早退設定
+     * WorkTimeCommonSet -> LateLeaveEarlySettingOfWorkTime
      */
     class ScreenModel {
         
@@ -20,13 +22,11 @@ module a9 {
         /**
          * Constructor
          */
-        constructor(data: any) {
+        constructor(screenMode: any) {
             let _self = this;
             
-            _self.data = ko.observable(data());
-            
             // Detail mode and simple mode is same
-            _self.isDetailMode = ko.observable(null);
+            _self.isDetailMode = ko.observable(true);
             _self.isDetailMode.subscribe(newValue => {
                 (newValue === true) ? _self.loadDetailMode() : _self.loadSimpleMode();
             });
@@ -35,8 +35,10 @@ module a9 {
             _self.lateSetting = new TimeRoundingModel();
             _self.leaveEarlySetting = new TimeRoundingModel();
             
-            //TODO
-            _self.isDetailMode = ko.observable(true);     
+            //TODO  
+            screenMode.subscribe((value: any) => {
+                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            });
         }
         
         /**
@@ -75,6 +77,7 @@ module a9 {
         
         constructor() {
             let _self = this;
+            //TODO replace with enum value
             _self.listRoundingTimeValue = ko.observableArray([
                 new ItemModel(1, nts.uk.resource.getText("KMK003_91")),
                 new ItemModel(2, nts.uk.resource.getText("KMK003_92"))
@@ -125,13 +128,12 @@ module a9 {
                 .mergeRelativePath('/view/kmk/003/a9/index.xhtml').serialize();
             // Get data
             let input = valueAccessor();
-            let data = input.data;
+            let screenMode = input.screenMode;
 
-            let screenModel = new ScreenModel(data);
+            let screenModel = new ScreenModel(screenMode);
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
             });
         }
 

@@ -12,16 +12,10 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 public interface CommonWorkTimePolicy {
 
 	/**
-	 * Validate work time of timezone set.
+	 * Validate.
 	 *
 	 * @param pred the pred
+	 * @param workTimezoneCommonSet the work timezone common set
 	 */
-	public void validateWorkTimeOfTimezoneSet(PredetemineTimeSetting pred);
-	
-	/**
-	 * Validate over time hour set.
-	 *
-	 * @param pred the pred
-	 */
-	public void validateOverTimeHourSet(PredetemineTimeSetting pred);
+	public void validate(PredetemineTimeSetting pred,WorkTimezoneCommonSet workTimezoneCommonSet);
 }

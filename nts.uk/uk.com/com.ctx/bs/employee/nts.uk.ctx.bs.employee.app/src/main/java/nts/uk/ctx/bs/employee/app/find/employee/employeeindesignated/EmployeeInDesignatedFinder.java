@@ -17,12 +17,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.TemporaryAbsenceRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -41,14 +43,16 @@ public class EmployeeInDesignatedFinder {
 	@Inject
 	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepo;
 
-	/** The emp repo. */
 	@Inject
-	private EmployeeRepository empRepo;
+	private EmployeeDataMngInfoRepository employeeDataRepo;
+	
+	@Inject
+	private AffCompanyHistRepository affCompanyHistRepo;
 
 	/** The temporary absence repo. */
 	@Inject
-	private TemporaryAbsenceRepository temporaryAbsenceRepo;
-
+	private TempAbsItemRepository temporaryAbsenceItemRepo;
+	
 	/** The workplace info repo. */
 	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepo;
@@ -100,26 +104,26 @@ public class EmployeeInDesignatedFinder {
 				input.getReferenceDate());
 
 		// Get All Employee Domain from Employee Id List Above
-		List<Employee> employeeList = this.empRepo.findByListEmployeeId(AppContexts.user().companyId(), empIdList);
-
+		List<EmployeeDataMngInfo> employeeList = employeeDataRepo.findByListEmployeeId(AppContexts.user().companyId(), empIdList);
+		
 		// Get PersonIds from Employee List acquired above
-		List<String> personIds = employeeList.stream().map(Employee::getPId).collect(Collectors.toList());
+		List<String> personIds = employeeList.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
 		// Get All Person Domain from PersonIds above
 		List<Person> personList = this.personRepo.getPersonByPersonIds(personIds);
 
 		// Add Employee Data
-		employeeList.stream().forEach(employee -> {
+		employeeList.stream().forEach(employeeInfo -> {
 			// Get Person by personId
 			Person person = new Person();
 			if (!CollectionUtil.isEmpty(personList)) {
 				person = personList.stream().filter(p -> {
-					return employee.getPId().equals(p.getPersonId());
+					return employeeInfo.getPersonId().equals(p.getPersonId());
 				}).findFirst().orElse(null);
 			}
 
 			// Get AffWorkplaceHistory
 			AffWorkplaceHistory affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
-				return employee.getSId().equals(aff.getEmployeeId());
+				return employeeInfo.getEmployeeId().equals(aff.getEmployeeId());
 			}).findFirst().orElse(null);
 
 			// Get WorkplaceInfo
@@ -128,11 +132,11 @@ public class EmployeeInDesignatedFinder {
 			}).findFirst().orElse(null);
 
 			// Employee Data
-			EmployeeSearchOutput empData = EmployeeSearchOutput.builder().employeeId(employee.getSId())
-					.employeeCode((employee.getSCd() == null) ? null : employee.getSCd().v())
+			EmployeeSearchOutput empData = EmployeeSearchOutput.builder().employeeId(employeeInfo.getEmployeeId())
+					.employeeCode((employeeInfo.getEmployeeCode() == null) ? null : employeeInfo.getEmployeeCode().v())
 					.employeeName((person == null || person.getPersonNameGroup() == null
 							|| (person.getPersonNameGroup().getPersonName() == null)) ? null
-									: person.getPersonNameGroup().getPersonName().v())
+									: person.getPersonNameGroup().getPersonName().getFullName().v())
 					.workplaceId(affWkpHist == null || (affWkpHist.getWorkplaceId() == null) ? null
 							: affWkpHist.getWorkplaceId().v())
 					.workplaceCode((wkpInfo == null) || (wkpInfo.getWorkplaceCode() == null) ? null
@@ -204,72 +208,55 @@ public class EmployeeInDesignatedFinder {
 	 * @return the status of employment
 	 */
 	public List<EmploymentStatusDto> getStatusOfEmployments(List<String> employeeIds, GeneralDate referenceDate) {
-		List<Employee> employees = empRepo.getByListEmployeeId(employeeIds);
+		List<EmployeeDataMngInfo> employees = employeeDataRepo.findByListEmployeeId(AppContexts.user().companyId(), employeeIds);
 		if (CollectionUtil.isEmpty(employees)) {
 			return Collections.emptyList();
 		}
 
 		// Convert to dto
-		return employees.stream().map(employee -> {
+		return employees.stream().map(employeeInfo -> {
+			String employeeId = employeeInfo.getEmployeeId();
 			EmploymentStatusDto statusOfEmploymentExport = new EmploymentStatusDto();
-			statusOfEmploymentExport.setEmployeeId(employee.getSId());
+			statusOfEmploymentExport.setEmployeeId(employeeId);
 			statusOfEmploymentExport.setRefereneDate(referenceDate);
-
-			// List Entry Job History
-			List<JobEntryHistory> listEntryJobHist = employee.getListEntryJobHist();
-
-			// TODO: Solution for a Temporary Case (DB is unavailable: List of
-			// JobEntryHistory is empty)
-			if (CollectionUtil.isEmpty(listEntryJobHist)) {
+			AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(employeeId)
+					.getAffCompanyHistByEmployee(employeeId);
+			
+			// employeeHistory is null
+			if (employeeHistory == null) {
 				statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
 				return statusOfEmploymentExport;
-				// throw new RuntimeException("Data is invalid. Please check
-				// again.")
 			}
-			// End of Solution
 
-			// Filter ListEntryJobHist: JoinDate <= BaseDate <= RetirementDate
-			List<JobEntryHistory> filteredEntryJobHist = listEntryJobHist.stream()
-					.filter(x -> (x.getJoinDate().beforeOrEquals(referenceDate)
-							&& x.getRetirementDate().afterOrEquals(referenceDate)))
-					.collect(Collectors.toList());
-
-			if (filteredEntryJobHist.isEmpty()) {
-				// Case: Filtered ListEntryJobHist (Condition: JoinDate <= BaseDate <= RetirementDate) is empty
+			Optional<AffCompanyHistItem> employeeHitoryItem = employeeHistory.getHistoryWithReferDate(referenceDate);
+			if (!employeeHitoryItem.isPresent()) {
 				
-				// JobEntryHistory List (Condition: JoinDate < BaseDate)
-				List<JobEntryHistory> jonEntryHistBefore = listEntryJobHist.stream().filter(item -> {
-					return item.getJoinDate().before(referenceDate);
-				}).collect(Collectors.toList());
-				
-				if (CollectionUtil.isEmpty(jonEntryHistBefore)) {
-					// StatusOfEmployment = BEFORE_JOINING
-					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
-				} else {
-					// StatusOfEmployment = RETIREMENT
+				if (employeeHistory.getHistoryBeforeReferDate(referenceDate).isPresent()) {
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.RETIREMENT.value);
+				} else if (employeeHistory.getHistoryAfterReferDate(referenceDate).isPresent()) {
+					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
 				}
 				
-			} else {// Case: Filtered ListEntryJobHist (Condition: JoinDate <=
-					// BaseDate <= RetirementDate) is not empty
+			} else {
 
 				// Get TemporaryAbsence By employee ID and BaseDate
-				Optional<TempAbsenceHisItem> temporaryAbsOpt = temporaryAbsenceRepo
-						.getBySidAndReferDate(employee.getSId(), referenceDate);
-				if (temporaryAbsOpt.isPresent()) {
+				Optional<TempAbsenceHisItem> tempAbsItemDomain = temporaryAbsenceItemRepo
+						.getByEmpIdAndStandardDate(employeeInfo.getEmployeeId(), referenceDate);
+				if (tempAbsItemDomain.isPresent()) {
 					// Domain TemporaryAbsence is Present
-					TempAbsenceHisItem temporaryAbsenceDomain = temporaryAbsOpt.get();
 					// set LeaveHolidayType
-//					statusOfEmploymentExport.setLeaveHolidayType(temporaryAbsenceDomain.getTempAbsenceType().value);
-//
-//					// Check if TempAbsenceType = TEMP_LEAVE
-//					if (temporaryAbsenceDomain.getTempAbsenceType().value == TempAbsenceType.TEMP_LEAVE.value) {
-//						// StatusOfEmployment = LEAVE_OF_ABSENCE
-//						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
-//					} else {
-//						// StatusOfEmployment = HOLIDAY
-//						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.HOLIDAY.value);
-//					}
+					int tempAbsNo = tempAbsItemDomain.get().getTempAbsenceFrNo().v().intValue();
+					int tempAbsenceType = tempAbsNo <= 6 ? tempAbsNo : 7;
+					statusOfEmploymentExport.setLeaveHolidayType(tempAbsenceType);
+
+					// Check if TempAbsenceType = TEMP_LEAVE
+					if (tempAbsenceType == LeaveHolidayType.LEAVE_OF_ABSENCE.value) {
+						// StatusOfEmployment = LEAVE_OF_ABSENCE
+						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
+					} else {
+						// StatusOfEmployment = HOLIDAY
+						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.HOLIDAY.value);
+					}
 				} else {
 					// StatusOfEmployment = INCUMBENT 在籍
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.INCUMBENT.value);

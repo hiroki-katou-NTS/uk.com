@@ -17,5 +17,5 @@ public interface FlWorkSettingPolicy {
 	 * @param flowSet the flow set
 	 * @param predSet the pred set
 	 */
-	void validate(FlWorkSetting flowSet, PredetemineTimeSetting predSet);
+	void validate(FlowWorkSetting flowSet, PredetemineTimeSetting predSet);
 }

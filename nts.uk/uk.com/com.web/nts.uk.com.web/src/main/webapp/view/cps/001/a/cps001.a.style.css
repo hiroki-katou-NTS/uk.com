@@ -43,6 +43,10 @@
 	min-width: 120px;
 }
 
+#content-area #layout .ntsSearchBox.nts-editor {
+	width: 178px;
+}
+
 .avatar-group, .person-group, .action-group {
 	float: left;
 	padding: 0 1px;
@@ -204,10 +208,6 @@
 	padding-top: 5px;
 }
 
-.form-group:not(.item-classification){
-	margin-bottom:5px;
-}
-
 .form-group:not(.item-classification)>* {
 	display: inline-block;
 	vertical-align: middle;
@@ -217,7 +217,7 @@
 	min-width: 860px;
 }
 
-#contents-area .category-input .layout-control .drag-panel {
+#contents-area .category-input .cat-has-childs .layout-control .drag-panel {
 	min-width: 830px;
 	border: none;
 	height: auto;

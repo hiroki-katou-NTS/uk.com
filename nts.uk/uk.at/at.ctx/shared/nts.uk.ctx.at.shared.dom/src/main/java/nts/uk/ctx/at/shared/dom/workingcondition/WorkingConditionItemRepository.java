@@ -1,52 +1,54 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
-import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
- * The Interface WokingConditionItemRepository.
+ * The Interface WorkingConditionItemRepository.
  */
 public interface WorkingConditionItemRepository {
-	
+
 	/**
-	 * Find woking condition item.
+	 * Gets the by history id.
+	 *
+	 * @param historyId the history id
+	 * @return the by history id
+	 */
+	Optional<WorkingConditionItem> getByHistoryId(String historyId);
+
+	/**
+	 * Find working condition item by pers work cat.
 	 *
 	 * @param employeeId the employee id
-	 * @param historyId the history id
+	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	Optional<WorkingConditionItem> findWokingConditionItem(String employeeId, String historyId);
-	
-	
+	Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+
 	/**
 	 * Adds the.
 	 *
-	 * @param workingConditionItem the working condition item
+	 * @param item the item
 	 */
-	void add(WorkingConditionItem workingConditionItem);
-	
-	
+	void add(WorkingConditionItem item);
+
 	/**
 	 * Update.
 	 *
-	 * @param workingConditionItem the working condition item
+	 * @param item the item
 	 */
-	void update(WorkingConditionItem workingConditionItem);
-	
-	
+	void update(WorkingConditionItem item);
+
 	/**
-	 * Removes the.
+	 * Delete.
 	 *
-	 * @param employeeId the employee id
 	 * @param historyId the history id
 	 */
-	void remove(String employeeId, String historyId);
-	
-	/**
-	 * Gets the all woking condition item.
-	 *
-	 * @param companyId the company id
-	 * @return the all woking condition item
-	 */
-	List<WorkingConditionItem> getAllWokingConditionItem();
+	void delete(String historyId);
+
 }

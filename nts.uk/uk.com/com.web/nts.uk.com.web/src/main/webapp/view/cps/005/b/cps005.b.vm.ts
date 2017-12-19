@@ -279,7 +279,7 @@ module nts.uk.com.view.cps005.b {
                 self.perInfoItemSelectCode.subscribe(newItemId => {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     nts.uk.ui.errors.clearAll();
-                    new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
+                    new service.Service().getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType ).done(function(data: IPersonInfoItem) {
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
@@ -288,13 +288,13 @@ module nts.uk.com.view.cps005.b {
                             self.isEnableButtonProceed(false);
                             self.isEnableButtonDelete(false);
                         }
-                        
-                        if (data.itemTypeState.dataTypeState !== undefined 
-                                    && data.itemTypeState.dataTypeState.dataTypeValue === 6 
-                                    && data.itemTypeState.dataTypeState.referenceType === "CODE_NAME") {
+
+                        if (data.itemTypeState.dataTypeState !== undefined
+                            && data.itemTypeState.dataTypeState.dataTypeValue === 6
+                            && data.itemTypeState.dataTypeState.referenceType === "CODE_NAME") {
                             self.currentItemSelected().selectionItem().selectionItemId(data.itemTypeState.dataTypeState.typeCode || undefined);
                         }
-                        
+
                         self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
@@ -331,6 +331,7 @@ module nts.uk.com.view.cps005.b {
             let self = this;
             self.dataType.subscribe(function(value) {
                 if (value === 6) {
+                    self.selectionItem().selectionItemRefType(2);
                     let baseDate = moment(new Date()).format('YYYY-MM-DD');
                     if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
                         new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
@@ -476,7 +477,7 @@ module nts.uk.com.view.cps005.b {
         }
     }
     export class SelectionItemModel {
-        selectionItemRefType: KnockoutObservable<string> = ko.observable("");
+        selectionItemRefType: KnockoutObservable<number> = ko.observable(0);
         selectionItemRefTypeText: KnockoutObservable<string> = ko.observable("");
         selectionItemRefCode: KnockoutObservable<string> = ko.observable(null);
         //danh sach selection item
@@ -495,19 +496,48 @@ module nts.uk.com.view.cps005.b {
         constructor(data: ISelectionItem) {
             let self = this;
             if (!data) return;
-            self.selectionItemRefType(data.selectionItemRefType || undefined);
-            self.selectionItemRefCode(data.typeCode || undefined);
-            self.selectionItemId(data.selectionItemId || undefined);
+            self.selectionItemRefCode(data.typeCode || data.enumName || data.masterType || undefined);
+            if (data.referenceType === "DESIGNATED_MASTER") {
+                self.selectionItemRefType(1);
+            } else if (data.referenceType === "CODE_NAME") {
+                self.selectionItemRefType(2);
+            } else if (data.referenceType === "ENUM") {
+                self.selectionItemRefType(3);
+            }
+            self.selectionItemId(data.selectionItemId || data.typeCode || undefined);
             self.selectionItemName(data.selectionItemName || undefined);
+
+
             if (!nts.uk.util.isNullOrUndefined(self.selectionItemId())) {
                 self.selectionItemId(self.selectionItemId());
             }
             self.selectionItemLst(data.selectionItemLst || []);
             self.selectionLst([]);
             let baseDate = moment(new Date()).format('YYYY-MM-DD');
-            if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
 
-                new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate,
+            if (self.selectionItemId() === undefined || self.selectionItemId() === "") {
+                if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
+
+                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate,
+                        __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                            if (data.length > 0) {
+                                self.selectionLst.removeAll();
+                                self.selectionLst(data);
+                                self.selectionLst.valueHasMutated();
+
+                            } else {
+                                self.selectionLst.removeAll();
+                                self.selectionLst([]);
+                                self.selectionLst.valueHasMutated();
+
+                            }
+
+
+                        });
+                }
+            } else {
+
+                new service.Service().getAllSelByHistory(ko.toJS(self.selectionItemId), baseDate,
                     __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                         if (data.length > 0) {
                             self.selectionLst.removeAll();

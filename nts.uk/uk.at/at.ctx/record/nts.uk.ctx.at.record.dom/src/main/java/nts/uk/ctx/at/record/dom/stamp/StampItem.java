@@ -17,31 +17,55 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @AllArgsConstructor
 @Getter
 public class StampItem extends AggregateRoot {
-	//カード番号
+	/**
+	 * カード番号
+	 */
 	private CardNumber cardNumber;
-	//勤怠時刻
+	/**
+	 * 勤怠時刻
+	 */
 	private AttendanceTime attendanceTime;
-	//打刻組み合わせ区分
+	/**
+	 * 打刻組み合わせ区分
+	 */
 	private StampCombinationAtr stampCombinationAtr;
-	//就業時間帯コード
+	/**
+	 * 就業時間帯コード
+	 */
 	private SiftCd SiftCd;
+	/**
+	 * 打刻方法
+	 */
 	private StampMethod stampMethod;
-	//打刻区分
+	/**
+	 * 打刻区分
+	 */
 	private StampAtr stampAtr;
-	//勤務場所コード
+	/**
+	 * 勤務場所コード
+	 */
 	private WorkLocationCD workLocationCd;
 	//null
 	private WorkLocationName workLocationName;
-	//打刻理由
-	private StampReason stampReason;
-	//年月日
+	/**
+	 * 外出理由
+	 */
+	private GoOutReason goOutReason;
+	/**
+	 * 年月日
+	 */
 	private GeneralDate date;
-	//null
+	/**
+	 * 
+	 */
 	private String personId;
-	
+	/**
+	 * 反映済み区分
+	 */
+	private ReflectedAtr reflectedAtr;
 	public static StampItem createFromJavaType(String cardNumber, int attendanceTime,
 			int stampCombinationAtr, String SiftCd, int stampMethod, int stampAtr, String workLocationCd,String workLocationName,
-			int stampReason, GeneralDate date,String personId ) {
+			int stampReason, GeneralDate date,String personId, Integer reflected ) {
 		return new StampItem(new CardNumber(cardNumber), 
 				new AttendanceTime(attendanceTime),
 				EnumAdaptor.valueOf(stampCombinationAtr, StampCombinationAtr.class), 
@@ -50,8 +74,9 @@ public class StampItem extends AggregateRoot {
 				EnumAdaptor.valueOf(stampAtr, StampAtr.class),
 				new WorkLocationCD(workLocationCd), 
 				new WorkLocationName(workLocationName),
-				EnumAdaptor.valueOf(stampReason, StampReason.class), 
+				EnumAdaptor.valueOf(stampReason, GoOutReason.class), 
 				date,
-				personId);
+				personId,
+				EnumAdaptor.valueOf(reflected, ReflectedAtr.class));
 	}
 }

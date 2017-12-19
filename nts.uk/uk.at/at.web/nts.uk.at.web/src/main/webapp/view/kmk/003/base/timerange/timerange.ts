@@ -36,13 +36,15 @@ module kmk003.base.timerange {
                 if (!self.validTimeRange(newValue, self.endTime())) {
                     return;
                 }
-               self.value().startTime = newValue;
+                self.value().startTime = newValue;
+                self.value().endTime = self.endTime();
             });
             self.endTime.subscribe((newValue) => {
                 if (!self.validTimeRange(self.startTime(), newValue)) {
                     return;
                 }
-               self.value().endTime = newValue;
+                self.value().startTime = self.startTime();
+                self.value().endTime = newValue;
             });
         }
 
@@ -52,8 +54,8 @@ module kmk003.base.timerange {
         public bindDataToScreen(value: KnockoutObservable<TimePeriod>) {
             let self = this;
             
-            self.startTime(value().startTime);
-            self.endTime(value().endTime);
+            self.startTime(value().startTime ? value().startTime : null);
+            self.endTime(value().endTime ? value().endTime : null);
         }
 
         /**
@@ -95,10 +97,6 @@ module kmk003.base.timerange {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
             bindingContext: KnockoutBindingContext): void {
             
-        }
-
-        private getData() {
-            let self = this;
         }
 
         /**

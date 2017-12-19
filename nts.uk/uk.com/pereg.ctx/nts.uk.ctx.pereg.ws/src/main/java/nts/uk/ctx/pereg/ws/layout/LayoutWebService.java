@@ -9,12 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import find.layout.NewLayoutDto;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
-import nts.uk.ctx.bs.employee.app.find.layout.dto.EmpMaintLayoutDto;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -34,8 +34,22 @@ public class LayoutWebService extends WebService {
 
 	@Path("getByCreateType")
 	@POST
-	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
+	public NewLayoutDto getByCreateType(AddEmployeeCommand command) {
 		return this.layoutFinder.getByCreateType(command);
+	}
+	
+	/**
+	 * get category and it's children
+	 * @author xuan vinh
+	 * 
+	 * @param ctgId
+	 * @return
+	 */
+	
+	@Path("find/getctgtab/{categoryid}")
+	@POST
+	public List<PerInfoCtgFullDto> getCtgTab(@PathParam("categoryid")String ctgId){
+		return this.layoutProcessor.getCtgTab(ctgId);
 	}
 	
 	/**
@@ -44,20 +58,23 @@ public class LayoutWebService extends WebService {
 	 * @return
 	 */
 	
-	@Path("find/getTabDetail")
+	@Path("find/gettabdetail")
 	@POST
 	public EmpMaintLayoutDto getTabDetail(PeregQuery query){
 		return this.layoutProcessor.getCategoryChild(query);
 	}
 	
 	/**
-	 * 
+	 * @author xuan vinh
+	 * @param query
+	 * @return
 	 */
 	
-	@Path("find/getCtgTab/{categoryId}")
+	@Path("find/gettabsubdetail")
 	@POST
-	public List<PersonInfoCategory> getTabDetail(@PathParam("resourceId")String ctgId){
-		return this.layoutProcessor.getCtgTab(ctgId);
+	public EmpMaintLayoutDto getTabSubDetail(PeregQuery query){
+		return this.layoutProcessor.getSubDetailInCtgChild(query);
 	}
-
+	
+	
 }

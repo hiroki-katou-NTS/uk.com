@@ -7,7 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 845, height: 445 };</script>
+			<script>var dialogSize = { width: 845, height: 350 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternGroupName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.ja.main.css" />
 			<com:scriptfile path="ksu001.ja.vm.js" />
@@ -16,28 +19,44 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed">#{i18n.getText('KSU001_901')}</button>
+				<button class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KSU001_901')}</button>
 				<button class="danger">#{i18n.getText('KSU001_902')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_903')}</button>
 			</div>
 			<div id="contents-area">
-				<div>
+				<div data-bind="visible: isVisibleWkpName">
 					<div data-bind="ntsFormLabel: {}">職場名</div>
 					<span>職場名</span> <br />
 					<hr />
 				</div>
 				<div id="group-link-button"
 					class="bg-green caret-background caret-bottom cf">
-					<a class="hyperlink" href="#">病棟用</a> <a class="hyperlink" href="#">グループ2</a>
-					<a class="hyperlink" href="#">グループ3</a> <a class="hyperlink"
-						href="#">グループ4</a> <a class="hyperlink" href="#">グループ5</a> <a
-						class="hyperlink" href="#">グループ6</a> <a class="hyperlink" href="#">グループ7</a>
-					<a class="hyperlink" href="#">グループ8</a> <a class="hyperlink"
-						href="#">グループ9</a> <a class="hyperlink" href="#">グループ10</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 0)">病棟用</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 1)">グループ2</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 2)">グループ3</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 3)">グループ4</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 4)">グループ5</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 5)">グループ6</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 6)">グループ7</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 7)">グループ8</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 8)">グループ9</a>
+					<a class="hyperlink"
+						data-bind="click: clickLinkButton.bind($data, $element, 9)">グループ10</a>
 				</div>
 				<div class="mt-10">
-					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_904')}</div>
-					<input data-bind="ntsTextEditor: {value: txtName, required: true}" />
+					<div id="name"
+						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternGroupName'}">#{i18n.getText('KSU001_904')}</div>
+					<input id="textName"
+						data-bind="ntsTextEditor: {value: txtName, required: true, constraint: 'WorkPairPatternGroupName'}" />
 					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_905')}</div>
 					<div class="cf"
 						data-bind="ntsSwitchButton: {
@@ -48,8 +67,9 @@
 							enable: true }"></div>
 				</div>
 				<div class="mt-10">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_906')}</div>
-					<input id="note" data-bind="ntsTextEditor: {value: txtName1}" />
+					<div style="margin-right: 38px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_906')}</div>
+					<input id="note"
+						data-bind="ntsTextEditor: {value: txtName1, constraint: 'WorkPairPatternGroupName'}" />
 				</div>
 
 				<div class="mt-10">

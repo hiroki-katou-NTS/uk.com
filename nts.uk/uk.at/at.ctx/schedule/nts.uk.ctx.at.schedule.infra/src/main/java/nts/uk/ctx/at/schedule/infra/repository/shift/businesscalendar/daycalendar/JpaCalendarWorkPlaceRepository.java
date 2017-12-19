@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.daycalendar;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,10 +8,9 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarCompany;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarWorkplace;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarWorkplacePK;
 
@@ -22,14 +20,14 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	private final String SELECT_ALL_WORKPLACE = SELECT_FROM_WORKPLACE
 			+ " WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ";
 	private final String SELECT_WORKPLACE_BY_DATE = SELECT_ALL_WORKPLACE
-			+ " AND w.ksmmtCalendarWorkplacePK.dateId = :dateId";
+			+ " AND w.ksmmtCalendarWorkplacePK.date = :date";
 	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_WORKPLACE 
-			+ " AND w.ksmmtCalendarWorkplacePK.dateId >= :startYM "
-			+ " AND w.ksmmtCalendarWorkplacePK.dateId <= :endYM";
+			+ " AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
+			+ " AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
 	private final String DELETE_BY_YEAR_MONTH = "delete FROM KsmmtCalendarWorkplace w "
 			+" WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
-			+" AND w.ksmmtCalendarWorkplacePK.dateId >= :startYM "
-			+" AND w.ksmmtCalendarWorkplacePK.dateId <= :endYM";
+			+" AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
+			+" AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
 	
 	/**
 	 * toDomain calendar workplace
@@ -39,7 +37,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	private static CalendarWorkplace toDomainCalendarWorkplace(KsmmtCalendarWorkplace entity){
 		val domain = CalendarWorkplace.createFromJavaType(
 				entity.ksmmtCalendarWorkplacePK.workPlaceId,
-				entity.ksmmtCalendarWorkplacePK.dateId,
+				entity.ksmmtCalendarWorkplacePK.date,
 				entity.workingDayAtr);
 		return domain;
 	}
@@ -52,7 +50,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 		val entity = new  KsmmtCalendarWorkplace();
 		entity.ksmmtCalendarWorkplacePK = new KsmmtCalendarWorkplacePK(
 															domain.getWorkPlaceId(),
-															domain.getDateId());
+															domain.getDate());
 		entity.workingDayAtr = domain.getWorkingDayAtr().value;
 		return entity;
 	}
@@ -102,10 +100,10 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 * delete calendar workplace
 	 */
 	@Override
-	public void deleteCalendarWorkplace(String workPlaceId,BigDecimal dateId) {
+	public void deleteCalendarWorkplace(String workPlaceId,GeneralDate date) {
 		KsmmtCalendarWorkplacePK ksmmtCalendarWorkplacePK = new KsmmtCalendarWorkplacePK(
 																		workPlaceId,
-																		dateId);
+																		date);
 		this.commandProxy().remove(KsmmtCalendarWorkplace.class,ksmmtCalendarWorkplacePK);
 		
 	}
@@ -113,10 +111,10 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 * get  calendar workplace by date
 	 */
 	@Override
-	public Optional<CalendarWorkplace> findCalendarWorkplaceByDate(String workPlaceId, BigDecimal dateId) {
+	public Optional<CalendarWorkplace> findCalendarWorkplaceByDate(String workPlaceId, GeneralDate date) {
 		return this.queryProxy().query(SELECT_WORKPLACE_BY_DATE,KsmmtCalendarWorkplace.class)
 				.setParameter("workPlaceId", workPlaceId )
-				.setParameter("dateId", dateId)
+				.setParameter("date", date)
 				.getSingle(c->toDomainCalendarWorkplace(c));
 	}
 	/**

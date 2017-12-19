@@ -25,5 +25,5 @@ public interface FlWtzSettingGetMemento {
 	 *
 	 * @return the lst OT timezone
 	 */
-	List<FlOTTimezone> getLstOTTimezone();
+	List<FlowOTTimezone> getLstOTTimezone();
 }

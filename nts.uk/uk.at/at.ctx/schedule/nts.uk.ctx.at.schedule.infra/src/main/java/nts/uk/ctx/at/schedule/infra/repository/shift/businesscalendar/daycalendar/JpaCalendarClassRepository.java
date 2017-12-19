@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClassRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
@@ -22,11 +23,11 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 			+ " where l.ksmmtCalendarClassPK.companyId = :companyId "
 			+ " and l.ksmmtCalendarClassPK.classId = :classId ";
 	private final String SELECT_CLASS_BY_DATE = SELECT_ALL_CLASS
-			+ " and l.ksmmtCalendarClassPK.dateId = :dateId";
-	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.ksmmtCalendarClassPK.dateId >= :startYM and l.ksmmtCalendarClassPK.dateId <= :endYM";
+			+ " and l.ksmmtCalendarClassPK.date = :date";
+	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
 	private final String DELETE_BY_YEAR_MONTH = "delete from KsmmtCalendarClass l where l.ksmmtCalendarClassPK.companyId = :companyId"
 			+ " and l.ksmmtCalendarClassPK.classId = :classId "
-			+" and l.ksmmtCalendarClassPK.dateId >= :startYM and l.ksmmtCalendarClassPK.dateId <= :endYM";
+			+" and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
 	/**
 	 * class
 	 * @param entity
@@ -37,7 +38,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 		val domain = CalendarClass.createFromJavaType(
 				entity.ksmmtCalendarClassPK.companyId,
 				entity.ksmmtCalendarClassPK.classId,
-				entity.ksmmtCalendarClassPK.dateId,
+				entity.ksmmtCalendarClassPK.date,
 				entity.workingDayAtr);
 		return domain;
 	}
@@ -47,7 +48,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 		entity.ksmmtCalendarClassPK = new KsmmtCalendarClassPK(
 												domain.getCompanyId(),
 												domain.getClassId().v(),
-												domain.getDateId());
+												domain.getDate());
 		entity.workingDayAtr = domain.getWorkingDayAtr().value;
 		return entity;
 	}
@@ -93,19 +94,19 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 	}
 
 	@Override
-	public void deleteCalendarClass(String companyId,String classId,BigDecimal dateId) {
+	public void deleteCalendarClass(String companyId,String classId,GeneralDate date) {
 		KsmmtCalendarClassPK ksmmtCalendarClassPK = new KsmmtCalendarClassPK(companyId,
 														classId,
-														dateId);  
+														date);  
 		this.commandProxy().remove(KsmmtCalendarClass.class,ksmmtCalendarClassPK);
 	}
 
 	@Override
-	public Optional<CalendarClass> findCalendarClassByDate(String companyId,String classId,BigDecimal dateId) {
+	public Optional<CalendarClass> findCalendarClassByDate(String companyId,String classId,GeneralDate date) {
 		return this.queryProxy().query(SELECT_CLASS_BY_DATE,KsmmtCalendarClass.class)
 				.setParameter("companyId",companyId)
 				.setParameter("classId", classId)
-				.setParameter("dateId", dateId)
+				.setParameter("date", date)
 				.getSingle(c->toDomainCalendarClass(c));
 	}
 	@Override

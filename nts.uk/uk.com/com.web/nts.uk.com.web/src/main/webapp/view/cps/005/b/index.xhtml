@@ -9,14 +9,14 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.person.dom.person.info.item.ItemName
-				nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItemLength
-				nts.uk.ctx.bs.person.dom.person.info.numericitem.DecimalPart
-				nts.uk.ctx.bs.person.dom.person.info.numericitem.IntegerPart
-				nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItemMin
-				nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItemMax
-				nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItemMin
-				nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItemMax
+				nts.uk.ctx.pereg.dom.person.info.item.ItemName
+				nts.uk.ctx.pereg.dom.person.info.stringitem.StringItemLength
+				nts.uk.ctx.pereg.dom.person.info.numericitem.DecimalPart
+				nts.uk.ctx.pereg.dom.person.info.numericitem.IntegerPart
+				nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItemMin
+				nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItemMax
+				nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItemMin
+				nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItemMax
 				nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
 			<script>var dialogSize = { width: 1150, height: 580 };</script>
@@ -449,7 +449,7 @@
 
 								<!-- Start dataType is selected value 6 - 選択(Selection)
 								<com:ko-if bind="(dataType() === 6)"> --> 
-								<div id="data-type-value-selection" data-bind="with: selectionItem, visible: ((dataType() == 6) )">
+								<div id="data-type-value-selection" data-bind="with: selectionItem, visible: ((dataType() == 6)  &amp; (selectionItem().selectionItemRefType() == 2))">
 									<div >
 									<div  
 										class="valign-center control-group control-group-margin-custom">
@@ -662,7 +662,7 @@
 								<!-- Start dataType is selected value 6 - 選択(Selection) -->
 								
 								<div id="data-type-value-selection"
-									data-bind="with: selectionItem, visible: dataType() == 6">
+									data-bind="with: selectionItem, visible: ((dataType() == 6) &amp; (selectionItem().selectionItemRefType() == 2))">
 									<div
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"

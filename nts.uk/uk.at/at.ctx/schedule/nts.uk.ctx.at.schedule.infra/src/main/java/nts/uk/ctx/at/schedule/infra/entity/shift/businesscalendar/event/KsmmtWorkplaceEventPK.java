@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -12,6 +11,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 /**
  * @author hungnm
@@ -33,5 +33,5 @@ public class KsmmtWorkplaceEventPK implements Serializable{
 
 	@Basic(optional = false)
 	@Column(name = "YMD_K")
-	public BigDecimal date;
+	public GeneralDate date;
 }

@@ -8,18 +8,18 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmInfoCtgDataRepository;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.category.EmpInfoCtgData;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemData;
-import nts.uk.ctx.bs.employee.dom.regpersoninfo.personinfoadditemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonEmployeeType;
-import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgData;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.DataState;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.ctx.bs.person.dom.person.personinfoctgdata.item.PersonInfoItemData;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataState;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.userdef.PeregUserDefUpdateCommand;
@@ -32,14 +32,14 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 	@Inject 
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 	
-	@Inject
-	private PerInfoCtgDataRepository perInfoCtgDataRepository;
+//	@Inject
+//	private PerInfoCtgDataRepository perInfoCtgDataRepository;
 	
 	@Inject
 	private PerInfoItemDataRepository perInfoItemDataRepository;
 	
-	@Inject
-	private EmInfoCtgDataRepository emInfoCtgDataRepository;
+//	@Inject
+//	private EmInfoCtgDataRepository emInfoCtgDataRepository;
 	
 	@Inject
 	private EmpInfoItemDataRepository empInfoItemDataRepository;
@@ -47,6 +47,9 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 	@Override
 	protected void handle(CommandHandlerContext<PeregUserDefUpdateCommand> context) {
 		val command = context.getCommand();
+		if (command.getItems() == null || command.getItems().isEmpty()){
+			return;
+		}
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get Command
@@ -60,7 +63,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 		if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.PERSON) {
 			
 			// Update category data
-			perInfoCtgDataRepository.updateCategoryData(new PerInfoCtgData(command.getRecordId(),perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
+//			perInfoCtgDataRepository.updateCategoryData(new PerInfoCtgData(command.getRecordId(),perInfoCategory.get().getPersonInfoCategoryId(),command.getPersonId()));
 			
 			// Insert item data
 			PersonInfoItemData itemData = null;
@@ -69,7 +72,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			
 			for (ItemValue item : command.getItems()){
 				
-				OptionalUtil.createDataState(item,state);
+				state = OptionalUtil.createDataState(item);
 				
 				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
 				perInfoItemDataRepository.updateItemData(itemData);
@@ -77,13 +80,13 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			
 		} else if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
 			// Update emp category data
-			emInfoCtgDataRepository.updateEmpInfoCtgData(new EmpInfoCtgData(command.getRecordId(),perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
+//			emInfoCtgDataRepository.updateEmpInfoCtgData(new EmpInfoCtgData(command.getRecordId(),perInfoCategory.get().getPersonInfoCategoryId(),command.getEmployeeId()));
 			
 			// Add item data
 			EmpInfoItemData itemData = null;
 			DataState state = null;
 			for (ItemValue item : command.getItems()){
-				OptionalUtil.createDataState(item, state);
+				state = OptionalUtil.createDataState(item);
 				itemData = new EmpInfoItemData(item.definitionId(), command.getRecordId(), state);
 				empInfoItemDataRepository.updateEmpInfoItemData(itemData);
 			}

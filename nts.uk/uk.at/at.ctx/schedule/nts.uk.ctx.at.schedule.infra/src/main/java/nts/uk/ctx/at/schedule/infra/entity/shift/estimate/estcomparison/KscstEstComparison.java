@@ -59,20 +59,15 @@ public class KscstEstComparison extends UkJpaEntity implements Serializable {
 		return this.cid;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + comparisonAtr;
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -87,8 +82,9 @@ public class KscstEstComparison extends UkJpaEntity implements Serializable {
 				return false;
 		} else if (!cid.equals(other.cid))
 			return false;
+		if (comparisonAtr != other.comparisonAtr)
+			return false;
 		return true;
 	}
-	
 
 }

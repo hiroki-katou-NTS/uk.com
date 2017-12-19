@@ -19,19 +19,30 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet_;
 
+/**
+ * The Class JpaWorkTimeSettingRepository.
+ */
 @Stateless
 public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkTimeSettingRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#findByCompanyId(java.lang.String)
+	 */
 	@Override
-	public List<WorkTimeSetting> findByCompanyID(String companyID) {
+	public List<WorkTimeSetting> findByCompanyId(String companyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#findAll(java.lang.String)
+	 */
 	@Override
 	public List<WorkTimeSetting> findAll(String companyId) {
 		// get entity manager
@@ -58,12 +69,49 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		}).collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#
+	 * findByCodes(java.lang.String, java.util.List)
+	 */
 	@Override
 	public List<WorkTimeSetting> findByCodes(String companyID, List<String> codes) {
-		// TODO Auto-generated method stub
-		return null;
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
+		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyID));
+		lstpredicateWhere
+				.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(codes));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<KshmtWorkTimeSet> lstKshmtWorkTimeSet = em.createQuery(cq).getResultList();
+
+		return lstKshmtWorkTimeSet.stream().map(item -> {
+			WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
+			return worktimeSetting;
+			
+		}).collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#
+	 * findByCode(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Optional<WorkTimeSetting> findByCode(String companyId, String worktimeCode) {
 		// get entity manager
@@ -91,10 +139,41 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		return Optional.of(new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(kwtstWorkTimeSet)));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#
+	 * findByCodeList(java.lang.String, java.util.List)
+	 */
 	@Override
 	public List<WorkTimeSetting> findByCodeList(String companyID, List<String> siftCDs) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#
+	 * save(nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting)
+	 */
+	@Override
+	public void save(WorkTimeSetting domain) {
+		this.commandProxy().update(this.toEntity(domain));
+	}
+	
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kshmt work time set
+	 */
+	private KshmtWorkTimeSet toEntity(WorkTimeSetting domain){
+		KshmtWorkTimeSet entity = new KshmtWorkTimeSet();
+		domain.saveToMemento(new JpaWorkTimeSettingSetMemento(entity));
+		return entity;
 	}
 
 }

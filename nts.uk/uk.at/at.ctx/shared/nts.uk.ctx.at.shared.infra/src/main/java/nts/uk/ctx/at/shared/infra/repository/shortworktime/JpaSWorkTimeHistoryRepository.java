@@ -17,42 +17,21 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK_;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist_;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * The Class JpaSWorkTimeHistoryRepository.
  */
 @Stateless
-public class JpaSWorkTimeHistoryRepository extends JpaRepository implements SWorkTimeHistoryRepository {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository#add(nts
-	 * .uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory)
-	 */
-	@Override
-	public void add(ShortWorkTimeHistory domain) {
-		this.commandProxy().insert(this.toEntity(domain));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository#update(
-	 * nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory)
-	 */
-	@Override
-	public void update(ShortWorkTimeHistory domain) {
-		this.commandProxy().update(this.toEntity(domain));
-	}
+public class JpaSWorkTimeHistoryRepository extends JpaRepository
+		implements SWorkTimeHistoryRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -64,23 +43,31 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository implements SWor
 	public Optional<ShortWorkTimeHistory> findByKey(String empId, String histId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
-        Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
-        
-        List<Predicate> predicateList = new ArrayList<>();
-        
-        predicateList.add(builder.equal(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
-                .get(BshmtWorktimeHistPK_.sid), empId));
-        predicateList.add(builder.equal(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
-                .get(BshmtWorktimeHistPK_.histId), histId));
-        
-        query.where(predicateList.toArray(new Predicate[]{}));
-        
-		return em.createQuery(query).getResultList().stream()
-				.map(entity -> new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(entity)))
-				.findFirst();
+		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
+		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList.add(builder.equal(
+				root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.sid),
+				empId));
+		predicateList.add(builder.equal(
+				root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.histId),
+				histId));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		List<BshmtWorktimeHist> result = em.createQuery(query).getResultList();
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// Return
+		return Optional.of(new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(result)));
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -91,38 +78,77 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository implements SWor
 	public Optional<ShortWorkTimeHistory> findByBaseDate(String empId, GeneralDate baseDate) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
-        Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
-        
-        List<Predicate> predicateList = new ArrayList<>();
-        
-        predicateList.add(builder.equal(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
-        		.get(BshmtWorktimeHistPK_.sid), empId));
-        predicateList.add(builder.lessThanOrEqualTo(root.get(BshmtWorktimeHist_.strYmd), baseDate));
-        predicateList.add(builder.greaterThanOrEqualTo(root.get(BshmtWorktimeHist_.endYmd), baseDate));
-        
-        query.where(predicateList.toArray(new Predicate[]{}));
-        
-		return em.createQuery(query).getResultList().stream()
-				.map(entity -> new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(entity)))
-				.findFirst();
+		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
+		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+
+		List<Predicate> predicateList = new ArrayList<>();
+
+		predicateList.add(builder.equal(
+				root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.sid),
+				empId));
+		predicateList.add(builder.lessThanOrEqualTo(root.get(BshmtWorktimeHist_.strYmd), baseDate));
+		predicateList
+				.add(builder.greaterThanOrEqualTo(root.get(BshmtWorktimeHist_.endYmd), baseDate));
+
+		query.where(predicateList.toArray(new Predicate[] {}));
+
+		List<BshmtWorktimeHist> result = em.createQuery(query).getResultList();
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// Return
+		return Optional.of(new ShortWorkTimeHistory(new JpaSWorkTimeHistGetMemento(result)));
 	}
 
+	@Override
+	public Optional<ShortWorkTimeHistory> getBySid(String cid, String sid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void add(String cid, String sid, DateHistoryItem histItem) {
+		this.commandProxy().insert(toEntity(cid, sid, histItem));
+	}
+
+	@Override
+	public void update(String sid, DateHistoryItem histItem) {
+		BshmtWorktimeHistPK key = new BshmtWorktimeHistPK(sid, histItem.identifier());
+		Optional<BshmtWorktimeHist> existItem = this.queryProxy().find(key, BshmtWorktimeHist.class);
+		if (!existItem.isPresent()){
+			throw new RuntimeException("Invalid BshmtWorktimeHist");
+		}
+		updateEntity(histItem, existItem.get());
+		this.commandProxy().update(existItem.get());
+	}
+
+	@Override
+	public void delete(String sid, String histId) {
+		BshmtWorktimeHistPK key = new BshmtWorktimeHistPK(sid, histId);
+		this.commandProxy().remove(BshmtWorktimeHist.class, key);
+	}
 	/**
-	 * To entity.
-	 *
-	 * @param domain
-	 *            the domain
-	 * @return the bshmt worktime hist
+	 * Convert from domain to entity
+	 * @param cid
+	 * @param sid
+	 * @param dateItem
+	 * @return
 	 */
-	private BshmtWorktimeHist toEntity(ShortWorkTimeHistory domain) {
-		BshmtWorktimeHist entity = this.queryProxy()
-				.find(new BshmtWorktimeHistPK(domain.getEmployeeId(), domain.getHistoryItem().identifier()),
-						BshmtWorktimeHist.class)
-				.orElse(new BshmtWorktimeHist(new BshmtWorktimeHistPK()));
-		JpaSWorkTimeHistSetMemento memento = new JpaSWorkTimeHistSetMemento(entity);
-		domain.saveToMemento(memento);
-		return entity;
+	private BshmtWorktimeHist toEntity(String cid, String sid, DateHistoryItem dateItem){
+		BshmtWorktimeHistPK bshmtWorktimeHistPK = new BshmtWorktimeHistPK(sid, dateItem.identifier());
+		return new BshmtWorktimeHist(bshmtWorktimeHistPK,cid,dateItem.start(),dateItem.end());
 	}
-
+	
+	/**
+	 * Update entity
+	 * @param domain
+	 * @param entity
+	 */
+	private void updateEntity(DateHistoryItem domain,BshmtWorktimeHist entity){
+		entity.setStrYmd(domain.start());
+		entity.setEndYmd(domain.end());
+	}
 }

@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeCommand> {
+public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<CreateOvertimeCommand, String> {
 
 	@Inject
 	private IFactoryOvertime factoryOvertime;
@@ -35,7 +35,7 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 	private RegisterAtApproveReflectionInfoService registerService;
 
 	@Override
-	protected void handle(CommandHandlerContext<CreateOvertimeCommand> context) {
+	protected String handle(CommandHandlerContext<CreateOvertimeCommand> context) {
 
 		//
 		CreateOvertimeCommand command = context.getCommand();
@@ -71,7 +71,7 @@ public class CreateOvertimeCommandHandler extends CommandHandler<CreateOvertimeC
 		overTimeService.CreateOvertime(overTimeDomain, appRoot);
 
 		// 2-3.新規画面登録後の処理を実行
-		newAfterRegister.processAfterRegister(appRoot);
+		return newAfterRegister.processAfterRegister(appRoot);
 
 	}
 }

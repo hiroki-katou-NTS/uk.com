@@ -8,10 +8,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
 import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
+import nts.uk.ctx.sys.auth.dom.employee.dto.SimpleJobTitleImport;
 
 @Stateless
 public class AuthJobTitleAdapterImpl implements JobTitleAdapter {
@@ -31,8 +34,9 @@ public class AuthJobTitleAdapterImpl implements JobTitleAdapter {
 
 	@Override
 	public JobTitleValueImport findJobTitleBySid(String employeeId, GeneralDate baseDate) {
-		Optional<JobTitleExport> export = this.syJobTitlePub.findBySid(employeeId, baseDate);
-		return export.map(x -> this.toImport(x)).orElse(null);
+		Optional<EmployeeJobHistExport> export = this.syJobTitlePub.findBySid(employeeId, baseDate);
+		//return export.map(x -> this.toImport(x)).orElse(null);
+		return null;
 	}
 
 	@Override
@@ -45,5 +49,10 @@ public class AuthJobTitleAdapterImpl implements JobTitleAdapter {
 		List<JobTitleValueImport> data = syJobTitlePub.findAll(companyId, baseDate).stream().map(x -> this.toImport(x))
 				.collect(Collectors.toList());
 		return data;
+	}
+
+	@Override
+	public List<SimpleJobTitleImport> findByIds(String companyId, List<String> jobIds, GeneralDate baseDate) {
+		return syJobTitlePub.findByIds(companyId, jobIds, baseDate).stream().map(item -> new SimpleJobTitleImport(item.getJobTitleId(), item.getJobTitleCode(), item.getJobTitleName(), item.getDisporder())).collect(Collectors.toList());
 	}
 }

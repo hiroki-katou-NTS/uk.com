@@ -81,18 +81,21 @@ module cas009.a.viewmodel {
         /** Start Page */
        public  startPage(): any {           
             let self = this;
+            block.invisible();
             service.getOptItemEnum().done((res) => {
                 self.enumRange(res);    
                 if(self.assignAtr() ==0)     self.enumRangeChange(self.enumRange().slice(0,1));
                 else  self.enumRangeChange(self.enumRange().slice(1,4));
-            });
+            });           
             self.getListRole().done(()=>{
                 if(self.listRole().length==0) 
                 {
                     self.createNew();
                 }else{
-                    self.component.currentCode(self.component.listRole()[0].roleId)                  
+                    self.component.currentCode(self.component.listRole()[0].roleId)                
                 }  
+            }).always(()=>{
+                      block.clear();  
             });
            // self.userHasRole();
 
@@ -153,20 +156,25 @@ module cas009.a.viewmodel {
             $(".nts-input").trigger("validate");
             if($(".nts-input").ntsError("hasError")) return ;
              $('#roleName').focus();
+            block.invisible();
             let role = new model.Role(self.createMode(), self.roleId(), self.roleCode(), self.employeeReferenceRange(), self.name(), self.assignAtr(), self.referFutureDate());
             service.saveRole(role).done(function(){
                  nts.uk.ui.dialog.alert({ messageId: "Msg_15" });  
                  
                     self.getListRole().done(()=>{
                            self.component.currentCode(_.find(self.listRole(), function(o){ return o.roleCode == role.roleCode  }).roleId);
+                 }).always(()=>{
+                           block.clear();    
                  });
           
             }).fail((error) => {
                  nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                 block.clear();
             });    
         }
         public remove(): any{
             let self = this;
+               block.invisible();
                if(self.component.currentCode() !="" && self.component.currentCode() !=null){
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                         service.deleteRole({roleId: self.roleId(), assignAtr: self.assignAtr()}).done(function(){
@@ -174,11 +182,14 @@ module cas009.a.viewmodel {
                             let index = _.findIndex(self.listRole(), ['roleId', self.roleId()]);
                             index = _.min([self.listRole().length - 2, index]);
                             self.getListRole().done(function(){
-                                 self.selectRoleByIndex(index);
+                                 self.selectRoleByIndex(index);                               
+                            }).always(() =>{
+                                 block.clear();    
                             });
                             
                         }).fail((error) => {
                                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                                block.clear();
                         });   
                    }); 
                }   

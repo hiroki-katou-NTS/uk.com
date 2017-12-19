@@ -13,11 +13,12 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
  *
  */
 @Getter
-@Setter
 @NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
-	//勤務NO
+	/*
+	 * 勤務NO
+	 */
 	private WorkNo workNo;
 	
 	private TimeActualStamp attendanceStamp;
@@ -26,6 +27,12 @@ public class TimeLeavingWork extends DomainObject{
 
 	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
 		super();
+		this.workNo = workNo;
+		this.attendanceStamp = attendanceStamp;
+		this.leaveStamp = leaveStamp;
+	}
+	
+	public void setTimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp){
 		this.workNo = workNo;
 		this.attendanceStamp = attendanceStamp;
 		this.leaveStamp = leaveStamp;

@@ -28,7 +28,7 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	@Basic(optional = false)
 	@Id
-	@Column(name = "HIST_ID")
+	@Column(name = "HISTORY_ID")
 	public String histId;
 
 	@Basic(optional = false)
@@ -36,8 +36,8 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	public String sid;
 	
 	@Basic(optional = false)
-	@Column(name = "LEAVE_HOLIDAY_ATR")
-	public int leaveHolidayAtr;
+	@Column(name = "TEMP_ABS_FRAME_NO")
+	public int tempAbsFrameNo;
 
 	@Basic(optional = true)
 	@Column(name = "REMARKS")
@@ -80,5 +80,103 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	@Override
 	protected Object getKey() {
 		return histId;
+	}
+	/**
+	 * createLeave
+	 * createSickLeave
+	 * createAnyLeave
+	 * @param historyId
+	 * @param employeeId
+	 * @param remarks
+	 * @param soInsPayCategory
+	 */
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
+			Integer soInsPayCategory) {
+		this.histId = historyId;
+		this.sid = employeeId;
+		this.tempAbsFrameNo = tempAbsFrameNo;
+		this.remarks = remarks;
+		this.soInsPayCategory = soInsPayCategory;
+	}
+	/**
+	 * createMidweekClosure
+	 * @param historyId
+	 * @param employeeId
+	 * @param remarks
+	 * @param soInsPayCategory
+	 * @param multiple
+	 */
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
+			Integer soInsPayCategory, Boolean multiple) {
+		this.histId = historyId;
+		this.sid = employeeId;
+		this.tempAbsFrameNo = tempAbsFrameNo;
+		this.remarks = remarks;
+		this.soInsPayCategory = soInsPayCategory;
+		this.multiple = multiple ? 1: 0;
+	}
+	/**
+	 * createAfterChildbirth
+	 * @param historyId
+	 * @param employeeId
+	 * @param remarks
+	 * @param soInsPayCategory
+	 * @param familyMemberId
+	 */
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
+			Integer soInsPayCategory, String familyMemberId) {
+		this.histId = historyId;
+		this.sid = employeeId;
+		this.tempAbsFrameNo = tempAbsFrameNo;
+		this.remarks = remarks;
+		this.soInsPayCategory = soInsPayCategory;
+		this.familyMemberId = familyMemberId;
+	}
+	/**
+	 * createChildCareHoliday
+	 * @param historyId
+	 * @param employeeId
+	 * @param remarks
+	 * @param soInsPayCategory
+	 * @param sameFamily
+	 * @param childType
+	 * @param familyMemberId
+	 * @param createDate
+	 * @param spouseIsLeave
+	 */
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
+			Integer soInsPayCategory, Boolean sameFamily, Integer childType, String familyMemberId,
+			GeneralDate createDate, Boolean spouseIsLeave) {
+		this.histId = historyId;
+		this.sid = employeeId;
+		this.tempAbsFrameNo = tempAbsFrameNo;
+		this.remarks = remarks;
+		this.soInsPayCategory = soInsPayCategory;
+		this.sameFamily = sameFamily ? 1: 0;
+		this.childType = childType;
+		this.familyMemberId = familyMemberId;
+		this.createDate = createDate;
+		this.spouseIsLeave = spouseIsLeave ? 1 : 0;
+	}
+	/**
+	 * createCareHoliday
+	 * @param historyId
+	 * @param employeeId
+	 * @param remarks
+	 * @param soInsPayCategory
+	 * @param sameFamily
+	 * @param sameFamilyDays
+	 * @param familyMemberId
+	 */
+	public BsymtTempAbsHisItem (String historyId, String employeeId, int tempAbsFrameNo, String remarks,
+			Integer soInsPayCategory, Boolean sameFamily, Integer sameFamilyDays, String familyMemberId) {
+		this.histId = historyId;
+		this.sid = employeeId;
+		this.tempAbsFrameNo = tempAbsFrameNo;
+		this.remarks = remarks;
+		this.soInsPayCategory = soInsPayCategory;
+		this.sameFamily = sameFamily ? 1: 0;
+		this.familyMemberId = familyMemberId;
+		this.sameFamilyDays = sameFamilyDays;
 	}
 }

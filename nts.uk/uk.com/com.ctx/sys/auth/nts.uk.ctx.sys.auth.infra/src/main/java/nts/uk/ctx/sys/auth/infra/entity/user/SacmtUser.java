@@ -1,4 +1,3 @@
-
 package nts.uk.ctx.sys.auth.infra.entity.user;
 
 import java.io.Serializable;
@@ -11,15 +10,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "SACMT_USER")
 @NoArgsConstructor
@@ -28,8 +23,8 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	 @EmbeddedId
-	    public SacmtUserPK sacmtUserPK;
+	@EmbeddedId
+    public SacmtUserPK sacmtUserPK;
     
     /** The default User */
     /** デフォルトユーザ*/
@@ -88,8 +83,6 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 	}
 
 	public User toDomain() {
-		boolean specialUser = this.specialUser == 1;
-		boolean multiCompanyConcurrent = this.multiCompanyConcurrent == 1;
 		boolean defaultUser = this.defaultUser == 1;
 		return User.createFromJavatype(
 				this.sacmtUserPK.userID, 
@@ -105,5 +98,12 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 				this.associatedPersonID);
 	}
 
+	public static SacmtUser toEntity(User user) {
+		int isDefaultUser = user.isDefaultUser() ? 1 : 0;
+		return new SacmtUser(new SacmtUserPK(user.getUserID()), isDefaultUser, user.getPassword().v(),
+				user.getLoginID().v(), user.getContractCode().v(), user.getExpirationDate(), user.getSpecialUser().value,
+				user.getMultiCompanyConcurrent().value, user.getMailAddress().v(), user.getUserName().v(),
+				user.getAssociatedPersonID());
+	}
 	
 }

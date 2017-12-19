@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 /**
  * domain : 職場営業日カレンダー日次
  * @author tutk
@@ -13,19 +12,19 @@ import nts.arc.enums.EnumAdaptor;
 public class CalendarWorkplace {
 	private String workPlaceId;
 	
-	private BigDecimal dateId;
+	private GeneralDate date;
 	
 	private UseSet workingDayAtr;
 
-	private CalendarWorkplace(String workPlaceId, BigDecimal dateId, UseSet workingDayAtr) {
+	private CalendarWorkplace(String workPlaceId, GeneralDate date, UseSet workingDayAtr) {
 		super();
 		this.workPlaceId = workPlaceId;
-		this.dateId = dateId;
+		this.date = date;
 		this.workingDayAtr = workingDayAtr;
 	}
 
-	public static CalendarWorkplace createFromJavaType(String workPlaceId, BigDecimal dateId, int workingDayAtr) {
-		return new  CalendarWorkplace(workPlaceId, dateId, EnumAdaptor.valueOf(workingDayAtr, UseSet.class));
+	public static CalendarWorkplace createFromJavaType(String workPlaceId, GeneralDate date, int workingDayAtr) {
+		return new  CalendarWorkplace(workPlaceId, date, EnumAdaptor.valueOf(workingDayAtr, UseSet.class));
 	}
 	
 	

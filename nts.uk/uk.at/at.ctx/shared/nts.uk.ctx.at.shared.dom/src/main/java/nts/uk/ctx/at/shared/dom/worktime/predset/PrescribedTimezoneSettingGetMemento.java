@@ -34,6 +34,6 @@ public interface PrescribedTimezoneSettingGetMemento {
 	 *
 	 * @return the lst timezone
 	 */
-	List<Timezone> getLstTimezone();
+	List<TimezoneUse> getLstTimezone();
 
 }

@@ -51,17 +51,6 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento#
-	 * setClosureId(java.lang.Integer)
-	 */
-	@Override
-	public void setClosureId(Integer closureId) {
-		this.closureId = closureId;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento#
 	 * setUseClassification(nts.uk.ctx.at.shared.dom.workrule.closure.
 	 * UseClassification)
 	 */

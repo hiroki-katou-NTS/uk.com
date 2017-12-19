@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -29,7 +29,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	
 	/** The timezone. */
 	//時間帯
-	private List<Timezone> lstTimezone;
+	private List<TimezoneUse> lstTimezone;
 
 	/** The shift one. */
 	public static Integer SHIFT_ONE = 1;
@@ -58,6 +58,25 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		memento.setAfternoonStartTime(this.afternoonStartTime);
 		memento.setLstTimezone(this.lstTimezone);
 	}
+
+	/**
+	 * Gets the timezone shift one.
+	 *
+	 * @return the timezone shift one
+	 */
+	public TimezoneUse getTimezoneShiftOne() {
+		return this.getTimezone(SHIFT_ONE);
+	}
+
+	/**
+	 * Gets the timezone shift two.
+	 *
+	 * @return the timezone shift two
+	 */
+	public TimezoneUse getTimezoneShiftTwo() {
+		return this.getTimezone(SHIFT_TWO);
+	}
+
 	/**
 	 * Update start time shift.
 	 *
@@ -65,7 +84,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @param workNo the work no
 	 */
 	public void updateStartTimeShift(TimeWithDayAttr newTime, int workNo) {
-		Timezone tz = this.getTimezone(workNo);
+		TimezoneUse tz = this.getTimezone(workNo);
 		tz.updateStartTime(newTime);
 	}
 
@@ -76,7 +95,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @param workNo the work no
 	 */
 	public void updateEndTimeShift(TimeWithDayAttr newTime, int workNo) {
-		Timezone tz = this.getTimezone(workNo);
+		TimezoneUse tz = this.getTimezone(workNo);
 		tz.updateEndTime(newTime);
 	}
 	
@@ -98,7 +117,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @param workNo the work no
 	 * @return the timezone
 	 */
-	public Timezone getTimezone(int workNo) {
+	private TimezoneUse getTimezone(int workNo) {
 		return this.lstTimezone.stream()
 			.filter(timezone -> timezone.getWorkNo() == workNo)
 			.findFirst()
@@ -113,31 +132,17 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		super.validate();
 		
 		// valid timezone must increase
-		Timezone tzWorkNo1 = this.getTimezone(SHIFT_ONE);
-		Timezone tzWorkNo2 = this.getTimezone(SHIFT_TWO);
+		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
+		TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
 		if (tzWorkNo2.getStart().lessThanOrEqualTo(tzWorkNo1.getEnd())) {
 			throw new BusinessException("Msg_772");
 		}
 		
 		// valid 時間帯.終了 >= 0:01
-		boolean isValidEnd = this.lstTimezone.stream()
-				.filter(timezone -> timezone.getEnd().lessThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))
-				.collect(Collectors.toList())
-				.isEmpty();
-		if (!isValidEnd) {
+		if (this.lstTimezone.stream()
+				.anyMatch(timezone -> !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
 			throw new BusinessException("Msg_778");
 		}
-		
-		// valid 時間帯.開始  < 時間帯.終了
-		boolean isValidTimeRange = this.lstTimezone.stream()
-				.filter(timezone -> timezone.getStart().lessThan(timezone.getEnd()))
-				.collect(Collectors.toList())
-				.isEmpty();
-		if (!isValidTimeRange) {
-			throw new BusinessException("Msg_770");
-		}
-		
-		// TODO: valid message Msg_516
 		
 		// valid: 2 時間帯 có 勤務NO=1 và 2 not overlap
 		boolean isWorkNoOverlap = this.getTimezone(SHIFT_ONE).getWorkNo() == this.getTimezone(SHIFT_TWO).getWorkNo();
@@ -149,42 +154,43 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		 * 勤務NO2 = する, 勤務NO=1の開始～終了の間  or 勤務NO=2の開始～終了の間であること
 		 * or 勤務NO2 = しない,  勤務NO=1の開始～終了の間であること
 		 */
-		validTimeDay();
+		this.validTimeDay();
 	}
 	
 	/**
 	 * Valid time day.
 	 */
 	private void validTimeDay() {
-		// 使用しない
-		if (this.getTimezone(SHIFT_TWO).getUseAtr() == UseSetting.NOT_USE) {
-			
-			//get timezone workno#1
-			Timezone tzWorkNo1 = this.getTimezone(SHIFT_ONE);
-			
-			boolean isInValidTimeEndMorning = this.getMorningEndTime().lessThan(tzWorkNo1.getStart())
-					|| this.getMorningEndTime().greaterThan(tzWorkNo1.getEnd());
-			
-			boolean isInValidTimeStrAfternoon = this.getAfternoonStartTime().lessThan(tzWorkNo1.getStart())
-					|| this.getAfternoonStartTime().greaterThan(tzWorkNo1.getEnd());
-			
-			if (isInValidTimeEndMorning || isInValidTimeStrAfternoon) {
-				throw new BusinessException("Msg_773");
-			}
-		}
 		// 使用する
-		else {
-			boolean isInValidTimeDay = this.lstTimezone.stream().filter(timezone -> {
-				boolean isValidTimeEndMorning = this.getMorningEndTime().greaterThanOrEqualTo(timezone.getStart())
-						&& this.getMorningEndTime().lessThanOrEqualTo(timezone.getEnd());
-				boolean isValidTimeStrAfternoon = this.getAfternoonStartTime().greaterThanOrEqualTo(timezone.getStart())
-						&& this.getAfternoonStartTime().lessThanOrEqualTo(timezone.getEnd());
-				return isValidTimeEndMorning || isValidTimeStrAfternoon;
-			}).collect(Collectors.toList()).isEmpty();
-			if (isInValidTimeDay) {
+		if (this.getTimezoneShiftTwo().isUsed()) {
+			if (!(this.isMorningAndAfternoonInShift1() || this.isMorningAndAfternoonInShift2())) {
 				throw new BusinessException("Msg_774");
 			}
 		}
+		// 使用しない
+		else if (!this.isMorningAndAfternoonInShift1()) {
+			throw new BusinessException("Msg_773");
+		}
+	}
+
+	/**
+	 * Checks if is morning and afternoon in shift 1.
+	 *
+	 * @return true, if is morning and afternoon in shift 1
+	 */
+	private boolean isMorningAndAfternoonInShift1() {
+		val tzWorkNo1 = this.getTimezoneShiftOne();
+		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) && tzWorkNo1.consistOf(this.getAfternoonStartTime());
+	}
+
+	/**
+	 * Checks if is morning and afternoon in shift 2.
+	 *
+	 * @return true, if is morning and afternoon in shift 2
+	 */
+	private boolean isMorningAndAfternoonInShift2() {
+		val tzWorkNo2 = this.getTimezoneShiftTwo();
+		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) && tzWorkNo2.consistOf(this.getAfternoonStartTime());
 	}
 	
 }

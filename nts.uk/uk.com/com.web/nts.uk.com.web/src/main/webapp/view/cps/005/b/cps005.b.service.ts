@@ -2,13 +2,13 @@ module nts.uk.com.view.cps005.b {
     export module service {
         export class Service {
             paths = {
-                getAllPerInfoItemDefByCtgId: "ctx/bs/person/info/ctgItem/findby/categoryId1/{0}/{1}",
-                getPerInfoItemDefById: "ctx/bs/person/info/ctgItem/findby/itemId/{0}",
-                addItemDef: "ctx/bs/person/info/ctgItem/add",
-                updateItemDef: "ctx/bs/person/info/ctgItem/update",
-                removeItemDef: "ctx/bs/person/info/ctgItem/remove",
-                getAllSelectionItem: "ctx/bs/person/info/setting/selection/findAllSelectionItem",
-                filterHisSel: "ctx/bs/person/info/setting/selection/find/{0}/{1}/{2}"
+                getAllPerInfoItemDefByCtgId: "ctx/pereg/person/info/ctgItem/findby/categoryId1/{0}/{1}",
+                getPerInfoItemDefById: "ctx/pereg/person/info/ctgItem/findby/itemId/{0}/{1}",
+                addItemDef: "ctx/pereg/person/info/ctgItem/add",
+                updateItemDef: "ctx/pereg/person/info/ctgItem/update",
+                removeItemDef: "ctx/pereg/person/info/ctgItem/remove",
+                getAllSelectionItem: "ctx/pereg/person/info/setting/selection/findAllSelectionItem",
+                filterHisSel: "ctx/pereg/person/info/setting/selection/find/{0}/{1}/{2}"
 
             }
 

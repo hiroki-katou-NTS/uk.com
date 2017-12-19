@@ -6,7 +6,6 @@ package nts.uk.ctx.at.schedule.infra.repository.plannedyearholiday.frame;
 
 import java.math.BigDecimal;
 
-import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameName;
@@ -20,13 +19,6 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaPlanYearHolidayFrameGetMemento implements PlanYearHolidayFrameGetMemento{
 	
 	/** The kscst plan year hd frame. */
-	
-	/**
-	 * Sets the kscst plan year hd frame.
-	 *
-	 * @param kscstPlanYearHdFrame the new kscst plan year hd frame
-	 */
-	@Setter
 	private KscstPlanYearHdFrame kscstPlanYearHdFrame;
 	
 	/**
@@ -38,15 +30,13 @@ public class JpaPlanYearHolidayFrameGetMemento implements PlanYearHolidayFrameGe
 		this.kscstPlanYearHdFrame = kscstPlanYearHdFrame;
 	}
 
-	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationGetMemento#getCompanyId()
+	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento#getCompanyId()
 	 */
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(this.kscstPlanYearHdFrame.getKscstPlanYearHdFramePK().getCid());
 	}
-
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento#getPlanYearHolidayFrameNo()
@@ -56,7 +46,6 @@ public class JpaPlanYearHolidayFrameGetMemento implements PlanYearHolidayFrameGe
 		return new PlanYearHolidayFrameNo(BigDecimal.valueOf(this.kscstPlanYearHdFrame.getKscstPlanYearHdFramePK().getPlanYearHdNo()));
 	}
 
-
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento#getUseClassification()
 	 */
@@ -64,7 +53,6 @@ public class JpaPlanYearHolidayFrameGetMemento implements PlanYearHolidayFrameGe
 	public NotUseAtr getUseClassification() {
 		return NotUseAtr.valueOf((int) this.kscstPlanYearHdFrame.getUseAtr());
 	}
-
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento#getPlanYearHolidayFrameName()

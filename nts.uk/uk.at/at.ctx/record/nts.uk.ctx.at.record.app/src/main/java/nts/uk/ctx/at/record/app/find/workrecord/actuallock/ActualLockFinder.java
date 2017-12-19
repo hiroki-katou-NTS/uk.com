@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -75,7 +74,7 @@ public class ActualLockFinder {
 
 		List<Closure> filtedList = closureList.stream().filter(closure -> {
 			Optional<ClosureHistory> closureHistOpt = this.closureRepo.findBySelectedYearMonth(companyId,
-					closure.getClosureId(), closure.getClosureMonth().getProcessingYm().v());
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().v());
 			// Check exist
 			if (!closureHistOpt.isPresent()) {
 				return false;
@@ -92,16 +91,16 @@ public class ActualLockFinder {
 				ActualLockFinderDto dto = new ActualLockFinderDto();
 				// Find ClosureHistory
 				Optional<ClosureHistory> closureHistOpt = this.closureRepo.findBySelectedYearMonth(companyId,
-						c.getClosureId(), c.getClosureMonth().getProcessingYm().v());
+						c.getClosureId().value, c.getClosureMonth().getProcessingYm().v());
 				// Find ActualLock
-				Optional<ActualLock> actualLockOpt = this.actualLockRepo.findById(companyId, c.getClosureId());
+				Optional<ActualLock> actualLockOpt = this.actualLockRepo.findById(companyId, c.getClosureId().value);
 
 				// Get ClosurePeriod to get StartDate, EndDate
-				DatePeriod datePeriod = closureService.getClosurePeriod(c.getClosureId(),
+				DatePeriod datePeriod = closureService.getClosurePeriod(c.getClosureId().value,
 						c.getClosureMonth().getProcessingYm());
 				
 				// Set ActualLockFinderDto
-				dto.setClosureId(ClosureId.valueOf(c.getClosureId()));
+				dto.setClosureId(c.getClosureId());
 				dto.setClosureName(closureHistOpt.get().getClosureName().v());
 				// Set Period: StartDate, EndDate
 				dto.setStartDate(datePeriod.start().toString());

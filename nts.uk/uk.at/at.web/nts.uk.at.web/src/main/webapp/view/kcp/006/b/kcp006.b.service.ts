@@ -9,11 +9,11 @@ module nts.uk.at.view.kcp006.b.service {
     }
     
     export function getCompanyEvent(lstDate): JQueryPromise<Array<model.EventObj>> {
-        return nts.uk.request.ajax(paths.getCompanyEvent, lstDate);
+        return nts.uk.request.ajax(paths.getCompanyEvent, lstDate.map((date) => { return moment(date, "YYYYMMDD").utc().toISOString(); }));
     }
 
     export function getWorkplaceEvent(lstDate): JQueryPromise<Array<model.EventObj>> {
-        return nts.uk.request.ajax(paths.getWorkplaceEvent, lstDate);
+        return nts.uk.request.ajax(paths.getWorkplaceEvent, lstDate.map((date) => { return moment(date, "YYYYMMDD").utc().toISOString(); }));
     }
     
     export function addCompanyEvent(event): JQueryPromise<Array<model.EventObj>> {

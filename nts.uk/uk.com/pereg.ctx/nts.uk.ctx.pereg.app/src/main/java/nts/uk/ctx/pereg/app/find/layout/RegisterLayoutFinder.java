@@ -3,33 +3,34 @@ package nts.uk.ctx.pereg.app.find.layout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.layout.NewLayoutDto;
-import find.layout.classification.LayoutPersonInfoClsDto;
-import find.layout.classification.LayoutPersonInfoClsFinder;
-import find.layout.classification.LayoutPersonInfoValueDto;
-import find.person.info.item.PerInfoItemDefDto;
-import find.person.info.item.SingleItemDto;
-import find.person.info.item.StringItemDto;
-import find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
-import find.person.setting.init.category.SettingCtgDto;
-import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.bs.employee.app.find.layout.GetLayoutByCeateTypeDto;
-import nts.uk.ctx.bs.person.dom.person.layout.INewLayoutReposotory;
-import nts.uk.ctx.bs.person.dom.person.layout.NewLayout;
-import nts.uk.ctx.bs.person.dom.person.layout.classification.LayoutItemType;
-import nts.uk.ctx.pereg.app.find.copysetting.item.CopySetItemFinder;
+import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
+import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.app.find.copysetting.item.CopySettingItemFinder;
 import nts.uk.ctx.pereg.app.find.copysetting.setting.EmpCopySettingFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.InitValueSetItemFinder;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.initsetting.item.findInitItemDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.NewLayoutDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
+import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
+import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**
  * @author sonnlb
@@ -49,12 +50,19 @@ public class RegisterLayoutFinder {
 	private PerInfoInitValueSettingCtgFinder initCtgSettingFinder;
 
 	@Inject
-	private InitValueSetItemFinder initItemSettingFinder;
-
-	@Inject
 	private EmpCopySettingFinder copySettingFinder;
 
-	private CopySetItemFinder copySetItemFinder;
+	@Inject
+
+	private CopySettingItemFinder copyItemFinder;
+
+	@Inject
+
+	private InitValueSetItemFinder initItemFinder;
+
+	@Inject
+	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
+
 	// sonnlb end
 
 	// sonnlb code start
@@ -66,9 +74,9 @@ public class RegisterLayoutFinder {
 	 *            : command from client push to webservice
 	 * @return NewLayoutDto
 	 */
-	public NewLayoutDto getByCreateType(GetLayoutByCeateTypeDto command) {
+	public NewLayoutDto getByCreateType(AddEmployeeCommand command) {
 
-		Optional<NewLayout> layout = repo.getLayout();
+		Optional<NewLayout> layout = repo.getLayout(false);
 		if (!layout.isPresent()) {
 
 			return null;
@@ -76,108 +84,182 @@ public class RegisterLayoutFinder {
 
 		NewLayout _layout = layout.get();
 
-		// Get list Classification Item by layoutID
-		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(_layout.getLayoutID());
-
-		if (command.getCreateType() != 3) {
-
-			List<SettingItemDto> dataSourceList = loadAllItemByCreateType(command.getCreateType(),
-					command.getInitSettingId(), command.getBaseDate(), command.getEmployeeId());
-
-			if (dataSourceList.isEmpty()) {
-
-				return null;
-
-			}
-
-			for (LayoutPersonInfoClsDto itemCls : listItemCls) {
-				if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
-					if (command.getCreateType() == 2) {
-
-						itemCls.setListItemDf(itemCls.getListItemDf().stream()
-								.filter(x -> findItemFromList(dataSourceList, x) != null).collect(Collectors.toList()));
-
-					}
-
-					LayoutItemType layoutType = itemCls.getLayoutItemType();
-
-					switch (layoutType) {
-					case ITEM: // item
-
-						List<Object> itemValues = createItemValueList(itemCls.getListItemDf(), dataSourceList);
-
-						itemCls.setItems(itemValues.isEmpty() ? null : itemValues);
-
-						break;
-					case LIST: // list
-						itemCls.setItems(null);
-						break;
-
-					default:
-						// spa
-						itemCls.setItems(null);
-						break;
-					}
-				}
-			}
-
-		}
-
-		// remove all category no item;
-		listItemCls = listItemCls.stream().filter(x -> x.getListItemDf() != null ? x.getListItemDf().size() > 0 : false)
-				.collect(Collectors.toList());
+		List<LayoutPersonInfoClsDto> listItemCls = getlistItemCls(command, _layout);
 
 		return NewLayoutDto.fromDomain(_layout, listItemCls);
 
 	}
 
-	/**
-	 * create item list from each item layout list and value from dataSourceList
-	 * 
-	 * @param <E>
-	 * 
-	 * @param dataSourceList
-	 *            : datasource List
-	 * @param layoutItemList
-	 *            : itemList need set value
-	 * @return itemList as List<Object>
-	 */
-	private <E> List<Object> createItemValueList(List<PerInfoItemDefDto> layoutItemList,
-			List<SettingItemDto> dataSourceList) {
-		List<Object> itemValueList = new ArrayList<Object>();
-		for (PerInfoItemDefDto itemDf : layoutItemList) {
+	private List<LayoutPersonInfoClsDto> getlistItemCls(AddEmployeeCommand command, NewLayout _layout) {
 
-			SettingItemDto item = findItemFromList(dataSourceList, itemDf);
+		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDtoHasCtgCd(_layout.getLayoutID());
 
-			LayoutPersonInfoValueDto value = new LayoutPersonInfoValueDto(itemDf.getPerInfoCtgId(),
-					item.getCategoryCode(), itemDf.getId(), itemDf.getItemName(), itemDf.getItemCode(), 0,
-					item.getValueAsString());
+		if (command.getCreateType() != 3) {
 
-			val itemDto = (SingleItemDto) itemDf.getItemTypeState();
-			value.setItem(itemDto.getDataTypeState());
+			List<SettingItemDto> dataServer = this.getItemListByCreateType(command);
 
-			itemValueList.add(value);
+			if (CollectionUtil.isEmpty(dataServer)) {
+
+				return null;
+			}
+
+			setData(dataServer, listItemCls, command.getCreateType());
+			if (command.getCreateType() == 1) {
+
+				return listItemCls;
+
+			}
+
+			if (command.getCreateType() == 2) {
+
+				return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
+						.collect(Collectors.toList());
+			}
 
 		}
-		return itemValueList;
+
+		if (command.getCreateType() == 3) {
+
+			listItemCls.forEach(itemCls -> {
+				if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
+					itemCls.getListItemDf().forEach(itemDef -> {
+						LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
+								ActionRole.EDIT.value, itemCls.getPersonInfoCategoryCD());
+
+						if (CollectionUtil.isEmpty(itemCls.getItems())) {
+							List<Object> itemList = new ArrayList<Object>();
+							itemList.add(newLayoutDto);
+							itemCls.setItems(itemList);
+						} else {
+
+							itemCls.getItems().add(newLayoutDto);
+						}
+					});
+				}
+
+			});
+		}
+
+		return listItemCls;
 	}
 
-	/**
-	 * get item from list when same itemId
-	 * 
-	 * @param itemDataList
-	 *            list source
-	 * @param item
-	 *            condiction
-	 * @return SettingItemDto
-	 */
-	private SettingItemDto findItemFromList(List<SettingItemDto> itemDataList, PerInfoItemDefDto item) {
+	private void setData(List<SettingItemDto> dataServer, List<LayoutPersonInfoClsDto> listItemCls, int createType) {
 
-		return itemDataList.stream().filter(i -> i.getItemDefId().equals(item.getId())).findFirst().orElse(null);
+		listItemCls.forEach(itemCls -> {
+			createInfoValueDtoByItemCls(dataServer, itemCls, createType);
+		});
+
 	}
 
+	private void createInfoValueDtoByItemCls(List<SettingItemDto> dataServer, LayoutPersonInfoClsDto itemCls,
+			int createType) {
+		List<PerInfoItemDefDto> itemDefList = itemCls.getListItemDf();
+		if (!CollectionUtil.isEmpty(itemDefList)) {
+			List<Object> itemDataList = new ArrayList<Object>();
+			itemDefList.forEach(itemDef -> {
+				Optional<SettingItemDto> setItemOpt = dataServer.stream()
+						.filter(item -> item.getItemDefId().equals(itemDef.getId())).findFirst();
+
+				LayoutPersonInfoValueDto infoValue = null;
+				if (setItemOpt.isPresent()) {
+					SettingItemDto setItem = setItemOpt.get();
+					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value,
+							itemCls.getPersonInfoCategoryCD());
+				} else {
+					if (itemDef.getItemTypeState().getItemType() == 1 || createType == 1) {
+						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value,
+								itemCls.getPersonInfoCategoryCD());
+					}
+
+				}
+
+				if (infoValue != null) {
+					itemDataList.add(infoValue);
+				}
+
+			});
+
+			itemCls.setItems(itemDataList);
+		}
+
+	}
+
+	private LayoutPersonInfoValueDto createPersonInfoValueDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
+			int actionRole, String ctgCd) {
+
+		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
+		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+		dataObject.setItemDefId(itemDef.getId());
+		dataObject.setItemName(itemDef.getItemName());
+		dataObject.setItemCode(itemDef.getItemCode());
+		dataObject.setRow(0);
+		dataObject.setRequired(itemDef.getIsRequired() == 1);
+		dataObject.setType(itemDef.getItemTypeState().getItemType());
+		if (itemDef.getItemTypeState().getItemType() != 1) {
+			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
+			dataObject.setItem(sigleItem.getDataTypeState());
+			int dataTypeValue = dataObject.getItem().getDataTypeValue();
+			if (dataTypeValue == 6) {
+				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
+				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
+						GeneralDate.today());
+				dataObject.setLstComboBoxValue(lstComboBox);
+			}
+		}
+		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
+		if (setItem != null) {
+			dataObject.setValue(setItem.getValueAsString());
+		}
+		dataObject.setCategoryCode(ctgCd);
+		return dataObject;
+
+	}
+
+	// private PerInfoItemDefForLayoutDto
+	// createLayoutInfoDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto
+	// itemDef,
+	// int actionRole) {
+	//
+	// PerInfoItemDefForLayoutDto dataObject = new PerInfoItemDefForLayoutDto();
+	//
+	// dataObject.setPerInfoCtgId(itemDef.getPerInfoCtgId());
+	// dataObject.setId(itemDef.getId());
+	// dataObject.setItemName(itemDef.getItemName());
+	// dataObject.setItemCode(itemDef.getItemCode());
+	// dataObject.setRow(0);
+	// dataObject.setIsRequired(itemDef.getIsRequired());
+	// dataObject.setItemTypeState(itemDef.getItemTypeState());
+	// dataObject.setActionRole(EnumAdaptor.valueOf(actionRole,
+	// ActionRole.class));
+	//
+	// dataObject.setSelectionItemRefType(itemDef.getSelectionItemRefType());
+	// List<EnumConstant> selectionItemRefTypes =
+	// EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
+	// dataObject.setSelectionItemRefTypes(selectionItemRefTypes);
+	// if (setItem != null) {
+	// dataObject.setPerInfoCtgCd(setItem.getCategoryCode());
+	// }
+	// if (itemDef.getItemTypeState().getItemType() == 2) {
+	//
+	// SingleItemDto singleItem = (SingleItemDto) itemDef.getItemTypeState();
+	//
+	// int dataTypeValue = singleItem.getDataTypeState().getDataTypeValue();
+	// if (dataTypeValue == 6) {
+	// SelectionItemDto selectionItemDto = (SelectionItemDto)
+	// singleItem.getDataTypeState();
+	// List<ComboBoxObject> lstComboBox =
+	// comboBoxRetrieveFactory.getComboBox(selectionItemDto,
+	// GeneralDate.today());
+	// dataObject.setLstComboxBoxValue(lstComboBox);
+	// }
+	// }
+	//
+	// return dataObject;
+	//
+	// }
+
 	/**
-	 * load All SettingItemDto in database by createType
+	 * load All PeregDto in database by createType
 	 * 
 	 * @param createType
 	 *            : type client need create data
@@ -189,42 +271,42 @@ public class RegisterLayoutFinder {
 	 *            : id of employee copy
 	 * @return SettingItemDto List
 	 */
-	public List<SettingItemDto> loadAllItemByCreateType(int createType, String initSettingId, GeneralDate baseDate,
-			String employeeCopyId) {
-		// get all Data
-		List<SettingItemDto> returnList = new ArrayList<SettingItemDto>();
+	public List<SettingItemDto> getItemListByCreateType(AddEmployeeCommand command) {
 
+		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
 		// Copy Type
-		if (createType == 1) {
-			List<SettingCtgDto> ctgList = new ArrayList<SettingCtgDto>();
+		if (command.getCreateType() == 1) {
 
-			ctgList = this.copySettingFinder.getEmpCopySetting();
+			this.copySettingFinder.getEmpCopySetting().forEach(x -> {
+				listQuery.add(
+						new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
+			});
 
-			for (SettingCtgDto settingCtg : ctgList) {
-
-				List<SettingItemDto> itemList = this.copySetItemFinder
-						.getAllCopyItemByCtgCode(settingCtg.getCategoryCd(), employeeCopyId, baseDate);
-				returnList.addAll(itemList);
-			}
+			listQuery.forEach(x -> {
+				result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(x.getCategoryCode(),
+						command.getEmployeeCopyId(), command.getHireDate()));
+			});
 
 		} else {
 			// Init Value Type
 
-			List<SettingCtgDto> ctgList = new ArrayList<SettingCtgDto>();
+			this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
 
-			ctgList = this.initCtgSettingFinder.getAllCategoryBySetId(initSettingId);
+				listQuery.add(
+						new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
+			});
 
-			for (SettingCtgDto settingCtg : ctgList) {
+			listQuery.forEach(x -> {
 
-				List<SettingItemDto> itemList = this.initItemSettingFinder.getAllInitItemByCtgCode(initSettingId,
-						settingCtg.getCategoryCd(), baseDate);
-				returnList.addAll(itemList);
-
-			}
+				findInitItemDto findInitCommand = new findInitItemDto(command.getInitSettingId(), command.getHireDate(),
+						x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(),
+						command.getHireDate());
+				result.addAll(this.initItemFinder.getAllInitItemByCtgCode(findInitCommand));
+			});
 
 		}
-		// fill all item in list to save resources when searching by itemcode
-		return returnList;
+		return result;
 	}
 	// sonnlb code end
 

@@ -3,14 +3,13 @@
 	width: 100px;
 }
 
-.body-left {
-	width: 800px;
-    margin-left: 60px;
+.body-right {
+    margin-left: 50px;
     float: left;
-	
 }
-td{
-	padding-bottom: 10px;
+
+.layout-table td{
+	padding-bottom: 7px;
 }
 
 button.nts-switch-button{
@@ -23,4 +22,7 @@ button.nts-switch-button{
 
 #table-infor th,#table-label th{
 
+}
+#master-wrapper{
+	overflow: hidden !important;
 }

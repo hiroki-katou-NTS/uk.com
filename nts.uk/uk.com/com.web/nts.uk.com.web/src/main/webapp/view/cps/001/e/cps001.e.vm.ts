@@ -20,7 +20,7 @@ module cps001.e.vm {
         }
         start() {
             let self = this, 
-            params: IEmpFileMn = getShared("CPS001E_PARAMS");
+             params = getShared("CPS001E_PARAMS");
             self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
             service.getAvatar(self.empFileMn().employeeId).done(function(data) {
@@ -29,8 +29,9 @@ module cps001.e.vm {
                     self.empFileMn().fileType = 1;
                     if (self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
                         self.getImage();
+                    else self.isChange(true);
                     self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
-                }
+                }else self.isChange(true);
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
                         self.isChange(true);
@@ -52,6 +53,7 @@ module cps001.e.vm {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
                         self.empFileMn().fileId = data.id;
+                        self.oldEmpFileMn = {employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType};
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
                     });
                 } else self.close();
@@ -87,7 +89,12 @@ module cps001.e.vm {
         getImage() {
             let self = this;
             let id = self.empFileMn().fileId;
-            $("#test").ntsImageEditor("selectByFileId", id);
+            try{
+                 $("#test").ntsImageEditor("selectByFileId", id);
+            }catch(Error){
+                self.isChange(true);
+            }
+           
         }
         close() {
             close();

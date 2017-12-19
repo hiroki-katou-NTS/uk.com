@@ -1,9 +1,10 @@
-module ksu001 {
+module nts.uk.at.view.ksu001 {
 
     class ExCalendarBindingHandler implements KnockoutBindingHandler {
 
         init(element: any, valueAccessor: () => any, allBindingsAccessor?: KnockoutAllBindingsAccessor, viewModel?: any, bindingContext?: KnockoutBindingContext): void {
             let data = valueAccessor();
+            let colors: any[] = ko.unwrap(data.colors());
             let heightC: string = !!data.height ? ko.unwrap(data.height()) : 'auto';
             let widthC: string = !!data.width ? ko.unwrap(data.width()) : '400px';
             let startDate: Date = ko.unwrap(data.startDate());
@@ -15,7 +16,7 @@ module ksu001 {
             let container = $(element);
             //set width
             container.css('width', widthC);
-            
+
             container.fullCalendar({
                 height: heightC,
                 dateAlignment: "week",
@@ -29,16 +30,33 @@ module ksu001 {
                 header: false,
             });
 
-            //add color for header of cell, which is disabled
-            _.each($('div.fc-content-skeleton thead td:not(.fc-day-top)'), (x) => {
-                if (x.cellIndex == 0) {
-                    $(x).addClass('fc-day-top fc-sun fc-past');
-                } else if (x.cellIndex == 6) {
-                    $(x).addClass('fc-day-top fc-sat fc-past');
-                } else {
-                    $(x).addClass('fc-day-top fc-past');
-                }
+            let arrayColor: any[] = _.filter(colors, ['rowId', 0]);
+            if (arrayColor.length > 0) {
+                //set color for header of cell, which is date of week
+                $('th.fc-sun').addClass('color-sunday');
+                $('th.fc-sat').addClass('color-saturday');
+
+                //set color for header of cell, which is not disable
+                _.each($('span.fc-day-number'), (y) => {
+                    let clazz: string = _.find(arrayColor, ['columnKey', moment($(y.closest('td')).attr('data-date'), 'YYYY-MM-DD').format('_YYYYMMDD')]).clazz;
+                    $(y).addClass(clazz);
+                });
+            } 
+//            else {
+//                _.each($('span.fc-day-number'), (a) => {
+//                    $(a.closest('td')).addClass('color-gray');
+//                });
+//            }
+
+            //set color for header of cell, which is disabled
+//            _.each($('div.fc-content-skeleton thead td:not(.fc-day-top)'), (x) => {
+//                $(x).addClass('fc-day-top color-gray');
+//            });
+            
+            _.each($('div.fc-content-skeleton thead td'), (x) => {
+                $(x).addClass('fc-day-top color-gray');
             });
+            
 
             //create timeLable and button
             $(container).prepend("<div id='periodCoverd' data-bind='ntsFormLabel: {}'>" + nts.uk.resource.getText("KSU001_346") + "</div>");
@@ -88,8 +106,7 @@ module ksu001 {
             });
         }
 
-        update(element: any, valueAccessor: () => any, allBindingsAccessor?: KnockoutAllBindingsAccessor, viewModel?: any, bindingContext?: KnockoutBindingContext): void {
-        }
+        update(element: any, valueAccessor: () => any, allBindingsAccessor?: KnockoutAllBindingsAccessor, viewModel?: any, bindingContext?: KnockoutBindingContext): void { }
     }
 
     ko.bindingHandlers['ntsExCalendar'] = new ExCalendarBindingHandler();

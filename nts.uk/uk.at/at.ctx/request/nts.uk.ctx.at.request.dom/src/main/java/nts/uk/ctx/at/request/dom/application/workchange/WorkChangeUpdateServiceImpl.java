@@ -26,10 +26,10 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	public void UpdateWorkChange(Application app, AppWorkChange workChange) {
 		
 		//アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
-		registerService.checkWorkHour(workChange);
+		//registerService.checkWorkHour(workChange);
 		
 		//アルゴリズム「勤務変更申請休憩時間１チェックの内容」を実行する
-		registerService.checkBreakTime1(workChange);
+		//registerService.checkBreakTime1(workChange);
 		
 		//ドメインモデル「勤務変更申請」の更新をする
 		appRepository.updateApplication(app);

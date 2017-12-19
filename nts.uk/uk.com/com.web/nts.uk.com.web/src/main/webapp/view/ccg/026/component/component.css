@@ -1,11 +1,9 @@
-table {
+#table-permission {
     width:  100%;
     border-collapse: collapse;
 }
-td {
-    border: 1px solid black;
-}
-.scrollingTable {
-    width: 30em;
-    overflow-y: auto;
+
+#table-permission .description {
+	display: inline-block;
+	white-space: nowrap;
 }

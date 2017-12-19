@@ -74,7 +74,37 @@
 						<button id="btnComfirmAttendance" data-bind="click : referencesActualResult, visible: showButton().available23">#{i18n.getText('KDW003_22')}</button>
 						
 						<div id="emp-component"></div>
-						<div id="cbListDate">
+					<div id ="numberHoliday">
+						<table id="fixed-table">
+							<thead>
+								<tr>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="ui-widget-body" >
+									  <span data-bind="text: dataHoliday().compensation"></span>
+									</td>
+									<td class="ui-widget-body" >
+									<span data-bind="text: dataHoliday().substitute"></span>
+									</td>
+									<td class="ui-widget-body" >
+									<span data-bind="text: dataHoliday().paidYear"></span> <br/>
+									<span data-bind="text: dataHoliday().paidHalf"></span> <br/>
+									<span data-bind="text: dataHoliday().paidHours"></span>
+									</td>
+									<td class="ui-widget-body" >
+									<span data-bind="text: dataHoliday().fundedPaid"></span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="cbListDate">
 							<div id="choosenDate" data-bind="ntsDatePicker: {value: selectedDate, 
 											dateFormat: 'YYYY/MM/DD', 
 											showJumpButtons: true, 
@@ -82,6 +112,7 @@
 											endDate: dateRanger().endDate}">
 							</div>
 						</div>
+						<div style="height: 20px">
 						<button id="btn-signAll" data-bind="click: signAll, visible: showButton().available25">#{i18n.getText('KDW003_23')}</button>
 						<div class="setting-container">
 							<button id="btn-setting" data-bind="click: btnSetting_Click" >&#9881;</button>
@@ -103,13 +134,15 @@
 						</div>
 						<button id="btn-saveColumnWidth" data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
 						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
+						</div>
 						<div class="compact-grid grid-container" id="gid" >
 							<table id="dpGrid"></table>
 							<div id="sample-component"></div>
 						</div>
 						<span style="margin: 10px 0 0 18px; display: inline-block;">■　生産性を上げて、残業時間を減らしましょう！</span>
 					</div>
-				</div>
+				<div id="tooltip">tooltip</div>
+			    </div>
 			</ui:define>
 		</ui:composition>
    	</body>

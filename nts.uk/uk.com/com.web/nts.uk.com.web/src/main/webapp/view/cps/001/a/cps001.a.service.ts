@@ -4,20 +4,24 @@ module cps001.a.service {
 
     let paths: any = {
         layout: {
-            getAll: "ctx/bs/person/maintenance/findAll",
-            getDetails: "ctx/bs/person/maintenance/findOne/{0}"
+            getAll: "ctx/pereg/person/maintenance/findSimple/{0}",
+            getDetails: "ctx/pereg/person/maintenance/findLayoutData",
+            'register': 'facade/pereg/register'
         },
         category: {
-            'getData': 'bs/employee/category/getAll/{0}',
-            'getTabInfo': 'ctx/pereg/layout/find/getTabDetail',
+            'getCats': 'ctx/pereg/employee/category/getall/{0}',
+            'getDetails': 'ctx/pereg/layout/find/gettabdetail',
+            'getTabsInfo': 'ctx/pereg/layout/find/getctgtab/{0}', //categoryId
+            'getHistData': '/ctx/pereg/employee/category/getlistinfocategory',
+            'delete': 'facade/pereg/delete',
         },
         person: {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
         },
         emp: {
-            getInfo: 'basic/organization/employee/get-info/{0}',
+            getInfo: 'basic/organization/employee/get-header/{0}',
             getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
-            permision: 'ctx/bs/person/roles/auth/getSelfAuth',
+            permision: 'ctx/pereg/roles/auth/get-self-auth',
         },
         file: '/shr/infra/file/storage/infor/{0}',
         saveData: ''
@@ -28,8 +32,20 @@ module cps001.a.service {
     }
 
     export function getCats(id: string) {
-        return ajax(format(paths.category.getData, id));
+        return ajax(format(paths.category.getCats, id));
     };
+
+    export function getCatChilds(id: string) {
+        return ajax(format(paths.category.getTabsInfo, id));
+    }
+
+    export function getCatData(query: any) {
+        return ajax(paths.category.getDetails, query);
+    }
+
+    export function getHistData(query: any) {
+        return ajax(paths.category.getHistData, query);
+    }
 
     export function getAvatar(id: string) {
         return ajax(format(paths.emp.getFile, id, 0));
@@ -43,27 +59,27 @@ module cps001.a.service {
         return ajax(paths.emp.permision);
     }
 
-    export function getAllLayout() {
-        return ajax(paths.layout.getAll);
+    export function getAllLayout(empId: string) {
+        return ajax(format(paths.layout.getAll, empId));
     };
 
-    export function getCurrentLayout(id: string) {
-        return ajax(format(paths.layout.getDetails, id));
+    export function getCurrentLayout(query: any) {
+        return ajax(paths.layout.getDetails, query);
+    }
+
+    export function saveCurrentLayout(command: any) {
+        return ajax(paths.layout.register, command);
+    }
+
+    export function removeCurrentCategoryData(command: any) {
+        return ajax(paths.category.delete, command);
     }
 
     export function getData() {
         return ajax(paths.getData);
     }
 
-    export function saveData(command) {
-        return ajax(paths.saveData, command);
-    }
-
     export function getFileInfo(id: string) {
         return ajax(paths.file, id);
-    }
-
-    export function getTabInfo(data: any) {
-        return ajax(paths.category.getTabInfo, data);
     }
 }

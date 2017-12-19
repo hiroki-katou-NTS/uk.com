@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.predset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -63,7 +63,7 @@ public class PrescribedTimezoneSettingDto implements PrescribedTimezoneSettingSe
 	 * PrescribedTimezoneSettingSetMemento#setLstTimezone(java.util.List)
 	 */
 	@Override
-	public void setLstTimezone(List<Timezone> lstTimezone) {
+	public void setLstTimezone(List<TimezoneUse> lstTimezone) {
 		if (CollectionUtil.isEmpty(lstTimezone)) {
 			this.lstTimezone = new ArrayList<>();
 		} else {

@@ -7,11 +7,10 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
-import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
-import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommandHandler;
+import nts.uk.ctx.pereg.app.find.employee.EmpInfoDto;
+import nts.uk.ctx.pereg.app.find.employee.EmployeeInfoFinder;
 
 /**
  * @author sonnlb
@@ -25,7 +24,7 @@ public class AddEmployeeWebService extends WebService {
 	AddEmployeeCommandHandler addEmpHandler;
 
 	@Inject
-	private EmployeeFinder employeeFinder;
+	private EmployeeInfoFinder employeeFinder;
 
 	// sonnlb code start
 
@@ -37,15 +36,15 @@ public class AddEmployeeWebService extends WebService {
 
 	@POST
 	@Path("validateEmpInfo")
-	public validateEmpInfoResultDto validateEmpInfo(EmpInfoDto empInfo) {
+	public void validateEmpInfo(EmpInfoDto empInfo) {
 
-		return this.employeeFinder.validateEmpInfo(empInfo);
+		this.employeeFinder.validateEmpInfo(empInfo);
 	}
-	
+
 	@POST
 	@Path("addNewEmployee")
-	public void addNewEmployee(AddEmployeeCommand command) {
-		this.addEmpHandler.handle(command);
+	public JavaTypeResult<String> addNewEmployee(AddEmployeeCommand command) {
+		return new JavaTypeResult<String>(this.addEmpHandler.handle(command));
 	}
 
 	// sonnlb end

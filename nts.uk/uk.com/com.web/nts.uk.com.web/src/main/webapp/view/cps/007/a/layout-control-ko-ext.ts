@@ -10,6 +10,7 @@ module nts.custombinding {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import parseTime = nts.uk.time.parseTime;
+    import clearError = nts.uk.ui.errors.clearAll;
 
     let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraints'];
 
@@ -126,6 +127,11 @@ module nts.custombinding {
                     .layout-control .item-classification div.set-item-list div.set-item,
                     .layout-control .item-classification div.item-control .single-item-list>div {
                         display: inline-block;
+                    }
+
+                    .layout-control .item-classification div.set-item-list div.set-item.set-item-sperator {
+                        width: 37px;
+                        text-align: center;
                     }
 
                     .layout-control .item-classification .table-container {
@@ -271,7 +277,7 @@ module nts.custombinding {
 
                     .layout-control .item-classification .item-control textarea.nts-editor,
                     .layout-control .item-classification .item-controls textarea.nts-editor {
-                        width: 280px;
+                        width: 368px;
                         height: 70px;
                         overflow-y: scroll;
                     }
@@ -303,6 +309,11 @@ module nts.custombinding {
                         content: '▾';
                         display: block;
                         position: absolute;
+                    }
+
+                    .layout-control .item-classification .ui-igcombo-wrapper {
+                        width: auto;
+                        width: initial;                            
                     }
 
                     .layout-control .item-classification .form-label {
@@ -430,7 +441,15 @@ module nts.custombinding {
                     <div class="add-buttons">
                         <button id="cps007_btn_add"></button>
                     </div>
-                    <div class="drag-panel">
+                    <div class="drag-panel" data-bind="let: {
+                        catType: {  
+                            SINGLE : 1,
+                            MULTI: 2,
+                            CONTI: 3, /* continuos history hasn't end date */
+                            NODUP: 4,
+                            DUPLI: 5,
+                            CONTIWED: 6 /* continuos history has end date */
+                        } }">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification"
                                     data-bind="let: { 
@@ -456,6 +475,7 @@ module nts.custombinding {
                                             constraint: _constraint.length && _constraint || undefined  }"></div>
                                         <div data-bind="if: (_item || {}).type == 1" class="set-items">
                                             <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
+                                                <div class="set-item set-item-sperator" data-bind="css: { 'hidden': $index() == 0 }">~</div>
                                                 <div data-bind="template: {
                                                         data: set,
                                                         name: 'itemtemplate'
@@ -545,107 +565,92 @@ module nts.custombinding {
                     </div>
                 </div>
                 <script type="text/html" id="itemtemplate">
-                    <div data-bind="if: item.dataTypeValue == 1" class="string">
-                        <div data-bind="if: item.stringItemType == 4 || item.stringItemLength < 40">
-                            <input data-bind="attr: { title: itemName, id: itemCode },
-                                ntsTextEditor: {
-                                    value: value,
-                                    constraint: itemDefId.replace(/-/g, ''),
-                                    required: false, 
-                                    option: {
-                                        textmode: 'text',
-                                        placeholder: itemName
-                                    },
-                                    enable: editable,
-                                    readonly: readonly,
-                                    immediate: false
-                                }" />
+                    <div data-bind="let: { nameid : itemDefId.replace(/-/g, '')}">
+                        <div data-bind="if: item.dataTypeValue == 1" class="string">
+                            <div data-bind="if: item.stringItemType == 4 || item.stringItemLength < 40 || ([1, 5].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
+                                <input data-bind="attr: { title: itemName, id: nameid, nameid: nameid },
+                                    ntsTextEditor: {
+                                        value: value,
+                                        constraint: nameid,
+                                        required: required,
+                                        option: {
+                                            textmode: 'text',
+                                            placeholder: itemName
+                                        },
+                                        enable: editable,
+                                        readonly: readonly,
+                                        immediate: false
+                                    }" />
+                            </div>
+                            <div data-bind="if: item.stringItemType != 4 && (([1, 5].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([1, 5].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80))">
+                                <textarea data-bind="ntsMultilineEditor: {
+                                        value: value,
+                                        constraint: nameid,
+                                        required: required,
+                                        option: {
+                                            textmode: 'text',
+                                            placeholder: itemName
+                                        },
+                                        enable: editable,
+                                        readonly: readonly,
+                                        immediate: false }, attr: { id: nameid, nameid: nameid }" />
+                            </div>
                         </div>
-                        <div data-bind="if: item.stringItemType != 4 && item.stringItemLength >= 40">
-                            <textarea data-bind="ntsMultilineEditor: {
-                                value: value,
-                                constraint: itemDefId.replace(/-/g, ''),
-                                option: {
-                                    textmode: 'text',
-                                    placeholder: itemName
-                                },
-                                enable: editable,
-                                readonly: readonly,
-                                immediate: false}, attr: {id: itemCode}" />
+                        <div data-bind="if: item.dataTypeValue == 2" class="numeric">
+                            <input data-bind="ntsNumberEditor: { 
+                                        value: value,
+                                        constraint: nameid,
+                                        required: required,
+                                        option: {
+                                            grouplength: 3,
+                                            decimallength: 2,
+                                            placeholder: itemName,
+                                            width: '',
+                                            textalign: 'left'
+                                        },
+                                        enable: editable,
+                                        readonly: readonly }, attr: { id: nameid, nameid: nameid }" />
                         </div>
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 2" class="numeric">
-                        <input data-bind="ntsNumberEditor: { 
-                                    value: value,
-                                    constraint: itemDefId.replace(/-/g, ''),
-                                    option: {
-                                        grouplength: 3,
-                                        decimallength: 2,
-                                        placeholder: itemName,
-                                        width: '',
-                                        textalign: 'left'
-                                    },
-                                    enable: editable,
-                                    readonly: readonly }, attr: {id: itemCode}" />
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 3" class="date">
-                        <div data-bind="ntsDatePicker: {
-                                    value: value,
-                                    constraint: itemDefId.replace(/-/g, ''),
-                                    dateFormat: 'YYYY/MM/DD',
-                                    enable: editable,
-                                    readonly: readonly
-                                }"></div>
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 4" class="time">
-                        <input data-bind="ntsTimeEditor: {
-                            value: value,
-                            constraint: itemDefId.replace(/-/g, ''),
-                            inputFormat: 'HH:mm',
-                            enable: editable,
-                            readonly: readonly }, attr: { placeholder: itemName, id: itemCode }" />
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 5" class="timepoint">
-                        <input data-bind="ntsTimeEditor: {
-                            value: value, 
-                            constraint: itemDefId.replace(/-/g, ''),
-                            inputFormat: 'HH:mm',
-                            enable: editable,
-                            readonly: readonly
-                        }, attr: { placeholder: itemName, id: itemCode }" />
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 6" class="selection">
-                        <div data-bind="ntsComboBox: {
-                            options: ko.observableArray([{
-                                code: 1,
-                                name: '等級区分 1'
-                            },{
-                                code: 2,
-                                name: '等級区分 2'
-                            },{
-                                code: 3,
-                                name: '等級区分 3'
-                            }]),
-                            optionsValue: 'code',
-                            visibleItemsCount: 5,
-                            value: value,
-                            /*constraint: itemCode,*/
-                            optionsText: 'name',
-                            /*editable: !editable,*/
-                            enable: editable,
-                            dropDownAttachedToBody: true,
-                            columns: [{ prop: 'name', length: 10 }]}, attr: {id: itemCode}"></div>
+                        <div data-bind="if: item.dataTypeValue == 3" class="date">
+                            <div data-bind="ntsDatePicker: {
+                                        value: value,
+                                        constraint: nameid,
+                                        dateFormat: item.dateItemType == 1 ? 'YYYY/MM/DD' : (item.dateItemType == 2 ? 'YYYY/MM' : 'YYYY'),
+                                        enable: editable,
+                                        readonly: readonly
+                                    }, attr: { id: nameid, nameid: nameid }"></div>
+                        </div>
+                        <div data-bind="if: [4, 5].indexOf(item.dataTypeValue) > -1" class="time timepoint">
+                            <input data-bind="ntsTimeEditor: {
+                                        value: value,
+                                        constraint: nameid,
+                                        required: required,
+                                        inputFormat: 'time',
+                                        enable: editable,
+                                        readonly: readonly }, attr: { placeholder: itemName, id: nameid, nameid: nameid }" />
+                        </div>
+                        <div data-bind="if: item.dataTypeValue == 6" class="selection">
+                            <div data-bind="ntsComboBox: {
+                                        options: ko.observableArray(lstComboBoxValue || []),
+                                        optionsValue: 'optionValue',
+                                        visibleItemsCount: 5,
+                                        value: value,
+                                        optionsText: 'optionText',
+                                        enable: editable,
+                                        dropDownAttachedToBody: true,
+                                        columns: [{ prop: 'optionText', length: 10 }]}, attr: { id: nameid, nameid: nameid }"></div>
+                        </div>
                     </div>
                 </script>`;
 
         private api = {
-            getCat: 'ctx/bs/person/info/category/find/companyby/{0}',
-            getCats: "ctx/bs/person/info/category/findby/company",
-            getGroups: 'ctx/bs/person/groupitem/getAll',
-            getItemCats: 'ctx/bs/person/info/ctgItem/layout/findby/categoryId/{0}',
-            getItemGroups: 'ctx/bs/person/groupitem/getAllItemDf/{0}',
-            getItemsById: 'ctx/bs/person/info/ctgItem/layout/findby/itemId/{0}',
-            getItemsByIds: 'ctx/bs/person/info/ctgItem/layout/findby/listItemId',
+            getCat: 'ctx/pereg/person/info/category/find/companyby/{0}',
+            getCats: "ctx/pereg/person/info/category/findby/company",
+            getGroups: 'ctx/pereg/person/groupitem/getAll',
+            getItemCats: 'ctx/pereg/person/info/ctgItem/layout/findby/categoryId/{0}',
+            getItemGroups: 'ctx/pereg/person/groupitem/getAllItemDf/{0}',
+            getItemsById: 'ctx/pereg/person/info/ctgItem/layout/findby/itemId/{0}',
+            getItemsByIds: 'ctx/pereg/person/info/ctgItem/layout/findby/listItemId',
         };
 
         private services = {
@@ -755,6 +760,7 @@ module nts.custombinding {
                     },
                     sortable: {
                         data: ko.observableArray([]),
+                        outData: ko.observableArray([]),
                         isEnabled: ko.observable(true),
                         isEditable: ko.observable(0),
                         beforeMove: (data, evt, ui) => {
@@ -788,23 +794,6 @@ module nts.custombinding {
                                     data.cancelDrop = true;
                                 }
                             }
-                        },
-                        afterMove: (data, evt, ui) => {
-                            /*let self = this,
-                                opts = self.options,
-                                source: Array<any> = ko.unwrap(opts.sortable.data),
-                                maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
-                                    .filter(x => x != -1).value();
-        
-                            // remove next line if two line is sibling
-                            _.each(maps, (x, i) => {
-                                if (maps[i + 1] == x + 1) {
-                                    opts.sortable.data.remove(m => {
-                                        let item = ko.unwrap(opts.sortable.data)[maps[i + 1]];
-                                        return item.typeId == IT_CLA_TYPE.SPER && item.id == m.id;
-                                    });
-                                }
-                            });*/
                         },
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
                             let items = opts.sortable.data;
@@ -997,42 +986,13 @@ module nts.custombinding {
                 },
                 // render primative value to viewContext
                 primitiveConst = () => {
-                    //xx
-                    /*
-                    ConstraintDescriptor{
-                        itemCode: string;
-                        required?: boolean;
-                    }
-                    
-                    StringConstraintDescriptor extends ConstraintDescriptor{
-                        maxLength: number;
-                        charType: string;
-                        paddingCharacter: string;
-                        isPaddingLeft: boolean;
-                        isPadding: boolean;
-                        stringExpression: string;
-                    }
-                    
-                    NumericConstraintDescriptor extends ConstraintDescriptor{
-                        min: number;
-                        max: number;
-                        valueType: string;
-                        mantissaMaxLength: number; 
-                    }
-                    
-                    TimeConstraintDescriptor extends ConstraintDescriptor{
-                        min: string;
-                        max: string;
-                        valueType: string;
-                    }*/
-
                     let constraints = _(ko.unwrap(opts.sortable.data))
-                        .map((x: IItemClassification) => x.items && x.items())
+                        .map((x: any) => _.has(x, "items") && ko.toJS(x.items))
                         .flatten()
                         .flatten()
-                        .filter((x: any) => !!x && !_.isEqual(x.item, {}))
+                        .filter((x: any) => _.has(x, "item") && !_.isEqual(x.item, {}))
                         .map((x: any) => {
-                            let dts = x.item,//(x.itemTypeState || <IItemTypeState>{}).dataTypeState,
+                            let dts = x.item,
                                 constraint: any = {
                                     itemName: x.itemName,
                                     itemCode: x.itemDefId.replace(/-/g, ""),
@@ -1050,7 +1010,7 @@ module nts.custombinding {
                                         switch (dts.stringItemType) {
                                             default:
                                             case ITEM_STRING_TYPE.ANY:
-                                                constraint.charType = 'Alphabet';
+                                                constraint.charType = 'Any';
                                                 break;
                                             case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                                 constraint.charType = 'AnyHalfWidth';
@@ -1113,6 +1073,7 @@ module nts.custombinding {
                     }
                 };
 
+            // add style to <head> on first run
             if (!$('#layout_style').length) {
                 $('head').append(self.style);
             }
@@ -1121,9 +1082,14 @@ module nts.custombinding {
                 .append(self.tmp)
                 .addClass('ntsControl layout-control');
 
-            // bindding callback function to control
+            // binding callback function to control
             if (access.callback) {
                 $.extend(opts, { callback: access.callback });
+            }
+
+            // binding output data value 
+            if (access.outData) {
+                $.extend(opts.sortable, { outData: access.outData });
             }
 
             // validate editAble
@@ -1219,25 +1185,163 @@ module nts.custombinding {
                 });
 
                 opts.sortable.isEditable.valueHasMutated();
-
                 _.each(data, (x, i) => {
                     // define common function for init new item value
-                    let modifitem = (def: any, item: any) => {
-                        def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
-                        def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
+                    let isStr = (item: any) => {
+                        if (item && item.itemTypeState && item.itemTypeState.dataTypeState) {
+                            switch (item.itemTypeState.dataTypeState.dataTypeValue) {
+                                default:
+                                    return false;
+                                case ITEM_SINGLE_TYPE.STRING:
+                                case ITEM_SINGLE_TYPE.SELECTION:
+                                    return true;
+                            }
+                        } else {
+                            return false;
+                        }
+                    },
+                        modifitem = (def: any, item?: any) => {
+                            if (!item) {
+                                item = {};
+                            }
 
-                        def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
-                        def.required = _.has(def, "required") && def.required || !!item.isRequired;
+                            def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
+                            def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
+                            def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
+                            def.required = _.has(def, "required") && def.required || !!item.isRequired;
 
-                        def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
+                            def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                        def.hidden = _.has(def, "actionRole") ? def.actionRole == 0 : true;
-                        def.readonly = _.has(def, "actionRole") ? def.actionRole == 1 : !!opts.sortable.isEnabled();
-                        def.editable = _.has(def, "actionRole") ? def.actionRole == 2 : !!opts.sortable.isEditable();;
+                            def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(item) && def.value ? String(def.value) : def.value);
+                            def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
 
-                        def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
-                        def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
-                    };
+                            def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
+                            def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
+                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
+
+                            def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
+                            def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+
+
+                            def.value.subscribe(x => {
+                                let inputs = [],
+                                    proc = function(data: any): any {
+                                        if (!data.item) {
+                                            return {
+                                                value: String(data.value),
+                                                typeData: 1
+                                            };
+                                        }
+
+                                        switch (data.item.dataTypeValue) {
+                                            default:
+                                            case ITEM_SINGLE_TYPE.STRING:
+                                                return {
+                                                    value: data.value ? String(data.value) : undefined,
+                                                    typeData: 1
+                                                };
+                                            case ITEM_SINGLE_TYPE.TIME:
+                                            case ITEM_SINGLE_TYPE.NUMERIC:
+                                            case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                                return {
+                                                    value: data.value ? String(data.value).replace(/:/g, '') : undefined,
+                                                    typeData: 2
+                                                };
+                                            case ITEM_SINGLE_TYPE.DATE:
+                                                return {
+                                                    value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
+                                                    typeData: 3
+                                                };
+                                            case ITEM_SINGLE_TYPE.SELECTION:
+                                                if (data.item.referenceType != ITEM_SELECT_TYPE.ENUM) {
+                                                    return {
+                                                        value: data.value ? String(data.value) : undefined,
+                                                        typeData: 1
+                                                    };
+                                                } else {
+                                                    return {
+                                                        value: data.value ? String(data.value) : undefined,
+                                                        typeData: 2
+                                                    };
+                                                }
+                                        }
+                                    };
+
+                                _(opts.sortable.data())
+                                    .filter(x => _.has(x, "items") && _.isFunction(x.items))
+                                    .map(x => ko.toJS(x.items))
+                                    .flatten()
+                                    .filter((x: any) => _.has(x, "item") && !!x.item)
+                                    .map((x: any) => {
+                                        if (_.isArray(x)) {
+                                            return x.map((m: any) => {
+                                                let data = proc(m);
+                                                return {
+                                                    recordId: m.recordId,
+                                                    categoryCd: m.categoryCode,
+                                                    definitionId: m.itemDefId,
+                                                    itemCode: m.itemCode,
+                                                    value: data.value,
+                                                    'type': data.typeData
+                                                }
+                                            });
+                                        } else {
+                                            let data = proc(x);
+                                            return {
+                                                recordId: x.recordId,
+                                                categoryCd: x.categoryCode,
+                                                definitionId: x.itemDefId,
+                                                itemCode: x.itemCode,
+                                                value: data.value,
+                                                'type': data.typeData
+                                            };
+                                        }
+                                    })
+                                    .groupBy((x: any) => x.categoryCd)
+                                    .each(x => {
+                                        if (_.isArray(_.first(x))) {
+                                            _.each(x, k => {
+                                                let group = _.groupBy(k, (m: any) => !!m.recordId);
+                                                _.each(group, g => {
+                                                    let first: any = _.first(g);
+                                                    inputs.push({
+                                                        recordId: first.recordId,
+                                                        categoryCd: first.categoryCd,
+                                                        items: g.map(m => {
+                                                            return {
+                                                                definitionId: m.definitionId,
+                                                                itemCode: m.itemCode,
+                                                                value: m.value,
+                                                                'type': m.type
+                                                            };
+                                                        })
+                                                    });
+                                                });
+                                            });
+                                        } else {
+                                            let group = _.groupBy(x, (m: any) => !!m.recordId);
+                                            _.each(group, g => {
+                                                let first: any = _.first(g);
+                                                inputs.push({
+                                                    recordId: first.recordId,
+                                                    categoryCd: first.categoryCd,
+                                                    items: g.map(m => {
+                                                        return {
+                                                            definitionId: m.definitionId,
+                                                            itemCode: m.itemCode,
+                                                            value: m.value,
+                                                            'type': m.type
+                                                        };
+                                                    })
+                                                });
+                                            });
+                                        }
+                                    });
+                                // change value
+                                opts.sortable.outData(inputs);
+                            });
+                            def.value.valueHasMutated();
+                        };
 
                     x.dispOrder = i + 1;
                     x.layoutID = random();
@@ -1261,10 +1365,11 @@ module nts.custombinding {
                                     let def = _.find(x.items(), (m: any) => m.itemDefId == item.id);
                                     if (!def) {
                                         def = {
+                                            categoryCode: x.personInfoCategoryID, // miss categoryCode;
                                             itemCode: item.itemCode,
                                             itemName: item.itemName,
                                             itemDefId: item.id,
-                                            value: ko.observable()
+                                            value: undefined
                                         };
                                         x.items.push(def);
                                     }
@@ -1278,7 +1383,6 @@ module nts.custombinding {
                                 if (rn < 3) {
                                     rn = 3;
                                 }
-
                                 _.each(_.range(rn), i => {
                                     let row = x.items()[i];
 
@@ -1293,10 +1397,11 @@ module nts.custombinding {
 
                                         if (!def) {
                                             def = {
+                                                categoryCode: x.personInfoCategoryID, // miss categoryCode;
                                                 itemCode: item.itemCode,
                                                 itemName: item.itemName,
                                                 itemDefId: item.id,
-                                                value: ko.observable()
+                                                value: undefined
                                             };
                                             row.push(def);
                                         }
@@ -1309,21 +1414,43 @@ module nts.custombinding {
                                 break;
                         }
                     }
+
+                    switch (x.layoutItemType) {
+                        case IT_CLA_TYPE.ITEM:
+                            _.each((x.items()), (def, i) => {
+                                modifitem(def);
+                            });
+                            break;
+                        case IT_CLA_TYPE.LIST:
+                            // define row number
+                            let rn = _.map(ko.toJS(x.items), x => x).length;
+
+                            _.each(_.range(rn), i => {
+                                let row = x.items()[i];
+
+                                if (!row || !_.isArray(row)) {
+                                    row = [];
+                                }
+
+                                x.items()[i] = row;
+
+                                _.each(row, (def, j) => {
+                                    modifitem(def);
+                                });
+                            });
+                            break;
+                        case IT_CLA_TYPE.SPER:
+                            x.items = undefined;
+                            break;
+                    }
                 });
+                // clear all error on switch new layout
+                clearError();
+
                 // write primitive constraints to viewContext
                 primitiveConst();
             });
             opts.sortable.data.valueHasMutated();
-
-            // extend data of sortable with valueAccessor beforeMove prop
-            if (access.beforeMove) {
-                $.extend(opts.sortable, { beforeMove: access.beforeMove });
-            }
-
-            // extend data of sortable with valueAccessor afterMove prop
-            if (access.afterMove) {
-                $.extend(opts.sortable, { afterMove: access.afterMove });
-            }
 
             // get all id of controls
             $.extend(ctrls, {
@@ -1710,7 +1837,7 @@ module nts.custombinding {
         dataTypeState?: IItemDefinitionData // Single item value
     }
 
-    interface IItemDefinitionData extends IItemTime, IItemDate, IItemString, IItemTimePoint, IItemNumeric {
+    interface IItemDefinitionData extends IItemTime, IItemDate, IItemString, IItemTimePoint, IItemNumeric, IItemSelection {
         dataTypeValue: ITEM_SINGLE_TYPE; // type of value of item
         editable?: KnockoutObservable<boolean>;
         readonly?: KnockoutObservable<boolean>;
@@ -1722,7 +1849,7 @@ module nts.custombinding {
     }
 
     interface IItemDate {
-        dateItemType?: number;
+        dateItemType?: DateType;
     }
 
     interface IItemString {
@@ -1746,7 +1873,7 @@ module nts.custombinding {
     }
 
     interface IItemSelection extends IItemMasterSelection, IItemEnumSelection, IItemCodeNameSelection {
-        referenceType?: number;
+        referenceType?: ITEM_SELECT_TYPE;
     }
 
     interface IItemMasterSelection {
@@ -1822,11 +1949,23 @@ module nts.custombinding {
     // type of item if it's selection item
     enum ITEM_SELECT_TYPE {
         // 1:専用マスタ(DesignatedMaster)
-        DESIGNATED_MASTER = 1,
+        DESIGNATED_MASTER = <any>"DESIGNATED_MASTER",
         // 2:コード名称(CodeName)
-        CODE_NAME = 2,
+        CODE_NAME = <any>"CODE_NAME",
         // 3:列挙型(Enum)
-        ENUM = 3
+        ENUM = <any>"ENUM"
+    }
+
+    enum DateType {
+        YEARMONTHDAY = 1,
+        YEARMONTH = 2,
+        YEAR = 3
+    }
+
+    enum ACTION_ROLE {
+        HIDDEN = <any>"HIDDEN",
+        VIEW_ONLY = <any>"VIEW_ONLY",
+        EDIT = <any>"EDIT"
     }
 }
 
