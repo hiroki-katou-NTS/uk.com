@@ -47,7 +47,7 @@ module a16 {
             _self.settingEnum = settingEnum;
             
             // Init all data                                      
-            _self.zeroHStraddCalculateSetting = ko.observable(false);
+            _self.zeroHStraddCalculateSetting = ko.observable(true);
             _self.listZeroHStraddCalculateSetting = ko.observableArray([
                 { value: true, localizedName: nts.uk.resource.getText("KMK003_142") },
                 { value: false, localizedName: nts.uk.resource.getText("KMK003_143") }
