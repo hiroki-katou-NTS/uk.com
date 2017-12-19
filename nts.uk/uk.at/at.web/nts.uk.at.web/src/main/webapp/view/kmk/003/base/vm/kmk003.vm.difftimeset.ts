@@ -312,6 +312,19 @@ module nts.uk.at.view.kmk003.a {
                     this.overtimeSetting = ko.observable(0);
                 }
 
+                public getHDWtzOneday(): DiffTimeHalfDayWorkTimezoneModel {
+                    let self = this;
+                    return _.find(self.halfDayWorkTimezones, time => time.amPmAtr() == 0);
+                }
+                public getHDWtzMorning(): DiffTimeHalfDayWorkTimezoneModel {
+                    let self = this;
+                    return _.find(self.halfDayWorkTimezones, time => time.amPmAtr() == 1);
+                }
+                public getHDWtzAfternoon(): DiffTimeHalfDayWorkTimezoneModel {
+                    let self = this;
+                    return _.find(self.halfDayWorkTimezones, time => time.amPmAtr() == 2);
+                }
+
                 updateData(data: DiffTimeWorkSettingDto) {
                     this.companyId(data.companyId);
                     this.workTimeCode(data.workTimeCode);

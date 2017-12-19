@@ -219,6 +219,19 @@ module nts.uk.at.view.kmk003.a {
                     this.lstStampReflectTimezone = [];
                 }
 
+                public getHDWtzOneday(): FlexHalfDayWorkTimeModel {
+                    let self = this;
+                    return _.find(self.lstHalfDayWorkTimezone, time => time.ampmAtr() == 0);
+                }
+                public getHDWtzMorning(): FlexHalfDayWorkTimeModel {
+                    let self = this;
+                    return _.find(self.lstHalfDayWorkTimezone, time => time.ampmAtr() == 1);
+                }
+                public getHDWtzAfternoon(): FlexHalfDayWorkTimeModel {
+                    let self = this;
+                    return _.find(self.lstHalfDayWorkTimezone, time => time.ampmAtr() == 2);
+                }
+
                 updateData(data: FlexWorkSettingDto) {
                     this.workTimeCode(data.workTimeCode);
                     this.useHalfDayShift(data.useHalfDayShift);

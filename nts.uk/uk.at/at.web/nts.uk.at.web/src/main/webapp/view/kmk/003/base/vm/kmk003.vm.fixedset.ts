@@ -159,6 +159,19 @@ module nts.uk.at.view.kmk003.a {
                     this.legalOTSetting = ko.observable(0);
                 }
 
+                public getHDWtzOneday(): FixHalfDayWorkTimezoneModel {
+                    let self = this;
+                    return _.find(self.lstHalfDayWorkTimezone, time => time.dayAtr() == 0);
+                }
+                public getHDWtzMorning(): FixHalfDayWorkTimezoneModel {
+                    let self = this;
+                    return _.find(self.lstHalfDayWorkTimezone, time => time.dayAtr() == 1);
+                }
+                public getHDWtzAfternoon(): FixHalfDayWorkTimezoneModel {
+                    let self = this;
+                    return _.find(self.lstHalfDayWorkTimezone, time => time.dayAtr() == 2);
+                }
+
                 updateData(data: FixedWorkSettingDto) {
                     this.workTimeCode(data.workTimeCode);                                        
                     this.offdayWorkTimezone.updateData(data.offdayWorkTimezone);
