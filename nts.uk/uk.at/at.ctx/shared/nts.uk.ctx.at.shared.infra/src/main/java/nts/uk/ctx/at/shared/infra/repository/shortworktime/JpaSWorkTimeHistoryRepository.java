@@ -24,8 +24,6 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK_;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist_;
-import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
-import nts.uk.ctx.bs.employee.infra.entity.department.BsymtAffiDepartmentHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
