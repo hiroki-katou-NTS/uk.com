@@ -52,7 +52,7 @@
 					data-bind="html: nts.uk.resource.getText('CPS001_48').replace(/\n/g, '&lt;br/&gt;')"></div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="danger x-large" data-bind="click: pushData">#{i18n.getText('CPS001_43')}</button>
+				<button class="danger x-large" data-bind="click: pushData, enable: $root.errors.isEmpty()">#{i18n.getText('CPS001_43')}</button>
 				<button data-bind="click: close">#{i18n.getText('CPS001_44')}</button>
 			</div>
 		</ui:define>
