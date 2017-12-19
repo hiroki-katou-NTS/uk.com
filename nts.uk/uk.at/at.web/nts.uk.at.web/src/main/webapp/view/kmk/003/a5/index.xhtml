@@ -35,7 +35,7 @@
 	</div>
 	-->
 	<!-- fix, diff, flex timezones -->
-        <com:ko tag="if" bind="isTzOfFlexOrFixedOrDiff">
+        <com:ko tag="if" bind="isTzOfFlexOrFixedOrDiff"><span>fix or diff or flex timezones</span>
             <div id="ntsft-a5-oneday" data-bind="ntsFixTableCustom: {option: oneDayTimezoneOption}"></div>
             <div id="ntsft-a5-morning" data-bind="ntsFixTableCustom: {option: morningTimezoneOption}"></div>
             <div id="ntsft-a5-afternoon" data-bind="ntsFixTableCustom: {option: afternoonTimezoneOption}"></div>
@@ -44,7 +44,7 @@
 
     <!-- Flex rest time -->
 
-        <com:ko tag="if" bind="isFlexRestTime">
+        <com:ko tag="if" bind="isFlexRestTime"><span> flex rest</span>
 
 		<!-- One day -->
         <div id="ntsft-a5-onedayFlex" data-bind="ntsFixTableCustom: {option: oneDayRestSetOption}"></div>
@@ -75,11 +75,12 @@
                  text: nts.uk.resource.getText('KMK003_144') }"></div>
         </div>
         <!-- <div id="ntsft-a5-afternoonFlex2" data-bind="ntsFixTableCustom: {option: afternoonFlexOption2}"></div> -->
+        </com:ko>
 
 	<!-- End of Flex rest time -->
 		
 	<!-- flow timezones -->
-        <com:ko tag="if" bind="isFlowTimezone">
+        <com:ko tag="if" bind="isFlowTimezone"><span>flow timezones</span>
             <div data-bind="ntsFixTableCustom: {option: flowTimezoneOption}"></div>
             <table>
             	<tr>
@@ -91,10 +92,13 @@
 	<!-- End of flow timezones -->
 
 	<!-- flow rest set -->
-        <com:ko tag="if" bind="isFlowRestTime">
+        <com:ko tag="if" bind="isFlowRestTime"><span>flow rest set</span>
             <div data-bind="ntsFixTableCustom: {option: flowRestSetOption}"></div>
+            <div data-bind="ntsCheckBox: {
+                 checked: checkFlow,
+                 enable: true,
+                 text: nts.uk.resource.getText('KMK003_144') }"></div>
         </com:ko>
 	<!-- End of flow timezones -->
 
-        </com:ko>
     </ui:composition>

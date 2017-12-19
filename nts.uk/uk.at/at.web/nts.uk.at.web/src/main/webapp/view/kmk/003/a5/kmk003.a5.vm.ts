@@ -48,6 +48,7 @@ module a5 {
         checkOneDay: KnockoutObservable<boolean>;
         checkMorning: KnockoutObservable<boolean>;
         checkAfternoon: KnockoutObservable<boolean>;
+        checkFlow: KnockoutObservable<boolean>;
 
         // flag
         isFlex: KnockoutObservable<boolean>;
@@ -67,7 +68,7 @@ module a5 {
             let self = this;
 
             // nts fix table data source
-            self.oneDayTimezones = ko.observableArray([]);
+            self.oneDayTimezones = ko.observableArray([]);self.oneDayTimezones.subscribe(vl => console.log(vl));
             self.morningTimezones = ko.observableArray([]);
             self.afternoonTimezones = ko.observableArray([]);
             self.oneDayRestSets = ko.observableArray([]);
@@ -83,6 +84,7 @@ module a5 {
                 { code: 0, name: nts.uk.resource.getText("KMK003_143") } // not used
             ];
             self.fixedRestTime = ko.observable(0);
+            self.fixedRestTime.subscribe(vl => console.log(vl));
 
             // init computed
             self.initComputed(valueAccessor);
@@ -91,6 +93,7 @@ module a5 {
             self.checkOneDay = ko.observable(false);
             self.checkMorning = ko.observable(false);
             self.checkAfternoon = ko.observable(false);
+            self.checkFlow = ko.observable(false);
 
             // fix table option
             self.setFixedTableOption();
@@ -122,32 +125,39 @@ module a5 {
          */
         private initComputed(valueAccessor: any): void {
             let self = this;
-            let settingWorkFrom = valueAccessor.settingWorkFrom; // flex = 2
-            let settingMethod = valueAccessor.settingMethod; // fix = 1, diff = 2, flow = 3
+            let workTimeAtr = valueAccessor.workTimeAtr; // flex = 1
+            let workTimeMethod = valueAccessor.workTimeMethod; // fix = 1, diff = 2, flow = 3
+            workTimeAtr.subscribe(vl => console.log(vl));
+            workTimeMethod.subscribe(vl => console.log(vl));
 
             let fixHalfDayWorkTimes: Array<FixHalfDayWorkTimezoneModel> = [];
             let diffHalfDayWorkTimes: Array<FixHalfDayWorkTimezoneModel> = []; //TODO chua co model
             let flexHalfDayWorkTimes: Array<FlexHalfDayWorkTimeModel> = []
             let flowWorkRestTimezone: FlowWorkRestTimezoneModel = new FlowWorkRestTimezoneModel();
 
+            // get one day, morning, afternoon;
+            let oneday = _.find(fixHalfDayWorkTimes, time => time.dayAtr() == 0);
+            let morning = _.find(fixHalfDayWorkTimes, time => time.dayAtr() == 1);
+            let afternoon = _.find(fixHalfDayWorkTimes, time => time.dayAtr() == 2);
+
             self.isFlex = ko.computed(() => {
-                return true;
+                return workTimeAtr() == 1;
             });
             self.isFlow = ko.computed(() => {
-                return false;
+                return workTimeAtr() != 1 && workTimeMethod() == 2;
             });
             self.isFixed = ko.computed(() => {
-                return false;
+                return workTimeAtr() != 1 && workTimeMethod() == 0;
             });
             self.isDiffTime = ko.computed(() => {
-                return false;
+                return workTimeAtr() != 1 && workTimeMethod() == 1;
             });
 
             self.isFlexOrFlow = ko.computed(() => {
                 return self.isFlex() || self.isFlow();
             });
             self.isTzOfFlexOrFixedOrDiff = ko.computed(() => {
-                return (self.isFlex() && self.fixedRestTime() == 0) || self.isFixed() || self.isDiffTime();
+                return (self.isFlex() && self.fixedRestTime() == 1) || self.isFixed() || self.isDiffTime();
             });
             self.isFlowTimezone = ko.computed(() => {
                 return self.isFlow() && self.fixedRestTime() == 1;
@@ -262,12 +272,20 @@ module a5 {
             let self = this;
             return [
                 {
-                    headerText: nts.uk.resource.getText("KMK003_54"),
-                    key: "columnOneDay1",
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                    width: 243,
-                    template: `<div data-bind="ntsTimeRangeEditor: { 
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    headerText: nts.uk.resource.getText("KMK003_174"),
+                    key: "startCol",
+                    defaultValue: ko.observable(15),
+                    width: 200,
+                    template: `<input data-bind="ntsTimeEditor: { 
+                        required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_176"),
+                    key: "endCol",
+                    defaultValue: ko.observable(15),
+                    width: 200,
+                    template: `<input data-bind="ntsTimeEditor: { 
+                        required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 }
             ];
         }
