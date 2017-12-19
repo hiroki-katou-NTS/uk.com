@@ -84,12 +84,11 @@ public class KshstFlexWorkSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "ADDITION_TIME_WORK")
 	public int additionTimeWork;
 	
-	@OneToOne(optional = false)
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name = "", referencedColumnName="", insertable = false, updatable = false)
-	})
-	public KshstHolidayAddtimeSet holidayAddtimeSet;
+//	@OneToOne(optional = false)
+//	@JoinColumns({
+//		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
+//	})
+//	public KshstHolidayAddtimeSet holidayAddtimeSet;
 	@Override
 	protected Object getKey() {
 		return kshstFlexWorkSetPK;
