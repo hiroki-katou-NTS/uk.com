@@ -90,7 +90,7 @@ module cps002.a.vm {
                     self.createTypeId(data.employeeCreationMethod);
 
 
-                    if (data.copyEmployeeId != "" && self.employeeBasicInfo().copyEmployeeId != data.copyEmployeeId) {
+                    if (self.employeeBasicInfo().copyEmployeeId != "") {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
