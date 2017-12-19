@@ -40,11 +40,7 @@
 }
 
 #lefttabs .ntsSearchBox.ntsSearchBox_Component {
-	min-width: 120px;
-}
-
-#content-area #layout .ntsSearchBox.nts-editor {
-	width: 178px;
+	min-width: 178px;
 }
 
 .avatar-group, .person-group, .action-group {

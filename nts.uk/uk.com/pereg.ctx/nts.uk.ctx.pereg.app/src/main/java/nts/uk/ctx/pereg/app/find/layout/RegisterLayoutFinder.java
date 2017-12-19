@@ -96,7 +96,7 @@ public class RegisterLayoutFinder {
 
 		if (command.getCreateType() != 3) {
 
-			List<SettingItemDto> dataServer = this.getItemListByCreateType(command);
+			List<SettingItemDto> dataServer = this.getItemInitList(command);
 
 			if (CollectionUtil.isEmpty(dataServer)) {
 
@@ -118,27 +118,24 @@ public class RegisterLayoutFinder {
 
 		}
 
-		if (command.getCreateType() == 3) {
+		listItemCls.forEach(itemCls -> {
+			if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
+				itemCls.getListItemDf().forEach(itemDef -> {
+					LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
+							ActionRole.EDIT.value, itemCls.getPersonInfoCategoryCD());
 
-			listItemCls.forEach(itemCls -> {
-				if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
-					itemCls.getListItemDf().forEach(itemDef -> {
-						LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
-								ActionRole.EDIT.value, itemCls.getPersonInfoCategoryCD());
+					if (CollectionUtil.isEmpty(itemCls.getItems())) {
+						List<Object> itemList = new ArrayList<Object>();
+						itemList.add(newLayoutDto);
+						itemCls.setItems(itemList);
+					} else {
 
-						if (CollectionUtil.isEmpty(itemCls.getItems())) {
-							List<Object> itemList = new ArrayList<Object>();
-							itemList.add(newLayoutDto);
-							itemCls.setItems(itemList);
-						} else {
+						itemCls.getItems().add(newLayoutDto);
+					}
+				});
+			}
 
-							itemCls.getItems().add(newLayoutDto);
-						}
-					});
-				}
-
-			});
-		}
+		});
 
 		return listItemCls;
 	}
@@ -271,43 +268,50 @@ public class RegisterLayoutFinder {
 	 *            : id of employee copy
 	 * @return SettingItemDto List
 	 */
-	public List<SettingItemDto> getItemListByCreateType(AddEmployeeCommand command) {
+	public List<SettingItemDto> getItemInitList(AddEmployeeCommand command) {
 
-		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
-		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
 		// Copy Type
 		if (command.getCreateType() == 1) {
 
-			this.copySettingFinder.getEmpCopySetting().forEach(x -> {
-				listQuery.add(
-						new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
-			});
-
-			listQuery.forEach(x -> {
-				result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(x.getCategoryCode(),
-						command.getEmployeeCopyId(), command.getHireDate()));
-			});
-
+			return getAllCopyItem(command);
 		} else {
 			// Init Value Type
 
-			this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
-
-				listQuery.add(
-						new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
-			});
-
-			listQuery.forEach(x -> {
-
-				findInitItemDto findInitCommand = new findInitItemDto(command.getInitSettingId(), command.getHireDate(),
-						x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(),
-						command.getHireDate());
-				result.addAll(this.initItemFinder.getAllInitItemByCtgCode(findInitCommand));
-			});
+			return getAllInitItemBySetId(command);
 
 		}
-		return result;
 	}
 	// sonnlb code end
+
+	public List<SettingItemDto> getAllInitItemBySetId(AddEmployeeCommand command) {
+		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
+		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+		this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
+
+			listQuery.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
+		});
+
+		listQuery.forEach(x -> {
+
+			findInitItemDto findInitCommand = new findInitItemDto(command.getInitSettingId(), command.getHireDate(),
+					x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(), command.getHireDate());
+			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(findInitCommand));
+		});
+		return result;
+	}
+
+	public List<SettingItemDto> getAllCopyItem(AddEmployeeCommand command) {
+		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
+		this.copySettingFinder.getEmpCopySetting().forEach(x -> {
+			listQuery.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
+		});
+
+		listQuery.forEach(x -> {
+			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(x.getCategoryCode(), command.getEmployeeCopyId(),
+					command.getHireDate()));
+		});
+		return result;
+	}
 
 }
