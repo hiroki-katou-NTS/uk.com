@@ -43,6 +43,11 @@ module cps001.b.vm {
         pushData() {
             let self = this,
                 empDelete: IModelDto = ko.toJS(self.empDelete);
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this,
                     dataShare: IDataShare = getShared('CPS001B_PARAMS') || null;

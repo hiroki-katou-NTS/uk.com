@@ -58,6 +58,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         errorModeHeader: Array<any> = [];
         formatCodes: KnockoutObservableArray<any> = ko.observableArray([]);
         lstAttendanceItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        //A13_1 コメント
+        comment: KnockoutObservable<any> = ko.observable(null);
         employeeModeFixCol: Array<any> = [
             { columnKey: 'id', isFixed: true },
             { columnKey: 'state', isFixed: true },
@@ -189,6 +191,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
                 console.log(data);
+                self.comment(data.comment != null ? '■ ' + data.comment : null);
                 self.formatCodes(data.lstControlDisplayItem.formatCode);
                 _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                     item.columns.unshift("sign");

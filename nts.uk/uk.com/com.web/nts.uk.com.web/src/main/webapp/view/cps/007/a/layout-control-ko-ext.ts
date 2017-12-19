@@ -442,14 +442,15 @@ module nts.custombinding {
                         <button id="cps007_btn_add"></button>
                     </div>
                     <div class="drag-panel" data-bind="let: {
-                        catType: {  
-                            SINGLE : 1,
-                            MULTI: 2,
-                            CONTI: 3, /* continuos history hasn't end date */
-                            NODUP: 4,
-                            DUPLI: 5,
-                            CONTIWED: 6 /* continuos history has end date */
-                        } }">
+                                CAT_TYPE: {  
+                                    SINGLE : 1,
+                                    MULTI: 2,
+                                    CONTI: 3, /* continuos history hasn't end date */
+                                    NODUP: 4,
+                                    DUPLI: 5,
+                                    CONTIWED: 6 /* continuos history has end date */
+                                }
+                            }">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification"
                                     data-bind="let: { 
@@ -565,9 +566,31 @@ module nts.custombinding {
                     </div>
                 </div>
                 <script type="text/html" id="itemtemplate">
-                    <div data-bind="let: { nameid : itemDefId.replace(/-/g, '')}">
-                        <div data-bind="if: item.dataTypeValue == 1" class="string">
-                            <div data-bind="if: item.stringItemType == 4 || item.stringItemLength < 40 || ([1, 5].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
+                    <div data-bind="let: {
+                            ITEM_TYPE: {
+                                STRING: 1,
+                                NUMERIC: 2,
+                                DATE: 3,
+                                TIME: 4,
+                                TIMEPOINT: 5,
+                                SELECTION: 6
+                            },
+                            STRING_TYPE: {
+                                ANY: 1,
+                                ANYHALFWIDTH: 2,
+                                ALPHANUMERIC: 3,
+                                NUMERIC: 4,
+                                KANA: 5
+                            },
+                            DATE_TYPE: {
+                                YYYYMMDD: 1,
+                                YYYYMM: 2,
+                                YYYY: 3
+                            },
+                            nameid : itemDefId.replace(/-/g, '')
+                        }">
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.STRING" class="string">
+                            <div data-bind="if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
                                 <input data-bind="attr: { title: itemName, id: nameid, nameid: nameid },
                                     ntsTextEditor: {
                                         value: value,
@@ -582,7 +605,7 @@ module nts.custombinding {
                                         immediate: false
                                     }" />
                             </div>
-                            <div data-bind="if: item.stringItemType != 4 && (([1, 5].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([1, 5].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80))">
+                            <div data-bind="if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80))">
                                 <textarea data-bind="ntsMultilineEditor: {
                                         value: value,
                                         constraint: nameid,
@@ -596,7 +619,7 @@ module nts.custombinding {
                                         immediate: false }, attr: { id: nameid, nameid: nameid }" />
                             </div>
                         </div>
-                        <div data-bind="if: item.dataTypeValue == 2" class="numeric">
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.NUMERIC" class="numeric">
                             <input data-bind="ntsNumberEditor: { 
                                         value: value,
                                         constraint: nameid,
@@ -611,16 +634,16 @@ module nts.custombinding {
                                         enable: editable,
                                         readonly: readonly }, attr: { id: nameid, nameid: nameid }" />
                         </div>
-                        <div data-bind="if: item.dataTypeValue == 3" class="date">
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.DATE" class="date">
                             <div data-bind="ntsDatePicker: {
                                         value: value,
                                         constraint: nameid,
-                                        dateFormat: item.dateItemType == 1 ? 'YYYY/MM/DD' : (item.dateItemType == 2 ? 'YYYY/MM' : 'YYYY'),
+                                        dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
                                         enable: editable,
                                         readonly: readonly
                                     }, attr: { id: nameid, nameid: nameid }"></div>
                         </div>
-                        <div data-bind="if: [4, 5].indexOf(item.dataTypeValue) > -1" class="time timepoint">
+                        <div data-bind="if: [ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(item.dataTypeValue) > -1" class="time timepoint">
                             <input data-bind="ntsTimeEditor: {
                                         value: value,
                                         constraint: nameid,
@@ -629,7 +652,7 @@ module nts.custombinding {
                                         enable: editable,
                                         readonly: readonly }, attr: { placeholder: itemName, id: nameid, nameid: nameid }" />
                         </div>
-                        <div data-bind="if: item.dataTypeValue == 6" class="selection">
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.SELECTION" class="selection">
                             <div data-bind="ntsComboBox: {
                                         options: ko.observableArray(lstComboBoxValue || []),
                                         optionsValue: 'optionValue',
