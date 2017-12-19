@@ -5,21 +5,23 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 @Getter
 @Setter
-public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceItem{
+@AttendanceItemRoot(rootName = "")
+public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceItem {
 
-	@AttendanceItemLayout(layout="A")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "A")
 	private SampleObject attendanceItem;
-	
-	@AttendanceItemLayout(layout="B", isList=true)
+
+	@AttendanceItemLayout(layout = "B", isList = true, jpPropertyName = "B")
 	private List<SampleConvertibleAttendanceItem> attendanceItems;
-	
-	@AttendanceItemValue(type=ValueType.INTEGER, itemId=2)
-	@AttendanceItemLayout(layout="C")
+
+	@AttendanceItemValue(type = ValueType.INTEGER, itemId = 2)
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "C")
 	private String attendanceItemB;
 }
