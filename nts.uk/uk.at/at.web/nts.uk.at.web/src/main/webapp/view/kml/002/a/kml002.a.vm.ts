@@ -1053,6 +1053,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 if (self.calculatorItems().length == 0) {
                     self.deleteLineEnable(false);
                 }
+                
+                if (self.calculatorItems().length >= 0) {
+                    self.addLineEnable(true);
+                }
             }).ifNo(() => {
                 return;
             })
