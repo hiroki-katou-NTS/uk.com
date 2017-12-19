@@ -85,7 +85,7 @@ module cps001.a.vm {
         categories: KnockoutComputed<Array<IListData>> = ko.computed(() => {
             let self = this,
                 categories = self.multipleData().map(x => x.categories());
-            
+
             return [{ optionValue: 'cat1', optionText: 'Category First' }, { optionValue: 'cat2', optionText: 'Category Second' }];
             //return categories[0] || [{ optionValue: 'cat1', optionText: 'Category First' }, { optionValue: 'cat1', optionText: 'Category First' }];
         });
@@ -454,7 +454,7 @@ module cps001.a.vm {
             let self = this,
                 layout = self.layout,
                 category = self.category();
-            
+
             if (data) {
                 self.personId(data.personId);
                 self.employeeId(data.employeeId);
@@ -537,18 +537,18 @@ module cps001.a.vm {
                         };
                     switch (t) {
                         case IT_CAT_TYPE.SINGLE:
-                        case IT_CAT_TYPE.NODUPLICATE:
                             service.getCatData(query).done(data => {
                                 layout().listItemCls(data.classificationItems);
                             });
                             break;
                         case IT_CAT_TYPE.MULTI:
-                        case IT_CAT_TYPE.DUPLICATE:
                             {
                             }
                             break;
                         case IT_CAT_TYPE.CONTINU:
                         case IT_CAT_TYPE.CONTINUWED:
+                        case IT_CAT_TYPE.DUPLICATE:
+                        case IT_CAT_TYPE.NODUPLICATE:
                             service.getHistData(query).done((data: Array<any>) => {
                                 if (data && data.length) {
                                     self.gridlist(data);
