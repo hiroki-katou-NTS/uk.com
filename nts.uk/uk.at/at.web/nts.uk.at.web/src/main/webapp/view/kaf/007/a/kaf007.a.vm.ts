@@ -34,7 +34,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];        
         //menu-bar 
-        enableSendMail :KnockoutObservable<boolean> = ko.observable(false);     
+        enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
+        manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);    
         dateFormat: string = 'YYYY/MM/DD';
         
         constructor() {
@@ -97,8 +98,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                         self.typicalReasonDisplayFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg == 1 ? true : false );
                         //「申請種類別設定．申請理由の表示」  ※A11
                         self.displayAppReasonContentFlg(appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg == 1 ? true : false );
+                        //登録時にメールを送信する Visible
+                        self.enableSendMail(appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false);
+                        //self.enableSendMail(appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? false: true);
                     }
-                    
+                    self.manualSendMailAtr(appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true: false);
                     //A5 勤務を変更する ※A4                    
                     if(appWorkChangeCommonSetting　!= undefined){ 
                         //勤務変更申請設定.勤務時間を変更できる　＝　出来る
@@ -358,10 +362,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //dataWork = self.appWorkChange().dataWork(),
             //    workChange = self.appWorkChange().workChange();
             nts.uk.ui.windows.setShared('parentCodes', {
-                workTypeCodes: dataWork.workTypeCodes(),
-                selectedWorkTypeCode: dataWork.selectedWorkTypeCd(),
-                workTimeCodes: dataWork.workTimeCodes(),
-                selectedWorkTimeCode: dataWork.selectedWorkTimeCd(),
+                workTypeCodes: dataWork.workTypeCodes,
+                selectedWorkTypeCode: dataWork.selectedWorkTypeCd,
+                workTimeCodes: dataWork.workTimeCodes,
+                selectedWorkTimeCode: dataWork.selectedWorkTimeCd,
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
