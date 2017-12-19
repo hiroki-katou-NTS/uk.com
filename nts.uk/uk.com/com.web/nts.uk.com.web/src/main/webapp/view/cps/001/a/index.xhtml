@@ -137,7 +137,7 @@
 								<div data-bind="let: { catType: category().categoryType() }">
 									<div data-bind="text: catType"></div>
 									<div
-										data-bind="if: catType == CAT_TYPE.SINGLE || catType == CAT_TYPE.NODUP">
+										data-bind="if: catType == CAT_TYPE.SINGLE">
 										<div
 											data-bind="template: { name: 'list-data', data: { 
 														dataSource: ko.observableArray([]),
@@ -152,7 +152,7 @@
 										</div>
 									</div>
 									<div
-										data-bind="if: catType == CAT_TYPE.MULTI ||  catType == CAT_TYPE.DUPLI">
+										data-bind="if: catType == CAT_TYPE.MULTI">
 										<div
 											data-bind="template: { name: 'list-multiple', data: { 
 													list: {
@@ -172,7 +172,7 @@
 										</div>
 									</div>
 									<div
-										data-bind="if: catType == CAT_TYPE.CONTI || catType == CAT_TYPE.CONTIWED">
+										data-bind="if: [CAT_TYPE.CONTI, CAT_TYPE.CONTIWED, CAT_TYPE.DUPLI, CAT_TYPE.NODUP].indexOf(catType) > -1">
 										<div
 											data-bind="template: { name: 'list-history', data: {
 												list: {
