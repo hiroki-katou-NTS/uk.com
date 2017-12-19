@@ -14,8 +14,6 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class ApprovalRootState {
 	
-	private String companyID;
-	
 	private String rootStateID;
 	
 	private RootType rootType;

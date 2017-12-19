@@ -11,8 +11,6 @@ import lombok.Getter;
 @Getter
 public class ApproverState {
 	
-	private String companyID;
-	
 	private String rootStateID;
 	
 	private RootType rootType;
