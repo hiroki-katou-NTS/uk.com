@@ -417,8 +417,8 @@ public class LayoutFinder {
 					.filter(column -> column.getPerInfoItemDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.after((GeneralDate) startDateOpt.get().getValue())
-						&& stardardDate.before((GeneralDate) endDateOpt.get().getValue())) {
+				if (stardardDate.afterOrEquals((GeneralDate) startDateOpt.get().getValue())
+						&& stardardDate.beforeOrEquals((GeneralDate) endDateOpt.get().getValue())) {
 					MappingFactory.matchPerOptionData(recordId, classItemList, dataItems);
 					break;
 				}
@@ -452,8 +452,8 @@ public class LayoutFinder {
 					.filter(column -> column.getPerInfoDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.after((GeneralDate)startDateOpt.get().getValue())
-						&& stardardDate.before( (GeneralDate) endDateOpt.get().getValue())) {
+				if (stardardDate.afterOrEquals((GeneralDate)startDateOpt.get().getValue())
+						&& stardardDate.beforeOrEquals( (GeneralDate) endDateOpt.get().getValue())) {
 					MappingFactory.matchEmpOptionData(recordId, classItemList, dataItems);
 					break;
 				}
