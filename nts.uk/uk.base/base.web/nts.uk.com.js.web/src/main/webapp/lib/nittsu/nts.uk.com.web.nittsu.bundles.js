@@ -3058,7 +3058,6 @@ var nts;
                 var errorPages;
                 (function (errorPages) {
                     function systemError() {
-                        jump('com', '/view/common/error/system/index.xhtml');
                     }
                     errorPages.systemError = systemError;
                     function sessionTimeout() {
