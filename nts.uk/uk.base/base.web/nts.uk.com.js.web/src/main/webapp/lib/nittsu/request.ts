@@ -341,7 +341,7 @@ module nts.uk.request {
         export module errorPages {
             
             export function systemError() {
-                jump('com', '/view/common/error/system/index.xhtml');
+                //jump('com', '/view/common/error/system/index.xhtml');
             }
             
             export function sessionTimeout() {
