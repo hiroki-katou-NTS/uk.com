@@ -82,7 +82,7 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
 
 					int dayOfAgo = -1;
 					// update end date of workplace history latest
-					this.wkpService.updatePreviousHistory(companyId, histIdLatest,
+					this.wkpService.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().identifier(),
 							command.getStartDWkpConfigInfo().addDays(dayOfAgo));
 				}
 			}

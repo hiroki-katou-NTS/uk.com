@@ -69,6 +69,7 @@ public class JpaEmployeeFileManagement extends JpaRepository implements EmpFileM
 	public void insert(PersonFileManagement domain) {
 		BpsmtPersonFileManagement entity = toEntityEmpFileManagement(domain);
 		getEntityManager().persist(entity);
+		this.getEntityManager().flush();
 	}
 
 	@Override

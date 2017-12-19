@@ -36,7 +36,7 @@ public class DailyModifyCommandFacade {
 		FINDER_CLASSES.put("AttendanceTimeOfDailyPerformance", AttendanceTimeOfDailyPerformFinder.class);
 	}
 
-	private static final Map<String, TypeLiteral<? extends CommandFacade<? extends AttendanceItemCommand>>> ADD_COMMAND_CLASSES;
+	private static final Map<String, TypeLiteral<?>> ADD_COMMAND_CLASSES;
 	static {
 		//Sample
 		ADD_COMMAND_CLASSES = new HashMap<>();
@@ -57,8 +57,8 @@ public class DailyModifyCommandFacade {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends AttendanceItemCommand> void handle(TypeLiteral<? extends CommandFacade<T>> type, ConvertibleAttendanceItem data){
-		CommandFacade<T> handler = CDI.current().select(type).get();
+	private <T extends AttendanceItemCommand> void handle(TypeLiteral<?> type, ConvertibleAttendanceItem data){
+		CommandFacade<T> handler = (CommandFacade<T>) CDI.current().select(type).get();
 		AttendanceItemCommand command = handler.newCommand();
 		command.setRecords(data);
 		handler.handle((T) command);

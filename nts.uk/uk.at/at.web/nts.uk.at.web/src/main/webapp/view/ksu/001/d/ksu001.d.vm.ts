@@ -1,4 +1,4 @@
-module ksu001.d.viewmodel {
+module nts.uk.at.view.ksu001.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
@@ -96,6 +96,9 @@ module ksu001.d.viewmodel {
          * Close dialog
          */
         closeDialog(): void {
+            setShared('dataFromScreenD', {
+                clickCloseDialog: true
+            });
             nts.uk.ui.windows.close();
         }
     }

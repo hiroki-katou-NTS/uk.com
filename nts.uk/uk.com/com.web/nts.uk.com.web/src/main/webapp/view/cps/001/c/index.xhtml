@@ -27,8 +27,8 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button type="button" class="proceed" data-bind="click: reStoreData , enable:enaBtnRes">#{i18n.getText('CPS001_49')}</button>
-				<button type="button" class="danger" data-bind="click: deleteData , enable : enaBtnDel">#{i18n.getText('CPS001_50')}</button>
+				<button type="button" class="proceed" data-bind="click: reStoreData , enable: $root.errors.isEmpty() &amp; enaBtnRes()">#{i18n.getText('CPS001_49')}</button>
+				<button type="button" class="danger" data-bind="click: deleteData , enable : $root.errors.isEmpty() &amp; enaBtnDel()">#{i18n.getText('CPS001_50')}</button>
 				<button type="button" data-bind="click : closeUp">#{i18n.getText('CPS001_51')}</button>
 			</div>
 			<div id="contents-area" class="cf" data-bind="let: {text: nts.uk.resource.getText}">
@@ -69,21 +69,21 @@
 						<span class="text-inform" data-bind="text: reason"></span>
 					</div>
 					<div class="form-group">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_56')}</div>
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CPS001_56')}</div>
 						<input
 							data-bind="ntsTextEditor: {
 							value: code,
 							constraint: 'EmployeeCode',
-							required: false,
+							required: true,
 							enable: enableCode,
 							readonly: false}" />
 					</div>
 					<div class="form-group">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_58')}</div>
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CPS001_58')}</div>
 						<input 
 							data-bind="ntsTextEditor: {
 							value: name,
-							required: false,
+							required: true,
 							constraint: 'BusinessName',
 							enable: enableName,
 							readonly: false}" />

@@ -21,6 +21,7 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 public class PerInfoItemDefForLayoutDto extends PerInfoItemDefDto{
 	
 	private String perInfoCtgCd;
+	private int ctgType;
 	
 	private int itemDefType;
 	

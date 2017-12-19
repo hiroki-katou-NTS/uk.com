@@ -141,22 +141,23 @@ public class InitValueSetItemFinder {
 
 		PeregDto dto = this.layoutProc.findSingle(query);
 
-		Map<String, Object> dataMap = MappingFactory.getAllItem(dto);
+		if (dto != null) {
+			Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
 
-		dataMap.forEach((k, v) -> {
+			dataMap.forEach((k, v) -> {
 
-			Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
+				Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
 
-					x -> x.getItemCode().equals(k)).findFirst();
+						x -> x.getItemCode().equals(k)).findFirst();
 
-			if (itemInfoOpt.isPresent()) {
-				SettingItemDto itemInfo = itemInfoOpt.get();
+				if (itemInfoOpt.isPresent()) {
+					SettingItemDto itemInfo = itemInfoOpt.get();
 
-				itemInfo.setData(v != null ? v.toString() : "");
-			}
+					itemInfo.setData(v != null ? v.toString() : "");
+				}
 
-		});
-
+			});
+		}
 	}
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {

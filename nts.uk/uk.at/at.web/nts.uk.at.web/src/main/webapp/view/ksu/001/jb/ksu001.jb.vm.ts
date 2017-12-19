@@ -1,4 +1,4 @@
-module ksu001.jb.viewmodel {
+module nts.uk.at.view.ksu001.jb.viewmodel {
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkType());
@@ -36,7 +36,7 @@ module ksu001.jb.viewmodel {
                         workTimeName = '';
                     }
                 }
-                
+
                 if (!!workTypeName && !!workTimeName) {
                     nameWTT = workTypeName + '/' + workTimeName;
                 } else if (!workTypeName) {

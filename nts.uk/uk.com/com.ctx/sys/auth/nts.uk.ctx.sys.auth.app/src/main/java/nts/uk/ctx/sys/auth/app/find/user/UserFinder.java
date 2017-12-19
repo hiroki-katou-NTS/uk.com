@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -58,7 +59,9 @@ public class UserFinder {
 			if (listEmployeeInfo.isEmpty())
 				return result;
 			
-			for (User user : listUser) {
+			List<User> notEmptyAssociatedUser = listUser.stream().filter(c -> c.hasAssociatedPersonID()).collect(Collectors.toList());
+			
+			for (User user : notEmptyAssociatedUser) {
 				Optional<EmployeeInfoImport> associatedEmployee = listEmployeeInfo.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).findFirst();
 				if (associatedEmployee.isPresent()) {
 					if (user.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase()) ||

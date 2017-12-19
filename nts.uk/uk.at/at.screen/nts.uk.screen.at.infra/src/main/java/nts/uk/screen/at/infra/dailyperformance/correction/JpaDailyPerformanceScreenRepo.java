@@ -505,7 +505,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
-		List<BsymtEmployeeDataMngInfo> lstEmployee = this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployeeDataMngInfo.class)
+		List<BsymtEmployeeDataMngInfo> lstEmployee = this.queryProxy()
+				.query(SEL_EMPLOYEE, BsymtEmployeeDataMngInfo.class)
 				.setParameter("lstWkp", lstWorkplace.keySet().stream().collect(Collectors.toList())).getList();
 		List<BpsmtPerson> lstPerson = this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
 				.setParameter("lstPersonId", lstEmployee.stream().map((employee) -> {
@@ -514,8 +515,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return lstEmployee.stream().map((employee) -> {
 			for (BpsmtPerson person : lstPerson) {
 				if (person.bpsmtPersonPk.pId.equals(employee.bsymtEmployeeDataMngInfoPk.pId)) {
-					return new DailyPerformanceEmployeeDto(employee.bsymtEmployeeDataMngInfoPk.sId, employee.employeeCode,
-							person.personName, lstWorkplace.values().stream().findFirst().get(),
+					return new DailyPerformanceEmployeeDto(employee.bsymtEmployeeDataMngInfoPk.sId,
+							employee.employeeCode, person.personName, lstWorkplace.values().stream().findFirst().get(),
 							lstWorkplace.keySet().stream().findFirst().get(), "", false);
 				}
 			}
@@ -737,7 +738,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				KrcstDailyRecOpe.class);
 		if (krcstDailyRecOpeOpt.isPresent()) {
 			return new OperationOfDailyPerformanceDto(companyId,
-					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit.intValue(), SettingUnit.class));
+					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit.intValue(), SettingUnit.class),
+					krcstDailyRecOpeOpt.get().comment);
 		} else
 			return null;
 	}

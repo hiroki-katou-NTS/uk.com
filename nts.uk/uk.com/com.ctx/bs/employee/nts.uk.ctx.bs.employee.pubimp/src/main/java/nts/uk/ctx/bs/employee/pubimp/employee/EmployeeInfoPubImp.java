@@ -18,6 +18,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDto;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -57,19 +58,50 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	}
 
 	@Override
+	public Optional<EmployeeInfoDto> getEmployeeInfoByCidPid(String companyId, String personId) {
+
+		Optional<EmployeeDataMngInfo> empInfo = empDataMngRepo.findByCidPid(companyId, personId);
+
+		if (!empInfo.isPresent()) {
+			return Optional.empty();
+		} else {
+			EmployeeDataMngInfo emp = empInfo.get();
+
+			EmployeeInfoDto result = new EmployeeInfoDto();
+			result.setCompanyId(emp.getCompanyId());
+			result.setPersonId(emp.getPersonId());
+			result.setEmployeeId(emp.getEmployeeId());
+			result.setEmployeeCode(emp.getEmployeeCode().v());
+			result.setExternalCode(emp.getExternalCode() == null ? null : emp.getExternalCode().v());
+			result.setDeleteDateTemporary(emp.getDeleteDateTemporary());
+			/** 0 - NOTDELETED - 削除していない **/
+			/** 1 - TEMPDELETED - 一時削除 **/
+			/** 2 - PURGEDELETED - 完全削除 **/
+			result.setDeletedStatus(emp.getDeletedStatus() == null ? null : emp.getDeletedStatus().value);
+			result.setRemoveReason(emp.getRemoveReason() == null ? null : emp.getRemoveReason().v());
+			return Optional.of(result);
+
+		}
+	}
+
+	@Override
 	public List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate standardDate) {
 
 		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
 
-		EmployeeInfoDtoExport result = null;
 
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
-
-		return listEmpDomain.stream().map(employee -> {
-
+		
+		List<EmployeeInfoDtoExport> result = new ArrayList<>();
+		
+		for (EmployeeDataMngInfo employee: listEmpDomain) {
 			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
 
+			if (affComHist == null)
+				continue;
+			
+			EmployeeInfoDtoExport employeeInfo = new EmployeeInfoDtoExport();
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
 			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
@@ -86,26 +118,26 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 					Optional<Person> personOpt = this.personRepo.getByPersonId(affComHist.getPId());
 					if (personOpt.isPresent()) {
 						Person person = personOpt.get();
-						result.setPersonId(person.getPersonId());
-						result.setPerName(person.getPersonNameGroup().getBusinessName() == null ? null
+						employeeInfo.setPersonId(person.getPersonId());
+						employeeInfo.setPerName(person.getPersonNameGroup().getBusinessName() == null ? null
 								: person.getPersonNameGroup().getBusinessName().v());
 					}
 				}
 			}
 
-			result.setCompanyId(employee.getCompanyId());
-			result.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
-			result.setEmployeeId(employee.getEmployeeId());
-
-			return result;
-		}).collect(Collectors.toList());
+			employeeInfo.setCompanyId(employee.getCompanyId());
+			employeeInfo.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+			employeeInfo.setEmployeeId(employee.getEmployeeId());
+			result.add(employeeInfo);
+		}
+		
+		return result;
 	}
 
 	/*
-	 * @Override public List<EmpBasicInfoExport>
-	 * getListEmpBasicInfo(List<String> sid) { List<Employee> listEmpDomain =
-	 * repo.getByListEmployeeId(sid); List<EmpBasicInfoExport> listResult = new
-	 * ArrayList<>();
+	 * @Override public List<EmpBasicInfoExport> getListEmpBasicInfo(List<String>
+	 * sid) { List<Employee> listEmpDomain = repo.getByListEmployeeId(sid);
+	 * List<EmpBasicInfoExport> listResult = new ArrayList<>();
 	 * 
 	 * if (!listEmpDomain.isEmpty()) {
 	 * 
@@ -114,12 +146,11 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	 * getSCd().v())
 	 * .pId(item.getPId()).companyMailAddress(item.getCompanyMail().v())
 	 * .entryDate(item.getListEntryJobHist().get(0).getJoinDate())
-	 * .retiredDate(item.getListEntryJobHist().get(0).getRetirementDate()).build
-	 * ()) .collect(Collectors.toList());
+	 * .retiredDate(item.getListEntryJobHist().get(0).getRetirementDate()).build ())
+	 * .collect(Collectors.toList());
 	 * 
 	 * List<String> pids =
-	 * listEmpDomain.stream().map(Employee::getPId).collect(Collectors.toList())
-	 * ;
+	 * listEmpDomain.stream().map(Employee::getPId).collect(Collectors.toList()) ;
 	 * 
 	 * List<Person> listPersonDomain = personRepo.getPersonByPersonIds(pids);
 	 * 
@@ -133,8 +164,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	 * getFullName() == null ? "" :
 	 * per.getPersonNameGroup().getPersonName().getFullName().v());
 	 * listResult.get(j).setGender(per.getGender() == null ? 0 :
-	 * per.getGender().value);
-	 * listResult.get(j).setBirthDay(per.getBirthDate()); } } }
+	 * per.getGender().value); listResult.get(j).setBirthDay(per.getBirthDate()); }
+	 * } }
 	 * 
 	 * return listResult; }
 	 */
@@ -200,4 +231,5 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		}
 		return listResult;
 	}
+
 }
