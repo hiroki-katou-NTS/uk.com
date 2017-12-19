@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_OVER_DAY_HD_SET ")
+@Table(name = "KSHST_OVERDAY_HD_ATT_SET ")
 public class KshstOverdayHdAttSet extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */

@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_OVER_DAY_HD_SET ")
+@Table(name = "KSHST_WEEKDAY_HD ")
 public class KshstWeekdayHd extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */

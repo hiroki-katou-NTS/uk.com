@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_FLEX_WORK_SET")
+@Table(name = "KSHST_FLEX_SET")
 public class KshstFlexSet  extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
