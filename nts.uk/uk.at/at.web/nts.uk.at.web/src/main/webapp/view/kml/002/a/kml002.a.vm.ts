@@ -856,12 +856,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     self.singleSelectedCode(data.verticalCalCd);
                     self.singleSelectedCode.valueHasMutated();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId});
                 }).always(function() {
                     blockUI.clear();
                 });
             } else {
                 $('#checkall').ntsError('set', { messageId: "Msg_110" });
+                blockUI.clear();
             }
         }
 
