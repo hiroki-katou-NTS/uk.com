@@ -73,7 +73,7 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<String, String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
 		// List<String> lstClassification = this.repo.getListClassification();
 		// 取得したドメインモデル「所属職場．社員ID」に対応するImported「（就業）社員」を取得する
-		if(lstWorkplace.isEmpty()) {
+		if (lstWorkplace.isEmpty()) {
 			return new ArrayList<>();
 		}
 		return this.repo.getListEmployee(null, null, lstWorkplace, null);
@@ -105,13 +105,11 @@ public class DailyPerformanceCorrectionProcessor {
 	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
 	 */
 	private DPControlDisplayItem getControlDisplayItems(List<String> lstEmployeeId, DateRange dateRange,
-			CorrectionOfDailyPerformance correct, List<String> formatCodeSelects) {
+			CorrectionOfDailyPerformance correct, List<String> formatCodeSelects,
+			OperationOfDailyPerformanceDto dailyPerformanceDto) {
 		DPControlDisplayItem result = new DPControlDisplayItem();
 		String companyId = AppContexts.user().companyId();
 		if (lstEmployeeId.size() > 0) {
-			// 対応するドメインモデル「日別実績の運用」を取得する | Acquire corresponding domain model
-			// "Operation of daily performance"
-			OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
 			// 取得したドメインモデル「日別実績の運用」をチェックする | Check the acquired domain model
 			// "Operation of daily performance"
 			List<FormatDPCorrectionDto> lstFormat = new ArrayList<FormatDPCorrectionDto>();
@@ -139,7 +137,9 @@ public class DailyPerformanceCorrectionProcessor {
 							authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
 						} else {
 							// アルゴリズム「表示項目の選択を起動する」を実行する
-							/// 画面「表示フォーマットの選択」をモーダルで起動する(Chạy màn hình "Select  display format" theo cách thức) -- chay man hinh C
+							/// 画面「表示フォーマットの選択」をモーダルで起動する(Chạy màn hình "Select
+							// display format" theo cách thức) -- chay man hinh
+							// C
 							throw new BusinessException("KDW/003/a");
 						}
 					} else {
@@ -264,7 +264,8 @@ public class DailyPerformanceCorrectionProcessor {
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
 		// employee's daily performance"--
 		// roleId = AppContexts.user().roles().forPersonalInfo() fixed
-		List<DailyPerformanceAuthorityDto> dailyPerformans = repo.findDailyAuthority("00000000-0000-0000-0000-000000000001");
+		List<DailyPerformanceAuthorityDto> dailyPerformans = repo
+				.findDailyAuthority("00000000-0000-0000-0000-000000000001");
 		if (dailyPerformans.isEmpty()) {
 			throw new BusinessException("Msg_671");
 		} else {
@@ -334,14 +335,19 @@ public class DailyPerformanceCorrectionProcessor {
 		// アルゴリズム「就業確定情報を取得する」を実行する
 		/// アルゴリズム「日別実績のロックを取得する」を実行する (Tiến hành xử lý "Lấy về lock của thành
 		// tích theo ngày")
-//		Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(),
-//				closureDto.getClosureId());
-//		// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
-//		Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(closureDto.getClosureId(),
-//				closureDto.getClosureMonth());
+		// Optional<ActualLockDto> actualLockDto =
+		// repo.findAutualLockById(AppContexts.user().companyId(),
+		// closureDto.getClosureId());
+		// // アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
+		// Optional<WorkFixedDto> workFixedOp =
+		// repo.findWorkFixed(closureDto.getClosureId(),
+		// closureDto.getClosureMonth());
 
+		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+		screenDto.setComment(dailyPerformanceDto != null && dailyPerformanceDto.getComment() != null
+				? dailyPerformanceDto.getComment() : null);
 		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
-				correct, formatCodes);
+				correct, formatCodes, dailyPerformanceDto);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
 		// Map<Integer, Integer> typeControl =
