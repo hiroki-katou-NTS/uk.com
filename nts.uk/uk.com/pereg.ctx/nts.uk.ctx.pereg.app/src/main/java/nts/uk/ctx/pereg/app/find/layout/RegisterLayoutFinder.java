@@ -118,27 +118,24 @@ public class RegisterLayoutFinder {
 
 		}
 
-		if (command.getCreateType() == 3) {
+		listItemCls.forEach(itemCls -> {
+			if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
+				itemCls.getListItemDf().forEach(itemDef -> {
+					LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
+							ActionRole.EDIT.value, itemCls.getPersonInfoCategoryCD());
 
-			listItemCls.forEach(itemCls -> {
-				if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
-					itemCls.getListItemDf().forEach(itemDef -> {
-						LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
-								ActionRole.EDIT.value, itemCls.getPersonInfoCategoryCD());
+					if (CollectionUtil.isEmpty(itemCls.getItems())) {
+						List<Object> itemList = new ArrayList<Object>();
+						itemList.add(newLayoutDto);
+						itemCls.setItems(itemList);
+					} else {
 
-						if (CollectionUtil.isEmpty(itemCls.getItems())) {
-							List<Object> itemList = new ArrayList<Object>();
-							itemList.add(newLayoutDto);
-							itemCls.setItems(itemList);
-						} else {
+						itemCls.getItems().add(newLayoutDto);
+					}
+				});
+			}
 
-							itemCls.getItems().add(newLayoutDto);
-						}
-					});
-				}
-
-			});
-		}
+		});
 
 		return listItemCls;
 	}
