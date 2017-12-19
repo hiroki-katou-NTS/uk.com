@@ -75,14 +75,14 @@ public class AddEmployeeCommandFacade {
 
 	public void updateRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		List<ItemsByCategory> fixedInputs = inputs.stream()
+		List<ItemsByCategory> requiredInputs = inputs.stream()
 				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1).collect(Collectors.toList());
 
-		if (!CollectionUtil.isEmpty(fixedInputs)) {
+		if (!CollectionUtil.isEmpty(requiredInputs)) {
 
-			updateRequiredSystemInputs(fixedInputs, personId, employeeId);
+			updateRequiredSystemInputs(requiredInputs, personId, employeeId);
 
-			addRequiredOptinalInputs(fixedInputs, personId, employeeId);
+			addRequiredOptinalInputs(requiredInputs, personId, employeeId);
 
 		}
 
@@ -110,10 +110,10 @@ public class AddEmployeeCommandFacade {
 
 	public void addNoRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		inputs = inputs.stream().filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) == -1)
-				.collect(Collectors.toList());
+		List<ItemsByCategory> noRequiredInputs = inputs.stream()
+				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) == -1).collect(Collectors.toList());
 		// call add commandFacade
-		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, inputs);
+		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noRequiredInputs);
 
 		this.commandFacade.add(addContainer);
 	}

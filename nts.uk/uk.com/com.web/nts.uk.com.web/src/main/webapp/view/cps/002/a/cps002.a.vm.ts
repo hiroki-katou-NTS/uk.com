@@ -542,9 +542,9 @@ module cps002.a.vm {
 
             if (currentEmpInfo) {
                 if (isInit) {
-                    newEmpInfo.copyEmployeeId = !newEmpInfo.copyEmployeeId ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
+                    newEmpInfo.copyEmployeeId = newEmpInfo.copyEmployeeId == '' ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
                 } else {
-                    newEmpInfo.initialValueCode = !newEmpInfo.initialValueCode ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
+                    newEmpInfo.initialValueCode = newEmpInfo.initialValueCode == '' ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
 
                 }
 
