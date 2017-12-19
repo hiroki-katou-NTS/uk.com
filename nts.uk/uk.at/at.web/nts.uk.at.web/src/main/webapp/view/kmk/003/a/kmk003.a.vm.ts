@@ -122,10 +122,10 @@ module nts.uk.at.view.kmk003.a {
 
                 self.useHalfDayOptions = ko.observableArray([
                     { code: "1", name: nts.uk.resource.getText("KMK003_49") },
-                    { code: "2", name: nts.uk.resource.getText("KMK003_50") }
+                    { code: "0", name: nts.uk.resource.getText("KMK003_50") }
                 ]);
 
-                self.useHalfDay = ko.observable("1");
+                self.useHalfDay = ko.observable("0");
 
                 //
                 self.tabs = ko.observableArray([
@@ -158,6 +158,7 @@ module nts.uk.at.view.kmk003.a {
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
                    self.updateWorktimeCode(worktimeCode); 
                 });
+                self.dataModelOneDay = [];
             }
 
             /**
@@ -246,7 +247,7 @@ module nts.uk.at.view.kmk003.a {
                 if (data.useHalfDayShift) {
                     self.useHalfDay('1');
                 } else {
-                    self.useHalfDay('2');
+                    self.useHalfDay('0');
                 }
             }
           

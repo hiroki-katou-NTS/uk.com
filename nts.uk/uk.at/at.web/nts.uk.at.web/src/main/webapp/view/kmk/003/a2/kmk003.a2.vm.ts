@@ -29,12 +29,12 @@ module a2 {
         /**
         * Constructor.
         */
-        constructor(selectedSettingMethod: any, selectedTab: any, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(selectedSettingMethod: any, selectedTab: any, settingEnum: WorkTimeSettingEnumDto, dataModelOneDay: EmTimeZoneSetModel[]) {
             let self = this;
             self.selectedSettingMethod = selectedSettingMethod;
             self.selectedTab = selectedTab;
             self.settingEnum = settingEnum;
-            self.dataModelOneDay = [];
+            self.dataModelOneDay = dataModelOneDay;
             self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
             self.isActiveTab = ko.observable(self.getActiveTabBySelected(self.selectedTab()));
             self.dataSourceOneDay = ko.observableArray([]);
@@ -112,14 +112,15 @@ module a2 {
             });
             
             self.dataSourceOneDay.subscribe(function(dataOneDay) {
-                self.dataModelOneDay = [];
                 var employmentTimeFrameNo: number = 0;
+                self.dataModelOneDay = [];
                 for (var dataModel of dataOneDay) {
                     employmentTimeFrameNo++;
+                    console.log('YES');
                     self.dataModelOneDay.push(self.toModelDto(dataModel, employmentTimeFrameNo));
+                    console.log(dataModelOneDay);
                 }
             });
-            
              // Create Customs handle For event rened nts grid.
             
         }
@@ -207,7 +208,7 @@ module a2 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"), 
                     key: "tab1_col_OneDay_time", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
+                    defaultValue: ko.observable({ startTime: 600, endTime: 601 }), 
                     width: 243, 
                     template: `<div data-bind="ntsTimeRangeEditor: { 
                         required: true, enable: true, inputFormat: 'time'}"/>`
@@ -285,7 +286,7 @@ module a2 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"), 
                     key: "columnAfternoon1", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
+                    defaultValue: ko.observable({ startTime: 600, endTime: 601 }), 
                     width: 243, 
                     template: `<div data-bind="ntsTimeRangeEditor: { 
                         required: true, enable: true, inputFormat: 'time'}"/>`
@@ -350,7 +351,8 @@ module a2 {
             let selectedSettingMethod = input.settingMethod;
             let selectedTab = input.settingTab;
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
-            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab, settingEnum);
+            var dataModelOneDay: EmTimeZoneSetModel[] = input.oneday;
+            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab, settingEnum, dataModelOneDay);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
