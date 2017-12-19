@@ -71,7 +71,7 @@ module a5 {
             self.oneDayTimezones = ko.observableArray([]);self.oneDayTimezones.subscribe(vl => console.log(vl));
             self.morningTimezones = ko.observableArray([]);
             self.afternoonTimezones = ko.observableArray([]);
-            self.oneDayRestSets = ko.observableArray([]);
+            self.oneDayRestSets = ko.observableArray([]);self.oneDayRestSets.subscribe(vl => console.log(vl));
             self.morningRestSets = ko.observableArray([]);
             self.afternoonRestSets = ko.observableArray([]);
             self.oneDayHereAfterRestSet = ko.observableArray([]);
@@ -187,7 +187,7 @@ module a5 {
                 isShowButton: true,
                 dataSource: self.oneDayTimezones,
                 isMultipleSelect: true,
-                columns: self.getColumnSettingDefault(),
+                columns: self.getTimezoneColumns(),
                 tabindex: -1
             };
             self.morningTimezoneOption = {
@@ -197,7 +197,7 @@ module a5 {
                 isShowButton: true,
                 dataSource: self.morningTimezones,
                 isMultipleSelect: true,
-                columns: self.getColumnSettingDefault(),
+                columns: self.getTimezoneColumns(),
                 tabindex: -1
             };
             self.afternoonTimezoneOption = {
@@ -207,7 +207,7 @@ module a5 {
                 isShowButton: true,
                 dataSource: self.afternoonTimezones,
                 isMultipleSelect: true,
-                columns: self.getColumnSettingDefault(),
+                columns: self.getTimezoneColumns(),
                 tabindex: -1
             };
 
@@ -219,7 +219,7 @@ module a5 {
                 isShowButton: true,
                 dataSource: self.oneDayRestSets,
                 isMultipleSelect: true,
-                columns: self.getColumnSettingDefault(),
+                columns: self.getRestSetColumns(),
                 tabindex: -1
             };
             self.morningRestSetOption = {
@@ -229,7 +229,7 @@ module a5 {
                 isShowButton: true,
                 dataSource: self.morningRestSets,
                 isMultipleSelect: true,
-                columns: self.getColumnSettingDefault(),
+                columns: self.getRestSetColumns(),
                 tabindex: -1
             };
             self.afternoonRestSetOption = {
@@ -239,7 +239,7 @@ module a5 {
                 isShowButton: true,
                 dataSource: self.afternoonRestSets,
                 isMultipleSelect: true,
-                columns: self.getColumnSettingDefault(),
+                columns: self.getRestSetColumns(),
                 tabindex: -1
             };
 
@@ -251,7 +251,7 @@ module a5 {
                 isShowButton: true,
                 dataSource: self.afternoonRestSets,
                 isMultipleSelect: true,
-                columns: self.getColumnSettingDefault(),
+                columns: self.getTimezoneColumns(),
                 tabindex: -1
             };
 
@@ -263,12 +263,12 @@ module a5 {
                 isShowButton: true,
                 dataSource: self.afternoonRestSets,
                 isMultipleSelect: true,
-                columns: self.getColumnSettingDefault(),
+                columns: self.getRestSetColumns(),
                 tabindex: -1
             };
         }
 
-        private getColumnSettingDefault(): Array<any> {
+        private getRestSetColumns(): Array<any> {
             let self = this;
             return [
                 {
@@ -276,7 +276,7 @@ module a5 {
                     key: "startCol",
                     defaultValue: ko.observable(15),
                     width: 200,
-                    template: `<input data-bind="ntsTimeEditor: { 
+                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime',
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 },
                 {
@@ -284,13 +284,13 @@ module a5 {
                     key: "endCol",
                     defaultValue: ko.observable(15),
                     width: 200,
-                    template: `<input data-bind="ntsTimeEditor: { 
+                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime',
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 }
             ];
         }
 
-        private getColumnSettingSingle(): Array<any> {
+        private getTimezoneColumns(): Array<any> {
             let self = this;
             return [
                 {
@@ -299,6 +299,7 @@ module a5 {
                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
                     width: 243,
                     template: `<div data-bind="ntsTimeRangeEditor: { 
+                        startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
                         required: true, enable: true, inputFormat: 'time'}"/>`
                 }
             ];
