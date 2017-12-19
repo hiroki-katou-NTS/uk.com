@@ -187,7 +187,7 @@ public class ScheCreExeWorkTimeHandler {
 		}
 
 		// return data by call repository
-		return this.workingConditionItemRepository.findWorkingConditionItemByPersWorkCat(employeeId, baseDate);
+		return this.workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
 	}
 	
 	/**

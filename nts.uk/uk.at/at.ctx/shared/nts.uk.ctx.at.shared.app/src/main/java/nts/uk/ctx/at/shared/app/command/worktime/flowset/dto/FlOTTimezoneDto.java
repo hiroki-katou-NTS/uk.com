@@ -10,7 +10,7 @@ import lombok.Value;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezoneGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 
 /**
  * The Class FlOTTimezoneDto.
@@ -76,8 +76,8 @@ public class FlOTTimezoneDto implements FlOTTimezoneGetMemento {
 	 * getFlowTimeSetting()
 	 */
 	@Override
-	public FlTimeSetting getFlowTimeSetting() {
-		return new FlTimeSetting(this.flowTimeSetting);
+	public FlowTimeSetting getFlowTimeSetting() {
+		return new FlowTimeSetting(this.flowTimeSetting);
 	}
 
 	/*

@@ -116,8 +116,8 @@ module cps002.a.vm {
                 });
                 if (InitSetting) {
                     service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                        self.categorySelectedCode("");
                         if (result.length) {
-                            self.categorySelectedCode("");
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
@@ -219,18 +219,14 @@ module cps002.a.vm {
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
             });
-            block.invisible();
             service.getLayout().done((layout) => {
                 if (layout) {
                     service.getUserSetting().done((result: IUserSetting) => {
                         if (result) {
-                            block.invisible();
                             self.getEmployeeCode(result).done((empCode) => {
                                 self.currentEmployee().employeeCode(empCode);
                                 self.getCardNumber(result);
 
-                            }).always(() => {
-                                block.clear();
                             });
                         }
 
@@ -245,8 +241,6 @@ module cps002.a.vm {
                         jump('/view/cps/007/a/index.xhtml');
                     });
                 }
-            }).always(() => {
-                block.clear();
             });
 
         }
@@ -256,15 +250,12 @@ module cps002.a.vm {
                 showHistory = !userSetting ? true : userSetting.recentRegistrationType === 1 ? true : false;
 
             if (showHistory) {
-                block.invisible();
                 service.getLastRegHistory().done((result: IEmpRegHistory) => {
                     if (result) {
 
                         self.empRegHistory(new EmpRegHistory(result));
                     }
-                }).always(() => {
-                    block.clear();
-                });;
+                });
             } else {
                 self.empRegHistory(null);
 

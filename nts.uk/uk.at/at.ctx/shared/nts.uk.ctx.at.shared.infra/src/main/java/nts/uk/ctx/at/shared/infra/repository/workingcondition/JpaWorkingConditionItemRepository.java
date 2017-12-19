@@ -40,11 +40,34 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
+	 * getByHistoryId(java.lang.String)
+	 */
+	@Override
+	public Optional<WorkingConditionItem> getByHistoryId(String historyId) {
+		// Query
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(historyId,
+				KshmtWorkingCondItem.class);
+
+		// Check exist
+		if (!optEntity.isPresent()) {
+			return Optional.empty();
+		}
+
+		// Return
+		return Optional.of(
+				new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(optEntity.get())));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#
 	 * findWorkingConditionItemByPersWorkCat(java.lang.String,
 	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<WorkingConditionItem> findWorkingConditionItemByPersWorkCat(String employeeId,
+	public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId,
 			GeneralDate baseDate) {
 
 		// get entity manager
@@ -121,7 +144,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
 
-		this.commandProxy().insert(entity);
+		this.commandProxy().update(entity);
 	}
 
 	/*
@@ -132,7 +155,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * delete(java.lang.String)
 	 */
 	@Override
-	public void remove(String historyId) {
+	public void delete(String historyId) {
 		this.commandProxy().remove(KshmtWorkingCondItem.class, historyId);
 	}
 

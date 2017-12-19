@@ -17,5 +17,5 @@ public interface FlTimeSettingPolicy {
 	 * @param predTime the pred time
 	 * @param flTimeSetting the fl time setting
 	 */
-	void validate(PredetemineTimeSetting predTime, FlTimeSetting flTimeSetting);
+	void validate(PredetemineTimeSetting predTime, FlowTimeSetting flTimeSetting);
 }

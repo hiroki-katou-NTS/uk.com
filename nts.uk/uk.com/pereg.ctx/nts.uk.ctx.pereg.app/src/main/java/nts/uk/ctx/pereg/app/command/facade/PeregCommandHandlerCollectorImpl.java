@@ -14,6 +14,7 @@ import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.DeleteBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
+//import nts.uk.ctx.at.shared.app.command.shortworktime.*;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.DeleteAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.UpdateAffClassificationCommand;
@@ -28,6 +29,7 @@ import nts.uk.ctx.bs.employee.app.command.employment.history.AddEmploymentHistor
 import nts.uk.ctx.bs.employee.app.command.employment.history.DeleteEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.history.UpdateEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.AddAffJobTitleMainCommand;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.UpdateAffJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.DeleteJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.UpdateJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCommand;
@@ -58,12 +60,13 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddEmployeeDataMngInfoCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){}
+			//,new TypeLiteral<PeregAddCommandHandler<AddShortWorkTimeCommand>>(){}
 			);
 	
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffiliationDepartmentCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffJobTitleMainCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
@@ -72,6 +75,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffCompanyHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>(){}
+			
+		//	,new TypeLiteral<PeregUpdateCommandHandler<UpdateShortWorkTimeCommand>>(){}
 			);
 	
 	/** Delete handlers */
@@ -83,6 +88,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmploymentHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteBusinessWorkTypeOfHistoryCommand>>(){}
+			//,new TypeLiteral<PeregDeleteCommandHandler<DeleteShortWorkTimeCommand>>(){}
 			);
 	
 	@Override

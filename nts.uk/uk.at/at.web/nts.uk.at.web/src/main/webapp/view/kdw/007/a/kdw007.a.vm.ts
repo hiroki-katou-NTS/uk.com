@@ -65,7 +65,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let self = this;
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
-                    let foundItem = _.find(self.lstErrorAlarm(), (item: ErrorAlarmWorkRecord) => {
+                    let foundItem = _.find(self.lstErrorAlarm(), (item) => {
                         return item.code == code;
                     });
                     if (foundItem) {
@@ -76,20 +76,32 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             });
         }
 
+        isExistedCode() {
+            let self = this;
+            let foundItem = _.find(self.lstErrorAlarm(), (item) => {
+                return item.code == "U" + self.selectedErrorAlarm().code();
+            });
+            if (foundItem) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         changeSelectedErrorAlarm(foundItem) {
             let self = this;
             $(".nts-input").ntsError("clear");
             self.reSetData(self.selectedErrorAlarm(), foundItem);
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage(code): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             service.getAll().done((lstData) => {
                 if (lstData && lstData.length > 0) {
                     let sortedData = _.orderBy(lstData, ['code'], ['asc']);
                     self.lstErrorAlarm(sortedData);
-                    self.selectedErrorAlarmCode(sortedData[0].code);
+                    self.selectedErrorAlarmCode(code !== null ? code : sortedData[0].code);
                     self.isNewMode(false);
                 } else {
                     self.isNewMode(true);
@@ -108,7 +120,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.isNewMode(true);
             self.selectedTab('tab-1');
         }
-    
+
         reSetData(selectedErrorAlarm, param) {
             selectedErrorAlarm.companyId(param && param.companyId ? param.companyId : '');
             selectedErrorAlarm.code(param && param.code ? param.code : '');
@@ -138,7 +150,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let self = this;
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                let data = ko.mapping.toJS(self.selectedErrorAlarm());
+                var data = ko.mapping.toJS(self.selectedErrorAlarm());
                 data.boldAtr = data.boldAtr ? 1 : 0;
                 data.alCheckTargetCondition.filterByBusinessType = data.alCheckTargetCondition.filterByBusinessType ? 1 : 0;
                 data.alCheckTargetCondition.filterByEmployment = data.alCheckTargetCondition.filterByEmployment ? 1 : 0;
@@ -167,14 +179,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     item.countableAddAtdItems = Object.values(item.countableAddAtdItems);
                     item.countableSubAtdItems = Object.values(item.countableSubAtdItems);
                 });
-                debugger;
-                service.update(data).done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    let currentItem = self.selectedErrorAlarmCode();
-                    self.startPage().done(() => {
-                        self.selectedErrorAlarmCode(currentItem);
+                if (self.isNewMode() && self.isExistedCode()) {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
+                } else {
+                    service.update(data).done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.startPage(self.isNewMode() ? "U" + data.code : data.code);
                     });
-                });
+                }
             }
 
         }
@@ -185,7 +197,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                 service.remove(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                    self.startPage();
+                    self.startPage(null);
                 });
             })
         }
@@ -331,7 +343,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         }
         /* End Tab 4 */
     }
-    
+
     export class ErrorAlarmWorkRecord {
         /* 会社ID */
         companyId: KnockoutObservable<string>;

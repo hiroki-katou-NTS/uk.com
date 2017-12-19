@@ -84,12 +84,24 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		
 		dataSetter.setData("dailyCreateTotal", targetPersons.size());
 		
+		ProcessState finalStatus = ProcessState.SUCCESS;
+		
 		//各処理の実行		
-		ProcessState status = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList, periodTime, executionAttr, companyId, empCalAndSumExecLogID, executionLog);
+		finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, employeeIdList, periodTime, executionAttr, companyId, empCalAndSumExecLogID, executionLog);
+		
+//		if (finalStatus == ProcessState.SUCCESS) {
+//			// next Step : 日別実績の計算
+//			// fake status
+//			finalStatus = ProcessState.SUCCESS;
+//			if(finalStatus == ProcessState.SUCCESS){
+//				// next Step : 申請の反映
+//			}
+//			
+//		}
 		
 		// ドメインモデル「就業計算と修正実行ログ」を更新する
 		// 就業計算と集計実行ログ．実行状況　←　実行中止
-		if (status == ProcessState.INTERRUPTION) {
+		if (finalStatus == ProcessState.INTERRUPTION) {
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.STOPPING.value);
 		} else {
 			// 完了処理 (Xử lý hoàn thành)

@@ -64,4 +64,14 @@ public class TimeZone extends DomainObject {
 	public boolean isBetweenOrEqual(TimeZone timezone) {
 		return this.start.greaterThanOrEqualTo(timezone.start) && this.end.lessThanOrEqualTo(timezone.getEnd());
 	}
+
+	/**
+	 * Consist of.
+	 *
+	 * @param time the time
+	 * @return true, if successful
+	 */
+	public boolean consistOf(TimeWithDayAttr time) {
+		return time.greaterThanOrEqualTo(this.start) && time.lessThanOrEqualTo(this.end);
+	}
 }

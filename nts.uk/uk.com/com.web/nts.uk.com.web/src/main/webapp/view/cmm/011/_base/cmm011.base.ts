@@ -24,7 +24,7 @@ module nts.uk.com.view.cmm011 {
                     self.fillTextDisplay();
                     
                     // set selected first
-                    self.selectFirst();
+//                    self.selectFirst();
                 });
             }
             

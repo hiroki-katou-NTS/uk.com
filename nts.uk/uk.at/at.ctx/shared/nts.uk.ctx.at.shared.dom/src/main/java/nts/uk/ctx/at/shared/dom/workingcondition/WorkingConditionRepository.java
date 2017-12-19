@@ -6,21 +6,20 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface WorkingConditionRepository.
  */
 public interface WorkingConditionRepository {
 
 	/**
-	 * Gets the working condition history.
+	 * Gets the by sid.
 	 *
-	 * @param companyId the company id
 	 * @param sId the s id
-	 * @param historyId the history id
-	 * @return the working condition history
+	 * @return the by sid
 	 */
-	Optional<WorkingCondition> getWorkingConditionHistory(String companyId, String sId,
-			String historyId);
+	Optional<WorkingCondition> getBySid(String sId);
 
 	/**
 	 * Gets the all woking condition.
@@ -32,12 +31,20 @@ public interface WorkingConditionRepository {
 	Optional<WorkingCondition> getBySid(String companyId, String sId);
 
 	/**
-	 * Gets the by sid.
+	 * Gets the by history id.
 	 *
-	 * @param sId the s id
-	 * @return the by sid
+	 * @param historyId the history id
+	 * @return the by history id
 	 */
-	Optional<WorkingCondition> getBySid(String sId);
+	Optional<WorkingCondition> getByHistoryId(String historyId);
+
+	/**
+	 * Gets the by sid and standard date.
+	 *
+	 * @param employeeId the employee id
+	 * @return the by sid and standard date
+	 */
+	Optional<WorkingCondition> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Adds the.
@@ -52,12 +59,19 @@ public interface WorkingConditionRepository {
 	 * @param workingCondition the working condition
 	 */
 	void update(WorkingCondition workingCondition);
+	
+	/**
+	 * Save.
+	 *
+	 * @param workingCondition the working condition
+	 */
+	void save(WorkingCondition workingCondition);
 
 	/**
 	 * Delete.
 	 *
 	 * @param historyId the history id
 	 */
-	void  remove(String employeeId);
+	void  delete(String employeeId);
 
 }

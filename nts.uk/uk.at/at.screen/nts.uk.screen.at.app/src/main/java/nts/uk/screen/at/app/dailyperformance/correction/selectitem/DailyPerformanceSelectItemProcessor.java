@@ -23,6 +23,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ColumnSetting;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItemControl;
@@ -156,6 +157,15 @@ public class DailyPerformanceSelectItemProcessor {
 				}
 			}
 			// set text to header
+			for (DPHeaderDto key : result.getLstHeader()) {
+				ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+				if(!key.getGroup().isEmpty()){
+					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
+					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+				}
+				result.getColumnSettings().add(columnSetting);
+
+			};
 			if (!lstAttendanceItem.isEmpty()) {
 				result.setHeaderText(lstAttendanceItem);
 				// set color to header
@@ -269,6 +279,9 @@ public class DailyPerformanceSelectItemProcessor {
 
 		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
 				correct, formatCodes);
+		screenDto.getLstFixedHeader().forEach(column ->{
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+		});
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
 		// Map<Integer, Integer> typeControl =
@@ -342,7 +355,7 @@ public class DailyPerformanceSelectItemProcessor {
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
 					result.add(new DPDataDto(dataId, "1", "", filterDate, false, employee.getId(), employee.getCode(),
-							employee.getBusinessName()));
+							employee.getBusinessName(),  employee.getWorkplaceId()));
 					dataId++;
 				}
 			}

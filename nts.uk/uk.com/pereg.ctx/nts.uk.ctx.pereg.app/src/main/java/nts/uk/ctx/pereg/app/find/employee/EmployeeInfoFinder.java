@@ -98,33 +98,66 @@ public class EmployeeInfoFinder {
 				standard += "1";
 				returnString = standard;
 			} else {
-				String increaseLetter = "", lastLetter = "";
-				int descIndex = 1;
-				boolean canContinue = true;
-				do {
-					lastLetter = Character.toString(value.charAt(length - descIndex));
-					// nếu ký tự tăng là 9
-					if (lastLetter.equals("9"))
-						increaseLetter = "0";
-					// nếu ký tự tăng là z
-					else if (lastLetter.equals("z"))
-						increaseLetter = "a";
-					// nếu ký tự tăng là Z
-					else if (lastLetter.equals("Z"))
-						increaseLetter = "A";
-					else
-						increaseLetter = String.valueOf((char) (((int) lastLetter.charAt(0)) + 1));
-					String preSub = (length - descIndex) >= 0 ? value.substring(0, length - descIndex)
-							: value.substring(0);
-					String posSub = descIndex > 1 ? value.substring(length - descIndex + 1) : "";
-					value = preSub + increaseLetter + posSub;
-					if (lastLetter.equals("9") || lastLetter.equals("z") || lastLetter.equals("Z")) {
-						descIndex += 1;
-						canContinue = true;
-					} else
-						canContinue = false;
-				} while (canContinue);
-				returnString = value;
+				char increaseLetter = ' ';
+				char [] arr = value.toCharArray();
+				char [] resultArr = new char[arr.length];
+				boolean con = true;
+				boolean beforeLast = false;
+				for(int i = arr.length -1; i >= 0; i--){
+					char curChar = arr[i];
+					if(con){
+						con = false;
+						switch(curChar){
+							case ' ':
+								increaseLetter = ' ';
+								con = true;
+								break;
+							case '9':
+								increaseLetter = '0';
+								beforeLast = true;
+								con = true;
+								break;
+							// nếu ký tự tăng là z
+							case 'z':
+								increaseLetter = 'a';
+								beforeLast = true;
+								con = true;
+								break;
+							// nếu ký tự tăng là Z
+							case 'Z':
+								increaseLetter = 'A';
+								beforeLast = true;
+								con = true;
+								break;
+							default:
+								increaseLetter = (char)((int) curChar + 1);								
+								break;
+						}
+						if(i != 0){
+							if(beforeLast && increaseLetter == ' '){
+								increaseLetter = '1';
+								beforeLast = false;
+								con = false;
+							}
+							resultArr[i] = increaseLetter;
+						}
+						else {
+							if(con){
+								resultArr[i] = increaseLetter;
+								for(int j = resultArr.length - 2; j > 0; j--){
+									char c = resultArr[j-1];
+									resultArr[j] = c;
+								}
+								if(beforeLast)
+									resultArr[0] = '1';
+							}else resultArr[i] = increaseLetter;
+						}
+					}else {
+						resultArr[i] = arr[i];
+					}
+					
+				}
+				returnString = String.valueOf(resultArr);
 			}
 		}
 		return returnString;
