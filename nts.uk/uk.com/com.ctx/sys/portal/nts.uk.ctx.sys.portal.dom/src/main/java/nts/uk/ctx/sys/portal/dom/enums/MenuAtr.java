@@ -8,11 +8,11 @@ package nts.uk.ctx.sys.portal.dom.enums;
  *
  */
 public enum MenuAtr {
-	
-	/**0:区切り線 */
-	SeparatorLine(0),
-	/**1:メニュー */
-	Menu(1);
+
+	/**0:メニュー */
+	Menu(0),
+	/**1:区切り線 */
+	SeparatorLine(1);
 	
 	public int value;
 
