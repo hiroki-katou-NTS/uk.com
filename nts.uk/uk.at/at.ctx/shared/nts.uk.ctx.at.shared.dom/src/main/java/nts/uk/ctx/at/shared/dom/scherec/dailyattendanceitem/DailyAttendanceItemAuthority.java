@@ -7,7 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 public class DailyAttendanceItemAuthority extends AggregateRoot {
 	private int attendanceItemId;
 
-	private int authorityId;
+	private String authorityId;
 
 	private boolean youCanChangeIt;
 
@@ -17,7 +17,7 @@ public class DailyAttendanceItemAuthority extends AggregateRoot {
 
 	private int userCanSet;
 
-	public DailyAttendanceItemAuthority(int attendanceItemId, int authorityId,
+	public DailyAttendanceItemAuthority(int attendanceItemId, String authorityId,
 			boolean youCanChangeIt, boolean canBeChangedByOthers, boolean use, int userCanSet) {
 		super();
 		this.attendanceItemId = attendanceItemId;
@@ -29,7 +29,7 @@ public class DailyAttendanceItemAuthority extends AggregateRoot {
 	}
 	
 	
-	public static DailyAttendanceItemAuthority createFromJavaType(int attendanceItemId, int authorityId,
+	public static DailyAttendanceItemAuthority createFromJavaType(int attendanceItemId, String authorityId,
 			boolean youCanChangeIt, boolean canBeChangedByOthers, boolean use,
 			int userCanSet) {
 		
