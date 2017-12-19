@@ -29,7 +29,6 @@ public class AddEmployeeCommandFacade {
 
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
-	// từ từ ,luong sai @@
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId) {
