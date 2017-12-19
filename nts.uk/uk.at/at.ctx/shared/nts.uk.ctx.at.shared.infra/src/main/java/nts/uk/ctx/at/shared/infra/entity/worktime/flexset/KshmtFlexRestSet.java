@@ -67,10 +67,10 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
     @Column(name = "TIME_MANAGER_SET_ATR")
     private int timeManagerSetAtr;
     
-    /** The fixed calculate method. */
+    /** The calculate method. */
     @Basic(optional = false)
-    @Column(name = "FIXED_CALCULATE_METHOD")
-    private int fixedCalculateMethod;
+    @Column(name = "CALCULATE_METHOD")
+    private int calculateMethod;
     
     /** The use plural work rest time. */
     @Basic(optional = false)
@@ -108,10 +108,10 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
         return hash;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof KshmtFlexRestSet)) {
 			return false;
@@ -124,24 +124,20 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "entity.KshmtFlexRestSet[ kshmtFlexRestSetPK=" + kshmtFlexRestSetPK + " ]";
-	}
+		 return "entity.KshmtFlexRestSet[ kshmtFlexRestSetPK=" + kshmtFlexRestSetPK + " ]";
+    }
 
-	/**
-	 * Gets the key.
-	 *
-	 * @return the key
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
 		return this.kshmtFlexRestSetPK;
 	}
-
+    
 }

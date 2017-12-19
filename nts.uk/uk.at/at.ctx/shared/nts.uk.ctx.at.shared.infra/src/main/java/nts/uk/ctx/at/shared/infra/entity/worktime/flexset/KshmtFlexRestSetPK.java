@@ -26,44 +26,47 @@ public class KshmtFlexRestSetPK implements Serializable {
 	
 	/** The cid. */
 	@Basic(optional = false)
-    @Column(name = "CID")
-    private String cid;
-    
-    /** The worktime cd. */
-    @Basic(optional = false)
-    @Column(name = "WORKTIME_CD")
-    private String worktimeCd;
+	@Column(name = "CID")
+	private String cid;
 
-    /**
-     * Instantiates a new kshmt flex rest set PK.
-     */
-    public KshmtFlexRestSetPK() {
-    }
+	/** The worktime cd. */
+	@Basic(optional = false)
+	@Column(name = "WORKTIME_CD")
+	private String worktimeCd;
 
-    /**
-     * Instantiates a new kshmt flex rest set PK.
-     *
-     * @param cid the cid
-     * @param worktimeCd the worktime cd
-     */
-    public KshmtFlexRestSetPK(String cid, String worktimeCd) {
-        this.cid = cid;
-        this.worktimeCd = worktimeCd;
-    }
+	/**
+	 * Instantiates a new kshmt flex rest set PK.
+	 */
+	public KshmtFlexRestSetPK() {
+	}
 
+	/**
+	 * Instantiates a new kshmt flex rest set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 */
+	public KshmtFlexRestSetPK(String cid, String worktimeCd) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
+		return hash;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-        return hash;
-    }
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -82,12 +85,16 @@ public class KshmtFlexRestSetPK implements Serializable {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return "entity.KshmtFlexRestSetPK[ cid=" + cid + ", worktimeCd=" + worktimeCd + " ]";
 	}
+
+	
 
 }

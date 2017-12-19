@@ -20,8 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The Class KshmtFlexHaRestTime.
  */
 
-@Getter
 @Setter
+@Getter
 @Entity
 @Table(name = "KSHMT_FLEX_HA_REST_TIME")
 public class KshmtFlexHaRestTime extends UkJpaEntity implements Serializable {

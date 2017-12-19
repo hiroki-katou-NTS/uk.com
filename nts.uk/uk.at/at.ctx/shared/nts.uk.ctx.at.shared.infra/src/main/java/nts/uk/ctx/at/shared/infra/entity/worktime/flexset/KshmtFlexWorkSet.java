@@ -61,6 +61,11 @@ public class KshmtFlexWorkSet extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "ESPECIAL_CALC")
     private int especialCalc;
+    
+    /** The use halfday shift. */
+    @Basic(optional = false)
+    @Column(name = "USE_HALFDAY_SHIFT")
+    private int useHalfdayShift;
 
     /**
      * Instantiates a new kshmt flex work set.

@@ -16,6 +16,7 @@ import lombok.Setter;
 /**
  * The Class KshmtFlexOtTimeSetPK.
  */
+
 @Getter
 @Setter
 @Embeddable
@@ -23,9 +24,9 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
 
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The cid. */
-	@Basic(optional = false)
+    @Basic(optional = false)
     @Column(name = "CID")
     private String cid;
     
@@ -34,10 +35,10 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
     @Column(name = "WORKTIME_CD")
     private String worktimeCd;
     
-    /** The am pm class. */
+    /** The am pm atr. */
     @Basic(optional = false)
-    @Column(name = "AM_PM_CLASS")
-    private int amPmClass;
+    @Column(name = "AM_PM_ATR")
+    private int amPmAtr;
     
     /** The worktime no. */
     @Basic(optional = false)
@@ -59,7 +60,7 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
         hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-        hash += (int) amPmClass;
+        hash += (int) amPmAtr;
         hash += (int) worktimeNo;
         return hash;
     }
@@ -69,7 +70,6 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// not set
 		if (!(object instanceof KshmtFlexOtTimeSetPK)) {
 			return false;
 		}
@@ -81,7 +81,7 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
 				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
 			return false;
 		}
-		if (this.amPmClass != other.amPmClass) {
+		if (this.amPmAtr != other.amPmAtr) {
 			return false;
 		}
 		if (this.worktimeNo != other.worktimeNo) {
@@ -90,13 +90,14 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
 	public String toString() {
-		return "entity.KshmtFlexOtTimeSetPK[ cid=" + cid + ", worktimeCd=" + worktimeCd + ", amPmClass=" + amPmClass
+		return "entity.KshmtFlexOtTimeSetPK[ cid=" + cid + ", worktimeCd=" + worktimeCd + ", amPmAtr=" + amPmAtr
 				+ ", worktimeNo=" + worktimeNo + " ]";
 	}
+    
     
 }

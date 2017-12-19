@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_FLEX_OT_TIME_SET")
-public class KshmtFlexOtTimeSet  extends UkJpaEntity implements Serializable {
+public class KshmtFlexOtTimeSet extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -101,10 +101,10 @@ public class KshmtFlexOtTimeSet  extends UkJpaEntity implements Serializable {
         return hash;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
 	public boolean equals(Object object) {
 		// not set
 		if (!(object instanceof KshmtFlexOtTimeSet)) {
@@ -135,5 +135,5 @@ public class KshmtFlexOtTimeSet  extends UkJpaEntity implements Serializable {
 		return this.kshmtFlexOtTimeSetPK;
 	}
 	
-    
+
 }
