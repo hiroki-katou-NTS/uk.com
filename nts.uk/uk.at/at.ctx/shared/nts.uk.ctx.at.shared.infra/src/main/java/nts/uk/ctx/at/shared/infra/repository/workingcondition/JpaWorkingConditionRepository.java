@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -30,29 +31,6 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 @Stateless
 public class JpaWorkingConditionRepository extends JpaRepository
 		implements WorkingConditionRepository {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
-	 * getWorkingConditionHistory(java.lang.String, java.lang.String,
-	 * java.lang.String)
-	 */
-	@Override
-	public Optional<WorkingCondition> getWorkingConditionHistory(String companyId, String sId,
-			String historyId) {
-
-		List<KshmtWorkingCond> result = this.findBy(companyId, sId, historyId);
-
-		// Check exist
-		if (CollectionUtil.isEmpty(result)) {
-			return Optional.empty();
-		}
-
-		// exclude select
-		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -75,6 +53,13 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
+	 * getBySid(java.lang.String)
+	 */
 	@Override
 	public Optional<WorkingCondition> getBySid(String sId) {
 
@@ -87,6 +72,70 @@ public class JpaWorkingConditionRepository extends JpaRepository
 
 		// exclude select
 		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
+	 * getByHistoryId(java.lang.String)
+	 */
+	@Override
+	public Optional<WorkingCondition> getByHistoryId(String historyId) {
+		List<KshmtWorkingCond> result = this.findBy(null, null, historyId);
+
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// exclude select
+		return Optional.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#
+	 * getBySidAndStandardDate(java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<WorkingCondition> getBySidAndStandardDate(String employeeId,
+			GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCond> cq = criteriaBuilder.createQuery(KshmtWorkingCond.class);
+
+		// root data
+		Root<KshmtWorkingCond> root = cq.from(KshmtWorkingCond.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtWorkingCond_.kshmtWorkingCondPK).get(KshmtWorkingCondPK_.sid),
+				employeeId));
+		lstpredicateWhere
+				.add(criteriaBuilder.lessThanOrEqualTo(root.get(KshmtWorkingCond_.strD), baseDate));
+		lstpredicateWhere.add(
+				criteriaBuilder.greaterThanOrEqualTo(root.get(KshmtWorkingCond_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// creat query
+		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
+
+		return Optional
+				.of(new WorkingCondition(new JpaWorkingConditionGetMemento(query.getResultList())));
 	}
 
 	/*
@@ -112,8 +161,9 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 */
 	@Override
 	public void update(WorkingCondition workingCondition) {
-		List<KshmtWorkingCond> entities = findBy(workingCondition.getCompanyId(),
+		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(),
 				workingCondition.getEmployeeId(), null);
+		this.commandProxy().removeAll(entities);
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
 		this.commandProxy().updateAll(entities);
 	}
@@ -126,8 +176,8 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 * remove(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void remove(String employeeId) {
-		List<KshmtWorkingCond> entities = findBy(null, employeeId, null);
+	public void delete(String employeeId) {
+		List<KshmtWorkingCond> entities = this.findBy(null, employeeId, null);
 		this.commandProxy().removeAll(entities);
 	}
 
@@ -138,6 +188,8 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 *            the company id
 	 * @param sId
 	 *            the s id
+	 * @param historyId
+	 *            the history id
 	 * @return the list
 	 */
 	private List<KshmtWorkingCond> findBy(String companyId, String sId, String historyId) {
@@ -176,6 +228,9 @@ public class JpaWorkingConditionRepository extends JpaRepository
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// Order by start date
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtWorkingCond_.strD)));
 
 		// creat query
 		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);

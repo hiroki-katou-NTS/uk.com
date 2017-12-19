@@ -14,13 +14,21 @@ import nts.arc.time.GeneralDate;
 public interface WorkingConditionItemRepository {
 
 	/**
+	 * Gets the by history id.
+	 *
+	 * @param historyId the history id
+	 * @return the by history id
+	 */
+	Optional<WorkingConditionItem> getByHistoryId(String historyId);
+
+	/**
 	 * Find working condition item by pers work cat.
 	 *
 	 * @param employeeId the employee id
 	 * @param baseDate the base date
 	 * @return the optional
 	 */
-	Optional<WorkingConditionItem> findWorkingConditionItemByPersWorkCat(String employeeId, GeneralDate baseDate);
+	Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Adds the.
@@ -41,6 +49,6 @@ public interface WorkingConditionItemRepository {
 	 *
 	 * @param historyId the history id
 	 */
-	void remove(String historyId);
+	void delete(String historyId);
 
 }
