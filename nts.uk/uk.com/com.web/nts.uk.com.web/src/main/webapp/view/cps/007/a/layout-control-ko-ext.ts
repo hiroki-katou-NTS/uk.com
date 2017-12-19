@@ -599,7 +599,7 @@ module nts.custombinding {
                     </div>
                 </div>
                 <script type="text/html" id="ctr_template">
-                    <div data-bind="text: $data.ctgType"></div>
+                    <!--<div data-bind="text: $data.ctgType"></div>-->
                     <div data-bind="let: {
                             nameid : itemDefId.replace(/-/g, '')
                         }">
