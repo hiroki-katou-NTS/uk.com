@@ -89,7 +89,10 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 		List<DateHistoryItem> periods = affClassHistory.get().getPeriods();
 		if(periods.size() == 0)
 			return new ArrayList<>();
-		return periods.stream()
+		List<DateHistoryItem> containItemPeriods = periods.stream().filter(x -> {
+			return affClassHistItemRepo.getByHistoryId(x.identifier()).isPresent();
+		}).collect(Collectors.toList());
+		return containItemPeriods.stream()
 				.sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 				.collect(Collectors.toList());

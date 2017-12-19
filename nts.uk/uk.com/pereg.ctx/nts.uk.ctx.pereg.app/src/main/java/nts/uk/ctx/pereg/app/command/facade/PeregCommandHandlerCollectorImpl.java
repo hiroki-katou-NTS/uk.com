@@ -29,6 +29,7 @@ import nts.uk.ctx.bs.employee.app.command.employment.history.AddEmploymentHistor
 import nts.uk.ctx.bs.employee.app.command.employment.history.DeleteEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.history.UpdateEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.AddAffJobTitleMainCommand;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.UpdateAffJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.DeleteJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.UpdateJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCommand;
@@ -65,7 +66,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffiliationDepartmentCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffJobTitleMainCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
