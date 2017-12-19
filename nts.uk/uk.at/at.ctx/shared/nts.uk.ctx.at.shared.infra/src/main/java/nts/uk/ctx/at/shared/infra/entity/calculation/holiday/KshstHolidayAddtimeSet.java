@@ -60,14 +60,14 @@ public class KshstHolidayAddtimeSet  extends UkJpaEntity implements Serializable
 	@Column(name = "YEARLY_RESERVED")
 	public int yearlyReserved;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstRegularWorkSet regularWorkSet;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstFlexWorkSet flexWorkSet;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstIrregularWorkSet irregularWorkSet;
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
+//	public KshstRegularWorkSet regularWorkSet;
+//	
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
+//	public KshstFlexWorkSet flexWorkSet;
+//	
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
+//	public KshstIrregularWorkSet irregularWorkSet;
 	
 	@Override
 	protected Object getKey() {

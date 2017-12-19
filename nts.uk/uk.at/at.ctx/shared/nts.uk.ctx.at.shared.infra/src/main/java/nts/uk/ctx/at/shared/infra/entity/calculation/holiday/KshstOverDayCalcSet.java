@@ -74,14 +74,14 @@ public class KshstOverDayCalcSet extends UkJpaEntity implements Serializable{
 	@Column(name = "EXCESS_PUBLIC_SPHD")
 	public int excessPublicSphd;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-	public KshstWeekdayHd weekdayHd;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-	public KshstOverdayHdAttSet overdayHdAttSet;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-	public KshstOverDayHdSet overDayHdSet;
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+//	public KshstWeekdayHd weekdayHd;
+//	
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+//	public KshstOverdayHdAttSet overdayHdAttSet;
+//	
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+//	public KshstOverDayHdSet overDayHdSet;
 	
 	@Override
 	protected Object getKey() {
