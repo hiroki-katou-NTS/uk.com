@@ -54,7 +54,12 @@ public class BshmtWorktimeHist extends UkJpaEntity implements Serializable {
 	public BshmtWorktimeHist() {
 		super();
 	}
-
+	public BshmtWorktimeHist(BshmtWorktimeHistPK bshmtWorktimeHistPK, String cid, GeneralDate startDate, GeneralDate endDate) {
+		this.bshmtWorktimeHistPK = bshmtWorktimeHistPK;
+		this.cId = cid;
+		this.strYmd = startDate;
+		this.endYmd = endDate;
+	}
 	/**
 	 * Instantiates a new bshmt worktime hist.
 	 *

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
@@ -22,6 +23,10 @@ public class WorkTimezoneCommonSetPolicyImpl implements WorkTimezoneCommonSetPol
 	@Inject
 	private WorkTimezoneOtherSubHolTimeSetPolicy wtzOtherPolicy;
 
+	/** The wtz late early policy. */
+	@Inject
+	private WorkTimezoneLateEarlySetPolicy wtzLateEarlyPolicy;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -33,8 +38,11 @@ public class WorkTimezoneCommonSetPolicyImpl implements WorkTimezoneCommonSetPol
 	 */
 	@Override
 	public void validate(PredetemineTimeSetting predSet, WorkTimezoneCommonSet wtzCommon) {
-		// validate
+		// validate WorkTimezoneOtherSubHolTimeSet
 		this.wtzOtherPolicy.validate(predSet, wtzCommon.getSubHolTimeSet());
+
+		// validate WorkTimezoneLateEarlySet
+		this.wtzLateEarlyPolicy.validate(predSet, wtzCommon.getLateEarlySet());
 	}
 
 }

@@ -23,9 +23,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeMail;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
@@ -38,7 +35,6 @@ import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 
 /**
  * The Class SyEmployeePubImp.
@@ -46,9 +42,6 @@ import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 @Stateless
 public class SyEmployeePubImp implements SyEmployeePub {
 
-	/** The employee repository. */
-	@Inject
-	private EmployeeRepository employeeRepository;
 
 	/** The person repository. */
 	@Inject
@@ -87,15 +80,42 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<String> employeeIds = affWorkplaceHistories.stream().map(AffWorkplaceHistory::getEmployeeId)
 				.collect(Collectors.toList());
 
-		List<Employee> employeeList = employeeRepository.findByListEmployeeId(companyId, employeeIds);
+		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);
 
-		// Return
-		return employeeList.stream()
-				.map(item -> EmployeeExport.builder().companyId(item.getCompanyId()).pId(item.getPId())
-						.sId(item.getSId()).sCd(item.getSCd().v()).sMail(item.getCompanyMail().v())
-						.retirementDate(item.getListEntryJobHist().get(0).getRetirementDate())
-						.joinDate(item.getListEntryJobHist().get(0).getJoinDate()).build())
-				.collect(Collectors.toList());
+		Date date = new Date();
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
+
+		return employeeList.stream().map(employee -> {
+
+			EmployeeExport result = new EmployeeExport();
+
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
+
+			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
+
+			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
+
+			if (affComHistByEmp.items() != null) {
+
+				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
+					return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+				}).collect(Collectors.toList());
+
+				if (!filter.isEmpty()) {
+					affComHistItem = filter.get(0);
+					result.setJoinDate(affComHistItem.start());
+					result.setRetirementDate(affComHistItem.end());
+				}
+			}
+
+			result.setCompanyId(employee.getCompanyId());
+			result.setSCd(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+			result.setSId(employee.getEmployeeId());
+			result.setPId(employee.getPersonId());
+			result.setSMail("");// bo mail roi.
+
+			return result;
+		}).collect(Collectors.toList());
 	}
 
 	/*
@@ -112,9 +132,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<String> employeeIds = affJobTitleHistories.stream().map(AffJobTitleHistory::getEmployeeId)
 				.collect(Collectors.toList());
 
-		List<Employee> employeeList = this.employeeRepository.findByListEmployeeId(companyId, employeeIds);
+		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);
 
-		List<String> personIds = employeeList.stream().map(Employee::getPId).collect(Collectors.toList());
+		List<String> personIds = employeeList.stream().map(EmployeeDataMngInfo::getPersonId)
+				.collect(Collectors.toList());
 
 		List<PersonImport> persons = this.syPersonAdapter.findByPersonIds(personIds);
 
@@ -124,9 +145,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		// Return
 		// TODO: Du san Q&A for jobCls #
 		return employeeList.stream()
-				.map(item -> ConcurrentEmployeeExport.builder().employeeId(item.getSId()).employeeCd(item.getSCd().v())
-						.personName(personNameMap.get(item.getPId())).jobId(jobId).jobCls(JobClassification.Principal)
-						.build())
+				.map(item -> ConcurrentEmployeeExport.builder().employeeId(item.getEmployeeId())
+						.employeeCd(item.getEmployeeCode().v()).personName(personNameMap.get(item.getPersonId()))
+						.jobId(jobId).jobCls(JobClassification.Principal).build())
 				.collect(Collectors.toList());
 	}
 
@@ -138,32 +159,57 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	 */
 	@Override
 	public EmployeeBasicInfoExport findBySId(String sId) {
+
+		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
 		// Employee Opt
-		Optional<Employee> empOpt = this.employeeRepository.getBySid(sId);
+		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sId);
 		if (!empOpt.isPresent()) {
 			return null;
 		}
 		// Get Employee
-		Employee emp = empOpt.get();
+		EmployeeDataMngInfo emp = empOpt.get();
 		// Person Opt
-		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPId());
+		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPersonId());
 		if (!personOpt.isPresent()) {
 			return null;
 		}
 		// Get Person
 		Person person = personOpt.get();
 		String pname = person.getPersonNameGroup().getPersonName().getFullName().v();
-		EmployeeMail comMailAddr = emp.getCompanyMail();
+		// EmployeeMail comMailAddr = emp.getCompanyMail();
 
-		EmployeeBasicInfoExport empBasicInfo = EmployeeBasicInfoExport.builder().pId(person.getPersonId())
-				.employeeId(emp.getSId() == null ? null : emp.getSId()).pName((pname == null ? null : pname))
-				.gender(person.getGender().value).birthDay(person.getBirthDate() == null ? null : person.getBirthDate())
-				.pMailAddr(null).employeeCode(emp.getSCd() == null ? null : emp.getSCd().v())
-				.entryDate(emp.getListEntryJobHist().get(0).getJoinDate())
-				.retiredDate(emp.getListEntryJobHist().get(0).getRetirementDate())
-				.companyMailAddr(comMailAddr == null ? null : new MailAddress(emp.getCompanyMail().v())).build();
+		result.setPId(person.getPersonId());
+		result.setEmployeeId(emp.getEmployeeId());
+		result.setPName(person.getPersonNameGroup().getPersonName().getFullName().v());
+		result.setGender(person.getGender().value);
+		result.setPMailAddr(new MailAddress(""));
+		result.setEmployeeCode(emp.getEmployeeCode().v());
+		result.setCompanyMailAddr(new MailAddress(""));
+		result.setBirthDay(person.getBirthDate());
 
-		return empBasicInfo;
+		Date date = new Date();
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
+
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(emp.getEmployeeId());
+
+		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
+
+		AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
+
+		if (affComHistByEmp.items() != null) {
+
+			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
+				return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+			}).collect(Collectors.toList());
+
+			if (!filter.isEmpty()) {
+				affComHistItem = filter.get(0);
+				result.setRetiredDate(affComHistItem.end());
+				result.setEntryDate(affComHistItem.start());
+			}
+		}
+
+		return result;
 	}
 
 	/*
@@ -175,7 +221,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<EmployeeBasicInfoExport> findBySIds(List<String> sIds) {
 
-		EmployeeBasicInfoExport result = null;
+		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
 
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
@@ -193,7 +239,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 			// Get Person
 			Person person = mapPersons.get(employee.getPersonId());
-			
+
 			if (person != null) {
 				result.setGender(person.getGender().value);
 				result.setPName(person.getPersonNameGroup().getBusinessName() == null ? null

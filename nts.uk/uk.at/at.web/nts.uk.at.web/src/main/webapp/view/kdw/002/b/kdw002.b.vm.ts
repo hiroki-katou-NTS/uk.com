@@ -20,9 +20,8 @@ module nts.uk.at.view.kdw002.b {
 
                 self.bussinessCurrentCode = ko.observable('');
                 self.bussinessCurrentCode.subscribe(businessTypeCode => {
-
                     self.bussinessCurrentCode(businessTypeCode);
-
+                    _.defer(() => nts.uk.ui.block.invisible());
                     $.when(service.getListDailyServiceTypeControl(businessTypeCode), service.getAttendanceItems()).done(
                         (DailyServiceTypeControls, attendanceItems) => {
                             $('#useCheckAll').prop('checked', false);
@@ -49,6 +48,7 @@ module nts.uk.at.view.kdw002.b {
                                     }
                                 }
                             }
+                            nts.uk.ui.block.clear();
                         }
                     );
 

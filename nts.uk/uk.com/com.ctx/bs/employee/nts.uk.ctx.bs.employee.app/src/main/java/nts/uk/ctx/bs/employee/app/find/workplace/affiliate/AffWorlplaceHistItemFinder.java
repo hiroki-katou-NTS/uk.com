@@ -63,7 +63,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
 			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
 		}
-		return new PeregDomainDto();
+		return null;
 	}
 	
 	private PeregDomainDto getByHistId(String historyId){
@@ -72,7 +72,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
 			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
 		}
-		return new PeregDomainDto();
+		return null;
 	}
 
 	@Override

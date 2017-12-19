@@ -4,7 +4,6 @@ module nts.uk.com.view.cas013.a {
     export module service {
         export class Service {
             paths = {
-                getCompanyIdOfLoginUser: "ctx/sys/auth/roleset/companyidofloginuser",
                 getRoleType: "ctx/sys/auth/grant/roleindividual/getRoleType",
                 getRole: "ctx/sys/auth/grant/roleindividual/getRoles",
                 getRoleGrants: "ctx/sys/auth/grant/roleindividual/getRoleGrants",
@@ -14,10 +13,6 @@ module nts.uk.com.view.cas013.a {
                 deleteRoleGrant: "ctx/sys/auth/grant/roleindividual/deleteRoleGrant"
             }
             constructor() {}
-            //get company id of login user
-            getCompanyIdOfLoginUser(): JQueryPromise<any> {
-                return ajax(this.paths.getCompanyIdOfLoginUser);
-            }
             getRoleTypes(): JQueryPromise<any> {
                 return ajax("com", this.paths.getRoleType);
             }

@@ -6,6 +6,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 
 @Getter
 @Setter
@@ -63,4 +64,8 @@ public class User extends AggregateRoot {
 				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class), new MailAddress(mailAddress), new UserName(userName), associatedPersonID);
 	}
 
+	public boolean hasAssociatedPersonID() {
+		return !StringUtil.isNullOrEmpty(this.associatedPersonID, false);
+	}
+	
 }

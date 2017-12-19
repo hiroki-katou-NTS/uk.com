@@ -14,12 +14,12 @@ public interface FlWorkDedGetMemento {
 	 *
 	 * @return the overtime setting
 	 */
-	FlOTSet getOvertimeSetting();
+	FlowOTSet getOvertimeSetting();
 
 	/**
 	 * Gets the calculate setting.
 	 *
 	 * @return the calculate setting
 	 */
-	FlCalcSet getCalculateSetting();
+	FlowCalculateSet getCalculateSetting();
 }

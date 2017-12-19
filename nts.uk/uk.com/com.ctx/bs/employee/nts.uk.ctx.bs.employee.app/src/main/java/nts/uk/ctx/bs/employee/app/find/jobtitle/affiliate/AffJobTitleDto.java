@@ -52,12 +52,12 @@ public class AffJobTitleDto extends PeregDomainDto {
 
 	}
 
-	public AffJobTitleDto(String recordId, String employeeId) {
-		super(recordId, employeeId, null);
+	public AffJobTitleDto(String recordId) {
+		super(recordId);
 	}
 
 	public static AffJobTitleDto createFromDomain(AffJobTitleHistoryItem histItem, AffJobTitleHistory_ver1 history) {
-		AffJobTitleDto dto = new AffJobTitleDto(histItem.getHistoryId(), histItem.getEmployeeId());
+		AffJobTitleDto dto = new AffJobTitleDto(histItem.getHistoryId());
 		dto.setDateHistoryItem(history.getHistoryItems().get(0));
 		dto.setStartDate(history.getHistoryItems().get(0).start());
 		dto.setEndDate(history.getHistoryItems().get(0).end());

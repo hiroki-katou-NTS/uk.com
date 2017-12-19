@@ -72,25 +72,16 @@ module nts.uk.com.view.cas013.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-
-            /**
-             *実行時情報をチェックする- check runtime
-             */
-            new service.Service().getCompanyIdOfLoginUser().done((companyId: any) => {
-                if (!companyId) {
-                    self.backToTopPage();
-                    dfd.resolve();
-                } else {
-                    // initial screen
-                    dfd.resolve();
-                    new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
-                        self.listRoleType(data);
-                    });
-                }
-            }).fail(error => {
+            if (!__viewContext.user) {
                 self.backToTopPage();
                 dfd.resolve();
-            });
+            } else {
+                // initial screen
+                new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
+                    self.listRoleType(data);
+                    dfd.resolve();
+                });
+            }
             return dfd.promise();
         }
 
@@ -106,10 +97,9 @@ module nts.uk.com.view.cas013.a.viewmodel {
             if (roleType != '') {
                 new service.Service().getRole(roleType).done(function(data: any) {
                     if (data != null && data.length > 0) {
-                        var items = [];
-                        items = _.sortBy(data, ["roleCode", "roleId"]);
-                        self.listRole(items);
-                        self.selectedRole(items[0].roleId);
+                        data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
+                        self.listRole(data);
+                        self.selectedRole(data[0].roleId);
                     }
                     else {
                         self.listRole([]);
@@ -164,6 +154,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         self.isDelete(true);
                     }
                 });
+            }else{
+                self.isDelete(false);    
             }
         }
         New(): void {
@@ -206,7 +198,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     self.upDate();
                 }
             } else if (nts.uk.text.isNullOrEmpty(self.userName())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" ,messageParams:['ユーザー ']});
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: ['ユーザー '] });
             } else if (nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)) {
                 $(".nts-input").trigger("validate");
             }
@@ -222,6 +214,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             block.invisible();
             new service.Service().insertRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
                 if (!nts.uk.util.isNullOrUndefined(data)) {
+                    self.selectedRoleIndividual("");
                     self.selectRole(roleId, data);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.isCreateMode(false);
@@ -260,6 +253,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     var userId = self.selectedRoleIndividual();
                     block.invisible();
                     new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
+                        self.selectedRoleIndividual('');
                         self.selectRole(self.selectedRole(), '');
                     }).always(() => {
                         block.clear();
@@ -287,11 +281,13 @@ module nts.uk.com.view.cas013.a.viewmodel {
         roleId: string;
         roleCode: string;
         name: string;
+        assignAtr: string;
 
-        constructor(roleId: string, roleCode: string, name: string) {
+        constructor(roleId: string, roleCode: string, name: string, assignAtr: string) {
             this.roleId = roleId;
             this.roleCode = roleCode;
             this.name = name;
+            this.assignAtr = assignAtr;
         }
     }
     class RoleIndividual {

@@ -22,13 +22,13 @@ public class PermissionSettingMenuPubImpl implements PermissionSettingMenuPub{
 	public List<PermissionSettingMenuExport> findByRoleType(int roleType) {
 		List<PermissionSettingMenuExport> result = new ArrayList<PermissionSettingMenuExport>();
 		List<PermissionSettingMenu> perMenues = perSettingMenuRepo.findbyRoleType(roleType);
-		PermissionSettingMenuExport dto = new PermissionSettingMenuExport();
+
 		if (perMenues != null && !perMenues.isEmpty()) {
 			perMenues.forEach(m -> {
 				StandardMenu standardMenu = standardMenuRepo.getStandardMenubyCode(
 						AppContexts.user().companyId(), m.getMenuCode().toString(), m.getSystem().value,
 						m.getClassification().value).get();
-				
+				PermissionSettingMenuExport dto = new PermissionSettingMenuExport();
 				dto.setCode(standardMenu.getCode().toString());
 				dto.setDisplayName(standardMenu.getDisplayName().toString());
 				dto.setProgramId(standardMenu.getProgramId());
