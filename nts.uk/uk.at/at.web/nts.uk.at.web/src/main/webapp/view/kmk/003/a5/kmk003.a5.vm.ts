@@ -1,31 +1,48 @@
 module a5 {
+    import FixTableOption = nts.uk.at.view.kmk003.base.fixedtable.FixTableOption;
+    import FlowWorkRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestTimezoneModel;
+    import FixHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixHalfDayWorkTimezoneModel;
+    import FlexHalfDayWorkTimeModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexHalfDayWorkTimeModel;
+
     class ScreenModel {
 
-        oneDayOption: any;
-        morningOption: any;
-        afternoonOption: any;
+        // flex or difftime or fix timezones
+        oneDayTimezones: KnockoutObservableArray<any>;
+        morningTimezones: KnockoutObservableArray<any>;
+        afternoonTimezones: KnockoutObservableArray<any>;
 
-        oneDayFlexOption: any;
-        morningFlexOption: any;
-        afternoonFlexOption: any;
+        // flex restSet
+        oneDayRestSets: KnockoutObservableArray<any>;
+        morningRestSets: KnockoutObservableArray<any>;
+        afternoonRestSets: KnockoutObservableArray<any>;
+        oneDayHereAfterRestSet: any;
+        morningHereAfterRestSet: any;
+        afternoonHereAfterRestSet: any;
 
-        oneDayFlexOption2: any;
-        morningFlexOption2: any;
-        afternoonFlexOption2: any;
+        // flow timezones
+        flowTimezones: KnockoutObservableArray<any>;
 
-        oneDay: KnockoutObservableArray<any>;
-        morning: KnockoutObservableArray<any>;
-        afternoon: KnockoutObservableArray<any>;
-        oneDayFlex: KnockoutObservableArray<any>;
-        morningFlex: KnockoutObservableArray<any>;
-        afternoonFlex: KnockoutObservableArray<any>;
-        oneDayFlex2: KnockoutObservableArray<any>;
-        morningFlex2: KnockoutObservableArray<any>;
-        afternoonFlex2: KnockoutObservableArray<any>;
+        // flow restSet
+        flowRestSets: KnockoutObservableArray<any>;
+        hereAfterRestSet: any;
+
+        // ntsFixTableCustom options
+        // timezone option
+        oneDayTimezoneOption: FixTableOption;
+        morningTimezoneOption: FixTableOption;
+        afternoonTimezoneOption: FixTableOption;
+        // restSet flex option
+        oneDayRestSetOption: FixTableOption;
+        morningRestSetOption: FixTableOption;
+        afternoonRestSetOption: FixTableOption;
+        // flow timezone option
+        flowTimezoneOption: FixTableOption;
+        flowRestSetOption: FixTableOption;
+
 
         // switch
         switchDs: Array<any>;
-        switchVl: KnockoutObservable<any>;
+        fixedRestTime: KnockoutObservable<number>; // 0 = not use, 1 = use
 
         // checkbox
         checkOneDay: KnockoutObservable<boolean>;
@@ -33,38 +50,42 @@ module a5 {
         checkAfternoon: KnockoutObservable<boolean>;
 
         // flag
-        settingMethod: KnockoutObservable<any>;
-        settingWorkFrom: KnockoutObservable<any>;
+        isFlex: KnockoutObservable<boolean>;
+        isFlow: KnockoutObservable<boolean>;
+        isFixed: KnockoutObservable<boolean>;
+        isDiffTime: KnockoutObservable<boolean>;
 
-        // enable
-        display19: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow
-        display23: KnockoutComputed<boolean>; // ( flex and suru ) or (fix or diff)
-        display24: KnockoutComputed<boolean>; // flow and suru
-        display25: KnockoutComputed<boolean>; // flow and nashi
-        display26: KnockoutComputed<boolean>; // flex and nashi
+        // show/hide
+        isFlexOrFlow: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow *19
+        isTzOfFlexOrFixedOrDiff: KnockoutComputed<boolean>; // ( flex and suru ) or (fix or diff) *23
+        isFlowTimezone: KnockoutComputed<boolean>; // flow and suru *24
+        isFlowRestTime: KnockoutComputed<boolean>; // flow and nashi *25
+        isFlexRestTime: KnockoutComputed<boolean>; // flex and nashi *26
+        display27: KnockoutComputed<boolean>; // A23_7 is checked *27
 
         constructor(valueAccessor: any) {
             let self = this;
 
             // nts fix table data source
-            self.oneDay = ko.observableArray([]);
-            self.morning = ko.observableArray([]);
-            self.afternoon = ko.observableArray([]);
-            self.oneDayFlex = ko.observableArray([]);
-            self.morningFlex = ko.observableArray([]);
-            self.afternoonFlex = ko.observableArray([]);
-            self.oneDayFlex2 = ko.observableArray([]);
-            self.morningFlex2 = ko.observableArray([]);
-            self.afternoonFlex2 = ko.observableArray([]);
+            self.oneDayTimezones = ko.observableArray([]);
+            self.morningTimezones = ko.observableArray([]);
+            self.afternoonTimezones = ko.observableArray([]);
+            self.oneDayRestSets = ko.observableArray([]);
+            self.morningRestSets = ko.observableArray([]);
+            self.afternoonRestSets = ko.observableArray([]);
+            self.oneDayHereAfterRestSet = ko.observableArray([]);
+            self.morningHereAfterRestSet = ko.observableArray([]);
+            self.afternoonHereAfterRestSet = ko.observableArray([]);
 
-            // init computed
-            self.initComputed(valueAccessor);
-
+            // switch button
             self.switchDs = [
                 { code: 1, name: nts.uk.resource.getText("KMK003_142") }, // used
                 { code: 0, name: nts.uk.resource.getText("KMK003_143") } // not used
             ];
-            self.switchVl = ko.observable(0);
+            self.fixedRestTime = ko.observable(0);
+
+            // init computed
+            self.initComputed(valueAccessor);
 
             // check box
             self.checkOneDay = ko.observable(false);
@@ -80,9 +101,9 @@ module a5 {
             let self = this;
             // TODO need to check
 //            if (self.display23()) {
-//                $('#ntsft-a5-oneday').ntsFixTableCustom(self.oneDayOption);
-//                $('#ntsft-a5-morning').ntsFixTableCustom(self.morningOption);
-//                $('#ntsft-a5-afternoon').ntsFixTableCustom(self.afternoonOption);
+//                $('#ntsft-a5-oneday').ntsFixTableCustom(self.oneDayTimezoneOption);
+//                $('#ntsft-a5-morning').ntsFixTableCustom(self.morningTimezoneOption);
+//                $('#ntsft-a5-afternoon').ntsFixTableCustom(self.afternoonTimezoneOption);
 //            }
 //            if (self.display26()) {
 //                $('#ntsft-a5-onedayFlex').ntsFixTableCustom(self.oneDayFlexOption);
@@ -96,134 +117,142 @@ module a5 {
 //            }
         }
 
+        /**
+         * Initial computed.
+         */
         private initComputed(valueAccessor: any): void {
             let self = this;
             let settingWorkFrom = valueAccessor.settingWorkFrom; // flex = 2
             let settingMethod = valueAccessor.settingMethod; // fix = 1, diff = 2, flow = 3
 
-            self.display19 = ko.computed(() => {
-                if (settingWorkFrom() == '2' || settingMethod() == '3') {
-                    return true;
-                }
+            let fixHalfDayWorkTimes: Array<FixHalfDayWorkTimezoneModel> = [];
+            let diffHalfDayWorkTimes: Array<FixHalfDayWorkTimezoneModel> = []; //TODO chua co model
+            let flexHalfDayWorkTimes: Array<FlexHalfDayWorkTimeModel> = []
+            let flowWorkRestTimezone: FlowWorkRestTimezoneModel = new FlowWorkRestTimezoneModel();
+
+            self.isFlex = ko.computed(() => {
+                return true;
+            });
+            self.isFlow = ko.computed(() => {
                 return false;
             });
-            self.display23 = ko.computed(() => {
-                if (settingMethod() == 1
-                    || settingMethod() == 2
-                    || (settingWorkFrom() == '2' && self.switchVl() == 1)
-                ) {
-                    return true;
-                }
+            self.isFixed = ko.computed(() => {
                 return false;
             });
-            self.display24 = ko.computed(() => {
-                return settingMethod() == 3 && self.switchVl() == 1;
+            self.isDiffTime = ko.computed(() => {
+                return false;
             });
-            self.display25 = ko.computed(() => {
-                return settingMethod() == 3 && self.switchVl() == 0;
+
+            self.isFlexOrFlow = ko.computed(() => {
+                return self.isFlex() || self.isFlow();
             });
-            self.display26 = ko.computed(() => {
-                return settingWorkFrom() == 2 && self.switchVl() == 0;
+            self.isTzOfFlexOrFixedOrDiff = ko.computed(() => {
+                return (self.isFlex() && self.fixedRestTime() == 0) || self.isFixed() || self.isDiffTime();
+            });
+            self.isFlowTimezone = ko.computed(() => {
+                return self.isFlow() && self.fixedRestTime() == 1;
+            });
+            self.isFlowRestTime = ko.computed(() => {
+                return self.isFlow() && self.fixedRestTime() == 0;
+            });
+            self.isFlexRestTime = ko.computed(() => {
+                return self.isFlex() && self.fixedRestTime() == 0;
             });
         }
 
+        /**
+         * Set fixed table option
+         */
         private setFixedTableOption(): void {
-            const maxRowDefault = 1;
-            const minRowDefault = 1;
-            const maxRowDisplayDefault = 5;
-
+            const maxRowTimezone = 10;
+            const minRowDefault = 0;
+            const maxRowRestSet = 5;
             let self = this;
-            self.oneDayOption = {
-                maxRow: maxRowDefault,
+
+            // timezone option
+            self.oneDayTimezoneOption = {
+                maxRow: maxRowTimezone,
                 minRow: minRowDefault,
-                maxRowDisplay: maxRowDisplayDefault,
+                maxRowDisplay: maxRowTimezone,
                 isShowButton: true,
-                dataSource: self.oneDay,
+                dataSource: self.oneDayTimezones,
                 isMultipleSelect: true,
                 columns: self.getColumnSettingDefault(),
                 tabindex: -1
             };
-            self.morningOption = {
-                maxRow: maxRowDefault,
+            self.morningTimezoneOption = {
+                maxRow: maxRowTimezone,
                 minRow: minRowDefault,
-                maxRowDisplay: maxRowDisplayDefault,
+                maxRowDisplay: maxRowTimezone,
                 isShowButton: true,
-                dataSource: self.morning,
+                dataSource: self.morningTimezones,
                 isMultipleSelect: true,
                 columns: self.getColumnSettingDefault(),
                 tabindex: -1
             };
-            self.afternoonOption = {
-                maxRow: maxRowDefault,
+            self.afternoonTimezoneOption = {
+                maxRow: maxRowTimezone,
                 minRow: minRowDefault,
-                maxRowDisplay: maxRowDisplayDefault,
+                maxRowDisplay: maxRowTimezone,
                 isShowButton: true,
-                dataSource: self.afternoon,
+                dataSource: self.afternoonTimezones,
                 isMultipleSelect: true,
                 columns: self.getColumnSettingDefault(),
                 tabindex: -1
             };
 
-            // flex
-            self.oneDayFlexOption = {
-                maxRow: maxRowDefault,
+            // flex restSet option
+            self.oneDayRestSetOption = {
+                maxRow: maxRowRestSet,
                 minRow: minRowDefault,
-                maxRowDisplay: maxRowDisplayDefault,
+                maxRowDisplay: maxRowRestSet,
                 isShowButton: true,
-                dataSource: self.oneDayFlex,
+                dataSource: self.oneDayRestSets,
                 isMultipleSelect: true,
                 columns: self.getColumnSettingDefault(),
                 tabindex: -1
             };
-            self.morningFlexOption = {
-                maxRow: maxRowDefault,
+            self.morningRestSetOption = {
+                maxRow: maxRowRestSet,
                 minRow: minRowDefault,
-                maxRowDisplay: maxRowDisplayDefault,
+                maxRowDisplay: maxRowRestSet,
                 isShowButton: true,
-                dataSource: self.morningFlex,
+                dataSource: self.morningRestSets,
                 isMultipleSelect: true,
                 columns: self.getColumnSettingDefault(),
                 tabindex: -1
             };
-            self.afternoonFlexOption = {
-                maxRow: maxRowDefault,
+            self.afternoonRestSetOption = {
+                maxRow: maxRowRestSet,
                 minRow: minRowDefault,
-                maxRowDisplay: maxRowDisplayDefault,
+                maxRowDisplay: maxRowRestSet,
                 isShowButton: true,
-                dataSource: self.afternoonFlex,
+                dataSource: self.afternoonRestSets,
                 isMultipleSelect: true,
                 columns: self.getColumnSettingDefault(),
                 tabindex: -1
             };
 
-            // single no button list
-            self.oneDayFlexOption2 = {
-                maxRow: 1,
-                minRow: 1,
-                maxRowDisplay: 1,
-                isShowButton: false,
-                dataSource: self.oneDayFlex2,
-                isMultipleSelect: false,
+            // flow timezone option
+            self.flowTimezoneOption= {
+                maxRow: maxRowTimezone,
+                minRow: minRowDefault,
+                maxRowDisplay: maxRowTimezone,
+                isShowButton: true,
+                dataSource: self.afternoonRestSets,
+                isMultipleSelect: true,
                 columns: self.getColumnSettingDefault(),
                 tabindex: -1
             };
-            self.morningFlexOption2 = {
-                maxRow: 1,
-                minRow: 1,
-                maxRowDisplay: 1,
-                isShowButton: false,
-                dataSource: self.morningFlex2,
-                isMultipleSelect: false,
-                columns: self.getColumnSettingDefault(),
-                tabindex: -1
-            };
-            self.afternoonFlexOption2 = {
-                maxRow: 1,
-                minRow: 1,
-                maxRowDisplay: 1,
-                isShowButton: false,
-                dataSource: self.afternoonFlex2,
-                isMultipleSelect: false,
+
+            // flow restSet option
+            self.flowRestSetOption = {
+                maxRow: maxRowRestSet,
+                minRow: minRowDefault,
+                maxRowDisplay: maxRowRestSet,
+                isShowButton: true,
+                dataSource: self.afternoonRestSets,
+                isMultipleSelect: true,
                 columns: self.getColumnSettingDefault(),
                 tabindex: -1
             };
@@ -265,10 +294,7 @@ module a5 {
         }
 
         init(element: any,
-            valueAccessor: () => any,
-            allBindingsAccessor: () => any,
-            viewModel: any,
-            bindingContext: KnockoutBindingContext): void {
+            valueAccessor: () => any): void {
             let webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                 .mergeRelativePath('/view/kmk/003/a5/index.xhtml').serialize();
@@ -280,13 +306,6 @@ module a5 {
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
                 screenModel.loadData();
             });
-        }
-
-        update(element: any,
-            valueAccessor: () => any,
-            allBindingsAccessor: () => any,
-            viewModel: any,
-            bindingContext: KnockoutBindingContext): void {
         }
 
     }
