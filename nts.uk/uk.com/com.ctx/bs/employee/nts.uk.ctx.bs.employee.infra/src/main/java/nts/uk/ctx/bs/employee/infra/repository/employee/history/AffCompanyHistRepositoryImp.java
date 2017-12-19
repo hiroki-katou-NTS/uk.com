@@ -125,7 +125,8 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	@Override
 	public AffCompanyHist getAffCompanyHistoryOfEmployee(String cid, String employeeId) {
 		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
-				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId).getList();
+				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId)
+				.setParameter("cid", cid).getList();
 
 		return toDomain(lstBsymtAffCompanyHist);
 	}
