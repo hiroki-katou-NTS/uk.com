@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm051.a {
         import modal = nts.uk.ui.windows.sub.modal;
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
-        import Function = base.Function;
+        import FunctionPermission = base.FunctionPermission;
         import WorkplaceManager = base.WorkplaceManager;
         import ccg = nts.uk.com.view.ccg026;
         import model = nts.uk.com.view.ccg026.component.model;
@@ -33,7 +33,7 @@ module nts.uk.com.view.cmm051.a {
 
             // CCG026
             component: ccg.component.viewmodel.ComponentModel;
-            listPermission: KnockoutObservableArray<Function>;
+            listPermission: KnockoutObservableArray<FunctionPermission>;
             constructor() {
                 let self = this;
                 
@@ -78,28 +78,19 @@ module nts.uk.com.view.cmm051.a {
                         if (data[0]) {
                             self.selectedWkpManager(new WorkplaceManager(data[0]));
                         } else {
-                            let node = _.filter(self.wkpManagerTree(), function(o) { return o.wkpManagerId == newValue; });
+                            let node = _.filter(self.wkpManagerTree(), function(o : Node) { return o.wkpManagerId == newValue; });
                             let firstWkpMng = node[0].childs[0];
                             if (firstWkpMng && firstWkpMng != null) {
                                 self.selectedCode(firstWkpMng.wkpManagerId);
-//                                self.selectedWpkManagerId(firstWkpMng.wkpManagerId);
                             } else {
                                 self.selectedCode(self.wkpManagerList()[0].wkpManagerId);
-//                                self.selectedWpkManagerId(self.wkpManagerList()[0].wkpManagerId);
                             }
                         }
                     }
                     self.initWkpManager();
                 });
                 
-                
                 self.headers = ko.observableArray(["コード／名称"]);
-                self.selectedCode = ko.observable('');
-                self.selectedCode.subscribe(newValue => {
-                    self.selectedWpkManagerId(newValue);
-                });
-                
-                
                 self.listPermission = ko.observableArray([]);
             }
             
@@ -111,7 +102,6 @@ module nts.uk.com.view.cmm051.a {
                
                 // CCG026
                 self.component = new ccg.component.viewmodel.ComponentModel({ 
-                      roleId: self.selectedWpkManagerId,
                       classification: 1,
                       maxRow: 5
                 });
@@ -144,7 +134,6 @@ module nts.uk.com.view.cmm051.a {
                         } else {
                             self.selectedCode(savedWkpMngId);
                         }
-//                        let index = 0;
                         // Setup workplace manager display tree
                         _.forEach(dataList, (mng) => {
                             let node = _.find(self.wkpManagerTree(), function(o : Node) { return o.wkpManagerId == mng.employeeInfo.employeeId; });
@@ -152,7 +141,6 @@ module nts.uk.com.view.cmm051.a {
                                 node.childs.push(new WorkplaceManager(mng));
                             } else {
                                 self.wkpManagerTree.push(new Node(mng.employeeInfo.employeeCode, mng.employeeInfo.namePerson, [new WorkplaceManager(mng)], mng.employeeInfo.employeeId));
-//                                index++;
                             }
                         });
                         self.reBindingTreeList();
@@ -237,10 +225,6 @@ module nts.uk.com.view.cmm051.a {
                     $("#func-notifier-errors").addClass("shown");
                     return false;
                 }
-//                $('#wkpName').ntsEditor('validate');
-//                $('#wkpDisplayName').ntsEditor('validate');
-//                $('#wkpFullName').ntsEditor('validate');
-
                 return !$('.nts-input').ntsError('hasError');
             }
             
@@ -248,20 +232,22 @@ module nts.uk.com.view.cmm051.a {
              * clearError
              */
             private clearError() {
-                $('#wkpCd').ntsError('clear');
-//                $('#wkpName').ntsError('clear');
-//                $('#wkpDisplayName').ntsError('clear');
-//                $('#wkpFullName').ntsError('clear');
+                $(".ntsDatepicker ").ntsError('clear');
+                $("#func-notifier-errors").removeClass("shown");
             }
             
             // 削除 button
             delWkpManager() {
                 let self = this;
-                let nodeList = self.wkpManagerTree();
+                let nodeList : Array<Node> = self.wkpManagerTree();
                 let currentNodeIndex = _.findIndex(nodeList, x => x.wkpManagerId == self.selectedWkpManager().employeeId);
+                if (currentNodeIndex < 0) {
+                    nts.uk.ui.dialog.alert('エラーがあります');
+                    return;
+                }
                 let currentNode = nodeList[currentNodeIndex];
                 let lastNodeIndex = nodeList.length - 1;
-                let currentItemList = currentNode.childs;
+                let currentItemList : Array<WorkplaceManager> = currentNode.childs;
                 let currentItemIndex = _.findIndex(currentItemList, x => x.wkpManagerId == self.selectedWkpManager().wkpManagerId);
                 let lastItemIndex = currentItemList.length - 1;
                 let isFinalElement = currentItemList.length - 1 == 0 ? true : false;
@@ -322,8 +308,6 @@ module nts.uk.com.view.cmm051.a {
                     }
                     var employeeId = getShared('CDL009Output');
                     self.getEmployeeInfo(employeeId);
-//                    self.selectedWkpManager().employeeInfo({employeeCode:'12         3', namePerson : 'An                                       '});
-//                    self.selectedWkpManager().employeeId = employeeId;
                 });
             }
             
@@ -332,7 +316,9 @@ module nts.uk.com.view.cmm051.a {
                 service.getEmployeeInfo(empId).done(function(data: any) {
                     if (data) {
                         self.selectedWkpManager().employeeId = empId;
-                        self.selectedWkpManager().employeeInfo(data);
+                        self.selectedWkpManager().employeeInfo({employeeId:data.employeeId,
+                                                                employeeCode:data.employeeCode,
+                                                                namePerson:data.personalName});
                     }
                 }).fail(function(error) {
                     self.showMessageError({ messageId: error.messageId });

@@ -11,7 +11,6 @@ import javax.enterprise.util.TypeLiteral;
 
 import find.person.info.PersonDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
 import nts.uk.ctx.bs.employee.app.find.department.affiliate.AffDeptHistDto;
 import nts.uk.ctx.bs.employee.app.find.employee.history.AffCompanyHistInfoDto;

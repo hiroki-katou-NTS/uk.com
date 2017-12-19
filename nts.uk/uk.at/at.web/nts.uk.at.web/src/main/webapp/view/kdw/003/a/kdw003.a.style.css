@@ -20,7 +20,7 @@
 	width: 1200px;
 }
 
-#emp-component, #cbListDate {
+#cbListDate {
 	margin-top: 10px;
 }
 
@@ -146,11 +146,27 @@
 	height: 80px;
 }
 #numberHoliday{
-    margin-left: 850px;
+    margin-left: 5px;
 	height: 80px ; 
 	margin-top: 10px; 
-	margin-bottom: 10px; 
-	width: 1200px"
+	margin-bottom: 10px;
+}
+#emp-component{
+	margin-top: 10px;
+	margin-left: -10px;
+}
+.ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-footer, .ui-iggrid .ui-iggrid-toolbar {
+    background-color: white;
+    border-color: white;
+}
+#content-grid{
+	top: -30px;
+    position: relative;
+}
+#content-grid-not{
+	height: 20px ;
+	 position: relative;
+	  bottom: -35px;
 }
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */

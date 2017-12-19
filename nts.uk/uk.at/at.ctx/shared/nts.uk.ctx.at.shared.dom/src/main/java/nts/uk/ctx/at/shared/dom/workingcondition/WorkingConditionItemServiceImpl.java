@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.holidayset.HolidaySettingRepository;
  * The Class WorkingConditionItemServiceIpm.
  */
 @Stateless
-public class WorkingConditionItemServiceIpm implements WorkingConditionItemService {
+public class WorkingConditionItemServiceImpl implements WorkingConditionItemService {
 
 	/** The Constant STATUTORY_HOLIDAYS. */
 	/* 法定内休日 */
@@ -48,7 +48,7 @@ public class WorkingConditionItemServiceIpm implements WorkingConditionItemServi
 			GeneralDate baseDate, String workTypeCode) {
 
 		Optional<WorkingConditionItem> optWorkingCondItem = this.repositoryWorkingConditionItem
-				.findWorkingConditionItemByPersWorkCat(employeeId, baseDate);
+				.getBySidAndStandardDate(employeeId, baseDate);
 
 		// check list working condition item is present
 		if (optWorkingCondItem.isPresent()) {
@@ -66,17 +66,17 @@ public class WorkingConditionItemServiceIpm implements WorkingConditionItemServi
 
 				// filter by holiday Setting atr
 				switch (holidayAtr) {
-				case WorkingConditionItemServiceIpm.STATUTORY_HOLIDAYS:
+				case WorkingConditionItemServiceImpl.STATUTORY_HOLIDAYS:
 					if (this.checkInLawBreakTime(domain.getWorkCategory())) {
 						return domain.getWorkCategory().getInLawBreakTime();
 					}
 					return Optional.of(domain.getWorkCategory().getHolidayWork());
-				case WorkingConditionItemServiceIpm.NON_STATUTORY_HOLIDAYS:
+				case WorkingConditionItemServiceImpl.NON_STATUTORY_HOLIDAYS:
 					if (this.checkInLawBreakTime(domain.getWorkCategory())) {
 						return domain.getWorkCategory().getOutsideLawBreakTime();
 					}
 					return Optional.of(domain.getWorkCategory().getHolidayWork());
-				case WorkingConditionItemServiceIpm.PUBLIC_HOLIDAY:
+				case WorkingConditionItemServiceImpl.PUBLIC_HOLIDAY:
 					if (this.checkInLawBreakTime(domain.getWorkCategory())) {
 						return domain.getWorkCategory().getHolidayAttendanceTime();
 					}

@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements AffJobTitleHistoryRepository_ver1 {
 
 	private final String QUERY_GET_AFFJOBTITLEHIST_BYSID = "SELECT jb FROM BsymtAffJobTitleHist jb"
-			+ " WHERE jb.sid = :sid ORDER BY jb.strDate";
+			+ " WHERE jb.sid = :sid and jb.cid = :cid ORDER BY jb.strDate";
 	
 	private final String GET_BY_SID_DATE = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid = :sid and h.strDate <= :standardDate and h.endDate >= :standardDate";
@@ -34,7 +34,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		DateHistoryItem dateItem = null;
 		for (BsymtAffJobTitleHist item : listHist) {
 			dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
-			domain.add(dateItem);
+			domain.getHistoryItems().add(dateItem);
 		}
 		return domain;
 	}
@@ -52,7 +52,8 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	@Override
 	public Optional<AffJobTitleHistory_ver1> getListBySid(String cid, String sid) {
 		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
-				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID, BsymtAffJobTitleHist.class).setParameter("sid", sid).getList();
+				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID, BsymtAffJobTitleHist.class)
+				.setParameter("cid", cid).setParameter("sid", sid).getList();
 		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toAffJobTitleHist(listHist));
 		}

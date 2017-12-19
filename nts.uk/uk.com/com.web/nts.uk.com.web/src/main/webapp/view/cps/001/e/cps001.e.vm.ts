@@ -47,6 +47,11 @@ module cps001.e.vm {
         upload() {
             let self = this;
             nts.uk.ui.block.grayout();
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
             
             if (isImageLoaded.imgOnView) {

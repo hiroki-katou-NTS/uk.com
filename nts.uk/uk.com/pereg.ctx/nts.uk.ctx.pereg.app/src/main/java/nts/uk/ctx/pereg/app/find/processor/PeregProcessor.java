@@ -131,7 +131,7 @@ public class PeregProcessor {
 		// get category
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
 				.get();
-
+		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
 		if (!isMainDetail) {
 			query.setCategoryCode(perInfoCtg.getCategoryCode().v() + "SD");
 		}
