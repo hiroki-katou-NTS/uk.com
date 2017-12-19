@@ -25,10 +25,11 @@ public class DPDataDto {
     private String employeeId;
     private String employeeCode;
     private String employeeName;
+    private String workplaceId;
     private Set<DPCellDataDto> cellDatas;
     
 	public DPDataDto(int id, String state, String error, GeneralDate date, boolean sign, String employeeId,
-			String employeeCode, String employeeName) {
+			String employeeCode, String employeeName, String workplaceId) {
 		this.id = id;
 		this.state = state;
 		this.error = error;
@@ -37,6 +38,7 @@ public class DPDataDto {
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
 		this.employeeName = employeeName;
+		this.workplaceId = workplaceId;
 		this.cellDatas = new HashSet<DPCellDataDto>();
 	}
 	
