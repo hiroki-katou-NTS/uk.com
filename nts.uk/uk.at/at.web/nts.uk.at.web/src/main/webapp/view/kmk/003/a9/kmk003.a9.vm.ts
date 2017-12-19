@@ -1,5 +1,7 @@
 module a9 {
     
+    import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
+    import WorkTimeMethodSet = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeMethodSet
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
     
@@ -40,6 +42,12 @@ module a9 {
         constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
                     
+            // Check exist
+            if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
+                // Stop rendering page
+                return;    
+            }
+            
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
@@ -51,109 +59,111 @@ module a9 {
             _self.listRoundingValue = ko.observableArray([]);
             
             _self.listRoundingTimeValue(_self.settingEnum.roundingTime);
-            _self.listRoundingValue(_self.settingEnum.roundingSimple.reverse());
+            _self.listRoundingValue(_self.settingEnum.roundingSimple.reverse());        
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                (newValue === true) ? _self.loadDetailMode() : _self.loadSimpleMode();
+                console.log('change to ' + (newValue ? 'detail' : 'simple'));
+                _self.changeWorkSettingMode();
             });                                   
+            // Subscribe Work Setting Regular/Flex mode
             _self.workTimeDailyAtr = ko.observable(0);
-            _self.workTimeMethodSet = ko.observable(0);               
-            
+            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
+                console.log('change workTimeDailyAtr');
+                _self.workTimeDailyAtr(newValue);
+                _self.changeWorkSettingMode();
+            });  
+            // Subscribe Work Setting Fixed/Diff/Flow mode
+            _self.workTimeMethodSet = ko.observable(0); 
+            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
+                console.log('change workTimeMethodSet');
+                _self.workTimeMethodSet(newValue);
+                _self.changeWorkSettingMode();
+            });                          
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
             
-            // Call first time
+            // Binding value 
             screenMode == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
+            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }            
         
         /**
-         * UI - Detail: change to Detail mode
+         * UI - All: change WorkSetting mode
          */
-        private loadDetailMode(): void {
-            let _self = this;
-            
-            // Subscribe Work Setting mode
-            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                console.log('change workTimeDailyAtr');
-                _self.workTimeDailyAtr(newValue);
-                _self.changeWorkSettingModeDetail();
-            });  
-            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                console.log('change workTimeMethodSet');
-                _self.workTimeMethodSet(newValue);
-                _self.changeWorkSettingModeDetail();
-            });  
-            
-            // Call first time
-            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
-            _self.changeWorkSettingModeDetail();
-        }
-        
-        /**
-         * UI - Detail: change WorkSetting mode
-         */
-        private changeWorkSettingModeDetail(): void {
+        private changeWorkSettingMode(): void {
             let _self = this;        
                        
-            //TODO
-            if (_self.workTimeDailyAtr() === _self.settingEnum.workTimeDailyAtr[0].value) {
+            //TODO           
+            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
-                    case 0: {
+                    case WorkTimeMethodSet.FIXED_WORK: {
                         console.log("fixed");
-                        //_self.changeBindingDetail(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);                                    
+                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);                                
                     } break;
-                    case 1: {
+                    case WorkTimeMethodSet.DIFFTIME_WORK: {
                         console.log("diff");
-                        //_self.changeBindingDetail(_self.model.diffWorkSetting.commonSetting.lateEarlySet.otherClassSets);
+                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.lateEarlySet.otherClassSets);
                     } break;
-                    case 2: {
+                    case WorkTimeMethodSet.FLOW_WORK: {
                         console.log("flow");
-                        //_self.changeBindingDetail(_self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets);
+                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets);
                     } break;               
                     default: {
                         console.log("fixed default");
-                        //_self.changeBindingDetail(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);
+                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);      
                     }
                 } 
             } else {
                 // Flex work
                 console.log("flex");
-                //_self.changeBindingDetail(_self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets); 
+                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets);             
             }               
         }       
+        
+        /**
+         * UI - All: change Binding mode
+         */
+        private changeBinding(otherClassSets: OtherEmTimezoneLateEarlySetModel[]): void {
+            let _self = this;
+            if (_self.isDetailMode()) {
+                _self.changeBindingDetail(otherClassSets); 
+            } else {
+                _self.changeBindingSimple(otherClassSets); 
+            }  
+        }
         
         /**
          * UI - Detail: change Binding Detail mode
          */
         private changeBindingDetail(otherClassSets: OtherEmTimezoneLateEarlySetModel[]): void {
             let _self = this;
-            let otherClassSet1: OtherEmTimezoneLateEarlySetModel = otherClassSets[0];
-            let otherClassSet2: OtherEmTimezoneLateEarlySetModel = otherClassSets[1];
-            // Check late and early
-            if (otherClassSet1.lateEarlyAtr() === _self.settingEnum.lstLateEarlyAtr[0].value) {
-                _self.lateSetting = otherClassSet1.delTimeRoundingSet;
-                _self.leaveEarlySetting = otherClassSet2.delTimeRoundingSet;
-            } else {
-                _self.lateSetting = otherClassSet2.delTimeRoundingSet;
-                _self.leaveEarlySetting = otherClassSet1.delTimeRoundingSet;
-            }  
+            let otherClassSet1: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.LATE);
+            let otherClassSet2: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
+            _self.lateSetting = otherClassSet1.delTimeRoundingSet;
+            _self.leaveEarlySetting = otherClassSet2.delTimeRoundingSet;
         }
         
         /**
-         * UI - Simple: change to Simple mode
+         * UI - Simple: change Binding Simple mode 
          */
-        private loadSimpleMode(): void {          
+        private changeBindingSimple(otherClassSets: OtherEmTimezoneLateEarlySetModel[]): void {
             let _self = this;
-            
-            // No simple mode
-            _self.loadDetailMode();
+            let otherClassSet1: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.LATE);
+            let otherClassSet2: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
+            _self.lateSetting = otherClassSet1.delTimeRoundingSet;
+            _self.leaveEarlySetting = otherClassSet2.delTimeRoundingSet;
         }
+    }
+    
+    enum LateEarlyAtr {
+        LATE,
+        EARLY
     }
     
     /**

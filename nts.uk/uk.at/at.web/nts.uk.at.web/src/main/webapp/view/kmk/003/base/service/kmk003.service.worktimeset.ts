@@ -43,8 +43,21 @@ module nts.uk.at.view.kmk003.a {
                     rounding: EnumConstantDto[];
                     roundingSimple: EnumConstantDto[];
                     lstLateEarlyAtr: EnumConstantDto[];
+                    workSystemAtr: EnumConstantDto[];
                 }
 
+
+                
+                export enum WorkTimeDailyAtr {
+                    REGULAR_WORK,
+                    FLEX_WORK
+                }
+                
+                export enum WorkTimeMethodSet {
+                    FIXED_WORK,
+                    DIFFTIME_WORK,
+                    FLOW_WORK
+                }
             }
         }
     }

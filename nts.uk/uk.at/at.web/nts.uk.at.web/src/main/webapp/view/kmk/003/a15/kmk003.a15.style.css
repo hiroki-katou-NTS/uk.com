@@ -1,16 +1,16 @@
-.tab_12_setting_rows {
+.tab_15_setting_rows {
 	margin-top: 20px;
 	width: 100%;
 	display: flex;
     align-items: center;
 }
 
-.tab_12_setting_header {
+.tab_15_setting_header {
 	width: 180px;
 	margin-left: 20px;
 }
 
-.tab_12_inline_item {
+.tab_15_inline_item {
 	padding: 0px 10px 0px 10px;
 	display: inline-block;
 }

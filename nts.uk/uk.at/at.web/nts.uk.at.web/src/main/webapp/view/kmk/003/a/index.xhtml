@@ -39,10 +39,14 @@
 			<com:stylefile path="../a7/kmk003.a7.style.css" />
 			<com:scriptfile path="../a8/kmk003.a8.vm.js" />
 			<com:stylefile path="../a8/kmk003.a8.style.css" />
+			
+			<!-- Begin tab 09 -->
 			<com:scriptfile path="../a9/kmk003.a9.vm.js" />
-			<com:stylefile path="../a9/kmk003.a9.style.css" />
+			<com:stylefile path="../a9/kmk003.a9.style.css" /><!-- End tab 09 -->
+			
+			<!-- Begin tab 10 -->
 			<com:scriptfile path="../a10/kmk003.a10.vm.js" />
-			<com:stylefile path="../a10/kmk003.a10.style.css" />
+			<com:stylefile path="../a10/kmk003.a10.style.css" /><!-- End tab 10 -->
 			
 			<!-- Begin tab 11 -->
 			<com:scriptfile path="../a11/kmk003.a11.vm.js" />
@@ -59,6 +63,14 @@
 			<!-- Begin tab 14 -->
 			<com:scriptfile path="../a14/kmk003.a14.vm.js" />
 			<com:stylefile path="../a14/kmk003.a14.style.css" /><!-- End tab 14 -->
+			
+			<!-- Begin tab 15 -->
+			<com:scriptfile path="../a15/kmk003.a15.vm.js" />
+			<com:stylefile path="../a15/kmk003.a15.style.css" /><!-- End tab 15 -->
+			
+			<!-- Begin tab 16 -->
+			<com:scriptfile path="../a16/kmk003.a16.vm.js" />
+			<com:stylefile path="../a16/kmk003.a16.style.css" /><!-- End tab 16 -->
 			
 			<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
 			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
@@ -359,10 +371,20 @@
 												</div>
 											</div>
 											<div class="tab-a15">
-												<span>Tab Content 1</span><br />
+												<div data-bind="ntsKMK003A15: {
+													screenMode: tabMode,
+													model: mainSettingModel,
+													enum: settingEnum
+												}">
+												</div>
 											</div>
 											<div class="tab-a16">
-												<span>Tab Content 2</span><br />
+												<div data-bind="ntsKMK003A16: {
+													screenMode: tabMode,
+													model: mainSettingModel,
+													enum: settingEnum
+												}">
+												</div>
 											</div>
 										</div>
 									</td>

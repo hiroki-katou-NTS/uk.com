@@ -271,7 +271,6 @@ module nts.uk.at.view.kmk003.a {
                     diffTimeWorkSetting: DiffTimeWorkSettingDto ;
                     */
                 }
-
             }
         }
     }

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+	<div class="tab_15_setting_rows">
+		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_118')}</div>
+		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
+			<input tabindex="159" style="width: 80px;" data-bind="ntsTimeEditor: {value: dayShiftApplicationTime, inputFormat: 'time'}" />
+		</div>		
+	</div>
+	
+	<div class="tab_15_setting_rows">
+		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_119')}</div>
+		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
+			<input tabindex="160" style="width: 80px;" data-bind="ntsTimeEditor: {value: nightShiftApplicationTime, inputFormat: 'time'}" />
+		</div>		
+	</div>
+	
+	<div class="tab_15_setting_rows">
+		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
+		<div class="tab_15_inline_item" style="width: 100px;">
+			<div tabindex="161" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
+					options: listRoundingTimeValue,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					visibleItemsCount: 8,
+					value: dayShiftSetting.roundingTime,
+					editable: false,
+					enable: true }"></div>
+		</div>				
+		<div class="tab_15_inline_item">
+			<div tabindex="162" class="cf" data-bind="ntsSwitchButton: {
+				options: listRoundingValue,
+				optionsValue: 'value',
+				optionsText: 'localizedName',
+				value: dayShiftSetting.rounding }"></div>
+		</div>
+	</div>
+	
+	<div class="tab_15_setting_rows">
+		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
+		<div class="tab_15_inline_item" style="width: 100px;">
+			<div tabindex="163" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
+					options: listRoundingTimeValue,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					visibleItemsCount: 8,
+					value: nightShiftSetting.roundingTime,
+					editable: false,
+					enable: true }"></div>
+		</div>				
+		<div class="tab_15_inline_item">
+			<div tabindex="164" class="cf" data-bind="ntsSwitchButton: {
+				options: listRoundingValue,
+				optionsValue: 'value',
+				optionsText: 'localizedName',
+				value: nightShiftSetting.rounding }"></div>
+		</div>
+	</div>
+		
+</ui:composition>

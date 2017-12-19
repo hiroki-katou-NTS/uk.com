@@ -1,4 +1,4 @@
-module a10 {
+module a16 {
     
     import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
     import WorkTimeMethodSet = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeMethodSet
@@ -8,9 +8,9 @@ module a10 {
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     
     /**
-     * Screen Model - Tab 10
-     * 就業時間帯の共通設定 -> 加給設定
-     * WorkTimeCommonSet -> BonusPaySettingCode
+     * Screen Model - Tab 16
+     * 就業時間帯の共通設定 -> 0時跨ぎ計算
+     * WorkTimeCommonSet -> overDayCalcSetting
      */
     class ScreenModel {
         
@@ -24,7 +24,9 @@ module a10 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        bonusPaySettingCode: KnockoutObservable<string>;
+        zeroHStraddCalculateSetting: KnockoutObservable<boolean>;
+        
+        listZeroHStraddCalculateSetting: KnockoutObservableArray<any>;
         
         // Simple mode - Data  
         
@@ -44,8 +46,12 @@ module a10 {
             _self.model = model; 
             _self.settingEnum = settingEnum;
             
-            // Init all data           
-            _self.bonusPaySettingCode = ko.observable('');                                 
+            // Init all data                                      
+            _self.zeroHStraddCalculateSetting = ko.observable(false);
+            _self.listZeroHStraddCalculateSetting = ko.observableArray([
+                { value: true, localizedName: nts.uk.resource.getText("KMK003_142") },
+                { value: false, localizedName: nts.uk.resource.getText("KMK003_143") }
+            ]);
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -86,57 +92,57 @@ module a10 {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.raisingSalarySet);                                    
+                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet);                                    
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.raisingSalarySet);
+                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.zeroHStraddCalculateSet);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
-                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.raisingSalarySet);
+                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet);
                     } break;               
                     default: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.raisingSalarySet);
+                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet);
                     }
                 } 
             } else {
                 // Flex work
-                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.raisingSalarySet); 
+                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet); 
             }               
-        }                   
+        }       
         
         /**
          * UI - All: change Binding mode
          */
-        private changeBinding(raisingSalarySet: KnockoutObservable<string>): void {
+        private changeBinding(zeroHStraddCalculateSet: KnockoutObservable<boolean>): void {
             let _self = this;
             if (_self.isDetailMode()) {
-                _self.changeBindingDetail(raisingSalarySet); 
+                _self.changeBindingDetail(zeroHStraddCalculateSet); 
             } else {
-                _self.changeBindingSimple(raisingSalarySet); 
+                _self.changeBindingSimple(zeroHStraddCalculateSet); 
             }  
         }
         
         /**
          * UI - Detail: change Binding Detail mode
          */
-        private changeBindingDetail(raisingSalarySet: KnockoutObservable<string>): void {
-            let _self = this;           
-            _self.bonusPaySettingCode = raisingSalarySet;
+        private changeBindingDetail(zeroHStraddCalculateSet: KnockoutObservable<boolean>): void {
+            let _self = this;        
+            _self.zeroHStraddCalculateSetting = zeroHStraddCalculateSet;
         }
         
         /**
          * UI - Simple: change Binding Simple mode 
          */
-        private changeBindingSimple(raisingSalarySet: KnockoutObservable<string>): void {
+        private changeBindingSimple(zeroHStraddCalculateSet: KnockoutObservable<boolean>): void {
             let _self = this;
-            _self.bonusPaySettingCode = raisingSalarySet;
-        }              
+            _self.zeroHStraddCalculateSetting = zeroHStraddCalculateSet;
+        }
     }
     
     /**
-     * Knockout Binding Handler - Tab 10
+     * Knockout Binding Handler - Tab 16
      */
-    class KMK003A10BindingHandler implements KnockoutBindingHandler {
+    class KMK003A16BindingHandler implements KnockoutBindingHandler {
         
         /**
          * Constructor
@@ -154,7 +160,7 @@ module a10 {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
             let webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/a10/index.xhtml').serialize();
+                .mergeRelativePath('/view/kmk/003/a16/index.xhtml').serialize();
             // Get data
             let input = valueAccessor();
             let screenMode = input.screenMode;
@@ -170,5 +176,5 @@ module a10 {
 
     }
     
-    ko.bindingHandlers['ntsKMK003A10'] = new KMK003A10BindingHandler();
+    ko.bindingHandlers['ntsKMK003A16'] = new KMK003A16BindingHandler();
 }

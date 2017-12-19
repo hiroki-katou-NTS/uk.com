@@ -1,16 +1,19 @@
-module a10 {
+module a15 {
     
     import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
     import WorkTimeMethodSet = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeMethodSet
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
     
+    import TimeRoundingSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRoundingSettingModel;
+    import WorkTimezoneMedicalSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneMedicalSetModel;
+    
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     
     /**
-     * Screen Model - Tab 10
-     * 就業時間帯の共通設定 -> 加給設定
-     * WorkTimeCommonSet -> BonusPaySettingCode
+     * Screen Model - Tab 15
+     * 就業時間帯の共通設定 -> 医療設定
+     * WorkTimeCommonSet -> MedicalWorkTimeSetting
      */
     class ScreenModel {
         
@@ -24,7 +27,13 @@ module a10 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        bonusPaySettingCode: KnockoutObservable<string>;
+        dayShiftApplicationTime: KnockoutObservable<number>;
+        nightShiftApplicationTime: KnockoutObservable<number>;
+        dayShiftSetting: TimeRoundingSettingModel;
+        nightShiftSetting: TimeRoundingSettingModel;     
+        
+        listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
+        listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
         
         // Simple mode - Data  
         
@@ -44,8 +53,16 @@ module a10 {
             _self.model = model; 
             _self.settingEnum = settingEnum;
             
-            // Init all data           
-            _self.bonusPaySettingCode = ko.observable('');                                 
+            // Init all data                                      
+            _self.dayShiftApplicationTime = ko.observable(0);
+            _self.nightShiftApplicationTime = ko.observable(0);
+            _self.dayShiftSetting = new TimeRoundingSettingModel();
+            _self.nightShiftSetting = new TimeRoundingSettingModel();
+            _self.listRoundingTimeValue = ko.observableArray([]);
+            _self.listRoundingValue = ko.observableArray([]);
+            
+            _self.listRoundingTimeValue(_self.settingEnum.roundingTime);
+            _self.listRoundingValue(_self.settingEnum.roundingSimple.reverse()); 
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -86,57 +103,72 @@ module a10 {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.raisingSalarySet);                                    
+                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.medicalSet);                                    
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.raisingSalarySet);
+                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.medicalSet);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
-                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.raisingSalarySet);
+                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.medicalSet);
                     } break;               
                     default: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.raisingSalarySet);
+                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.medicalSet);
                     }
                 } 
             } else {
                 // Flex work
-                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.raisingSalarySet); 
+                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.medicalSet); 
             }               
-        }                   
+        }       
         
         /**
          * UI - All: change Binding mode
          */
-        private changeBinding(raisingSalarySet: KnockoutObservable<string>): void {
+        private changeBinding(medicalSet: WorkTimezoneMedicalSetModel[]): void {
             let _self = this;
             if (_self.isDetailMode()) {
-                _self.changeBindingDetail(raisingSalarySet); 
+                _self.changeBindingDetail(medicalSet); 
             } else {
-                _self.changeBindingSimple(raisingSalarySet); 
+                _self.changeBindingSimple(medicalSet); 
             }  
         }
         
         /**
          * UI - Detail: change Binding Detail mode
          */
-        private changeBindingDetail(raisingSalarySet: KnockoutObservable<string>): void {
-            let _self = this;           
-            _self.bonusPaySettingCode = raisingSalarySet;
+        private changeBindingDetail(medicalSet: WorkTimezoneMedicalSetModel[]): void {
+            let _self = this;        
+            let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
+            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);
+            _self.dayShiftApplicationTime = dayShiftMedicalSet.applicationTime;   
+            _self.dayShiftSetting = dayShiftMedicalSet.roundingSet;
+            _self.nightShiftApplicationTime = nightShiftMedicalSet.applicationTime;   
+            _self.nightShiftSetting = nightShiftMedicalSet.roundingSet;
         }
         
         /**
          * UI - Simple: change Binding Simple mode 
          */
-        private changeBindingSimple(raisingSalarySet: KnockoutObservable<string>): void {
+        private changeBindingSimple(medicalSet: WorkTimezoneMedicalSetModel[]): void {
             let _self = this;
-            _self.bonusPaySettingCode = raisingSalarySet;
-        }              
+            let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
+            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);
+            _self.dayShiftApplicationTime = dayShiftMedicalSet.applicationTime;   
+            _self.dayShiftSetting = dayShiftMedicalSet.roundingSet;
+            _self.nightShiftApplicationTime = nightShiftMedicalSet.applicationTime;   
+            _self.nightShiftSetting = nightShiftMedicalSet.roundingSet;
+        }
+    }
+    
+    enum WorkSystemAtr {
+        DAY_SHIFT,
+        NIGHT_SHIFT
     }
     
     /**
-     * Knockout Binding Handler - Tab 10
+     * Knockout Binding Handler - Tab 15
      */
-    class KMK003A10BindingHandler implements KnockoutBindingHandler {
+    class KMK003A15BindingHandler implements KnockoutBindingHandler {
         
         /**
          * Constructor
@@ -154,7 +186,7 @@ module a10 {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
             let webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/a10/index.xhtml').serialize();
+                .mergeRelativePath('/view/kmk/003/a15/index.xhtml').serialize();
             // Get data
             let input = valueAccessor();
             let screenMode = input.screenMode;
@@ -170,5 +202,5 @@ module a10 {
 
     }
     
-    ko.bindingHandlers['ntsKMK003A10'] = new KMK003A10BindingHandler();
+    ko.bindingHandlers['ntsKMK003A15'] = new KMK003A15BindingHandler();
 }
