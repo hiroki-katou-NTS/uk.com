@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezonePolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtz;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
@@ -31,7 +31,7 @@ public class FlOffdayWtzPolicyImpl implements FlOffdayWtzPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtz)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, FlOffdayWtz flowOff) {
+	public void validate(PredetemineTimeSetting predTime, FlowOffdayWorkTimezone flowOff) {
 		// validate FlowWorkRestTimezone
 		this.flowRestPolicy.validate(predTime, flowOff.getRestTimeZone());
 	}

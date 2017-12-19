@@ -11,7 +11,7 @@ public class Role {
 
 	private String roleName;
 
-	public Role(String roleCode, String roleId, String roleName) {
+	public Role(String roleId, String roleCode, String roleName) {
 		super();
 		this.roleCode = roleCode;
 		this.roleId = roleId;

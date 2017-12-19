@@ -51,6 +51,9 @@
 	width: 400px;
 	padding-left: 23px;
 }
+.show-text-user-id{
+	width: 700px;
+}
 
 .right-content {
 	margin-left: 100px;
@@ -60,6 +63,9 @@
 
 .right-content .right-content-space {
 	padding-left: 28px;
+}
+.right-content-space-employee-code {
+	padding-left: 14px;
 }
 
 .right-content .right-content-space-login {

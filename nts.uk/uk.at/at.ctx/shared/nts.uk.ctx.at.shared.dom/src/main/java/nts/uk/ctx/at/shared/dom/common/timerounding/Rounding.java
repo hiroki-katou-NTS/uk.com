@@ -41,7 +41,7 @@ public enum Rounding {
 	 * @param value the value
 	 * @param nameId the name id
 	 * @param description the description
-	 */
+	 */  
 	private Rounding(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;

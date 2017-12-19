@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -10,8 +8,6 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class BusinessTypeDto extends PeregDomainDto{
 
 	// 開始日
@@ -25,5 +21,16 @@ public class BusinessTypeDto extends PeregDomainDto{
 	//勤務種別CD
 	@PeregItem("IS00257")
 	private String businessTypeCode;
+	
+	public BusinessTypeDto(String recordId) {
+		super(recordId);
+	}
+	
+	public BusinessTypeDto(String recordId, GeneralDate startDate, GeneralDate endDate, String businessTypeCode) {
+		super(recordId);
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.businessTypeCode = businessTypeCode;
+	}
 	
 }

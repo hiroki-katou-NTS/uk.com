@@ -82,11 +82,18 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		AffCompanyHist affCompanyHist = achFinder.getAffCompanyHistoryOfEmployee(query.getEmployeeId());
-		if (affCompanyHist != null)
-			return affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
+		
+		if (affCompanyHist != null){
+			List<AffCompanyHistItem> comHists = affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem();
+			if(comHists.size() == 0) return new ArrayList<>();
+			List<AffCompanyHistItem> containItemComHists = comHists.stream().filter(x -> {
+						return aciFinder.getAffCompanyInfoByHistId(x.identifier()) != null;
+					}).collect(Collectors.toList());  
+			return containItemComHists.stream()
 					.sorted((a, b) -> b.start().compareTo(a.start()))
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 					.collect(Collectors.toList());
+		}
 		return new ArrayList<>();
 	}
 

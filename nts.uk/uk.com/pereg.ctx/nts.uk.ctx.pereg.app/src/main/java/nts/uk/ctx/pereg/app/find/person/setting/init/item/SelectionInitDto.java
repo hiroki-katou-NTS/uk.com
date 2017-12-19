@@ -14,7 +14,7 @@ public class SelectionInitDto {
 
 	public static SelectionInitDto fromDomainSelection(Selection domain) {
 		return new SelectionInitDto(domain.getSelectionID(), domain.getSelectionCD().toString(),
-				domain.getSelectionName().toString());
+				domain.getSelectionName().toString(), domain.getSelectionItemName());
 
 	}
 	

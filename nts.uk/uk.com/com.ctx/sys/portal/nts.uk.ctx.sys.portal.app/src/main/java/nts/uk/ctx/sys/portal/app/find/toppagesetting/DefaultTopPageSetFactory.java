@@ -36,6 +36,8 @@ import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.service.TopPagePartService;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.PersonPermissionSetting;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleAdapter;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleImport;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopMenuCode;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
@@ -76,6 +78,8 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	private FlowMenuRepository flowMenuRepository;
 	@Inject
 	private FileStorage fileStorage;
+	@Inject
+	private PortalJobTitleAdapter jobTitleAdapter;
 
 	private final String LOGIN_SCREEN = "login";
 
@@ -134,7 +138,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	 * get by position
 	 */
 	@Override
-	public LayoutAllDto getTopPageForPosition(String fromScreen, JobPositionDto jobPosition, TopPageJobSet topPageJob) {
+	public LayoutAllDto getTopPageForPosition(String fromScreen, PortalJobTitleImport jobPosition,TopPageJobSet topPageJob) {
 		/**
 		 * check = true (When start: display top page) check = false (When
 		 * start: display my page)
@@ -295,12 +299,12 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		String companyId = AppContexts.user().companyId();
 		List<String> lst = new ArrayList<>();
 		// lay job position
-		JobPositionDto jobPosition = topPageSelfSet.getJobPosition(AppContexts.user().employeeId());
-		if (jobPosition == null) {
+		Optional<PortalJobTitleImport> jobPosition = jobTitleAdapter.getJobPosition(AppContexts.user().employeeId());
+		if (!jobPosition.isPresent()) {
 			return false;
 		}
 
-		lst.add(jobPosition.getJobId());
+		lst.add(jobPosition.get().getJobTitleID());
 		// lay top page job title set
 		List<TopPageJobSet> lstTpJobSet = topPageJobSet.findByListJobId(companyId, lst);
 		if (lstTpJobSet.isEmpty()) {

@@ -2752,6 +2752,7 @@ var nts;
         (function (request) {
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             request.WEB_APP_NAME = {
+                comjs: 'nts.uk.com.js.web',
                 com: 'nts.uk.com.web',
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web'
@@ -2908,6 +2909,8 @@ var nts;
                     else {
                         dfd.resolve(res);
                     }
+                }).fail(function () {
+                    specials.errorPages.systemError();
                 });
                 return dfd.promise();
             }
@@ -2947,8 +2950,7 @@ var nts;
                         }
                     },
                     error: function (xhr, status, error) {
-                        alert(error);
-                        dfd.reject();
+                        specials.errorPages.systemError();
                     }
                 });
                 return dfd.promise();
@@ -3053,6 +3055,16 @@ var nts;
                     return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
                 }
                 specials.isFileExist = isFileExist;
+                var errorPages;
+                (function (errorPages) {
+                    function systemError() {
+                    }
+                    errorPages.systemError = systemError;
+                    function sessionTimeout() {
+                        jump('com', '/view/common/error/sessiontimeout/index.xhtml');
+                    }
+                    errorPages.sessionTimeout = sessionTimeout;
+                })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jump(webAppId, path, data) {
                 if (typeof arguments[1] !== 'string') {
@@ -3070,6 +3082,22 @@ var nts;
                 window.location.href = path;
             }
             request.jump = jump;
+            var login;
+            (function (login) {
+                var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+                function keepUsedLoginPage() {
+                    uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+                }
+                login.keepUsedLoginPage = keepUsedLoginPage;
+                function jumpToUsedLoginPage() {
+                    uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
+                        window.location.href = path;
+                    }).ifEmpty(function () {
+                        request.jump('/view/ccg007/a/index.xhtml');
+                    });
+                }
+                login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+            })(login = request.login || (request.login = {}));
             function resolvePath(path) {
                 var destination;
                 if (path.charAt(0) === '/') {
@@ -10991,9 +11019,9 @@ var nts;
                                 "<button class = 'ntsDateNextButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
                             $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" +
                                 "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
-                            var $nextButton = $container.find(".ntsDateNextButton");
-                            var $prevButton = $container.find(".ntsDatePrevButton");
-                            $nextButton.text("next").click(function (evt, ui) {
+                            var $nextButton = $container.find(".ntsDateNextButton").text("▶").css("margin-left", "3px");
+                            var $prevButton = $container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
+                            $nextButton.click(function (evt, ui) {
                                 var $startDate = $container.find(".ntsStartDatePicker");
                                 var $endDate = $container.find(".ntsEndDatePicker");
                                 var oldValue = value();
@@ -11023,7 +11051,7 @@ var nts;
                                 }
                                 value(oldValue);
                             });
-                            $prevButton.text("prev").click(function (evt, ui) {
+                            $prevButton.click(function (evt, ui) {
                                 var $startDate = $container.find(".ntsStartDatePicker");
                                 var $endDate = $container.find(".ntsEndDatePicker");
                                 var oldValue = value();
@@ -11748,12 +11776,14 @@ var nts;
                     }
                     function getSelectRow($grid) {
                         var row = null;
-                        var selectedRows = $grid.igGrid("selectedRows");
-                        if (selectedRows) {
-                            row = selectedRows[0];
-                        }
-                        else {
-                            row = $grid.igGrid("selectedRow");
+                        if ($grid.data("igGrid")) {
+                            var selectedRows = $grid.igGrid("selectedRows");
+                            if (selectedRows) {
+                                row = selectedRows[0];
+                            }
+                            else {
+                                row = $grid.igGrid("selectedRow");
+                            }
                         }
                         return row;
                     }
@@ -12386,6 +12416,53 @@ var nts;
                     return NtsHelpButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsHelpButton'] = new NtsHelpButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * HelpButton binding handler
+                 */
+                var NtsIconBindingHandler = (function () {
+                    function NtsIconBindingHandler() {
+                    }
+                    NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var iconNo = ko.unwrap(data.no);
+                        var width = ko.unwrap(data.width) || "100%";
+                        var height = ko.unwrap(data.height) || "100%";
+                        var iconFileName = iconNo + ".png";
+                        var iconPath = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                            .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                            .mergeRelativePath(iconFileName)
+                            .serialize();
+                        var $icon = $(element);
+                        $icon.addClass("img-icon");
+                        $icon.css({
+                            "background-image": "url(" + iconPath + ")",
+                            "background-size": "contain",
+                            width: width,
+                            height: height
+                        });
+                    };
+                    NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                    };
+                    return NtsIconBindingHandler;
+                }());
+                ko.bindingHandlers['ntsIcon'] = new NtsIconBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -16771,7 +16848,7 @@ var nts;
                         // TODO: Jump to top page.
                     });
                     displayUserInfo();
-                    nts.uk.request.ajax(constants.MenuDataPath).done(function (menuSet) {
+                    nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
                         var $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
                         if (!menuSet || menuSet.length === 0)
                             return;
@@ -16781,7 +16858,8 @@ var nts;
                             var selectedMenu = _.find(menuSet, function (m) {
                                 return m.webMenuCode === menuCode.get();
                             });
-                            generate($menuNav, selectedMenu);
+                            !uk.util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
+                                : generate($menuNav, menuSet[0]);
                         }
                         else {
                             generate($menuNav, menuSet[0]);
@@ -16828,7 +16906,7 @@ var nts;
                             op();
                         }
                     };
-                    nts.uk.request.ajax(constants.Companies).done(function (companies) {
+                    nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
                         if (!companies || companies.length === 0)
                             return;
                         var $companyName = $("<span/>").attr("id", "company-name");
@@ -16847,7 +16925,7 @@ var nts;
                             }
                             $companyList.fadeOut(100);
                         });
-                        nts.uk.request.ajax(constants.UserName).done(function (userName) {
+                        nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function (userName) {
                             var $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
                             $userImage.css("margin-right", "6px").on(constants.CLICK, function () {
                                 // TODO: Jump to personal profile.
@@ -16893,7 +16971,7 @@ var nts;
                  * Get program.
                  */
                 function getProgram() {
-                    nts.uk.request.ajax(constants.PG).done(function (pg) {
+                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
                         var $pgArea = $("#pg-area");
                         $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
@@ -16987,13 +17065,13 @@ var nts;
                             if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
                                 var fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
                                 // TODO: Show image
-                                //                    $titleImage.attr("src", fqpImage).show();
-                                $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
+                                $titleImage.attr("src", fqpImage).show();
+                                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
                                 height += 80;
                             }
                             if (t.treeMenu && t.treeMenu.length > 0) {
                                 _.forEach(t.treeMenu, function (item, i) {
-                                    if (item.menuAttr === 0) {
+                                    if (item.menuAttr === 1) {
                                         $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
                                         height += 30;
                                         return;
@@ -17020,6 +17098,7 @@ var nts;
                 })(titleMenu || (titleMenu = {}));
                 var constants;
                 (function (constants) {
+                    constants.APP_ID = "com";
                     constants.MENU = "UK-Menu";
                     constants.CLICK = "click";
                     constants.MenuDataPath = "/sys/portal/webmenu/finddetails";

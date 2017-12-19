@@ -513,7 +513,7 @@ module nts.uk.com.view.cmm007.g {
                 let wdoHdFr4 = new WorkdayoffFrameDto(WorkdayoffFrameNo.FOUR, _self.wdoFrName4(), _self.transferName4(), _self.useAtrWdoFrName4());
                 let wdoHdFr5 = new WorkdayoffFrameDto(WorkdayoffFrameNo.FIVE, _self.wdoFrName5(), _self.transferName5(), _self.useAtrWdoFrName5());
                 let wdoHdFr6 = new WorkdayoffFrameDto(WorkdayoffFrameNo.SIX, _self.wdoFrName6(), _self.transferName6(), _self.useAtrWdoFrName6());
-                let wdoHdFr7 = new WorkdayoffFrameDto(WorkdayoffFrameNo.SEVEN, _self.wdoFrName7(), _self.transferName5(), _self.useAtrWdoFrName5());
+                let wdoHdFr7 = new WorkdayoffFrameDto(WorkdayoffFrameNo.SEVEN, _self.wdoFrName7(), _self.transferName7(), _self.useAtrWdoFrName7());
                 let wdoHdFr8 = new WorkdayoffFrameDto(WorkdayoffFrameNo.EIGHT, _self.wdoFrName8(), _self.transferName8(), _self.useAtrWdoFrName8());
                 let wdoHdFr9 = new WorkdayoffFrameDto(WorkdayoffFrameNo.NINE, _self.wdoFrName9(), _self.transferName9(), _self.useAtrWdoFrName9());
                 let wdoHdFr10 = new WorkdayoffFrameDto(WorkdayoffFrameNo.TEN, _self.wdoFrName10(), _self.transferName10(), _self.useAtrWdoFrName10());

@@ -19,7 +19,7 @@ public enum FixedItemAtr {
 	EMPLOYMENT(2, "KML002_87", "Com_Employment"),
 	
 	/** 3- 分類 **/
-	CLASSIFICATION(3, "KML002_87", "Com_Jobtitle"),
+	CLASSIFICATION(3, "KML002_87", "Com_Class"),
 	
 	/** 4- 職位 **/
 	POSITION(4, "KML002_87", "Com_Jobtitle"),

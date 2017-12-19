@@ -18,8 +18,8 @@ import nts.uk.ctx.sys.gateway.app.command.singlesignon.RemoveWindowAccountComman
 import nts.uk.ctx.sys.gateway.app.command.singlesignon.SaveWindowAccountCommand;
 import nts.uk.ctx.sys.gateway.app.command.singlesignon.SaveWindowAccountCommandHandler;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserDto;
-import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserInfoFinder;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserInfoDate;
+import nts.uk.ctx.sys.gateway.app.find.singlesignon.UserInfoFinder;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindowAccountFinder;
 import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindownAccountFinderDto;
 
@@ -92,14 +92,6 @@ public class WindowAccountWs extends WebService{
 	@POST
 	public void removeWindowAccount(RemoveWindowAccountCommand removeCommand) {
 		removeWindowAccountCommandHandler.handle(removeCommand);
-	}
-	
-	
-//	@Path("return/userId")
-//	@POST
-//	public String returnUserId(String userId) {
-//		removeWindowAccountCommandHandler.handle(removeCommand);
-//	}
-	
+	}		
 	
 }

@@ -18,7 +18,7 @@ public interface FlStampReflectTzGetMemento {
 	 *
 	 * @return the two times work reflect basic time
 	 */
-	ReflectRefTwoWT getTwoTimesWorkReflectBasicTime();
+	ReflectReferenceTwoWorkTime getTwoTimesWorkReflectBasicTime();
 
 	/**
 	 * Gets the stamp reflect timezone.

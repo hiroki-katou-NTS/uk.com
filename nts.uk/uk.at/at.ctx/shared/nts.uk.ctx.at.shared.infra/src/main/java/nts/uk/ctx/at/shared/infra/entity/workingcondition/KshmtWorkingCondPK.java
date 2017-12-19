@@ -11,7 +11,6 @@ import javax.persistence.Embeddable;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtWorkingCondPK.
@@ -19,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Embeddable
-public class KshmtWorkingCondPK extends UkJpaEntity implements Serializable {
+public class KshmtWorkingCondPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -79,16 +78,6 @@ public class KshmtWorkingCondPK extends UkJpaEntity implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Gets the key.
-	 *
-	 * @return the key
-	 */
-	@Override
-	protected Object getKey() {
-		return this.historyId;
 	}
 
 }

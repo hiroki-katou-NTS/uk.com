@@ -23,7 +23,7 @@ a.fc-more {vertical-align: top; font-size: 8px !IMPORTANT;}
 .button-cell:active {top: 27px !IMPORTANT;}
 
 .event-note {display: none; position: absolute;z-index:100;width: 130px;height: 100px;background-color: #E8DEF8; box-shadow: 5px 5px 5px #888888;padding: 5px 0 0 5px;}
-.event-note:before{content: ' ';height: 0px;position: absolute;width: 0;border: 12px solid transparent;border-right-color: #E8DEF8; left: -24px; top: 6px;}
+.event-note:before{content: ' '; height: 0px; position: absolute; width: 0; border: 6px solid transparent; border-right-color: #E8DEF8; left: -12px; top: 11px;}
 .event-note span {color: gray}
 .event-data {display: none;}
 .event-note span{font-size: 10px;display: inline-block;}

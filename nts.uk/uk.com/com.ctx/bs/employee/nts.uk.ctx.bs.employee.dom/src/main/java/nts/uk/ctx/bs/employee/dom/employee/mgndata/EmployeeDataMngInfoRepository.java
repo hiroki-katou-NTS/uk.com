@@ -32,6 +32,8 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> findByPersonId(String pid);
 
 	List<EmployeeDataMngInfo> findByCompanyId(String cid);
+	
+	Optional<EmployeeDataMngInfo> findByEmpId(String sId);
 
 	// sonnlb code start
 
@@ -92,5 +94,11 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return
 	 */
 	Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd);
+	
+	//sonnlb start
+
+	String findLastEml(String companyId, String startLetters);
+	
+	//sonnlb end
 
 }
