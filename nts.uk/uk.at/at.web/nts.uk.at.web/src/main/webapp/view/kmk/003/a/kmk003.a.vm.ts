@@ -27,8 +27,8 @@ module nts.uk.at.view.kmk003.a {
             selectedSettingMethod: KnockoutObservable<string>;
 
             workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
-            columns: KnockoutObservable<any>;
-            selectedWorkTimezone: KnockoutObservable<string>;
+            columnWorktimeSettings: KnockoutObservable<any>;
+            selectedWorkTimeCode: KnockoutObservable<string>;
 
             siftCode: KnockoutObservable<string>;
             
@@ -88,12 +88,12 @@ module nts.uk.at.view.kmk003.a {
                 self.selectedSettingMethod = ko.observable('1');
                 
                 self.workTimeSettings = ko.observableArray([]);
-                self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'name', width: 130 },
+                self.columnWorktimeSettings = ko.observableArray([
+                    { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 100 },
+                    { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 130 },
                     { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'description', width: 50 }
                 ]);
-                self.selectedWorkTimezone = ko.observable('');
+                self.selectedWorkTimeCode = ko.observable('');
 
 
                 self.siftCode = ko.observable('');
@@ -155,6 +155,9 @@ module nts.uk.at.view.kmk003.a {
                 //TODO: xoa model khong dung den
                 self.workTimeSettingModel = new WorkTimeSettingModel();
                 self.predetemineTimeSettingModel = new PredetemineTimeSettingModel();
+                self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
+                   self.updateWorktimeCode(worktimeCode); 
+                });
             }
 
             /**
@@ -168,24 +171,32 @@ module nts.uk.at.view.kmk003.a {
                     service.findAllWorkTimeSet().done(function(worktime) {
                         self.workTimeSettings(worktime);
                         if (worktime && worktime.length > 0) {
-                            service.findWorktimeSetingInfoByCode(worktime[0].worktimeCode).done(function(worktimeSettingInfo) {
-                                self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
-                                self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
-                                self.mainSettingModel.workTimeSetting = self.workTimeSettingModel;
-                                self.mainSettingModel.predetemineTimeSetting = self.predetemineTimeSettingModel;
-                                service.findByCodeFlexWorkSetting(worktime[0].worktimeCode).done(function(flexdata){
-                                    if (flexdata) {
-                                        self.updateDataFlexMode(flexdata);
-                                    }
-                                    dfd.resolve();
-                                });
-                            });
+                            self.selectedWorkTimeCode(worktime[0].worktimeCode);
+                            dfd.resolve();
                         }
                     });
                 });
                 
                 
                 // set ntsFixedTable style
+                return dfd.promise();
+            }
+
+            private updateWorktimeCode(worktimeCode: string): JQueryPromise<void> {
+                var self = this;
+                let dfd = $.Deferred<void>();
+                service.findWorktimeSetingInfoByCode(worktimeCode).done(function(worktimeSettingInfo) {
+                    self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
+                    self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
+                    self.mainSettingModel.workTimeSetting = self.workTimeSettingModel;
+                    self.mainSettingModel.predetemineTimeSetting = self.predetemineTimeSettingModel;
+                    service.findByCodeFlexWorkSetting(worktimeCode).done(function(flexdata) {
+                        if (flexdata) {
+                            self.updateDataFlexMode(flexdata);
+                        }
+                        dfd.resolve();
+                    });
+                });
                 return dfd.promise();
             }
             
