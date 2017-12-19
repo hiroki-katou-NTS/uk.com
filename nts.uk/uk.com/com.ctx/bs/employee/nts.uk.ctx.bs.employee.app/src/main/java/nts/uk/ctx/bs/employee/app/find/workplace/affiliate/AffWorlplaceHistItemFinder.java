@@ -22,14 +22,14 @@ import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
 @Stateless
-public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistItemDto>{
+public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistItemDto> {
 
 	@Inject
 	private AffWorkplaceHistoryItemRepository_v1 affWrkplcHistItemRepo;
-	
+
 	@Inject
 	private AffWorkplaceHistoryRepository_v1 affWrkplcHistRepo;
-	
+
 	@Override
 	public String targetCategoryCode() {
 		return "CS00017";
@@ -47,7 +47,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
-		return query.getInfoId() == null ? getByEmpIdAndStandDate(query.getEmployeeId(), query.getStandardDate()) 
+		return query.getInfoId() == null ? getByEmpIdAndStandDate(query.getEmployeeId(), query.getStandardDate())
 				: getByHistId(query.getInfoId());
 	}
 
@@ -56,22 +56,30 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	private PeregDomainDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate){
-		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(employeeId, standDate);
-		if(affWrkplcHist.isPresent()){
-			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
-			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
+
+	private PeregDomainDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
+		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(employeeId,
+				standDate);
+		if (affWrkplcHist.isPresent()) {
+
+			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo
+					.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
+			if (affWrkplcHistItem.isPresent()) {
+				return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
+			}
 		}
 		return null;
 	}
-	
-	private PeregDomainDto getByHistId(String historyId){
+
+	private PeregDomainDto getByHistId(String historyId) {
 		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByHistId(historyId);
-		if(affWrkplcHist.isPresent()){
-			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
-			if(!affWrkplcHistItem.isPresent()) return null;
-			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
+		if (affWrkplcHist.isPresent()) {
+			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo
+					.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
+			if (affWrkplcHistItem.isPresent()) {
+				return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
+			}
+
 		}
 		return null;
 	}
@@ -79,19 +87,19 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getAffWorkplaceHistByEmployeeId(companyId, query.getEmployeeId());
+		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getAffWorkplaceHistByEmployeeId(companyId,
+				query.getEmployeeId());
 		if (!affWrkplcHist.isPresent())
 			return new ArrayList<>();
 		List<DateHistoryItem> historyItems = affWrkplcHist.get().getHistoryItems();
-		if(historyItems.size() == 0) 
+		if (historyItems.size() == 0)
 			return new ArrayList<>();
 		List<DateHistoryItem> containItemHists = historyItems.stream().filter(x -> {
 			return affWrkplcHistItemRepo.getByHistId(x.identifier()).isPresent();
 		}).collect(Collectors.toList());
-		return containItemHists.stream()
-				.sorted((a, b) -> b.start().compareTo(a.start()))
+		return containItemHists.stream().sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 				.collect(Collectors.toList());
-	
+
 	}
 }
