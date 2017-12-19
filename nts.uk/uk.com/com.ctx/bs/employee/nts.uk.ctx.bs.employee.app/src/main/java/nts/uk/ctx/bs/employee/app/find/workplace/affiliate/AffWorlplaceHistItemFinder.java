@@ -63,16 +63,17 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
 			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
 		}
-		return new PeregDomainDto();
+		return null;
 	}
 	
 	private PeregDomainDto getByHistId(String historyId){
 		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByHistId(historyId);
 		if(affWrkplcHist.isPresent()){
 			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
+			if(!affWrkplcHistItem.isPresent()) return null;
 			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
 		}
-		return new PeregDomainDto();
+		return null;
 	}
 
 	@Override
@@ -84,7 +85,11 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		List<DateHistoryItem> historyItems = affWrkplcHist.get().getHistoryItems();
 		if(historyItems.size() == 0) 
 			return new ArrayList<>();
-		return historyItems.stream()
+		List<DateHistoryItem> containItemHists = historyItems.stream().filter(x -> {
+			return affWrkplcHistItemRepo.getByHistId(x.identifier()).isPresent();
+		}).collect(Collectors.toList());
+		return containItemHists.stream()
+				.sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 				.collect(Collectors.toList());
 	

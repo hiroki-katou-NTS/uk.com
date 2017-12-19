@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 400, height: 600 };</script>
+			<script>var dialogSize = { width: 400, height: 525 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -36,7 +36,7 @@
 						</div>
 						<table id="grid_container" style="margin: auto;"
 							data-bind="ntsGridList: {
-											height: 330,
+											rows: 10,
 											options: dataSource,
 											optionsValue: 'userID',
 											columns: columns,

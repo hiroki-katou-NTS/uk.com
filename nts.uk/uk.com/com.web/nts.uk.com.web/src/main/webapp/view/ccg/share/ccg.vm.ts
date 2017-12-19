@@ -228,6 +228,11 @@ module nts.uk.com.view.ccg.share.ccg {
                     ko.applyBindings(self, $input[0]);
                     self.applyDataSearch();
                     self.initNextTabFeature();
+                    
+                    // Set tabindex ro button show component.
+                    var tabindex = $input.attr('tabindex');
+                    $input.attr('tabindex', -1);
+                    $input.find('.btn_showhide').attr('tabindex', tabindex);
                     dfd.resolve();
                 });
                 

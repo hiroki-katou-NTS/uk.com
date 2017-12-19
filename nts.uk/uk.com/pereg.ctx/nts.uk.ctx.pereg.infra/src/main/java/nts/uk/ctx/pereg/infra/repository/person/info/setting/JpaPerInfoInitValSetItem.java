@@ -63,7 +63,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " AND CM.itemType = 2" + " AND ITEM.perInfoCtgId IN :perInfoCtgId";
 	// SONNLB
 	private final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
-			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr,b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd , pc.categoryCd,pm.dataType"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr,b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd , pc.categoryCd,pm.dataType ,pm.selectionItemRefType"
 			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
 			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -303,7 +303,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 		domain.setSaveDataType(EnumAdaptor.valueOf(Integer.valueOf(saveDataType), SaveDataType.class));
 
-		domain.setStringValue(new StringValue(entity[7] == null ? " " : entity[7].toString()));
+		domain.setStringValue(new StringValue(entity[7] == null ? "" : entity[7].toString()));
 		domain.setIntValue(new IntValue(new BigDecimal(entity[8] == null ? "0" : entity[8].toString())));
 
 		String dateValue;
@@ -322,6 +322,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		domain.setCtgCode(entity[11] == null ? "" : entity[11].toString());
 
 		domain.setDataType(new Integer(entity[12] == null ? "0" : entity[12].toString()));
+		
+		domain.setSelectionItemRefType(new Integer(entity[13] == null ? "0" : entity[13].toString()));
 
 		return domain;
 

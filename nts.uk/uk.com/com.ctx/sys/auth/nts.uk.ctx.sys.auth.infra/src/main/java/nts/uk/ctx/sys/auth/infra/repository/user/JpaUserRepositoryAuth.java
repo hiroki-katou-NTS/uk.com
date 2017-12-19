@@ -75,6 +75,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	@Override
 	public void addNewUser(User user) {
 		this.commandProxy().insert(SacmtUser.toEntity(user));
+		this.getEntityManager().flush();
 	}
 
 }

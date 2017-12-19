@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.app.command.worktime.flowset.dto;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlCalcSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedGetMemento;
 
 /**
@@ -28,8 +28,8 @@ public class FlWorkDedSettingDto implements FlWorkDedGetMemento {
 	 * getOvertimeSetting()
 	 */
 	@Override
-	public FlOTSet getOvertimeSetting() {
-		return new FlOTSet(this.overtimeSetting);
+	public FlowOTSet getOvertimeSetting() {
+		return new FlowOTSet(this.overtimeSetting);
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class FlWorkDedSettingDto implements FlWorkDedGetMemento {
 	 * getCalculateSetting()
 	 */
 	@Override
-	public FlCalcSet getCalculateSetting() {
-		return new FlCalcSet(this.calculateSetting);
+	public FlowCalculateSet getCalculateSetting() {
+		return new FlowCalculateSet(this.calculateSetting);
 	}
 }

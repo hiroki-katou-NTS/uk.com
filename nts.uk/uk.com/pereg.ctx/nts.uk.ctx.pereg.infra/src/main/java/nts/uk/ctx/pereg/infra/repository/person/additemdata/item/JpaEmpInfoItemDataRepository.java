@@ -23,7 +23,7 @@ import nts.uk.shr.pereg.app.ItemValueType;
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
 
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,pc.ppemtPerInfoCtgPK.perInfoCtgId,pc.categoryCd,pm.itemType"
+	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,pc.ppemtPerInfoCtgPK.perInfoCtgId,pc.categoryCd,pm.itemType,pm.selectionItemRefType"
 			+ " FROM PpemtEmpInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc ON id.ppemtEmpInfoItemDataPk.recordId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -56,23 +56,22 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 
 	private EmpInfoItemData toDomainNew(Object[] entity) {
-		try{
 		PpemtEmpInfoItemData itemData = (PpemtEmpInfoItemData) entity[0];
 		PpemtPerInfoItem personInforItem = (PpemtPerInfoItem) entity[1];
 		PpemtPerInfoCtg personInforCategory = (PpemtPerInfoCtg) entity[2];
 		PpemtPerInfoItemCm perInfoItemCm = (PpemtPerInfoItemCm) entity[3];
-
-		return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
-				personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
-				personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
-				personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
-				itemData.intValue, itemData.dateValue, perInfoItemCm.dataType.intValue());
-		}catch(Exception e){
-			PpemtEmpInfoItemData itemData = (PpemtEmpInfoItemData) entity[0];
-			PpemtPerInfoItem personInforItem = (PpemtPerInfoItem) entity[1];
-			PpemtPerInfoCtg personInforCategory = (PpemtPerInfoCtg) entity[2];
-			PpemtPerInfoItemCm perInfoItemCm = (PpemtPerInfoItemCm) entity[3];
-			return new EmpInfoItemData();
+		try {
+			return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
+					personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
+					personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
+					personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
+					itemData.intValue, itemData.dateValue, perInfoItemCm.dataType.intValue());
+		} catch (Exception e) {
+			return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
+					personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
+					personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
+					personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
+					itemData.intValue, itemData.dateValue, itemData.saveDataType);
 		}
 	}
 
@@ -88,9 +87,15 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 		int dataType = Integer.parseInt(entity[13] != null ? entity[13].toString() : "0");
 
-		return EmpInfoItemData.createFromJavaType(entity[10].toString(), entity[0].toString(), entity[1].toString(),
-				entity[11].toString(), entity[12].toString(), entity[9].toString(), isRequired, dataStateType,
-				entity[5].toString(), intValue, dateValue, dataType);
+		int selectionItemRefType = Integer.parseInt(entity[14] != null ? entity[14].toString() : "0");
+
+		EmpInfoItemData newInfoItem = EmpInfoItemData.createFromJavaType(entity[10].toString(), entity[0].toString(),
+				entity[1].toString(), entity[11].toString(), entity[12].toString(), entity[9].toString(), isRequired,
+				dataStateType, entity[5].toString(), intValue, dateValue, dataType);
+
+		newInfoItem.setSelectionItemRefType(BigDecimal.valueOf(selectionItemRefType));
+		return newInfoItem;
+
 	}
 
 	@Override
@@ -98,11 +103,11 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		List<Object[]> lstEntity = this.queryProxy()
 				.query(SELECT_ALL_INFO_ITEM_BY_RECODE_ID_QUERY_STRING, Object[].class)
 				.setParameter("recordId", recordId).getList();
-		if(lstEntity == null) return new ArrayList<>();
+		if (lstEntity == null)
+			return new ArrayList<>();
 		return lstEntity.stream().map(c -> toDomainNew(c)).collect(Collectors.toList());
 	}
 
-	
 	/**
 	 * Convert from domain to entity
 	 * 

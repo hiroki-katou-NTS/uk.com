@@ -3,12 +3,12 @@ module cps002.a.vm {
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
     import subModal = nts.uk.ui.windows.sub.modal;
     import jump = nts.uk.request.jump;
     import liveView = nts.uk.request.liveView;
     import character = nts.uk.characteristics;
+    import block = nts.uk.ui.block;
 
     export class ViewModel {
 
@@ -90,7 +90,7 @@ module cps002.a.vm {
                     self.createTypeId(data.employeeCreationMethod);
 
 
-                    if (data.copyEmployeeId != "") {
+                    if (data.copyEmployeeId != "" && self.employeeBasicInfo().copyEmployeeId != data.copyEmployeeId) {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
@@ -116,8 +116,8 @@ module cps002.a.vm {
                 });
                 if (InitSetting) {
                     service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                        self.categorySelectedCode("");
                         if (result.length) {
-                            self.categorySelectedCode("");
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
@@ -223,9 +223,8 @@ module cps002.a.vm {
                 if (layout) {
                     service.getUserSetting().done((result: IUserSetting) => {
                         if (result) {
-
-                            self.getEmployeeCode(result).done(() => {
-
+                            self.getEmployeeCode(result).done((empCode) => {
+                                self.currentEmployee().employeeCode(empCode);
                                 self.getCardNumber(result);
 
                             });
@@ -270,8 +269,8 @@ module cps002.a.vm {
 
             if (genType === 3 || genType === 1) {
                 service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
-                    self.currentEmployee().employeeCode(result);
-                    dfd.resolve();
+
+                    dfd.resolve(result);
                 });
             }
 
@@ -360,6 +359,8 @@ module cps002.a.vm {
             let self = this;
 
             self.currentStep(0);
+
+            self.start();
         }
 
         gotoStep3() {
@@ -495,13 +496,13 @@ module cps002.a.vm {
                     }));
 
                     if (self.initSettingSelectedCode() == '') {
-                        if (self.employeeBasicInfo()) {
+                        if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
                             self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
                     }
-
+                    $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
                 dialog({ messageId: error.message }).then(() => {
@@ -567,11 +568,11 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
+
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
-
-                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "no-close", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
                             self.backtoStep1();
@@ -585,7 +586,7 @@ module cps002.a.vm {
 
                     dialog({ messageId: error.message });
 
-                });
+                })
             }
         }
 
@@ -597,7 +598,18 @@ module cps002.a.vm {
                 employee = self.currentEmployee();
 
             setShared("cardNoMode", isCardNoMode);
-            setShared("value", isCardNoMode ? employee.cardNo() : employee.employeeCode());
+            if (useSetting) {
+
+                if (!isCardNoMode) {
+                    self.getEmployeeCode(useSetting).done((employeeCode) => {
+
+                        setShared("textValue", employeeCode);
+                    });
+                } else {
+
+
+                }
+            }
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),

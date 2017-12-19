@@ -46,7 +46,7 @@ module cps002.f.vm {
             });
 
             self.start();
-            $(".searchCtg .ntsSearchBox").focus();
+
         }
         register() {
             let self = this;
@@ -74,6 +74,7 @@ module cps002.f.vm {
             service.getPerInfoCtgHasItems(ctgName).done(function(data) {
                 self.lstCategory(data);
                 self.currentPerInfoCtg(ctgid ? ctgid : data[0].id);
+                $("#searchCtg input").focus();
             }).fail(function() {
                 alertError({ messageId: "Msg_352" });
             });

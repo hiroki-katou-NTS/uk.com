@@ -17,5 +17,5 @@ public interface FlOffdayWtzPolicy {
 	 * @param predTime the pred time
 	 * @param flowOff the flow off
 	 */
-	void validate(PredetemineTimeSetting predTime, FlOffdayWtz flowOff);
+	void validate(PredetemineTimeSetting predTime, FlowOffdayWorkTimezone flowOff);
 }

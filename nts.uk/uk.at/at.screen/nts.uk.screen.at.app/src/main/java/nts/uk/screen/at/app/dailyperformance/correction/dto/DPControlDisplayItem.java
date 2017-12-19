@@ -26,11 +26,14 @@ public class DPControlDisplayItem {
 	private List<DPAttendanceItem> lstAttendanceItem;
 	
 	private Set<String> formatCode;
+	
+	private List<ColumnSetting> columnSettings;
 
 	public DPControlDisplayItem() {
 		super();
 		this.lstSheet = new ArrayList<>();
 		this.lstHeader = new ArrayList<>();
+		this.columnSettings = new ArrayList<>();
 	}
 	
 	private boolean isExistHeader(DPHeaderDto header) {

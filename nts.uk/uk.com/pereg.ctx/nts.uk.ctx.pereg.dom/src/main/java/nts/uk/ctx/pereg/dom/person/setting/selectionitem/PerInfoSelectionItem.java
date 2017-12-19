@@ -2,10 +2,12 @@ package nts.uk.ctx.pereg.dom.person.setting.selectionitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-
-@AllArgsConstructor
-@Getter
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.ExternalCD;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.MemoSelection;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionCD;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionName;
 
 /**
  * 
@@ -13,6 +15,9 @@ import nts.arc.enums.EnumAdaptor;
  *
  */
 
+@AllArgsConstructor
+@Getter
+@Setter
 // 個人情報の選択項目ドメイン
 public class PerInfoSelectionItem {
 	private String selectionItemId;
@@ -34,4 +39,18 @@ public class PerInfoSelectionItem {
 				FormatSelection.createFromJavaType(selectionCd, characterTypeAtr, selectionName, selectionExtCd));
 
 	}
+
+//	public PerInfoSelectionItem(String selectionItemId, SelectionItemName selectionItemName,
+//			Memo Memo, SelectionItemClassification selectionItemClassification, String contractCode,
+//			IntegrationCode integrationCode, FormatSelection formatSelection){
+//		super();
+//		this.selectionItemId = selectionItemId;
+//		this.selectionItemName = selectionItemName;
+//		this.Memo = Memo;
+//		this.selectionItemClassification = selectionItemClassification;
+//		this.contractCode = contractCode;
+//		this.integrationCode = integrationCode;
+//		this.formatSelection.getSelectionName();
+//		
+//	}
 }

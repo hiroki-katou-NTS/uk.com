@@ -24,11 +24,12 @@ module cps001.e.vm {
             self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
             service.getAvatar(self.empFileMn().employeeId).done(function(data) {
-                if (data.fileId) {
+                if (data) {
                     self.empFileMn().fileId = data.fileId ? data.fileId : "";
                     self.empFileMn().fileType = 1;
                     if (self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
                         self.getImage();
+                    else self.isChange(true);
                     self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
                 }else self.isChange(true);
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
@@ -46,13 +47,18 @@ module cps001.e.vm {
         upload() {
             let self = this;
             nts.uk.ui.block.grayout();
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
             
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
-                        self.empFileMn().employeeId = "000426a2-181b-4c7f-abc8-6fff9f4f983a";
                         self.empFileMn().fileId = data.id;
+                        self.oldEmpFileMn = {employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType};
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
                     });
                 } else self.close();

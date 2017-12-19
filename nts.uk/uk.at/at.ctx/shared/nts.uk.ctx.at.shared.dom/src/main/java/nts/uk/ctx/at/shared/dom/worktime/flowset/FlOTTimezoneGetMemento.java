@@ -38,7 +38,7 @@ public interface FlOTTimezoneGetMemento {
 	 *
 	 * @return the flow time setting
 	 */
-	 FlTimeSetting getFlowTimeSetting();
+	 FlowTimeSetting getFlowTimeSetting();
 
 	/**
 	 * Gets the in legal OT frame no.

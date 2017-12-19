@@ -55,27 +55,30 @@ public class CopySettingItemFinder {
 
 		itemList.forEach(x -> {
 			result.add(new SettingItemDto(x.getCategoryCode(), x.getItemDefId(), x.getItemCode(), x.getItemName(),
-					x.getIsRequired().value, SettingItemDto.createSaveDataDto(1, ""), x.getDataType()));
+					x.getIsRequired().value, SettingItemDto.createSaveDataDto(1, ""), x.getDataType(),
+					x.getSelectionItemRefType()));
 		});
 
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
 
-		Map<String, Object> dataMap = MappingFactory.getAllItem(dto);
+		if (dto != null) {
+			Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
 
-		dataMap.forEach((k, v) -> {
+			dataMap.forEach((k, v) -> {
 
-			Optional<SettingItemDto> itemDtoOpt = result.stream().filter(x -> x.getItemCode().equals(k)).findFirst();
+				Optional<SettingItemDto> itemDtoOpt = result.stream().filter(x -> x.getItemCode().equals(k))
+						.findFirst();
 
-			if (itemDtoOpt.isPresent()) {
-				SettingItemDto itemInfo = itemDtoOpt.get();
+				if (itemDtoOpt.isPresent()) {
+					SettingItemDto itemInfo = itemDtoOpt.get();
 
-				itemInfo.setData(v != null ? v.toString() : "");
-			}
+					itemInfo.setData(v != null ? v.toString() : "");
+				}
 
-		});
-
+			});
+		}
 		return result;
 
 	}
