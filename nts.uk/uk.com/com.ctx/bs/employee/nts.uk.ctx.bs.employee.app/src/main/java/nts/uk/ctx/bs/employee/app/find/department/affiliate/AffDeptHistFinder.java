@@ -57,7 +57,6 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 	}
 
 	private PeregDomainDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate){
-		if(standDate == null) return null;
 		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getAffDeptHistByEmpHistStandDate(employeeId, standDate);
 		if(affDeptHist.isPresent()){
 			Optional<AffDepartmentHistoryItem> affDeptHistItem = affDeptHistItemRepo.getByHistId(affDeptHist.get().getHistoryItems().get(0).identifier());

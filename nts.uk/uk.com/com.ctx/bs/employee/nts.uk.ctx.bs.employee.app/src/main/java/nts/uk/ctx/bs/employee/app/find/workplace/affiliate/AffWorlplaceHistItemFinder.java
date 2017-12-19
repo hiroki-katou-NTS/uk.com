@@ -70,6 +70,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByHistId(historyId);
 		if(affWrkplcHist.isPresent()){
 			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
+			if(!affWrkplcHistItem.isPresent()) return null;
 			return AffWorlplaceHistItemDto.getFirstFromDomain(affWrkplcHist.get(), affWrkplcHistItem.get());
 		}
 		return null;
