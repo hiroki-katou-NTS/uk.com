@@ -6,6 +6,7 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyD
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ColumnSetting;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItemControl;
@@ -173,7 +175,7 @@ public class DailyPerformanceCorrectionProcessor {
 							.collect(Collectors.toList());
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
-					lstAttendanceItem = this.repo.getListAttendanceItem(lstAtdItemUnique);
+					lstAttendanceItem = lstAtdItemUnique.isEmpty()? Collections.emptyList() : this.repo.getListAttendanceItem(lstAtdItemUnique);
 					mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
@@ -201,7 +203,7 @@ public class DailyPerformanceCorrectionProcessor {
 					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
-					lstAttendanceItem = this.repo.getListAttendanceItem(lstAtdItemUnique);
+					lstAttendanceItem = lstAtdItemUnique.isEmpty()? Collections.emptyList() : this.repo.getListAttendanceItem(lstAtdItemUnique);
 					result.createSheets(lstSheet);
 					mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 					result.addColumnsToSheet(lstFormat, mapDP);
@@ -224,6 +226,15 @@ public class DailyPerformanceCorrectionProcessor {
 					result.setColumnsAccessModifier(lstDPBusinessTypeControl);
 				}
 			}
+			for (DPHeaderDto key : result.getLstHeader()) {
+				ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+				if(!key.getGroup().isEmpty()){
+					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
+					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+				}
+				result.getColumnSettings().add(columnSetting);
+
+			};
 			if (!lstAttendanceItem.isEmpty()) {
 				// set text to header
 				result.setHeaderText(lstAttendanceItem);
@@ -349,6 +360,9 @@ public class DailyPerformanceCorrectionProcessor {
 		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
 				correct, formatCodes, dailyPerformanceDto);
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
+		screenDto.getLstFixedHeader().forEach(column ->{
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+		});
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
 		// Map<Integer, Integer> typeControl =
 		//// lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::
