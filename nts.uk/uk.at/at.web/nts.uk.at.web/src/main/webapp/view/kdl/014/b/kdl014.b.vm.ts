@@ -67,13 +67,8 @@ module kdl014.b.viewmodel {
                 let lstSource: Array<StampModel> = [];
                 if (lstStamp.length > 0) {
                     _.forEach(lstStamp, function(item) {
-                        lstSource.push(new StampModel(item.personId, 'name', moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-//                        _.forEach(lstEmloyee, function(employee) {
-//                            if (employee.personId == item.personId) {
-//                                lstSource.push(new StampModel(employee.employeeCd, 'name', moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-//                                return false;
-//                            }
-//                        });
+                        lstSource.push(new StampModel(item.employeeCode, item.pname, moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+
                     });
                 }
                 self.items(_.orderBy(lstSource, ['date', 'attendanceTime', 'employeeCd'], ['asc', 'asc', 'asc']));
