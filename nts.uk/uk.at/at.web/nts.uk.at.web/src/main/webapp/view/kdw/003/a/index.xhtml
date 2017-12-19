@@ -85,42 +85,42 @@
 					</div>
 					<button id="btnComfirmAttendance"
 						data-bind="click : referencesActualResult, visible: showButton().available23">#{i18n.getText('KDW003_22')}</button>
-					<div id ="container">
-					    <table>
-					     <tr>
-					     <td>
-					     <div id="emp-component"></div>
-					     </td>
-					     <td>
-					     <div id="numberHoliday">
-							<table id="fixed-table">
-								<thead>
-									<tr>
-										<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-										<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-										<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-										<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td class="ui-widget-body"><span
-											data-bind="text: dataHoliday().compensation"></span></td>
-										<td class="ui-widget-body"><span
-											data-bind="text: dataHoliday().substitute"></span></td>
-										<td class="ui-widget-body"><span
-											data-bind="text: dataHoliday().paidYear"></span> <br /> <span
-											data-bind="text: dataHoliday().paidHalf"></span> <br /> <span
-											data-bind="text: dataHoliday().paidHours"></span></td>
-										<td class="ui-widget-body"><span
-											data-bind="text: dataHoliday().fundedPaid"></span></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					     </td>
-					     </tr>
-					    </table>
+					<div id="container">
+						<table>
+							<tr>
+								<td>
+									<div id="emp-component"></div>
+								</td>
+								<td>
+									<div id="numberHoliday">
+										<table id="fixed-table">
+											<thead>
+												<tr>
+													<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+													<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+													<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+													<th class="ui-widget-header" rowspan="2">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td class="ui-widget-body"><span
+														data-bind="text: dataHoliday().compensation"></span></td>
+													<td class="ui-widget-body"><span
+														data-bind="text: dataHoliday().substitute"></span></td>
+													<td class="ui-widget-body"><span
+														data-bind="text: dataHoliday().paidYear"></span> <br /> <span
+														data-bind="text: dataHoliday().paidHalf"></span> <br /> <span
+														data-bind="text: dataHoliday().paidHours"></span></td>
+													<td class="ui-widget-body"><span
+														data-bind="text: dataHoliday().fundedPaid"></span></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+						</table>
 					</div>
 					<div id="cbListDate">
 						<div id="choosenDate"
@@ -131,16 +131,16 @@
 											endDate: dateRanger().endDate}">
 						</div>
 					</div>
-					<div id = "content-grid">
-					<div id ="content-grid-not">
-						<button id="btn-signAll"
-							data-bind="click: signAll, visible: showButton().available25">#{i18n.getText('KDW003_23')}</button>
-						<div class="setting-container">
-							<button id="btn-setting" data-bind="click: btnSetting_Click">&#9881;</button>
-							<div id="setting-content">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
-								<div id="cbCursorMoveDirection"
-									data-bind="ntsComboBox: {
+					<div id="content-grid">
+						<div id="content-grid-not">
+							<button id="btn-signAll"
+								data-bind="click: signAll, visible: showButton().available25">#{i18n.getText('KDW003_23')}</button>
+							<div class="setting-container">
+								<button id="btn-setting" data-bind="click: btnSetting_Click">&#9881;</button>
+								<div id="setting-content">
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
+									<div id="cbCursorMoveDirection"
+										data-bind="ntsComboBox: {
 								options: cursorMoveDirections,
 								optionsValue: 'code',
 								value: selectedDirection,
@@ -149,26 +149,29 @@
 								columns: [
 									{ prop: 'name', length: 3 },
 								]}"></div>
-								<br />
-								<div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
-								<br />
-								<div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
-								<br />
-								<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
-								<br />
+									<br />
+									<div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
+									<br />
+									<div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
+									<br />
+									<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
+									<br />
+								</div>
 							</div>
+							<button id="btn-saveColumnWidth"
+								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
+							<button id="btn-legend"
+								data-bind="ntsLegendButton: legendOptions">凡例</button>
 						</div>
-						<button id="btn-saveColumnWidth"
-							data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available8">#{i18n.getText('KDW003_24')}</button>
-						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
+						<div class="compact-grid grid-container" id="gid">
+							<table id="dpGrid"></table>
+							<div id="sample-component"></div>
+						</div>
+						<span style="margin: 10px 0 0 18px; display: inline-block;"
+							data-bind="text: comment"></span>
 					</div>
-					<div class="compact-grid grid-container" id="gid">
-						<table id="dpGrid"></table>
-						<div id="sample-component"></div>
-					</div>
-					<span style="margin: 10px 0 0 18px; display: inline-block;" data-bind = "text: comment"></span>
+					<div id="tooltip">tooltip</div>
 				</div>
-				<div id="tooltip">tooltip</div>
 			</div>
 		</ui:define>
 	</ui:composition>
