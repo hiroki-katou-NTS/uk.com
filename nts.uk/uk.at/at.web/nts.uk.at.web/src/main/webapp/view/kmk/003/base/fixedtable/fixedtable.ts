@@ -42,6 +42,11 @@ module nts.uk.at.view.kmk003.base.fixedtable {
          * list columns table
          */
         columns: Array<FixColumn>;
+
+        /**
+         * Show/hide multiple select checkbox
+         */
+        isMultipleSelect: boolean;
     }
 
     /**
