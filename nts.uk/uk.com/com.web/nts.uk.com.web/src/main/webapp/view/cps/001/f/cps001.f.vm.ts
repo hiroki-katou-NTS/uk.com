@@ -18,6 +18,7 @@ module cps001.f.vm {
         accept: KnockoutObservableArray<string>;
         asLink: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
+        fileSize: KnockoutObservable<string>;
         onchange: (filename) => void;
         onfilenameclick: (fileId) => void;
 
@@ -37,6 +38,7 @@ module cps001.f.vm {
             self.textId = ko.observable("CPS001_71");
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
+            self.fileSize = ko.observable("");
             self.onchange = (filename) => {
 
             };
@@ -52,6 +54,7 @@ module cps001.f.vm {
             self.items = [];
             let dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
             var dfdGetData = service.getData(dataShare.pid);
+
 
             $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
                 _.forEach(datafile, function(item) {
@@ -73,12 +76,13 @@ module cps001.f.vm {
                 // upload file 
                 $("#file-upload").ntsFileUpload({ stereoType: "document" }).done(function(res) {
                     self.fileId(res[0].id);
-                    var maxSize = 10485760; // 10MB = 10485760B
-                    
+                    var fileSize = ((res[0].originalSize) / 1024).toFixed(2);
+                    self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
+
                     // get Info
                     nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(info: any) {
                         self.fileInfo(info);
-                        
+
                         // save file to domain EmployeeFileManagement
                         if (self.items.length == 0) {
                             service.savedata({
@@ -114,6 +118,10 @@ module cps001.f.vm {
             }
         }
 
+        onchangefileupload(filename: string) {
+            this.pushData();
+        }
+
         checkSize() {
             var self = this;
             nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(res) {
@@ -142,11 +150,11 @@ module cps001.f.vm {
         }
 
         restart() {
-            __viewContext['viewModel'] = new vm.ViewModel();
+            //__viewContext['viewModel'] = new vm.ViewModel();
 
             __viewContext['viewModel'].start().done(() => {
                 init();
-                __viewContext.bind(__viewContext['viewModel']);
+                //__viewContext.bind(__viewContext['viewModel']);
             });
         }
 

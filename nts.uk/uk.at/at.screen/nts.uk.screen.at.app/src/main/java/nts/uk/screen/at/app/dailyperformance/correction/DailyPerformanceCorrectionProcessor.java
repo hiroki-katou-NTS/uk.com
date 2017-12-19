@@ -93,7 +93,7 @@ public class DailyPerformanceCorrectionProcessor {
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
 					result.add(new DPDataDto(dataId, "lock.png", "", filterDate, false, employee.getId(),
-							employee.getCode(), employee.getBusinessName()));
+							employee.getCode(), employee.getBusinessName(), employee.getWorkplaceId()));
 					dataId++;
 				}
 			}
