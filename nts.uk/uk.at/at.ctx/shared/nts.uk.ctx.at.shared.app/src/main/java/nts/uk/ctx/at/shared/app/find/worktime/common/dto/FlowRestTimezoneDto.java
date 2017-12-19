@@ -15,11 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
  * The Class FlowRestTimezoneDto.
  */
 
-/**
- * Gets the here after rest set.
- *
- * @return the here after rest set
- */
 @Getter
 public class FlowRestTimezoneDto implements FlowRestTimezoneSetMemento {
 
@@ -67,6 +62,9 @@ public class FlowRestTimezoneDto implements FlowRestTimezoneSetMemento {
 	 */
 	@Override
 	public void setHereAfterRestSet(FlowRestSetting set) {
-		set.saveToMemento(this.hereAfterRestSet);
+		if (set != null) {
+			this.hereAfterRestSet = new FlowRestSettingDto();
+			set.saveToMemento(this.hereAfterRestSet);
+		}
 	}
 }

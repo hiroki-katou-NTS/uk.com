@@ -2,26 +2,34 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
+package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 
 /**
- * The Class FlowWorkRestSettingDto.
+ * The Class JpaFlexFlowWorkRestSettingSetMemento.
  */
-@Getter
-@Setter
-public class FlowWorkRestSettingDto implements FlowWorkRestSettingSetMemento {
-
-	/** The common rest setting. */
-	private CommonRestSettingDto commonRestSetting;
-
-	/** The flow rest setting. */
-	private FlowWorkRestSettingDetailDto flowRestSetting;
+public class JpaFlexFlowWorkRestSettingSetMemento implements FlowWorkRestSettingSetMemento{
+	
+	/** The entity. */
+	private KshmtFlexRestSet entity;
+	
+	/**
+	 * Instantiates a new jpa flex flow work rest setting set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFlexFlowWorkRestSettingSetMemento(KshmtFlexRestSet entity) {
+		super();
+		if(entity.getKshmtFlexRestSetPK() == null){
+			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
+		}
+		this.entity = entity;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -33,10 +41,7 @@ public class FlowWorkRestSettingDto implements FlowWorkRestSettingSetMemento {
 	 */
 	@Override
 	public void setCommonRestSetting(CommonRestSetting commonRest) {
-		if (commonRest != null) {
-			this.commonRestSetting = new CommonRestSettingDto();
-			commonRest.saveToMemento(this.commonRestSetting);
-		}
+		commonRest.saveToMemento(new JpaFlexCommonRestSettingSetMemento(this.entity));
 	}
 
 	/*
@@ -49,10 +54,7 @@ public class FlowWorkRestSettingDto implements FlowWorkRestSettingSetMemento {
 	 */
 	@Override
 	public void setFlowRestSetting(FlowWorkRestSettingDetail flowRest) {
-		if (flowRest != null) {
-			this.flowRestSetting = new FlowWorkRestSettingDetailDto();
-			flowRest.saveToMemento(this.flowRestSetting);
-		}
+		flowRest.saveToMemento(new JpaFlexFlowWorkRestSettingDetailSetMemento(this.entity));
 	}
 
 }

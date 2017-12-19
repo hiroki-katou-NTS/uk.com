@@ -2,27 +2,38 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
+package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
-import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetailSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 
 /**
- * The Class FlowWorkRestSettingDetailDto.
+ * The Class JpaFlexFlowWorkRestSettingDetailSetMemento.
  */
-@Getter
-public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSetMemento {
+public class JpaFlexFlowWorkRestSettingDetailSetMemento implements FlowWorkRestSettingDetailSetMemento {
+	
 
-	/** The flow rest setting. */
-	private FlowRestSetDto flowRestSetting;
+	/** The entity. */
+	private KshmtFlexRestSet entity;
+	
+	/**
+	 * Instantiates a new jpa flex flow work rest setting detail set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFlexFlowWorkRestSettingDetailSetMemento(KshmtFlexRestSet entity) {
+		super();
+		if(entity.getKshmtFlexRestSetPK() == null){
+			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
+		}
+		this.entity = entity;
+	}
 
-	/** The flow fixed rest setting. */
-	private FlowFixedRestSetDto flowFixedRestSetting;
 
-	/** The use plural work rest time. */
-	private boolean usePluralWorkRestTime;
 
 	/*
 	 * (non-Javadoc)
@@ -33,10 +44,7 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	 */
 	@Override
 	public void setFlowRestSetting(FlowRestSet set) {
-		if (set != null) {
-			this.flowRestSetting = new FlowRestSetDto();
-			set.saveToMemento(this.flowRestSetting);
-		}
+		set.saveToMemento(new JpaFlexFlowRestSetSetMemento(this.entity));
 	}
 
 	/*
@@ -48,10 +56,7 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	 */
 	@Override
 	public void setFlowFixedRestSetting(FlowFixedRestSet set) {
-		if (set != null) {
-			this.flowFixedRestSetting = new FlowFixedRestSetDto();
-			set.saveToMemento(this.flowFixedRestSetting);
-		}
+		set.saveToMemento(new JpaFlexFlowFixedRestSetSetMemento(this.entity));
 	}
 
 	/*
@@ -62,7 +67,7 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	 */
 	@Override
 	public void setUsePluralWorkRestTime(boolean val) {
-		this.usePluralWorkRestTime = val;
+		this.entity.setUsePluralWorkRestTime(BooleanGetAtr.getAtrByBoolean(val));
 	}
 
 }
