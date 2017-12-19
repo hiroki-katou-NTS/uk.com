@@ -853,10 +853,7 @@ module nts.uk.com.view.cmm011.a {
                     service.removeWorkplaceHistory(command).done(() => {
                         
                         // find workplace history
-                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId()).done(() => {
-                            // select item 
-                            self.setSelectionHistSuitable();
-                        });
+                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
                     }).fail((res: any) => {
                         nts.uk.ui.dialog.bundledErrors(res);
                     })
@@ -882,6 +879,9 @@ module nts.uk.com.view.cmm011.a {
                     });
                     //update list hist
                     self.lstWpkHistory(lstWpkHistory);
+                    
+                    // select item 
+                    self.setSelectionHistSuitable();
 
                     nts.uk.ui.block.clear();
                     dfd.resolve();
@@ -911,10 +911,6 @@ module nts.uk.com.view.cmm011.a {
             public setSelectionHistSuitable() {
                 let self = this;
                 
-                // list only a item.
-                if (self.lstWpkHistory().length == 1) {
-                    return;
-                }
                 let result: Array<IHistory> = self.lstWpkHistory()
                     .filter(item => item.startDate <= self.parentModel.strDWorkplace()
                         && item.endDate >= self.parentModel.strDWorkplace());
