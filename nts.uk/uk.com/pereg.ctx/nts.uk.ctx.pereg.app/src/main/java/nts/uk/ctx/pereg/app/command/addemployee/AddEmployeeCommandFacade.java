@@ -20,9 +20,9 @@ import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
 @Stateless
-public class AddEmployeeProcess {
+public class AddEmployeeCommandFacade {
 
-	List<String> fixedCtgList = Arrays.asList("CS00001", "CS00002", "CS00003");
+	List<String> requiredCtgList = Arrays.asList("CS00001", "CS00002", "CS00003");
 
 	@Inject
 	private PeregCommandFacade commandFacade;
@@ -47,10 +47,10 @@ public class AddEmployeeProcess {
 
 		List<ItemsByCategory> inputs = command.getInputs();
 
-		List<SettingItemDto> dataServer = new ArrayList<SettingItemDto>();
-
 		// merge data from client with dataServer
 		if (command.getCreateType() == 2) {
+
+			List<SettingItemDto> dataServer = new ArrayList<SettingItemDto>();
 			mergeData(dataServer, inputs, command);
 
 			// inputs = new ArrayList<ItemsByCategory>();
@@ -74,37 +74,42 @@ public class AddEmployeeProcess {
 
 	public void updateRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		List<ItemsByCategory> fixedInputs = inputs.stream().filter(x -> fixedCtgList.indexOf(x.getCategoryCd()) != -1)
+		List<ItemsByCategory> fixedInputs = inputs.stream().filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1)
 				.collect(Collectors.toList());
 
 		if (!CollectionUtil.isEmpty(fixedInputs)) {
 
+			updateRequiredSystemInputs(fixedInputs, personId, employeeId);
+
 			addRequiredOptinalInputs(fixedInputs, personId, employeeId);
-
-			List<ItemsByCategory> updateInputs = new ArrayList<ItemsByCategory>();
-
-			fixedInputs.forEach(ctg -> {
-				List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'S')
-						.collect(Collectors.toList());
-				if (!CollectionUtil.isEmpty(lstItem)) {
-					ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
-					updateInputs.add(newItemCtg);
-
-				}
-
-			});
-
-			PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
-
-			this.commandFacade.update(updateContainer);
 
 		}
 
 	}
 
+	private void updateRequiredSystemInputs(List<ItemsByCategory> fixedInputs, String personId, String employeeId) {
+		List<ItemsByCategory> updateInputs = new ArrayList<ItemsByCategory>();
+
+		fixedInputs.forEach(ctg -> {
+			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'S')
+					.collect(Collectors.toList());
+			if (!CollectionUtil.isEmpty(lstItem)) {
+				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+				updateInputs.add(newItemCtg);
+
+			}
+
+		});
+
+		PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
+
+		this.commandFacade.update(updateContainer);
+
+	}
+
 	public void addNoRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		inputs = inputs.stream().filter(x -> fixedCtgList.indexOf(x.getCategoryCd()) == -1)
+		inputs = inputs.stream().filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) == -1)
 				.collect(Collectors.toList());
 		// call add commandFacade
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, inputs);

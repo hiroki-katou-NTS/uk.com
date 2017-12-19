@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -16,12 +15,12 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmployeeCommand, String> {
-	
+
 	@Inject
 	private AddEmployeeCommandHelper helper;
-	
+
 	@Inject
-	private AddEmployeeProcess addEmployeeProcess;
+	private AddEmployeeCommandFacade addEmployeeProcess;
 
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
@@ -41,7 +40,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		helper.addBasicData(command, personId, employeeId, comHistId, companyId, userId);
 
 		// call commandFacade
-//		helper.inputsProcess(command, personId, employeeId, comHistId);
+		// helper.inputsProcess(command, personId, employeeId, comHistId);
 		addEmployeeProcess.addNewFromInputs(command, personId, employeeId, comHistId);
 		// Lai di@@
 

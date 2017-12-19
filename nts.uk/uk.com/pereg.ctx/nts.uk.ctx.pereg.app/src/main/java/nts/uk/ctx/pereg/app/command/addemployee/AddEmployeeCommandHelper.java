@@ -3,7 +3,6 @@ package nts.uk.ctx.pereg.app.command.addemployee;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -27,10 +26,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
@@ -68,14 +63,11 @@ public class AddEmployeeCommandHelper {
 	private PersonRepository personRepo;
 
 	/** The workplace history repository. */
-	@Inject
-	private AffWorkplaceHistoryRepository workplaceHistRepo;
-
-	@Inject
-	private WorkplaceInfoRepository workPlaceInfoRepo;
-
-	@Inject
-	private AddEmployeeProcess addEmployeeProcess;
+	// @Inject
+	// private AffWorkplaceHistoryRepository workplaceHistRepo;
+	//
+	// @Inject
+	// private WorkplaceInfoRepository workPlaceInfoRepo;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addBasicData(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
@@ -101,39 +93,23 @@ public class AddEmployeeCommandHelper {
 		addAvatar(personId, command);
 
 		// for test
-		addAffHist(companyId, employeeId);
+		//addAffHist(companyId, employeeId);
 
 		// Update employee registration history
 		updateEmployeeRegHist(companyId, employeeId);
 	}
 
-	// Tach thang nay sang 1 class moi di. Minh di an da ok
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void inputsProcess(AddEmployeeCommand command, String personId, String employeeId, String comHistId) {
-
-		this.addEmployeeProcess.addNewFromInputs(command, personId, employeeId, comHistId);
-
-		// categoryCodeList.forEach(categoryCd -> {
-		//
-		// ItemsByCategory newCtg = createNewItemsByCategoryCode(dataServer,
-		// categoryCd);
-		// if (newCtg != null) {
-		//
-		// inputs.add(newCtg);
-		// }
-		//
-		// });
-	}
-
-	private void addAffHist(String companyId, String employeeId) {
-		List<WorkplaceInfo> wplst = this.workPlaceInfoRepo.findAll(companyId, GeneralDate.today());
-		Random rnd = new Random();
-		WorkplaceInfo wp = wplst.get(rnd.nextInt(wplst.size()));
-		AffWorkplaceHistory newAffWork = AffWorkplaceHistory.createFromJavaType(wp.getWorkplaceId(),
-				ConstantUtils.minDate(), ConstantUtils.maxDate(), employeeId);
-		this.workplaceHistRepo.addAffWorkplaceHistory(newAffWork);
-
-	}
+	// private void addAffHist(String companyId, String employeeId) {
+	// List<WorkplaceInfo> wplst = this.workPlaceInfoRepo.findAll(companyId,
+	// GeneralDate.today());
+	// Random rnd = new Random();
+	// WorkplaceInfo wp = wplst.get(rnd.nextInt(wplst.size()));
+	// AffWorkplaceHistory newAffWork =
+	// AffWorkplaceHistory.createFromJavaType(wp.getWorkplaceId(),
+	// ConstantUtils.minDate(), ConstantUtils.maxDate(), employeeId);
+	// this.workplaceHistRepo.addAffWorkplaceHistory(newAffWork);
+	//
+	// }
 
 	private void addNewPerson(String personId, AddEmployeeCommand command) {
 		Person newPerson = Person.createFromJavaType(ConstantUtils.minDate(), BloodType.Unselected.value,
