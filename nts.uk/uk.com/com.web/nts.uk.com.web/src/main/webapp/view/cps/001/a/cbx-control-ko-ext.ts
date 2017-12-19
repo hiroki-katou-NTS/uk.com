@@ -27,7 +27,6 @@ module nts.custombinding {
                 selectionChanged: function(evt, ui) {
                     if (ui.items[0]) {
                         value(ui.items[0]["data"][valueKey]);
-                        console.log(value());
                     }
                 }
             });
