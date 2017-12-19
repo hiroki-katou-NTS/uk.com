@@ -11,18 +11,18 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRestTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayFlWRestTzSetMemento;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayHDWTSheetSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayFlWRestTzGetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayHDWTSheetGetMemento;
 
 /**
  * The Class JpaFlexOffdayWorkTimeGetMemento.
  */
-public class JpaFlexOffdayWorkTimeSetMemento implements FlexOffdayWorkTimeSetMemento{
+public class JpaFlexOffdayWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento{
 	
 	/** The entity worktimezones. */
 	private List<KshmtFlexHolSet> entityWorktimezones;
@@ -38,14 +38,14 @@ public class JpaFlexOffdayWorkTimeSetMemento implements FlexOffdayWorkTimeSetMem
 	
 
 	/**
-	 * Instantiates a new jpa flex offday work time set memento.
+	 * Instantiates a new jpa flex offday work time get memento.
 	 *
 	 * @param entityWorktimezones the entity worktimezones
 	 * @param entity the entity
 	 * @param entityFixedRests the entity fixed rests
 	 * @param entityFlowRests the entity flow rests
 	 */
-	public JpaFlexOffdayWorkTimeSetMemento(List<KshmtFlexHolSet> entityWorktimezones, KshmtFlexHaRestTime entity,
+	public JpaFlexOffdayWorkTimeGetMemento(List<KshmtFlexHolSet> entityWorktimezones, KshmtFlexHaRestTime entity,
 			List<KshmtFlexHaFixRest> entityFixedRests, List<KshmtFlexOdRestSet> entityFlowRests) {
 		super();
 		this.entityWorktimezones = entityWorktimezones;
@@ -54,35 +54,27 @@ public class JpaFlexOffdayWorkTimeSetMemento implements FlexOffdayWorkTimeSetMem
 		this.entityFlowRests = entityFlowRests;
 	}
 
+
+
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeSetMemento#setLstWorkTimezone(java.util.List)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento#getLstWorkTimezone()
 	 */
 	@Override
-	public void setLstWorkTimezone(List<HDWorkTimeSheetSetting> lstWorkTimezone) {
-		if(CollectionUtil.isEmpty(lstWorkTimezone)){
-			this.entityWorktimezones = new ArrayList<>();
+	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
+		if (CollectionUtil.isEmpty(this.entityWorktimezones)) {
+			return new ArrayList<>();
 		}
-		else {
-			this.entityWorktimezones = lstWorkTimezone.stream().map(domain -> {
-				KshmtFlexHolSet entity = new KshmtFlexHolSet();
-				domain.saveToMemento(new JpaFlexOffdayHDWTSheetSetMemento(entity));
-				return entity;
-			}).collect(Collectors.toList());
-		}
+		return this.entityWorktimezones.stream()
+				.map(entity -> new HDWorkTimeSheetSetting(new JpaFlexOffdayHDWTSheetGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeSetMemento#
-	 * setRestTimezone(nts.uk.ctx.at.shared.dom.worktime.common.
-	 * FlowWorkRestTimezone)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento#getRestTimezone()
 	 */
 	@Override
-	public void setRestTimezone(FlowWorkRestTimezone restTimezone) {
-		restTimezone.saveToMemento(
-				new JpaFlexOffdayFlWRestTzSetMemento(this.entity, this.entityFixedRests, this.entityFlowRests));
+	public FlowWorkRestTimezone getRestTimezone() {
+		return new FlowWorkRestTimezone(new JpaFlexOffdayFlWRestTzGetMemento(this.entity, this.entityFixedRests, this.entityFlowRests));
 	}
 
 }

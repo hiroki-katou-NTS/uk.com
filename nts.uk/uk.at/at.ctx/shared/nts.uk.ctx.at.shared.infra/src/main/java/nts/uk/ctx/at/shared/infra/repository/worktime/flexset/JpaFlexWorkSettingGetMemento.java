@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -18,7 +19,9 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowWorkRestSettingGetMemento;
 
 /**
  * The Class JpaFlexWorkSettingGetMemento.
@@ -27,6 +30,9 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	
 	/** The entity. */
 	private KshmtFlexWorkSet entity;
+	
+	/** The entity flow. */
+	private KshmtFlexRestSet entityFlow;
 	
 	/** The entity settings. */
 	private List<KshmtFlexSettingGroup> entitySettings;
@@ -40,13 +46,15 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 * Instantiates a new jpa flex work setting get memento.
 	 *
 	 * @param entity the entity
+	 * @param entityFlow the entity flow
 	 * @param entitySettings the entity settings
 	 * @param entityODGrounp the entity OD grounp
 	 */
-	public JpaFlexWorkSettingGetMemento(KshmtFlexWorkSet entity, List<KshmtFlexSettingGroup> entitySettings,
-			KshmtFlexOdGroup entityODGrounp) {
+	public JpaFlexWorkSettingGetMemento(KshmtFlexWorkSet entity, KshmtFlexRestSet entityFlow,
+			List<KshmtFlexSettingGroup> entitySettings, KshmtFlexOdGroup entityODGrounp) {
 		super();
 		this.entity = entity;
+		this.entityFlow = entityFlow;
 		this.entitySettings = entitySettings;
 		this.entityODGrounp = entityODGrounp;
 	}
@@ -81,8 +89,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public CoreTimeSetting getCoreTimeSetting() {
-		return null;
-		//return new CoreTimeSetting(new JpaCoreTimeSettingGetMemento(this.entity));
+		return new CoreTimeSetting(new JpaCoreTimeSettingGetMemento(this.entity));
 	}
 
 	/*
@@ -93,8 +100,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public FlowWorkRestSetting getRestSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlowWorkRestSetting(new JpaFlexFlowWorkRestSettingGetMemento(this.entityFlow));
 	}
 
 	/*
@@ -129,8 +135,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public boolean getUseHalfDayShift() {
-		// TODO Auto-generated method stub
-		return false;
+		return BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfdayShift());
 	}
 
 	/*
@@ -169,8 +174,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public FlexCalcSetting getCalculateSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlexCalcSetting(new JpaFlexCalcSettingGetMemento(this.entity));
 	}
 
 }

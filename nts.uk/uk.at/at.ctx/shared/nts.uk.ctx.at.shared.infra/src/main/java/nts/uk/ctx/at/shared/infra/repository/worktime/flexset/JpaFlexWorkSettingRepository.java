@@ -19,6 +19,9 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet_;
@@ -56,21 +59,32 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	/**
 	 * To domain.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 * @return the flex work setting
 	 */
 	private FlexWorkSetting toDomain(KshmtFlexWorkSet entity) {
-		return new FlexWorkSetting(new JpaFlexWorkSettingGetMemento(entity, null, null));
+		return new FlexWorkSetting(new JpaFlexWorkSettingGetMemento(entity,
+				this.findFlexRestSetting(entity.getKshmtFlexWorkSetPK().getCid(),
+						entity.getKshmtFlexWorkSetPK().getWorktimeCd()),
+				new ArrayList<>(), new KshmtFlexOdGroup(new ArrayList<>(), new KshmtFlexOdRestTime(), new ArrayList<>(),
+						new ArrayList<>())));
 	}
 
 	/**
+	 * Find flex rest setting.
+	 *
+	 * @param companyId the company id
+	 * @param worktimeCode the worktime code
+	 * @return the kshmt flex rest set
+	 */
+	private KshmtFlexRestSet findFlexRestSetting(String companyId, String worktimeCode){
+	 return this.queryProxy().find(new KshmtFlexRestSetPK(companyId, worktimeCode), KshmtFlexRestSet.class).get();
+	}
+	/**
 	 * Find work setting.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param worktimeCode
-	 *            the worktime code
+	 * @param companyId the company id
+	 * @param worktimeCode the worktime code
 	 * @return the optional
 	 */
 	private Optional<KshmtFlexWorkSet> findWorkSetting(String companyId, String worktimeCode) {
@@ -92,14 +106,12 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// equal company id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.cid),
-				companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.cid), companyId));
 
 		// equal work time code
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.worktimeCd),
-				worktimeCode));
+				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.worktimeCd), worktimeCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

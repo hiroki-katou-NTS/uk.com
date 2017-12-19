@@ -4,25 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
-import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class JpaTimeSheetGetMemento.
+ * The Class JpaFlexTimeSheetSetMemento.
  */
-public class JpaTimeSheetGetMemento implements TimeSheetGetMemento {
+public class JpaFlexTimeSheetSetMemento implements TimeSheetSetMemento {
 	
 	/** The entity. */
 	private KshmtFlexWorkSet entity;
 	
 	/**
-	 * Instantiates a new jpa time sheet get memento.
+	 * Instantiates a new jpa flex time sheet set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaTimeSheetGetMemento(KshmtFlexWorkSet entity) {
+	public JpaFlexTimeSheetSetMemento(KshmtFlexWorkSet entity) {
 		super();
 		if(entity.getKshmtFlexWorkSetPK() == null){
 			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
@@ -30,27 +30,28 @@ public class JpaTimeSheetGetMemento implements TimeSheetGetMemento {
 		this.entity = entity;
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetGetMemento#
-	 * getStartTime()
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetSetMemento#
+	 * setStartTime(nts.uk.shr.com.time.TimeWithDayAttr)
 	 */
 	@Override
-	public TimeWithDayAttr getStartTime() {
-		return new TimeWithDayAttr(this.entity.getCoreTimeStr());
+	public void setStartTime(TimeWithDayAttr startTime) {
+		this.entity.setCoreTimeStr(startTime.valueAsMinutes());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetGetMemento#getEndTime(
-	 * )
+	 * nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetSetMemento#setEndTime(
+	 * nts.uk.shr.com.time.TimeWithDayAttr)
 	 */
 	@Override
-	public TimeWithDayAttr getEndTime() {
-		return new TimeWithDayAttr(this.entity.getCoreTimeEnd());
+	public void setEndTime(TimeWithDayAttr endTime) {
+		this.entity.setCoreTimeEnd(endTime.valueAsMinutes());
 	}
 
 }

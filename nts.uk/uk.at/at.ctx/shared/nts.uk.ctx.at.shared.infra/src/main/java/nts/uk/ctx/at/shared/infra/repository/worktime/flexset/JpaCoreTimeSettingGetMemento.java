@@ -39,7 +39,7 @@ public class JpaCoreTimeSettingGetMemento implements CoreTimeSettingGetMemento {
 	 */
 	@Override
 	public TimeSheet getCoreTimeSheet() {
-		return new TimeSheet(new JpaTimeSheetGetMemento(this.entity));
+		return new TimeSheet(new JpaFlexTimeSheetGetMemento(this.entity));
 	}
 
 	/**
