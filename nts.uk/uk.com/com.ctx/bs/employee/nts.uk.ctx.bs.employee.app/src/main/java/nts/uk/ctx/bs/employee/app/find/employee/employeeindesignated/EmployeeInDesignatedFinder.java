@@ -212,14 +212,14 @@ public class EmployeeInDesignatedFinder {
 		if (CollectionUtil.isEmpty(employees)) {
 			return Collections.emptyList();
 		}
-
+		String cid = AppContexts.user().companyId();
 		// Convert to dto
 		return employees.stream().map(employeeInfo -> {
 			String employeeId = employeeInfo.getEmployeeId();
 			EmploymentStatusDto statusOfEmploymentExport = new EmploymentStatusDto();
 			statusOfEmploymentExport.setEmployeeId(employeeId);
 			statusOfEmploymentExport.setRefereneDate(referenceDate);
-			AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(employeeId)
+			AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,employeeId)
 					.getAffCompanyHistByEmployee(employeeId);
 			
 			// employeeHistory is null
