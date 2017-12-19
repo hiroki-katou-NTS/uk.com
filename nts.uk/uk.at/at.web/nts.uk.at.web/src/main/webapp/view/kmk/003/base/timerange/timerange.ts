@@ -10,8 +10,8 @@ module kmk003.base.timerange {
         enable: boolean;
         inputFormat: string;
         
-        startTime: KnockoutObservable<string>;
-        endTime: KnockoutObservable<string>;
+        startTime: KnockoutObservable<number>;
+        endTime: KnockoutObservable<number>;
         
         /**
         * Constructor.
@@ -61,13 +61,10 @@ module kmk003.base.timerange {
         /**
          * validTimeRange
          */
-        private validTimeRange(startTime: string, endTime: string): boolean {
+        private validTimeRange(startTime: number, endTime: number): boolean {
             let self = this;
-            let startVal: any = nts.uk.time.parseTime(startTime).toValue();
-            let endVal: any = nts.uk.time.parseTime(endTime).toValue();
-            
             $('#time-range-editor').ntsError('clear');
-            if (startVal >= endVal) {
+            if (startTime >= endTime) {
                 $('#time-range-editor').ntsError('set', '期間入力フォームの開始と終了が逆転しています');
                 return false;
             }
@@ -79,8 +76,8 @@ module kmk003.base.timerange {
      * TimePeriod
      */
     interface TimePeriod {
-        startTime: string;
-        endTime: string;
+        startTime: number;
+        endTime: number;
     }
     
     class TimeRangeBindingHandler implements KnockoutBindingHandler {

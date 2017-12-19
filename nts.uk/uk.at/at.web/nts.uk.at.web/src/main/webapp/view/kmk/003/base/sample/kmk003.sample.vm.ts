@@ -63,12 +63,12 @@ module nts.uk.at.view.kmk003.sample {
                 let dfd = $.Deferred<any>();
 
                 self.dataSource1.push({
-                    column1: ko.observable("23:00"), column2: ko.observable(false),
-                    column3: ko.observable({startTime:"13:00", endTime:"14:00"}), column4: ko.observable(3)
+                    column1: ko.observable(2300), column2: ko.observable(false),
+                    column3: ko.observable({startTime: 1300, endTime: 1400}), column4: ko.observable(3)
                 });
                 self.dataSource1.push({
-                    column1: ko.observable("10:00"), column2: ko.observable(false),
-                    column3: ko.observable({startTime:"10:00", endTime:"12:00"}), column4: ko.observable(3)
+                    column1: ko.observable(1000), column2: ko.observable(false),
+                    column3: ko.observable({startTime: 1000, endTime: 1200}), column4: ko.observable(3)
                 });
                 
                 dfd.resolve();
@@ -88,11 +88,11 @@ module nts.uk.at.view.kmk003.sample {
             private columnSetting(): Array<any> {
                 let self = this;
                 return [
-                    {headerText: "カラム1", key: "column1", defaultValue: ko.observable("12:00"), width: 107, template: `<input data-bind="ntsTimeEditor: {
+                    {headerText: "カラム1", key: "column1", defaultValue: ko.observable(1200), width: 107, template: `<input data-bind="ntsTimeEditor: {
                         inputFormat: 'time'}" />`, cssClassName: 'column-time-editor'},
                     {headerText: "カラム2", key: "column2", defaultValue: ko.observable(true), width: 60, template: `<div data-bind="ntsCheckBox: {
                         enable: true}"></div>`},
-                    {headerText: "カラム3", key: "column3", defaultValue: ko.observable({startTime: "10:00", endTime: "12:00"}), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
+                    {headerText: "カラム3", key: "column3", defaultValue: ko.observable({startTime: 1000, endTime: 1200}), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
                         required: true, enable: true, inputFormat: 'time'}"/>`},
                     {headerText: "カラム4", key: "column4", defaultValue: ko.observable(1), width: 300, dataSource: self.itemList(), template: `<div data-bind="ntsComboBox: {
                                             optionsValue: 'code',
