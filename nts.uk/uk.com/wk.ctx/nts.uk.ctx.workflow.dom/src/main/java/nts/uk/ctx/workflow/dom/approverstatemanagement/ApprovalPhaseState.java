@@ -14,11 +14,7 @@ import lombok.Setter;
 @Getter
 public class ApprovalPhaseState {
 	
-	private String companyID;
-	
 	private String rootStateID;
-	
-	private RootType rootType;
 	
 	private Integer phaseOrder;
 	

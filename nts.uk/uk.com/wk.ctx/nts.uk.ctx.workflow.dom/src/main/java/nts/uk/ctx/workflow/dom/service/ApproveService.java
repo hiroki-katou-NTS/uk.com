@@ -28,7 +28,7 @@ public interface ApproveService {
 　				true：指定する承認フェーズの承認が完了
 　				false：指定する承認フェーズの承認がまだ未完了
 	 */
-	public Boolean isApproveApprovalPhaseStateComplete(ApprovalPhaseState approvalPhaseState);
+	public Boolean isApproveApprovalPhaseStateComplete(String companyID, ApprovalPhaseState approvalPhaseState);
 	
 	/**
 	 * 2.承認全体が完了したか

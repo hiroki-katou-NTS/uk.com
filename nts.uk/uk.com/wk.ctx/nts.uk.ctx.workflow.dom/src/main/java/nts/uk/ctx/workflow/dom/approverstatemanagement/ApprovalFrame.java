@@ -15,11 +15,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class ApprovalFrame {
 	
-	private String companyID;
-	
 	private String rootStateID;
-	
-	private RootType rootType;
 	
 	private Integer phaseOrder;
 	

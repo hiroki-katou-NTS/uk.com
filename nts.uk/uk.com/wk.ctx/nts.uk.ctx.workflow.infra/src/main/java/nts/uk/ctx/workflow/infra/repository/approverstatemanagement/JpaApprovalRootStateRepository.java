@@ -20,9 +20,21 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void insert(ApprovalRootState approvalRootState) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void update(ApprovalRootState approvalRootState) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(String rootStateID) {
 		// TODO Auto-generated method stub
 		
 	}

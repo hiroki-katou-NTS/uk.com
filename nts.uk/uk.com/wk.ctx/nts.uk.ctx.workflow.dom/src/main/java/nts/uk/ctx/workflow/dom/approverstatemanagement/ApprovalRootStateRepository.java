@@ -8,8 +8,12 @@ import java.util.Optional;
  */
 public interface ApprovalRootStateRepository {
 	
-	public Optional<ApprovalRootState> findEmploymentApp(String companyID, String rootStateID);
+	public Optional<ApprovalRootState> findEmploymentApp(String rootStateID);
+	
+	public void insert(ApprovalRootState approvalRootState);
 
 	public void update(ApprovalRootState approvalRootState);
+	
+	public void delete(String rootStateID);
 	
 }
