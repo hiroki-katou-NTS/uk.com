@@ -1,26 +1,15 @@
 module nts.uk.com.view.cmm051 {
     export module base {
-        export interface IWorkplaceManager {
-            wkpId: string;
-            employeeId: string;
-            startDate: string;
-            endDate: string;
-            wkpManagerId?: string;
-            employeeInfo: KnockoutObservable<IEmployee> = ko.observable();
-            roleList : Array<IRole>;
-            nodeText : string;
-        }
-        
         export class WorkplaceManager {
             wkpId: string;
             employeeId: string;
             startDate: string;
             endDate: string;
-            wkpManagerId?: string;
-            employeeInfo: KnockoutObservable<IEmployee> = ko.observable();
-            roleList : KnockoutObservableArray<IRole> = ko.observableArray([]);
+            wkpManagerId: string;
+            employeeInfo: any = ko.observable();
+            roleList : any = ko.observableArray([]);
             nodeText : string;
-            constructor(x: IWorkplaceManager) {
+            constructor(x: WorkplaceManager) {
                 let self = this;
                 if (x) {
                     self.wkpId = x.wkpId == '' ? '' : x.wkpId;
@@ -44,36 +33,15 @@ module nts.uk.com.view.cmm051 {
             }
         }
         
-        export interface IEmployee {
-            employeeCode: string;
-            namePerson: string;
-        }
-        
-        export interface IRole {
-            roleId: string;
-            companyId: string;
-            functionNo: number;
-            availability: boolean;
-        }
-        
-        export interface IFunction {
+        export class FunctionPermission {
             functionNo: number;
             initialValue: boolean;
             displayName: string;
             displayOrder: number;
             description: string;
-            availability: boolean;
-        }
-        
-        export class Function {
-            functionNo: number;
-            initialValue: boolean;
-            displayName: string;
-            displayOrder: number;
-            description: string;
-            availability: boolean;
+            availability: KnockoutObservable<boolean> = ko.observable(false);
             
-            constructor(x: IFunction) {
+            constructor(x: FunctionPermission) {
                 let self = this;
                 if (x) {
                     self.functionNo = x.functionNo == null ? null : x.functionNo;
@@ -81,14 +49,14 @@ module nts.uk.com.view.cmm051 {
                     self.displayName = x.displayName == '' ? '' : x.displayName;
                     self.displayOrder = x.displayOrder == null ? null : x.displayOrder;
                     self.description = x.description == '' ? '' : x.description;
-                    self.availability = x.availability;
+                    self.availability(x.availability());
                 } else {
                     self.functionNo = null;
                     self.initialValue = false;
                     self.displayName = '';
                     self.displayOrder = null;
                     self.description = '';
-                    self.availability = false;
+                    self.availability(false);
                 }
             }
         }
