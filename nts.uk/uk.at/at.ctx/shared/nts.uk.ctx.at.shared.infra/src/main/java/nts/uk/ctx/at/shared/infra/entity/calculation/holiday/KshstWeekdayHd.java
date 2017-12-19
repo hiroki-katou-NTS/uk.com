@@ -35,12 +35,11 @@ public class KshstWeekdayHd extends UkJpaEntity implements Serializable{
 	@Column(name = "EXCESS_SPHD_NO")
 	public int excessSphdNo;
 	
-	@OneToOne(optional = false)
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name = "", referencedColumnName="", insertable = false, updatable = false)
-	})
-	public KshstOverDayCalcSet overDayCalcSet;
+//	@OneToOne(optional = false)
+
+//		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
+
+//	public KshstOverDayCalcSet overDayCalcSet;
 	
 	@Override
 	protected Object getKey() {
