@@ -2,7 +2,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
 /**
- * 区分
+ * 承認者指定区分
  * @author hoatt
  *
  */

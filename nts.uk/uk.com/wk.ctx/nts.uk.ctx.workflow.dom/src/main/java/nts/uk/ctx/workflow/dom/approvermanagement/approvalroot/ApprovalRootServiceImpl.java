@@ -17,8 +17,6 @@ import nts.uk.ctx.workflow.dom.agent.ApprovalAgencyInfoService;
 import nts.uk.ctx.workflow.dom.agent.output.ApprovalAgencyInfoOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalPhaseOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalRootOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
-import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ErrorFlag;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
@@ -31,6 +29,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
+import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 
 /**
  * 1.社員の対象申請の承認ルートを取得する
@@ -87,7 +87,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	public List<ApprovalRootOutput> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
 			int appType, GeneralDate baseDate) {
 		List<ApprovalRootOutput> result = new ArrayList<>();
-		// get 個人別就業承認ルート from workflow
+		/*// get 個人別就業承認ルート from workflow
 		List<PersonApprovalRoot> perAppRoots = this.perApprovalRootRepository.findByBaseDate(cid, sid, baseDate,
 				appType);
 		if (CollectionUtil.isEmpty(perAppRoots)) {
@@ -150,7 +150,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			result = perAppRoots.stream().map(x -> ApprovalRootOutput.convertFromPersonData(x))
 					.collect(Collectors.toList());
 			this.adjustmentData(cid, sid, baseDate, result);
-		}
+		}*/
 
 		return result;
 	}

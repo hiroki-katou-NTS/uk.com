@@ -1,11 +1,14 @@
 package nts.uk.ctx.pereg.app.command.copysetting.item;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -48,17 +51,6 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 	}
 
 	@Transactional
-	private void addObject() {
-		// add objects
-		if (!CollectionUtil.isEmpty(command.getPerInfoItemDefIds())) {
-			EmpCopySetting newCtg =  EmpCopySetting.createFromJavaType(ctgId, AppContexts.user().companyId());
-			this.empCopyRepo.addCtgCopySetting(newCtg);
-			empCopyItemRepo.updatePerInfoItemInCopySetting(ctgId, command.getPerInfoItemDefIds());
-		}
-
-	}
-
-	@Transactional
 	private void removeObject() {
 
 		this.empCopyRepo.removeCtgCopySetting(command.getPerInfoCtgId());
@@ -68,6 +60,36 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 
 		});
 		// delete object
+
+	}
+
+	@Transactional
+	private void addObject() {
+		// add objects
+		if (!CollectionUtil.isEmpty(command.getPerInfoItemDefLst())) {
+			EmpCopySetting newCtg = EmpCopySetting.createFromJavaType(ctgId, AppContexts.user().companyId());
+			this.empCopyRepo.addCtgCopySetting(newCtg);
+			List<String> itemDefIds = new ArrayList<String>();
+
+			command.getPerInfoItemDefLst().forEach(x -> {
+
+				if (x.getChecked()) {
+					if (StringUtils.isEmpty(x.getItemParentCd())) {
+						itemDefIds.add(x.getId());
+					}
+				}
+			});
+			
+			command.getPerInfoItemDefLst().stream().filter(x -> {
+				return !StringUtils.isEmpty(x.getItemParentCd());
+			}).collect(Collectors.toList()).forEach(item -> {
+				if (itemDefIds.contains(item.getItemParentCd())) {
+					itemDefIds.add(item.getId());
+				}
+			});
+
+			empCopyItemRepo.updatePerInfoItemInCopySetting(ctgId, itemDefIds);
+		}
 
 	}
 

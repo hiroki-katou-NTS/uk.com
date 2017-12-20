@@ -30,9 +30,6 @@ public class RegularWork {
 	/** インターバル免除時間を含めて計算する */
 	private int calsIntervalTimeWork;
 	
-	/** 欠勤時間をマイナスする*/
-	private int minusAbsenceTimeWork;
-	
 	/** 実働のみで計算する */
 	private int calcActualOperaWork;
 	
@@ -47,10 +44,10 @@ public class RegularWork {
 	
 	public static RegularWork createFromJavaType(String companyId, int calcActualOperationPre,
 			int calcIntervalTimePre, int calcIncludCarePre, int additionTimePre, int notDeductLateleavePre,
-			int deformatExcValuePre, int calsIntervalTimeWork, int minusAbsenceTimeWork, int calcActualOperaWork,
+			int deformatExcValuePre, int calsIntervalTimeWork, int calcActualOperaWork,
 			int calcIncludCareWork, int notDeductLateleaveWork, int additionTimeWork){
 		return new RegularWork(companyId, calcActualOperationPre, calcIntervalTimePre, calcIncludCarePre,
-				additionTimePre, notDeductLateleavePre, deformatExcValuePre, calsIntervalTimeWork, minusAbsenceTimeWork,
+				additionTimePre, notDeductLateleavePre, deformatExcValuePre, calsIntervalTimeWork,
 				calcActualOperaWork, calcIncludCareWork, notDeductLateleaveWork, additionTimeWork);
 	}
 }

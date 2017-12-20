@@ -35,6 +35,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     let foundItem = _.find(self.lstBusinessType(), (item: BusinessType) => {
                         return item.businessTypeCode == businessTypeCode;
                     });
+                    nts.uk.ui.errors.clearAll();
                     self.checkUpdate(true);
                     self.selectedOption(foundItem);
                     self.selectedName(self.selectedOption().businessTypeName);
@@ -116,7 +117,6 @@ module nts.uk.at.view.kdw009.a.viewmodel {
         } 
         //  new mode 
         newMode(){
-            var t0 = performance.now(); 
             let self = this;
             self.check(true);
             self.checkUpdate(false);
@@ -126,8 +126,6 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             $("#inpCode").focus(); 
             $("#inpCode").ntsError('clear');
             nts.uk.ui.errors.clearAll();                 
-            var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         /** remove item from list **/
         remove(){

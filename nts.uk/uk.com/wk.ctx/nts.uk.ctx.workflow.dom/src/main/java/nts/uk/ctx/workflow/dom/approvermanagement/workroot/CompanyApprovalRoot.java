@@ -1,11 +1,17 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 会社別就業承認ルート
  * @author hoatt
@@ -14,17 +20,13 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CompanyApprovalRoot extends AggregateRoot {
+public class CompanyApprovalRoot extends AggregateRoot implements UnduplicatableHistory<EmploymentAppHistoryItem, DatePeriod, GeneralDate> {
 	/**会社ID*/
 	private String companyId;
 	/**承認ID*/
 	public String approvalId;
-	/**履歴ID*/
-	private String historyId;
 	/**申請種類*/
 	private ApplicationType applicationType;
-	/**期間*/
-	private ApprovalPeriod period;
 	/**分岐ID*/
 	private String branchId;
 	/**任意項目申請ID*/
@@ -33,6 +35,8 @@ public class CompanyApprovalRoot extends AggregateRoot {
 	private ConfirmationRootType confirmationRootType;
 	/**就業ルート区分*/
 	private EmploymentRootAtr employmentRootAtr;
+	/** 就業承認ルート履歴*/
+	private List<EmploymentAppHistoryItem>  employmentAppHistoryItems;
 	
 	public static CompanyApprovalRoot createSimpleFromJavaType(String companyId,
 			String approvalId,
@@ -44,15 +48,16 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			String anyItemApplicationId,
 			Integer confirmationRootType,
 			int employmentRootAtr){
+		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));
+		employmentAppHistorys.add(employmentAppHistory);
 		return new CompanyApprovalRoot(companyId,
 			approvalId,
-			historyId,
 			applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-			ApprovalPeriod.createSimpleFromJavaType(startDate, endDate),
 			branchId,
 			anyItemApplicationId,
 			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class));
+			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),employmentAppHistorys);
 	}
 	public static CompanyApprovalRoot convert(String companyId,
 			String approvalId,
@@ -64,24 +69,28 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			String anyItemApplicationId,
 			Integer confirmationRootType,
 			int employmentRootAtr){
+		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
+		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
+		employmentAppHistorys.add(employmentAppHistory);
 		return new CompanyApprovalRoot(companyId,
 			approvalId,
-			historyId,
-			applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
-			new ApprovalPeriod(startDate, endDate),
+			applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class),
 			branchId,
 			anyItemApplicationId,
 			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class));
+			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
+			employmentAppHistorys);
 	}
 	public static CompanyApprovalRoot updateEdate(CompanyApprovalRoot comApprovalRoot, String eDate){
 		CompanyApprovalRoot com = comApprovalRoot;
-		com.period.updateEndate(eDate);
+		//com.period.updateEndate(eDate);
+		com.employmentAppHistoryItems.get(0).changeSpan(new DatePeriod(com.employmentAppHistoryItems.get(0).start(), GeneralDate.fromString(eDate, "yyyy-MM-dd")));
 		return com;
 	}
 	public static CompanyApprovalRoot updateSdate(CompanyApprovalRoot comApprovalRoot, String startDate){
 		CompanyApprovalRoot com = comApprovalRoot;
-		com.period.updateStrartDate(startDate);
+		//com.period.updateStrartDate(startDate);
+		com.employmentAppHistoryItems.get(0).changeSpan(new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), com.employmentAppHistoryItems.get(0).end()));
 		return com;
 	}
 	public static boolean checkValidate(String startDate, String endDate){
@@ -89,5 +98,10 @@ public class CompanyApprovalRoot extends AggregateRoot {
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public List<EmploymentAppHistoryItem> items() {
+		// TODO Auto-generated method stub
+		return employmentAppHistoryItems;
 	}
 }

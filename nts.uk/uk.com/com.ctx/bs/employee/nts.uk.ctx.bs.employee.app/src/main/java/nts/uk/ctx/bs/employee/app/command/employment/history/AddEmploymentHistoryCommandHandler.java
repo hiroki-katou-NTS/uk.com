@@ -55,7 +55,7 @@ public class AddEmploymentHistoryCommandHandler
 				new DatePeriod(command.getStartDate()!=null? command.getStartDate() : ConstantUtils.minDate(), command.getEndDate() != null ? command.getEndDate()
 						: ConstantUtils.maxDate()));
 
-		Optional<EmploymentHistory> histBySid = employmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
+		Optional<EmploymentHistory> histBySid = employmentHistoryRepository.getByEmployeeId(companyId, command.getEmployeeId());
 
 		EmploymentHistory itemtoBeAdded = new EmploymentHistory(companyId, command.getEmployeeId(), new ArrayList<>());
 		if (histBySid.isPresent()) {

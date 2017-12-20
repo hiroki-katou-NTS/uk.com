@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 
 public class AdjustedApprovalPhases {
 	@Getter

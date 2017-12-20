@@ -84,11 +84,15 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	@Override
 	public PesionInforImport getEmployeeInfor(String sID) {
 		PersonInfoExport personIn = this.personPub.getPersonInfo(sID);
-		PesionInforImport person = new PesionInforImport(personIn.getEmployeeCode(),
-				personIn.getEmployeeId(),
+		PesionInforImport person = new PesionInforImport(personIn.getPid(),
 				personIn.getPname(),
-				"",//TODO mail can xem lai 
-				new ArrayList<JobEntryHistoryImport>());
+				personIn.getEntryDate(),
+				personIn.getGender(),
+				personIn.getBirthDay(),
+				personIn.getEmployeeId(),
+				personIn.getEmployeeCode(),
+				personIn.getRetiredDate(),
+				"");
 		return person;
 	}
 

@@ -95,7 +95,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 * @return
 	 */
 	@Override
-	public List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<String> lstSpecificDateItem) {
+	public List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<Integer> lstSpecificDateItem) {
 		return this.queryProxy().query(GET_BY_LIST_CODE, KsmstSpecificDateItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("lstSpecificDateItem", lstSpecificDateItem)

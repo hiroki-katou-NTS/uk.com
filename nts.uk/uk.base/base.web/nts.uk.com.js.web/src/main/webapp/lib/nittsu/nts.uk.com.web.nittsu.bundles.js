@@ -12427,6 +12427,53 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * HelpButton binding handler
+                 */
+                var NtsIconBindingHandler = (function () {
+                    function NtsIconBindingHandler() {
+                    }
+                    NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var iconNo = ko.unwrap(data.no);
+                        var width = ko.unwrap(data.width) || "100%";
+                        var height = ko.unwrap(data.height) || "100%";
+                        var iconFileName = iconNo + ".png";
+                        var iconPath = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                            .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                            .mergeRelativePath(iconFileName)
+                            .serialize();
+                        var $icon = $(element);
+                        $icon.addClass("img-icon");
+                        $icon.css({
+                            "background-image": "url(" + iconPath + ")",
+                            "background-size": "contain",
+                            width: width,
+                            height: height
+                        });
+                    };
+                    NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                    };
+                    return NtsIconBindingHandler;
+                }());
+                ko.bindingHandlers['ntsIcon'] = new NtsIconBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsSearchBox;
@@ -16801,7 +16848,7 @@ var nts;
                         // TODO: Jump to top page.
                     });
                     displayUserInfo();
-                    nts.uk.request.ajax(constants.MenuDataPath).done(function (menuSet) {
+                    nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
                         var $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
                         if (!menuSet || menuSet.length === 0)
                             return;
@@ -16811,7 +16858,8 @@ var nts;
                             var selectedMenu = _.find(menuSet, function (m) {
                                 return m.webMenuCode === menuCode.get();
                             });
-                            generate($menuNav, selectedMenu);
+                            !uk.util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
+                                : generate($menuNav, menuSet[0]);
                         }
                         else {
                             generate($menuNav, menuSet[0]);
@@ -16858,7 +16906,7 @@ var nts;
                             op();
                         }
                     };
-                    nts.uk.request.ajax(constants.Companies).done(function (companies) {
+                    nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
                         if (!companies || companies.length === 0)
                             return;
                         var $companyName = $("<span/>").attr("id", "company-name");
@@ -16877,7 +16925,7 @@ var nts;
                             }
                             $companyList.fadeOut(100);
                         });
-                        nts.uk.request.ajax(constants.UserName).done(function (userName) {
+                        nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function (userName) {
                             var $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
                             $userImage.css("margin-right", "6px").on(constants.CLICK, function () {
                                 // TODO: Jump to personal profile.
@@ -16923,7 +16971,7 @@ var nts;
                  * Get program.
                  */
                 function getProgram() {
-                    nts.uk.request.ajax(constants.PG).done(function (pg) {
+                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
                         var $pgArea = $("#pg-area");
                         $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
@@ -17017,13 +17065,13 @@ var nts;
                             if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
                                 var fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
                                 // TODO: Show image
-                                //                    $titleImage.attr("src", fqpImage).show();
-                                $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
+                                $titleImage.attr("src", fqpImage).show();
+                                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
                                 height += 80;
                             }
                             if (t.treeMenu && t.treeMenu.length > 0) {
                                 _.forEach(t.treeMenu, function (item, i) {
-                                    if (item.menuAttr === 0) {
+                                    if (item.menuAttr === 1) {
                                         $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
                                         height += 30;
                                         return;
@@ -17050,6 +17098,7 @@ var nts;
                 })(titleMenu || (titleMenu = {}));
                 var constants;
                 (function (constants) {
+                    constants.APP_ID = "com";
                     constants.MENU = "UK-Menu";
                     constants.CLICK = "click";
                     constants.MenuDataPath = "/sys/portal/webmenu/finddetails";
@@ -26120,47 +26169,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_28.koExtentions || (ui_28.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsIconBindingHandler = (function () {
-                    function NtsIconBindingHandler() {
-                    }
-                    NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var iconNo = ko.unwrap(data.no);
-                        var width = ko.unwrap(data.width) || "100%";
-                        var height = ko.unwrap(data.height) || "100%";
-                        var iconFileName = iconNo + ".png";
-                        var iconPath = nts.uk.request.location.siteRoot
-                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                            .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                            .mergeRelativePath(iconFileName)
-                            .serialize();
-                        var $icon = $(element);
-                        $icon.addClass("img-icon");
-                        $icon.css({
-                            "background-image": "url(" + iconPath + ")",
-                            "background-size": "contain",
-                            width: width,
-                            height: height
-                        });
-                    };
-                    NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                    };
-                    return NtsIconBindingHandler;
-                }());
-                ko.bindingHandlers['ntsIcon'] = new NtsIconBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

@@ -36,7 +36,6 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
-import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -52,7 +51,6 @@ import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassif
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
@@ -143,10 +141,10 @@ public class LayoutFinder {
 		// query properties
 		GeneralDate standardDate = GeneralDate.legacyDate(layoutQuery.getStandardDate());
 		String browsingEmpId = layoutQuery.getBrowsingEmpId();
-
+		String cid = AppContexts.user().companyId();
 		EmployeeDataMngInfo employee = employeeDataRepo.findByEmpId(browsingEmpId).get();
 		String browsingPeronId = employee.getPersonId();
-		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(browsingEmpId)
+		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,browsingEmpId)
 				.getAffCompanyHistByEmployee(browsingEmpId);
 		// validate standard date
 		standardDate = validateStandardDate(standardDate, employeeHistory, result);
@@ -419,8 +417,8 @@ public class LayoutFinder {
 					.filter(column -> column.getPerInfoItemDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.after((GeneralDate) startDateOpt.get().getValue())
-						&& stardardDate.before((GeneralDate) endDateOpt.get().getValue())) {
+				if (stardardDate.afterOrEquals((GeneralDate) startDateOpt.get().getValue())
+						&& stardardDate.beforeOrEquals((GeneralDate) endDateOpt.get().getValue())) {
 					MappingFactory.matchPerOptionData(recordId, classItemList, dataItems);
 					break;
 				}
@@ -454,8 +452,8 @@ public class LayoutFinder {
 					.filter(column -> column.getPerInfoDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.after((GeneralDate)startDateOpt.get().getValue())
-						&& stardardDate.before( (GeneralDate) endDateOpt.get().getValue())) {
+				if (stardardDate.afterOrEquals((GeneralDate)startDateOpt.get().getValue())
+						&& stardardDate.beforeOrEquals( (GeneralDate) endDateOpt.get().getValue())) {
 					MappingFactory.matchEmpOptionData(recordId, classItemList, dataItems);
 					break;
 				}
