@@ -39,9 +39,9 @@ public class KshstOverDayHdSet extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCESS_SPHD_NO")
 	public int excessHd;
 	
-//	@OneToOne(optional = false)
-//	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
-//	public KshstOverDayCalcSet overDayCalcSet;
+	@OneToOne
+	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
+	public KshstZeroTimeSet overDayCalcSet;
 
 	@Override
 	protected Object getKey() {

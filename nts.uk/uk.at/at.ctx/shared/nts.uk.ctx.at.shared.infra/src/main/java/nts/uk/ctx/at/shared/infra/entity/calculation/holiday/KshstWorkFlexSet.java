@@ -69,15 +69,15 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	
 	/** フレックスの所定不足時 */
 	@Column(name = "PREDETERMIN_DEFICIENCY_2")
-	public int preDef2;
+	public int predeterminDeficiency;
 	
 	/** 加算する */
 	@Column(name = "ADDITION_TIME_2")
 	public int additionTimeWork;
 	
-//	@OneToOne(optional = false)
-//		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
-//	public KshstHolidayAddtimeSet holidayAddtimeSet;
+	@OneToOne(optional = false)
+		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
+	public KshstHolidayAdditionSet holidayAddtimeSet;
 	
 	@Override
 	protected Object getKey() {

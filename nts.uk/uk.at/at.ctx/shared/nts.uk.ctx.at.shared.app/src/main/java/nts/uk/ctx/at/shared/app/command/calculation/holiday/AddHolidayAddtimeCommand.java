@@ -55,20 +55,25 @@ public class AddHolidayAddtimeCommand {
 		if (this.regularWork == null) {
 			return null;
 		}
-		return RegularWork.createFromJavaType(companyId, this.regularWork.getCalcActualOperationPre(), this.regularWork.getCalcIntervalTimePre(), this.regularWork.getCalcIncludCarePre(), 
-				this.regularWork.getAdditionTimePre(), this.regularWork.getNotDeductLateleavePre(), this.regularWork.getDeformatExcValuePre(), 
-				this.regularWork.getCalsIntervalTimeWork(), this.regularWork.getMinusAbsenceTimeWork(), this.regularWork.getCalcActualOperaWork(), 
-				this.regularWork.getCalcIncludCareWork(), this.regularWork.getNotDeductLateleaveWork(), this.regularWork.getAdditionTimeWork());
+		return RegularWork.createFromJavaType(companyId, this.regularWork.getCalcActualOperationPre(),
+				this.regularWork.getCalcIntervalTimePre(), 
+				this.regularWork.getCalcIncludCarePre(), this.regularWork.getAdditionTimePre(), 
+				this.regularWork.getNotDeductLateleavePre(), this.regularWork.getDeformatExcValuePre(), 
+				this.regularWork.getCalsIntervalTimeWork(),
+				this.regularWork.getCalcActualOperaWork(), 
+				this.regularWork.getCalcIncludCareWork(), this.regularWork.getNotDeductLateleaveWork(), 
+				this.regularWork.getAdditionTimeWork());
 }
 	
 	private FlexWork toDomainFlexWork(String companyId) {
 		if (this.flexWork == null) {
 			return null;
 		}
-		return FlexWork.createFromJavaType(companyId, this.flexWork.getHolidayCalcMethodSet(),this.flexWork.getAddWithMonthStatutory(),this.flexWork.getCalcActualOperationPre(), this.flexWork.getCalcIntervalTimePre(), this.flexWork.getCalcIncludCarePre(),this.flexWork.getPredExcessTimeflexPre(), 
-				this.flexWork.getAdditionTimePre(), this.flexWork.getNotDeductLateleavePre(), this.flexWork.getDeformatExcValuePre(), 
+		return FlexWork.createFromJavaType(companyId, this.flexWork.getCalcActualOperationPre(), this.flexWork.getCalcIntervalTimePre(), 
+				this.flexWork.getCalcIncludCarePre(),this.flexWork.getPredExcessTimeflexPre(), 
+				this.flexWork.getAdditionTimePre(), this.flexWork.getNotDeductLateleavePre(), 
 				this.flexWork.getCalsIntervalTimeWork(), this.flexWork.getMinusAbsenceTimeWork(), this.flexWork.getCalcActualOperaWork(), 
-				this.flexWork.getCalcIncludCareWork(), this.flexWork.getNotDeductLateleaveWork(), this.flexWork.getAdditionTimeWork());
+				this.flexWork.getCalcIncludCareWork(), this.flexWork.getNotDeductLateleaveWork(),this.flexWork.getPredeterminDeficiency(), this.flexWork.getAdditionTimeWork());
 }
 	
 	private IrregularWork toDomainIrregularWork(String companyId) {
