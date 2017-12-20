@@ -54,8 +54,8 @@ module a15 {
             _self.settingEnum = settingEnum;
             
             // Init all data                                      
-            _self.dayShiftApplicationTime = ko.observable(0);
-            _self.nightShiftApplicationTime = ko.observable(0);
+            _self.dayShiftApplicationTime = ko.observable(null);
+            _self.nightShiftApplicationTime = ko.observable(null);
             _self.dayShiftSetting = new TimeRoundingSettingModel();
             _self.nightShiftSetting = new TimeRoundingSettingModel();
             _self.listRoundingTimeValue = ko.observableArray([]);
@@ -97,29 +97,66 @@ module a15 {
          */
         private changeWorkSettingMode(): void {
             let _self = this;        
-                       
-            //TODO
+            
             if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.medicalSet);                                    
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.medicalSet) || 
+                                _self.model.fixedWorkSetting.commonSetting.medicalSet.length === 0) {
+                            _self.model.fixedWorkSetting.commonSetting.medicalSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.medicalSet);                                    
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.medicalSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.medicalSet) || 
+                                _self.model.diffWorkSetting.commonSet.medicalSet.length === 0) {
+                            _self.model.diffWorkSetting.commonSet.medicalSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.medicalSet);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
-                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.medicalSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.medicalSet) || 
+                                _self.model.flowWorkSetting.commonSetting.medicalSet.length === 0) {
+                            _self.model.flowWorkSetting.commonSetting.medicalSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.medicalSet);
                     } break;               
                     default: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.medicalSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.medicalSet) || 
+                                _self.model.fixedWorkSetting.commonSetting.medicalSet.length === 0) {
+                            _self.model.fixedWorkSetting.commonSetting.medicalSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.medicalSet);
                     }
                 } 
             } else {
                 // Flex work
-                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.medicalSet); 
+                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.medicalSet) || 
+                        _self.model.flexWorkSetting.commonSetting.medicalSet.length === 0) {
+                    _self.model.flexWorkSetting.commonSetting.medicalSet = _self.createBinding();                           
+                }
+                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.medicalSet); 
             }               
         }       
+        
+        /**
+         * UI - All: create new Binding data
+         */
+        private createBinding(): WorkTimezoneMedicalSetModel[] {
+            let _self = this;           
+            let result: WorkTimezoneMedicalSetModel[] = [];      
+            
+            let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
+            dayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
+            result.push(dayShiftMedicalSet);
+            
+            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
+            nightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
+            result.push(nightShiftMedicalSet);
+            
+            return result;
+        }
         
         /**
          * UI - All: change Binding mode

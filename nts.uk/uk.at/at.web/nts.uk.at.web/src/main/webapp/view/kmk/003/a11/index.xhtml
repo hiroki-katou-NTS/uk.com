@@ -3,14 +3,16 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<com:ValidatorScript>
-		nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime
-	</com:ValidatorScript>
-	<table>
-		<th colspan="2">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_104')}</div>
-			<hr />
-		</th>
+	
+	<div class="tab_11_setting_rows">
+		<div class="tab_11_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
+	</div>
+	
+	<div style="width: 330px; margin-left: 20px;">		
+		<hr/>
+	</div>
+	
+	<table style="margin-left: 20px;">
 		<tbody>
 			<!-- BEGIN A40_3 ~ A40_11 -->
 			<td>

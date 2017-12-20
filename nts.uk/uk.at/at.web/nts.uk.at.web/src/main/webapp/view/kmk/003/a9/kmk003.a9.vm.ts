@@ -98,33 +98,71 @@ module a9 {
         private changeWorkSettingMode(): void {
             let _self = this;        
                        
-            //TODO           
+            //TODO Remove console.log          
             if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
                         console.log("fixed");
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);                                
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets) || 
+                                _self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets.length === 0) {
+                            _self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);                                
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
                         console.log("diff");
-                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.lateEarlySet.otherClassSets);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.lateEarlySet.otherClassSets) || 
+                                _self.model.diffWorkSetting.commonSet.lateEarlySet.otherClassSets.length === 0) {
+                            _self.model.diffWorkSetting.commonSet.lateEarlySet.otherClassSets = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.lateEarlySet.otherClassSets);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
                         console.log("flow");
-                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets) ||
+                                _self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets.length === 0) {
+                            _self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets);
                     } break;               
                     default: {
                         console.log("fixed default");
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);      
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets) || 
+                                _self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets.length === 0) {
+                            _self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);      
                     }
                 } 
             } else {
                 // Flex work
                 console.log("flex");
-                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets);             
+                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets) || 
+                        _self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets.length === 0) {
+                    _self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets = _self.createBinding();                           
+                }
+                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets);             
             }               
         }       
+        
+        /**
+         * UI - All: create new Binding data
+         */
+        private createBinding(): OtherEmTimezoneLateEarlySetModel[] {
+            let _self = this;           
+            let result: OtherEmTimezoneLateEarlySetModel[] = [];
+            
+            let otherClassSetLate: OtherEmTimezoneLateEarlySetModel = new OtherEmTimezoneLateEarlySetModel();
+            otherClassSetLate.lateEarlyAtr(LateEarlyAtr.LATE);
+            result.push(otherClassSetLate);
+            
+            let otherClassSetLeaveEarly: OtherEmTimezoneLateEarlySetModel = new OtherEmTimezoneLateEarlySetModel();
+            otherClassSetLeaveEarly.lateEarlyAtr(LateEarlyAtr.EARLY);
+            result.push(otherClassSetLeaveEarly);
+            
+            return result;
+        }
         
         /**
          * UI - All: change Binding mode
@@ -143,10 +181,10 @@ module a9 {
          */
         private changeBindingDetail(otherClassSets: OtherEmTimezoneLateEarlySetModel[]): void {
             let _self = this;
-            let otherClassSet1: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.LATE);
-            let otherClassSet2: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
-            _self.lateSetting = otherClassSet1.delTimeRoundingSet;
-            _self.leaveEarlySetting = otherClassSet2.delTimeRoundingSet;
+            let otherClassSetLate: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.LATE);
+            let otherClassSetLeaveEarly: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
+            _self.lateSetting = otherClassSetLate.delTimeRoundingSet;
+            _self.leaveEarlySetting = otherClassSetLeaveEarly.delTimeRoundingSet;
         }
         
         /**

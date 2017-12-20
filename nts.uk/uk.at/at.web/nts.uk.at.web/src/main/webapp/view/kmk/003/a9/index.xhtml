@@ -4,71 +4,64 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	
-	<table style="width: 100%; padding: 10px">
-		<tr>
-			<td colspan="3" style="text-align: right;">
-				<button>#{i18n.getText('KMK003_192')}</button>
-			</td>
-		</tr>
-		
-		<tr>
-			<td colspan="3">
-				<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_94')}</div>
-			</td>
-		</tr>
-		
-		<tr>
-			<td colspan="3">
-				<hr/>
-			</td>
-		</tr>
-		
-		<tr>
-			<td style="width: 100px; padding: 0px 10px 0px 10px; text-align: center;">
+	<div style="text-align: right;">
+		<button>#{i18n.getText('KMK003_192')}</button>
+	</div>
+	
+	<div class="tab_9_setting_rows" style="margin-top: 0px;">
+		<div class="tab_9_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_94')}</div>		
+	</div>
+	
+	<div style="margin-left: 20px; margin-right: 20px;">		
+		<hr/>
+	</div>
+	
+	<div style="margin-left: 40px;">
+		<div class="tab_12_setting_rows">
+			<div class="tab_12_inline_item">
 				<div class="label">#{i18n.getText('KMK003_95')}</div>
-			</td>
-			<td style="width: 100px; padding: 0px 10px 0px 10px;">
+			</div>
+			<div class="tab_12_inline_item" style="width: 100px;">
 				<div id="combo-box-late-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					visibleItemsCount: 8,
-					value: lateSetting.roundingTime,
-					editable: false,
-					enable: true }"></div>
-			</td>
-			<td style="padding: 0px 10px 0px 10px;">
+						options: listRoundingTimeValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						visibleItemsCount: 8,
+						value: lateSetting.roundingTime,
+						editable: false,
+						enable: true }"></div>
+			</div>				
+			<div class="tab_12_inline_item">
 				<div class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: lateSetting.rounding }">
-				</div>
-			</td>
-		</tr>
+						options: listRoundingValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						value: lateSetting.rounding }"></div>
+			</div>
+		</div>
 		
-		<tr>
-			<td style="width: 100px; padding: 0px 10px 0px 10px; text-align: center;">
-				<div class="label">#{i18n.getText('KMK003_96')}</div>
-			</td>
-			<td style="width: 100px; padding: 0px 10px 0px 10px;">
+		<div class="tab_12_setting_rows">
+			<div class="tab_12_inline_item">
+				<div class="label">#{i18n.getText('KMK003_95')}</div>
+			</div>
+			<div class="tab_12_inline_item" style="width: 100px;">
 				<div id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					visibleItemsCount: 8,
-					value: leaveEarlySetting.roundingTime,
-					editable: false,
-					enable: true }"></div>
-			</td>
-			<td style="padding: 0px 10px 0px 10px;">
+						options: listRoundingTimeValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						visibleItemsCount: 8,
+						value: leaveEarlySetting.roundingTime,
+						editable: false,
+						enable: true }"></div>
+			</div>				
+			<div class="tab_12_inline_item">
 				<div class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: leaveEarlySetting.rounding }">
-				</div>
-			</td>
-		</tr>
-	</table>
+						options: listRoundingValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						value: leaveEarlySetting.rounding }"></div>
+			</div>
+		</div>
+	</div>
+		
 </ui:composition>

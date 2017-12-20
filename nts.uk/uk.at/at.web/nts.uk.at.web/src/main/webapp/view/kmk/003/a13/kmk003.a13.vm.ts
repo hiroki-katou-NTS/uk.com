@@ -91,28 +91,52 @@ module a13 {
         private changeWorkSettingMode(): void {
             let _self = this;        
                        
-            //TODO
             if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet);                                    
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet)) {
+                            _self.model.fixedWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet);                                    
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.extraordTimeSet.timeRoundingSet)) {
+                            _self.model.diffWorkSetting.commonSet.extraordTimeSet.timeRoundingSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.extraordTimeSet.timeRoundingSet);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
-                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet)) {
+                            _self.model.flowWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet);
                     } break;               
                     default: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet)) {
+                            _self.model.fixedWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet);
                     }
                 } 
             } else {
                 // Flex work
-                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet); 
+                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet)) {
+                    _self.model.flexWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet = _self.createBinding();                           
+                } 
+                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.extraordTimeSet.timeRoundingSet); 
             }               
         }       
+        
+        /**
+         * UI - All: create new Binding data
+         */
+        private createBinding(): TimeRoundingSettingModel {
+            let _self = this;
+            
+            let result: TimeRoundingSettingModel = new TimeRoundingSettingModel();           
+            return result;
+        }
         
         /**
          * UI - All: change Binding mode

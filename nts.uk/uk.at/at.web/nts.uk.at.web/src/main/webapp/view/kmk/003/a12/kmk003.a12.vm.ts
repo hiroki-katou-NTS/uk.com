@@ -91,29 +91,53 @@ module a12 {
          */
         private changeWorkSettingMode(): void {
             let _self = this;        
-                       
-            //TODO
+
             if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);                                    
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting)) {
+                            _self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);                                    
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.lateNightTimeSet.roundingSetting)) {
+                            _self.model.diffWorkSetting.commonSet.lateNightTimeSet.roundingSetting = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.lateNightTimeSet.roundingSetting);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
-                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.lateNightTimeSet.roundingSetting)) {
+                            _self.model.flowWorkSetting.commonSetting.lateNightTimeSet.roundingSetting = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);
                     } break;               
                     default: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting)) {
+                            _self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);
                     }
                 } 
             } else {
                 // Flex work
-                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.lateNightTimeSet.roundingSetting); 
+                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.lateNightTimeSet.roundingSetting)) {
+                    _self.model.flexWorkSetting.commonSetting.lateNightTimeSet.roundingSetting = _self.createBinding();                           
+                } 
+                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.lateNightTimeSet.roundingSetting); 
             }               
         }       
+        
+        /**
+         * UI - All: create new Binding data
+         */
+        private createBinding(): TimeRoundingSettingModel {
+            let _self = this;
+            
+            let result: TimeRoundingSettingModel = new TimeRoundingSettingModel();           
+            return result;
+        }
         
         /**
          * UI - All: change Binding mode

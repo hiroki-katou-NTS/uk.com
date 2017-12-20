@@ -87,28 +87,52 @@ module a16 {
         private changeWorkSettingMode(): void {
             let _self = this;        
                        
-            //TODO
             if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet);                                    
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet)) {
+                            _self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet);                                    
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.zeroHStraddCalculateSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.zeroHStraddCalculateSet)) {
+                            _self.model.diffWorkSetting.commonSet.zeroHStraddCalculateSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.zeroHStraddCalculateSet);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
-                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet)) {
+                            _self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet);
                     } break;               
                     default: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet)) {
+                            _self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet);
                     }
                 } 
             } else {
                 // Flex work
-                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet); 
+                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet)) {
+                    _self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet = _self.createBinding();                           
+                }
+                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet); 
             }               
         }       
+        
+        /**
+         * UI - All: create new Binding data
+         */
+        private createBinding(): KnockoutObservable<boolean> {
+            let _self = this;
+            
+            let result: KnockoutObservable<boolean> = ko.observable(true);           
+            return result;
+        }
         
         /**
          * UI - All: change Binding mode

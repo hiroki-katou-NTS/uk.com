@@ -96,28 +96,52 @@ module a14 {
         private changeWorkSettingMode(): void {
             let _self = this;        
                        
-            //TODO
             if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet);                                    
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet)) {
+                            _self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet);                                    
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        //_self.changeBinding(_self.model.diffWorkSetting.commonSetting.shortTimeWorkSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.shortTimeWorkSet)) {
+                            _self.model.diffWorkSetting.commonSet.shortTimeWorkSet = _self.createBinding();                           
+                        }
+                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.shortTimeWorkSet);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
-                        //_self.changeBinding(_self.model.flowWorkSetting.commonSetting.shortTimeWorkSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.shortTimeWorkSet)) {
+                            _self.model.flowWorkSetting.commonSetting.shortTimeWorkSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.shortTimeWorkSet);
                     } break;               
                     default: {
-                        //_self.changeBinding(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet);
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet)) {
+                            _self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet);
                     }
                 } 
             } else {
                 // Flex work
-                //_self.changeBinding(_self.model.flexWorkSetting.commonSetting.shortTimeWorkSet); 
+                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.shortTimeWorkSet)) {
+                    _self.model.flexWorkSetting.commonSetting.shortTimeWorkSet = _self.createBinding();                           
+                } 
+                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.shortTimeWorkSet); 
             }               
         }       
+        
+        /**
+         * UI - All: create new Binding data
+         */
+        private createBinding(): WorkTimezoneShortTimeWorkSetModel {
+            let _self = this;
+            
+            let result: WorkTimezoneShortTimeWorkSetModel = new WorkTimezoneShortTimeWorkSetModel();           
+            return result;
+        }
         
         /**
          * UI - All: change Binding mode
