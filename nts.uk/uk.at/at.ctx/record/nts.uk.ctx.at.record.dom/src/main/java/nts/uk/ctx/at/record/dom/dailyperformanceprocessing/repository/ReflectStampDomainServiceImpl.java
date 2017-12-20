@@ -115,7 +115,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		// result data
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
-
+		
+		
+		
 		// after check 打刻反映時の出勤休日扱いチェック
 		// 終了状態：休日扱い - 休日系の打刻範囲を取得する
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
@@ -259,15 +261,21 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				companyID, 3);
 		stampReflectOnHolidayOutPut.setStampReflectNextDay(stampNextDay);
 
-		// 前々日との関係から打刻反映範囲を補正
-		this.stampReflectCorrection(stampTwoDay);
-
-		// 前日との関係から打刻範囲範囲を補正
-		this.stampReflectCorrection(stampPreviousDay);
-
-		// 翌日との関係から打刻反映範囲を補正
-		this.nextDayCorrection(stampNextDay);
-
+		if(stampTwoDay != null){
+			// 前々日との関係から打刻反映範囲を補正
+			this.stampReflectCorrection(stampTwoDay);	
+		}
+		
+		if(stampPreviousDay != null){
+			// 前日との関係から打刻範囲範囲を補正
+			this.stampReflectCorrection(stampPreviousDay);			
+		}
+		
+		if (stampNextDay != null) {
+			// 翌日との関係から打刻反映範囲を補正
+			this.nextDayCorrection(stampNextDay);
+		}
+		
 		return stampReflectRangeOutput;
 	}
 
@@ -287,7 +295,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		WorkStyle workStyle = basicScheduleService
 				.checkWorkDay(workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v());
 
-		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
+		StampReflectRangeOutput stampReflectRangeOutput = null;
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
 			// get workTimeCode of processingDate
