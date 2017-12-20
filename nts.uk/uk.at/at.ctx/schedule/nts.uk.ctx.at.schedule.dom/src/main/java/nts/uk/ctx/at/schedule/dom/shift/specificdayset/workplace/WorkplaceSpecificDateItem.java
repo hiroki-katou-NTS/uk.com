@@ -6,7 +6,10 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName;
-
+/**
+ * 職場特定日設定
+ *
+ */
 @Getter
 @AllArgsConstructor
 public class WorkplaceSpecificDateItem extends AggregateRoot {
