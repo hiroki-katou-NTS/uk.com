@@ -62,6 +62,20 @@ module nts.uk.at.view.kmk003.a {
                     this.workTimezone = new FixedWorkTimezoneSetModel();
                     this.dayAtr = ko.observable(0);
                 }
+
+                static getDefaultData(): Array<FixHalfDayWorkTimezoneModel> {
+                    let oneday = new FixHalfDayWorkTimezoneModel();
+                    oneday.dayAtr(0);
+                    let morning = new FixHalfDayWorkTimezoneModel();
+                    morning.dayAtr(1);
+                    let afternoon = new FixHalfDayWorkTimezoneModel();
+                    afternoon.dayAtr(2);
+                    let list = [];
+                    list.push(oneday);
+                    list.push(morning);
+                    list.push(afternoon);
+                    return list;
+                }
                 
                 updateData(data: FixHalfDayWorkTimezoneDto) {
                     this.restTimezone.updateData(data.restTimezone);
@@ -154,7 +168,7 @@ module nts.uk.at.view.kmk003.a {
                     this.commonSetting = new WorkTimezoneCommonSetModel();
                     this.useHalfDayShift = ko.observable(false);
                     this.fixedWorkRestSetting = new FixedWorkRestSetModel();
-                    this.lstHalfDayWorkTimezone = [];
+                    this.lstHalfDayWorkTimezone = FixHalfDayWorkTimezoneModel.getDefaultData();
                     this.lstStampReflectTimezone = [];
                     this.legalOTSetting = ko.observable(0);
                 }
@@ -178,17 +192,20 @@ module nts.uk.at.view.kmk003.a {
                     this.commonSetting.updateData(data.commonSetting);
                     this.useHalfDayShift(data.useHalfDayShift);                    
                     this.fixedWorkRestSetting.updateData(data.fixedWorkRestSetting);                                       
-                    this.lstHalfDayWorkTimezone = _.map(data.lstHalfDayWorkTimezone, (dataDTO) => {
-                        let dataModel: FixHalfDayWorkTimezoneModel = new FixHalfDayWorkTimezoneModel();
-                        dataModel.updateData(dataDTO);
-                        return dataModel;
-                    });                   
+                    this.updateListHalfDay(data.lstHalfDayWorkTimezone);
                     this.lstStampReflectTimezone = _.map(data.lstStampReflectTimezone, (dataDTO) => {
                         let dataModel: StampReflectTimezoneModel = new StampReflectTimezoneModel();
                         dataModel.updateData(dataDTO);
                         return dataModel;
                     });                                    
                     this.legalOTSetting(data.legalOTSetting);
+                }
+
+                updateListHalfDay(lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[]): void {
+                    lstHalfDayWorkTimezone.sort(item => item.dayAtr);
+                    this.getHDWtzOneday().updateData(lstHalfDayWorkTimezone[0]);
+                    this.getHDWtzMorning().updateData(lstHalfDayWorkTimezone[1]);
+                    this.getHDWtzAfternoon().updateData(lstHalfDayWorkTimezone[2]);
                 }
                 
                 toDto(): FixedWorkSettingDto {

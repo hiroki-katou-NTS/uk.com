@@ -221,6 +221,20 @@ module nts.uk.at.view.kmk003.a {
                     this.amPmAtr = ko.observable(0);
                 }
 
+                static getDefaultData(): Array<DiffTimeHalfDayWorkTimezoneModel> {
+                    let oneday = new DiffTimeHalfDayWorkTimezoneModel();
+                    oneday.amPmAtr(0);
+                    let morning = new DiffTimeHalfDayWorkTimezoneModel();
+                    morning.amPmAtr(1);
+                    let afternoon = new DiffTimeHalfDayWorkTimezoneModel();
+                    afternoon.amPmAtr(2);
+                    let list = [];
+                    list.push(oneday);
+                    list.push(morning);
+                    list.push(afternoon);
+                    return list;
+                }
+
                 updateData(data: DiffTimeHalfDayWorkTimezoneDto) {
                     this.restTimezone.updateData(data.restTimezone);
                     this.workTimezone.updateData(data.workTimezone);
@@ -307,7 +321,7 @@ module nts.uk.at.view.kmk003.a {
                     this.commonSet = new WorkTimezoneCommonSetModel();
                     this.isUseHalfDayShift = ko.observable(false);
                     this.changeExtent = new EmTimezoneChangeExtentModel();
-                    this.halfDayWorkTimezones = [];
+                    this.halfDayWorkTimezones = DiffTimeHalfDayWorkTimezoneModel.getDefaultData();
                     this.stampReflectTimezone = new DiffTimeWorkStampReflectTimezoneModel();
                     this.overtimeSetting = ko.observable(0);
                 }
@@ -333,14 +347,16 @@ module nts.uk.at.view.kmk003.a {
                     this.commonSet.updateData(data.commonSet);
                     this.isUseHalfDayShift(data.isUseHalfDayShift);
                     this.changeExtent.updateData(data.changeExtent);
-                    this.halfDayWorkTimezones = [];
-                    for (var dataDTO of data.halfDayWorkTimezones) {
-                        var dataModel: DiffTimeHalfDayWorkTimezoneModel = new DiffTimeHalfDayWorkTimezoneModel();
-                        dataModel.updateData(dataDTO);
-                        this.halfDayWorkTimezones.push(dataModel);
-                    }
+                    this.updateListHalfDay(data.halfDayWorkTimezones);
                     this.stampReflectTimezone.updateData(data.stampReflectTimezone);
                     this.overtimeSetting(data.overtimeSetting);
+                }
+
+                updateListHalfDay(lstHalfDayWorkTimezone: DiffTimeHalfDayWorkTimezoneDto[]): void {
+                    lstHalfDayWorkTimezone.sort(item => item.amPmAtr);
+                    this.getHDWtzOneday().updateData(lstHalfDayWorkTimezone[0]);
+                    this.getHDWtzMorning().updateData(lstHalfDayWorkTimezone[1]);
+                    this.getHDWtzAfternoon().updateData(lstHalfDayWorkTimezone[2]);
                 }
 
                 toDto(): DiffTimeWorkSettingDto {
