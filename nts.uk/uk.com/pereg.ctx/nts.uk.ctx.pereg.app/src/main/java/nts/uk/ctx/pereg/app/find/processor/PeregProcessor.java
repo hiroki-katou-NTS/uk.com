@@ -181,7 +181,7 @@ public class PeregProcessor {
 			PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 
 		List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef);
-		if(perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO
+		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
 				&& query.getInfoId() == null && query.getStandardDate() == null)
 			return classItemList;
 		if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
