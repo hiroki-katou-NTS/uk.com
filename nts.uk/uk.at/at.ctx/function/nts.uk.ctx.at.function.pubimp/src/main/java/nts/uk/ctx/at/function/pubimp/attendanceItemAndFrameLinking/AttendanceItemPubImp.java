@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.enums.TypeOfItem;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.repository.AttendanceItemLinkingRepository;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
 import nts.uk.ctx.at.function.pub.attendanceItemAndFrameLinking.AttendanceItemLinkingDto;
 import nts.uk.ctx.at.function.pub.attendanceItemAndFrameLinking.AttendanceItemLinkingPub;
 

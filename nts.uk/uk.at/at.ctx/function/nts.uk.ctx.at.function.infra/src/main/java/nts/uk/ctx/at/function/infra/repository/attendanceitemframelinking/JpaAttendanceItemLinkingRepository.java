@@ -2,16 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.function.infra.repository.attendanceItemAndFrameLinking;
+package nts.uk.ctx.at.function.infra.repository.attendanceitemframelinking;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.AttendanceItemLinking;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.enums.TypeOfItem;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.repository.AttendanceItemLinkingRepository;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
 import nts.uk.ctx.at.function.infra.enity.attendanceItemAndFrameLinking.KfnmtAttendanceLink;
 
 @Stateless

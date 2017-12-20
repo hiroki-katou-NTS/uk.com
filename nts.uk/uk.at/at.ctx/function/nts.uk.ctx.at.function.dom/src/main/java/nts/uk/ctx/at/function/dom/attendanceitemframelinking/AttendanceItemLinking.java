@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking;
+package nts.uk.ctx.at.function.dom.attendanceitemframelinking;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.enums.FrameCategory;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.enums.TypeOfItem;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.primitivevalue.FrameNo;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.primitivevalue.FrameNo;
 
 /**
  * 

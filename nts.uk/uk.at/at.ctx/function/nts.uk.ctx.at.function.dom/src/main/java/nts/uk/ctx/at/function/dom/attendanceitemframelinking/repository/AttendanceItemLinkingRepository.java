@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.repository;
+package nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository;
 
 import java.util.List;
 
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.AttendanceItemLinking;
-import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.enums.TypeOfItem;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 
 public interface AttendanceItemLinkingRepository {
 	

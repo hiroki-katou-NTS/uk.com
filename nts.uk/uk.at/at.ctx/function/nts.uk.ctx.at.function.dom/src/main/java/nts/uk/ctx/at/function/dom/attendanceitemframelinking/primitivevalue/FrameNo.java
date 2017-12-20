@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.primitivevalue;
+package nts.uk.ctx.at.function.dom.attendanceitemframelinking.primitivevalue;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;

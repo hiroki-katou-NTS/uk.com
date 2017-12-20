@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.enums;
+package nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums;
 
 import lombok.AllArgsConstructor;
 
