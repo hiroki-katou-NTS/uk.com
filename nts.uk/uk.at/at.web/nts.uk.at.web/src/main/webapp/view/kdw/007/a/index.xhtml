@@ -256,7 +256,7 @@
 									    	<input class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().workTimeCondition.displayLstWorkTimePlan, readonly: true, required: selectedErrorAlarm().workTimeCondition.planFilterAtr}" />
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseWorkTime.bind($data, 'plan'), enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_65')}</button>
+									    	<button data-bind="click: chooseWorkTime.bind($data, 'plan'), enable: selectedErrorAlarm().fixedAtr() != 1 &amp;&amp; selectedErrorAlarm().workTimeCondition.planFilterAtr()">#{i18n.getText('KDW007_65')}</button>
 									    </td> 
 									  </tr>
 								</table>
@@ -293,7 +293,7 @@
 									    </td>
 									    <td>
 									    	<button data-bind="click: chooseWorkType.bind($data, 'actual'), 
-									    						enable: (selectedErrorAlarm().workTypeCondition.comparePlanAndActual() == 0) &amp;&amp; (selectedErrorAlarm().fixedAtr() != 1)">#{i18n.getText('KDW007_64')}</button>
+									    						enable: (selectedErrorAlarm().fixedAtr() != 1) &amp;&amp; selectedErrorAlarm().workTypeCondition.actualFilterAtr()">#{i18n.getText('KDW007_64')}</button>
 									    </td> 
 									  </tr>
 									  <tr>
@@ -307,7 +307,7 @@
 									    </td>
 									    <td>
 									    	<button data-bind="click: chooseWorkTime.bind($data, 'actual'),
-									    						enable: (selectedErrorAlarm().workTimeCondition.comparePlanAndActual() == 0) &amp;&amp; (selectedErrorAlarm().fixedAtr() != 1)">#{i18n.getText('KDW007_65')}</button>
+									    						enable:  (selectedErrorAlarm().fixedAtr() != 1) &amp;&amp; selectedErrorAlarm().workTimeCondition.actualFilterAtr()">#{i18n.getText('KDW007_65')}</button>
 									    </td> 
 									  </tr>
 								</table>
