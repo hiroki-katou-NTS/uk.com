@@ -57,9 +57,9 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 		String itemCode = entity[3] != null ? entity[3].toString() : null;
 		String itemName = entity[4] != null ? entity[4].toString() : null;
 		int isRequired = entity[5] != null ? Integer.parseInt(entity[5].toString()) : 0;
-		int dataType = entity[6] != null ? Integer.parseInt(entity[6].toString()) : 0;
+		int dataType = entity[6] != null ? Integer.parseInt(entity[6].toString()) : 1;
 		int selectionItemRefType = entity[7] != null ? Integer.parseInt(entity[7].toString()) : 0;
-		String itemParentCd = String.valueOf(entity[8]);
+		String itemParentCd =  entity[8] != null ? entity[8].toString() : null;
 
 		return EmpCopySettingItem.createFromJavaType(perInfoCtgId, categoryCd, perInfoItemDefId, itemCode, itemName,
 				isRequired, dataType, BigDecimal.valueOf(selectionItemRefType), itemParentCd);
