@@ -441,20 +441,19 @@ module nts.custombinding {
                     <div class="add-buttons">
                         <button id="cps007_btn_add"></button>
                     </div>
-                    <div class="drag-panel" data-bind="let: {
-                                text: nts.uk.resource.getText,
-                                CAT_TYPE: {  
-                                    SINGLE : 1,
-                                    MULTI: 2,
-                                    CONTI: 3, /* continuos history hasn't end date */
-                                    NODUP: 4,
-                                    DUPLI: 5,
-                                    CONTIWED: 6 /* continuos history has end date */
-                                }
-                            }">
+                    <div class="drag-panel">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification"
                                     data-bind="let: {
+                                        text: nts.uk.resource.getText,
+                                        CAT_TYPE: {  
+                                            SINGLE : 1,
+                                            MULTI: 2,
+                                            CONTI: 3, /* continuos history hasn't end date */
+                                            NODUP: 4,
+                                            DUPLI: 5,
+                                            CONTIWED: 6 /* continuos history has end date */
+                                        },
                                         LAYOUT_TYPE: {
                                             ITEM: 'ITEM',
                                             LIST: 'LIST',
@@ -683,10 +682,27 @@ module nts.custombinding {
                                         }"></div>
                             </div>
                             <div data-bind="if: index == 2">
-                                <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1">
-                                    <div data-bind="text: value"></div>
+                                <div data-bind="if: typeof ctgType !== 'undefined'">
+                                    <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1">
+                                        <div data-bind="text: value"></div>
+                                    </div>
+                                    <div data-bind="if: [CAT_TYPE.NODUP, CAT_TYPE.DUPLI].indexOf(ctgType) > -1">
+                                        <div data-bind="ntsDatePicker: {
+                                                value: value,
+                                                startDate: startDate,
+                                                endDate: endDate,
+                                                constraint: nameid,
+                                                dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                                enable: editable,
+                                                readonly: readonly
+                                            }, attr: { 
+                                                id: nameid, 
+                                                nameid: nameid,
+                                                title: itemName
+                                            }"></div>
+                                    </div>
                                 </div>
-                                <div data-bind="if: [CAT_TYPE.NODUP, CAT_TYPE.DUPLI].indexOf(ctgType) > -1">
+                                <div data-bind="if: typeof ctgType === 'undefined'">
                                     <div data-bind="ntsDatePicker: {
                                             value: value,
                                             startDate: startDate,

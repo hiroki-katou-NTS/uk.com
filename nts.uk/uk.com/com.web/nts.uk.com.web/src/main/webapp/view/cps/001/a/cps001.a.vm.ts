@@ -2,6 +2,7 @@ module cps001.a.vm {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -419,17 +420,19 @@ module cps001.a.vm {
                 let self = this,
                     category = self.category();
 
-                let query = {
-                    recordId: self.infoId(),
-                    personId: self.personId(),
-                    employeeId: self.employeeId(),
-                    categoryId: category.categoryCode()
-                };
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    let query = {
+                        recordId: self.infoId(),
+                        personId: self.personId(),
+                        employeeId: self.employeeId(),
+                        categoryId: category.categoryCode()
+                    };
 
-                service.removeCurrentCategoryData(query).done(x => {
-                    info({ messageId: "Msg_16" }).then(() => {
-                        self.infoId(undefined);
-                        category.categoryType.valueHasMutated();
+                    service.removeCurrentCategoryData(query).done(x => {
+                        info({ messageId: "Msg_16" }).then(() => {
+                            self.infoId(undefined);
+                            category.categoryType.valueHasMutated();
+                        });
                     });
                 });
             },
