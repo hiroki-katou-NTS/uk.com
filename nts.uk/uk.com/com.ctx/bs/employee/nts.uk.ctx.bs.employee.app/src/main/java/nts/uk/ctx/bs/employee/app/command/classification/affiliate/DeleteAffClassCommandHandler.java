@@ -14,6 +14,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
@@ -47,7 +48,9 @@ public class DeleteAffClassCommandHandler extends CommandHandler<DeleteAffClassi
 	@Override
 	protected void handle(CommandHandlerContext<DeleteAffClassificationCommand> context) {
 		DeleteAffClassificationCommand command = context.getCommand();
-		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(command.getEmployeeId());
+		String companyId = AppContexts.user().companyId();
+		
+		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId,command.getEmployeeId());
 		if ( !historyOption.isPresent()) {
 			throw new RuntimeException("Invalid AffClassHistory_ver1");
 		}

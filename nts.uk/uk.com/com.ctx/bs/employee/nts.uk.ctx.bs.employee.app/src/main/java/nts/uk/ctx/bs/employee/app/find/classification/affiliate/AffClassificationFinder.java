@@ -15,6 +15,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -83,7 +84,8 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		Optional<AffClassHistory_ver1> affClassHistory = affClassHistRepo.getByEmployeeId(query.getEmployeeId());
+		String cid = AppContexts.user().companyId();
+		Optional<AffClassHistory_ver1> affClassHistory = affClassHistRepo.getByEmployeeId(cid,query.getEmployeeId());
 		if (!affClassHistory.isPresent())
 			return new ArrayList<>();
 		List<DateHistoryItem> periods = affClassHistory.get().getPeriods();

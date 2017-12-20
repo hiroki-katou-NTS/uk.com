@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSet;
@@ -40,4 +41,9 @@ public class WorkChangeBasicData {
 	 * 申請共通設定
 	 */
 	private AppCommonSettingOutput appCommonSettingOutput;	
+	
+	/**
+	 * 勤務就業ダイアログ用データ取得
+	 */
+	private DataWork workingData;
 }

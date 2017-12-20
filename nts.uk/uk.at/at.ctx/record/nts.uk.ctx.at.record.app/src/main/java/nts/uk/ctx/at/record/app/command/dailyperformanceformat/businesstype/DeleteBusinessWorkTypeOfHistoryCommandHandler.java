@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfHistoryGeneralRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
@@ -44,7 +45,9 @@ public class DeleteBusinessWorkTypeOfHistoryCommandHandler
 		DeleteBusinessWorkTypeOfHistoryCommand command = context.getCommand();
 		String employeeId = command.getEmployeeId();
 		String historyId = command.getHistoryId();
-		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(employeeId);
+		String companyId = AppContexts.user().companyId();
+		
+		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(companyId,employeeId);
 		
 		if (!optional.isPresent()) {
 			throw new BusinessException("No data to update!");

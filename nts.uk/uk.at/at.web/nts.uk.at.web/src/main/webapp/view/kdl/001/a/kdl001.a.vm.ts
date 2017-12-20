@@ -68,10 +68,8 @@ module nts.uk.at.view.kdl001.a {
                 var self = this;
                 let command = {
                     codelist: _.map(self.rootList, function(item){ return item.code}),
-                    startAtr: self.startTimeOption(),
-                    startTime: nts.uk.util.isNullOrEmpty(self.startTime())?-1:self.startTime(),
-                    endAtr: self.endTimeOption(),
-                    endTime: nts.uk.util.isNullOrEmpty(self.endTime())?-1:self.endTime()
+                    startTime: nts.uk.util.isNullOrEmpty(self.startTime())?null :self.startTime(),
+                    endTime: nts.uk.util.isNullOrEmpty(self.endTime())?null :self.endTime()
                 }
                 kdl001.a.service.findByTime(command)
                     .done(function(data) {

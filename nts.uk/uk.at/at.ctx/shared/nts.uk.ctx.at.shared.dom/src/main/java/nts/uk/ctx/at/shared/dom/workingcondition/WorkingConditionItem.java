@@ -139,4 +139,23 @@ public class WorkingConditionItem extends AggregateRoot {
 		return true;
 	}
 
+	public WorkingConditionItem(String historyId, NotUseAtr scheduleManagementAtr, PersonalDayOfWeek workDayOfWeek,
+			PersonalWorkCategory workCategory, NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr,
+			String employeeId, NotUseAtr vacationAddedTimeAtr, int contractTime,
+			WorkingSystem laborSystem, BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod) {
+		super();
+		this.historyId = historyId;
+		this.scheduleManagementAtr = scheduleManagementAtr;
+		this.workDayOfWeek = workDayOfWeek;
+		this.workCategory = workCategory;
+		this.autoStampSetAtr = autoStampSetAtr;
+		this.autoIntervalSetAtr = autoIntervalSetAtr;
+		this.employeeId = employeeId;
+		this.vacationAddedTimeAtr = vacationAddedTimeAtr;
+		this.contractTime = new LaborContractTime(contractTime);
+		this.laborSystem = laborSystem;
+		this.holidayAddTimeSet = holidayAddTimeSet;
+		this.scheduleMethod = scheduleMethod;
+	}
+
 }

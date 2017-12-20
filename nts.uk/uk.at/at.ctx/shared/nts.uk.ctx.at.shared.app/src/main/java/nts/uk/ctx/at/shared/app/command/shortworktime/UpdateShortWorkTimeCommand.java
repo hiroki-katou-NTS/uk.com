@@ -77,11 +77,11 @@ public class UpdateShortWorkTimeCommand implements SWorkTimeHistItemGetMemento {
 	@Override
 	public List<SChildCareFrame> getLstTimeSlot() {
 		List<SChildCareFrame> listSChildCare = new ArrayList<>();
-		if (startTime1 != null || endTime1 != null){
+		if (startTime1 != null && endTime1 != null){
 			SChildCareFrame careFrame = new SChildCareFrame(1, new TimeWithDayAttr(startTime1.intValue()), new TimeWithDayAttr(endTime1.intValue()));
 			listSChildCare.add(careFrame);
 		}
-		if (startTime2 != null || endTime2 != null){
+		if (startTime2 != null && endTime2 != null){
 			SChildCareFrame careFrame = new SChildCareFrame(2, new TimeWithDayAttr(startTime2.intValue()), new TimeWithDayAttr(endTime2.intValue()));
 			listSChildCare.add(careFrame);
 		}

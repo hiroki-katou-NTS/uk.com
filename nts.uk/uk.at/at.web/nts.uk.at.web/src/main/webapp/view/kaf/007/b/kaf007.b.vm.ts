@@ -39,6 +39,9 @@ module nts.uk.at.view.kaf007.b {
             enableSendMail: KnockoutObservable<boolean> = ko.observable( false );
             dateFormat: string = 'YYYY/MM/DD';
             dateTimeFormat: string = 'YYYY/MM/DD hh:mm:ss';
+            //勤務就業ダイアログ用データ取得
+            workTypeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
+            workTimeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
         
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
@@ -99,7 +102,8 @@ module nts.uk.at.view.kaf007.b {
                             ko.mapping.fromJS( detailData.applicationDto, {}, self.appWorkChange().application );
                             //setting reason content
                             self.multilContent( self.appWorkChange().application().applicationReason() );
-
+                            self.workTypeCodes = detailData.workTypeCodes;
+                            self.workTimeCodes = detailData.workTimeCodes;
                             dfd.resolve();
                             nts.uk.ui.block.clear();
                         } ).fail(( res ) => {
@@ -295,23 +299,14 @@ module nts.uk.at.view.kaf007.b {
              * 「勤務就業選択」ボタンをクリックする
              * KDL003_勤務就業ダイアログを起動する
              */
-            openKDL003Click() {
+            openKDL003Click()  {
                 let self = this,
-                //workTypeCodes = [],
-                //TODO: QA
-                workTypeCodes = ['001','002','003','004','005','006','007','008','009','010'],
-                workChange = self.workChange(),
-                //workTimeCodes = [];
-                workTimeCodes = ['001','003','005'];
+                workChange = self.workChange();                
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: workTypeCodes,
-                    //TODO: QA
-                    // selectedWorkTypeCode: workChange.workTypeCd(),
-                    selectedWorkTypeCode: '002',
-                    workTimeCodes: workTimeCodes,
-                  //TODO: QA
-                    //selectedWorkTimeCode: workChange.workTimeCd(),
-                    selectedWorkTimeCode: '003',
+                    workTypeCodes: self.workTypeCodes,                    
+                    selectedWorkTypeCode: workChange.workTypeCd(),
+                    workTimeCodes: self.workTimeCodes,
+                    selectedWorkTimeCode: workChange.workTimeCd(),
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {

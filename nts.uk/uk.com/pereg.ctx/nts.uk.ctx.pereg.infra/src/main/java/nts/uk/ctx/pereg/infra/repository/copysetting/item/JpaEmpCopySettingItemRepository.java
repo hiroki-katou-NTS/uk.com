@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.infra.repository.copysetting.item;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,30 +16,28 @@ import nts.uk.ctx.pereg.infra.entity.copysetting.item.PpestEmployeeCopySettingIt
 @Stateless
 public class JpaEmpCopySettingItemRepository extends JpaRepository implements EmpCopySettingItemRepository {
 
-	private static final String SELECT_EMP_COPY_SETTING_ITEM_BY_CTG_ID_QUERY_STRING = "SELECT DISTINCT pi.perInfoCtgId,pc.categoryCd,pi.ppemtPerInfoItemPK.perInfoItemDefId,pi.itemCd,pi.itemName,pi.requiredAtr,pm.dataType,pm.selectionItemRefType"
-			+ " FROM PpestEmployeeCopySettingItem ci" + " INNER JOIN PpestEmployeeCopySetting cs "
+	private static final String SELECT_EMP_COPY_SETTING_ITEM_BY_CTG_ID_QUERY_STRING = "SELECT DISTINCT pi.perInfoCtgId,pc.categoryCd,pi.ppemtPerInfoItemPK.perInfoItemDefId,pi.itemCd,pi.itemName,pi.requiredAtr,"
+			+ " pm.dataType,pm.selectionItemRefType,pm.itemParentCd" + " FROM PpestEmployeeCopySettingItem ci"
+			+ " INNER JOIN PpestEmployeeCopySetting cs "
 			+ " ON ci.categoryId = cs.ppestEmployeeCopySettingPk.categoryId" + " INNER JOIN PpemtPerInfoCtg pc"
 			+ " ON ci.categoryId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId=pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoItemCm pm"
-			+ " ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " INNER JOIN PpemtPersonItemAuth pa"
 			+ " ON ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId=pa.ppemtPersonItemAuthPk.personItemDefId"
+			+ " INNER JOIN PpemtPerInfoItemCm pm"
+			+ " ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " WHERE pc.categoryCd =:categoryCd AND pc.cid=:companyId";
 	private static final String CHECK_OTHER_AUTH = " AND pa.otherPersonAuthType!=1";
 
 	private static final String CHECK_SELF_AUTH = " AND pa.selfAuthType!=1";
 
 	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,"
-			+ " CASE WHEN (ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId) IS NOT NULL  THEN 'True' ELSE 'False' END AS alreadyCopy "
+			+ " CASE WHEN (ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId) IS NOT NULL THEN 'True' ELSE 'False' END AS alreadyCopy ,ic.itemParentCd"
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm ic"
+			+ " ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " LEFT JOIN PpestEmployeeCopySettingItem ci ON i.ppemtPerInfoItemPK.perInfoItemDefId = ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId"
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
-
-	private final static String COUNT_ITEMS_IN_COPYITEM = "SELECT COUNT(s) FROM PpestEmployeeCopySettingItem s "
-			+ " JOIN PpemtPerInfoItem i ON i.ppemtPerInfoItemPK.perInfoItemDefId = s.ppestEmployeeCopySettingItemPk.perInfoItemDefId "
-			+ " JOIN PpemtPerInfoCtg c ON c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId "
-			+ " WHERE s.ppestEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
 
 	@Override
 	public List<EmpCopySettingItem> getAllItemFromCategoryCd(String categoryCd, String companyId, boolean isSelf) {
@@ -54,17 +51,18 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 
 	private EmpCopySettingItem toDomain(Object[] entity) {
 
-		String perInfoCtgId = entity[0] != null ? entity[0].toString() : "";
-		String categoryCd = entity[1] != null ? entity[1].toString() : "";
-		String perInfoItemDefId = entity[2] != null ? entity[2].toString() : "";
-		String itemCode = entity[3] != null ? entity[3].toString() : "";
-		String itemName = entity[4] != null ? entity[4].toString() : "";
+		String perInfoCtgId = entity[0] != null ? entity[0].toString() : null;
+		String categoryCd = entity[1] != null ? entity[1].toString() : null;
+		String perInfoItemDefId = entity[2] != null ? entity[2].toString() : null;
+		String itemCode = entity[3] != null ? entity[3].toString() : null;
+		String itemName = entity[4] != null ? entity[4].toString() : null;
 		int isRequired = entity[5] != null ? Integer.parseInt(entity[5].toString()) : 0;
 		int dataType = entity[6] != null ? Integer.parseInt(entity[6].toString()) : 0;
 		int selectionItemRefType = entity[7] != null ? Integer.parseInt(entity[7].toString()) : 0;
+		String itemParentCd = String.valueOf(entity[8]);
 
 		return EmpCopySettingItem.createFromJavaType(perInfoCtgId, categoryCd, perInfoItemDefId, itemCode, itemName,
-				isRequired, dataType, BigDecimal.valueOf(selectionItemRefType));
+				isRequired, dataType, BigDecimal.valueOf(selectionItemRefType), itemParentCd);
 
 	}
 
@@ -85,21 +83,15 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 	@Override
 	public List<EmpCopySettingItem> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId,
 			String contractCd) {
-		return this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class).setParameter("companyId", companyId)
-				.setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
-					EmpCopySettingItem newCopyItem = EmpCopySettingItem.createFromJavaType(perInfoCategoryId, "",
-							String.valueOf(i[0]), "", String.valueOf(i[1]), 0, 0, BigDecimal.valueOf(0));
-					newCopyItem.setAlreadyCopy(Boolean.valueOf(i[2].toString()));
-
-					return newCopyItem;
+		List<EmpCopySettingItem> itemList = this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class)
+				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
+					return EmpCopySettingItem.createFromJavaType(perInfoCategoryId, String.valueOf(i[0]),
+							String.valueOf(i[1]), Boolean.valueOf(i[2].toString()),
+							i[3] != null ? i[3].toString() : null);
 				});
-	}
 
-	@Override
-	public int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId) {
-		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_COPYITEM, Long.class)
-				.setParameter("companyId", companyId).setParameter("perInfoItemDefId", perInfoItemDefId).getSingle();
-		return a.isPresent() ? a.get().intValue() : 0;
+		return itemList;
+
 	}
 
 }
