@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+
 /**
  * The Interface PredetemineTimeSettingRepository.
  */
@@ -57,4 +59,8 @@ public interface PredetemineTimeSettingRepository {
 	 * @return the list
 	 */
 	public List<PredetemineTimeSetting> findByStartAndEnd(String companyID, List<String> workTimeCodes, int startClock, int endClock);
+	
+	public List<PredetemineTimeSetting> findByCompanyID(String companyID);
+
+	public List<PredetemineTimeSetting> findByCodeList(String companyID, List<String> worktimeCodes);
 }

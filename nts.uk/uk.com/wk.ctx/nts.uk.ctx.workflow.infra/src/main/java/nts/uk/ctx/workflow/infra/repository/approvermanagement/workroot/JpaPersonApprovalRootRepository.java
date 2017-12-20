@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtPsApprovalRoot;
@@ -40,7 +42,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
 			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
-			   + " AND c.employmentRootAtr IN (1,2,3)" 
+			   + " AND c.employmentRootAtr = :rootAtr" 
 			   + " AND c.applicationType = :appType";
 	 private final String FIND_BY_BASEDATE_OF_COM = FIN_BY_EMP
 			   + " AND c.startDate <= :baseDate"
@@ -205,13 +207,14 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, GeneralDate baseDate, int appType) {
+	public Optional<PersonApprovalRoot> findByBaseDate(String companyID, String employeeID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAtr) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtPsApprovalRoot.class)
-				.setParameter("companyId", cid)
-				.setParameter("employeeId", sid)
-				.setParameter("baseDate", baseDate)
-				.setParameter("appType", appType)
-				.getList(c->toDomainPsApR(c));
+				.setParameter("companyId", companyID)
+				.setParameter("employeeId", employeeID)
+				.setParameter("baseDate", date)
+				.setParameter("appType", appType.value)
+				.setParameter("rootAtr", rootAtr.value)
+				.getSingle(c->toDomainPsApR(c));
 	}
 	
 	/**
@@ -223,10 +226,10 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, GeneralDate baseDate) {
+	public List<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtPsApprovalRoot.class)
-				.setParameter("companyId", cid)
-				.setParameter("employeeId", sid)
+				.setParameter("companyId", companyID)
+				.setParameter("employeeId", employeeID)
 				.setParameter("baseDate", baseDate)
 				.getList(c->toDomainPsApR(c));
 	}
@@ -258,9 +261,9 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	private WwfmtPsApprovalRoot toEntityPsApR(PersonApprovalRoot domain){
 		val entity = new WwfmtPsApprovalRoot();
-		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmployeeId(), domain.getHistoryId());
-		entity.startDate = domain.getPeriod().getStartDate();
-		entity.endDate = domain.getPeriod().getEndDate();
+		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmployeeId(), domain.getEmploymentAppHistoryItems().get(0).getHistoryId());
+		entity.startDate = domain.getEmploymentAppHistoryItems().get(0).start();
+		entity.endDate = domain.getEmploymentAppHistoryItems().get(0).end();
 		entity.applicationType = (domain.getApplicationType() == null ? null : domain.getApplicationType().value);
 		entity.branchId = domain.getBranchId();
 		entity.anyItemAppId = domain.getAnyItemApplicationId();

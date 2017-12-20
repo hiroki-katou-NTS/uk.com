@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -76,7 +77,8 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getByEmployeeId(query.getEmployeeId());
+		String cid = AppContexts.user().companyId();
+		Optional<AffDepartmentHistory> affDeptHist = affDeptHistRepo.getByEmployeeId(cid,query.getEmployeeId());
 		if (!affDeptHist.isPresent())
 			return new ArrayList<>();
 		List<DateHistoryItem> historyItems = affDeptHist.get().getHistoryItems();

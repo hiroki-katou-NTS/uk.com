@@ -21,7 +21,7 @@ public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceIte
 	@AttendanceItemLayout(layout = "B", isList = true, jpPropertyName = "B")
 	private List<SampleConvertibleAttendanceItem> attendanceItems;
 
-	@AttendanceItemValue(type = ValueType.INTEGER, itemId = 2)
+	@AttendanceItemValue(type = ValueType.INTEGER, itemId = {2, 2, 2})
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "C")
 	private String attendanceItemB;
 }

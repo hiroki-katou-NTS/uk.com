@@ -21,15 +21,15 @@ import lombok.Setter;
 public class BshmtWorktimeHistPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
 	/** The sid. */
 	@Column(name = "SID")
-	private String sid;
+	public String sid;
 
 	/** The hist id. */
 	@Column(name = "HIST_ID")
-	private String histId;
+	public String histId;
 
 	/**
 	 * Instantiates a new bshmt worktime hist PK.
