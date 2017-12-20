@@ -26,7 +26,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
  */
 @Stateless
 public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto> {
-	
+
 	@Inject
 	private EmploymentHistoryItemRepository empHistItemRepo;
 
@@ -77,18 +77,15 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		String cid = AppContexts.user().companyId();
-		Optional<EmploymentHistory> optHis = this.empHistRepo.getByEmployeeId(cid,query.getEmployeeId());
-		if(!optHis.isPresent()) return new ArrayList<>();
-		List<DateHistoryItem> items = optHis.get().getHistoryItems();
-		if(items.size() == 0) return new ArrayList<>();
-		List<DateHistoryItem> containItemHists = items.stream().filter(x -> {
-			return empHistItemRepo.getByHistoryId(x.identifier()).isPresent();
-		}).collect(Collectors.toList());
-		return containItemHists.stream()
-				.sorted((a, b) -> b.start().compareTo(a.start()))
-				.map(x -> ComboBoxObject.toComboBoxObject
-				(x.identifier(), x.start().toString(), x.end().toString())).collect(Collectors.toList());
+		Optional<EmploymentHistory> optHis = this.empHistRepo.getByEmployeeIdDesc(AppContexts.user().companyId(),
+				query.getEmployeeId());
+		if (optHis.isPresent()) {
+			optHis.get().getHistoryItems().stream()
+					.filter(x -> empHistItemRepo.getByHistoryId(x.identifier()).isPresent())
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
 }
