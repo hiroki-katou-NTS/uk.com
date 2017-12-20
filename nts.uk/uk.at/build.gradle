@@ -153,6 +153,7 @@ project (':at.ctx:at.auth:nts.uk.ctx.at.auth.pubimp') {
 	dependencies {
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.pub')
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.dom')
+		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.infra')
 	}
 }
@@ -198,6 +199,7 @@ project (':at.ctx:shared:nts.uk.ctx.at.shared.pubimp') {
 	dependencies {
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
 	}
 }
@@ -252,6 +254,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.pubimp') {
 	dependencies {
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.pub')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
 	}
 }
@@ -302,6 +305,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.pubimp') {
 	dependencies {
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.pub')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
+		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.infra')
 	}
 }
@@ -354,6 +358,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.pubimp') {
 	dependencies {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.pub')
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
+		compile project(':at.ctx:record:nts.uk.ctx.at.record.app')
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
 	}
 }
@@ -407,6 +412,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.pubimp') {
 	dependencies {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.dom')
+		compile project(':at.ctx:request:nts.uk.ctx.at.request.app')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.infra')
 	}
 }
