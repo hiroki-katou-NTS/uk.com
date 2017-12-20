@@ -70,8 +70,8 @@ public class StampServiceImpl implements StampDomainService{
 				int attendanceClock = x.getAttendanceTime().v();
 				TimeZoneOutput stampRange = s.getStampRange();
 				boolean reflectClass = false;
-				if (x.getDate().compareTo(date) == 0 && attendanceClock >= stampRange.getStart().v()
-						&& attendanceClock <= stampRange.getEnd().v() && reflectClass == false) {
+				if (x.getDate().compareTo(date) == 0 && attendanceClock >= stampRange.getStart().v().intValue()
+						&& attendanceClock <= stampRange.getEnd().v().intValue() && reflectClass == false) {
 					lstStampItemOutput.add(x);
 				}
 
@@ -83,10 +83,10 @@ public class StampServiceImpl implements StampDomainService{
 		}
 
 		lstStampItem.forEach(x -> {
-			int attendanceClock = x.getAttendanceTime().v();
+			int attendanceClock = x.getAttendanceTime().v().intValue();
 			TimeZoneOutput stampRange = s.getStampRange();
-			if (x.getDate().compareTo(date) == 0 && attendanceClock >= stampRange.getStart().v()
-					&& attendanceClock <= stampRange.getEnd().v()) {
+			if (x.getDate().compareTo(date) == 0 && attendanceClock >= stampRange.getStart().v().intValue()
+					&& attendanceClock <= stampRange.getEnd().v().intValue()) {
 				lstStampItemOutput.add(x);
 			}
 		});
