@@ -361,6 +361,9 @@ module nts.uk.com.view.cmm011.a {
                             
                             // new workplace history
                             self.workplaceHistory().newHistory();
+                            
+                            // select item 
+                            self.workplaceHistory().setSelectionHistSuitable();
                         }
                         // Focus
                         $('#wkpCd').focus();
