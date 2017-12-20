@@ -2,9 +2,9 @@ module nts.uk.com.view.cas005.a {
     export module service {
         var paths = {
             getListWebMenu : "ctx/sys/auth/webmenu/getlistwebmenu",
-            getAllWorkPlaceFunction :"at/auth/workplace/wplmanagementauthority/workplacefunction/getlistworkplacefunction",
-            getAllWorkPlaceAuthority : "at/auth/workplace/wplmanagementauthority/workplaceauthority/getallWorkplaceauthority",
-            getAllWorkPlaceAuthorityById : "at/auth/workplace/wplmanagementauthority/workplaceauthority/getallWorkplaceauthoritybyid",
+            getAllWorkPlaceFunction :"auth/wplmanagementauthority/workplacefunction/getlistworkplacefunction",
+            getAllWorkPlaceAuthority : "auth/wplmanagementauthority/workplaceauthority/getallWorkplaceauthority",
+            getAllWorkPlaceAuthorityById : "com/auth/wplmanagementauthority/workplaceauthority/getallWorkplaceauthoritybyid",
             addRoleCas005 :"screen/sys/auth/cas005/addrolecas005",
             updateRoleCas005 :"screen/sys/auth/cas005/updaterolecas005",
             deleteRoleCas005 :"screen/sys/auth/cas005/deleterolecas005",
@@ -19,16 +19,16 @@ module nts.uk.com.view.cas005.a {
         }
         //get list WorkPlace Function
         export function getAllWorkPlaceFunction() : JQueryPromise<any>{
-            return nts.uk.request.ajax("at",paths.getAllWorkPlaceFunction);
+            return nts.uk.request.ajax("com",paths.getAllWorkPlaceFunction);
         }
         
         //get list WorkPlace Authority
         export function getAllWorkPlaceAuthority() : JQueryPromise<any>{
-            return nts.uk.request.ajax("at",paths.getAllWorkPlaceAuthority);
+            return nts.uk.request.ajax("com",paths.getAllWorkPlaceAuthority);
         }
         //get list WorkPlace Authority By Id
         export function getAllWorkPlaceAuthorityById(roleId: string) : JQueryPromise<any>{
-            return nts.uk.request.ajax("at",paths.getAllWorkPlaceAuthorityById+"/"+roleId);
+            return nts.uk.request.ajax("com",paths.getAllWorkPlaceAuthorityById+"/"+roleId);
         }
         
         //Add role cas005
