@@ -47,7 +47,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 		stringBuilder.append("FROM KrcmtBusinessTypeOfHistory k ");
 		stringBuilder.append("WHERE k.sId = :sId ");
 		stringBuilder.append("AND k.cID = :cId ");
-		stringBuilder.append("ODER BY k.startDate ASC ");
+		stringBuilder.append("ORDER BY k.startDate ASC ");
 		FIND_BY_EMPLOYEE = stringBuilder.toString();
 	}
 
