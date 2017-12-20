@@ -60,6 +60,7 @@ module cps001.d.vm {
                 }
             });
 
+            $('.upload-btn').focus();
         }
 
         upload() {
