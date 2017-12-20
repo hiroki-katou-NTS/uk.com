@@ -48,7 +48,7 @@ module nts.uk.ui.menu {
         });
         
         displayUserInfo();
-        nts.uk.request.ajax(constants.MenuDataPath).done(function(menuSet) {
+        nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function(menuSet) {
             let $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
             if (!menuSet || menuSet.length === 0) return;
             createMenuSelect($menuNav, menuSet);
@@ -57,7 +57,9 @@ module nts.uk.ui.menu {
                 let selectedMenu = _.find(menuSet, function(m) {
                     return m.webMenuCode === menuCode.get();
                 });
-                generate($menuNav, selectedMenu);
+                
+                !util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
+                    : generate($menuNav, menuSet[0]);
             } else {
                 generate($menuNav, menuSet[0]);
             }
@@ -107,7 +109,7 @@ module nts.uk.ui.menu {
             }
         };
         
-        nts.uk.request.ajax(constants.Companies).done(function(companies: any) {
+        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function(companies: any) {
             if (!companies || companies.length === 0) return;
             let $companyName = $("<span/>").attr("id", "company-name");
             $companyName.text(companies[0]).appendTo($company);
@@ -126,7 +128,7 @@ module nts.uk.ui.menu {
                 $companyList.fadeOut(100);
             });
             
-            nts.uk.request.ajax(constants.UserName).done(function(userName: any) {
+            nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function(userName: any) {
                 let $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
                 $userImage.css("margin-right", "6px").on(constants.CLICK, function() {
                     // TODO: Jump to personal profile.
@@ -174,7 +176,7 @@ module nts.uk.ui.menu {
      * Get program.
      */
     function getProgram() {
-        nts.uk.request.ajax(constants.PG).done(function(pg: any) {
+        nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function(pg: any) {
             let $pgArea = $("#pg-area");
             $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
             let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
@@ -276,14 +278,14 @@ module nts.uk.ui.menu {
                 if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
                     let fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
                     // TODO: Show image
-//                    $titleImage.attr("src", fqpImage).show();
-                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
+                    $titleImage.attr("src", fqpImage).show();
+//                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
                     height += 80;
                 }
                 
                 if (t.treeMenu && t.treeMenu.length > 0) {
                     _.forEach(t.treeMenu, function(item, i) {
-                        if (item.menuAttr === 0) {
+                        if (item.menuAttr === 1) {
                             $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
                             height += 30;
                             return;
@@ -309,6 +311,7 @@ module nts.uk.ui.menu {
     }
     
     module constants {
+        export let APP_ID = "com";
         export let MENU = "UK-Menu";
         export let CLICK = "click";
         export let MenuDataPath = "/sys/portal/webmenu/finddetails";

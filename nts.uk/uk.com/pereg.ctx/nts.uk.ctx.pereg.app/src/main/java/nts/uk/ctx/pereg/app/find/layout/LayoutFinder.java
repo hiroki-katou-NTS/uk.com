@@ -36,7 +36,6 @@ import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
-import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -52,7 +51,6 @@ import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassif
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
-import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
@@ -326,7 +324,7 @@ public class LayoutFinder {
 	private void getDataforSingleItem(PersonInfoCategory perInfoCategory, List<LayoutPersonInfoClsDto> classItemList,
 			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
 
-		cloneDefItemToValueItem(perInfoCategory.getCategoryCode().v(), classItemList);
+		cloneDefItemToValueItem(perInfoCategory, classItemList);
 
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
@@ -419,8 +417,8 @@ public class LayoutFinder {
 					.filter(column -> column.getPerInfoItemDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.after((GeneralDate) startDateOpt.get().getValue())
-						&& stardardDate.before((GeneralDate) endDateOpt.get().getValue())) {
+				if (stardardDate.afterOrEquals((GeneralDate) startDateOpt.get().getValue())
+						&& stardardDate.beforeOrEquals((GeneralDate) endDateOpt.get().getValue())) {
 					MappingFactory.matchPerOptionData(recordId, classItemList, dataItems);
 					break;
 				}
@@ -454,8 +452,8 @@ public class LayoutFinder {
 					.filter(column -> column.getPerInfoDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.after((GeneralDate)startDateOpt.get().getValue())
-						&& stardardDate.before( (GeneralDate) endDateOpt.get().getValue())) {
+				if (stardardDate.afterOrEquals((GeneralDate)startDateOpt.get().getValue())
+						&& stardardDate.beforeOrEquals( (GeneralDate) endDateOpt.get().getValue())) {
 					MappingFactory.matchEmpOptionData(recordId, classItemList, dataItems);
 					break;
 				}
@@ -464,12 +462,13 @@ public class LayoutFinder {
 		}
 	}
 
-	private void cloneDefItemToValueItem(String categoryCode, List<LayoutPersonInfoClsDto> classItemList) {
+	private void cloneDefItemToValueItem(PersonInfoCategory perInfoCategory, List<LayoutPersonInfoClsDto> classItemList) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			List<Object> items = new ArrayList<>();
 			for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
-				items.add(LayoutPersonInfoValueDto.cloneFromItemDef(categoryCode, itemDef));
+				items.add(LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef));
 			}
+			classItem.setListItemDf(null);
 			classItem.setItems(items);
 		}
 	}

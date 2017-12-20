@@ -13,21 +13,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import com.aspose.cells.ComboBox;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
@@ -130,7 +125,7 @@ public class ComboBoxRetrieveFactory {
 			
 			case "M00002":
 				//職場マスタ
-				break;
+				return getWorkPlace(companyId);
 			
 			case "M00003":
 				//雇用マスタ
@@ -144,7 +139,7 @@ public class ComboBoxRetrieveFactory {
 						.collect(Collectors.toList());
 			case "M00005":
 				//職位マスタ
-				break;
+				return getJobTitle(companyId);
 			
 			case "M00006":
 				//休職休業マスタ
@@ -183,6 +178,24 @@ public class ComboBoxRetrieveFactory {
 		for (Employment employment : employments) {
 			comboBoxList
 					.add(new ComboBoxObject(employment.getEmploymentCode().v(), employment.getEmploymentName().v()));
+
+		}
+		return comboBoxList;
+	}
+	
+	private List<ComboBoxObject> getJobTitle(String companyId) {
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			comboBoxList.add(new ComboBoxObject(i + "", "Job Title " + i));
+
+		}
+		return comboBoxList;
+	}
+	
+	private List<ComboBoxObject> getWorkPlace(String companyId) {
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			comboBoxList.add(new ComboBoxObject(i + "", "Work Place " + i));
 
 		}
 		return comboBoxList;
