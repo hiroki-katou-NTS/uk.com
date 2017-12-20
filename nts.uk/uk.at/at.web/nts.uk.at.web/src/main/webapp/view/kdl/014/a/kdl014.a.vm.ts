@@ -56,7 +56,7 @@ module kdl014.a.viewmodel {
             self.employeeID = data.employeeID;
 
             //Set value for param display in screen.
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～    ';
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '　～　';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
             self.startEndDate = '' + self.startDate + '' + self.endDate;
             
