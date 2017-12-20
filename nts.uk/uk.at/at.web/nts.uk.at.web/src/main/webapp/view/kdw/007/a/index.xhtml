@@ -90,7 +90,7 @@
 								<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
 								<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span><br/>
 								<div id="color-label" data-bind="ntsFormLabel: { }">#{i18n.getText('KDW007_13')}</div>
-								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: true, width: 100}"/><br/>
+								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/><br/>
 								<div id="message-label" data-bind="ntsFormLabel: { required: true, constraint: 'DisplayMessage' }">#{i18n.getText('KDW007_14')}</div>
 								<textarea id="messageDisplay" class="need-check" data-bind="ntsMultilineEditor: { 
 									value: selectedErrorAlarm().displayMessage, 
