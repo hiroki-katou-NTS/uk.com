@@ -774,7 +774,7 @@ public class AppOvertimeFinder {
 				overtimeInputDtos.add(overtimeInputDto);
 				frameNo.add(overTimeInput.getFrameNo());
 			}
-			List<OvertimeFrame> overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameNo);
+			List<OvertimeFrame> overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNos(companyID,frameNo);
 			for (OvertimeInputDto overtimeInputDto : overtimeInputDtos) {
 				for (OvertimeFrame overtimeFrame : overtimeFrames) {
 					if (overtimeInputDto.getFrameNo() == overtimeFrame.getOtFrameNo()) {
@@ -823,7 +823,7 @@ public class AppOvertimeFinder {
 		}
 		List<OvertimeFrame> overtimeFrames = new ArrayList<>();
 		if(frameOverTimeNo != null && frameOverTimeNo.size() > 0){
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameOverTimeNo);
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNos(companyID,frameOverTimeNo);
 		}
 		List<BonusPayTimeItem> bonusPayTimeItems = new ArrayList<>();
 		if(frameBonusTimeNo != null && frameBonusTimeNo.size() > 0){

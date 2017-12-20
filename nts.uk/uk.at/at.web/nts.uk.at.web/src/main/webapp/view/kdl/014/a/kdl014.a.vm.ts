@@ -11,6 +11,7 @@ module kdl014.a.viewmodel {
         //Param diplay on screen.
         items: KnockoutObservableArray<StampModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
+        employeeCode: KnockoutObservable<String>;
         employeeName: string;
         startEndDate: string;
 
@@ -20,6 +21,7 @@ module kdl014.a.viewmodel {
             self.startDate = '';
             self.endDate = '';
             self.employeeID = '';
+            self.employeeCode = "";
 
             //Init param display in screen.
             self.items = ko.observableArray([]);
@@ -57,7 +59,8 @@ module kdl014.a.viewmodel {
             self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～    ';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
             self.startEndDate = '' + self.startDate + '' + self.endDate;
-            self.employeeName = "name" + self.employeeID;
+            
+            //self.employeeName = "name" + self.employeeID;
 
             //Create Param to get list Stamp from server.
             let arrEmpCode: Array<string> = [];
@@ -72,6 +75,9 @@ module kdl014.a.viewmodel {
                 if (lstStamp.length > 0) {
                     _.forEach(lstStamp, function(item) {
                         lstSource.push(new StampModel(moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                        //Set employeeName by Dto of emloyeeName.
+                        self.employeeName = item.pname;
+                        self.employeeCode = item.employeeCode;
                     });
                 };
                 //set list data source

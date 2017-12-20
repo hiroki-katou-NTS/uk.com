@@ -751,7 +751,11 @@ public class UpdateWorkingConditionCommand{
 	 * 加給CD
 	 */
 	// @PeregItem("IS00246")
-
+	
+	/** The auto stamp set atr. */
+	// 自動打刻セット区分
+	@PeregItem("IS00258")
+	private BigDecimal autoStampSetAtr;
 	/**
 	 * 年休就時設定 就業時間帯の自動設定区分
 	 */

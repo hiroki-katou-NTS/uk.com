@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
@@ -23,4 +24,8 @@ public class GoBackDirectBasicData {
 	List<ApplicationReason> listAppReason;
 	AppCommonSettingOutput appCommonSettingOutput;
 	boolean isDutiesMulti;
+	/**
+	 * 勤務就業ダイアログ用データ取得
+	 */
+	private DataWork workingData;	
 }

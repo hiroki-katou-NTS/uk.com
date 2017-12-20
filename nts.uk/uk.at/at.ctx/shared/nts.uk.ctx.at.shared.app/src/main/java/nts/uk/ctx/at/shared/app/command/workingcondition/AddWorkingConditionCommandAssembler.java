@@ -122,9 +122,8 @@ public class AddWorkingConditionCommandAssembler {
 		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(EnumAdaptor.valueOf(command.getReferenceType().intValue(),TimeZoneScheduledMasterAtr.class));
 		ScheduleMethod scheduleMethod = new ScheduleMethod(EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(),WorkScheduleBasicCreMethod.class),
 				busCal,monthlySchedule);
-		// TODO missing item
 		WorkingConditionItem workingCond = new WorkingConditionItem(histId, EnumAdaptor.valueOf(command.getScheduleManagementAtr().intValue(),NotUseAtr.class),
-				workDayOfWeek, workCategory, EnumAdaptor.valueOf(command.getAutoIntervalSetAtr().intValue(),NotUseAtr.class), EnumAdaptor.valueOf(command.getAutoIntervalSetAtr().intValue(),NotUseAtr.class), command.getEmployeeId(), EnumAdaptor.valueOf(command.getVacationAddedTimeAtr().intValue(), NotUseAtr.class), command.getContractTime().intValue(), EnumAdaptor.valueOf(command.getLaborSystem().intValue(), WorkingSystem.class), holidayAddTimeSet, scheduleMethod);
+				workDayOfWeek, workCategory, EnumAdaptor.valueOf(command.getAutoStampSetAtr().intValue(),NotUseAtr.class), EnumAdaptor.valueOf(command.getAutoIntervalSetAtr().intValue(),NotUseAtr.class), command.getEmployeeId(), EnumAdaptor.valueOf(command.getVacationAddedTimeAtr().intValue(), NotUseAtr.class), command.getContractTime().intValue(), EnumAdaptor.valueOf(command.getLaborSystem().intValue(), WorkingSystem.class), holidayAddTimeSet, scheduleMethod);
 		return workingCond;
 	}
 	public WorkingConditionItem fromDTO(UpdateWorkingConditionCommand command){
@@ -221,9 +220,8 @@ public class AddWorkingConditionCommandAssembler {
 		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(EnumAdaptor.valueOf(command.getReferenceType().intValue(),TimeZoneScheduledMasterAtr.class));
 		ScheduleMethod scheduleMethod = new ScheduleMethod(EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(),WorkScheduleBasicCreMethod.class),
 				busCal,monthlySchedule);
-		// TODO missing item
 		WorkingConditionItem workingCond = new WorkingConditionItem(command.getHistId(), EnumAdaptor.valueOf(command.getScheduleManagementAtr().intValue(),NotUseAtr.class),
-				workDayOfWeek, workCategory, EnumAdaptor.valueOf(command.getAutoIntervalSetAtr().intValue(),NotUseAtr.class), EnumAdaptor.valueOf(command.getAutoIntervalSetAtr().intValue(),NotUseAtr.class), command.getEmployeeId(), EnumAdaptor.valueOf(command.getVacationAddedTimeAtr().intValue(), NotUseAtr.class), command.getContractTime().intValue(), EnumAdaptor.valueOf(command.getLaborSystem().intValue(), WorkingSystem.class), holidayAddTimeSet, scheduleMethod);
+				workDayOfWeek, workCategory, EnumAdaptor.valueOf(command.getAutoStampSetAtr().intValue(),NotUseAtr.class), EnumAdaptor.valueOf(command.getAutoIntervalSetAtr().intValue(),NotUseAtr.class), command.getEmployeeId(), EnumAdaptor.valueOf(command.getVacationAddedTimeAtr().intValue(), NotUseAtr.class), command.getContractTime().intValue(), EnumAdaptor.valueOf(command.getLaborSystem().intValue(), WorkingSystem.class), holidayAddTimeSet, scheduleMethod);
 		return workingCond;
 	}
 	

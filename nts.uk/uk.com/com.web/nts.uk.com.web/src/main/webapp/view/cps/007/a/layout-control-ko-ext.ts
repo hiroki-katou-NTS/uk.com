@@ -442,6 +442,7 @@ module nts.custombinding {
                         <button id="cps007_btn_add"></button>
                     </div>
                     <div class="drag-panel" data-bind="let: {
+                                text: nts.uk.resource.getText,
                                 CAT_TYPE: {  
                                     SINGLE : 1,
                                     MULTI: 2,
@@ -505,7 +506,11 @@ module nts.custombinding {
                                             constraint: _constraint.length && _constraint || undefined  }"></div>
                                         <div data-bind="if: (_item || {}).type == CTRL_TYPE.SET" class="set-items">
                                             <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
-                                                <div class="set-item set-item-sperator" data-bind="css: { 'hidden': $index() == 0 }">~</div>
+                                                <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
+                                                    <div data-bind="if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1">
+                                                        <span data-bind="text: text('CPS001_89')"></span>
+                                                    </div>
+                                                </div>
                                                 <div data-bind="template: {
                                                         data: set,
                                                         name: 'ctr_template'
@@ -662,17 +667,41 @@ module nts.custombinding {
                                     }" />
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.DATE" class="date">
-                            <div data-bind="ntsDatePicker: {
-                                        value: value,
-                                        constraint: nameid,
-                                        dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
-                                        enable: editable,
-                                        readonly: readonly
-                                    }, attr: { 
-                                        id: nameid, 
-                                        nameid: nameid,
-                                        title: itemName
-                                    }"></div>
+                            <div data-bind="if: index <= 1">
+                                <div data-bind="ntsDatePicker: {
+                                            value: value,
+                                            startDate: startDate,
+                                            endDate: endDate,
+                                            constraint: nameid,
+                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                            enable: editable,
+                                            readonly: readonly
+                                        }, attr: { 
+                                            id: nameid, 
+                                            nameid: nameid,
+                                            title: itemName
+                                        }"></div>
+                            </div>
+                            <div data-bind="if: index == 2">
+                                <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1">
+                                    <div data-bind="text: value"></div>
+                                </div>
+                                <div data-bind="if: [CAT_TYPE.NODUP, CAT_TYPE.DUPLI].indexOf(ctgType) > -1">
+                                    <div data-bind="ntsDatePicker: {
+                                            value: value,
+                                            startDate: startDate,
+                                            endDate: endDate,
+                                            constraint: nameid,
+                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                            enable: editable,
+                                            readonly: readonly
+                                        }, attr: { 
+                                            id: nameid, 
+                                            nameid: nameid,
+                                            title: itemName
+                                        }"></div>
+                                </div>
+                            </div>
                         </div>
                         <div data-bind="if: [ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(item.dataTypeValue) > -1" class="time timepoint">
                             <input data-bind="ntsTimeEditor: {
@@ -1430,6 +1459,7 @@ module nts.custombinding {
                                     let def = _.find(x.items(), (m: any) => m.itemDefId == item.id);
                                     if (!def) {
                                         def = {
+                                            index: i,
                                             categoryCode: x.personInfoCategoryID, // miss categoryCode;
                                             itemCode: item.itemCode,
                                             itemName: item.itemName,
@@ -1437,6 +1467,8 @@ module nts.custombinding {
                                             value: undefined
                                         };
                                         x.items.push(def);
+                                    } else {
+                                        def.index = i;
                                     }
 
                                     modifitem(def, item);
@@ -1462,6 +1494,7 @@ module nts.custombinding {
 
                                         if (!def) {
                                             def = {
+                                                index: j,
                                                 categoryCode: x.personInfoCategoryID, // miss categoryCode;
                                                 itemCode: item.itemCode,
                                                 itemName: item.itemName,
@@ -1469,6 +1502,8 @@ module nts.custombinding {
                                                 value: undefined
                                             };
                                             row.push(def);
+                                        } else {
+                                            def.index = j;
                                         }
                                         modifitem(def, item);
                                     });
@@ -1483,6 +1518,7 @@ module nts.custombinding {
                     switch (x.layoutItemType) {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
+                                def.index = i;
                                 modifitem(def);
                             });
                             break;
@@ -1500,7 +1536,92 @@ module nts.custombinding {
                                 x.items()[i] = row;
 
                                 _.each(row, (def, j) => {
+                                    def.index = j;
                                     modifitem(def);
+                                });
+                            });
+                            break;
+                        case IT_CLA_TYPE.SPER:
+                            x.items = undefined;
+                            break;
+                    }
+
+                    // validation set item range
+                    switch (x.layoutItemType) {
+                        case IT_CLA_TYPE.ITEM:
+                            _.each((x.items()), (def, i) => {
+                                if (_.has(def, "item") && !_.isNull(def.item)) {
+                                    // validate date range
+                                    switch (def.item.dataTypeValue) {
+                                        case ITEM_SINGLE_TYPE.DATE:
+                                            if (def.index == 0) {
+                                                def.endDate = ko.observable(undefined);
+                                                def.startDate = ko.observable(undefined);
+                                            }
+                                            else if (def.index == 1) {
+                                                let next = x.items()[2] || { value: () => ko.observable(undefined) };
+                                                if (next.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
+                                                    && _.has(next, "value")
+                                                    && ko.isObservable(next.value)) {
+
+                                                    def.endDate = next.value;
+                                                    def.startDate = ko.observable(undefined);
+
+                                                    next.endDate = ko.observable(undefined);
+                                                    next.startDate = def.value;
+                                                }
+                                            }
+                                            else if (def.index == 2) {
+                                                let prev = x.items()[1] || { value: () => ko.observable(undefined) };
+                                                if (prev.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
+                                                    && _.has(prev, "value")
+                                                    && ko.isObservable(prev.value)) {
+
+                                                    prev.endDate = def.value;
+                                                    prev.startDate = ko.observable(undefined);
+
+                                                    def.endDate = ko.observable(undefined);
+                                                    def.startDate = prev.value;
+                                                }
+
+                                                if (def.ctgType == IT_CAT_TYPE.CONTINU) {
+                                                    if (!def.value()) {
+                                                        def.value('9999/12/31');
+                                                    }
+                                                }
+                                            }
+
+                                            if (!_.has(def, "endDate")) {
+                                                def.endDate = ko.observable(undefined);
+                                            }
+
+                                            if (!_.has(def, "startDate")) {
+                                                def.startDate = ko.observable(undefined);
+                                            }
+                                            break;
+                                        case ITEM_SINGLE_TYPE.TIME:
+                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+
+                                            break;
+                                    }
+                                }
+                            });
+                            break;
+                        case IT_CLA_TYPE.LIST:
+                            // define row number
+                            let rn = _.map(ko.toJS(x.items), x => x).length;
+
+                            _.each(_.range(rn), i => {
+                                let row = x.items()[i];
+
+                                if (!row || !_.isArray(row)) {
+                                    row = [];
+                                }
+
+                                x.items()[i] = row;
+
+                                _.each(row, (def, j) => {
+                                    // call some validate function at here
                                 });
                             });
                             break;
@@ -1598,6 +1719,7 @@ module nts.custombinding {
                         switch (item.categoryType) {
                             case IT_CAT_TYPE.SINGLE:
                             case IT_CAT_TYPE.CONTINU:
+                            case IT_CAT_TYPE.CONTINUWED:
                             case IT_CAT_TYPE.NODUPLICATE:
                                 $(ctrls.button).text(text('CPS007_11'));
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
@@ -1966,7 +2088,8 @@ module nts.custombinding {
         MULTI = 2, // Multi info
         CONTINU = 3, // Continuos history
         NODUPLICATE = 4, //No duplicate history
-        DUPLICATE = 5 // Duplicate history
+        DUPLICATE = 5, // Duplicate history
+        CONTINUWED = 6 // Continuos history with end date
     }
 
     // defined CATEGORY or GROUP mode

@@ -8,7 +8,10 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.UseAtr;
-
+/**
+ * 特定日
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor

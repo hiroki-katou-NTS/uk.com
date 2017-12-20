@@ -56,7 +56,7 @@ public class UpdateWorkingConditionCommandHandler extends CommandHandler<UpdateW
 		}
 		workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
 		
-		workingConditionRepository.update(workingCond);
+		workingConditionRepository.save(workingCond);
 		
 		WorkingConditionItem  workingCondItem = addWorkingConditionCommandAssembler.fromDTO(command);
 		

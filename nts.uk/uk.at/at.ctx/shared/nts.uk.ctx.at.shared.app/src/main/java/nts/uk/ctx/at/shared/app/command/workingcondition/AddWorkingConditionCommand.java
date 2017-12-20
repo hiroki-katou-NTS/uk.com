@@ -6,7 +6,6 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
-import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class AddWorkingConditionCommand{
@@ -748,7 +747,12 @@ public class AddWorkingConditionCommand{
 	 * 加給CD
 	 */
 	// @PeregItem("IS00246")
-
+	
+	/** The auto stamp set atr. */
+	// 自動打刻セット区分
+	@PeregItem("IS00258")
+	private BigDecimal autoStampSetAtr;
+	
 	/**
 	 * 年休就時設定 就業時間帯の自動設定区分
 	 */

@@ -13,9 +13,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.ApprovalRootServi
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.JobtitleToApproverService;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.AdjustedApprovalPhases;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalRootOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
+import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;

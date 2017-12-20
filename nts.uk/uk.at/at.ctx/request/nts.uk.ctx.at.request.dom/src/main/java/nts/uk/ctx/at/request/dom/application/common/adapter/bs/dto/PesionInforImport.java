@@ -1,26 +1,29 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
 public class PesionInforImport {
-	/** The employee code. */
-	private String employeeCode;
+	private String pid;
+
+	private String pname;
+
+	private GeneralDate entryDate;
+
+	private int gender;
+
+	private GeneralDate birthDay;
 
 	/** The employee id. */
 	private String employeeId;
-	
-	/** The employee name. */
-	private String employeeName;
 
+	/** The employee code. */
+	private String employeeCode;
+
+	private GeneralDate retiredDate;
 	
-	/** The companyMail. */
-	private String companyMail;
-	
-	/** The List Job Entry History. */
-	private List<JobEntryHistoryImport> listJobEntryHist;
+	private String sMail;
 }

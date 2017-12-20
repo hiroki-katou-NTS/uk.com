@@ -57,7 +57,7 @@ public class AddWorkingConditionCommandHandler extends CommandHandlerWithResult<
 		DateHistoryItem itemToBeAdded = new DateHistoryItem(histId, new DatePeriod(command.getStartDate(), command.getEndDate()));
 		workingCond.add(itemToBeAdded);
 		
-		workingConditionRepository.add(workingCond);
+		workingConditionRepository.save(workingCond);
 		
 		WorkingConditionItem  workingCondItem = addWorkingConditionCommandAssembler.fromDTO(histId,command);
 		
