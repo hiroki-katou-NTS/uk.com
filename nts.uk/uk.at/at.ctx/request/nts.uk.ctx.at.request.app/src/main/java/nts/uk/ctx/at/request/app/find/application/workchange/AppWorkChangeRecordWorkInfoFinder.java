@@ -45,12 +45,12 @@ public class AppWorkChangeRecordWorkInfoFinder {
 			workTimeName = workType.get().getName().v();
 		}
 		//TODO: (就業.contexts)「勤務実績」．休憩時刻1、休憩時刻2 ?????
-		/*RecordWorkInfoDto dto = new RecordWorkInfoDto(appDate, recordInfo.getWorkTypeCode(), workTypeName,
+		RecordWorkInfoDto dto = new RecordWorkInfoDto(appDate, recordInfo.getWorkTypeCode(), workTypeName,
 				recordInfo.getWorkTimeCode(), workTimeName, recordInfo.getAttendanceStampTimeFirst(),
 				recordInfo.getLeaveStampTimeFirst(), recordInfo.getAttendanceStampTimeSecond(), 
-				recordInfo.getLeaveStampTimeSecond(), 360, 540);*/
+				recordInfo.getLeaveStampTimeSecond(), -1, -1);
 		//Test data
-		RecordWorkInfoDto dto = new RecordWorkInfoDto("2017/12/08", "001", "山田001", "AAC", "通常８ｈ", 420, 480, 600, 660, 360, 540);
+		//RecordWorkInfoDto dto = new RecordWorkInfoDto("2017/12/08", "001", "山田001", "AAC", "通常８ｈ", 420, 480, 600, 660, 360, 540);
 		
 		return dto;
 	}
