@@ -10,11 +10,12 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -57,7 +58,8 @@ public class UpdateAffCompanyHistoryCommandHandler extends CommandHandler<Update
 		if (!itemToBeUpdated.isPresent()){
 			throw new RuntimeException("Invalid AffCompanyHist");
 		}
-		listHistBySID.changeSpan(itemToBeUpdated.get(),new DatePeriod(command.getStartDate(),command.getEndDate()) );
+		// 所属期間．終了日が指定されない場合（＝退職していない）、所属期間．終了日＝9999/12/31を自動的に設定する。
+		listHistBySID.changeSpan(itemToBeUpdated.get(),new DatePeriod(command.getStartDate(),command.getEndDate()!= null? command.getEndDate():ConstantUtils.maxDate()) );
 		affCompanyHistService.update(listHistBySID, itemToBeUpdated.get());
 		
 		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(command.getHistoryId(), command.getRecruitmentClassification(), command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());

@@ -1,10 +1,10 @@
 module cps002.e.service{
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-    let basePath = "basic/organization/employee";
+    let basePath = "ctx/pereg/";
     let paths = {
-        getEmlCode:"/getGenerateEmplCode",
-        getCardNo: "/getGenerateCardNo"
+        getEmlCode:"employee/mngdata/getGenerateEmplCode",
+        getCardNo: "employee/mngdata/getGenerateCardNo"
     };
     
     export function getEmlCode(startLetters){

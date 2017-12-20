@@ -13,13 +13,11 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -42,11 +40,7 @@ public class ScheCreExeWorkTypeHandler {
 	/** The sche cre exe error log handler. */
 	@Inject
 	private ScheCreExeErrorLogHandler scheCreExeErrorLogHandler;
-	
-	/** The personal labor condition repository. */
-	@Inject
-	private PersonalLaborConditionRepository personalLaborConditionRepository;
-	
+		
 	/** The basic schedule service. */
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -67,11 +61,11 @@ public class ScheCreExeWorkTypeHandler {
 	 * Creates the work schedule.
 	 *
 	 * @param command the command
-	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @param workingConditionItem the personal work schedule cre set
 	 */
 	// 営業日カレンダーで勤務予定を作成する
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command,
-			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+			WorkingConditionItem workingConditionItem) {
 
 		// 登録前削除区分をTrue（削除する）とする
 		command.setIsDeleteBeforInsert(true);
@@ -79,13 +73,13 @@ public class ScheCreExeWorkTypeHandler {
 		// setup command getter
 		WorkTypeGetterCommand commandWorktypeGetter = new WorkTypeGetterCommand();
 		commandWorktypeGetter.setBaseGetter(command.toBaseCommand());
-		commandWorktypeGetter.setEmployeeId(personalWorkScheduleCreSet.getEmployeeId());
+		commandWorktypeGetter.setEmployeeId(workingConditionItem.getEmployeeId());
 		commandWorktypeGetter.setReferenceBasicWork(
-				personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBasicWork().value);
-		commandWorktypeGetter.setReferenceBusinessDayCalendar(
-				personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar().value);
+				workingConditionItem.getScheduleMethod().getWorkScheduleBusCal().getReferenceBasicWork().value);
+		commandWorktypeGetter.setReferenceBusinessDayCalendar(workingConditionItem.getScheduleMethod()
+				.getWorkScheduleBusCal().getReferenceBusinessDayCalendar().value);
 		commandWorktypeGetter.setReferenceWorkingHours(
-				personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceWorkingHours().value);
+				workingConditionItem.getScheduleMethod().getWorkScheduleBusCal().getReferenceWorkingHours().value);
 		
 		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter);
 
@@ -97,11 +91,10 @@ public class ScheCreExeWorkTypeHandler {
 			if (optionalWorkTime.isPresent()) {
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
-						personalWorkScheduleCreSet.getEmployeeId(), optWorktype.get(), optionalWorkTime.get());
+						workingConditionItem.getEmployeeId(), optWorktype.get(), optionalWorkTime.get());
 			}
 
 		}
-
 	}
 	
 	/**
@@ -120,28 +113,29 @@ public class ScheCreExeWorkTypeHandler {
 			return command.getWorkTypeCode();
 		} else {
 
+			// get working condition item
+			Optional<WorkingConditionItem> optionalWorkingConditionItem = this.scheCreExeWorkTimeHandler
+					.getLaborConditionItem(command.getBaseGetter().getCompanyId(), command.getEmployeeId(),
+							command.getBaseGetter().getToDate());
+			// check not exits data
+			if (!optionalWorkingConditionItem.isPresent()) {
+				// return work type code of command
+				return command.getWorkTypeCode();
+			}
+
 			// find work time code by day of week
-			String worktimeCode = this.scheCreExeWorkTimeHandler
-					.getWorkTimeCodeOfDayOfWeekPersonalCondition(command.toWorktimeConvert());
+			String worktimeCode = this.scheCreExeWorkTimeHandler.getWorkTimeCodeOfDayOfWeekPersonalCondition(
+					command.toWorktimeConvert(), optionalWorkingConditionItem.get());
 
 			// check default work time code
 			if (this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktimeCode)) {
 				return command.getWorkTypeCode();
 			}
 
-			// find personal condition by id
-			Optional<PersonalLaborCondition> optionalPersonalLaborCondition = this.personalLaborConditionRepository
-					.findById(command.getEmployeeId(), command.getBaseGetter().getToDate());
-
-			// check exist data personal condition
-			if (optionalPersonalLaborCondition.isPresent()) {
-
-				// return work type code by holiday time
-				return optionalPersonalLaborCondition.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
-			}
+			// return work type code by holiday time
+			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
 		}
 
-		return ScheCreExeWorkTimeHandler.DEFAULT_CODE;
 	}
 	
 	/**
@@ -154,10 +148,10 @@ public class ScheCreExeWorkTypeHandler {
 	// 休業休職の勤務種類コードを返す
 	private String getWorktypeCodeLeaveHolidayType(WorkTypeByEmpStatusGetterCommand command,
 			EmploymentStatusDto employmentStatus) {
-		
+
 		// get work style by work type code
 		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(command.getWorkTypeCode());
-		
+
 		// is one day rest
 		if (workStyle.equals(WorkStyle.ONE_DAY_REST)) {
 			return command.getWorkTypeCode();
@@ -168,16 +162,24 @@ public class ScheCreExeWorkTypeHandler {
 
 		if (this.scheCreExeWorkTimeHandler.checkHolidayWork(worktype.getDailyWork())) {
 			// 休日出勤
-			return command.getWorkTypeCode();
+
+			Optional<WorkingConditionItem> optionalWorkingConditionItem = this.scheCreExeWorkTimeHandler
+					.getLaborConditionItem(command.getBaseGetter().getCompanyId(), command.getEmployeeId(),
+							command.getBaseGetter().getToDate());
+			// check not exits data
+			if (!optionalWorkingConditionItem.isPresent()) {
+				return command.getWorkTypeCode();
+			}
+			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode().v();
 		} else {
-			
-			// find work type set by close atr employment status 
+
+			// find work type set by close atr employment status
 			List<WorkTypeSet> worktypeSets = this.workTypeRepository.findWorkTypeSetCloseAtr(
 					command.getBaseGetter().getCompanyId(), employmentStatus.getLeaveHolidayType());
 
 			// check empty work type set
 			if (CollectionUtil.isEmpty(worktypeSets)) {
-				
+
 				// add message error log 601
 				this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_601");
 				return ScheCreExeWorkTimeHandler.DEFAULT_CODE;

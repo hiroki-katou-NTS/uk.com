@@ -20,9 +20,6 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicS
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
@@ -39,8 +36,9 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;;
 
@@ -67,17 +65,9 @@ public class ScheduleCreatorExecutionCommandHandler
 	@Inject
 	private ScheduleErrorLogRepository scheduleErrorLogRepository;
 	
-	/** The cre set repository. */
-	@Inject
-	private PersonalWorkScheduleCreSetRepository creSetRepository;
-	
 	/** The content repository. */
 	@Inject
 	private ScheduleCreateContentRepository contentRepository;
-		
-	/** The personal labor condition repository. */
-	@Inject
-	private PersonalLaborConditionRepository personalLaborConditionRepository;
 		
 	/** The sche cre exe work time handler. */
 	@Inject
@@ -90,6 +80,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The sche cre exe basic schedule handler. */
 	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
+	
 	
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -294,6 +285,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		this.scheduleExecutionLogRepository.update(domain);
 	}
 	
+	
 	/**
 	 * Creates the schedule based person.
 	 *
@@ -305,32 +297,9 @@ public class ScheduleCreatorExecutionCommandHandler
 	private void createScheduleBasedPerson(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
 			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 
-		PersonalWorkScheduleCreSet personalWorkScheduleCreSet = this.creSetRepository.findById(creator.getEmployeeId())
-				.get();
-
-		// check domain WorkScheduleBasicCreMethod is BUSINESS_DAY_CALENDAR
-		if (personalWorkScheduleCreSet.getBasicCreateMethod()
-				.equals(WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR)) {
-			// call create WorkSchedule
-			this.createWorkScheduleByBusinessDayCalenda(command, domain, personalWorkScheduleCreSet, context);
-		}
-	}
-	
-	/**
-	 * Creates the work schedule by business day calenda.
-	 *
-	 * @param command the command
-	 * @param domain the domain
-	 * @param personalWorkScheduleCreSet the personal work schedule cre set
-	 */
-	// 営業日カレンダーで勤務予定を作成する
-	private void createWorkScheduleByBusinessDayCalenda(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog domain, PersonalWorkScheduleCreSet personalWorkScheduleCreSet,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
-
 		// get info by context
 		val asyncTask = context.asAsync();
-		
+
 		// get to day by start period date
 		command.setToDate(domain.getPeriod().start());
 
@@ -342,43 +311,45 @@ public class ScheduleCreatorExecutionCommandHandler
 				asyncTask.finishedAsCancelled();
 				break;
 			}
-			PersonalLaborCondition personalLaborCondition = this.personalLaborConditionRepository
-					.findById(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate()).get();
+			Optional<WorkingConditionItem> workingConditionItem = this.scheCreExeWorkTimeHandler
+					.getLaborConditionItem(command.getCompanyId(), creator.getEmployeeId(), command.getToDate());
 
 			// check is use manager
-			if (personalLaborCondition.isUseScheduleManagement()) {
-				if (this.createWorkScheduleByBusinessDayCalendaUseManager(command, domain,
-						personalWorkScheduleCreSet)) {
-					return;
-				}
+			if (workingConditionItem.isPresent()
+					&& workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE
+					&& workingConditionItem.get().getScheduleMethod()
+							.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
+				this.createWorkScheduleByBusinessDayCalenda(command, domain, workingConditionItem.get(), context);
 			}
 			command.setToDate(this.nextDay(command.getToDate()));
 		}
 	}
 	
 	/**
-	 * Creates the work schedule by business day calenda use manager.
+	 * Creates the work schedule by business day calenda.
 	 *
 	 * @param command the command
 	 * @param domain the domain
-	 * @param personalWorkScheduleCreSet the personal work schedule cre set
-	 * @return true, if successful
+	 * @param workingConditionItem the working condition item
+	 * @param context the context
 	 */
-	private boolean createWorkScheduleByBusinessDayCalendaUseManager(ScheduleCreatorExecutionCommand command,
-			ScheduleExecutionLog domain, PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+	// 営業日カレンダーで勤務予定を作成する
+	private void createWorkScheduleByBusinessDayCalenda(ScheduleCreatorExecutionCommand command,
+			ScheduleExecutionLog domain, WorkingConditionItem workingConditionItem,
+			CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		// get status employment
 		EmploymentStatusDto employmentStatus = this.scheCreExeWorkTimeHandler
-				.getStatusEmployment(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
+				.getStatusEmployment(workingConditionItem.getEmployeeId(), command.getToDate());
 
 		// status employment equal RETIREMENT (退職)
 		if (employmentStatus.getStatusOfEmployment() == RETIREMENT) {
-			return true;
+			return;
 		}
 
 		// status employment not equal BEFORE_JOINING (入社前)
 		if (employmentStatus.getStatusOfEmployment() != BEFORE_JOINING) {
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
-					.find(personalWorkScheduleCreSet.getEmployeeId(), command.getToDate());
+					.find(workingConditionItem.getEmployeeId(), command.getToDate());
 
 			// check exist data basic schedule
 			if (optionalBasicSchedule.isPresent()) {
@@ -386,35 +357,34 @@ public class ScheduleCreatorExecutionCommandHandler
 
 				// check parameter implementAtr recreate
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
-					this.createWorkScheduleByRecreate(command, basicSchedule, personalWorkScheduleCreSet);
+					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem);
 				}
 			} else {
 				// not exist data basic schedule
-				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
+				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 			}
 		}
-		return false;
 	}
-
+	
 	/**
 	 * Creates the work schedule by recreate.
 	 *
 	 * @param command the command
 	 * @param basicSchedule the basic schedule
-	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @param workingConditionItem the working condition item
 	 */
 	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
-			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+			WorkingConditionItem workingConditionItem) {
 
 		// check parameter ReCreateAtr onlyUnconfirm
 		if (command.getContent().getReCreateContent().getReCreateAtr().value == ReCreateAtr.ONLY_UNCONFIRM.value) {
 
 			// check confirmedAtr of basic schedule
 			if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
-				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
+				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 			}
 		} else {
-			this.scheCreExeWorkTypeHandler.createWorkSchedule(command, personalWorkScheduleCreSet);
+			this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 		}
 	}
 

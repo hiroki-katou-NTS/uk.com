@@ -11,10 +11,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtz;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtz;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTz;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -88,8 +88,8 @@ public class FlWorkSettingDto implements FlWorkSettingGetMemento {
 	 * getOffdayWorkTimezone()
 	 */
 	@Override
-	public FlOffdayWtz getOffdayWorkTimezone() {
-		return new FlOffdayWtz(this.offdayWorkTimezone);
+	public FlowOffdayWorkTimezone getOffdayWorkTimezone() {
+		return new FlowOffdayWorkTimezone(this.offdayWorkTimezone);
 	}
 
 	/*
@@ -110,8 +110,8 @@ public class FlWorkSettingDto implements FlWorkSettingGetMemento {
 	 * getHalfDayWorkTimezone()
 	 */
 	@Override
-	public FlHalfDayWtz getHalfDayWorkTimezone() {
-		return new FlHalfDayWtz(this.halfDayWorkTimezone);
+	public FlowHalfDayWorkTimezone getHalfDayWorkTimezone() {
+		return new FlowHalfDayWorkTimezone(this.halfDayWorkTimezone);
 	}
 
 	/*
@@ -121,8 +121,8 @@ public class FlWorkSettingDto implements FlWorkSettingGetMemento {
 	 * getStampReflectTimezone()
 	 */
 	@Override
-	public FlStampReflectTz getStampReflectTimezone() {
-		return new FlStampReflectTz(this.stampReflectTimezone);
+	public FlowStampReflectTimezone getStampReflectTimezone() {
+		return new FlowStampReflectTimezone(this.stampReflectTimezone);
 	}
 
 	/*
@@ -143,8 +143,8 @@ public class FlWorkSettingDto implements FlWorkSettingGetMemento {
 	 * getFlowSetting()
 	 */
 	@Override
-	public FlWorkDedSetting getFlowSetting() {
-		return new FlWorkDedSetting(this.flowSetting);
+	public FlowWorkDedicateSetting getFlowSetting() {
+		return new FlowWorkDedicateSetting(this.flowSetting);
 	}
 
 }

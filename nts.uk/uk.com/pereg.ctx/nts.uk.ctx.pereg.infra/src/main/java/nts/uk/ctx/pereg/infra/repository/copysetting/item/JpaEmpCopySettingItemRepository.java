@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.infra.repository.copysetting.item;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ import nts.uk.ctx.pereg.infra.entity.copysetting.item.PpestEmployeeCopySettingIt
 @Stateless
 public class JpaEmpCopySettingItemRepository extends JpaRepository implements EmpCopySettingItemRepository {
 
-	private static final String SELECT_EMP_COPY_SETTING_ITEM_BY_CTG_ID_QUERY_STRING = "SELECT DISTINCT pi.perInfoCtgId,pc.categoryCd,pi.ppemtPerInfoItemPK.perInfoItemDefId,pi.itemCd,pi.itemName,pi.requiredAtr,pm.dataType"
+	private static final String SELECT_EMP_COPY_SETTING_ITEM_BY_CTG_ID_QUERY_STRING = "SELECT DISTINCT pi.perInfoCtgId,pc.categoryCd,pi.ppemtPerInfoItemPK.perInfoItemDefId,pi.itemCd,pi.itemName,pi.requiredAtr,pm.dataType,pm.selectionItemRefType"
 			+ " FROM PpestEmployeeCopySettingItem ci" + " INNER JOIN PpestEmployeeCopySetting cs "
 			+ " ON ci.categoryId = cs.ppestEmployeeCopySettingPk.categoryId" + " INNER JOIN PpemtPerInfoCtg pc"
 			+ " ON ci.categoryId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " INNER JOIN PpemtPerInfoItem pi"
@@ -60,9 +61,10 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 		String itemName = entity[4] != null ? entity[4].toString() : "";
 		int isRequired = entity[5] != null ? Integer.parseInt(entity[5].toString()) : 0;
 		int dataType = entity[6] != null ? Integer.parseInt(entity[6].toString()) : 0;
+		int selectionItemRefType = entity[7] != null ? Integer.parseInt(entity[7].toString()) : 0;
 
 		return EmpCopySettingItem.createFromJavaType(perInfoCtgId, categoryCd, perInfoItemDefId, itemCode, itemName,
-				isRequired, dataType);
+				isRequired, dataType, BigDecimal.valueOf(selectionItemRefType));
 
 	}
 
@@ -86,7 +88,7 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 		return this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class).setParameter("companyId", companyId)
 				.setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
 					EmpCopySettingItem newCopyItem = EmpCopySettingItem.createFromJavaType(perInfoCategoryId, "",
-							String.valueOf(i[0]), "", String.valueOf(i[1]), 0, 0);
+							String.valueOf(i[0]), "", String.valueOf(i[1]), 0, 0, BigDecimal.valueOf(0));
 					newCopyItem.setAlreadyCopy(Boolean.valueOf(i[2].toString()));
 
 					return newCopyItem;

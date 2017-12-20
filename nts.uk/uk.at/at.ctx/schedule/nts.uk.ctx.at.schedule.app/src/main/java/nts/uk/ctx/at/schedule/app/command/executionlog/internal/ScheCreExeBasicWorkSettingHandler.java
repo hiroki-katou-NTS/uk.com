@@ -4,14 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.ScClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ClassificationDto;
@@ -261,15 +259,6 @@ public class ScheCreExeBasicWorkSettingHandler {
 		return Optional.empty();
 	}
 	
-	/**
-	 * To year month date.
-	 *
-	 * @param baseDate the base date
-	 * @return the big decimal
-	 */
-	private BigDecimal toYearMonthDate(GeneralDate baseDate) {
-		return new BigDecimal(baseDate.year() * MUL_YEAR + baseDate.month() * MUL_MONTH + baseDate.day());
-	}
 	
 	/**
 	 * Gets the workday division by class.

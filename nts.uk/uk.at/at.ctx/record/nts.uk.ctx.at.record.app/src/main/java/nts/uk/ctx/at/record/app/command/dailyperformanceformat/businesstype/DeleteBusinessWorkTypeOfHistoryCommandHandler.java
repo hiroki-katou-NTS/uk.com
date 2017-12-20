@@ -45,24 +45,25 @@ public class DeleteBusinessWorkTypeOfHistoryCommandHandler
 		String employeeId = command.getEmployeeId();
 		String historyId = command.getHistoryId();
 		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(employeeId);
-		BusinessTypeOfEmployeeHistory bEmployeeHistory = new BusinessTypeOfEmployeeHistory();
-		if (optional.isPresent()) {
-			bEmployeeHistory = optional.get();
-		} else {
+		
+		if (!optional.isPresent()) {
 			throw new BusinessException("No data to update!");
 		}
+		
+		BusinessTypeOfEmployeeHistory bEmployeeHistory = optional.get();
+		
 		Optional<DateHistoryItem> currentItem = bEmployeeHistory.getHistory().stream().filter(x -> {
-			return x.identifier() == historyId;
+			return x.identifier().equals(historyId);
 		}).findFirst();
 		if (currentItem.isPresent()) {
 			bEmployeeHistory.remove(currentItem.get());
 			typeOfHistoryGeneralRepos.deleteBusinessTypeEmpOfHistory(bEmployeeHistory, currentItem.get());
 		}
-		// update typeof employee
+		// Delete typeof employee
 		if (typeOfEmployeeRepos.findByHistoryId(historyId).isPresent()) {
 			typeOfEmployeeRepos.delete(historyId);
 		} else {
-			throw new BusinessException("No data to update!");
+			throw new BusinessException("No data to delete!");
 		}
 	}
 

@@ -31,7 +31,7 @@ public interface EmployeeInfoPub {
 	 * Get List Employee Infomation For request No.126 param : sid : employeeId
 	 *
 	 */
-	List<EmpBasicInfoExport> getListEmpBasicInfo(List<String> sid);
+	//List<EmpBasicInfoExport> getListEmpBasicInfo(List<String> sid);
 
 	/**
 	 * Get Employee Info By Pid.
@@ -40,5 +40,12 @@ public interface EmployeeInfoPub {
 	 * @return
 	 */
 	List<EmpInfoExport> getEmpInfoByPid(String pid);
+	
+	
+	/**
+	 * Find Employee by companyId,Pid
+	 * RequestList No. 
+	 */
+	Optional<EmployeeInfoDto> getEmployeeInfoByCidPid(String companyId, String personId);
 
 }

@@ -46,6 +46,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 		stringBuilder.append("SELECT k ");
 		stringBuilder.append("FROM KrcmtBusinessTypeOfHistory k ");
 		stringBuilder.append("WHERE k.sId = :sId ");
+		stringBuilder.append("ODER BY k.startDate ASC ");
 		FIND_BY_EMPLOYEE = stringBuilder.toString();
 	}
 
@@ -87,7 +88,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 				.query(FIND_BY_BASE_DATE, KrcmtBusinessTypeOfHistory.class).setParameter("sId", sId)
 				.setParameter("baseDate1", baseDate).setParameter("baseDate2", baseDate).getList();
 		if (entities == null || entities.isEmpty()) {
-			return null;
+			return Optional.empty();
 		} else {
 			return Optional.of(toDomain(entities));
 		}
@@ -99,7 +100,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 		List<KrcmtBusinessTypeOfHistory> entities = this.queryProxy()
 				.query(FIND_BY_EMPLOYEE, KrcmtBusinessTypeOfHistory.class).setParameter("sId", sId).getList();
 		if (entities == null || entities.isEmpty()) {
-			return null;
+			return Optional.empty();
 		} else {
 			return Optional.of(toDomain(entities));
 		}
@@ -113,7 +114,15 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 	@Override
 	public void update(String companyId, String employeeId, String historyId, GeneralDate startDate,
 			GeneralDate endDate) {
-		this.commandProxy().update(toEntity(companyId, employeeId, historyId, startDate, endDate));
+		Optional<KrcmtBusinessTypeOfHistory> optional = this.queryProxy()
+				.find(new KrcmtBusinessTypeOfHistoryPK(historyId), KrcmtBusinessTypeOfHistory.class);
+		if(optional.isPresent()){
+			KrcmtBusinessTypeOfHistory entity = optional.get();
+			entity.startDate = startDate;
+			entity.endDate = endDate;
+			this.commandProxy().update(entity);
+		}
+		
 
 	}
 
@@ -135,7 +144,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 				}
 			}));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 }

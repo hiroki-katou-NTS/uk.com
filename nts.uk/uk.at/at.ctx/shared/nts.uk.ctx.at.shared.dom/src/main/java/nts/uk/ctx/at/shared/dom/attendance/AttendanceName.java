@@ -4,7 +4,7 @@ import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(30)
+@StringMaxLength(60)
 public class AttendanceName extends StringPrimitiveValue<PrimitiveValue<String>> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

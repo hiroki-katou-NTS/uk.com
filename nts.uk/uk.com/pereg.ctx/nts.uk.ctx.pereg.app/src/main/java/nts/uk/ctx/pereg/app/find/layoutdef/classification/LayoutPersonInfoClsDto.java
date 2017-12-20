@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassification;
+import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassificationWithCtgCd;
 
 @Data
 @AllArgsConstructor
@@ -19,35 +20,35 @@ import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassif
 public class LayoutPersonInfoClsDto {
 
 	private String layoutID;
-	
+
 	private int dispOrder;
-	
+
 	private String className;
-	
+
 	private String personInfoCategoryID;
-	
+
+	private String personInfoCategoryCD;
+
 	private LayoutItemType layoutItemType;
-	
+
 	// None require
 	private List<PerInfoItemDefDto> listItemDf;
 
 	/*
 	 * List item value single/set: List<LayoutPersonInfoValueDto> list:
-	 * List<List<LayoutPersonInfoValueDto>> ----------------------------- single:
-	 * [{value: undefined}]
+	 * List<List<LayoutPersonInfoValueDto>> -----------------------------
+	 * single: [{value: undefined}]
 	 * -------------------------------------------------------------------------
 	 * set: [ { value: undefined }, { value: undefined }, { value: undefined }]
 	 * -------------------------------------------------------------------------
-	 * list: [
-	 * [ { value: undefined }, { value: undefined }, { value: undefined }]
-	 * [ { value: undefined }, { value: undefined }, { value: undefined }]
-	 * [ { value: undefined }, { value: undefined }, { value: undefined }]
-	 * ]
+	 * list: [ [ { value: undefined }, { value: undefined }, { value: undefined
+	 * }] [ { value: undefined }, { value: undefined }, { value: undefined }] [
+	 * { value: undefined }, { value: undefined }, { value: undefined }] ]
 	 * -------------------------------------------------------------------------
 	 */
 	private List<Object> items;
-	
-	public LayoutPersonInfoClsDto(){
+
+	public LayoutPersonInfoClsDto() {
 		items = new ArrayList<>();
 	}
 
@@ -59,9 +60,24 @@ public class LayoutPersonInfoClsDto {
 		this.layoutItemType = EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class);
 	}
 
+	public LayoutPersonInfoClsDto(String layoutID, int dispOrder, String personInfoCategoryID, int layoutItemType,
+			String personInfoCategoryCD) {
+		super();
+		this.layoutID = layoutID;
+		this.dispOrder = dispOrder;
+		this.personInfoCategoryID = personInfoCategoryID;
+		this.layoutItemType = EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class);
+		this.personInfoCategoryCD = personInfoCategoryCD;
+	}
+
 	public static LayoutPersonInfoClsDto fromDomain(LayoutPersonInfoClassification domain) {
 		return new LayoutPersonInfoClsDto(domain.getLayoutID(), domain.getDispOrder().v(),
 				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value);
+	}
+
+	public static LayoutPersonInfoClsDto fromDomainWithCtgCD(LayoutPersonInfoClassificationWithCtgCd domain) {
+		return new LayoutPersonInfoClsDto(domain.getLayoutID(), domain.getDispOrder().v(),
+				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value, domain.getPersonInfoCategoryCD());
 	}
 
 }

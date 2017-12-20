@@ -1,4 +1,4 @@
-module ksu001.o.service {
+module nts.uk.at.view.ksu001.o.service {
     var paths: any = {
         getDataForComboBox: "screen/at/schedule/basicschedule"
     }

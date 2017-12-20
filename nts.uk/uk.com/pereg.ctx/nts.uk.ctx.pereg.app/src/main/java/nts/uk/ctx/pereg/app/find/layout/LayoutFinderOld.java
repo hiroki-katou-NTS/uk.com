@@ -13,10 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layout.dto.SimpleEmpMainLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
@@ -54,9 +51,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class LayoutFinderOld {
-
-	@Inject
-	private EmployeeRepository employeeRepo;
 
 	@Inject
 	private IMaintenanceLayoutRepository maintenanceRepo;
@@ -144,15 +138,6 @@ public class LayoutFinderOld {
 		String loginEmployeeId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonnel();
 		// check standard date
-		Employee employee = employeeRepo.findBySid(companyId, browsingEmpId).get();
-		GeneralDate joinDate = employee.getJoinDate();
-		GeneralDate retirementDate = employee.getRetirementDate();
-		if (standardDate.before(joinDate)) {
-			throw new BusinessException("Msg_383");
-		}
-		if (standardDate.after(retirementDate)) {
-			standardDate = retirementDate;
-		}
 		// get layout
 		MaintenanceLayout maintenanceLayout = maintenanceRepo.getById(companyId, mainteLayoutId).get();
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(mainteLayoutId);
@@ -192,7 +177,7 @@ public class LayoutFinderOld {
 					if (authClassItem.getLayoutItemType() == LayoutItemType.ITEM) {
 					} else if (authClassItem.getLayoutItemType() == LayoutItemType.LIST) {
 						getDataforListItem(perInfoCategory, personCategoryAuthOpt.get(), inforAuthItems, authClassItem,
-								standardDate, employee.getPId(), employee.getSId(), selfBrowsing);
+								standardDate, null, null, selfBrowsing);
 					}
 
 					authItemClasList.add(authClassItem);
