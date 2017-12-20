@@ -43,7 +43,7 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
-
+import nts.uk.ctx.at.shared.app.command.workingcondition.*;
 
 
 @Stateless
@@ -61,8 +61,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddPersonCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddEmployeeDataMngInfoCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){}
-			,new TypeLiteral<PeregAddCommandHandler<AddShortWorkTimeCommand>>(){}
+			new TypeLiteral<PeregAddCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddWorkingConditionCommand>>(){}
 			);
 	
 	/** Update handlers */
@@ -77,7 +78,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffCompanyHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateShortWorkTimeCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingConditionCommand>>(){}
 			);
 	
 	/** Delete handlers */
@@ -89,7 +91,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmploymentHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteBusinessWorkTypeOfHistoryCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteShortWorkTimeCommand>>(){}
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteWorkingConditionCommand>>(){}
 			);
 	
 	@Override
