@@ -42,7 +42,7 @@ public class TimeZone extends DomainObject {
 	 * @return true, if is overlap
 	 */
 	public boolean isOverlap(TimeZone timezone) {
-		return !(this.end.lessThan(timezone.getStart()) || this.start.greaterThan(timezone.getEnd()));
+		return !(this.end.lessThanOrEqualTo(timezone.getStart()) || this.start.greaterThanOrEqualTo(timezone.getEnd()));
 	}
 
 	/**
