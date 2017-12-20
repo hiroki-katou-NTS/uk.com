@@ -1,54 +1,80 @@
 module a5 {
     import FixTableOption = nts.uk.at.view.kmk003.base.fixedtable.FixTableOption;
-    import FlowWorkRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestTimezoneModel;
+    import FlowRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestTimezoneModel;
+    import FlowRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestSettingModel;
+    import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
+    import DeductionTimeDto = nts.uk.at.view.kmk003.a.service.model.common.DeductionTimeDto;
     import FixHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixHalfDayWorkTimezoneModel;
+    import DiffTimeHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeHalfDayWorkTimezoneModel;
     import FlexHalfDayWorkTimeModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexHalfDayWorkTimeModel;
+    import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
 
     class ScreenModel {
 
-        // flex or difftime or fix timezones
-        oneDayTimezones: KnockoutObservableArray<any>;
-        morningTimezones: KnockoutObservableArray<any>;
-        afternoonTimezones: KnockoutObservableArray<any>;
+        // flex timezones
+        oneDayFlexTimezones: KnockoutObservableArray<any>;
+        morningFlexTimezones: KnockoutObservableArray<any>;
+        afternoonFlexTimezones: KnockoutObservableArray<any>;
 
-        // flex restSet
-        oneDayRestSets: KnockoutObservableArray<any>;
-        morningRestSets: KnockoutObservableArray<any>;
-        afternoonRestSets: KnockoutObservableArray<any>;
-        oneDayHereAfterRestSet: any;
-        morningHereAfterRestSet: any;
-        afternoonHereAfterRestSet: any;
+        // diff time timezones
+        oneDayDiffTimezones: KnockoutObservableArray<any>;
+        morningDiffTimezones: KnockoutObservableArray<any>;
+        afternoonDiffTimezones: KnockoutObservableArray<any>;
+
+        // fixed timezones
+        oneDayFixedTimezones: KnockoutObservableArray<any>;
+        morningFixedTimezones: KnockoutObservableArray<any>;
+        afternoonFixedTimezones: KnockoutObservableArray<any>;
 
         // flow timezones
         flowTimezones: KnockoutObservableArray<any>;
 
+        // flex restSet
+        oneDayFlexRestSets: KnockoutObservableArray<FlowRestSettingModel>;
+        oneDayAfterRestSet: FlowRestSettingModel;
+        oneDayAfterRestSetUse: KnockoutObservable<boolean>;
+        morningFlexRestSets: KnockoutObservableArray<FlowRestSettingModel>;
+        morningAfterRestSet: FlowRestSettingModel;
+        morningAfterRestSetUse: KnockoutObservable<boolean>;
+        afternoonFlexRestSets: KnockoutObservableArray<FlowRestSettingModel>;
+        afternoonAfterRestSet: FlowRestSettingModel;
+        afternoonAfterRestSetUse: KnockoutObservable<boolean>;
+
         // flow restSet
-        flowRestSets: KnockoutObservableArray<any>;
-        hereAfterRestSet: any;
+        flowRestSets: KnockoutObservableArray<FlowRestSettingModel>;
+        afterFlowRestSet: FlowRestTimezoneModel;
+        flowRestSetUse: KnockoutObservable<boolean>;
 
         // ntsFixTableCustom options
-        // timezone option
-        oneDayTimezoneOption: FixTableOption;
-        morningTimezoneOption: FixTableOption;
-        afternoonTimezoneOption: FixTableOption;
-        // restSet flex option
-        oneDayRestSetOption: FixTableOption;
-        morningRestSetOption: FixTableOption;
-        afternoonRestSetOption: FixTableOption;
-        // flow timezone option
+
+        // flex timezones option
+        oneDayFlexTimezoneOption: FixTableOption;
+        morningFlexTimezoneOption: FixTableOption;
+        afternoonFlexTimezoneOption: FixTableOption;
+
+        // flex timezones option
+        oneDayDiffTimezoneOption: FixTableOption;
+        morningDiffTimezoneOption: FixTableOption;
+        afternoonDiffTimezoneOption: FixTableOption;
+
+        // flex timezones option
+        oneDayFixedTimezoneOption: FixTableOption;
+        morningFixedTimezoneOption: FixTableOption;
+        afternoonFixedTimezoneOption: FixTableOption;
+
+        // flex rest set option
+        oneDayFlexRestSetOption: FixTableOption;
+        morningFlexRestSetOption: FixTableOption;
+        afternoonFlexRestSetOption: FixTableOption;
+
+        // flow timezones and rest set option
         flowTimezoneOption: FixTableOption;
         flowRestSetOption: FixTableOption;
 
-
         // switch
         switchDs: Array<any>;
-        fixedRestTime: KnockoutObservable<number>; // 0 = not use, 1 = use
-
-        // checkbox
-        checkOneDay: KnockoutObservable<boolean>;
-        checkMorning: KnockoutObservable<boolean>;
-        checkAfternoon: KnockoutObservable<boolean>;
-        checkFlow: KnockoutObservable<boolean>;
+        flexFixedRestTime: KnockoutObservable<number>; // 0 = not use, 1 = use
+        flowFixedRestTime: KnockoutObservable<number>; // 0 = not use, 1 = use
 
         // flag
         isFlex: KnockoutObservable<boolean>;
@@ -57,8 +83,8 @@ module a5 {
         isDiffTime: KnockoutObservable<boolean>;
 
         // show/hide
-        isFlexOrFlow: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow *19
-        isTzOfFlexOrFixedOrDiff: KnockoutComputed<boolean>; // ( flex and suru ) or (fix or diff) *23
+        //isFlexOrFlow: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow *19
+        //isTzOfFlexOrFixedOrDiff: KnockoutComputed<boolean>; // ( flex and suru ) or (fix or diff) *23
         isFlowTimezone: KnockoutComputed<boolean>; // flow and suru *24
         isFlowRestTime: KnockoutComputed<boolean>; // flow and nashi *25
         isFlexRestTime: KnockoutComputed<boolean>; // flex and nashi *26
@@ -68,36 +94,53 @@ module a5 {
             let self = this;
 
             // nts fix table data source
-            self.oneDayTimezones = ko.observableArray([]);self.oneDayTimezones.subscribe(vl => console.log(vl));
-            self.morningTimezones = ko.observableArray([]);
-            self.afternoonTimezones = ko.observableArray([]);
-            self.oneDayRestSets = ko.observableArray([]);self.oneDayRestSets.subscribe(vl => console.log(vl));
-            self.morningRestSets = ko.observableArray([]);
-            self.afternoonRestSets = ko.observableArray([]);
-            self.oneDayHereAfterRestSet = ko.observableArray([]);
-            self.morningHereAfterRestSet = ko.observableArray([]);
-            self.afternoonHereAfterRestSet = ko.observableArray([]);
+            self.oneDayFlexTimezones = ko.observableArray([]);self.oneDayFlexTimezones.subscribe(vl => console.log(vl));
+            self.morningFlexTimezones = ko.observableArray([]);
+            self.afternoonFlexTimezones = ko.observableArray([]);
+            self.oneDayFlexRestSets = ko.observableArray([]);self.oneDayFlexTimezones.subscribe(vl => console.log(vl));
+            self.morningFlexRestSets = ko.observableArray([]);
+            self.afternoonFlexRestSets = ko.observableArray([]);
+            self.oneDayFixedTimezones = ko.observableArray([]);self.oneDayFixedTimezones.subscribe(vl => console.log(vl));
+            self.morningFixedTimezones = ko.observableArray([]);
+            self.afternoonFixedTimezones = ko.observableArray([]);
+            self.oneDayDiffTimezones = ko.observableArray([]);
+            self.morningDiffTimezones = ko.observableArray([]);
+            self.afternoonDiffTimezones = ko.observableArray([]);
+            self.flowTimezones = ko.observableArray([]);
+            self.flowRestSets = ko.observableArray([]);
+
+            // checkbox
+            self.oneDayAfterRestSetUse = ko.observable(false);
+            self.morningAfterRestSetUse = ko.observable(false);
+            self.afternoonAfterRestSetUse = ko.observable(false);
+            self.flowRestSetUse = ko.observable(false);
 
             // switch button
             self.switchDs = [
                 { code: 1, name: nts.uk.resource.getText("KMK003_142") }, // used
                 { code: 0, name: nts.uk.resource.getText("KMK003_143") } // not used
             ];
-            self.fixedRestTime = ko.observable(0);
-            self.fixedRestTime.subscribe(vl => console.log(vl));
+            self.flexFixedRestTime = ko.observable(0);
+            self.flowFixedRestTime = ko.observable(0);
+            self.flexFixedRestTime.subscribe(vl => console.log(vl));
 
             // init computed
             self.initComputed(valueAccessor);
 
-            // check box
-            self.checkOneDay = ko.observable(false);
-            self.checkMorning = ko.observable(false);
-            self.checkAfternoon = ko.observable(false);
-            self.checkFlow = ko.observable(false);
-
             // fix table option
             self.setFixedTableOption();
 
+        }
+
+        public toTimeRangeArray(before: DeductionTimeModel): any {
+            return {startTime: before.start(), endTime: before.end()};
+        }
+
+        public toDeductionTimeDto(before: any): DeductionTimeDto {
+            let dto =  <DeductionTimeDto>{};
+            dto.start = before.startTime;
+            dto.end = before.endTime;
+            return dto;
         }
 
         public loadData(): void {
@@ -130,15 +173,31 @@ module a5 {
             workTimeAtr.subscribe(vl => console.log(vl));
             workTimeMethod.subscribe(vl => console.log(vl));
 
-            let fixHalfDayWorkTimes: Array<FixHalfDayWorkTimezoneModel> = [];
-            let diffHalfDayWorkTimes: Array<FixHalfDayWorkTimezoneModel> = []; //TODO chua co model
-            let flexHalfDayWorkTimes: Array<FlexHalfDayWorkTimeModel> = []
-            let flowWorkRestTimezone: FlowWorkRestTimezoneModel = new FlowWorkRestTimezoneModel();
+            let ms: MainSettingModel = valueAccessor.mainSettingModel;
+            let test = ms.fixedWorkSetting.getHDWtzOneday();
+//            test.restTimezone.lstTimezone.subscribe(newList => {
+//                let mapped = _.map(newList, item => self.toTimeRangeArray(item));
+//                self.oneDayFixedTimezones(mapped);
+//            });
+//            self.oneDayFixedTimezones.subscribe(newList => {
+//                let mapped = _.map(newList, item => self.toDeductionTimeDto(item));
+//                test.restTimezone.updateData({lstTimezone: mapped});
+//            });
+            //TODO testing
+
+            let flexHdWtOneday: FlexHalfDayWorkTimeModel;
+            let flexHdWtMorning: FlexHalfDayWorkTimeModel;
+            let flexHdWtAfternoon: FlexHalfDayWorkTimeModel;
+
+            let fixedHdWtOneday: FixHalfDayWorkTimezoneModel;
+            let fixedHdWtMorning: FixHalfDayWorkTimezoneModel;
+            let fixedHdWtAfternoon: FixHalfDayWorkTimezoneModel;
+
+            let diffHdWtOneday: DiffTimeHalfDayWorkTimezoneModel;
+            let diffHdWtMorning: DiffTimeHalfDayWorkTimezoneModel;
+            let diffHdWtAfternoon: DiffTimeHalfDayWorkTimezoneModel;
 
             // get one day, morning, afternoon;
-            let oneday = _.find(fixHalfDayWorkTimes, time => time.dayAtr() == 0);
-            let morning = _.find(fixHalfDayWorkTimes, time => time.dayAtr() == 1);
-            let afternoon = _.find(fixHalfDayWorkTimes, time => time.dayAtr() == 2);
 
             self.isFlex = ko.computed(() => {
                 return workTimeAtr() == 1;
@@ -153,20 +212,14 @@ module a5 {
                 return workTimeAtr() != 1 && workTimeMethod() == 1;
             });
 
-            self.isFlexOrFlow = ko.computed(() => {
-                return self.isFlex() || self.isFlow();
-            });
-            self.isTzOfFlexOrFixedOrDiff = ko.computed(() => {
-                return (self.isFlex() && self.fixedRestTime() == 1) || self.isFixed() || self.isDiffTime();
-            });
             self.isFlowTimezone = ko.computed(() => {
-                return self.isFlow() && self.fixedRestTime() == 1;
+                return self.isFlow() && self.flowFixedRestTime() == 1;
             });
             self.isFlowRestTime = ko.computed(() => {
-                return self.isFlow() && self.fixedRestTime() == 0;
+                return self.isFlow() && self.flowFixedRestTime() == 0;
             });
             self.isFlexRestTime = ko.computed(() => {
-                return self.isFlex() && self.fixedRestTime() == 0;
+                return self.isFlex() && self.flexFixedRestTime() == 0;
             });
         }
 
@@ -174,94 +227,71 @@ module a5 {
          * Set fixed table option
          */
         private setFixedTableOption(): void {
-            const maxRowTimezone = 10;
-            const minRowDefault = 0;
-            const maxRowRestSet = 5;
             let self = this;
 
-            // timezone option
-            self.oneDayTimezoneOption = {
-                maxRow: maxRowTimezone,
-                minRow: minRowDefault,
-                maxRowDisplay: maxRowTimezone,
-                isShowButton: true,
-                dataSource: self.oneDayTimezones,
-                isMultipleSelect: true,
-                columns: self.getTimezoneColumns(),
-                tabindex: -1
-            };
-            self.morningTimezoneOption = {
-                maxRow: maxRowTimezone,
-                minRow: minRowDefault,
-                maxRowDisplay: maxRowTimezone,
-                isShowButton: true,
-                dataSource: self.morningTimezones,
-                isMultipleSelect: true,
-                columns: self.getTimezoneColumns(),
-                tabindex: -1
-            };
-            self.afternoonTimezoneOption = {
-                maxRow: maxRowTimezone,
-                minRow: minRowDefault,
-                maxRowDisplay: maxRowTimezone,
-                isShowButton: true,
-                dataSource: self.afternoonTimezones,
-                isMultipleSelect: true,
-                columns: self.getTimezoneColumns(),
-                tabindex: -1
-            };
+            // flex timezone option
+            self.oneDayFlexTimezoneOption = self.getDefaultTimezoneOption();
+            self.oneDayFlexTimezoneOption.dataSource = self.oneDayFlexTimezones;
+            self.morningFlexTimezoneOption = self.getDefaultTimezoneOption();
+            self.morningFlexTimezoneOption.dataSource = self.morningFlexTimezones;
+            self.afternoonFlexTimezoneOption = self.getDefaultTimezoneOption();
+            self.afternoonFlexTimezoneOption.dataSource = self.afternoonFlexTimezones;
+
+            // difftime timezone option
+            self.oneDayDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.oneDayDiffTimezoneOption.dataSource = self.oneDayDiffTimezones;
+            self.morningDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.morningDiffTimezoneOption.dataSource = self.morningDiffTimezones;
+            self.afternoonDiffTimezoneOption = self.getDefaultTimezoneOption();
+            self.afternoonDiffTimezoneOption.dataSource = self.afternoonDiffTimezones;
+
+            // fixed timezone option
+            self.oneDayFixedTimezoneOption = self.getDefaultTimezoneOption();
+            self.oneDayFixedTimezoneOption.dataSource = self.oneDayFixedTimezones;
+            self.morningFixedTimezoneOption = self.getDefaultTimezoneOption();
+            self.morningFixedTimezoneOption.dataSource = self.morningFixedTimezones;
+            self.afternoonFixedTimezoneOption = self.getDefaultTimezoneOption();
+            self.afternoonFixedTimezoneOption.dataSource = self.afternoonFixedTimezones;
 
             // flex restSet option
-            self.oneDayRestSetOption = {
-                maxRow: maxRowRestSet,
-                minRow: minRowDefault,
-                maxRowDisplay: maxRowRestSet,
-                isShowButton: true,
-                dataSource: self.oneDayRestSets,
-                isMultipleSelect: true,
-                columns: self.getRestSetColumns(),
-                tabindex: -1
-            };
-            self.morningRestSetOption = {
-                maxRow: maxRowRestSet,
-                minRow: minRowDefault,
-                maxRowDisplay: maxRowRestSet,
-                isShowButton: true,
-                dataSource: self.morningRestSets,
-                isMultipleSelect: true,
-                columns: self.getRestSetColumns(),
-                tabindex: -1
-            };
-            self.afternoonRestSetOption = {
-                maxRow: maxRowRestSet,
-                minRow: minRowDefault,
-                maxRowDisplay: maxRowRestSet,
-                isShowButton: true,
-                dataSource: self.afternoonRestSets,
-                isMultipleSelect: true,
-                columns: self.getRestSetColumns(),
-                tabindex: -1
-            };
+            self.oneDayFlexRestSetOption = self.getDefaultRestSetOption();
+            self.oneDayFlexRestSetOption.dataSource = self.oneDayFlexRestSets;
+            self.morningFlexRestSetOption = self.getDefaultRestSetOption();
+            self.morningFlexRestSetOption.dataSource = self.morningFlexRestSets;
+            self.afternoonFlexRestSetOption = self.getDefaultRestSetOption();
+            self.afternoonFlexRestSetOption.dataSource = self.afternoonFlexRestSets;
 
             // flow timezone option
-            self.flowTimezoneOption= {
-                maxRow: maxRowTimezone,
-                minRow: minRowDefault,
-                maxRowDisplay: maxRowTimezone,
+            self.flowTimezoneOption = self.getDefaultTimezoneOption();
+            self.flowTimezoneOption.dataSource = self.flowTimezones;
+
+            // flow restSet option
+            self.flowRestSetOption = self.getDefaultRestSetOption();
+            self.flowRestSetOption.dataSource = self.flowRestSets;
+        }
+
+        private getDefaultTimezoneOption(): FixTableOption {
+            let self = this;
+            return {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 10,
                 isShowButton: true,
-                dataSource: self.afternoonRestSets,
+                dataSource: ko.observableArray([]),
                 isMultipleSelect: true,
                 columns: self.getTimezoneColumns(),
                 tabindex: -1
             };
+        }
 
-            // flow restSet option
-            self.flowRestSetOption = {
-                maxRow: maxRowRestSet,
-                minRow: minRowDefault,
-                maxRowDisplay: maxRowRestSet,
+        private getDefaultRestSetOption(): FixTableOption {
+            let self = this;
+            return {
+                maxRow: 5,
+                minRow: 0,
+                maxRowDisplay: 5,
                 isShowButton: true,
-                dataSource: self.afternoonRestSets,
+                dataSource: ko.observableArray([]),
                 isMultipleSelect: true,
                 columns: self.getRestSetColumns(),
                 tabindex: -1
@@ -274,17 +304,17 @@ module a5 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_174"),
                     key: "startCol",
-                    defaultValue: ko.observable(15),
+                    //defaultValue: ko.observable(0),
                     width: 200,
-                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime',
+                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"),
                     key: "endCol",
-                    defaultValue: ko.observable(15),
+                    //defaultValue: ko.observable(0),
                     width: 200,
-                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime',
+                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 }
             ];
@@ -295,8 +325,8 @@ module a5 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"),
-                    key: "columnOneDay1",
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
+                    key: "column1",
+                    defaultValue: ko.observable({ startTime: 0, endTime: 0 }),
                     width: 243,
                     template: `<div data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
