@@ -256,7 +256,7 @@ module nts.uk.ui.jqueryExtentions {
                     let c = $(this);
                     if(self.mode === "master"){
                         if(_.isFunction(self.clickOnAction)){
-                            self.clickOnAction().done(function(result){
+                            self.clickOnAction(evt, c.parent().data("cell-data")).done(function(result){
                                 self.setCellValue(c, result);   
                             });
                         }
