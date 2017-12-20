@@ -65,23 +65,24 @@ public class AddEmployeeCommandFacade {
 			});
 
 			return categoryCodeList.stream()
-					.map(c -> createNewItemsByCategoryCode(dataServer, c, employeeId, personId, comHistId))
-					.filter(c -> c != null).collect(Collectors.toList());
+					.map(ctgCode -> createNewItemsByCategoryCode(dataServer, ctgCode, employeeId, personId, comHistId))
+					.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
 		}
-		return inputs;
+		return inputs.stream().map(c -> createNewItemsByCategoryCode(c, employeeId, personId, comHistId))
+				.filter(c -> c != null).collect(Collectors.toList());
 
 	}
 
 	public void updateRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		List<ItemsByCategory> fixedInputs = inputs.stream().filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1)
-				.collect(Collectors.toList());
+		List<ItemsByCategory> requiredInputs = inputs.stream()
+				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1).collect(Collectors.toList());
 
-		if (!CollectionUtil.isEmpty(fixedInputs)) {
+		if (!CollectionUtil.isEmpty(requiredInputs)) {
 
-			updateRequiredSystemInputs(fixedInputs, personId, employeeId);
+			updateRequiredSystemInputs(requiredInputs, personId, employeeId);
 
-			addRequiredOptinalInputs(fixedInputs, personId, employeeId);
+			addRequiredOptinalInputs(requiredInputs, personId, employeeId);
 
 		}
 
@@ -109,10 +110,10 @@ public class AddEmployeeCommandFacade {
 
 	public void addNoRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		inputs = inputs.stream().filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) == -1)
-				.collect(Collectors.toList());
+		List<ItemsByCategory> noRequiredInputs = inputs.stream()
+				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) == -1).collect(Collectors.toList());
 		// call add commandFacade
-		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, inputs);
+		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noRequiredInputs);
 
 		this.commandFacade.add(addContainer);
 	}
@@ -200,6 +201,34 @@ public class AddEmployeeCommandFacade {
 		}
 
 		if (categoryCd == "CS00003") {
+			recordId = comHistId;
+
+		}
+
+		return new ItemsByCategory(categoryCd, recordId, items);
+	}
+
+	private ItemsByCategory createNewItemsByCategoryCode(ItemsByCategory itemByCtg, String employeeId, String personId,
+			String comHistId) {
+
+		List<ItemValue> items = itemByCtg.getItems();
+
+		if (CollectionUtil.isEmpty(items)) {
+			return null;
+		}
+		String recordId = null;
+		String categoryCd = itemByCtg.getCategoryCd();
+
+		if (categoryCd.equals("CS00001")) {
+
+			recordId = employeeId;
+		}
+
+		if (categoryCd.equals("CS00002")) {
+			recordId = personId;
+		}
+
+		if (categoryCd.equals("CS00003")) {
 			recordId = comHistId;
 
 		}

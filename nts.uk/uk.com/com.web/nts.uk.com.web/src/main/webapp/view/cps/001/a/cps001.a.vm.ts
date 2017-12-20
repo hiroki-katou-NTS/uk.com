@@ -86,9 +86,10 @@ module cps001.a.vm {
             let self = this,
                 categories = self.multipleData().map(x => x.categories());
 
-            return [{ optionValue: 'cat1', optionText: 'Category First' }, { optionValue: 'cat2', optionText: 'Category Second' }];
-            //return categories[0] || [{ optionValue: 'cat1', optionText: 'Category First' }, { optionValue: 'cat1', optionText: 'Category First' }];
+            return categories[0] || [];
         });
+
+        combobox: KnockoutObservableArray<any> = ko.observableArray([]);
 
         // resource id for title in category mode
         titleResource: KnockoutComputed<string> = ko.computed(() => {
@@ -175,13 +176,15 @@ module cps001.a.vm {
 
                                 service.getCats(employeeId).done((data: Array<ICategory>) => {
                                     if (data && data.length) {
-                                        layoutData.combobox(data.map(x => {
+                                        let sources = data.map(x => {
                                             return {
-                                                item: x,
+                                                item: _.cloneDeep(x),
                                                 optionValue: x.id,
                                                 optionText: x.categoryName
                                             };
-                                        }));
+                                        });
+                                        layoutData.combobox(sources);
+                                        layoutData.id(sources[0].optionValue);
                                     }
                                 });
                             }

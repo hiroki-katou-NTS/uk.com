@@ -12,6 +12,8 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
+        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+
 
         constructor() {
             let self = this;
@@ -21,7 +23,8 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 { code: '1', name: nts.uk.resource.getText("KSU001_71") },
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
             ]);
-
+            self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
+            
             self.columnsWorkTime = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KSU001_1402"), key: 'siftCd', width: 70 },
                 { headerText: nts.uk.resource.getText("KSU001_1403"), key: 'symbol', width: 70 },
@@ -104,6 +107,33 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
          */
         closeDialog(): void {
             nts.uk.ui.windows.close();
+        }
+        search(): void {
+            let self = this;
+            if (!self.time1() && !self.time2()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+            }
+            if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+            }
+            self.listWorkTimeComboBox([]);
+            _.forEach(self.listWorkTime(), (obj) => {
+                if (self.time1() && self.time2()
+                    && (moment.duration(self.time1()).asMinutes() == obj.start)
+                    && (moment.duration(self.time2()).asMinutes() == obj.end)) {
+                    self.listWorkTimeComboBox.push(obj);
+                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.start)) {
+                    self.listWorkTimeComboBox.push(obj);
+                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.end)) {
+                    self.listWorkTimeComboBox.push(obj);
+                }
+            });
+
+        }
+        clear(): void {
+            let self = this;
+            self.listWorkTimeComboBox([]);
+            self.listWorkTimeComboBox(self.listWorkTime());
         }
     }
 }

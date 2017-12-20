@@ -90,7 +90,7 @@ module cps002.a.vm {
                     self.createTypeId(data.employeeCreationMethod);
 
 
-                    if (data.copyEmployeeId != "" && self.employeeBasicInfo().copyEmployeeId != data.copyEmployeeId) {
+                    if (self.employeeBasicInfo().copyEmployeeId != "") {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
@@ -542,9 +542,9 @@ module cps002.a.vm {
 
             if (currentEmpInfo) {
                 if (isInit) {
-                    newEmpInfo.copyEmployeeId = !newEmpInfo.copyEmployeeId ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
+                    newEmpInfo.copyEmployeeId = newEmpInfo.copyEmployeeId == '' ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
                 } else {
-                    newEmpInfo.initialValueCode = !newEmpInfo.initialValueCode ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
+                    newEmpInfo.initialValueCode = newEmpInfo.initialValueCode == '' ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
 
                 }
 

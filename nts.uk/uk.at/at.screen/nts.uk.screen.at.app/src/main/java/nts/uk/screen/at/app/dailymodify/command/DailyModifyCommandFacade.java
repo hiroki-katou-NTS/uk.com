@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.record.app.command.actualworkinghours.AttendanceTimeOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.daily.DailyWorkRecordCommand;
-import nts.uk.ctx.at.record.app.find.actualworkinghours.AttendanceTimeOfDailyPerformFinder;
+import nts.uk.ctx.at.record.app.find.dailyperform.AttendanceTimeOfDailyPerformFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.daily.DailyWorkRecordFinder;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemCommand;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemUtil;
@@ -36,7 +36,7 @@ public class DailyModifyCommandFacade {
 		FINDER_CLASSES.put("AttendanceTimeOfDailyPerformance", AttendanceTimeOfDailyPerformFinder.class);
 	}
 
-	private static final Map<String, TypeLiteral<? extends CommandFacade<? extends AttendanceItemCommand>>> ADD_COMMAND_CLASSES;
+	private static final Map<String, TypeLiteral<?>> ADD_COMMAND_CLASSES;
 	static {
 		//Sample
 		ADD_COMMAND_CLASSES = new HashMap<>();
@@ -57,8 +57,8 @@ public class DailyModifyCommandFacade {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends AttendanceItemCommand> void handle(TypeLiteral<? extends CommandFacade<T>> type, ConvertibleAttendanceItem data){
-		CommandFacade<T> handler = CDI.current().select(type).get();
+	private <T extends AttendanceItemCommand> void handle(TypeLiteral<?> type, ConvertibleAttendanceItem data){
+		CommandFacade<T> handler = (CommandFacade<T>) CDI.current().select(type).get();
 		AttendanceItemCommand command = handler.newCommand();
 		command.setRecords(data);
 		handler.handle((T) command);

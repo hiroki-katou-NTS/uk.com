@@ -26,8 +26,11 @@ public class CopyRoleCas005CommandHandler extends CommandHandler<CopyRoleCas005C
 	protected void handle(CommandHandlerContext<CopyRoleCas005Command> context) {
 		CopyRoleCas005Command data = context.getCommand();
 		Optional<Role> role =  repo.findRoleByRoleCode(data.getRoleCas005Command().getRoleCode(), data.getRoleCas005Command().getRoleType());
+		
 		//nếu có dữ liệu
 		if(role.isPresent()) {
+			String roleID = role.get().getRoleId();
+			data.getRoleCas005Command().setRoleId(roleID);
 			if(data.isCheckUpdate()) {
 				updateRoleCas005CmdHandler.handle(data.getRoleCas005Command());
 			}else {
