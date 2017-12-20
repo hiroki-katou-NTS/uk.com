@@ -16,7 +16,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateReposito
 public class JpaApprovalRootStateRepository extends JpaRepository implements ApprovalRootStateRepository {
 
 	@Override
-	public Optional<ApprovalRootState> findEmploymentApp(String companyID, String rootStateID) {
+	public Optional<ApprovalRootState> findEmploymentApp(String rootStateID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
