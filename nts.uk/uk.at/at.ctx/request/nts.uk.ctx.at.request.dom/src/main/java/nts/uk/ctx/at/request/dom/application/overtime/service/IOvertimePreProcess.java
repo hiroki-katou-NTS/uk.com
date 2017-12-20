@@ -14,8 +14,8 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 
 /**
@@ -35,13 +35,13 @@ public interface IOvertimePreProcess {
 	 * 01-03_残業枠を取得
 	 * @param overtimeAtr
 	 */
-	public List<OvertimeFrame> getOvertimeHours(int overtimeAtr,String companyID);
+	public List<OvertimeWorkFrame> getOvertimeHours(int overtimeAtr,String companyID);
 	
 	/**
 	 * @param companyID
 	 * @return
 	 */
-	public List<BreaktimeFrame> getBreaktimeFrame(String companyID);
+	public List<WorkdayoffFrame> getBreaktimeFrame(String companyID);
 	
 	/**
 	 * 01-04_加給時間を取得
