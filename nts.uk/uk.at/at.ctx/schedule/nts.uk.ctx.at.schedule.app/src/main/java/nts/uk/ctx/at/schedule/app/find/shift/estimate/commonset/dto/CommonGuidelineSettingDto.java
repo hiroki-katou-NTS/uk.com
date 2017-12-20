@@ -71,7 +71,8 @@ public class CommonGuidelineSettingDto implements CommonGuidelineSettingSetMemen
 		this.estimateTime = new ReferenceConditionDto(
 				estimateTime.getYearlyDisplayCondition().value,
 				estimateTime.getMonthlyDisplayCondition().value,
-				estimateTime.getAlarmCheckCondition().value);
+				estimateTime.getYearlyAlarmCkCondition().value,
+				estimateTime.getMonthlyAlarmCkCondition().value);
 	}
 
 	/*
@@ -86,7 +87,8 @@ public class CommonGuidelineSettingDto implements CommonGuidelineSettingSetMemen
 		this.estimatePrice = new ReferenceConditionDto(
 				estimatePrice.getYearlyDisplayCondition().value,
 				estimatePrice.getMonthlyDisplayCondition().value,
-				estimatePrice.getAlarmCheckCondition().value);
+				estimatePrice.getYearlyAlarmCkCondition().value,
+				estimatePrice.getMonthlyAlarmCkCondition().value);
 	}
 
 	/*
@@ -101,7 +103,8 @@ public class CommonGuidelineSettingDto implements CommonGuidelineSettingSetMemen
 		this.estimateNumberOfDays = new ReferenceConditionDto(
 				estimateNumberOfDays.getYearlyDisplayCondition().value,
 				estimateNumberOfDays.getMonthlyDisplayCondition().value,
-				estimateNumberOfDays.getAlarmCheckCondition().value);
+				estimateNumberOfDays.getYearlyAlarmCkCondition().value,
+				estimateNumberOfDays.getMonthlyAlarmCkCondition().value);
 	}
 
 }

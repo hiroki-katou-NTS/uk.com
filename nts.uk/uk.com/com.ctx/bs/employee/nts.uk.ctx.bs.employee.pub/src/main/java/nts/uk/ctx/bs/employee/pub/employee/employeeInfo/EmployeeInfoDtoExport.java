@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.pub.employee.employeeInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.time.GeneralDate;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class EmployeeDto. 
@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeInfoDtoExport {
 
 	/** The company id. */
@@ -27,5 +28,7 @@ public class EmployeeInfoDtoExport {
 
 	/** The person Id. */
 	private String personId;
+	
+	private String perName;
 
 }

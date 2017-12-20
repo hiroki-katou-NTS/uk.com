@@ -65,8 +65,7 @@
       */
      export function getDetailCheck(inputGetDetailCheck) : JQueryPromise<any>{
          return nts.uk.request.ajax("at",paths.getDetailCheck,inputGetDetailCheck);
-     }  
-     
+     }
       /**
       * get getMessageDeadline
       */

@@ -113,12 +113,13 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 			TimeSpanForCalc duplicateTime = holidayWorkFrameTimeSheet.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().getSpan()).orElse(null);
 			if(duplicateTime!=null) {//重複している場合の処理
 				//控除項目の時間帯に法定内区分をセット
-				timeSheetOfDeductionItem = timeSheetOfDeductionItem.createBreakTimeSheetAsFixed(
-						timeSheetOfDeductionItem.getTimeSheet().getSpan(),
-						timeSheetOfDeductionItem.getGoOutReason(),
-						timeSheetOfDeductionItem.getBreakAtr(),
-						timeSheetOfDeductionItem.getDeductionAtr(),
-						WithinStatutoryAtr.WithinStatutory);
+				//TODO: createBreakTimeSheetAsFixed
+//				timeSheetOfDeductionItem = timeSheetOfDeductionItem.createBreakTimeSheetAsFixed(
+//						timeSheetOfDeductionItem.getTimeSheet().getSpan(),
+//						timeSheetOfDeductionItem.getGoOutReason(),
+//						timeSheetOfDeductionItem.getBreakAtr(),
+//						timeSheetOfDeductionItem.getDeductionAtr(),
+//						WithinStatutoryAtr.WithinStatutory);
 				//控除時間分、終了時刻を遅くする
 				TimeSpanForCalc collectTimeSheet = this.timeSheet.shiftEndBack(duplicateTime.lengthAsMinutes());
 				TimeSpanWithRounding newTimeSheet = this.timeSheet;
@@ -134,8 +135,9 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 		
 		//深夜時間帯を作成
 		
-		HolidayWorkFrameTimeSheet holidayWorkFrameTimeSheet =  new HolidayWorkFrameTimeSheet();
-		return holidayWorkFrameTimeSheet;
+		//TODO: return HolidayWorkFrameTimeSheet
+//		HolidayWorkFrameTimeSheet holidayWorkFrameTimeSheet2 =  new HolidayWorkFrameTimeSheet();
+		return null;
 	}
 	
 	

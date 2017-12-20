@@ -10,17 +10,17 @@ package nts.uk.ctx.at.record.dom.optitem;
 // 任意項目の属性
 public enum OptionalItemAtr {
 
+	/** The time. */
+	// 時間
+	TIME(0, "Enum_OptionalItemAtr_TIME", "時間"),
+
 	/** The number. */
 	// 回数
 	NUMBER(1, "Enum_OptionalItemAtr_NUMBER", "回数"),
 
 	/** The amount. */
 	// 金額
-	AMOUNT(2, "Enum_OptionalItemAtr_AMOUNT", "金額"),
-
-	/** The time. */
-	// 時間
-	TIME(0, "Enum_OptionalItemAtr_TIME", "時間");
+	AMOUNT(2, "Enum_OptionalItemAtr_AMOUNT", "金額");
 
 	/** The value. */
 	public int value;

@@ -65,7 +65,7 @@
 											<div tabindex="-1" data-bind="text: overtimeNo"></div>
 										</td>
 										<td tabindex="-1">
-											<div tabindex="-1" class="tdname" data-bind="text: languageName"></div>
+											<label tabindex="-1" class="tdname tooltip-label" data-bind="text: languageName" ></label>
 										</td>
 										<td>
 											<div>
@@ -94,7 +94,7 @@
 									<com:ko tag="if" bind="$parent.isManage()">
 										<com:ko tag="foreach" bind="overtimes">
 											<td tabindex="-1">
-												<div tabindex="-1" class="overtimeName" data-bind="text: languageName"></div>
+												<label tabindex="-1" class="overtimeName tooltip-label" data-bind="text: languageName"></label>
 											</td>
 										</com:ko>
 									</com:ko>
@@ -115,13 +115,13 @@
 											<div data-bind="text: breakdownItemNo"></div>
 										</td>
 										<td class="tdname">
-											<div class="limited-label" data-bind="text: languageName"></div>
+											<label class="tooltip-label" data-bind="text: languageName"></label>
 										</td>
 										<td class="tdbutton">
 											<button tabindex="9" data-bind="click: openDialogDailyAttendanceItems">#{i18n.getText('KMK010_19')}</button>
 										</td>
 										<td class="tdname">
-											<label class="limited-label" data-bind="text: attendanceItemName" />
+											<label class="tooltip-label" data-bind="text: attendanceItemName" />
 										</td>
 										<td class="tdname">
 											<div data-bind="text: productNumber"></div>

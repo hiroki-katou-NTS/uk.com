@@ -3,9 +3,9 @@ module nts.uk.com.view.cps009.b {
         __viewContext["viewModel"] = new viewmodel.ViewModel();
         __viewContext["viewModel"].start().done(function(data) {
             init();
-            __viewContext.bind(__viewContext["viewModel"]);
              $("#grid_B").igGrid("option", "dataSource", __viewContext["viewModel"].itemInitLst);
-             
+            __viewContext.bind(__viewContext["viewModel"]);
+            $("#grid_B_table_isCheckBox").focus();
         });
 
     });
@@ -13,7 +13,7 @@ module nts.uk.com.view.cps009.b {
 
 function init() {
     $("#grid_B").igGrid({
-        width: '300px',
+        width: '270px',
         height: '300px',
         dataSource: [],
         primaryKey: 'id',
@@ -29,7 +29,7 @@ function init() {
                 function(index, el: any) {
                     let nameCell = $("#grid_B").igGrid("cellAt", 0, index);
                     let referenceCell = $("#grid_B").igGrid("cellAt", 1, index);
-                    if (el.isRequired == 'true') {
+                    if (el.isRequired == 1) {
                         $(nameCell).addClass('requiredCell');
                         $(referenceCell).addClass('requiredCell');
                     } else {
@@ -40,15 +40,15 @@ function init() {
                 });
         },
         columns: [
-            { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: 'REQUIRED', key: 'isRequired', width: 100, hidden: true },
+            { headerText: 'id', key: 'id', width: 10, hidden: true },
+            { headerText: 'REQUIRED', key: 'isRequired', width: 10, hidden: true },
             {
                 headerText:"<input class='isCheckBox' type='checkbox'  tabindex='2' ></input>",
                 key: 'isCheckBox', width: "35px", height: "40px",
                 template: "<input style='width:30px, height:40px' class='checkRow isCheckBox' type='checkbox'"
                 + " data-checked='${isCheckBox}' data-id='${id}' tabindex='4'/>"
             },
-            { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', width: 200 }
+            { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', width: 150 }
         ],
         features: [],
     });

@@ -19,13 +19,17 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryService;
  */
 @Stateless
 public class JobTitleHistoryServiceImpl implements JobTitleHistoryService {
-	
+
 	/** The job title repository. */
 	@Inject
 	private JobTitleRepository jobTitleRepository;
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryService#updateHistory(java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryService#
+	 * updateHistory(java.lang.String, java.lang.String,
+	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
 	public void updateHistory(String companyId, String historyId, GeneralDate endĐate) {
@@ -40,8 +44,12 @@ public class JobTitleHistoryServiceImpl implements JobTitleHistoryService {
 		this.jobTitleRepository.update(jobTitle);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryService#updateLastestHistory(java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryService#
+	 * updateLastestHistory(java.lang.String, java.lang.String,
+	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
 	public void updateLastestHistory(String companyId, String jobTitleId, GeneralDate endĐate) {
@@ -49,7 +57,7 @@ public class JobTitleHistoryServiceImpl implements JobTitleHistoryService {
 		if (!opJobTitle.isPresent()) {
 			throw new RuntimeException(String.format("Job title %s not found!", jobTitleId));
 		}
-		
+
 		// Set end date of previous history
 		JobTitle jobTitle = opJobTitle.get();
 		jobTitle.getLastestHistory().updateEndDate(endĐate);

@@ -1,0 +1,47 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.dom.ot.frame;
+
+/**
+ * The Interface OvertimeWorkFrameGetMemento.
+ */
+public interface OvertimeWorkFrameGetMemento {
+	
+	/**
+	 * Gets the company id.
+	 *
+	 * @return the company id
+	 */
+	String getCompanyId();
+
+	/**
+	 * Gets the overtime work frame no.
+	 *
+	 * @return the overtime work frame no
+	 */
+	OvertimeWorkFrameNo getOvertimeWorkFrameNo();
+	
+	/**
+	 * Gets the use classification.
+	 *
+	 * @return the use classification
+	 */
+	NotUseAtr getUseClassification();
+	
+	
+	/**
+	 * Gets the transfer frame name.
+	 *
+	 * @return the transfer frame name
+	 */
+	OvertimeWorkFrameName getTransferFrameName();
+	
+	/**
+	 * Gets the overtime work frame name.
+	 *
+	 * @return the overtime work frame name
+	 */
+	OvertimeWorkFrameName getOvertimeWorkFrameName();
+}

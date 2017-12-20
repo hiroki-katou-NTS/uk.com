@@ -1,11 +1,13 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,6 +24,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHist;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHistPK;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHistPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHist_;
 
@@ -29,9 +32,8 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkpl
  * The Class JpaAffWorkplaceHistoryRepository.
  */
 @Stateless
-public class JpaAffWorkplaceHistoryRepository extends JpaRepository
-		implements AffWorkplaceHistoryRepository {
-	
+public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements AffWorkplaceHistoryRepository {
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -40,8 +42,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 	 * java.util.List)
 	 */
 	@Override
-	public List<AffWorkplaceHistory> searchWorkplaceHistory(GeneralDate baseDate,
-			List<String> workplaces) {
+	public List<AffWorkplaceHistory> searchWorkplaceHistory(GeneralDate baseDate, List<String> workplaces) {
 
 		// check exist data
 		if (CollectionUtil.isEmpty(workplaces)) {
@@ -53,8 +54,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_WORKPLACE_HIST (KmnmtWorkplaceHist SQL)
-		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder
-				.createQuery(KmnmtAffiliWorkplaceHist.class);
+		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder.createQuery(KmnmtAffiliWorkplaceHist.class);
 
 		// root data
 		Root<KmnmtAffiliWorkplaceHist> root = cq.from(KmnmtAffiliWorkplaceHist.class);
@@ -66,18 +66,16 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// work place in data work place
-		lstpredicateWhere.add(
-				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaces)));
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
+				.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaces)));
 
 		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.strD),
+				baseDate));
 
 		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -86,24 +84,23 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		TypedQuery<KmnmtAffiliWorkplaceHist> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
-				.collect(Collectors.toList());
+		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the employee workplace history
 	 */
 	private AffWorkplaceHistory toDomain(KmnmtAffiliWorkplaceHist entity) {
-		return new AffWorkplaceHistory(
-				new JpaAffWorkplaceHistoryGetMemento(entity));
+		return new AffWorkplaceHistory(new JpaAffWorkplaceHistoryGetMemento(entity));
 	}
 
 	@Override
-	public List<AffWorkplaceHistory> searchWorkplaceHistory(List<String> employeeIds,
-			GeneralDate baseDate, List<String> workplaces) {
+	public List<AffWorkplaceHistory> searchWorkplaceHistory(List<String> employeeIds, GeneralDate baseDate,
+			List<String> workplaces) {
 
 		// check exist data
 		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(workplaces)) {
@@ -115,8 +112,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_WORKPLACE_HIST (KmnmtWorkplaceHist SQL)
-		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder
-				.createQuery(KmnmtAffiliWorkplaceHist.class);
+		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder.createQuery(KmnmtAffiliWorkplaceHist.class);
 
 		// root data
 		Root<KmnmtAffiliWorkplaceHist> root = cq.from(KmnmtAffiliWorkplaceHist.class);
@@ -128,23 +124,20 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// employee id in data employee id
-		lstpredicateWhere.add(
-				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.empId).in(employeeIds)));
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
+				.get(KmnmtAffiliWorkplaceHistPK_.empId).in(employeeIds)));
 
 		// work place in data work place
-		lstpredicateWhere.add(
-				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaces)));
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
+				.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaces)));
 
 		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.strD),
+				baseDate));
 
 		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -153,8 +146,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		TypedQuery<KmnmtAffiliWorkplaceHist> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
-				.collect(Collectors.toList());
+		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
 
 	/*
@@ -165,16 +157,14 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 	 * java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<AffWorkplaceHistory> searchWorkplaceHistoryByEmployee(String employeeId, 
-			GeneralDate baseDate) {
+	public List<AffWorkplaceHistory> searchWorkplaceHistoryByEmployee(String employeeId, GeneralDate baseDate) {
 
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_WORKPLACE_HIST (KmnmtWorkplaceHist SQL)
-		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder
-				.createQuery(KmnmtAffiliWorkplaceHist.class);
+		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder.createQuery(KmnmtAffiliWorkplaceHist.class);
 
 		// root data
 		Root<KmnmtAffiliWorkplaceHist> root = cq.from(KmnmtAffiliWorkplaceHist.class);
@@ -186,18 +176,17 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// employee id equal employee id
-		lstpredicateWhere.add(
-				criteriaBuilder.equal(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.empId), employeeId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.empId),
+				employeeId));
 
 		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.strD),
+				baseDate));
 
 		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -206,26 +195,23 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		TypedQuery<KmnmtAffiliWorkplaceHist> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
-				.collect(Collectors.toList());
+		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<AffWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
-			GeneralDate baseDate) {
-		
+	public List<AffWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds, GeneralDate baseDate) {
+
 		// check exist data
-		if(CollectionUtil.isEmpty(employeeIds)){
+		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_WORKPLACE_HIST (KmnmtWorkplaceHist SQL)
-		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder
-				.createQuery(KmnmtAffiliWorkplaceHist.class);
+		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder.createQuery(KmnmtAffiliWorkplaceHist.class);
 
 		// root data
 		Root<KmnmtAffiliWorkplaceHist> root = cq.from(KmnmtAffiliWorkplaceHist.class);
@@ -236,19 +222,17 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-		// employee id in employee id 
-		lstpredicateWhere.add(
-				criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.empId).in(employeeIds)));
+		// employee id in employee id
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
+				.get(KmnmtAffiliWorkplaceHistPK_.empId).in(employeeIds)));
 
 		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
-						.get(KmnmtAffiliWorkplaceHistPK_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.strD),
+				baseDate));
 
 		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -257,8 +241,165 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository
 		TypedQuery<KmnmtAffiliWorkplaceHist> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
-				.collect(Collectors.toList());
+		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.
+	 * AffWorkplaceHistoryRepository#getByWorkplaceID(java.lang.String,
+	 * nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<AffWorkplaceHistory> getByWorkplaceID(String workplaceId, GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_WORKPLACE_HIST (KmnmtWorkplaceHist SQL)
+		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder.createQuery(KmnmtAffiliWorkplaceHist.class);
+
+		// root data
+		Root<KmnmtAffiliWorkplaceHist> root = cq.from(KmnmtAffiliWorkplaceHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// workplace id equal workplace id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.wkpId),
+				workplaceId));
+
+		// start date <= base date
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.strD),
+				baseDate));
+
+		// endDate >= base date
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KmnmtAffiliWorkplaceHist> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
+	}
+
+	/**
+	 * Convert from domain to entity
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	private KmnmtAffiliWorkplaceHist toEntity(AffWorkplaceHistory domain) {
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),
+				domain.getWorkplaceId().v(), domain.getPeriod().start());
+		return new KmnmtAffiliWorkplaceHist(key, domain.getPeriod().end());
+	}
+
+	private void updateEntity(AffWorkplaceHistory domain, KmnmtAffiliWorkplaceHist entity) {
+		entity.endD = domain.getPeriod().end();
+	}
+
+	/**
+	 * ドメインモデル「所属職場」を削除する
+	 * 
+	 * @param domain
+	 */
+	@Override
+	public void deleteAffWorkplaceHistory(AffWorkplaceHistory domain) {
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),
+				domain.getWorkplaceId().v(), domain.getPeriod().start());
+
+		this.commandProxy().remove(KmnmtAffiliWorkplaceHist.class, key);
+	}
+
+	/**
+	 * ドメインモデル「所属職場」を新規登録する
+	 * 
+	 * @param domain
+	 */
+	@Override
+	public void addAffWorkplaceHistory(AffWorkplaceHistory domain) {
+		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
+	}
+
+	/**
+	 * ドメインモデル「所属職場」を取得する
+	 * 
+	 * @param domain
+	 */
+	@Override
+	public void updateAffWorkplaceHistory(AffWorkplaceHistory domain) {
+		KmnmtAffiliWorkplaceHistPK key = new KmnmtAffiliWorkplaceHistPK(domain.getEmployeeId(),
+				domain.getWorkplaceId().v(), domain.getPeriod().start());
+		Optional<KmnmtAffiliWorkplaceHist> existItem = this.queryProxy().find(key, KmnmtAffiliWorkplaceHist.class);
+
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid AffWorkplaceHistory");
+		}
+		// Update entity
+		updateEntity(domain, existItem.get());
+		// Update table
+		this.commandProxy().update(existItem.get());
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.
+	 * AffWorkplaceHistoryRepository#getByWorkplaceIDs(java.util.List,
+	 * nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<AffWorkplaceHistory> getByWorkplaceIDs(List<String> workplaceIds, GeneralDate baseDate) {
+		if (CollectionUtil.isEmpty(workplaceIds)) {
+			return Collections.emptyList();
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_WORKPLACE_HIST (KmnmtWorkplaceHist SQL)
+		CriteriaQuery<KmnmtAffiliWorkplaceHist> cq = criteriaBuilder.createQuery(KmnmtAffiliWorkplaceHist.class);
+
+		// root data
+		Root<KmnmtAffiliWorkplaceHist> root = cq.from(KmnmtAffiliWorkplaceHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// workplace id equal workplace id
+		lstpredicateWhere.add(root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK)
+				.get(KmnmtAffiliWorkplaceHistPK_.wkpId).in(workplaceIds));
+
+		// start date <= base date
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KmnmtAffiliWorkplaceHist_.kmnmtAffiliWorkplaceHistPK).get(KmnmtAffiliWorkplaceHistPK_.strD),
+				baseDate));
+
+		// endDate >= base date
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliWorkplaceHist_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KmnmtAffiliWorkplaceHist> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());
+	}
 }

@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmployeeFileManagement;
+import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 
 @Stateless
 @Transactional
@@ -23,10 +23,9 @@ public class UpdateCtgDocFileCommandHandler extends CommandHandler<UpdateCtgDocF
 		
 		UpdateCtgDocFileDocumentFileCommand command = context.getCommand();
 		
-		Optional<EmployeeFileManagement> domain = empFileManagementRepository.getEmpMana(command.getFileId());
+		Optional<PersonFileManagement> domain = empFileManagementRepository.getEmpMana(command.getFileId());
 		if (domain.isPresent()) {
-			EmployeeFileManagement emp = domain.get();
-			emp.setPersonInfoCategoryId(command.getPersonInfoCategoryIdNew());
+			PersonFileManagement emp = domain.get();
 			empFileManagementRepository.update(emp);
 		}
 		

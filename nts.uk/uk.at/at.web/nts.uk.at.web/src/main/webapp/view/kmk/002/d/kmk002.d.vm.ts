@@ -127,16 +127,14 @@ module nts.uk.at.view.kmk002.d {
                     return false;
                 }
 
-                // Check required input
-                if (self.rightItem.settingMethod() == 1 && !self.rightItem.inputValue()) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_419" });
-                    return false;
+                // Check required input of right item
+                if (self.rightItem.settingMethod() == SettingMethod.NUMBER_INPUT) {
+                    $('#inp-right-item').ntsEditor('validate');
                 }
 
-                // Check required input
-                if (self.leftItem.settingMethod() == 1 && !self.leftItem.inputValue()) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_419" });
-                    return false;
+                // Check required input of left item
+                if (self.leftItem.settingMethod() == SettingMethod.NUMBER_INPUT) {
+                    $('#inp-left-item').ntsEditor('validate');
                 }
 
                 // Validate calculation
@@ -178,7 +176,8 @@ module nts.uk.at.view.kmk002.d {
              */
             private isBothItemSelect(): boolean {
                 let self = this;
-                if (self.leftItem.settingMethod() == 0 && self.rightItem.settingMethod() == 0) {
+                if (self.leftItem.settingMethod() == SettingMethod.ITEM_SELECTION
+                    && self.rightItem.settingMethod() == SettingMethod.ITEM_SELECTION) {
                     return true;
                 }
                 return false;
@@ -189,7 +188,8 @@ module nts.uk.at.view.kmk002.d {
              */
             private isBothNumberInput(): boolean {
                 let self = this;
-                if (self.leftItem.settingMethod() == 1 && self.rightItem.settingMethod() == 1) {
+                if (self.leftItem.settingMethod() == SettingMethod.NUMBER_INPUT
+                    && self.rightItem.settingMethod() == SettingMethod.NUMBER_INPUT) {
                     return true;
                 }
                 return false;
@@ -244,10 +244,10 @@ module nts.uk.at.view.kmk002.d {
             dispOrder: number;
             inputValue: KnockoutObservable<number>;
             formulaItemId: KnockoutObservable<string>;
+            settingItemStash: SettingItemDto;
 
             constructor() {
                 this.settingMethod = ko.observable(0);
-                this.dispOrder = 1;
                 this.inputValue = ko.observable(0);
                 this.formulaItemId = ko.observable('');
             }
@@ -256,7 +256,7 @@ module nts.uk.at.view.kmk002.d {
              * is input value check
              */
             public isInputValue(): boolean {
-                if (this.settingMethod() == 0) {
+                if (this.settingMethod() == SettingMethod.ITEM_SELECTION) {
                     return false;
                 }
                 return true;
@@ -270,6 +270,9 @@ module nts.uk.at.view.kmk002.d {
                 this.dispOrder = dto.dispOrder;
                 this.inputValue(dto.inputValue);
                 this.formulaItemId(dto.formulaItemId);
+
+                // save data to stash
+                this.settingItemStash = jQuery.extend(true, {}, dto);
             }
 
             /**
@@ -284,8 +287,22 @@ module nts.uk.at.view.kmk002.d {
                 dto.inputValue = this.inputValue();
                 dto.formulaItemId = this.formulaItemId();
 
+                // get original data from stash if control is disabled
+                if (this.settingMethod() == SettingMethod.ITEM_SELECTION) {
+                    // reset input value
+                    dto.inputValue = this.settingItemStash.inputValue;
+                } else {
+                    // reset formulaItem id
+                    dto.formulaItemId = this.settingItemStash.formulaItemId;
+                }
+
                 return dto;
             }
+        }
+
+        enum SettingMethod {
+            ITEM_SELECTION = 0,
+            NUMBER_INPUT = 1
         }
     }
 }

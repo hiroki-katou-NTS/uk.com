@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.applicable;
 
-import java.util.Optional;
-
 /**
  * The Interface EmpConditionRepository.
  */
@@ -23,8 +21,8 @@ public interface EmpConditionRepository {
 	 *
 	 * @param companyId the company id
 	 * @param optionalItemNo the optional item no
-	 * @return the optional
+	 * @return the emp condition
 	 */
-	Optional<EmpCondition> find(String companyId, String optionalItemNo);
+	EmpCondition find(String companyId, String optionalItemNo);
 
 }

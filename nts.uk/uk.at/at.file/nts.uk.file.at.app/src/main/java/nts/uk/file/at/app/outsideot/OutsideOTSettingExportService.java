@@ -16,8 +16,6 @@ import javax.inject.Inject;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.app.find.outsideot.OutsideOTSettingFinder;
 import nts.uk.ctx.at.shared.app.find.outsideot.holiday.SuperHD60HConMedFinder;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
@@ -27,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.file.at.app.outsideot.data.OutsideOTBRDItemNameLangData;
 import nts.uk.file.at.app.outsideot.data.OutsideOTSettingData;
 import nts.uk.file.at.app.outsideot.data.OutsideOTSettingReport;
@@ -266,10 +266,10 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
 	private static final String NAME_VALUE_A15_3= "KMK010_62";
 
 	/** The Constant TRUE_SETTING_RATE. */
-	private static final String TRUE_SETTING_RATE= "休暇発生する";
+	private static final String TRUE_SETTING_RATE= "莨第嚊逋ｺ逕溘☆繧�";
 	
 	/** The Constant FALSE_SETTING_RATE. */
-	private static final String FALSE_SETTING_RATE= "休暇発生しない";
+	private static final String FALSE_SETTING_RATE= "莨第嚊逋ｺ逕溘＠縺ｪ縺�";
 	
 	
     

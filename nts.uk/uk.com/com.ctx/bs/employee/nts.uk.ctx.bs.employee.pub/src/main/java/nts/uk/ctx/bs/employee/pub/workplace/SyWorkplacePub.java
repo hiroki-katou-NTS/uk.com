@@ -56,6 +56,17 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList #66
 	Optional<WkpCdNameExport> findByWkpId(String workplaceId, GeneralDate baseDate);
+	
+	/**
+	 * Find parent wpk ids by wkp id.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @param date the date
+	 * @return the list
+	 */
+	// RequestList #83
+	List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date);
 
 	/**
 	 * Gets the workplace id.

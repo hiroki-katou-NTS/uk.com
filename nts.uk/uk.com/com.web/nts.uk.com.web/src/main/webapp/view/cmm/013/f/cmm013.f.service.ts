@@ -1,7 +1,7 @@
 module nts.uk.com.view.cmm013.f {
        
-    import SequenceMasterSaveCommand = base.SequenceMasterSaveCommand;  
-    import SequenceMasterRemoveCommand = base.SequenceMasterRemoveCommand;
+    import SequenceMasterSaveCommand = service.model.SequenceMasterSaveCommand;  
+    import SequenceMasterRemoveCommand = service.model.SequenceMasterRemoveCommand;
     
     export module service {
         
@@ -48,6 +48,35 @@ module nts.uk.com.view.cmm013.f {
         */
         export module model {
             
+            /**
+             * SequenceMaster save command
+             */
+            export class SequenceMasterSaveCommand {
+                
+                isCreateMode: boolean;
+                sequenceCode: string;
+                sequenceName: string;
+                order: number;
+                
+                constructor(isCreateMode: boolean, sequenceCode: string, sequenceName: string, order: number) {
+                    this.isCreateMode = isCreateMode;
+                    this.sequenceCode = sequenceCode;
+                    this.sequenceName = sequenceName;
+                    this.order = order;
+                }
+            }
+            
+            /**
+             * SequenceMaster remove command
+             */
+            export class SequenceMasterRemoveCommand {
+                
+                sequenceCode: string;
+                
+                constructor(sequenceCode: string) {
+                    this.sequenceCode = sequenceCode;
+                }
+            }   
         }
     }
 }

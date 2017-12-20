@@ -10,8 +10,6 @@ module demo.a.viewmodel {
         
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
-        selectionTypeList: KnockoutObservableArray<any>;
-        selectedType: KnockoutObservable<number>;
         constructor() {
             var self = this;
             self.isMultiSelect = ko.observable(true);
@@ -26,9 +24,6 @@ module demo.a.viewmodel {
                     }
                     self.selectedItem(self.selectedCodes());
                 } else {
-                    if (self.selectedType() == SelectType.SELECT_ALL) {
-                        self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
-                    }
                     self.selectedItem(self.selectedCode());
                 }
             });
@@ -54,26 +49,12 @@ module demo.a.viewmodel {
                     self.isMultiSelect(true);
                 }
             });
-            self.selectionTypeList = ko.observableArray([
-                { code: 1, name: 'By Selected Code' },
-                { code: 2, name: 'Select All Items' },
-                { code: 3, name: 'Select First Item' },
-                { code: 4, name: 'Select None' }
-            ]);
-            self.selectedType = ko.observable(1);
-            self.selectedType.subscribe(function(data: number) {
-                if (data == SelectType.SELECT_ALL && !self.isMultiSelect()) {
-                    nts.uk.ui.dialog.alert("Select All is not available for Single Selection!");
-                    self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
-                }
-            });
         }
         // Open Dialog CDL002
         private openDialog() {
             let self = this;
             setShared('CDL002Params', {
-                isMultiSelect: self.isMultiSelect(),
-                selecType: self.selectedType(),
+                isMultiple: self.isMultiSelect(),
                 selectedCodes: self.selectedItem(),
                 showNoSelection: self.isDisplayUnselect(),
             }, true);
@@ -85,18 +66,8 @@ module demo.a.viewmodel {
                 }
                 var output = getShared('CDL002Output');
                 self.selectedItem(output);
-                self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
             });
         }
         
-    }
-    /**
-     * Class SelectType
-     */
-    export class SelectType {
-        static SELECT_BY_SELECTED_CODE = 1;
-        static SELECT_ALL = 2;
-        static SELECT_FIRST_ITEM = 3;
-        static NO_SELECT = 4;
     }
 }

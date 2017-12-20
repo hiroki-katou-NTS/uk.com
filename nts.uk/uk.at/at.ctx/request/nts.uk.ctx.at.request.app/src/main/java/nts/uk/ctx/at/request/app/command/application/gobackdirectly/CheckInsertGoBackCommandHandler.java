@@ -64,7 +64,6 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 				command.appCommand.getEnteredPersonSID(),
 				command.appCommand.getReversionReason(), 
 				command.appCommand.getApplicationDate(),
-				command.appCommand.getAppReasonID(),
 				command.appCommand.getApplicationReason(),
 				command.appCommand.getApplicationType(), 
 				command.appCommand.getApplicantSID(),

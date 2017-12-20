@@ -25,4 +25,8 @@ public class KscmtFormPeopleFuncPK implements Serializable {
 	/* 汎用縦計項目ID */
 	@Column(name = "VERTICAL_CAL_ITEM_ID")
 	public String verticalCalItemId;
+	
+	/* 順番 */
+	@Column(name = "DISPORDER")
+	public int dispOrder;
 }

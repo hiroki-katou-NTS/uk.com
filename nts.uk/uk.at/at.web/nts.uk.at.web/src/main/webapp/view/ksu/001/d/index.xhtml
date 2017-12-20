@@ -12,6 +12,9 @@
 			<com:stylefile path="ksu001.d.main.css" />
 			<com:scriptfile path="ksu001.d.vm.js" />
 			<com:scriptfile path="ksu001.d.start.js" />
+			<com:scriptfile path="ksu001.d.service.js" />
+
+			<com:scriptfile path="../common/ksu001.js" />
 			<!-- KCP005 -->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<!-- ExCalendar -->
@@ -36,7 +39,7 @@
 				<div id="content-right">
 					<div id="content-right-top">
 						<div id="calendar"
-							data-bind="ntsExCalendar:{startDate: startDate, endDate: endDate, value: selectedIds}"></div>
+							data-bind="ntsExCalendar:{startDate: startDate, endDate: endDate, value: selectedIds, colors: listColorOfHeader}"></div>
 					</div>
 					<div>
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_78')}</div>
@@ -52,7 +55,7 @@
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_81')}</div>
 						<br />
 						<div id="check-box"
-							data-bind="ntsCheckBox: { checked: checked, enable: true, text: text}"></div>
+							data-bind="ntsCheckBox: { checked: permissionHandCorrection, enable: true, text: text}"></div>
 					</div>
 				</div>
 			</div>

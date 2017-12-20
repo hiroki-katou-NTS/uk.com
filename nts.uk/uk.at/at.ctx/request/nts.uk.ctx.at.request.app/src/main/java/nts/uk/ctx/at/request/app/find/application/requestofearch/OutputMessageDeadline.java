@@ -8,4 +8,8 @@ public class OutputMessageDeadline {
 	String message;
 	//締め切り期限：
 	String deadline;
+	/**
+	 * true: show, false: hidden
+	 */
+	boolean chkShow;
 }

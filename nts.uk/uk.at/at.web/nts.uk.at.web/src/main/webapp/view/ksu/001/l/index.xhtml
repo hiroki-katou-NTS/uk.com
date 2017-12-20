@@ -24,7 +24,7 @@
 			</div>
 			<div id="contents-area">
 				<div id="content-top">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_1104')}</div>
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Workplace')}</div>
 					<span class="code" data-bind="text:workPlaceId"></span> <span
 						data-bind="text: workPlaceName"></span>
 					<hr />
@@ -48,18 +48,19 @@
 							<div class="formlabel-class" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_1113')}</div>
 							<span class="code" data-bind="text:selectedTeam"></span> <span
 								data-bind="text: teamName"></span>
-							<div>
+							<div style="margin-top: 5px">
 								<div class="formlabel-class" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_1114')}</div>
 							</div>
 							<hr />
 						</div>
-						<div id="content-bot-right-bot">
+						<div>
 							<div>
-								<div id="check-box" data-bind="ntsCheckBox: { }">#{i18n.getText('KSU001_1115')}</div>
+								<div id="check-box"
+									data-bind="ntsCheckBox: { checked: onlyEmpNotTeam }">#{i18n.getText('KSU001_1115')}</div>
 							</div>
 							<div id="content-bot-right-bot-left">
 								<div class="formlabel-class" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_1116')}</div>
-								<hr style="width: 280px" />
+								<hr style="width: 390px" />
 							</div>
 
 							<div id="content-bot-right-bot-right">

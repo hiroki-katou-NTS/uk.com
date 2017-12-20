@@ -68,14 +68,14 @@ module nts.uk.at.view.kml002 {
         }
 
         interface ITabModel {
-            id: string;
+            id: any;
             name: string;
             active?: boolean;
             display?: boolean;
         }
 
         class TabModel {
-            id: string;
+            id: any;
             name: string;
             active: KnockoutObservable<boolean> = ko.observable(false);
             display: KnockoutObservable<boolean> = ko.observable(true);
@@ -115,6 +115,7 @@ module nts.uk.at.view.kml002 {
             start() {
                 var self = this;
                 var dfd = $.Deferred();
+                self.items.removeAll();
                 self.getAllFixedVertical();
                 dfd.resolve();
 
@@ -122,6 +123,7 @@ module nts.uk.at.view.kml002 {
             }
 
             openDialog(fixItemNo: number) {
+                
                 let self = this;
                 if(FixedItemAtr.TIME_ZONE == fixItemNo){
                     self.openIDialog(fixItemNo);
@@ -134,15 +136,20 @@ module nts.uk.at.view.kml002 {
             openIDialog(fixItemNo: number) {
                 let self = this;  
                 nts.uk.ui.windows.setShared('KML002H_VERTICAL_ID', fixItemNo);
+                nts.uk.ui.block.invisible();
                 nts.uk.ui.windows.sub.modal('/view/kml/002/i/index.xhtml').onClosed(function(): any {
-                    
+                    nts.uk.ui.block.clear();
                 });
+                
             }
             openLDialog(fixItemNo: number) {
                 let self = this;
                 nts.uk.ui.windows.setShared('KML002H_VERTICAL_ID', fixItemNo);
+                nts.uk.ui.block.invisible();
                 nts.uk.ui.windows.sub.modal('/view/kml/002/l/index.xhtml').onClosed(function(): any {
+                nts.uk.ui.block.clear();
                 });
+                
             }
             
             openMDialog() {
@@ -152,6 +159,7 @@ module nts.uk.at.view.kml002 {
             getAllFixedVertical(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                self.items.removeAll();
                 service.findByCid().done(function(totalTimeArr: Array<ITotalTime>) {
                     _.forEach(totalTimeArr, function(res: ITotalTime) {
                         var totalTime: ITotalTime = {
@@ -160,6 +168,7 @@ module nts.uk.at.view.kml002 {
                             useAtr: res.useAtr,
                             verticalDetailedSettings: res.verticalDetailedSettings
                         };
+                        
                         self.items.push(new TotalTime(totalTime));
                     });
                 });
@@ -169,9 +178,13 @@ module nts.uk.at.view.kml002 {
             addFixedVertical(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                nts.uk.ui.block.invisible();
                 service.addFixedVertical(ko.toJS(self.items())).done(function(any) {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                }).always(()=>{
+                    nts.uk.ui.block.clear();    
                 });
+                
                 return dfd.promise();
             }
         }

@@ -17,48 +17,48 @@ public interface JobTitleInfoSetMemento {
 	 *
 	 * @param companyId the new company id
 	 */
-	public void setCompanyId(CompanyId companyId);
-	
+	void setCompanyId(CompanyId companyId);
+
 	/**
 	 * Sets the job title history id.
 	 *
 	 * @param jobTitleHistoryId the new job title history id
 	 */
-	public void setJobTitleHistoryId(String jobTitleHistoryId);
-	
+	void setJobTitleHistoryId(String jobTitleHistoryId);
+
 	/**
 	 * Sets the checks if is manager.
 	 *
 	 * @param isManager the new checks if is manager
 	 */
-	public void setIsManager(boolean isManager);
-	
+	void setIsManager(boolean isManager);
+
 	/**
 	 * Sets the job title id.
 	 *
 	 * @param jobTitleId the new job title id
 	 */
-	public void setJobTitleId(String jobTitleId);
-	
+	void setJobTitleId(String jobTitleId);
+
 	/**
 	 * Sets the job title code.
 	 *
 	 * @param jobTitleCode the new job title code
 	 */
-	public void setJobTitleCode(JobTitleCode jobTitleCode);
-	
+	void setJobTitleCode(JobTitleCode jobTitleCode);
+
 	/**
 	 * Sets the job title name.
 	 *
 	 * @param jobTitleName the new job title name
 	 */
-	public void setJobTitleName(JobTitleName jobTitleName);
-	
+	void setJobTitleName(JobTitleName jobTitleName);
+
 	/**
 	 * Sets the sequence code.
 	 *
 	 * @param sequenceCode the new sequence code
 	 */
-	public void setSequenceCode(SequenceCode sequenceCode);
-	
+	void setSequenceCode(SequenceCode sequenceCode);
+
 }

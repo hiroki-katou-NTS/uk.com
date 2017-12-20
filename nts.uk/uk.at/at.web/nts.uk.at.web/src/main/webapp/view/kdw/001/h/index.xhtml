@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 530, height: 680 };</script>
+			<script>var dialogSize = { width: 630, height: 680 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw001.h.main.css" />
 			<com:scriptfile path="kdw001.h.start.js" />
@@ -27,7 +27,7 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_80')}</div>
 						</td>
 						<!-- H1_2 -->
-						<td colspan="2">日別作成</td>
+						<td colspan="2" data-bind="text : executionContentName"></td>
 					</tr>
 					<tr>
 						<td>
@@ -35,9 +35,9 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
 						</td>
 						<!-- H1_6 -->
-						<td>11月度</td>
+						<td><span data-bind="text:processingMonth"></span></td>
 						<!-- H1_9 -->
-						<td>01：末締めI1-4</td>
+						<td><span data-bind="text:nameClosue"></span></td>
 					</tr>
 					<tr>
 						<td>
@@ -45,7 +45,7 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
 						<!-- H1_4 -->
-						<td colspan="2">2016/11/01 ～ 2016/11/30</td>
+						<td colspan="2"><span data-bind="text : objectPeriod.startDate"></span> ～ <span data-bind="text : objectPeriod.endDate"></span></td>
 					</tr>
 					<tr>
 						<td>
@@ -53,25 +53,24 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
 						</td>
 						<!-- H1_8 -->
-						<td colspan="2">33人</td>
+						<td colspan="2"><span data-bind="text : listPeson.length"></span>人</td>
 					</tr>
 				</table>
 				<div>
 					
 				</div>
 				<div style="margin-left: 60px">
-					<button id="button-left" class="large" >#{i18n.getText('KDW001_31')}</button>
+					<button id="button-left" class="large" data-bind="click: printError" >#{i18n.getText('KDW001_31')}</button>
 					<div class="clear:"></div>
 					<table  id="single-list"
 						data-bind="ntsGridList: {
-	                             width: 400,
+	                             width: 500,
 	                             height: 260,
-	                             options: listClassification,
-	                             optionsValue: 'code',
+	                             options: listErrMessageInfo,
+	                             optionsValue: 'GUID',
 	                             columns: columns,
 	                             multiple: false,
-	                             value: currentSelectedRow,
-	                             primaryKey: 'code'}"
+	                             value: currentSelectedRow}"
 						class="cf table-infor">
 					</table>
 				</div>

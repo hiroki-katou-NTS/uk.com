@@ -11,18 +11,30 @@ module nts.uk.at.view.kmk002.a {
             getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
         };
 
+        /**
+         * Call service to get optional item enum
+         */
         export function getOptItemEnum(): JQueryPromise<model.OptItemEnumDto> {
             return nts.uk.request.ajax(servicePath.getOptItemEnum);
         }
 
+        /**
+         * Call service to save optional item
+         */
         export function saveOptionalItem(command: model.OptionalItemDto): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveOptionalItem, command);
         }
 
+        /**
+         * Call service to get optional item detail
+         */
         export function findOptionalItemDetail(itemNo: string): JQueryPromise<model.OptionalItemDto> {
             return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo);
         }
 
+        /**
+         * Call service to get optional item header
+         */
         export function findOptionalItemHeaders(): JQueryPromise<Array<model.OptionalItemHeader>> {
             return nts.uk.request.ajax(servicePath.findOptionalItemHeaders);
         }
@@ -124,6 +136,7 @@ module nts.uk.at.view.kmk002.a {
                 operator: number;
                 operatorText?: string;
                 attendanceItemName?: string;
+                attendanceItemDisplayNumber?: number;
             }
             export interface RoundingDto {
                 unit: EnumConstantDto[];

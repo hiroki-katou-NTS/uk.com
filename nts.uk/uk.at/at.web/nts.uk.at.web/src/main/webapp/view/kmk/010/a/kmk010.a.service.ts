@@ -129,6 +129,28 @@ module nts.uk.at.view.kmk010.a {
         export function findAllAttendanceItemOvertime(): JQueryPromise<number[]> {
             return nts.uk.request.ajax('at', paths.findAllAttendanceItemOvertime);
         }
+        
+        /**
+         * Init tooltip service.
+         */
+        export function initTooltip() {
+            $('.tooltip-label').each((index, e) => {
+                let $label = $(e);
+
+                // Check if contents is overflow
+                if ($label.outerWidth() < $label[0].scrollWidth) {
+                    $label.attr('title', $label.text());
+                } else {
+                    $label.removeAttr('title');
+                }
+            })
+            $('.tooltip-label').tooltip({
+                tooltipClass: 'tooltip-label-view',
+                show: { duration: 100 },
+                track: true
+            });
+        }
+        
         export module model {
 
             

@@ -14,6 +14,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleUpdateCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleUpdateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommandHandler;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -33,6 +35,9 @@ public class BasicScheduleWebService extends WebService {
 	/** The basic schedule service. */
 	@Inject
 	private BasicScheduleService basicScheduleService;
+
+	@Inject
+	private BasicScheduleUpdateCommandHandler updateBScheduleCommandHandler;
 
 	/**
 	 * Register data to BASIC_SCHEDULE
@@ -62,13 +67,21 @@ public class BasicScheduleWebService extends WebService {
 	/**
 	 * Check pair work type work time.
 	 *
-	 * @param workTypeCode the work type code
-	 * @param workTimeCode the work time code
+	 * @param workTypeCode
+	 *            the work type code
+	 * @param workTimeCode
+	 *            the work time code
 	 */
 	@POST
 	@Path("checkPairWorkTypeWorkTime/{workTypeCode}/{workTimeCode}")
 	public void checkPairWorkTypeWorkTime(@PathParam("workTypeCode") String workTypeCode,
 			@PathParam("workTimeCode") String workTimeCode) {
 		this.basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode);
+	}
+
+	@POST
+	@Path("update")
+	public void update(BasicScheduleUpdateCommand command) {
+		this.updateBScheduleCommandHandler.handle(command);
 	}
 }

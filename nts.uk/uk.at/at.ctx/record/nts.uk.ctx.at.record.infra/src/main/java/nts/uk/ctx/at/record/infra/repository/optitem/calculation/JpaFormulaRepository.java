@@ -21,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula_;
 
@@ -113,6 +114,20 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 		// Get results
 		return em.createQuery(cq).getResultList();
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository#findById(
+	 * java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Formula findById(String companyId, String optItemNo, String formulaId) {
+		KrcmtOptItemFormula entity = this.queryProxy()
+				.find(new KrcmtOptItemFormulaPK(companyId, optItemNo, formulaId), KrcmtOptItemFormula.class).get();
+		return new Formula(new JpaFormulaGetMemento(entity));
 	}
 
 }

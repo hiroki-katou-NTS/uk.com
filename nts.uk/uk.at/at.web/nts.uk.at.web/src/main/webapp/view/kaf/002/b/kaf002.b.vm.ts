@@ -47,6 +47,11 @@ module nts.uk.at.view.kaf002.b {
                         nts.uk.ui.block.clear();
                     });
                 }); 
+                self.cm.application().appDate.subscribe(value => {
+                    self.kaf000_a2.objApprovalRootInput().standardDate = value;
+                    self.kaf000_a2.getAllApprovalRoot();
+                    self.kaf000_a2.getMessageDeadline(7, value);
+                });
             }
             
             startPage(): JQueryPromise<any> {
@@ -55,7 +60,6 @@ module nts.uk.at.view.kaf002.b {
                 var dfd = $.Deferred();
                 service.newScreenFind()
                     .done(function(commonSet: vmbase.AppStampNewSetDto) {
-                        
                         dfd.resolve(commonSet); 
                     })
                     .fail(function(res) { 
@@ -70,7 +74,7 @@ module nts.uk.at.view.kaf002.b {
 
             register() {
                 var self = this;
-                self.cm.register();
+                self.cm.register(self.kaf000_a2.errorFlag, self.kaf000_a2.errorMsg);
             }
             
             performanceReference(){

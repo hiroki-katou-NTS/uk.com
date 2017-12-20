@@ -21,7 +21,7 @@ public interface CompanyGetMemento {
 	 *
 	 * @return the company name
 	 */
-	CompanyName getCompanyName();
+	Name getCompanyName();
 	
 	/**
 	 * Gets the company id.

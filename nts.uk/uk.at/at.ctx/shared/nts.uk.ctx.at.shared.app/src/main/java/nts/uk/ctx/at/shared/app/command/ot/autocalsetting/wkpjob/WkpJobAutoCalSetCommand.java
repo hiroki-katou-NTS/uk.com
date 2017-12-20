@@ -18,7 +18,20 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingGet
 /**
  * The Class WkpJobAutoCalSetCommand.
  */
+
+/**
+ * Sets the rest time.
+ *
+ * @param restTime
+ *            the new rest time
+ */
 @Setter
+
+/**
+ * Gets the rest time.
+ *
+ * @return the rest time
+ */
 @Getter
 public class WkpJobAutoCalSetCommand {
 
@@ -43,7 +56,8 @@ public class WkpJobAutoCalSetCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyId the company id
+	 * @param companyId
+	 *            the company id
 	 * @return the wkp job auto cal setting
 	 */
 	public WkpJobAutoCalSetting toDomain(String companyId) {
@@ -64,8 +78,10 @@ public class WkpJobAutoCalSetCommand {
 		/**
 		 * Instantiates a new dto get memento.
 		 *
-		 * @param companyId the company id
-		 * @param command the command
+		 * @param companyId
+		 *            the company id
+		 * @param command
+		 *            the command
 		 */
 		public DtoGetMemento(String companyId, WkpJobAutoCalSetCommand command) {
 			this.companyId = companyId;
@@ -75,9 +91,8 @@ public class WkpJobAutoCalSetCommand {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesGetMemento#
-		 * getCompanyId()
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.
+		 * WkpJobAutoCalSettingGetMemento#getCompanyId()
 		 */
 		@Override
 		public CompanyId getCompanyId() {
@@ -87,8 +102,8 @@ public class WkpJobAutoCalSetCommand {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
-		 * ComAutoCalSettingGetMemento#getNormalOTTime()
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.
+		 * WkpJobAutoCalSettingGetMemento#getNormalOTTime()
 		 */
 		@Override
 		public AutoCalOvertimeSetting getNormalOTTime() {
@@ -117,16 +132,22 @@ public class WkpJobAutoCalSetCommand {
 			return this.command.getRestTime().toDomain();
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingGetMemento#getWkpId()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+		 * WkpJobAutoCalSettingGetMemento#getWkpId()
 		 */
 		@Override
 		public WorkplaceId getWkpId() {
 			return new WorkplaceId(this.command.getWkpId());
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingGetMemento#getPositionId()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+		 * WkpJobAutoCalSettingGetMemento#getPositionId()
 		 */
 		@Override
 		public JobTitleId getJobId() {

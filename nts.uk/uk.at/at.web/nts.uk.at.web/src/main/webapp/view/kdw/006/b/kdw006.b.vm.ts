@@ -38,6 +38,10 @@ module nts.uk.at.view.kdw006 {
             changeTab(tab: TabModel) {
                 let self = this;
                 let view = __viewContext.viewModel;
+                
+                //clear All error when switch screen.
+                nts.uk.ui.errors.clearAll();
+                
                 let oldTab = _.find(self.tabs(), t => t.active());
 
                 // cancel action if tab self click

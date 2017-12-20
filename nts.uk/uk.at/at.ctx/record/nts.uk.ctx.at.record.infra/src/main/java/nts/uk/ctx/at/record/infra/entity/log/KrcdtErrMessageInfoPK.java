@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 
 @Embeddable
@@ -23,4 +24,10 @@ public class KrcdtErrMessageInfoPK implements Serializable {
 	
 	@Column(name = "RESOURCE_ID")
 	public String resourceID;
+	
+	@Column(name = "EXECUTION_CONTENT")
+	public int executionContent;
+	
+	@Column(name = "DISPOSAL_DAY")
+	public GeneralDate disposalDay;
 }

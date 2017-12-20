@@ -1,10 +1,19 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 
+/**
+ * @author loivt
+ * 残業休出申請共通設定
+ */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OvertimeRestAppCommonSetting {
 	
 	/**
@@ -87,5 +96,38 @@ public class OvertimeRestAppCommonSetting {
 	 */
 	private UseAtr calculationOvertimeDisplayAtr;
 	
+	public static OvertimeRestAppCommonSetting createSimpleFromJavaType(String companyID,
+																		int appType,
+																		int divergenceReasonInputAtr,
+																		int divergenceReasonFormAtr,
+																		int divergenceReasonRequired,
+																		int preDisplayAtr,
+																		int preExcessDisplaySetting,
+																		int bonusTimeDisplayAtr,
+																		int outingSettingAtr,
+																		int performanceDisplayAtr,
+																		int performanceExcessAtr,
+																		int intructDisplayAtr,
+																		int extratimeDisplayAtr,
+																		int extratimeExcessAtr,
+																		int appDateContradictionAtr,
+																		int calculationOvertimeDisplayAtr){
+		return new OvertimeRestAppCommonSetting(companyID,
+				EnumAdaptor.valueOf(appType,ApplicationType.class),
+				EnumAdaptor.valueOf(divergenceReasonInputAtr,UseAtr.class),
+				EnumAdaptor.valueOf(divergenceReasonFormAtr,UseAtr.class),
+				EnumAdaptor.valueOf(divergenceReasonRequired,UseAtr.class),
+				EnumAdaptor.valueOf(preDisplayAtr,UseAtr.class),
+				EnumAdaptor.valueOf(preExcessDisplaySetting,UseAtr.class),
+				EnumAdaptor.valueOf(bonusTimeDisplayAtr,UseAtr.class),
+				EnumAdaptor.valueOf(outingSettingAtr,OutingSettingAtr.class), 
+				EnumAdaptor.valueOf(performanceDisplayAtr,UseAtr.class),
+				EnumAdaptor.valueOf(performanceExcessAtr,UseAtr.class),
+				EnumAdaptor.valueOf(intructDisplayAtr,UseAtr.class),
+				EnumAdaptor.valueOf(extratimeDisplayAtr,UseAtr.class),
+				EnumAdaptor.valueOf(extratimeExcessAtr,UseAtr.class),
+				EnumAdaptor.valueOf(appDateContradictionAtr,AppDateContradictionAtr.class),
+				EnumAdaptor.valueOf(calculationOvertimeDisplayAtr,UseAtr.class));
+	}
 
 }

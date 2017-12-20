@@ -60,10 +60,10 @@ public interface PersonalLaborConditionGetMemento {
 	
 	
 	/**
-	 * Gets the automatic emboss set atr.
+	 * Gets the auto stamp set atr.
 	 *
-	 * @return the automatic emboss set atr
+	 * @return the auto stamp set atr
 	 */
-	public UseAtr getAutomaticEmbossSetAtr();
+	public UseAtr getAutoStampSetAtr();
 
 }

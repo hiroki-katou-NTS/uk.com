@@ -5,8 +5,9 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixedWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 
 /**
  * The Class WeekdayWorkTime.
@@ -20,7 +21,8 @@ public class FixWeekdayWorkTime {
 
 	/** The rest time. */
 	// 休憩時間帯
-	private FixRestTime restTime;
+//	private FixRestTime restTime;
+	private FlowWorkRestTimezone restTime;
 
 	/** The am pm cls. */
 	// 午前午後区分

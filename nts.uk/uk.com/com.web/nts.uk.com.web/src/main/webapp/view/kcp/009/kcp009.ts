@@ -60,7 +60,9 @@ module kcp009.viewmodel {
             self.selectedItem = data.selectedItem;
             
             // Set SelectedItem: First Item
-            self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
+            if (!self.selectedItem()) {
+                self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
+            }
 
             // Initial Binding from Selected Item
             self.bindEmployee(self.selectedItem());
@@ -145,8 +147,6 @@ module kcp009.viewmodel {
                     },
                     dismissible: false,
                 });
-                $('#items-list').attr('style', 'z-index: 100;');
-                $('#items-list').hide();
                 // Toggle
                 $('#btn_show_list').click(function() {
                     $('#items-list').ntsPopup('toggle');

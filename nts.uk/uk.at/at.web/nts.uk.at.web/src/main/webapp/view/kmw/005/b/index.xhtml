@@ -26,15 +26,15 @@
 				<!-- <div id="detail-content"> -->
 					<table>
 						<tr>
-							<td></td>
-							<td>
+							<td class="contents-left"></td>
+							<td id="target-YM">
 								<div id="targetYM" tabindex="1"
 									data-bind="ntsDatePicker: { value: yearMonth, name: '#[KMW005_25]', dateFormat: 'yearmonth', showJumpButtons: true, valueFormat: 'YYYYMM'}">
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td id="contents-left">
+							<td class="contents-left">
 								<div id="closure-content" class="bg-green caret-background">
 									<table id="closure-list"
 									data-bind="ntsGridList: {
@@ -51,7 +51,7 @@
 								
 							</td>
 
-							<td id="contents-right" class="caret-background">
+							<td class="contents-right caret-background">
 
 								<table id="history-list" 
 									data-bind="ntsGridList: {

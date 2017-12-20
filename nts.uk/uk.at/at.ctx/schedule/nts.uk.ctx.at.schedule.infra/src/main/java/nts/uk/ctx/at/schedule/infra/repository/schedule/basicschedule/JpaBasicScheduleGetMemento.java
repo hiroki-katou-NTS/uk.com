@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleGetMemento;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
@@ -16,8 +19,10 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkS
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
+import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.workscheduletimezone.JpaWorkScheduleTimeZoneGetMemento;
 
 /**
  * The Class JpaBasicScheduleGetMemento.
@@ -26,17 +31,21 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	
 	/** The entity. */
 	private KscdtBasicSchedule entity;	
-
+	
+	/** The entity time zones. */
+	private List<KscdtWorkScheduleTimeZone> entityTimeZones;
+	
 	/**
 	 * Instantiates a new jpa basic schedule get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaBasicScheduleGetMemento(KscdtBasicSchedule entity) {
-		if(entity.getKscdpBSchedulePK() == null){
+	public JpaBasicScheduleGetMemento(KscdtBasicSchedule entity, List<KscdtWorkScheduleTimeZone> entityTimeZones) {
+		if (entity.getKscdpBSchedulePK() == null) {
 			entity.setKscdpBSchedulePK(new KscdtBasicSchedulePK());
 		}
 		this.entity = entity;
+		this.entityTimeZones = entityTimeZones;
 	}
 
 	/* (non-Javadoc)
@@ -84,7 +93,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public WorkdayDivision getWorkDayAtr() {
-		return WorkdayDivision.WORKINGDAYS;
+		return WorkdayDivision.valuesOf(this.entity.getWorkingDayAtr());
 	}
 
 	/* (non-Javadoc)
@@ -92,7 +101,12 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<WorkScheduleTimeZone> getWorkScheduleTimeZones() {
-		return null;
+		if (CollectionUtil.isEmpty(this.entityTimeZones)) {
+			return new ArrayList<>();
+		}
+		return this.entityTimeZones.stream()
+				.map(entity -> new WorkScheduleTimeZone(new JpaWorkScheduleTimeZoneGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -100,7 +114,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<WorkScheduleBreak> getWorkScheduleBreaks() {
-		return null;
+		return new ArrayList<>();
 	}
 
 	/* (non-Javadoc)
@@ -108,7 +122,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public Optional<WorkScheduleTime> getWorkScheduleTime() {
-		return null;
+		return Optional.empty();
 	}
 
 	/* (non-Javadoc)
@@ -116,7 +130,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<WorkSchedulePersonFee> getWorkSchedulePersonFees() {
-		return null;
+		return new ArrayList<>();
 	}
 
 	/* (non-Javadoc)
@@ -124,7 +138,7 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	 */
 	@Override
 	public List<ChildCareSchedule> getChildCareSchedules() {
-		return null;
+		return new ArrayList<>();
 	}
 
 }

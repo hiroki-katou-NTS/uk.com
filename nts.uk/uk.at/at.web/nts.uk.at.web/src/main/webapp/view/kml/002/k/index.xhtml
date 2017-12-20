@@ -23,17 +23,17 @@
 				<br />
 				<div style="margin-top: 20px;"
 					data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KML002_96')}</div>
-				<input style="width: 70px" id="test"
+				<input style="width: 70px" id="test1"
 					data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
 					value: startTime,required: true }" />
-				<span>~</span> <input style="width: 70px" id="test"
+				<span>~</span> <input style="width: 70px" id="test2"
 					data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', 
 					value: endTime, required: true }" />
 
 			</div>
 			<div id="contents-area-bottom"></div>
-			<button
-				style="height: 55px; width: 120px; margin-left: 67px; margin-top: 25px;"
+			<button 
+				style="height: 50px; width: 110px; margin-left: 67px; margin-top: 25px;"
 				class="proceed" data-bind="click: submitTime" id="K_BTN_001">#{i18n.getText('KML002_40')}</button>
 			<button data-bind="click: closeDialog" style="margin-left: 15px;"
 				id="K_BTN_002">#{i18n.getText('KML002_41')}</button>

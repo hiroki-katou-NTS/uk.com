@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1050,
+					height : 660
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="cdl009.a.service.js" />
+			<com:scriptfile path="cdl009.a.start.js" />
+			<com:scriptfile path="cdl009.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>#{i18n.getText('CDL009_2')}</div>
+				<br></br>
+				<table>
+					<tr>
+						<td><div id="workplace-component" tabindex="1"></div></td>
+						<td style="width: 90px; padding-left: 15px; padding-top: 50px"><div id="status-control">
+							<table>
+								<tr><td style="height: 40px"><div style="width: 85px" data-bind="ntsCheckBox: { checked: isIncumbent }">#{i18n.getText('CDL009_4')}</div></td></tr>
+								<tr><td style="height: 40px"><div style="width: 85px" data-bind="ntsCheckBox: { checked: isLeaveOfAbsence }">#{i18n.getText('CDL009_5')}</div></td></tr>
+								<tr><td style="height: 40px"><div style="width: 85px" data-bind="ntsCheckBox: { checked: isHoliday }">#{i18n.getText('CDL009_6')}</div></td></tr>
+								<tr><td style="height: 40px"><div style="width: 85px" data-bind="ntsCheckBox: { checked: isRetirement }">#{i18n.getText('CDL009_7')}</div></td></tr>
+								<tr><td style="height: 60px; padding-top: 20px"><button data-bind="click: searchEmp" tabindex="2">#{i18n.getText('CDL009_3')}</button></td></tr>
+							</table>
+						</div></td>
+						<td style="padding-top: 50px"><div id="emp-component" tabindex="3"></div></td>
+					</tr>
+				</table>
+			</div>
+			<div id="ruled-line" style="border: 1px solid;"></div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: decideData" tabindex="4">#{i18n.getText('CDL009_8')}</button>
+				<button class="large" data-bind="click: closeDialog" tabindex="5">#{i18n.getText('CDL009_9')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

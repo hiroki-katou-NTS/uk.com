@@ -8,9 +8,9 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesName
-				nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesABName
-				nts.uk.ctx.at.schedule.dom.shift.totaltimes.ConditionThresholdLimit
+				nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName
+				nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName
+				nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit
 				nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -227,6 +227,21 @@
 								</div>
 							</td>
 						</tr>
+						
+						<tr class="row">
+							<td>
+								<!-- A3_27 -->
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_23')}</div>
+							</td>
+							<td>
+								<!-- A3_28 Open dialog KDL002-->
+								<button tabindex="13"
+									data-bind="click: openKDL002Dialog_A3_28, enable: enableAtdBtn">#{i18n.getText('KMK009_15')}</button>
+								<!-- <span class="nts-input" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span> -->
+								<span class="label" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span>
+							</td>
+						</tr>
+						
 						<tr class="row">
 							<td>
 								<!-- A3_23 -->
@@ -237,7 +252,7 @@
 									<!-- A3_24: Check error(select) -->
 									<div tabindex="13"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail.countAtr,
+									checked: itemTotalTimesDetail.countAtr() == 0 ? true : false,
 									enable: enableUse,
 									text: '#{i18n.getText('KMK009_21')}'}">
 									</div>

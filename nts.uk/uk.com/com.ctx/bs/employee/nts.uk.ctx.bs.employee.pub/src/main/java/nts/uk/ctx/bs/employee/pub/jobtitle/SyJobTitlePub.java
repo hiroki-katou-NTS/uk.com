@@ -31,7 +31,7 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList #33
-	Optional<JobTitleExport> findBySid(String employeeId, GeneralDate baseDate);
+	Optional<EmployeeJobHistExport> findBySid(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find job title by position id.
@@ -53,5 +53,26 @@ public interface SyJobTitlePub {
 	 */
 	// RequestList #74
 	List<JobTitleExport> findAll(String companyId, GeneralDate baseDate);
+
+	/**
+	 * Find S job hist by S id.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList #??? -> NamPT pls add on
+	Optional<EmployeeJobHistExport> findSJobHistBySId(String employeeId, GeneralDate baseDate);
+
+	/**
+	 * Find by ids.
+	 *
+	 * @param companyId the company id
+	 * @param jobIds the job ids
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList #158
+	List<SimpleJobTitleExport> findByIds(String companyId,List<String> jobIds, GeneralDate baseDate);
 
 }

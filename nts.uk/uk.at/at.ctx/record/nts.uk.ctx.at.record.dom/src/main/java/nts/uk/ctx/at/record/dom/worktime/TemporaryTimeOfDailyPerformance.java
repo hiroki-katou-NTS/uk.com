@@ -24,4 +24,13 @@ public class TemporaryTimeOfDailyPerformance extends AggregateRoot {
 
 	private GeneralDate ymd;
 
+	public TemporaryTimeOfDailyPerformance(String employeeId, WorkTimes workTimes,
+			List<TimeLeavingWork> timeLeavingWorks, GeneralDate ymd) {
+		super();
+		this.employeeId = employeeId;
+		this.workTimes = workTimes;
+		this.timeLeavingWorks = timeLeavingWorks;
+		this.ymd = ymd;
+	}
+
 }

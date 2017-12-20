@@ -150,19 +150,24 @@ module nts.uk.at.view.kmk002.b {
             public initNtsGrid(): void {
                 let self = this;
                 $("#grid-emp-condition").ntsGrid({
-                    width: '322px',
                     height: '315px',
                     dataSource: this.empConditions,
                     primaryKey: 'empCd',
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: '', key: 'empCd', dataType: 'string', hidden: true},
-                        { headerText: nts.uk.resource.getText("KMK002_49"), key: 'empName', dataType: 'string'},
-                        { headerText: nts.uk.resource.getText("KMK002_50"), key: 'empApplicableAtr', dataType: 'number', ntsControl: 'SwitchButtons' },
+                        { headerText: '', key: 'empCd', dataType: 'string', width: '0px', hidden: true },
+                        {
+                            headerText: nts.uk.resource.getText("KMK002_49"), width: '160px',
+                            key: 'empName', dataType: 'string'
+                        },
+                        {
+                            headerText: nts.uk.resource.getText("KMK002_50"), width: '153px',
+                            key: 'empApplicableAtr', dataType: 'number', ntsControl: 'SwitchButtons'
+                        },
                     ],
-                    features: [{ name: 'Resizing' }],
-                    ntsFeatures: [{ name: 'CopyPaste' }],
+                    features: [],
+                    ntsFeatures: [],
                     ntsControls: [{
                         name: 'SwitchButtons', options: this.switchds,
                         optionsValue: 'code', optionsText: 'name', controlType: 'SwitchButtons', enable: true

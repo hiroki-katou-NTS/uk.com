@@ -2,11 +2,13 @@ package nts.uk.ctx.bs.employee.dom.familyrelatedinformation.socialinsurance;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class FamilySocialInsurance extends AggregateRoot {
 
 	/**

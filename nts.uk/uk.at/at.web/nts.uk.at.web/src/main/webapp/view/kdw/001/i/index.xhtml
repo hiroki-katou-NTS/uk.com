@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 1030, height: 680 };</script>
+			<script>var dialogSize = { width: 1130, height: 680 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw001.i.main.css" />
 			<com:scriptfile path="kdw001.i.start.js" />
@@ -18,54 +18,53 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-					
-			</div>
+			<div id="functions-area"></div>
 			<div id="contents-area">
 				<table id="table-label" class="from-label">
 					<tr>
 						<td>
-							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_77')}</div>
+							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_77')}</div>
 						</td>
 						<!-- I1_2 -->
-						<td colspan="2" data-bind="text:executedMenuJapan"></td>
+						<td colspan="2" data-bind="text:executedMenuName"></td>
 					</tr>
 					<tr>
 						<td>
-							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
+							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
 						</td>
 						<!-- I1_4 -->
-						<td data-bind="text : processingMonthName"></td>
+						<td><span data-bind="text : processingMonth "></span>月度</td>
 						<!-- I1_5 -->
-						<td>01：末締めI1-4</td>
+						<td data-bind="text : nameClosure"></td>
 					</tr>
 					<tr>
 						<td>
-							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
+							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
 						<!-- I1_6 -->
-						<td colspan="2"><span data-bind="text: periodStartDate"></span> ～ <span data-bind="text: periodEndDate"></span></td>
+						<td colspan="2"><span data-bind="text: periodStartDate"></span>
+							～ <span data-bind="text: periodEndDate"></span></td>
 					</tr>
 					<tr>
 						<td>
-							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
+							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
 						</td>
 						<!-- I1_9 -->
 						<td colspan="2"><span data-bind="text: numberPerson "></span>人</td>
 					</tr>
 				</table>
-				
-				<div style="margin-top: 25px;margin-left: 50px;">
+
+				<div style="margin-top: 25px; margin-left: 50px;">
 					<table id="table-infor">
 						<thead>
 							<tr class="bg-green">
 								<!-- I2_2 3 4 5 6 7 8 9 -->
 								<th style="width: 200px;">#{i18n.getText('KDW001_24')}</th>
 								<th style="width: 200px;">#{i18n.getText('KDW001_25')}</th>
-								<th style="width: 100px;text-align: center;">#{i18n.getText('KDW001_26')}</th>
+								<th style="width: 100px; text-align: center;">#{i18n.getText('KDW001_26')}</th>
 								<th style="width: 100px;">#{i18n.getText('KDW001_80')}</th>
-								<th style="width: 70px;">#{i18n.getText('KDW001_82')}</th>
-								<th style="width: 200px;">#{i18n.getText('KDW001_79')}</th>
+								<th style="width: 90px;">#{i18n.getText('KDW001_82')}</th>
+								<th style="width: 290px;">#{i18n.getText('KDW001_79')}</th>
 								<th style="width: 70px;">#{i18n.getText('KDW001_20')}</th>
 								<th style="width: 70px;">#{i18n.getText('KDW001_49')}</th>
 							</tr>
@@ -78,17 +77,90 @@
 									<!-- I2_11 -->
 									<td><span data-bind="text: $data.executionTime.endTime"></span></td>
 									<!-- I2_12 -->
-									<td style="text-align: center;"><span data-bind="text: $data.executionTime.timeSpan"></span></td>
+									<td style="text-align: center;"><span
+										data-bind="text: $data.executionTime.timeSpan"></span></td>
 									<!-- I2_13 -->
-									<td><span data-bind="text: $data.empCalAndSumExecLogID"></span></td>
+									<td><span data-bind="text: $data.executionContentName"></span></td>
 									<!-- I2_14 -->
-									<td><span data-bind="text: $data.empCalAndSumExecLogID"></span></td>
-									<!-- I2_15 -->
-									<td><span data-bind="text: $data.empCalAndSumExecLogID"></span></td>
+									<td>
+										<com:ko-if bind="$data.executionContent == 0">
+											<span data-bind="text: $data.dailyCreationSetInfo.executionTypeName"></span>
+										</com:ko-if>
+										<com:ko-if bind="$data.executionContent == 1">
+											<span data-bind="text: $data.dailyCalSetInfo.executionTypeName"></span>
+										</com:ko-if>
+										<com:ko-if bind="$data.executionContent == 2">
+											<span data-bind="text: $data.reflectApprovalSetInfo.executionTypeName"></span>
+										</com:ko-if>
+										<com:ko-if bind="$data.executionContent == 3">
+											<span data-bind="text: $data.monlyAggregationSetInfo.executionTypeName"></span>
+										</com:ko-if>
+									</td>
+									<!-- I2_15 o day -->
+									<td>
+										<com:ko-if bind="$data.executionContent == 0">
+										
+											<com:ko-if bind="$data.dailyCreationSetInfo.executionType == 1">
+												<com:ko-if bind="$data.dailyCreationSetInfo.creationType == 0">
+													<span>#{i18n.getText('KDW001_56')}</span>
+												</com:ko-if>
+												
+												<com:ko-if bind="$data.dailyCreationSetInfo.creationType == 1">
+													<span>#{i18n.getText('KDW001_57')}</span>
+												</com:ko-if><br />
+												
+												<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification !== null">
+													<!-- 1 -->
+													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.calculationClassificationResetting == true">
+														<span>#{i18n.getText('KDW001_94')}</span><br />
+													</com:ko-if>
+													<!-- 2 -->
+													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.closedHolidays == true">
+														<span>#{i18n.getText('KDW001_98')}</span><br />
+													</com:ko-if>
+													<!-- 3 -->
+													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.masterReconfiguration == true">
+														<span>#{i18n.getText('KDW001_96')}</span><br />
+													</com:ko-if>
+													<!-- 4 -->
+													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.reflectsTheNumberOfFingerprintChecks == true">
+														<span>#{i18n.getText('KDW001_101')}</span><br />
+													</com:ko-if>
+													<!-- 5 -->
+													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resetTimeAssignment == true">
+														<span>#{i18n.getText('KDW001_97')}</span><br />
+													</com:ko-if>
+													<!-- 6 -->
+													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resetTimeChildOrNurseCare == true">
+														<span>#{i18n.getText('KDW001_100')}</span><br />
+													</com:ko-if>
+													<!-- 7 -->
+													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resettingWorkingHours == true">
+														<span>#{i18n.getText('KDW001_99')}</span><br />
+													</com:ko-if>
+													<!-- 8 -->
+													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.specificDateClassificationResetting == true">
+														<span>#{i18n.getText('KDW001_95')}</span>
+													</com:ko-if>
+												</com:ko-if>
+											</com:ko-if>
+											
+										</com:ko-if>
+										<com:ko-if bind="$data.executionContent == 2">
+											<com:ko-if bind="$data.reflectApprovalSetInfo.forciblyReflect == true">
+												<span>#{i18n.getText('KDW001_102')}</span>
+											</com:ko-if>
+										</com:ko-if>
+										
+									</td>
 									<!-- I2_16 -->
-									<td style="text-align: center;"><span class="hyperlink" data-bind=" text: $data.empCalAndSumExecLogID, click: $parent.openDialogG "></span></td>
+									<td style="text-align: center;"><span class="hyperlink"
+										data-bind="click: $parent.openDialogG.bind($parent, $data) "><span
+											data-bind=" text: $parent.numberPerson"></span>人</span></td>
 									<!-- I2_17 -->
-									<td style="text-align: center;"><span class="hyperlink" data-bind="text: $data.empCalAndSumExecLogID, click : $parent.openDialogH "></span></td>
+									<td style="text-align: center;"><span class="hyperlink"
+										data-bind="click: $parent.openDialogH.bind($parent, $data) "><span
+											data-bind=" text: $data.numberPersonErr"></span>人</span></td>
 								</tr>
 							</com:ko-foreach>
 						</tbody>
@@ -97,9 +169,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- I3_2 -->
-				<button class="large" data-bind="click: closeDialog" >#{i18n.getText('KDW001_38')}</button>
+				<button class="large" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
 			</div>
-			
+
 		</ui:define>
 
 	</ui:composition>

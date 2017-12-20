@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.log;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(250)
+@StringMaxLength(100)
 public class UseCaseName  extends StringPrimitiveValue<UseCaseName>{
 
 	public UseCaseName(String rawValue) {

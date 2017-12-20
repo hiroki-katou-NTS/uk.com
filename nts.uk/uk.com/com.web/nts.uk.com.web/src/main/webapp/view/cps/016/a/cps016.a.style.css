@@ -48,7 +48,8 @@
 	padding: 20px;
 	float: left;
 	min-height: 540px;
-	width: 15%;
+	min-width: 200px !important;
+/* 	width: 15%; */
 }
 
 button.search-btn {
@@ -85,12 +86,8 @@ button.search-btn {
 	border-left: none;
 }
 
-.clear-btn {
-	visibility: hidden;
-}
-
 div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 365px;
+	width: 395px;
 }
 
 i.icon.icon-searchbox {
@@ -139,3 +136,11 @@ i.icon.icon-searchbox {
 #coll {
 	width: 150px;
 }
+
+.ui-widget-content.ui-iggrid-tablebody.ui-ig-record.ui-iggrid-record th {
+	background-color: #CFF1A5;
+	color: #000;
+}
+
+
+

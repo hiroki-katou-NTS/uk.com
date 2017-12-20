@@ -15,7 +15,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -26,13 +25,9 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHistoryAddCommand> {
 
-	/** The repository history. */
+	/** The closure repository. */
 	@Inject
-	private ClosureHistoryRepository closureHistoryRepo;
-
-	/** The repository. */
-	@Inject
-	private ClosureRepository closureRepo;
+	private ClosureRepository closureRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -54,11 +49,11 @@ public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHisto
 		ClosureHistoryAddCommand command = context.getCommand();
 
 		// get last closure history
-		Optional<ClosureHistory> closureHistoryLast = this.closureHistoryRepo
+		Optional<ClosureHistory> closureHistoryLast = this.closureRepository
 				.findByHistoryLast(companyId, command.getClosureHistoryAdd().getClosureId());
 
 		// get closure
-		Optional<Closure> closure = this.closureRepo.findById(companyId,
+		Optional<Closure> closure = this.closureRepository.findById(companyId,
 				command.getClosureHistoryAdd().getClosureId());
 
 		// check exist closure and closure history
@@ -85,10 +80,10 @@ public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHisto
 				YearMonth.of(command.getClosureHistoryAdd().getStartDate()).previousMonth());
 
 		// update domain
-		this.closureHistoryRepo.update(closureHistoryLast.get());
+		this.closureRepository.updateHistory(closureHistoryLast.get());
 
 		// add domain
-		this.closureHistoryRepo.add(domain);
+		this.closureRepository.addHistory(domain);
 	}
 
 }

@@ -40,7 +40,7 @@
 }
 
 #lefttabs .ntsSearchBox.ntsSearchBox_Component {
-	min-width: 120px;
+	min-width: 178px;
 }
 
 .avatar-group, .person-group, .action-group {
@@ -55,28 +55,36 @@
 }
 
 .person-group {
-	width: 550px;
+	width: 510px;
 	height: 147px;
 }
 
 .action-group {
-	width: 194px;
+	width: 234px;
+	height: 147px;
+}
+
+.action-group .active-panel:first-child {
+	height: 85px;
+}
+
+.action-group .active-panel:last-child {
+	height: 60px;
 }
 
 .action-group .column {
-	width: 92px;
+	width: 112px;
 	margin-left: 1px;
 	padding: 3px 0 3px 5px;
 	box-sizing: border-box;
 	float: left;
 }
 
-.action-group button {
+.action-group button.btn {
 	width: 100%;
-}
-
-.action-group .btn {
-	margin-bottom: 5px;
+	margin-bottom: 5px;   
+	padding-left: 30px;
+    text-align: left;
 }
 
 .action-group .btn-print {
@@ -106,7 +114,7 @@
 	cursor: pointer;
 	display: block;
 	min-height: 51px;
-	line-height: 42px;
+	line-height: 50px;
 	padding-left: 60px;
 	background-repeat: no-repeat;
 	background-position-x: 5px;
@@ -133,8 +141,10 @@
 	height: 7px;
 }
 
-.avatar-group img {
+.avatar-group img.avatar {
 	padding: 5px 2px 2px 5px;
+	width: 100px;
+	height: 130px;
 }
 
 .person-info {
@@ -148,6 +158,10 @@
 	border: 1px solid #999;
 }
 
+.person-info td:not(:first-child ) {
+	position: relative;
+}
+
 .person-info td:first-child {
 	width: 120px;
 	padding-left: 15px;
@@ -159,6 +173,29 @@
 	box-sizing: border-box;
 }
 
+.person-info td>div.info {
+	float: left;
+	display: block;
+	padding-left: 5px;
+	padding-right: 5px;
+    min-height: 30px;
+	max-height: 30px;
+	overflow: hidden;
+}
+
+.person-info td>div.info.first {
+	min-width: 95px;
+	max-width: 95px;
+}
+
+.person-info td>div.bg-calendar-ym-set {
+	display: inline-block;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-left: 1px solid #999;
+	border-right: 1px solid #999;
+}
+
 #hor-scroll-button-hide {
 	margin-top: 5%;
 }
@@ -167,11 +204,7 @@
 	padding-top: 5px;
 }
 
-.form-group:not (.item-classification ) {
-	margin-bottom: 5px;
-}
-
-.form-group:not (.item-classification )>* {
+.form-group:not(.item-classification)>* {
 	display: inline-block;
 	vertical-align: middle;
 }
@@ -180,22 +213,28 @@
 	min-width: 860px;
 }
 
+#contents-area .category-input .cat-has-childs .layout-control .drag-panel {
+	min-width: 830px;
+	border: none;
+	height: auto;
+}
+
 .ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
 	.ui-iggrid .ui-iggrid-tablebody td {
 	border-top: none;
 }
 
-#employees_container .ui-iggrid-headertable th:last-child,
-	#employees_container .ui-iggrid-tablebody td.ui-state-hover:last-child,
-	#employees_container .ui-iggrid-tablebody td.ui-state-active:last-child,
-	#employees_container .ui-iggrid-tablebody td:last-child {
+#employees .ui-iggrid-headertable th:last-child,
+	#employees .ui-iggrid-tablebody td.ui-state-hover:last-child,
+	#employees .ui-iggrid-tablebody td.ui-state-active:last-child,
+	#employees .ui-iggrid-tablebody td:last-child {
 	border-left: none;
 }
 
-#employees_container .ui-iggrid-headertable th:first-child,
-	#employees_container .ui-iggrid-tablebody td.ui-state-hover:first-child,
-	#employees_container .ui-iggrid-tablebody td.ui-state-active:first-child,
-	#employees_container .ui-iggrid-tablebody td:first-child {
+#employees .ui-iggrid-headertable th:first-child,
+	#employee .ui-iggrid-tablebody td.ui-state-hover:first-child,
+	#employees .ui-iggrid-tablebody td.ui-state-active:first-child,
+	#employees .ui-iggrid-tablebody td:first-child {
 	border-right: none;
 }
 
@@ -203,13 +242,20 @@
 	padding: 10px;
 }
 
-.search-box {
+.form-group.search-box {
 	margin-bottom: 15px;
+	position: relative;
 }
-.search-box>* {
+
+.form-group.search-box>* {
 	display: inline-block;
 	vertical-align: middle;
-} 
+}
+
+.form-group.search-box .btn-delete {
+	position: absolute;
+	right: 0;
+}
 
 .ui-igcombo-wrapper {
 	width: 195px;
@@ -220,10 +266,17 @@
 	border-width: 35px 10px
 }
 
-
-
 .category-input>.title {
 	display: block;
 	line-height: 37px;
+	text-align: center;
 	background-color: #cee6ff;
+}
+
+.nts-searchbbox-wrapper button.search-btn, .nts-searchbbox-wrapper button.clear-btn {
+	min-width: 50px !important;
+}
+
+#lefttabs .ntsSearchBox.ntsSearchBox_Component {
+    min-width: 130px !important;
 }

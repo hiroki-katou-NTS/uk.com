@@ -1,21 +1,19 @@
 module nts.uk.com.view.cps017.d.service {
-
-    export function getItems() {
-        return $.Deferred().resolve(new DemoData().items).promise();
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+    var paths = {
+        getAllPerInfoHistorySelection: "ctx/pereg/person/info/setting/selection/findAllHistSelection/{0}",
+        editHistoryData: "ctx/pereg/person/info/setting/selection/editHistory"
     }
 
-    export function getItem(id: string) {
-        let items = new DemoData().items,
-            item = _.find(items, x => x.id == id);
-
-        return $.Deferred().resolve(item).promise();
+    //history datetime:
+    export function getAllPerInfoHistorySelection(selectionItemId: string) {
+        let _path = format(paths.getAllPerInfoHistorySelection, selectionItemId);
+        return nts.uk.request.ajax("com", _path);
     }
 
-    class DemoData {
-        items = [{
-            id: 1,
-            name: '個人情報選択項目の定義'
-        }];
+    // edit history data:
+    export function editHistoryData(command) {
+        return ajax(paths.editHistoryData, command);
     }
-
 }

@@ -59,6 +59,11 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
             });
+            self.date.subscribe(value => {
+                self.kaf000_a2.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
+                self.kaf000_a2.getAllApprovalRoot();
+                self.kaf000_a2.getMessageDeadline(9, value);
+            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -66,7 +71,15 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getByCode("").done(function(data) {
-                self.ListTypeReason(data.listApplicationReasonDto);
+                self.ListTypeReason.removeAll();
+                _.forEach(data.listApplicationReasonDto, data => {
+                    let reasonTmp: TypeReason = {reasonID: data.reasonID, reasonTemp: data.reasonTemp};
+                    self.ListTypeReason.push(reasonTmp); 
+                    if(data.defaultFlg == 1){
+                        self.selectedCode(data.reasonID);
+                    }          
+                });
+                
                 self.displayOrder(data.workManagementMultiple.useATR);
                 self.applicantName(data.applicantName);
                 self.late1.subscribe(value => { $("#inpLate1").trigger("validate"); });
@@ -85,56 +98,68 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         /** Create Button Click */
         registryButtonClick() {
             var self = this;
-            if (!nts.uk.ui.errors.hasError()) {
-               /**  0: 事前の受付制限
-                    1: 事後の受付制限
-                */ 
-                let prePostAtr = 1;
-                if (self.showScreen == 'B'){
-                    //[画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻>=早退時刻 (#Msg_381#)
-                    if((self.late1() && self.early1() && self.lateTime1() >= self.earlyTime1())
-                        || (self.late2() && self.early2() && self.lateTime2() >= self.earlyTime2())){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_381"});
-                        return;
+            let errorFlag = self.kaf000_a2.errorFlag;
+            let errorMsg = self.kaf000_a2.errorMsg;
+            if(errorFlag!=0){
+                nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
+            } else {
+                if (!nts.uk.ui.errors.hasError()) {
+                   /**  0: 事前の受付制限
+                        1: 事後の受付制限
+                    */ 
+                    let prePostAtr = 1;
+                    if (self.showScreen == 'B'){
+                        //[画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻>=早退時刻 (#Msg_381#)
+                        if((self.late1() && self.early1() && self.lateTime1() >= self.earlyTime1())
+                            || (self.late2() && self.early2() && self.lateTime2() >= self.earlyTime2())){
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_381"});
+                            return;
+                        }
+                        //[画面Bのみ]遅刻、早退、遅刻2、早退2のチェックがある遅刻時刻、早退時刻は入力必須(#Msg_470#)
+                        if(self.late1() 
+                            && self.early1() 
+                            && self.late2() 
+                            && self.early2()
+                            && (self.lateTime1() == null || self.earlyTime1() == null)){
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_470"});
+                            return;                            
+                        }
+                            
+                        prePostAtr = 0;
                     }
-                    //[画面Bのみ]遅刻、早退、遅刻2、早退2のチェックがある遅刻時刻、早退時刻は入力必須(#Msg_470#)
-                    if(self.late1() 
-                        && self.early1() 
-                        && self.late2() 
-                        && self.early2()
-                        && (self.lateTime1() == null || self.earlyTime1() == null)){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_470"});
-                        return;                            
+                    nts.uk.ui.block.invisible();
+                    let txtReasonTmp = self.selectedCode();
+                    if(!nts.uk.text.isNullOrEmpty(self.selectedCode())){
+                        let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
+                        txtReasonTmp = reasonText.reasonTemp;
                     }
-                        
-                    prePostAtr = 0;
-                }
-                let lateOrLeaveEarly: LateOrLeaveEarly = {
-                    prePostAtr: prePostAtr, 
-                    applicationDate: self.date(),
-                    sendMail: self.sendMail(),
-                    late1: self.late1() ? 1 : 0,
-                    lateTime1: self.lateTime1(),
-                    early1: self.early1() ? 1 : 0,
-                    earlyTime1: self.earlyTime1(),
-                    late2: self.late2() ? 1 : 0,
-                    lateTime2: self.lateTime2(),
-                    early2: self.early2() ? 1 : 0,
-                    earlyTime2: self.earlyTime2(),
-                    reasonTemp: self.selectedCode(),
-                    appReason: self.appreason(),
-                    appApprovalPhaseCmds: self.kaf000_a2.approvalList
-                };
-                service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
+                    
+                    let lateOrLeaveEarly: LateOrLeaveEarly = {
+                        prePostAtr: prePostAtr, 
+                        applicationDate: self.date(),
+                        sendMail: self.sendMail(),
+                        late1: self.late1() ? 1 : 0,
+                        lateTime1: self.lateTime1(),
+                        early1: self.early1() ? 1 : 0,
+                        earlyTime1: self.earlyTime1(),
+                        late2: self.late2() ? 1 : 0,
+                        lateTime2: self.lateTime2(),
+                        early2: self.early2() ? 1 : 0,
+                        earlyTime2: self.earlyTime2(),
+                        reasonTemp: txtReasonTmp,
+                        appReason: self.appreason(),
+                        appApprovalPhaseCmds: self.kaf000_a2.approvalList
+                    };
+                    service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                            location.reload();
+                        });
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});  
                     });
-                }).fail((res) => {
-                    nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
-                });
-
+    
+                }
             }
-
         }
     }
 

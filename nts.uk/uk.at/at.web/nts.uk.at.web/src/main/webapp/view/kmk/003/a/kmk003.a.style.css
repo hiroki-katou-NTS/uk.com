@@ -1,0 +1,44 @@
+.caret-left-width {
+	padding: 20px;
+}
+
+.checkbox_display {
+	padding-left: 170px;
+}
+
+.screen-content-left {
+	width: 280px;
+	padding: 10px;
+	vertical-align: top;
+}
+
+.screen-content-right {
+	width: 920px;
+	padding: 10px;
+}
+
+.td-cell {
+	padding: 5px;
+}
+
+.memo-field {
+	height: 50px;
+}
+
+.label_header {
+	margin-left: 10px;
+}
+
+.label_memo {
+	height: 60px !important;
+}
+
+.setting_header {
+	margin-left: 10px;
+}
+
+.setting_header_br {
+	margin-left: 10px;
+	margin-top: 15px;
+	display: inline-flex;
+}

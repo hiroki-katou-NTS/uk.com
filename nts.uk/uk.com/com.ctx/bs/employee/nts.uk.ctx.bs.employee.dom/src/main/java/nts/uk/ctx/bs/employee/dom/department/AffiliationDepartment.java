@@ -4,29 +4,43 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.department;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class AffiliationDepartment. - 所属部門
  */
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AffiliationDepartment extends AggregateRoot {
-	
+
 	/** The id. */
 	private String id;
-	
+
 	/** The period. */
 	private DatePeriod period;
-	
+
 	/** The employee id. */
 	private String employeeId;
-	
+
 	/** The department id. */
 	private String departmentId;
 
-	/* (non-Javadoc)
+	public static AffiliationDepartment createDmainFromJavaType(String id, GeneralDate startDate, GeneralDate endDate,
+			String empId, String departmentId) {
+		return new AffiliationDepartment(id, new DatePeriod(startDate, endDate), empId, departmentId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -37,7 +51,9 @@ public class AffiliationDepartment extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

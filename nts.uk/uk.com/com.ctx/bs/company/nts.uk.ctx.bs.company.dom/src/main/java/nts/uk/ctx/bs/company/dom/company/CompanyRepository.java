@@ -12,16 +12,71 @@ import java.util.Optional;
  */
 
 public interface CompanyRepository {
+		
+	/**
+	 * Find all company with isAbolition=0
+	 * @return
+	 */
+	List<Company>  getAllCompany();
+	
+	/** 
+	 * get all company from database
+	 * @author: Hoang Yen
+	 */
+	List<Company> findAll();
 	
 	/**
-	 * Gets the comany id.
-	 *
-	 * @param companyId the company id
-	 * @return the comany id
+	 * find a company infor item by code 
+	 * @param contractCd
+	 * @param companyId
+	 * @param companyCd
+	 * @author: Hoang Yen
+	 * @return
 	 */
-	Optional<Company> getComanyById(String companyId);
+	Optional<Company> find(String companyId);
 	
-	List<Company>  getAllCompany();
+	/**
+	 * get address
+	 * @param companyId
+	 * @return
+	 * @author Hoang Yen
+	 */
+	Optional<AddInfor> findAdd(String companyId);
+	
+	/** 
+	 * update a company
+	 * @author: Hoang Yen
+	 */
+	void updateCom(Company company);
+	
+	/**
+	 * update add infor
+	 * @param addInfor
+	 * @author: Hoang Yen
+	 */
+	void updateAdd(AddInfor addInfor);
+	
+	/** 
+	 * insert a company 
+	 * @author: Hoang Yen
+	 */
+	void insertCom(Company company);
+
+	/**
+	 * insert Address information company
+	 * @param addInfor
+	 * @author: Hoang Yen
+	 */
+	void insertAdd(AddInfor addInfor);
+	
+	/**
+	 * delete a company item
+	 * @param comId
+	 * @param contractCd
+	 * @param companyCode
+	 * @author: Hoang Yen
+	 */
+	void deleteCom(String comId, String contractCd, String companyCode);
 	
 	/**
 	 * RequestList #108.
@@ -30,6 +85,17 @@ public interface CompanyRepository {
 	 * @return the comany
 	 */
 	Optional<Company> getComanyInfoByCid(String cid);
+	
+	/**
+	 * check list company mustn't be abolished all 
+	 * @param currentCompanyId
+	 * @return
+	 * @author yennth
+	 */
+	boolean checkAbolish(String currentCompanyId);
+	
+	// request list No.125
+	Optional<Company> getComanyByCid(String cid);
 	
 }
 

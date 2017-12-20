@@ -1,4 +1,4 @@
-module ksu001.a {
+module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
 
     __viewContext.ready(function() {
@@ -21,7 +21,7 @@ module ksu001.a {
         $('#popup-area2').ntsPopup({
             position: {
                 my: 'left top',
-                at: 'left bottom',
+                at: 'left bottom+3',
                 of: $('.create')
             }
         });
@@ -34,7 +34,7 @@ module ksu001.a {
         $('#popup-area3').ntsPopup({
             position: {
                 my: 'left top',
-                at: 'left bottom',
+                at: 'left bottom+3',
                 of: $('.check')
             }
         });
@@ -47,7 +47,7 @@ module ksu001.a {
         $('#popup-area4').ntsPopup({
             position: {
                 my: 'left top',
-                at: 'left bottom',
+                at: 'left bottom+3',
                 of: $('.vacation')
             }
         });
@@ -60,7 +60,7 @@ module ksu001.a {
         $('#popup-area5').ntsPopup({
             position: {
                 my: 'left top',
-                at: 'left bottom',
+                at: 'left bottom+3',
                 of: $('.setting')
             }
         });
@@ -73,7 +73,7 @@ module ksu001.a {
         $('#popup-area6').ntsPopup({
             position: {
                 my: 'left top',
-                at: 'left bottom',
+                at: 'left bottom+3',
                 of: $('.setting-button')
             }
         });
@@ -86,7 +86,7 @@ module ksu001.a {
         $('#popup-area7').ntsPopup({
             position: {
                 my: 'left top',
-                at: 'left bottom',
+                at: 'left bottom+3',
                 of: $('.done')
             }
         });
@@ -100,7 +100,7 @@ module ksu001.a {
         $('#popup-area9').ntsPopup({
             position: {
                 my: 'left top',
-                at: 'left bottom',
+                at: 'left bottom+3',
                 of: $('.color-button')
             }
         });

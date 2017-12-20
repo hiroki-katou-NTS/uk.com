@@ -11,12 +11,14 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -28,6 +30,9 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 	@Inject
 	public WorkTypeRepository workTypeRepo;
+
+	@Inject
+	public WorkTimeSetRepository workTimeSetRepo;
 
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -82,8 +87,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 			if (WorkStyle.ONE_DAY_REST == workStyle) {
 
 				SetupType morningWorkStyle = this.checkRequiredOfInputType(dailyWork.getMorning());
-				SetupType afternoonWorkStyle = this
-						.checkRequiredOfInputType(dailyWork.getAfternoon());
+				SetupType afternoonWorkStyle = this.checkRequiredOfInputType(dailyWork.getAfternoon());
 
 				return this.checkRequired(morningWorkStyle, afternoonWorkStyle);
 			} else {
@@ -101,48 +105,44 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		return SetupType.OPTIONAL;
 	}
 
+	/**
+	 * 1日半日出勤・1日休日系の判定
+	 */
 	@Override
 	public WorkStyle checkWorkDay(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
-		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
+		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId, workTypeCode);
 
-		if (!workType.isPresent()) {
-			throw new RuntimeException("NOT FOUND WORK TYPE");
+		if (!workTypeOpt.isPresent()) {
+			return null;
 		}
-		DailyWork dailyWork = workType.get().getDailyWork();
-		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();
+
+		WorkType workType = workTypeOpt.get();
+		DailyWork dailyWork = workTypeOpt.get().getDailyWork();
+
 		// All day
-		if (WorkTypeUnit.OneDay == workTypeUnit) {
-			WorkTypeClassification workTypeClass = dailyWork.getOneDay();
-			if (this.checkType(workTypeClass)) {
+		if (workType.isOneDay()) {
+			if (dailyWork.IsLeaveForADay()) {
 				return WorkStyle.ONE_DAY_REST;
-			} else {
-				return WorkStyle.ONE_DAY_WORK;
 			}
+
+			return WorkStyle.ONE_DAY_WORK;
 		}
 
 		// Half day
-		if (WorkTypeUnit.MonringAndAfternoon == workTypeUnit) {
-
-			WorkTypeClassification morningType = dailyWork.getMorning();
-			WorkTypeClassification afternoonType = dailyWork.getAfternoon();
-
-			if (this.checkType(morningType)) {
-				if (this.checkType(afternoonType)) {
-					return WorkStyle.ONE_DAY_REST;
-				} else {
-					return WorkStyle.AFTERNOON_WORK;
-				}
-			} else {
-				if (this.checkType(afternoonType)) {
-					return WorkStyle.MORNING_WORK;
-				} else {
-					return WorkStyle.ONE_DAY_WORK;
-				}
+		if (dailyWork.IsLeaveForMorning()) {
+			if (dailyWork.IsLeaveForAfternoon()) {
+				return WorkStyle.ONE_DAY_REST;
 			}
+
+			return WorkStyle.AFTERNOON_WORK;
 		}
 
-		throw new RuntimeException("NOT FOUND WORK STYLE");
+		if (dailyWork.IsLeaveForAfternoon()) {
+			return WorkStyle.MORNING_WORK;
+		}
+
+		return WorkStyle.ONE_DAY_WORK;
 	}
 
 	@Override
@@ -225,6 +225,14 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public boolean isReverseStartAndEndTime(TimeWithDayAttr scheduleStartClock, TimeWithDayAttr scheduleEndClock) {
+		return scheduleStartClock.greaterThanOrEqualTo(scheduleEndClock);
 	}
 
 }

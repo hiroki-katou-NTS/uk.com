@@ -21,6 +21,7 @@ import nts.uk.ctx.bs.employee.app.command.jobtitle.dto.JobTitleHistoryDto;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.dto.PeriodDto;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
@@ -37,7 +38,7 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 	/** The job title repository. */
 	@Inject
 	private JobTitleRepository jobTitleRepository;
-	
+
 	/** The job title info repository. */
 	@Inject
 	private JobTitleInfoRepository jobTitleInfoRepository;
@@ -46,15 +47,6 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 	@Inject
 	private SequenceMasterRepository sequenceMasterRepository;
 
-	/** The Constant DATE_FORMAT. */
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
-
-	/** The Constant MIN_DATE. */
-	private static final String MIN_DATE = "1900/01/01";
-	
-	/** The Constant MAX_DATE. */
-	private static final String MAX_DATE = "9999/12/31";
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -76,13 +68,13 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 
 		// Validate
 		this.validate(companyId, command);
-		
+
 		if (command.getIsCreateMode()) {
-			// Add				
+			// Add
 			this.addJobTitle(companyId, command);
 		} else {
 			// Update
-			this.jobTitleInfoRepository.update(command.toDomain(companyId));
+			this.updateJobTitle(companyId, command);
 		}
 	}
 
@@ -95,7 +87,7 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 	private void validate(String companyId, SaveJobTitleCommand command) {
 		boolean isError = false;
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
-		
+
 		// Check Sequence Master
 		String sequenceCode = command.getJobTitleInfo().getSequenceCode();
 		if (!StringUtils.isEmpty(sequenceCode)) {
@@ -106,24 +98,22 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 				isError = true;
 				exceptions.addMessage("Msg_565");
 			}
-		}		
-		
-		// Check JobTitle	
-		if (command.getIsCreateMode()) {
-			// Add			
-			if (this.jobTitleInfoRepository.isJobTitleCodeExist(companyId, command.getJobTitleInfo().getJobTitleCode())) {
-				// Throw Exception - Duplicated JobTitleCode
-				isError = true;
-				exceptions.addMessage("Msg_3");
-			}
-		} 
-		
+		}
+
+		// Check JobTitle - Add
+		if (command.getIsCreateMode() && this.jobTitleInfoRepository.isJobTitleCodeExist(companyId,
+				command.getJobTitleInfo().getJobTitleCode())) {
+			// Throw Exception - Duplicated JobTitleCode
+			isError = true;
+			exceptions.addMessage("Msg_3");
+		}
+
 		// Has error, throws message
 		if (isError) {
 			exceptions.throwExceptions();
 		}
 	}
-	
+
 	/**
 	 * Adds the job title.
 	 *
@@ -131,24 +121,39 @@ public class SaveJobTitleCommandHandler extends CommandHandler<SaveJobTitleComma
 	 * @param command the command
 	 */
 	private void addJobTitle(String companyId, SaveJobTitleCommand command) {
-		
-		// Insert JobTitle history		
+
+		// Insert JobTitle history
 		JobTitleHistoryDto newJobTitleHistoryDto = new JobTitleHistoryDto();
-		newJobTitleHistoryDto.setPeriod(new PeriodDto(
-				GeneralDate.fromString(MIN_DATE, DATE_FORMAT), 
-				GeneralDate.fromString(MAX_DATE, DATE_FORMAT)));
-		
+		newJobTitleHistoryDto.setPeriod(new PeriodDto(GeneralDate.min(), GeneralDate.max()));
+
 		JobTitleDto newJobTitleDto = new JobTitleDto();
-		newJobTitleDto.setJobTitleHistory(newJobTitleHistoryDto);				
+		newJobTitleDto.setJobTitleHistory(newJobTitleHistoryDto);
+
+		JobTitle newJobTitle = newJobTitleDto.toDomain(companyId);
+		this.jobTitleRepository.add(newJobTitle);
+
+		// Insert JobTitle info
+		JobTitleInfo jobTitleInfo = command.getJobTitleInfo().toDomain(companyId, newJobTitle.getJobTitleId(),
+				newJobTitle.getLastestHistory().identifier());
+		this.jobTitleInfoRepository.add(jobTitleInfo);
+	}
 	
-        JobTitle newJobTitle = newJobTitleDto.toDomain(companyId);
-        this.jobTitleRepository.add(newJobTitle);
-        
-        // Insert JobTitle info
-        JobTitleInfo jobTitleInfo = command.getJobTitleInfo().toDomain(
-        		companyId, 
-        		newJobTitle.getJobTitleId(),
-        		newJobTitle.getLastestHistory().identifier());
-        this.jobTitleInfoRepository.add(jobTitleInfo);
+	/**
+	 * Update job title.
+	 *
+	 * @param companyId the company id
+	 * @param command the command
+	 */
+	private void updateJobTitle(String companyId, SaveJobTitleCommand command) {		
+		
+		// Get old JobTitleCode
+		Optional<JobTitleCode> opJobTitleCode = this.jobTitleInfoRepository.findJobTitleCode(companyId, command.getJobTitleInfo().getJobTitleId());
+		if (!opJobTitleCode.isPresent()) {
+			return;
+		}
+		
+		// JobTitleCode is not changable
+		command.getJobTitleInfo().setJobTitleCode(opJobTitleCode.get().v());
+		this.jobTitleInfoRepository.update(command.toDomain(companyId));
 	}
 }

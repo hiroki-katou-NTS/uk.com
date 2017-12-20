@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 /**
  * The Class AcquisitionSetting.
  */
+// 取得設定
 @Builder
 public class AcquisitionSetting {
 

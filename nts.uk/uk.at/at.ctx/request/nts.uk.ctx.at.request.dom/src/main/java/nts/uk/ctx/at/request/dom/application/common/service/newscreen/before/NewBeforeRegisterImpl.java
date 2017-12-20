@@ -72,7 +72,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		
 		// 登録可能期間のチェック(１年以内)(check thời gian có thế đăng ký (trong vong 1 năm)
 		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(application.getEndDate())) {
-			throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_276").addRaw(application.getEndDate().toString(DATE_FORMAT)).build()));
+			throw new BusinessException("Msg_276", application.getEndDate().toString(DATE_FORMAT));
 		}
 		
 		// 過去月のチェック(check tháng quá khứ)
@@ -121,22 +121,15 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	public void retirementCheckBeforeJoinCompany(String companyID, String employeeID, GeneralDate date){
 		// Imported(就業)「社員」を取得する (Lấy employee)
 		PesionInforImport pesionInforImport = employeeAdaptor.getEmployeeInfor(employeeID);
-		
-		// lấy lịch sử làm việc mới nhất
-		if(pesionInforImport.getListJobEntryHist().isEmpty()){
-			throw new RuntimeException("Not found PersionInforImport in table BSYMT_JOB_ENTRY_HISTORY, employeeID =" + employeeID);
-		}
-		JobEntryHistoryImport jobEntryHistoryImport = pesionInforImport.getListJobEntryHist().get(0);
-		
 		// 入社前をチェックする(Check trước khi vào cty)
 		// データが１件以上取得できた 且つ 申請対象日 < Imported(就業)「社員」．入社年月日
-		if(date.before(jobEntryHistoryImport.getJoinDate())) {
+		if(pesionInforImport.getEntryDate() != null && date.before(pesionInforImport.getEntryDate())) {
 			throw new BusinessException("Msg_235");
 		}
 		
 		// 退職後をチェックする(Check sau khi làm việc)
 		// データが１件以上取得できた 且つ 申請対象日 > Imported(就業)「社員」．退職年月日
-		if(date.after(jobEntryHistoryImport.getRetirementDate())) {
+		if(pesionInforImport.getRetiredDate() != null && date.after(pesionInforImport.getRetiredDate())) {
 			throw new BusinessException("Msg_391");
 		}
 	}
@@ -171,7 +164,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 			}
 			// システム日付と申請締め切り日を比較する(So sánh ngày hệ thống với ngày chốt)
 			if(GeneralDate.today().afterOrEquals(deadline)) {
-				throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_327").addRaw(deadline.toString(DATE_FORMAT)).build())); 
+				throw new BusinessException("Msg_327", deadline.toString(DATE_FORMAT)); 
 			}
 		}	
 	}
@@ -216,18 +209,18 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 						// ループする日と受付制限日と比較する(So sánh ngày loop với ngày giới hạn chấp nhận)
 						GeneralDate limitDay = systemDate.addDays(0 - appTypeDiscreteSetting.getRetrictPreDay().value);
 						if(loopDay.before(limitDay)) {
-							throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_327").addRaw(loopDay.toString(DATE_FORMAT)).build()));
+							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 						}
 					} else {
 						// ループする日とシステム日付を比較する(So sánh ngày loop và ngày hệ thống)
 						if(loopDay.before(systemDate)){
-							throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_327").addRaw(loopDay.toString(DATE_FORMAT)).build()));
+							throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 						} else if(loopDay.equals(systemDate)){
 							Integer limitTime = appTypeDiscreteSetting.getRetrictPreTimeDay().v();
 							Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
 							// システム日時と受付制限日時と比較する(So sánh ngày hệ thống với ngày giới hạn chấp nhận)
 							if(systemTime > limitTime) {
-								throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_327").addRaw(loopDay.toString(DATE_FORMAT)).build()));
+								throw new BusinessException("Msg_327", loopDay.toString(DATE_FORMAT));
 							}
 						}
 					}

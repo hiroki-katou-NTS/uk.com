@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -27,15 +29,15 @@ public class CalcResultRange extends DomainObject {
 	// ===================== Optional ======================= //
 	/** The number range. */
 	// 回数範囲
-	private NumberRange numberRange;
+	private Optional<NumberRange> numberRange;
 
 	/** The time range. */
 	// 時間範囲
-	private TimeRange timeRange;
+	private Optional<TimeRange> timeRange;
 
 	/** The amount range. */
 	// 金額範囲
-	private AmountRange amountRange;
+	private Optional<AmountRange> amountRange;
 
 	/**
 	 * Instantiates a new calculation result range.
@@ -49,12 +51,6 @@ public class CalcResultRange extends DomainObject {
 		this.timeRange = memento.getTimeRange();
 		this.amountRange = memento.getAmountRange();
 
-		// validate
-		if (this.hasBothLimit()) {
-			this.numberRange.validateRange();
-			this.timeRange.validateRange();
-			this.amountRange.validateRange();
-		}
 	}
 
 	/**
@@ -62,7 +58,7 @@ public class CalcResultRange extends DomainObject {
 	 *
 	 * @return true, if successful
 	 */
-	private boolean hasBothLimit() {
+	public boolean hasBothLimit() {
 		return this.lowerLimit == CalcRangeCheck.SET && this.upperLimit == CalcRangeCheck.SET;
 	}
 

@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CurrentClosureDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -32,10 +31,7 @@ public class CurrentClosureFinder {
 	@Inject
 	private ClosureRepository closureRepository;
 
-	/** The closure history repository. */
-	@Inject
-	private ClosureHistoryRepository closureHistoryRepository;
-
+	/** The closure service. */
 	@Inject 
 	private ClosureService closureService;
 	
@@ -51,29 +47,28 @@ public class CurrentClosureFinder {
 
 		// get company id
 		String companyId = loginUserContext.companyId();
-		
-		List<Closure> listClosure = this.closureRepository.findAllActive(companyId, UseClassification.UseClass_Use);	
+
+		List<Closure> listClosure = this.closureRepository.findAllActive(companyId, UseClassification.UseClass_Use);
 		List<CurrentClosureDto> listCurrentClosureDto = new ArrayList<CurrentClosureDto>();
-		
+
 		for (Closure closure : listClosure) {
-			Optional<ClosureHistory> opClosureHistory = this.closureHistoryRepository.findByClosureIdAndCurrentMonth(
-					closure.getClosureId(), 
-					closure.getClosureMonth().getProcessingYm().v());
-			
-			DatePeriod currentPeriod = this.closureService.getClosurePeriod(
-					closure.getClosureId(), 
+			Optional<ClosureHistory> opClosureHistory = this.closureRepository.findByClosureIdAndCurrentMonth(
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().v());
+
+			DatePeriod currentPeriod = this.closureService.getClosurePeriod(closure.getClosureId().value,
 					closure.getClosureMonth().getProcessingYm());
-			
+
 			if (opClosureHistory.isPresent()) {
 				CurrentClosureDto currentClosureDto = CurrentClosureDto.builder()
 						.closureId(opClosureHistory.get().getClosureId().value)
 						.startDate(currentPeriod.start())
 						.endDate(currentPeriod.end())
 						.closureName(opClosureHistory.get().getClosureName().v())
+						.processingDate(closure.getClosureMonth().getProcessingYm().v())
 						.build();
 				listCurrentClosureDto.add(currentClosureDto);
 			}
-		}		
+		}
 
 		return listCurrentClosureDto;
 	}

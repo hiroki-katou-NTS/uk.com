@@ -9,8 +9,14 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingGetMemento;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
+import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberUnit;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 
 /**
  * The Class RoundingDto.
@@ -44,11 +50,9 @@ public class RoundingDto implements RoundingGetMemento {
 	 * getNumberRounding()
 	 */
 	@Override
-	public NumberRounding getNumberRounding() {
-		return new NumberRounding(
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.numberrounding.Unit.class),
-				EnumAdaptor.valueOf(this.numberRounding,
-						nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding.class));
+	public NumberRoundingSetting getNumberRounding() {
+		return new NumberRoundingSetting(EnumAdaptor.valueOf(this.numberUnit, NumberUnit.class),
+				EnumAdaptor.valueOf(this.numberRounding, NumberRounding.class));
 	}
 
 	/*
@@ -59,9 +63,8 @@ public class RoundingDto implements RoundingGetMemento {
 	 */
 	@Override
 	public TimeRoundingSetting getTimeRoundingSetting() {
-		return new TimeRoundingSetting(
-				EnumAdaptor.valueOf(this.timeUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Unit.class),
-				EnumAdaptor.valueOf(this.timeRounding, nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class));
+		return new TimeRoundingSetting(EnumAdaptor.valueOf(this.timeUnit, Unit.class),
+				EnumAdaptor.valueOf(this.timeRounding, Rounding.class));
 	}
 
 	/*
@@ -71,9 +74,8 @@ public class RoundingDto implements RoundingGetMemento {
 	 * getAmountRounding()
 	 */
 	@Override
-	public AmountRounding getAmountRounding() {
-		return new AmountRounding(
-				EnumAdaptor.valueOf(this.amountUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Unit.class),
-				EnumAdaptor.valueOf(this.amountRounding, nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class));
+	public AmountRoundingSetting getAmountRounding() {
+		return new AmountRoundingSetting(EnumAdaptor.valueOf(this.amountUnit, AmountUnit.class),
+				EnumAdaptor.valueOf(this.amountRounding, AmountRounding.class));
 	}
 }

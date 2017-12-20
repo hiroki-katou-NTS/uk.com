@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -24,9 +24,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class DefaultClosureServiceImpl implements ClosureService {
 
-	/** The closure history repository. */
+	/** The closure repository. */
 	@Inject
-	private ClosureHistoryRepository closureHistoryRepository;
+	private ClosureRepository closureRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -43,7 +43,7 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		String companyId = loginUserContext.companyId();
 
 		//
-		Optional<ClosureHistory> optClosureHistory = this.closureHistoryRepository
+		Optional<ClosureHistory> optClosureHistory = this.closureRepository
 				.findBySelectedYearMonth(companyId, closureId, processingYm.v());
 
 		// Check exist

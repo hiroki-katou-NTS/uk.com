@@ -22,7 +22,7 @@ module nts.uk.com.view.cdl003.parent.viewmodel {
             let self = this;
             let canSelected = self.canSelectClassificationCodes() ? self.canSelectClassificationCodes().split(',') : [];
             nts.uk.ui.windows.setShared('inputCDL003', {
-                canSelected: self.selectMode() ? canSelected : canSelected[0],
+                selectedCodes: self.selectMode() ? canSelected : canSelected[0],
                 showNoSelection: self.showNoSelection(),
                 isMultiple: self.selectMode()
             }, true);
@@ -31,7 +31,7 @@ module nts.uk.com.view.cdl003.parent.viewmodel {
                 //view all code of selected item 
                 var output = nts.uk.ui.windows.getShared('outputCDL003');
                 if (output) {
-                    self.selectClassificationCodes(output.selectedCode);
+                    self.selectClassificationCodes(output);
                 }
             })
         }

@@ -52,6 +52,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
                             self.rightItems([]);
                             self.currentCodeList.removeAll();
                             self.items.push(foundItem);
+                            self.items.push(search);
                         }else{
                             self.items(self.listBudget());
                         }
@@ -65,6 +66,7 @@ module nts.uk.at.view.kml002.d.viewmodel {
                         self.rightItems([]);
                         self.currentCodeList.removeAll();
                         self.items.push(foundItem);
+                        self.items.push(search);
                     }else{
                         self.items(self.listBudget());
                     }
@@ -80,11 +82,13 @@ module nts.uk.at.view.kml002.d.viewmodel {
             var dfd = $.Deferred();
             let array = [];
             let i = 2;
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             let param = {
                 budgetAtr: 1,   
                 // received from mother screen 0: day or 1: time
-                unitAtr: 0
+                unitAtr: data.unit
             }
+            
             service.getByAtr(param).done((lst) => {  
                 let sortedData= _.orderBy(lst, ['externalBudgetCode'], ['asc']);
                 _.map(sortedData, function(item){
@@ -110,8 +114,33 @@ module nts.uk.at.view.kml002.d.viewmodel {
                 let sortedLst= _.orderBy(array, ['id'], ['asc']);
                 self.items(sortedLst); 
                 self.listBudget(sortedLst);
+                
+                if(data.formPeople != null) {
+                    if(data.formPeople.lstPeopleFunc.length > 0) {
+                        let dataItems = [];
+                        self.checked(data.formPeople.actualDisplayAtr == 1? true: false);
+                        _.forEach(data.formPeople.lstPeopleFunc, function(item){
+                            let curItem = _.find(self.items(), function(o) { return o.code == item.externalBudgetCd; });
+                            
+                            let data = {
+                                id: item.dispOrder,
+                                code: item.externalBudgetCd,
+                                operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
+                                name: curItem.name
+                            }
+            
+                            dataItems.push(data);
+                        });
+                        
+                        self.rightItems.removeAll();
+                        var sortedItems = _.sortBy(dataItems, [function(o) { return o.id; }]);
+                        self.rightItems(sortedItems);
+                    }
+                }
+                    
                 dfd.resolve();
-            })
+            });
+            
             return dfd.promise();
         }
         
@@ -119,14 +148,37 @@ module nts.uk.at.view.kml002.d.viewmodel {
          * event when click register button
          */
         submit() {
+            var t0 = performance.now();
             var self = this;
+            let dataItems = [];
+            var dataA = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            
+            _.forEach(self.rightItems(), function(item, index){
+                let data = {
+                    verticalCalCd: dataA.verticalCalCd,
+                    verticalCalItemId: dataA.itemId,
+                    externalBudgetCd: item.code,
+                    categoryAtr: 1,
+                    operatorAtr: item.operatorAtr == nts.uk.resource.getText("KML002_37") ? 0 : 1,
+                    dispOrder: index,
+                    name: item.name
+                }
+
+                dataItems.push(data);
+            });
+
             let transfer = {
-                checked: self.checked(),
-                rightItems: self.rightItems(),
+                verticalCalCd: dataA.verticalCalCd,
+                verticalCalItemId: dataA.itemId,                
+                actualDisplayAtr: self.checked() ? 1 : 0,
+                lstPeopleFunc: dataItems
             }
+            
             setSharedD('KML002_D_Budget', transfer);
-            console.log(transfer);
             nts.uk.ui.windows.close();
+            
+            var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         
         /**
@@ -141,16 +193,20 @@ module nts.uk.at.view.kml002.d.viewmodel {
          * event when click add button 
          */
         add(){
+              var t0 = performance.now();
             let self = this;
+            console.log(self.rightItems());
             if((self.rightItems().length + self.currentCodeList().length) > 100){
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             }else{
+                var righItems = self.rightItems();
+                let i = self.rightItems().length;
                 _.forEach(self.currentCodeList(), function(item){
                     var temp = _.find(self.listBudget(), function(obj) {
                         return item == obj.id;
                     });
-                    let i = self.rightItems().length;
-                    self.rightItems.push({
+                    
+                    righItems.push({
                         id: i,
                         code: temp.code,
                         operatorAtr: nts.uk.resource.getText("KML002_37"),
@@ -158,30 +214,37 @@ module nts.uk.at.view.kml002.d.viewmodel {
                     })
                     i = i+1;
                 });
+                self.rightItems(righItems);
+                console.log(self.rightItems());
             }
+             var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         
         /**
          * event when click subtraction button
-         */
+         */  
         sub(){
             let self = this; 
             if((self.rightItems().length + self.currentCodeList().length) > 100){
                 nts.uk.ui.dialog.info({ messageId: "Msg_195" });
             }else{   
+                var righItems = self.rightItems();
+                let i = self.rightItems().length;
                 _.forEach(self.currentCodeList(), function(item){
                     var temp = _.find(self.listBudget(), function(obj) {
                         return item == obj.id;
                     });
-                    let i = self.rightItems().length;
-                    self.rightItems.push({
+                    righItems.push({
                         id: i,
                         code: temp.code,
                         operatorAtr: nts.uk.resource.getText("KML002_38"),
                         name: temp.name,    
-                    })
+                    }) 
                     i = i+1;
                 });
+                self.rightItems(righItems);
+                console.log(self.rightItems());
             }
         }
         

@@ -7,7 +7,6 @@ package nts.uk.ctx.sys.env.dom.mailserver;
 /**
  * メール送信認証
  */
-// 使用区�?
 public enum UseAuthentication {
 
 	/** The not use. */

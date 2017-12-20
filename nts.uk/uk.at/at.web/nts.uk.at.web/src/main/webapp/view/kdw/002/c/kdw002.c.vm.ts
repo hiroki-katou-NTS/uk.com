@@ -14,18 +14,20 @@ module nts.uk.at.view.kdw002.c {
                 self.bussinessCodeItems = ko.observableArray([]);
 
                 this.bussinessColumn = ko.observableArray([
-                    { headerText: getText('KDW002_12'), key: 'roleId', width: 100 },
+                    { headerText: 'ID', key: 'roleId', width: 100, hidden: true  },
+                    { headerText: getText('KDW002_12'), key: 'roleCode', width: 100 },
                     { headerText: getText('KDW002_4'), key: 'roleName', width: 150, formatter: _.escape },
                 ]);
 
                 self.currentRoleId = ko.observable('');
                 self.currentRoleId.subscribe(roleId => {
-
                     self.currentRoleId(roleId);
-
+                    _.defer(() => nts.uk.ui.block.invisible());
                     $.when(service.getListDailyServiceTypeControl(roleId), service.getAttendanceItems()).done(
                         (DailyServiceTypeControls, attendanceItems) => {
-
+                            $('#useCheckAll').prop('checked', false);
+                            $('#youCanCheckAll').prop('checked', false);
+                            $('#otherCheckAll').prop('checked', false);
                             if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls) && !nts.uk.util.isNullOrUndefined(attendanceItems)) {
                                 var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
                                 var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
@@ -47,6 +49,7 @@ module nts.uk.at.view.kdw002.c {
                                     }
                                 }
                             }
+                            nts.uk.ui.block.clear();
                         }
                     );
                 });
@@ -103,9 +106,11 @@ module nts.uk.at.view.kdw002.c {
                         use: dstc.use
                     }));
                 });
-
+                nts.uk.ui.block.invisible();
                 service.updateDailyService(DailyServiceTypeControls).done(x => {
                     infor(nts.uk.resource.getMessage("Msg_15", []));
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
             }
 
@@ -173,10 +178,12 @@ module nts.uk.at.view.kdw002.c {
 
         class BusinessType {
             roleId: string;
+            roleCode: string;
             roleName: string;
             constructor(param: IBusinessType) {
                 let self = this;
                 self.roleId = param.roleId;
+                self.roleCode = param.roleCode;
                 self.roleName = param.roleName;
             }
         }
@@ -346,9 +353,9 @@ function loadIgrid() {
     var useTemplate = "<input type='checkbox' {{if ${use} }} checked {{/if}} onclick='useChanged(this, ${attendanceItemId})' />";
     var youCanChangeItTemplate = "<input type='checkbox' {{if ${youCanChangeIt} }} checked {{/if}} onclick='youCanChangeItChanged(this, ${attendanceItemId})' />";
     var canBeChangedByOthersTemplate = "<input type='checkbox' {{if ${canBeChangedByOthers} }} checked {{/if}} onclick='canBeChangedByOthersChanged(this, ${attendanceItemId})' />";
-    var useHeader = "<input type='checkbox' onclick='useHeaderChanged(this)'/> ";
-    var youCanChangeItHeader = "<input type='checkbox' onclick='youCanChangeItHeaderChanged(this)'/> ";
-    var canBeChangedByOthersHeader = "<input type='checkbox' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
+    var useHeader = "<input type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
+    var youCanChangeItHeader = "<input type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> ";
+    var canBeChangedByOthersHeader = "<input type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
     $("#grid").igGrid({
         primaryKey: "attendanceItemId",
         height: 400,
@@ -362,11 +369,11 @@ function loadIgrid() {
         // virtualizationMode: "continuous",
         virtualizationMode: "fixed",
         columns: [
-            { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number", columnCssClass: "readOnlyColor" },
-            { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string", columnCssClass: "readOnlyColor" },
-            { key: "use", width: "150px", headerText: useHeader + nts.uk.resource.getText('KDW002_5'), dataType: "bool", template: useTemplate },
-            { key: "youCanChangeIt", width: "150px", headerText: youCanChangeItHeader + nts.uk.resource.getText('KDW002_6'), dataType: "bool", template: youCanChangeItTemplate },
-            { key: "canBeChangedByOthers", width: "150px", headerText: canBeChangedByOthersHeader + nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
+            { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number" },
+            { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string" },
+            { key: "use", width: "100px", headerText: useHeader + nts.uk.resource.getText('KDW002_5'), dataType: "bool", template: useTemplate },
+            { key: "youCanChangeIt", width: "120px", headerText: youCanChangeItHeader + nts.uk.resource.getText('KDW002_6'), dataType: "bool", template: youCanChangeItTemplate },
+            { key: "canBeChangedByOthers", width: "120px", headerText: canBeChangedByOthersHeader + nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
             { key: "userCanSet", dataType: "bool", hidden: true }
         ],
         features: [

@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter @Getter
 public class GridItem {
 	private int id;
+	private String flexImage;
 	private boolean flag;
 	private int ruleCode;
 	private String time;
@@ -33,8 +34,9 @@ public class GridItem {
 	
 	public GridItem(int index) {
 		this.id = index;
+		this.flexImage = index % 3 == 0 ? "1" : null;
         this.flag = index % 2 == 0;
-        this.ruleCode = index % 3 + 1;
+        this.ruleCode = index;
         this.time = "13:36";
         this.addressCode1 = "001";
         this.addressCode2 = "002";

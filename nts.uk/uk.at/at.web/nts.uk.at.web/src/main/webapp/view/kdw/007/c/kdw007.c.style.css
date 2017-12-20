@@ -1,0 +1,14 @@
+#all-list_container, #add-sub-list_container {
+	display: inline-block;
+}
+
+.control-button-wrap {
+    text-align: center;
+    display: inline-block;
+    margin-top: 60px;
+    vertical-align: top;
+}
+
+.control-button-wrap button {
+	margin: 0px 0 10px 0;
+}

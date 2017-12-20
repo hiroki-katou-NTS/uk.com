@@ -13,5 +13,15 @@ public interface ShiftConditionRepository {
 	 */
 	public List<ShiftCondition> getListShiftCondition(String companyId);
 
-	
+	/**
+	 * get list shift condition by companyId and list conditionNo
+	 * 
+	 * @param companyId
+	 *            companyId
+	 * @param conditionNos
+	 *            list conditionNo
+	 * @return list shift condition
+	 */
+	public List<ShiftCondition> getShiftCondition(String companyId, List<Integer> conditionNos);
+
 }

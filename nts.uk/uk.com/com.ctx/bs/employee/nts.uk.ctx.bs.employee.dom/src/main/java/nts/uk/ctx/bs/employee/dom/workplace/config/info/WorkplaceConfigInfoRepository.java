@@ -74,4 +74,14 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceConfigInfo> findAllByParentWkpId(String companyId, GeneralDate baseDate, String parentWkpId);
+	
+	/**
+	 * Find all parent by wkp id.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @param wkpId the wkp id
+	 * @return the optional
+	 */
+	Optional<WorkplaceConfigInfo> findAllParentByWkpId(String companyId, GeneralDate baseDate, String wkpId);
 }

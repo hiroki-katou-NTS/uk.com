@@ -10,7 +10,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleName;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
-import nts.uk.ctx.bs.employee.infra.repository.workplace.info.IsManagerStatus;
 
 /**
  * The Class JpaJobTitleInfoGetMemento.
@@ -106,7 +105,7 @@ public class JpaJobTitleInfoGetMemento implements JobTitleInfoGetMemento {
 	 * getIsManager()
 	 */
 	@Override
-	public boolean getIsManager() {
+	public boolean isManager() {
 		return IsManagerStatus.valueOf(this.bsymtJobInfo.getIsManager()).booleanValue;
 	}
 }

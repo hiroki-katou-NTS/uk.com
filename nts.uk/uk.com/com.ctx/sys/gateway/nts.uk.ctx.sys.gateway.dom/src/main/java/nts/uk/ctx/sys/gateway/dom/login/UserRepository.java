@@ -14,16 +14,19 @@ public interface UserRepository {
 	/**
 	 * Gets the by login id.
 	 *
-	 * @param loginId the login id
+	 * @param loginId
+	 *            the login id
 	 * @return the by login id
 	 */
-	Optional<User> getByLoginId(String loginId); 
-	
+	Optional<User> getByLoginId(String loginId);
+
 	/**
 	 * Gets the by associated person id.
 	 *
-	 * @param associatedPersonId the associated person id
+	 * @param associatedPersonId
+	 *            the associated person id
 	 * @return the by associated person id
 	 */
-	Optional<User> getByAssociatedPersonId(String associatedPersonId); 
+	Optional<User> getByAssociatedPersonId(String associatedPersonId);
+
 }

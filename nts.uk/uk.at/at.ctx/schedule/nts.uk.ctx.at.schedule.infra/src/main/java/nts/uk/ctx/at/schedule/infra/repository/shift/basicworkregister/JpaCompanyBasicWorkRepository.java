@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.shift.basicworkregister;
@@ -140,6 +140,46 @@ public class JpaCompanyBasicWorkRepository extends JpaRepository implements Comp
 				.setWorkdayDivision(entity.getKscmtCompanyWorkSetPK().getWorkdayDivision());
 		entityToUpdate.getKscmtCompanyWorkSetPK().setCid(entity.getKscmtCompanyWorkSetPK().getCid());
 		return entityToUpdate;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository#findById(java.lang.String, int)
+	 */
+	@Override
+	public Optional<CompanyBasicWork> findById(String companyId, int workdayAtr) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder bd = em.getCriteriaBuilder();
+		CriteriaQuery<KscmtCompanyWorkSet> cq = bd.createQuery(KscmtCompanyWorkSet.class);
+
+		// Root
+		Root<KscmtCompanyWorkSet> root = cq.from(KscmtCompanyWorkSet.class);
+		cq.select(root);
+
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		
+		// equal companyId
+		predicateList.add(bd.equal(root.get(KscmtCompanyWorkSet_.kscmtCompanyWorkSetPK).get(KscmtCompanyWorkSetPK_.cid),
+				companyId));
+		
+		// equal workdayDivision
+		predicateList.add(bd.equal(root.get(KscmtCompanyWorkSet_.kscmtCompanyWorkSetPK).get(KscmtCompanyWorkSetPK_.workdayDivision),
+				workdayAtr));
+
+		// Set Where clause to SQL Query
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Create Query
+		TypedQuery<KscmtCompanyWorkSet> query = em.createQuery(cq);
+
+		List<KscmtCompanyWorkSet> entities = query.getResultList();
+
+		if (CollectionUtil.isEmpty(entities)) {
+			return Optional.empty();
+		}
+
+		return Optional.of(this.toDomain(entities));
 	}
 
 }

@@ -21,7 +21,7 @@ public class WorkTimeScreenDto {
 	private int methodAtr;
 	private int displayAtr;
 	private String note;
-	private int amStartClock;
-	private int pmEndClock;
+	private int start;
+	private int end;
 	private int timeNumberCnt;
 }

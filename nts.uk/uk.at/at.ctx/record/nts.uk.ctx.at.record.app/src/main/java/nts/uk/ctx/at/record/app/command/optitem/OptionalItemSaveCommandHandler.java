@@ -74,7 +74,7 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 			return new FormulaDispOrder(item);
 		}).collect(Collectors.toList());
 
-		if (this.optItemSv.canRegisterListFormula(formulas)) {
+		if (this.optItemSv.canRegister(dom, formulas)) {
 
 			// update optional item.
 			this.optItemRepo.update(dom);

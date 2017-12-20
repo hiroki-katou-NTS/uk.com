@@ -15,14 +15,16 @@ public class OutputDetailCheckDto {
 		private int approvalATR;
 		//代行期限切れフラグ
 		private boolean alternateExpiration;
-		
+		//ドメインモデル「申請」．入力者 == ログイン者社員ID OR ドメインモデル「申請」．申請者 == ログイン者社員ID
+		private boolean loginInputOrApproval;
 		public static OutputDetailCheckDto fromDomain(DetailedScreenPreBootModeOutput domain) {
 			return new OutputDetailCheckDto(
 					domain.getUser().value,
 					domain.getReflectPlanState().value,
 					domain.isAuthorizableFlags(),
 					domain.getApprovalATR().value,
-					domain.isAlternateExpiration()
+					domain.isAlternateExpiration(),
+					domain.isLoginInputOrApproval()
 					);
 		}
 }

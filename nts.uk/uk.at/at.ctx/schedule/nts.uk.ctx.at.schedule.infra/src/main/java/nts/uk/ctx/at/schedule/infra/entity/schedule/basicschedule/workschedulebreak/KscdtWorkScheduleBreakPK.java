@@ -27,7 +27,7 @@ public class KscdtWorkScheduleBreakPK implements Serializable {
 	@Column(name = "YMD")
 	public GeneralDate date;
 
-	@Column(name = "SCHEDULE_BREAK_CNT")
+	@Column(name = "BREAK_CNT")
 	public int scheduleBreakCnt;
 
 }

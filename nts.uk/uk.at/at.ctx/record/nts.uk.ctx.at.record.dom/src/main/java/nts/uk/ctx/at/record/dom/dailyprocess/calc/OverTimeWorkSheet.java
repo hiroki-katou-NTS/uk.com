@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.Working
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.overtimework.StatutoryPrioritySet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.OverWorkSet.StatutoryOverTimeWorkSet;
+import nts.uk.ctx.at.shared.dom.worktime.commomsetting.overworkset.StatutoryOverTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidOverTimeWorkSheet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidWorkTimeSetting;

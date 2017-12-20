@@ -7,8 +7,6 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 
 public interface GoBackDirectlyUpdateService {
 	
-	public void update(GoBackDirectly goBackDirectly, Application application);
-	
 	/**
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
 	 * @return
@@ -18,5 +16,5 @@ public interface GoBackDirectlyUpdateService {
 	 * アルゴリズム「直行直帰更新」を実行する
 	 * @param goBackDirectly
 	 */
-	public void updateGoBackDirectly(GoBackDirectly goBackDirectly);
+	public void updateGoBackDirectly(GoBackDirectly goBackDirectly, Application application);
 }

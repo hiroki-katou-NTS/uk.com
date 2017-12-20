@@ -58,7 +58,7 @@ module nts.uk.at.view.kaf002.m4 {
                         });     
                     })
                     .fail(function(res) { 
-                        nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});  
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
                     });
                 }
             }
@@ -96,7 +96,7 @@ module nts.uk.at.view.kaf002.m4 {
                             location.reload();
                         });    
                     } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.message}).then(function(){nts.uk.ui.block.clear();});     
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});     
                     }
                 });  
             }

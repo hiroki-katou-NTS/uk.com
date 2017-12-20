@@ -10,18 +10,13 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalCd
 				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalName
+				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.ItemName
 			</com:ValidatorScript>
 			
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-
+				
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:stylefile path="../main.css" />
-
 			<com:scriptfile path="kml002.h.vm.js" />
 			<com:scriptfile path="kml002.h.service.js" />
 			<com:scriptfile path="kml002.h.start.js" />		
@@ -51,7 +46,7 @@
 					<button tab-index="2" class="registrationBtn proceed" data-bind="click: $parent.viewmodelA.registrationBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_2')}</button>
 					<button tab-index="3" class="settingBtn" data-bind="click: $parent.viewmodelA.settingBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_3')}</button>
 <!-- 					<button tab-index="4" class="deleteBtn danger" data-bind="click: $parent.viewmodelA.deleteBtn.bind($parent.viewmodelA), enable: $parent.viewmodelA.items().length>0">#{i18n.getText('KML002_4')}</button>					 -->
-					<button tab-index="4" class="deleteBtn danger" data-bind="click: $parent.viewmodelA.deleteBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_4')}</button>
+					<button tab-index="4" class="deleteBtn danger" data-bind="click: $parent.viewmodelA.deleteBtn.bind($parent.viewmodelA), enable: !$parent.viewmodelA.editMode()">#{i18n.getText('KML002_4')}</button>
 				</com:ko-if>
 			</div>
 			<div id="tabpanel-h" role="tabpanel" class="screen-h" data-bind="with: viewmodelH">
@@ -84,7 +79,7 @@
 								</td>
 								<td>
 									<com:ko-if bind="fixedItemAtr() == 0 || fixedItemAtr() == 1 || fixedItemAtr() == 6">
-										<button data-bind="click: $parent.openDialog.bind($parent, $data.fixedItemAtr())" class="advance-setting" >#{i18n.getText('KML002_84')}</button>
+										<button data-bind="click: $parent.openDialog.bind($parent, $data.fixedItemAtr()), enable: $data.useAtr()==0" class="advance-setting" >#{i18n.getText('KML002_84')}</button>
 									</com:ko-if>
 								</td>
 							</tr>

@@ -18,12 +18,15 @@ public class DPAttendanceItem {
 	private Integer displayNumber;
 	private boolean userCanSet;
 	private Integer lineBreakPosition;
-	// 勤怠項目属性
-	// 0: 時間
-	// 1: 時刻
-	// 2: 回数
-	// 3: 区分
-	// 4: ｺｰﾄﾞ
-	// 5: 金額
+	/*0:  コード */
+	/*1:  マスタを参照する */
+	/*2:  回数*/
+	/*3:  金額*/
+	/*4:  区分 */
+	/*5:  時間 */
+	/*6:  時刻*/
+	/*7:  文字 */
 	private Integer attendanceAtr;
+	
+	private Integer typeGroup;
 }

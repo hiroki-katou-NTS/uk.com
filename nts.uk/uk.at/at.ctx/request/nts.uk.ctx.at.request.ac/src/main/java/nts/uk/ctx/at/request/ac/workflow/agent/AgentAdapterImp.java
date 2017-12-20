@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
 import nts.uk.ctx.workflow.pub.agent.AgentPub;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
@@ -38,7 +39,7 @@ public class AgentAdapterImp implements AgentAdapter {
 	private ApproverRepresenterImport covertApproverImport(ApproverRepresenterExport approverRepresenterExport) {
 		return new  ApproverRepresenterImport(
 				approverRepresenterExport.getApprover(),
-				approverRepresenterExport.getRepresenter()
+				new RepresenterInformationImport(approverRepresenterExport.getRepresenter().getValue()) 
 				);
 	}
 

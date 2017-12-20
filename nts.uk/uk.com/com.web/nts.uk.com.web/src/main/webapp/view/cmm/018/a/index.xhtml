@@ -167,7 +167,7 @@
 											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
 											<!-- A3_14: -->
@@ -234,7 +234,7 @@
 											<td class="allow-pay">
 												<div>
 													<button data-bind="click: function() {$parent.deleteRow(approvalId,employRootAtr)}" 
-													style=" background-image: url(../images/137.png);width:41px; height:44px;"></button>
+													style=" background-image: url(../images/137.png);width:32px; height:32px;"></button>
 												</div>
 											</td>
 										</tr>
@@ -280,7 +280,7 @@
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
 								<br/>
-								<table class="contents-header" id="fixed-tableB">
+								<table class="contents-header" id="fixed-tableB" style = "table-layout: fixed;">
 									<colgroup>
 										<col width="100px"/>
 										<col width="80px"/>
@@ -339,7 +339,7 @@
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
 											<!-- B3_14: -->
@@ -351,7 +351,7 @@
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -363,7 +363,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_20: -->
@@ -375,7 +375,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase">
@@ -386,7 +386,7 @@
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_26: -->
@@ -398,7 +398,7 @@
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 										</tr>
@@ -551,7 +551,7 @@
 											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
 											<!-- C3_14: -->
@@ -617,7 +617,7 @@
 											<td class="allow-pay">
 												<div>
 													<button data-bind="click: function() {$parent.deleteRow(approvalId,employRootAtr)}" 
-													style=" background-image: url(../images/137.png);width:41px; height:44px;"></button>
+													style=" background-image: url(../images/137.png);width:32px; height:32px;"></button>
 												</div>
 											</td>
 										</tr>
@@ -663,7 +663,7 @@
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
 								<br/>
-								<table class="contents-header" id="fixed-tableWpB">
+								<table class="contents-header" id="fixed-tableWpB" style = "table-layout: fixed;">
 									<colgroup>
 										<col width="100px"/>
 										<col width="80px"/>
@@ -722,7 +722,7 @@
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
 											<!-- B3_14: -->
@@ -734,7 +734,7 @@
 											<!-- D3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -746,7 +746,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- D3_20: -->
@@ -758,7 +758,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase">
@@ -769,7 +769,7 @@
 											<!-- D3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- D3_26: -->
@@ -781,7 +781,7 @@
 											<!-- D3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 										</tr>
@@ -926,7 +926,7 @@
 											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
 											<!-- A3_14: -->
@@ -992,7 +992,7 @@
 											<td class="allow-pay">
 												<div>
 													<button data-bind="click: function() {$parent.deleteRow(approvalId,employRootAtr)}" 
-													style=" background-image: url(../images/137.png);width:41px; height:44px;"></button>
+													style=" background-image: url(../images/137.png);width:32px; height:32px;"></button>
 												</div>
 											</td>
 										</tr>
@@ -1038,7 +1038,7 @@
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
 								<br/>
-								<table class="contents-header" id = "fixed-tablePsB">
+								<table class="contents-header" id = "fixed-tablePsB" style = "table-layout: fixed;">
 									<colgroup>
 										<col width="100px"/>
 										<col width="80px"/>
@@ -1097,14 +1097,14 @@
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
-													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
 											<!-- F3_14: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
 														data-bind="click: function(){$parent.openDialogKB(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
-												<div data-bind="text: appPhase1.appFormName"></div>
+												<div class = "fixName" data-bind="text: appPhase1.appFormName"></div>
 											</td>
 											<!-- F3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -1121,7 +1121,7 @@
 											<!-- F3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- F3_20: -->
@@ -1133,7 +1133,7 @@
 											<!-- F3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
 											<!-- F3_23: -->
 											<td class="button_phase">
@@ -1144,7 +1144,7 @@
 											<!-- F3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 											<!-- F3_26: -->
@@ -1156,7 +1156,7 @@
 											<!-- F3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
 										</tr>

@@ -153,7 +153,14 @@ __viewContext.ready(function () {
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
         if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
         else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green"));
-        if (i % 7 === 0) detailContentDeco.push(new CellColor("_3", i.toString(), "cell-light-green", 0));
+        if (i % 7 === 0) {
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 0));
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 0));
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 1));
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 1));
+            detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 0));
+            detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 1));
+        }
         if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
         vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
         newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00"});

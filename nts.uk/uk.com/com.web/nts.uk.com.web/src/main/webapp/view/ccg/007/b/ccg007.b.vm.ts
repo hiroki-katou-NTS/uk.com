@@ -85,10 +85,10 @@ module nts.uk.pr.view.ccg007.b {
                         nts.uk.characteristics.remove("form1LoginInfo").done(function() {
                             if (self.isSaveLoginInfo()) {
                                 nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {
-                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
                                 });
                             } else {
-                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml", {screen: 'login'});
                             }
                         });
                         blockUI.clear();

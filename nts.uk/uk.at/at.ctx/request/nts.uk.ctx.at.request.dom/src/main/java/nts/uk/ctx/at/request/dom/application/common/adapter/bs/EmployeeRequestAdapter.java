@@ -5,6 +5,8 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.ConcurrentEmployeeRequest;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 
 public interface EmployeeRequestAdapter {
 	/**
@@ -29,15 +31,6 @@ public interface EmployeeRequestAdapter {
 	List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate date);
 
 	/**
-	 * 所属職場の取得 Gets the workplace id.
-	 *
-	 * @param companyId the company id
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
-	 * @return the workplace id
-	 */
-	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
-	/**
 	 * Get employee Name
 	 * @param sID
 	 * @return
@@ -51,4 +44,8 @@ public interface EmployeeRequestAdapter {
 	String empEmail(String sID);
 	
 	List<ConcurrentEmployeeRequest> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
+	
+	SEmpHistImport getEmpHist(String companyId, String employeeId,
+			GeneralDate baseDate);
+	SWkpHistImport getSWkpHistByEmployeeID(String employeeId, GeneralDate baseDate);
 }

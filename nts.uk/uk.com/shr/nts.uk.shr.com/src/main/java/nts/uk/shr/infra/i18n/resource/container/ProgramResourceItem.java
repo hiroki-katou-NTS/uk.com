@@ -5,14 +5,12 @@ import lombok.RequiredArgsConstructor;
 import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 
 @RequiredArgsConstructor
+@Getter
 public class ProgramResourceItem implements I18NResourceItem {
 
-	@Getter
+	private final String systemId;
 	private final String programId;
-
-	@Getter
 	private final String serialNumber;
-	
 	private final String content;
 
 	@Override

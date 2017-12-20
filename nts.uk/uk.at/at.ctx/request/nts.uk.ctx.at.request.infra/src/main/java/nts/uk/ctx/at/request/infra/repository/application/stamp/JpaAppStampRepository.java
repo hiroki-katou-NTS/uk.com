@@ -73,13 +73,11 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 	public void updateStamp(AppStamp appStamp) {
 		Optional<KrqdtAppStamp> optional = this.queryProxy().find(new KrqdpAppStamp(
 				appStamp.getCompanyID(), 
-				appStamp.getApplicationID(), 
-				appStamp.getStampRequestMode().value), KrqdtAppStamp.class);
+				appStamp.getApplicationID()), KrqdtAppStamp.class);
 		if(!optional.isPresent()) throw new RuntimeException(" Not found AppStamp in table KRQDT_APP_STAMP, appID =" + appStamp.getApplicationID());
 		KrqdtAppStamp krqdtAppStamp = optional.get();
 		krqdtAppStamp.version = appStamp.getVersion();
-		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getApplicationReason().v().split(":")[0];
-		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v().split(":")[1].substring(1);
+		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v();
 		switch(appStamp.getStampRequestMode()) {
 			case STAMP_GO_OUT_PERMIT: 
 				for(int i=0;i<appStamp.getAppStampGoOutPermits().size();i++){
@@ -137,7 +135,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		List<AppStampWork> appStampWorks = new ArrayList<AppStampWork>();
 		List<AppStampCancel> appStampCancels = new ArrayList<AppStampCancel>();
 		AppStampOnlineRecord appStampOnlineRecord = null;
-		switch(krqdtAppStamp.krqdpAppStampPK.stampRequestMode) {
+		switch(krqdtAppStamp.stampRequestMode) {
 			case 0:
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
 					AppStampGoOutPermit appStampGoOutPermit = new AppStampGoOutPermit(
@@ -207,7 +205,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				krqdtAppStamp.kafdtApplication.enteredPersonSID, 
 				new AppReason(krqdtAppStamp.kafdtApplication.reversionReason), 
 				krqdtAppStamp.kafdtApplication.applicationDate, 
-				krqdtAppStamp.kafdtApplication.appReasonId,
 				new AppReason(krqdtAppStamp.kafdtApplication.applicationReason), 
 				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.applicationType, ApplicationType.class), 
 				krqdtAppStamp.kafdtApplication.applicantSID, 
@@ -222,7 +219,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				null,
 				null,
 				null,
-				EnumAdaptor.valueOf(krqdtAppStamp.krqdpAppStampPK.stampRequestMode, StampRequestMode.class), 
+				EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode.class), 
 				appStampGoOutPermits, 
 				appStampWorks, 
 				appStampCancels, 
@@ -235,8 +232,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		KrqdtAppStamp krqdtAppStamp = new KrqdtAppStamp(
 				new KrqdpAppStamp(
 						appStamp.getCompanyID(), 
-						appStamp.getApplicationID(), 
-						appStamp.getStampRequestMode().value), 
+						appStamp.getApplicationID()), 
+				appStamp.getStampRequestMode().value,
 				appStamp.getVersion(),
 				null, 
 				null, 
@@ -245,7 +242,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								appStamp.getCompanyID(), 
 								appStamp.getApplicationID()), 
 						appStamp.getVersion(),
-						appStamp.getAppReasonID(),
 						appStamp.getPrePostAtr().value, 
 						appStamp.getInputDate(), 
 						appStamp.getEnteredPersonSID(), 
@@ -263,7 +259,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						appStamp.getReflectPerState().value, 
 						appStamp.getReflectPerEnforce().value,
 						null,
-						null,null,null,null),
+						null,null,null,null,null, null),
 				null);
 		List<KrqdtAppStampDetail> krqdtAppStampDetails = new ArrayList<KrqdtAppStampDetail>();
 		switch(appStamp.getStampRequestMode()) {

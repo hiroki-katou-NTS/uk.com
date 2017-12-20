@@ -1,61 +1,73 @@
 module nts.uk.com.view.cps017.c.viewmodel {
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import textUK = nts.uk.text;
+    import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog;
+    import formatDate = nts.uk.time.formatDate;
 
     export class ScreenModel {
-        Items: KnockoutObservableArray<IItem> = ko.observableArray([]);
-        item: KnockoutObservable<Item> = ko.observable(new Item({ id: '', name: '' }));
-        date: KnockoutObservable<string>;
+        listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
+        historySelection: KnockoutObservable<HistorySelection> = ko.observable(new HistorySelection({ histId: '', selectionItemId: '' }));
+        selectionName: KnockoutObservable<string> = ko.observable('');
+        data: any;
 
         constructor() {
-            let self = this,
-                item: Item = self.item();
-            
-            self.date = ko.observable("1990/01/01");
-            self.start();
+            let self = this;
+            self.data = getShared('CPS017C_PARAMS');
+            //get name from screen main
+            self.selectionName(self.data.name);
         }
 
-        //
-        start() {
+        closeDialog() {
+            nts.uk.ui.windows.close();
+        }
+
+        addHistory() {
+            block.invisible();
             let self = this,
-                items: KnockoutObservableArray<IItem> = self.Items;
-            
-            service.getItems().done((_items: Array<IItem>) => {
-                if (_items && _items.length) {
-                    _items.forEach(x => items.push(x));
-                }
+                currentItem: HistorySelection = self.historySelection(),
+                selectHistory = self.data.selectHistory;
+            currentItem.companyId(selectHistory.companyId);
+            currentItem.selectionItemId(selectHistory.selectionItemId);
+            currentItem.histId(selectHistory.histId);
+            let command = ko.toJS(currentItem);
+            service.addHistoryData(command).done(function() {
+                dialog.info({ messageId: "Msg_15" }).then(function() {
+                    nts.uk.ui.windows.close();
+                });
+
+            }).fail(function(res) {
+                $('#start-date-sel').ntsError('set', { messageId: res.messageId });
+            }).always(() => {
+                block.clear();
             });
         }
-        
-        //
-        closeDialog(){
-            nts.uk.ui.windows.close();    
-        }
     }
 
-    //
-    class Item {
-        id: KnockoutObservable<number> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
+    // History:
+    interface IHistorySelection {
+        histId?: string;
+        selectionItemId?: string;
+        companyId: string;
+        startDate: string;
+        endDate: string;
+    }
 
-        constructor(param: IItem) {
+    class HistorySelection {
+        histId: KnockoutObservable<string> = ko.observable('');
+        selectionItemId: KnockoutObservable<string> = ko.observable('');
+        companyId: KnockoutObservable<string> = ko.observable('');
+        startDate: KnockoutObservable<string> = ko.observable(formatDate(new Date()) || undefined);
+        endDate: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: IHistorySelection) {
             let self = this;
-            self.id(param.id);
-            self.name(param.name || '');
+            self.histId(param.histId || '');
+            self.selectionItemId(param.selectionItemId || '');
+            self.companyId(param.companyId || '');
+            self.startDate(formatDate(new Date()) || undefined);
+            self.endDate(param.endDate || '');
         }
-    }
 
-    //
-    interface IItem {
-        id: number;
-        name: string;
     }
-
 
 }

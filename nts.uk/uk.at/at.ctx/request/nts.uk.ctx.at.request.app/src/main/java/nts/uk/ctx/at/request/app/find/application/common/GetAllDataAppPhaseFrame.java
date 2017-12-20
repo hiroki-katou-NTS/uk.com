@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
@@ -59,6 +61,7 @@ public class GetAllDataAppPhaseFrame {
 				.stream().map(appApprovalPhase -> AppApprovalPhaseDto.fromDomain(appApprovalPhase))
 				.collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(listPhaseByAppID)) {
+			Collections.sort(listPhaseByAppID, Comparator.comparing(AppApprovalPhaseDto::getDispOrder));
 			application.setListPhase(listPhaseByAppID);
 		}
 		//duyet list phase

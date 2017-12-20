@@ -7,17 +7,26 @@ package nts.uk.ctx.bs.employee.dom.jobtitle;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
+import nts.uk.shr.com.history.strategic.ContinuousHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JobTitle.
  */
 //職位
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class JobTitle extends AggregateRoot {
+@Setter
+public class JobTitle extends AggregateRoot implements ContinuousHistory<JobTitleHistory, DatePeriod, GeneralDate>{
 	
 	/** The company id. */
 	//会社ID
@@ -29,7 +38,7 @@ public class JobTitle extends AggregateRoot {
 	
 	/** The job title history. */
 	//履歴
-	private List<JobTitleHistory> jobTitleHistory;
+	private List<JobTitleHistory> jobTitleHistories;
 
 	/**
 	 * Instantiates a new job title.
@@ -39,7 +48,7 @@ public class JobTitle extends AggregateRoot {
 	public JobTitle(JobTitleGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.jobTitleId = memento.getJobTitleId();
-		this.jobTitleHistory = memento.getJobTitleHistory()
+		this.jobTitleHistories = memento.getJobTitleHistory()
 				.stream()
 				// sort by start date desc 
 				.sorted((obj1, obj2) -> obj2.span().start().compareTo(obj1.span().start()))
@@ -54,7 +63,7 @@ public class JobTitle extends AggregateRoot {
 	public void saveToMemento(JobTitleSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setJobTitleId(this.jobTitleId);
-		memento.setJobTitleHistory(this.jobTitleHistory);
+		memento.setJobTitleHistory(this.jobTitleHistories);
 	}
 	
 	/**
@@ -64,7 +73,7 @@ public class JobTitle extends AggregateRoot {
 	 */
 	public JobTitleHistory getLastestHistory() {
 		final int indexLastestHistory = 0;
-        return this.jobTitleHistory.get(indexLastestHistory);
+        return this.jobTitleHistories.get(indexLastestHistory);
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +84,7 @@ public class JobTitle extends AggregateRoot {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
-		result = prime * result + ((jobTitleHistory == null) ? 0 : jobTitleHistory.hashCode());
+		result = prime * result + ((jobTitleHistories == null) ? 0 : jobTitleHistories.hashCode());
 		result = prime * result + ((jobTitleId == null) ? 0 : jobTitleId.hashCode());
 		return result;
 	}
@@ -97,10 +106,10 @@ public class JobTitle extends AggregateRoot {
 				return false;
 		} else if (!companyId.equals(other.companyId))
 			return false;
-		if (jobTitleHistory == null) {
-			if (other.jobTitleHistory != null)
+		if (jobTitleHistories == null) {
+			if (other.jobTitleHistories != null)
 				return false;
-		} else if (!jobTitleHistory.equals(other.jobTitleHistory))
+		} else if (!jobTitleHistories.equals(other.jobTitleHistories))
 			return false;
 		if (jobTitleId == null) {
 			if (other.jobTitleId != null)
@@ -108,6 +117,14 @@ public class JobTitle extends AggregateRoot {
 		} else if (!jobTitleId.equals(other.jobTitleId))
 			return false;
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.com.history.History#items()
+	 */
+	@Override
+	public List<JobTitleHistory> items() {
+		return this.jobTitleHistories;
 	}
 		
 }

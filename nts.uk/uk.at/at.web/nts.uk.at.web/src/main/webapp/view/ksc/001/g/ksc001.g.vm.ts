@@ -17,8 +17,8 @@ module nts.uk.at.view.ksc001.g {
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({
                     //get previous 1 year
-                    startDate: moment().subtract(1, 'years').add(1,'days').format('YYYY/MM/DD'),
-                    endDate: moment().format('YYYY/MM/DD'),
+                    startDate: moment.utc(moment().subtract(1, 'years').add(1, 'days').format('YYYYMMDD')).toISOString(),
+                    endDate: moment.utc(moment().format('YYYYMMDD')).add(1, 'days').subtract(1, 'seconds').toISOString()
                 });
 
                 self.startDateString.subscribe(function(value) {
@@ -39,8 +39,12 @@ module nts.uk.at.view.ksc001.g {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                let data = {
+                    startDate: new Date(self.dateValue().startDate),
+                    endDate: new Date(self.dateValue().endDate)
+                };
                 blockUI.invisible();
-                service.findExecutionList({ startDate: new Date(self.dateValue().startDate), endDate: new Date(self.dateValue().endDate) }).done(function(data: any) {
+                service.findExecutionList(data).done(function(data: any) {
                     self.pushDataToList(data);
                     dfd.resolve();
                     blockUI.clear();
@@ -56,7 +60,8 @@ module nts.uk.at.view.ksc001.g {
                 self.items([]);
                 if (data && data.length > 0) {
                     data.forEach(function(item, index) {
-                        self.items.push(new GridItem(moment(item.executionDateTime.executionStartDate).format('YYYY/MM/DD').toString(), item.employeeCode, item.employeeName, item.period, item.completionStatus, item.executionId));
+                        let dateString = moment(item.executionDateTime.executionStartDate).format('YYYY/MM/DD').toString();
+                        self.items.push(new GridItem(dateString, item.employeeCode, item.employeeName, item.period, item.completionStatus, item.executionId));
                     });
                 }
             }
@@ -67,9 +72,16 @@ module nts.uk.at.view.ksc001.g {
             private search() {
                 if (!nts.uk.ui.errors.hasError()) {
                     var self = this;
+                    var date = {
+                        startDate: moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').toISOString(),
+                        endDate: moment.utc(self.dateValue().endDate, 'YYYY/MM/DD')
+                            .add(1, 'days')
+                            .subtract(1, 'seconds')
+                            .toISOString()
+                    };
                     //block UI
                     blockUI.invisible();
-                    service.findExecutionList({ startDate: new Date(self.dateValue().startDate), endDate: new Date(self.dateValue().endDate) }).done(function(data: any) {
+                    service.findExecutionList(date).done(function(data: any) {
                         self.pushDataToList(data);
                         self.loadGridTable(self);
                         //clear block

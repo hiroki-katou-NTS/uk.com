@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,7 +35,7 @@ public class UpdateApplicationCommand {
 	/**
 	 * 入力日
 	 */
-	private GeneralDate inputDate; 
+	private GeneralDateTime inputDate; 
 	
 	/**
 	 * 入力者
@@ -126,7 +127,6 @@ public class UpdateApplicationCommand {
 				this.enteredPersonSID,  
 				this.reversionReason,  
 				this.applicationDate,  
-				this.appReasonID,
 				this.applicationReason,  
 				this.applicationType,  
 				this.applicantSID,  

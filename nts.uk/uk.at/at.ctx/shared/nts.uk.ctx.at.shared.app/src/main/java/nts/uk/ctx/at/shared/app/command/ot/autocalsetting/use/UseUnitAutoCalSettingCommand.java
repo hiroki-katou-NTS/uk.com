@@ -11,7 +11,19 @@ import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.use.UseUnitAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.use.UseUnitAutoCalSettingGetMemento;
 
+/**
+ * Checks if is use jobwkp set.
+ *
+ * @return true, if is use jobwkp set
+ */
 @Getter
+
+/**
+ * Sets the use jobwkp set.
+ *
+ * @param useJobwkpSet
+ *            the new use jobwkp set
+ */
 @Setter
 public class UseUnitAutoCalSettingCommand {
 
@@ -28,7 +40,7 @@ public class UseUnitAutoCalSettingCommand {
 	private boolean useJobwkpSet;
 
 	/**
-	 * Instantiates a new use unit auto cal setting dto.
+	 * Instantiates a new use unit auto cal setting command.
 	 *
 	 * @param useJobSet
 	 *            the use job set
@@ -46,7 +58,7 @@ public class UseUnitAutoCalSettingCommand {
 	}
 
 	/**
-	 * Instantiates a new use unit auto cal setting dto.
+	 * Instantiates a new use unit auto cal setting command.
 	 */
 	public UseUnitAutoCalSettingCommand() {
 		super();
@@ -90,9 +102,8 @@ public class UseUnitAutoCalSettingCommand {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesGetMemento#
-		 * getCompanyId()
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.use.
+		 * UseUnitAutoCalSettingGetMemento#getCompanyId()
 		 */
 		@Override
 		public CompanyId getCompanyId() {

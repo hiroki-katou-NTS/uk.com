@@ -32,28 +32,41 @@
 						<tr>
 							<td>
 								<div style="width: 300px; margin-right: 30px; padding: 20px " class="caret-right caret-background bg-green">
-									<div tabindex="1" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igGrid', comId:'tbl-left', items: leftItems, 
-										selected: selectedLeftItem, selectedKey: 'code', fields: ['attendanceItemId', 'attendanceItemName']}" />
+									<div id="searchbox-attd-item" tabindex="1"
+										data-bind="ntsSearchBox: {
+										targetKey: 'attendanceItemId',
+										mode:'igGrid',
+										comId:'tbl-left',
+										items: leftItems,
+										selected: selectedLeftItem,
+										selectedKey: 'attendanceItemId',
+										fields: ['attendanceItemDisplayNumber', 'attendanceItemName']}" />
 									<table id="tbl-left"
 										data-bind="ntsGridList: {
 										name: '#[KMK002_55]',
-									width: 300,
-									dataSource: leftItems,
-									optionsValue: 'attendanceItemId',
-									columns: columnsLeft,
-									multiple: true,
-									value: selectedLeftItem,
-									rows: 15}">
+										width: 300,
+										dataSource: leftItems,
+										optionsValue: 'attendanceItemId',
+										columns: columnsLeft,
+										multiple: true,
+										value: selectedLeftItem,
+										rows: 15}">
 									</table>
 								</div>
 							</td>
 							<td>
 								<div class="action-center">
-									<button tabindex="4" data-bind="click: onClickAdd">#{i18n.getText('KMK002_56')}</button>
-									<button tabindex="5" data-bind="click: onClickSubtract">#{i18n.getText('KMK002_57')}</button>
-									<button tabindex="6" data-bind="click: onClickBack" id="btn-back">
+									<div style="width: 100%">
+										<button tabindex="4" data-bind="click: onClickAdd">#{i18n.getText('KMK002_56')}</button>
+									</div>
+									<div style="width: 100%">
+										<button tabindex="5" data-bind="click: onClickSubtract">#{i18n.getText('KMK002_57')}</button>
+									</div>
+									<div style="width: 100%">
+										<button tabindex="6" data-bind="click: onClickBack" id="btn-back">
 										<i class="icon icon-button-arrow-left"/>
 									</button>
+									</div>
 								</div>
 							</td>
 							<td style="vertical-align: bottom;">
@@ -64,7 +77,7 @@
 								dataSource: rightItems,
 								optionsValue: 'attendanceItemId',
 								columns: columnsRight,
-								multiple: false,
+								multiple: true,
 								value: selectedRightItem,
 								rows: 15}">
 								</table>

@@ -8,24 +8,29 @@
 }
 
 .contents-area {
-	padding: 20px 58px;
+	padding: 8px 58px;
 }
 
 table.item-setting {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 table.item-setting thead tr td {
 	background-color: #c7f391 !important;
 }
 
-table.item-setting tr {
-	height: 40px;
+table.item-setting thead tr {
+	height: 28px;
+}
+
+table.item-setting tbody tr {
+	height: 39px;
 }
 
 table.item-setting td {
 	border: 1px solid #CCC;
 	padding: 5px;
+	height: 18px;
 }
 
 table.item-setting tr td:first-child {
@@ -35,7 +40,9 @@ table.item-setting tr td:first-child {
 .advance-setting {
 	width: 78px;
 }
-
+.nts-switch-button selected, .nts-switch-button{
+	height: 27px;
+}
 /* 
 	Screen A styles 
 */
@@ -64,7 +71,7 @@ table.input-form-a tr {
 }
 
 .work-collection {
-	padding-left: 30px;
+	padding-left: 12px;
 }
 
 .help-box {
@@ -72,115 +79,107 @@ table.input-form-a tr {
 }
 
 .switch-box {
-	padding-left: 20px;
+	padding-left: 8px;
 }
 
-table.calculator-items {
-	margin-top: 10px;
-	float: left;
+#table-wrapper {
+	position:relative;
+    width: 780px;
 }
 
-table.calculator-items thead {
-	background-color: #c7f391;
+#table-scroll {
+	height:300px;
+	overflow:auto;  
 }
 
-table.calculator-items tr {
-	height: 32px;
+.toggle-link {
+    margin-left: 108px;
 }
 
-table.calculator-items td {
-	border-bottom: 1px solid #CCC;
-	border-top: 1px solid #CCC;
-	border-left: 1px solid #CCC;
-	padding: 0px 3px;
+#popup-area {
+	top: 380px !important;
+    white-space: pre-wrap;
+    text-align: left;
 }
 
-table.calculator-items thead, table.calculator-items tbody {
-	display: block;
-}
-
-table.calculator-items tbody {
-	height: 350px;
-	overflow-y: auto;
-	overflow-x: hidden;
-	border: 1px solid #CCC;
-}
-
-table.calculator-items thead td:nth-child(1), table.calculator-items thead td:nth-child(2)
-{
+.formula-text {
 	text-align: center;
-}
-
-table.calculator-items tbody td:nth-child(1), table.calculator-items tbody td:nth-child(2), 
-table.calculator-items tbody td:nth-child(4), table.calculator-items tbody td:nth-child(5),
-table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nth-child(7)
-{
-	text-align: center;
+	width: 222px;
 }
 
 .attributes {
 	min-width: 0 !important;
-	width: 80px !important;
+	width: 95px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .item-name {
-	width: 120px;
+	width: 120px !important;
 }
 
 .display-atr {
 	min-width: 0 !important;
-	width: 110px !important;
+	width: 98px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .total {
 	min-width: 0 !important;
-	width: 110px !important;
+	width: 98px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .rounding {
 	min-width: 0 !important;
-	width: 130px !important;
+	width: 100px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .fraction {
 	min-width: 0 !important;
-	width: 130px !important;
+	width: 90px !important;
+	margin-left: 2px;
+	height: 31px !important;
 }
 
 .cbx-list-header {
-	width: 32px;
+	width: 28px;
 }
 
 .number-header {
-	width: 32px;
+	width: 28px;
 }
 
 .attribute-header {
-	width: 80px;
+	width: 96px;
 }
 
 .name-header {
-	width: 150px;
+	width: 142px;
 }
 
 .setting-header {
-	width: 464px;
+	width: 435px;
 }
 
 .display-atr-header {
-	width: 110px;
+	width: 96px;
 }
 
 .total-header {
-	width: 110px;
+	width: 96px;
 }
 
 .rounding-header {
-	width: 130px;
+	width: 96px;
 }
 
 .fraction-header {
-	width: 130px;
+	width: 96px;
 }
 
 .cbx-list-item {
@@ -209,27 +208,27 @@ table.calculator-items tbody td:nth-child(6), table.calculator-items tbody td:nt
 }
 
 .formula-item {
-	width: 200px;
+	width: 170px;
 }
 
 .display-atr-item {
-	width: 110px;
+	width: 97px;
 }
 
 .total-item {
-	width: 110px;
+	width: 68px;
 }
 
 .rounding-item {
-	width: 130px;
+	width: 104px;
 }
 
 .fraction-item {
-	width: 130px;
+	width: 95px;
 }
 
-table.link-notes {
-	width: 95.5%;
+.ntsControl .nts-input {
+	padding: 7px 10px !important;
 }
 
 table.link-notes td {
@@ -237,10 +236,9 @@ table.link-notes td {
 }
 
 .up-down-button {
-	float: right;
-	width: 30px;
-	padding: 16px;
-	margin-top: 132px;
+    float: right;
+    width: 30px;
+    margin: -210px -25px 0 0;
 }
 
 .down-btn {
@@ -251,6 +249,10 @@ table.link-notes td {
 	background: url(../002/a/KML002_1.png) no-repeat scroll 0 0 transparent;
 	width: 28px;
 	height: 28px;
+}
+
+.input-name {
+    width: 132px !important;
 }
 
 /* 
@@ -484,7 +486,9 @@ input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
 table.tbl-rounding td {
 	padding: 12px;
 }
-
+.advance-setting {
+	height: 27px;
+}
 /* 
 	Screen F styles 
 */
@@ -541,4 +545,10 @@ Screen K
 
 .nts-fixed-table{
 	margin-top: 20px!important;
+}
+#treegridItemsAmount_displayContainer{
+	height: 362px!important;
+}
+.ui-igcombo-list{
+	max-height: 300px!important;
 }

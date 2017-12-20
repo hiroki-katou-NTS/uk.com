@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.request.infra.entity.overtimeinstruct;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,8 +27,14 @@ public class KrqdtOvertimeInstructPK implements Serializable {
     @Column(name = "CID")
     private String cid;
 	
-    @Basic(optional = false)
-    @Column(name = "APP_ID")
-    private String appId;
+
+    @Column(name = "TARGET_PERSON")
+    private String targetPerson;
+    
+
+    @Column(name = "INSTRUCT_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date instructDate;
+	
 
 }

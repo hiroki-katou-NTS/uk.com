@@ -13,71 +13,55 @@
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_9')}</button>
 			<button tabindex="2" class="danger"
-				data-bind="click: deleteWkpJobAutoCal">#{i18n.getText('KMK006_26')}</button>
+				data-bind="enable: createModeScreenD, click: deleteWkpJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
-		<ui:define name="extended-111">
-			<div class="lableContentPersonal"
-				data-bind="ntsFormLabel: {}">
-				<label>#{i18n.getText('KMK006_33')}</label>
-			</div>
-			<div data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
-			<button style="margin-left: 10px" data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_34')}</button>
-			<!-- <div tabindex="6" id="comboTargetYear"
-				data-bind="ntsComboBox: {
-				name: '#[KMK006_26]',
-				options: lstTargetYear,
-				optionsValue: 'year',
-				visibleItemsCount: 5,
-				value: personalEstablishmentModel.selectedYear,
-				optionsText: 'year',
-				editable: false,
-				enable: true,
-				columns: [
-					{ prop: 'year', length: 6 }
-				]}"></div> -->
-		</ui:define>
+
 		<ui:define name="extended-222">
 			<div class="pull-right"
-				style="margin-top: 10px; margin-right: 50px; margin-bottom: 50px; margin-left: 80px">
-				<div style="margin-top: 30px" id="tree-grid"></div>
+				style="margin-top: 50px; margin-left: 20px">
+				
+				<div id="input-date" class="lableContentPersonal"
+					data-bind="ntsFormLabel: { required: true }">
+					<label>#{i18n.getText('KMK006_33')}</label>
+				</div>
+				<div data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+				<button style="margin-left: 10px" data-bind="click: applyBaseDate">#{i18n.getText('KMK006_34')}</button>
+				
+				<div style="margin-top: 17px" id="tree-grid"></div>
 				<div style="margin-top: 30px" id="jobtitles"></div>
 			</div>
 
 			<div class="pull-left">
 				<table class="table-label">
 					<tr style="margin-top: 10px">
-						<td class="pull-left">
-							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('Com_Workplace')}</div>
+						<td class="pull-left table-label-bottom">
+							<div data-bind="ntsFormLabel: {required: false }">#{i18n.getText('Com_Workplace')}</div>
 							<span data-bind="text: treeItemCode"></span> 
 							<span data-bind="text: treeItemName"></span>
 						</td>
-						<td class="pull-right">
-							<div class="pull-left">
-								<div data-bind="ntsFormLabel: {}">
-									<label>#{i18n.getText('KMK006_7')}</label>
-								</div>
+						<td class="pull-right table-label-bottom">
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_7')}</label>
 							</div>
 							<div tabindex="-1" class="pull-left helpButton">
 								<button tabindex="-1"
-									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_2.png', position: 'right top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_2.png', position: 'left top', enable: true }">?</button>
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td class="pull-left">
-							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('Com_Jobtitle')}</div>
+							<div data-bind="ntsFormLabel: {required: false }">#{i18n.getText('Com_Jobtitle')}</div>
 							<span data-bind="text: componentItemCode"></span> 
 							<span data-bind="text: componentItemName"></span>
 						</td>
 						<td class="pull-right">
-							<div class="pull-left">
-								<div data-bind="ntsFormLabel: {}">
-									<label>#{i18n.getText('KMK006_8')}</label>
-								</div>
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_8')}</label>
 							</div>
 							<div tabindex="-1" class="pull-left helpButton">
 								<button tabindex="-1"
-									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_3.png', position: 'right top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_3.png', position: 'left top', enable: true }">?</button>
 							</div>
 						</td>
 					</tr>

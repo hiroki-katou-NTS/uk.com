@@ -93,16 +93,17 @@ module kcp.share.tree {
     export class TreeType {
         static WORK_PLACE = 1;
     }
+    
+    interface TreeStyle {
+        width: number;
+        height: number;
+    }
 
     export class SelectionType {
         static SELECT_BY_SELECTED_CODE = 1;
         static SELECT_ALL = 2;
         static SELECT_FIRST_ITEM = 3;
         static NO_SELECT = 4;
-    }
-
-    export interface TreeStyle {
-        height: number;
     }
 
     export class TreeComponentScreenModel {
@@ -121,11 +122,12 @@ module kcp.share.tree {
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         $input: JQuery;
         data: TreeComponentOption
-        treeStyle: TreeStyle;
         maxRows: number;
 
         isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
+        
+        treeStyle: TreeStyle;
 
         constructor() {
             let self = this;
@@ -147,6 +149,11 @@ module kcp.share.tree {
                 { level: 10, name: '10' }
             ];
             self.levelSelected = ko.observable(10);
+            
+            self.treeStyle = {
+                width: 410,
+                height: 0
+            };
         }
 
         public init($input: JQuery, data: TreeComponentOption): JQueryPromise<void> {
@@ -177,8 +184,6 @@ module kcp.share.tree {
                 }
                 return false;
             });
-            self.calHeightTree(data);
-
 
             // subscribe change selected level
             self.levelSelected.subscribe(function(level) {
@@ -254,6 +259,10 @@ module kcp.share.tree {
             let self = this;
             // Convert tree to array.
             let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
+            
+            // calculate height tree
+            self.calHeightTree(maxSizeNameCol);
+            
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                 {
@@ -277,6 +286,22 @@ module kcp.share.tree {
                     }
                 });
             }
+        }
+        
+        /**
+         * calHeightTree
+         */
+        private calHeightTree(widthColText: number) {
+            let self = this;
+            let heightRow = 24, heightScrollX = 0;
+            
+            // check has scroll-x
+            if (widthColText > self.treeStyle.width) {
+                heightScrollX = 18;
+            }
+            
+            // calculate height tree
+            self.treeStyle.height = heightRow * (self.maxRows + 1) + heightScrollX;
         }
 
         /**
@@ -315,16 +340,6 @@ module kcp.share.tree {
                 o.remove();
             });
             return max;
-        }
-
-        /**
-         * Calculate number max row
-         */
-        private calHeightTree(data: TreeComponentOption) {
-            let height = 24;
-            this.treeStyle = {
-                height: height * (data.maxRows + 1) + 16
-            };
         }
 
         /**
@@ -447,7 +462,8 @@ module kcp.share.tree {
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
                 self.itemList(subItemList);
                 self.initSelectedValue(self.itemList());
-                self.loadTreeGrid();
+                ko.cleanNode($('#' + self.getComIdSearchBox())[0]);
+                ko.applyBindings(self, $('#' + self.getComIdSearchBox())[0]);
             }
         }
 

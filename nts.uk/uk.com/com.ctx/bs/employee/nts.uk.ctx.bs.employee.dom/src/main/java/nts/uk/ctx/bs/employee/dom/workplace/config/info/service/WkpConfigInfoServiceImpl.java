@@ -12,8 +12,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.uk.ctx.bs.employee.dom.workplace.CreateWorkpceType;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
@@ -180,7 +178,7 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
                 .sorted((item1, item2) -> item2.getHierarchyCode().v().compareTo(item1.getHierarchyCode().v()))
                 .findFirst();
 
-        String newHierarchyCd = Strings.EMPTY;
+        String newHierarchyCd;
         if (!opWkpHierarchyChildLast.isPresent()) {
             newHierarchyCd = hierarchyCdSelected.concat(HIERARCHY_ORIGIN);
         } else {
@@ -206,7 +204,7 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
     private WorkplaceHierarchy updateHierarchySiblings(WorkplaceHierarchy wkpHierarchy, String hierarchyCdSelected,
             CreateWorkpceType createType, String newWkpId) {
         String hierarchyCd = wkpHierarchy.getHierarchyCode().v();
-        String newHierarchyCd = Strings.EMPTY;
+        String newHierarchyCd;
 
         if (hierarchyCd.compareTo(hierarchyCdSelected) < EQUAL_VALUE) {
             return wkpHierarchy;

@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk010.a {
             __viewContext.bind(screenModel);
             $("#selectMethodOutsideOT").focus();
             screenModel.addViewLanguage();
+            service.initTooltip();
         }); 
     });
 }

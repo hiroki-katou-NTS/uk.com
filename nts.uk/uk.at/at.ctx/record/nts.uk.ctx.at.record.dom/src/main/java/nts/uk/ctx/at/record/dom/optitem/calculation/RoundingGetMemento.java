@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
-import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
@@ -18,7 +18,7 @@ public interface RoundingGetMemento {
 	 *
 	 * @return the number rounding
 	 */
-	NumberRounding getNumberRounding();
+	NumberRoundingSetting getNumberRounding();
 
 	/**
 	 * Gets the time rounding setting.
@@ -32,6 +32,6 @@ public interface RoundingGetMemento {
 	 *
 	 * @return the amount rounding
 	 */
-	AmountRounding getAmountRounding();
+	AmountRoundingSetting getAmountRounding();
 
 }

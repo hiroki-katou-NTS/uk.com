@@ -81,6 +81,9 @@ interface JQuery {
     ntsCalendar(action: string, option: any);
     
     ntsSwitchMasterLanguage(): void;
+    ntsFixedTable(option: any): void;
+    ntsGrid(option: any): void;
+    ntsGrid(method: string, option: any, data: any): void;
 }
 
 interface UnitModel {

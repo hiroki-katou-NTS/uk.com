@@ -2,7 +2,10 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
 
 /**
  * @author loivt
@@ -10,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeApp
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class OverTimeInput{
 	
 	/**
@@ -22,13 +26,13 @@ public class OverTimeInput{
 	 */
 	private String appID;
 	/**
-	 * 勤怠項目ID
+	 * 勤怠種類
 	 */
 	private AttendanceID attendanceID;
 	/**
-	 * 勤怠種類
+	 * 勤怠項目NO
 	 */
-	private int attendanceNo;
+	private int frameNo;
 	/**
 	 * 開始時間
 	 */
@@ -41,17 +45,21 @@ public class OverTimeInput{
 	 * 申請時間
 	 */
 	private OvertimeAppPrimitiveTime applicationTime;
+	
 	/**
-	 * 事前申請
+	 * timeItemTypeAtr
 	 */
-	private OvertimeAppPrimitiveTime preApplicationTime;
-	/**
-	 * 指示時間
-	 */
-	private OvertimeAppPrimitiveTime indicatedTime;
-	/**
-	 * 計算時間
-	 */
-	private OvertimeAppPrimitiveTime calculationTime;
+	private TimeItemTypeAtr timeItemTypeAtr;
+	
+	public static OverTimeInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, Integer startTime, Integer endTime, Integer applicationTime, int timeItemTypeAtr){
+		return new OverTimeInput(companyID,
+				appID,
+				EnumAdaptor.valueOf(attendanceID, AttendanceID.class),
+				frameNo,
+				new OvertimeAppPrimitiveTime(startTime),
+				new OvertimeAppPrimitiveTime(endTime),
+				new OvertimeAppPrimitiveTime(applicationTime),
+				EnumAdaptor.valueOf(timeItemTypeAtr, TimeItemTypeAtr.class));
+	}
 
 }

@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCDT_BASIC_SCHEDULE")
+@Table(name = "KSCDT_SCHE_BASIC")
 public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -49,6 +49,7 @@ public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
 	/** The working day atr. */
 	@Column(name = "WORKING_DAY_ATR")
 	public int workingDayAtr;
+	
 
 	@Override
 	protected Object getKey() {

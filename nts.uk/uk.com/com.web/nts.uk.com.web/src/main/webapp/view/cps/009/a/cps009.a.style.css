@@ -1,7 +1,7 @@
-#content {
-	/* 	width: 1200px;
-	margin-bottom: 20px; */
-	
+#contents-area {
+	width: 1280px;
+	height: 100%;
+	overflow-y: hidden !important;
 }
 
 .float-right {
@@ -9,8 +9,8 @@
 }
 
 #content-left {
-	width: 260px;
-	height: 590px;
+	width: 288px !important;
+	height: 407px !important;
 	float: left;
 }
 
@@ -23,23 +23,48 @@
 }
 
 .input-units {
-	width: 200px !important;
+	width: 209px !important;
+	min-height: 16px !important;
+	max-height: 16px !important;
 }
 
 .sub-input-units {
-	width: 161px !important;
-	margin-left: 3px !important;
+	width: 150px !important;
+	margin-left: 1px !important;
 	margin-right: 3px !important;
-	height: 15px !important;
+	border: 0px !important;
+	text-align: right !important;
+	max-height: 12px !important;
 }
 
 .nts-datepicker-wrapper .ntsDatepicker {
 	width: 161px !important;
 }
 
+#date {
+	border: 0px solid #999999 !important;
+	width: 210px !important;
+}
+
+#timeItem {
+	width: 210px !important;
+}
+
+#timePoint {
+	width: 210px !important;
+}
+
+#number {
+	width: 210px !important;
+}
+
+#string {
+	width: 210px !important;
+}
+
 #content-right {
 	float: left;
-	width: 900px;
+	width: 930px;
 }
 
 #category_grid_container {
@@ -66,14 +91,23 @@
 button.search-btn, button.clear-btn {
 	width: 40px;
 }
+/* 
+.nts-searchbbox-wrapper button.search-btn {
+	vertical-align: top;
+	margin-left: 5px;
+	min-width: 67px;
+	margin-bottom: 0px !important;
+}
 
-.nts-searchbbox-wrapper button.search-btn, .nts-searchbbox-wrapper button.clear-btn
-	{
+.nts-searchbbox-wrapper button.clear-btn {
 	vertical-align: top;
 	margin-left: 5px;
 	min-width: 50px;
 }
 
+.nts-searchbbox-wrapper {
+	margin-bottom: 0px !important;
+} */
 input.ntsSearchBox {
 	width: 150px !important;
 }
@@ -83,23 +117,30 @@ input.ntsSearchBox {
 }
 
 #sub-left {
-	width: 300px;
+	width: 265px;
 	height: 590px;
 	float: left;
 }
 
 #sub-right {
 	float: left;
-	width: 600px;
+	width: 630px;
+	margin-left: 30px;
+}
+
+#search_his {
+	margin-top: 38px;
+	margin-bottom: 15px;
 }
 
 #history {
-	margin-left: 220px;
+	float: left;
+	margin-left: 200px;
 }
 
 .contents-header {
 	width: 100%;
-	margin-top: 20px !important;
+	margin-top: 10px !important;
 }
 
 .contents-data {
@@ -110,11 +151,17 @@ input.ntsSearchBox {
 .contents-data  td {
 	border: 1px solid #CCC;
 	text-align: left;
-	height: 2px !important;
+	min-height: 16px !important;
+	max-height: 16px !important;
+}
+
+.contents-data  tr {
+	min-height: 16px !important;
+	max-height: 16px !important;
 }
 
 table.contents-data thead, table.contents-data tbody {
-	display: block;
+	display: block !important;
 }
 
 table.contents-data tbody {
@@ -126,10 +173,12 @@ table.contents-data tbody {
 
 thead {
 	background-color: #CFF1A5;
+	height: 35px !important;
 }
 
-tr {
-	height: 2px !important;
+table.contents-data tr {
+	min-height: 16px !important;
+	max-height: 16px !important;
 }
 
 table tr td, table tr th {
@@ -138,55 +187,171 @@ table tr td, table tr th {
 }
 
 .ui-igcombo-buttonicon, .ui-igcombo-clearicon {
-	top: 27% !important;
+	top: 20% !important;
 	margin-top: -8px !important;
 	position: inherit !important;
 }
+
 .ui-igcombo-wrapper {
-    position: relative;
-    display: inline-block;
-    overflow: visible;
-    width: 140px;
-    height: 20px;
+	position: relative;
+	display: inline-block;
+	overflow: visible;
+	width: 160px;
+	height: 15px;
 }
 
 .value {
 	width: 200px !important;
 }
 
-.contents-header td {
-	border: 1px solid #CCC;
-	text-align: center;
-	height: 15px;
-	padding: 5px 3px;
+#combox1 {
+	height: 18px;
+	margin-left: 16px;
+	min-width: 210px !important;
+	max-width: 210px !important;
+	
 }
 
+.contents-header td {
+	border: 1px solid #CCC;
+	text-align: left;
+	height: 35px;
+	padding: 0px 0px;
+	font-weight: bold;
+}
 
+#COL_1 {
+	min-width: 200px !important;
+	max-width: 200px !important;
+}
+
+#COL_2 {
+	min-width: 190px !important;
+	max-width: 190px !important;
+}
+
+#COL_3 {
+	min-width: 234px !important;
+	max-width: 240px !important;
+}
 
 #A2_012 {
-	margin-left: 0px;
+	margin-left: 15px;
 	width: 97px;
-	height: 21px;
+	height: 30px;
+	padding: 0px 0px !important;
 }
 
 #help {
 	width: 30px;
+	height: 30px;
 	margin-left: 5px;
+	padding: 0px 0px !important;
 }
 
 #combo-box {
-	margin-left: 14px;
+	margin-left: 9px;
 	min-width: 100px !important;
 	height: 20px;
 }
 
-.input-units {
-	width: 200px;
+.input-units-1 {
+	min-width: 200px;
+	max-width: 200px;
 }
 
+.input-units-2 {
+	min-width: 190px;
+	max-width: 190px;
+}
 
-/* span.ntsControl .nts-input {
-	border: none !important;
-	border-radius: 0px;
-	overflow: none !important;
-} */
+.input-units-3 {
+	min-width: 240px;
+	max-width: 240px;
+}
+
+#notdata {
+	min-width: 240px !important;
+	max-width: 240px !important;
+}
+
+#sub-center {
+	width: 25px !important;
+	float: left;
+}
+
+span.caret-background.caret-right.direction-right {
+	position: fixed !important;
+}
+
+.table-container {
+	color: #000;
+	position: relative;
+	border: 1px solid #ccc;
+}
+
+.table-container>div {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 355px !important;
+	border-top: 1px solid #ccc;
+}
+
+.table-container>div table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th>div {
+	top: 0;
+	padding: 3px;
+	color: #000;
+	line-height: 32px;
+	position: absolute;
+	border-left: 1px solid #ccc;
+	background-color: #CFF1A5 !important;
+}
+
+th {
+	height: 0;
+	line-height: 0;
+	padding: 0;
+	border: none;
+	white-space: nowrap;
+	font-weight: bold;
+	background-color: #CFF1A5 !important;
+}
+
+th:first-child div {
+	border: none;
+	background-color: #CFF1A5 !important;
+}
+
+td {
+	padding: 0px !important;
+	border: 1px solid #ccc;
+}
+
+tbody tr:first-child td {
+	border-top: none;
+}
+
+label[for] {
+	line-height: 20px !important;
+	right: 48px !important;
+}
+
+#date1 {
+	width: 85px !important;
+	margin-left: 5px !important;
+}
+
+#A3_13 {
+	width: 22px !important;
+	margin-left: 5px !important;
+	height: 27px !important;
+}
+
+#A3_15 {
+	margin-left: 5px !important;
+}

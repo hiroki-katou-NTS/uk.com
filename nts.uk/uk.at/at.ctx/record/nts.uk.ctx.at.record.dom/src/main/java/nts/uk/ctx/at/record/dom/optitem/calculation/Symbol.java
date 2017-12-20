@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 @StringMaxLength(2)
 // 記号
-public class Symbol extends StringPrimitiveValue<FormulaName> {
+public class Symbol extends StringPrimitiveValue<Symbol> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

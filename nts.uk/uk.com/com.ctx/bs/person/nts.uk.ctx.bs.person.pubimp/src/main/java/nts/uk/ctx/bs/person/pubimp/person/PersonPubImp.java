@@ -36,24 +36,35 @@ public class PersonPubImp implements PersonPub {
 	@Override
 	public List<PubPersonDto> findByPersonIds(List<String> personIds) {
 		return personRepository.getPersonByPersonIds(personIds).stream()
-				.map(item -> new PubPersonDto(item.getPersonId(), item.getPersonNameGroup().getPersonName().v()))
+				.map(item -> new PubPersonDto(item.getPersonId(), item.getPersonNameGroup().getPersonName().getFullName().v()))
 				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.bs.person.pub.person.PersonPub#findById(java.lang.String)
+	 * 
+	 * @Override public PersonInfoExport findById(String personId) { Person person =
+	 * this.personRepository.getByPersonId(personId).get(); PersonInfoExport
+	 * personInfo = PersonInfoExport.builder() .personId(person.getPersonId())
+	 * .personName(person.getPersonNameGroup().getPersonName().v())
+	 * .birthDay(person.getBirthDate()) .pMailAddr(new
+	 * MailAddress(person.getMailAddress().v())) .build();
+	 * 
+	 * return personInfo; }
 	 */
+
 	@Override
-	public PersonInfoExport findById(String personId) {
-		Person person = this.personRepository.getByPersonId(personId).get();
-		PersonInfoExport personInfo = PersonInfoExport.builder()
-				.personId(person.getPersonId())
-				.personName(person.getPersonNameGroup().getPersonName().v())
-				.birthDay(person.getBirthDate())
-				.pMailAddr(new MailAddress(person.getMailAddress().v()))
-				.build();
-				
-		return personInfo;
+	public List<PersonInfoExport> findByListId(List<String> personIds) {
+		return personRepository.getPersonByPersonIds(personIds).stream()
+				.map(item -> new PersonInfoExport(
+						item.getPersonId(),
+						item.getPersonNameGroup().getPersonName() == null ? "" : item.getPersonNameGroup().getPersonName().getFullName().v(),
+						item.getBirthDate(), 
+						null,
+						item.getGender() == null ? 0 : item.getGender().value))
+				.collect(Collectors.toList());
 	}
 
 }

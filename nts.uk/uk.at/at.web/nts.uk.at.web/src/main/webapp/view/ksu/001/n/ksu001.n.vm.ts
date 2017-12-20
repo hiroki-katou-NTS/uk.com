@@ -78,20 +78,20 @@ module nts.uk.at.view.ksu001.n.viewmodel {
                     }
                 }
             });
-            if (flag == true) {
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_343" }).ifYes(() => {
-                    service.addRankSetting(data).done(function() {
-                        self.initData().done(function() {
-                            self.initGrid();
-                        });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-                    }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error.message);
-                    })
-                }).then(function() {
-                    nts.uk.ui.block.clear();
-                });
-            } else {
+//            if (flag == true) {
+//                nts.uk.ui.dialog.confirm({ messageId: "Msg_343" }).ifYes(() => {
+//                    service.addRankSetting(data).done(function() {
+//                        self.initData().done(function() {
+//                            self.initGrid();
+//                        });
+//                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+//                    }).fail(function(error) {
+//                        nts.uk.ui.dialog.alertError(error.message);
+//                    })
+//                }).then(function() {
+//                    nts.uk.ui.block.clear();
+//                });
+//            } else {
                 service.addRankSetting(data).done(function() {
                     self.initData().done(function() {
                         self.initGrid();
@@ -102,7 +102,7 @@ module nts.uk.at.view.ksu001.n.viewmodel {
                 }).then(function() {
                     nts.uk.ui.block.clear();
                 });
-            }
+            //}
 
         }
         /**
@@ -112,7 +112,7 @@ module nts.uk.at.view.ksu001.n.viewmodel {
             let self = this;
             $("#grid2").ntsGrid({
                 width: '400px',
-                height: '310px',
+                height: '315px',
                 dataSource: self.listRank(),
                 primaryKey: 'employeeCode',
                 virtualization: true,

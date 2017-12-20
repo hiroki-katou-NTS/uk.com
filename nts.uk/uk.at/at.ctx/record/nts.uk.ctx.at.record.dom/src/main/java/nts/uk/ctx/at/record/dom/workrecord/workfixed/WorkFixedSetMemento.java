@@ -53,4 +53,11 @@ public interface WorkFixedSetMemento {
 	 */
 	void setProcessDate(Integer processDate);
 	
+	/**
+	 * Sets the cid.
+	 *
+	 * @param cid the new cid
+	 */
+	void setCid(String cid);
+	
 }

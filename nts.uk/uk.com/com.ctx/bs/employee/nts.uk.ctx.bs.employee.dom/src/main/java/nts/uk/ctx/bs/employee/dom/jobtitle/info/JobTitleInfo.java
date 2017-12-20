@@ -59,7 +59,7 @@ public class JobTitleInfo extends AggregateRoot {
 	public JobTitleInfo(JobTitleInfoGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.jobTitleHistoryId = memento.getJobTitleHistoryId();
-		this.isManager = memento.getIsManager();
+		this.isManager = memento.isManager();
 		this.jobTitleId = memento.getJobTitleId();
 		this.jobTitleCode = memento.getJobTitleCode();
 		this.jobTitleName = memento.getJobTitleName();

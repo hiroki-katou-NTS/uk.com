@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.dom.adapter;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ClassificationDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ClassificationDto;
 
 /**
  * The Class ScClassificationAdapter.

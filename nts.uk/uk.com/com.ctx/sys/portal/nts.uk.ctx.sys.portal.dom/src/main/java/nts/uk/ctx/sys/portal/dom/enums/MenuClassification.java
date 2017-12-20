@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.enums;
 
+import nts.uk.ctx.sys.portal.dom.permissionmenu.RoleType;
+
 public enum MenuClassification {
 	
 	/**0:標準 */
@@ -26,5 +28,20 @@ public enum MenuClassification {
 	private MenuClassification(int type) {
 		this.value = type;
 	}
+	public static MenuClassification valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
 
+		// Find value.
+		for (MenuClassification val : MenuClassification.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
 }

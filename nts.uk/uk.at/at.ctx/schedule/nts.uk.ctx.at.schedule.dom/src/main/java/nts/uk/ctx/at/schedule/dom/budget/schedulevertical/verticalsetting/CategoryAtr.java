@@ -2,6 +2,10 @@ package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 計算式設定-人数/カテゴリ区分
+ *
+ */
 @AllArgsConstructor
 public enum CategoryAtr {
 	/** 0- 日別実績 **/

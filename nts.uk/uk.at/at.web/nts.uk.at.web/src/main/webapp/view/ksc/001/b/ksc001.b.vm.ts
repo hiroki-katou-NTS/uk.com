@@ -5,14 +5,20 @@ module nts.uk.at.view.ksc001.b {
     import UserInfoDto = service.model.UserInfoDto;
     import ScheduleExecutionLogSaveDto = service.model.ScheduleExecutionLogSaveDto;
     import ScheduleExecutionLogSaveRespone = service.model.ScheduleExecutionLogSaveRespone;
+    import baseService = nts.uk.at.view.kdl023.base.service;
+    import DailyPatternSetting = baseService.model.DailyPatternSetting;
+    import ReflectionSetting = baseService.model.ReflectionSetting;
+    // 休日反映方法
+    import ReflectionMethod = baseService.model.ReflectionMethod;
+    import DayOffSetting = baseService.model.DayOffSetting;
 
     export module viewmodel {
         export class ScreenModel {
-            
+
             // step setup
             stepList: Array<NtsWizardStep>;
             stepSelected: KnockoutObservable<NtsWizardStep>;
-            
+
             // setup ccg001
             ccgcomponent: GroupOption;
 
@@ -36,8 +42,8 @@ module nts.uk.at.view.ksc001.b {
             resetAbsentHolidayBusines: KnockoutObservable<boolean>;
             resetTimeAssignment: KnockoutObservable<boolean>;
             confirm: KnockoutObservable<boolean>;
-            
-            periodDate:KnockoutObservable<any>;
+
+            periodDate: KnockoutObservable<any>;
             copyStartDate: KnockoutObservable<Date>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
@@ -46,7 +52,7 @@ module nts.uk.at.view.ksc001.b {
             infoCreateMethod: KnockoutObservable<string>;
             infoPeriodDate: KnockoutObservable<string>;
             lengthEmployeeSelected: KnockoutObservable<string>;
-            
+
             // Employee tab
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservableArray<string>;
@@ -54,13 +60,13 @@ module nts.uk.at.view.ksc001.b {
             employeeList: KnockoutObservableArray<UnitModel>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
-            
+            personalScheduleInfo: KnockoutObservable<PersonalSchedule>;
+            responeReflectionSetting: KnockoutObservable<ReflectionSetting>;
+            responeDailyPatternSetting: KnockoutObservable<DailyPatternSetting>;
+
             //for control field
             isReCreate: KnockoutObservable<boolean>;
             isReSetting: KnockoutObservable<boolean>;
-//            isReCreate: KnockoutObservable<boolean>;
-//            isReCreate: KnockoutObservable<boolean>;
-//            isReCreate: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
 
@@ -76,7 +82,10 @@ module nts.uk.at.view.ksc001.b {
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
-                
+                self.personalScheduleInfo = ko.observable(new PersonalSchedule());
+                self.responeReflectionSetting = ko.observable(null);
+                self.responeDailyPatternSetting = ko.observable(null);
+
                 self.periodDate = ko.observable({});
                 self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
                 self.checkReCreateAtrAllCase = ko.observable(true);
@@ -133,8 +142,10 @@ module nts.uk.at.view.ksc001.b {
                 }
                 self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
                 var lstRadioBoxModelImplementAtr: RadioBoxModel[] = [];
-                lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.GENERALLY_CREATED, nts.uk.resource.getText("KSC001_74")));
-                lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.RECREATE, nts.uk.resource.getText("KSC001_75")));
+                lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.GENERALLY_CREATED,
+                    nts.uk.resource.getText("KSC001_74")));
+                lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.RECREATE,
+                    nts.uk.resource.getText("KSC001_75")));
                 self.selectImplementAtr = ko.observableArray(lstRadioBoxModelImplementAtr);
                 self.selectedImplementAtrCode = ko.observable(ImplementAtr.GENERALLY_CREATED);
 
@@ -153,78 +164,109 @@ module nts.uk.at.view.ksc001.b {
                 self.checkProcessExecutionAtrReconfig.subscribe(function(check: boolean) {
                     self.checkProcessExecutionAtrRebuild(!check);
                 });
-                
+
                 // update CreateMethodAtr
-                self.checkCreateMethodAtrPersonalInfo.subscribe(function(check: boolean){
-                   if(check){
-                      self.checkCreateMethodAtrPatternSchedule(!check);      
-                      self.checkCreateMethodAtrCopyPastSchedule(!check);      
-                   } 
+                self.checkCreateMethodAtrPersonalInfo.subscribe(function(check: boolean) {
+                    if (check) {
+                        self.checkCreateMethodAtrPatternSchedule(!check);
+                        self.checkCreateMethodAtrCopyPastSchedule(!check);
+                    }
                 });
-                self.checkCreateMethodAtrPatternSchedule.subscribe(function(check: boolean){
-                   if(check){
-                      self.checkCreateMethodAtrPersonalInfo(!check);      
-                      self.checkCreateMethodAtrCopyPastSchedule(!check);      
-                   } 
+
+                // update CreateMethodAtr
+                self.checkCreateMethodAtrPatternSchedule.subscribe(function(check: boolean) {
+                    if (check) {
+                        self.checkCreateMethodAtrPersonalInfo(!check);
+                        self.checkCreateMethodAtrCopyPastSchedule(!check);
+                    }
                 });
-                self.checkCreateMethodAtrCopyPastSchedule.subscribe(function(check: boolean){
-                   if(check){
-                      self.checkCreateMethodAtrPersonalInfo(!check);      
-                      self.checkCreateMethodAtrPatternSchedule(!check);      
-                   } 
+
+                // update CreateMethodAtr
+                self.checkCreateMethodAtrCopyPastSchedule.subscribe(function(check: boolean) {
+                    if (check) {
+                        self.checkCreateMethodAtrPersonalInfo(!check);
+                        self.checkCreateMethodAtrPatternSchedule(!check);
+                    }
                 });
+
                 self.lstLabelInfomation = ko.observableArray([]);
                 self.infoCreateMethod = ko.observable('');
                 self.infoPeriodDate = ko.observable('');
                 self.lengthEmployeeSelected = ko.observable('');
-                
+
                 //for control field
                 self.isReCreate = ko.computed(function() {
                     return self.selectedImplementAtrCode() == ImplementAtr.RECREATE;
                 });
 
+                // for is reseting
                 self.isReSetting = ko.computed(function() {
                     return self.checkProcessExecutionAtrReconfig() && self.isReCreate();
                 });
             }
             /**
-             * get user login
-             */
-            public getUserLogin(): UserInfoDto {
-                var userinfo: UserInfoDto = { companyId: '000000000000-0001', employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a' };
-                return userinfo;
-
+             * save to client service PersonalSchedule by employeeId
+            */
+            private savePersonalScheduleByEmployeeId(employeeId: string, data: PersonalSchedule): void {
+                nts.uk.characteristics.save("PersonalSchedule_" + employeeId, data);
             }
             /**
              * save to client service PersonalSchedule
             */
-            private savePersonalSchedule(employeeId: string, data: PersonalSchedule): void {
-                nts.uk.characteristics.save("PersonalSchedule_" + employeeId, data);
+            private savePersonalSchedule(data: PersonalSchedule): void {
+                var self = this;
+                var user: any = __viewContext.user;
+                self.savePersonalScheduleByEmployeeId(user.employeeId, data);
+            }
+
+            /**
+             * find by client service PersonalSchedule by employee
+            */
+            private findPersonalScheduleByEmployeeId(employeeId: string): JQueryPromise<PersonalSchedule> {
+                return nts.uk.characteristics.restore("PersonalSchedule_" + employeeId);
             }
 
             /**
              * find by client service PersonalSchedule
             */
-            private findPersonalScheduleByEmployeeId(employeeId: string): JQueryPromise<PersonalSchedule> {
-                return nts.uk.characteristics.restore("PersonalSchedule_" + employeeId);
+            private findPersonalSchedule(): JQueryPromise<PersonalSchedule> {
+                var self = this;
+                var user: any = __viewContext.user;
+                return nts.uk.characteristics.restore("PersonalSchedule_" + user.employeeId);
             }
             /**
              * function next wizard by on click button 
              */
-            private next(): void {
-                $('#wizard').ntsWizard("next");
+            private next(): JQueryPromise<void> {
+                return $('#wizard').ntsWizard("next");
             }
             /**
              * function previous wizard by on click button 
              */
-            private previous(): void {
-                $('#wizard').ntsWizard("prev");
+            private previous(): JQueryPromise<void> {
+                return $('#wizard').ntsWizard("prev");
+            }
+            /**
+             * function next two page wizard by on click button 
+             */
+            private nextTwo(): JQueryPromise<void> {
+                var index = $('#wizard').ntsWizard("getCurrentStep");
+                index = index + 2;
+                return $('#wizard').ntsWizard("goto", index);
+            }
+            /**
+            * function previous wizard by on click button 
+            */
+            private previousTwo(): JQueryPromise<void> {
+                var index = $('#wizard').ntsWizard("getCurrentStep");
+                index = index - 2;
+                return $('#wizard').ntsWizard("goto", index);
             }
             /**
              * function convert string to Date
              */
             private toDate(strDate: string): Date {
-                return moment.utc(strDate, 'yyyy/MM/dd').toDate();
+                return moment(strDate, 'YYYY/MM/DD').toDate();
             }
             /**
            * start page data 
@@ -232,14 +274,16 @@ module nts.uk.at.view.ksc001.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                // block ui
+                nts.uk.ui.block.invisible();
 
+                // find closure by id = 1
                 service.findPeriodById(1).done(function(data) {
+                    // update start date end date to ccg001
                     self.periodDate({
                         startDate: data.startDate,
                         endDate: data.endDate
                     });
-//                    self.periodStartDate(data.startDate);
-//                    self.periodEndDate(data.endDate);
                     dfd.resolve(self);
                 });
                 return dfd.promise();
@@ -259,8 +303,11 @@ module nts.uk.at.view.ksc001.b {
                     };
                     employeeSearchs.push(employee);
                 }
+
+                // update employee list by ccg001 search 
                 self.employeeList(employeeSearchs);
 
+                // update kc005
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
@@ -274,7 +321,8 @@ module nts.uk.at.view.ksc001.b {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 550,
-                    maxRows: 15
+                    maxRows: 15,
+                    tabindex: 5
                 };
 
             }
@@ -285,37 +333,43 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 // check selection employee 
                 if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                    var user: UserInfoDto = self.getUserLogin();
-                    self.findPersonalScheduleByEmployeeId(user.employeeId).done(function(data){
+                    var user: any = __viewContext.user;
+                    self.findPersonalScheduleByEmployeeId(user.employeeId).done(function(data) {
                         self.updatePersonalScheduleData(data);
-                        self.next();
-                    }).fail(function(error){
-                        console.log(error);   
+
+                        // focus by done
+                        self.next().done(function() {
+                            $('#inputSelectImplementAtr').focus();
+                        });
+                    }).fail(function(error) {
+                        console.log(error);
                     });
                 }
                 else {
+                    // show message by not choose employee of kcp005
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_206' });
                 }
             }
-            
+
             /**
              * update PersonalSchedule by find by employee id login
              */
             private updatePersonalScheduleData(data: PersonalSchedule): void {
                 var self = this;
-                if(data){
-                        
+                if (data) {
+                    self.personalScheduleInfo(data);
                 }
             }
             /**
              * convert ui to PersonalSchedule
              */
-            private toPersonalScheduleData(employeeId: string): PersonalSchedule{
+            private toPersonalScheduleData(): PersonalSchedule {
                 var self = this;
-                var data : PersonalSchedule = new PersonalSchedule();
+                var user: any = __viewContext.user;
+                var data: PersonalSchedule = new PersonalSchedule();
                 data.resetMasterInfo = self.resetMasterInfo();
                 data.resetAbsentHolidayBusines = self.resetAbsentHolidayBusines();
-                
+
                 // set CreateMethodAtr
                 if (self.checkCreateMethodAtrPersonalInfo()) {
                     data.createMethodAtr = CreateMethodAtr.PERSONAL_INFO;
@@ -327,7 +381,7 @@ module nts.uk.at.view.ksc001.b {
                     data.createMethodAtr = CreateMethodAtr.COPY_PAST_SCHEDULE;
                 }
                 data.confirm = self.confirm();
-                
+
                 // set ReCreateAtr
                 if (self.checkReCreateAtrAllCase()) {
                     data.reCreateAtr = ReCreateAtr.ALLCASE;
@@ -335,7 +389,7 @@ module nts.uk.at.view.ksc001.b {
                 if (self.checkReCreateAtrOnlyUnConfirm()) {
                     data.reCreateAtr = ReCreateAtr.ONLYUNCONFIRM;
                 }
-                
+
                 // set ProcessExecutionAtr
                 if (self.checkProcessExecutionAtrRebuild()) {
                     data.processExecutionAtr = ProcessExecutionAtr.REBUILD;
@@ -343,18 +397,18 @@ module nts.uk.at.view.ksc001.b {
                 if (self.checkProcessExecutionAtrReconfig()) {
                     data.processExecutionAtr = ProcessExecutionAtr.RECONFIG;
                 }
-                
+
                 // set ImplementAtr
                 data.implementAtr = self.selectedImplementAtrCode();
-                
+
                 data.resetWorkingHours = self.resetWorkingHours();
-                
+
                 data.resetTimeAssignment = self.resetTimeAssignment();
-                
+
                 data.resetDirectLineBounce = self.resetDirectLineBounce();
-                
-                data.employeeId = employeeId;
-                
+
+                data.employeeId = user.employeeId;
+
                 data.resetTimeChildCare = self.resetTimeChildCare();
                 return data;
             }
@@ -365,23 +419,27 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 self.previous();
             }
+
             /**
              * function next page by selection employee goto next page
              */
             private nextPageC(): void {
                 var self = this;
-                //
-                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
+                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
+                    && self.checkProcessExecutionAtrReconfig()) {
                     //build string for Screen E
                     self.buildString();
                     //goto screen E
-                    var index = $('#wizard').ntsWizard("getCurrentStep");
-                    $('#wizard').ntsWizard("goto", index + 2);
+                    self.nextTwo().done(function() {
+                        $('#buttonFinishPageE').focus();
+                    });
                 }
                 else {
-                    // goto screen D
-                    self.next();
+                    self.next().done(function() {
+                        $('#inputCreateMethodAtr').focus();
+                    });
                 }
+
             }
             /**
              * function previous page by selection employee goto page (D)
@@ -395,22 +453,78 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageD(): void {
                 var self = this;
-                
+
+                // check D1_4 is checked
+                if (self.checkCreateMethodAtrPatternSchedule()) {
+
+                    if (self.responeReflectionSetting()) {
+
+                        // next page E by pattern code of self
+                        self.findByPatternCodeAndOpenPageE(self.responeReflectionSetting().selectedPatternCd);
+                    }
+                    else {
+                        self.findPersonalSchedule().done(function(res) {
+                            if (res && res != null) {
+                                // next page E by pattern code of res
+                                self.findByPatternCodeAndOpenPageE(res.patternCode);
+                            } else {
+                                baseService.findAllPattern().done(function(allData) {
+
+                                    // next page E by pattern code of all data first
+                                    if (allData && allData.length > 0) {
+                                        self.responeDailyPatternSetting(allData[0]);
+                                        self.openDialogPageE();
+                                    } else {
+                                        // show message error 531
+                                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_531' });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                } else {
+                    self.openDialogPageE();
+                }
+
+            }
+
+            /**
+             * find by pattern code and open dialog E
+             */
+            private findByPatternCodeAndOpenPageE(patternCode: string): void {
+                var self = this;
+                baseService.findPatternByCode(patternCode).done(function(res) {
+                    if (res && res != null) {
+                        self.responeDailyPatternSetting(res);
+                        self.openDialogPageE();
+                    }
+                    else {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_531' });
+                    }
+                });
+            }
+
+            /**
+             * open dialog E
+             */
+            private openDialogPageE(): void {
+                var self = this;
                 self.buildString();
-                self.next();
+                self.next().done(function() {
+                    $('#buttonFinishPageE').focus();
+                });
             }
             /**
              * function previous page by selection employee goto page (E)
              */
             private previousPageE(): void {
                 var self = this;
-                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig()) {
+
+                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
+                    && self.checkProcessExecutionAtrReconfig()) {
                     //back screen C
-                    var index = $('#wizard').ntsWizard("getCurrentStep");
-                    $('#wizard').ntsWizard("goto", index - 2);
-                }
-                else {
-                    //back screen D
+                    self.previousTwo();
+                } else {
                     self.previous();
                 }
             }
@@ -419,7 +533,9 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
+                nts.uk.ui.block.invisible();
                 service.checkThreeMonth(self.toDate(self.periodDate().startDate)).done(function(check) {
+                    nts.uk.ui.block.clear();
                     if (check) {
                         // show message confirm 567
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_567' }).ifYes(function() {
@@ -436,7 +552,10 @@ module nts.uk.at.view.ksc001.b {
                     console.log(error);
                 });
             }
-            
+
+            /**
+             * function build string to page E
+             */
             private buildString() {
                 var self = this;
                 var lstLabelInfomation: string[] = [];
@@ -449,46 +568,56 @@ module nts.uk.at.view.ksc001.b {
 
                     //NO2
                     if (self.checkReCreateAtrAllCase()) {
-                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_4"));
+                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
+                            + nts.uk.resource.getText("KSC001_4"));
                     }
                     if (self.checkReCreateAtrOnlyUnConfirm()) {
-                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_5"));
+                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
+                            + nts.uk.resource.getText("KSC001_5"));
                     }
 
                     //NO3
                     if (self.checkProcessExecutionAtrRebuild()) {
-                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_7"));
+                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
+                            + nts.uk.resource.getText("KSC001_7"));
                     } else {
-                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_8"));
+                        lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
+                            + nts.uk.resource.getText("KSC001_8"));
 
                         //NO4
                         if (self.resetWorkingHours()) {
-                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_15"));
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38")
+                                + nts.uk.resource.getText("KSC001_15"));
                         }
 
                         //NO5
                         if (self.resetDirectLineBounce()) {
-                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_11"));
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38")
+                                + nts.uk.resource.getText("KSC001_11"));
                         }
 
                         //NO6
                         if (self.resetMasterInfo()) {
-                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_12"));
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38")
+                                + nts.uk.resource.getText("KSC001_12"));
                         }
 
                         //NO7
                         if (self.resetTimeChildCare()) {
-                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_13"));
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38")
+                                + nts.uk.resource.getText("KSC001_13"));
                         }
 
                         //NO8
                         if (self.resetAbsentHolidayBusines()) {
-                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_14"));
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38")
+                                + nts.uk.resource.getText("KSC001_14"));
                         }
 
                         //NO9
                         if (self.resetTimeAssignment()) {
-                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_16"));
+                            lstLabelInfomation.push(" " + nts.uk.resource.getText("KSC001_38")
+                                + nts.uk.resource.getText("KSC001_16"));
                         }
                     }
                 }
@@ -501,19 +630,29 @@ module nts.uk.at.view.ksc001.b {
                 //reset infoCreateMethod !important
                 self.infoCreateMethod('');
                 //check select recreate and select resetting
-                if (!((self.selectedImplementAtrCode() == ImplementAtr.RECREATE) && self.checkProcessExecutionAtrReconfig())) {
+                if (!((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
+                    && self.checkProcessExecutionAtrReconfig())) {
+
+                    // set to view
                     if (self.checkCreateMethodAtrPersonalInfo()) {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_22"));
                     }
+
+                    // set to view
                     if (self.checkCreateMethodAtrPatternSchedule()) {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_23"));
                     }
+                    // set to view
                     if (self.checkCreateMethodAtrCopyPastSchedule()) {
-                        self.infoCreateMethod(nts.uk.resource.getText("KSC001_39", [moment(self.copyStartDate()).format('YYYY/MM/DD')]));
+                        self.infoCreateMethod(nts.uk.resource.getText("KSC001_39",
+                            [moment(self.copyStartDate()).format('YYYY/MM/DD')]));
                     }
                 }
-                self.infoPeriodDate(nts.uk.resource.getText("KSC001_46", [self.periodDate().startDate,self.periodDate().endDate]));
-                self.lengthEmployeeSelected(nts.uk.resource.getText("KSC001_47", [self.selectedEmployeeCode().length]));
+                // set to view info
+                self.infoPeriodDate(nts.uk.resource.getText("KSC001_46",
+                    [self.periodDate().startDate, self.periodDate().endDate]));
+                self.lengthEmployeeSelected(nts.uk.resource.getText("KSC001_47",
+                    [self.selectedEmployeeCode().length]));
             }
             /**
              * function createPersonalSchedule to client by check month max
@@ -542,52 +681,59 @@ module nts.uk.at.view.ksc001.b {
                     // C1_5 is check
                     if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_570' }).ifYes(function() {
-                           self.savePersonalScheduleData();
+                            self.savePersonalScheduleData();
                         }).ifNo(function() {
                             return;
                         });
                     }
                     else {
-                        self.savePersonalScheduleData();    
+                        self.savePersonalScheduleData();
                     }
                 }).ifNo(function() {
                     return;
                 });
 
             }
-            
+
             /**
              * save PersonalSchedule data
              */
             private savePersonalScheduleData(): void {
                 var self = this;
-                var user: UserInfoDto = self.getUserLogin();
-                self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
-                service.addScheduleExecutionLog(self.collectionData()).done(function(data){
+                self.savePersonalSchedule(self.toPersonalScheduleData());
+                service.addScheduleExecutionLog(self.collectionData()).done(function(data) {
+                    nts.uk.ui.block.clear();
                     nts.uk.ui.windows.setShared('inputData', data);
                     nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
                     });
                 });
-                
+
             }
-            
-            
+
+
             /**
              * open dialog KDL023
              */
-            private showDialogKDL023(): void{
+            private showDialogKDL023(): void {
                 var self = this;
                 var data: PersonalSchedule = new PersonalSchedule();
-                nts.uk.ui.windows.setShared('reflectionSetting', self.convertPersonalScheduleToReflectionSetting(data));
-                nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
-                    let dto = nts.uk.ui.windows.getShared('returnedData');
+                self.findPersonalSchedule().done(function(dataInfo) {
+                    if (dataInfo && dataInfo != null) {
+                        data = dataInfo;
+                    }
+                    nts.uk.ui.windows.setShared('reflectionSetting', self.convertPersonalScheduleToReflectionSetting(data));
+                    nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
+                        let dto = nts.uk.ui.windows.getShared('returnedData');
+                        self.responeReflectionSetting(dto);
+                    });
                 });
+
             }
             /**
              * convert data personal schedule to refelctionSetting
              */
-            private convertPersonalScheduleToReflectionSetting(data: PersonalSchedule): ReflectionSetting{
-                var self = this;    
+            private convertPersonalScheduleToReflectionSetting(data: PersonalSchedule): ReflectionSetting {
+                var self = this;
                 var dto: ReflectionSetting = {
                     calendarStartDate: self.periodDate().startDate,
                     calendarEndDate: self.periodDate().endDate,
@@ -599,11 +745,11 @@ module nts.uk.at.view.ksc001.b {
                     nonStatutorySetting: self.convertWorktypeSetting(data.legalHolidayUseAtr, data.legalHolidayWorkType)
                 };
                 return dto;
-            } 
-            
-             /**
-             * find employee id in selected
-             */
+            }
+
+            /**
+            * find employee id in selected
+            */
             public findEmployeeIdByCode(employeeCode: string): string {
                 var self = this;
                 var employeeId = '';
@@ -619,21 +765,21 @@ module nts.uk.at.view.ksc001.b {
              */
             public findEmployeeIdsByCode(employeeCodes: string[]): string[] {
                 var self = this;
-                var employeeIds : string[] = [];
-                for(var employeeCode of employeeCodes){
+                var employeeIds: string[] = [];
+                for (var employeeCode of employeeCodes) {
                     var employeeId = self.findEmployeeIdByCode(employeeCode);
-                    if(employeeId && !(employeeId ==='')){
+                    if (employeeId && !(employeeId === '')) {
                         employeeIds.push(employeeId);
-                    }    
+                    }
                 }
                 return employeeIds;
             }
             /**
              * collection data => command save
              */
-            private collectionData(): ScheduleExecutionLogSaveDto{
+            private collectionData(): ScheduleExecutionLogSaveDto {
                 var self = this;
-                var data: PersonalSchedule = self.toPersonalScheduleData('');
+                var data: PersonalSchedule = self.toPersonalScheduleData();
                 var dto: ScheduleExecutionLogSaveDto = {
                     periodStartDate: self.toDate(self.periodDate().startDate),
                     periodEndDate: self.toDate(self.periodDate().endDate),
@@ -653,7 +799,7 @@ module nts.uk.at.view.ksc001.b {
                 };
                 return dto;
             }
-            
+
             /**
              * convert work type setting
              */
@@ -666,31 +812,7 @@ module nts.uk.at.view.ksc001.b {
             }
 
         }
-        
-        export interface DayOffSetting {
-            useClassification: boolean;
-            workTypeCode: string;
-        }
-        
-        export interface ReflectionSetting {
-            calendarStartDate?: string;
-            calendarEndDate?: string;
-            selectedPatternCd: string;
-            patternStartDate: string; // 'YYYY-MM-DD'
-            reflectionMethod: ReflectionMethod;
-            statutorySetting: DayOffSetting;
-            nonStatutorySetting: DayOffSetting;
-            holidaySetting: DayOffSetting;
-        }
 
-        // 休日反映方法
-        export enum ReflectionMethod {
-            // 上書き反映
-            OVERWRITE = 0,
-
-            // 穴埋め反映
-            FILLINTHEBLANK = 1
-        }
 
         // 実施区分
         export enum ImplementAtr {
@@ -804,20 +926,20 @@ module nts.uk.at.view.ksc001.b {
 
             // 育児介護時間再設定
             resetTimeChildCare: boolean;
-            
+
             constructor() {
                 var self = this;
-                self.patternCode = '11';
+                self.patternCode = '02';
                 self.patternStartDate = new Date();
                 self.resetMasterInfo = false;
-                self.holidayReflect = ReflectionMethod.OVERWRITE;
+                self.holidayReflect = ReflectionMethod.Overwrite;
                 self.resetAbsentHolidayBusines = false;
                 self.createMethodAtr = CreateMethodAtr.PERSONAL_INFO;
                 self.confirm = false;
                 self.reCreateAtr = ReCreateAtr.ALLCASE;
                 self.processExecutionAtr = ProcessExecutionAtr.REBUILD;
                 self.implementAtr = ImplementAtr.GENERALLY_CREATED;
-                self.resetWorkingHours =  false;
+                self.resetWorkingHours = false;
                 self.legalHolidayUseAtr = UseAtr.NOTUSE;
                 self.legalHolidayWorkType = '';
                 self.statutoryHolidayUseAtr = UseAtr.NOTUSE;

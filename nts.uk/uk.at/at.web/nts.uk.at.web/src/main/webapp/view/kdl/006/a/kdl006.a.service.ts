@@ -6,34 +6,48 @@ module nts.uk.at.view.kdl006.a {
          *  Service paths
          */
         var servicePath: any = {
-             findCurrentClosure: "ctx/at/shared/workrule/closure/findCurrentClosure",                    
-             findWorkplaceInfo:"bs/employee/workplace/info/findWorkplaceInfo",
-             findWorkFixedByWkpIdAndClosureId:"at/record/workfixed/findWorkFixed",
-             
+             findCurrentPersonName: "at/record/workfixed/currentPerson",
+             findCurrentClosure: "ctx/at/shared/workrule/closure/findCurrentClosure",             
+             findWorkplaceInfo:"at/record/workfixed/findWkpInfo",
+             //findWorkplaceInfo:"bs/employee/workplace/info/findWorkplaceInfo",
+             findWorkFixedInfo: "at/record/workfixed/find",
+             saveWorkFixedInfo: "at/record/workfixed/save",
         }
-    
+        
+        /**
+         * findCurrentPersonName
+         */
+        export function findCurrentPersonName(): JQueryPromise<model.PersonInfo> {
+            return nts.uk.request.ajax(servicePath.findCurrentPersonName);
+        }
+        
         /**
          * findClosureNameAndPeriod
          */
-        export function findCurrentClosure(): JQueryPromise<any[]> {
+        export function findCurrentClosure(): JQueryPromise<model.Closure[]> {
             return nts.uk.request.ajax(servicePath.findCurrentClosure);
         }
         
         /**
          * findWorkplaceInfo
          */
-        export function findWorkplaceInfo(): JQueryPromise<any[]> {
-            return nts.uk.request.ajax('com', servicePath.findWorkplaceInfo);
+        export function findWorkplaceInfo(): JQueryPromise<model.WorkplaceInfo[]> {
+            return nts.uk.request.ajax(servicePath.findWorkplaceInfo);
+            //return nts.uk.request.ajax('com', servicePath.findWorkplaceInfo, {baseDate : new Date()});
         }
         
         /**
-         * findWorkFixedByWkpIdAndClosureId
+         * findWorkFixed
          */
-        export function findWorkFixedByWkpIdAndClosureId(workplaceId: string, closureId: number): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findWorkFixedByWkpIdAndClosureId, {
-                closureId: closureId,
-                wkpId: workplaceId
-            });
+        export function findWorkFixedInfo(listWorkFixed: model.WorkFixed[]): JQueryPromise<model.WorkFixed[]> {
+            return nts.uk.request.ajax(servicePath.findWorkFixedInfo, listWorkFixed);           
+        }    
+        
+        /**
+         * saveWorkFixedInfo
+         */
+        export function saveWorkFixedInfo(listWorkFixed: model.SaveWorkFixedCommand[]): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveWorkFixedInfo, listWorkFixed);
         }
         
         /**
@@ -41,78 +55,97 @@ module nts.uk.at.view.kdl006.a {
          */
         export module model {
             
-            export class CurrentClosure {
-
-                /** The closure id. */
+            // Data class
+            export class Closure {
                 closureId: number;
-                             
-                /** The start date. */
                 startDate: string;
-
-                /** The end date. */
                 endDate: string;
-
-                /** The closure name. */
                 closureName: string;
-
-                /** The view text */
+                processingDate: number;
                 viewText: string;              
             }     
             
-            export class WorkplaceDto {
-                
-                /** The work place id. */
+            export class WorkplaceInfo {               
                 workplaceId: string;
-                
-                /** The work place code. */
                 workplaceCode: string;
-                
-                /** The work place name. */
                 workplaceName: string;
-                    
-                /** The list work fixed dto. */
-                workFixedDto: WorkFixedDto[];
-                
-                /** The view text. */
-                viewText: string;
-                
-                // Columns
-                columnText1: string;
-                columnCheck1: boolean;
-                
-                columnText2: string;
-                columnCheck2: boolean;
-                
-                columnText3: string;
-                columnCheck3: boolean;
-                
-                columnText4: string;
-                columnCheck4: boolean;
-                
-                columnText5: string;
-                columnCheck5: boolean;
+                viewText: string;    
+
+                listWorkFixed: WorkFixed[];                
             }   
             
-            export class WorkFixedDto {
-                
-                /** The closure id. */
+            export class WorkFixed {                          
                 closureId: number;
-                
-                /** The confirm id. */
-                confirmPid: string;
-                
-                /** The work place id. */
+                confirmPid: string;               
                 wkpId: string;
-                
-                /** The confirm closure status. */
                 confirmClsStatus: number;
-                
-                /** The fixed date. */
                 fixedDate: string;
-                
-                /** The process date. */
                 processDate: number;
+                employeeName: string;
+                
+                // State
+                isEdited: boolean;
+                
+                // CheckBox
+                checked: KnockoutObservable<boolean>;
+                text: KnockoutObservable<string>;
+                
+                constructor (isEdited: boolean, closureId: number, wkpId: string) {
+                    this.isEdited = isEdited;
+                    this.closureId = closureId;
+                    this.wkpId = wkpId;                   
+                }
             }
+            
+            export class PersonInfo {
+                employeeId: string;
+                employeeName: string;
+                
+                constructor (employeeId: string, employeeName: string) {
+                    this.employeeId = employeeId;
+                    this.employeeName = employeeName;                   
+                }
+            }
+            
+            export enum ConfirmClsStatus {
+                PENDING = 0,
+                CONFIRM
+            }
+            
+            export class SaveWorkFixedCommand {       
+                isEdited: boolean;         
+                closureId: number;              
+                wkpId: string;
+                confirmClsStatus: number;
+                processDate: number;
+                
+                constructor (isEdited: boolean, closureId: number, wkpId: string, confirmClsStatus: number, processDate: number) {
+                    this.isEdited = isEdited;
+                    this.closureId = closureId;
+                    this.wkpId = wkpId;
+                    this.confirmClsStatus = confirmClsStatus;
+                    this.processDate = processDate;
+                }
+            }
+            
+            // UI class
+            export class CheckBoxItem {               
+                checked: KnockoutObservable<boolean>;
+                visible: KnockoutObservable<boolean>;
+                text: KnockoutObservable<string>;
+                
+                constructor() {                                   
+                    this.checked = ko.observable(null);
+                    this.visible = ko.observable(null);
+                    this.text = ko.observable(null);
+                }
+                
+                updateData(checked: boolean, visible: boolean, text: string) {
+                    this.checked(checked);
+                    this.visible(visible);
+                    this.text(text);
+                }
+            }         
         }
     }
 }  

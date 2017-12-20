@@ -70,7 +70,11 @@ public class JpaRequestOfEarchCompanyRepository extends JpaRepository implements
 				c.goOutTimeBeginDisFlg, 
 				c.timeCalUseAtr, 
 				c.timeInputUseAtr,
-				c.requiredInstructionFlg);
+				c.requiredInstructionFlg,
+				c.instructionAtr,
+				c.instructionMemo,
+				c.instructionUseAtr,
+				c.timeEndDispFlg);
 	}
 
 }

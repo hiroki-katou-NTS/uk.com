@@ -43,8 +43,12 @@ module nts.uk.com.view.cmm050.a {
             
             popServerEnable: KnockoutObservable<boolean>;
             
+            isEnableButtonTest: KnockoutObservable<boolean>;
+            
             constructor(){
                 let _self = this;
+                
+                _self.isEnableButtonTest = ko.observable(false);
                 
                 _self.useServerArray = ko.observableArray([
                     { value: 1, name: nts.uk.resource.getText("CMM050_7") },
@@ -93,17 +97,18 @@ module nts.uk.com.view.cmm050.a {
                     if(_self.useAuth() == UseServer.USE){
                        return nts.uk.resource.getText("CMM050_13", [25]);
                     }else{
-                       return nts.uk.resource.getText("CMM050_13", [578]);
+                       return nts.uk.resource.getText("CMM050_13", [587]);
                     } 
                 });
                 
+                //handle when value have been changed
                 _self.useAuth.subscribe(function(useAuthChanged){
                     if(useAuthChanged == UseServer.USE){
                         _self.authMethodEnable(true);
-                        _self.smtpPort(25);
+//                        _self.smtpPort(25);
                         _self.fillUI(_self.authMethod());
                     }else{
-                        _self.smtpPort(587);
+//                       _self.smtpPort(587);
                        _self.authMethodEnable(false);
                        _self.havePopSetting(false);
                        _self.haveImapSetting(false);
@@ -111,10 +116,12 @@ module nts.uk.com.view.cmm050.a {
                     }
                 }); 
                 
+                //handle when value have been changed
                 _self.authMethod.subscribe(function(authMethodChanged){
                     _self.fillUI(authMethodChanged);
                 });
                 
+                //handle when value have been changed
                 _self.imapUseServer.subscribe(function(imapUseServerChanged){
                     if(imapUseServerChanged == ImapUseServer.USE){
                        _self.imapServerEnable(true);
@@ -123,6 +130,7 @@ module nts.uk.com.view.cmm050.a {
                     }
                 });
                 
+                //handle when value have been changed
                 _self.popUseServer.subscribe(function(popUseServerChanged){
                     if(popUseServerChanged == PopUseServer.USE){
                        _self.popServerEnable(true);
@@ -131,6 +139,7 @@ module nts.uk.com.view.cmm050.a {
                     }
                 });
                  
+                //handle when value have been changed
                 _self.emailAuth.subscribe(function(emailString){
                    if(emailString.trim().length <= 0){
                         _self.emailAuth(emailString.trim());
@@ -142,7 +151,8 @@ module nts.uk.com.view.cmm050.a {
                     }
                 });
                 
-                 _self.popServer.subscribe(function(popServer){
+                //handle when value have been changed
+                _self.popServer.subscribe(function(popServer){
                    if(popServer.trim().length <= 0){
                         _self.popServer(popServer.trim());
                     }
@@ -154,6 +164,7 @@ module nts.uk.com.view.cmm050.a {
                     }
                 });
                 
+                //handle when value have been changed
                 _self.smtpServer.subscribe(function(smtpServer){
                    if(smtpServer.trim().length <= 0){
                         _self.smtpServer(smtpServer.trim());
@@ -193,25 +204,34 @@ module nts.uk.com.view.cmm050.a {
                 
                 var dfd = $.Deferred<void>();
                 
+                //prepare data 
+                
                 var params = new model.MailServerDto(
                         _self.useAuth(),
                         _self.encryptionMethod(),
                         _self.authMethod(),
                         _self.emailAuth(),
                         _self.password(),
-                        new model.SmtpInfoDto(_self.smtpServer(), _self.smtpPort()),
+                        new model.SmtpInfoDto( _self.smtpServer(), _self.smtpPort()),
                         new model.PopInfoDto(_self.popServer(), _self.popUseServer(), _self.popPort()),
                         new model.ImapInfoDto(_self.imapServer(), _self.imapUseServer(), _self.imapPort())
                     );
                 
                 _self.saveMailServerSetting(params).done(function(){
                     dfd.resolve();
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
+                        _self.startPage().done(function(){});
+                        $('#email_auth').focus();
+                    });
                 }).fail(function(){
                     alert('error');    
                 });
                 
                 return dfd.promise();
+            }
+            
+            private checkToUseOlDataOrNewData() {
+                
             }
             
             /**
@@ -220,15 +240,21 @@ module nts.uk.com.view.cmm050.a {
             public showDialogTest() {
                 let _self = this;
                 // Validate
-                if (_self.hasError()) {
+                if (nts.uk.text.isNullOrEmpty(_self.emailAuth())) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_533" });
                     return;
                 }
+                
+                // Validate
+                if (_self.hasError()) {
+                    return;
+                }
+                
                 setShared('CMM050Params', {
                     emailAuth: _self.emailAuth(),
                 }, true);
                 nts.uk.ui.windows.sub.modal("/view/cmm/050/b/index.xhtml").onClosed(function() {
-                  
+                    
                 });
             }
             
@@ -242,26 +268,17 @@ module nts.uk.com.view.cmm050.a {
                 _self.loadMailServerSetting().done(function(data: MailServerFindDto){
       
                     //check visible
-                    if (data.useAuth == UseServer.USE && (data.authenticationMethod == AuthenticationMethod.SMTP_AUTH_LOGIN || data.authenticationMethod == AuthenticationMethod.SMTP_AUTH_PLAIN)){
-                        _self.fillUI(data.authenticationMethod);
-                    }
-                    
-                    if(data.useAuth == UseServer.USE && data.authenticationMethod == AuthenticationMethod.POP_BEFORE_SMTP){
-                        _self.fillUI(data.authenticationMethod);
-                        if(data.popDto.popUseServer == PopUseServer.USE){
-                          _self.popServerEnable(true);
+                    if (data.useAuth == UseServer.USE){
+                        if (data.authMethod == AuthenticationMethod.POP_BEFORE_SMTP && data.popDto.popUseServer == PopUseServer.USE){
+                              _self.popServerEnable(true);
+                        }else if(data.authMethod == AuthenticationMethod.IMAP_BEFORE_SMTP && data.imapDto.imapUseServer == ImapUseServer.USE){
+                              _self.imapServerEnable(true);
                         }
-                    }
-                    
-                    if(data.useAuth == UseServer.USE && data.authenticationMethod == AuthenticationMethod.IMAP_BEFORE_SMTP){
-                        _self.fillUI(data.authenticationMethod);
-                        if(data.imapDto.imapUseServer == ImapUseServer.USE){
-                           _self.imapServerEnable(true);
-                        }  
-                    }
-                    
+                        _self.fillUI(data.authMethod);
+                    }else{
+                        _self.fillUI(99); 
+                    }          
                     dfd.resolve();
-                    $('#email_auth').focus();
                 });
                 
                 return dfd.promise();
@@ -278,15 +295,11 @@ module nts.uk.com.view.cmm050.a {
                         _self.haveEncryptMethod(false);
                         _self.havePopSetting(true);
                         _self.haveImapSetting(false);
-                        
-                        _self.encryptionMethod(EncryptMethod.None);
                         break;
                     case AuthenticationMethod.IMAP_BEFORE_SMTP:
                         _self.haveEncryptMethod(false);
                         _self.havePopSetting(false);
                         _self.haveImapSetting(true);
-                        
-                        _self.encryptionMethod(EncryptMethod.None);
                         break;
                     case AuthenticationMethod.SMTP_AUTH_LOGIN:
                         _self.haveEncryptMethod(true);
@@ -302,8 +315,11 @@ module nts.uk.com.view.cmm050.a {
                         _self.haveEncryptMethod(false);
                         _self.havePopSetting(false);
                         _self.haveImapSetting(false);
-                        
-                        _self.encryptionMethod(EncryptMethod.None);
+                        break;
+                    default:
+                        _self.haveEncryptMethod(false);
+                        _self.havePopSetting(false);
+                        _self.haveImapSetting(false);
                         break;
                 }    
             } 
@@ -369,6 +385,7 @@ module nts.uk.com.view.cmm050.a {
                 
                 service.findMailServerSetting().done(function(data: MailServerFindDto){
                     if (data === undefined){
+                         _self.isEnableButtonTest(false);
                          let data = new model.MailServerDto(
                                         _self.useAuth(),
                                         _self.encryptionMethod(),
@@ -382,9 +399,10 @@ module nts.uk.com.view.cmm050.a {
                         dfd.resolve(data);
                     }else {
                         //set common mail server setting data
+                        _self.isEnableButtonTest(true);
                         _self.emailAuth(data.emailAuthencation);
                         _self.useAuth(data.useAuth);
-                        _self.authMethod(data.authenticationMethod);
+                        _self.authMethod(data.authMethod);
                         _self.password(data.password);
                         _self.encryptionMethod(data.encryptionMethod);
                         

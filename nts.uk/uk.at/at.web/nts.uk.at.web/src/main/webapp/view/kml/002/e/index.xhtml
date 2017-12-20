@@ -10,26 +10,26 @@
 			<script>
 				var dialogSize = {
 					width : 980,
-					height : 770
+					height : 720
 				};
 			</script>
-<!-- 			<com:ValidatorScript> -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceYears -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceMonths -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt -->
-<!-- 			</com:ValidatorScript> -->
+			<!-- 			<com:ValidatorScript> -->
+			<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceYears -->
+			<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceMonths -->
+			<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays -->
+			<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays -->
+			<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt -->
+			<!-- 			</com:ValidatorScript> -->
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../main.css" />
 			<com:scriptfile path="kml002.e.vm.js" />
 			<com:scriptfile path="kml002.e.start.js" />
-			<com:scriptfile path="kml002.e.service.js" />
+			<com:scriptfile path="kml002.e.service.js" />                                                                                                                  
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
-		
+
 			<!-- BEGIN CONTENT AREA-->
 			<div id="contents-area">
 				<table class="cal-formula-form-data">
@@ -41,9 +41,9 @@
 						<td><span data-bind="text: itemNameLabel"></span></td>
 					</tr>
 				</table>
-				
+
 				<hr />
-				
+
 				<table class="cal-method-selection">
 					<tr>
 						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_147')}</div></td>
@@ -58,56 +58,58 @@
 						</td>
 					</tr>
 				</table>
-				
+
 				<div class="method-a">
 					<div class="grid-area-e"
 						data-bind="ntsPanel:{width: '310px', height: '395px', direction: 'right', showIcon: false, visible: true}">
-						<div class="checked-a-method" data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
-						
+						<div class="checked-a-method"
+							data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
+
 						<div class="search-box"
-							data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
-							items: itemsB, selected: currentCodeListB, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
-							
+							data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegridItems', 
+							items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name'], mode: 'igGrid'}" />
+
 						<table id="treegridItems"
 							data-bind="ntsGridList: {
 								width: 300,
 								height: 300,
-								options: itemsB,
+								options: items,
 								optionsValue: 'code',
 								columns: columns,
 								multiple: true,
-								value: currentCodeListB
+								value: currentCodeList
 							}">
 						</table>
 					</div>
-					
+
 					<div class="function-btns-a-method">
-						<button class="addition">#{i18n.getText('KML002_37')}</button>
-						<button class="subtraction">#{i18n.getText('KML002_38')}</button>
-						<button class="left-btn"><i class="icon icon-button-arrow-left"></i></button>
+						<button class="addition" data-bind="click: addition">#{i18n.getText('KML002_37')}</button>
+					<button class="subtraction" data-bind="click: subtraction">#{i18n.getText('KML002_38')}</button>
+					<button class="left-btn" data-bind="click: returnItems, enable: enableReturn"><i class="icon icon-button-arrow-left"></i></button>
 					</div>
-					
+
 					<div class="time-item-title">#{i18n.getText('KML002_51')}</div>
 					<div class="unit-price-title">#{i18n.getText('KML002_52')}</div>
-					
+
 					<div class="right-tbl-a-method">
 						<table id="treegridItems"
 							data-bind="ntsGridList: {
 								width: 300,
 								height: 200,
-								options: rightItemsB,
+								options: rightItems,
 								optionsValue: 'code',
 								columns: rightItemcolumns,
 								multiple: true,
-								value: currentRightCodeListB
+								value: currentRightCodeList
 							}">
 						</table>
-						
+
 						<table class="tbl-unit-price">
 							<tr>
 								<td class="multiplication">#{i18n.getText('KML002_59')}</td>
 								<td>
-									<div class="unit-price-items" data-bind="ntsComboBox: {
+									<div class="unit-price-items"
+										data-bind="ntsComboBox: {
 										options: unitPriceItems,
 										optionsValue: 'uPCd',
 										value: uPCd,
@@ -120,13 +122,14 @@
 							</tr>
 						</table>
 					</div>
-					
+
 					<div class="rounding-setting">
 						<table class="tbl-rounding">
 							<tr>
 								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_23')}</div></td>
 								<td>
-									<div class="unit-price-items" data-bind="ntsComboBox: {
+									<div class="unit-price-items"
+										data-bind="ntsComboBox: {
 										options: roundingItems,
 										optionsValue: 'roundingCd',
 										value: roundingCd,
@@ -137,7 +140,8 @@
 										]}"></div>
 								</td>
 								<td>
-									<button id="help" data-bind="ntsHelpButton: {image: 'KML002_4.png', position: 'left top', enable: true }">?</button>
+									<button id="help"
+										data-bind="ntsHelpButton: {image: 'KML002_4.png', position: 'left top', enable: true }">?</button>
 								</td>
 							</tr>
 							<tr>
@@ -156,43 +160,83 @@
 						</table>
 					</div>
 				</div>
-				
+
 				<div class="method-b">
 					<div class="grid-area-e"
 						data-bind="ntsPanel:{width: '310px', height: '440px', direction: 'right', showIcon: false, visible: true}">
 						<div class="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_28')}</div>
 						<div class="categories" data-bind="ntsComboBox: {
-								options: categoryItems,
-								optionsValue: 'catCode',
-								value: catCode,
-								optionsText: 'catName',
+								options: categoryItemsTime,
+								optionsValue: 'catCodeTime',
+								value: catCodeTime,
+								optionsText: 'catNameTime',
 								enable: true,
 								columns: [
-									{ prop: 'catName', length: 10 }
+									{ prop: 'catNameTime', length: 10 }
 								]}"></div>
-						<div class="cbx-checked-e" data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KML002_27')}' }"></div>
+						<div class="cbx-checked-e" data-bind="ntsCheckBox: { checked: checkedTime , enable: catCodeTime()==0, text: '#{i18n.getText('KML002_27')}' }"></div>
 						
 						<div class="search-box"
 							data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
-							items: itemsB, selected: currentCodeListB, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+							items: itemsTime, selected: currentCodeListTime, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 							
-						<table id="treegridItems"
+						<table id="treegridItemsTime"
 							data-bind="ntsGridList: {
 								width: 300,
 								height: 300,
-								options: itemsB,
+								options: itemsTime,
 								optionsValue: 'code',
-								columns: columns,
+								columns: columnsTime,
 								multiple: true,
-								value: currentCodeListB
+								value: currentCodeListTime
 							}">
 						</table>
 					</div>
 					
 					<div class="function-btns-e">
-						<button class="addition">#{i18n.getText('KML002_37')}</button>
-						<button class="subtraction">#{i18n.getText('KML002_38')}</button>
-						<button class="left-btn"><i class="icon icon-button-arrow-left"></i></button>
+						<button class="addition" data-bind="click: additionTime">#{i18n.getText('KML002_37')}</button>
+					<button class="subtraction" data-bind="click: subtractionTime">#{i18n.getText('KML002_38')}</button>
+					<button class="left-btn" data-bind="click: returnItemsTime, enable: enableReturnTime"><i class="icon icon-button-arrow-left"></i></button>
+					</div>
+					
+					<div class="right-tbl-e">
+						<table id="treegridItemsTime"
+							data-bind="ntsGridList: {
+								width: 300,
+								height: 300,
+								options: rightItemsTime,
+								optionsValue: 'code',
+								columns: rightItemcolumns,
+								multiple: true,
+								value: currentRightCodeListTime
+							}">
+						</table>
+					</div>
+				</div>
+				<div class="method-c">
+					<div class="grid-area-e"
+						data-bind="ntsPanel:{width: '310px', height: '440px', direction: 'right', showIcon: false, visible: true}">
+						<div class="search-box"
+							data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+							items: itemsAmount, selected: currentCodeListAmount, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+							
+						<table id="treegridItemsAmount"
+							data-bind="ntsGridList: {
+								width: 300,
+								height: 300,
+								options: itemsAmount,
+								optionsValue: 'code',
+								columns: columnsAmount,
+								multiple: true,
+								value: currentCodeListAmount
+							}">
+						</table>
+					</div>
+					
+					<div class="function-btns-e">
+						<button class="addition" data-bind="click: additionAmount">#{i18n.getText('KML002_37')}</button>
+					<button class="subtraction" data-bind="click: subtractionAmount">#{i18n.getText('KML002_38')}</button>
+					<button class="left-btn" data-bind="click: returnItemsAmount, enable: enableReturnAmount"><i class="icon icon-button-arrow-left"></i></button>
 					</div>
 					
 					<div class="right-tbl-e">
@@ -200,24 +244,23 @@
 							data-bind="ntsGridList: {
 								width: 300,
 								height: 300,
-								options: rightItemsB,
+								options: rightItemsAmount,
 								optionsValue: 'code',
 								columns: rightItemcolumns,
 								multiple: true,
-								value: currentRightCodeListB
+								value: currentRightCodeListAmount
 							}">
 						</table>
 					</div>
 				</div>
 			</div>
 			<!-- END CONTENT AREA-->
-			
+
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area-bottom">
-				<button id="submit-btn" class="x-large proceed"
+				<button id="submit-btn"  class="x-large proceed"
 					data-bind="click: submit">#{i18n.getText('KML002_40')}</button>
-				<button id="cancel-btn" data-bind="click: cancel"
-					class="large">#{i18n.getText('KML002_41')}</button>
+				<button id="cancel-btn" data-bind="click: cancel" class="large">#{i18n.getText('KML002_41')}</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 

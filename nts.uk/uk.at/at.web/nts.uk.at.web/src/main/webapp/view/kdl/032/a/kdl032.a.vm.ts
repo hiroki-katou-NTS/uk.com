@@ -28,15 +28,18 @@ module nts.uk.at.view.kdl032.a.viewmodel {
 
             var dfd = $.Deferred();
 
+            if (parameter != null) {
+                service.getData(parameter.divergenceTimeID).done(function(deviationTimeList: Array<DeviationTime>) {
+                    deviationTimeList = _.orderBy(deviationTimeList, ["divReasonCode"], ["asc"]);
+                    self.deviationTimeList(deviationTimeList);
+                    self.deviationTimeList.unshift(new DeviationTime("", nts.uk.resource.getText("KDL032_7")));
+                    self.selectCode(parameter.reasonCD);
 
-            service.getData(parameter.divergenceTimeID).done(function(deviationTimeList: Array<DeviationTime>) {
-                deviationTimeList = _.orderBy(deviationTimeList, ["deviationTimeCD"], ["asc"]);
-                self.deviationTimeList(deviationTimeList);
-                self.deviationTimeList.unshift(new DeviationTime("", nts.uk.resource.getText("KDL032_7")));
-                self.selectCode(parameter.reasonCD);
-
-            });
-
+                });
+            }
+            else {
+                self.selectCode(self.deviationTimeList[0]);
+            }
             dfd.resolve();
 
             return dfd.promise();
@@ -48,7 +51,7 @@ module nts.uk.at.view.kdl032.a.viewmodel {
         }
 
         submit() {
-            console.time('Submit');
+
             var self = this;
             var selectDeviationTime = _.find(self.deviationTimeList(), ['divReasonCode', self.selectCode()]);
             if (selectDeviationTime !== undefined) {
@@ -58,9 +61,10 @@ module nts.uk.at.view.kdl032.a.viewmodel {
                 nts.uk.ui.windows.setShared("ReturnData", null, true);
             }
             self.cancel_Dialog();
-             console.timeEnd('Submit');
+            
+
         }
-       
+
     }
     class DeviationTime {
         divReasonCode: string;

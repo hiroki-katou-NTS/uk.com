@@ -8,8 +8,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyServiceTypeControl;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyServiceTypeControlRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyServiceTypeControl;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyServiceTypeControlRepository;
 
 @Stateless
 public class DailyServiceTypeControlUpdateCommand extends CommandHandler<List<DailyServiceTypeControlCommand>> {

@@ -49,16 +49,17 @@ module nts.uk.com.view.cmm013.b {
                     .ifYes(() => { 
                         nts.uk.ui.block.grayout();
                         service.removeJobTitle(_self.toJSON())
-                            .done(() => {
-                                nts.uk.ui.block.clear();                                                             
+                            .done(() => {                                                            
                                 nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_REMOVE_JOB, true);
                                 nts.uk.ui.dialog.info({ messageId: "Msg_483" }).then(() => {
                                     _self.close();
                                 });                               
                             })
-                            .fail((res: any) => {
-                                nts.uk.ui.block.clear();
+                            .fail((res: any) => {                                
                                 _self.showMessageError(res);
+                            })
+                            .always(() => {
+                                nts.uk.ui.block.clear();
                             });
                     })
                     .ifNo(() => { 
@@ -91,8 +92,11 @@ module nts.uk.com.view.cmm013.b {
              * Validate
              */
             private validate(): boolean {
-                let _self = this;               
-                $('#end-date').ntsError('clear');                
+                let _self = this;     
+                          
+                // Clear error
+                nts.uk.ui.errors.clearAll();          
+                  
                 $('#end-date').ntsEditor('validate');               
                 return !$('.nts-input').ntsError('hasError');
             }
@@ -101,7 +105,15 @@ module nts.uk.com.view.cmm013.b {
              * Show Error Message
              */
             private showMessageError(res: any): void {
-                if (res.businessException) {
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 }
             }   

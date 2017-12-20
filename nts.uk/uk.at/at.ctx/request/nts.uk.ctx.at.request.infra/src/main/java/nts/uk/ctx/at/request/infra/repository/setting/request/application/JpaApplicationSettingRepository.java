@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -129,6 +129,7 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 
 	@Override
 	public Optional<ApplicationSetting> getApplicationSettingByComID(String companyID) {
-		return this.queryProxy().find(new KrqstApplicationSettingPK(companyID), KrqstApplicationSetting.class).map(x-> toDomain(x));
+		 Optional<ApplicationSetting> op = this.queryProxy().find(new KrqstApplicationSettingPK(companyID), KrqstApplicationSetting.class).map(x-> toDomain(x));
+		 return op;
 	}
 }

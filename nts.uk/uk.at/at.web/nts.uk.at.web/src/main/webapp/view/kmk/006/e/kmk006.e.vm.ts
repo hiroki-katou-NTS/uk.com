@@ -18,7 +18,7 @@ module nts.uk.at.view.kmk006.e {
             public startPage(): JQueryPromise<void> {
                 var self = this;
 
-                var dfd = $.Deferred();
+                var dfd = $.Deferred<any>();
                 
 
                 nts.uk.ui.block.invisible();
@@ -62,6 +62,7 @@ module nts.uk.at.view.kmk006.e {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(function() {
+                   
                     nts.uk.ui.block.clear();
                 });
             }
@@ -80,29 +81,29 @@ module nts.uk.at.view.kmk006.e {
             useWkpSet: KnockoutObservable<boolean>;
             useJobwkpSet: KnockoutObservable<boolean>;
             constructor() {
-                this.useJobSet = ko.observable(true);
                 this.useWkpSet = ko.observable(true);
+                this.useJobSet = ko.observable(true);
                 this.useJobwkpSet = ko.observable(false);
             }
 
             updateData(dto: UnitAutoCalSettingDto) {
-                this.useJobSet(dto.useJobSet);
                 this.useWkpSet(dto.useWkpSet);
+                this.useJobSet(dto.useJobSet);
                 this.useJobwkpSet(dto.useJobwkpSet);
             }
 
             toDto(): UnitAutoCalSettingDto {
                 var dto: UnitAutoCalSettingDto = {
-                    useJobSet: this.useJobSet(),
                     useWkpSet: this.useWkpSet(),
+                    useJobSet: this.useJobSet(),
                     useJobwkpSet: this.useJobwkpSet()
                 };
                 return dto;
             }
 
             resetData() {
-                this.useJobSet(true);
                 this.useWkpSet(true);
+                this.useJobSet(true);
                 this.useJobwkpSet(false);
             }
         }

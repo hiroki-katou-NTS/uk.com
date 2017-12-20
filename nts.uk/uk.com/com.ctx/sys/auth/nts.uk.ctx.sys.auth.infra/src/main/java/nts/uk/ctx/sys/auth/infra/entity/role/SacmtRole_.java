@@ -13,7 +13,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(SacmtRole.class)
 public class SacmtRole_ {
 	/** The id. */
-	public static volatile SingularAttribute<SacmtRole, String> id;
+	public static volatile SingularAttribute<SacmtRole, String> roleId;
 	
 	/** The cid. */
 	public static volatile SingularAttribute<SacmtRole, String> cid;

@@ -11,33 +11,39 @@ module nts.uk.com.view.cps009.d.viewmodel {
 
         currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue(
             {
-                itemCode: "0001",
-                itemName: "A"
+                itemCode: "",
+                itemName: ""
             }));
 
-
-
         constructor() {
-
-
         }
 
         newInitValue() {
 
             let self = this,
-                copyObj = {
+                newInit = {
                     itemCode: self.currentInitVal().itemCode(),
                     itemName: self.currentInitVal().itemName()
                 };
-            service.add(copyObj).done(function(data) {
-                dialog.info({ messageId: "Msg_20" }).then(function() {
-                    close();
+
+            $('.nts-input').trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                service.add(newInit).done(function(initSettingId) {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('CPS009D_PARAMS', initSettingId);
+                        close();
+                    });
+                }).fail(function(res) {
+                    //display message error.
+                    dialog.alertError({ messageId: res.messageId }).then(() => {
+                        $('#roleCode').focus();
+                    });
+
                 });
-            });
+            }
         }
 
         cancelNewInitValue() {
-
             close();
         }
 

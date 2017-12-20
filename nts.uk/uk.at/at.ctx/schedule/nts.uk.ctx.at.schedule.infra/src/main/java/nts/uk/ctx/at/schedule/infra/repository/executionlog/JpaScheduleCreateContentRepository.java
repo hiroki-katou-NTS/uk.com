@@ -17,7 +17,9 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
  * The Class JpaScheduleCreateContentRepository.
  */
 @Stateless
-public class JpaScheduleCreateContentRepository extends JpaRepository implements ScheduleCreateContentRepository{
+public class JpaScheduleCreateContentRepository extends JpaRepository
+		implements
+			ScheduleCreateContentRepository {
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository#findByExecutionId(java.lang.String)
@@ -74,10 +76,7 @@ public class JpaScheduleCreateContentRepository extends JpaRepository implements
 	private KscdtScheExeContent toEntityUpdate(ScheduleCreateContent domain) {
 		Optional<KscdtScheExeContent> opEntity = this.queryProxy().find(domain.getExecutionId(),
 				KscdtScheExeContent.class);
-		KscdtScheExeContent entity = new KscdtScheExeContent();
-		if (opEntity.isPresent()) {
-			entity = opEntity.get();
-		}
+		KscdtScheExeContent entity = opEntity.get();
 		domain.saveToMemento(new JpaScheduleCreateContentSetMemento(entity));
 		return entity;
 	}

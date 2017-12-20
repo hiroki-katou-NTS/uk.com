@@ -1,12 +1,12 @@
 module nts.uk.at.view.kdw001.c {
     import getText = nts.uk.resource.getText;
-    
+
     export module viewmodel {
         export class ScreenModel {
-            
+
             //Declare screenName flag to forward screen B or screen C
             screenName: string;
-            
+
             //Declare kcp005 list properties
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
@@ -34,19 +34,24 @@ module nts.uk.at.view.kdw001.c {
             baseDate: KnockoutObservable<Date>;
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
+            //close period
+            periodStartDate: any;
+
+
+
             constructor() {
 
                 var self = this;
-                
+
                 //Get screenName value from a screen
                 __viewContext.transferred.ifPresent(data => {
                     self.screenName = data.screenName;
                 });
-                
+
                 //Init kcp005 properties
                 self.baseDate = ko.observable(new Date());
-                self.selectedCode = ko.observable('2');
-                self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+                self.selectedCode = ko.observable(null);
+                self.multiSelectedCode = ko.observableArray([]);
                 self.isShowAlreadySet = ko.observable(false);
                 self.alreadySettingList = ko.observableArray([
                     { code: '1', isAlreadySetting: true },
@@ -59,14 +64,14 @@ module nts.uk.at.view.kdw001.c {
                 self.isShowSelectAllButton = ko.observable(false);
 
                 this.employeeList = ko.observableArray<UnitModel>([]);
-                
+
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: false,
+                    isMultiSelect: true,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.multiSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
@@ -74,7 +79,7 @@ module nts.uk.at.view.kdw001.c {
                     isShowSelectAllButton: self.isShowSelectAllButton()
                 };
 
-             
+
 
                 //Init time range input
                 self.enable = ko.observable(true);
@@ -82,21 +87,33 @@ module nts.uk.at.view.kdw001.c {
 
                 let today = new Date;
                 self.dateValue = ko.observable({});
-                self.dateValue().startDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate() + 2);
+                self.dateValue().startDate = "2017/11/08";
                 self.dateValue().endDate = today;
 
-                self.startDateString = ko.observable("");
-                self.endDateString = ko.observable("");
 
-                self.startDateString.subscribe(function(value) {
-                    self.dateValue().startDate = value;
+                //var closureID = __viewContext.transferred.value.closureID;
+                var closureID = '1';
+                service.findPeriodById(Number(closureID)).done((data) => {
+                    self.periodStartDate = data.startDate.toString();
+                    self.dateValue().startDate = data.startDate.toString();
+                    self.dateValue().endDate = data.endDate.toString();
                     self.dateValue.valueHasMutated();
+                }).always(() => {
+                    self.startDateString = ko.observable("");
+                    self.endDateString = ko.observable("");
+
+                    self.startDateString.subscribe(function(value) {
+                        self.dateValue().startDate = value;
+                        self.dateValue.valueHasMutated();
+                    });
+
+                    self.endDateString.subscribe(function(value) {
+                        self.dateValue().endDate = value;
+                        self.dateValue.valueHasMutated();
+                    });
+
                 });
 
-                self.endDateString.subscribe(function(value) {
-                    self.dateValue().endDate = value;
-                    self.dateValue.valueHasMutated();
-                });
 
                 //Init employee filter component
                 self.selectedEmployee = ko.observableArray([]);
@@ -126,12 +143,29 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         self.showinfoSelectedEmployee(true);
                         var dataEmployee: EmployeeSearchDto[] = [];
                         dataEmployee.push(data);
                         self.selectedEmployee(dataEmployee);
+
+                        //Bug self fix
+                        let unitModel = new UnitModel(data);
+                        let listUnitModel: UnitModel[] = [];
+                        listUnitModel.push(unitModel);
+                        self.employeeList(listUnitModel);
+
+                        //Fix bug 42, bug 43
+                        let selectList: any = [];
+                        selectList.push(data.employeeCode);
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -142,6 +176,12 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -152,6 +192,12 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataList, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -162,25 +208,114 @@ module nts.uk.at.view.kdw001.c {
                             return new UnitModel(item);
                         });
                         self.employeeList(items);
+
+                        //Fix bug 42, bug 43
+                        let selectList = _.map(dataEmployee, item => {
+                            return item.employeeCode;
+                        });
+                        self.multiSelectedCode(selectList);
                     }
 
                 }
 
 
             }
-            
+
             opendScreenBorJ() {
                 let self = this;
-                if(self.screenName == "B"){
-                    nts.uk.request.jump("/view/kdw/001/b/index.xhtml", {"activeStep": 1});    
-                }else{
-                    nts.uk.request.jump("/view/kdw/001/j/index.xhtml", {"activeStep": 1});
-                }        
+                //var closureID = __viewContext["viewmodel"].closureID;
+                var closureID = '1';
+                service.findPeriodById(Number(closureID)).done((data) => {
+                    if (data) {
+                        let listEmpSelected = self.listComponentOption.selectedCode();
+                        if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
+                            return;
+                        }
+                        let startDateS = self.dateValue().startDate.split("/");
+                        let endDateS = self.dateValue().endDate.split("/");
+                        let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
+                        let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
+                        let startDate_unixtime = parseInt(startDate.getTime() / 1000);
+                        let endDate_unixtime = parseInt(endDate.getTime() / 1000);
+                        var timeDifference = endDate_unixtime - startDate_unixtime;
+                        var timeDifferenceInHours = timeDifference / 60 / 60;
+                        var timeDifferenceInDays = timeDifferenceInHours / 24;
+
+                        if (timeDifferenceInDays > 31) {
+                            nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
+                                let yearPeriodStartDate = self.periodStartDate.split("/")[0];
+                                let monthPeriodStartDate = self.periodStartDate.split("/")[1];
+                                let dayPeriodStartDate = self.periodStartDate.split("/")[2];
+                                let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
+                                let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                                let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
+                                if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
+                                    nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                                    return;
+                                }
+
+                           
+                                let listEmpSelectedId = [];
+                                _.forEach(self.selectedEmployee(), function(value) {
+                                    if( _.includes(listEmpSelected,value.employeeCode)){
+                                        listEmpSelectedId.push(value.employeeId);
+                                    }
+                                });
+
+
+
+
+                                __viewContext["viewmodel"].params.setParamsScreenC({
+                                    lstEmployeeID: listEmpSelectedId,
+                                    periodStartDate: self.dateValue().startDate,
+                                    periodEndDate: self.dateValue().endDate
+                                });
+                                $("#wizard").ntsWizard("next").done(function() {
+                                    $('#checkBox1').focus();
+                                });
+
+                            })
+
+                        } else {
+                            let monthNow = data.month; // thieu thang hien tai cua  domain 締め
+                            let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                            if (monthStartDate < monthNow) {
+                                nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                                return;
+                            }
+
+                             let listEmpSelectedId = [];
+                                _.forEach(self.selectedEmployee(), function(value) {
+                                    if( _.includes(listEmpSelected,value.employeeCode)){
+                                        listEmpSelectedId.push(value.employeeId);
+                                    }
+                                });
+
+                            __viewContext["viewmodel"].params.setParamsScreenC({
+                                lstEmployeeID: listEmpSelectedId,
+                                periodStartDate: self.dateValue().startDate,
+                                periodEndDate: self.dateValue().endDate
+                            });
+                            $("#wizard").ntsWizard("next").done(function() {
+                                $('#checkBox1').focus();
+                            });
+
+                        }
+                    }
+
+
+                });
+
+
+
+
+
             }
-            
+
             start() {
                 var self = this;
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent); 
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
             }
 

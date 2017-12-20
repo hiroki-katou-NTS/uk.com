@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  */
 @Data
 public class BasicScheduleScreenParams {
-	public List<String> sId;
+	public List<String> employeeId;
 	public GeneralDate startDate;
 	public GeneralDate endDate;
 }

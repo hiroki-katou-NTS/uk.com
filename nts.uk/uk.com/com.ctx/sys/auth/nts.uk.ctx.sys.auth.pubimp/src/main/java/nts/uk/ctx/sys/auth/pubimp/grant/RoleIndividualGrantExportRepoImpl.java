@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.grant;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrant;
-import nts.uk.ctx.sys.auth.dom.grant.RoleIndividualGrantRepository;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
@@ -24,23 +26,25 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 	@Inject
 	private RoleIndividualGrantRepository roleIndividualGrantRepository;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUserAndRoleType(java.lang.String, java.lang.Integer)
-	 */
 	@Override
 	public RoleIndividualGrantExport getByUserAndRoleType(String userId, Integer roleType) {
-		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository
-				.findByUserAndRole(userId, RoleType.valueOf(roleType)).get();
-		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
+		List<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository
+				.findByUserAndRole(userId, RoleType.valueOf(roleType).value);
+		if (roleIndividualGrant.isEmpty()) {
+			return null;
+		}
+		return new RoleIndividualGrantExport(roleIndividualGrant.get(0).getRoleId());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo#getByUser(java.lang.String)
-	 */
 	@Override
-	public RoleIndividualGrantExport getByUser(String userId,GeneralDate date) {
-		RoleIndividualGrant roleIndividualGrant = roleIndividualGrantRepository.findByUser(userId,date).get();
-		return new RoleIndividualGrantExport(roleIndividualGrant.getRoleId());
+	public RoleIndividualGrantExport getByUser(String userId, GeneralDate date) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+	@Override
+	public RoleIndividualGrantExport getByUser(String userId) {
+		return roleIndividualGrantRepository.findByUserAndDate(userId, GeneralDate.today())
+				.map(r -> new RoleIndividualGrantExport(r.getRoleId())).orElseGet(null);
+	}
 }

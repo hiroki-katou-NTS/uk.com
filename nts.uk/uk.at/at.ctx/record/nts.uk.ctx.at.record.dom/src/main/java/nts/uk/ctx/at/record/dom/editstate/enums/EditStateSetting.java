@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 /**
  * 
  * @author nampt
- * 日別実績の編集状態
+ * 日別実績の編集状態 - enums
  *
  */
 @AllArgsConstructor

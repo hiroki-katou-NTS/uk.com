@@ -1,61 +1,57 @@
 module nts.uk.com.view.cps017.d.viewmodel {
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import textUK = nts.uk.text;
+    import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
 
     export class ScreenModel {
-        Items: KnockoutObservableArray<IItem> = ko.observableArray([]);
-        item: KnockoutObservable<Item> = ko.observable(new Item({ id: '', name: '' }));
-        date: KnockoutObservable<string>;
-
+        listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
+        selectionName: KnockoutObservable<string> = ko.observable('');
+        startDate: KnockoutObservable<string> = ko.observable('');
+        data: any;
         constructor() {
-            let self = this,
-                item: Item = self.item();
-            
-            self.date = ko.observable("1990/01/01");
-            self.start();
+            let self = this;
+            self.data = getShared('CPS017D_PARAMS');
+            self.selectionName(self.data.sel_name);
+            self.startDate(self.data.sel_history.startDate);
+        }
+        /**
+         * close dialog when click button キャンセル
+         */
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
 
-        //
-        start() {
-            let self = this,
-                items: KnockoutObservableArray<IItem> = self.Items;
-            
-            service.getItems().done((_items: Array<IItem>) => {
-                if (_items && _items.length) {
-                    _items.forEach(x => items.push(x));
+        /**
+         * update history when click button 決定 
+         */
+        editHistory() {
+            block.invisible();
+            let self = this;
+            let history: IHistorySelection = self.data.sel_history;
+            let data = { startDateNew: moment(self.startDate()).format("YYYY/MM/DD"),
+                        startDate: history.startDate,
+                        endDate: history.endDate,
+                        histId: history.histId,
+                        selectionItemId: history.selectionItemId,
+            }
+            service.editHistoryData(data).done(function() {
+                nts.uk.ui.windows.close();
+            }).fail(function(res){
+                if(res.messageId == 'Msg_127'){
+                    $('#start-date-sel').ntsError('set', {messageId: res.messageId});
+                }else{
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }
+            }).always(() => {
+                block.clear();
             });
         }
-        
-        //
-        closeDialog(){
-            nts.uk.ui.windows.close();    
-        }
     }
 
-    //
-    class Item {
-        id: KnockoutObservable<number> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
-
-        constructor(param: IItem) {
-            let self = this;
-            self.id(param.id);
-            self.name(param.name || '');
-        }
+    // History:
+    interface IHistorySelection {
+        histId?: string;
+        selectionItemId?: string;
+        startDate: string;
+        endDate: string;
     }
-
-    //
-    interface IItem {
-        id: number;
-        name: string;
-    }
-
-
 }

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.repository.login;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +28,12 @@ import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtUser_;
 @Stateless
 public class JpaUserRepository extends JpaRepository implements UserRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByLoginId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByLoginId(java.lang.
+	 * String)
 	 */
 	@Override
 	public Optional<User> getByLoginId(String loginId) {
@@ -45,7 +50,7 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtUser> result = em.createQuery(query).getResultList();
-		//get single user 
+		// get single user
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {
@@ -53,8 +58,12 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByAssociatedPersonId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByAssociatedPersonId(
+	 * java.lang.String)
 	 */
 	@Override
 	public Optional<User> getByAssociatedPersonId(String associatedPersonId) {
@@ -71,7 +80,7 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtUser> result = em.createQuery(query).getResultList();
-		//get single user 
+		// get single user
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {

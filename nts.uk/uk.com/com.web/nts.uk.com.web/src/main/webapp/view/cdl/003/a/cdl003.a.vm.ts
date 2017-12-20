@@ -26,10 +26,10 @@ module nts.uk.com.view.cdl003.a {
                     self.isMultiple = inputCDL003.isMultiple;
                     self.isShowNoSelectRow = inputCDL003.showNoSelection;
                     if (self.isMultiple) {
-                        self.selectedMulClassification(inputCDL003.canSelected);
+                        self.selectedMulClassification(inputCDL003.selectedCodes);
                     }   
                     else {
-                        self.selectedSelClassification(inputCDL003.canSelected);
+                        self.selectedSelClassification(inputCDL003.selectedCodes);
                     } 
                 }
                 
@@ -64,9 +64,9 @@ module nts.uk.com.view.cdl003.a {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
                         return;
                     }
-                    nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCodes });
+                    nts.uk.ui.windows.setShared('outputCDL003', selectedCodes);
                     nts.uk.ui.windows.close();    
-                }else {
+                } else {
                     var selectedCode: string = self.getSelectBySel(self.selectedSelClassification(), dataList);
                     var isNoSelectRowSelected = $("#classification").isNoSelectRowSelected();
                     if(!selectedCode && !isNoSelectRowSelected){
@@ -74,7 +74,7 @@ module nts.uk.com.view.cdl003.a {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
                         return;
                     }
-                    nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: isNoSelectRowSelected ? null : selectedCode});
+                    nts.uk.ui.windows.setShared('outputCDL003', isNoSelectRowSelected ? null : selectedCode);
                     nts.uk.ui.windows.close();    
                 }
                 
@@ -109,6 +109,7 @@ module nts.uk.com.view.cdl003.a {
              * close windows
              */
             private closeWindows(): void{
+                nts.uk.ui.windows.setShared('CDL003Cancel', true);
                 nts.uk.ui.windows.close();  
             }
         }

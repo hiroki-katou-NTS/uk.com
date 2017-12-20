@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 350,
+					width : 420,
 					height :600
 				};
 			</script>
@@ -22,47 +22,40 @@
 
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
-				<div id='ctg'>
-					<div class='flex'>
-						<div data-bind="ntsFormLabel: {}" class='distane'>
-							<label id="ctg">#{i18n.getText('CPS009_31')}</label>
-						</div>
-						<label id="ctgName" style = "margin-top: 10px;" data-bind="text: categoryName"></label>
-					</div>
-					<div data-bind="ntsFormLabel: {}" class='distane'>
-						<label id="itemSel">#{i18n.getText('CPS009_32')}</label>
-					</div>
+				<!-- B001: label カテゴリ -->
+				<div data-bind="ntsFormLabel: {}" class='distane'>
+					<label id="ctg">#{i18n.getText('CPS009_31')}</label>
 				</div>
-				<div id="itemLst">
-					<table id="grid_B">
-<!-- 						data-bind="ntsGridList: {
-						height: 300,
-						options: itemInitLst,
-						optionsValue: 'id',
-						columns: itemColumns,
-						multiple: true,
-						value: currentIdLst 
-				    }"--></table>
+				<!-- B002: Text: カテゴリ名 -->
+				<label id="ctgName" style = "margin-top: 10px; margin-left: 10px;" data-bind="text: categoryName"></label>
+				<br/>
+				<!-- B003: label 項目選択 -->
+				<div data-bind="ntsFormLabel: {}" class='distane'>
+					<label id="itemSel">#{i18n.getText('CPS009_32')}</label>
 				</div>
-				<div>
-					<div data-bind="ntsFormLabel: {}" class='distane'>
-						<label id="itemSel">#{i18n.getText('CPS009_34')}</label>
-					</div>
-					<div id="B_009" class="cf"
-						data-bind="ntsSwitchButton: {
-						options: roundingRules,
-						optionsValue: 'code',
-						optionsText: 'name',
-						value: selectedRuleCode,
-						enable: true }" tabindex="4"></div>
+				<!-- B004: table -->
+				<div id="itemLst" style="margin-left: 80px">
+					<div id="grid_B" style="background-color: #F3F3F3; width: 260px;"></div>
 				</div>
-
-
+				<!-- B009: label 一括指定する区分 -->
+				<div data-bind="ntsFormLabel: {}" class='distane'>
+					<label id="itemSel">#{i18n.getText('CPS009_34')}</label>
+				</div>
+				<!-- B010: switch button 項目初期値設定-->
+				<div id="B_010" class="cf" data-bind="ntsSwitchButton: {
+											name: '#[CPS009_35]',
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode,
+											enable: true }">
+				</div>
 			</div>
 			<div id='functions-area-bottom'>
-				<button id="registration" class="proceed x-large" tabindex="5" data-bind="click: registerItems">#{i18n.getText('CPS009_29')}
-				</button>
-				<button id="cancel" tabindex="6" data-bind="click: closeDialog">#{i18n.getText('CPS009_30')}</button>
+				<!-- B011: button 決定 -->
+				<button id="registration" class="proceed x-large" data-bind="click: registerItems">#{i18n.getText('CPS009_29')}</button>
+				<!-- B012: button キャンセル -->
+				<button id="cancel" data-bind="click: closeDialog">#{i18n.getText('CPS009_30')}</button>
 
 			</div>
 

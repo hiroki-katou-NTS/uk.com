@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleCreatorDto;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmployeeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
 

@@ -1,34 +1,37 @@
+#tab-1, #tab-2 {
+	height: 525px;
+}
+
+#top-area *, #contain-view * {
+	font-size: 11.5px !important;
+	vertical-align: middle;
+}
+
 #master-wrapper {
 	overflow-x: hidden;
 }
 
-.extable .xheader td.color-pink {
-	background-color: #FFB9B9;
+#extable {
+	float: left;
+	top: 2px;
+	left: 80px;
 }
 
-.extable .xheader td.color-blue {
-	background-color: #8BD8FF;
+#extable td, #extable td>* {
+	font-size: 10.5px;
 }
 
-.extable td.text-color-red {
-	color: red;
-}
-
-.extable td.text-color-blue {
-	color: blue;
-}
-
-.text-align-center {
+.xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
+	{
 	text-align: center;
 }
 
-#extable {
-	top: 5px;
-	left: 85px;
+.ex-header-vert-sum tr:NTH-CHILD(2) {
+	font-size: 90%;
 }
 
-.ml-30 {
-	margin-left: 30px
+.ml-3 {
+	margin-left: 3px;
 }
 
 table th, table td {
@@ -37,17 +40,15 @@ table th, table td {
 }
 
 #functions-area>button {
-	height: 30px;
 	margin-left: 5px;
-	min-width: 85px
 }
 
 .setting {
-	margin-left: 120px !important;
+	margin-left: 215px !important;
 }
 
 .hope {
-	margin-left: 100px !important;
+	margin-left: 145px !important;
 }
 
 .generally, .simulation, .capture {
@@ -83,52 +84,53 @@ table th, table td {
 }
 
 #top-area {
+	float: left;
+	width: 100%;
 	border-bottom: 1px solid #B1B1B1;
 	margin-left: 80px;
-	padding-bottom: 7px;
-}
-
-#top-area div:first-child {
-	height: 20px
+	margin-top: 3px;
+	padding-bottom: 2px;
+	border-bottom: 1px solid #B1B1B1;
+	padding-bottom: 3px;
 }
 
 #oViewModel, #qViewModel {
 	float: left;
-	width: 92%
+	width: 94%
+}
+
+#qViewModel {
+	margin-top: 3px;
+	height: 120px
 }
 
 #group-bt {
 	float: left;
-	width: 8%;
+	width: 6%;
 }
 
 .setting-button {
-	vertical-align: middle;
 	background: url(../image/image008.png) no-repeat center;
-	background-size: 25px 25px;
-	height: 30px;
-	width: 30px;
 }
 
 .color-button {
-	vertical-align: middle;
 	background: url(../image/image099.png) no-repeat center;
-	background-size: 25px 25px;
-	height: 30px;
-	width: 30px;
-	margin-left: 45px;
+}
+
+.size-image-button1 {
+	background-size: 20px 20px !important;
+	height: 24px !important;
+	width: 24px;
+}
+
+.size-image-button2 {
+	background-size: 24px 24px !important;
+	height: 27px !important;;
+	width: 27px;
 }
 
 .icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
 	width: 12px !important;
-}
-
-.switchButton-wrapper {
-	margin-left: 10px !important;
-}
-
-.nts-switch-button {
-	min-width: 55px;
 }
 
 #button-top {
@@ -156,14 +158,15 @@ table th, table td {
 	box-shadow: 1px 1px 5px 2px #888 !important;
 	padding: 12px;
 	background-color: #F8EFD4 !important;
+	visibility: hidden;
 }
 
 #multi-list {
 	height: initial !important;
 }
 
-#generally-created, #simulation-explanation, #capture-explanation,
-	#date-time-after, #special {
+#generally-created, #simulation-explanation,
+	#capture-explanationgenerally-created {
 	margin-left: 10px;
 }
 
@@ -172,11 +175,6 @@ table th, table td {
 }
 
 #popup-area6 {
-	display: none;
-	z-index: 100;
-	visibility: visible;
-	top: 155px;
-	left: 825px;
 	width: 390px
 }
 
@@ -197,11 +195,6 @@ table th, table td {
 }
 
 #popup-area9 {
-	display: none;
-	z-index: 100;
-	visibility: visible;
-	top: 155px;
-	left: 712px;
 	width: 470px
 }
 
@@ -234,46 +227,62 @@ table th, table td {
 	background-color: #008000
 }
 
-#image102 {
+#paste {
 	background: url(../image/image102.png) no-repeat center;
-	background-size: 32px 32px;
-	height: 35px;
-	width: 35px;
 }
 
-#image104 {
+#copy {
 	background: url(../image/image104.png) no-repeat center;
-	background-size: 32px 32px;
-	height: 35px;
-	width: 35px;
 }
 
-#image030 {
-	margin: 5px 0 0 41px;
+#undo {
+	margin: 2px 0 0 31px;
 	background: url(../image/image030.png) no-repeat center;
-	background-size: 32px 32px;
-	height: 35px;
-	width: 35px;
 }
 
 #prevMonth {
-	vertical-align: middle;
 	background: url(../image/image050.png) no-repeat center;
-	background-size: 30px 30px;
-	height: 30px;
-	width: 30px;
 }
 
 #nextMonth {
-	vertical-align: middle;
 	background: url(../image/image053.png) no-repeat center;
-	background-size: 30px 30px;
-	height: 30px;
-	width: 30px;
 }
 
 #contain-view {
+	float: left;
+	margin-top: 3px;
+	width: 100%;
 	margin-left: 80px;
-	margin-top: 5px;
-	height: 85px;
+}
+
+.right-content button {
+	height: 27px;
+}
+
+#top-area-left {
+	float: left;
+	width: 30%;
+}
+
+#top-area-left * {
+	font-size: 21px !important;
+}
+
+#top-area-right {
+	float: left;
+	width: 70%;
+}
+
+#date-time-prev, #date-time-after {
+	font-size: 12.5px !important
+}
+
+#set-work-time {
+	margin-top: 2px
+}
+
+.ex-editor input {
+	width: 100%;
+	height: 100%;
+	display: grid;
 }

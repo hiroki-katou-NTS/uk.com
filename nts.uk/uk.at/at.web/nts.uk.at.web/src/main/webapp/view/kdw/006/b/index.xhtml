@@ -15,9 +15,10 @@
 					height : 630
 				};
 			</script>
-			
+
 			<com:ValidatorScript>
 					nts.uk.ctx.at.record.dom.workrecord.operationsetting.RegisterTotaltimeCheer
+					nts.uk.ctx.at.record.dom.workrecord.workingtype.ChangeableWorkTypeGroupName
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -47,7 +48,7 @@
 		</ui:define>
 
 		<ui:define name="sidebar">
-			<div data-bind="with: tabView">
+			<div data-bind="with: tabView" tabindex="1">
 				<ul class="navigator"
 					data-bind="foreach: tabs().filter(function(t) { return t.display() == true})">
 					<li><a
@@ -63,10 +64,12 @@
 					id="back-navigate" class="goback"
 					data-bind="ntsLinkButton: {}, click: navigateView">#{i18n.getText('KDW006_25')}</a>
 
-				<button id="save" class="proceed" data-bind="click: saveData">#{i18n.getText('KDW006_26')}</button>
-				<button id="copy" data-bind="click: copyData, visible: enableCopyBtn">#{i18n.getText('KDW006_52')}</button>
+				<button id="save" class="proceed" tabindex="2"
+					data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KDW006_26')}</button>
+				<button id="copy" tabindex="3"
+					data-bind="click: copyData, visible: enableCopyBtn">#{i18n.getText('KDW006_52')}</button>
 			</div>
-
+			
 			<div id="tabpanel-b" role="tabpanel" class="screen-b"
 				data-bind="with: viewmodelB">
 				<ui:include src="b/index.xhtml" />
@@ -74,30 +77,24 @@
 
 			<div id="tabpanel-c" role="tabpanel" class="screen-c"
 				data-bind="with: viewmodelC">
-
 				<ui:include src="c/index.xhtml" />
-
 			</div>
 
 			<div id="tabpanel-d" role="tabpanel" class="screen-d"
 				data-bind="with: viewmodelD">
-
 				<ui:include src="d/index.xhtml" />
 
 			</div>
 
 			<div id="tabpanel-e" role="tabpanel" class="screen-e"
 				data-bind="with: viewmodelE">
-
 				<ui:include src="e/index.xhtml" />
 
 			</div>
 
 			<div id="tabpanel-g" role="tabpanel" class="screen-g"
 				data-bind="with: viewmodelG">
-
 				<ui:include src="g/index.xhtml" />
-
 			</div>
 
 		</ui:define>

@@ -16,6 +16,12 @@ import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 @AllArgsConstructor
 public class EmpCalAndSumExeLogDto {
 	
+	
+	/**
+	 * 就業計算と集計実行ログID
+	 */
+	private String empCalAndSumExecLogID;
+	
 	/**
 	 * 会社ID
 	 */
@@ -23,14 +29,31 @@ public class EmpCalAndSumExeLogDto {
 	private String companyID;
 	
 	/**
-	 * ID
+	 * 処理月
 	 */
-	private String empCalAndSumExecLogID;
+	private Integer processingMonth;
+	
+	/**
+	 * 実行したメニュー
+	 * ・選択して実行 ・ケース別実行
+	 */
+	private int executedMenu;
 
 	/**
-	 * 運用ケース
+	 * 実行日
 	 */
-	private String caseSpecExeContentID;
+
+	private GeneralDate executionDate;
+	
+	/**
+	 * 実行状況
+	 */
+	private int executionStatus;
+	
+	/**
+	 * 実行状況 Name Japan
+	 */
+	private String executionStatusName;
 	
 	/**
 	 * 実行社員ID
@@ -39,33 +62,21 @@ public class EmpCalAndSumExeLogDto {
 	private String employeeID;
 	
 	/**
-	 * 実行したメニュー
-	 * ・選択して実行 ・ケース別実行
-	 */
-	private int executedMenu;
-
-	
-	
-	/**
-	 * 実行状況
-	 */
-	private int executionStatus;
-
-	/**
-	 * 実行日
-	 */
-
-	private GeneralDate executionDate;
-
-	/**
-	 * 処理月
-	 */
-	private Integer processingMonth;
-	
-	/**
 	 * 締めID
 	 */
 	private int closureID;
+	
+
+	/**
+	 * 運用ケース
+	 */
+	private String caseSpecExeContentID;	
+	
+	
+
+
+	
+	
 	
 	/**
 	 * 実行ログ
@@ -75,15 +86,16 @@ public class EmpCalAndSumExeLogDto {
 	
 	public static EmpCalAndSumExeLogDto fromDomain(EmpCalAndSumExeLog domain) {
 		return new EmpCalAndSumExeLogDto(
-				domain.getCompanyID(), 
 				domain.getEmpCalAndSumExecLogID(), 
-				domain.getCaseSpecExeContentID(), 
-				domain.getEmployeeID(), 
-				domain.getExecutedMenu().value, 
-				domain.getExecutionStatus().value, 
-				domain.getExecutionDate(), 
+				domain.getCompanyID(), 
 				domain.getProcessingMonth().v(), 
-				domain.getClosureID(), 
+				domain.getExecutedMenu().value, 
+				domain.getExecutionDate(), 
+				domain.getExecutionStatus().value,
+				domain.getExecutionStatus().nameId,
+				domain.getEmployeeID(),
+				domain.getClosureID(),
+				domain.getCaseSpecExeContentID(),
 				domain.getExecutionLogs().stream().map(c->ExecutionLogDto.fromDomain(c)).collect(Collectors.toList())
 				);
 	}

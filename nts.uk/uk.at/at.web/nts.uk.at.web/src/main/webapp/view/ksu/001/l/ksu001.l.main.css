@@ -9,7 +9,6 @@
 
 #content-bot-left {
 	float: left;
-	margin-top: 15px;
 	width: 290px;
 	height: 285px;
 }
@@ -20,7 +19,7 @@
 }
 
 .formlabel-class {
-	margin-top: 5px
+	margin-top: 2px
 }
 
 #check-box {
@@ -38,7 +37,7 @@
 
 #content-bot-right-bot-right {
 	float: left;
-	margin-left: 115px;
+	margin-left: 95px;
 }
 
 #contents-area {

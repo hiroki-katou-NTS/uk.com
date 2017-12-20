@@ -19,8 +19,8 @@ module nts.uk.at.view.kmk006.e {
 
         export module model {
             export interface UnitAutoCalSettingDto {
-                useJobSet: boolean;
                 useWkpSet: boolean;
+                useJobSet: boolean;
                 useJobwkpSet: boolean;
             }
         }

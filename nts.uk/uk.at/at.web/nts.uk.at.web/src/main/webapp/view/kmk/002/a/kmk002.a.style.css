@@ -1,8 +1,14 @@
 @CHARSET "UTF-8";
 
-#contents-area {
-	padding-top: 30px;
-	padding-left: 30px;
+.opt-item-grid-list {
+	width: 300px;
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-right: 30px;
+	padding: 20px;
+}
+.opt-item-detail {
+	margin-top: 15px;
 }
 .control-group td {
 	padding-bottom: 10px;
@@ -22,9 +28,11 @@
 	background-size: 20px 20px;
 }
 .nts-fixed-table {
-	border-left: solid #CCC 1px;
-	border-right: solid #CCC 1px;
-	border-bottom: solid #CCC 1px;
-	width: 878px;
-	overflow-x: scroll;
+	margin-left: 10px;
+}
+.nts-switch-button {
+	min-width: 85px;
+}
+.inp-formula-required {
+	width: 130px;
 }

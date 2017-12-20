@@ -16,7 +16,7 @@ public enum ApplicationType {
 	/** 直行直帰申請*/
 	GO_RETURN_DIRECTLY_APPLICATION(4,"直行直帰申請"),
 	/** 休出時間申請*/
-	LEAVE_TIME_APPLICATION(6,"休出時間申請"),
+	BREAK_TIME_APPLICATION(6,"休出時間申請"),
 	/** 打刻申請*/
 	STAMP_APPLICATION(7,"打刻申請"),
 	/** 時間年休申請*/

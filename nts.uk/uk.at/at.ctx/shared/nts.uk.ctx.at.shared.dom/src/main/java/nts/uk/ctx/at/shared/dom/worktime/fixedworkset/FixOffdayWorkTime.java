@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 import java.util.List;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 
 /**
  * The Class OffdayWorkTime.
@@ -19,5 +20,6 @@ public class FixOffdayWorkTime {
 
 	/** The break time. */
 	// 休憩時間帯
-	private FixRestTime restTime;
+//	private FixRestTime restTime;
+	private FlowWorkRestTimezone restTime;
 }

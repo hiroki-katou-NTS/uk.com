@@ -21,15 +21,24 @@
 					<table id="processing-state">
 						<tr>
 							<th>#{i18n.getText('KSU001_202')}</th>
-							<td id="timer"></td>
+							<td><ul class="countdown">
+									<li><span class="hours">00</span> <!-- <p class="hours_ref">hours</p> --></li>
+									<li class="seperator">:</li>
+									<li><span class="minutes">00</span> <!-- <p class="minutes_ref">minutes</p> --></li>
+									<li class="seperator">:</li>
+									<li><span class="seconds">00</span> <!-- <p class="seconds_ref">seconds</p> --></li>
+								</ul></td>
 						</tr>
 						<tr>
 							<th>#{i18n.getText('KSU001_203')}</th>
-							<td></td>
+							<td><span id="processingState" data-bind="text:processingState"></span> 
+							<span id="state" data-bind="text:state"></span> 
+							<span id="number-error" data-bind="text:numberError"></span></td>
 						</tr>
 					</table>
-					<button id="error-output">#{i18n.getText('KSU001_210')}</button>
-					<table id="error-status">
+					<button id="error-output"
+						data-bind="click: exportExcel, hasfocus : isError, visible: !isError">#{i18n.getText('KSU001_210')}</button>
+					<table id="error-status" data-bind="visible: !isError">
 						<thead>
 							<tr>
 								<th>#{i18n.getText('KSU001_204')}</th>
@@ -40,94 +49,22 @@
 								<th>#{i18n.getText('KSU001_209')}</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody data-bind="foreach:inforError ">
 							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-							</tr>
-							<tr>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
-								<td>a</td>
+								<td data-bind="text: employeeCode"></td>
+								<td data-bind="text: employeeName"></td>
+								<td data-bind="text: date"></td>
+								<td data-bind="text: category"></td>
+								<td data-bind="text: condition"></td>
+								<td data-bind="text: message"></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button id="stop" data-bind="click: stop">STOP</button>
-				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_211')}</button>
+				<button id="close-button"
+					data-bind="click: closeDialog , hasfocus:!isError()">#{i18n.getText('KSU001_211')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

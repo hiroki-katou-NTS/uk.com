@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.worktimeset;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -40,9 +42,6 @@ public class WorkTimeSet extends AggregateRoot {
 	/** The predetermine atr. */
 	// 残業を含めた所定時間帯を設定する
 	private boolean predetermine;
-
-	private static final Integer SHIFT1 = 1;
-	private static final Integer SHIFT2 = 2;
 	/**
 	 * Instantiates a new work time set.
 	 *
@@ -75,8 +74,7 @@ public class WorkTimeSet extends AggregateRoot {
 	 * @param start the start
 	 */
 	public void updateStartTimeShift1(TimeWithDayAttr start) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
+		TimezoneUse tz = this.prescribedTimezoneSetting.getTimezoneShiftOne();
 		tz.updateStartTime(start);
 	}
 	
@@ -86,8 +84,7 @@ public class WorkTimeSet extends AggregateRoot {
 	 * @param end the end
 	 */
 	public void updateEndTimeShift1(TimeWithDayAttr end) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
+		TimezoneUse tz = this.prescribedTimezoneSetting.getTimezoneShiftOne();
 		tz.updateEndTime(end);
 	}
 	
@@ -96,8 +93,7 @@ public class WorkTimeSet extends AggregateRoot {
 	 */
 	public void removeShift1()
 	{
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
+		TimezoneUse tz = this.prescribedTimezoneSetting.getTimezoneShiftOne();
 		tz.updateStartTime(null);
 		tz.updateEndTime(null);
 	}
@@ -107,8 +103,7 @@ public class WorkTimeSet extends AggregateRoot {
 	 */
 	public void removeShift2()
 	{
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
+		TimezoneUse tz = this.prescribedTimezoneSetting.getTimezoneShiftTwo();
 		tz.updateStartTime(null);
 		tz.updateEndTime(null);
 	}
@@ -119,8 +114,7 @@ public class WorkTimeSet extends AggregateRoot {
 	 * @param start the start
 	 */
 	public void updateStartTimeShift2(TimeWithDayAttr start) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
+		TimezoneUse tz = this.prescribedTimezoneSetting.getTimezoneShiftTwo();
 		tz.updateStartTime(start);
 	}
 	
@@ -137,8 +131,7 @@ public class WorkTimeSet extends AggregateRoot {
 	 * @param end the end
 	 */
 	public void updateEndTimeShift2(TimeWithDayAttr end) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
+		TimezoneUse tz = this.prescribedTimezoneSetting.getTimezoneShiftTwo();
 		tz.updateEndTime(end);
 	}
 	

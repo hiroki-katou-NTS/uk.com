@@ -2,12 +2,12 @@ module nts.uk.com.view.cps009.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     let paths = {
-        getAll: "ctx/bs/person/info/setting/init/findAll",
-        getAllCtg: "ctx/bs/person/info/setting/init/ctg/find/{0}",
-        getAllItemByCtgId: "ctx/bs/person/info/setting/init/item/find/{0}/{1}",
-        deleteInitVal: "ctx/bs/person/info/setting/init/delete",
-        update : "ctx/bs/person/info/setting/init/ctg/update"
-
+        getAll: "ctx/pereg/person/info/setting/init/findAll",
+        getAllCtg: "ctx/pereg/person/info/setting/init/ctg/find/{0}",
+        getAllItemByCtgId: "ctx/pereg/person/info/setting/init/item/find/{0}/{1}",
+        deleteInitVal: "ctx/pereg/person/info/setting/init/delete",
+        update : "ctx/pereg/person/info/setting/init/ctg/update",
+        filterHisSel : "ctx/pereg/person/info/setting/selection/find/{0}/{1}"
     }
     /**
      * Get all init value setting
@@ -44,6 +44,19 @@ module nts.uk.com.view.cps009.a.service {
         return ajax(paths.update, obj);
     }
 
-
+    /**
+     * Reference History
+     */
+    export function refHistSel(param) {
+        return ajax(paths.refHistSel, param);
+    }
+    
+    
+        /**
+   * Get all init value setting
+   */
+    export function getAllSelByHistory(selectionItemId : string, baseDate : any) {
+        return ajax(format(paths.filterHisSel, selectionItemId, baseDate));
+    }
 
 }

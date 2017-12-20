@@ -19,7 +19,7 @@ public class SampleJobPositionMainTest {
 	@Test
 	public void add() {
 		
-		val target = new SampleJobPositionMain("emp1", "job1", new ArrayList<>());
+		val target = new SampleJobPositionMain("emp1", new ArrayList<>());
 		
 		target.add(new DateHistoryItem("1", new DatePeriod(GeneralDate.ymd(2000, 1, 1), GeneralDate.max())));
 		target.add(new DateHistoryItem("2", new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.max())));
@@ -33,7 +33,7 @@ public class SampleJobPositionMainTest {
 	@Test
 	public void remove() {
 		
-		val target = new SampleJobPositionMain("emp1", "job1", new ArrayList<>());
+		val target = new SampleJobPositionMain("emp1", new ArrayList<>());
 		
 		target.add(new DateHistoryItem("1", new DatePeriod(GeneralDate.ymd(2000, 1, 1), GeneralDate.max())));
 		val item2 = new DateHistoryItem("2", new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.max()));
@@ -49,7 +49,7 @@ public class SampleJobPositionMainTest {
 	@Test
 	public void changeSpan() {
 		
-		val target = new SampleJobPositionMain("emp1", "job1", new ArrayList<>());
+		val target = new SampleJobPositionMain("emp1", new ArrayList<>());
 		
 		target.add(new DateHistoryItem("1", new DatePeriod(GeneralDate.ymd(2000, 1, 1), GeneralDate.max())));
 		val item2 = new DateHistoryItem("2", new DatePeriod(GeneralDate.ymd(2010, 1, 1), GeneralDate.max()));

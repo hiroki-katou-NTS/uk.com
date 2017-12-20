@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.pub.dailyattendanceitem.DailyAttendanceItemRecPub;
 import nts.uk.ctx.at.schedule.dom.adapter.dailyattendanceitem.ScDailyAttendanceItemAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.dailyattendanceitem.ScDailyAttendanceItemDto;
+import nts.uk.ctx.at.shared.pub.scherec.dailyattendanceitem.DailyAttendanceItemRecPub;
 
 @Stateless
 public class ScDailyAttendanceItemAdapterImpl implements ScDailyAttendanceItemAdapter {

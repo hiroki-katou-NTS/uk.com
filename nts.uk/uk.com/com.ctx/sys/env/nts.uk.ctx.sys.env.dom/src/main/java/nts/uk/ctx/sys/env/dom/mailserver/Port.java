@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * ãƒã?¼ãƒ?
+ * ãƒãƒ¼ãƒˆ
  */
 @IntegerMinValue(0)
 @IntegerMaxValue(65536)

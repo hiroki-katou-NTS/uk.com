@@ -12,7 +12,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceSetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHistPK;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceSetMemento.
@@ -84,14 +83,14 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento {
     @Override
     public void setWorkplaceHistory(List<WorkplaceHistory> lstWkpHistory) {
         // convert list workplace history to map by key historyId
-        Map<String, DatePeriod> mapWkpHist = lstWkpHistory.stream().collect(Collectors.toMap(
-                item -> ((WorkplaceHistory) item).identifier(), item -> ((WorkplaceHistory) item).span()));
+        Map<String, WorkplaceHistory> mapWkpHist = lstWkpHistory.stream().collect(Collectors.toMap(
+                item -> ((WorkplaceHistory) item).identifier(), item -> item));
 
         // set period
         this.lstEntity.forEach(entity -> {
-            DatePeriod period = mapWkpHist.get(entity.getBsymtWorkplaceHistPK().getHistoryId());
-            entity.setStrD(period.start());
-            entity.setEndD(period.end());
+        	WorkplaceHistory wkpHist = mapWkpHist.get(entity.getBsymtWorkplaceHistPK().getHistoryId());
+        	JpaWorkplaceHistorySetMemento memento = new JpaWorkplaceHistorySetMemento(entity);
+        	wkpHist.saveToMemento(memento);
         });
     }
 

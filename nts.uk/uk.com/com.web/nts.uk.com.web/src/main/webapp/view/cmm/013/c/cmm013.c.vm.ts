@@ -32,56 +32,13 @@ module nts.uk.com.view.cmm013.c {
                 let dfd = $.Deferred<any>();
 
                 // Load sequence data list
-                nts.uk.ui.block.grayout();
-                _self.loadSequenceList()
-                    .done((data: SequenceMaster[]) => {    
-                        nts.uk.ui.block.clear();                    
-                        if (data && data.length > 0) {
-                            // Load data
-                            _self.items(data);
-                            _self.currentCode(data[0].sequenceCode);                           
-                        } else {
-                            // No data - Error msg_571
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_571" }).then(() => {
-                                // Load sequence register screen
-                                nts.uk.ui.windows.sub.modal('/view/cmm/013/f/index.xhtml').onClosed(() => {
-                                    // Reload data after register
-                                    _self.loadSequenceList()
-                                        .done((data: SequenceMaster[]) => {                        
-                                            if (data && data.length > 0) {
-                                                // Load data
-                                                _self.items(data);
-                                                _self.currentCode(data[0].sequenceCode);    
-                                            }                       
-                                        })                                        
-                                        .fail((res: any) => {
-                            
-                                        });
-                                });                      
-                            });                                     
-                        }                                                 
-                        dfd.resolve();
-                    })
-                    .fail((res: any) => {
-                        nts.uk.ui.block.clear();
-                    });
+                let data: SequenceMaster[] = nts.uk.ui.windows.getShared(Constants.SHARE_IN_DIALOG_SELECT_SEQUENCE);
+                if (data) {
+                     _self.items(data);
+                    _self.currentCode(data[0].sequenceCode);         
+                }
+                dfd.resolve();               
                 
-                return dfd.promise();
-            }
-            
-            /**
-             * Load all sequence
-             */
-            public loadSequenceList(): JQueryPromise<any> {
-                let _self = this;
-                let dfd = $.Deferred<any>();
-                service.findAllSequenceMaster()
-                    .done((data: SequenceMaster[]) => {                                                                       
-                        dfd.resolve(data);
-                    })
-                    .fail((res: any) => {
-                        dfd.fail(res);
-                    });
                 return dfd.promise();
             }
             
@@ -89,23 +46,25 @@ module nts.uk.com.view.cmm013.c {
              * Select sequence master
              */
             public selectSequence(): void {               
-                let _self = this;               
+                let _self = this;  
+                             
+                nts.uk.ui.windows.setShared(Constants.IS_ACCEPT_DIALOG_SELECT_SEQUENCE, true);
                 if (_self.currentCode()) {
                     nts.uk.ui.block.grayout();
                     service.findBySequenceCode(_self.currentCode())
-                        .done((data: SequenceMaster) => {   
-                            nts.uk.ui.block.clear();                        
+                        .done((data: SequenceMaster) => {                         
                             nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, data);
-                            _self.close();
                         })
-                        .fail((res: any) => {
-                            nts.uk.ui.block.clear();   
-                            nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, null);
-                            _self.close();
+                        .fail((res: any) => {                             
+                            nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, null);                     
+                        })
+                        .always(() => {
+                            nts.uk.ui.block.clear();     
+                            nts.uk.ui.windows.close();
                         });
                 } else {
                     nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, null);
-                    _self.close();                                
+                    nts.uk.ui.windows.close();                   
                 }
             }
             
@@ -113,8 +72,9 @@ module nts.uk.com.view.cmm013.c {
              * Close
              */
             public close(): void {
+                nts.uk.ui.windows.setShared(Constants.IS_ACCEPT_DIALOG_SELECT_SEQUENCE, false);
                 nts.uk.ui.windows.close();
-            }
+            }           
         }
     }    
 }

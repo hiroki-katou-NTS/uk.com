@@ -27,13 +27,16 @@ public class KrqdtAppEmployWorktypePK implements Serializable {
     @Column(name = "CID")
     private String cid;
 	
-    @Column(name = "EMPLOYEEMENT_CODE")
-    private String employeementCode;
+    @Column(name = "EMPLOYMENT_CODE")
+    private String employmentCode;
     
     @Column(name = "APP_TYPE")
-    private short appType;
+    private int appType;
     
     @Column(name = "HOLIDAY_OR_PAUSE_TYPE")
-    private short holidayOrPauseType;
+    private int holidayOrPauseType;
+    
+    @Column(name = "WORK_TYPE_CODE")
+    private String workTypeCode;
 
 }

@@ -1,25 +1,23 @@
 @CHARSET "UTF-8";
 
-#contents-left, #contents-right {
+.contents-left, .contents-right {
 	padding: 20px;
 	vertical-align: top !important;
 	min-width: 100px;
 }
 
-#contents-left {
+.contents-left {
 	padding-left: 10px;
 	padding-right: 10px;
 }
 
-#contents-right {
+.contents-right {
 	padding-left: 20px !important;
 	width: 300px;
 }
 
-#targetYM {
-	height: 30px;
-	margin-left: 10px;
-	margin-bottom: 10px;
+#target-YM {
+	padding-left: 20px !important;
 }
 
 #closure-content {

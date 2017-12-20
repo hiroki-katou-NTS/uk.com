@@ -3,7 +3,7 @@ module kml002.l.service {
      *  Service paths
      */
     var paths: any = {
-        findAll: "ctx/at/schedule/shift/totaltimes/getallitem",
+        findAll: "at/shared/scherec/totaltimes/getallitem",
         addTotalTimes: "ctx/at/schedule/budget/fixedverticalsetting/addVerticalCnt",
         findAllCountNo:  "ctx/at/schedule/budget/fixedverticalsetting/findCnt"
     }

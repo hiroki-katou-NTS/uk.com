@@ -9,10 +9,10 @@ import lombok.Value;
  */
 @Value
 public class OverDayEndSetOfWeekDayAttendance {
-	private int OverWorkFrameID;
-	private ? TransferFrameIDOfExcessHoliday;
-	private ? TransferFrameIDOfExcessSpecialHoliday;
-	private ? TransferFrameIDOfStatutoryHoliday;
+	private int overWorkFrameID;
+//	private ? TransferFrameIDOfExcessHoliday;
+//	private ? TransferFrameIDOfExcessSpecialHoliday;
+//	private ? TransferFrameIDOfStatutoryHoliday;
 	
 	
 }

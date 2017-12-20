@@ -4,5 +4,5 @@ module nts.uk.at.view.cdl024 {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
         });
-    });
+    })
 }

@@ -17,12 +17,12 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -177,15 +177,12 @@ public class AttendanceItemsFinder {
 	 * @author anhnm
 	 */
 	private int convertToAttdItemType(int formulaAtr) {
-		final int AMOUNT = OptionalItemAtr.AMOUNT.value;
-		final int NUMBER = OptionalItemAtr.NUMBER.value;
-		final int TIMTE = OptionalItemAtr.TIME.value;
 
-		if (formulaAtr == AMOUNT) {
+		if (formulaAtr == OptionalItemAtr.AMOUNT.value) {
 			return DailyAttendanceAtr.AmountOfMoney.value;
-		} else if (formulaAtr == NUMBER) {
+		} else if (formulaAtr == OptionalItemAtr.NUMBER.value) {
 			return DailyAttendanceAtr.NumberOfTime.value;
-		} else if (formulaAtr == TIMTE) {
+		} else if (formulaAtr == OptionalItemAtr.TIME.value) {
 			return DailyAttendanceAtr.Time.value;
 		} else {
 			throw new RuntimeException("value not found");

@@ -25,7 +25,7 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		
 		stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT NEW " + WorkTypeDto.class.getName());
-		stringBuilder.append("(c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.deprecateAtr, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr, c.calculatorMethod, o.dispOrder) ");
+		stringBuilder.append("(c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.deprecateAtr, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr, c.calculatorMethod, 0) ");
 		stringBuilder.append("FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o ");
 		stringBuilder.append("ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode ");
 		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId ");

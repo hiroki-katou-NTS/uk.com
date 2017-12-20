@@ -64,7 +64,7 @@ public class RequestAppDetailSetting extends DomainObject {
 	/**
 	 * 出退勤時刻初期表示区分
 	 */
-	public DisplayFlg atworkTimeBeginDisFlg;	
+	public AtWorkAtr atworkTimeBeginDisFlg;	
 	/**
 	 * 実績から外出を初期表示する
 	 */
@@ -78,8 +78,19 @@ public class RequestAppDetailSetting extends DomainObject {
 	 * 時間入力利用区分
 	 */
 	public UseAtr timeInputUseAtr;
-	
+	/**
+	 * 指示が必須
+	 */
 	public SettingFlg requiredInstructionFlg; 
+	/**
+	 * 指示利用設定
+	 */
+	public InstructionUseSetting instructionUseSetting;
+	
+	/**
+	 * 退勤時刻初期表示区分
+	 */
+	public DisplayBreakTime timeEndDispFlg;
 	
 	public static RequestAppDetailSetting createSimpleFromJavaType(String companyId,
 			int appType,
@@ -96,7 +107,11 @@ public class RequestAppDetailSetting extends DomainObject {
 			int goOutTimeBeginDisFlg,
 			int timeCalUseAtr,
 			int timeInputUseAtr,
-			int requiredInstructionFlg) {
+			int requiredInstructionFlg,
+			int instructionAtr,
+			String instructionRemarks,
+			int instructionUseDivision,
+			int timeEndDispFlg) {
 				return new RequestAppDetailSetting(companyId, 
 						EnumAdaptor.valueOf(appType, ApplicationType.class),
 						new Memo(memo),
@@ -108,11 +123,15 @@ public class RequestAppDetailSetting extends DomainObject {
 						EnumAdaptor.valueOf(lateOrLeaveAppSettingFlg, SettingFlg.class),
 						EnumAdaptor.valueOf(breakInputFieldDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(breakTimeDisFlg, DisplayFlg.class),
-						EnumAdaptor.valueOf(atworkTimeBeginDisFlg, DisplayFlg.class),
+						EnumAdaptor.valueOf(atworkTimeBeginDisFlg, AtWorkAtr.class),
 						EnumAdaptor.valueOf(goOutTimeBeginDisFlg, DisplayFlg.class),
 						EnumAdaptor.valueOf(timeCalUseAtr, UseAtr.class),
 						EnumAdaptor.valueOf(timeInputUseAtr, UseAtr.class),
-						EnumAdaptor.valueOf(requiredInstructionFlg, SettingFlg.class));
+						EnumAdaptor.valueOf(requiredInstructionFlg, SettingFlg.class),
+						new InstructionUseSetting(EnumAdaptor.valueOf(instructionAtr, UseAtr.class),
+						new Memo(instructionRemarks), 
+						EnumAdaptor.valueOf(instructionUseDivision, UseAtr.class)),
+						EnumAdaptor.valueOf(timeEndDispFlg, DisplayBreakTime.class));
 		
 	}
 	

@@ -82,7 +82,6 @@ public class JpaTeamRepository extends JpaRepository implements TeamRepository {
 	public void updateTeam(Team team) {
 		KscmtTeamPK key = new KscmtTeamPK(team.getWorkPlaceId(), team.getTeamCode().v());
 		KscmtTeam entity = this.queryProxy().find(key, KscmtTeam.class).get();
-		entity.kscmtTeamPk = key;
 		entity.teamName = team.getTeamName().v();
 		this.commandProxy().update(entity);
 	}

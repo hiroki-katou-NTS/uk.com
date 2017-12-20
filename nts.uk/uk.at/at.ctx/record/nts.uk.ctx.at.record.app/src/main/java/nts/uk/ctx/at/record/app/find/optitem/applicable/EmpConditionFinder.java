@@ -4,13 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem.applicable;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpApplicableAtr;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.organization.EmploymentImported;
@@ -40,17 +41,34 @@ public class EmpConditionFinder {
 	public EmpConditionDto find(String itemNo) {
 		String comId = AppContexts.user().companyId();
 
-		Map<String, String> employments = this.adapter.getAllEmployment(comId).stream()
-				.collect(Collectors.toMap(EmploymentImported::getEmpCd, EmploymentImported::getEmpName));
+		List<EmploymentImported> employments = this.adapter.getAllEmployment(comId).stream()
+				.collect(Collectors.toList());
+
+		// find EmploymentCondition
+		EmpCondition dom = this.repo.find(comId, itemNo);
+
+		// to map
+		Map<String, Integer> empConditions = dom.getEmpConditions().stream()
+				.collect(Collectors.toMap(k -> k.getEmpCd(), v -> v.getEmpApplicableAtr().value));
 
 		EmpConditionDto dto = new EmpConditionDto();
-		Optional<EmpCondition> dom = this.repo.find(comId, itemNo);
-		if (dom.isPresent()) {
-			dom.get().saveToMemento(dto);
+		dom.saveToMemento(dto);
+		dto.getEmpConditions().clear();
 
-			// Set employment name.
-			dto.getEmpConditions().forEach(item -> item.setEmpName(employments.get(item.getEmpCd())));
-		}
+		employments.forEach(emp -> {
+			// default value of EmpApplicableAtr == APPLY
+			EmploymentConditionDto empC = new EmploymentConditionDto(emp.getEmpCd(), EmpApplicableAtr.APPLY.value);
+			empC.setEmpName(emp.getEmpName());
+
+			// set emp condition
+			Integer applicable = empConditions.get(empC.getEmpCd());
+			if (applicable != null) {
+				empC.setEmpApplicableAtr(applicable);
+			}
+
+			dto.getEmpConditions().add(empC);
+		});
+
 		return dto;
 	}
 }

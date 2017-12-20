@@ -5,14 +5,16 @@ module nts.uk.at.view.ksc001.f {
             findScheduleExecutionLogById: "at/schedule/exelog/findById",
             findScheduleExecutionLogInfoById: "at/schedule/exelog/findInfoById",
             executionScheduleExecutionLog: "at/schedule/exelog/execution",
-            findAllScheduleErrorLog: "at/schedule/exelog/findAllError"
+            findAllScheduleErrorLog: "at/schedule/exelog/findAllError",
+            exportScheduleErrorLog: "at/schedule/exelog/error/export"
         }
         
 
         /**
          * call service find ScheduleExecutionLog by id
          */
-        export function findScheduleExecutionLogById(executionId: string): JQueryPromise<model.ScheduleExecutionLogDto> {
+        export function findScheduleExecutionLogById(executionId: string)
+            : JQueryPromise<model.ScheduleExecutionLogDto> {
             return nts.uk.request.ajax('at', paths.findScheduleExecutionLogById + '/' + executionId);
         }
         
@@ -26,7 +28,8 @@ module nts.uk.at.view.ksc001.f {
         /**
          * call service find ScheduleExecutionLogInfo by id
          */
-        export function findScheduleExecutionLogInfoById(executionId: string): JQueryPromise<model.ScheduleExecutionLogInfoDto> {
+        export function findScheduleExecutionLogInfoById(executionId: string)
+            : JQueryPromise<model.ScheduleExecutionLogInfoDto> {
             return nts.uk.request.ajax('at', paths.findScheduleExecutionLogInfoById + '/' + executionId);
         }
         /**
@@ -34,6 +37,13 @@ module nts.uk.at.view.ksc001.f {
          */
         export function findAllScheduleErrorLog(executionId: string): JQueryPromise<model.ScheduleErrorLogDto[]> {
             return nts.uk.request.ajax('at', paths.findAllScheduleErrorLog + '/' + executionId);
+        }
+        
+        /**
+         * call service export file ScheduleErrorLog 
+         */
+        export function exportScheduleErrorLog(executionId: string): JQueryPromise<model.ScheduleErrorLogDto[]> {
+            return nts.uk.request.exportFile(paths.exportScheduleErrorLog + "/" + executionId);
         }
 
         export module model {

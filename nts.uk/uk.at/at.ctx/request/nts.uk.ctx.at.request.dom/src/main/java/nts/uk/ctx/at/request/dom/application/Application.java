@@ -2,12 +2,15 @@ package nts.uk.ctx.at.request.dom.application;
 
 import java.util.List;
 import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 
 /**
@@ -17,11 +20,12 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Application extends AggregateRoot{
 	/**
 	 * 会社ID
 	 */
-	private final String CompanyID;
+	private String CompanyID;
 	/**
 	 * 申請ID
 	 */
@@ -33,7 +37,7 @@ public class Application extends AggregateRoot{
 	/**
 	 * 入力日
 	 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 	/**
 	 * 入力者
 	 */
@@ -42,6 +46,7 @@ public class Application extends AggregateRoot{
 	/**
 	 * 差戻し理由
 	 */
+	@Setter
 	private AppReason reversionReason;
 	/**
 	 * 申請日
@@ -52,9 +57,6 @@ public class Application extends AggregateRoot{
 	/**
 	 * 申請理由
 	 */
-	@Setter
-	private String appReasonID;
-	
 	@Setter
 	private AppReason applicationReason;
 	/**
@@ -122,11 +124,10 @@ public class Application extends AggregateRoot{
 	public static Application createFromJavaType(
 			String companyID,
 			int prePostAtr,
-			GeneralDate inputDate, 
+			GeneralDateTime inputDate, 
 			String enteredPersonSID, 
 			String reversionReason, 
 			GeneralDate applicationDate,
-			String appReasonID,
 			String applicationReason, 
 			int applicationType, 
 			String applicantSID,
@@ -149,7 +150,6 @@ public class Application extends AggregateRoot{
 				enteredPersonSID, 
 				new AppReason(reversionReason), 
 				applicationDate, 
-				appReasonID,
 				new AppReason(applicationReason), 
 				EnumAdaptor.valueOf(applicationType,ApplicationType.class), 
 				applicantSID, 

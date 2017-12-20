@@ -9,6 +9,8 @@ import lombok.Getter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
+import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
+import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 
 /**
  * 承認フェーズDto

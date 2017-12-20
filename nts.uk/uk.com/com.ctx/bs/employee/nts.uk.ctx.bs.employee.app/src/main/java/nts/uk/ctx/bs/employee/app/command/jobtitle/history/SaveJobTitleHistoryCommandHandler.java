@@ -30,6 +30,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTitleHistoryCommand> {
 
+	/** The Constant DATE_FORMAT. */
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
+
+	/** The Constant MAX_DATE. */
+	private static final String MAX_DATE = "9999/12/31";
+
+	/** The Constant LIST_HISTORY_MIN_SIZE. */
+	private static final int LIST_HISTORY_MIN_SIZE = 1;
+
 	/** The job title repository. */
 	@Inject
 	private JobTitleRepository jobTitleRepository;
@@ -41,15 +50,6 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 	/** The job title history service. */
 	@Inject
 	private JobTitleHistoryService jobTitleHistoryService;
-
-	/** The Constant DATE_FORMAT. */
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
-
-	/** The Constant MAX_DATE. */
-	private static final String MAX_DATE = "9999/12/31";
-
-	/** The Constant LIST_HISTORY_MIN_SIZE. */
-	private static final Integer LIST_HISTORY_MIN_SIZE = 1;
 
 	/*
 	 * (non-Javadoc)
@@ -64,7 +64,7 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		final String companyId = AppContexts.user().companyId();
 
 		Optional<JobTitle> opJobTitle = this.jobTitleRepository.findByJobTitleId(companyId, command.getJobTitleId());
-		JobTitle jobTitle = opJobTitle.get();
+		JobTitle jobTitle = opJobTitle.orElse(null);
 
 		if (command.getIsCreateMode()) {
 			this.addJobTitleHistory(companyId, command, jobTitle);
@@ -97,7 +97,7 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		this.jobTitleRepository.add(newEntity);
 
 		// Update previous history
-		if (CollectionUtil.isEmpty(jobTitle.getJobTitleHistory())) {
+		if (CollectionUtil.isEmpty(jobTitle.getJobTitleHistories())) {
 			return;
 		}
 		int previousDay = -1;
@@ -126,14 +126,14 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		updateEntity.getLastestHistory().updateEndDate(GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
 
 		// If only 1 history available
-		if (jobTitle.getJobTitleHistory().size() == LIST_HISTORY_MIN_SIZE) {
+		if (LIST_HISTORY_MIN_SIZE == jobTitle.getJobTitleHistories().size()) {
 			// Update history
 			this.jobTitleRepository.update(updateEntity);
 			return;
 		}
 
 		int indexPreviousHistory = 1;
-		JobTitleHistory previousHistory = jobTitle.getJobTitleHistory().get(indexPreviousHistory);
+		JobTitleHistory previousHistory = jobTitle.getJobTitleHistories().get(indexPreviousHistory);
 
 		// Validate
 		this.validHistory(Boolean.FALSE, previousHistory, updateEntity.getLastestHistory(),
@@ -143,7 +143,7 @@ public class SaveJobTitleHistoryCommandHandler extends CommandHandler<SaveJobTit
 		this.jobTitleRepository.update(updateEntity);
 
 		// Update previous history
-		if (jobTitle.getJobTitleHistory().size() == LIST_HISTORY_MIN_SIZE) {
+		if (LIST_HISTORY_MIN_SIZE == jobTitle.getJobTitleHistories().size()) {
 			return;
 		}
 		int previousDay = -1;

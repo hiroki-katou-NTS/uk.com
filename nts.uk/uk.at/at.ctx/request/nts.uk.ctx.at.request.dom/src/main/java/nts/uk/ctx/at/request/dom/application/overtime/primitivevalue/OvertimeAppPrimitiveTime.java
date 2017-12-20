@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.overtime.primitivevalue;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
 /**
  * @author loivt
  * 残業申請時間
  */
-@IntegerRange(min = -1, max = 2880)
-public class OvertimeAppPrimitiveTime extends IntegerPrimitiveValue<OvertimeAppPrimitiveTime> {
+@TimeRange(min = "-0:01", max = "48:00")
+public class OvertimeAppPrimitiveTime extends TimeDurationPrimitiveValue<OvertimeAppPrimitiveTime> {
 
 	
 	private static final long serialVersionUID = 1L;

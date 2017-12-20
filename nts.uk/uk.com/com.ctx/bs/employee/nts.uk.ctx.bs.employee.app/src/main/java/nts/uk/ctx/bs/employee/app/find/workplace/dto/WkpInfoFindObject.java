@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class WkpInfoFindObject.
@@ -19,4 +20,7 @@ public class WkpInfoFindObject {
 	
 	/** The history id. */
 	private String historyId;
+	
+	/** The base date. */
+	private GeneralDate baseDate;
 }

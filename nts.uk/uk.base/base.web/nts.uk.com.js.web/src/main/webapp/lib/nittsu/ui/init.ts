@@ -54,13 +54,13 @@ module nts.uk.ui {
             //avoid page content overlap header and function area
             var content_height=20;
             if ($("#header").length != 0) {
-                content_height += 50 ;//header height+ content area botton padding,top padding
+                content_height += $("#header").outerHeight();//header height+ content area botton padding,top padding
             }
             if ($("#functions-area").length != 0) {
-                content_height += 49;//top function area height
+                content_height += $("#functions-area").outerHeight();//top function area height
             }
             if ($("#functions-area-bottom").length != 0) {
-                content_height += 74;//bottom function area height
+                content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
             }
             $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
             //            if($("#functions-area-bottom").length!=0){
@@ -74,6 +74,9 @@ module nts.uk.ui {
                 .map(v => JSON.parse(v));
             
             _.defer(() => _start.call(__viewContext));
+            
+            // Menu
+            nts.uk.ui.menu.request();
         });
     }
 }

@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.App
 @Getter
 public class CreateLateOrLeaveEarlyCommand {
 	/** 会社ID */
-	private String companyID;
+	//private String companyID;
 	
 	/** 申請ID */
 	private String appID;

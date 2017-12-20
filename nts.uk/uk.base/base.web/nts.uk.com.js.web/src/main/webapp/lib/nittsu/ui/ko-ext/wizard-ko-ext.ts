@@ -67,6 +67,10 @@ module nts.uk.ui.koExtentions {
                     
                     active(container.steps("getCurrentIndex"));
                     
+                    if(container.data("waitStepShowed")){
+                        container.trigger("stepShowed");
+                    }
+                    
                     return true;
                 }
             }).data("length", options.length);

@@ -13,9 +13,10 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionSetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCondPK;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtSingleDaySche;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -26,8 +27,11 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	/** The entity. */
 	private KshmtPerLaborCond entityCondiotion;
 	
-	/** The entity single days. */
-	private List<KshmtSingleDaySche> entitySingleDays ;
+	/** The entity day of weeks. */
+	private List<KshmtPerDayOfWeek> entityDayOfWeeks ;
+	
+	/** The entity work categorys. */
+	private List<KshmtPerWorkCategory> entityWorkCategorys ;
 	
 	
 
@@ -35,18 +39,28 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 * Instantiates a new jpa personal labor condition set memento.
 	 *
 	 * @param entityCondiotion the entity condiotion
-	 * @param entitySingleDays the entity single days
+	 * @param entityDayOfWeeks the entity day of weeks
+	 * @param entityWorkCategorys the entity work categorys
 	 */
 	public JpaPersonalLaborConditionSetMemento(KshmtPerLaborCond entityCondiotion,
-			List<KshmtSingleDaySche> entitySingleDays) {
+			List<KshmtPerDayOfWeek> entityDayOfWeeks,
+			List<KshmtPerWorkCategory> entityWorkCategorys) {
 		if (entityCondiotion.getKshmtPerLaborCondPK() == null) {
 			entityCondiotion.setKshmtPerLaborCondPK(new KshmtPerLaborCondPK());
 		}
 		this.entityCondiotion = entityCondiotion;
-		if (CollectionUtil.isEmpty(entitySingleDays)) {
-			this.entitySingleDays = new ArrayList<>();
-		} else
-			this.entitySingleDays = entitySingleDays;
+		
+		if (CollectionUtil.isEmpty(entityDayOfWeeks)) {
+			this.entityDayOfWeeks = new ArrayList<>();
+		} else {
+			this.entityDayOfWeeks = entityDayOfWeeks;
+		}
+		
+		if (CollectionUtil.isEmpty(entityWorkCategorys)) {
+			this.entityWorkCategorys = new ArrayList<>();
+		} else {
+			this.entityWorkCategorys = entityWorkCategorys;
+		}
 	}
 
 	/*
@@ -58,7 +72,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setScheduleManagementAtr(UseAtr scheduleManagementAtr) {
-		this.entityCondiotion.setSchedMgmtAtr(scheduleManagementAtr.value);
+		this.entityCondiotion.setScheManageAtr(scheduleManagementAtr.value);
 	}
 
 	/*
@@ -70,9 +84,9 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setHolidayAddTimeSet(BreakdownTimeDay holidayAddTimeSet) {
-		this.entityCondiotion.setHdAddOneDay(holidayAddTimeSet.getOneDay().valueAsMinutes());
-		this.entityCondiotion.setHdAddMorning(holidayAddTimeSet.getMorning().valueAsMinutes());
-		this.entityCondiotion.setHdAddAfternoon(holidayAddTimeSet.getAfternoon().valueAsMinutes());
+		this.entityCondiotion.setOneDay(holidayAddTimeSet.getOneDay().valueAsMinutes());
+		this.entityCondiotion.setMorning(holidayAddTimeSet.getMorning().valueAsMinutes());
+		this.entityCondiotion.setAfternoon(holidayAddTimeSet.getAfternoon().valueAsMinutes());
 	}
 
 	/*
@@ -84,7 +98,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory) {
-		workCategory.saveToMemento(new JpaPersonalWorkCategorySetMemento(this.entitySingleDays));
+		workCategory.saveToMemento(new JpaPersonalWorkCategorySetMemento(this.entityWorkCategorys));
 	}
 
 	/*
@@ -96,7 +110,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 */
 	@Override
 	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek) {
-		workDayOfWeek.saveToMemento(new JpaPersonalDayOfWeekSetMemento(this.entitySingleDays));
+		workDayOfWeek.saveToMemento(new JpaPersonalDayOfWeekSetMemento(this.entityDayOfWeeks));
 	}
 
 	/*
@@ -123,16 +137,18 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 		this.entityCondiotion.getKshmtPerLaborCondPK().setSid(employeeId);
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.personallaborcondition.
-	 * PersonalLaborConditionSetMemento#setAutomaticEmbossSetAtr(nts.uk.ctx.at.
-	 * shared.dom.personallaborcondition.UseAtr)
+	 * PersonalLaborConditionSetMemento#setAutoStampSetAtr(nts.uk.ctx.at.shared.
+	 * dom.personallaborcondition.UseAtr)
 	 */
 	@Override
-	public void setAutomaticEmbossSetAtr(UseAtr automaticEmbossSetAtr) {
-		this.entityCondiotion.setAutoEmbossSetAtr(automaticEmbossSetAtr.value);
+	public void setAutoStampSetAtr(UseAtr autoStampSetAtr) {
+		this.entityCondiotion.setAutoStampSetAtr(autoStampSetAtr.value);
+		
 	}
 
 }

@@ -3,23 +3,50 @@ module nts.uk.at.view.kdw001.g {
     export module viewmodel {
         export class ScreenModel {
             //list
-            listClassification: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;//nts.uk.ui.NtsGridListColumn
             currentSelectedRow: KnockoutObservable<any>;
+            
+            
+            //param
+            executionStartTime :string;
+            processingMonth : string;
+            nameClosue : string;
+            objectPeriod : Array<any>;
+            listPeson : Array<any>;
+            listTargetPerson: KnockoutObservableArray<any>;
+            executionContent : number;
+            executionContentName :string;
+            
             constructor() {
                 let self = this;
-                //list
-                self.listClassification = ko.observableArray([]);
+                let param  = nts.uk.ui.windows.getShared("openG");
                 self.currentSelectedRow = ko.observable(null);
-                for (let i = 1; i <= 15; i++) {
-                    self.listClassification.push({code: "A000000" + i, 
-                         name :"name (" + i+")",
-                         memo :"memo "+i });
+                if(param !=null){
+                    self.executionStartTime  = param.executionStartTime;  
+                    self.processingMonth = param.processingMonth+ "月度";
+                    self.nameClosue = param.nameClosue;
+                    self.objectPeriod = param.objectPeriod;
+                    self.listPeson = param.listTargetPerson;
+                    self.listTargetPerson = ko.observableArray([]);
+                    self.executionContent = param.executionContent;
+                    self.executionContentName = param.executionContentName;
+                    
+                    for(let i = 0;i<self.listPeson.length;i++){
+                        self.listTargetPerson().push({employeeCode: self.listPeson[i].employeeId, 
+                         employeeName :self.listPeson[i].employeeId,
+                         
+                         status : _.find(self.listPeson[i].state, function(state) { 
+                                return state.executionContent == self.executionContent; }).statusName 
+                         
+                         });
+                    }
                 }
+                
+                
                 self.columns = ko.observableArray([
-                    { headerText: getText('KDW001_33'), key: 'code', width: 100 },
-                    { headerText: getText('KDW001_35'), key: 'name', width: 100 },
-                    { headerText: getText('KDW001_51'), key: 'memo', width: 100 }
+                    { headerText: getText('KDW001_33'), key: 'employeeCode', width: 100 },
+                    { headerText: getText('KDW001_35'), key: 'employeeName', width: 100 },
+                    { headerText: getText('KDW001_51'), key: 'status', width: 100 }
                 ]);
             }
             

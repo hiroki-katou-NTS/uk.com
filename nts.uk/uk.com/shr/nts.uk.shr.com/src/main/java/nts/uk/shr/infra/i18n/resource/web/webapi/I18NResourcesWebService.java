@@ -93,7 +93,7 @@ public class I18NResourcesWebService {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
 
-		builder.append(resource.entrySet().stream().map(e -> e.getKey() + ":\"" + e.getValue() + "\"")
+		builder.append(resource.entrySet().stream().map(e -> e.getKey() + ":\"" + e.getValue().replace(System.getProperty("line.separator"), "\\r\\n") + "\"")
 				.collect(Collectors.joining(",")));
 
 		builder.append("}");

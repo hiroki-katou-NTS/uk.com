@@ -6,39 +6,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
-import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionTime;
-import nts.uk.ctx.at.record.dom.workrecord.log.ObjectPeriod;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrMessageInfoDto {
-	/**
-	 * 実行社員ID
-	 */
+	
+	/** 実行社員ID */
 	private String employeeID;
 	
-	/**
-	 * 就業計算と集計実行ログID
-	 */
+	/** 就業計算と集計実行ログID */
 	private String empCalAndSumExecLogID;
-	/**
-	 * リソースID
-	 */
+	
+	/** リソースID */
 	private String resourceID;
 	
-	/**
-	 * 実行内容
-	 */
+	/** 実行内容 */
 	private int executionContent;
-	/**
-	 * 処理日
-	 */
+	
+	/** 処理日 */
 	private GeneralDate disposalDay;
-	/**
-	 * エラーメッセージ
-	 */
+	
+	/** エラーメッセージ */
 	private String messageError;
 	
 	public static ErrMessageInfoDto fromDomain(ErrMessageInfo domain) {

@@ -42,7 +42,7 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 	@Override
 	public Optional<RequestAppDetailSetting> getRequestDetail(String companyId, String workplaceId, int appType) {
 		Optional<RequestAppDetailSetting> data = this.queryProxy()
-				.query(FIND, KrqstWpAppConfigDetail.class)
+				.query(FINDDETAIL, KrqstWpAppConfigDetail.class)
 				.setParameter("companyId", companyId)
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("appType", appType)
@@ -73,7 +73,11 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 				c.goOutTimeBeginDisFlg, 
 				c.timeCalUseAtr, 
 				c.timeInputUseAtr,
-				c.requiredInstructionFlg);
+				c.requiredInstructionFlg,
+				c.instructionAtr,
+				c.instructionMemo,
+				c.instructionUseAtr,
+				c.timeEndDispFlg);
 	}
 
 }

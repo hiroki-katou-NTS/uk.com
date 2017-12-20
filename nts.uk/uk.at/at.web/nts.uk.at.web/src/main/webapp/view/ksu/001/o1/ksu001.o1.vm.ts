@@ -1,4 +1,4 @@
-module ksu001.o1.viewmodel {
+module nts.uk.at.view.ksu001.o1.viewmodel {
     import getShare = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
@@ -10,7 +10,7 @@ module ksu001.o1.viewmodel {
         time2: KnockoutObservable<string> = ko.observable('15:00');
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
-        nameWorkTimeType: KnockoutComputed<ExCell>;
+        nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
 
         constructor() {
@@ -61,14 +61,11 @@ module ksu001.o1.viewmodel {
                         workTimeCode = '';
                     }
                 }
-                return new ExCell({
+                return new ksu001.common.viewmodel.ExCell({
                     workTypeCode: workTypeCode,
                     workTypeName: workTypeName,
                     workTimeCode: workTimeCode,
-                    workTimeName: workTimeName,
-                    symbol: null,
-                    startTime: null,
-                    endTime: null
+                    workTimeName: workTimeName
                 });
             });
 
@@ -76,11 +73,30 @@ module ksu001.o1.viewmodel {
                 //Paste data into cell (set-sticker-single)
                 nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickData", value);
             });
+        }
 
-            //undo
-            $("#image030").click(function() {
-                nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickUndo");
-            });
+        /**
+         * paste data on cell
+         */
+        pasteData(): void {
+            if (nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.__viewContext.viewModel.viewA.selectedModeDisplay() == 1) {
+                nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("updateMode", "stick");
+                nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickMode", "single");
+            }
+        }
+
+        /**
+         * copy data on cell
+         */
+        copyData(): void {
+            nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("updateMode", "copyPaste");
+        }
+
+        /**
+         * undo data on cell
+         */
+        undoData(): void {
+            nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickUndo");
         }
 
         /**
@@ -88,35 +104,6 @@ module ksu001.o1.viewmodel {
          */
         closeDialog(): void {
             nts.uk.ui.windows.close();
-        }
-    }
-
-    interface IExCell {
-        workTypeCode: string,
-        workTypeName: string,
-        workTimeCode: string,
-        workTimeName: string,
-        symbol: string,
-        startTime: any,
-        endTime: any
-    }
-
-    class ExCell {
-        workTypeCode: string;
-        workTypeName: string;
-        workTimeCode: string;
-        workTimeName: string;
-        symbol: string;
-        startTime: any;
-        endTime: any;
-        constructor(params: IExCell) {
-            this.workTypeCode = params.workTypeCode;
-            this.workTypeName = params.workTypeName;
-            this.workTimeCode = params.workTimeCode;
-            this.workTimeName = params.workTimeName;
-            this.symbol = params.symbol;
-            this.startTime = params.startTime;
-            this.endTime = params.endTime;
         }
     }
 }

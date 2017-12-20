@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
-import java.util.List;
-
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexworkset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
+import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

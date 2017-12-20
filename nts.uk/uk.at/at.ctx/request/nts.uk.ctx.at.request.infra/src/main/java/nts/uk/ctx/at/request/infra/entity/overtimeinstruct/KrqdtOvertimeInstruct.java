@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.infra.entity.overtimeinstruct;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -39,13 +38,6 @@ public class KrqdtOvertimeInstruct extends UkJpaEntity implements Serializable {
     @Column(name = "INPUT_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date inputDate;
-    
-    @Column(name = "TARGET_PERSON")
-    private String targetPerson;
-    
-    @Column(name = "INSTRUCT_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date instructDate;
     
     @Column(name = "INSTRUCTOR")
     private String instructor;

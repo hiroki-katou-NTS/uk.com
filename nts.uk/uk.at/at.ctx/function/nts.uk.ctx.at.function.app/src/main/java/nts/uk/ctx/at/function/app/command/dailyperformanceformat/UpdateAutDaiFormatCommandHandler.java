@@ -114,7 +114,13 @@ public class UpdateAutDaiFormatCommandHandler extends CommandHandler<UpdateAutho
 		AuthorityFormatSheet authorityFormatSheet = new AuthorityFormatSheet(companyId,
 				new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()),
 				command.getAuthorityDailyCommand().getSheetNo(), command.getAuthorityDailyCommand().getSheetName());
-		this.authorityFormatSheetRepository.update(authorityFormatSheet);
+		if (this.authorityFormatSheetRepository.checkExistData(companyId,
+				new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()),
+				command.getAuthorityDailyCommand().getSheetNo())) {
+			this.authorityFormatSheetRepository.update(authorityFormatSheet);
+		} else {
+			this.authorityFormatSheetRepository.add(authorityFormatSheet);
+		}
 
 		AuthorityDailyPerformanceFormat authorityDailyPerformanceFormat = new AuthorityDailyPerformanceFormat(companyId,
 				new DailyPerformanceFormatCode(command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()),

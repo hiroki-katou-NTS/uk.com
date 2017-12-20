@@ -1,21 +1,22 @@
 .distane {
-	margin-bottom: 5px;
+	margin-left: 10px;
+	margin-top: 10px;
 }
 
 #itemLst {
 	margin-left: 13px;
 }
 
-#B_009 {
-	margin-left: 40px;
+#B_010 {
+	margin-left: 80px;
 }
 
 .requiredCell {
-	background-color: #FAEC82;
+ background-color: #FFC000;
 }
 
 .notrequiredCell {
-	background-color: #CFF1A5;
+ background-color: #C7F391;
 }
 
 .ui-iggrid table tr td {

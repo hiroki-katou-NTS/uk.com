@@ -53,7 +53,7 @@ module nts.uk.ui.jqueryExtentions {
                      };
                 
                 nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data) {
-                    if (data !== undefined && data.businessException) {
+                    if (nts.uk.util.exception.isBusinessError(data)) {
                         dfd.reject(data);
                     } else {
                         dfd.resolve(data);

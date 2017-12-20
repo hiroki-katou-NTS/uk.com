@@ -25,6 +25,10 @@ public class CurrentClosureDto {
 	
 	/** The closure name. */
 	private String closureName;
+		
+	/** The processing date. */
+	//処理年月
+	private Integer processingDate;
 
 	/**
 	 * Instantiates a new closure name and period dto.
@@ -33,12 +37,13 @@ public class CurrentClosureDto {
 	 * @param endDate the end date
 	 * @param closureName the closure name
 	 */
-	public CurrentClosureDto(Integer closureId, GeneralDate startDate, GeneralDate endDate, String closureName) {
+	public CurrentClosureDto(Integer closureId, GeneralDate startDate, GeneralDate endDate, String closureName, Integer processingDate) {
 		super();
 		this.closureId = closureId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.closureName = closureName;
+		this.processingDate = processingDate;
 	}
 
 	/**

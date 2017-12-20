@@ -97,7 +97,7 @@ module nts.uk.ui.jqueryExtentions {
                 if ($displayPanel.find(".sidebar-content-header").length > 0) {
                     $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
                 } else {
-                    setErrorPosition($displayPanel);
+                    setErrorPosition($(".sidebar-content"));
                 }
             }, 10);
         }

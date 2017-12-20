@@ -43,8 +43,10 @@ module nts.uk.at.view.kml002.b.viewmodel {
             self.verticalInputItem2 = ko.observable(0);
             
             self.operatorItem = ko.observableArray([
-                { operatorCode: 0, operatorName: 'X' },
-                { operatorCode: 1, operatorName: ':' }
+                { operatorCode: 0, operatorName: nts.uk.resource.getText("Enum_OperatorAtr_ADD") },
+                { operatorCode: 1, operatorName: nts.uk.resource.getText("Enum_OperatorAtr_SUBTRACT") },
+                { operatorCode: 2, operatorName: nts.uk.resource.getText("Enum_OperatorAtr_MULTIPLY") },
+                { operatorCode: 3, operatorName: nts.uk.resource.getText("Enum_OperatorAtr_DIVIDE") }
             ]);
             
             self.selectedOperator = ko.observable(0);
@@ -82,7 +84,17 @@ module nts.uk.at.view.kml002.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             
+            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             
+            if(data.formBuilt != null) {
+                self.settingMethod1(data.formBuilt.settingMethod1);            
+                self.settingMethod2(data.formBuilt.settingMethod2);
+                self.selectedItem1(data.formBuilt.verticalCalItem1);
+                self.selectedItem2(data.formBuilt.verticalCalItem2);
+                self.verticalInputItem1(data.formBuilt.verticalInputItem1);
+                self.verticalInputItem2(data.formBuilt.verticalInputItem2);
+                self.selectedOperator(data.formBuilt.operatorAtr);
+            }
             
             dfd.resolve();
             return dfd.promise();
@@ -98,16 +110,20 @@ module nts.uk.at.view.kml002.b.viewmodel {
             
             if(resultValidate) {
                 var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+                var item1 = _.find(self.verticalCalItems(), function(o) { return o.itemCode == self.selectedItem1(); });
+                var item2 = _.find(self.verticalCalItems(), function(o) { return o.itemCode == self.selectedItem2(); });
                 
                 var formulaItem : IFormulaItem = {
                     verticalCalCd: data.verticalCalCd,
                     verticalCalItemId: data.itemId,
                     settingMethod1: self.settingMethod1(),
                     verticalCalItem1: self.selectedItem1(),
-                    verticalInputItem1: self.verticalInputItem1(),
+                    verticalCalItemName1: item1.itemName,
+                    verticalInputItem1: self.settingMethod1() == 1 ? self.verticalInputItem1() : null,
                     settingMethod2: self.settingMethod2(),
                     verticalCalItem2: self.selectedItem2(),
-                    verticalInputItem2: self.verticalInputItem2(),
+                    verticalCalItemName2: item2.itemName,
+                    verticalInputItem2: self.settingMethod2() == 1 ? self.verticalInputItem2() : null,
                     operatorAtr: self.selectedOperator()
                 };
                 
@@ -132,10 +148,10 @@ module nts.uk.at.view.kml002.b.viewmodel {
             var success = true;
             
             //設定方法が数値入力の場合、縦計入力項目が入力しないといけない。
-            if(self.settingMethod1() == 1 && (self.verticalInputItem1() == null) || self.verticalInputItem1().toString() == "") {
+            if(self.settingMethod1() == 1 && (self.verticalInputItem1() == null)) {
                 success = false;
                 nts.uk.ui.dialog.alert({ messageId: "Msg_419" });
-            } else if(self.settingMethod2() == 1 && (self.verticalInputItem1() == null) || self.verticalInputItem1().toString() == "") {
+            } else if(self.settingMethod2() == 1 && (self.verticalInputItem2() == null)) {
                 success = false;
                 nts.uk.ui.dialog.alert({ messageId: "Msg_419" });
             }
@@ -144,6 +160,10 @@ module nts.uk.at.view.kml002.b.viewmodel {
             if(self.settingMethod1() == 1 && self.settingMethod2() == 1) {
                 success = false;
                 nts.uk.ui.dialog.alert({ messageId: "Msg_420" });
+            }
+            
+            if(nts.uk.ui.errors.hasError()) {
+                success = false;
             }
             
             return success;
@@ -160,7 +180,7 @@ module nts.uk.at.view.kml002.b.viewmodel {
             if(data.length == 0) {
                 var item : IVerticalCalItem = {
                     itemCode: "00",
-                    itemName: "Default"
+                    itemName: "Not set"
                 };
                 
                 verticalCalItems.push(item);
@@ -200,9 +220,11 @@ module nts.uk.at.view.kml002.b.viewmodel {
         verticalCalItemId: KnockoutObservable<string>;
         settingMethod1: KnockoutObservable<number>;
         verticalCalItem1: KnockoutObservable<number>;
+        verticalCalItemName1: KnockoutObservable<string>;
         verticalInputItem1: KnockoutObservable<number>;
         settingMethod2: KnockoutObservable<number>;
         verticalCalItem2: KnockoutObservable<number>;
+        verticalCalItemName2: KnockoutObservable<string>;
         verticalInputItem2: KnockoutObservable<number>;
         operatorAtr: KnockoutObservable<number>;
         
@@ -212,9 +234,11 @@ module nts.uk.at.view.kml002.b.viewmodel {
             self.verticalCalItemId = ko.observable(param.verticalCalItemId);
             self.settingMethod1 = ko.observable(param.settingMethod1);
             self.verticalCalItem1 = ko.observable(param.verticalCalItem1);
+            self.verticalCalItemName1 = ko.observable(param.verticalCalItemName1);
             self.verticalInputItem1 = ko.observable(param.verticalInputItem1);
             self.settingMethod2 = ko.observable(param.settingMethod2);
             self.verticalCalItem2 = ko.observable(param.verticalCalItem2);
+            self.verticalCalItemName2 = ko.observable(param.verticalCalItemName2);
             self.verticalInputItem2 = ko.observable(param.verticalInputItem2);
             self.operatorAtr = ko.observable(param.operatorAtr);
         }
@@ -225,9 +249,11 @@ module nts.uk.at.view.kml002.b.viewmodel {
         verticalCalItemId: string;
         settingMethod1: number;
         verticalCalItem1: number;
+        verticalCalItemName1: string;
         verticalInputItem1: number;
         settingMethod2: number;
         verticalCalItem2: number;
+        verticalCalItemName2: string;
         verticalInputItem2: number;
         operatorAtr: number;
     }

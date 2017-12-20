@@ -34,7 +34,7 @@
 						enable: isNewMode() ? false : isWkpConfigHistLatest">
 						#{i18n.getText('CMM011_5')}</button>
 				<button class="proceed" tabindex="1" data-bind="click: saveWorkplace,
-					enable:  (isNewMode() ? true : isWkpConfigHistLatest()) &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMM011_6')}</button>
+					enable:  (isNewMode() ? isSelectedWpkId() : isWkpConfigHistLatest()) &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMM011_6')}</button>
 				<button class="danger" tabindex="3" data-bind="click: removeWorkplace,
 					enable: isNewMode() ? false : isWkpConfigHistLatest" style="margin-left: 200px;">#{i18n.getText('CMM011_7')}</button>
 				<!-- END A1_1 ~ A1_3 -->
@@ -46,7 +46,7 @@
 					<div id="left-content-top"
 						class="bg-green caret-bottom caret-inline caret-background">
 						<div class="cf">
-							<div data-bind="ntsFormLabel: {}" style="margin-right: 18px;">#{i18n.getText('CMM011_2')}</div>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM011_2')}</div>
 							<span data-bind="text: strDWorkplace"></span>
 							<label style="margin-left: 8px;margin-right: 8px;">#{i18n.getText('CMM011_26')}</label>
 							<span data-bind="text: endDWorkplace"></span>
@@ -68,9 +68,10 @@
 							childField: 'childs',
 							fields: ['name', 'code']}" style="width: 280px;"></div>
 							
-						<table id="single-tree-grid" class="cf" tabindex="8" data-bind="ntsTreeGridView:{
-								width: 385,
-								height: calHeightTree(),
+						<div tabindex="8">
+							<table id="single-tree-grid" class="cf" data-bind="ntsTreeGridView:{
+								width: treeStyle.width,
+								height: treeStyle.height,
 								name: '#[CMM011_8]',
 								dataSource: lstWorkplace,
 								value: selectedWpkId,
@@ -82,6 +83,7 @@
 								extColumns: treeColumns,
 								showCheckBox: false}">
 						</table>
+						</div>
 					</div><!-- END A3_1 ~ A4_4 -->
 				</div>
 
@@ -109,11 +111,11 @@
 									{ key: 'textDisplay', length: 15 }
 								]}"></div></td>
 							<td>
-								<div><button tabindex="10" data-bind="click: addWkpHistoryDialog,
+								<div style="margin-top: -4px;"><button tabindex="10" data-bind="click: addWkpHistoryDialog,
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_10')}</button></div>
-								<div style="margin: 5px 0px;"><button tabindex="11" data-bind="click: updateWkpHistoryDialog,
+								<div  style="margin-top: 8px;"><button tabindex="11" data-bind="click: updateWkpHistoryDialog,
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_11')}</button></div>
-								<div><button tabindex="12" data-bind="click: deleteWkpHistory,
+								<div style="margin-top: 8px;"><button tabindex="12" data-bind="click: deleteWkpHistory,
 									enable: $parent.isNewMode() ? false : $parent.isWkpHistoryLatest">#{i18n.getText('CMM011_12')}</button></div>
 							</td>
 							<td></td>
@@ -134,7 +136,7 @@
 												width: '100px',
 											},
 											required: true,
-											enable: isNewMode()}" /></div></td>
+											enable: isNewMode() &amp;&amp; isSelectedWpkId()}" /></div></td>
 							<td><div data-bind="ntsFormLabel: {constraint: 'OutsideWorkplaceCode'}">
 								#{i18n.getText('CMM011_14')}</div></td>
 							<td><div><input tabindex="14" data-bind="ntsTextEditor: {
@@ -145,7 +147,7 @@
 												width: '100px',
 											},
 											required: false,
-											enable: isNewMode() ? true : isWkpHistoryLatest}" /></div></td>
+											enable: isNewMode() ? true  &amp;&amp; isSelectedWpkId() : isWkpHistoryLatest}" /></div></td>
 						</tr><!-- END A6_1 ~ A7_2 -->
 						
 						<!-- BEGIN A81_1 ~ A8_2 -->
@@ -160,14 +162,14 @@
 												width: '150px',
 											},
 											required: true,
-											enable: isNewMode() ? true : isWkpHistoryLatest}" /></div></td>
+											enable: isNewMode() ? true &amp;&amp; isSelectedWpkId() : isWkpHistoryLatest}" /></div></td>
 							<td></td>
 							<td></td>
 						</tr><!-- END A81_1 ~ A8_2 -->
 						
 						<!-- BEGIN A9_1 ~ A9_2 -->
 						<tr>
-							<td class="td-detail"><div data-bind="ntsFormLabel: {constraint: 'WorkplaceDisplayName'}">
+							<td class="td-detail"><div data-bind="ntsFormLabel: {required: true, constraint: 'WorkplaceDisplayName'}">
 								#{i18n.getText('CMM011_16')}</div></td>
 							<td colspan="2"><div><input id="wkpDisplayName" tabindex="16" data-bind="ntsTextEditor: {
 											value: wkpDisplayName,
@@ -177,13 +179,13 @@
 												width: '360px',
 											},
 											required: true,
-											enable: isNewMode() ? true : isWkpHistoryLatest}" /></div></td>
+											enable: isNewMode() ? true &amp;&amp; isSelectedWpkId() : isWkpHistoryLatest}" /></div></td>
 							<td></td>
 						</tr><!-- END A9_1 ~ A9_2 -->
 						
 						<!-- BEGIN A10_1 ~ A10_2 -->
 						<tr>
-							<td class="td-detail"><div data-bind="ntsFormLabel: {constraint: 'WorkplaceGenericName'}">
+							<td class="td-detail"><div data-bind="ntsFormLabel: {required: true, constraint: 'WorkplaceGenericName'}">
 								#{i18n.getText('CMM011_17')}</div></td>
 							<td colspan="4"><div><input id="wkpFullName" tabindex="17" data-bind="ntsTextEditor: {
 											value: wkpFullName,
@@ -193,7 +195,7 @@
 												width: '512px',
 											},
 											required: true,
-											enable: isNewMode() ? true : isWkpHistoryLatest}" /></div></td>
+											enable: isNewMode() ? true &amp;&amp; isSelectedWpkId() : isWkpHistoryLatest}" /></div></td>
 							<td></td>
 						</tr><!-- END A10_1 ~ A10_2 -->
 					</table>

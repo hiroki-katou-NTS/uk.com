@@ -66,6 +66,10 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 						))
 				.collect(Collectors.toList());
 		// get new Application Item
+		String appReason = "";
+		if(!command.appCommand.getAppReasonID().isEmpty() || !command.appCommand.getApplicationReason().isEmpty()) {
+			appReason = !command.appCommand.getAppReasonID().isEmpty() ? command.appCommand.getAppReasonID() + System.lineSeparator() + command.appCommand.getApplicationReason() : command.appCommand.getApplicationReason();
+		}
 		Application updateApp =  new  Application(
 				companyId, 
 				command.goBackCommand.getAppID(),
@@ -74,8 +78,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 				command.appCommand.getEnteredPersonSID(), 
 				new AppReason(command.appCommand.getReversionReason()), 
 				command.appCommand.getApplicationDate(), 
-				command.appCommand.getAppReasonID(), 
-				new AppReason(command.appCommand.getApplicationReason()), 
+				new AppReason(appReason), 
 				EnumAdaptor.valueOf(command.appCommand.getApplicationType(),ApplicationType.class), 
 				command.appCommand.getApplicantSID(), 
 				EnumAdaptor.valueOf(command.appCommand.getReflectPlanScheReason(),ReflectPlanScheReason.class), 
@@ -109,6 +112,6 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 		updateGoBack.setVersion(command.goBackCommand.version);
 		// update
 		
-		this.goBackDirectlyUpdateService.update(updateGoBack, updateApp);
+		this.goBackDirectlyUpdateService.updateGoBackDirectly(updateGoBack, updateApp);
 	}
 }

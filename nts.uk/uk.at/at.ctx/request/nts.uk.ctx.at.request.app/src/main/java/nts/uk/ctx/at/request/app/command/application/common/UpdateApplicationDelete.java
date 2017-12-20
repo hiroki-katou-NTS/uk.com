@@ -10,16 +10,16 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.A
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
-public class UpdateApplicationDelete extends CommandHandlerWithResult<UpdateApplicationCommonCmd,ListMailApproval> {
+public class UpdateApplicationDelete extends CommandHandlerWithResult<UpdateApplicationCommonCmd,String> {
 
 	
 	@Inject
 	private AfterProcessDelete afterProcessDelete;
 
 	@Override
-	protected ListMailApproval handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
+	protected String handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		//5.2(hieult)
-		return new ListMailApproval(afterProcessDelete.screenAfterDelete(companyID, context.getCommand().getAppId()));
+		return afterProcessDelete.screenAfterDelete(companyID, context.getCommand().getAppId(), context.getCommand().getVersion());
 	}
 }

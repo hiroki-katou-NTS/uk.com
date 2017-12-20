@@ -9,10 +9,14 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 430,
+					width : 550,
 					height :180
 				};
 			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.pereg.dom.person.setting.init.ValueSettingCode
+					nts.uk.ctx.pereg.dom.person.setting.init.ValueSettingName
+   			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps009.d.style.css" />
 			<com:scriptfile path="cps009.d.service.js" />
@@ -22,31 +26,26 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="copy_row_1" style="margin-bottom: 5px;">
-					<label>#{i18n.getText('CPS009_26')}</label>
-					<div id="label_code" data-bind="ntsFormLabel: {required: true}"
-						class="form-label ">
-						<label>#{i18n.getText('CPS009_12')}</label>
-					</div>
-					<input id="roleCode"
-						data-bind="ntsTextEditor: {value: currentInitVal().itemCode,  
-										required: true, enable: true,
-										immediate: true}" />
-					<input id="roleName"
-						data-bind="ntsTextEditor: {value: currentInitVal().itemName,  
-										required: true, enable: true,
-										immediate: true}" />
-
-
-				</div>
-
+				<!-- D_001: label コード/名称-->
+				<div id="label_code" data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}" class="form-label ">#{i18n.getText('CPS009_12')}</div>
+				<!-- D_002: コード -->
+				<input id="roleCode" tabindex="1" data-bind="ntsTextEditor: {value: currentInitVal().itemCode,  
+											name: '#[CPS009_13]',
+											required: true, enable: true,
+											constraint: 'ValueSettingCode',
+											immediate: true}" />
+				<!-- D_003: 名称 -->
+				<input id="roleName" tabindex="2" data-bind="ntsTextEditor: {value: currentInitVal().itemName,  
+											name: '#[CPS009_14]',
+											required: true, enable: true,
+											constraint: 'ValueSettingName',
+											immediate: true}" />
 			</div>
 			<div id='functions-area-bottom'>
-				<button id="registration" data-bind="click: newInitValue"
-					class="proceed x-large" tabindex="5">#{i18n.getText('CPS009_29')}
-				</button>
-				<button id="cancel" data-bind="click: cancelNewInitValue"
-					tabindex="6">#{i18n.getText('CPS009_30')}</button>
+				<!-- D_004: button 実行 -->
+				<button id="registration" data-bind="click: newInitValue" class="proceed large" tabindex="3">#{i18n.getText('CPS009_29')} </button>
+				<!-- D_005: button キャンセル -->
+				<button id="cancel" data-bind="click: cancelNewInitValue" tabindex="4">#{i18n.getText('CPS009_30')}</button>
 
 			</div>
 		</ui:define>

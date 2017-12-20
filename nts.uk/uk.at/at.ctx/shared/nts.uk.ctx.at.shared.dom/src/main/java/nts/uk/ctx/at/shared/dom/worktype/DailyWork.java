@@ -32,7 +32,8 @@ public class DailyWork extends DomainObject { // 1日の勤務
 	private WorkTypeClassification morning; 
 
 	/** The afternoon. */
-	private WorkTypeClassification afternoon; // 午後
+	// 午後
+	private WorkTypeClassification afternoon; 
 	
 	/**
 	 * 出勤区分区分の取得
@@ -86,4 +87,46 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		return false;
 	}
 	
+	/**
+	 * check leave for a a morning
+	 * @return true leave for morning else false
+	 */
+	public boolean IsLeaveForMorning() {
+		return this.checkLeave(this.morning);
+	}
+	
+	/**
+	 * check leave for a afternoon
+	 * @return true leave for a afternoon else false
+	 */
+	public boolean IsLeaveForAfternoon() {
+		return this.checkLeave(this.afternoon);
+	}
+	
+	/**
+	 * check leave for a day
+	 * @return true leave for a day else false
+	 */
+	public boolean IsLeaveForADay() {
+		return this.checkLeave(this.oneDay);
+	}
+	
+	/**
+	 * check leave by 
+	 * @param attribute 勤務種類の分類
+	 * @return
+	 */
+	private boolean checkLeave(WorkTypeClassification attribute) {
+		return WorkTypeClassification.Holiday == attribute
+				|| WorkTypeClassification.Pause == attribute
+				|| WorkTypeClassification.AnnualHoliday == attribute
+				|| WorkTypeClassification.YearlyReserved == attribute
+				|| WorkTypeClassification.SpecialHoliday == attribute
+				|| WorkTypeClassification.TimeDigestVacation == attribute
+				|| WorkTypeClassification.SubstituteHoliday == attribute
+				|| WorkTypeClassification.Absence == attribute
+				|| WorkTypeClassification.ContinuousWork == attribute
+				|| WorkTypeClassification.Closure == attribute
+				|| WorkTypeClassification.LeaveOfAbsence == attribute;
+	}
 }

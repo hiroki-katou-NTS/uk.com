@@ -8,16 +8,18 @@ module nts.uk.at.view.kml002.g.viewmodel {
         attrLabel: KnockoutObservable<String>;
         itemNameLabel: KnockoutObservable<String>;
         verticalId: KnockoutObservable<number>;
-
+        genVertId: KnockoutObservable<number>;
 
         constructor() {
             var self = this;
 
-            var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            var dataTranfer = nts.uk.ui.windows.getShared("KML002_A_DATA");
+            var data = dataTranfer.unitPrice;
 
-            self.verticalId = ko.observable(data.itemId);
-            self.attrLabel = ko.observable(data.attribute);
-            self.itemNameLabel = ko.observable(data.itemName);
+            self.genVertId = ko.observable(dataTranfer.verticalCalCd);
+            self.verticalId = ko.observable(dataTranfer.itemId);
+            self.attrLabel = ko.observable(dataTranfer.attribute);
+            self.itemNameLabel = ko.observable(dataTranfer.itemName);
 
             self.unitPriceItems = ko.observableArray([
                 { uPCd: 0, uPName: nts.uk.resource.getText("KML002_53") },
@@ -27,15 +29,20 @@ module nts.uk.at.view.kml002.g.viewmodel {
                 { uPCd: 4, uPName: nts.uk.resource.getText("KML002_57") }
             ]);
 
-            self.uPCd = ko.observable(0);
-
             self.radioMethod = ko.observableArray([
                 { id: 0, name: nts.uk.resource.getText("KML002_62") },
                 { id: 1, name: nts.uk.resource.getText("KML002_63") },
                 { id: 2, name: nts.uk.resource.getText("KML002_64") }
             ]);
 
-            self.selectedMethod = ko.observable(0);
+            if(data != null) {
+                self.uPCd = ko.observable(data.unitPrice);
+                self.selectedMethod = ko.observable(data.attendanceAtr);
+            } else {
+                self.uPCd = ko.observable(0);
+                self.selectedMethod = ko.observable(0);
+            }
+            
         }
 
         /**
@@ -51,14 +58,20 @@ module nts.uk.at.view.kml002.g.viewmodel {
 
         submit() {
             var self = this;
+            nts.uk.ui.block.invisible();
+                
+            var item = _.find(self.unitPriceItems(), function(o) { return o.uPCd == self.uPCd(); });
             var data = {
-                verticalId: self.verticalId(),
-                unitPriceCtg: self.uPCd(),
-                attendanceDecisionCls: self.selectedMethod(),
+                verticalCalCd: self.genVertId(),
+                verticalCalItemId: self.verticalId(),
+                unitPrice: self.uPCd(),
+                unitName: item.uPName,
+                attendanceAtr: self.selectedMethod(),
             };
 
             nts.uk.ui.windows.setShared("KML002_G_DATA", data);
-            nts.uk.ui.windows.close(); 
+            nts.uk.ui.block.clear();
+            nts.uk.ui.windows.close();
         }
 
         cancel() {

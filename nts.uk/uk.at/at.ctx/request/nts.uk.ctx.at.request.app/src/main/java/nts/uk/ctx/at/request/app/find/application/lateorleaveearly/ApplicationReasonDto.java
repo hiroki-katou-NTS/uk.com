@@ -9,4 +9,6 @@ public class ApplicationReasonDto {
 	
 	private String reasonTemp;
 	
+	private int defaultFlg;
+	
 }

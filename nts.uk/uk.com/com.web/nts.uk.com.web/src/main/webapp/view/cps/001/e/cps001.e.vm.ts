@@ -10,7 +10,7 @@ module cps001.e.vm {
 
     export class ViewModel {
 
-        empFileMn: KnockoutObservable<EmpFileMn> = ko.observable(new EmpFileMn({ employeeId: "", fileId: "", fileType: -1 }));
+        empFileMn: KnockoutObservable<IEmpFileMn>= ko.observable(<IEmpFileMn>{});
         oldEmpFileMn = {};
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         isInit = true;
@@ -19,17 +19,19 @@ module cps001.e.vm {
             let self = this;
         }
         start() {
-            let self = this;
-            self.empFileMn().employeeId(getShared("employeeId"));
+            let self = this, 
+             params = getShared("CPS001E_PARAMS");
+            self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
-            service.getAvatar(self.empFileMn().employeeId()).done(function(data) {
+            service.getAvatar(self.empFileMn().employeeId).done(function(data) {
                 if (data) {
-                    self.empFileMn().fileId(data.fileId ? data.fileId : "");
-                    self.empFileMn().fileType(1);
-                    if (self.empFileMn().fileId() != "" && self.empFileMn().fileId() != undefined)
+                    self.empFileMn().fileId = data.fileId ? data.fileId : "";
+                    self.empFileMn().fileType = 1;
+                    if (self.empFileMn().fileId != "" && self.empFileMn().fileId != undefined)
                         self.getImage();
-                    self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId(), fileId: self.empFileMn().fileId(), fileType: self.empFileMn().fileType() };
-                }
+                    else self.isChange(true);
+                    self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
+                }else self.isChange(true);
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
                         self.isChange(true);
@@ -45,11 +47,18 @@ module cps001.e.vm {
         upload() {
             let self = this;
             nts.uk.ui.block.grayout();
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
+            
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
-                        self.empFileMn().fileId(data.id);
+                        self.empFileMn().fileId = data.id;
+                        self.oldEmpFileMn = {employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType};
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
                     });
                 } else self.close();
@@ -67,7 +76,7 @@ module cps001.e.vm {
                         //insert employee file management
                         service.removeAvaOrMap(oldEmpFileMn).done(function() {
                             service.insertAvaOrMap(currentEmpFileMn).done(function() {
-                                setShared("imageId", currentEmpFileMn.fileId);
+                                setShared("CPS001E_VALUES", ko.unwrap(self.empFileMn));
                                 self.close();
                             }).always(function() { nts.uk.ui.block.clear(); });
                         });
@@ -75,7 +84,7 @@ module cps001.e.vm {
                 } else {
                     //insert employee file management
                     service.insertAvaOrMap(currentEmpFileMn).done(function() {
-                        setShared("imageId", currentEmpFileMn.fileId);
+                        setShared("CPS001E_VALUES", ko.unwrap(self.empFileMn));
                         self.close();
                     }).always(function() { nts.uk.ui.block.clear(); });
                 }
@@ -84,8 +93,13 @@ module cps001.e.vm {
 
         getImage() {
             let self = this;
-            let id = self.empFileMn().fileId();
-            $("#test").ntsImageEditor("selectByFileId", id);
+            let id = self.empFileMn().fileId;
+            try{
+                 $("#test").ntsImageEditor("selectByFileId", id);
+            }catch(Error){
+                self.isChange(true);
+            }
+           
         }
         close() {
             close();
@@ -96,16 +110,5 @@ module cps001.e.vm {
         employeeId: string;
         fileId?: string;
         fileType?: number;
-    }
-    class EmpFileMn {
-        employeeId: KnockoutObservable<string> = ko.observable("");
-        fileId: KnockoutObservable<string> = ko.observable("");
-        fileType: KnockoutObservable<number> = ko.observable(-1);
-        constructor(data: IEmpFileMn) {
-            let self = this;
-            self.employeeId(data.employeeId);
-            self.fileId(data.fileId);
-            self.fileType(data.fileType);
-        }
-    }
+    }   
 }

@@ -6,8 +6,10 @@ package nts.uk.ctx.sys.auth.infra.repository.role;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,9 +22,11 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
 
+
 /**
  * The Class JpaRoleRepository.
  */
+@Stateless
 public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	/* (non-Javadoc)
@@ -42,7 +46,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		// add where
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.id), roleId));
+		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.roleId), roleId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SacmtRole> sacmtRoles = em.createQuery(cq).getResultList();
@@ -68,7 +72,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		// add where
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(root.get(SacmtRole_.id).in(lstRoleId));
+		predicateList.add(root.get(SacmtRole_.roleId).in(lstRoleId));
 		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.cid), companyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
@@ -76,6 +80,92 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		return sacmtRoles.stream().map(sacmtRole -> {
 			return new Role(new JpaRoleGetMemento(sacmtRole));
 		}).collect(Collectors.toList());
+	}
+	
+	
+	
+	@Override
+	public void insert(Role role) {
+		this.commandProxy().insert(toEntity(role));		
+	}
+
+	@Override
+	public void update(Role role) {
+		SacmtRole updateEntity = this.queryProxy().find(role.getRoleId(), SacmtRole.class).get();
+		updateEntity.setCid(role.getCompanyId());
+		updateEntity.setRoleType(role.getRoleType().value);
+		updateEntity.setReferenceRange(role.getEmployeeReferenceRange().value);
+		updateEntity.setName(role.getName().toString());
+		updateEntity.setContractCode(role.getContractCode().toString());
+		updateEntity.setAssignAtr(role.getAssignAtr().value);
+		this.commandProxy().update(updateEntity);		
+	}
+	@Override
+	public void remove(String roleId) {		
+		this.commandProxy().remove(SacmtRole.class, roleId);
+	}
+	
+	private SacmtRole  toEntity(Role role){
+		SacmtRole entity = new SacmtRole();
+		entity.setRoleId(role.getRoleId());
+		entity.setCid(role.getCompanyId());
+		entity.setCode(role.getRoleCode().toString());
+		entity.setRoleType(role.getRoleType().value);
+		entity.setReferenceRange(role.getEmployeeReferenceRange().value);
+		entity.setName(role.getName().toString());
+		entity.setContractCode(role.getContractCode().toString());
+		entity.setAssignAtr(role.getAssignAtr().value);
+		return entity;
+	}
+
+	@Override
+	public List<Role> findByType(String companyId, int roleType) {
+		List<Role> result = new ArrayList<>();
+		
+		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType ORDER BY e.assignAtr ASC, e.code ASC ";
+		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("companyId", companyId).setParameter("roleType", roleType).getList();
+		if (entities != null && entities.size() !=0) {
+			return entities.stream().map(x->new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
+		}
+		return result;
+	}
+
+	@Override
+	public List<Role> findByType(int roleType) {
+		List<Role> result = new ArrayList<>();
+		String query ="SELECT e FROM SacmtRole e WHERE e.roleType = :roleType ORDER BY e.assignAtr ASC, e.code ASC ";
+		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class).setParameter("roleType", roleType).getList();
+		if (entities != null  && !entities.isEmpty()) {
+			return entities.stream().map(x ->new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
+		}
+		return result;
+	}
+
+	@Override
+	public Optional<Role> findByRoleId(String roleId) {
+		String query ="SELECT e FROM SacmtRole e WHERE e.roleId = :roleId ";
+		return this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("roleId", roleId).getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
+	}
+
+	@Override
+	public Optional<Role> findRoleByRoleCode(String roleCode, int roleType) {
+		String query ="SELECT e FROM SacmtRole e WHERE e.code = :code AND e.roleType = :roleType ";
+		return this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("code", roleCode)
+				.setParameter("roleType", roleType)
+				.getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
+	}
+
+	@Override
+	public Optional<Role> findByContractCDRoleTypeAndCompanyID(String contractCD, int roleType, String companyID) {
+		String query = "SELECT e FROM SacmtRole e WHERE e.contractCode = :contractCode AND e.roleType = :roleType AND e.cid = :cid";
+		return this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("contractCode", contractCD)
+				.setParameter("roleType", roleType)
+				.setParameter("cid", companyID)
+				.getList().stream().map(x ->new Role (new JpaRoleGetMemento(x))).findFirst();
 	}
 
 }

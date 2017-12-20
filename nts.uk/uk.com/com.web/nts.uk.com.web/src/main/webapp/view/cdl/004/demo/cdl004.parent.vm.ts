@@ -25,7 +25,7 @@ module nts.uk.com.view.cdl004.parent.viewmodel {
             let canSelected = self.canSelectJobtitleCodes() ? self.canSelectJobtitleCodes().split(',') : [];
             nts.uk.ui.windows.setShared('inputCDL004', {
                 baseDate: self.baseDate(),
-                canSelected: self.selectMode() ? canSelected : canSelected[0],
+                selectedCodes: self.selectMode() ? canSelected : canSelected[0],
                 showNoSelection: self.showNoSelection(),
                 isMultiple: self.selectMode()
             }, true);

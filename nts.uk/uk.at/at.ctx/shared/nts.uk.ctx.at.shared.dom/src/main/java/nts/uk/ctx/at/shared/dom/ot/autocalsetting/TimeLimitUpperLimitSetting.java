@@ -7,18 +7,18 @@ package nts.uk.ctx.at.shared.dom.ot.autocalsetting;
 /**
  * The Enum TimeLimitUpperLimitSetting.
  */
-//時間外の上限設定
+// 時間外の上限設定
 public enum TimeLimitUpperLimitSetting {
 
 	/** The noupperlimit. */
-	NOUPPERLIMIT(0, "上限なし" ,"Enum_TimeLimitUpperLimitSetting_NoUpperLimit" ),
-	
+	NOUPPERLIMIT(0, "Enum_TimeLimitUpperLimitSetting_NoUpperLimit", "上限なし"),
+
 	/** The limitnumberapplication. */
-	LIMITNUMBERAPPLICATION(1, "事前申請を上限とする" ,"Enum_TimeLimitUpperLimitSetting_LimitNumberApplications" ),
-	
+	LIMITNUMBERAPPLICATION(1, "Enum_TimeLimitUpperLimitSetting_LimitNumberApplications", "事前申請を上限とする"),
+
 	/** The indicatedyimeupperlimit. */
-	INDICATEDYIMEUPPERLIMIT(2, "指示時間を上限とする" ,"Enum_TimeLimitUpperLimitSetting_IndicatedTimeUpperLimit" );
-	
+	INDICATEDYIMEUPPERLIMIT(2, "Enum_TimeLimitUpperLimitSetting_IndicatedTimeUpperLimit", "指示時間を上限とする");
+
 	/** The value. */
 	public final int value;
 
@@ -31,13 +31,15 @@ public enum TimeLimitUpperLimitSetting {
 	/** The Constant values. */
 	private final static TimeLimitUpperLimitSetting[] values = TimeLimitUpperLimitSetting.values();
 
-
 	/**
 	 * Instantiates a new time limit upper limit setting.
 	 *
-	 * @param value the value
-	 * @param nameId the name id
-	 * @param description the description
+	 * @param value
+	 *            the value
+	 * @param nameId
+	 *            the name id
+	 * @param description
+	 *            the description
 	 */
 	private TimeLimitUpperLimitSetting(int value, String nameId, String description) {
 		this.value = value;
@@ -48,7 +50,8 @@ public enum TimeLimitUpperLimitSetting {
 	/**
 	 * Value of.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the time limit upper limit setting
 	 */
 	public static TimeLimitUpperLimitSetting valueOf(Integer value) {

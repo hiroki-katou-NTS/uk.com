@@ -39,9 +39,9 @@ public class PersonalLaborCondition extends AggregateRoot{
 	// 社員ID
 	private String employeeId;
 	
-	/** The automatic emboss set atr. */
+	/** The auto stamp set atr. */
 	// 自動打刻セット区分
-	private UseAtr automaticEmbossSetAtr;
+	private UseAtr autoStampSetAtr;
 
 	/**
 	 * Instantiates a new personal labor condition.
@@ -49,13 +49,22 @@ public class PersonalLaborCondition extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public PersonalLaborCondition(PersonalLaborConditionGetMemento memento) {
-		this.scheduleManagementAtr = memento.getAutomaticEmbossSetAtr();
+		this.scheduleManagementAtr = memento.getScheduleManagementAtr();
 		this.holidayAddTimeSet = memento.getHolidayAddTimeSet();
 		this.workCategory = memento.getWorkCategory();
 		this.workDayOfWeek = memento.getWorkDayOfWeek();
 		this.period = memento.getPeriod();
 		this.employeeId = memento.getEmployeeId();
-		this.automaticEmbossSetAtr = memento.getAutomaticEmbossSetAtr();
+		this.autoStampSetAtr = memento.getAutoStampSetAtr();
+	}
+	
+	/**
+	 * Checks if is use schedule management.
+	 *
+	 * @return true, if is use schedule management
+	 */
+	public boolean isUseScheduleManagement(){
+		return this.scheduleManagementAtr.equals(UseAtr.USE);
 	}
 	
 	/**
@@ -70,7 +79,7 @@ public class PersonalLaborCondition extends AggregateRoot{
 		memento.setWorkDayOfWeek(this.workDayOfWeek);
 		memento.setPeriod(this.period);
 		memento.setEmployeeId(this.employeeId);
-		memento.setAutomaticEmbossSetAtr(this.automaticEmbossSetAtr);
+		memento.setAutoStampSetAtr(this.autoStampSetAtr);
 	}
 	
 	/* (non-Javadoc)

@@ -29,8 +29,23 @@ public interface PersonRepository {
 	 */
 	Optional<Person> getByPersonId(String personId);
 	
-	String getLastCardNo(String companyId, String startCardNoLetters);
+	/**
+	 * Gets person for pereg by person id.
+	 *
+	 * @param personId the person id
+	 * @return the by person id
+	 */
+	Optional<Person> getPeregPerByPersonId(String personId);
 	
-	void updatePerson(Person person);
+	String getLastCardNo(String companyId, String startCardNoLetters);
+	/**
+	 * Update person 取得した「個人」を更新する
+	 * 
+	 * @param person
+	 */
+	void update(Person person);
+
+
+	void addNewPerson(Person newPerson);
 	
 }

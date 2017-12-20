@@ -8,8 +8,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItemAuthority;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 
 @Stateless
 public class UpdateAttdItemAuthCommandHandler extends CommandHandler<List<UpdateAttdItemAuthCommand>> {

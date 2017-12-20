@@ -8,17 +8,16 @@ module kml002.k.viewmodel {
 
         constructor() {
             var self = this;
-
             self.enable = ko.observable(true);
             self.readonly = ko.observable(false);
             self.startTime = ko.observable(0);
             self.endTime = ko.observable(0);
-
         }
         start() {
             var self = this,
                 dfd = $.Deferred();
             dfd.resolve();
+            $(".nts-editor").find("#test1").focus();
             return dfd.promise();
         }
         closeDialog(): void {
@@ -26,17 +25,21 @@ module kml002.k.viewmodel {
         }
 
         submitTime() {
+            nts.uk.ui.block.invisible();
             var self = this;
             var dataTime = {
                 startTime: self.startTime(),
                 endTime: self.endTime()
             }
             if (self.startTime() > self.endTime()) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_28" });
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_307"));
                 return;
             }
             nts.uk.ui.windows.setShared('KML002K_TIME', dataTime);
+            nts.uk.ui.block.clear();
             nts.uk.ui.windows.close();
+
         }
 
     }

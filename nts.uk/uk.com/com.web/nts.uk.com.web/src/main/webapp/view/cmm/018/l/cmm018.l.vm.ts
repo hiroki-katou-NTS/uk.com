@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm018.l {
             date: KnockoutObservable<Date>;
             constructor() {
                 var self = this;
-                self.date =ko.observable(new Date())
+                self.date =ko.observable(moment(new Date()).toDate())
             }
             //閉じるボタン
             closeDialog(){

@@ -18,6 +18,7 @@ import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.file.FileUtil;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 
 @Stateless
 public class DefaultStoredFileStreamService implements StoredFileStreamService {
@@ -27,11 +28,23 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	@Override
 	public void store(StoredFileInfo fileInfo, InputStream streamToStore) {
 		try {
-			Files.copy(streamToStore, pathToTargetStoredFile(fileInfo.getId()));
+			Files.copy(CommonKeyCrypt.encrypt(streamToStore, fileInfo.getOriginalSize()), pathToTargetStoredFile(fileInfo.getId()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	public void storeZipEntry(StoredFileInfo fileInfo, InputStream streamToStore) {
+		try {
+			String[] names = fileInfo.getOriginalName().split("/");
+			if (names.length != 2) return;
+			Files.copy(CommonKeyCrypt.encrypt(streamToStore, fileInfo.getOriginalSize()), pathToStoredZipEntry(names[0], names[1]));
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+	
 	@Override
 	public InputStream takeOutFromFileId(String fileId) {
 		Optional<StoredFileInfo> fileInfo = fileStorage.getInfo(fileId);
@@ -39,17 +52,37 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 			throw new BusinessException(new RawErrorMessage("file not found"));
 		}
 		
-		return FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.get().getId()));
+		return CommonKeyCrypt.decrypt(
+				FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.get().getId())), 
+				fileInfo.get().getOriginalSize());
 	}
 	@Override
 	public InputStream takeOut(StoredFileInfo fileInfo) {
-		return FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.getId()));
+		Path filePath = null;
+		if (fileInfo.getOriginalName().indexOf("/") > -1) {
+			String[] names = fileInfo.getOriginalName().split("/");
+			filePath = pathToStoredZipEntry(names[0], names[1]);
+		} else {
+			filePath = pathToTargetStoredFile(fileInfo.getId());
+		}
+		
+		return CommonKeyCrypt.decrypt(
+				FileUtil.NoCheck.newInputStream(filePath), fileInfo.getOriginalSize());
 	}
 
 	@Override
 	public InputStream takeOutDeleteOnClosed(StoredFileInfo fileInfo) {
-		return FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.getId()),
-				StandardOpenOption.DELETE_ON_CLOSE);
+		Path filePath = null;
+		if (fileInfo.getOriginalName().indexOf("/") > -1) {
+			String[] names = fileInfo.getOriginalName().split("/");
+			filePath = pathToStoredZipEntry(names[0], names[1]);
+		} else {
+			filePath = pathToTargetStoredFile(fileInfo.getId());
+		}
+		
+		return CommonKeyCrypt.decrypt(
+				FileUtil.NoCheck.newInputStream(filePath, StandardOpenOption.DELETE_ON_CLOSE), 
+				fileInfo.getOriginalSize());
 	}
 
 	@Override
@@ -63,6 +96,16 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 
 	private static Path pathToTargetStoredFile(String fileId) {
 		return new File(ServerSystemProperties.fileStoragePath()).toPath().resolve(fileId);
+	}
+	
+	private static Path pathToStoredZipEntry(String zipFileId, String entryName) {
+		try {
+			Path filePath = new File(ServerSystemProperties.fileStoragePath()).toPath().resolve(zipFileId).resolve(entryName);
+			Files.createDirectories(filePath.getParent());
+			return filePath;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

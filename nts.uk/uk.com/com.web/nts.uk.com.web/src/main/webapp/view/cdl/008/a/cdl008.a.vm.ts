@@ -27,10 +27,10 @@ module nts.uk.com.view.cdl008.a {
                     self.baseDate(inputCDL008.baseDate);
                     self.isMultiple = inputCDL008.isMultiple;
                     if (self.isMultiple) {
-                        self.selectedMulWorkplace(inputCDL008.canSelected);
+                        self.selectedMulWorkplace(inputCDL008.selectedCodes);
                     }   
                     else {
-                        self.selectedSelWorkplace(inputCDL008.canSelected);
+                        self.selectedSelWorkplace(inputCDL008.selectedCodes);
                     } 
                 }
                 

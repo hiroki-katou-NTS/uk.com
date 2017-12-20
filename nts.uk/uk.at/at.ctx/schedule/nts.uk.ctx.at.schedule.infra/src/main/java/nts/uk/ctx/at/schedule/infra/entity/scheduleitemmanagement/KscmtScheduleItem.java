@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_SCHEDULE_ITEM")
+@Table(name = "KSCMT_SCHE_ITEM")
 public class KscmtScheduleItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

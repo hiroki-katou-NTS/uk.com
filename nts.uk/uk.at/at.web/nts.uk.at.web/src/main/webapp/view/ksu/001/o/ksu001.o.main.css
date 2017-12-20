@@ -1,11 +1,6 @@
 #oViewModel #label, #oViewModel  #combo-box1, #oViewModel  #group-button,
-	#oViewModel  #set-work-type {
+	#oViewModel  #set-work-type, #oViewModel #set-work-time {
 	float: left;
-}
-
-#oViewModel #combo-box1 {
-	top: 2px;
-	margin-left: 35px
 }
 
 #oViewModel #time-edit1 {
@@ -19,42 +14,45 @@
 	width: 43px !important;
 }
 
-#oViewModel #set-work-time {
-	float: left;
-	margin-top: 2px;
-}
-
 #oViewModel .reserved {
 	margin-left: 10px;
 }
 
-#oViewModel .switchButton-wrapper {
+#oViewModel #switch-o {
 	margin-left: 30px;
 }
 
 #oViewModel #combo-box2 {
-	top: 9px;
 	margin-left: 16px;
 	min-width: 425px !important;
 }
 
 #oViewModel #combo-box1 {
 	min-width: 310px !important;
+	margin-left: 31px;
 }
 
 #oViewModel #group-button {
 	margin-left: 170px;
 }
 
-#oViewModel .cf1 .nts-switch-button {
-	width: 114px !important;
-}
-
 #oViewModel #image100 {
-	margin-left: 210px;
+	margin-left: 230px;
 	vertical-align: middle;
 	background: url(../image/image100.png) no-repeat center;
 	background-size: 20px 20px;
-	height: 30px;
-	width: 30px;
+	height: 24px;
+	width: 24px;
+}
+
+.ui-igcombo-wrapper {
+	height: 27px;
+}
+
+#oViewModel div.form-label {
+	height: 27px
+}
+
+#oViewModel label {
+	line-height: 27px;
 }

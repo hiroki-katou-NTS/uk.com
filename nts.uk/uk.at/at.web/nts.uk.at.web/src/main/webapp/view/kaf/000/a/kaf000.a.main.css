@@ -1,8 +1,7 @@
 #message-area {
 	background-color: #f8efd4;
 	height: 68px;
-	width: 800px;
-	margin-left: 39px;
+	width: 798px;
 }
 
 .message-td {
@@ -21,11 +20,14 @@
 }
 #label-1{
 	margin-top: 20px;
-    margin-left: 20px;
     float: left;
 }
 
 #table-1{
 	margin-top: 10px;
     margin-left: 150px;
+}
+.approverContent {
+	text-align: left !important;
+	padding-left: 5px;
 }

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**

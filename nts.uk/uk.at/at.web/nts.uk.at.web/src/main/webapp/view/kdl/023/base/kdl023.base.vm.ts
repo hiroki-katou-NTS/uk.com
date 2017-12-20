@@ -92,10 +92,17 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 .done(() => {
 
                     // Check if dailyPatternList has data.
-                    if (!self.dailyPatternList() || !self.dailyPatternList()[0]) {
+                    if (nts.uk.util.isNullOrEmpty(self.dailyPatternList())) {
                         dfd.resolve();
                         return;
                     }
+
+                    // validate selected code
+                    // if selected code is not valid, select first item.
+                    _.find(self.dailyPatternList(),
+                        pattern => self.reflectionSetting.selectedPatternCd() == pattern.patternCode) != undefined ?
+                        self.reflectionSetting.selectedPatternCd() :
+                        self.reflectionSetting.selectedPatternCd(self.dailyPatternList()[0].patternCode);
 
                     // Load daily pattern detail.
                     self.loadDailyPatternDetail(self.reflectionSetting.selectedPatternCd()).done(() => {

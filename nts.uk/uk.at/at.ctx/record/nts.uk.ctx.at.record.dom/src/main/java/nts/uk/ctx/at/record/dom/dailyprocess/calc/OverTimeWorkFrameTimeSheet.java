@@ -82,9 +82,10 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	 */
 	public static OverTimeWorkFrameTimeSheet createOverWorkFramTimeSheet(OverTimeHourSet overTimeHourSet,TimeSpanForCalc timeSpan) {
 		
-		DeductionTimeSheet deductionTimeSheet = /*実働時間の時間帯を跨いだ控除時間帯を分割する*/;
-		deductionTimeSheet.getForRecordTimeZoneList();/*法定内区分の置き換え*/
-		deductionTimeSheet.getForDeductionTimeZoneList();/*法定内区分の置き換え*/
+		//TODO: get DeductionTimeSheet
+		DeductionTimeSheet deductionTimeSheet = null;/*実働時間の時間帯を跨いだ控除時間帯を分割する*/;
+//		deductionTimeSheet.getForRecordTimeZoneList();/*法定内区分の置き換え*/
+//		deductionTimeSheet.getForDeductionTimeZoneList();/*法定内区分の置き換え*/
 		
 		
 		return new OverTimeWorkFrameTimeSheet(overTimeHourSet.getTimeSpan(),
@@ -118,7 +119,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 		}
 		return new OverTimeWorkFrameTime(this.overWorkFrameTime.getOverWorkFrameNo()
 				,this.overWorkFrameTime.getTransferTime()
-				,TimeWithCalculation.of(new AttendanceTime(overTimeWorkTime))
+				,TimeWithCalculation.sameTime(new AttendanceTime(overTimeWorkTime))
 				,this.overWorkFrameTime.getBeforeApplicationTime());
 	}
 	
@@ -167,7 +168,8 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 														 ,this.getOverWorkFrameTime()
 														 ,this.goEarly
 														 ,this.withinStatutoryAtr));
-			returnList.add();
+			//TODO: add ??
+//			returnList.add();
 			return returnList;
 		}
 	}

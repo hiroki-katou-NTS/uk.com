@@ -11,6 +11,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
@@ -19,9 +20,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.Wo
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 
 /**
- * The Class BasicSchedule.
+ * The Class BasicSchedule. 勤務予定基本情報
  */
-// 勤務予定基本情報
 @Getter
 public class BasicSchedule extends AggregateRoot {
 
@@ -64,7 +64,7 @@ public class BasicSchedule extends AggregateRoot {
 	/** The work schedule person fees. */
 	// 勤務予定人件費
 	private List<WorkSchedulePersonFee> workSchedulePersonFees;
-	
+
 	/** The child care schedules. */
 	// 勤務予定育児介護時間帯
 	private List<ChildCareSchedule> childCareSchedules;
@@ -78,7 +78,8 @@ public class BasicSchedule extends AggregateRoot {
 		this.employeeId = memento.getEmployeeId();
 		this.date = memento.getDate();
 		this.workTypeCode = memento.getWorkTypeCode();
-		this.workTimeCode = memento.getWorkTimeCode();
+		this.workTimeCode = StringUtil.isNullOrEmpty(memento.getWorkTimeCode(), true)
+				|| ("000").equals(memento.getWorkTimeCode()) ? "   " : memento.getWorkTimeCode();
 		this.confirmedAtr = memento.getConfirmedAtr();
 		this.workDayAtr = memento.getWorkDayAtr();
 		this.workScheduleTimeZones = memento.getWorkScheduleTimeZones();
@@ -109,7 +110,7 @@ public class BasicSchedule extends AggregateRoot {
 	}
 
 	/**
-	 * Save to memento.
+	 * Creates the from java type.
 	 *
 	 * @param sId
 	 *            the s id
@@ -119,6 +120,10 @@ public class BasicSchedule extends AggregateRoot {
 	 *            the work type code
 	 * @param workTimeCode
 	 *            the work time code
+	 * @param confirmedAtr
+	 *            the confirmed atr
+	 * @param workDayAtr
+	 *            the work day atr
 	 * @return the basic schedule
 	 */
 	public static BasicSchedule createFromJavaType(String sId, GeneralDate date, String workTypeCode,
@@ -147,4 +152,82 @@ public class BasicSchedule extends AggregateRoot {
 		memento.setWorkSchedulePersonFees(this.workSchedulePersonFees);
 		memento.setChildCareSchedules(this.childCareSchedules);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((childCareSchedules == null) ? 0 : childCareSchedules.hashCode());
+		result = prime * result + ((confirmedAtr == null) ? 0 : confirmedAtr.hashCode());
+		result = prime * result + ((workDayAtr == null) ? 0 : workDayAtr.hashCode());
+		result = prime * result + ((workScheduleBreaks == null) ? 0 : workScheduleBreaks.hashCode());
+		result = prime * result + ((workSchedulePersonFees == null) ? 0 : workSchedulePersonFees.hashCode());
+		result = prime * result + ((workScheduleTime == null) ? 0 : workScheduleTime.hashCode());
+		result = prime * result + ((workScheduleTimeZones == null) ? 0 : workScheduleTimeZones.hashCode());
+		result = prime * result + ((workTimeCode == null) ? 0 : workTimeCode.hashCode());
+		result = prime * result + ((workTypeCode == null) ? 0 : workTypeCode.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BasicSchedule other = (BasicSchedule) obj;
+		if (childCareSchedules == null) {
+			if (other.childCareSchedules != null)
+				return false;
+		} else if (!childCareSchedules.equals(other.childCareSchedules))
+			return false;
+		if (confirmedAtr != other.confirmedAtr)
+			return false;
+		if (workDayAtr != other.workDayAtr)
+			return false;
+		if (workScheduleBreaks == null) {
+			if (other.workScheduleBreaks != null)
+				return false;
+		} else if (!workScheduleBreaks.equals(other.workScheduleBreaks))
+			return false;
+		if (workSchedulePersonFees == null) {
+			if (other.workSchedulePersonFees != null)
+				return false;
+		} else if (!workSchedulePersonFees.equals(other.workSchedulePersonFees))
+			return false;
+		if (workScheduleTime == null) {
+			if (other.workScheduleTime != null)
+				return false;
+		} else if (!workScheduleTime.equals(other.workScheduleTime))
+			return false;
+		if (workScheduleTimeZones == null) {
+			if (other.workScheduleTimeZones != null)
+				return false;
+		} else if (!workScheduleTimeZones.equals(other.workScheduleTimeZones))
+			return false;
+		if (workTimeCode == null) {
+			if (other.workTimeCode != null)
+				return false;
+		} else if (!workTimeCode.equals(other.workTimeCode))
+			return false;
+		if (workTypeCode == null) {
+			if (other.workTypeCode != null)
+				return false;
+		} else if (!workTypeCode.equals(other.workTypeCode))
+			return false;
+		return true;
+	}
+
 }

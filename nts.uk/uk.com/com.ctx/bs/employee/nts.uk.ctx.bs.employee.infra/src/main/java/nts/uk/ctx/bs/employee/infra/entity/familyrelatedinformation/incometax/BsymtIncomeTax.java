@@ -4,18 +4,19 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -63,7 +64,6 @@ public class BsymtIncomeTax extends UkJpaEntity implements Serializable{
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return this.bsymtIncomeTaxPK;
 	}
 

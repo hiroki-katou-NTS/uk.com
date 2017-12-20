@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.basic.ws.company.organization.employee;
@@ -16,15 +16,18 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
-import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
+import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeInDesignatedFinder;
+import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.EmployeeSearchOutput;
+import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.SearchEmpInput;
+import nts.uk.ctx.bs.employee.app.find.employee.mngdata.GetHeaderOfCPS001Finder;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListQuery;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchQuery;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchQueryProcessor;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 
 @Path("basic/organization/employee")
 @Produces({ "application/json", "text/plain" })
@@ -33,11 +36,19 @@ public class EmployeeWebService extends WebService {
 	@Inject
 	private EmployeeFinder employeeFinder;
 
-
-
 	/** The employee query processor. */
 	@Inject
 	private EmployeeSearchQueryProcessor employeeQueryProcessor;
+	
+	/** The emp in designated finder. */
+	@Inject
+	private EmployeeInDesignatedFinder empInDesignatedFinder;
+	
+	@Inject
+	private GetHeaderOfCPS001Finder empFinder;
+	
+	
+	
 
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}/{baseDate}")
@@ -63,34 +74,7 @@ public class EmployeeWebService extends WebService {
 	public List<EmployeeDto> getAllEmployee() {
 		return this.employeeFinder.getAllEmployee();
 	}
-
-	@POST
-	@Path("getGenerateEmplCode")
-	public JavaTypeResult<String> getGenerateEmplCode(String startLetters) {
-		return new JavaTypeResult<String>(this.employeeFinder.getGenerateEmplCode(startLetters));
-	}
-
-	@POST
-	@Path("getGenerateCardNo")
-	public JavaTypeResult<String> getGenerateCardNo(String startLetters) {
-		return new JavaTypeResult<String>(this.employeeFinder.getGenerateCardNo(startLetters));
-	}
-	// sonnlb
-
-	@POST
-	@Path("getGenerateEmplCodeAndComId")
-	public JavaTypeResult<String> getGenerateEmplCodeAndComId(String startLetters) {
-		return new JavaTypeResult<String>(this.employeeFinder.getGenerateEmplCodeAndComId(startLetters));
-	}
-
-	@POST
-	@Path("validateEmpInfo")
-	public validateEmpInfoResultDto validateEmpInfo(EmpInfoDto empInfo) {
-
-		return this.employeeFinder.validateEmpInfo(empInfo);
-	}
-
-	// sonnlb
+	
 	/**
 	 * Search all employee.
 	 *
@@ -195,4 +179,40 @@ public class EmployeeWebService extends WebService {
 		return this.employeeQueryProcessor.searchEmployees(input);
 	}
 
+
+
+	@POST
+	@Path("get-info/{employeeId}")
+	public EmployeeDto getInfo(@PathParam(value = "employeeId") String employeeId) {
+		return employeeFinder.getInfoById(employeeId).orElse(null);
+	}
+	
+	
+	/**
+	 * Search by workplace list.
+	 *
+	 * @param input the input
+	 * @return the list
+	 */
+	// QuyenNT
+	@POST
+	@Path("searchByWorkplaceList")
+	public List<EmployeeSearchOutput> searchByWorkplaceList(SearchEmpInput input) {
+		return this.empInDesignatedFinder.searchEmpByWorkplaceList(input);
+	}
+	
+	/**
+	 * get header for cps001
+	 */
+	@POST
+	@Path("get-header/{employeeId}")
+	public EmployeeInfo getEmployeeInfo(@PathParam(value = "employeeId") String employeeId) {
+		return this.empFinder.getEmployeeInfo(employeeId);
+	}	
+	
+	
+	
+	
+	
+	
 }

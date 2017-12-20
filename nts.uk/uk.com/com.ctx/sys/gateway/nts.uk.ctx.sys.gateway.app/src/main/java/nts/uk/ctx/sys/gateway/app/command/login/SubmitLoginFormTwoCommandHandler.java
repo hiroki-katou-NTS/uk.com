@@ -30,7 +30,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
  * The Class SubmitLoginFormTwoCommandHandler.
  */
 @Stateless
-public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommand<SubmitLoginFormTwoCommand> {
+public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<SubmitLoginFormTwoCommand> {
 
 	/** The user repository. */
 	@Inject

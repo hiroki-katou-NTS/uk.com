@@ -13,6 +13,8 @@ import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleAdapter;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleImport;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
@@ -36,7 +38,7 @@ public class DisplayMyPageFinder {
 	@Inject
 	private TopPageJobSetRepository topPageJobSet;
 	@Inject
-	private TopPageSelfSettingFinder topPageSelfSet;
+	private PortalJobTitleAdapter jobTitleAdapter;
 
 	/**
 	 * find layout (top page)
@@ -67,13 +69,13 @@ public class DisplayMyPageFinder {
 		}
 		// top page code is empty
 		// get position(所属職位履歴)
-		JobPositionDto jobPosition = topPageSelfSet.getJobPosition(AppContexts.user().employeeId());
+		Optional<PortalJobTitleImport> jobPosition = jobTitleAdapter.getJobPosition(AppContexts.user().employeeId());
 		List<String> lstJobId = new ArrayList<>();
-		if (jobPosition == null) {
+		if (!jobPosition.isPresent()) {
 			return topPageSet.getTopPageNotPosition(fromScreen);
 		}
 
-		lstJobId.add(jobPosition.getJobId());
+		lstJobId.add(jobPosition.get().getJobTitleID());
 
 		// lay top page job title set
 		List<TopPageJobSet> lstTpJobSet = topPageJobSet.findByListJobId(companyId, lstJobId);
@@ -83,7 +85,7 @@ public class DisplayMyPageFinder {
 
 		TopPageJobSet tpJobSet = lstTpJobSet.get(0);
 
-		return topPageSet.getTopPageForPosition(fromScreen, jobPosition, tpJobSet);
+		return topPageSet.getTopPageForPosition(fromScreen, jobPosition.get(), tpJobSet);
 
 	}
 }

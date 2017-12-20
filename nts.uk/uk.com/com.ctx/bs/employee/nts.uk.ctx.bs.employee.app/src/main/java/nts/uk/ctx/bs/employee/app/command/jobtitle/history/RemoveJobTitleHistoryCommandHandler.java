@@ -27,18 +27,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class RemoveJobTitleHistoryCommandHandler extends CommandHandler<RemoveJobTitleHistoryCommand> {
 
-	/** The job title repository. */
-	@Inject
-	private JobTitleRepository jobTitleRepository;
-	
-	/** The job title info repository. */
-	@Inject
-	private JobTitleInfoRepository jobTitleInfoRepository;
-	
-	/** The job title history service. */
-	@Inject
-	private JobTitleHistoryService jobTitleHistoryService;
-
 	/** The Constant DATE_FORMAT. */
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
@@ -48,8 +36,24 @@ public class RemoveJobTitleHistoryCommandHandler extends CommandHandler<RemoveJo
 	/** The Constant LIST_HISTORY_MIN_SIZE. */
 	private static final Integer LIST_HISTORY_MIN_SIZE = 1;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/** The job title repository. */
+	@Inject
+	private JobTitleRepository jobTitleRepository;
+
+	/** The job title info repository. */
+	@Inject
+	private JobTitleInfoRepository jobTitleInfoRepository;
+
+	/** The job title history service. */
+	@Inject
+	private JobTitleHistoryService jobTitleHistoryService;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<RemoveJobTitleHistoryCommand> context) {
@@ -68,25 +72,26 @@ public class RemoveJobTitleHistoryCommandHandler extends CommandHandler<RemoveJo
 		// Remove history
 		this.jobTitleRepository.removeHistory(companyId, command.getJobTitleId(), command.getHistoryId());
 		this.jobTitleInfoRepository.remove(companyId, command.getJobTitleId(), command.getHistoryId());
-		
+
 		// Update lastest history
-		this.jobTitleHistoryService.updateLastestHistory(companyId,
-				jobTitle.getJobTitleId(),
+		this.jobTitleHistoryService.updateLastestHistory(companyId, jobTitle.getJobTitleId(),
 				GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
 	}
 
 	/**
 	 * Valid history.
 	 *
-	 * @param jobTitleInfo the job title info
-	 * @param removeHistoryId the remove history id
+	 * @param jobTitleInfo
+	 *            the job title info
+	 * @param removeHistoryId
+	 *            the remove history id
 	 */
 	private void validHistory(JobTitle jobTitleInfo, String removeHistoryId) {
 		boolean isError = false;
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
 		// Only 1 history remain, can't remove
-		if (jobTitleInfo.getJobTitleHistory().size() <= LIST_HISTORY_MIN_SIZE) {
+		if (jobTitleInfo.getJobTitleHistories().size() <= LIST_HISTORY_MIN_SIZE) {
 			isError = true;
 			exceptions.addMessage("Msg_57");
 		}

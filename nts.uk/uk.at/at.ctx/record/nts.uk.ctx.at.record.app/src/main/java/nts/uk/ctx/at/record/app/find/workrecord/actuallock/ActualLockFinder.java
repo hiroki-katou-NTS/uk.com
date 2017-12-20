@@ -24,8 +24,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -46,10 +44,6 @@ public class ActualLockFinder {
 	/** The closure repo. */
 	@Inject
 	private ClosureRepository closureRepo;
-
-	/** The closure hist repo. */
-	@Inject
-	private ClosureHistoryRepository closureHistRepo;
 
 	@Inject
 	private ClosureService closureService;
@@ -79,8 +73,8 @@ public class ActualLockFinder {
 		List<Closure> closureList = this.closureRepo.findAll(companyId);
 
 		List<Closure> filtedList = closureList.stream().filter(closure -> {
-			Optional<ClosureHistory> closureHistOpt = this.closureHistRepo.findBySelectedYearMonth(companyId,
-					closure.getClosureId(), closure.getClosureMonth().getProcessingYm().v());
+			Optional<ClosureHistory> closureHistOpt = this.closureRepo.findBySelectedYearMonth(companyId,
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().v());
 			// Check exist
 			if (!closureHistOpt.isPresent()) {
 				return false;
@@ -96,17 +90,17 @@ public class ActualLockFinder {
 			filtedList.stream().forEach(c -> {
 				ActualLockFinderDto dto = new ActualLockFinderDto();
 				// Find ClosureHistory
-				Optional<ClosureHistory> closureHistOpt = this.closureHistRepo.findBySelectedYearMonth(companyId,
-						c.getClosureId(), c.getClosureMonth().getProcessingYm().v());
+				Optional<ClosureHistory> closureHistOpt = this.closureRepo.findBySelectedYearMonth(companyId,
+						c.getClosureId().value, c.getClosureMonth().getProcessingYm().v());
 				// Find ActualLock
-				Optional<ActualLock> actualLockOpt = this.actualLockRepo.findById(companyId, c.getClosureId());
+				Optional<ActualLock> actualLockOpt = this.actualLockRepo.findById(companyId, c.getClosureId().value);
 
 				// Get ClosurePeriod to get StartDate, EndDate
-				DatePeriod datePeriod = closureService.getClosurePeriod(c.getClosureId(),
+				DatePeriod datePeriod = closureService.getClosurePeriod(c.getClosureId().value,
 						c.getClosureMonth().getProcessingYm());
 				
 				// Set ActualLockFinderDto
-				dto.setClosureId(ClosureId.valueOf(c.getClosureId()));
+				dto.setClosureId(c.getClosureId());
 				dto.setClosureName(closureHistOpt.get().getClosureName().v());
 				// Set Period: StartDate, EndDate
 				dto.setStartDate(datePeriod.start().toString());

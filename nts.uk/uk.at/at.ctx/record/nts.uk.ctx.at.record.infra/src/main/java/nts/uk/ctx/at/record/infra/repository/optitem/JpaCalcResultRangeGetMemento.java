@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem;
 
-import java.math.BigDecimal;
+import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.optitem.AmountRange;
 import nts.uk.ctx.at.record.dom.optitem.CalcRangeCheck;
@@ -63,9 +63,9 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	 * ()
 	 */
 	@Override
-	public NumberRange getNumberRange() {
-		return new NumberRange(BigDecimal.valueOf(this.typeValue.getUpperNumberRange()),
-				BigDecimal.valueOf(this.typeValue.getLowerNumberRange()));
+	public Optional<NumberRange> getNumberRange() {
+		return Optional.of(new NumberRange(this.typeValue.getUpperNumberRange(),
+				this.typeValue.getLowerNumberRange()));
 	}
 
 	/*
@@ -75,9 +75,9 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	 * nts.uk.ctx.at.record.dom.optitem.CalcResultRangeGetMemento#getTimeRange()
 	 */
 	@Override
-	public TimeRange getTimeRange() {
-		return new TimeRange(this.typeValue.getUpperTimeRange(),
-				this.typeValue.getLowerTimeRange());
+	public Optional<TimeRange> getTimeRange() {
+		return Optional.of(new TimeRange(this.typeValue.getUpperTimeRange(),
+				this.typeValue.getLowerTimeRange()));
 	}
 
 	/*
@@ -88,9 +88,9 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	 * ()
 	 */
 	@Override
-	public AmountRange getAmountRange() {
-		return new AmountRange(this.typeValue.getUpperAmountRange(),
-				this.typeValue.getLowerAmountRange());
+	public Optional<AmountRange> getAmountRange() {
+		return Optional.of(new AmountRange(this.typeValue.getUpperAmountRange(),
+				this.typeValue.getLowerAmountRange()));
 	}
 
 }

@@ -13,8 +13,12 @@ import javax.ws.rs.Produces;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.selectitem.DailyPerformanceSelectItemProcessor;
 
 /**
  * @author hungnm
@@ -28,12 +32,33 @@ public class DailyPerformanceCorrectionWebService {
 	private DailyPerformanceCorrectionProcessor processor;
 	
 	@Inject
+	private DailyPerformanceErrorCodeProcessor errorProcessor;
+	
+	@Inject
+	private DailyPerformanceSelectItemProcessor selectProcessor;
+	
+	@Inject
 	private DPUpdateColWidthCommandHandler commandHandler;
+	
+	@Inject
+	private DataDialogWithTypeProcessor dialogProcessor;
 	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily, params.formatCodes);
+	}
+	
+	@POST
+	@Path("errorCode")
+	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
+		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
+	}
+	
+	@POST
+	@Path("selectCode")
+	public DailyPerformanceCorrectionDto selectFormatCode(DPParams params ) throws InterruptedException{
+		return this.selectProcessor.generateData(params.dateRange, params.lstEmployee, params.displayFormat, params.correctionOfDaily, params.formatCodes);
 	}
 	
 	@POST
@@ -46,6 +71,18 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("updatecolumnwidth")
 	public void getError(UpdateColWidthCommand command){
 		this.commandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("findCodeName")
+	public CodeName findCodeName(DPParamDialog param){
+		return this.dialogProcessor.getTypeDialog(param.getTypeDialog(), param.getParam());
+	}
+	
+	@POST
+	@Path("findAllCodeName")
+	public List<CodeName> findAllCodeName(DPParamDialog param){
+		return this.dialogProcessor.getAllTypeDialog(param.getTypeDialog(), param.getParam());
 	}
 	
 }

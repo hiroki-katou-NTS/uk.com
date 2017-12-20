@@ -40,7 +40,7 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 	@Override
 	public Optional<EmployeeImport> getCurrentInfoByScd(String companyId, String employeeCode) {
 		Optional<EmployeeInfoDtoExport> opEmployee = employeeInfoPub.getEmployeeInfo(companyId,
-				employeeCode, GeneralDate.today());
+				employeeCode);
 
 		// Check exist
 		if (opEmployee.isPresent()) {

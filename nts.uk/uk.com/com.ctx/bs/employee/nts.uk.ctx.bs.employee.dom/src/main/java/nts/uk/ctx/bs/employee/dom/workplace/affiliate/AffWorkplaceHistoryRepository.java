@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
@@ -53,4 +53,39 @@ public interface AffWorkplaceHistoryRepository {
 	 */
 	public List<AffWorkplaceHistory> searchWorkplaceOfCompanyId(List<String> employeeIds,
 			GeneralDate baseDate);
+	
+	/**
+	 * Gets the by workplace ID.
+	 *
+	 * @param workplaceId the workplace id
+	 * @param baseDate the base date
+	 * @return the by workplace ID
+	 */
+	public List<AffWorkplaceHistory> getByWorkplaceID(String workplaceId, GeneralDate baseDate);
+	
+	/**
+	 * Gets the by workplace I ds.
+	 *
+	 * @param workplaceIds the workplace ids
+	 * @param baseDate the base date
+	 * @return the by workplace I ds
+	 */
+	public List<AffWorkplaceHistory> getByWorkplaceIDs(List<String> workplaceIds, GeneralDate baseDate);
+	
+	/**
+	 * ドメインモデル「所属職場」を新規登録する
+	 * @param domain
+	 */
+	void addAffWorkplaceHistory(AffWorkplaceHistory domain);
+	/**
+	 * ドメインモデル「所属職場」を削除する
+	 * @param domain
+	 */
+	void deleteAffWorkplaceHistory(AffWorkplaceHistory domain);
+	
+	/**
+	 * ドメインモデル「所属職場」を取得する
+	 * @param domain
+	 */
+	void updateAffWorkplaceHistory(AffWorkplaceHistory domain);
 }

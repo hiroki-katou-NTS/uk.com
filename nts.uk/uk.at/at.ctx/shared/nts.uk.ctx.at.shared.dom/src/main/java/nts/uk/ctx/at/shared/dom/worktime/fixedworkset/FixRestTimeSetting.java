@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 
 /**

@@ -4,8 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
+import java.util.Optional;
+
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -18,11 +19,11 @@ public class TimeRange extends DomainObject {
 
 	/** The upper limit. */
 	// 上限値
-	private TimeRangeValue upperLimit;
+	private Optional<TimeRangeValue> upperLimit;
 
 	/** The lower limit. */
 	// 下限値
-	private TimeRangeValue lowerLimit;
+	private Optional<TimeRangeValue> lowerLimit;
 
 	/**
 	 * Instantiates a new time range.
@@ -30,18 +31,17 @@ public class TimeRange extends DomainObject {
 	 * @param upperLimit the upper limit
 	 * @param lowerLimit the lower limit
 	 */
-	public TimeRange(int upperLimit, int lowerLimit) {
+	public TimeRange(Integer upperLimit, Integer lowerLimit) {
 		super();
-		this.upperLimit = new TimeRangeValue(upperLimit);
-		this.lowerLimit = new TimeRangeValue(lowerLimit);
-	}
-
-	/**
-	 * Validate range.
-	 */
-	public void validateRange() {
-		if (isInvalidRange()) {
-			throw new BusinessException("Msg_574");
+		if (upperLimit == null) {
+			this.upperLimit = Optional.empty();
+		} else {
+			this.upperLimit = Optional.of(new TimeRangeValue(upperLimit));
+		}
+		if (lowerLimit == null) {
+			this.lowerLimit = Optional.empty();
+		} else {
+			this.lowerLimit = Optional.of(new TimeRangeValue(lowerLimit));
 		}
 	}
 
@@ -50,11 +50,11 @@ public class TimeRange extends DomainObject {
 	 *
 	 * @return true, if is invalid range
 	 */
-	private boolean isInvalidRange() {
-		if (this.upperLimit.lessThan(this.lowerLimit)) {
-			return true;
+	public boolean isInvalidRange() {
+		if (this.upperLimit.get().greaterThan(this.lowerLimit.get())) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 }

@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.dom.stamp;
 
 import lombok.AllArgsConstructor;
-
+/**
+ * 打刻方法
+ * @author dudt
+ *
+ */
 @AllArgsConstructor
 public enum StampMethod {
 	// タイムレコーダー

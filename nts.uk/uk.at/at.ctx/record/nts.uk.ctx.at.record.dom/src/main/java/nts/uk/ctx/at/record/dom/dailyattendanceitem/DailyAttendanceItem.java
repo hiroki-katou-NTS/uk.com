@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.dom.dailyattendanceitem;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.DailyAttendanceAtr;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.UseSetting;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.AttendanceName;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
+import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 
 /**
  * 日次の勤怠項目

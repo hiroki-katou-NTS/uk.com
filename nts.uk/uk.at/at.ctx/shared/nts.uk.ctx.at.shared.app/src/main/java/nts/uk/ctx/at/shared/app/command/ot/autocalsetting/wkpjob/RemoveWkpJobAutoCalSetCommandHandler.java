@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.ot.autocalsetting.wkpjob;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,6 +38,11 @@ public class RemoveWkpJobAutoCalSetCommandHandler extends CommandHandler<RemoveW
 	protected void handle(CommandHandlerContext<RemoveWkpJobAutoCalSetCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RemoveWkpJobAutoCalSetCommand command = context.getCommand();
-		wkpJobAutoCalSettingRepository.delete(companyId, command.getWkpId(), command.getJobId());
+		
+		// Check exist
+		Optional<WkpJobAutoCalSetting> result = this.wkpJobAutoCalSettingRepository.getWkpJobAutoCalSetting(companyId, command.getWkpId(), command.getJobId());
+		if (result.isPresent()) {
+			this.wkpJobAutoCalSettingRepository.delete(companyId, command.getWkpId(), command.getJobId());
+		}	
 	}
 }

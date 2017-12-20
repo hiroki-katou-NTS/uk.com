@@ -13,12 +13,12 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.service.WkpConfigService;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.service.WkpConfigInfoService;
-import nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService;
-import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
+import nts.uk.ctx.bs.employee.dom.workplace.policy.HistoryPolicy;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -87,7 +87,7 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
 
         WorkplaceConfigHistory latestWkpConfigHist = wkpConfig.getWkpConfigHistoryLatest();
         // validate add hist and return first histId
-        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpConfigHist.span().start(), newStartDateHist);
+        HistoryPolicy.validStartDate(Boolean.TRUE, latestWkpConfigHist.span().start(), newStartDateHist);
 
         String latestHistIdCurrent = latestWkpConfigHist.identifier();
 
@@ -132,7 +132,7 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
 			WorkplaceConfigHistory prevHistLatest = wkpConfigDatabase.items().get(idxPrevLatestHist);
 
 			// validate new start date with previous of latest history.
-			HistoryUtil.validStartDate(Boolean.FALSE, prevHistLatest.span().start(), newStartDateHist);
+			HistoryPolicy.validStartDate(Boolean.FALSE, prevHistLatest.span().start(), newStartDateHist);
 
 			// set end date of previous history (below of history latest)
 			int dayOfAgo = -1;

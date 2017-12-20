@@ -20,15 +20,25 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 
-	/** The company id. */
-	private String companyId;
+	/** The type values. */
+
+	@Getter
+	private List<KrcstApplEmpCon> typeValues;
+
+	/** The cid. */
+	private String cid;
 
 	/** The opt no. */
 	private String optNo;
 
-	/** The type values. */
-	@Getter
-	private List<KrcstApplEmpCon> typeValues;
+	/**
+	 * Instantiates a new jpa emp condition set memento.
+	 *
+	 * @param entities the entities
+	 */
+	public JpaEmpConditionSetMemento(List<KrcstApplEmpCon> entities) {
+		this.typeValues = entities;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +48,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId comId) {
-		this.companyId = comId.v();
+		this.cid = comId.v();
 	}
 
 	/*
@@ -61,12 +71,21 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	@Override
 	public void setEmpConditions(List<EmploymentCondition> empConditions) {
 		this.typeValues = empConditions.stream().map(item -> {
-			KrcstApplEmpConPK pk = new KrcstApplEmpConPK(this.companyId, this.optNo, item.getEmpCd());
-			KrcstApplEmpCon entity = new KrcstApplEmpCon(pk);
-			entity.setEmpApplAtr(item.getEmpApplicableAtr().value);
-			return entity;
+			KrcstApplEmpCon empCon = this.typeValues.stream()
+					.filter(entity -> entity.getKrcstApplEmpConPK().getEmpCd().equals(item.getEmpCd()))
+					.findFirst()
+					.orElse(null);
+			if (empCon != null) {
+				// update value
+				empCon.setEmpApplAtr(item.getEmpApplicableAtr().value);
+			} else {
+				// create value
+				KrcstApplEmpConPK pk = new KrcstApplEmpConPK(this.cid, this.optNo, item.getEmpCd());
+				empCon = new KrcstApplEmpCon(pk);
+				empCon.setEmpApplAtr(item.getEmpApplicableAtr().value);
+			}
+			return empCon;
 		}).collect(Collectors.toList());
-
 	}
 
 }

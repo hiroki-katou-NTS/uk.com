@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.executionlog;
 
 import java.math.BigDecimal;
@@ -44,8 +48,7 @@ public class ScheduleCreateContentFinder {
 	/**
 	 * Find by execution id.
 	 *
-	 * @param executionId
-	 *            the execution id
+	 * @param executionId the execution id
 	 * @return the schedule create content dto
 	 */
 	public ScheduleCreateContentDto findByExecutionId(String executionId) {
@@ -53,33 +56,32 @@ public class ScheduleCreateContentFinder {
 
 		Optional<ScheduleExecutionLog> exeLogOp = scheduleExecutionLogRepository.findById(companyId, executionId);
 
-		Optional<ScheduleCreateContent> createContentOp = scheduleCreateContentRepository
-				.findByExecutionId(executionId);
-		// get count ScheduleCreator
-		List<ScheduleCreator> lstCreator = scheduleCreatorRepository.findAll(executionId);
+		if (exeLogOp.isPresent()) {
 
-		// get count ScheduleError
-		Integer cntError = scheduleErrorLogRepository.distinctErrorByExecutionId(executionId);
+			ScheduleCreateContent createContent = scheduleCreateContentRepository.findByExecutionId(executionId).get();
 
-		if (createContentOp.isPresent()) {
+			// get count ScheduleCreator
+			List<ScheduleCreator> lstCreator = scheduleCreatorRepository.findAll(executionId);
+
+			// get count ScheduleError
+			Integer cntError = scheduleErrorLogRepository.distinctErrorByExecutionId(executionId);
+
 			ScheduleCreateContentDto dto = new ScheduleCreateContentDto();
-			createContentOp.get().saveToMemento(dto);
-			if (exeLogOp.isPresent()) {
-				GeneralDateTime exeStart = exeLogOp.get().getExecutionDateTime().getExecutionStartDate();
-				GeneralDateTime exeEnd = exeLogOp.get().getExecutionDateTime().getExecutionEndDate();
-				GeneralDate startDate = exeLogOp.get().getPeriod().start();
-				GeneralDate endDate = exeLogOp.get().getPeriod().end();
-				dto.setStartDate(startDate);
-				dto.setEndDate(endDate);
-				dto.setExecutionStart(exeStart);
-				dto.setExecutionEnd(exeEnd);
-			} else {
-				return null;
-			}
+			createContent.saveToMemento(dto);
+
+			GeneralDateTime exeStart = exeLogOp.get().getExecutionDateTime().getExecutionStartDate();
+			GeneralDateTime exeEnd = exeLogOp.get().getExecutionDateTime().getExecutionEndDate();
+			GeneralDate startDate = exeLogOp.get().getPeriod().start();
+			GeneralDate endDate = exeLogOp.get().getPeriod().end();
+			dto.setStartDate(startDate);
+			dto.setEndDate(endDate);
+			dto.setExecutionStart(exeStart);
+			dto.setExecutionEnd(exeEnd);
 			dto.setCountExecution(lstCreator == null ? BigDecimal.ZERO.intValue() : lstCreator.size());
 			dto.setCountError(cntError);
 			return dto;
 		}
+
 		return null;
 	}
 }

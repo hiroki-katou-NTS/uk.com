@@ -1,0 +1,12 @@
+.title {
+	width: 200px;
+}
+
+.main-content {
+	margin-left: 35px;
+	margin-top: 40px;
+}
+
+.main-content > div:NTH-CHILD(2){
+	padding-top: 40px;
+}

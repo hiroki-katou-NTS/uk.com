@@ -64,12 +64,25 @@ module nts.uk.ui.koExtentions {
             // Container.
             var container = $(element);
             // Select tab.
-            var activeTab = tabs.filter(tab => { return tab.id == data.active(); })[0];
+            var activeTab = _.find(tabs, function(tab){
+                return tab.id == data.active();
+            }); 
             var indexActive = tabs.indexOf(activeTab);
             let oldIndexActive = container.tabs("option", "active");
             if(oldIndexActive !== indexActive){
                 container.tabs("option", "active", indexActive);
             }
+             
+            if ( !activeTab.enable() || !activeTab.visible() ) {
+                let firstActiveTab = _.find(tabs, function(tab){
+                    return tab.enable() && tab.visible(); 
+                }); 
+                if(!nts.uk.util.isNullOrUndefined(firstActiveTab)) {
+                    data.active(firstActiveTab.id);
+                    var firstIndexActive = tabs.indexOf(firstActiveTab);
+                    container.tabs("option", "active", firstIndexActive);
+                }
+            } 
 
             // Disable & visible tab.
             tabs.forEach(tab => {

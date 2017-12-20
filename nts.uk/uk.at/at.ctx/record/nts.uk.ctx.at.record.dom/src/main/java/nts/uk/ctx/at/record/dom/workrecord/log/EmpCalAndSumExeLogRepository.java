@@ -12,30 +12,28 @@ import nts.arc.time.GeneralDate;
  */
 public interface EmpCalAndSumExeLogRepository {
 	/**
-	 * get all EmpCalAndSumExeLog
-	 * 
+	 * get all  EmpCalAndSumExeLog by companyID, employeeID
+	 * @param companyID
+	 * @param employeeID
+	 * @return
+	 */
+	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogMaxByEmp(String companyID, String employeeID);
+	
+	/**
+	 * get all  EmpCalAndSumExeLog
 	 * @param companyID
 	 * @return
 	 */
 	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID);
 
-	/**
-	 * get EmpCalAndSumExeLog by empCalAndSumExecLogId
-	 * 
-	 * @param companyID
-	 * @param empCalAndSumExecLogId
-	 * @param operationCaseId
-	 * @param employeeId
-	 * @return
-	 */
-	Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogByID(String companyID, String empCalAndSumExecLogID,String operationCaseID, String employeeID);
+	
 	
 	/**
-	 * get list EmpCalAndSumExeLog by empCalAndSumExecLogID
+	 * get EmpCalAndSumExeLog by empCalAndSumExecLogID
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
-	List<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
+	Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID (String empCalAndSumExecLogID);
 
 	/**
 	 * KIF 001 3 日別実績の作成処理
@@ -44,7 +42,7 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param executionContent
 	 * @return
 	 */
-	Optional<EmpCalAndSumExeLog> getListByExecutionContent(String empCalAndSumExecLogID, int executionContent);
+	Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent);
 
 	/**
 	 * KIF 001 4 ログ情報（実行ログ）
@@ -52,7 +50,7 @@ public interface EmpCalAndSumExeLogRepository {
 	 * @param empCalAndSumExecLogID
 	 * 
 	 */
-	void updateLogInfo(String empCalAndSumExecLogID);
+	void updateLogInfo(String empCalAndSumExecLogID,int executionContent, int processStatus);
 
 	/**
 	 * get all EmpCalAndSumExeLog by startDate and endDate
@@ -64,4 +62,8 @@ public interface EmpCalAndSumExeLogRepository {
 	List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLogByDate(String companyID, GeneralDate startDate,
 			GeneralDate endDate);
 
+	void add(EmpCalAndSumExeLog empCalAndSumExeLog);
+	
+	void updateStatus(String empCalAndSumExecLogID, int executionStatus);
+	
 }

@@ -10,6 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteApplicationCommand {
+	private Long version;
+	
 	/**
 	 * 申請ID
 	 */

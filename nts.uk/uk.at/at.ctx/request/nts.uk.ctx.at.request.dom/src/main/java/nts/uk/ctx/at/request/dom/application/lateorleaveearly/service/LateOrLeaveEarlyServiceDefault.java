@@ -75,7 +75,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		String applicationReason = lateOrLeaveEarly.getApplicationReason().v();
 		
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isEmpty(applicationReason)) {
+				&& Strings.isBlank(applicationReason)) {
 			throw new BusinessException("Msg_115");
 		}
 

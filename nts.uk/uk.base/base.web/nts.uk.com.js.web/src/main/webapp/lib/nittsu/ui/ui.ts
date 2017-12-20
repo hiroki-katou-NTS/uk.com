@@ -274,7 +274,7 @@ module nts.uk.ui {
 
         export function setShared(key: string, data: any, persist?: boolean) {
             container.setShared(key, data, windows.getSelf().isRoot, persist);
-        }
+        } 
 
         export function getSelf() {
             return container.windows[selfId];
@@ -355,7 +355,7 @@ module nts.uk.ui {
             return max;
         }
         function createNoticeDialog(message, buttons, header?: DialogHeader) {
-            var $control = $('<div/>').addClass('control');
+            var $control = $('<div/>').addClass('control').addClass("pre");
             let text;
             if (typeof message === "object") {
                 //business exception
@@ -483,7 +483,7 @@ module nts.uk.ui {
 		 *			text information text
 		 * @returns handler
 		 */
-        export function alert(text) {
+        export function alert(text) {  
             var then = $.noop;
             var $dialog = parent.$('<div/>').hide();
             $(function() {
@@ -593,51 +593,110 @@ module nts.uk.ui {
             return handlers;
         };
         
-        function addError(errorBody: JQuery, msg: string, id: string, idx: number){
+        function addError(errorBody: JQuery, error: any, idx: number){
             let row = $("<tr/>");
-            row.append("<td style='display: none;'>" + idx + "/td><td>" + msg + "</td><td>" + id + "</td>");   
+            row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
+            let nameId = error["supplements"]["NameID"];   
+            if (!util.isNullOrUndefined(nameId)) {
+                row.click(function(evt, ui){
+                    let element = $("body").find('[NameID="' + nameId + '"]');
+                    let tab = element.closest("[role='tabpanel']");
+                    while(!util.isNullOrEmpty(tab)){
+                        let tabId = tab.attr("id");
+                        tab.siblings(":first").children("li[aria-controls='" + tabId + "']").children("a").click();
+                        tab = tab.parent().closest("[role='tabpanel']");
+                    } 
+                    element.focus();
+                    let $dialogContainer = errorBody.closest(".bundled-errors-alert").closest("[role='dialog']");
+                    let $self = nts.uk.ui.windows.getSelf();
+                    let additonalTop = 0;
+                    let additonalLeft = 0;
+                    if(!$self.isRoot) {
+                        let $currentDialog = $self.$dialog.closest("[role='dialog']");
+                        let $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                        let currentDialogOffset = $currentDialog.offset();
+                        additonalTop = currentDialogOffset.top+ $currentHeadBar.height();
+                        additonalLeft = currentDialogOffset.left;
+                    }
+                    
+                    let currentControlOffset = element.offset();
+                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
+                    let $errorDialogOffset = $dialogContainer.offset();
+                    let maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                    let maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                    if($errorDialogOffset.top < top && top < maxTop){
+                        $dialogContainer.css("top", top + 15);
+                    }
+                    if (($errorDialogOffset.left < left && left < maxLeft) ){
+                        $dialogContainer.css("left", left);
+                    }
+                });    
+            }
             row.appendTo(errorBody);  
         }
         
+        function getRoot(): JQuery {
+            let self = nts.uk.ui.windows.getSelf();
+            while(!self.isRoot){
+                self = self.parent; 
+            }
+            return $(self.globalContext.document).find("body");
+        }
+        
         export function bundledErrors(errors) {
+            var then = $.noop;
             let id = util.randomId();
-            $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
-            let container = $("body").find("#" + id);
-            container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
-                    "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
-            let errorBody = container.find("tbody");
-            let idxCount = 0;
-            _.forEach(errors["messageId"], function(id, idx: number){ 
-                if ($.isArray(errors.messages[id])) {
-                   _.forEach(errors.messages[id], function (m) {
-                        addError(errorBody, m , id, idx + idxCount + 1); 
-                        idxCount++;
-                   }); 
-                } else {
-                    addError(errorBody, errors.messages[id], id, idx + idxCount + 1); 
-                }  
-            });
-            let functionArea = container.find("#functions-area-bottom");
-            functionArea.append("<button class='ntsButton ntsClose large'/>");
-            container.dialog({
+            let container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), 
+                functionArea = $("<div id='functions-area-bottom'/>"),
+                errorBoard = $(`<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>エラー内容</th>
+                    <th style='display: none;'/>    <th style='width: 150px;'>エラーコード</th>   </tr>   </thead>    <tbody/>    </table> </div>`),
+                closeButton = $("<button class='ntsButton ntsClose large'/>");
+            
+            let errorBody = errorBoard.find("tbody");
+            if($.isArray(errors["errors"])) {
+                 _.forEach(errors["errors"], function(error, idx: number){ 
+                    addError(errorBody, error, idx + 1);  
+                 });   
+            } else {
+                return alertError(errors);
+            }
+                       
+            closeButton.appendTo(functionArea);
+            functionArea.appendTo(container);
+            errorBoard.appendTo(container);
+            container.appendTo(getRoot()); 
+            
+            setTimeout(function() {
+                container.dialog({ 
                     title: "エラー一覧",   
                     dialogClass: "no-close-btn",
-                    modal: true,
+                    modal: false,
                     resizable: false,
                     width: 450,
                     maxHeight: 500,
                     closeOnEscape: false,
                     open: function() {
-                        container.find("#error-board").css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
-                        container.find("#functions-area-bottom").css({"left": "0px"});
-                        functionArea.find(".ntsClose").text("閉じる").click(function(evt){
+                        errorBoard.css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
+                        functionArea.css({"left": "0px"});
+                        closeButton.text("閉じる").click(function(evt){
                             container.dialog("destroy");  
                             container.remove();
-                        });   
+                            then();
+                        });
+                        
+                        container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
                     },
                     close: function(event) {
                     }
                 });
+            }, 0);
+            
+            return {
+                then: function(callback) {
+                    then = callback;
+                }
+            };
         };
     }
 
@@ -829,7 +888,7 @@ module nts.uk.ui {
     module smallExtensions {
 
         $(() => {
-            $(window).on('.limited-label', 'mouseenter', e => {
+            $(document).on('mouseenter', '.limited-label', e => {
                 let $label = $(e.target);
 
                 // Check if contents is overflow

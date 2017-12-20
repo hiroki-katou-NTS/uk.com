@@ -284,7 +284,7 @@ module kcp.share.list {
             
             // Check is show no select row.
             if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
-                self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+                self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             
             // Init component.
@@ -354,7 +354,9 @@ module kcp.share.list {
             if (data.tabindex) {
                 return {
                     searchBox: data.tabindex,
-                    table: data.tabindex
+                    table: data.tabindex,
+                    baseDateInput: data.tabindex,
+                    decideButton: data.tabindex
                 }
             }
             switch(data.listType) {
@@ -455,7 +457,10 @@ module kcp.share.list {
          */
         private selectData(option: ComponentOption, data: UnitModel) :any {
             if (this.isMultiple) {
-                return [data.code];
+                return option.listType == ListType.JOB_TITLE ? [data.id] : [data.code];
+            }
+            if (option.listType == ListType.JOB_TITLE) {
+                return data.id;
             }
             return data.code;
         }
@@ -571,7 +576,7 @@ module kcp.share.list {
         
         public getItemNameForBaseDate(): string {
             if (this.hasBaseDate) {
-                return '#[KCP003_2 ]'
+                return '#[KCP003_2]'
             }
             return '';
         }

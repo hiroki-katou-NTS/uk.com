@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.enums;
 
+import nts.uk.ctx.sys.portal.dom.permissionmenu.RoleType;
+
 /**
  * 
  * @author sonnh1
@@ -31,5 +33,22 @@ public enum System {
 
 	System(int type) {
 		this.value = type;
+	}
+	
+	public static System valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (System val : System.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
@@ -18,8 +19,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinStatutoryAtr;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 
 /**
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
  * 日別実績の外出時間帯 - root
  *
  */
+@AllArgsConstructor
 @Getter
 public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	
@@ -41,12 +43,12 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> getGoOutTimeSheet(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet
-												 		  ,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet){
+												 		  ,Optional<FlowWorkRestTimezone> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet){
 		val goOutTimeSheetList = removeUnuseItemBaseOnAtr(acqAtr);
 		switch(workTimeMethodSet) {
 		case Enum_Fluid_Work:
 			if(fluRestTime.isPresent()) {
-				if(fluRestTime.get().getUseFixedRestTime()) {
+				if(fluRestTime.get().isFixRestTime()) {
 					return convertFromConvertToBreakTime(fluidprefixBreakTimeSet, goOutTimeSheetList);
 				}
 			}

@@ -28,10 +28,10 @@ module nts.uk.com.view.cdl004.a {
                     self.baseDate(inputCDL004.baseDate);
                     self.isShowNoSelectRow = inputCDL004.showNoSelection;
                     if (self.isMultiple) {
-                        self.selectedMulJobtitle(inputCDL004.canSelected ? inputCDL004.canSelected : []);
+                        self.selectedMulJobtitle(inputCDL004.selectedCodes ? inputCDL004.selectedCodes : []);
                     }   
                     else {
-                        self.selectedSelJobtitle(inputCDL004.canSelected);
+                        self.selectedSelJobtitle(inputCDL004.selectedCodes);
                     } 
                 }
                 

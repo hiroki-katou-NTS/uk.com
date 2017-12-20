@@ -1,13 +1,20 @@
 package nts.uk.ctx.at.request.infra.repository.setting.applicationreason;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
 
 @Stateless
@@ -53,6 +60,13 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 				.setParameter("companyId", companyId)
 				.setParameter("appType", appType)
 				.getList(c ->toDomain(c));
+		List<ApplicationReason> dataTmp = data.stream().filter(x -> x.getDefaultFlg() == DefaultFlg.DEFAULT).collect(Collectors.toList());
+		ApplicationReason firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, "選択してください", DefaultFlg.NOTDEFAULT);
+		if(CollectionUtil.isEmpty(dataTmp)) {
+			firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, "選択してください", DefaultFlg.DEFAULT);
+		}
+		Collections.sort(data, Comparator.comparing(ApplicationReason :: getDispOrder));
+		data.add(0, firstData);
 		return data;
 	}
 

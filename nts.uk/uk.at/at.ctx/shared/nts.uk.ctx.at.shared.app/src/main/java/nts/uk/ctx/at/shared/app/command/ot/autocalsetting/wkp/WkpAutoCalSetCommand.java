@@ -65,13 +65,6 @@ public class WkpAutoCalSetCommand {
 			this.command = command;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesGetMemento#
-		 * getCompanyId()
-		 */
 		@Override
 		public CompanyId getCompanyId() {
 			return new CompanyId(this.companyId);

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.workrule.outsideworktime;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -47,9 +46,10 @@ public class GetOfStatutoryWorkTime {
 	 * @return
 	 */
 	public DailyTime getDailyTimeFromStaturoyWorkTime() {
-		Optional<StatutoryWorkTime> statutoryTime =;  
+		//TODO: get StatutoryWorkTime
+		Optional<StatutoryWorkTime> statutoryTime = Optional.empty();  
 		if(statutoryTime.isPresent()) {
-			return statutoryTime.get();
+			return statutoryTime.get().getStatutoryWorkTime();
 		}
 		else {
 			return new DailyTime(0);
@@ -69,7 +69,8 @@ public class GetOfStatutoryWorkTime {
 		switch(workingSystem) {
 		case RegularWork:
 		case VariableWorkingTimeWork:
-			return Optional.of(StatutoryWorkTime(Optional.empty(),statutoryWorkTimeSet().DailyTime(日単位),workingSystem));
+			//TODO: get StatutoryWorkTime
+//			return Optional.of(StatutoryWorkTime(Optional.empty(),statutoryWorkTimeSet().DailyTime(日単位),workingSystem));
 		case ExcludedWorkingCalculate:
 		case FlexTimeWork:
 			return Optional.empty();
@@ -94,8 +95,9 @@ public class GetOfStatutoryWorkTime {
 			return Optional.empty();
 		case ExcludedWorkingCalculate:
 		case FlexTimeWork:
-			設定 = statutoryWorkTimeSet().DailyTime(日単位);
-			return Optional.of(StatutoryWorkTime(Optional.of(設定).所定労働,設定.法定労働,workingSystem));
+			//TODO: get StatutoryWorkTime
+//			設定 = statutoryWorkTimeSet().DailyTime(日単位);
+//			return Optional.of(StatutoryWorkTime(Optional.of(設定).所定労働,設定.法定労働,workingSystem));
 		default:
 			throw new RuntimeException("unknown workingSystem" + workingSystem);	
 		}
@@ -113,6 +115,7 @@ public class GetOfStatutoryWorkTime {
 	private int statutoryWorkTimeSet(String companyId,String workPlaceId,String employmentCd,String employeerId,GeneralDate targetDate){
 		val setting = usageUnitSettingRepository.findByCompany(companyId);
 		
+		//TODO: get 法定労働時間設定
 		if(setting.get().isEmployee()) {
 			val statutorySet = employeeWtSettingRepository.find(companyId);
 		}
@@ -125,6 +128,6 @@ public class GetOfStatutoryWorkTime {
 		else {
 			val statutorySet = companyWtSettingRepository.find(companyId, targetDate.year());
 		}
-		return new (statutorySet); 
+		return 0; 
 	}
 }

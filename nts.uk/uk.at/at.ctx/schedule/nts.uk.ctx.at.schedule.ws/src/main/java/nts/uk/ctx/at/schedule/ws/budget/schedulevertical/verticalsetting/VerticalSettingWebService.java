@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting.DeleteVerticalSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting.VerticalSettingCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.verticalsetting.VerticalSettingCommandHandler;
@@ -24,7 +25,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.verticalsetting.V
 
 @Path("ctx/at/schedule/budget/verticalsetting")
 @Produces("application/json")
-public class VerticalSettingWebService {
+public class VerticalSettingWebService extends WebService {
 	@Inject
 	private VerticalSettingFinder verticalSettingFinder;
 	
@@ -68,4 +69,5 @@ public class VerticalSettingWebService {
 	public void deleteVerticalCalSet(VerticalSettingCommand command) { 
 		this.deleteVerticalSettingCommandHandler.handle(command);
 	}
+	
 }

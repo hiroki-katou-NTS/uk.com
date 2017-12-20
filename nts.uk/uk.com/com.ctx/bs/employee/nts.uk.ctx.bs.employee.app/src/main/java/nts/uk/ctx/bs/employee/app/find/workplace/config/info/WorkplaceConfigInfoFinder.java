@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.config.info;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +18,6 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
-import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
@@ -43,10 +42,6 @@ public class WorkplaceConfigInfoFinder {
 	/** The wkp config info repo. */
 	@Inject
 	private WorkplaceConfigInfoRepository wkpConfigInfoRepo;
-
-	/** The wkp repo. */
-	@Inject
-	private WorkplaceRepository wkpRepo;
 
 	/** The wkp info repo. */
 	@Inject
@@ -74,9 +69,14 @@ public class WorkplaceConfigInfoFinder {
 		if (!optionalWkpConfig.isPresent()) {
 			return null;
 		}
-		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
-
-		return this.initTree(historyId);
+		WorkplaceConfig wkpConfig = optionalWkpConfig.get();
+		String historyId = wkpConfig.getWkpConfigHistoryLatest().identifier();
+		Optional<WorkplaceConfigInfo> opWkpConfigInfo = wkpConfigInfoRepo.find(companyId,
+				historyId);
+		if (!opWkpConfigInfo.isPresent()) {
+			return Collections.emptyList();
+		}
+		return this.initTree(baseD, opWkpConfigInfo.get());
 	}
 
 	/**
@@ -94,68 +94,33 @@ public class WorkplaceConfigInfoFinder {
 		if (!optionalWkpConfig.isPresent()) {
 			return null;
 		}
-		String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().identifier();
+		WorkplaceConfig wkpConfig = optionalWkpConfig.get();
+		String historyId = wkpConfig.getWkpConfigHistoryLatest().identifier();
 
-		return this.initTree(historyId);
+		Optional<WorkplaceConfigInfo> opWkpConfigInfo = wkpConfigInfoRepo.find(companyId,
+				historyId);
+		if (!opWkpConfigInfo.isPresent()) {
+			throw new BusinessException("Msg_373");
+		}
+		
+		return this.initTree(strD, opWkpConfigInfo.get());
 	}
 
 	/**
 	 * Inits the tree.
 	 *
-	 * @param historyId
-	 *            the history id
+	 * @param wkpConfigInfo the wkp config info
 	 * @return the list
 	 */
-	private List<WorkplaceHierarchyDto> initTree(String historyId) {
+	private List<WorkplaceHierarchyDto> initTree(GeneralDate startDWkpConfigHist, WorkplaceConfigInfo wkpConfigInfo) {
 		String companyId = AppContexts.user().companyId();
 
-		Optional<WorkplaceConfigInfo> optionalWkpConfigInfo = wkpConfigInfoRepo.find(companyId,
-				historyId);
-
-		if (!optionalWkpConfigInfo.isPresent()) {
-			throw new BusinessException("Msg_373");
-		}
-		WorkplaceConfigInfo wkpConfigInfo = optionalWkpConfigInfo.get();
-		
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getLstWkpHierarchy();
-		List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();
-		lstHierarchy.forEach(item -> {
-			Optional<Workplace> opWorkplace = this.wkpRepo.findByWorkplaceId(companyId,
-					item.getWorkplaceId());
-			if (!opWorkplace.isPresent()) {
-				throw new RuntimeException(
-						String.format("Workplace %s didn't exist.", item.getWorkplaceId()));
-			}
-			Workplace workplace = opWorkplace.get();
-			Optional<WorkplaceInfo> opWkpInfor = this.wkpInfoRepo.find(companyId,
-					item.getWorkplaceId(), workplace.getWkpHistoryLatest().identifier());
-			if (!opWkpInfor.isPresent()) {
-				throw new RuntimeException(String.format("Workplace Infor %s didn't exist.",
-						workplace.getWkpHistoryLatest().identifier()));
-			}
-			lstWkpInfo.add(opWkpInfor.get());
-		});
-
+		
+		// filter workplace infor latest
+		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findDetailLatestByWkpIds(companyId, startDWkpConfigHist);
 		return this.createTree(lstHierarchy.iterator(), lstWkpInfo, new ArrayList<>());
-	}
-
-	/**
-	 * Covert to workplace hierarchy dto.
-	 *
-	 * @param wkpHierarchy
-	 *            the wkp hierarchy
-	 * @param wkpInfo
-	 *            the wkp info
-	 * @return the workplace hierarchy dto
-	 */
-	private WorkplaceHierarchyDto covertToWorkplaceHierarchyDto(WorkplaceHierarchy wkpHierarchy,
-			WorkplaceInfo wkpInfo) {
-		WorkplaceHierarchyDto dto = new WorkplaceHierarchyDto();
-		wkpHierarchy.saveToMemento(dto);
-		dto.setCode(wkpInfo.getWorkplaceCode().v());
-		dto.setName(wkpInfo.getWorkplaceName().v());
-		return dto;
 	}
 
 	/**
@@ -172,17 +137,34 @@ public class WorkplaceConfigInfoFinder {
 	private List<WorkplaceHierarchyDto> createTree(
 			Iterator<WorkplaceHierarchy> iteratorWkpHierarchy, List<WorkplaceInfo> lstHWkpInfo,
 			List<WorkplaceHierarchyDto> lstReturn) {
+		
+		List<WorkplaceHierarchy> lstWkpHierarchyRemove = new ArrayList<>();
+		
 		// while have workplace
 		while (iteratorWkpHierarchy.hasNext()) {
 			// pop 1 item
 			WorkplaceHierarchy wkpHierarchy = iteratorWkpHierarchy.next();
-			// get workplace hierarchy by wkpId
-			WorkplaceInfo workplaceInfo = lstHWkpInfo.stream()
-					.filter(w -> w.getWorkplaceId().equals(wkpHierarchy.getWorkplaceId()))
-					.findFirst().get();
+			
 			// convert
-			WorkplaceHierarchyDto dto = this.covertToWorkplaceHierarchyDto(wkpHierarchy,
-					workplaceInfo);
+			WorkplaceHierarchyDto dto = new WorkplaceHierarchyDto();
+			wkpHierarchy.saveToMemento(dto);
+			
+			// get workplace hierarchy by wkpId
+			Optional<WorkplaceInfo> opWkpInfo = lstHWkpInfo.stream()
+					.filter(w -> w.getWorkplaceId().equals(wkpHierarchy.getWorkplaceId()))
+					.findFirst();
+			if (opWkpInfo.isPresent()) {
+				WorkplaceInfo wkpInfo = opWkpInfo.get();
+				dto.setCode(wkpInfo.getWorkplaceCode().v());
+				dto.setName(wkpInfo.getWorkplaceName().v());
+			} else {
+				lstWkpHierarchyRemove.add(wkpHierarchy);
+			}
+			
+			// ignore workplace that don't have code and name.
+			if (lstWkpHierarchyRemove.contains(wkpHierarchy)) {
+				continue;
+			}
 
 			dto.setHierarchyCode(new HierarchyCode(wkpHierarchy.getHierarchyCode().v()));
 			// build List

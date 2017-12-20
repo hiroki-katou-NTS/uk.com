@@ -219,9 +219,19 @@
 	background-color: #007fff;
 }
 
-.nts-image-container {
+.nts-image-container, .nts-fleximage-container {
 	height: 100%;
 	text-align: center;
+}
+
+.nts-editor-container {
+	height: 100%;
+	margin-left: -1px;
+}
+
+.nts-editor-wrapper {
+	width: 100%;
+	margin: 1px;
 }
 
 .nts-grid-wrapper {

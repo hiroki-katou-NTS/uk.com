@@ -7,8 +7,8 @@ package nts.uk.ctx.at.record.app.find.optitem.calculation;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingSetMemento;
-import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
-import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
@@ -44,7 +44,7 @@ public class RoundingDto implements RoundingSetMemento {
 	 * NumberRounding)
 	 */
 	@Override
-	public void setNumberRounding(NumberRounding rounding) {
+	public void setNumberRounding(NumberRoundingSetting rounding) {
 		this.numberRounding = rounding.getRounding().value;
 		this.numberUnit = rounding.getUnit().value;
 	}
@@ -70,7 +70,7 @@ public class RoundingDto implements RoundingSetMemento {
 	 * AmountRounding)
 	 */
 	@Override
-	public void setAmountRounding(AmountRounding rounding) {
+	public void setAmountRounding(AmountRoundingSetting rounding) {
 		this.amountRounding = rounding.getRounding().value;
 		this.amountUnit = rounding.getUnit().value;
 	}

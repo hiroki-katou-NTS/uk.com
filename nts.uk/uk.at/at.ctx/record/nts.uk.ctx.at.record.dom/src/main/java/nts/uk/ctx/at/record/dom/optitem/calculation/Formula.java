@@ -78,6 +78,14 @@ public class Formula extends AggregateRoot {
 		this.monthlyRounding = memento.getMonthlyRounding();
 		this.dailyRounding = memento.getDailyRounding();
 
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
 		this.validateSymbol();
 	}
 
@@ -89,6 +97,7 @@ public class Formula extends AggregateRoot {
 			throw new BusinessException("Msg_508");
 		}
 	}
+
 
 	/**
 	 * Save to memento.

@@ -14,11 +14,12 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 public interface OptionalItemPolicy {
 
 	/**
-	 * Can register list formula.
+	 * Can register.
 	 *
+	 * @param optItem the opt item
 	 * @param formulas the formulas
 	 * @return true, if successful
 	 */
-	boolean canRegisterListFormula(List<Formula> formulas);
+	boolean canRegister(OptionalItem optItem, List<Formula> formulas);
 
 }

@@ -7,8 +7,14 @@ package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingGetMemento;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
+import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberUnit;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 
 /**
  * The Class JpaRoundingGetMemento.
@@ -34,14 +40,11 @@ public class JpaRoundingGetMemento implements RoundingGetMemento {
 	 * getNumberRounding()
 	 */
 	@Override
-	public NumberRounding getNumberRounding() {
+	public NumberRoundingSetting getNumberRounding() {
 		this.entity.getNumberRounding();
-		nts.uk.ctx.at.shared.dom.common.numberrounding.Unit unit = nts.uk.ctx.at.shared.dom.common.numberrounding.Unit
-				.valueOf(this.entity.getNumberRoundingUnit());
-		nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding rounding = nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding
-				.valueOf(this.entity.getNumberRounding());
-
-		return new NumberRounding(unit, rounding);
+		NumberUnit unit = NumberUnit.valueOf(this.entity.getNumberRoundingUnit());
+		NumberRounding rounding = NumberRounding.valueOf(this.entity.getNumberRounding());
+		return new NumberRoundingSetting(unit, rounding);
 	}
 
 	/*
@@ -52,10 +55,8 @@ public class JpaRoundingGetMemento implements RoundingGetMemento {
 	 */
 	@Override
 	public TimeRoundingSetting getTimeRoundingSetting() {
-		nts.uk.ctx.at.shared.dom.common.timerounding.Unit unit = nts.uk.ctx.at.shared.dom.common.timerounding.Unit
-				.valueOf(this.entity.getTimeRoundingUnit());
-		nts.uk.ctx.at.shared.dom.common.timerounding.Rounding rounding = nts.uk.ctx.at.shared.dom.common.timerounding.Rounding
-				.valueOf(this.entity.getTimeRounding());
+		Unit unit = Unit.valueOf(this.entity.getTimeRoundingUnit());
+		Rounding rounding = Rounding.valueOf(this.entity.getTimeRounding());
 		return new TimeRoundingSetting(unit, rounding);
 	}
 
@@ -66,12 +67,10 @@ public class JpaRoundingGetMemento implements RoundingGetMemento {
 	 * getAmountRounding()
 	 */
 	@Override
-	public AmountRounding getAmountRounding() {
-		nts.uk.ctx.at.shared.dom.common.amountrounding.Unit unit = nts.uk.ctx.at.shared.dom.common.amountrounding.Unit
-				.valueOf(this.entity.getAmountRoundingUnit());
-		nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding rounding = nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding
-				.valueOf(this.entity.getAmountRounding());
-		return new AmountRounding(unit, rounding);
+	public AmountRoundingSetting getAmountRounding() {
+		AmountUnit unit = AmountUnit.valueOf(this.entity.getAmountRoundingUnit());
+		AmountRounding rounding = AmountRounding.valueOf(this.entity.getAmountRounding());
+		return new AmountRoundingSetting(unit, rounding);
 	}
 
 }

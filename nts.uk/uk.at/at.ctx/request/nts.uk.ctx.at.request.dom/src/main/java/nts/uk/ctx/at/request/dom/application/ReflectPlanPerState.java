@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.request.dom.application;
-
+/**
+ * 予定反映状態/ステータス
+ * @author dudt
+ *
+ */
 public enum ReflectPlanPerState {
 	/**
 	 * 未反映

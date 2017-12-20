@@ -6,6 +6,8 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
  */
 
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -19,7 +21,7 @@ public interface OtherCommonAlgorithm {
 	 * @param employeeID
 	 * @param referenceDate
 	 */
-	public void getWorkingHoursByWorkplace(String companyID,String employeeID,GeneralDate referenceDate);
+	public List<String> getWorkingHoursByWorkplace(String companyID,String employeeID,GeneralDate referenceDate);
 	/**
 	 * 3.事前事後の判断処理(事前事後非表示する場合)
 	 * @param appType

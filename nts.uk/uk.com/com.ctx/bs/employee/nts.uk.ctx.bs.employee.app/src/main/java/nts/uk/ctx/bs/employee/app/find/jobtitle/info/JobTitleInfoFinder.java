@@ -33,8 +33,10 @@ public class JobTitleInfoFinder {
 	/**
 	 * Find by job id and history id.
 	 *
-	 * @param jobTitleId the job title id
-	 * @param historyId the history id
+	 * @param jobTitleId
+	 *            the job title id
+	 * @param historyId
+	 *            the history id
 	 * @return the job title info find dto
 	 */
 	public JobTitleInfoFindDto findByJobIdAndHistoryId(String jobTitleId, String historyId) {
@@ -56,17 +58,18 @@ public class JobTitleInfoFinder {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Find by job code.
 	 *
-	 * @param jobTitleCode the job title code
+	 * @param jobTitleCode
+	 *            the job title code
 	 * @return the job title info find dto
 	 */
 	public JobTitleInfoFindDto findByJobCode(String jobTitleCode) {
 		String companyId = AppContexts.user().companyId();
 		Optional<JobTitleInfo> opJobTitleInfo = this.jobTitleInfoRepository.findByJobCode(companyId, jobTitleCode);
-		
+
 		if (opJobTitleInfo.isPresent()) {
 			JobTitleInfoFindDto dto = new JobTitleInfoFindDto();
 			opJobTitleInfo.get().saveToMemento(dto);

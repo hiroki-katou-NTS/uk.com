@@ -5,7 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-
+/**
+ * 残業申請設定
+ * @author loivt
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor

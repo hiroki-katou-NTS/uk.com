@@ -29,7 +29,7 @@ public class TestMasterListExportImpl implements MasterListData{
 			int j = 1;
 			Map<String, Object> data = new HashMap<>();
 			while (j <= 100){
-				data.put("Column " + j, random.nextInt(1000) + 1);
+				data.put("Column " + j, "日本" + (random.nextInt(1000) + 1));
 				j++;
 			}
 			datas.add(new MasterData(data, null, ""));
@@ -45,7 +45,7 @@ public class TestMasterListExportImpl implements MasterListData{
 		int i = 1;
 		
 		while (i <= 100) {
-			columns.add(new MasterHeaderColumn("Column " + i, "", ColumnTextAlign.CENTER, "", true));
+			columns.add(new MasterHeaderColumn("Column " + i, "Column " + i, ColumnTextAlign.CENTER, "", true));
 			i++;
 		}
 		

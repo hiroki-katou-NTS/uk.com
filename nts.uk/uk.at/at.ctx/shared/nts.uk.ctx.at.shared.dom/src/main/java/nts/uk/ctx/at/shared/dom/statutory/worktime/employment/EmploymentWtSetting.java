@@ -18,23 +18,23 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.NormalSetting;
 @Getter
 public class EmploymentWtSetting extends AggregateRoot {
 
-	/** フレックス勤務労働時間設定. */
-	private FlexSetting flexSetting;
-
 	/** 会社ID. */
 	private CompanyId companyId;
+	
+	/** 年. */
+	private Year year;
+	
+	/** 雇用コード. */
+	private String employmentCode;
+	
+	/** フレックス勤務労働時間設定. */
+	private FlexSetting flexSetting;
 
 	/** 変形労働労働時間設定. */
 	private DeformationLaborSetting deformationLaborSetting;
 
-	/** 年. */
-	private Year year;
-
 	/** 通常勤務労働時間設定. */
 	private NormalSetting normalSetting;
-
-	/** 雇用コード. */
-	private String employmentCode;
 
 	/**
 	 * Instantiates a new employment setting.

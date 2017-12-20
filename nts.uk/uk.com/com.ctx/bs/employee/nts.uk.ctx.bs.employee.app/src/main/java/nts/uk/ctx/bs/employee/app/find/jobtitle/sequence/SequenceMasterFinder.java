@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.sequence.dto.SequenceMasterFindDto;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
@@ -35,11 +36,20 @@ public class SequenceMasterFinder {
 		String companyId = AppContexts.user().companyId();
 		List<SequenceMaster> result = this.repository.findByCompanyId(companyId);
 
-		return result.stream().map(sequence -> {
-			SequenceMasterFindDto memento = new SequenceMasterFindDto();
-			sequence.saveToMemento(memento);
-			return memento;
-		}).collect(Collectors.toList());
+		if (result.isEmpty()) {
+			BundledBusinessException exceptions = BundledBusinessException.newInstance();
+			exceptions.addMessage("Msg_571");
+			exceptions.throwExceptions();
+		}
+		
+		return result.stream()
+				.map(sequence -> {
+					SequenceMasterFindDto memento = new SequenceMasterFindDto();
+					sequence.saveToMemento(memento);
+					return memento;
+				})
+				.sorted((seq1, seq2) -> seq1.getSequenceCode().compareTo(seq2.getSequenceCode()))
+				.collect(Collectors.toList());
 	}
 
 	/**

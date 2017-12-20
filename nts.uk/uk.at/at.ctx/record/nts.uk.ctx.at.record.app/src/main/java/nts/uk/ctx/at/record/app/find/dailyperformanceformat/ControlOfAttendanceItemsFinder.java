@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.ControlOfAttendanceItems;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.ControlOfAttendanceItems;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 
 @Stateless
 public class ControlOfAttendanceItemsFinder {

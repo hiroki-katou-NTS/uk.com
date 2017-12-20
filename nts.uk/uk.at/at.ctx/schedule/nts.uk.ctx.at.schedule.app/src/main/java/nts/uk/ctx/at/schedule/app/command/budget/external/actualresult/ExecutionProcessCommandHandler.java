@@ -41,7 +41,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.Exter
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetTimeDto;
-import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;

@@ -7,9 +7,9 @@ package nts.uk.ctx.bs.company.infra.repository.company;
 import nts.uk.ctx.bs.company.dom.company.CompanyCode;
 import nts.uk.ctx.bs.company.dom.company.CompanyGetMemento;
 import nts.uk.ctx.bs.company.dom.company.CompanyId;
-import nts.uk.ctx.bs.company.dom.company.CompanyName;
+import nts.uk.ctx.bs.company.dom.company.Name;
 import nts.uk.ctx.bs.company.dom.company.StartMonth;
-import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
+import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompanyInfor;
 
 /**
  * The Class JpaCompanyGetMemento.
@@ -17,9 +17,9 @@ import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
 public class JpaCompanyGetMemento implements CompanyGetMemento {
 	
 	/** The company. */
-	private BcmmtCompany company;
+	private BcmmtCompanyInfor company;
 
-	public JpaCompanyGetMemento(BcmmtCompany company) {
+	public JpaCompanyGetMemento(BcmmtCompanyInfor company) {
 		this.company = company;
 	}
 	
@@ -31,7 +31,7 @@ public class JpaCompanyGetMemento implements CompanyGetMemento {
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.company.getCcd());
+		return new CompanyCode(this.company.companyCode);
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class JpaCompanyGetMemento implements CompanyGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.company.getCid());
+		return new CompanyId(this.company.bcmmtCompanyInforPK.companyId);
 	}
 
 	/**
@@ -51,13 +51,13 @@ public class JpaCompanyGetMemento implements CompanyGetMemento {
 	 */
 	@Override
 	public StartMonth getStartMonth() {
-		return new StartMonth(this.company.getStrM());
+		return new StartMonth(this.company.startMonth);
 	}
 
 
 	@Override
-	public CompanyName getCompanyName() {
-		return new CompanyName(this.company.getCompanyName());
+	public Name getCompanyName() {
+		return new Name(this.company.companyName);
 	}
 
 }

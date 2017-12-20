@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit.Direction;
 
 /**
@@ -37,7 +38,8 @@ public class TimeRoundingSetting extends AggregateRoot {
 		int minutesInHour = timeAsMinutes % 60;
 		
 		switch (this.rounding) {
-		case ROUNDING_LESSTHANOREQUAL:
+//		case ROUNDING_LESSTHANOREQUAL:
+		case ROUNDING_DOWN_OVER:
 			int mod = minutesInHour % (this.roundingTime.asTime() * 2);
 			val direction = minutesInHour < mod ? Direction.TO_BACK : Direction.TO_FORWARD;
 			return this.roundingTime.round(timeAsMinutes, direction);

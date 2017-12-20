@@ -36,6 +36,8 @@ public class OverTimeWorkOfDaily {
 	
 	private OverTimeWorkOfDaily(List<OverTimeWorkFrameTimeSheet> frameTimeList) {
 		this.overTimeWorkFrameTimeSheet = frameTimeList;
+		//TODO: init overTimeWorkFrameTimeSheet list
+		this.overTimeWorkFrameTime = new ArrayList<>();
 	}
 	
 	/**

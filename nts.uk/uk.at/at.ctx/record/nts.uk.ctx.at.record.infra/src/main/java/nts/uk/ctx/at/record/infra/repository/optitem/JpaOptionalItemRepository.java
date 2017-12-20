@@ -7,7 +7,6 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -41,14 +40,14 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 */
 	@Override
 	public void update(OptionalItem dom) {
-		Optional<KrcstOptionalItem> optEntity = this.queryProxy().find(
+
+		// Find entity
+		KrcstOptionalItem entity = this.queryProxy().find(
 				new KrcstOptionalItemPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
-				KrcstOptionalItem.class);
+				KrcstOptionalItem.class).get();
 
-		KrcstOptionalItem entity = optEntity.get();
-
+		// Update entity
 		dom.saveToMemento(new JpaOptionalItemSetMemento(entity));
-
 		this.commandProxy().update(entity);
 	}
 
@@ -60,17 +59,12 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * String, java.lang.String)
 	 */
 	@Override
-	public Optional<OptionalItem> find(String companyId, String optionalItemNo) {
-		Optional<KrcstOptionalItem> optEntity = this.queryProxy()
-				.find(new KrcstOptionalItemPK(companyId, optionalItemNo), KrcstOptionalItem.class);
-
-		// Check exist
-		if (!optEntity.isPresent()) {
-			return Optional.empty();
-		}
+	public OptionalItem find(String companyId, String optionalItemNo) {
+		KrcstOptionalItem entity = this.queryProxy()
+				.find(new KrcstOptionalItemPK(companyId, optionalItemNo), KrcstOptionalItem.class).get();
 
 		// Return
-		return Optional.of(new OptionalItem(new JpaOptionalItemGetMemento(optEntity.get())));
+		return new OptionalItem(new JpaOptionalItemGetMemento(entity));
 	}
 
 	/*

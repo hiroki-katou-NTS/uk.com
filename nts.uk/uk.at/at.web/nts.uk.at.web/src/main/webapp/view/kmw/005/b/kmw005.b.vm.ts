@@ -64,10 +64,9 @@ module nts.uk.at.view.kmw005.b {
             }
             
             /**
-             * Add LockIcon
+             * Add LockIcon to columns DailyLock, MonthlyLock.
              */
             private addLockIcon() {
-                // Add icon to column already setting.
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                     .mergeRelativePath('/view/kmw/005/a/images/2.png').serialize();
@@ -75,7 +74,7 @@ module nts.uk.at.view.kmw005.b {
             }
             
             /**
-             * bindLockHist
+             * Bindding Lock History By Closure Selected
              */
             private bindLockHist(closureId: number): void {
                 let self = this;
@@ -89,11 +88,12 @@ module nts.uk.at.view.kmw005.b {
             }
             
             /**
-             * bindLockHistByYM
+             * Bindding Lock History By Target YearMonth Selected
              */
             private bindLockHistByYM(): void {
                 let self = this;
-                service.findHistByTargetYM(self.selectedClosure(), self.yearMonth()).done(function(data: Array<ActualLockHistFindDto>) {
+                service.findHistByTargetYM(self.selectedClosure(), 
+                self.yearMonth()).done(function(data: Array<ActualLockHistFindDto>) {
                     self.setLockHistList(data);
                     self.addLockIcon();
                 }).fail(function() {
@@ -102,21 +102,24 @@ module nts.uk.at.view.kmw005.b {
             }
             
             /**
-             * setLockHistList
+             * Convert ActualLockHistFindDto to ActualLockHistFind
              */
             private setLockHistList(list: Array<ActualLockHistFindDto>): void {
                 let self = this;
                 var convertList: ActualLockHistFind[] = [];
-                for (var item: ActualLockHistFindDto of list) {
+                
+                _.forEach(list, function(item: ActualLockHistFindDto) {
                     var lockHist: ActualLockHistFind = new ActualLockHistFind();
                     lockHist.closureId = item.closureId;
                     lockHist.dailyLockState = item.dailyLockState;
                     lockHist.monthlyLockState = item.monthlyLockState;
                     lockHist.lockDateTime = item.lockDateTime;
                     lockHist.updater = item.updater;
-                    lockHist.targetMonth = item.targetMonth.toString().substring(0, 4) + "/" + item.targetMonth.toString().substring(4);
+                    lockHist.targetMonth = item.targetMonth.toString().substring(0, 4) + "/" 
+                    + item.targetMonth.toString().substring(4);
                     convertList.push(lockHist);
-                }
+                })
+                
                 self.lockHistList(convertList);
             }
             

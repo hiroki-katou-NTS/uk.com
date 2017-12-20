@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
+import java.util.Optional;
+
 /**
- * The Interface CalculationResultRangeSetMemento.
+ * The Interface CalcResultRangeSetMemento.
  */
 public interface CalcResultRangeSetMemento {
 
@@ -28,19 +30,19 @@ public interface CalcResultRangeSetMemento {
 	 *
 	 * @param range the new number range
 	 */
-	void setNumberRange(NumberRange range);
+	void setNumberRange(Optional<NumberRange> range);
 
 	/**
 	 * Sets the time range.
 	 *
 	 * @param range the new time range
 	 */
-	void setTimeRange(TimeRange range);
+	void setTimeRange(Optional<TimeRange> range);
 
 	/**
 	 * Sets the amount range.
 	 *
 	 * @param range the new amount range
 	 */
-	void setAmountRange(AmountRange range);
+	void setAmountRange(Optional<AmountRange> range);
 }

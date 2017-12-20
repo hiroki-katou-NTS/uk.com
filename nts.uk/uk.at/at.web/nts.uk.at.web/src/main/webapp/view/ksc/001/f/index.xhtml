@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 650,
-					height : 700
+					width : 610,
+					height : 400
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -21,21 +21,21 @@
 			<com:scriptfile path="ksc001.f.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
-				<div class="contentSchedule">
-					<label class="labelFirstBold">#{i18n.getText('KSC001_48')}</label>
+			<div id="contents-area" tabindex="-1">
+				<div class="contentSchedule" tabindex="-1">
+					<label tabindex="-1" class="labelFirstBold">#{i18n.getText('KSC001_48')}</label>
 					
 					<table class="tableSchedule" tabindex="-1">
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_49')}</td>
+							<td class="bg-green titleScheduleSetting">#{i18n.getText('KSC001_49')}</td>
 							<td class="valueScheduleSetting" data-bind="text: executionStartDate"></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
+							<td class="bg-green titleScheduleSetting" >#{i18n.getText('KSC001_50')}</td>
 							<td class="valueScheduleSetting" data-bind="text: executionTotal"></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
+							<td class="bg-green titleScheduleSetting" >#{i18n.getText('KSC001_50')}</td>
 							<td class="valueScheduleSetting" ><ul class="countdown">
 										<!-- <li><span class="days">00</span>
 											<p class="days_ref">days</p></li>
@@ -51,11 +51,11 @@
 									</ul></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_51')}</td>
+							<td  class="bg-green titleScheduleSetting">#{i18n.getText('KSC001_51')}</td>
 							<td class="valueScheduleSetting" data-bind="text: scheduleExecutionLogModel.completionStatus"></td>
 						</tr>
 						<tr tabindex="-1">
-							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_52')}</td>
+							<td class="bg-green titleScheduleSetting" >#{i18n.getText('KSC001_52')}</td>
 							<td class="valueScheduleSetting" data-bind="text: executionError"></td>
 						</tr>
 					</table>
@@ -63,33 +63,41 @@
 						<label>#{i18n.getText('KSC001_53')}</label>
 						<table tabindex="-1">
 							<tr tabindex="-1">
-								<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_31')}</td>
+								<td class="bg-green titleScheduleSetting">#{i18n.getText('KSC001_31')}</td>
 								<td class="valueScheduleSetting" data-bind="text: periodInfo"></td>
 							</tr>
 						</table>
 					</div>
-					
-					<div class="buttonErrorOutput cf">
-						<button>#{i18n.getText('KSC001_54')}</button>
-					</div>
-					<div class="tableErrorLog cf">
-						<table id="tableShowError" data-bind="ntsGridList: {								
-							height: 350,
-							dataSource: errorLogs,
-							primaryKey: 'employeeId',
-							columns: columns,
-							multiple: false,
-							value: currentCode,
-							rows: 10
-						}"></table>
-					</div>
+					<com:ko tag="if" bind="isError()">
+						<div class="buttonErrorOutput cf">
+							<button data-bind ="click: exportFileError">#{i18n.getText('KSC001_54')}</button>
+						</div>
+						<div class="tableErrorLog cf">
+							<table id="tableShowError" data-bind="ntsGridList: {								
+								height: 350,
+								dataSource: errorLogs,
+								primaryKey: 'employeeId',
+								columns: columns,
+								multiple: false,
+								value: currentCode,
+								rows: 10
+							}"></table>
+						</div>
+					</com:ko>
 					
 				</div>
 				
 				
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="17" class="large" data-bind="click: cancelSaveCommonGuidelineSetting">#{i18n.getText('KSC001_59')}</button>
+				<com:ko tag="if" bind="isFinish()">
+					<button tabindex="17" class="large"
+						data-bind="click: cancelSaveCommonGuidelineSetting">#{i18n.getText('KSC001_61')}</button>
+				</com:ko>
+				<com:ko tag="if" bind="!isFinish()">
+					<button tabindex="17" class="large"
+						data-bind="click: stopExecution">#{i18n.getText('KSC001_60')}</button>
+				</com:ko>
 			</div>
 		</ui:define>
 	</ui:composition>

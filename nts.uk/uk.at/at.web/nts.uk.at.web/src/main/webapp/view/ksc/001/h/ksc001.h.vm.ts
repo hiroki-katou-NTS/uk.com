@@ -46,7 +46,7 @@ module nts.uk.at.view.ksc001.h {
                     dfd.resolve();
                     blockUI.clear();
                 });
-                $("#fixed-table").ntsFixedTable();
+                $("#fixed-table").ntsFixedTable({});
                 return dfd.promise();
             }
 
@@ -64,8 +64,8 @@ module nts.uk.at.view.ksc001.h {
                         self.startDate(data.startDate);
                         self.endDate(data.endDate);
                         self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", [data.startDate, data.endDate]));
-                        self.detailContentMethod = ko.observableArray(self.detailCreateMethod(data));
-                        self.executionContent = ko.observableArray(self.detailContentString(data));
+                        self.detailContentMethod = ko.observableArray(self.loadDetailCreateMethod(data));
+                        self.executionContent = ko.observableArray(self.loadDetailContentString(data));
                         self.exeStart = ko.observable(moment(data.executionStart).format(dateTimeFormat));
                         self.exeEnd = ko.observable(moment(data.executionEnd).format(dateTimeFormat));
                         //get diff time execution
@@ -88,6 +88,7 @@ module nts.uk.at.view.ksc001.h {
             openEmployeeTargetListDialog(): void {
                 let self = this;
                 if (self.controlExecution()) {
+                    //send data to dialog
                     var data: any = {
                         executionId: self.executionId(),
                         startDate: self.startDate(),
@@ -108,6 +109,7 @@ module nts.uk.at.view.ksc001.h {
                 let self = this;
                 if (self.controlError()) {
                     blockUI.invisible();
+                    //send data to dialog
                     var data: any = {
                         executionId: self.executionId(),
                         startDate: self.startDate(),
@@ -132,53 +134,54 @@ module nts.uk.at.view.ksc001.h {
             /**
              * function to load detail content string
              */
-            private detailContentString(data: any): string[] {
+            private loadDetailContentString(data: any): string[] {
                 let self = this;
                 let str: string[] = [];
                 let spaceString = "　";
-                //==
+                //実施区分= 通常作成
                 if (data.implementAtr == ImplementAtr.GENERALLY_CREATED) {
                     str.push(nts.uk.resource.getText("KSC001_35"));
-                } else {
+                } else {//実施区分= 再作成
                     str.push(nts.uk.resource.getText("KSC001_36"));
-                    //==
+                    //再作成区分 = 全件
                     if (data.reCreateAtr == ReCreateAtr.ALLCASE) {
                         str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_4"));
-                    } else {
+                    } else {//再作成区分 = 未確定データのみ
                         str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_5"));
                     }
-                    //==
+                    //処理実行区分 = もう一度作り直す
                     if (data.processExecutionAtr == ProcessExecutionAtr.REBUILD) {
                         str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_7"));
-                    } else {
+                    } else {//処理実行区分 = 再設定する
                         str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_8"));
 
-                        //==
+                        //就業時間帯再設定 true
                         if (data.resetWorkingHours) {
                             str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_15"));
                         }
-                        //==
+                        //直行直帰再設定 true
                         if (data.resetDirectLineBounce) {
                             str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_11"));
                         }
-                        //==
+                        //マスタ情報再設定 true
                         if (data.resetMasterInfo) {
                             str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_12"));
                         }
-                        //==
+                        //育児介護時間再設定 true
                         if (data.resetTimeChildCare) {
                             str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_13"));
                         }
-                        //==
+                        //休職休業再設定 true
                         if (data.resetAbsentHolidayBusines) {
                             str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_14"));
                         }
-                        //==
+                        //申し送り時間再設定 true
                         if (data.resetTimeAssignment) {
                             str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_16"));
                         }
                     }
                 }
+                //作成時に確定済みにする true
                 if (data.confirm) {
                     str.push(nts.uk.resource.getText("KSC001_17"));
                 }
@@ -189,7 +192,7 @@ module nts.uk.at.view.ksc001.h {
             /**
              * function to detail create method
              */
-            private detailCreateMethod(data: any): string[] {
+            private loadDetailCreateMethod(data: any): string[] {
                 let self = this;
                 let str: string[] = [];
                 if(data.createMethodAtr == null)

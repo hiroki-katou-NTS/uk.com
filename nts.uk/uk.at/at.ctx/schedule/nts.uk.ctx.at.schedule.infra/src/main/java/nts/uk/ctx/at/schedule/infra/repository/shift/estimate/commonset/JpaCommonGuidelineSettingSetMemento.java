@@ -70,7 +70,8 @@ public class JpaCommonGuidelineSettingSetMemento implements CommonGuidelineSetti
 	public void setEstimateTime(ReferenceCondition estimateTime) {
 		this.entity.setTimeYearlyDispCond(estimateTime.getYearlyDisplayCondition().value);
 		this.entity.setTimeMonthlyDispCond(estimateTime.getMonthlyDisplayCondition().value);
-		this.entity.setTimeAlarmCheckCond(estimateTime.getAlarmCheckCondition().value);
+		this.entity.setTimeYearAlarmCheckCond(estimateTime.getYearlyAlarmCkCondition().value);
+		this.entity.setTimeMonthAlarmCheckCond(estimateTime.getMonthlyAlarmCkCondition().value);
 	}
 
 	/*
@@ -84,7 +85,8 @@ public class JpaCommonGuidelineSettingSetMemento implements CommonGuidelineSetti
 	public void setEstimatePrice(ReferenceCondition estimatePrice) {
 		this.entity.setPriceYearlyDispCond(estimatePrice.getYearlyDisplayCondition().value);
 		this.entity.setPriceMonthlyDispCond(estimatePrice.getMonthlyDisplayCondition().value);
-		this.entity.setPriceAlarmCheckCond(estimatePrice.getAlarmCheckCondition().value);
+		this.entity.setPriceYearAlarmCheckCond(estimatePrice.getYearlyAlarmCkCondition().value);
+		this.entity.setPriceMonthAlarmCheckCond(estimatePrice.getMonthlyAlarmCkCondition().value);
 	}
 
 	/*
@@ -98,7 +100,8 @@ public class JpaCommonGuidelineSettingSetMemento implements CommonGuidelineSetti
 	public void setEstimateNumberOfDays(ReferenceCondition estimateNumberOfDays) {
 		this.entity.setNumOfDayYearlyDispCond(estimateNumberOfDays.getYearlyDisplayCondition().value);
 		this.entity.setNumOfDayMonthlyDispCond(estimateNumberOfDays.getMonthlyDisplayCondition().value);
-		this.entity.setNumOfDayAlarmCheckCond(estimateNumberOfDays.getAlarmCheckCondition().value);
+		this.entity.setDaysYearAlarmCheckCond(estimateNumberOfDays.getYearlyAlarmCkCondition().value);
+		this.entity.setDaysMonthAlarmCheckCond(estimateNumberOfDays.getMonthlyAlarmCkCondition().value);
 	}
 
 }

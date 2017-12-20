@@ -15,13 +15,13 @@
 				<table id="single-list" data-bind="ntsGridList: {								
 					height: 450,
 					dataSource: items,
-					primaryKey: 'code',
+					primaryKey: 'caseSpecExeContentID',
 					columns: columns2,
 					deleteOptions : {visible : false, deleteField: 'deletable'},
-					features: [{name: 'Switch', optionsValue: 'code', optionsText: 'name'}],
+					features: [{name: 'Switch', optionsValue: 'caseSpecExeContentID', optionsText: 'useCaseName'}],
 					multiple: false,
 					value: currentCode,
-					showNumbering: true,
+					showNumbering: false,
 					rows: 10
 				}"></table>
 			</div>
@@ -31,14 +31,23 @@
 			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW001_86')}</div>
 		</div>
 		
-		<div id="panel37" class="panel panel-gray-bg">
-			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW001_84')}</div>
-			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW001_84')}</div>
-			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW001_84')}</div>
+		<div id="panel37" class="panel panel-gray-bg" data-bind="with: currentItem">
+			<div data-bind="if: reflectApprovalSetInfo() != null">
+				<div class="label" style="margin-bottom: 15px;" data-bind="text:reflectApprovalSetInfo().executionTypeName"></div>
+			</div>
+			<div data-bind="if: dailyCreationSetInfo() != null">
+				<div class="label" style="margin-bottom: 15px;" data-bind="text:dailyCreationSetInfo().executionTypeName"></div>
+			</div>
+			<div data-bind="if: dailyCalSetInfo() != null">
+				<div class="label" style="margin-bottom: 15px;" data-bind="text:dailyCalSetInfo().executionTypeName"></div>
+			</div>
+			<div data-bind="if: monlyAggregationSetInfo() != null">
+				<div class="label" style="margin-bottom: 15px;" data-bind="text:monlyAggregationSetInfo().executionTypeName"></div>
+			</div>
 		</div>
 		
 		<div id="label310Area">
-			<div id="label310" class="label warning">#{i18n.getText('KDW001_87')}</div>
+			<div id="label310" class="label warning" data-bind="visible: warnVisible">#{i18n.getText('KDW001_87')}</div>
 		</div>
 		
 		<div id="button36Area">

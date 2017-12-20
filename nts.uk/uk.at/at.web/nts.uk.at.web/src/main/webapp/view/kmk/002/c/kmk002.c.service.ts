@@ -1,6 +1,10 @@
 module nts.uk.at.view.kmk002.c {
     export module service {
-        var paths: any = {
+
+        /**
+        *  Service paths
+        */
+        let paths: any = {
             findDailyAttdItem: "at/record/businesstype/attendanceItem/daily/findbyanyitem",
             findMonthlyAttdItem: "at/record/attendanceitem/monthly/findbyanyitem"
         }
@@ -19,10 +23,14 @@ module nts.uk.at.view.kmk002.c {
             return nts.uk.request.ajax('at', paths.findMonthlyAttdItem, request);
         }
 
+        /**
+         * Data Model
+         */
         export module model {
             export interface AttendanceItemDto {
                 attendanceItemId: number;
                 attendanceItemName: string;
+                attendanceItemDisplayNumber?: number;
             }
             export interface AttdItemLinkRequest {
                 anyItemNos: string[];

@@ -32,10 +32,10 @@ public class KrcstCalcResultRange_ {
 	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> lowerTimeRange;
 
 	/** The upper number range. */
-	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> upperNumberRange;
+	public static volatile SingularAttribute<KrcstCalcResultRange, Double> upperNumberRange;
 
 	/** The lower number range. */
-	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> lowerNumberRange;
+	public static volatile SingularAttribute<KrcstCalcResultRange, Double> lowerNumberRange;
 
 	/** The upper amount range. */
 	public static volatile SingularAttribute<KrcstCalcResultRange, Integer> upperAmountRange;

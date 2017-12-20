@@ -1,0 +1,351 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../base/service/kmk003.service.common.js" />
+			<com:scriptfile path="../base/service/kmk003.service.flexset.js" />
+			<com:scriptfile path="../base/service/kmk003.service.flowset.js" />
+			<com:scriptfile path="../base/service/kmk003.service.predset.js" />
+			<com:scriptfile path="../base/service/kmk003.service.worktimeset.js" />
+			<com:scriptfile path="../base/service/kmk003.service.command.js" />
+			<com:scriptfile path="../base/vm/kmk003.vm.common.js" />
+			<com:scriptfile path="../base/vm/kmk003.vm.flexset.js" />
+			<com:scriptfile path="../base/vm/kmk003.vm.predset.js" />
+			<com:scriptfile path="../base/vm/kmk003.vm.worktimeset.js" />
+			<com:scriptfile path="../a1/kmk003.a1.vm.js" />
+			<com:stylefile path="../a1/kmk003.a1.style.css" />
+			<com:scriptfile path="../a2/kmk003.a2.vm.js" />
+			<com:stylefile path="../a2/kmk003.a2.style.css" />
+			<com:scriptfile path="../a3/kmk003.a3.vm.js" />
+			<com:stylefile path="../a3/kmk003.a3.style.css" />
+			<com:scriptfile path="../a4/kmk003.a4.vm.js" />
+			<com:stylefile path="../a4/kmk003.a4.style.css" />
+			<com:scriptfile path="../a5/kmk003.a5.vm.js" />
+			<com:stylefile path="../a5/kmk003.a5.style.css" />
+			<com:scriptfile path="../a6/kmk003.a6.vm.js" />
+			<com:stylefile path="../a6/kmk003.a6.style.css" />
+			<com:scriptfile path="../a7/kmk003.a7.vm.js" />
+			<com:stylefile path="../a7/kmk003.a7.style.css" />
+			<com:scriptfile path="../a8/kmk003.a8.vm.js" />
+			<com:stylefile path="../a8/kmk003.a8.style.css" />
+			<com:scriptfile path="../a9/kmk003.a9.vm.js" />
+			<com:stylefile path="../a9/kmk003.a9.style.css" />
+			<com:scriptfile path="../a10/kmk003.a10.vm.js" />
+			<com:stylefile path="../a10/kmk003.a10.style.css" />
+			
+			<!-- Begin tab 11 -->
+			<com:scriptfile path="../a11/kmk003.a11.vm.js" />
+			<com:stylefile path="../a11/kmk003.a11.style.css" /><!-- End tab 11 -->
+			
+			<!-- Begin tab 12 -->
+			<com:scriptfile path="../a12/kmk003.a12.vm.js" />
+			<com:stylefile path="../a12/kmk003.a12.style.css" /><!-- End tab 12 -->
+			
+			<!-- Begin tab 13 -->
+			<com:scriptfile path="../a13/kmk003.a13.vm.js" />
+			<com:stylefile path="../a13/kmk003.a13.style.css" /><!-- End tab 13 -->
+			
+			<!-- Begin tab 14 -->
+			<com:scriptfile path="../a14/kmk003.a14.vm.js" />
+			<com:stylefile path="../a14/kmk003.a14.style.css" /><!-- End tab 14 -->
+			
+			<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
+			
+			<com:stylefile path="kmk003.a.style.css" />
+			<com:scriptfile path="kmk003.a.start.js" />
+			<com:scriptfile path="kmk003.a.service.js" />
+			<com:scriptfile path="kmk003.a.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName
+				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName
+				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol
+				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote
+				nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
+				nts.uk.shr.com.primitive.Memo
+			</com:ValidatorScript>
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button>#{i18n.getText('KMK003_3')}</button>
+				<button class="proceed" data-bind="click: save">#{i18n.getText('KMK003_4')}</button>
+				<button>#{i18n.getText('KMK003_5')}</button>
+				<button class="danger">#{i18n.getText('KMK003_6')}</button>
+			</div>
+			<div id="contents-area" style="display: none"
+				data-bind="visible: true">
+				<table>
+					<tr>
+						<td class="screen-content-left">
+							<div class="caret-left-width caret-right caret-background bg-green">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
+									options: workFormOptions,
+									optionsValue: 'code',
+									visibleItemsCount: 3,
+									value: selectedWorkForm,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+									{ prop: 'name', length: 10 },]}">
+								</div>
+								<br />
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
+								<div id="combo-box" 
+									data-bind="ntsComboBox: {
+									options: settingMethodOptions,
+									optionsValue: 'code',
+									visibleItemsCount: 3,
+									value: selectedSettingMethod,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+									{ prop: 'name', length: 6 },]}">
+								</div>
+								<br />
+								<div class="checkbox_display"
+									data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMK003_9')}
+								</div>
+								<div style="width: 300px"
+									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
+									comId: 'single-list', items: workTimeSettings,  selectedKey: 'worktimeCode', 
+									fields: ['workTimeName', 'worktimeCode'], mode: 'igGrid'}">
+								</div>
+								<table id="single-list"
+									data-bind="ntsGridList: {
+									height: 320,
+									options: workTimeSettings,
+									optionsValue: 'worktimeCode',
+									columns: columns,
+									multiple: false,
+									value: selectedWorkTimezone
+									}">
+								</table>
+							</div>
+						</td>
+						<td class="screen-content-right">
+							<div class="setting_header" data-bind="with: workTimeSettingModel">
+								<div style="width: 160px;"
+									data-bind="ntsFormLabel: {required:true, 
+									constraint: 'WorkTimeCode'}">
+									#{i18n.getText('KMK003_13')}
+								</div>
+
+								<input data-bind="ntsTextEditor: {
+									value: worktimeCode,
+									constraint: 'WorkTimeCode',
+									option: siftCodeOption,
+									required: true,
+									enable: isUpdateMode}">
+								</input> 
+								<input data-bind="ntsTextEditor: {
+									value: workTimeDisplayName.workTimeName,
+									constraint: 'WorkTimeName',
+									option: siftNameOption,
+									required: true,
+									enable: true
+									}">
+								</input>
+								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_14')}
+								</div>
+								<input data-bind="ntsTextEditor: {
+									value: workTimeDisplayName.workTimeAbName,
+									constraint: 'WorkTimeAbName',
+									option: siftShortNameOption,
+									required: true,
+									enable: true
+									}" />
+								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_15')}
+								</div>
+								<input data-bind="ntsTextEditor: {
+									value: workTimeDisplayName.workTimeSymbol,
+									constraint: 'WorkTimeSymbol',
+									option: siftSymbolNameOption,
+									required: true,
+									enable: true
+									}" />
+								<div class="label_header"
+									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_16')}
+								</div>
+								<div id="colorpicker"
+									data-bind="ntsColorPicker: {value: colorCode, enable: true, width: 50}" />
+							</div>
+							<div class="setting_header_br">
+								<div style="width: 165px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
+									options: settingEnum.workTimeDailyAtr,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+									value: workTimeSettingModel.workTimeDivision.workTimeDailyAtr,
+									optionsText: 'localizedName',
+									editable: false,
+									enable: true,
+									columns: [
+									{ prop: 'localizedName', length: 10 }]}">
+								</div>
+								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}
+								</div>
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
+									options: settingEnum.workTimeMethodSet,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+									value: workTimeSettingModel.workTimeDivision.workTimeMethodSet,
+									optionsText: 'localizedName',
+									editable: false,
+									enable: true,
+									columns: [{ prop: 'localizedName', length: 6 }]}">
+								</div>
+							</div>
+							<div class="setting_header_br" data-bind="with: workTimeSettingModel">
+								<div class="label_memo"
+									data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_162')}
+								</div>
+								<input class="memo-field"
+									data-bind="ntsTextEditor: {
+									value: note,
+									constraint: 'WorkTimeNote',
+									option: siftRemarkOption,
+									required: false,
+									enable: true
+									}" />
+								<div class="label_memo label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_183')}
+								</div>
+								<input class="memo-field"
+									data-bind="ntsTextEditor: {
+									value: memo,
+									constraint: 'Memo',
+									option: memoOption,
+									required: false,
+									enable: true
+									}" />
+							</div>
+							<table>
+								
+								<tr>
+									<td colspan="2" class="td-cell">
+										<div class="cf"
+											data-bind="ntsSwitchButton: {
+											options: tabModeOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: tabMode,
+											enable: true }">
+										</div>
+									</td>
+									<td class="td-cell">
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
+									</td>
+									<td colspan="2" class="td-cell">
+										<div class="cf"
+											data-bind="ntsSwitchButton: {
+											options: useHalfDayOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: useHalfDay,
+											enable: true }">
+										</div>
+									</td>
+								</tr>
+								<!-- panels -->
+								<tr>
+									<td colspan="10" class="td-cell">
+										<div id="tab-panel"
+											data-bind="ntsTabPanel: {width:300, dataSource: tabs, 
+											active: selectedTab,direction: 'vertical' }">
+											<div class="tab-a1">
+												<div data-bind="ntsKMK003A1: {screenMode:tabMode, 
+													settingMethod:selectedSettingMethod, workTimeCode: siftCode, 
+													saveAction: isClickSave, predseting: predetemineTimeSettingModel}">
+												</div>
+											</div>
+											<div class="tab-a2">
+												<div data-bind="ntsKMK003A2: {settingMethod: selectedSettingMethod,
+													 settingTab: selectedTab, enum: settingEnum}">
+												</div>
+											</div>
+											<div class="tab-a3">
+												<div data-bind="ntsKMK003A3: { settingMethod: selectedSettingMethod,
+													 settingTab: selectedTab, settingWorkFrom: selectedWorkForm}">
+												</div>
+											</div>
+											<div class="tab-a4">
+												<div data-bind="ntsKMK003A4: { screenMode:tabMode, 
+													settingMethod:selectedSettingMethod, workTimeCode: siftCode}">
+												</div>
+											</div>
+											<div class="tab-a5">
+												<div data-bind="ntsKMK003A5: { screenMode: tabMode(), 
+													settingMethod: selectedSettingMethod,
+													settingWorkFrom: selectedWorkForm }">
+												</div>
+											</div>
+											<div class="tab-a6">
+												<div data-bind="ntsKMK003A6: {settingMethod: selectedSettingMethod,
+													 settingTab: selectedTab}">
+												</div>
+											</div>
+											<div class="tab-a7">
+												<div data-bind="ntsKMK003A7: { screenMode:tabMode, 
+													settingMethod:selectedSettingMethod, workTimeCode: siftCode, 
+													saveAction: isClickSave}">
+												</div>
+											</div>
+											<div class="tab-a8">
+												<div data-bind="ntsKMK003A8: {}">
+												</div>
+											</div>
+											<div class="tab-a9">
+												<div data-bind="ntsKMK003A9: { screenMode:tabMode }">
+												</div>
+											</div>
+											<div class="tab-a10">
+												<div data-bind="ntsKMK003A10: {}">
+												</div>
+											</div>
+											<div class="tab-a11">
+												<div data-bind="ntsKMK003A11: {}">
+												</div>
+											</div>
+											<div class="tab-a12">
+												<div data-bind="ntsKMK003A12: { screenMode:tabMode }">
+												</div>
+											</div>
+											<div class="tab-a13">
+												<div data-bind="ntsKMK003A13: { screenMode:tabMode }">
+												</div>
+											</div>
+											<div class="tab-a14">
+												<div data-bind="ntsKMK003A14: {}">
+												</div>
+											</div>
+											<div class="tab-a15">
+												<span>Tab Content 1</span><br />
+											</div>
+											<div class="tab-a16">
+												<span>Tab Content 2</span><br />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

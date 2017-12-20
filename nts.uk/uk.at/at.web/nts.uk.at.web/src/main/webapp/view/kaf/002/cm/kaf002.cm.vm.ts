@@ -15,6 +15,7 @@ module nts.uk.at.view.kaf002.cm {
             application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/DD"),'',moment(new Date()).format("YYYY/MM/DD"),'','','',0));
             inputReasons: KnockoutObservableArray<vmbase.InputReason> = ko.observableArray([new vmbase.InputReason('','')]);
             currentReason: KnockoutObservable<string> = ko.observable('');
+            currentReasonText: KnockoutObservable<string> = ko.observable('');
             inputReasonsDisp: KnockoutObservable<number> = ko.observable(0);
             detailReasonDisp: KnockoutObservable<number> = ko.observable(0);
             topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0)); 
@@ -40,11 +41,12 @@ module nts.uk.at.view.kaf002.cm {
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
                 self.resultDisplay(commonSet.appStampSetDto.stampRequestSettingDto.resultDisp);
                 self.inputReasons.removeAll();
-                let inputReasonParams = [];
                 _.forEach(commonSet.appStampSetDto.applicationReasonDtos, o => {
-                    inputReasonParams.push(new vmbase.InputReason(o.reasonID, o.reasonTemp));           
+                    self.inputReasons.push(new vmbase.InputReason(o.reasonID, o.reasonTemp)); 
+                    if(o.defaultFlg == 1){
+                        self.currentReason(o.reasonID);
+                    }          
                 });
-                self.inputReasons(inputReasonParams);
                 self.topComment().text(commonSet.appStampSetDto.stampRequestSettingDto.topComment);
                 self.topComment().color(commonSet.appStampSetDto.stampRequestSettingDto.topCommentFontColor);
                 self.topComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.topCommentFontWeight);
@@ -62,7 +64,7 @@ module nts.uk.at.view.kaf002.cm {
                         default: break;
                     }     
                 });
-                if(self.screenMode()==0){
+                if(self.screenMode()==0){//detail screen
                     if(!nts.uk.util.isNullOrUndefined(appStampData)) {
                         self.application(new vmbase.Application(
                             appStampData.appID,
@@ -77,13 +79,9 @@ module nts.uk.at.view.kaf002.cm {
                     }
                     self.stampRequestMode(appStampData.stampRequestMode);
                     self.employeeName(appStampData.employeeName);
-                    self.currentReason(self.application().titleReason());
-                } else {
+                } else {//new screen
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
-                    if(self.inputReasonsDisp() == 1 && self.inputReasons().length != 0){
-                        self.currentReason(_.first(self.inputReasons()).id);
-                    }
                 }
                 _.forEach(approvalList, appPhase => {
                     _.forEach(appPhase.approverDtos, appFrame => {
@@ -95,22 +93,37 @@ module nts.uk.at.view.kaf002.cm {
                 self.approvalList = approvalList;
             }
             
-            register(){
+            register(errorFlag: any, errorMsg: any){
                 var self = this;
-                self.application().titleReason(self.currentReason());
-                switch(self.stampRequestMode()){
-                    case 0: self.m1.register(self.application(), self.approvalList);break;    
-                    case 1: self.m2.register(self.application(), self.approvalList);break;  
-                    case 2: self.m3.register(self.application(), self.approvalList);break; 
-                    case 3: self.m4.register(self.application(), self.approvalList);break; 
-                    case 4: self.m5.register(self.application(), self.approvalList);break; 
-                    default: break;
-                }    
+                if(errorFlag!=0){
+                    nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
+                } else {
+                    if(!nts.uk.text.isNullOrEmpty(self.currentReason())){
+                        var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
+                        self.application().titleReason(reasonText.content);    
+                    }else{
+                        self.application().titleReason("");
+                    }
+                    switch(self.stampRequestMode()){
+                        case 0: self.m1.register(self.application(), self.approvalList);break;    
+                        case 1: self.m2.register(self.application(), self.approvalList);break;  
+                        case 2: self.m3.register(self.application(), self.approvalList);break; 
+                        case 3: self.m4.register(self.application(), self.approvalList);break; 
+                        case 4: self.m5.register(self.application(), self.approvalList);break; 
+                        default: break;
+                    }    
+                }
             }
             
             update(approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
-                self.application().titleReason(self.currentReason());
+                if(!nts.uk.text.isNullOrEmpty(self.currentReason())){
+                    var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
+                    self.application().titleReason(reasonText.content);    
+                }else{
+                    self.application().titleReason("");
+                }
+                           
                 switch(self.stampRequestMode()){
                     case 0: self.m1.update(self.application(), approvalList);break;    
                     case 1: self.m2.update(self.application(), approvalList);break;  

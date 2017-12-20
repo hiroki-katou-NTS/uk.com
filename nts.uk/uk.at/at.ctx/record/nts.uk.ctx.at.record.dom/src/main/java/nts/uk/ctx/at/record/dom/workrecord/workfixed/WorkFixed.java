@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
  * @return the process date
  */
 @Getter
+//就業確定
 public class WorkFixed extends AggregateRoot{
 	
 	/** The closure id. */
@@ -44,6 +45,10 @@ public class WorkFixed extends AggregateRoot{
 	//処理年月
 	private Integer processDate;
 	
+	/** The cid. */
+    //会社ID
+    private String cid;
+	
 	/**
 	 * Instantiates a new work fixed.
 	 *
@@ -56,6 +61,7 @@ public class WorkFixed extends AggregateRoot{
 		this.confirmClsStatus = memento.getConfirmClsStatus();
 		this.fixedDate = memento.getFixedDate();
 		this.processDate = memento.getProcessDate();
+		this.cid = memento.getCid();
 	}
 	
 	
@@ -71,6 +77,7 @@ public class WorkFixed extends AggregateRoot{
 		memento.setConfirmClsStatus(this.getConfirmClsStatus());
 		memento.setFixedDate(this.fixedDate);
 		memento.setProcessDate(this.processDate);
+		memento.setCid(this.cid);
 	}
 
 

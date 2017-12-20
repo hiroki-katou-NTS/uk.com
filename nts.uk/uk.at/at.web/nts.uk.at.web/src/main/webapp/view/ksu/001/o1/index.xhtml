@@ -12,14 +12,19 @@
 			<com:stylefile path="ksu001.o1.main.css" />
 			<com:scriptfile path="ksu001.o1.vm.js" />
 			<com:scriptfile path="ksu001.o1.start.js" />
+
+			<com:scriptfile path="../common/ksu001.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_1401')}</button>
-				<button id="image102"></button>
-				<button id="image104"></button>
-				<button id="image030"></button>
+				<button id="paste" class="size-image-button"
+					data-bind="click: pasteData"></button>
+				<button id="copy" class="size-image-button"
+					data-bind="click: copyData"></button>
+				<button id="undo" class="size-image-button"
+					data-bind="click: undoData"></button>
 				<button id="setting-workplace">#{i18n.getText('KSU001_69')}</button>
 			</div>
 			<div id="contents-area">

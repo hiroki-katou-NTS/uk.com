@@ -59,11 +59,9 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 				.find(new KrcdtActualLockHistPK(actualLockHistory.getCompanyId(),
 						actualLockHistory.getClosureId().value, actualLockHistory.getLockDateTime()),
 						KrcdtActualLockHist.class);
-		KrcdtActualLockHist entity = null;
+		KrcdtActualLockHist entity = new KrcdtActualLockHist();
 		if (optional.isPresent()) {
 			entity = optional.get();
-		} else {
-			entity = new KrcdtActualLockHist();
 		}
 		actualLockHistory.saveToMemento(new JpaActualLockHistSetMemento(entity));
 		this.commandProxy().update(entity);

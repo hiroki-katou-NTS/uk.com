@@ -57,7 +57,7 @@
 										<span class="box"></span>
 										<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
 									</label>
-									<div tabindex="2" id="cbb-left-item" class="width-200"
+									<div tabindex="2" id="cbb-left-item" class="inline-table"
 										data-bind="ntsComboBox: {
 										name: '#[KMK002_66]',
 										options: selectableFormulas,
@@ -68,7 +68,7 @@
 										enable: isLeftCbbEnable,
 										columns: [
 											{ prop: 'symbolValue', length: 1 },
-											{ prop: 'formulaName', length: 10 },
+											{ prop: 'formulaName', length: 6 },
 										]}">
 									</div>
 								</div>
@@ -98,7 +98,7 @@
 									<span class="box"></span>
 									<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
 								</label>
-								<div tabindex="6" id="cbb-right-item" class="width-200"
+								<div tabindex="6" id="cbb-right-item" class="inline-table"
 									data-bind="ntsComboBox: {
 									name: '#[KMK002_66]',
 									options: selectableFormulas,
@@ -109,7 +109,7 @@
 									enable: isRightCbbEnable,
 									columns: [
 										{ prop: 'symbolValue', length: 1 },
-										{ prop: 'formulaName', length: 10 },
+										{ prop: 'formulaName', length: 6 },
 									]}">
 								</div>
 							</td>
@@ -131,7 +131,11 @@
 										data-bind="ntsNumberEditor: {
 										name: '#[KMK002_67]',
 	                                    value: leftItem.inputValue,
-	                                    constraint: 'InputValue', 
+	                                    constraint: 'InputValue',
+	                                    option: {
+		                                    grouplength: 3,
+		                                    decimallength: 2
+	                                    },
 	                                    enable: leftItem.isInputValue(), 
 	                                    required: true,
 	                                    }"/>
@@ -152,6 +156,11 @@
 										data-bind="ntsNumberEditor: {
 									  	name: '#[KMK002_67]',
 	                                    value: rightItem.inputValue,
+	                                    constraint: 'InputValue',
+	                                    option: {
+		                                    grouplength: 3,
+		                                    decimallength: 2
+	                                    },
 	                                    enable: rightItem.isInputValue(), 
 	                                    required: true}"/>
                                </div>

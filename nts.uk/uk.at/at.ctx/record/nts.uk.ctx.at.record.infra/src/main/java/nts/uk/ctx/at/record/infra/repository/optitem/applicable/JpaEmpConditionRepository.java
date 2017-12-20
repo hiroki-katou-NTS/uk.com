@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.infra.repository.optitem.applicable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -37,11 +36,11 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 */
 	@Override
 	public void update(EmpCondition dom) {
-		JpaEmpConditionSetMemento memento = new JpaEmpConditionSetMemento();
+		List<KrcstApplEmpCon> entities = this.findByItemNo(dom.getCompanyId().v(), dom.getOptItemNo().v());
+		JpaEmpConditionSetMemento memento = new JpaEmpConditionSetMemento(entities);
 		dom.saveToMemento(memento);
-		List<KrcstApplEmpCon> optEntitylist = memento.getTypeValues();
 
-		this.commandProxy().updateAll(optEntitylist);
+		this.commandProxy().updateAll(memento.getTypeValues());
 	}
 
 	/*
@@ -52,13 +51,11 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<EmpCondition> find(String companyId, String optionalItemNo) {
+	public EmpCondition find(String companyId, String optionalItemNo) {
 
 		List<KrcstApplEmpCon> entityEmpCons = this.findByItemNo(companyId, optionalItemNo);
 
-		EmpCondition domain = new EmpCondition(new JpaEmpConditionGetMemento(entityEmpCons));
-
-		return Optional.ofNullable(domain);
+		return new EmpCondition(new JpaEmpConditionGetMemento(companyId, optionalItemNo, entityEmpCons));
 	}
 
 	/**
@@ -84,12 +81,10 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
+		predicateList.add(
+				builder.equal(root.get(KrcstApplEmpCon_.krcstApplEmpConPK).get(KrcstApplEmpConPK_.cid), companyId));
 		predicateList.add(builder.equal(
-				root.get(KrcstApplEmpCon_.krcstApplEmpConPK).get(KrcstApplEmpConPK_.cid),
-				companyId));
-		predicateList.add(builder.equal(
-				root.get(KrcstApplEmpCon_.krcstApplEmpConPK).get(KrcstApplEmpConPK_.optionalItemNo),
-				optionalItemNo));
+				root.get(KrcstApplEmpCon_.krcstApplEmpConPK).get(KrcstApplEmpConPK_.optionalItemNo), optionalItemNo));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get results

@@ -96,7 +96,7 @@ public class OutsideOTSetting extends AggregateRoot{
 				if(overtime1.getUseClassification().value == UseClassification.UseClass_Use.value 
 						&& overtime2.getUseClassification().value ==UseClassification.UseClass_Use.value 
 						&& overtime1.getOvertimeNo().value != overtime2.getOvertimeNo().value
-						&& overtime1.getOvertime().v() == overtime2.getOvertime().v()){
+						&& overtime1.getOvertime().equals(overtime2.getOvertime())){
 					return true;
 				}
 			}

@@ -16,8 +16,8 @@ import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.ClassifiBasic
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;

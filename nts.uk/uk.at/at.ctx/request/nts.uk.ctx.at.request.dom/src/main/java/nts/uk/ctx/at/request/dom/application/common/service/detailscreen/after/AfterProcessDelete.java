@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface AfterProcessDelete {
 
-	public List<String> screenAfterDelete (String companyID,String appID );
+	public String screenAfterDelete (String companyID,String appID, Long version );
 
 }

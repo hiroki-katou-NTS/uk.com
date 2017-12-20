@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.worktime.flexworkset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluOffdayWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluWeekdayWorkTime;
 
 /**
  * The Class FlexWorkSetting.
@@ -20,11 +22,11 @@ public class FlexWorkSetting extends AggregateRoot {
 
 	/** The weekday work time. */
 	// 平日勤務時間帯
-	private FleWeekdayWorkTime weekdayWorkTime;
+	private FluWeekdayWorkTime weekdayWorkTime;
 
 	/** The offday work time. */
 	// 休日勤務時間帯
-	private FleOffdayWorkTime offdayWorkTime;
+	private FluOffdayWorkTime offdayWorkTime;
 
 	// 共通設定
 	// private WorkTimeCommonSet commonSetting;

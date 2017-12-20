@@ -28,30 +28,30 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_80')}</div>
 						</td>
 						<!-- G1_2 -->
-						<td colspan="2">入社日を変更した</td>
+						<td colspan="2" data-bind="text : executionContentName "></td>
 					</tr>
 					<tr>
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
 						</td>
 						<!-- G1_10 -->
-						<td>11月度</td>
+						<td><span data-bind="text:processingMonth"></span></td>
 						<!-- G1_11 -->
-						<td>01：末締めI1-4</td>
+						<td><span data-bind="text:nameClosue"></span></td>
 					</tr>
 					<tr>
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
 						<!-- G1_14 -->
-						<td colspan="2">2016/11/01 ～ 2016/11/30</td>
+						<td colspan="2"><span data-bind="text : objectPeriod.startDate"></span> ～ <span data-bind="text : objectPeriod.endDate"></span></td>
 					</tr>
 					<tr>
 						<td>
 							<div style="float:left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
 						</td>
 						<!-- G1_8 -->
-						<td colspan="2">33人</td>
+						<td colspan="2"><span data-bind="text : listPeson.length"></span>人</td>
 					</tr>
 				</table>
 				<div style="margin-left: 60px">
@@ -59,19 +59,17 @@
 						data-bind="ntsGridList: {
 	                             width: 400,
 	                             height: 260,
-	                             options: listClassification,
-	                             optionsValue: 'code',
+	                             options: listTargetPerson,
+	                             optionsValue: 'employeeCode',
 	                             columns: columns,
 	                             multiple: false,
-	                             value: currentSelectedRow,
-	                             primaryKey: 'code'}"
-						class="cf table-infor">
+	                             value : currentSelectedRow}">
 					</table>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-					<button class="large" data-bind="click: closeDialog" >#{i18n.getText('KDW001_38')}</button>
-				</div>
+				<button class="large" data-bind="click: closeDialog" >#{i18n.getText('KDW001_38')}</button>
+			</div>
 			
 		</ui:define>
 

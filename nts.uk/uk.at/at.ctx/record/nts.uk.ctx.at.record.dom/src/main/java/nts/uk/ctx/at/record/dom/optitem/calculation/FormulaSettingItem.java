@@ -43,11 +43,16 @@ public class FormulaSettingItem extends DomainObject {
 		this.dispOrder = memento.getSettingItemOrder();
 		this.inputValue = memento.getInputValue();
 		this.formulaItemId = memento.getFormulaId();
+	}
 
-		if(this.settingMethod == SettingMethod.NUMERICAL_INPUT) {
-			if (this.inputValue == null) {
-				throw new BusinessException("Msg_419");
-			}
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.dom.DomainObject#validate()
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.settingMethod == SettingMethod.NUMERICAL_INPUT && this.inputValue == null) {
+			throw new BusinessException("Msg_419");
 		}
 	}
 

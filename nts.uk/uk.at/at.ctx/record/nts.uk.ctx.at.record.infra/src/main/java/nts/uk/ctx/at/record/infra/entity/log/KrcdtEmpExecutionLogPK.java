@@ -14,18 +14,8 @@ import lombok.NoArgsConstructor;
 public class KrcdtEmpExecutionLogPK implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
-
-	@Column(name = "CID")
-	public String companyID;
 	
 	@Column(name = "EMP_EXECUTION_LOG_ID")
 	public String empCalAndSumExecLogID;
-				  
 	
-	@Column(name = "OPERATION_CASE_ID")
-	public String caseSpecExeContentID;
-	
-	@Column(name = "SID")
-	public String employeeID;
-
 }

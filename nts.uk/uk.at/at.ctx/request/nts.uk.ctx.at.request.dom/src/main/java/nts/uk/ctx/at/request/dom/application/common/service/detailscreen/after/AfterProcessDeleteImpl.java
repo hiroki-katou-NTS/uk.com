@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -18,6 +21,8 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 /**
  * 
@@ -30,12 +35,6 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 
 	@Inject
 	private AppApprovalPhaseRepository appApprovalPhaseRepository;
-
-	@Inject
-	private AfterApprovalProcess detailedScreenAfterApprovalProcessService;
-	
-	@Inject
-	private AfterProcessDelete DetailedScreenProcessAfterDeleteSevice;
 
 	@Inject
 	private AgentAdapter approvalAgencyInformationService;
@@ -52,10 +51,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private ApplicationRepository applicationRepo;
 	
-	
+	@Inject
+	private MailSender mailSender;
 	
 	@Override
-	public List<String> screenAfterDelete(String companyID,String appID) {
+	public String screenAfterDelete(String companyID,String appID, Long version) {
 		ApplicationType appType = applicationRepo.getAppById(companyID, appID).get().getApplicationType();
 		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
 				.get().getSendMailWhenRegisterFlg();
@@ -73,21 +73,26 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 			List<AppApprovalPhase> listAppApprovalPhase = appApprovalPhaseRepository.findPhaseByAppID(companyID, appID);
 			for (AppApprovalPhase appApprovalPhase : listAppApprovalPhase) {
 				// 8-2.3.1
-				List<String> listApproverID = detailedScreenAfterApprovalProcessService.actualReflectionStateDecision(appApprovalPhase.getAppID(), appApprovalPhase.getPhaseID(), appApprovalPhase.getApprovalATR());
-				
+				List<String> listApproverID = new ArrayList<>();// detailedScreenAfterApprovalProcessService.actualReflectionStateDecision(appApprovalPhase.getAppID(), appApprovalPhase.getPhaseID(), appApprovalPhase.getApprovalATR());
+				appApprovalPhase.getListFrame().stream().forEach(x -> {
+					x.getListApproveAccepted().stream().forEach(y ->{
+						listApproverID.add(y.getApproverSID());
+					});
+				});
 				if (!listApproverID.isEmpty()) {
-					List<String> approver = new ArrayList<String>();
+					//List<String> approver = new ArrayList<String>();
 					
 					/** 3-1 アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)*/
-					AgentPubImport agentPubImport = approvalAgencyInformationService.getApprovalAgencyInformation(companyID, approver);
+					AgentPubImport agentPubImport = approvalAgencyInformationService.getApprovalAgencyInformation(companyID, listApproverID);
+					//承認者の代行情報リスト
 					List<ApproverRepresenterImport> listApproverRepresenter = agentPubImport.getListApproverAndRepresenterSID();
 					
-					/** 3-2 */
+					/** 3-2.送信先の判断処理 */
 					listDestination.addAll(destinationJudgmentProcessService.getDestinationJudgmentProcessService(listApproverRepresenter));
 					
-					//Add listDestination to listSender
+					/*//Add listDestination to listSender
 					List<String> listSender = new ArrayList<String>(listDestination);
-					listSender.addAll(listApproverID);
+					listSender.addAll(listApproverID);*/
 					if(appApprovalPhase.getApprovalATR() != ApprovalAtr.APPROVED){
 						break;
 					}					
@@ -95,26 +100,35 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 			}
 		}
 		//filter duplicate
-		 converList = listDestination.stream().distinct().collect(Collectors.toList());
-		
+		converList = listDestination.stream().distinct().collect(Collectors.toList());
+		String strMail = "";
 		if (converList != null) {
 			// TODOgui mail cho ng xac nhan
 			
 			// TODO lay thong tin Imported
-			List<String> lstMail = new ArrayList<>();
+			
 			for(String employeeId: converList){
-				String mail = employeeAdapter.getEmployeeInfor(employeeId).getCompanyMail();
-				lstMail.add(mail);
+				String mail = employeeAdapter.getEmployeeInfor(employeeId).getSMail();
+				if(Strings.isBlank(mail)) {
+					continue;
+				}
+				try {
+					mailSender.send("nts", mail, new MailContents("nts mail", "delete mail from NTS"));
+					strMail += mail + System.lineSeparator();
+				} catch (SendMailFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
 		//TODO delete domaim Application
-		applicationRepo.deleteApplication(companyID, appID);
+		applicationRepo.deleteApplication(companyID, appID, version);
 		//TODO hien thi thong tin Msg_16 
-		if (converList != null) {
+		/*if (converList != null) {
 			//TODO Hien thi thong tin 392
-		}
-		return converList;
+		}*/
+		return strMail;
 	}
 
 }

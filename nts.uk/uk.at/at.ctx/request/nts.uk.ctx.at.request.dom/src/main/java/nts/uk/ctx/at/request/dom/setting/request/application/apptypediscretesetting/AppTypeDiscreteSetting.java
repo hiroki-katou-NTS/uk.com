@@ -4,7 +4,7 @@ import javax.enterprise.inject.Model;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
@@ -55,15 +55,15 @@ public class AppTypeDiscreteSetting {
 	 */
 	private AppDisplayAtr displayReasonFlg;
 	/**
-	 * チェック方法
+	 * 事前の受付制限: チェック方法
 	 */
 	private CheckMethod retrictPreMethodFlg;
 	/**
-	 * 利用する
+	 * 事前の受付制限: 利用する
 	 */
 	private UseAtr retrictPreUseFlg;
 	/**
-	 * 日数
+	 * 事前の受付制限: 日数
 	 */
 	private RetrictDay retrictPreDay;
 	/**
@@ -75,7 +75,7 @@ public class AppTypeDiscreteSetting {
 	 */
 	private PossibleAtr retrictPreCanAceeptFlg;
 	/**
-	 * 未来日許可しない
+	 * 事後の受付制限: 未来日許可しない
 	 */
 	private AllowAtr retrictPostAllowFutureFlg;
 

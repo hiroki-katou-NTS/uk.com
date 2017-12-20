@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.shift.basicworkregister;
@@ -210,6 +210,48 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 				.setClassifyCode(entity.getKscmtClassifyWorkSetPK().getClassifyCode());
 
 		return entityToUpdate;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
+	 * ClassifiBasicWorkRepository#findById(java.lang.String, java.lang.String,
+	 * int)
+	 */
+	@Override
+	public Optional<ClassificationBasicWork> findById(String companyId, String classificationCode, int workdayAtr) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder bd = em.getCriteriaBuilder();
+		CriteriaQuery<KscmtClassifyWorkSet> cq = bd.createQuery(KscmtClassifyWorkSet.class);
+
+		// Root
+		Root<KscmtClassifyWorkSet> root = cq.from(KscmtClassifyWorkSet.class);
+		cq.select(root);
+
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		predicateList.add(bd.equal(
+				root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.cid), companyId));
+		predicateList.add(bd.equal(
+				root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.classifyCode),
+				classificationCode));
+		predicateList.add(bd.equal(
+				root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.workdayDivision),
+				workdayAtr));
+
+		// Set Where clause to SQL Query
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Create Query
+		TypedQuery<KscmtClassifyWorkSet> query = em.createQuery(cq);
+
+		if (CollectionUtil.isEmpty(query.getResultList())) {
+			return Optional.empty();
+		}
+
+		return Optional.of(this.toDomain(query.getResultList()));
 	}
 
 

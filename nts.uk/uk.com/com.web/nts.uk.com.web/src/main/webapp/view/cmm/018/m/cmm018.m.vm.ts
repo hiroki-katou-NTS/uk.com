@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm018.m {
             isCompany: KnockoutObservable<boolean> = ko.observable(true);
             isWorkplace: KnockoutObservable<boolean> = ko.observable(true);
             isPerson: KnockoutObservable<boolean> = ko.observable(true);            
-            date: KnockoutObservable<Date> = ko.observable(new Date);
+            date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
             constructor() {
                 var self = this;                            
             }

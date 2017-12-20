@@ -4,16 +4,34 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.adapter.person;
 
+import java.util.List;
+
 /**
- * The Interface PersonAdapter.
+ * The Interface PersonInfoAdapter.
  */
 public interface PersonInfoAdapter {
-
+	
 	/**
 	 * Gets the person info.
 	 *
-	 * @param sID the s ID
+	 * @param employeeId the employee id
 	 * @return the person info
 	 */
-	PersonInfoImportedDto getPersonInfo(String sID);
+	PersonInfoImport getPersonInfo(String employeeId);
+	
+	/**
+	 * get list person by list person ID
+	 * @param personId
+	 * @return
+	 */
+	List<PersonInfoImport> getByListId(List<String> personId);
+	
+	/**
+	 * Gets the list person info.
+	 *
+	 * @param listSid the list sid
+	 * @return the list person info
+	 */
+	List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid);
+
 }

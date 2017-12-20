@@ -786,6 +786,17 @@ module nts.uk.at.view.ksm001.a {
                     self.loadUsageSettingModel();
                 });
             }
+            
+            /**
+             * open [Comparison Target Setting] Dialog
+             */
+            private openComparTargetSettingDialog(): void {
+                let self = this;
+                nts.uk.ui.windows.sub.modal("/view/ksm/001/g/index.xhtml").onClosed(function() {
+                    $('#comboTargetYear').focus();
+                    // Do st
+                });
+            }
 
             /**
              * open dialog CommonSetting (view model F)

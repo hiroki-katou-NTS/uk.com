@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscdtScheExeContent.
@@ -26,7 +27,7 @@ import nts.arc.time.GeneralDate;
 @Setter
 @Entity
 @Table(name = "KSCDT_SCHE_EXE_CONTENT")
-public class KscdtScheExeContent implements Serializable {
+public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -139,6 +140,14 @@ public class KscdtScheExeContent implements Serializable {
     public String toString() {
         return "entity.KscmtSchCreateContent[ exeId=" + exeId + " ]";
     }
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.exeId;
+	}
     
     
 }

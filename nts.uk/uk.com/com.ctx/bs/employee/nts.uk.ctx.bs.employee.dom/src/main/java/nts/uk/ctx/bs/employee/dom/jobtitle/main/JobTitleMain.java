@@ -2,12 +2,16 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.main;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Getter
 @AllArgsConstructor
-public class JobTitleMain {
+@NoArgsConstructor
+public class JobTitleMain extends AggregateRoot{
 	/**
 	 * domain : 職務職位 - JobPositionMain
 	 */
@@ -16,10 +20,10 @@ public class JobTitleMain {
 	
 	private String sid;
 	
-	private GenericHistoryItem genericHistoryItem;
+	private DateHistoryItem dateHistoryItem;
 	
 	public static JobTitleMain creatFromJavaType(String jobTitleId, String sid , String hisid, GeneralDate startDate, GeneralDate endDate) {
-		return new JobTitleMain(jobTitleId, hisid, new GenericHistoryItem(hisid, new DatePeriod(startDate, endDate)));
+		return new JobTitleMain(jobTitleId, hisid, new DateHistoryItem(hisid, new DatePeriod(startDate, endDate)));
 		
 	}
 	

@@ -21,6 +21,7 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscdtScheExeLog.
@@ -29,7 +30,7 @@ import nts.arc.time.GeneralDateTime;
 @Setter
 @Entity
 @Table(name = "KSCDT_SCHE_EXE_LOG")
-public class KscdtScheExeLog implements Serializable {
+public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -130,6 +131,14 @@ public class KscdtScheExeLog implements Serializable {
 	@Override
 	public String toString() {
 		return "entity.KscmtSchExecutionLog[ kscmtSchExecutionLogPK=" + kscdtScheExeLogPK + " ]";
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.kscdtScheExeLogPK;
 	}
     
 }

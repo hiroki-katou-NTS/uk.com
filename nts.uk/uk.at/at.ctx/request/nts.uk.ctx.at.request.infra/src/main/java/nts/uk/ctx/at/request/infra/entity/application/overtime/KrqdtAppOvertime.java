@@ -1,16 +1,30 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -28,6 +42,10 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected KrqdtAppOvertimePK krqdtAppOvertimePK;
+    
+    @Version
+	@Column(name="EXCLUS_VER")
+	public Long version;
    
     @Column(name = "OVERTIME_ATR")
     private int overtimeAtr;
@@ -39,37 +57,103 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
     private String siftCode;
     
     @Column(name = "WORK_CLOCK_FROM1")
-    private int workClockFrom1;
+    private Integer workClockFrom1;
     
     @Column(name = "WORK_CLOCK_TO1")
-    private int workClockTo1;
+    private Integer workClockTo1;
     
     @Column(name = "WORK_CLOCK_FROM2")
-    private int workClockFrom2;
+    private Integer workClockFrom2;
     
     @Column(name = "WORK_CLOCK_TO2")
-    private int workClockTo2;
-    
-    @Column(name = "DIVERGENCE_REASON_ID")
-    private String divergenceReasonId;
+    private Integer workClockTo2;
     
     @Column(name = "DIVERGENCE_REASON")
     private String divergenceReason;
     
     @Column(name = "FLEX_EXCESS_TIME")
-    private int flexExcessTime;
-    
-    @Column(name = "CALCULATION_OVERTIME")
-    private int calculationOvertime;
+    private Integer flexExcessTime;
     
     @Column(name = "OVERTIME_SHIFT_NIGHT")
-    private int overtimeShiftNight;
+    private Integer overtimeShiftNight;
+    
+    @OneToMany(targetEntity=KrqdtOvertimeInput.class, mappedBy="appOvertime", cascade = CascadeType.ALL)
+    @JoinTable(name = "KRQDT_OVERTIME_INPUT")
+	public List<KrqdtOvertimeInput> overtimeInputs;
+    
+    @OneToOne(targetEntity=KafdtApplication.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
+		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
+	})
+	public KafdtApplication kafdtApplication;
+    
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
 		return krqdtAppOvertimePK;
 	}
 
+	public KrqdtAppOvertime fromDomainValue(AppOverTime appOverTime){
+		this.version = appOverTime.getVersion();
+		this.setWorkTypeCode(appOverTime.getWorkTypeCode().v());
+		this.setSiftCode(appOverTime.getSiftCode().v());
+		this.setWorkClockFrom1(appOverTime.getWorkClockFrom1());
+		this.setWorkClockTo1(appOverTime.getWorkClockTo1());
+		this.setWorkClockFrom2(appOverTime.getWorkClockFrom2());
+		this.setWorkClockTo2(appOverTime.getWorkClockTo2());
+		// krqdtAppOvertime.setOvertimeInputs(krqdtAppOvertime.getOvertimeInputs().stream().);
+		this.setOvertimeAtr(appOverTime.getOverTimeAtr().value);
+		this.setOvertimeShiftNight(appOverTime.getOverTimeShiftNight());
+		this.setFlexExcessTime(appOverTime.getFlexExessTime());
+		this.setDivergenceReason(appOverTime.getDivergenceReason());
+		for(int i = 0; i<appOverTime.getOverTimeInput().size(); i++){
+			OverTimeInput overtimeInput = appOverTime.getOverTimeInput().get(i);
+			this.getOvertimeInputs().stream().filter(
+					x -> x.krqdtOvertimeInputPK.getAttendanceId()==overtimeInput.getAttendanceID().value 
+					&& x.krqdtOvertimeInputPK.getFrameNo()==overtimeInput.getFrameNo()
+					&& x.krqdtOvertimeInputPK.getTimeItemTypeAtr()==overtimeInput.getTimeItemTypeAtr().value)
+			.findAny()
+			.map(x -> {
+				x.fromDomainValue(overtimeInput);
+				return Optional.ofNullable(null);
+			}).orElseGet(()->{
+				KrqdtOvertimeInput krqdtOvertimeInput = new KrqdtOvertimeInput(
+						new KrqdtOvertimeInputPK(
+							appOverTime.getCompanyID(),
+							appOverTime.getAppID(),
+							overtimeInput.getAttendanceID().value,
+							overtimeInput.getFrameNo(),
+							overtimeInput.getTimeItemTypeAtr().value
+						), 
+						overtimeInput.getStartTime().v(), 
+						overtimeInput.getEndTime().v(), 
+						overtimeInput.getApplicationTime().v());
+				this.overtimeInputs.add(krqdtOvertimeInput);
+				return null;
+			});
+		}
+		return this;
+	}
+	
+	public AppOverTime toDomain(){
+		AppOverTime appOverTime = new AppOverTime(
+				this.krqdtAppOvertimePK.getCid(), 
+				this.krqdtAppOvertimePK.getAppId(), 
+				this.getOvertimeAtr(), 
+				this.getWorkTypeCode(), 
+				this.getSiftCode(), 
+				this.getWorkClockFrom1(), 
+				this.getWorkClockTo1(), 
+				this.getWorkClockFrom2(), 
+				this.getWorkClockTo2(), 
+				this.getDivergenceReason(), 
+				this.getFlexExcessTime(), 
+				this.getOvertimeShiftNight());
+		appOverTime.setOverTimeInput(this.overtimeInputs.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+		appOverTime.setVersion(this.version);
+		return appOverTime;
+	}
     
 }
 

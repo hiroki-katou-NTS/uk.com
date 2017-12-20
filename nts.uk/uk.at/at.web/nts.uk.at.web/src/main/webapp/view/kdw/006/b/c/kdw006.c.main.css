@@ -20,3 +20,7 @@
 #screen-c .switchAtr {
 	margin-left: 100px;
 }
+
+#screen-c .switchAtr > button.nts-switch-button {
+	width: 80px;
+}

@@ -53,4 +53,11 @@ public interface WorkFixedGetMemento {
 	 * @return the process date
 	 */
 	Integer getProcessDate();
+	
+	/**
+	 * Gets the cid.
+	 *
+	 * @return the cid
+	 */
+	String getCid();
 }

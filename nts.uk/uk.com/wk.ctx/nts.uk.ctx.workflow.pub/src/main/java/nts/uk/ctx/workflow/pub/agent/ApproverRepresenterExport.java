@@ -15,5 +15,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ApproverRepresenterExport {
 	String approver;
-	String representer;
+	RepresenterInformationExport representer;
 }

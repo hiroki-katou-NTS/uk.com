@@ -11,10 +11,23 @@ module nts.uk.at.view.ksm001.f {
 
         export class ScreenModel {
             commonGuidelineSettingModel: CommonGuidelineSettingModel;
-           
+            comparisonTarget: ComparisonTarget;
+//            selectedCompaTarget: KnockoutObservable<number>; 
+//            comparisonTagetList: KnockoutObservableArray<any>;
+//           
             constructor() {
                 var self = this;
                 self.commonGuidelineSettingModel = new CommonGuidelineSettingModel();
+                self.comparisonTarget = new ComparisonTarget();
+//                this.comparisonTagetList = ko.observableArray([
+//                    {id: 1, name: nts.uk.resource.getText('KSM001_67')},
+//                    {id: 2, name: nts.uk.resource.getText('KSM001_68')},
+//                    {id: 3, name: nts.uk.resource.getText('KSM001_69')}
+////                    new ComparisonTargetModel(EstComparison.PRE_DETERMINED, nts.uk.resource.getText('KSM001_67')),
+////                    new ComparisonTargetModel(EstComparison.TOTAL_WORKING_HOURS, nts.uk.resource.getText('KSM001_68')),
+////                    new ComparisonTargetModel(EstComparison.PER_COST_TIME, nts.uk.resource.getText('KSM001_69'))
+//                ]);
+//                this.selectedCompaTarget = ko.observable(1);
             }
 
             /**
@@ -23,11 +36,15 @@ module nts.uk.at.view.ksm001.f {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                service.findCommonGuidelineSetting().done(function(data){
-                    if(data){
-                        self.commonGuidelineSettingModel.updateData(data);    
+                $.when(service.findCommonGuidelineSetting()).done(function(data){
+                    if(data.alarmColors){
+                        self.commonGuidelineSettingModel.updateData(data);
                     }
                     dfd.resolve();
+                }).always(function() {
+                    service.findEstimateComparison().done(function(data) {
+                        self.comparisonTarget.selectedCompaTarget(data.comparisonAtr);
+                    });
                 });
                 return dfd.promise();
             }
@@ -40,7 +57,11 @@ module nts.uk.at.view.ksm001.f {
 
                 nts.uk.ui.block.invisible();
 
-                service.saveCommonGuidelineSetting(self.commonGuidelineSettingModel.toDto()).done(function() {
+                // set CommonGuidelineSettingDto
+                let dto: CommonGuidelineSettingDto = self.commonGuidelineSettingModel.toDto();
+                dto.estimateComparison = self.comparisonTarget.selectedCompaTarget();
+                
+                service.saveCommonGuidelineSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // close windows
@@ -66,13 +87,17 @@ module nts.uk.at.view.ksm001.f {
         export class ReferenceConditionModel {
             yearlyDisplayCondition: KnockoutObservable<number>;
             monthlyDisplayCondition: KnockoutObservable<number>;
-            alarmCheckCondition: KnockoutObservable<number>;
+//            alarmCheckCondition: KnockoutObservable<number>;
+            monthlyAlarmCkCondition: KnockoutObservable<number>;
+            yearlyAlarmCkCondition: KnockoutObservable<number>;
             lstEstimateCondition: KnockoutObservableArray<EstimatedConditionDto>;
 
             constructor() {
                 this.yearlyDisplayCondition = ko.observable(1);
                 this.monthlyDisplayCondition = ko.observable(1);
-                this.alarmCheckCondition = ko.observable(1);
+//                this.alarmCheckCondition = ko.observable(1);
+                this.monthlyAlarmCkCondition = ko.observable(1);
+                this.yearlyAlarmCkCondition = ko.observable(1);
                 this.lstEstimateCondition = ko.observableArray([
                     { code: 1, name: "条件1" },
                     { code: 2, name: "条件2" },
@@ -85,7 +110,9 @@ module nts.uk.at.view.ksm001.f {
             updateData(dto: ReferenceConditionDto) {
                 this.yearlyDisplayCondition(dto.yearlyDisplayCondition);
                 this.monthlyDisplayCondition(dto.monthlyDisplayCondition);
-                this.alarmCheckCondition(dto.alarmCheckCondition);
+//                this.alarmCheckCondition(dto.alarmCheckCondition);
+                this.monthlyAlarmCkCondition(dto.monthlyAlarmCkCondition);
+                this.yearlyAlarmCkCondition(dto.yearlyAlarmCkCondition);
             }
             
             toDto(): ReferenceConditionDto {
@@ -93,7 +120,9 @@ module nts.uk.at.view.ksm001.f {
                     {
                         yearlyDisplayCondition: this.yearlyDisplayCondition(),
                         monthlyDisplayCondition: this.monthlyDisplayCondition(),
-                        alarmCheckCondition: this.alarmCheckCondition()
+//                        alarmCheckCondition: this.alarmCheckCondition()
+                        monthlyAlarmCkCondition: this.monthlyAlarmCkCondition(),
+                        yearlyAlarmCkCondition: this.yearlyAlarmCkCondition()
                     };
                 return dto;
             }
@@ -169,10 +198,51 @@ module nts.uk.at.view.ksm001.f {
                         alarmColors: alarmColors,
                         estimateTime: this.estimateTime.toDto(),
                         estimatePrice: this.estimatePrice.toDto(),
-                        estimateNumberOfDays: this.estimateNumberOfDays.toDto()
+                        estimateNumberOfDays: this.estimateNumberOfDays.toDto(),
+                        estimateComparison: 0
                     };
                 return dto;
             }
+        }
+        
+        export class ComparisonTarget {
+            selectedCompaTarget: KnockoutObservable<number>; 
+            comparisonTagetList: Array<ComparisonTargetModel>; 
+            
+            constructor() {
+//                this.comparisonTagetList = ko.observableArray([
+//                    new ComparisonTargetModel(EstComparison.PRE_DETERMINED, nts.uk.resource.getText('KSM001_67')),
+//                    new ComparisonTargetModel(EstComparison.TOTAL_WORKING_HOURS, nts.uk.resource.getText('KSM001_68')),
+//                    new ComparisonTargetModel(EstComparison.PER_COST_TIME, nts.uk.resource.getText('KSM001_69'))
+//                ]);
+                this.selectedCompaTarget = ko.observable(EstComparison.PRE_DETERMINED);
+                this.comparisonTagetList = [
+                    new ComparisonTargetModel(EstComparison.PRE_DETERMINED, nts.uk.resource.getText('KSM001_67')),
+                    new ComparisonTargetModel(EstComparison.TOTAL_WORKING_HOURS, nts.uk.resource.getText('KSM001_68')),
+                    new ComparisonTargetModel(EstComparison.PER_COST_TIME, nts.uk.resource.getText('KSM001_69'))
+                ]
+            }
+        }
+        
+        export class ComparisonTargetModel {
+            id: number;
+            name: string;
+            
+            constructor(id, name) {
+                var self = this;
+                self.id = id;
+                self.name = name;
+            }
+        }
+        
+        // 目安比較対象区分
+        export enum EstComparison {
+            // 所定時間
+            PRE_DETERMINED = 1,
+            // 総労働時間
+            TOTAL_WORKING_HOURS = 2,
+            // 人件費時間
+            PER_COST_TIME = 3
         }
         
         //  目安利用条件

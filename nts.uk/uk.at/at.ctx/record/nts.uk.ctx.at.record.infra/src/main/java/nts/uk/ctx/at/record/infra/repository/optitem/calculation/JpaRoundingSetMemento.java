@@ -6,8 +6,8 @@ package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
 import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingSetMemento;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRounding;
-import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
-import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
@@ -35,7 +35,7 @@ public class JpaRoundingSetMemento implements RoundingSetMemento {
 	 * NumberRounding)
 	 */
 	@Override
-	public void setNumberRounding(NumberRounding rounding) {
+	public void setNumberRounding(NumberRoundingSetting rounding) {
 		this.rounding.setNumberRounding(rounding.getRounding().value);
 		this.rounding.setNumberRoundingUnit(rounding.getUnit().value);
 	}
@@ -61,7 +61,7 @@ public class JpaRoundingSetMemento implements RoundingSetMemento {
 	 * AmountRounding)
 	 */
 	@Override
-	public void setAmountRounding(AmountRounding rounding) {
+	public void setAmountRounding(AmountRoundingSetting rounding) {
 		this.rounding.setAmountRounding(rounding.getRounding().value);
 		this.rounding.setAmountRoundingUnit(rounding.getUnit().value);
 	}

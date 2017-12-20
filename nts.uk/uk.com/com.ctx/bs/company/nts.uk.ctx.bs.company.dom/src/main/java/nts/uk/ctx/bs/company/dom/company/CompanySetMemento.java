@@ -18,7 +18,7 @@ public interface CompanySetMemento {
 	 *
 	 * @param companyName the new company name
 	 */
-	void setCompanyName(CompanyName companyName);
+	void setCompanyName(Name companyName);
 	
 	/**
 	 * Sets the company id.

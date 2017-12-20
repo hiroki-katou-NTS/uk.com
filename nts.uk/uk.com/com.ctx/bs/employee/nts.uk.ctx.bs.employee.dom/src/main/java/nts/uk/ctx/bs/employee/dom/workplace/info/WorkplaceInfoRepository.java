@@ -82,5 +82,31 @@ public interface WorkplaceInfoRepository {
 	 */
 	boolean isExistedWkpCd(String companyId, String newWkpCd);
 	
-	List<WorkplaceInfo> findByWkpByCidAndBaseDate(String companyId, GeneralDate baseDate);
+	/**
+	 * Gets the by wkp ids.
+	 *
+	 * @param wkpIds the wkp ids
+	 * @param baseDate the base date
+	 * @return the by wkp ids
+	 */
+	List<WorkplaceInfo> getByWkpIds(List<String> wkpIds, GeneralDate baseDate);
+	
+	/**
+	 * Find by wkp ids.
+	 *
+	 * @param companyId the company id
+	 * @param wkpIds the wkp ids
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByWkpIds(String companyId, List<String> wkpIds);
+	
+	/**
+	 * Find detail latest by wkp ids.
+	 *
+	 * @param companyId the company id
+	 * @param startDWkpConfigHist the start D wkp config hist
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId, GeneralDate startDWkpConfigHist);
+	
 }

@@ -4,25 +4,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * TanLV
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class BaseItemsDto {
-	/* 会社ID */
+	/** 会社ID */
     private String companyId;
     
-    /* Id */
+    /** Id */
     private String id;
     
-    /* 項目Id */
+    /** 項目Id */
     private String itemId;
     
-    /* 項目名 */
+    /** 項目名 */
     private String itemName;
     
-    /* アイテムタイプ */
+    /** アイテムタイプ */
     private int itemType;
     
-    /* 順番 */
+    /** 順番 */
     private int dispOrder;
 }

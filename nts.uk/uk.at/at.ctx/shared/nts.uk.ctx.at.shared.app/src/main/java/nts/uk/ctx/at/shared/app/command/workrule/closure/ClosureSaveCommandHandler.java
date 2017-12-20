@@ -14,7 +14,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -25,14 +24,10 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class ClosureSaveCommandHandler extends CommandHandler<ClosureSaveCommand> {
 	
-	/** The repository. */
+	/** The closure repository. */
 	@Inject
-	private ClosureRepository closureRepo;
+	private ClosureRepository closureRepository;
 	
-	/** The repository history. */
-	@Inject
-	private ClosureHistoryRepository closureHistoryRepo;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -52,10 +47,10 @@ public class ClosureSaveCommandHandler extends CommandHandler<ClosureSaveCommand
 		// get command
 		ClosureSaveCommand command = context.getCommand();
 		
-		Optional<ClosureHistory> beginClosureHistory = this.closureHistoryRepo
+		Optional<ClosureHistory> beginClosureHistory = this.closureRepository
 				.findByHistoryBegin(companyId, command.getClosureId());
 		
-		Optional<ClosureHistory> endClosureHistory = this.closureHistoryRepo
+		Optional<ClosureHistory> endClosureHistory = this.closureRepository
 				.findByHistoryLast(companyId, command.getClosureId());
 		// check (min start month) <= closure month <= (max end month) 
 		if (beginClosureHistory.isPresent() && endClosureHistory.isPresent()
@@ -68,7 +63,7 @@ public class ClosureSaveCommandHandler extends CommandHandler<ClosureSaveCommand
 		// to domain
 		Closure domain = command.toDomain(companyId);
 		
-		this.closureRepo.update(domain);
+		this.closureRepository.update(domain);
 	}
 
 }

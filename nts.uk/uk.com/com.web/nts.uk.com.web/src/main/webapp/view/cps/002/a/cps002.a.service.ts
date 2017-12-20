@@ -1,70 +1,265 @@
 module cps002.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-
-    let paths: any = {
-        'getData': 'ctx/bs/person/newlayout/get',
-        'getUserSetting': 'ctx/bs/person/info/setting/user/getUserSetting',
-        'getLastRegHistory': 'ctx/bs/person/info/setting/regisHistory/getLastRegHistory',
-        'getEmployeeCode': 'basic/organization/employee/getGenerateEmplCode',
-        'getCardNumber': 'basic/organization/employee/getGenerateCardNo',
-        'getGenerateEmplCodeAndComId': 'basic/organization/employee/getGenerateEmplCodeAndComId',
-        'validateEmpInfo': 'basic/organization/employee/validateEmpInfo',
-        'getCopySetting': 'ctx/bs/person/info/setting/copySetting/getCopySetting',
-        'getAllInitValueSetting': 'ctx/bs/person/info/setting/init/findAllHasChild',
-        'getAllInitValueCtgSetting': 'ctx/bs/person/info/setting/init/ctg/findAllBySetId/{0}',
-        'getAllInitValueItemSetting': 'regpersoninfo/init/item/findInit/{0}/{1}',
-        'getSelfRoleAuth': 'ctx/bs/person/roles/auth/getSelfAuth'
-
-    };
+    import block = nts.uk.ui.block;
+    let
+        regpath = "ctx/pereg/",
+        paths: any = {
+            getEmployeeCode: 'employee/mngdata/getGenerateEmplCode',
+            getCardNumber: 'employee/mngdata/getGenerateCardNo',
+            getLayout: 'person/newlayout/get-layout-can-null',
+            getAllInitValueSetting: 'person/info/setting/init/findAllHasChild',
+            getSelfRoleAuth: 'roles/auth/get-self-auth',
+            getUserSetting: 'usersetting/getUserSetting',
+            getLastRegHistory: 'empreghistory/getLastRegHistory',
+            getGenerateEmplCodeAndComId: 'addemployee/getGenerateEmplCodeAndComId',
+            validateEmpInfo: 'addemployee/validateEmpInfo',
+            getCopySetting: 'copysetting/setting/getCopySetting',
+            getAllCopySettingItem: 'copysetting/item/getAll/{0}/{1}/{2}',
+            getAllInitValueCtgSetting: 'initsetting/category/findAllBySetId/{0}',
+            getAllInitValueItemSetting: 'initsetting/item/findInit',
+            getLayoutByCreateType: 'layout/getByCreateType',
+            addNewEmployee: 'addemployee/addNewEmployee',
+            getEmployeeInfo: 'basic/organization/employee/getoffselect',
+        };
 
     export function getLayout() {
-        return ajax(paths.getData);
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(regpath + paths.getLayout)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
     }
 
     export function getUserSetting() {
-        return ajax(paths.getUserSetting);
+
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(regpath + paths.getUserSetting)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
     }
 
     export function getLastRegHistory() {
-        return ajax(paths.getLastRegHistory);
+
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(regpath + paths.getLastRegHistory)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
+
     }
 
     export function getEmployeeCode(employeeLetter) {
-        return ajax(paths.getEmployeeCode, employeeLetter);
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax("com", regpath + paths.getEmployeeCode, employeeLetter)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
+
+
     }
 
     export function getCardNumber(cardLetter) {
-        return ajax(paths.getCardNumber, cardLetter);
+
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax("com", regpath + paths.getCardNumber, cardLetter)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
     }
 
     export function getEmployeeCodeAndComId(employeeLetter) {
-        return ajax(paths.getCardNumber, employeeLetter);
+
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax("com", regpath + paths.getCardNumber, employeeLetter)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
     }
 
-    export function validateEmpInfo(employeeCode, cardNo) {
-        return ajax(paths.validateEmpInfo, { employeeCode: employeeCode, cardNo: cardNo });
+    export function validateEmpInfo(command) {
+
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax("com", regpath + paths.validateEmpInfo, command)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
+
     }
 
     export function getCopySetting() {
-        return ajax(paths.getCopySetting);
+
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(regpath + paths.getCopySetting)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
+    }
+
+    export function getAllCopySettingItem(employeeId, categoryCd, baseDate) {
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(format(regpath + paths.getAllCopySettingItem, employeeId, categoryCd, baseDate))
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
     }
 
     export function getAllInitValueSetting() {
-        return ajax(paths.getAllInitValueSetting);
+        return ajax(regpath + paths.getAllInitValueSetting);
     }
 
     export function getAllInitValueCtgSetting(settingId: string) {
-        return ajax(format(paths.getAllInitValueCtgSetting, settingId));
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(format(regpath + paths.getAllInitValueCtgSetting, settingId))
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
 
     }
 
-    export function getAllInitValueItemSetting(settingId, categoryCd) {
-        return ajax(format(paths.getAllInitValueItemSetting, settingId, categoryCd));
+    export function getAllInitValueItemSetting(command) {
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(regpath + paths.getAllInitValueItemSetting, command)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
     }
 
     export function getSelfRoleAuth() {
-        return ajax(paths.getSelfRoleAuth);
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(regpath + paths.getSelfRoleAuth)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
+    }
+
+    export function getLayoutByCreateType(command) {
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax(regpath + paths.getLayoutByCreateType, command)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
+    }
+
+    export function addNewEmployee(command) {
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.grayout();
+        nts.uk.request.ajax(regpath + paths.addNewEmployee, command)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
+    }
+    export function getEmployeeInfo(command) {
+        let dfd = $.Deferred<any>();
+        let self = this;
+        block.invisible();
+        nts.uk.request.ajax("com", paths.getEmployeeInfo, command)
+            .done(function(res) {
+                dfd.resolve(res);
+            }).fail(function(res) {
+                dfd.reject(res);
+            }).always(() => {
+                block.clear();
+            });
+        return dfd.promise();
     }
 
 }

@@ -1,8 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.employee.deletemanagement;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,10 +9,11 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpRepository;
-import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.ReasonRemoveEmp;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.RemoveReason;
 
 @Stateless
 @Transactional
@@ -21,26 +21,25 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 
 	/** The repository. */
 	@Inject
-	private DeleteEmpRepository deleteEmpRepo;
+	private EmployeeDataMngInfoRepository EmpDataMngRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<EmployeeDeleteCommand> context) {
 
-		// get command
-		EmployeeDeleteCommand command = context.getCommand();
-
-		// getting current date and time using Date class
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date dateobj = new Date();
-		
-
-		if (command != null) {
-			// 0 : deleted = false , 1 : deleted = true;
-			DeleteEmpManagement domain = new DeleteEmpManagement(0, command.getSId(),
-					GeneralDate.fromString(df.format(dateobj), "yyyy-MM-dd HH:mm:ss"), new ReasonRemoveEmp(command.getReason()));
-			deleteEmpRepo.insertToDeleteEmpManagemrnt(domain);
+		if (context != null) {
+			// get command
+			EmployeeDeleteCommand command = context.getCommand();
+			
+			// get EmployeeDataMngInfo
+			List<EmployeeDataMngInfo> listEmpData = EmpDataMngRepo.findByEmployeeId(command.getSId());
+			if (!listEmpData.isEmpty()) {
+				EmployeeDataMngInfo empInfo =  EmpDataMngRepo.findByEmployeeId(command.getSId()).get(0);
+				GeneralDateTime currentDatetime = GeneralDateTime.legacyDateTime(new Date());
+				empInfo.setDeleteDateTemporary(currentDatetime);
+				empInfo.setRemoveReason(new RemoveReason(command.getReason()));
+				empInfo.setDeletedStatus(EmployeeDeletionAttr.TEMPDELETED);
+				EmpDataMngRepo.updateRemoveReason(empInfo);
+			} 
 		}
-
 	}
-
 }

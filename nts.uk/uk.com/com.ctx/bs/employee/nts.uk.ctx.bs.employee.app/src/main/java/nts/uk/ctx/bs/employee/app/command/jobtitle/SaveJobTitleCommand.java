@@ -22,87 +22,108 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 @Getter
 @Setter
 public class SaveJobTitleCommand {
-	
+
 	/** The is create mode. */
 	private Boolean isCreateMode;
-    
-    /** The job title info. */
-    private JobTitleInfoDto jobTitleInfo;
-    
-    /**
-     * To domain.
-     *
-     * @param companyId the company id
-     * @return the job title info
-     */
-    public JobTitleInfo toDomain(String companyId) {
-        return new JobTitleInfo(new JobTitleInfoGetMementoImpl(companyId, this));
-    }
-    
-    /**
-     * The Class JobTitleInfoGetMementoImpl.
-     */
-    public class JobTitleInfoGetMementoImpl implements JobTitleInfoGetMemento {
 
-        /** The company id. */
-        private String companyId;
+	/** The job title info. */
+	private JobTitleInfoDto jobTitleInfo;
 
-        /** The save command. */
-        private SaveJobTitleCommand saveCommand;
+	/**
+	 * To domain.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the job title info
+	 */
+	public JobTitleInfo toDomain(String companyId) {
+		return new JobTitleInfo(new JobTitleInfoGetMementoImpl(companyId, this));
+	}
 
-        /**
-         * Instantiates a new job title info get memento impl.
-         *
-         * @param companyId the company id
-         * @param saveCommand the save command
-         */
-        public JobTitleInfoGetMementoImpl(String companyId, SaveJobTitleCommand saveCommand) {
-            this.companyId = companyId;
-            this.saveCommand = saveCommand;
-        }
-    	
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getCompanyId()
+	/**
+	 * The Class JobTitleInfoGetMementoImpl.
+	 */
+	public class JobTitleInfoGetMementoImpl implements JobTitleInfoGetMemento {
+
+		/** The company id. */
+		private String companyId;
+
+		/** The save command. */
+		private SaveJobTitleCommand saveCommand;
+
+		/**
+		 * Instantiates a new job title info get memento impl.
+		 *
+		 * @param companyId
+		 *            the company id
+		 * @param saveCommand
+		 *            the save command
+		 */
+		public JobTitleInfoGetMementoImpl(String companyId, SaveJobTitleCommand saveCommand) {
+			this.companyId = companyId;
+			this.saveCommand = saveCommand;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+		 * getCompanyId()
 		 */
 		@Override
 		public CompanyId getCompanyId() {
 			return new CompanyId(this.companyId);
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getJobTitleHistoryId()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+		 * getJobTitleHistoryId()
 		 */
 		@Override
 		public String getJobTitleHistoryId() {
 			return this.saveCommand.getJobTitleInfo().getJobTitleHistoryId();
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getJobTitleId()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+		 * getJobTitleId()
 		 */
 		@Override
 		public String getJobTitleId() {
 			return this.saveCommand.getJobTitleInfo().getJobTitleId();
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getJobTitleCode()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+		 * getJobTitleCode()
 		 */
 		@Override
 		public JobTitleCode getJobTitleCode() {
 			return new JobTitleCode(this.saveCommand.getJobTitleInfo().getJobTitleCode());
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getJobTitleName()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+		 * getJobTitleName()
 		 */
 		@Override
 		public JobTitleName getJobTitleName() {
 			return new JobTitleName(this.saveCommand.getJobTitleInfo().getJobTitleName());
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getSequenceCode()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+		 * getSequenceCode()
 		 */
 		@Override
 		public SequenceCode getSequenceCode() {
@@ -113,12 +134,15 @@ public class SaveJobTitleCommand {
 			return new SequenceCode(sequenceCode);
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#getIsManager()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoGetMemento#
+		 * getIsManager()
 		 */
 		@Override
-		public boolean getIsManager() {
+		public boolean isManager() {
 			return this.saveCommand.getJobTitleInfo().getIsManager();
-		}    	
-    }
+		}
+	}
 }

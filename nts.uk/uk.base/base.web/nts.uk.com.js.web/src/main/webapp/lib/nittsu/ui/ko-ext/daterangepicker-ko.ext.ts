@@ -49,10 +49,10 @@ module nts.uk.ui.koExtentions {
                 $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" + 
                     "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>"); 
                 
-                let $nextButton = $container.find(".ntsDateNextButton");
-                let $prevButton = $container.find(".ntsDatePrevButton");
+                let $nextButton = $container.find(".ntsDateNextButton").text("▶").css("margin-left", "3px");
+                let $prevButton = $container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
                 
-                $nextButton.text("next").click(function (evt, ui){
+                $nextButton.click(function (evt, ui){
                     let $startDate = $container.find(".ntsStartDatePicker");
                     let $endDate = $container.find(".ntsEndDatePicker");
                     
@@ -85,7 +85,7 @@ module nts.uk.ui.koExtentions {
                     value(oldValue);       
                 });
                 
-                $prevButton.text("prev").click(function (evt, ui){
+                $prevButton.click(function (evt, ui){
                     let $startDate = $container.find(".ntsStartDatePicker");
                     let $endDate = $container.find(".ntsEndDatePicker");
                     
@@ -152,7 +152,7 @@ module nts.uk.ui.koExtentions {
                     if (endDate.isBefore(startDate)) {
                         $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]));    
                     } else if(dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth"){
-                        let maxDate = startDate.add(1, "months");
+                        let maxDate = startDate.add(31, "days");
                         if(endDate.isAfter(maxDate)){
                             $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]));         
                         }

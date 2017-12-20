@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
@@ -22,14 +25,13 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 @Stateless
 public class AfterApprovalProcessImpl implements AfterApprovalProcess {
@@ -51,16 +53,23 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepository;
 	
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
+	@Inject
+	private MailSender mailsender;
+	
 	@Override
-	public List<String> detailScreenAfterApprovalProcess(Application application, String approverMemo) {
+	public String detailScreenAfterApprovalProcess(Application application, String approverMemo) {
 		String companyID = AppContexts.user().companyId();
 		List<String> listMailReceived = new ArrayList<>();
+		String strMail = "";
 		//アルゴリズム「承認情報の整理」を実行する(thực hiện xứ lý 「承認情報の整理」)		
 		application = reflectionInfoService.organizationOfApprovalInfo(application, approverMemo);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
 		this.judgmentActualReflection(application);
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
-		appRepo.updateApplication(application);
+		appRepo.fullUpdateApplication(application);
 		// get domain 申請種類別設定
 		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
 		// 承認処理時に自動でメールを送信するが trueの場合
@@ -78,17 +87,25 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					// 申請者本人にメール送信する 
 					listMailReceived = this.MailDestination(application).getDestinationMail();
 					if(!listMailReceived.isEmpty()) {
-						//TODO:
-						//メール送信先リストにメール送信する
+						for(String mail: listMailReceived) {
+							try {
+								if(!Strings.isBlank(mail)) {
+									mailsender.send("nts", mail, new MailContents("nts mail", "approval mail from NTS"));
+									strMail += mail + System.lineSeparator();
+								}
+							} catch (SendMailFailedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}						
 					}
 				}
 			}
 		}
 		
 		//情報メッセージ（)
-		//throw new BusinessException("Msg_220");
 		//TODO: TRA VE MOT LIST GUI MAIL
-		return listMailReceived;
+		return strMail;
 	}
 	/**
 	 * 1.申請個別のエラーチェック
@@ -209,6 +226,27 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		}
 		
 		
+	}
+	@Override
+	public List<String> getListApprover(String companyID, String appID) {
+		List<String> listApprover = new ArrayList<String>();
+		Optional<Application> opApplication = applicationRepository.getAppById(companyID, appID);
+		if(!opApplication.isPresent()){
+			return listApprover;
+		}
+		Application application = opApplication.get();
+		application.getListPhase().stream().forEach(phase ->{
+			phase.getListFrame().stream().forEach(frame -> {
+				frame.getListApproveAccepted().stream().forEach(accepted -> {
+					if(Strings.isNotBlank(accepted.getRepresenterSID())){
+						listApprover.add(accepted.getRepresenterSID());
+					} else {
+						listApprover.add(accepted.getApproverSID());
+					}
+				});
+			});
+		});
+		return listApprover;
 	}
 
 }

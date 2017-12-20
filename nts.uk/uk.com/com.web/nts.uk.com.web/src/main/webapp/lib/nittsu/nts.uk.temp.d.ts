@@ -24,7 +24,7 @@ declare module nts.uk.request {
         function getInfo(id: string): JQueryPromise<any>;
         function requestToCancel(id: string): void;
     }
-    function liveView(fileId: string): void;
+    function liveView(fileId: string): string;
     const WEB_APP_NAME: any;
 }
 

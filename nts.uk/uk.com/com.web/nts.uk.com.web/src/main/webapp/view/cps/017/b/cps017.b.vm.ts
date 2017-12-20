@@ -1,92 +1,108 @@
 module nts.uk.com.view.cps017.b.viewmodel {
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
+    import close = nts.uk.ui.windows.close;
     export class ScreenModel {
-        listSelection: KnockoutObservableArray<ISelection> = ko.observableArray([]);
-        selection: KnockoutObservable<Selection> = ko.observable(new Selection({ selectionID: '', histId: '' }));
-
-        currentSelList: KnockoutObservableArray<any>;
-
+        listSelection: KnockoutObservableArray<any> = ko.observableArray([]);
+        currentSelectedId: KnockoutObservable<string> = ko.observable('');
         constructor() {
-            let self = this;
-            self.currentSelList = ko.observableArray([]);
-
         }
 
         //開始
         start(): JQueryPromise<any> {
+            block.invisible();
             let self = this,
-                currentItem: Selection = self.selection(),
-                listSelection: Array<Selection> = self.listSelection(),
-                selectedHisId = getShared('selectedHisId');//get histId ben screen A
-
-
-            //comand: Selection = ko.toJS(currentItem);
-
-            dfd = $.Deferred();
+            selectedHisId = getShared('selectedHisId');
+            let dfd = $.Deferred();
             nts.uk.ui.errors.clearAll();
-
+            
+            self.listSelection.subscribe(function(newSource){
+                if(!nts.uk.util.isNullOrEmpty(newSource) && !nts.uk.util.isNullOrEmpty($('#item_register_grid2').children())){
+                    let source = ko.toJS(newSource);
+                    $('#item_register_grid2').igGrid("option", "dataSource", source);
+                    $('#item_register_grid2').igGrid("dataBind");    
+                }
+            });
+            
             service.getAllOrderSetting(selectedHisId).done((itemList: Array<ISelection>) => {
                 if (itemList && itemList.length > 0) {
+                    let i = 1;
                     itemList.forEach(x => {
-                        self.listSelection.push(x)
-                        if (x.initSelection === 1) {
-                            self.currentSelList().push(x.selectionID);
+                        self.listSelection.push({id: i, 
+                            selectionID: x.selectionID,
+                            histId: x.histId,
+                            selectionCD: x.selectionCD,
+                            selectionName: x.selectionName,
+                            externalCD: x.externalCD,
+                            memoSelection: x.memoSelection,
+                            initSelection: x.initSelection == 1? true : false });
+                        i++;
+                        if(x.initSelection == 1){
+                            self.currentSelectedId(x.selectionID);
                         }
                     });
-                    //test:
-                    self.currentSelList().push(itemList[0].selectionID);
-//
-//                    self.currentSelList().push(itemList[0].selectionID);
-//                     self.currentSelList().push(itemList[3].selectionID);
-
                 }
                 dfd.resolve();
-            }).fail(error => {
-                alertError({ messageId: "Msg_455" });
+            }).always(() => {
+                block.clear();
             });
 
             return dfd.promise();
         }
+        /**
+         * register
+         */
+        register(){
+            block.invisible();
+            let self = this;
+            let lstData: Array<SelOrder> = [];
+            _.each(self.listSelection(), function(item, index){
+                lstData.push(new SelOrder(item.selectionID, item.histId, item.selectionCD, index+1, item.selectionID == self.currentSelectedId() ? true : false));
+            });
+            console.log(lstData);
+            service.updateSelOrder(lstData).done(function(){
+                //情報メッセージ（#Msg_15）を表示する (Hiển thị InfoMessage Msg_15)
+                info({ messageId: "Msg_15" }).then(function() {
+                    //close dialog
+                    close();
+                });
+            }).always(() => {
+                block.clear();
+            });
+        }
+        /**
+         * close dialog.
+         */
+        close(){
+            close();
+        }
     }
-
+    
     //Selection
     interface ISelection {
+        id?: number;
         selectionID?: string;
         histId?: string;
         selectionCD: string;
         selectionName: string;
         externalCD: string;
         memoSelection: string;
-        initSelection: number;
+        initSelection: any;
     }
-    class Selection {
-        selectionID: KnockoutObservable<string> = ko.observable('');
-        histId: KnockoutObservable<string> = ko.observable('');
-        selectionCD: KnockoutObservable<string> = ko.observable('');
-        selectionName: KnockoutObservable<string> = ko.observable('');
-        externalCD: KnockoutObservable<string> = ko.observable('');
-        memoSelection: KnockoutObservable<string> = ko.observable('');
-        initSelection: KnockoutObservable<number> = ko.observable();
-
-
-        constructor(param: ISelection) {
-            let self = this;
-            self.selectionID(param.selectionID || '');
-            self.histId(param.histId || '');
-            self.selectionCD(param.selectionCD || '');
-            self.selectionName(param.selectionName || '');
-            self.externalCD(param.externalCD || '');
-            self.memoSelection(param.memoSelection || '');
-            self.initSelection(param.initSelection || '');
-
+    export class SelOrder{
+        selectionID: string;
+        histId: string;
+        code: string;
+        dispOrder: number;
+        initSelection: boolean;
+        constructor(selectionID: string, histId: string,code: string,
+                dispOrder: number, initSelection: boolean){
+            this.selectionID = selectionID;
+            this.histId = histId;
+            this.code = code;
+            this.dispOrder = dispOrder;
+            this.initSelection = initSelection;
         }
     }
 }

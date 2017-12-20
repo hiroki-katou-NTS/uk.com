@@ -9,7 +9,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //enable list workplace
         enableListWp: KnockoutObservable<boolean> = ko.observable(true);
         appType: KnockoutObservable<String> = ko.observable('');
-        standardDate: KnockoutObservable<Date> = ko.observable(new Date());
+        standardDate: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
         //承認者指定種類
         typeSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
         selectTypeSet: KnockoutObservable<number> = ko.observable(0);
@@ -86,7 +86,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }
             }
             //基準日
-            this.standardDate(new Date());
+            this.standardDate(moment(new Date()).toDate());
             //承認者指定種類
             self.typeSetting.push(new ButtonSelect(0, resource.getText('CMM018_56')));
             self.typeSetting.push(new ButtonSelect(1, resource.getText('CMM018_57')));
@@ -157,7 +157,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                         job.positionCode = "";
                         job.positionName = "";
                         job.sequenceCode = "";
-                        job.endDate = new Date();
+                        job.endDate = moment(new Date()).toDate();
                         service.getJobTitleName(job).done(function(data: any){
                             self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1));
                         })    
@@ -240,8 +240,21 @@ module nts.uk.com.view.cmm018.k.viewmodel{
          */
         applyDataSearch(): void {
              let self = this;
-             self.treeGrid.baseDate(this.standardDate());
-             $('#tree-grid').ntsTreeComponent(self.treeGrid);
+            if(self.selectTypeSet() == 0){
+                self.treeGrid.baseDate(this.standardDate());
+                $('#tree-grid').ntsTreeComponent(self.treeGrid);
+            }else{
+                self.employeeList([]);
+                service.getJobTitleInfor(self.standardDate()).done(function(data: string){
+                    _.forEach(data, function(value: service.model.JobtitleInfor){
+                        var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1);
+                        self.employeeList.push(job);
+                    })    
+                }).fail(function(res: any){
+                    nts.uk.ui.dialog.alert(res.messageId);
+                })
+            }
+             
          }
     }//end ScreenModel
     interface ITreeGrid {

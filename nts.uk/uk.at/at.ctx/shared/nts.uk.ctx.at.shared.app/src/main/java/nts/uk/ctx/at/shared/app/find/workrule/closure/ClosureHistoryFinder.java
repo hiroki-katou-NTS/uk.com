@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryHeaderDt
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -32,9 +31,6 @@ public class ClosureHistoryFinder {
 	@Inject
 	private ClosureRepository repository;
 
-	/** The repository history. */
-	@Inject
-	private ClosureHistoryRepository repositoryHistory;
 
 	/**
 	 * Find all.
@@ -56,9 +52,8 @@ public class ClosureHistoryFinder {
 		List<ClosureHistory> closureHistories = new ArrayList<>();
 
 		closures.forEach(closure -> {
-			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory
-					.findBySelectedYearMonth(companyId, closure.getClosureId(),
-							closure.getClosureMonth().getProcessingYm().v());
+			Optional<ClosureHistory> closureHistoryLast = this.repository.findBySelectedYearMonth(companyId,
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().v());
 
 			if (closureHistoryLast.isPresent()) {
 				closureHistories.add(closureHistoryLast.get());
@@ -74,10 +69,9 @@ public class ClosureHistoryFinder {
 	}
 
 	/**
-	 * Detail.
+	 * Find by id.
 	 *
-	 * @param master
-	 *            the master
+	 * @param master the master
 	 * @return the closure history header dto
 	 */
 	public ClosureHistoryHeaderDto findById(ClosureHistoryInDto master) {
@@ -88,8 +82,8 @@ public class ClosureHistoryFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find closure history
-		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findById(companyId,
-				master.getClosureId(), master.getStartDate());
+		Optional<ClosureHistory> closureHistory = this.repository.findById(companyId, master.getClosureId(),
+				master.getStartDate());
 
 		// return data
 		ClosureHistoryHeaderDto dto = new ClosureHistoryHeaderDto();

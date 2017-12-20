@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.AmountRange;
@@ -27,22 +29,22 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 
 	// ===================== Optional ======================= //
 	/** The number upper. */
-	private int numberUpper;
+	private Double numberUpper;
 
 	/** The number lower. */
-	private int numberLower;
+	private Double numberLower;
 
 	/** The time upper. */
-	private int timeUpper;
+	private Integer timeUpper;
 
 	/** The time lower. */
-	private int timeLower;
+	private Integer timeLower;
 
 	/** The amount upper. */
-	private int amountUpper;
+	private Integer amountUpper;
 
 	/** The amount lower. */
-	private int amountLower;
+	private Integer amountLower;
 
 	/*
 	 * (non-Javadoc)
@@ -76,9 +78,14 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	 * setNumberRange(nts.uk.ctx.at.shared.dom.workrecord.NumberRange)
 	 */
 	@Override
-	public void setNumberRange(NumberRange range) {
-		this.numberLower = range.getLowerLimit().v().intValue();
-		this.numberUpper = range.getUpperLimit().v().intValue();
+	public void setNumberRange(Optional<NumberRange> range) {
+		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
+			this.numberLower = range.get().getLowerLimit().get().v();
+
+		}
+		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
+			this.numberUpper = range.get().getUpperLimit().get().v();
+		}
 	}
 
 	/*
@@ -89,9 +96,14 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	 * setTimeRange(nts.uk.ctx.at.shared.dom.workrecord.TimeRange)
 	 */
 	@Override
-	public void setTimeRange(TimeRange range) {
-		this.timeLower = range.getLowerLimit().v().intValue();
-		this.timeUpper = range.getUpperLimit().v().intValue();
+	public void setTimeRange(Optional<TimeRange> range) {
+		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
+			this.timeLower = range.get().getLowerLimit().get().v().intValue();
+
+		}
+		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
+			this.timeUpper = range.get().getUpperLimit().get().v().intValue();
+		}
 	}
 
 	/*
@@ -102,9 +114,14 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	 * setAmountRange(nts.uk.ctx.at.shared.dom.workrecord.AmountRange)
 	 */
 	@Override
-	public void setAmountRange(AmountRange range) {
-		this.amountLower = range.getLowerLimit().v().intValue();
-		this.amountUpper = range.getUpperLimit().v().intValue();
+	public void setAmountRange(Optional<AmountRange> range) {
+		if (range.isPresent() && range.get().getLowerLimit().isPresent()) {
+			this.amountLower = range.get().getLowerLimit().get().v().intValue();
+
+		}
+		if (range.isPresent() && range.get().getUpperLimit().isPresent()) {
+			this.amountUpper = range.get().getUpperLimit().get().v().intValue();
+		}
 	}
 
 }

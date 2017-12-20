@@ -6,18 +6,20 @@ module nts.uk.com.view.cmm050.b {
             emailFrom: KnockoutObservable<string>;
             emailTo: KnockoutObservable<string>;
             
+            testButtonEnable: KnockoutObservable<boolean>;
+            
             emailAuthOption: any;
             
             constructor(){
                 let _self = this;
                 
-                let params = getShared('CMM050Params');
-                
-                _self.emailFrom = ko.observable(params.emailAuth);
-                _self.emailTo = ko.observable(params.emailAuth);
+                _self.emailFrom = ko.observable("");
+                _self.emailTo = ko.observable("");
                 _self. emailAuthOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "350px"
                 }));
+                
+                _self.testButtonEnable = ko.observable(true);
                 
                _self.emailFrom.subscribe(function(emailString){
                    if(emailString.trim().length <= 0){
@@ -31,6 +33,20 @@ module nts.uk.com.view.cmm050.b {
                });
             }
             
+            public start_page(): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                let _self = this;
+                
+                let params = getShared('CMM050Params');
+                
+                _self.emailFrom(params.emailAuth);
+                _self.emailTo(params.emailAuth);
+                
+                dfd.resolve();
+                
+                return dfd.promise();
+            }
+            
              /**
              * Close dialog.
              */
@@ -41,21 +57,25 @@ module nts.uk.com.view.cmm050.b {
             /**
              * test send mail
              */
-            public testSendMail() {
+            public testSendMail() :void {
                 let _self = this;
-                var dfd = $.Deferred<void>();
+                
+                _self.testButtonEnable(false);
                 
                 if(_self.emailFrom().length <= 0){
                      $('#email1').ntsError('set', {messageId:"Msg_533"});
+                    _self.testButtonEnable(true);
                     return;
                 }
                  if(_self.emailTo().length <= 0){
                      $('#email2').ntsError('set', {messageId:"Msg_539"});
+                     _self.testButtonEnable(true);
                     return;
                 }
                 
                  // Validate
                 if (_self.hasError()) {
+                    _self.testButtonEnable(true);
                     return;
                 }
                 
@@ -66,12 +86,12 @@ module nts.uk.com.view.cmm050.b {
                 
                 service.testMailServerSetting(data).done(function(){
                     nts.uk.ui.dialog.alert({ messageId: "Msg_534" });
-                    dfd.resolve();
+                    _self.testButtonEnable(true);
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    _self.testButtonEnable(true);
                 });
                 
-                return dfd.promise();
             }
             
             /**
@@ -106,6 +126,7 @@ module nts.uk.com.view.cmm050.b {
                 $('#email2').ntsEditor("validate");
                 
                 if ($('.nts-input').ntsError('hasError')) {
+                    _self.testButtonEnable(true);
                     return true;
                 }
                 return false;

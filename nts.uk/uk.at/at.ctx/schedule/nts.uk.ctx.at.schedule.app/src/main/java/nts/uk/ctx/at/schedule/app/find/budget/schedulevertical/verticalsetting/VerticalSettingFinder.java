@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
-import nts.uk.ctx.at.schedule.app.find.scheduleitemmanagement.ScheduleItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.dailyattendanceitem.ScDailyAttendanceItemAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.dailyattendanceitem.ScDailyAttendanceItemDto;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalSet;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalSettingRepository;
+import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItem;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItemManagementRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -99,9 +99,7 @@ public class VerticalSettingFinder {
 		}
 		
 		// Get schedule data
-		List<ScheduleItemDto> scheduleItems = this.scheduleRepository.findAllScheduleItemByAtr(companyId, param.getScheduleAtr())
-				.stream().map(c -> ScheduleItemDto.fromDomain(c))
-				.collect(Collectors.toList());
+		List<ScheduleItem> scheduleItems = this.scheduleRepository.findAllScheduleItemByAtr(companyId, param.getScheduleAtr());
 
 		for(int i = 0; i < scheduleItems.size(); i++) {
 			BaseItemsDto scheduleItem = new BaseItemsDto();
@@ -118,20 +116,17 @@ public class VerticalSettingFinder {
 		}
 		
 		// Get external data
-		List<ExternalBudgetDto> externalItems = this.externalBudgerRepository.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr())
-				.stream().map(c -> ExternalBudgetDto.fromDomain(c))
-				.collect(Collectors.toList());
+		List<ExternalBudget> externalItems = this.externalBudgerRepository.findByAtr(companyId, param.getBudgetAtr(), param.getUnitAtr());
 				
 		for(int i = 0; i < externalItems.size(); i++) {
 			BaseItemsDto externalItem = new BaseItemsDto();
-			String id = externalItems.get(i).getExternalBudgetCode() + "" + ItemTypes.EXTERNAL.value;
-			
+			String id = externalItems.get(i).getExternalBudgetCd().v() + "" + ItemTypes.EXTERNAL.value;
 			externalItem.setCompanyId(companyId);
 			externalItem.setId(id);
-			externalItem.setItemId(externalItems.get(i).getExternalBudgetCode());
-			externalItem.setItemName(externalItems.get(i).getExternalBudgetName());
+			externalItem.setItemId(externalItems.get(i).getExternalBudgetCd().v());
+			externalItem.setItemName(externalItems.get(i).getExternalBudgetName().v());
 			externalItem.setItemType(ItemTypes.EXTERNAL.value);
-			externalItem.setDispOrder(Integer.parseInt(externalItems.get(i).getExternalBudgetCode()));
+			externalItem.setDispOrder(i);
 			
 			baseItems.add(externalItem);
 		}
