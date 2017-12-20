@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -59,8 +60,12 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	@Override
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
 		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
-		Application application = appRepository.getAppById(cid, appId).get();
-		
+		//15.詳細画面申請データを取得する
+		Optional<Application> applicationOpt = appRepository.getAppById(cid, appId);		
+		if (!applicationOpt.isPresent()) {
+			throw new BusinessException("Msg_198");
+		}
+		Application application = applicationOpt.get();
 		// アルゴリズム「14-1.詳細画面起動前モードの判断」を実行する
 		workChangeDetail.setPrelaunchAppSetting(beforeAppCommonSetting.getPrelaunchAppSetting(appId));
 
