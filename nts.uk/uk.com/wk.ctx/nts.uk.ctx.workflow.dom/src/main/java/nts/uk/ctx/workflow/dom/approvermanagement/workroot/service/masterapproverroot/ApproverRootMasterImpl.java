@@ -108,10 +108,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			ApprovalRootCommonOutput psRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
 					root.getApprovalId(), root.getEmployeeId(),
 					"", 
-					root.getHistoryId(),
+					root.getEmploymentAppHistoryItems().get(0).getHistoryId(),
 					root.getApplicationType() == null ? 0: root.getApplicationType().value,
-					root.getPeriod().getStartDate(), 
-					root.getPeriod().getEndDate(), 
+					root.getEmploymentAppHistoryItems().get(0).start(), 
+					root.getEmploymentAppHistoryItems().get(0).end(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
 					root.getConfirmationRootType() == null ? 0: root.getConfirmationRootType().value,
@@ -148,10 +148,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getApprovalId(), 
 					"",
 					root.getWorkplaceId(), 
-					root.getHistoryId(),
+					root.getEmploymentAppHistoryItems().get(0).getHistoryId(),
 					root.getApplicationType() == null ? 0:  root.getApplicationType().value,
-					root.getPeriod().getStartDate(), 
-					root.getPeriod().getEndDate(), 
+					root.getEmploymentAppHistoryItems().get(0).start(), 
+					root.getEmploymentAppHistoryItems().get(0).end(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
 					root.getConfirmationRootType()  == null ? 0:  root.getConfirmationRootType().value,
@@ -211,12 +211,12 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 */
 	private ApprovalForApplication getApproval(int appType, String appName, CompanyApprovalRoot comRoot, String companyID) {
 		ApprovalForApplication approvalForApplication = new ApprovalForApplication(appType, appName, null, null, null);
-		approvalForApplication.setStartDate(comRoot.getPeriod().getStartDate());
-		approvalForApplication.setEndDate(comRoot.getPeriod().getEndDate());
+		approvalForApplication.setStartDate(comRoot.getEmploymentAppHistoryItems().get(0).start());
+		approvalForApplication.setEndDate(comRoot.getEmploymentAppHistoryItems().get(0).end());
 		
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
 		//承認フェーズ, 承認者
-		lstMatter = getPhaseApprover(companyID, comRoot.getBranchId(), comRoot.getPeriod().getStartDate());		
+		lstMatter = getPhaseApprover(companyID, comRoot.getBranchId(), comRoot.getEmploymentAppHistoryItems().get(0).start());		
 		approvalForApplication.setLstApproval(lstMatter);
 		return approvalForApplication;
 	}

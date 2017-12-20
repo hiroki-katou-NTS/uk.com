@@ -55,7 +55,7 @@ public class AddAffiliationDepartmentCommandHandler
 		String newHistId = IdentifierUtil.randomUniqueId();
 
 		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository
-				.getByEmployeeId(command.getEmployeeId());
+				.getByEmployeeId(companyId,command.getEmployeeId());
 
 		AffDepartmentHistory itemToBeAdded = new AffDepartmentHistory(companyId, command.getEmployeeId(),
 				new ArrayList<>());

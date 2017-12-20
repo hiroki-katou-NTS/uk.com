@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -69,9 +68,7 @@ public class KshstWorkRegularSet  extends UkJpaEntity implements Serializable{
 	public int additionTimeWork;
 	
 //	@OneToOne(optional = false)
-//	@JoinColumns({
 //		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
-//	})
 //	public KshstHolidayAddtimeSet holidayAddtimeSet;
 	
 	@Override

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.DataWorkDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
@@ -35,6 +36,10 @@ public class GoBackDirectSettingDto {
 	boolean isDutiesMulti;
 
 	/**
+	 * 勤務就業ダイアログ用データ取得
+	 */
+	DataWorkDto dataWorkDto;
+	/**
 	 * Convert Data Setting to DTO
 	 * 
 	 * @param domain
@@ -49,7 +54,7 @@ public class GoBackDirectSettingDto {
 						domain.getListAppReason().stream()
 						.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()),
 				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()),
-				domain.isDutiesMulti());
+				domain.isDutiesMulti(), DataWorkDto.fromDomain(domain.getWorkingData()));
 	}
 
 }
