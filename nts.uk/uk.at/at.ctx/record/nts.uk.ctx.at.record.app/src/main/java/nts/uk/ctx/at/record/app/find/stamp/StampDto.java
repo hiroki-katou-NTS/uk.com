@@ -29,23 +29,23 @@ public class StampDto {
 	private String employeeCode;
 	private String pName;
 	
-
+	//Convert from Stamp domain to stamp dto, when exist data and null.
 	public static StampDto fromDomain(StampItem domain, EmployeeRecordImport empInfor) {
-		return new StampDto(domain.getCardNumber().v(), 
-				domain.getAttendanceTime().v(), 
-				domain.getStampCombinationAtr().value,
-				domain.getStampCombinationAtr().name,
-				domain.getSiftCd().v(), 
-				domain.getStampMethod().value,
-				domain.getStampMethod().name,
-				domain.getStampAtr().value,
-				domain.getStampAtr().name,
-				domain.getWorkLocationCd().v(), 
-				domain.getWorkLocationName().v(),
-				domain.getGoOutReason().value,
-				domain.getGoOutReason().name,
-				domain.getDate(),
-				domain.getEmployeeId(),
+		return new StampDto(domain.getCardNumber() == null ? "" : domain.getCardNumber().v(), 
+				domain.getAttendanceTime() == null? -1 : domain.getAttendanceTime().v(), 
+				domain.getStampCombinationAtr() == null? -1 : domain.getStampCombinationAtr().value,
+				domain.getStampCombinationAtr() == null? "" : domain.getStampCombinationAtr().name,
+				domain.getSiftCd() == null? "" : domain.getSiftCd().v(), 
+				domain.getStampMethod() == null? -1 : domain.getStampMethod().value,
+				domain.getStampMethod() == null? "" : domain.getStampMethod().name,
+				domain.getStampAtr() == null? -1 : domain.getStampAtr().value,
+				domain.getStampAtr() == null? "" : domain.getStampAtr().name,
+				domain.getWorkLocationCd() == null? "" : domain.getWorkLocationCd().v(), 
+				domain.getWorkLocationName() == null? "" : domain.getWorkLocationName().v(),
+				domain.getGoOutReason() == null? -1 : domain.getGoOutReason().value,
+				domain.getGoOutReason() == null? "" : domain.getGoOutReason().name,
+				domain.getDate() == null? null : domain.getDate(),
+				domain.getEmployeeId() == null? "" : domain.getEmployeeId(),
 				empInfor.getEmployeeCode(),
 				empInfor.getPname());
 	}
