@@ -70,16 +70,15 @@ public interface PerInfoItemDefRepositoty {
 	 * @return
 	 */
 	List<PersonInfoItemDefinition> getNotFixedPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
-	
-	/**
-	 * checkExistedSelectionItemId
-	 * @param ctgId
-	 * @param itemId
-	 * @return
-	 */
-	boolean checkExistedSelectionItemId(String ctgId, String itemId);
 
 	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String personInfoCategoryId, String companyId,
 			String contractCode);
+	/**
+	 * @author lanlt
+	 * get All Item selection thuộc kiểu datatype = 6 & thuộc kiểu code
+	 * dùng cho màn hình cps016
+	 */
+	boolean checkExistedSelectionItemId(String selectionItemId);
+
 	
 }

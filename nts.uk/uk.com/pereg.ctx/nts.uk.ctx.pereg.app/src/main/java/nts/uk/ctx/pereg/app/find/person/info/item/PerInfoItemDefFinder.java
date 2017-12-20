@@ -329,5 +329,10 @@ public class PerInfoItemDefFinder {
 			return null;
 		}
 	}
+	
+	public boolean checkExistedSelectionItemId(String selectionItemId){
+		
+		return this.pernfoItemDefRep.checkExistedSelectionItemId(selectionItemId);
+	}
 
 }

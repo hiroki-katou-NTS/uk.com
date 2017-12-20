@@ -35,7 +35,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		implements SWorkTimeHistoryRepository {
 	
 	private final String QUERY_GET__BYSID = "SELECT ad FROM BshmtWorktimeHist ad"
-			+ " WHERE ad.BshmtWorktimeHistPK.sid = :sid and ad.cId = :cid ORDER BY ad.strDate";
+			+ " WHERE ad.bshmtWorktimeHistPK.sid = :sid and ad.cId = :cid ORDER BY ad.strYmd";
 	/*
 	 * (non-Javadoc)
 	 * 

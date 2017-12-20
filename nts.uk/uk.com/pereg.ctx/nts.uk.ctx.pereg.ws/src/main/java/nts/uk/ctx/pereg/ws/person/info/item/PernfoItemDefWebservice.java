@@ -135,4 +135,10 @@ public class PernfoItemDefWebservice extends WebService {
 	public void updateItemChange(UpdateOrderItemChangeCommand command) {
 		this.updateOrderItemChange.handle(command);
 	}
+	
+	@POST
+	@Path("checkExistItem/{selectionItemId}")
+	public boolean checkExistedSelectionItemId(@PathParam("selectionItemId") String selectionItemId) {
+		return this.itemDefFinder.checkExistedSelectionItemId(selectionItemId);
+	}
 }
