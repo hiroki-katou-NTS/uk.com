@@ -94,22 +94,23 @@ module nts.uk.at.view.kmk003.a {
             }
             
             export class FixRestTimezoneSetModel {
-                lstTimezone: DeductionTimeModel[];
+                lstTimezone: KnockoutObservableArray<DeductionTimeModel>;
                 
                 constructor() {
-                    this.lstTimezone = [];
+                    this.lstTimezone = ko.observableArray([]);
                 }
                 
                 updateData(data: FixRestTimezoneSetDto) {
-                    this.lstTimezone = _.map(data.lstTimezone, (dataDTO) => {
+                    let mapped = _.map(data.lstTimezone, (dataDTO) => {
                         let dataModel: DeductionTimeModel = new DeductionTimeModel();
                         dataModel.updateData(dataDTO);
                         return dataModel;
                     });  
+                    this.lstTimezone(mapped);
                 }
                 
                 toDto(): FixRestTimezoneSetDto {
-                    let lstTimezone: DeductionTimeDto[] = _.map(this.lstTimezone, (dataModel) => dataModel.toDto());
+                    let lstTimezone: DeductionTimeDto[] = _.map(this.lstTimezone(), dataModel => dataModel.toDto());
                     
                     let dataDTO: FixRestTimezoneSetDto = {
                         lstTimezone: lstTimezone
