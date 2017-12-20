@@ -49,8 +49,6 @@ public class LayoutingProcessor {
 	 * @return
 	 */
 	public PeregDto findSingle(PeregQuery query) {
-		
-		if(query.getInfoId() == null && query.getStandardDate() == null) return null;
 		// get domain data
 		val finderClass = this.finders.get(query.getCategoryCode());
 		if(finderClass == null) return null;

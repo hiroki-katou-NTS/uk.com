@@ -496,10 +496,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 //				 this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
 //				 employeeID, day,
 //				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr );
+
 			}
 
 		}
-
 
 		if (errMesInfos.isEmpty()) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する
@@ -710,12 +710,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			int hour = toDay.get(Calendar.HOUR_OF_DAY);
 			int minute = toDay.get(Calendar.MINUTE);
 			int currentMinuteOfDay = ((hour * 60) + minute);
-
+			
+			List<TimeLeavingWork> timeLeavingWorkList = new ArrayList<>();
 			// 出勤反映 = true
 			// 出勤に自動打刻セットする
 			if (automaticStampSetDetailDto.getAttendanceReflectAttr() == UseAtr.USE) {
 
-				List<TimeLeavingWork> timeLeavingWorkList = new ArrayList<>();
+				
 				List<TimeLeavingWorkOutput> timeLeavingWorkOutputs = new ArrayList<>();
 
 				// ドメインモデル「日別実績の出退勤」を取得する
@@ -847,20 +848,20 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 					return new TimeLeavingWork(item.getWorkNo(), attendanceStamp, leaveStamp);
 				}).collect(Collectors.toList());
-				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
+//				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
 
 			}
 
 			// 退勤反映 = true
 			if (automaticStampSetDetailDto.getRetirementAttr() == UseAtr.USE) {
 
-				List<TimeLeavingWork> timeLeavingWorkLst = new ArrayList<>();
+//				List<TimeLeavingWork> timeLeavingWorkLst = new ArrayList<>();
 				List<TimeLeavingWorkOutput> newTimeLeavingWorkOutputs = new ArrayList<>();
 
 				automaticStampSetDetailDto.getTimeLeavingWorks().stream().forEach(timeLeavingWork -> {
 
 					TimeLeavingWork stamp = null;
-					if (!timeLeavingOptional.getTimeLeavingWorks().isEmpty()) {
+					if (timeLeavingOptional.getTimeLeavingWorks() != null) {
 						stamp = timeLeavingOptional.getTimeLeavingWorks().stream()
 								.filter(itemm -> itemm.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v()))
 								.findAny().get();
@@ -946,7 +947,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						}
 					}
 				});
-				timeLeavingWorkLst = newTimeLeavingWorkOutputs.stream().map(item -> {
+				List<TimeLeavingWork> timeLeavingWorkLst = newTimeLeavingWorkOutputs.stream().map(item -> {
 					TimeActualStamp attendanceStamp = null;
 					if(item.getAttendanceStamp() != null){
 						WorkStamp actualStamp = null;
@@ -989,7 +990,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 					return new TimeLeavingWork(item.getWorkNo(), attendanceStamp, leaveStamp);
 				}).collect(Collectors.toList());
-				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkLst);
+				for(TimeLeavingWork item : timeLeavingWorkLst){
+					timeLeavingWorkList.add(item);
+				}
+				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
 			}
 		}
 	}
