@@ -206,22 +206,24 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: WorkTimezoneCommonSetDto) {
-                    this.zeroHStraddCalculateSet(data.zeroHStraddCalculateSet);
-                    this.intervalSet.updateData(data.intervalSet);
-                    this.subHolTimeSet.updateData(data.subHolTimeSet);
-                    this.raisingSalarySet(data.raisingSalarySet);
-                    this.medicalSet = [];
-                    for (var dataDTO of data.medicalSet) {
-                        var dataModel: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
-                        dataModel.updateData(dataDTO);
-                        this.medicalSet.push(dataModel);
+                    if (data) {
+                        this.zeroHStraddCalculateSet(data.zeroHStraddCalculateSet);
+                        this.intervalSet.updateData(data.intervalSet);
+                        this.subHolTimeSet.updateData(data.subHolTimeSet);
+                        this.raisingSalarySet(data.raisingSalarySet);
+                        this.medicalSet = [];
+                        for (var dataDTO of data.medicalSet) {
+                            var dataModel: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
+                            dataModel.updateData(dataDTO);
+                            this.medicalSet.push(dataModel);
+                        }
+                        this.goOutSet.updateData(data.goOutSet);
+                        this.stampSet.updateData(data.stampSet);
+                        this.lateNightTimeSet.updateData(data.lateNightTimeSet);
+                        this.shortTimeWorkSet.updateData(data.shortTimeWorkSet);
+                        this.extraordTimeSet.updateData(data.extraordTimeSet);
+                        this.lateEarlySet.updateData(data.lateEarlySet);
                     }
-                    this.goOutSet.updateData(data.goOutSet);
-                    this.stampSet.updateData(data.stampSet);
-                    this.lateNightTimeSet.updateData(data.lateNightTimeSet);
-                    this.shortTimeWorkSet.updateData(data.shortTimeWorkSet);
-                    this.extraordTimeSet.updateData(data.extraordTimeSet);
-                    this.lateEarlySet.updateData(data.lateEarlySet);
                 }
 
                 toDto(): WorkTimezoneCommonSetDto {
@@ -746,25 +748,25 @@ module nts.uk.at.view.kmk003.a {
             export class GoOutTimezoneRoundingSetModel {
                 pubHolWorkTimezone: GoOutTypeRoundingSetModel;
                 workTimezone: GoOutTypeRoundingSetModel;
-                oTTimezone: GoOutTypeRoundingSetModel;
+                ottimezone: GoOutTypeRoundingSetModel;
 
                 constructor() {
                     this.pubHolWorkTimezone = new GoOutTypeRoundingSetModel();
                     this.workTimezone = new GoOutTypeRoundingSetModel();
-                    this.oTTimezone = new GoOutTypeRoundingSetModel();
+                    this.ottimezone = new GoOutTypeRoundingSetModel();
                 }
 
                 updateData(data: GoOutTimezoneRoundingSetDto) {
                     this.pubHolWorkTimezone.updateData(data.pubHolWorkTimezone);
                     this.workTimezone.updateData(data.workTimezone);
-                    this.oTTimezone.updateData(data.oTTimezone);
+                    this.ottimezone.updateData(data.ottimezone);
                 }
 
                 toDto(): GoOutTimezoneRoundingSetDto {
                     var dataDTO: GoOutTimezoneRoundingSetDto = {
                         pubHolWorkTimezone: this.pubHolWorkTimezone.toDto(),
                         workTimezone: this.workTimezone.toDto(),
-                        oTTimezone: this.oTTimezone.toDto()
+                        ottimezone: this.ottimezone.toDto()
                     };
                     return dataDTO;
                 }

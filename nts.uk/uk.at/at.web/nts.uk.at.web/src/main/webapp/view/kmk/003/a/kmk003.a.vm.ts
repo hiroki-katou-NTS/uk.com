@@ -126,6 +126,10 @@ module nts.uk.at.view.kmk003.a {
                 ]);
 
                 self.useHalfDay = ko.observable("0");
+                
+                self.useHalfDay.subscribe(function(userHalfDay) {
+                    self.mainSettingModel.flexWorkSetting.useHalfDayShift(userHalfDay === "1");
+                });
 
                 //
                 self.tabs = ko.observableArray([
@@ -232,10 +236,11 @@ module nts.uk.at.view.kmk003.a {
                 var self = this;
                 var command: FlexWorkSettingSaveCommand;
                 command = {
-                    flexWorkSetting: null,
+                    flexWorkSetting: self.mainSettingModel.flexWorkSetting.toDto(),
                     predseting: self.predetemineTimeSettingModel.toDto(),
                     worktimeSetting: self.workTimeSettingModel.toDto()
                 };
+                console.log(command);
                 return command;     
             }
             
@@ -244,6 +249,7 @@ module nts.uk.at.view.kmk003.a {
              */
             private updateDataFlexMode(data: FlexWorkSettingDto) {
                 var self = this;
+                self.mainSettingModel.flexWorkSetting.updateData(data);
                 if (data.useHalfDayShift) {
                     self.useHalfDay('1');
                 } else {

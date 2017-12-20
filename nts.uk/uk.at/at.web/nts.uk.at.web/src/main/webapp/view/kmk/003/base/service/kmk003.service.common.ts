@@ -112,7 +112,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface GoOutTimezoneRoundingSetDto {
                     pubHolWorkTimezone: GoOutTypeRoundingSetDto;
                     workTimezone: GoOutTypeRoundingSetDto;
-                    oTTimezone: GoOutTypeRoundingSetDto;
+                    ottimezone: GoOutTypeRoundingSetDto;
                 }
 
                 export interface GraceTimeSettingDto {
