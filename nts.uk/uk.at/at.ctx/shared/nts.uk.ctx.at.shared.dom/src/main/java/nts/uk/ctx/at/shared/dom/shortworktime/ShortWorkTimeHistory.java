@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.shortworktime;
 
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -22,13 +21,17 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class ShortWorkTimeHistory extends AggregateRoot
 		implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 
+	/** The company id. */
+	// 会社ID
+	private String companyId;
+	
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
 
 	/** The history item. */
 	// 履歴項目
-	private DateHistoryItem historyItem;
+	private List<DateHistoryItem> historyItems;
 
 	/**
 	 * Instantiates a new short work time history.
@@ -36,8 +39,15 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	 * @param memento the memento
 	 */
 	public ShortWorkTimeHistory(SWorkTimeHistGetMemento memento) {
+		this.companyId = memento.getCompanyId();
 		this.employeeId = memento.getEmployeeId();
-		this.historyItem = memento.getHistoryItem();
+		this.historyItems = memento.getHistoryItems();
+	}
+	
+	public ShortWorkTimeHistory(String cid, String sid,  List<DateHistoryItem> historyItems) {
+		this.companyId = cid;
+		this.employeeId = sid;
+		this.historyItems = historyItems;
 	}
 	
 	/**
@@ -46,8 +56,9 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	 * @param memento the memento
 	 */
 	public void saveToMemento(SWorkTimeHistSetMemento memento) {
+		memento.setCompanyId(this.companyId);
 		memento.setEmployeeId(this.employeeId);
-		memento.setHistoryItem(this.historyItem);
+		memento.setHistoryItems(this.historyItems);
 	}
 	
 	/**
@@ -57,18 +68,24 @@ public class ShortWorkTimeHistory extends AggregateRoot
 	 */
 	@Override
 	public List<DateHistoryItem> items() {
-		return Arrays.asList(this.historyItem);
+		return this.historyItems;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((employeeId == null) ? 0 : employeeId.hashCode());
-		result = prime * result + ((historyItem == null) ? 0 : historyItem.hashCode());
+		result = prime * result + ((historyItems == null) ? 0 : historyItems.hashCode());
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -83,10 +100,10 @@ public class ShortWorkTimeHistory extends AggregateRoot
 				return false;
 		} else if (!employeeId.equals(other.employeeId))
 			return false;
-		if (historyItem == null) {
-			if (other.historyItem != null)
+		if (historyItems == null) {
+			if (other.historyItems != null)
 				return false;
-		} else if (!historyItem.equals(other.historyItem))
+		} else if (!historyItems.equals(other.historyItems))
 			return false;
 		return true;
 	}

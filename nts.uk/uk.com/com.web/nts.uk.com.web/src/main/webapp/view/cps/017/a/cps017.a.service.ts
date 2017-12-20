@@ -2,15 +2,15 @@ module nts.uk.com.view.cps017.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getAllSelectionItems: "ctx/bs/person/info/setting/selection/findAll",
-        getPerInfoSelectionItem: "ctx/bs/person/info/setting/selection/findItem/{0}",
-        getAllPerInfoHistorySelection: "ctx/bs/person/info/setting/selection/findAllHistSelection/{0}",
-        getAllOrderItemSelection: "ctx/bs/person/info/setting/selection/findAllSelection/{0}",
-        saveDataSelection: "ctx/bs/person/info/setting/selection/addSelection",
-        updateDataSelection: "ctx/bs/person/info/setting/selection/updateSelection",
-        removeDataSelection: "ctx/bs/person/info/setting/selection/removeSelection",
-        removeHistory: "ctx/bs/person/info/setting/selection/removeHistory",
-        reflUnrComp: "ctx/bs/person/info/setting/selection/reflunrcomp"
+        getAllSelectionItems: "ctx/pereg/person/info/setting/selection/findAll",
+        getPerInfoSelectionItem: "ctx/pereg/person/info/setting/selection/findItem/{0}",
+        getAllPerInfoHistorySelection: "ctx/pereg/person/info/setting/selection/findAllHistSelection/{0}",
+        getAllOrderItemSelection: "ctx/pereg/person/info/setting/selection/findAllSelection/{0}",
+        saveDataSelection: "ctx/pereg/person/info/setting/selection/addSelection",
+        updateDataSelection: "ctx/pereg/person/info/setting/selection/updateSelection",
+        removeDataSelection: "ctx/pereg/person/info/setting/selection/removeSelection",
+        removeHistory: "ctx/pereg/person/info/setting/selection/removeHistory",
+        reflUnrComp: "ctx/pereg/person/info/setting/selection/reflunrcomp"
     }
 
     export function getAllSelectionItems() {
@@ -26,11 +26,6 @@ module nts.uk.com.view.cps017.a.service {
         let _path = format(paths.getAllPerInfoHistorySelection, selectedId);
         return nts.uk.request.ajax("com", _path);
     }
-
-    //
-    //    export function getAllOrderItemSelection() {
-    //        return ajax(paths.getAllOrderItemSelection);
- //    }
     
     export function getAllOrderItemSelection(histId: string) {
         let _path = format(paths.getAllOrderItemSelection, histId);
@@ -63,14 +58,3 @@ module nts.uk.com.view.cps017.a.service {
     }
 }
 
-
-
-
-/*
-module nts.uk.com.view.cps017.a.service {
-    import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
-    let paths = {
-    }
-}
-*/

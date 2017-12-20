@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -8,14 +10,18 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
 public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
@@ -42,6 +48,14 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	@Inject
 	ApplicationReasonRepository appFormReposity;
 	
+	@Inject
+	private WorkTimeRepository workTimeRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private CollectAchievement collectAchievement;
 	@Override
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
 		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
@@ -55,42 +69,42 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		workChangeDetail.setDetailedScreenPreBootModeOutput(preBootOuput);
 		
 		//アルゴリズム「勤務変更申請基本データ（更新）」を実行する
-		AppWorkChange appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();
+		AppWorkChange appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();		
+		//Get work type name & work time name
+		Optional<WorkTime> workTime = workTimeRepository.findByCode(cid, appWorkChange.getWorkTimeCd());
+		if (workTime.isPresent()) {
+			appWorkChange.setWorkTimeName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
+		}
+		Optional<WorkType> workType = workTypeRepository.findByPK(cid, appWorkChange.getWorkTypeCd());
+		if (workType.isPresent()) {
+			appWorkChange.setWorkTypeName(workType.get().getName().v());
+		}
 		workChangeDetail.setAppWorkChange(appWorkChange);
 		
 		//アルゴリズム「14-3.詳細画面の初期モード」を実行する
 		workChangeDetail.setDetailScreenInitModeOutput(initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value));
 		
-		// Setting common application property
-		workChangeDetail.setAppDate(application.getApplicationDate());
-		workChangeDetail.setAppReason(application.getApplicationReason().v());
-		workChangeDetail.setPrePostAtr(application.getPrePostAtr().value);
+		// Setting application property
+		workChangeDetail.setApplication(application);
 		workChangeDetail.setEmployeeName(employeeAdapter.getEmployeeName(application.getApplicantSID()));
-		
-		// ドメインモデル「申請定型理由」を取得
-		List<ApplicationReason> listReason = appFormReposity.getReasonByAppType(cid,
-				ApplicationType.WORK_CHANGE_APPLICATION.value);
-		workChangeDetail.setListAppReason(listReason);
 		
 		//基準日　＝　申請日付（開始日）
 		GeneralDate basicDate = application.getStartDate();
 		GeneralDate endDate = application.getEndDate();
-		
-		while(basicDate.afterOrEquals(endDate)){
-			//「休日に関して」チェック有無は判定
-			if(appWorkChange.getExcludeHolidayAtr() == 0 || checkHoliday(basicDate)){
-				//TODO: アルゴリズム「実績の取得」を実行する
-				//13.実績を取得する
-			}
+		List<String> workTypes = new ArrayList<String>();
+		List<String> workTimes = new ArrayList<String>();		
+		while(basicDate.beforeOrEquals(endDate)){
+			//13.実績を取得する
+			AchievementOutput achievement  = collectAchievement.getAchievement(cid, application.getApplicantSID(), basicDate);
+			workTypes.add(achievement.getWorkType().getWorkTypeCode());
+			workTimes.add(achievement.getWorkTime().getWorkTimeCD());
 			//基準日　＝　基準日＋１
-			basicDate.addDays(1);
+			basicDate = basicDate.addDays(1);
 		}
+		workChangeDetail.setWorkTimeCodes(workTimes);
+		workChangeDetail.setWorkTypeCodes(workTypes);
 		
 		return workChangeDetail;
-	}
-	
-	private boolean checkHoliday(GeneralDate basicDate){
-		return true;
 	}
 
 }

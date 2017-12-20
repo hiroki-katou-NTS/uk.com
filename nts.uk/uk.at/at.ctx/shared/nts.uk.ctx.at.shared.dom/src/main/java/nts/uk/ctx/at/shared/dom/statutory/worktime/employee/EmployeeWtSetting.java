@@ -21,6 +21,12 @@ public class EmployeeWtSetting extends AggregateRoot {
 
 	/** 会社ID. */
 	private CompanyId companyId;
+	
+	/** 社員ID. */
+	private String employeeId;
+	
+	/** 年月. */
+	private YearMonth yearMonth;
 
 	/** 労働時間設定. */
 	private WorkingTimeSetting workingTimeSetting;
@@ -33,12 +39,6 @@ public class EmployeeWtSetting extends AggregateRoot {
 	
 	/** 変形労働時間設定 */
 	private DeformationLaborSetting deformatinLaborSetting;
-
-	/** 年月. */
-	private YearMonth yearMonth;
-
-	/** 社員ID. */
-	private String employeeId;
 
 	/**
 	 * Instantiates a new employee setting.

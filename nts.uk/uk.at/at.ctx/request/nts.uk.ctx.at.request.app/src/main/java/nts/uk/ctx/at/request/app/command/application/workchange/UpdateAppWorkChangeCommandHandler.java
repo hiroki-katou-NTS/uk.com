@@ -27,7 +27,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWorkChangeCommand> {
-
+	private static final String EMPTY_STRING = "";
+	private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeUpdateService updateService;
 
@@ -35,27 +36,24 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 	protected void handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
 		AddAppWorkChangeCommand updateCommand = context.getCommand();
 		// Command data
-		CreateApplicationCommand appCommand = updateCommand.getAppCommand();
-		AppWorkChangeCommand workChangeCommand = updateCommand.getWorkChangeCommand();
-		List<AppApprovalPhaseCmd> phaseCommand = updateCommand.getAppApprovalPhaseCmds();
-
+		CreateApplicationCommand appCommand = updateCommand.getApplication();
+		AppWorkChangeCommand workChangeCommand = updateCommand.getWorkChange();
+		List<AppApprovalPhaseCmd> approvalPhaseCommand = updateCommand.getAppApprovalPhases();
+		
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = appCommand.getApplicationID();
-		// 入力者
-		// String persionId = AppContexts.user().personId();
-		// 申請者
-		// String applicantSID = AppContexts.user().employeeId();
-
 		// Phase list
-		List<AppApprovalPhase> pharseList = ApprovalPhaseUtils.convertToDomain(phaseCommand, companyId, appID);
+		List<AppApprovalPhase> pharseList = ApprovalPhaseUtils.convertToDomain(approvalPhaseCommand, companyId, appID);
 		// 申請
 		Application updateApp = new Application(companyId,
 				// command.goBackCommand.getAppID(),
 				appID, EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), appCommand.getInputDate(),
-				appCommand.getEnteredPersonSID(), new AppReason(appCommand.getReversionReason()),
-				appCommand.getApplicationDate(), new AppReason(appCommand.getApplicationReason()),
+				appCommand.getEnteredPersonSID(), 
+				new AppReason(EMPTY_STRING), 
+				appCommand.getApplicationDate(), 
+				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())),
 				EnumAdaptor.valueOf(appCommand.getApplicationType(), ApplicationType.class),
 				appCommand.getApplicantSID(),
 				EnumAdaptor.valueOf(appCommand.getReflectPlanScheReason(), ReflectPlanScheReason.class),
@@ -77,7 +75,10 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 				workChangeCommand.getWorkTimeStart1(), workChangeCommand.getWorkTimeEnd1(),
 				workChangeCommand.getWorkTimeStart2(), workChangeCommand.getWorkTimeEnd2(),
 				workChangeCommand.getGoWorkAtr2(), workChangeCommand.getBackHomeAtr2());
-
+		//OptimisticLock
+		workChangeDomain.setVersion(workChangeCommand.getVersion());
+		updateApp.setVersion(workChangeCommand.getVersion());
+		
 		// アルゴリズム「勤務変更申請登録（更新）」を実行する
 		updateService.UpdateWorkChange(updateApp, workChangeDomain);
 	}

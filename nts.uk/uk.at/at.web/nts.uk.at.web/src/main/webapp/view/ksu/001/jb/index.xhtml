@@ -8,6 +8,9 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 1000, height: 680 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.jb.main.css" />
 			<com:scriptfile path="ksu001.jb.vm.js" />
@@ -17,9 +20,10 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
-					<div class="mw-90" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_908')}</div>
-					<input
-						data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
+					<div id="pairPatternName" class="mw-90"
+						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternName'}">#{i18n.getText('KSU001_908')}</div>
+					<input id="textName"
+						data-bind="ntsTextEditor: {value: ko.observable(''), required: true, constraint: 'WorkPairPatternName'}" />
 				</div>
 
 				<div id="set-work-type">
@@ -61,7 +65,7 @@
 										enable: true,
 										columns: [
 											{ prop: 'siftCd', length: 2 },
-											{ prop: 'symbol', length: 2 },
+											{ prop: 'symbolName', length: 2 },
 											{ prop: 'name', length: 5 },
 											{ prop: 'timeZone1', length: 5 },
 											{ prop: 'timeZone2', length: 5 },
@@ -158,10 +162,10 @@
 						</tr>
 					</table>
 				</div>
-				<div>#{i18n.getText('KSU001_919')}</div>
+				<div id="color-red">#{i18n.getText('KSU001_919')}</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed">決定</button>
+				<button class="proceed" data-bind="enable: $root.errors.isEmpty">決定</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_920')}</button>
 			</div>
 		</ui:define>

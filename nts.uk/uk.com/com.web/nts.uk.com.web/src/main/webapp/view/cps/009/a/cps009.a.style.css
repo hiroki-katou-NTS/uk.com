@@ -43,11 +43,28 @@
 
 #date {
 	border: 0px solid #999999 !important;
+	width: 210px !important;
+}
+
+#timeItem {
+	width: 210px !important;
+}
+
+#timePoint {
+	width: 210px !important;
+}
+
+#number {
+	width: 210px !important;
+}
+
+#string {
+	width: 210px !important;
 }
 
 #content-right {
 	float: left;
-	width: 900px;
+	width: 930px;
 }
 
 #category_grid_container {
@@ -74,7 +91,7 @@
 button.search-btn, button.clear-btn {
 	width: 40px;
 }
-
+/* 
 .nts-searchbbox-wrapper button.search-btn {
 	vertical-align: top;
 	margin-left: 5px;
@@ -90,8 +107,7 @@ button.search-btn, button.clear-btn {
 
 .nts-searchbbox-wrapper {
 	margin-bottom: 0px !important;
-}
-
+} */
 input.ntsSearchBox {
 	width: 150px !important;
 }
@@ -108,7 +124,7 @@ input.ntsSearchBox {
 
 #sub-right {
 	float: left;
-	width: 600px;
+	width: 630px;
 	margin-left: 30px;
 }
 
@@ -157,6 +173,7 @@ table.contents-data tbody {
 
 thead {
 	background-color: #CFF1A5;
+	height: 35px !important;
 }
 
 table.contents-data tr {
@@ -179,7 +196,7 @@ table tr td, table tr th {
 	position: relative;
 	display: inline-block;
 	overflow: visible;
-	width: 140px;
+	width: 160px;
 	height: 15px;
 }
 
@@ -190,38 +207,44 @@ table tr td, table tr th {
 #combox1 {
 	height: 18px;
 	margin-left: 16px;
+	min-width: 210px !important;
+	max-width: 210px !important;
+	
 }
 
 .contents-header td {
 	border: 1px solid #CCC;
-	text-align: center;
-	height: 15px;
+	text-align: left;
+	height: 35px;
 	padding: 0px 0px;
 	font-weight: bold;
 }
 
 #COL_1 {
-	width: 210px !important;
+	min-width: 200px !important;
+	max-width: 200px !important;
 }
 
 #COL_2 {
-	width: 170px;
+	min-width: 190px !important;
+	max-width: 190px !important;
 }
 
 #COL_3 {
-	width: 240px;
+	min-width: 234px !important;
+	max-width: 240px !important;
 }
 
 #A2_012 {
-	margin-left: 0px;
+	margin-left: 15px;
 	width: 97px;
-	height: 21px;
+	height: 30px;
 	padding: 0px 0px !important;
 }
 
 #help {
-	width: 20px;
-	height: 20px;
+	width: 30px;
+	height: 30px;
 	margin-left: 5px;
 	padding: 0px 0px !important;
 }
@@ -233,22 +256,23 @@ table tr td, table tr th {
 }
 
 .input-units-1 {
-	min-width: 196px !important;
-	max-width: 196px !important;
+	min-width: 200px;
+	max-width: 200px;
 }
 
 .input-units-2 {
-	min-width: 159px !important;
-	max-width: 159px !important;
+	min-width: 190px;
+	max-width: 190px;
 }
 
 .input-units-3 {
-	min-width: 205px !important;
-	max-width: 240px !important;
+	min-width: 240px;
+	max-width: 240px;
 }
 
 #notdata {
-	min-width: 239px !important;
+	min-width: 240px !important;
+	max-width: 240px !important;
 }
 
 #sub-center {
@@ -260,10 +284,6 @@ span.caret-background.caret-right.direction-right {
 	position: fixed !important;
 }
 
-#string {
-	width: 200px !important;
-}
-
 .table-container {
 	color: #000;
 	position: relative;
@@ -273,7 +293,7 @@ span.caret-background.caret-right.direction-right {
 .table-container>div {
 	overflow-y: auto;
 	overflow-x: hidden;
-	height: 400px !important;
+	height: 355px !important;
 	border-top: 1px solid #ccc;
 }
 
@@ -317,6 +337,21 @@ tbody tr:first-child td {
 }
 
 label[for] {
-	line-height: 20px  !important;
+	line-height: 20px !important;
 	right: 48px !important;
+}
+
+#date1 {
+	width: 85px !important;
+	margin-left: 5px !important;
+}
+
+#A3_13 {
+	width: 22px !important;
+	margin-left: 5px !important;
+	height: 27px !important;
+}
+
+#A3_15 {
+	margin-left: 5px !important;
 }

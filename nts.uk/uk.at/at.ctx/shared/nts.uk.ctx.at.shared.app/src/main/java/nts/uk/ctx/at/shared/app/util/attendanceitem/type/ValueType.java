@@ -1,0 +1,20 @@
+package nts.uk.ctx.at.shared.app.util.attendanceitem.type;
+
+public enum ValueType {
+	
+	INTEGER(0, "INTEGER", "回数、時間、時刻"),
+	STRING(1, "STRING", "コード、文字"),
+	DECIMAL(2, "DECIMAL", "回数"),
+	DATE(3, "DATE", "年月日"),
+	BOOLEAN(4, "BOOLEAN", "年月日");
+
+	public final int value;
+	public final String name;
+	public final String description;
+	
+	private ValueType (int value, String name, String description){
+		this.value = value;
+		this.name = name;
+		this.description = description;
+	}
+}

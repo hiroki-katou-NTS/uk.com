@@ -1,0 +1,96 @@
+package nts.uk.ctx.bs.employee.dom.employee.history;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.layer.dom.event.DomainEvent;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.strategic.UnduplicatableHistory;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+/** 所属会社履歴（社員別） */
+public class AffCompanyHistByEmployee extends DomainEvent
+		implements UnduplicatableHistory<AffCompanyHistItem, DatePeriod, GeneralDate> {
+	/** 社員ID */
+	private String sId;
+
+	/** 履歴 */
+	private List<AffCompanyHistItem> lstAffCompanyHistoryItem;
+
+	public AffCompanyHistItem getAffCompanyHistItem(String historyId) {
+		if (lstAffCompanyHistoryItem == null) {
+			lstAffCompanyHistoryItem = new ArrayList<AffCompanyHistItem>();
+		}
+
+		List<AffCompanyHistItem> filter = lstAffCompanyHistoryItem.stream()
+				.filter(m -> m.getHistoryId().equals(historyId)).collect(Collectors.toList());
+
+		if (!filter.isEmpty()) {
+			return filter.get(0);
+		}
+
+		return null;
+	}
+
+	public void addAffCompanyHistItem(AffCompanyHistItem domain) {
+		if (lstAffCompanyHistoryItem == null) {
+			lstAffCompanyHistoryItem = new ArrayList<AffCompanyHistItem>();
+		}
+
+		lstAffCompanyHistoryItem.add(domain);
+		this.toBePublished();
+	}
+	
+	@Override
+	public List<AffCompanyHistItem> items() {
+		return lstAffCompanyHistoryItem;
+	}
+	
+	public Optional<AffCompanyHistItem> getHistoryWithReferDate(GeneralDate referenceDate) {
+		return this.lstAffCompanyHistoryItem.stream()
+				.filter(history -> history.getDatePeriod().start().beforeOrEquals(referenceDate)
+						&& history.getDatePeriod().end().afterOrEquals(referenceDate))
+				.findFirst();
+	}
+	
+	public Optional<AffCompanyHistItem> getHistoryBeforeReferDate(GeneralDate referenceDate) {
+		List<AffCompanyHistItem> matchedListEntryJobHist = this.lstAffCompanyHistoryItem.stream()
+				.filter(history -> history.getDatePeriod().end().before(referenceDate)).collect(Collectors.toList());
+		if (matchedListEntryJobHist.isEmpty()) {
+			return Optional.empty();
+		}
+		AffCompanyHistItem lastJobEntryHistory = matchedListEntryJobHist.get(0);
+		for (AffCompanyHistItem jobEntryHistory : matchedListEntryJobHist) {
+			if (jobEntryHistory.getDatePeriod().end().after(lastJobEntryHistory.getDatePeriod().end())) {
+				lastJobEntryHistory = jobEntryHistory;
+			}
+		}
+		return Optional.of(lastJobEntryHistory);
+	}
+	
+	public Optional<AffCompanyHistItem> getHistoryAfterReferDate(GeneralDate referenceDate) {
+		List<AffCompanyHistItem> matchedListEntryJobHist = this.lstAffCompanyHistoryItem.stream()
+				.filter(history -> history.getDatePeriod().start().after(referenceDate)).collect(Collectors.toList());
+		if (matchedListEntryJobHist.isEmpty()) {
+			return Optional.empty();
+		}
+		AffCompanyHistItem firstJobEntryHistory = matchedListEntryJobHist.get(0);
+		for (AffCompanyHistItem jobEntryHistory : matchedListEntryJobHist) {
+			if (jobEntryHistory.getDatePeriod().start().before(firstJobEntryHistory.getDatePeriod().start())) {
+				firstJobEntryHistory = jobEntryHistory;
+			}
+		}
+		return Optional.of(firstJobEntryHistory);
+	}
+	
+}

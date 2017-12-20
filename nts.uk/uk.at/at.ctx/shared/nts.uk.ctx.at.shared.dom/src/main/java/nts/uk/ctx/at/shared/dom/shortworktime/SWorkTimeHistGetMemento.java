@@ -4,12 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.shortworktime;
 
+import java.util.List;
+
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * The Interface SWorkTimeHistGetMemento.
  */
 public interface SWorkTimeHistGetMemento {
+	
+	/**
+	 * Gets the company id.
+	 *
+	 * @return the company id
+	 */
+	String getCompanyId();
 
 	/**
 	 * Gets the employee id.
@@ -23,5 +32,5 @@ public interface SWorkTimeHistGetMemento {
 	 *
 	 * @return the history item
 	 */
-	DateHistoryItem getHistoryItem();
+	List<DateHistoryItem> getHistoryItems();
 }

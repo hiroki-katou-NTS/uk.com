@@ -40,7 +40,7 @@
 }
 
 #lefttabs .ntsSearchBox.ntsSearchBox_Component {
-	min-width: 120px;
+	min-width: 178px;
 }
 
 .avatar-group, .person-group, .action-group {
@@ -204,10 +204,6 @@
 	padding-top: 5px;
 }
 
-.form-group:not(.item-classification){
-	margin-bottom:5px;
-}
-
 .form-group:not(.item-classification)>* {
 	display: inline-block;
 	vertical-align: middle;
@@ -215,6 +211,12 @@
 
 #contents-area .layout-control .drag-panel {
 	min-width: 860px;
+}
+
+#contents-area .category-input .cat-has-childs .layout-control .drag-panel {
+	min-width: 830px;
+	border: none;
+	height: auto;
 }
 
 .ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
@@ -267,5 +269,14 @@
 .category-input>.title {
 	display: block;
 	line-height: 37px;
+	text-align: center;
 	background-color: #cee6ff;
+}
+
+.nts-searchbbox-wrapper button.search-btn, .nts-searchbbox-wrapper button.clear-btn {
+	min-width: 50px !important;
+}
+
+#lefttabs .ntsSearchBox.ntsSearchBox_Component {
+    min-width: 130px !important;
 }

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 import java.util.List;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidworktimesheet.FluWorkHolidayTimeSheet;
 
 /**
@@ -19,5 +20,6 @@ public class FluOffdayWorkTime {
 	private List<FluWorkHolidayTimeSheet> workingTimes;
 	/** The break time. */
 	// 休憩時間帯
-	private FluRestTime restTime;
+//	private FluRestTime restTime;
+	private FlowWorkRestTimezone restTime;
 }

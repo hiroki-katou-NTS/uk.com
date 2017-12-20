@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 /**
  * The Enum VacationType.
  */
+// 休暇の種類
 public enum AcquisitionType {
 
 	/** The Salary. */

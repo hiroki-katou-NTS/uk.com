@@ -20,6 +20,8 @@
 			<com:stylefile path="cps001.a.style.css" />
 			<com:scriptfile path="/view/cps/007/a/layout-control-ko-ext.js"
 				of="/nts.uk.com.web" />
+
+			<com:scriptfile path="cbx-control-ko-ext.js" />
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
 			<com:scriptfile path="cps001.a.start.js" />
@@ -27,20 +29,33 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button type="button" class="proceed" data-bind="click: saveData">#{i18n.getText('CPS001_4')}</button>
-				<button type="button" data-bind="click: unManagerEmployee">#{i18n.getText('CPS001_5')}</button>
+				<button type="button" class="proceed"
+					data-bind="click: saveData, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('CPS001_4')}</button>
+				<button type="button" data-bind="click: unManagerEmployee" tabindex="2">#{i18n.getText('CPS001_5')}</button>
 				<button type="button" class="danger"
-					data-bind="click: deleteEmployee">#{i18n.getText('CPS001_6')}</button>
+					data-bind="click: deleteEmployee" tabindex="3">#{i18n.getText('CPS001_6')}</button>
 				<a class="goout"
-					data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }">#{i18n.getText('CPS001_7')}</a>
+					data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }" tabindex="4">#{i18n.getText('CPS001_7')}</a>
 				<a class="goout"
-					data-bind="ntsLinkButton: { jump: '/view/cps/008/a/index.xhtml' }">#{i18n.getText('CPS001_8')}</a>
+					data-bind="ntsLinkButton: { jump: '/view/cps/008/a/index.xhtml' }" tabindex="5">#{i18n.getText('CPS001_8')}</a>
 			</div>
 			<div id="contents-area" class="cf"
 				data-bind="let: { 
-						text: nts.uk.resource.getText
+						text: nts.uk.resource.getText,
+						TABS: {
+							LAYOUT: 'layout',
+							CATEGORY: 'category'
+						},
+						CAT_TYPE: {	
+							SINGLE : 1,
+							MULTI: 2,
+							CONTI: 3, /* continuos history hasn't end date */
+							NODUP: 4,
+							DUPLI: 5,
+							CONTIWED: 6 /* continuos history has end date */
+						}
 					}">
-				<div id="ccgcomponent"></div>
+				<div id="ccgcomponent" tabindex="6"></div>
 				<div class="left-area">
 					<div class="bg-green caret-right caret-background"
 						data-bind="let: { emp: employee() }">
@@ -49,15 +64,15 @@
 								name: 'list-data',
 								data: {
 									value: emp.employeeId,
-									dataSource: listEmployee,
+									dataSource: employees,
 									primaryKey: 'employeeId',
 									columns: [
 										{ headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
-			                			{ headerText: text('CPS001_9'), key: 'employeeCode', width: 115, hidden: false },
+			                			{ headerText: text('CPS001_10'), key: 'employeeCode', width: 115, hidden: false },
 			                			{ headerText: '', key: 'employeeName', width: 125, hidden: false }
 									],
 								}
-							}"></div>
+							},attr: { NameID: text('CPS001_09')} "></div>
 					</div>
 					<div id="lefttabs"
 						data-bind="ntsTabPanel: {
@@ -76,53 +91,107 @@
 									enable: ko.observable(true), 
 									visible: ko.observable(true)
 								}], 
-							active: tabActive
+							active: tab
 							}">
-						<div class="layouttab" data-bind="let: { layout: currentLayout()}">
-							<div
-								data-bind="ntsSearchBox: {
-									searchMode: 'highlight',
-									targetKey: 'code',
-									comId: 'layouts',
-									items: ko.observableArray([]),
-									selectedKey: 'code', 
-									fields: ['name', 'code'], 
-									mode: 'igGrid'}"></div>
-							<div
-								data-bind="template: { name: 'list-data', data: {
-									dataSource: listLayout,
-									value: layout.maintenanceLayoutID,
-									primaryKey: 'maintenanceLayoutID',
-									columns: [
-										{ headerText: 'コード', key: 'maintenanceLayoutID', width: 100, hidden: true },
-			                			{ headerText: text('CPS001_25'), key: 'layoutName', width: 232, hidden: false }
-									],
-								} }">
+						<div class="layouttab" data-bind="if: tab() == TABS.LAYOUT">
+							<div data-bind="foreach: multipleData">
+								<div
+									data-bind="ntsSearchBox: {
+										searchMode: 'filter',
+										targetKey: 'code',
+										comId: 'layouts',
+										items: gridlist,
+										selectedKey: 'optionValue', 
+										fields: ['optionText'], 
+										mode: 'igGrid'}" tabindex="8"></div>
+								<table id="grid-data"
+									data-bind="ntsGridList: {							
+										rows: 10,
+										multiple: false,
+										columns: [
+											{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
+				                			{ headerText: text('CPS001_26'), key: 'optionText', width: 232, hidden: false }
+										],
+										primaryKey: 'optionValue',
+										value: id,
+										dataSource: gridlist
+									},attr: { NameID: text('CPS001_25')}"></table>
 							</div>
 						</div>
-						<div class="categorytab">
-							<div class="form-group search-box"
-								data-bind="let: { cat: currentCategory()} ">
-								<button type="button">#{i18n.getText('CPS001_27')}</button>
-								<div id="combo-box"
-									data-bind="ntsComboBox: {
-										options: listCategory,
-										visibleItemsCount: 5,
-										value: cat.id,
-										optionsText: 'categoryName',
-										optionsValue: 'personInfoCategoryID',
-										editable: false,
-										enable: true,
-										columns: [{ prop: 'categoryName', length: 10 }]}"></div>
-							</div>
-							<div
-								data-bind="template: { name: 'list-multiple', data: { 
-										list: {
-										}, 
-										event: {
-										} 
-									}
-								}">
+						<div class="categorytab" data-bind="if: tab() == TABS.CATEGORY">
+							<div data-bind="foreach: { data: multipleData, as: 'multiple' }">
+								<div data-bind="if: !$index()">
+									<div class="form-group search-box">
+										<button type="button"
+											data-bind="click: function() { multiple.id.valueHasMutated() }" tabindex="8">#{i18n.getText('CPS001_27')}</button>
+										<div id="combo-box"
+											data-bind="ntsDropDownList: {
+												value: multiple.id,
+												dataSource: multiple.combobox,
+												textKey: 'optionText',
+												valueKey: 'optionValue',
+												visibleItemsCount: 10,
+												tabIndex: -1
+										 }" tabindex="9"></div>
+									</div>
+									<div
+										data-bind="let: { catType: multiple.category().categoryType() }">
+										<div data-bind="if: catType == CAT_TYPE.SINGLE">
+											<div
+												data-bind="template: { name: 'list-data', data: { 
+														dataSource: ko.observableArray([]),
+														value: ko.observable(''),
+														primaryKey: 'id',
+														columns: [
+															{ headerText: '', key: 'id', width: 100, hidden: true },
+								                			{ headerText: '', key: 'name', width: 232, hidden: false }
+														],
+													}
+												}">
+											</div>
+										</div>
+										<div data-bind="if: catType == CAT_TYPE.MULTI">
+											<div
+												data-bind="template: { name: 'list-multiple', data: { 
+													list: {
+														value: multiple.infoId, 
+														dataSource: multiple.gridlist,
+														primaryKey: 'optionValue',
+														columns: [
+															{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
+								               				{ headerText: text('CPS001_65'), key: 'optionText', width: 232, hidden: false }
+														]
+													},
+													event: {
+														add: multiple.events.add,
+														delete: multiple.events.remove
+													}
+												} }">
+											</div>
+										</div>
+										<div
+											data-bind="if: [CAT_TYPE.CONTI, CAT_TYPE.CONTIWED, CAT_TYPE.DUPLI, CAT_TYPE.NODUP].indexOf(catType) > -1">
+											<div
+												data-bind="template: { name: 'list-history', data: {
+												list: {
+													value: multiple.infoId, 
+													dataSource: multiple.gridlist,
+													primaryKey: 'optionValue',
+													columns: [
+														{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
+							               				{ headerText: text('CPS001_65'), key: 'optionText', width: 232, hidden: false }
+													]
+												},
+												event: {
+													add: multiple.events.add,
+													replication: multiple.events.replace,
+													delete: multiple.events.remove
+												}
+											} }">
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -135,8 +204,8 @@
 						}">
 					<div class="top-right-area cf">
 						<div class="avatar-group">
-							<div class="active-panel" data-bind="click: chooseAvatar">
-								<img data-bind="attr: { src: _pers.avatar}" class="avatar" />
+							<div class="active-panel" data-bind="click: chooseAvatar" >
+								<img data-bind="attr: { src: _emp.avatar}" class="avatar" tabindex="13"/>
 							</div>
 						</div>
 						<div class="person-group">
@@ -148,7 +217,7 @@
 											<td>
 												<div class="info">
 													<span data-bind="text: _emp.employeeCode"></span> <span
-														data-bind="text: _pers.fullName"></span>
+														data-bind="text:  _emp.employeeName"></span>
 												</div>
 											</td>
 										</tr>
@@ -162,14 +231,15 @@
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_14')}</td>
-											<td data-bind="text: ''"></td>
+											<td><span data-bind="text: _emp.departmentCode"></span>
+												<span data-bind="text: _emp.departmentName"></span></td>
 										</tr>
 										<tr>
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_15')}</td>
 											<td>
-												<div class="info first" data-bind="text: ''"></div>
+												<div class="info first" data-bind="text: _emp.position"></div>
 												<div class="info bg-calendar-ym-set">#{i18n.getText('CPS001_16')}</div>
-												<div class="info" data-bind="text: ''"></div>
+												<div class="info" data-bind="text: _emp.contractType"></div>
 											</td>
 										</tr>
 									</tbody>
@@ -180,12 +250,12 @@
 							<div class="active-panel cf">
 								<div class="column">
 									<button class="btn btn-location" type="button"
-										data-bind="click: pickLocation, enable: _auth.allowMapBrowse()">#{i18n.getText('CPS001_20')}</button>
+										data-bind="click: pickLocation, enable: _auth.allowMapBrowse()" tabindex="16">#{i18n.getText('CPS001_20')}</button>
 									<button class="btn btn-details" type="button"
-										data-bind="click: uploadebook, enable: _auth.allowDocRef()">#{i18n.getText('CPS001_19')}</button>
+										data-bind="click: uploadebook, enable: _auth.allowDocRef()" tabindex="15">#{i18n.getText('CPS001_19')}</button>
 								</div>
 								<div class="column">
-									<button class="btn btn-print" type="button">#{i18n.getText('CPS001_17')}</button>
+									<button class="btn btn-print" type="button" tabindex="14">#{i18n.getText('CPS001_17')}</button>
 								</div>
 							</div>
 							<div class="active-panel">
@@ -193,36 +263,25 @@
 							</div>
 						</div>
 					</div>
-					<div class="bottom-right-area">
-						<div class="layout-input"
-							data-bind="css: { 'hidden': tabActive() != 'layout'}">
-							<div class="form-group">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
-								<div
-									data-bind="ntsDatePicker: {
-								value: ko.observable(''), 
-								dateFormat: 'YYYY/MM/DD'}"></div>
-								<button>#{i18n.getText('CPS001_37')}</button>
-							</div>
+					<div class="bottom-right-area"
+						data-bind="let: { 
+								cats: categories,
+								layouts: multipleData 
+							}">
+						<div class="layout-input" data-bind="if: tab() == TABS.LAYOUT">
 							<div
-								data-bind="template: { 
-									name: 'simple-layout', 
-									data: {
-										items: currentLayout().listItemClsDto
-								 	}
-								}"></div>
+								data-bind="template: { name: 'multiple-layout', data: { items: layouts() } }"></div>
 						</div>
-						<div class="category-input"
-							data-bind="css: { 'hidden': tabActive() != 'category'}">
-							<div class="title">category</div>
-							<div
-								data-bind="template: { 
-									name: 'cat-with-child', 
-									data: {
-										currentTabCategory: currentTabCategory,
-										listItemClsDto: ko.observableArray([])
-								 	}
-								}"></div>
+						<div class="category-input" data-bind="if: tab() == TABS.CATEGORY">
+							<div class="title" data-bind="text: titleResource"></div>
+							<div data-bind="if: cats().length" class="cat-with-childs">
+								<div
+									data-bind="template: { name: 'multiple-layout', data: { items: layouts() } }"></div>
+							</div>
+							<div data-bind="if: !cats().length" class="cat-no-childs">
+								<div
+									data-bind="template: { name: 'multiple-layout', data: { items: layouts() } }"></div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -250,7 +309,6 @@
 						dataSource: $data.dataSource || ko.observableArray([])
 					}"></table>
 			</script>
-
 			<script type="text/html" id="list-history"
 				data-structor="{
 					list: {
@@ -259,19 +317,19 @@
 						primaryKey: 'id',
 						columns: [
 							{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-               				{ headerText: '名称', key: 'name', width: 232, hidden: false }
+               				{ headerText: text('CPS001_65'), key: 'name', width: 232, hidden: false }
 						]
 					},
 					event: {
 						add: function() {},
 						replication: function() {},
-						delete: function()
+						delete: function() {}
 					}
 				}">
 				<div class="form-group search-box">
-					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}">#{i18n.getText('CPS001_32')}</button>
-					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}">#{i18n.getText('CPS001_33')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}" tabindex="10">#{i18n.getText('CPS001_32')}</button>
+					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}" tabindex="11">#{i18n.getText('CPS001_33')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: _.indexOf(_.map(ko.toJS($data.list.dataSource), function(x) { return x.optionValue; }), $data.list.value()) == 0 , " tabindex="12">#{i18n.getText('CPS001_34')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
@@ -280,8 +338,8 @@
 							dataSource: $data.list.dataSource,
 							primaryKey: $data.list.primaryKey || 'id',
 							columns: $data.list.columns || [
-								{ headerText: 'コード', key: 'maintenanceLayoutID', width: 100, hidden: true },
-                				{ headerText: text('CPS001_25'), key: 'layoutName', width: 232, hidden: false }
+								{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
+                				{ headerText: text('CPS001_65'), key: 'optionText', width: 232, hidden: false }
 							]
 						}
 					}">
@@ -295,17 +353,17 @@
 						primaryKey: 'id',
 						columns: [
 							{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-               				{ headerText: '名称', key: 'name', width: 232, hidden: false }
+               				{ headerText: text('CPS001_65'), key: 'name', width: 232, hidden: false }
 						]
 					},
 					event: {
 						add: function() {},
-						delete: function()						
+						delete: function() {}						
 					}
 				}">
 				<div class="form-group search-box">
-					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}">#{i18n.getText('CPS001_32')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}" tabindex="10">#{i18n.getText('CPS001_30')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.list.dataSource.length" tabindex="11">#{i18n.getText('CPS001_31')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
@@ -315,7 +373,7 @@
 							primaryKey: $data.list.primaryKey || 'id',
 							columns: $data.list.columns || [
 								{ headerText: 'コード', key: 'maintenanceLayoutID', width: 100, hidden: true },
-                				{ headerText: text('CPS001_25'), key: 'layoutName', width: 232, hidden: false }
+                				{ headerText: text('CPS001_65'), key: 'layoutName', width: 232, hidden: false }
 							]
 						}
 					}">
@@ -323,55 +381,46 @@
 			</script>
 			<script type="text/html" id="simple-layout"
 				data-structor="{
-					items: listItemClassification
+					items: listItemCls,
+					outData: outData
 				}">
 				<div style="padding-top: 10px"
 					data-bind="ntsLayoutControl: { 
 					data: $data.items,
+					outData: $data.outData || ko.observableArray([]),
 					editAble: 2 }"></div>
 			</script>
-			<script type="text/html" id="cat-with-child">
-				<div id="category-tab"
-					data-bind="ntsTabPanel: {
-							dataSource: [
-								{
-									id: 'cat1', 
-									title: text('CPS001_23'), 
-									content: '.cat1', 
-									enable: ko.observable(true), 
-									visible: ko.observable(true)
-								},
-								{
-									id: 'cat2', 
-									title: text('CPS001_24'), 
-									content: '.cat2', 
-									enable: ko.observable(true), 
-									visible: ko.observable(true)
-								}],
-							active: $data.currentTabCategory
-							}">
-					<div class="cat1">
-							<div
-								data-bind="template: { 
-									name: 'simple-layout', 
-									data: {
-										items: $data.listItemClsDto
-								 	}
-								}"></div>
+			<script type="text/html" id="multiple-layout"
+				data-structor="{
+					items: multipleData
+				}">
+				<div data-bind="foreach: { data: $data.items, as: 'multiple' }">
+					<div data-bind="if: $index() == 0">
+						<div class="form-group" data-bind="if: multiple.mode() == TABS.LAYOUT">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
+							<div data-bind="ntsDatePicker: {
+									value: multiple.layout().standardDate, 
+									dateFormat: 'YYYY/MM/DD'}"></div>
+							<button data-bind="click: function() { multiple.id.valueHasMutated() }">#{i18n.getText('CPS001_37')}</button>
+						</div>
+						<div data-bind="template: {
+								name: 'simple-layout',
+								data: {
+									items: multiple.layout().listItemCls,
+									outData: multiple.layout().outData
+								}
+							}"></div>
 					</div>
-					<div class="cat2">
-
-							<div
-								data-bind="template: { 
-									name: 'simple-layout', 
-									data: {
-										items: $data.listItemClsDto
-								 	}
-								}"></div>
+					<div data-bind="if: $index() != 0">
+						<div data-bind="template: {
+								name: 'simple-layout',
+								data: {
+									items: multiple.layout().listItemCls,
+									outData: multiple.layout().outData
+								}
+							}"></div>
 					</div>
 				</div>
-			</script>
-			<script type="text/html" id="cat-with-history">
 			</script>
 		</ui:define>
 	</ui:composition>

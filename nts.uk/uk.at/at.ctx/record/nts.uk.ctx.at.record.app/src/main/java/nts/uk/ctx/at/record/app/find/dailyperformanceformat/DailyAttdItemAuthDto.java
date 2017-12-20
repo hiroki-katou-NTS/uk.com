@@ -9,7 +9,7 @@ public class DailyAttdItemAuthDto {
 	
 	public int attendanceItemId;
 
-	public int authorityId;
+	public String authorityId;
 
 	public boolean youCanChangeIt;
 

@@ -73,8 +73,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 	public void updateStamp(AppStamp appStamp) {
 		Optional<KrqdtAppStamp> optional = this.queryProxy().find(new KrqdpAppStamp(
 				appStamp.getCompanyID(), 
-				appStamp.getApplicationID(), 
-				appStamp.getStampRequestMode().value), KrqdtAppStamp.class);
+				appStamp.getApplicationID()), KrqdtAppStamp.class);
 		if(!optional.isPresent()) throw new RuntimeException(" Not found AppStamp in table KRQDT_APP_STAMP, appID =" + appStamp.getApplicationID());
 		KrqdtAppStamp krqdtAppStamp = optional.get();
 		krqdtAppStamp.version = appStamp.getVersion();
@@ -136,7 +135,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		List<AppStampWork> appStampWorks = new ArrayList<AppStampWork>();
 		List<AppStampCancel> appStampCancels = new ArrayList<AppStampCancel>();
 		AppStampOnlineRecord appStampOnlineRecord = null;
-		switch(krqdtAppStamp.krqdpAppStampPK.stampRequestMode) {
+		switch(krqdtAppStamp.stampRequestMode) {
 			case 0:
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
 					AppStampGoOutPermit appStampGoOutPermit = new AppStampGoOutPermit(
@@ -220,7 +219,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				null,
 				null,
 				null,
-				EnumAdaptor.valueOf(krqdtAppStamp.krqdpAppStampPK.stampRequestMode, StampRequestMode.class), 
+				EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode.class), 
 				appStampGoOutPermits, 
 				appStampWorks, 
 				appStampCancels, 
@@ -233,8 +232,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		KrqdtAppStamp krqdtAppStamp = new KrqdtAppStamp(
 				new KrqdpAppStamp(
 						appStamp.getCompanyID(), 
-						appStamp.getApplicationID(), 
-						appStamp.getStampRequestMode().value), 
+						appStamp.getApplicationID()), 
+				appStamp.getStampRequestMode().value,
 				appStamp.getVersion(),
 				null, 
 				null, 
@@ -260,7 +259,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						appStamp.getReflectPerState().value, 
 						appStamp.getReflectPerEnforce().value,
 						null,
-						null,null,null,null,null),
+						null,null,null,null,null, null),
 				null);
 		List<KrqdtAppStampDetail> krqdtAppStampDetails = new ArrayList<KrqdtAppStampDetail>();
 		switch(appStamp.getStampRequestMode()) {

@@ -13,13 +13,9 @@
 					height : 430
 				};
 			</script>
-<!-- 			<com:ValidatorScript> -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceYears -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceMonths -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays -->
-<!-- 				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt -->
-<!-- 			</com:ValidatorScript> -->
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalInputItem
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../main.css" />
 			<com:scriptfile path="kml002.b.vm.js" />
@@ -104,9 +100,9 @@
 						</td>
 					</tr>
 					<tr>
-						<td><input tabindex="6" class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem1, enable: enableVerticalInputItem1 }" /></td>						
+						<td><input tabindex="6" class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem1, enable: enableVerticalInputItem1, constraint:['VerticalInputItem'] }" /></td>						
 						
-						<td><input tabindex="7" class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem2, enable: enableVerticalInputItem2 }" /></td>
+						<td><input tabindex="7" class="numerical" data-bind="ntsNumberEditor: { value: verticalInputItem2, enable: enableVerticalInputItem2, constraint:['VerticalInputItem'] }" /></td>
 					</tr>
 				</table>
 			</div>

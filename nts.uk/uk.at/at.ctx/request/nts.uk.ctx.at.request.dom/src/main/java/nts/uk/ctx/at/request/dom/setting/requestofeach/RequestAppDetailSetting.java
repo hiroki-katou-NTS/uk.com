@@ -87,6 +87,11 @@ public class RequestAppDetailSetting extends DomainObject {
 	 */
 	public InstructionUseSetting instructionUseSetting;
 	
+	/**
+	 * 退勤時刻初期表示区分
+	 */
+	public DisplayBreakTime timeEndDispFlg;
+	
 	public static RequestAppDetailSetting createSimpleFromJavaType(String companyId,
 			int appType,
 			String memo,
@@ -105,7 +110,8 @@ public class RequestAppDetailSetting extends DomainObject {
 			int requiredInstructionFlg,
 			int instructionAtr,
 			String instructionRemarks,
-			int instructionUseDivision) {
+			int instructionUseDivision,
+			int timeEndDispFlg) {
 				return new RequestAppDetailSetting(companyId, 
 						EnumAdaptor.valueOf(appType, ApplicationType.class),
 						new Memo(memo),
@@ -123,8 +129,9 @@ public class RequestAppDetailSetting extends DomainObject {
 						EnumAdaptor.valueOf(timeInputUseAtr, UseAtr.class),
 						EnumAdaptor.valueOf(requiredInstructionFlg, SettingFlg.class),
 						new InstructionUseSetting(EnumAdaptor.valueOf(instructionAtr, UseAtr.class),
-								new Memo(instructionRemarks), 
-								EnumAdaptor.valueOf(instructionUseDivision, UseAtr.class)));
+						new Memo(instructionRemarks), 
+						EnumAdaptor.valueOf(instructionUseDivision, UseAtr.class)),
+						EnumAdaptor.valueOf(timeEndDispFlg, DisplayBreakTime.class));
 		
 	}
 	

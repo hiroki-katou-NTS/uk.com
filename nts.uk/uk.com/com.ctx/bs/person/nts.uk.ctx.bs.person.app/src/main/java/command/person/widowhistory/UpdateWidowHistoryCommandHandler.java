@@ -17,8 +17,8 @@ public class UpdateWidowHistoryCommandHandler extends CommandHandler<UpdateWidow
 	private WidowHistoryRepository widowHistoryRepository;
 	
 	@Override
-	public String targetCategoryId() {
-		return "CS00014";
+	public String targetCategoryCd() {
+		return null;
 	}
 
 	@Override

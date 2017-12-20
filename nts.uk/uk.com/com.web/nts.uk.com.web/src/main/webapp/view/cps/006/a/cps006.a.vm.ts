@@ -12,9 +12,10 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categorySourceLst: KnockoutObservableArray<any> = ko.observableArray([]);
         currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable((new CategoryInfoDetail({
             id: '', categoryNameDefault: '',
-            categoryName: '', categoryType: 4, isAbolition: "", itemList: []
+            categoryName: '', categoryType: 4, isAbolition: "",
+             personEmployeeType : 0, itemList: [] 
         })));
-        // nếu sử dụng thì bằng true và ngược lại
+        // nếu sử dụng thì bằng true và ngược lại __viewContext["viewModel"].currentCategory().personEmployeeType
         isAbolished: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
@@ -70,7 +71,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 if (data) {
                     self.currentCategory().setData({
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
-                        categoryType: data.categoryType, isAbolition: data.abolition, itemList: data.itemLst
+                        categoryType: data.categoryType, isAbolition: data.abolition, 
+                        personEmployeeType: data.personEmployeeType, itemList: data.itemLst
                     }, data.systemRequired, data.isExistedItemLst);
                     if (data.itemLst.length > 0) {
                         self.currentCategory().currentItemId(data.itemLst[0].id);
@@ -204,7 +206,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     self.start(command.categoryId);
                 });
             }).fail(function(res: any) {
-                dialog.alertError({ messageId: res.messageId});
+                dialog.alertError({ messageId: res.messageId });
             });
 
         }
@@ -264,6 +266,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: string;
         categoryType: number;
         isAbolition: string;
+        personEmployeeType: number;
         itemList?: Array<any>;
     }
 
@@ -273,6 +276,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: number;
         isAbolition: KnockoutObservable<boolean>;
+        personEmployeeType: number;
         isExistedItemLst: number;
         displayIsAbolished: number = 0;
         itemList: KnockoutObservableArray<any>;
@@ -294,6 +298,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.categoryType = params.categoryType;
             this.isAbolition = ko.observable(false);
             this.itemList = ko.observableArray(params.itemList || []);
+            this.personEmployeeType = params.personEmployeeType || 1;
         }
 
         setData(params: any, displayIsAbolished: number, isExistedItemLst: number) {
@@ -303,6 +308,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.isAbolition(params.isAbolition);
             this.displayIsAbolished = displayIsAbolished;
             this.isExistedItemLst = isExistedItemLst;
+            this.personEmployeeType = params.personEmployeeType;
             this.itemList(params.itemList);
         }
     }

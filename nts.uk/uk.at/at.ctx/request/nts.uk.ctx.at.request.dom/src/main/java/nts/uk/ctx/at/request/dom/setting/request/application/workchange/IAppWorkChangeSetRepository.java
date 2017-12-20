@@ -11,7 +11,7 @@ public interface IAppWorkChangeSetRepository
 
     List<AppWorkChangeSet> getAllAppWorkChangeSet();
     
-    Optional<AppWorkChangeSet> findWorkChangeByID(String cid);
+    Optional<AppWorkChangeSet> findWorkChangeSetByID(String cid);
     
     void add(AppWorkChangeSet domain);
 

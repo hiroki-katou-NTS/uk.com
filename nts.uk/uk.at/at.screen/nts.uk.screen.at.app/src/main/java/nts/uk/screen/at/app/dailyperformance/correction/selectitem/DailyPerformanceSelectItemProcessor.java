@@ -17,14 +17,13 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatInitialDisplayDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.ColumnSetting;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItemControl;
@@ -44,7 +43,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerf
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -77,21 +75,18 @@ public class DailyPerformanceSelectItemProcessor {
 				// アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
 				// kiem tra thong tin rieng biet user
 				if (correct == null) {
-					List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo
-							.findAuthorityFormatInitialDisplay(companyId);
-					if (!initialDisplayDtos.isEmpty()) {
 						// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
 						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
+						// set FormatCode for button A2_4
+						result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
 						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 								.collect(Collectors.toList());
+						if(!formatCodes.isEmpty() && !sheetNos.isEmpty())
 						authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
-					} else {
-						// アルゴリズム「表示項目の選択を起動する」を実行する
-						/// 画面「表示フォーマットの選択」をモーダルで起動する(Chạy màn hình "Select
-						// display format" theo cách thức) -- chay man hinh C
-					}
 				} else {
 					// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
+					// set FormatCode for button A2_4
+					result.setFormatCode(formatCodes.stream().collect(Collectors.toSet()));
 					authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
 					List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 							.collect(Collectors.toList());
@@ -101,9 +96,6 @@ public class DailyPerformanceSelectItemProcessor {
 					lstFormat = new ArrayList<FormatDPCorrectionDto>();
 					lstSheet = new ArrayList<DPSheetDto>();
 					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
-					// set FormatCode for button A2_4
-					result.setFormatCode(authorityFomatDailys.stream().map(x -> x.getDailyPerformanceFormatCode())
-							.collect(Collectors.toSet()));
 					lstSheet = authorityFormatSheets.stream().map(x -> new DPSheetDto(x.getSheetNo().toString(), x.getSheetName().toString()))
 							.collect(Collectors.toList());
 					lstFormat = authorityFomatDailys.stream()
@@ -119,7 +111,7 @@ public class DailyPerformanceSelectItemProcessor {
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						// chia cot con code name cua AttendanceItemId chinh va
 						// set
-						lstHeader.add(DPHeaderDto.createSimpleHeader(String.valueOf(dto.getAttendanceItemId()),
+						lstHeader.add(DPHeaderDto.createSimpleHeader("A"+String.valueOf(dto.getAttendanceItemId()),
 								String.valueOf(dto.getColumnWidth()) + "px", mapDP));
 					}
 					result.setLstHeader(lstHeader);
@@ -147,7 +139,7 @@ public class DailyPerformanceSelectItemProcessor {
 					result.addColumnsToSheet(lstFormat, mapDP);
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
-						lstHeader.add(DPHeaderDto.createSimpleHeader(String.valueOf(dto.getAttendanceItemId()),
+						lstHeader.add(DPHeaderDto.createSimpleHeader("A"+String.valueOf(dto.getAttendanceItemId()),
 								String.valueOf(dto.getColumnWidth()) + "px", mapDP));
 					}
 					result.setLstHeader(lstHeader);
@@ -165,12 +157,23 @@ public class DailyPerformanceSelectItemProcessor {
 				}
 			}
 			// set text to header
-			result.setHeaderText(lstAttendanceItem);
-			// set color to header
-			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
-					.getListAttendanceItemControl(lstAtdItemUnique);
-			result.setLstAttendanceItem(lstAttendanceItem);
-			result.setHeaderColor(lstAttendanceItemControl);
+			for (DPHeaderDto key : result.getLstHeader()) {
+				ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
+				if(!key.getGroup().isEmpty()){
+					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
+					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+				}
+				result.getColumnSettings().add(columnSetting);
+
+			};
+			if (!lstAttendanceItem.isEmpty()) {
+				result.setHeaderText(lstAttendanceItem);
+				// set color to header
+				List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
+						.getListAttendanceItemControl(lstAtdItemUnique);
+				result.setLstAttendanceItem(lstAttendanceItem);
+				result.setHeaderColor(lstAttendanceItemControl);
+			}
 		}
 		return result;
 	}
@@ -221,7 +224,7 @@ public class DailyPerformanceSelectItemProcessor {
 		 * display format"
 		 */
 		// アルゴリズム「対象者を抽出する」を実行する | Execute "Extract subject"
-		if (lstEmployee.size() > 0) {
+		if (lstEmployee.size() > 0 && lstEmployee != null) {
 			screenDto.setLstEmployee(lstEmployee);
 		} else {
 			screenDto.setLstEmployee(getListEmployee(sId, screenDto.getDateRange()));
@@ -268,14 +271,17 @@ public class DailyPerformanceSelectItemProcessor {
 		// アルゴリズム「就業確定情報を取得する」を実行する
 		/// アルゴリズム「日別実績のロックを取得する」を実行する (Tiến hành xử lý "Lấy về lock của thành
 		// tích theo ngày")
-		Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(),
-				closureDto.getClosureId());
-		// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
-		Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(closureDto.getClosureId(),
-				closureDto.getClosureMonth());
+//		Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(),
+//				closureDto.getClosureId());
+//		// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
+//		Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(closureDto.getClosureId(),
+//				closureDto.getClosureMonth());
 
 		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
 				correct, formatCodes);
+		screenDto.getLstFixedHeader().forEach(column ->{
+			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+		});
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
 		// Map<Integer, Integer> typeControl =
@@ -301,7 +307,7 @@ public class DailyPerformanceSelectItemProcessor {
 						cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
 								"Link Name" + item.getId(), String.valueOf(item.getAttendanceAtr()), "Link2"));
 					} else {
-						cellDatas.add(new DPCellDataDto(String.valueOf(item.getId()), String.valueOf(a),
+						cellDatas.add(new DPCellDataDto("A"+String.valueOf(item.getId()), String.valueOf(a),
 								String.valueOf(item.getAttendanceAtr()), "label"));
 					}
 				});
@@ -349,7 +355,7 @@ public class DailyPerformanceSelectItemProcessor {
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
 					result.add(new DPDataDto(dataId, "1", "", filterDate, false, employee.getId(), employee.getCode(),
-							employee.getBusinessName()));
+							employee.getBusinessName(),  employee.getWorkplaceId()));
 					dataId++;
 				}
 			}

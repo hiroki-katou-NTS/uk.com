@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
 
                 // set ntsFixedTable style
-                $("#tbl-calc-formula").ntsFixedTable({ height: 250 });
+                $("#tbl-calc-formula").ntsFixedTable({ height: 250, width: 814 });
 
                 // Load data.
                 self.loadEnum()
@@ -1384,7 +1384,7 @@ module nts.uk.at.view.kmk002.a {
                 this.formulaId = nts.uk.util.randomId();
                 this.optionalItemNo = '';
                 this.formulaName = ko.observable('');
-                this.formulaAtr = ko.observable(null);
+                this.formulaAtr = ko.observable(0);
                 this.symbolValue = '';
                 this.orderNo = ko.observable(null);
                 this.selected = ko.observable(false);
@@ -1396,10 +1396,10 @@ module nts.uk.at.view.kmk002.a {
                 this.itemSelection = this.getDefaultItemSelection();
 
                 // stash
-                this.calcAtrStash = null;
-                this.formulaAtrStash = null;
-                this.timeMonthlyUnitStash = null;
-                this.timeDailyUnitStash = null;
+                this.calcAtrStash = 0;
+                this.formulaAtrStash = 0;
+                this.timeMonthlyUnitStash = 1;
+                this.timeDailyUnitStash = 1;
 
                 // Rounding
                 this.timeMonthlyRounding = ko.observable(0);

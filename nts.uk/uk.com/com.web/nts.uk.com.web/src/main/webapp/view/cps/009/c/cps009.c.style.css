@@ -7,7 +7,8 @@
 }
 
 #roleName {
-	width: 100px !important;
+	width: 240px!important;
+	margin-left: 5px!important;
 }
 #roleCodeOld {
 	margin-left: 110px;

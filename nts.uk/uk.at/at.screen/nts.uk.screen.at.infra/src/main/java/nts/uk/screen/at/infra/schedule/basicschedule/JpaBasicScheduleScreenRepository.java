@@ -1,6 +1,7 @@
 package nts.uk.screen.at.infra.schedule.basicschedule;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -8,13 +9,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtSchePerInfoAtr;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscstScheQualifySet;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControlPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtWorkEmpCombine;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenRepository;
-import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlDto;
-import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineDto;
+import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlScreenDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 
@@ -40,14 +41,8 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " FROM KshmtWorkType c" + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.deprecateAtr = :deprecateClassification";
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
-			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode =:workTypeCode "
-			+ " AND c.workTimeCode =:workTimeCode";
-	private static final String GET_ALL_SCHEDULE_PERSON_INFOR_ATTRIBUTE = "SELECT c FROM KscmtSchePerInfoAtr c"
-			+ " WHERE c.kscmtSchePerInfoAtrPk.companyId = :companyId";
-	private static final String GET_SCHEDULE_DIS_CONTROL = "SELECT c FROM KscmtScheDispControl c"
-			+ " WHERE c.kscmtScheDispControlPK.companyId = :companyId ";
-	private static final String GET_SCHEDULE_QUALIFY_SET = "SELECT c FROM KscstScheQualifySet c"
-			+ " WHERE c.kscstScheQualifySetPK.companyId = :companyId";
+			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode IN :workTypeCode"
+			+ " OR c.workTimeCode IN :workTimeCode";
 	private static final String GET_WORK_SCH_TIMEZONE = "SELECT a FROM KscdtWorkScheduleTimeZone a"
 			+ " WHERE a.kscdtWorkScheduleTimeZonePk.sId IN :sId"
 			+ " AND a.kscdtWorkScheduleTimeZonePk.date >= :startDate"
@@ -56,13 +51,21 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
 		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
-				entity.workTypeCode, entity.workTimeCode);
+				entity.workTypeCode, entity.workTimeCode, entity.confirmedAtr);
 	}
 
-	private static BasicScheduleScreenDto toWorkSchTimeZoneDto(KscdtWorkScheduleTimeZone entity) {
+	private static BasicScheduleScreenDto toBasicScheduleScreenDto(KscdtWorkScheduleTimeZone entity) {
 		return new BasicScheduleScreenDto(entity.kscdtWorkScheduleTimeZonePk.sId,
 				entity.kscdtWorkScheduleTimeZonePk.date, entity.kscdtWorkScheduleTimeZonePk.scheduleCnt,
 				entity.scheduleStartClock, entity.scheduleEndClock, entity.bounceAtr);
+	}
+
+	private static ScheduleDisplayControlScreenDto toScheduleDisplayControlScreenDto(KscmtScheDispControl entity) {
+		return new ScheduleDisplayControlScreenDto(entity.symbolAtr, entity.symbolHalfDayAtr, entity.symbolHalfDayName);
+	}
+
+	private static WorkEmpCombineScreenDto toWorkEmpCombineScreenDto(KscmtWorkEmpCombine entity) {
+		return new WorkEmpCombineScreenDto(entity.workTypeCode, entity.workTimeCode, entity.symbolName);
 	}
 
 	/**
@@ -96,30 +99,24 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 				.getList();
 	}
 
+	/**
+	 * Get data of table WorkEmpCombine
+	 */
 	@Override
-	public WorkEmpCombineDto getListWorkEmpCobine(String companyId, String workTypeCode, String workTimeCode) {
-		return this.queryProxy().query(GET_WORK_EMP_COMBINE, WorkEmpCombineDto.class)
-				.setParameter("companyId", companyId).setParameter("workTypeCode", workTypeCode)
-				.setParameter("workTimeCode", workTimeCode).getSingleOrNull();
+	public List<WorkEmpCombineScreenDto> getListWorkEmpCobine(String companyId, List<String> lstWorkTypeCode,
+			List<String> lstWorkTimeCode) {
+		return this.queryProxy().query(GET_WORK_EMP_COMBINE, KscmtWorkEmpCombine.class)
+				.setParameter("companyId", companyId).setParameter("workTypeCode", lstWorkTypeCode)
+				.setParameter("workTimeCode", lstWorkTimeCode).getList(x -> toWorkEmpCombineScreenDto(x));
 	}
 
+	/**
+	 * Get data of table ScheduleDisplayControl
+	 */
 	@Override
-	public ScheduleDisplayControlDto getListScheduleDisControl(String companyId) {
-		List<String> qualifyCodes = this.queryProxy().query(GET_SCHEDULE_QUALIFY_SET, KscstScheQualifySet.class)
-				.setParameter("companyId", companyId).getList(x -> x.kscstScheQualifySetPK.qualifyCode);
-		KscmtScheDispControl scheDispControl = this.queryProxy()
-				.query(GET_SCHEDULE_DIS_CONTROL, KscmtScheDispControl.class).setParameter("companyId", companyId)
-				.getSingleOrNull();
-		List<Integer> personInfoAtr = this.queryProxy()
-				.query(GET_ALL_SCHEDULE_PERSON_INFOR_ATTRIBUTE, KscmtSchePerInfoAtr.class)
-				.setParameter("companyId", companyId).getList(x -> x.kscmtSchePerInfoAtrPk.personInfoAtr);
-		if (scheDispControl == null) {
-			return null;
-		}
-
-		return new ScheduleDisplayControlDto(companyId, personInfoAtr, scheDispControl.personSyQualify,
-				scheDispControl.pubHolidayShortageAtr, scheDispControl.pubHolidayExcessAtr, scheDispControl.symbolAtr,
-				scheDispControl.symbolHalfDayAtr, scheDispControl.symbolHalfDayName, qualifyCodes);
+	public Optional<ScheduleDisplayControlScreenDto> getScheduleDisControl(String companyId) {
+		KscmtScheDispControlPK pk = new KscmtScheDispControlPK(companyId);
+		return this.queryProxy().find(pk, KscmtScheDispControl.class).map(x -> toScheduleDisplayControlScreenDto(x));
 	}
 
 	/**
@@ -130,6 +127,6 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			GeneralDate endDate) {
 		return this.queryProxy().query(GET_WORK_SCH_TIMEZONE, KscdtWorkScheduleTimeZone.class).setParameter("sId", sId)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.getList(x -> toWorkSchTimeZoneDto(x));
+				.getList(x -> toBasicScheduleScreenDto(x));
 	}
 }

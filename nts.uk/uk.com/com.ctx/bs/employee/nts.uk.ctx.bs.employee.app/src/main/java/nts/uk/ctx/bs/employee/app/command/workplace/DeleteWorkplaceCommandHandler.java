@@ -15,9 +15,11 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.command.workplace.service.WorkplaceService;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -48,37 +50,67 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
         String companyId = AppContexts.user().companyId();
         DeleteWorkplaceCommand command = context.getCommand();
         
+        List<Workplace> lstWorkplace = this.findAllByParentWkp(companyId, command);
+        
         Optional<Workplace> optionalWkp = this.wkpRepo.findByWorkplaceId(companyId, command.getWkpIdSelected());
         if (!optionalWkp.isPresent()) {
             throw new RuntimeException(String.format("Workplace %s not existed.", command.getWkpIdSelected()));
         }
-        Workplace workplace = optionalWkp.get();
-        GeneralDate startDWkpHistLatest = workplace.getWkpHistoryLatest().span().start();
         
-        if (command.getStartDWkpConfigInfo().equals(startDWkpHistLatest)) {
-            // remove workplace history and workplace infor
-            this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(),
-                    workplace.getWkpHistoryLatest().identifier());
-        } else {
-            if (command.getStartDWkpConfigInfo().before(startDWkpHistLatest)) {
-                List<String> lstHistIdRemove = this.findHistory(workplace, command.getStartDWkpConfigInfo());
-                // remove workplace after start date of workplace config history.
-                lstHistIdRemove.forEach(historyId -> {
-                    // remove workplace history and workplace infor
-                    this.wkpRepo.removeWkpHistory(companyId, command.getWkpIdSelected(), historyId);
-                });
-            }
-            int dayOfAgo = -1;
-            // update end date of workplace history latest
-            this.wkpService.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().identifier(),
-                    command.getStartDWkpConfigInfo().addDays(dayOfAgo));
-        }
-        
-        // delete workplace hierarchy that workplace is selected.
-        this.wkpConfigInfoRepo.removeWkpHierarchy(companyId, command.getHistoryIdWkpConfigInfo(),
-                command.getWkpIdSelected());
+		lstWorkplace.forEach((workplace) -> {
+
+			String wkpId = workplace.getWorkplaceId();
+			String histIdLatest = workplace.getWkpHistoryLatest().identifier();
+			GeneralDate startDWkpHistLatest = workplace.getWkpHistoryLatest().span().start();
+
+			if (command.getStartDWkpConfigInfo().equals(startDWkpHistLatest)) {
+				// remove workplace history and workplace infor
+				this.wkpRepo.removeWkpHistory(companyId, wkpId, histIdLatest);
+			} else {
+				if (command.getStartDWkpConfigInfo().before(startDWkpHistLatest)) {
+					List<String> lstHistIdRemove = this.findHistory(workplace, command.getStartDWkpConfigInfo());
+					// remove workplace after start date of workplace config
+					// history.
+					lstHistIdRemove.forEach(historyId -> {
+						// remove workplace history and workplace infor
+						this.wkpRepo.removeWkpHistory(companyId, wkpId, historyId);
+					});
+				}
+				
+				// check remaining workplace history after remove
+				if (!CollectionUtil.isEmpty(workplace.items())) {
+
+					int dayOfAgo = -1;
+					// update end date of workplace history latest
+					this.wkpService.updatePreviousHistory(companyId, workplace.getWkpHistoryLatest().identifier(),
+							command.getStartDWkpConfigInfo().addDays(dayOfAgo));
+				}
+			}
+
+			// delete workplace hierarchy that workplace is selected.
+			this.wkpConfigInfoRepo.removeWkpHierarchy(companyId, command.getHistoryIdWkpConfigInfo(), wkpId);
+		});
     }
 
+    /**
+     * Find all by parent wkp.
+     *
+     * @param companyId the company id
+     * @param command the command
+     * @return the list
+     */
+    private List<Workplace> findAllByParentWkp(String companyId, DeleteWorkplaceCommand command) {
+		WorkplaceConfigInfo wkpConfigInfo = this.wkpConfigInfoRepo.findAllByParentWkpId(companyId,
+				command.getStartDWkpConfigInfo(), command.getWkpIdSelected()).get();
+    	
+		// find list workplace id
+		List<String> lstWkpId = wkpConfigInfo.getLstWkpHierarchy().stream()
+				.map(wkpHeirarchy -> wkpHeirarchy.getWorkplaceId())
+				.collect(Collectors.toList());
+		
+		return this.wkpRepo.findByWkpIds(lstWkpId);
+    }
+    
     /**
      * Find history.
      *

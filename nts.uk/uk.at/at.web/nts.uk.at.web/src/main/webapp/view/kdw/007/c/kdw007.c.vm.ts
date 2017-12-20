@@ -18,24 +18,54 @@ module nts.uk.at.view.kdw007.c.viewmodel {
 
         constructor(param) {
             let self = this;
-            service.getAttendanceItemByCodes(param.lstAllItems).done((lstItems) => {
-                _.forEach(lstItems, (item) => {
-                    self.lstAllItems.push({ code: item.attendanceItemId, name: item.attendanceItemName });
-                });
-                self.sortGridList();
+            self.initData(param).done(()=>{
+                self.removeDupplicateItems();
             });
-            service.getAttendanceItemByCodes(param.lstAddItems).done((lstItems) => {
-                _.forEach(lstItems, (item) => {
-                    self.lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '+' });
+        }
+        
+        initData(param){
+            let self = this;
+            let dfdAll = $.Deferred();
+            let dfdLstAll = $.Deferred();
+            let dfdLstAdd = $.Deferred();
+            let dfdLstSub = $.Deferred();
+            if (param.lstAllItems.length > 0) {
+                service.getAttendanceItemByCodes(param.lstAllItems).done((lstItems) => {
+                    _.forEach(lstItems, (item) => {
+                        self.lstAllItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, displayOrder: item.attendanceItemDisplayNumber });
+                    });
+                    self.sortGridList();
+                    dfdLstAll.resolve();
                 });
-                self.sortGridList();
-            });
-            service.getAttendanceItemByCodes(param.lstSubItems).done((lstItems) => {
-                _.forEach(lstItems, (item) => {
-                    self.lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '-' });
+            } else {
+                dfdLstAll.resolve();
+            }
+            if (param.lstAddItems.length > 0) {
+                service.getAttendanceItemByCodes(param.lstAddItems).done((lstItems) => {
+                    _.forEach(lstItems, (item) => {
+                        self.lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '+', displayOrder: item.attendanceItemDisplayNumber });
+                    });
+                    self.sortGridList();
+                    dfdLstAdd.resolve();
                 });
-                self.sortGridList();
+            } else {
+                dfdLstAdd.resolve();
+            }
+            if (param.lstSubItems.length > 0) {
+                service.getAttendanceItemByCodes(param.lstSubItems).done((lstItems) => {
+                    _.forEach(lstItems, (item) => {
+                        self.lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '-', displayOrder: item.attendanceItemDisplayNumber });
+                    });
+                    self.sortGridList();
+                    dfdLstSub.resolve();
+                });
+            } else {
+                dfdLstSub.resolve();
+            }
+            $.when(dfdLstAll, dfdLstAdd, dfdLstSub).done(()=>{
+                dfdAll.resolve();
             });
+            return dfdAll;
         }
 
         removeDupplicateItems() {
@@ -49,13 +79,13 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let self = this;
             _.forEach(self.selectedAllList(), (item) => {
                 let targetItem = _.find(self.lstAllItems(), (baseItem) => {
-                    return baseItem.code === item;
+                    return baseItem.code === parseInt(item);
                 });
                 if (targetItem) {
                     self.lstAddSubItems.push(
                         { code: targetItem.code, name: targetItem.name, operator: '+' }
                     );
-                    self.lstAllItems.remove((itemBase) => { return itemBase.code === item });
+                    self.lstAllItems.remove((itemBase) => { return itemBase.code === parseInt(item) });
                 }
             });
             self.selectedAllList([]);
@@ -66,13 +96,13 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let self = this;
             _.forEach(self.selectedAllList(), (item) => {
                 let targetItem = _.find(self.lstAllItems(), (baseItem) => {
-                    return baseItem.code === item;
+                    return baseItem.code === parseInt(item);
                 });
                 if (targetItem) {
                     self.lstAddSubItems.push(
                         { code: targetItem.code, name: targetItem.name, operator: '-' }
                     );
-                    self.lstAllItems.remove((itemBase) => { return itemBase.code === item });
+                    self.lstAllItems.remove((itemBase) => { return itemBase.code === parseInt(item) });
                 }
             });
             self.selectedAllList([]);
@@ -83,13 +113,13 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let self = this;
             _.forEach(self.selectedAddSubList(), (item) => {
                 let targetItem = _.find(self.lstAddSubItems(), (baseItem) => {
-                    return baseItem.code === item;
+                    return baseItem.code === parseInt(item);
                 });
                 if (targetItem) {
                     self.lstAllItems.push(
                         { code: targetItem.code, name: targetItem.name }
                     );
-                    self.lstAddSubItems.remove((itemBase) => { return itemBase.code === item });
+                    self.lstAddSubItems.remove((itemBase) => { return itemBase.code === parseInt(item) });
                 }
             });
             self.selectedAddSubList([]);
@@ -98,9 +128,9 @@ module nts.uk.at.view.kdw007.c.viewmodel {
 
         sortGridList() {
             let self = this;
-            let lstAllItemsSorted = _.orderBy(self.lstAllItems(), ['code'], ['asc']);
+            let lstAllItemsSorted = _.orderBy(self.lstAllItems(), ['displayOrder'], ['asc']);
             self.lstAllItems(lstAllItemsSorted);
-            let lstAddSubItemsSorted = _.orderBy(self.lstAddSubItems(), ['operator', 'code'], ['asc', 'asc']);
+            let lstAddSubItemsSorted = _.orderBy(self.lstAddSubItems(), ['operator', 'displayOrder'], ['asc', 'asc']);
             self.lstAddSubItems(lstAddSubItemsSorted);
         }
 

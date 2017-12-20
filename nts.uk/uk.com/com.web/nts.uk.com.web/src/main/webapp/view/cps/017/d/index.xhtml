@@ -9,61 +9,54 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 600,
-					height : 400
+					width : 400,
+					height : 450
 				};
 			</script>
-			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionItemName
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionCodeLength
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IntegrationCode
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionNameLength
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionExternalCDLength
-					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.Memo
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 			<com:stylefile path="cps017.d.style.css" />
 			<com:scriptfile path="cps017.d.service.js" />
 			<com:scriptfile path="cps017.d.vm.js" />
 			<com:scriptfile path="cps017.d.start.js" />
 		</ui:define>
-
-
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" style="width: 380px">
 				<div class="form-group">
 					<div class="row">
-						<div class="collll">#{i18n.getText('CPS017_35')}</div>
+						<!-- D1_1: label 新たに作成する履歴の、作成情報を入力してください。 -->
+						<div class="collll">#{i18n.getText('CPS017_42')}</div>
 					</div>
+					<br/>
 					<div class="row">
-						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_36')}</div>
-						<span class="label">個人情報選択項目の定義</span>
+						<!-- D1_2: label 名称 -->
+						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_43')}</div>
+						<!-- D1_4: 選択項目名称 -->
+						<span class="label" data-bind="text: selectionName"></span>
 					</div>
-					<div class="row" data-bind="with: historySelection">
-						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_37')}</div>
-<!-- 						<input style="width: 90px;" -->
-<!-- 							data-bind="ntsTimeEditor: {value: startDate, inputFormat: 'date'}" /> -->
-						<div
-							data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
-						~ <span class="label">#{i18n.getText('CPS017_48')}</span>
+					<br/>
+					<div class="row">
+						<!-- D1_5: label 期間 -->
+						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_44')}</div>
+						<!-- D1_6: 履歴開始日 -->
+						<div id ="start-date-sel" data-bind="ntsDatePicker: {
+										name: '#[CPS017_45]',
+										value: startDate, 
+										required: true,
+										dateFormat: 'YYYY/MM/DD'
+										}"></div>
+						<!-- D1_7: label 履歴終了日 -->
+						～ <span id="label-date">#{i18n.getText('CPS017_48')}</span>
 					</div>
 				</div>
-
-				<div id="functions-area-bottom"
-					style="width: 580px; height: 100px; padding-top: 15px; text-align: center;">
-					<button id="A_BTN_REGISTER" class="proceed"
-						style="width: 145px; height: 60px; font-size: 25px;"
-						data-bind="click : editHistory, enable: $root.errors.isEmpty">#{i18n.getText('CPS017_40')}</button>
-					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_41')}</button>
-
+				<div id="functions-area-bottom" style="width: 380px">
+					<!-- D2_1: button 決定 -->
+					<button id="A_BTN_REGISTER" class="proceed x-large" 
+						data-bind="click : editHistory, enable: $root.errors.isEmpty">#{i18n.getText('CPS017_46')}</button>
+					<!-- D2_2: button キャンセル -->
+					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_47')}</button>
 				</div>
 			</div>
 		</ui:define>
-
-
-
-
 	</ui:composition>
 </body>
 </html>

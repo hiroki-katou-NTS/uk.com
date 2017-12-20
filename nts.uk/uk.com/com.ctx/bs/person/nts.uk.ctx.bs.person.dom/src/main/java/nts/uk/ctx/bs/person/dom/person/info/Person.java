@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.person.dom.person.info;
 
-import javax.persistence.EnumType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +12,13 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullNameSet;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessEnglishName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessNameKana;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessOtherName;
-import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
-import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameKana;
 
 /**
  * The Class Person.
@@ -45,34 +44,17 @@ public class Person extends AggregateRoot {
 	/** The person id - 個人ID */
 	private String personId;
 
-	/** The Person Mail Address - 個人メールアドレス */
-	private PersonMailAddress mailAddress;
-
-	/** The Person Mobile - 個人携帯*/
-	private PersonMobile personMobile;
 
 	/** The PersonNameGroup - 個人名グループ*/
 	private PersonNameGroup personNameGroup;
 
-	/** The Hobby - 趣味 */
-	private Hobby hobBy;
-
-	/** The countryId - 国籍    chua xac dinh duoc PrimitiveValue*/
-	private Nationality countryId;
-
-	/** The Taste - 嗜好 */
-	private Taste taste;
-	
-
-	public static Person createFromJavaType(String pId, String personName) {
-		return new Person(pId, new PersonNameGroup(new PersonName(personName)));
-	}
+//	public static Person createFromJavaType(String pId, String personName) {
+//		return new Person(pId, new PersonNameGroup(new PersonName(personName)));
+//	}
 	
 	//for required field
-	public static Person createFromJavaType(String personId, GeneralDate birthDate, int bloodType, int gender, String personMobile, String mailAddress, String businessName, String personName) {
-		return new Person(personId, birthDate, EnumAdaptor.valueOf(bloodType, BloodType.class),
-				EnumAdaptor.valueOf(gender, GenderPerson.class), new PersonMobile(personMobile), 
-				new PersonMailAddress(mailAddress), new BusinessName(businessName), new PersonName(personName));
+	public static Person createFromJavaType(String personId, GeneralDate birthDate, int bloodType, int gender, String businessName, String personName, String personNameKana) {
+		return new Person(personId, birthDate, bloodType,gender, new BusinessName(businessName), new FullNameSet(personName, personNameKana));
 	}
 	public Person(String personId, PersonNameGroup personNameGroup) {
 		super();
@@ -81,43 +63,56 @@ public class Person extends AggregateRoot {
 	}
 	
 	//constructor for required field
-	public Person(String personId, GeneralDate birthDate, BloodType bloodType, GenderPerson gender, PersonMobile personMobile, PersonMailAddress mailAddress, BusinessName businessName, PersonName personName){
+	public Person(String personId, GeneralDate birthDate, int bloodType, int gender, BusinessName businessName, FullNameSet personName){
 		super();
 		this.personId = personId;
 		this.birthDate = birthDate;
-		this.bloodType = bloodType;
-		this.gender = gender;
-		this.personMobile = personMobile;
-		this.mailAddress = mailAddress;
+		
+		if (ConstantUtils.ENUM_UNDEFINE_VALUE != bloodType){
+			this.bloodType = EnumAdaptor.valueOf(bloodType,BloodType.class);
+		}
+		if (ConstantUtils.ENUM_UNDEFINE_VALUE != gender){
+			this.gender = EnumAdaptor.valueOf(gender,GenderPerson.class);
+		}
+		
 		this.personNameGroup = new PersonNameGroup(personName, businessName);
+	}
+	public Person(GeneralDate birthDate,int bloodType, int gender,String personId,PersonNameGroup personNameGroup){
+		super();
+		this.personId = personId;
+		this.birthDate = birthDate;
+		
+		if (ConstantUtils.ENUM_UNDEFINE_VALUE != bloodType){
+			this.bloodType = EnumAdaptor.valueOf(bloodType,BloodType.class);
+		}
+		if (ConstantUtils.ENUM_UNDEFINE_VALUE != gender){
+			this.gender = EnumAdaptor.valueOf(gender,GenderPerson.class);
+		}
+		
+		this.personNameGroup =personNameGroup;
 	}
 	
 	// sonnlb code start
 
-		public static Person createFromJavaType(GeneralDate birthDate, int bloodType, int gender, String personId,
-				String mailAddress, String personMobile, String businessName, String personName, String businessOtherName,
-				String businessEnglishName, String personNameKana, String personRomanji, String personRomanjiKana,
-				String todokedeFullName, String todokedeFullNameKana, String oldName, String oldNameKana,
-				String todokedeOldFullName, String todokedeOldFullNameKana, String hobBy, String countryId, String taste) {
+	public static Person createFromJavaType(GeneralDate birthDate, int bloodType, int gender, String personId,
+			String businessName,String businessNameKana, String personName, String personNameKana, String businessOtherName,
+			String businessEnglishName, String personRomanji, String personRomanjiKana,
+			String todokedeFullName, String todokedeFullNameKana, String oldName, String oldNameKana,
+			String PersonalNameMultilingual, String PersonalNameMultilingualKana) {
+		FullNameSet personNameSet = new FullNameSet(personName, personNameKana);
+		FullNameSet personRomanjiSet = new FullNameSet(personRomanji, personRomanjiKana);
+		FullNameSet todokedeFullNameSet = new FullNameSet(todokedeFullName, todokedeFullNameKana);
+		FullNameSet oldNameSet = new FullNameSet(oldName, oldNameKana);
+		FullNameSet PersonalNameMultilingualSet = new FullNameSet(PersonalNameMultilingual, PersonalNameMultilingualKana);
 
-			FullNameSet personRomanjiSet = new FullNameSet(personRomanji, personRomanjiKana);
-			FullNameSet todokedeFullNameSet = new FullNameSet(todokedeFullName, todokedeFullNameKana);
-			FullNameSet oldNameSet = new FullNameSet(oldName, oldNameKana);
-			FullNameSet todokedeOldFullNameSet = new FullNameSet(todokedeOldFullName, todokedeOldFullNameKana);
+		PersonNameGroup personNameGroup = new PersonNameGroup(new BusinessName(businessName), new BusinessNameKana(businessNameKana),
+				new BusinessOtherName(businessOtherName),
+				new BusinessEnglishName(businessEnglishName), personNameSet,PersonalNameMultilingualSet,  personRomanjiSet,
+				todokedeFullNameSet, oldNameSet);
 
-			PersonNameGroup personNameGroup = new PersonNameGroup(new BusinessName(businessName),
-					new PersonName(personName), new BusinessOtherName(businessOtherName),
-					new BusinessEnglishName(businessEnglishName), new PersonNameKana(personNameKana), personRomanjiSet,
-					todokedeFullNameSet, oldNameSet, todokedeOldFullNameSet);
+		return new Person(birthDate,bloodType,gender, personId, personNameGroup);
+	}
 
-			return new Person(birthDate, EnumAdaptor.valueOf(bloodType, BloodType.class),
-					EnumAdaptor.valueOf(gender, GenderPerson.class), personId, new PersonMailAddress(mailAddress),
-					new PersonMobile(personMobile), personNameGroup, new Hobby(hobBy), new Nationality(countryId),
-					new Taste(taste)
-
-			);
-		}
-
-		// sonnlb code end
+	// sonnlb code end
 
 }

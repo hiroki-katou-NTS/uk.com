@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.service.PublicHolidayService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,10 +21,12 @@ public class DeletePublicHolidayCommandHandler extends CommandHandler<DeletePubl
 
 	@Inject
 	PublicHolidayService publicHolidayService;
+	
+	final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
 	protected void handle(CommandHandlerContext<DeletePublicHolidayCommand> context) {
 		String companyID = AppContexts.user().companyId();
-		publicHolidayService.deleteHolidayInfo(companyID, context.getCommand().getDate());
+		publicHolidayService.deleteHolidayInfo(companyID, GeneralDate.fromString(context.getCommand().getDate(), DATE_FORMAT));
 	}
 }

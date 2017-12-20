@@ -1,4 +1,16 @@
-span.caret-bottom.outline{font-size: 6.2rem;margin-left: 200px;}
-div.form-label.required{margin-left: 20px; margin-right: 40px;}
-div.form-label{margin-left: 20px; margin-right: 40px;}
-span.text{margin-left: 20px; display: inline-block;}	
+.container{margin-left: 15px;}
+
+.left-content{display: inline-block; vertical-align: top;}	
+.right-content{display: inline-block; vertical-align: top; margin-left: 60px;}
+
+.form-label{min-width: 110px; margin-right: 40px;}
+
+.caret-bottom{font-size:46px; margin-left: 165px; color: #E0F59E; vertical-align: top;}
+.caret-bottom:after{border-width: 0.8em 2em;}
+
+.rolelist-label{display: inline-block;}
+
+#btn-selectuser{margin: 40px 0;}
+.username {font-size: 1.3rem;}
+
+#daterangepicker {display:inline-block;}

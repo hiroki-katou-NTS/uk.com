@@ -19,16 +19,16 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @ZeroPaddedCode
 public class RoleSetCode extends StringPrimitiveValue<RoleSetCode> {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new Role set code.
-	 *
-	 * @param rawValue
-	 *            the raw value
-	 */
-	public RoleSetCode(String rawValue) {
-		super(rawValue);
-	}
+    /**
+     * Instantiates a new Role set code.
+     *
+     * @param rawValue
+     *       the raw value
+     */
+    public RoleSetCode(String rawValue) {
+        super(rawValue);
+    }
 }

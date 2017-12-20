@@ -14,6 +14,7 @@
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../../005/cm/kaf005.cm.main.css" />
+			<com:stylefile path="../../005/a/kaf005.a.main.css" />
 			<com:stylefile path="../../000/a/kaf000.a.main.css" />
 			<com:scriptfile path="../../005/shr/kaf005.shr.service.js" />
 			<com:scriptfile path="../../000/shr/kaf000.shr.vm.js" />
@@ -37,56 +38,13 @@
 			</div>
 			<div id="contents-area" class="">
 					<!-- Message area -->
-				<div style ="background-color: #f8efd4; width :839px; margin-left: 40px; padding-bottom: 14px;padding-top: 5px">	
+				<div style ="background-color: #f8efd4; width :800px; margin-left: -2px; margin-bottom: -30px; padding-top: 5px">	
 					<div class="cf valign-center control-group" style ="background-color: #f8efd4; margin:7px 0px 0px 12px" data-bind = "visible: instructInforFlag">
 						<div class="pull-left">#{i18n.getText('KAF005_20')}</div>
 						<label data-bind="text : instructInfor"></label>
 					</div>
-					<div data-bind="with: kaf000_a" class="" style ="margin-left: -37px">
+					<div data-bind="with: kaf000_a" class="" >
 						<ui:include src="../../000/a/index1.xhtml" />
-					</div>
-					<div class="cf valign-center control-group" data-bind="if: indicationOvertimeFlg" style = "margin-left: 12px">
-						<!--A2_7 時間外労働ラベル--> 			
-						<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
-						<div class="pull-left">
-						<table id="fixed-table-indicate">
-							<colgroup>
-								<col width="109px" />
-								<col width="109px" />
-								<col width="109px" />
-								<col width="109px" />
-								<col width="109px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<!--A2_9 年月ラベル-->
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_24')}</th>
-									<!--A2_10  限度ラベル-->						
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_25')}</th>
-									<!--A2_11 実績ラベル--> 						
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_26')}</th>
-									<!--A2_12  申請ラベル-->	
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_27')}</th>
-									<!--A2_13  合計ラベル-->
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_28')}</th>
-								</tr>
-							</thead>
-							<tbody data-bind="foreach: overtimeWork">
-								<tr>
-									<!--A2_14 年月ラベル--> 						
-									<td class="header" data-bind="text: yearMonth"></td>
-									<!--A2_15  限度ラベル--> 						
-									<td><input data-bind="ntsTimeWithDayEditor: {value: limitTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
-									<!--A2_16 実績ラベル--> 						
-									<td><input data-bind="ntsTimeWithDayEditor: {value: actualTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
-									<!--A2_17  申請ラベル-->
-									<td><input data-bind="ntsTimeWithDayEditor: {value: appTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
-									<!--A2_18  合計ラベル-->
-									<td><input data-bind="ntsTimeWithDayEditor: {value: totalTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
-								</tr>
-							</tbody>
-						</table>
-						</div>
 					</div>
 				</div>	
 				<!-- Main -->

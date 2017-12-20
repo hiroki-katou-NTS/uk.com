@@ -21,13 +21,17 @@
 				<table id="TblHeader">
 					<tr>
 						<td class="FormLabel"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL014_2')}</div></td>
-						<td data-bind="text: employeeCD"></td>
-						<td data-bind="text: employeeName"></td>
+						<td>
+							<span data-bind="text: employeeCode"></span>
+							<span id="employeeName" data-bind="text: employeeName"></span>
+						</td>
+						<td></td>
 					</tr>
 					<tr>
 						<td class="formLabel"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL014_3')}</div></td>
-						<td data-bind="text: startDate"></td>
-						<td data-bind="text: endDate"></td>
+						<td data-bind="text: startEndDate"></td>
+<!-- 						<td data-bind="text: startDate"></td> -->
+<!-- 						<td data-bind="text: endDate"></td> -->
 					</tr>
 				</table>
 				<div class="Content">

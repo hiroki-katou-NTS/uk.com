@@ -28,8 +28,12 @@ import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtUser_;
 @Stateless
 public class JpaUserRepository extends JpaRepository implements UserRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByLoginId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByLoginId(java.lang.
+	 * String)
 	 */
 	@Override
 	public Optional<User> getByLoginId(String loginId) {
@@ -46,7 +50,7 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtUser> result = em.createQuery(query).getResultList();
-		//get single user 
+		// get single user
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {
@@ -54,8 +58,12 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByAssociatedPersonId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.gateway.dom.login.UserRepository#getByAssociatedPersonId(
+	 * java.lang.String)
 	 */
 	@Override
 	public Optional<User> getByAssociatedPersonId(String associatedPersonId) {
@@ -72,30 +80,12 @@ public class JpaUserRepository extends JpaRepository implements UserRepository {
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SgwmtUser> result = em.createQuery(query).getResultList();
-		//get single user 
+		// get single user
 		if (result.isEmpty()) {
 			return Optional.empty();
 		} else {
 			return Optional.of(new User(new JpaUserGetMemento(result.get(0))));
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.login.UserRepository#addNewUser(nts.uk.ctx.sys.gateway.dom.login.User)
-	 */
-	@Override
-	public void addNewUser(User user) {
-		
-		this.commandProxy().insert(toEntity(user));
-		
-	}
-	
-	private SgwmtUser toEntity(User user){
-		
-		short isSpecialUser =  (short) (user.isSpecialUser()?1:0);
-		short isMultiCompanyConcurrent =  (short) (user.isMultiCompanyConcurrent()?1:0);
-		return new SgwmtUser(user.getUserId(), user.getPassword().v(), user.getLoginId().v(), user.getContractCode().v(), 
-				Date.valueOf(user.getExpirationDate().toString()), isSpecialUser, isMultiCompanyConcurrent, user.getMailAddress().v(), user.getUserName().v(), user.getAssociatedPersonId());
 	}
 
 }

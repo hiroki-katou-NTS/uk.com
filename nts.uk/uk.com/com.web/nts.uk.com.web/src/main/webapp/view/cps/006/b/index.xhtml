@@ -15,7 +15,8 @@
 				};
 			</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.person.dom.person.info.item.ItemName
+				nts.uk.ctx.pereg.dom.person.info.item.ItemName
+				nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
 			</com:ValidatorScript>
 			<com:stylefile path="cps006.b.style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -306,15 +307,41 @@
 										<div class="div_line">
 	
 											<div class="line_col_1">
-												<div id="B2_42" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS006_43')}</div>
+												<div id="B2_42" data-bind="ntsFormLabel: { required: true , constraint: ['SelectionItemName']}">#{i18n.getText('CPS006_43')}</div>
 											</div>
 	
 											<div class="line_col_2">
-												<span id="B2_43"></span>
+												<span id="B2_43"  data-bind="text: currentItem().selectionItemName"></span>
 											</div>
 	
-											<button id="B2_44">#{i18n.getText('CPS006_44')}</button>
-	
+											<button id="B2_44" data-bind="click: settingSelection">#{i18n.getText('CPS006_44')}</button>
+										
+											
+										</div>
+										<div  class="div_line">
+										<table class="contents-header"> 
+											<thead>
+													<tr>
+														<!-- A3_017: header 項目名 -->
+														<td id="COL_1">#{i18n.getText('CPS006_50')}</td>
+														<td id="COL_2" >#{i18n.getText('CPS006_51')}</td>
+													</tr>
+											</thead>
+											</table>
+											<section class="table-container">
+											<div>
+											<table >								         
+											<tbody data-bind="foreach:  currentItem().selectionLst()">
+											<td id="code" >
+													<span class="months-input " data-bind="text: selectionCode" />
+											</td>
+											<td id="name" >
+													<span class="months-input " data-bind="text: selectionName" />
+											</td>									
+										    </tbody>
+										    </table>
+										    </div>
+										    </section>
 										</div>
 									</com:ko-if>
 								</com:ko-if>

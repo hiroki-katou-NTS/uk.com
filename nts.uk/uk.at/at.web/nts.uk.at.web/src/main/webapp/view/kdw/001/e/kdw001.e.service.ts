@@ -2,20 +2,25 @@ module nts.uk.at.view.kdw001.e.service {
     import shareModel = nts.uk.at.view.kdw001.share.model;
     
     var paths: any = {
-        getImplementationResult: "at/record/log/findByEmpCalAndSumExecLogID",
-        insertData: "at/record/log/addEmpCalSumAndTarget",
-        executeTask: "at/record/log/executeTask"
-    }
-    export function getImplementationResult(empCalAndSumExecLogID: string): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getImplementationResult + "/" + empCalAndSumExecLogID));
+        getErrorMessageInfo: "at/record/log/getErrorMessageInfo",
+        addEmpCalSumAndTarget: "at/record/log/addEmpCalSumAndTarget",
+        checkprocess: "at/record/log/checkprocess"
     }
     
-    export function insertData(params: shareModel.executionProcessingCommand): JQueryPromise<shareModel.executionResult> {
-        return nts.uk.request.ajax("at", paths.insertData, params);
+    export function getErrorMessageInfo(params: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getErrorMessageInfo, params);
+    }
+    
+    export function insertData(params: shareModel.executionProcessingCommand): JQueryPromise<shareModel.AddEmpCalSumAndTargetCommandResult> {
+        return nts.uk.request.ajax("at", paths.addEmpCalSumAndTarget, params);
     }
 
-    export function executeTask(params: shareModel.executionResult): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.executeTask, params);
+    export function checkTask(params: shareModel.CheckProcessCommand): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkprocess, params);
+    }
+    
+    export function saveAsCsv(data:any): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "personError", domainType: "personerror", languageId: 'ja', reportType: 3 ,data:data});
     }
 
 }

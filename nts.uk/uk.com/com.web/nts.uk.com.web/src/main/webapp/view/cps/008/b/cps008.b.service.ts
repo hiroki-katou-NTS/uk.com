@@ -3,9 +3,9 @@ module cps008.b.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        getListCls: "ctx/bs/person/maintenance/findOne/{0}",
-        getData: "ctx/bs/person/newlayout/get",
-        saveData: "ctx/bs/person/newlayout/save",
+        getListCls: "ctx/pereg/person/maintenance/findOne/{0}",
+        getData: "ctx/pereg/person/newlayout/get",
+        saveData: "ctx/pereg/person/newlayout/save",
     };
 
     export function getData() {

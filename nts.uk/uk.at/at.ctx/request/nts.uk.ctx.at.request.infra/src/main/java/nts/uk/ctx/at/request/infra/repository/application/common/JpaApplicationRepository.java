@@ -10,8 +10,17 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
+import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectly;
+import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectlyPK;
+import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
+import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStamp;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository {
@@ -34,9 +43,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ "ORDER BY c.inputDate DESC";
 	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
 			+ " AND c.applicationDate = :appDate "
-			+ " AND c.inputDate = :inputDate "
+			//+ " AND c.inputDate = :inputDate "
 			+ " AND c.applicationType = :applicationType "
-			+ " AND c.prePostAtr = :prePostAtr ORDER BY c.inputDate";
+			+ " AND c.prePostAtr = :prePostAtr ORDER BY c.inputDate DESC";
 	/**
 	 * Get ALL application
 	 */
@@ -162,9 +171,91 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KafdtApplication.class)
 				.setParameter("companyID", companyId)
 				.setParameter("appDate", appDate)
-				.setParameter("inputDate", inputDate)
+				//.setParameter("inputDate", inputDate)
 				.setParameter("applicationType", appType)
 				.setParameter("prePostAtr", prePostAtr)				
 				.getList(c -> c.toDomain());
+	}
+
+	@Override
+	public void fullUpdateApplication(Application application) {
+		KafdtApplication newEntity = KafdtApplication.toEntity(application);
+		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class).get();
+		updateEntity.version = newEntity.version;
+		updateEntity.prePostAtr = newEntity.prePostAtr;
+		updateEntity.inputDate = newEntity.inputDate;
+		updateEntity.enteredPersonSID = newEntity.enteredPersonSID;
+		updateEntity.reversionReason = newEntity.reversionReason;
+		updateEntity.applicationDate = newEntity.applicationDate;
+		updateEntity.applicationReason = newEntity.applicationReason;
+		updateEntity.applicationType = newEntity.applicationType;
+		updateEntity.applicantSID = newEntity.applicantSID;
+		updateEntity.reflectPlanScheReason = newEntity.reflectPlanScheReason;
+		updateEntity.reflectPlanTime = newEntity.reflectPlanTime;
+		updateEntity.reflectPlanState = newEntity.reflectPlanState;
+		updateEntity.reflectPlanEnforce = newEntity.reflectPlanEnforce;
+		updateEntity.reflectPerScheReason = newEntity.reflectPerScheReason;
+		updateEntity.reflectPerTime = newEntity.reflectPerTime;
+		updateEntity.reflectPerState = newEntity.reflectPerState;
+		updateEntity.reflectPerEnforce = newEntity.reflectPerEnforce;
+		updateEntity.startDate = newEntity.startDate;
+		updateEntity.endDate = newEntity.endDate;
+		updateEntity.appApprovalPhases = newEntity.appApprovalPhases;
+		this.commandProxy().update(updateEntity);
+		this.updateRelationshipVersion(application);
+		
+	}
+	
+	private void updateRelationshipVersion(Application application){
+		String companyID = application.getCompanyID();
+		String appID = application.getApplicationID();
+		ApplicationType appType = application.getApplicationType();
+		switch(appType){
+			case ABSENCE_APPLICATION:
+				break;
+			case ANNUAL_HOLIDAY_APPLICATION: 
+				break;
+			case APPLICATION_36:
+				break;
+			case BREAK_TIME_APPLICATION:
+				break;
+			case BUSINESS_TRIP_APPLICATION:
+				break;
+			case BUSINESS_TRIP_APPLICATION_OFFICE_HELPER:
+				break;
+			case COMPLEMENT_LEAVE_APPLICATION:
+				break;
+			case EARLY_LEAVE_CANCEL_APPLICATION:
+				KrqdtAppLateOrLeavePK krqdtAppLateOrLeavePK = new KrqdtAppLateOrLeavePK(companyID, appID);
+				KrqdtAppLateOrLeave krqdtAppLateOrLeave = this.queryProxy().find(krqdtAppLateOrLeavePK, KrqdtAppLateOrLeave.class).get();
+				krqdtAppLateOrLeave.version = application.getVersion();
+				this.commandProxy().update(krqdtAppLateOrLeave);
+				break;
+			case GO_RETURN_DIRECTLY_APPLICATION:
+				KrqdtGoBackDirectlyPK krqdtGoBackDirectlyPK = new KrqdtGoBackDirectlyPK(companyID, appID);
+				KrqdtGoBackDirectly krqdtGoBackDirectly = this.queryProxy().find(krqdtGoBackDirectlyPK, KrqdtGoBackDirectly.class).get();
+				krqdtGoBackDirectly.version = application.getVersion();
+				this.commandProxy().update(krqdtGoBackDirectly);
+				break;
+			case LONG_BUSINESS_TRIP_APPLICATION:
+				break;
+			case OVER_TIME_APPLICATION:
+				KrqdtAppOvertimePK krqdtAppOvertimePK = new KrqdtAppOvertimePK(companyID, appID);
+				KrqdtAppOvertime krqdtAppOvertime = this.queryProxy().find(krqdtAppOvertimePK, KrqdtAppOvertime.class).get();
+				krqdtAppOvertime.setVersion(application.getVersion());
+				this.commandProxy().update(krqdtAppOvertime);
+				break;
+			case STAMP_APPLICATION:
+				KrqdpAppStamp krqdpAppStamp =  new KrqdpAppStamp(companyID, appID);
+				KrqdtAppStamp krqdtAppStamp = this.queryProxy().find(krqdpAppStamp, KrqdtAppStamp.class).get();
+				krqdtAppStamp.version = application.getVersion();
+				this.commandProxy().update(krqdtAppStamp);
+				break;
+			case STAMP_NR_APPLICATION:
+				break;
+			case WORK_CHANGE_APPLICATION:
+				break;
+			default: break;
+		}
 	}
 }

@@ -22,5 +22,6 @@ public class FluRestTimeSetting {
 	// 流動休憩時間
 	private AttendanceTime fluidRestTime;
 
-
+	// 流動経過時間
+	private AttendanceTime fluidElapsedTime;
 }

@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.entity.shortworktime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
@@ -29,30 +28,38 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class BshmtWorktimeHist extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
 	/** The bshmt worktime hist PK. */
 	@EmbeddedId
-	protected BshmtWorktimeHistPK bshmtWorktimeHistPK;
+	public BshmtWorktimeHistPK bshmtWorktimeHistPK;
+	
+	/** The c id. */
+	@Column(name = "CID")
+	public String cId;
 
 	/** The str ymd. */
-	@Basic(optional = false)
 	@Column(name = "STR_YMD")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate strYmd;
+	public GeneralDate strYmd;
 
 	/** The end ymd. */
-	@Basic(optional = false)
 	@Column(name = "END_YMD")
 	@Convert(converter = GeneralDateToDBConverter.class)
-	private GeneralDate endYmd;
+	public GeneralDate endYmd;
 
 	/**
 	 * Instantiates a new bshmt worktime hist.
 	 */
 	public BshmtWorktimeHist() {
+		super();
 	}
-
+	public BshmtWorktimeHist(BshmtWorktimeHistPK bshmtWorktimeHistPK, String cid, GeneralDate startDate, GeneralDate endDate) {
+		this.bshmtWorktimeHistPK = bshmtWorktimeHistPK;
+		this.cId = cid;
+		this.strYmd = startDate;
+		this.endYmd = endDate;
+	}
 	/**
 	 * Instantiates a new bshmt worktime hist.
 	 *

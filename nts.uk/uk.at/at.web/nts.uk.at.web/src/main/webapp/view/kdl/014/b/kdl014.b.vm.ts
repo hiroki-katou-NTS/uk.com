@@ -1,12 +1,28 @@
 module kdl014.b.viewmodel {
+    import modal = nts.uk.ui.windows.sub.modal;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
-        items: KnockoutObservableArray<StampModel>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
+        startEndDate: string;
+        
+        //Param get from test main-screen.
         startDate: string;
         endDate: string;
 
+        //Value diplay in screen.
+        items: KnockoutObservableArray<StampModel>;
+        columns: KnockoutObservableArray<NtsGridListColumn>;
+
         constructor() {
             var self = this;
+            
+            self.startEndDate = '';
+            
+            //Init param get from test main-screen.
+            self.startDate = '';
+            self.endDate = '';
+
+            //Init value display in this screen.
             self.items = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDL014_8"), key: 'employeeCd', width: 110 },
@@ -19,8 +35,6 @@ module kdl014.b.viewmodel {
                 { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 170 },
                 { headerText: nts.uk.resource.getText("KDL014_12"), key: 'stampCombinationName', width: 100 }
             ]);
-            startDate = '';
-            endDate = '';
             $("#igGridStamp").igGrid({
                 width: '1010px',
                 height: '395px',
@@ -29,8 +43,8 @@ module kdl014.b.viewmodel {
                 features: [{
                     name: 'Paging',
                     type: "local",
-                    pageSize: 6 
-                    }]
+                    pageSize: 6
+                }]
             });
         }
 
@@ -38,54 +52,33 @@ module kdl014.b.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            // Get list stamp
-            let startTemp: string = nts.uk.ui.windows.getShared("kdl014startDateB");
-            let endTemp: string = nts.uk.ui.windows.getShared("kdl014endDateB");
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～';
+
+            //Get data from main screen
+            let data: any = getShared('KDL014B_PARAM');
+            let startTemp = data.startDate;
+            let endTemp = data.endDate;
+            let lstEmployeeCode: Array<string> = data.lstEmployee;
+
+            //Convert attribute to display in this screen.
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～    ';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
-            let lstEmployeeCode: Array<string> = nts.uk.ui.windows.getShared("kdl014lstEmployeeB");
-            let lstCardNumber: Array<string> = [];
-            let lstPersonID: Array<string> = [];
-            let lstEmloyee: Array<PersonModel> = [];
-            let lstStampNumber: Array<string> = [];
-            let lstSource: Array<StampModel> = [];
-            service.getListPersonByListEmployee(lstEmployeeCode).done(function(persons: any) {
-                if (persons.length > 0) {
-                    _.forEach(persons, function(person) {
-                        lstPersonID.push(person.personId);
-                        lstEmloyee.push(new PersonModel(person.employeeCode, person.personId));
-                    });
-                    //Get list STAMP NUMBER from PersonID 
-                    service.getStampNumberByListPersonId(lstPersonID).done(function(StampNumbers: any) {
-                        if (StampNumbers.length > 0) {
-                            _.forEach(StampNumbers, function(i) {
-                                lstStampNumber.push(i.cardNumber);
-                            });
-                            //Get List Stamp Reference
-                            service.getStampByCode(lstStampNumber, startTemp, endTemp).done(function(lstStamp: any) {
-                                if (lstStamp.length > 0) {
-                                    _.forEach(lstStamp, function(item) {
-                                        _.forEach(lstEmloyee, function(employee) {
-                                            if (employee.personId == item.personId) {
-                                                lstSource.push(new StampModel(employee.employeeCd, 'name', moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-                                                return false;
-                                            }
-                                        });
-                                    });
-                                }
-                                self.items(_.orderBy(lstSource, ['date', 'attendanceTime', 'employeeCd'], ['asc', 'asc', 'asc']));
-                                $("#igGridStamp").igGrid({ dataSource: self.items() });
-                                dfd.resolve();
-                            }).fail(function(res) {
-                                dfd.reject();
-                            });
-                            dfd.resolve();
-                        }
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        dfd.reject();
+            self.startEndDate = '' + self.startDate + '' + self.endDate;
+
+            //Create param to get list stamp from server.
+            let stampParam = new StampParam(startTemp, endTemp, lstEmployeeCode);
+            //Get List Stamp from server.
+            service.getListStampDetail(stampParam).done(function(lstStamp: any) {
+                //Define value to save list stamp get from server.
+                let lstEmloyee: Array<PersonModel> = [];
+                let lstSource: Array<StampModel> = [];
+                if (lstStamp.length > 0) {
+                    _.forEach(lstStamp, function(item) {
+                        lstSource.push(new StampModel(item.employeeCode, item.pname, moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+
                     });
                 }
+                self.items(_.orderBy(lstSource, ['date', 'attendanceTime', 'employeeCd'], ['asc', 'asc', 'asc']));
+                $("#igGridStamp").igGrid({ dataSource: self.items() });
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject();
@@ -101,7 +94,7 @@ module kdl014.b.viewmodel {
     }
 
 
-    class StampModel {
+    export class StampModel {
         employeeCd: string;
         employeeName: string;
         date: string;
@@ -125,13 +118,25 @@ module kdl014.b.viewmodel {
         }
     }
 
-    class PersonModel {
+    export class PersonModel {
         employeeCd: string;
         personId: string;
         constructor(employeeCd: string, personId: string) {
             var self = this;
             self.employeeCd = employeeCd;
             self.personId = personId;
+        }
+    }
+
+    export class StampParam {
+        startDate: string;
+        endDate: string;
+        sIDs: Array<string>;
+        constructor(startDate: string, endDate: string, sids: Array<string>) {
+            var self = this;
+            self.startDate = startDate;
+            self.endDate = endDate;
+            self.sIDs = sids;
         }
     }
 }

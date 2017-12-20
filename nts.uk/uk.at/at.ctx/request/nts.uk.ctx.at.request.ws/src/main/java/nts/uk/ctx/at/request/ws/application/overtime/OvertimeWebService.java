@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegisterOvertime;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCaculationOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @Path("at/request/application/overtime")
@@ -47,24 +49,25 @@ public class OvertimeWebService extends WebService{
 	@POST
 	@Path("findByChangeAppDate")
 	public OverTimeDto findByChangeAppDate(ParamChangeAppDate param) {
-		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr());
+		return this.overtimeFinder.findByChangeAppDate(param.getAppDate(), param.getPrePostAtr(),param.getSiftCD(),param.getOvertimeHours());
 	}
 	@POST
 	@Path("checkConvertPrePost")
 	public OverTimeDto convertPrePost(ParamChangeAppDate param) {
-		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate());
+		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate(),param.getSiftCD(),param.getOvertimeHours());
 	}
 	@POST
 	@Path("getCaculationResult")
 	public List<CaculationTime> getCaculationResult(ParamCaculationOvertime param) {
-		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate());
+		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD());
 	}
 	
 	
 	@POST
 	@Path("create")
-	public void createOvertime(CreateOvertimeCommand command){
-		createHandler.handle(command);
+	public JavaTypeResult<String> createOvertime(CreateOvertimeCommand command){
+		JavaTypeResult<String>  test = new JavaTypeResult<String>(createHandler.handle(command)); 
+		return test;
 	}
 	@POST
 	@Path("checkBeforeRegister")
@@ -80,8 +83,14 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public void update(UpdateOvertimeCommand command) {
-		this.updateOvertimeCommandHandler.handle(command);
+	public List<String> update(UpdateOvertimeCommand command) {
+		return this.updateOvertimeCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("getRecordWork")
+	public RecordWorkDto getRecordWork(RecordWorkParam param) {
+		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours());
 	}
 }
 
@@ -90,4 +99,12 @@ class Param{
 	private String url;
 	private String appDate;
 	private int uiType;
+}
+@Value
+class RecordWorkParam {
+	public String employeeID; 
+	public String appDate;
+	public String siftCD;
+	public int prePostAtr;
+	public List<CaculationTime> overtimeHours;
 }

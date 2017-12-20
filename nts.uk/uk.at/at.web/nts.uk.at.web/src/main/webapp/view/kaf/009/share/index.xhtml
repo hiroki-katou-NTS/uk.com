@@ -1,14 +1,14 @@
 <div>
 	<!--LEFT CONTENTS -->
-	<div class="left-contents">
+	<div class="left-contents-009">
 		<div class="valign-center control-group">
-			<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_7')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_7')}</div>
 			<label class="lblEmployeeName" data-bind="text : employeeName"></label>
 		</div>
 		<!--事前事後区分-->
 		<div class="valign-center control-group "
 			data-bind="if: prePostDisp()">
-			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
 			<div class="cf"
 				data-bind="ntsSwitchButton: {
 								options:ko.observableArray([
@@ -22,14 +22,14 @@
 		</div>
 		<div class="valign-center control-group">
 			<!--申請日付 -->
-			<div class="lblTitle" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
 			<div id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
 		</div>
 		<!--勤務時間 1-->
 		<div class="valign-center control-group">
 			<div class="table">
 				<div class="cell valign-top">
-					<div class="lblTitle" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
+					<div class="lblTitleKAF009" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KAF009_13')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
@@ -51,7 +51,7 @@
 					</div>
 					<div class="cell valign-top row-cell-margin" style="display: inline-block">
 						<!--選択場所　Button-->
-						<button id="btnLocation1" class="location-button"
+						<button id="btnLocation1" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
 						<label id = "lblLocation"
 							data-bind="text : workLocationName()"></label>
@@ -59,7 +59,7 @@
 				</div>
 			</div>
 			<div class="table">
-				<div class="cell valign-top lblTitle">
+				<div class="cell valign-top lblTitleKAF009">
 				</div>
 				<div class="cell valign-center">	
 					<div style="display: inline-block; width: 250px;">
@@ -91,7 +91,7 @@
 				</div>	
 			</div>
 			<div class="table">
-				<div class="cell valign-top lblTitle">
+				<div class="cell valign-top lblTitleKAF009">
 				</div>
 				<div class="cell valign-center">	
 					<div style="display: inline-block; width: 250px;">
@@ -114,7 +114,7 @@
 		<div class="valign-center control-group" data-bind="if: useMulti()">
 			<div class="table">
 				<div class="cell valign-center">
-					<div class="lblTitle" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF009_20')}</div>
+					<div class="lblTitleKAF009" data-bind="ntsFormLabel: {required:false}">#{i18n.getText('KAF009_20')}</div>
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
@@ -131,7 +131,7 @@
 															value: timeEnd2}" />
 					</div>
 					<div class="cell row-cell-margin" style="display: inline-block">
-						<button id="btnLocation2" class="location-button"
+						<button id="btnLocation2" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(2)}">#{i18n.getText('KAF009_15')}</button>
 						<label
 							data-bind="text : workLocationName2()"></label>
@@ -139,7 +139,7 @@
 				</div>
 			</div>
 			<div class="table">
-				<div class="cell valign-top lblTitle">
+				<div class="cell valign-top lblTitleKAF009">
 				</div>
 				<div class="cell valign-center">	
 					<div style="display: inline-block; width: 250px;">
@@ -171,7 +171,7 @@
 				</div>
 			</div>
 			<div class="table">
-				<div class="cell valign-top lblTitle">
+				<div class="cell valign-top lblTitleKAF009">
 				</div>
 				<div class="cell valign-center">	
 					<div style="display: inline-block; width: 250px;">
@@ -194,8 +194,8 @@
 		<div class="valign-center control-group" data-bind ="visible: isWorkChange">
 			<div data-bind="visible: workState(), ntsCheckBox: { checked: workChangeAtr , enable: workState(), text: '#{i18n.getText('KAF009_21')}' }"></div>
 			<HR data-bind="display: typeSiftVisible() ? '' : 'none' " />
-			<div class="table" data-bind="if: typeSiftVisible()">
-				<div class="cell valign-center">
+			<div class="table clsWorkType" data-bind="if: typeSiftVisible()">
+				<div class="cell valign-center ">
 					<div class="valign-center control-group"
 						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_22')}</div>
 					<BR />
@@ -216,7 +216,7 @@
 		</div>
 		<!--定型理由 -->
 		<div class="valign-center control-group">
-			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
+			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
 			<div id="combo-box"
 				data-bind="ntsComboBox: {
 								name: '#[KAF009_26]',
@@ -230,9 +230,9 @@
 		</div>
 		<!-- 申請理由（ラベル) -->
 		<div class="valign-center control-group">
-			<div class="lblTitle"
+			<div class="lblTitleKAF009"
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
-			<div id="multiline">
+			<div id="inpReason">
 				<textarea
 					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, constraint: 'AppReason', required : requiredReason(), name: '#[KAF009_29]'}" />
 			</div>

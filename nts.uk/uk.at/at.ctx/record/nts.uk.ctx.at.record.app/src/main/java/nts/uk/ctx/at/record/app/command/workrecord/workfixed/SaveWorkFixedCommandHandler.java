@@ -53,12 +53,8 @@ public class SaveWorkFixedCommandHandler extends CommandHandler<SaveWorkFixedCom
 			workFixed = command.toDomain(companyId, personId, GeneralDate.today());
 		}		
 
-		// Find exist WorkFixed
-//		Optional<WorkFixed> opWorkFixed = this.repository.findByWorkPlaceIdAndClosureId(command.getWkpId(),
-//				command.getClosureId(), companyId);
-		
 		// Save/Update new WorkFixed
-		if (command.isEdited()) {
+		if (command.getIsEdited()) {
 			this.repository.update(workFixed);
 			return;
 		}

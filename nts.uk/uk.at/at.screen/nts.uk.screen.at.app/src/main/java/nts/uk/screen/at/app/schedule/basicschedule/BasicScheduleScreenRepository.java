@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.schedule.basicschedule;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -37,15 +38,17 @@ public interface BasicScheduleScreenRepository {
 	List<WorkTypeScreenDto> findByCIdAndDeprecateCls(String companyId, int deprecateCls);
 
 	/**
-	 * get data Working employment combination by companyId, workType , workTime
+	 * get list data Working employment combination by companyId, list
+	 * workTypeCode, list workTimeCode)
 	 */
-	WorkEmpCombineDto getListWorkEmpCobine(String companyId, String workTypeCode, String workTimeCode);
+	List<WorkEmpCombineScreenDto> getListWorkEmpCobine(String companyId, List<String> lstWorkTypeCode,
+			List<String> lstWorkTimeCode);
 
 	/**
 	 * get data ScheduleDisplayControl by companyId
 	 * 
 	 */
-	ScheduleDisplayControlDto getListScheduleDisControl(String companyId);
+	Optional<ScheduleDisplayControlScreenDto> getScheduleDisControl(String companyId);
 
 	/**
 	 * 

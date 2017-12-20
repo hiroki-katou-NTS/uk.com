@@ -42,4 +42,13 @@ public interface AfterApprovalProcess {
 	 * @return
 	 */
 	public DestinationMailListOuput MailDestination(Application application);
+	
+	/**
+	 * 3.1 : 承認者一覧を取得する
+	 * 1.承認フェーズ毎の承認者を取得する
+	 * @param companyID
+	 * @param appID
+	 * @return
+	 */
+	public List<String> getListApprover(String companyID, String appID);
 }

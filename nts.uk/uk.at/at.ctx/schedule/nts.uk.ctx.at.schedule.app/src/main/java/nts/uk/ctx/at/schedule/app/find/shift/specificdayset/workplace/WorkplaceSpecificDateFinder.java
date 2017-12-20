@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 
@@ -15,20 +16,27 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecif
 public class WorkplaceSpecificDateFinder {
 	@Inject
 	WorkplaceSpecificDateRepository workplaceSpecDateRepo;
+	
+	final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	// WITH name
 	public List<WokplaceSpecificDateDto> getWpSpecByDateWithName(String workplaceId, String wpSpecDate) {
 		List<WokplaceSpecificDateDto> wokplaceSpecificDateDtos = new ArrayList<WokplaceSpecificDateDto>();
-		List<WorkplaceSpecificDateItem> resultList = workplaceSpecDateRepo.getWpSpecByDateWithName(workplaceId, wpSpecDate);
-		for(int i=1;i<=31;i++){
-			int startMonth = Integer.valueOf(wpSpecDate+String.format("%02d", i));
-			List<WorkplaceSpecificDateItem> listByDate = resultList.stream().filter(x -> x.getSpecificDate().v().intValue()==startMonth).collect(Collectors.toList());
+		GeneralDate startDate = GeneralDate.fromString(wpSpecDate, DATE_FORMAT);
+		GeneralDate endDate = startDate.addMonths(1).addDays(-1);
+		List<WorkplaceSpecificDateItem> resultList = workplaceSpecDateRepo.getWpSpecByDateWithName(workplaceId, startDate, endDate);
+		
+		while(startDate.beforeOrEquals(endDate)) {	
+			GeneralDate tmpDate = startDate;
+			List<WorkplaceSpecificDateItem> listByDate = resultList.stream().filter(x -> x.getSpecificDate().equals(tmpDate)).collect(Collectors.toList());
 			if(!listByDate.isEmpty()){
-				List<BigDecimal> specificDateItemNo = new ArrayList<BigDecimal>();
+				List<Integer> specificDateItemNo = new ArrayList<Integer>();
 				for(WorkplaceSpecificDateItem dateRecord: listByDate){
 					specificDateItemNo.add(dateRecord.getSpecificDateItemNo().v());
 				}
-				wokplaceSpecificDateDtos.add(new WokplaceSpecificDateDto(workplaceId, listByDate.get(0).getSpecificDate().v(), specificDateItemNo));
+				wokplaceSpecificDateDtos.add(new WokplaceSpecificDateDto(workplaceId, listByDate.get(0).getSpecificDate(), specificDateItemNo));
 			}
+			startDate = startDate.addDays(1);
 		}
 		return wokplaceSpecificDateDtos;
 	}

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.request.ac.bs;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,19 +71,6 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 		return this.workplacePub.findWpkIdsBySid(companyId, sid, baseDate);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor#
-	 * getWorkplaceId(java.lang.String, java.lang.String,
-	 * nts.arc.time.GeneralDate)
-	 */
-	@Override
-	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
-		return this.workplacePub.getWorkplaceId(companyId, employeeId, baseDate);
-	}
-
 	/**
 	 * 
 	 * @param sID
@@ -90,35 +78,34 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	 */
 	@Override
 	public String getEmployeeName(String sID) {
-		return this.personPub.getPersonInfo(sID).getEmployeeName();
+		return this.personPub.getPersonInfo(sID).getPname();
 	}
 
 	@Override
 	public PesionInforImport getEmployeeInfor(String sID) {
 		PersonInfoExport personIn = this.personPub.getPersonInfo(sID);
-		PesionInforImport person = new PesionInforImport(personIn.getEmployeeCode(),
+		PesionInforImport person = new PesionInforImport(personIn.getPid(),
+				personIn.getPname(),
+				personIn.getEntryDate(),
+				personIn.getGender(),
+				personIn.getBirthDay(),
 				personIn.getEmployeeId(),
-				personIn.getEmployeeName(),
-				personIn.getCompanyMail(), 
-				personIn.getListJobEntryHist().stream().map(x -> new JobEntryHistoryImport(
-						x.getCompanyId(), 
-						x.getSId(), 
-						x.getHiringType(), 
-						x.getRetirementDate(), 
-						x.getJoinDate(), 
-						x.getAdoptDate())).collect(Collectors.toList()));
+				personIn.getEmployeeCode(),
+				personIn.getRetiredDate(),
+				"");
 		return person;
 	}
 
 	@Override
 	public String empEmail(String sID) {
 		PersonInfoExport data = this.personPub.getPersonInfo(sID);
-		if(!data.getCompanyMail().isEmpty()) {
+		/*if(!data.getCompanyMail().isEmpty()) {
 			return data.getCompanyMail();
 		}else {
 			return null;
-		}
-		
+		}*/
+		//TODO mail can xem lai
+		return null;
 	}
 
 	@Override

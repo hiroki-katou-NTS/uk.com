@@ -23,7 +23,7 @@ public interface ClosureSetMemento {
 	 *
 	 * @param closureId the new closure id
 	 */
-	void setClosureId(Integer closureId);
+	void setClosureId(ClosureId closureId);
 
 	/**
 	 * Sets the use classification.

@@ -14,6 +14,8 @@ import lombok.Data;
 public class PostalCodeDto {
 	/** 郵便番号ID */
 	private String postId;
+	/** 契約コード */
+	private String contractCd;
 	/**郵便番号 */
 	private String postCode;
 	/** 市区町村 */

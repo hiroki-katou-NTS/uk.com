@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.DataWorkDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.service.WorkChangeBasicData;
 
@@ -25,6 +26,10 @@ public class AppWorkChangeCommonSetDto {
 	 */
 	String sID;
 	/**
+	 * 共通設定.複数回勤務
+	 */
+	boolean isMultipleTime;
+	/**
 	 * 申請定型理由
 	 */
 	List<ApplicationReasonDto> listReasonDto;
@@ -32,12 +37,18 @@ public class AppWorkChangeCommonSetDto {
 	 * 申請共通設定
 	 */
 	AppCommonSettingDto appCommonSettingDto;
-
+	/**
+	 * 勤務就業ダイアログ用データ取得
+	 */
+	DataWorkDto dataWorkDto;
+	
 	public static AppWorkChangeCommonSetDto fromDomain(WorkChangeBasicData domain) {
 		return new AppWorkChangeCommonSetDto(AppWorkChangeSetDto.fromDomain(domain.getWorkChangeCommonSetting().get()),
 				domain.getEmployeeName(),
-				domain.getSID(), domain.getListAppReason().stream().map(x -> ApplicationReasonDto.convertToDto(x))
+				domain.getSID(), 
+				domain.isMultipleTime(),
+				domain.getListAppReason().stream().map(x -> ApplicationReasonDto.convertToDto(x))
 						.collect(Collectors.toList()),
-				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()));
+				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()), DataWorkDto.fromDomain(domain.getWorkingData()));
 	}
 }

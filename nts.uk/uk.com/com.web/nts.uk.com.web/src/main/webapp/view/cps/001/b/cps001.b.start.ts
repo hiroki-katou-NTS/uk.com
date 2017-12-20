@@ -5,6 +5,6 @@ module cps001.b {
         __viewContext.bind(__viewContext['viewModel']);
         
         // focus to first input textbox
-        $('input:first').focus();
+        $('#reason').focus();
     });
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 
 /**
  * The Class OffdayWorkTime.

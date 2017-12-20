@@ -75,7 +75,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 _.defer(() => {
                     block.invisible();
                 });
-                
+
                 let newCategory = _.find(self.RoleCategoryList(), (roleCategory) => {
 
                     return roleCategory.categoryId === categoryId;
@@ -343,7 +343,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 if (self.RoleCategoryList().length > 0) {
 
                     self.currentRole().currentCategory().loadRoleItems(self.currentRoleId(), selectedId).done(function() {
-
+                        self.checkboxSelectedAll(false);
                     });
 
                 }

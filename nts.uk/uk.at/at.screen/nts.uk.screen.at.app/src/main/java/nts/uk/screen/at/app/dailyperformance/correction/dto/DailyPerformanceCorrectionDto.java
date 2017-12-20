@@ -43,6 +43,11 @@ public class DailyPerformanceCorrectionDto {
 	private List<DPDataDto> lstData;
 	
 	private List<DailyPerformanceAuthorityDto> authorityDto;
+	
+	private String employmentCode;
+	
+	//A13_1  コメント
+	private String comment;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -81,10 +86,10 @@ public class DailyPerformanceCorrectionDto {
 		} else {
 			List<String> state = new ArrayList<>();
 			state.add("ntsgrid-disable");
-				int attendanceAtr = mapDP.get(Integer.parseInt(header.getKey().trim())).getAttendanceAtr() ;
+				int attendanceAtr = mapDP.get(Integer.parseInt(header.getKey().trim().substring(1, header.getKey().trim().length()))).getAttendanceAtr() ;
 				if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
-				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Code"+header.getKey(), state));
-				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Name"+header.getKey(), state));
+				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Code"+header.getKey().substring(1, header.getKey().length()), state));
+				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Name"+header.getKey().substring(1, header.getKey().length()), state));
 			} else {
 				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), header.getKey(), state));
 			}

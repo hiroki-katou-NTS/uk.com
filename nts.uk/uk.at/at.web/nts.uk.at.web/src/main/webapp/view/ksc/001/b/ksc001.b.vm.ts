@@ -274,6 +274,8 @@ module nts.uk.at.view.ksc001.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                // block ui
+                nts.uk.ui.block.invisible();
 
                 // find closure by id = 1
                 service.findPeriodById(1).done(function(data) {
@@ -531,7 +533,9 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
+                nts.uk.ui.block.invisible();
                 service.checkThreeMonth(self.toDate(self.periodDate().startDate)).done(function(check) {
+                    nts.uk.ui.block.clear();
                     if (check) {
                         // show message confirm 567
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_567' }).ifYes(function() {

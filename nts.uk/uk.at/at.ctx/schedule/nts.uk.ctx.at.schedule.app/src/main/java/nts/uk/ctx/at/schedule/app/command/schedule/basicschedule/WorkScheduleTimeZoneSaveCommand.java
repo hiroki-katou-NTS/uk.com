@@ -15,16 +15,16 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @Setter
-public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetMemento{
-	
+public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetMemento {
+
 	/** The schedule cnt. */
 	private int scheduleCnt;
 
 	/** The schedule start clock. */
-	private int scheduleStartClock;
+	private Integer scheduleStartClock;
 
 	/** The schedule end clock. */
-	private int scheduleEndClock;
+	private Integer scheduleEndClock;
 
 	/** The bounce atr. */
 	private int bounceAtr;
@@ -50,7 +50,7 @@ public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetM
 	 */
 	@Override
 	public TimeWithDayAttr getScheduleStartClock() {
-		return new TimeWithDayAttr(scheduleStartClock);
+		return scheduleStartClock != null ? new TimeWithDayAttr(scheduleStartClock) : null;
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class WorkScheduleTimeZoneSaveCommand implements WorkScheduleTimeZoneGetM
 	 */
 	@Override
 	public TimeWithDayAttr getScheduleEndClock() {
-		return new TimeWithDayAttr(scheduleEndClock);
+		return scheduleEndClock != null ? new TimeWithDayAttr(scheduleEndClock) : null;
 	}
 
 }

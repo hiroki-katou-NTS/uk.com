@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.FrameNamePri;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 
 /**
  * @author loivt

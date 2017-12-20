@@ -26,6 +26,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	private static final String DEL_BY_LIST_KEY;
 
+	private static final String DEL_BY_KEY_ID;
+
 	private static final String FIND_BY_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
 			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId " + " AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ";
 
@@ -33,9 +35,16 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ");
 		DEL_BY_KEY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtWorkScheduleTime a ");
+		builderString.append("WHERE a.krcdtWorkScheduleTimePK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtWorkScheduleTimePK.ymd = :ymd ");
+		DEL_BY_KEY_ID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -47,7 +56,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 	}
@@ -60,8 +69,12 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DEL_BY_KEY_ID).setParameter("employeeId", employeeId).setParameter("ymd", ymd)
+		.executeUpdate();
+		
 		this.getEntityManager().createQuery(DEL_BY_KEY).setParameter("employeeId", employeeId).setParameter("ymd", ymd)
 				.executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override

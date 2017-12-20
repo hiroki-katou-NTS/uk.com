@@ -76,9 +76,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 if (!codeChanged || codeChanged < 1) {
                     self.enableSave(false);
                     self.resetData();
+                    self.enableAtdBtn(false);
+                    self.attendanceModel.attendanceItemName('');
                     return;
                 }
                 self.enableSave(true);
+                self.enableAtdBtn(true);
                 self.clearError();
                 if (codeChanged == 0) { return; }
                 self.selectUse(null);
@@ -232,15 +235,31 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                         self.enableUnder(false);
                     }
                     
+                    self.attendanceModel.attendanceItemId(data.totalCondition.attendanceItemId);
+                    
                     self.loadListWorkType().done(function() {
                         self.loadListWorkTimes().done(function() {
-                            // load all data  Enum
-                            self.loadTotalClsEnum().done(function() {
-                                if (self.totalClsEnums.length > 0) {
-                                    self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
-                                }
+                                $.when( self.loadTotalClsEnum(), service.findAllDailyAttendanceItem()).done(function( a1, dataRes: Array<DailyAttendanceItemDto> ) {
+                                    // load all data  Enum
+                                    if (self.totalClsEnums.length > 0) {
+                                        self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
+                                    } 
+                                    
+//                                    let list: Array<string> = dataRes.map(item => item.attendanceItemId);
+                                    let selectID: Array<any> = _.filter(dataRes, function (item) {
+                                        return item.attendanceItemId == self.attendanceModel.attendanceItemId();
+                                    })
+                                    
+                                    if (selectID.length > 0) {
+                                        self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
+                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);
+                                    } else {
+                                        self.attendanceModel.update(0, null);
+                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', 1, true);
+                                    }
+                                });
+                                
                                 dfd.resolve();
-                            });
                         });
                     });
                 }
@@ -356,9 +375,9 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
             if (self.itemTotalTimesDetail.countAtr()) {
-                self.itemTotalTimesDetail.countAtr(1);
-            } else {
                 self.itemTotalTimesDetail.countAtr(0);
+            } else {
+                self.itemTotalTimesDetail.countAtr(1);
             }
             // save enum
             self.itemTotalTimesDetail.summaryAtr(self.valueEnum());
@@ -468,15 +487,15 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             nts.uk.ui.block.invisible();
             // check worktype or worktime send to KDL002Dialog
-            var listWorkType = [];
-            var listWorkCode = [];
-            for (let i = 0; i < self.itemTotalTimesDetail.listTotalSubjects().length; i++) {
-                if (self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeAtr() == 0) {
-                    listWorkType[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
-                } else {
-                    listWorkCode[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
-                }
-            }
+//            var listWorkType = [];
+//            var listWorkCode = [];
+//            for (let i = 0; i < self.itemTotalTimesDetail.listTotalSubjects().length; i++) {
+//                if (self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeAtr() == 0) {
+//                    listWorkType[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
+//                } else {
+//                    listWorkCode[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
+//                }
+//            }
 
             service.findAllDailyAttendanceItem().done(function(dataRes: Array<DailyAttendanceItemDto>) {
                 //list All workType
@@ -566,8 +585,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.updateData(self.stash.toDto());
                 saveData.useAtr(0);
             }
-            if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true)) {
+            if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true) && _.isNumber(self.attendanceModel.attendanceItemId())) {
                 saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
+            } else {
+                saveData.totalCondition.attendanceItemId(1);
             }
         }
     }
@@ -702,7 +723,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             this.lowerLimitSettingAtr = ko.observable(1);
             this.thresoldUpperLimit = ko.observable(1);
             this.thresoldLowerLimit = ko.observable(1);
-            this.attendanceItemId = ko.observable(null);
+            this.attendanceItemId = ko.observable(1);
         }
         updateData(dto: TotalConditionDto) {
             this.upperLimitSettingAtr(dto.upperLimitSettingAtr);
@@ -727,7 +748,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             this.lowerLimitSettingAtr(0);
             this.thresoldUpperLimit(0);
             this.thresoldLowerLimit(0);
-            this.attendanceItemId(null);
+            this.attendanceItemId(0);
         }
     }
 

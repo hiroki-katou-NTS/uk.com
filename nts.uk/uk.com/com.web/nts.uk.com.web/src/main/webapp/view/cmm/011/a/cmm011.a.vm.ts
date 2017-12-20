@@ -27,10 +27,13 @@ module nts.uk.com.view.cmm011.a {
             isNewMode: KnockoutObservable<boolean>;
             isWkpHistoryLatest: KnockoutObservable<boolean>;
             isWkpConfigHistLatest: KnockoutObservable<boolean>;
+            isSelectedWpkId: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
 
+                self.isNewMode = ko.observable(false);
+                
                 self.wkpConfigHistId = null;
                 self.strDWorkplace = ko.observable(null);
                 self.endDWorkplace = ko.observable(nts.uk.resource.getText("CMM011_27"));
@@ -45,12 +48,24 @@ module nts.uk.com.view.cmm011.a {
 
                 self.creationType = null;
 
-                self.isNewMode = ko.observable(false);
                 self.isWkpHistoryLatest = ko.computed(function() {
                     self.workplaceHistory().selectedHistoryId();
                     return self.workplaceHistory().isSelectedLatestHistory();
                 });
                 self.isWkpConfigHistLatest = ko.observable(false);
+                
+                self.isSelectedWpkId = ko.computed(() => {
+                    if (!nts.uk.text.isNullOrEmpty(self.treeWorkplace().selectedWpkId())) {
+                        return true;
+                    }
+                    // check when new mode
+                    if (self.treeWorkplace().lstWorkplace().length < 1
+                        || self.treeWorkplace().lstWorkplace().length > 0 && self.workplaceHistory().lstWpkHistory().length > 0) {
+                        return self.isNewMode();
+                    }
+                    // check case unselect item in grid
+                    return !self.isNewMode();
+                })
                 
                 // subscribe
                 self.strDWorkplace.subscribe((newValue) => {
@@ -197,6 +212,9 @@ module nts.uk.com.view.cmm011.a {
                 service.saveWkp(command).done(function() {
                     nts.uk.ui.block.clear();
                     
+                    // reset setting create workplace
+                    self.creationType = null;
+                    
                     // notice success
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         
@@ -232,7 +250,12 @@ module nts.uk.com.view.cmm011.a {
                 command.createType = self.creationType;
                 command.startDate = new Date(self.strDWorkplace());
                 command.wkpConfigInfoHistId = self.wkpConfigHistId;
-                command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
+                
+                if (self.isNewMode()) {
+                    command.wkpIdSelected = self.treeWorkplace().currentWpkId();
+                } else {
+                    command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
+                }
 
                 // data workplace
                 let workplace: any = {};
@@ -325,8 +348,25 @@ module nts.uk.com.view.cmm011.a {
                         if (creationType) {
                             self.isNewMode(true);
                             self.creationType = creationType;
+                            
+                            // set current select item grid
+                            self.treeWorkplace().currentWpkId(self.treeWorkplace().selectedWpkId());
+                            
+                            // reset selected item grid
+                            self.treeWorkplace().selectedWpkId(null);
+                            
+                            // in new mode, find hierarchy before select
+                            self.treeWorkplace().selectedHierarchyCd = self.treeWorkplace()
+                                .findSelectedHierarchyCd(self.treeWorkplace().currentWpkId());
+                            
+                            // new workplace history
                             self.workplaceHistory().newHistory();
+                            
+                            // select item 
+                            self.workplaceHistory().setSelectionHistSuitable();
                         }
+                        // Focus
+                        $('#wkpCd').focus();
                     });
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
@@ -415,7 +455,8 @@ module nts.uk.com.view.cmm011.a {
             treeColumns: Array<any>;
             lstWorkplace: KnockoutObservableArray<TreeWorkplace>;
             selectedWpkId: KnockoutObservable<string>;
-
+            currentWpkId: KnockoutObservable<string>;
+            
             treeArray: KnockoutObservableArray<any>;
             selectedHierarchyCd: string;
             mapHierarchy: any;
@@ -429,6 +470,8 @@ module nts.uk.com.view.cmm011.a {
 
                 self.lstWorkplace = ko.observableArray([]);
                 self.selectedWpkId = ko.observable(null);
+                self.currentWpkId = ko.observable(null);
+                
                 self.treeArray = ko.observableArray([]);
                 
                 self.treeColumns = self.treeColumns = [
@@ -472,11 +515,25 @@ module nts.uk.com.view.cmm011.a {
                 //subscribe selected wkp Id
                 self.selectedWpkId.subscribe(newValue => {
                     
+                    // validate null or empty
+                    if (nts.uk.text.isNullOrEmpty(newValue)) {
+                        
+                        self.parentModel.isNewMode(true);
+                        
+                        // reset data case unselect item in grid
+                        self.selectedHierarchyCd = null;
+                        self.parentModel.initData(null);
+                        if (self.lstWorkplace().length > 0) {
+                            self.parentModel.workplaceHistory().reset();
+                        }
+                        return;
+                    }
+                    
                     // set update mode
                     self.parentModel.isNewMode(false);
                     
                     // get hierarchy code selected.
-                    self.selectedHierarchyCd = self.getSelectedHierarchyCd();
+                    self.selectedHierarchyCd = self.findSelectedHierarchyCd(newValue);
 
                     // get wkp list hist by wkpId
                     self.parentModel.workplaceHistory().loadWkpHistoryByWkpId(newValue);
@@ -512,9 +569,11 @@ module nts.uk.com.view.cmm011.a {
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
 
-                    if (res.messageId == "Msg_373") {
-                        nts.uk.ui.dialog.info(res.message).then(() => {
+                    if (res.messageId == 'Msg_373') {
+                        nts.uk.ui.dialog.info({messageId: res.messageId}).then(() => {
                             self.lstWorkplace([]);
+                            // reset selected workplace when list empty
+                            self.parentModel.treeWorkplace().selectedWpkId(null);
                         });
                     } else {
                         self.parentModel.showMessageError(res);
@@ -539,13 +598,18 @@ module nts.uk.com.view.cmm011.a {
                 let index: number = 3;
                 let wkpFullName: string = "";
                 
-                // check null or empty
-                if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd)) {
+                let isCreateWkpChild: boolean = self.parentModel.creationType == CreationType.CREATE_TO_CHILD;
+                
+                // check null empty or it is workplace parent 
+                if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd)
+                        || (!isCreateWkpChild && self.selectedHierarchyCd.length <= 3)) {
                     return null;
                 }
                 
+                let maxLength: number = self.selectedHierarchyCd.length;
+                
                 // find path name parent workplace
-                while (index <= self.selectedHierarchyCd.length) {
+                while ((!isCreateWkpChild && index < maxLength) || (isCreateWkpChild && index <= maxLength)) {
                     let parentHierarchyCd: string = self.selectedHierarchyCd.substr(0, index);
                     wkpFullName += " " + self.mapHierarchy[parentHierarchyCd];
                     index += 3;
@@ -586,11 +650,11 @@ module nts.uk.com.view.cmm011.a {
             /**
              * getSelectedHierarchyCd
              */
-            private getSelectedHierarchyCd(): string {
+            public findSelectedHierarchyCd(wpkId: string): string {
                 let self = this;
                 let hierarchyCode: string = "";
                 for (let item of self.treeArray()) {
-                    if (item.workplaceId == self.selectedWpkId()) {
+                    if (item.workplaceId == wpkId) {
                         hierarchyCode = item.hierarchyCode;
                         break;
                     }
@@ -714,11 +778,24 @@ module nts.uk.com.view.cmm011.a {
 
                 // subscribe
                 self.selectedHistoryId.subscribe((newHistoryId) => {
+                    if (nts.uk.text.isNullOrEmpty(newHistoryId)) {
+                        self.parentModel.initData(null);
+                        return;
+                    }
                     // load workplace info by historyId
                     self.loadWkpHistoryInfo(self.parentModel.treeWorkplace().selectedWpkId(), newHistoryId);
                 });
             }
 
+            /**
+             * Reset data
+             */
+            public reset() {
+                let self = this;
+                self.lstWpkHistory([]);
+                self.selectedHistoryId(null);
+            }
+            
             /**
              * addWkpHistoryDialog
              */
@@ -805,9 +882,9 @@ module nts.uk.com.view.cmm011.a {
                     });
                     //update list hist
                     self.lstWpkHistory(lstWpkHistory);
-
-                    // set focus
-                    $('#wkpName').focus();
+                    
+                    // select item 
+                    self.setSelectionHistSuitable();
 
                     nts.uk.ui.block.clear();
                     dfd.resolve();
@@ -832,6 +909,33 @@ module nts.uk.com.view.cmm011.a {
             }
 
             /**
+             * After remove history, choose item in time range of workplace config history.
+             */
+            public setSelectionHistSuitable() {
+                let self = this;
+                
+                let result: Array<IHistory> = self.lstWpkHistory()
+                    .filter(item => item.startDate <= self.parentModel.strDWorkplace()
+                        && item.endDate >= self.parentModel.strDWorkplace());
+                
+                if (result.length <= 0) {
+                    self.selectFirst();
+                } else {
+                    // sort start date ASC
+                    result.sort(function(a: IHistory, b: IHistory) {
+                        if (a.startDate < b.startDate) {
+                            return -1;
+                        } else if (a.startDate > b.startDate) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    self.selectedHistoryId(result[0].historyId);
+                }
+                
+            }
+            
+            /**
              * loadWkpHistoryInfo
              */
             private loadWkpHistoryInfo(wkpId: string, historyId: string): JQueryPromise<void> {
@@ -845,6 +949,10 @@ module nts.uk.com.view.cmm011.a {
                     
                     // set data
                     self.parentModel.initData(data);
+                    
+                    // set focus
+                    $('#wkpName').focus();
+                    
                     dfd.resolve();
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();

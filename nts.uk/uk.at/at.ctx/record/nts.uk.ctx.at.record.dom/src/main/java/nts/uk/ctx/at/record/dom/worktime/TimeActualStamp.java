@@ -11,7 +11,6 @@ import lombok.Setter;
  *
  */
 @Getter
-@Setter
 @NoArgsConstructor
 public class TimeActualStamp {
 	
@@ -63,6 +62,11 @@ public class TimeActualStamp {
 	}
 	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp) {
 		super();
+		this.actualStamp = actualStamp;
+		this.stamp = stamp;
+		this.numberOfReflectionStamp = numberOfReflectionStamp;
+	}
+	public void setPropertyTimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp){
 		this.actualStamp = actualStamp;
 		this.stamp = stamp;
 		this.numberOfReflectionStamp = numberOfReflectionStamp;

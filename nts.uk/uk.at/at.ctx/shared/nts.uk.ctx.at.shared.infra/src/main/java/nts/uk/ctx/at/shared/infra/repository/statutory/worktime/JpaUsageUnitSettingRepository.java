@@ -28,7 +28,7 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 */
 	@Override
 	public void update(UsageUnitSetting setting) {
-		this.commandProxy().update(this.updateEntity(this.toEntitỵ̣̣(setting)));
+		this.commandProxy().update(this.updateEntity(this.toEntity(setting)));
 	}
 
 	/*
@@ -40,7 +40,7 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 */
 	@Override
 	public void create(UsageUnitSetting setting) {
-		this.commandProxy().insert(this.toEntitỵ̣̣(setting));
+		this.commandProxy().insert(this.toEntity(setting));
 	}
 
 	/*
@@ -70,7 +70,7 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * @param domain the domain
 	 * @return the juuwtst usage unit wt set
 	 */
-	private KuwstUsageUnitWtSet toEntitỵ̣̣(UsageUnitSetting domain) {
+	private KuwstUsageUnitWtSet toEntity(UsageUnitSetting domain) {
 		KuwstUsageUnitWtSet entity = new KuwstUsageUnitWtSet();
 		domain.saveToMemento(new JpaUsageUnitSettingSetMemento(entity));
 		return entity;

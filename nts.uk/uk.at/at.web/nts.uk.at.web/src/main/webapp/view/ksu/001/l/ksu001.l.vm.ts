@@ -1,4 +1,6 @@
 module nts.uk.at.view.ksu001.l.viewmodel {
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         listTeam: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -8,30 +10,33 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         teamName: KnockoutObservable<any> = ko.observable();
         columnsTeam: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1110"), key: 'code', width: 60 },
-            { headerText: nts.uk.resource.getText("KSU001_1111"), key: 'name', width: 120 },
+            { headerText: nts.uk.resource.getText("KSU001_1111"), key: 'name', width: 120, formatter: _.escape },
             { headerText: nts.uk.resource.getText("KSU001_1112"), key: 'amountOfPeople', width: 60 },
         ]);
         workPlaceId: string;
         workPlaceName: string;
         listEmployee: Array<any>;
         listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+        listEmployeeSwapTemp: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+        listEmployeeTemporary: KnockoutObservableArray<any> = ko.observableArray([]);
         columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
             { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
-            { headerText: nts.uk.resource.getText("KSU001_1121"), key: 'teamCode', width: 100 },
+            { headerText: nts.uk.resource.getText("KSU001_1121"), key: 'teamName', width: 100, formatter: _.escape },
         ]);
         columnsRightSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
-            { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120 },
+            { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120, formatter: _.escape },
         ]);
-
+        onlyEmpNotTeam: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
-            self.workPlaceId = nts.uk.ui.windows.getShared('workPlaceId');
-            self.listEmployee = nts.uk.ui.windows.getShared('listEmployee');
+            self.workPlaceId = getShared('dataForScreenL').workplaceId;
+            self.listEmployee = getShared('dataForScreenL').empItems;
             self.selectedEmployeeSwap = ko.observableArray([]);
+            self.listEmployeeTemporary = ko.observableArray([]);
             self.selectedTeam('');
             self.teamName('');
             if (self.listEmployee.length > 0) {
@@ -40,13 +45,29 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 self.workPlaceName = '';
             }
             self.selectedTeam.subscribe(function(newValue) {
-                let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', newValue]);
-                let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
-                self.selectedEmployeeSwap(teamSelected);
-                self.listEmployeeSwap(newListEmployeeSwap);
+                if (self.onlyEmpNotTeam() == false) {
+                    self.listEmployeeSwap().concat(self.listEmployeeTemporary());
+                    let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', newValue]);
+                    let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
+                    self.selectedEmployeeSwap(teamSelected);
+                    self.listEmployeeSwap(newListEmployeeSwap);
+                } else {
+                    //self.listEmployeeTemporary(self.selectedEmployeeSwap());
+                    let teamSelected = _.filter(self.listEmployeeTemporary(), ['teamCode', newValue]);
+                    let temporary = _.reject(self.listEmployeeSwap(), ['teamCode', 'なし']);
+                    let teamSelectedTemp = self.selectedEmployeeSwap().concat(temporary);
+                    self.listEmployeeTemporary(teamSelectedTemp);
+                    self.selectedEmployeeSwap(teamSelected);
+                }
+
+                //self.listEmployeeSwapTemp(_.clone(newListEmployeeSwap));
                 self.teamName(_.find(self.listTeam(), ['code', self.selectedTeam()]).name);
             });
+            self.onlyEmpNotTeam.subscribe(function(value) {
+                self.filterEmpNotTeam(value);
+            });
         }
+
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
@@ -65,7 +86,6 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 });
 
             });
-
             return dfd.promise();
         }
 
@@ -74,16 +94,18 @@ module nts.uk.at.view.ksu001.l.viewmodel {
          */
         openDialogLX(): void {
             let self = this;
-            nts.uk.ui.windows.setShared("workPlaceId", self.workPlaceId);
+            setShared("workPlaceId", self.workPlaceId);
             nts.uk.ui.windows.sub.modal("/view/ksu/001/lx/index.xhtml").onClosed(() => {
                 location.reload();
             });
         }
+
         getListTeam(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             return dfd.promise();
         }
+
         /**
         * get all team
         */
@@ -93,12 +115,12 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             service.findAllByWorkPlace(self.workPlaceId).done(data => {
                 self.listTeamDB(data);
                 dfd.resolve();
-            })
-                .fail(() => {
-                    dfd.reject();
-                });
+            }).fail(() => {
+                dfd.reject();
+            });
             return dfd.promise();
         }
+
         getAllTeamSetting(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -112,10 +134,14 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     let employee = new EmployeeModel(value);
                     if (employeeSeting) {
                         //check team exist
-                        if (_.findKey(teamDB, ['teamCode', employeeSeting.teamCode])) {
-                            employee.teamCode = employeeSeting.teamCode;
-                            employee.teamCodeOld = employeeSeting.teamCode;
+                        var team = _.find(teamDB, function(item) { return item.teamCode == employeeSeting.teamCode; });
+                        if (team) {
+                            employee.teamCode = team.teamCode;
+                            employee.teamCodeOld = team.teamCode;
+                            employee.teamName = team.teamName;
                         }
+                    } else {
+                        employee.teamName = "なし";
                     }
                     if (employee.teamCode == self.selectedTeam()) {
                         employeesSwapRight.push(employee);
@@ -136,10 +162,9 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 });
                 self.listTeam(arrayTeam);
                 dfd.resolve();
-            })
-                .fail(() => {
-                    dfd.reject();
-                });
+            }).fail(() => {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
@@ -152,6 +177,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         /**
          * add employee to team
          */
+
         addEmToTeam(): void {
             let self = this;
             nts.uk.ui.block.invisible();
@@ -164,8 +190,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 if (o != 'なし') {
                     return o != self.selectedTeam();
                 }
-            }
-            ).length > 0) ? true : false;
+            }).length > 0) ? true : false;
+
             if (isSwapTeamCode) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_342" }).ifYes(() => {
                     service.addEmToTeam(data).done(function() {
@@ -193,9 +219,25 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     });
                 }).then(() => { nts.uk.ui.block.clear(); });
             }
+        }
 
+        /**
+         * Event checkbox: filter employee not in team
+         */
+        filterEmpNotTeam(isChecked) {
+            var self = this;
+            if (isChecked == true) {
+                let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', 'なし']);
+                let temporary = _.reject(self.listEmployeeSwap(), ['teamCode', 'なし']);
+                self.listEmployeeTemporary(temporary);
+                self.listEmployeeSwap(teamSelected);
+            } else {
+                let newListEmployeeSwap = self.listEmployeeSwap().concat(self.listEmployeeTemporary());
+                self.listEmployeeSwap(newListEmployeeSwap);
+            }
         }
     }
+
     class TeamModel {
         code: string;
         name: string;
@@ -206,6 +248,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             this.amountOfPeople = amountOfPeople;
         }
     }
+
     interface IPersonModel {
         empId: string,
         empCd: string,
@@ -215,6 +258,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         workplaceName: string,
         baseDate?: number
     }
+
     class EmployeeModel {
         empId: string;
         code: string;
@@ -236,6 +280,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             this.teamCode = 'なし';
         }
     }
+
     class EmployeesAddModel {
         employeeCodes: Array<string>;
         teamCode: string;
@@ -246,6 +291,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             this.workPlaceId = workPlaceId;
         }
     }
+
     class TeamSettingModel {
         teamCode: string;
         workPlaceId: string;

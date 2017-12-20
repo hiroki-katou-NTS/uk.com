@@ -27,7 +27,19 @@
 	.nts-fixed-header-container {
 		overflow: hidden;
  	 	border-right: 1px #CCC solid;
+ 	 	border-left: 1px #CCC solid;
+ 	 	
+		thead  th:first-child {
+		    border-left: 0px !important;
+		}
 	}
+	
+	.nts-fixed-header-wrapper {
+		margin-left: -1px;
+	}
+	.scroll-header {
+		box-sizing: border-box;
+ 	}   
 	
 	.nts-fixed-body-container {
 		overflow: auto;
@@ -36,7 +48,19 @@
 		border-top: 0px;
 	}
 	
+	.nts-fixed-header{
+		display: inline-block;
+	}
+	
+	.scroll-header{
+		background-color: #EDE9ED;
+	}
+	
 	.nts-fixed-body-wrapper {
-		margin: -1px 0 0 -1px;
+		margin: -1px 0 0 -2px;    
+		border-left: 1px solid;
+	}
+	.body-no-record{
+		margin-left: 0px;
 	}
 }

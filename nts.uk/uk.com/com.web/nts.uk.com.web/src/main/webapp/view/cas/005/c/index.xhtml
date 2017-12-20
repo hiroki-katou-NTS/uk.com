@@ -7,23 +7,24 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1130, height: 680 };</script>
-			<com:stylefile path="csa005.c.main.css" />
-			
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="csa005.cb.vm.js" />
-			<com:scriptfile path="csa005.c.service.js" />
-			<com:scriptfile path="csa005.c.start.js" />
+			<script>var dialogSize = { width: 350, height: 550 };</script>
+            <com:scriptfile set="IGNITE" />
+			<com:stylefile path="cas005.c.main.css" />
+			<com:scriptfile path="cas005.c.service.js" />
+			<com:scriptfile path="cas005.c.start.js" />
+			<com:scriptfile path="cas005.c.vm.js" />            
 		</ui:define>
+
 		<ui:define name="content">
-			<div id="contents-area" style="margin-top: 30px;margin-left: 30px">
-				<div id="pannel-top" data-bind="ntsPanel:{width: '400px', height: '430px', direction: '', showIcon: true, visible: true}">
-					
-				</div> 
+			<div id="contents-area" >
+				<div tabindex="1" id="list_link" data-bind="foreach: listMenu">
+					<a class="hyperlink"  target="_blank" data-bind="attr: { href: url }"><span data-bind="text: displayName"></span></a>
+				</div>
+			</div>
+			<div id="functions-area-bottom" >
+				<button tabindex="2" data-bind='click: closeDialog'>#{i18n.getText('CAS009_21')}</button>
 			</div>
 		</ui:define>
-
-
 	</ui:composition>
 </body>
 </html>

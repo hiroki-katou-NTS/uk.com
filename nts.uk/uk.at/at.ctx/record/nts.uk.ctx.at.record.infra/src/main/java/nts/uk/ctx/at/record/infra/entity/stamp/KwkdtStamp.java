@@ -44,8 +44,11 @@ public class KwkdtStamp extends UkJpaEntity implements Serializable {
 	public int stampMethod;
 
 	@Basic(optional = false)
-	@Column(name = "STAMP_REASON")
-	public int stampReason;
+	@Column(name = "GO_OUT_REASON")
+	public int goOutReason;
+	@Basic(optional = false)
+	@Column(name = "REFLECTED_ATR")
+	public Integer reflectedAtr;
 
 	@Override
 	protected Object getKey() {

@@ -74,6 +74,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
         useMulti : KnockoutObservable<boolean> = ko.observable(true);
         dateType: string = 'YYYY/MM/DD';
+        //data work
+        workTypeCodes: KnockoutObservableArray<string> = ko.observableArray([]);
+        workTimeCodes: KnockoutObservableArray<string> = ko.observableArray([]);
         constructor() {
             let self = this;
             //KAF000_A
@@ -94,6 +97,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             self.appDate.subscribe(value => {
                 self.kaf000_a.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
                 self.kaf000_a.getAllApprovalRoot();
+                self.kaf000_a.getMessageDeadline(4, value);
             });
             
         }
@@ -164,6 +168,17 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.employeeName(settingData.employeeName);
                     //直行直帰申請共通設定
                     self.setGoBackCommonSetting(settingData.goBackSettingDto);
+                    //Setting data works
+                    //勤務種類
+                    self.workTypeCd(settingData.dataWorkDto.selectedWorkTypeCd);
+                    self.workTypeName(settingData.dataWorkDto.selectedWorkTypeName);
+                    //勤務種類
+                    self.siftCD(settingData.dataWorkDto.selectedWorkTimeCd);
+                    self.siftName(settingData.dataWorkDto.selectedWorkTimeName);
+                    //dataWorkDto
+                    self.workTypeCodes = settingData.dataWorkDto.workTypeCodes;
+                    self.workTimeCodes = settingData.dataWorkDto.workTimeCodes;
+                    
                     self.selectedGo.subscribe(value => { $("#inpStartTime1").ntsError("clear"); });
                     self.selectedBack.subscribe(value => { $("#inpEndTime1").ntsError("clear"); });
                     self.selectedGo2.subscribe(value => { $("#inpStartTime2").ntsError("clear"); });
@@ -233,7 +248,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             //check before Insert 
-            self.checkUse();
+            let errorFlag = self.kaf000_a.errorFlag;
+            let errorMsg = self.kaf000_a.errorMsg;
+            if(errorFlag!=0){
+                nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
+            } else {
+                self.checkUse();
+            }
             return dfd.promise();
         }
         checkRegister(){
@@ -468,8 +489,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         openDialogKdl003() {
             let self = this;
-            let workTypeCodes = [];
-            let workTimeCodes = [];
+            let workTypeCodes = self.workTypeCodes;
+            let workTimeCodes = self.workTimeCodes;
             nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: workTypeCodes,
                 selectedWorkTypeCode: self.workTypeCd(),
@@ -494,7 +515,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         openCMM018(){
             let self = this;
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID});  
+            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID()});  
         }
     }
     

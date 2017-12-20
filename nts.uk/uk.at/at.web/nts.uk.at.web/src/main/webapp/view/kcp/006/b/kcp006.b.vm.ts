@@ -66,12 +66,12 @@ module nts.uk.at.view.kcp006.b.viewmodel {
             if (self.workplaceId == "0") {
                 if (self.companyEvent() && self.companyEvent().trim() != "") {
                     let command = {
-                        date: moment(self.date, "YYYY/MM/DD").format("YYYYMMDD"),
+                        date: moment(self.date, "YYYY/MM/DD").utc().toISOString(),
                         eventName: self.companyEvent()
                     };
                     service.addCompanyEvent(command).done(() => {
                         self.start();
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }).fail((res) => {
 
                     });
@@ -82,12 +82,12 @@ module nts.uk.at.view.kcp006.b.viewmodel {
                 if (self.workplaceEvent() && self.workplaceEvent().trim() != "") {
                     let command = {
                         workplaceId: self.workplaceId,
-                        date: moment(self.date, "YYYY/MM/DD").format("YYYYMMDD"),
+                        date: moment(self.date, "YYYY/MM/DD").utc().toISOString(),
                         eventName: self.workplaceEvent()
                     };
                     service.addWorkplaceEvent(command).done(() => {
                         self.start();
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }).fail((res) => {
 
                     });
@@ -99,28 +99,28 @@ module nts.uk.at.view.kcp006.b.viewmodel {
 
         removeEvent() {
             let self = this;
-            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                 .ifYes(() => {
                     if (self.workplaceId == "0") {
                         let command = {
-                            date: moment(self.date, "YYYY/MM/DD").format("YYYYMMDD"),
+                            date: moment(self.date, "YYYY/MM/DD").utc().toISOString(),
                             eventName: self.companyEvent()
                         };
                         service.removeCompanyEvent(command).done(() => {
                             self.start();
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", []));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         }).fail((res) => {
 
                         });
                     } else {
                         let command = {
                             workplaceId: self.workplaceId,
-                            date: moment(self.date, "YYYY/MM/DD").format("YYYYMMDD"),
+                            date: moment(self.date, "YYYY/MM/DD").utc().toISOString(),
                             eventName: self.workplaceEvent()
                         };
                         service.removeWorkplaceEvent(command).done(() => {
                             self.start();
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", []));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         }).fail((res) => {
 
                         });

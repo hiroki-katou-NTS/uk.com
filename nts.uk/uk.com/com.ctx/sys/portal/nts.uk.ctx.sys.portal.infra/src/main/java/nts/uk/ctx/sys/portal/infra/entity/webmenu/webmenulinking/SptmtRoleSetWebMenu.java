@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * Class entity of table SacmtRoleSetWebMenu/SACMT_DEFAULT_ROLE_SET
- * @author Hieu.NV
+ * @author HieuNV
  *
  */
 @AllArgsConstructor
@@ -25,21 +25,21 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SPTMT_ROLE_SET_WEB_MENU")
 public class SptmtRoleSetWebMenu extends UkJpaEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public SptmtRoleSetWebMenuPK roleSetWebMenuPK;
+    @EmbeddedId
+    public SptmtRoleSetWebMenuPK roleSetWebMenuPK;
 
-	@Override
-	protected Object getKey() {
-		return roleSetWebMenuPK;
-	}
-	
-	/**
-	 * Build entity
-	 * @param roleSetWebMenuPK
-	 */
-	public void buildEntity(SptmtRoleSetWebMenuPK roleSetWebMenuPK) {
-		this.roleSetWebMenuPK = roleSetWebMenuPK;
-	}
+    @Override
+    protected Object getKey() {
+        return this.roleSetWebMenuPK;
+    }
+
+    /**
+     * Build entity
+     * @param roleSetWebMenuPK
+     */
+    public void buildEntity(SptmtRoleSetWebMenuPK roleSetWebMenuPK) {
+        this.roleSetWebMenuPK = roleSetWebMenuPK;
+    }
 }

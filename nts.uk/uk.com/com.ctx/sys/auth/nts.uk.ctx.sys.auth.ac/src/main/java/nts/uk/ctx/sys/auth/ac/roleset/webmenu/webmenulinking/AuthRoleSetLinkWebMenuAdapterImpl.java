@@ -21,16 +21,16 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AuthRoleSetLinkWebMenuAdapterImpl implements RoleSetLinkWebMenuAdapter {
-	
-	/** The web menu pub. */
-	@Inject
-	private RoleSetLinkWebMenuPub roleSetLinkWebMenuPub;
+    
+    /** The web menu pub. */
+    @Inject
+    private RoleSetLinkWebMenuPub roleSetLinkWebMenuPub;
 
-	@Override
-	public List<RoleSetLinkWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd) {
-		return this.roleSetLinkWebMenuPub.findAllWebMenuByRoleSetCd(AppContexts.user().companyId(), roleSetCd).stream()
-				.map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getWebMenuCode(), item.getRoleSetCd())
-				).collect(Collectors.toList());
-	}
-	
+    @Override
+    public List<RoleSetLinkWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd) {
+        return this.roleSetLinkWebMenuPub.findAllWebMenuByRoleSetCd(AppContexts.user().companyId(), roleSetCd).stream()
+                .map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getWebMenuCode(), item.getRoleSetCd())
+                ).collect(Collectors.toList());
+    }
+
 }

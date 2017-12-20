@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
@@ -42,6 +43,22 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 		}
 		
 		return Optional.ofNullable(affWorkplaceDto);
+	}
+
+	@Override
+	public Optional<AffWorkPlaceSidImport> findBySidAndDate(String employeeId, GeneralDate baseDate) {
+		Optional<SWkpHistExport> opSWkpHistExport = this.wkpPub.findBySid(employeeId, baseDate);
+		AffWorkPlaceSidImport affWorkPlaceSidImport = new AffWorkPlaceSidImport();
+		if(opSWkpHistExport.isPresent()){
+			affWorkPlaceSidImport = new AffWorkPlaceSidImport(opSWkpHistExport.get().getDateRange(),
+					opSWkpHistExport.get().getEmployeeId(),
+					opSWkpHistExport.get().getWorkplaceId(),
+					opSWkpHistExport.get().getWorkplaceCode(),
+					opSWkpHistExport.get().getWorkplaceName(),
+					opSWkpHistExport.get().getWkpDisplayName());
+			}
+		
+		return Optional.of(affWorkPlaceSidImport);
 	}
 
 }

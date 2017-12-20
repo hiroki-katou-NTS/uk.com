@@ -83,7 +83,7 @@ public class CreateOvertimeCommand {
 	private Integer workClockTo2;
 	/**
 	 * 休出時間
-	 * ATTENDANCE_ID = 0
+	 * ATTENDANCE_ID = 2
 	 */
 	private List<OvertimeInputCommand> breakTimes;
 	
@@ -94,7 +94,7 @@ public class CreateOvertimeCommand {
 	private List<OvertimeInputCommand> overtimeHours;
 	/**
 	 * 加給時間
-	 * ATTENDANCE_ID = 2
+	 * ATTENDANCE_ID = 0
 	 */
 	private List<OvertimeInputCommand> restTime;
 	/**

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,17 +19,20 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 	@Inject
 	private CompanySpecificDateRepository companyRepo;
 	
+	final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdateCompanySpecificDateCommand>> context) {
 		String companyId = AppContexts.user().companyId();
 		for(UpdateCompanySpecificDateCommand updateSpecificDateCommand :  context.getCommand()){
+			GeneralDate date = GeneralDate.fromString(updateSpecificDateCommand.getSpecificDate(), DATE_FORMAT);
 			if(updateSpecificDateCommand.isUpdate()) {
-				companyRepo.deleteComSpecByDate(companyId,updateSpecificDateCommand.getSpecificDate().intValue());
+				companyRepo.deleteComSpecByDate(companyId, date);
 				List<CompanySpecificDateItem> listInsert = new ArrayList<CompanySpecificDateItem>();
-				for(BigDecimal specificDateNo : updateSpecificDateCommand.getSpecificDateItemNo()){
+				for(Integer specificDateNo : updateSpecificDateCommand.getSpecificDateItemNo()){
 					listInsert.add(CompanySpecificDateItem.createFromJavaType(
 							companyId,
-							updateSpecificDateCommand.getSpecificDate(),
+							date,
 							specificDateNo,
 							"empty")
 					);
@@ -36,10 +40,10 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 				companyRepo.InsertComSpecDate(listInsert);
 			} else {
 				List<CompanySpecificDateItem> listInsert = new ArrayList<CompanySpecificDateItem>();
-				for(BigDecimal specificDateNo : updateSpecificDateCommand.getSpecificDateItemNo()){
+				for(Integer specificDateNo : updateSpecificDateCommand.getSpecificDateItemNo()){
 					listInsert.add(CompanySpecificDateItem.createFromJavaType(
 							companyId,
-							updateSpecificDateCommand.getSpecificDate(),
+							date,
 							specificDateNo,
 							"empty")
 					);

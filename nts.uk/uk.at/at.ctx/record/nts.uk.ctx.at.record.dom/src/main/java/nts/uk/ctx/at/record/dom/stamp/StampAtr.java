@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.dom.stamp;
 
 import lombok.AllArgsConstructor;
-
+/**
+ * 
+ * @author dudt
+ *
+ */
 @AllArgsConstructor
 public enum StampAtr {
 	// 0:出勤

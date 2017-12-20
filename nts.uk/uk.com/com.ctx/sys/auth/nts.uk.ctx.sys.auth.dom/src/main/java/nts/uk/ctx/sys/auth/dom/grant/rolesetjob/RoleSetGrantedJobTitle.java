@@ -33,8 +33,9 @@ public class RoleSetGrantedJobTitle extends AggregateRoot {
 	}
 	
 	public boolean isRoleSetCdExist(String roleSetCd){
+		if (this.details == null || this.details.isEmpty()) return false;
 		for (RoleSetGrantedJobTitleDetail d : this.details){
-			if (d.getRoleSetCd().equals(roleSetCd)) {
+			if (d.getRoleSetCd().v().equals(roleSetCd)) {
 				return true;
 			}
 		}

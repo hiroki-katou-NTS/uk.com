@@ -51,21 +51,24 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	@Override
 	public List<PersonRole> find(List<String> roleIds) {
 		List<PersonRole> result = new ArrayList<>();
-		List<SacmtPersonRole> entitys = this.queryProxy().query(FIND_BY_LIST_ROLE_ID, SacmtPersonRole.class)
-				.setParameter("roleIds", roleIds).getList();
-		if (entitys != null && entitys.size() == 0)
-			result = entitys.stream().map(x -> toDomain(x)).collect(Collectors.toList());
+		if(roleIds !=null){
+			List<SacmtPersonRole> entitys = this.queryProxy().query(FIND_BY_LIST_ROLE_ID, SacmtPersonRole.class)
+					.setParameter("roleIds", roleIds ==null ? "": roleIds).getList();
+			if (entitys != null && entitys.size() != 0)
+				result = entitys.stream().map(x -> toDomain(x)).collect(Collectors.toList());
+		}
 		return result;
 	}
 
-	@Override
 	public void insert(PersonRole personRole) {
 		this.commandProxy().insert(toEntity(personRole));
 	}
 
 	@Override
 	public void update(PersonRole personRole) {
-			this.commandProxy().update(toEntity(personRole));
+		SacmtPersonRole updateEntity = this.queryProxy().find(personRole.getRoleId(), SacmtPersonRole.class).get();
+		updateEntity.setReferFutureDate(personRole.getReferFutureDate());
+		this.commandProxy().update(updateEntity);
 	}
 
 	@Override

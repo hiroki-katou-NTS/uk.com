@@ -23,7 +23,7 @@ module nts.uk.com.view.cas014.a {
                 self.roleSetList = ko.observableArray([]);
                 self.jobTitleList = ko.observableArray([]);
                 self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
-                $(".fixed-table").ntsFixedTable({ height: 300 });
+                $("#A4").ntsFixedTable({ height: 287 });
                 self.date.subscribe((data) => {
                     if (!data) {
                         self.date(new Date().toISOString());
@@ -35,30 +35,34 @@ module nts.uk.com.view.cas014.a {
                 let self = this,
                     dfd = $.Deferred();
                 block.invisible();
-                new service.Service().getAllData(self.date()).done(function(data: any) {
+                self.roleSetList.removeAll();
+                self.jobTitleList.removeAll();
+                $("#A3_4").trigger("validate");
+                service.getAllData(self.date()).done(function(data: any) {
                     if (data) {
-                        self.roleSetList.removeAll();
                         let _rsList: Array<RoleSet> = _.map(data.listRoleSetDto, (rs: any) => {
                             return new RoleSet(rs.code, rs.name);
                         });
                         _.each(_rsList, rs => self.roleSetList.push(rs));
 
-                        self.jobTitleList.removeAll();
                         let _jtList: Array<JobTitle> = _.map(data.listJobTitleDto, (jt: any) => {
                             return new JobTitle(jt.id, jt.code, jt.name);
                         });
                         _.each(_jtList, jt => self.jobTitleList.push(jt));
 
-                        self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(data.roleSetGrantedJobTitleDto.applyToConcurrentPerson, self.jobTitleList(), self.roleSetList()));
-                        let details = self.roleSetJobTitle().details();
-                        _.each(details, (d: any) => {
-                            _.each(data.roleSetGrantedJobTitleDto.details, (dd: any) => {
-                                if (d.jobTitleId == dd.jobTitleId) {
-                                    d.roleSetCd(dd.roleSetCd);
-                                }
+                        self.roleSetJobTitle(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
+                        if (data.roleSetGrantedJobTitleDto) {
+                            self.roleSetJobTitle().applyToConcurrentPerson(data.roleSetGrantedJobTitleDto.applyToConcurrentPerson);
+                            let details = self.roleSetJobTitle().details();
+                            _.each(details, (d: any) => {
+                                _.each(data.roleSetGrantedJobTitleDto.details, (dd: any) => {
+                                    if (d.jobTitleId == dd.jobTitleId) {
+                                        d.roleSetCd(dd.roleSetCd);
+                                    }
+                                });
                             });
-                        });
-                        self.roleSetJobTitle().details(details);
+                            self.roleSetJobTitle().details(details);
+                        }
                     } else {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
@@ -66,14 +70,13 @@ module nts.uk.com.view.cas014.a {
                     $("#A4").focus();
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError({ messageId: error.message }).then(() => {
+                    alertError({ messageId: error.messageId }).then(() => {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     });
                     dfd.reject();
                 }).always(() => {
                     block.clear();
                 });
-
                 return dfd.promise();
             }
 
@@ -89,12 +92,12 @@ module nts.uk.com.view.cas014.a {
 
                 block.invisible();
 
-                new service.Service().registerData(command).done(function() {
+                service.registerData(command).done(function() {
                     info({ messageId: "Msg_15" }).then(() => {
                         $("#A4").focus();
                     });
                 }).fail(error => {
-                    alertError({ messageId: error.message });
+                    alertError({ messageId: error.messageId });
                 }).always(() => {
                     block.clear();
                 });

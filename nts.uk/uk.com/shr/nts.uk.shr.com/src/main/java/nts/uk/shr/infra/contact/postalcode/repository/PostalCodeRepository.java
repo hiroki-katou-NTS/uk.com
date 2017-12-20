@@ -17,7 +17,7 @@ public interface PostalCodeRepository {
 	 * @param postalId
 	 * @return PostalCodeDto
 	 */
-	Optional<PostalCodeDto> find(String postalId);
+	Optional<PostalCodeDto> find(String postalId, String contractCode);
 	
 	/**
 	 * get all postal code
@@ -29,6 +29,6 @@ public interface PostalCodeRepository {
 	 * get postal code by code
 	 * @return
 	 */
-	List<PostalCodeDto> findByCode(String postalCode);
+	List<PostalCodeDto> findByCode(String postalCode, String contractCode);
 	
 }

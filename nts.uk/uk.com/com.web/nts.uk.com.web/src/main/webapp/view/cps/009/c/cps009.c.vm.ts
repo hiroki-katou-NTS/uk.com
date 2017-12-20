@@ -8,7 +8,7 @@ module nts.uk.com.view.cps009.c.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ViewModel {
-        currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue("", "", "" ));
+        currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue("", "", ""));
         isCopy: KnockoutObservable<boolean> = ko.observable(false);
         codeCtg: KnockoutObservable<string> = ko.observable('');
         nameCtg: KnockoutObservable<string> = ko.observable('');
@@ -17,7 +17,7 @@ module nts.uk.com.view.cps009.c.viewmodel {
         param: any;
         constructor() {
             let self = this;
-            self.param = getShared('CPS009C_PARAMS') || {settingId: '', settingCode: '', settingName: ''};
+            self.param = getShared('CPS009C_PARAMS') || { settingId: '', settingCode: '', settingName: '' };
             self.codeCtg(self.param.settingCode);
             self.nameCtg(self.param.settingName);
         }
@@ -31,21 +31,22 @@ module nts.uk.com.view.cps009.c.viewmodel {
                     nameInput: self.currentInitVal().itemName()
                 }
             $('.nts-input').trigger("validate");
-            if (!nts.uk.ui.errors.hasError()){
-                service.copyInitValue(copyObj).done(function(){
+            if (!nts.uk.ui.errors.hasError()) {
+                service.copyInitValue(copyObj).done(function(initSettingId) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
+                        setShared('CPS009C_COPY', initSettingId);
                         //close dialog
                         close();
                     });
-                }).fail(function(res){
+                }).fail(function(res) {
                     //display message error.
-                    if(res.messageId == "Msg_3"){
-                        $('#codeInput').ntsError('set', {messageId:"Msg_3"});
-                    }else{
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId});
+                    if (res.messageId == "Msg_3") {
+                        $('#codeInput').ntsError('set', { messageId: "Msg_3" });
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }
                 });
-                };
+            };
         }
 
         cancelCopyInitValue() {
@@ -61,7 +62,7 @@ module nts.uk.com.view.cps009.c.viewmodel {
 
         itemName: KnockoutObservable<string>;
 
-        constructor(id: string, itemCode: string,itemName: string) {
+        constructor(id: string, itemCode: string, itemName: string) {
 
             let self = this;
 
@@ -73,10 +74,10 @@ module nts.uk.com.view.cps009.c.viewmodel {
 
         }
     }
-    export class DataCopy{
+    export class DataCopy {
         id: string;
         codeNew: string;
         nameNew: string;
-        copy: boolean;    
+        copy: boolean;
     }
 }

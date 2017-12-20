@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +27,14 @@ public class DPControlDisplayItem {
 	private List<DPAttendanceItem> lstAttendanceItem;
 	
 	private Set<String> formatCode;
+	
+	private List<ColumnSetting> columnSettings;
 
 	public DPControlDisplayItem() {
 		super();
 		this.lstSheet = new ArrayList<>();
 		this.lstHeader = new ArrayList<>();
+		this.columnSettings = new ArrayList<>();
 	}
 	
 	private boolean isExistHeader(DPHeaderDto header) {
@@ -65,6 +69,9 @@ public class DPControlDisplayItem {
 				this.lstSheet.add(sheet);
 			}
 		}
+		if(!this.lstSheet.isEmpty()) {
+			this.lstSheet.sort((e1,e2) -> new BigDecimal(e1.getName()).compareTo(new BigDecimal(e2.getName())));
+		}
 	}
 
 	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat, Map<Integer,DPAttendanceItem>  mapDP) {
@@ -75,8 +82,9 @@ public class DPControlDisplayItem {
 					if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
 						s.addColumn("Code"+f.getAttendanceItemId());
 						s.addColumn("Name"+f.getAttendanceItemId());
+						s.addColumn("A"+String.valueOf(f.getAttendanceItemId()));
 					}else{
-						s.addColumn(String.valueOf(f.getAttendanceItemId()));
+						s.addColumn("A"+String.valueOf(f.getAttendanceItemId()));
 					}
 				}
 			});
@@ -86,7 +94,7 @@ public class DPControlDisplayItem {
 	public void setHeaderText(List<DPAttendanceItem> lstAttendanceItem) {
 		lstAttendanceItem.stream().forEach(i -> {
 			Optional<DPHeaderDto> header = this.getLstHeader().stream()
-					.filter(h -> h.getKey().equals(String.valueOf(i.getId()))).findFirst();
+					.filter(h -> h.getKey().equals("A"+String.valueOf(i.getId()))).findFirst();
 			if (header.isPresent()) {
 				header.get().setHeaderText(i);
 			}
@@ -96,7 +104,7 @@ public class DPControlDisplayItem {
 	public void setHeaderColor(List<DPAttendanceItemControl> lstAttendanceItemControl) {
 		lstAttendanceItemControl.stream().forEach(i -> {
 			Optional<DPHeaderDto> header = this.getLstHeader().stream()
-					.filter(h -> h.getKey().equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
+					.filter(h -> h.getKey().equals(String.valueOf("A"+i.getAttendanceItemId()))).findFirst();
 			if (header.isPresent()) {
 				header.get().setHeaderColor(i);
 				if(!header.get().getGroup().isEmpty()){
@@ -110,7 +118,7 @@ public class DPControlDisplayItem {
 	public void setColumnsAccessModifier(List<DPBusinessTypeControl> lstDPBusinessTypeControl) {
 		lstDPBusinessTypeControl.stream().forEach(i -> {
 			Optional<DPHeaderDto> header = this.getLstHeader().stream()
-					.filter(h -> h.getKey().equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
+					.filter(h -> h.getKey().substring(1, h.getKey().length()).equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
 			if (header.isPresent()) {
 				header.get().setChangedByOther(i.isChangedByOther());
 				header.get().setChangedByYou(i.isChangedByYou());

@@ -11,6 +11,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -79,8 +80,8 @@ public class ClosureSaveCommand {
 		 * getClosureId()
 		 */
 		@Override
-		public Integer getClosureId() {
-			return command.getClosureId();
+		public ClosureId getClosureId() {
+			return ClosureId.valueOf(command.getClosureId());
 		}
 
 		/*

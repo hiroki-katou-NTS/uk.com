@@ -76,7 +76,8 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 				c.requiredInstructionFlg,
 				c.instructionAtr,
 				c.instructionMemo,
-				c.instructionUseAtr);
+				c.instructionUseAtr,
+				c.timeEndDispFlg);
 	}
 
 }

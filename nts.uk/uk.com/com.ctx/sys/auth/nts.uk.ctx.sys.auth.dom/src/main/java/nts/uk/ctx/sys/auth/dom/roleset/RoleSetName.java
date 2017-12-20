@@ -14,16 +14,14 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(30)
 public class RoleSetName extends StringPrimitiveValue<RoleSetName>{
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new role set name.
-	 *
-	 * @param rawValue the raw value
-	 */
-	public RoleSetName(String rawValue) {
-		super(rawValue);
-	}
-
+    /**
+     * Instantiates a new role set name.
+     * @param rawValue the raw value
+     */
+    public RoleSetName(String rawValue) {
+        super(rawValue);
+    }
 }

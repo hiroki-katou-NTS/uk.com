@@ -17,7 +17,8 @@ public class OvertimeFrameImpl extends JpaRepository implements OvertimeFrameRep
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" WHERE e.krqdtOvertimeFramePK.otFrameNo IN :frameNo");
+		query.append(" Where e.krqdtOvertimeFramePK.cid = :companyID");
+		query.append(" AND e.krqdtOvertimeFramePK.otFrameNo IN :frameNo");
 		FIND_BY_FRAMENO = query.toString();
 		
 		query = new StringBuilder();
@@ -27,9 +28,10 @@ public class OvertimeFrameImpl extends JpaRepository implements OvertimeFrameRep
 		FIND_BY_COMPANYID = query.toString();
 	}
 	@Override
-	public List<OvertimeFrame> getOvertimeFrameByFrameNo(List<Integer> frameNo) {
+	public List<OvertimeFrame> getOvertimeFrameByFrameNos(String companyID,List<Integer> frameNo) {
 		
 		return this.queryProxy().query(FIND_BY_FRAMENO, KrqdtOvertimeFrame.class)
+				.setParameter("companyID", companyID)
 				.setParameter("frameNo", frameNo)
 				.getList(e -> convertToDomain(e));
 	}

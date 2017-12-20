@@ -1,5 +1,18 @@
 module nts.uk.at.view.kmk003.a {
 
+    import SimpleWorkTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.SimpleWorkTimeSettingDto;
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
+
+    import FlexWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flexset.FlexWorkSettingDto;
+    
+    import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
+    
+    import WorkTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeSettingModel;
+
+    import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
+    
+    import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
+    
     export module viewmodel {
 
         export class ScreenModel {
@@ -10,33 +23,30 @@ module nts.uk.at.view.kmk003.a {
             settingMethodOptions: KnockoutObservableArray<ItemSettingMethod>;
             selectedSettingMethod: KnockoutObservable<string>;
 
-            workTimezoneItems: KnockoutObservableArray<any>;
+            workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
             columns: KnockoutObservable<any>;
             selectedWorkTimezone: KnockoutObservable<string>;
 
-            //screen mode
-            isUpdateMode: KnockoutObservable<boolean>;
-            //sift code input
             siftCode: KnockoutObservable<string>;
-            siftCodeOption: KnockoutObservable<any>;
+            
+            
 
             siftName: KnockoutObservable<string>;
-            siftNameOption: KnockoutObservable<any>;
+            
 
             siftShortName: KnockoutObservable<string>;
-            siftShortNameOption: KnockoutObservable<any>;
+            
 
             siftSymbolName: KnockoutObservable<string>;
-            siftSymbolNameOption: KnockoutObservable<any>;
+           
 
             //color
             pickColor: KnockoutObservable<string>;
 
             siftRemark: KnockoutObservable<string>;
-            siftRemarkOption: KnockoutObservable<any>;
 
             memo: KnockoutObservable<string>;
-            memoOption: KnockoutObservable<any>;
+            
 
             //tab mode
             tabModeOptions: KnockoutObservableArray<any>;
@@ -51,24 +61,27 @@ module nts.uk.at.view.kmk003.a {
             selectedTab: KnockoutObservable<string>;
 
             //data
-            data: KnockoutObservable<any>;
             isClickSave: KnockoutObservable<boolean>;
+            
+            workTimeSettingModel: WorkTimeSettingModel;
+            predetemineTimeSettingModel: PredetemineTimeSettingModel;
+            settingEnum: WorkTimeSettingEnumDto;
+            dataModelOneDay: EmTimeZoneSetModel[];
             constructor() {
                 let self = this;
                 self.workFormOptions = ko.observableArray([
-                    new ItemWorkForm('1', '基本給'),
-                    new ItemWorkForm('2', '役職手当'),
-                    new ItemWorkForm('3', '基本給')
+                    new ItemWorkForm('1', '通常勤務・変形労働用'),
+                    new ItemWorkForm('2', 'フレックス勤務用')
                 ]);
                 self.selectedWorkForm = ko.observable('1');
                 self.settingMethodOptions = ko.observableArray([
-                    new ItemSettingMethod('1', '基本給'),
-                    new ItemSettingMethod('2', '役職手当'),
-                    new ItemSettingMethod('3', '基本給')
+                    new ItemSettingMethod('1', "固定勤務"),
+                    new ItemSettingMethod('2', "時差勤務"),
+                    new ItemSettingMethod('3', "流動勤務")
                 ]);
                 self.selectedSettingMethod = ko.observable('1');
-
-                self.workTimezoneItems = ko.observableArray([]);
+                
+                self.workTimeSettings = ko.observableArray([]);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'code', width: 100 },
                     { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'name', width: 130 },
@@ -76,38 +89,20 @@ module nts.uk.at.view.kmk003.a {
                 ]);
                 self.selectedWorkTimezone = ko.observable('');
 
-                self.isUpdateMode = ko.observable(true);
 
                 self.siftCode = ko.observable('');
-                self.siftCodeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "60"
-                }));
                 self.siftName = ko.observable('');
-                self.siftNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "150"
-                }));
                 self.siftShortName = ko.observable('');
-                self.siftShortNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "60"
-                }));
 
                 self.siftSymbolName = ko.observable('');
-                self.siftSymbolNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "50"
-                }));
 
                 //color
                 self.pickColor = ko.observable('');
 
                 self.siftRemark = ko.observable('');
-                self.siftRemarkOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "200"
-                }));
+               
 
                 self.memo = ko.observable('');
-                self.memoOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                    width: "200"
-                }));
 
                 //tab mode
                 self.tabModeOptions = ko.observableArray([
@@ -148,8 +143,9 @@ module nts.uk.at.view.kmk003.a {
                 self.selectedTab = ko.observable('tab-1');
 
                 //data get from service
-                self.data = ko.observable();
                 self.isClickSave = ko.observable(false);
+                self.workTimeSettingModel = new WorkTimeSettingModel();
+                self.predetemineTimeSettingModel = new PredetemineTimeSettingModel();
             }
 
             /**
@@ -158,26 +154,85 @@ module nts.uk.at.view.kmk003.a {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
-                service.findWorkTimeSetByCode("AAC").done(function(data: any) {
-                    self.data(data);
+                service.getEnumWorktimeSeting().done(function(setting) {
+                    self.settingEnum = setting;
+                    service.findAllWorkTimeSet().done(function(worktime) {
+                        self.workTimeSettings(worktime);
+                        if (worktime && worktime.length > 0) {
+                            service.findWorktimeSetingInfoByCode(worktime[0].worktimeCode).done(function(worktimeSettingInfo) {
+                                self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
+                                self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
+                                service.findByCodeFlexWorkSetting(worktime[0].worktimeCode).done(function(flexdata){
+                                    if (flexdata) {
+                                        self.updateDataFlexMode(flexdata);
+                                    }
+                                    dfd.resolve();
+                                });
+                            });
+                        }
+                    });
                 });
+                
+                
                 // set ntsFixedTable style
-                dfd.resolve();
                 return dfd.promise();
             }
-
+            
+            
             private save() {
                 let self = this;
-                let data = self.data();
+                /*let data = self.data();
                 self.tabMode('2');
                 self.isClickSave(true);
                 service.savePred(data).done(function() {
                     self.isClickSave(false);
+                });*/
+                console.log(self.dataModelOneDay);
+                service.saveFlexWorkSetting(self.collectDataFlex()).done(function() {
+
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
                 });
             }
+            
+            /**
+             * function get flow mode by selection ui
+             */
+            private getFlowModeBySelected(selectedSettingMethod: string): boolean {
+                return (selectedSettingMethod === '3');
+            }
+            
+            /**
+             * function collection data flex mode 
+             */
+            private collectDataFlex(): FlexWorkSettingSaveCommand{
+                var self = this;
+                var command: FlexWorkSettingSaveCommand;
+                command = {
+                    flexWorkSetting: null,
+                    predseting: self.predetemineTimeSettingModel.toDto(),
+                    worktimeSetting: self.workTimeSettingModel.toDto()
+                };
+                return command;     
+            }
+            
+            /**
+             * update data by flex mode
+             */
+            private updateDataFlexMode(data: FlexWorkSettingDto) {
+                var self = this;
+                if (data.useHalfDayShift) {
+                    self.useHalfDay('1');
+                } else {
+                    self.useHalfDay('2');
+                }
+            }
+          
         }
-
+        
+        
+       
+        
         export class ItemWorkForm {
             code: string;
             name: string;

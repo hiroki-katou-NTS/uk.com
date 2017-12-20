@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.info;
@@ -99,5 +99,14 @@ public interface WorkplaceInfoRepository {
 	 * @return the list
 	 */
 	List<WorkplaceInfo> findByWkpIds(String companyId, List<String> wkpIds);
+	
+	/**
+	 * Find detail latest by wkp ids.
+	 *
+	 * @param companyId the company id
+	 * @param startDWkpConfigHist the start D wkp config hist
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId, GeneralDate startDWkpConfigHist);
 	
 }

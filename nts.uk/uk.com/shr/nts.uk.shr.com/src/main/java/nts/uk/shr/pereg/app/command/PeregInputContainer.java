@@ -2,14 +2,20 @@ package nts.uk.shr.pereg.app.command;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Value
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class PeregInputContainer {
 	
-	private final String personId;
+	private String personId;
 	
-	private final String employeeId;
+	private String employeeId;
 
-	private final List<ItemsByCategory> inputs;
+	private List<ItemsByCategory> inputs;
 }

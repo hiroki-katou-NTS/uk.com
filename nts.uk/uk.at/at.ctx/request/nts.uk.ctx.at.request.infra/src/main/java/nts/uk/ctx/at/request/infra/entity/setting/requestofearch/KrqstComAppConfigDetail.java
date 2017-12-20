@@ -89,6 +89,13 @@ public class KrqstComAppConfigDetail extends UkJpaEntity implements Serializable
 	 */
 	@Column(name = "TIME_INPUT_USE_ATR")
 	public int timeInputUseAtr;
+	
+	/**
+	 * 退勤時刻初期表示区分
+	 */
+	@Column(name = "TIME_END_DIS_FLG")
+	public int timeEndDispFlg;
+
 	/**
 	 * 指示が必須
 	 */

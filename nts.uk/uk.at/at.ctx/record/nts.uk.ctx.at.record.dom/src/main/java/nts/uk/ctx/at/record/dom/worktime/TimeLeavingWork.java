@@ -15,11 +15,12 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  *
  */
 @Getter
-@Setter
 @NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
-	//勤務NO
+	/*
+	 * 勤務NO
+	 */
 	private WorkNo workNo;
 	
 	private TimeActualStamp attendanceStamp;
@@ -61,4 +62,11 @@ public class TimeLeavingWork extends DomainObject{
 		}
 		return new TimeLeavingWork(this.workNo,newAttendance,newLeave);
 	}
+
+	public void setTimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp){
+		this.workNo = workNo;
+		this.attendanceStamp = attendanceStamp;
+		this.leaveStamp = leaveStamp;
+	}
+	
 }

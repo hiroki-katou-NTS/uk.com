@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.app.command.application.overtime;
 import java.util.List;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 /**
  * 
  * @author Doan Duy Hung
@@ -92,5 +94,34 @@ public class UpdateOvertimeCommand {
 	 * 残業申請.乖離理由 = 残業申請.乖離定型理由 + \n + 残業申請.乖離理由
 	 */
 	private String divergenceReasonContent;
+	
+	private String companyID;
+
+	/**
+	 * 申請.申請日
+	 */
+	private GeneralDate applicationDate;
+
+	/**
+	 * 申請.事前事後区分
+	 */
+	private int prePostAtr;
+
+	/**
+	 * 申請.申請者
+	 */
+	private String applicantSID;
+
+	/** Phase list */
+	private List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
+
+	/**
+	 * 登録時にメールを送信する
+	 */
+	private boolean sendMail;
+	/**
+	 * 計算フラグ
+	 */
+	private int calculateFlag;
 	
 }

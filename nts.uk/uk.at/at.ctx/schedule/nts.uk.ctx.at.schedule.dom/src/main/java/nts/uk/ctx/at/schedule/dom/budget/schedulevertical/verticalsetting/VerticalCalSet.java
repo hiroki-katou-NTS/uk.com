@@ -7,34 +7,34 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
-/**
+/** *
  * TanLV
  * 汎用縦計設定
  *
  */
 @Getter
 public class VerticalCalSet extends AggregateRoot {
-	/* 会社ID */
+	/** * 会社ID */
     private String companyId;
     
-    /*コード*/
+    /** コード*/
     private VerticalCalCd verticalCalCd;
     
-    /*名称*/
+    /** 名称*/
     private VerticalCalName verticalCalName;
     
-    /*単位*/
+    /** 単位*/
     private Unit unit;
     
-    /*利用区分*/
+    /** 利用区分*/
     private UseAtr useAtr;
     
-    /*応援集計区分*/
+    /** 応援集計区分*/
     private AssistanceTabulationAtr assistanceTabulationAtr;
     
     private List<VerticalCalItem> verticalCalItems;
 
-    /**
+    /** *
      * Contructor
      * @param companyId
      * @param verticalCalCd
@@ -56,7 +56,7 @@ public class VerticalCalSet extends AggregateRoot {
 		this.verticalCalItems = verticalCalItems;
 	}
     
-	/**
+	/** *
 	 * Create From Java Type
 	 * @param companyId
 	 * @param verticalCalCd

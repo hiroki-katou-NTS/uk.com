@@ -60,47 +60,18 @@ public class JpaJobAutoCalSettingSetMemento implements JobAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setNormalOTTime(AutoCalOvertimeSetting normalOTTime) {
-		if (normalOTTime.getEarlyOtTime().getCalAtr() != null) {
-			this.entity.setEarlyOtTimeAtr(normalOTTime.getEarlyOtTime().getCalAtr().value);
-		}		
-		if (normalOTTime.getEarlyOtTime().getUpLimitOtSet() != null) {
-			this.entity.setEarlyOtTimeLimit(normalOTTime.getEarlyOtTime().getUpLimitOtSet().value);
-		}
-		
-		if (normalOTTime.getEarlyMidOtTime().getCalAtr() != null) {
-			this.entity.setEarlyMidOtTimeAtr(normalOTTime.getEarlyMidOtTime().getCalAtr().value);
-		}		
-		if (normalOTTime.getEarlyMidOtTime().getUpLimitOtSet() != null) {
-			this.entity.setEarlyMidOtTimeLimit(normalOTTime.getEarlyMidOtTime().getUpLimitOtSet().value);
-		}
-
-		if (normalOTTime.getNormalOtTime().getCalAtr() != null) {
-			this.entity.setNormalOtTimeAtr(normalOTTime.getNormalOtTime().getCalAtr().value);
-		}		
-		if (normalOTTime.getNormalOtTime().getUpLimitOtSet() != null) {
-			this.entity.setNormalOtTimeLimit(normalOTTime.getNormalOtTime().getUpLimitOtSet().value);
-		}
-		
-		if (normalOTTime.getNormalMidOtTime().getCalAtr() != null) {
-			this.entity.setNormalMidOtTimeAtr(normalOTTime.getNormalMidOtTime().getCalAtr().value);
-		}		
-		if (normalOTTime.getNormalMidOtTime().getUpLimitOtSet() != null) {
-			this.entity.setNormalMidOtTimeLimit(normalOTTime.getNormalMidOtTime().getUpLimitOtSet().value);
-		}
-		
-		if (normalOTTime.getLegalOtTime().getCalAtr() != null) {
-			this.entity.setLegalOtTimeAtr(normalOTTime.getLegalOtTime().getCalAtr().value);
-		}		
-		if (normalOTTime.getLegalOtTime().getUpLimitOtSet() != null) {
-			this.entity.setLegalOtTimeLimit(normalOTTime.getLegalOtTime().getUpLimitOtSet().value);
-		}
-
-		if (normalOTTime.getLegalMidOtTime().getCalAtr() != null) {
-			this.entity.setLegalMidOtTimeAtr(normalOTTime.getLegalMidOtTime().getCalAtr().value);
-		}		
-		if (normalOTTime.getLegalMidOtTime().getUpLimitOtSet() != null) {
-			this.entity.setLegalMidOtTimeLimit(normalOTTime.getLegalMidOtTime().getUpLimitOtSet().value);
-		}		
+		this.entity.setEarlyOtTimeAtr(normalOTTime.getEarlyOtTime().getCalAtr().value);
+		this.entity.setEarlyOtTimeLimit(normalOTTime.getEarlyOtTime().getUpLimitOtSet().value);
+		this.entity.setEarlyMidOtTimeAtr(normalOTTime.getEarlyMidOtTime().getCalAtr().value);
+		this.entity.setEarlyMidOtTimeLimit(normalOTTime.getEarlyMidOtTime().getUpLimitOtSet().value);
+		this.entity.setNormalOtTimeAtr(normalOTTime.getNormalOtTime().getCalAtr().value);
+		this.entity.setNormalOtTimeLimit(normalOTTime.getNormalOtTime().getUpLimitOtSet().value);
+		this.entity.setNormalMidOtTimeAtr(normalOTTime.getNormalMidOtTime().getCalAtr().value);
+		this.entity.setNormalMidOtTimeLimit(normalOTTime.getNormalMidOtTime().getUpLimitOtSet().value);
+		this.entity.setLegalOtTimeAtr(normalOTTime.getLegalOtTime().getCalAtr().value);
+		this.entity.setLegalOtTimeLimit(normalOTTime.getLegalOtTime().getUpLimitOtSet().value);
+		this.entity.setLegalMidOtTimeAtr(normalOTTime.getLegalMidOtTime().getCalAtr().value);
+		this.entity.setLegalMidOtTimeLimit(normalOTTime.getLegalMidOtTime().getUpLimitOtSet().value);	
 	}
 
 	/*
@@ -112,12 +83,8 @@ public class JpaJobAutoCalSettingSetMemento implements JobAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime) {
-		if (flexOTTime.getFlexOtTime().getCalAtr() != null) {
-			this.entity.setFlexOtTimeAtr(flexOTTime.getFlexOtTime().getCalAtr().value);
-		}		
-		if (flexOTTime.getFlexOtTime().getUpLimitOtSet() != null) {
-			this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitOtSet().value);
-		}	
+		this.entity.setFlexOtTimeAtr(flexOTTime.getFlexOtTime().getCalAtr().value);
+		this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitOtSet().value);	
 	}
 
 	/*
@@ -129,18 +96,10 @@ public class JpaJobAutoCalSettingSetMemento implements JobAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setRestTime(AutoCalRestTimeSetting restTime) {
-		if (restTime.getRestTime().getCalAtr() != null) {
-			this.entity.setFlexOtTimeAtr(restTime.getRestTime().getCalAtr().value);
-		}		
-		if (restTime.getRestTime().getUpLimitOtSet() != null) {
-			this.entity.setFlexOtTimeLimit(restTime.getRestTime().getUpLimitOtSet().value);
-		}	
-		if (restTime.getLateNightTime().getCalAtr() != null) {
-			this.entity.setFlexOtTimeAtr(restTime.getLateNightTime().getCalAtr().value);
-		}		
-		if (restTime.getLateNightTime().getUpLimitOtSet() != null) {
-			this.entity.setFlexOtTimeLimit(restTime.getLateNightTime().getUpLimitOtSet().value);
-		}	
+		this.entity.setRestTimeAtr(restTime.getRestTime().getCalAtr().value);
+		this.entity.setRestTimeLimit(restTime.getRestTime().getUpLimitOtSet().value);
+		this.entity.setLateNightTimeAtr(restTime.getLateNightTime().getCalAtr().value);	
+		this.entity.setLateNightTimeLimit(restTime.getLateNightTime().getUpLimitOtSet().value);
 	}
 
 }

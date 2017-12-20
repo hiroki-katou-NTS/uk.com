@@ -13,5 +13,5 @@ public class DivergenceReasonDto {
 	 */
 	private String reasonTemp;
 	
-	private String divergenceReasonIdDefault;
+	private int divergenceReasonIdDefault;
 }

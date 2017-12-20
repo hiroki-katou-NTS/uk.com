@@ -1,4 +1,7 @@
 module a1 {
+    
+    import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
+    
     class ScreenModel {
 
         dayStartTime: KnockoutObservable<number>;
@@ -6,8 +9,6 @@ module a1 {
 
         oneDayRangeTime: KnockoutObservable<string>;
         oneDayRangeTimeOption: KnockoutObservable<any>;
-
-        nightWorkShift: KnockoutObservable<boolean>;
 
         beforeUpdateWorkTime: KnockoutObservable<number>;
         beforeUpdateWorkTimeOption: KnockoutObservable<any>;
@@ -38,12 +39,13 @@ module a1 {
         morning: KnockoutObservable<number>;
         afternoon: KnockoutObservable<number>;
 
-        data: KnockoutObservable<any>;
         isDetailMode: KnockoutObservable<boolean>;
+        predseting: PredetemineTimeSettingModel;
         /**
         * Constructor.
         */
-        constructor(data: any, screenMode: any, settingMethod: string, workTimeCode: string, isClickSave: any) {
+        constructor(screenMode: any, settingMethod: string, workTimeCode: string, isClickSave: any,
+            predseting: PredetemineTimeSettingModel) {
             let self = this;
 
             //day start Time
@@ -59,7 +61,6 @@ module a1 {
                 textmode: "text",
             }));
 
-            self.nightWorkShift = ko.observable(true);
 
             self.beforeUpdateWorkTime = ko.observable(0);
             self.beforeUpdateWorkTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
@@ -96,34 +97,32 @@ module a1 {
             self.morning = ko.observable(0);
             self.afternoon = ko.observable(0);
 
-            self.data = ko.observable(data());
             self.isDetailMode = ko.observable(true);
             screenMode.subscribe(function(value: any) {
                 value == "2" ? self.isDetailMode(true) : self.isDetailMode(false);
             });
             isClickSave.subscribe(function(value: any) {
                 if (value) {
-                    var oldData = data();
-                    self.collectData(oldData);
                 }
             });
+            self.predseting = predseting;
         }
 
         //bind data to screen items
         public bindDataToScreen(data: any) {
             let self = this;
-            self.dayStartTime(data().startDateClock);
-            self.oneDayRangeTime(data().rangeTimeDay);
-            self.nightWorkShift(data().nightShift);
-            //            self.beforeUpdateWorkTime();//diff time
-            //            self.afterUpdateWorkTime();//diff time
-            let timezone1 = data().prescribedTimezoneSetting.timezone[0];
-            let timezone2 = data().prescribedTimezoneSetting.timezone[1];
+//            self.dayStartTime(data().startDateClock);
+//            self.oneDayRangeTime(data().rangeTimeDay);
+//            self.nightWorkShift(data().nightShift);
+//            // self.beforeUpdateWorkTime();//diff time
+//            // self.afterUpdateWorkTime();//diff time
+//            let timezone1 = data().prescribedTimezoneSetting.timezone[0];
+//            let timezone2 = data().prescribedTimezoneSetting.timezone[1];
 
-            self.firstFixedStartTime(timezone1.start.inDayTimeWithFormat);
-            self.firstFixedEndTime(timezone1.end.inDayTimeWithFormat);
-            self.secondFixedStartTime(timezone2.start.inDayTimeWithFormat);
-            self.secondFixedEndTime(timezone2.end.inDayTimeWithFormat);
+//            self.firstFixedStartTime(timezone1.start.inDayTimeWithFormat);
+//            self.firstFixedEndTime(timezone1.end.inDayTimeWithFormat);
+//            self.secondFixedStartTime(timezone2.start.inDayTimeWithFormat);
+//            self.secondFixedEndTime(timezone2.end.inDayTimeWithFormat);
             self.useCoreTime();
             self.coreTimeStart();
             self.coreTimeEnd();
@@ -138,7 +137,6 @@ module a1 {
         public collectData(oldData: any) {
             let self = this;
             oldData.startDateClock = self.dayStartTime();
-            self.data(oldData);
         }
 
     }
@@ -179,17 +177,16 @@ module a1 {
                 .mergeRelativePath('/view/kmk/003/a1/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
-            let data = input.data;
             let screenMode = input.screenMode;
             let settingMethod = ko.unwrap(input.settingMethod);
             let workTimeCode = input.workTimeCode;
             let isClickSave = input.saveAction;
+            let predseting: PredetemineTimeSettingModel = input.predseting;
 
-            let screenModel = new ScreenModel(data, screenMode, settingMethod, workTimeCode, isClickSave);
+            let screenModel = new ScreenModel(screenMode, settingMethod, workTimeCode, isClickSave, predseting);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(data);
             });
         }
 

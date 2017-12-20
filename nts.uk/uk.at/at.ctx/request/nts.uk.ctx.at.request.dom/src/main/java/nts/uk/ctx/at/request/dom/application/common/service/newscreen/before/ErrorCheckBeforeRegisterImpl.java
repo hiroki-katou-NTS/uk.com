@@ -98,7 +98,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
 		List<Application> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
-				ApplicationType.OVER_TIME_APPLICATION.value, prePostAtr.value);
+				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			// TODO: QA Pending
 			result.setErrorCode(0);
@@ -106,10 +106,9 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 		// 事前申請否認チェック
 		// 否認以外：
-		// 反映情報.実績反映状態＝未反映、反映済、反映待ち
+		// 反映情報.実績反映状態＝ 否認、差し戻し
 		ReflectPlanPerState refPlan = beforeApplication.get(0).getReflectPerState();
-		if (refPlan.equals(ReflectPlanPerState.NOTREFLECTED) || refPlan.equals(ReflectPlanPerState.NOTREFLECTED)
-				|| refPlan.equals(ReflectPlanPerState.WAITREFLECTION)) {
+		if (!refPlan.equals(ReflectPlanPerState.DENIAL) && !refPlan.equals(ReflectPlanPerState.REMAND)) {
 			// 背景色を設定する
 			result.setErrorCode(1);
 			return result;
@@ -131,8 +130,12 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		for (int i = 0; i < overtimeInputs.size(); i++) {
 			OverTimeInput afterTime = overtimeInputs.get(i);
 			int frameNo = afterTime.getFrameNo();
-			OverTimeInput beforeTime = beforeOvertimeInputs.stream().filter(item -> item.getFrameNo() == frameNo)
-					.findFirst().get();
+			Optional<OverTimeInput> beforeTimeOpt = beforeOvertimeInputs.stream()
+					.filter(item -> item.getFrameNo() == frameNo).findFirst();
+			if (!beforeTimeOpt.isPresent()) {
+				continue;
+			}
+			OverTimeInput beforeTime = beforeTimeOpt.get();
 			if (null == beforeTime) {
 				continue;
 			}

@@ -8,7 +8,8 @@ module nts.uk.at.view.kaf005.shr.service {
         deleteOvertime: "at/request/application/overtime/delete",
         updateOvertime: "at/request/application/overtime/update",
         checkBeforeRegister: "at/request/application/overtime/checkBeforeRegister",
-        findByAppID: "at/request/application/overtime/findByAppID"
+        findByAppID: "at/request/application/overtime/findByAppID",
+        getRecordWork: "at/request/application/overtime/getRecordWork"
     }
 
     /** Get TitleMenu */
@@ -46,5 +47,9 @@ module nts.uk.at.view.kaf005.shr.service {
     
     export function findByAppID(appID: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.findByAppID ,appID);
+    }
+    
+    export function getRecordWork(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getRecordWork, param);
     }
 }

@@ -9,6 +9,7 @@ import lombok.Getter;
 /**
  * The Class TransferSetting.
  */
+// 代休振替設定
 @Getter
 public class TransferSetting {
     

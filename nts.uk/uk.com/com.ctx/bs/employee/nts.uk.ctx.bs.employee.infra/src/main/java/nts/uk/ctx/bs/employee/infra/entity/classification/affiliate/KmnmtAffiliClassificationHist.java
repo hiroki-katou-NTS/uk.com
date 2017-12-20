@@ -6,14 +6,11 @@ package nts.uk.ctx.bs.employee.infra.entity.classification.affiliate;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +25,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KMNMT_AFFI_CLASS_HIST")
-@XmlRootElement
 public class KmnmtAffiliClassificationHist extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
@@ -38,22 +34,30 @@ public class KmnmtAffiliClassificationHist extends UkJpaEntity implements Serial
     @EmbeddedId
     protected KmnmtAffiliClassificationHistPK kmnmtClassificationHistPK;
     
-   
-    
     /** The end D. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "END_D")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endD;
 
+    /**
+     * Instantiates a new kmnmt affili classification hist.
+     */
     public KmnmtAffiliClassificationHist() {
+    	super();
     }
 
+    /**
+     * Instantiates a new kmnmt affili classification hist.
+     *
+     * @param kmnmtClassificationHistPK the kmnmt classification hist PK
+     */
     public KmnmtAffiliClassificationHist(KmnmtAffiliClassificationHistPK kmnmtClassificationHistPK) {
         this.kmnmtClassificationHistPK = kmnmtClassificationHistPK;
     }
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
 		return this.getKmnmtClassificationHistPK();

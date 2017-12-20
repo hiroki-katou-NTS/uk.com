@@ -25,7 +25,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE a ");
+		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiAffiliationInf a ");
 		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
@@ -34,22 +34,23 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiAffiliationInf a ");
-		builderString.append("WHERE WHERE a.krcdtDaiAffiliationInfPK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 		
 		builderString = new StringBuilder();
-		builderString.append("SELECT ");
+		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiAffiliationInf a ");
-		builderString.append("WHERE WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
+		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
 	}
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createNamedQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
 		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode().v();
+		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() : null;
 		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode().v();
 		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode().v();
 		entity.jobtitleID = affiliationInforOfDailyPerfor.getJobTitleID();

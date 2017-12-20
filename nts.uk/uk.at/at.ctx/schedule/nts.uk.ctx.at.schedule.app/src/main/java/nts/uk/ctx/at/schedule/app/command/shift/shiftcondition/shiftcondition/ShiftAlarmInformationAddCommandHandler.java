@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.shiftcondition.shiftcondition;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,8 +53,12 @@ public class ShiftAlarmInformationAddCommandHandler extends AsyncCommandHandler<
 		}
 		List<EmployeeCommand> employees = command.getEmployee();
 		Map<String, EmployeeCommand> mapEmployee = employees.stream()
-				.collect(Collectors.toMap(EmployeeCommand::getEmpId, Function.identity()));
-		Set<String> empIds = mapEmployee.keySet();
+				.collect(Collectors.toMap(EmployeeCommand::getEmpId, Function.<EmployeeCommand>identity(), (u, v) -> {
+					throw new IllegalStateException(String.format("Duplicate key %s", u));
+				}, LinkedHashMap::new));
+		 
+		List<String> empIds = new ArrayList<>();
+		empIds.addAll(mapEmployee.keySet());
 		List<Integer> conditionNos = command.getConditionNos();
 		TimeWithDayAttr startTime = command.getStartTime() == null ? null : new TimeWithDayAttr(command.getStartTime());
 		TimeWithDayAttr endTime = command.getEndTime() == null ? null : new TimeWithDayAttr(command.getEndTime());
@@ -98,13 +103,13 @@ public class ShiftAlarmInformationAddCommandHandler extends AsyncCommandHandler<
 
 	}
 
-	private ShiftAlarmInformation processCheckAlarm(ShiftAlarmInformation alarmInformation, Set<String> empIds,
+	private ShiftAlarmInformation processCheckAlarm(ShiftAlarmInformation alarmInformation, List<String> empIds,
 			List<Integer> conditionNos, TimeWithDayAttr startDate, TimeWithDayAttr endDate, String companyId) {
 		List<ShiftCondition> conditions = conditionRepo.getShiftCondition(companyId, conditionNos);
 		List<ShiftAlarm> shiftAlarm = new ArrayList<>();
-		empIds.stream().forEach((empId) -> {
+		empIds.stream().forEachOrdered((empId) -> {
 			alarmInformation.setExcutionState(ExcutionState.DURING_EXCUTION);
-			conditions.stream().forEach((condition) -> {
+			conditions.stream().forEachOrdered((condition) -> {
 				// TODO getWorkPlace employee by employeeID and endDate
 				// TODO processAlarmChecked
 				int category = condition.getCategoryNo();

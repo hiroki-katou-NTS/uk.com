@@ -18,8 +18,8 @@ public class UpdatePerEmergencyContactCommandHandler extends CommandHandler<Upda
 	private PersonEmergencyCtRepository perEmergencyContact;
 	
 	@Override
-	public String targetCategoryId() {
-		return "CS00015";
+	public String targetCategoryCd() {
+		return null;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class UpdatePerEmergencyContactCommandHandler extends CommandHandler<Upda
 		PersonEmergencyContact emergencyContact = PersonEmergencyContact.createFromJavaType(command.getEmgencyContactId(), command.getPid(), command.getPersonName(),
 				command.getPersonMailAddress(), command.getStreetAddressPerson(), command.getPhone(), command.getPriorityEmegencyContact(), command.getRelationShip());
 		
-		// Add person emergency contact
+		// Update person emergency contact
 		
 		perEmergencyContact.updatePersonEmergencyContact(emergencyContact);
 	}

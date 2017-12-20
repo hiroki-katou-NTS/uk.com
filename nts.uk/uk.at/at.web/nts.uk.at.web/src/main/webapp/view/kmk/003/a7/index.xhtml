@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<table>
+		<tr data-bind="visible: isFixedOrDiffTime">
+			<td class="td-cell">
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_141')}</div>
+			</td>
+			<td class="td-cell">
+			<div class="cf"
+				data-bind="ntsSwitchButton: {
+							options: useFixedRestTimeOptions,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: useFixedRestTime,
+							enable: true }"></div>
+			</td>
+		</tr>
+		<tr>
+			<td class="td-cell">
+				<div id="nts-fix-table-a7" data-bind="ntsFixTableCustom: {option: fixTableOption}"></div>
+			</td>
+		</tr>
+	</table>
+</ui:composition>

@@ -33,4 +33,6 @@ public interface TargetPersonRepository {
 	
 	void addAll(List<TargetPerson> lstTargetPerson);
 	
+	void update(String employeeID, String empCalAndSumExecLogId, int state);
+	
 }

@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 /**
  * @author hungnm
@@ -12,7 +13,7 @@ import lombok.Data;
 @Data
 public class CompanyEventCommand {
 	
-	public int date;
+	public GeneralDate date;
 	
 	public String eventName;
 

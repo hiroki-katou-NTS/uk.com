@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 public interface CalendarWorkPlaceRepository {
 	
@@ -32,7 +33,7 @@ public interface CalendarWorkPlaceRepository {
 	 * delete clendar workplace
 	 * @param clendarworkplace
 	 */
-	void deleteCalendarWorkplace(String workPlaceId,BigDecimal dateId);
+	void deleteCalendarWorkplace(String workPlaceId,GeneralDate date);
 	
 	void deleteCalendarWorkPlaceByYearMonth(String workPlaceId, String yearMonth);
 	
@@ -40,5 +41,5 @@ public interface CalendarWorkPlaceRepository {
 	 * find clendar workplace by date
 	 * @param clendarworkplace
 	 */
-	Optional<CalendarWorkplace> findCalendarWorkplaceByDate(String workPlaceId,BigDecimal dateId);
+	Optional<CalendarWorkplace> findCalendarWorkplaceByDate(String workPlaceId,GeneralDate date);
 }

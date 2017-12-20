@@ -10,11 +10,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDept;
 import nts.uk.ctx.bs.employee.dom.department.CurrentAffiDeptRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.assigned.AssignedWorkplace;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtCurrAffiDept;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtCurrAffiDeptHist;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplace;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.assigned.BsymtAssiWorkplaceHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -53,6 +50,13 @@ public class JpaCurrAffiDept extends JpaRepository implements CurrentAffiDeptRep
 		entity.depId = domain.getDepartmentId();
 	}
 	
+	private BsymtCurrAffiDept toEntity(CurrentAffiDept domain){
+		return new BsymtCurrAffiDept(domain.getAffiDeptId(),domain.getEmployeeId(),domain.getDepartmentId(),domain.getDateHistoryItem().get(0).identifier());
+	}
+	
+	private BsymtCurrAffiDeptHist toBsymtCurrAffiDeptHist(DateHistoryItem item){
+		return new BsymtCurrAffiDeptHist(item.identifier(),item.start(),item.end());
+	}
 	/**
 	 * Update history table from domain
 	 * @param item
@@ -86,6 +90,33 @@ public class JpaCurrAffiDept extends JpaRepository implements CurrentAffiDeptRep
 		updateEntity(domain, existItem.get());
 		
 		this.commandProxy().update(existItem.get());
+	}
+
+	@Override
+	public void deleteCurrentAffiDept(String currrentAffiDeptId) {
+		Optional<BsymtCurrAffiDept> existItem = this.queryProxy().find(currrentAffiDeptId, BsymtCurrAffiDept.class);
+		if (!existItem.isPresent()){
+			throw new RuntimeException("invalid Assign workplace");
+		}
+		this.commandProxy().remove(BsymtCurrAffiDept.class,currrentAffiDeptId);
+		
+		Optional<BsymtCurrAffiDeptHist> existItemHist = this.queryProxy().find(existItem.get().histId, BsymtCurrAffiDeptHist.class);
+		
+		if (!existItemHist.isPresent()){
+			throw new RuntimeException("invalid BsymtCurrAffiDeptHist");
+		}
+		this.commandProxy().remove(BsymtCurrAffiDeptHist.class, existItemHist.get().getHistoryId());
+	}
+
+	@Override
+	public void addCurrentAffiDept(CurrentAffiDept domain) {
+		if (domain.getDateHistoryItem().isEmpty()){
+			return;
+		}
+		this.commandProxy().insert(toEntity(domain));
+		for(DateHistoryItem item : domain.getDateHistoryItem()){
+			this.commandProxy().insert(toBsymtCurrAffiDeptHist(item));
+		}
 	}
 
 }

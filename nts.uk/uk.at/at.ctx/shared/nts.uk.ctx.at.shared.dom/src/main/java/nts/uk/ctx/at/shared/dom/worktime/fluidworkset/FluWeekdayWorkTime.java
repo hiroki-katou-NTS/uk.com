@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidWorkTimeSetting;
 
 /**
@@ -19,6 +20,7 @@ public class FluWeekdayWorkTime {
 
 	/** The rest time. */
 	// 休憩時間帯
-	private FluRestTime restTime;
+//	private FluRestTime restTime;
+	private FlowWorkRestTimezone restTime;
 
 }
