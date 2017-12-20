@@ -229,8 +229,11 @@ public class PeregProcessor {
 	private void setOptionData(PersonInfoCategory perInfoCtg, List<LayoutPersonInfoClsDto> classItemList,
 			PeregQuery query) {
 		if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
-			List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
+			List<EmpInfoCtgData> empInfoCtgDatas = new ArrayList<>();
+			if(query.getInfoId() != null || query.getStandardDate() != null)
+					empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
 					perInfoCtg.getPersonInfoCategoryId());
+			else MappingFactory.matchEmpOptionData(null, classItemList, new ArrayList<>());
 			if (!empInfoCtgDatas.isEmpty()) {
 				String recordId = empInfoCtgDatas.get(0).getRecordId();
 				List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
@@ -238,8 +241,11 @@ public class PeregProcessor {
 				MappingFactory.matchEmpOptionData(recordId, classItemList, empOptionItemData);
 			}
 		} else {
-			List<PerInfoCtgData> perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(query.getPersonId(),
+			List<PerInfoCtgData> perInfoCtgDatas = new ArrayList<>();
+			if(query.getInfoId() != null || query.getStandardDate() != null)
+				perInfoCtgDatas = perInCtgDataRepo.getByPerIdAndCtgId(query.getPersonId(),
 					perInfoCtg.getPersonInfoCategoryId());
+			else MappingFactory.matchEmpOptionData(null, classItemList, new ArrayList<>());
 			if (!perInfoCtgDatas.isEmpty()) {
 				String recordId = perInfoCtgDatas.get(0).getRecordId();
 				List<PersonOptionalDto> perOptionItemData = perInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
