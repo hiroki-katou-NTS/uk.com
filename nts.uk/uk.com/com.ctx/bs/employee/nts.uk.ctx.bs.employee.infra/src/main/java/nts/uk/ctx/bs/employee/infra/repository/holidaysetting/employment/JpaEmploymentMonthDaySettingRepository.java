@@ -13,7 +13,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.common.Year;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.employment.EmploymentMonthDaySetting;
@@ -36,7 +35,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		List<KshmtEmpMonthDaySet> result = this.findBy(companyId, empCd, year, null);
 		
 		// Check exist
-		if (CollectionUtil.isEmpty(result)) {
+		if (result.isEmpty()) {
 			return Optional.empty();
 		}
 		
@@ -103,7 +102,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		// eq company id
 		if (companyId != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK).get(KshmtEmpMonthDaySetPK_.cid), companyId));
+					.add(criteriaBuilder.equal(root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK).get(KshmtEmpMonthDaySetPK_.cid), companyId.v()));
 		}
 		
 		if (empCd != null) {
@@ -115,13 +114,13 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		if (year != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
 					root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK).get(KshmtEmpMonthDaySetPK_.manageYear),
-					year));
+					year.v()));
 		}
 
 		if (month != null) {
 			lstpredicateWhere
 					.add(criteriaBuilder.equal(root.get(KshmtEmpMonthDaySet_.kshmtEmpMonthDaySetPK)
-							.get(KshmtEmpMonthDaySetPK_.month), month));
+							.get(KshmtEmpMonthDaySetPK_.month), month.intValue()));
 		}
 
 		// set where to SQL

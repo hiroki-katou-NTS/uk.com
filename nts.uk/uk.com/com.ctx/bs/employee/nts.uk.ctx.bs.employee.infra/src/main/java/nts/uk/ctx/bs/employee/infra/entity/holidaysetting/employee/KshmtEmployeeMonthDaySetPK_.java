@@ -8,9 +8,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(KshmtEmployeeMonthDaySetPK.class)
 public class KshmtEmployeeMonthDaySetPK_ { 
 
-    public static volatile SingularAttribute<KshmtEmployeeMonthDaySetPK, Short> month;
+    public static volatile SingularAttribute<KshmtEmployeeMonthDaySetPK, Integer> month;
     public static volatile SingularAttribute<KshmtEmployeeMonthDaySetPK, String> cid;
     public static volatile SingularAttribute<KshmtEmployeeMonthDaySetPK, String> sid;
-    public static volatile SingularAttribute<KshmtEmployeeMonthDaySetPK, Short> manageYear;
+    public static volatile SingularAttribute<KshmtEmployeeMonthDaySetPK, Integer> manageYear;
 
 }

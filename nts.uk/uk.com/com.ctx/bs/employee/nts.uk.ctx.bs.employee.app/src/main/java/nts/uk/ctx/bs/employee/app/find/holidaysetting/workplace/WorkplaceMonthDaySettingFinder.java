@@ -36,7 +36,7 @@ public class WorkplaceMonthDaySettingFinder {
 		
 		Optional<WorkplaceMonthDaySetting> optional = this.repository.findByYear(new CompanyId(companyId), workplaceId ,new Year(year));
 		
-		if(!optional.isPresent()){
+		if(optional.isPresent()){
 			WorkplaceMonthDaySetting domain = optional.get();
 			
 			WorkplaceMonthDaySettingDto dto = new WorkplaceMonthDaySettingDto();
