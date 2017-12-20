@@ -15,7 +15,7 @@ public class DailyAttdItemAuthFinder {
 	@Inject
 	private DailyAttdItemAuthRepository dailyAttdItemAuthRepository;
 
-	public List<DailyAttdItemAuthDto> getListDailyAttendanceItemAuthority(int authorityId) {
+	public List<DailyAttdItemAuthDto> getListDailyAttendanceItemAuthority(String authorityId) {
 		String companyId = AppContexts.user().companyId();
 		List<DailyAttendanceItemAuthority> listDailyAttendanceItemAuthority = this.dailyAttdItemAuthRepository
 				.getListDailyAttendanceItemAuthority(authorityId, companyId);

@@ -17,7 +17,7 @@ public class KshstWeekdayHdPK implements Serializable{
 	public String companyId;
 	
 	/**変更前の残業枠NO*/
-	@Column(name = "OVERWORK_FRAME_NO")
+	@Column(name = "OVERTIME_FRAME_NO")
 	public int overworkFrameNo;
 }
 

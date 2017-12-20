@@ -78,8 +78,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             //A3_10 + A3_11
             self.workSchedule = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_IncludeAtr_Include") },
-                { code: '1', name: nts.uk.resource.getText("Enum_IncludeAtr_Exclude") }
+                { code: '0', name: nts.uk.resource.getText("Enum_IncludeAtr_Exclude") },
+                { code: '1', name: nts.uk.resource.getText("Enum_IncludeAtr_Include") }
             ]);
 
             self.workScheduleSelected = ko.observable(0);
@@ -1052,6 +1052,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                 if (self.calculatorItems().length == 0) {
                     self.deleteLineEnable(false);
+                }
+                
+                if (self.calculatorItems().length >= 0) {
+                    self.addLineEnable(true);
                 }
             }).ifNo(() => {
                 return;

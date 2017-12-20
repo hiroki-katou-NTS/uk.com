@@ -21,7 +21,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 			+ " WHERE k.krcmtDailyAttendanceItemPK.companyId = :companyId";
 
 	@Override
-	public List<DailyAttendanceItemAuthority> getListDailyAttendanceItemAuthority(int authorityId, String companyId) {
+	public List<DailyAttendanceItemAuthority> getListDailyAttendanceItemAuthority(String authorityId, String companyId) {
 		return this.queryProxy().query(SELECT_BY_AUTHORITYID_AND_COMPANYID, Object[].class)
 				.setParameter("authorityId", authorityId).setParameter("companyId", companyId)
 				.getList(x -> this.toDomain(x, authorityId));
@@ -33,7 +33,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 
 		lstDailyAttendanceItemAuthority.forEach(c -> {
 			Optional<KshstDailyAttdItemAuth> kshstDailyAttdItemAuthOptional = this.queryProxy()
-					.find(new KshstDailyAttdItemAuthPK(new BigDecimal(c.getAuthorityId()),
+					.find(new KshstDailyAttdItemAuthPK(c.getAuthorityId(),
 							new BigDecimal(c.getAttendanceItemId())), KshstDailyAttdItemAuth.class);
 			if (kshstDailyAttdItemAuthOptional.isPresent()) {
 				KshstDailyAttdItemAuth kshstDailyAttdItemAuth = kshstDailyAttdItemAuthOptional.get();
@@ -49,7 +49,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 
 	}
 
-	private DailyAttendanceItemAuthority toDomain(Object[] object, int authorityId) {
+	private DailyAttendanceItemAuthority toDomain(Object[] object, String authorityId) {
 
 		KshstDailyAttdItemAuth kshstDailyAttdItemAuth = (KshstDailyAttdItemAuth) object[0];
 		int userCanSet = ((BigDecimal) object[1]).intValue();
@@ -60,7 +60,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 		}
 		return DailyAttendanceItemAuthority.createFromJavaType(
 				kshstDailyAttdItemAuth.kshstDailyAttdItemAuthPK.attendanceItemId.intValue(),
-				kshstDailyAttdItemAuth.kshstDailyAttdItemAuthPK.authorityId.intValue(),
+				kshstDailyAttdItemAuth.kshstDailyAttdItemAuthPK.authorityId,
 				kshstDailyAttdItemAuth.youCanChangeIt.intValue() == 1 ? true : false,
 				kshstDailyAttdItemAuth.canBeChangedByOthers.intValue() == 1 ? true : false,
 				kshstDailyAttdItemAuth.use.intValue() == 1 ? true : false, userCanSet);
@@ -69,7 +69,7 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 
 	private KshstDailyAttdItemAuth toEntity(DailyAttendanceItemAuthority dailyAttendanceItemAuthority) {
 		return new KshstDailyAttdItemAuth(
-				new KshstDailyAttdItemAuthPK(new BigDecimal(dailyAttendanceItemAuthority.getAuthorityId()),
+				new KshstDailyAttdItemAuthPK(dailyAttendanceItemAuthority.getAuthorityId(),
 						new BigDecimal(dailyAttendanceItemAuthority.getAttendanceItemId())),
 				new BigDecimal(dailyAttendanceItemAuthority.isYouCanChangeIt() ? 1 : 0),
 				new BigDecimal(dailyAttendanceItemAuthority.isCanBeChangedByOthers() ? 1 : 0),
