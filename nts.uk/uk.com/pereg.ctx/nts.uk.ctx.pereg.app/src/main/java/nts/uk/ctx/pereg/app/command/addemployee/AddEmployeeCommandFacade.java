@@ -29,7 +29,6 @@ public class AddEmployeeCommandFacade {
 
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
-	// từ từ ,luong sai @@
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId) {
@@ -50,8 +49,7 @@ public class AddEmployeeCommandFacade {
 		// merge data from client with dataServer
 		if (command.getCreateType() == 2) {
 
-			List<SettingItemDto> dataServer = new ArrayList<SettingItemDto>();
-			mergeData(dataServer, inputs, command);
+			List<SettingItemDto> dataServer = mergeData(inputs, command);
 
 			// inputs = new ArrayList<ItemsByCategory>();
 			List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
@@ -139,9 +137,9 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private void mergeData(List<SettingItemDto> dataList, List<ItemsByCategory> inputs, AddEmployeeCommand command) {
+	private List<SettingItemDto> mergeData(List<ItemsByCategory> inputs, AddEmployeeCommand command) {
 
-		dataList = this.layoutFinder.getAllInitItemBySetId(command);
+		List<SettingItemDto> dataList = this.layoutFinder.getAllInitItemBySetId(command);
 
 		dataList.forEach(x -> {
 
@@ -159,6 +157,8 @@ public class AddEmployeeCommandFacade {
 
 			}
 		});
+		
+		return dataList;
 
 	}
 

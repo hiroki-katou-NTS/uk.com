@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfHistoryGeneralRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -58,7 +57,7 @@ public class AddBusinessWokrTypeOfHistoryCommandHandler
 		GeneralDate startDate = command.getStartDate() != null ? command.getStartDate() : GeneralDate.min();
 		// Hop.NT update in case of endDate is null set to maxDate
 		GeneralDate endDate = command.getEndDate() != null ? command.getEndDate() : GeneralDate.max();
-		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(employeeId);
+		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(companyId,employeeId);
 		
 		List<DateHistoryItem> history = new ArrayList<DateHistoryItem>();
 		BusinessTypeOfEmployeeHistory bEmployeeHistory = new BusinessTypeOfEmployeeHistory(companyId, history, employeeId);

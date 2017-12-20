@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK_;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist_;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaSWorkTimeHistoryRepository.
@@ -32,7 +33,9 @@ import nts.uk.shr.com.history.DateHistoryItem;
 @Stateless
 public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		implements SWorkTimeHistoryRepository {
-
+	
+	private final String QUERY_GET__BYSID = "SELECT ad FROM BshmtWorktimeHist ad"
+			+ " WHERE ad.BshmtWorktimeHistPK.sid = :sid and ad.cId = :cid ORDER BY ad.strDate";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -105,10 +108,30 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 
 	@Override
 	public Optional<ShortWorkTimeHistory> getBySid(String cid, String sid) {
-		// TODO Auto-generated method stub
-		return null;
+		List<BshmtWorktimeHist> listHist = this.queryProxy().query(QUERY_GET__BYSID,BshmtWorktimeHist.class)
+				.setParameter("sid", sid)
+				.setParameter("cid", cid).getList();
+		if (listHist != null && !listHist.isEmpty()){
+			return Optional.of(toWorkTime(listHist));
+		}
+		return Optional.empty();
 	}
-
+	
+	/**
+	 * Convert to domain
+	 * @param listHist
+	 * @return
+	 */
+	private ShortWorkTimeHistory toWorkTime(List<BshmtWorktimeHist> listHist){
+		ShortWorkTimeHistory affDepart = new ShortWorkTimeHistory(listHist.get(0).getCId(), listHist.get(0).getBshmtWorktimeHistPK().sid, new ArrayList<>());
+		DateHistoryItem dateItem = null;
+		for (BshmtWorktimeHist item : listHist){
+			dateItem = new DateHistoryItem(item.getBshmtWorktimeHistPK().getHistId(), new DatePeriod(item.getStrYmd(), item.getEndYmd()));
+			affDepart.getHistoryItems().add(dateItem);
+		}
+		return affDepart;
+	}
+	
 	@Override
 	public void add(String cid, String sid, DateHistoryItem histItem) {
 		this.commandProxy().insert(toEntity(cid, sid, histItem));
