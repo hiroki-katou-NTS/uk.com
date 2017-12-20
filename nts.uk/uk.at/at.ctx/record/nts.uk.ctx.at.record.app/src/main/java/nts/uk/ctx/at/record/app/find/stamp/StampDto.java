@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 
 @NoArgsConstructor
@@ -24,9 +25,12 @@ public class StampDto {
 	private int stampReason;
 	private String stampReasonName;
 	private GeneralDate date;
-	private String personId;
+	private String employeeId;
+	private String employeeCode;
+	private String pName;
+	
 
-	public static StampDto fromDomain(StampItem domain) {
+	public static StampDto fromDomain(StampItem domain, EmployeeRecordImport empInfor) {
 		return new StampDto(domain.getCardNumber().v(), 
 				domain.getAttendanceTime().v(), 
 				domain.getStampCombinationAtr().value,
@@ -41,6 +45,8 @@ public class StampDto {
 				domain.getGoOutReason().value,
 				domain.getGoOutReason().name,
 				domain.getDate(),
-				domain.getPersonId());
+				domain.getEmployeeId(),
+				empInfor.getEmployeeCode(),
+				empInfor.getPname());
 	}
 }

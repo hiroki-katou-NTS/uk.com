@@ -91,7 +91,11 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 		if(!historyOpt.isPresent()) return new ArrayList<>();
 		List<DateHistoryItem> historyItems = historyOpt.get().getHistoryItems();
 		if(historyItems.size() == 0) return new ArrayList<>(); 
-		return historyItems.stream()
+		List<DateHistoryItem> containItemHists = historyItems.stream().filter(x -> {
+			return affJobTitleItemRepo.findByHitoryId(x.identifier()).isPresent();
+		}).collect(Collectors.toList());
+		return containItemHists.stream()
+				.sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 				.collect(Collectors.toList());
 	}

@@ -45,6 +45,9 @@ public class DailyPerformanceCorrectionDto {
 	private List<DailyPerformanceAuthorityDto> authorityDto;
 	
 	private String employmentCode;
+	
+	//A13_1  コメント
+	private String comment;
 
 	public DailyPerformanceCorrectionDto() {
 		super();

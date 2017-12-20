@@ -11,6 +11,8 @@ module cps002.e.vm {
         txtEmployeeCode: KnockoutObservable<string> = ko.observable("");
         txtCardNo: KnockoutObservable<string> = ko.observable("");
         generateEmCode: KnockoutObservable<string> = ko.observable("");
+        displayGenerateEmCode: KnockoutObservable<string> = ko.observable("");
+        
         constructor() {
             let self = this, textValue = getShared("textValue");
             self.cardNoMode = getShared("cardNoMode");
@@ -23,7 +25,10 @@ module cps002.e.vm {
             }
             if (textValue) {
                 self.generateEmCode(textValue);
-
+                let displayEmCode = _.map(textValue).map(function(i){ 
+                    return i == ' '? "&nbsp" : i;
+                });
+                self.displayGenerateEmCode(displayEmCode.join("").toString());
             }
         }
 
@@ -36,6 +41,10 @@ module cps002.e.vm {
             let self = this;
             service.getEmlCode(self.txtEmployeeCode()).done(function(emCode) {
                 self.generateEmCode(emCode);
+                let displayEmCode = _.map(emCode).map(function(i){ 
+                    return i == ' '? "&nbsp" : i;
+                });
+                self.displayGenerateEmCode(displayEmCode.join("").toString());
 
             }).fail(function() {
                 alertError({ messageId: "Msg_505" });

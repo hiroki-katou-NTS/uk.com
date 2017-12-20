@@ -90,7 +90,7 @@ module cps002.a.vm {
                     self.createTypeId(data.employeeCreationMethod);
 
 
-                    if (data.copyEmployeeId != "" && self.employeeBasicInfo().copyEmployeeId != data.copyEmployeeId) {
+                    if (self.employeeBasicInfo().copyEmployeeId != "") {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
@@ -219,18 +219,14 @@ module cps002.a.vm {
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
             });
-            block.invisible();
             service.getLayout().done((layout) => {
                 if (layout) {
                     service.getUserSetting().done((result: IUserSetting) => {
                         if (result) {
-                            block.invisible();
                             self.getEmployeeCode(result).done((empCode) => {
                                 self.currentEmployee().employeeCode(empCode);
                                 self.getCardNumber(result);
 
-                            }).always(() => {
-                                block.clear();
                             });
                         }
 
@@ -245,8 +241,6 @@ module cps002.a.vm {
                         jump('/view/cps/007/a/index.xhtml');
                     });
                 }
-            }).always(() => {
-                block.clear();
             });
 
         }
@@ -256,15 +250,12 @@ module cps002.a.vm {
                 showHistory = !userSetting ? true : userSetting.recentRegistrationType === 1 ? true : false;
 
             if (showHistory) {
-                block.invisible();
                 service.getLastRegHistory().done((result: IEmpRegHistory) => {
                     if (result) {
 
                         self.empRegHistory(new EmpRegHistory(result));
                     }
-                }).always(() => {
-                    block.clear();
-                });;
+                });
             } else {
                 self.empRegHistory(null);
 
@@ -551,9 +542,9 @@ module cps002.a.vm {
 
             if (currentEmpInfo) {
                 if (isInit) {
-                    newEmpInfo.copyEmployeeId = !newEmpInfo.copyEmployeeId ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
+                    newEmpInfo.copyEmployeeId = newEmpInfo.copyEmployeeId == '' ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
                 } else {
-                    newEmpInfo.initialValueCode = !newEmpInfo.initialValueCode ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
+                    newEmpInfo.initialValueCode = newEmpInfo.initialValueCode == '' ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
 
                 }
 
