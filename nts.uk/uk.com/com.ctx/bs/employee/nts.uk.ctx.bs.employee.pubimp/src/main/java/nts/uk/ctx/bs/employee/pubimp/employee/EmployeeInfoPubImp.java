@@ -23,6 +23,7 @@ import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeInfoPubImp implements EmployeeInfoPub {
@@ -89,14 +90,13 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
 
-
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 		
 		List<EmployeeInfoDtoExport> result = new ArrayList<>();
 		
 		for (EmployeeDataMngInfo employee: listEmpDomain) {
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(companyId,employee.getEmployeeId());
 
 			if (affComHist == null)
 				continue;

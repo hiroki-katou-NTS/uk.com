@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,9 @@ public class DPControlDisplayItem {
 			if(!isExistSheet(sheet)){
 				this.lstSheet.add(sheet);
 			}
+		}
+		if(!this.lstSheet.isEmpty()) {
+			this.lstSheet.sort((e1,e2) -> new BigDecimal(e1.getName()).compareTo(new BigDecimal(e2.getName())));
 		}
 	}
 

@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
@@ -42,8 +43,9 @@ public class DeleteTemporaryAbsenceCommandHandler extends CommandHandler<DeleteT
 	@Override
 	protected void handle(CommandHandlerContext<DeleteTemporaryAbsenceCommand> context) {
 		val command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		
-		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(command.getEmployeeId());
+		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(companyId,command.getEmployeeId());
 		
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid TempAbsenceHistory"); 

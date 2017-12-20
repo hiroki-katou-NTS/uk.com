@@ -33,4 +33,11 @@ public class MonthlyPatternWorkScheduleCre extends DomainObject {
 	public void saveToMemento(MonthlyPatternWorkScheduleCreSetMemento memento) {
 		memento.setReferenceType(this.referenceType);
 	}
+
+	public MonthlyPatternWorkScheduleCre(TimeZoneScheduledMasterAtr referenceType) {
+		super();
+		this.referenceType = referenceType;
+	}
+	
+	
 }

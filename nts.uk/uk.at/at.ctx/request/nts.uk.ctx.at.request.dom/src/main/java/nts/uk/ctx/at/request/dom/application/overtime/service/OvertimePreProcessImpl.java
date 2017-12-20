@@ -493,8 +493,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			hourminute = "00:00";
 		} else {
 			int hour = minute / 60;
+			int hourInDay = hour % 24;
 			int minutes = minute % 60;
-			hourminute = (hour < 10 ? ("0" + hour) : hour) + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
+			hourminute = (hourInDay < 10 ? ("0" + hourInDay) : hourInDay) + ":" + (minutes < 10 ? ("0" + minutes) : minutes);
 		}
 		return hourminute;
 	}

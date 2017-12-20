@@ -40,7 +40,7 @@ public class AffWorlplaceHistItemDto extends PeregDomainDto {
 
 	/** The normalWorkplaceCode. */
 	// 通常職場コード
-	@PeregItem("IS00086")
+	@PeregItem("IS00085")
 	private String normalWorkplaceCode;
 
 	private AffWorlplaceHistItemDto(String recordId) {
