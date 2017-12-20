@@ -4,6 +4,7 @@ module a2 {
     import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
     import TimeZoneRoundingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeZoneRoundingDto;
     import TimeRoundingSettingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeRoundingSettingDto;
+    import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     class ScreenModel {
 
         fixTableOptionOneDay: any;
@@ -29,12 +30,12 @@ module a2 {
         /**
         * Constructor.
         */
-        constructor(selectedSettingMethod: any, selectedTab: any, settingEnum: WorkTimeSettingEnumDto, dataModelOneDay: EmTimeZoneSetModel[]) {
+        constructor(selectedSettingMethod: any, selectedTab: any, settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
             let self = this;
             self.selectedSettingMethod = selectedSettingMethod;
             self.selectedTab = selectedTab;
             self.settingEnum = settingEnum;
-            self.dataModelOneDay = dataModelOneDay;
+            self.dataModelOneDay = mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone;
             self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
             self.isActiveTab = ko.observable(self.getActiveTabBySelected(self.selectedTab()));
             self.dataSourceOneDay = ko.observableArray([]);
@@ -113,12 +114,10 @@ module a2 {
             
             self.dataSourceOneDay.subscribe(function(dataOneDay) {
                 var employmentTimeFrameNo: number = 0;
-                self.dataModelOneDay = [];
+                self.dataModelOneDay.length = 0;
                 for (var dataModel of dataOneDay) {
                     employmentTimeFrameNo++;
-                    console.log('YES');
                     self.dataModelOneDay.push(self.toModelDto(dataModel, employmentTimeFrameNo));
-                    console.log(dataModelOneDay);
                 }
             });
              // Create Customs handle For event rened nts grid.
@@ -351,8 +350,8 @@ module a2 {
             let selectedSettingMethod = input.settingMethod;
             let selectedTab = input.settingTab;
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
-            var dataModelOneDay: EmTimeZoneSetModel[] = input.oneday;
-            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab, settingEnum, dataModelOneDay);
+            var mainSettingModel: MainSettingModel = input.mainModel;
+            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab, settingEnum, mainSettingModel);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

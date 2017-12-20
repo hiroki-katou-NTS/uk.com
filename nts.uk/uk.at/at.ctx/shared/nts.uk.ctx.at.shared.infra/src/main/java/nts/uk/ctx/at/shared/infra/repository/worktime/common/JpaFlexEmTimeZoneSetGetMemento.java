@@ -30,7 +30,7 @@ public class JpaFlexEmTimeZoneSetGetMemento implements EmTimeZoneSetGetMemento{
 
 	@Override
 	public EmTimeFrameNo getEmploymentTimeFrameNo() {
-		return null;
+		return new EmTimeFrameNo(this.entity.getKshmtFlexWorkTimeSetPK().getTimeFrameNo());
 	}
 
 	@Override

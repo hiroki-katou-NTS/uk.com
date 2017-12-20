@@ -14,16 +14,15 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtFlexWorkTimeSet.
  */
-@Setter
 @Getter
+@Setter
 @Entity
 @Table(name = "KSHMT_FLEX_WORK_TIME_SET")
-public class KshmtFlexWorkTimeSet extends UkJpaEntity implements Serializable {
+public class KshmtFlexWorkTimeSet implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -31,7 +30,12 @@ public class KshmtFlexWorkTimeSet extends UkJpaEntity implements Serializable {
     /** The kshmt flex work time set PK. */
     @EmbeddedId
     protected KshmtFlexWorkTimeSetPK kshmtFlexWorkTimeSetPK;
-        
+    
+    /** The unit. */
+    @Basic(optional = false)
+    @Column(name = "UNIT")
+    private int unit;
+    
     /** The rounding. */
     @Basic(optional = false)
     @Column(name = "ROUNDING")
@@ -53,29 +57,20 @@ public class KshmtFlexWorkTimeSet extends UkJpaEntity implements Serializable {
     public KshmtFlexWorkTimeSet() {
     }
 
-    /**
-     * Instantiates a new kshmt flex work time set.
-     *
-     * @param kshmtFlexWorkTimeSetPK the kshmt flex work time set PK
-     */
-    public KshmtFlexWorkTimeSet(KshmtFlexWorkTimeSetPK kshmtFlexWorkTimeSetPK) {
-        this.kshmtFlexWorkTimeSetPK = kshmtFlexWorkTimeSetPK;
-    }
-
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
     @Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (kshmtFlexWorkTimeSetPK != null ? kshmtFlexWorkTimeSetPK.hashCode() : 0);
-		return hash;
-	}
+    public int hashCode() {
+        int hash = 0;
+        hash += (kshmtFlexWorkTimeSetPK != null ? kshmtFlexWorkTimeSetPK.hashCode() : 0);
+        return hash;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof KshmtFlexWorkTimeSet)) {
@@ -90,21 +85,14 @@ public class KshmtFlexWorkTimeSet extends UkJpaEntity implements Serializable {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return "entity.KshmtFlexWorkTimeSet[ kshmtFlexWorkTimeSetPK=" + kshmtFlexWorkTimeSetPK + " ]";
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
-	@Override
-	protected Object getKey() {
-		return this.kshmtFlexWorkTimeSetPK;
-	}
-	
 
 }

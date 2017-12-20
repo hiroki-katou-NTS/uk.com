@@ -240,7 +240,6 @@ module nts.uk.at.view.kmk003.a {
                     predseting: self.predetemineTimeSettingModel.toDto(),
                     worktimeSetting: self.workTimeSettingModel.toDto()
                 };
-                console.log(command);
                 return command;     
             }
             

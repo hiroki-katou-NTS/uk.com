@@ -12,8 +12,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRestTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestTime;
 
 /**
  * The Class JpaFlexOffdayFlowRestTzGetMemento.
@@ -21,20 +21,19 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
 public class JpaFlexOffdayFlowRestTzGetMemento implements FlowRestTimezoneGetMemento{
 	
 	/** The entity. */
-	private KshmtFlexHaRestTime entity;
+	private KshmtFlexOdRestTime entity;
 	
 	/** The entity flow rests. */
 	private List<KshmtFlexOdRestSet> entityFlowRests;
 	
-	
 
 	/**
-	 * Instantiates a new jpa flex offday flow rest tz set memento.
+	 * Instantiates a new jpa flex offday flow rest tz get memento.
 	 *
 	 * @param entity the entity
 	 * @param entityFlowRests the entity flow rests
 	 */
-	public JpaFlexOffdayFlowRestTzGetMemento(KshmtFlexHaRestTime entity, List<KshmtFlexOdRestSet> entityFlowRests) {
+	public JpaFlexOffdayFlowRestTzGetMemento(KshmtFlexOdRestTime entity, List<KshmtFlexOdRestSet> entityFlowRests) {
 		super();
 		this.entity = entity;
 		this.entityFlowRests = entityFlowRests;

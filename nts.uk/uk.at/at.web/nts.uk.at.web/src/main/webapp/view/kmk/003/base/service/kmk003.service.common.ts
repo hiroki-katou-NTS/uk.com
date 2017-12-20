@@ -266,10 +266,9 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface WorkTimeSettingInfoDto extends WorkTimeCommonDto {
                     flexWorkSetting: flexset.FlexWorkSettingDto;
-                    /*fixedWorkSetting:FixedWorkSettingDto ;
-                     flowWorkSetting: FlWorkSettingDto;
-                    diffTimeWorkSetting: DiffTimeWorkSettingDto ;
-                    */
+                    fixedWorkSetting: fixedset.FixedWorkSettingDto;
+                    flowWorkSetting: flowset.FlWorkSettingDto;
+                    diffTimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
                 }
             }
         }

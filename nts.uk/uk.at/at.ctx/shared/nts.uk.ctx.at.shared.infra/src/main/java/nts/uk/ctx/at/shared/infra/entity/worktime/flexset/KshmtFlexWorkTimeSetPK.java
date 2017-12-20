@@ -34,10 +34,10 @@ public class KshmtFlexWorkTimeSetPK implements Serializable {
     @Column(name = "WORKTIME_CD")
     private String worktimeCd;
     
-    /** The am pm class. */
+    /** The am pm atr. */
     @Basic(optional = false)
-    @Column(name = "AM_PM_CLASS")
-    private int amPmClass;
+    @Column(name = "AM_PM_ATR")
+    private int amPmAtr;
     
     /** The time frame no. */
     @Basic(optional = false)
@@ -50,25 +50,39 @@ public class KshmtFlexWorkTimeSetPK implements Serializable {
     public KshmtFlexWorkTimeSetPK() {
     }
 
-
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /**
+     * Instantiates a new kshmt flex work time set PK.
+     *
+     * @param cid the cid
+     * @param worktimeCd the worktime cd
+     * @param amPmAtr the am pm atr
+     * @param timeFrameNo the time frame no
      */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-        hash += (int) amPmClass;
-        hash += (int) timeFrameNo;
-        return hash;
+    public KshmtFlexWorkTimeSetPK(String cid, String worktimeCd, int amPmAtr, int timeFrameNo) {
+        this.cid = cid;
+        this.worktimeCd = worktimeCd;
+        this.amPmAtr = amPmAtr;
+        this.timeFrameNo = timeFrameNo;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
+		hash += (int) amPmAtr;
+		hash += (int) timeFrameNo;
+		return hash;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof KshmtFlexWorkTimeSetPK)) {
 			return false;
@@ -81,7 +95,7 @@ public class KshmtFlexWorkTimeSetPK implements Serializable {
 				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
 			return false;
 		}
-		if (this.amPmClass != other.amPmClass) {
+		if (this.amPmAtr != other.amPmAtr) {
 			return false;
 		}
 		if (this.timeFrameNo != other.timeFrameNo) {
@@ -90,13 +104,13 @@ public class KshmtFlexWorkTimeSetPK implements Serializable {
 		return true;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
 	public String toString() {
-		return "entity.KshmtFlexWorkTimeSetPK[ cid=" + cid + ", worktimeCd=" + worktimeCd + ", amPmClass=" + amPmClass
+		return "entity.KshmtFlexWorkTimeSetPK[ cid=" + cid + ", worktimeCd=" + worktimeCd + ", amPmAtr=" + amPmAtr
 				+ ", timeFrameNo=" + timeFrameNo + " ]";
 	}
-    
+
 }

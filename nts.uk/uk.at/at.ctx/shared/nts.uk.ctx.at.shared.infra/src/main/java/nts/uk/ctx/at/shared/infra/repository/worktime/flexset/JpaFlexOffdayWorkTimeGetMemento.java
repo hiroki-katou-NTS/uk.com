@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRestTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestTime;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayFlWRestTzGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayHDWTSheetGetMemento;
 
@@ -28,7 +28,7 @@ public class JpaFlexOffdayWorkTimeGetMemento implements FlexOffdayWorkTimeGetMem
 	private List<KshmtFlexHolSet> entityWorktimezones;
 	
 	/** The entity. */
-	private KshmtFlexHaRestTime entity;
+	private KshmtFlexOdRestTime entity;
 	
 	/** The entity fixed rests. */
 	private List<KshmtFlexHaFixRest> entityFixedRests;
@@ -45,7 +45,7 @@ public class JpaFlexOffdayWorkTimeGetMemento implements FlexOffdayWorkTimeGetMem
 	 * @param entityFixedRests the entity fixed rests
 	 * @param entityFlowRests the entity flow rests
 	 */
-	public JpaFlexOffdayWorkTimeGetMemento(List<KshmtFlexHolSet> entityWorktimezones, KshmtFlexHaRestTime entity,
+	public JpaFlexOffdayWorkTimeGetMemento(List<KshmtFlexHolSet> entityWorktimezones, KshmtFlexOdRestTime entity,
 			List<KshmtFlexHaFixRest> entityFixedRests, List<KshmtFlexOdRestSet> entityFlowRests) {
 		super();
 		this.entityWorktimezones = entityWorktimezones;
@@ -53,8 +53,6 @@ public class JpaFlexOffdayWorkTimeGetMemento implements FlexOffdayWorkTimeGetMem
 		this.entityFixedRests = entityFixedRests;
 		this.entityFlowRests = entityFlowRests;
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento#getLstWorkTimezone()

@@ -223,6 +223,7 @@ module nts.uk.at.view.kmk003.a {
                 lstHalfDayWorkTimezone: FlexHalfDayWorkTimeModel[];
                 lstStampReflectTimezone: StampReflectTimezoneModel[];
                 calculateSetting: FlexCalcSettingModel;
+                
                 constructor() {
                     var self = this;
                     self.workTimeCode = ko.observable('');
@@ -232,18 +233,20 @@ module nts.uk.at.view.kmk003.a {
                     self.offdayWorkTime = new FlexOffdayWorkTimeModel();
                     self.commonSetting = new WorkTimezoneCommonSetModel();
                     self.lstHalfDayWorkTimezone = FlexHalfDayWorkTimeModel.getDefaultData();
-                    this.lstStampReflectTimezone = [];
-                    this.calculateSetting = new FlexCalcSettingModel();
+                    self.lstStampReflectTimezone = [];
+                    self.calculateSetting = new FlexCalcSettingModel();
                 }
 
                 public getHDWtzOneday(): FlexHalfDayWorkTimeModel {
                     let self = this;
                     return _.find(self.lstHalfDayWorkTimezone, time => time.ampmAtr() == 0);
                 }
+                
                 public getHDWtzMorning(): FlexHalfDayWorkTimeModel {
                     let self = this;
                     return _.find(self.lstHalfDayWorkTimezone, time => time.ampmAtr() == 1);
                 }
+                
                 public getHDWtzAfternoon(): FlexHalfDayWorkTimeModel {
                     let self = this;
                     return _.find(self.lstHalfDayWorkTimezone, time => time.ampmAtr() == 2);
