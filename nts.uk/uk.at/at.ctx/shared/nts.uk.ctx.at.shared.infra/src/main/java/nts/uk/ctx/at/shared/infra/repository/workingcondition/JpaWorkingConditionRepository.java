@@ -163,6 +163,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	public void update(WorkingCondition workingCondition) {
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(),
 				workingCondition.getEmployeeId(), null);
+		this.commandProxy().removeAll(entities);
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
 		this.commandProxy().updateAll(entities);
 	}
@@ -178,6 +179,24 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	public void delete(String employeeId) {
 		List<KshmtWorkingCond> entities = this.findBy(null, employeeId, null);
 		this.commandProxy().removeAll(entities);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository#save
+	 * (nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition)
+	 */
+	@Override
+	public void save(WorkingCondition workingCondition) {
+		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(),
+				workingCondition.getEmployeeId(), null);
+		this.commandProxy().removeAll(entities);
+
+		entities = new ArrayList<>();
+		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
+		this.commandProxy().updateAll(entities);
 	}
 
 	/**
@@ -237,4 +256,5 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		return query.getResultList();
 	}
 
+	
 }

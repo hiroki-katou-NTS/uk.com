@@ -69,6 +69,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	@Override
 	public void add(AffCompanyHist domain) {
 		this.commandProxy().insertAll(toEntities(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override

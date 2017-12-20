@@ -921,6 +921,12 @@ public class ProgramsManager {
 			"/view/cps/002/g/index.xhtml");
 	
 	/**
+	 * CPS002H
+	 */
+	public static final Program CPS002H  = new Program(WebAppId.COM, ProgramIdConsts.CPS002H, "CPS002_8",
+			"/view/cps/002/h/index.xhtml");
+	
+	/**
 	 * CPS002I
 	 */
 	public static final Program CPS002I  = new Program(WebAppId.COM, ProgramIdConsts.CPS002I, "CPS002_9",
@@ -1211,6 +1217,10 @@ public class ProgramsManager {
 			"/view/ksu/007/a/index.xhtml");
 	public static final Program KSU007B = new Program(WebAppId.AT, ProgramIdConsts.KSU007B, "KSU007_23",
 			"/view/ksu/007/b/index.xhtml");
+	
+	
+	public static final Program CPS016A = new Program(WebAppId.COM, ProgramIdConsts.CPS016A, "CPS016_1",
+			"/view/cps/016/a/index.xhtml");
 
 	
 	

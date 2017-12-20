@@ -42,7 +42,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 			+ "AND wkp.bsymtWorkplaceHistPK.wkpid = wkpInfor.bsymtWorkplaceInfoPK.wkpid "
 			+ "AND wkp.bsymtWorkplaceHistPK.historyId = wkpInfor.bsymtWorkplaceInfoPK.historyId "
 			+ "WHERE wkp.bsymtWorkplaceHistPK.cid = :cid "
-			+ "GROUP BY wkpInfor, wkp.endD HAVING wkp.endD = MAX(wkp.endD)";
+			+ "AND wkp.strD <= :strDWkpConfigHist "
+			+ "AND wkp.endD >= :strDWkpConfigHist";
 	
 	/*
 	 * (non-Javadoc)
@@ -310,7 +311,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.wkpcd).in(wkpIds));
+		lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid).in(wkpIds));
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD), baseDate));
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
@@ -372,10 +373,11 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findDetailLatestByWkpIds(java.lang.String)
 	 */
 	@Override
-	public List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId) {
+	public List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId, GeneralDate startDWkpConfigHist) {
 		
 		List<BsymtWorkplaceInfo> resultList = this.queryProxy().query(FIND_WKP_DETAIL_LATEST, BsymtWorkplaceInfo.class)
 				.setParameter("cid", companyId)
+				.setParameter("strDWkpConfigHist", startDWkpConfigHist)
 				.getList();
 		return resultList.stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))

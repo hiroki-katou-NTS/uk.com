@@ -80,7 +80,10 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		if(!optHis.isPresent()) return new ArrayList<>();
 		List<DateHistoryItem> items = optHis.get().getHistoryItems();
 		if(items.size() == 0) return new ArrayList<>();
-		return items.stream()
+		List<DateHistoryItem> containItemHists = items.stream().filter(x -> {
+			return empHistItemRepo.getByHistoryId(x.identifier()).isPresent();
+		}).collect(Collectors.toList());
+		return containItemHists.stream()
 				.sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject
 				(x.identifier(), x.start().toString(), x.end().toString())).collect(Collectors.toList());

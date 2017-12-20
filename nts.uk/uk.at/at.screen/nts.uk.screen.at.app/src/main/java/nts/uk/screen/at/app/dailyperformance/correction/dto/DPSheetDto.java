@@ -17,7 +17,9 @@ import lombok.Setter;
 @Setter
 public class DPSheetDto {
 
+	//sheet no
 	private String name;
+	//sheet name
 	private String text;
 	private List<String> columns;
 
