@@ -58,7 +58,7 @@ public class StampItem extends AggregateRoot {
 	/**
 	 * 
 	 */
-	private String personId;
+	private String employeeId;
 	/**
 	 * 反映済み区分
 	 */

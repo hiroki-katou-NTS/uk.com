@@ -141,10 +141,10 @@ public class LayoutFinder {
 		// query properties
 		GeneralDate standardDate = GeneralDate.legacyDate(layoutQuery.getStandardDate());
 		String browsingEmpId = layoutQuery.getBrowsingEmpId();
-
+		String cid = AppContexts.user().companyId();
 		EmployeeDataMngInfo employee = employeeDataRepo.findByEmpId(browsingEmpId).get();
 		String browsingPeronId = employee.getPersonId();
-		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(browsingEmpId)
+		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,browsingEmpId)
 				.getAffCompanyHistByEmployee(browsingEmpId);
 		// validate standard date
 		standardDate = validateStandardDate(standardDate, employeeHistory, result);

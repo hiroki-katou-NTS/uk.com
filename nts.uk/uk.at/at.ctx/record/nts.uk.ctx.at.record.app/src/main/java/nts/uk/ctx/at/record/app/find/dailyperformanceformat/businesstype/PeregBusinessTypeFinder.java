@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -70,12 +71,14 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos
-				.findByEmployee(query.getEmployeeId());
-		if (!optional.isPresent())
-			return new ArrayList<>();
-		return optional.get().getHistory().stream()
-				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
-				.collect(Collectors.toList());
+				.findByEmployeeDesc(AppContexts.user().companyId(), query.getEmployeeId());
+		if (optional.isPresent()) {
+			return optional.get().getHistory().stream()
+					.filter(x -> typeOfEmployeeRepos.findByHistoryId(x.identifier()).isPresent())
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
 	@Override

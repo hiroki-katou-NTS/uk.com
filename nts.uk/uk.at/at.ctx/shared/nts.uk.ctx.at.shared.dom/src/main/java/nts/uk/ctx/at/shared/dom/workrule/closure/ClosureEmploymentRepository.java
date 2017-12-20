@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClosureEmploymentRepository {
+	//Add by insert and delete list ClosureEmployment.
+	public void addListClousureEmp(String companyID, List<ClosureEmployment> listClosureEmpDom);
 	
 	public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD);
 	

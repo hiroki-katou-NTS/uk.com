@@ -6,7 +6,7 @@ module ksm002.e.service {
     /**
     * get SpecificDate by list code
     */
-    export function getSpecificdateByListCode(lstSpecificDateItem: Array<string>): JQueryPromise<Array<any>>{
+    export function getSpecificdateByListCode(lstSpecificDateItem: Array<number>): JQueryPromise<Array<any>>{
         return nts.uk.request.ajax("at", paths.getSpecificdateByListCode,lstSpecificDateItem);
     }  
 }

@@ -19,6 +19,7 @@ import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PersonInfoPubImp implements IPersonInfoPub {
@@ -64,10 +65,10 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 	private void setEmployeeInfo(EmployeeDataMngInfo employee, PersonInfoExport perResult) {
 		perResult.setEmployeeId(employee.getEmployeeId());
 		perResult.setEmployeeCode(employee.getEmployeeCode() == null ? "" : employee.getEmployeeCode().v());
-
+		String cid = AppContexts.user().companyId();
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid,employee.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 

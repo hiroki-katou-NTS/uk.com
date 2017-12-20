@@ -20,6 +20,8 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	private final String QUERY_GET_AFFJOBTITLEHIST_BYSID = "SELECT jb FROM BsymtAffJobTitleHist jb"
 			+ " WHERE jb.sid = :sid and jb.cid = :cid ORDER BY jb.strDate";
 	
+	private final String QUERY_GET_AFFJOBTITLEHIST_BYSID_DESC = QUERY_GET_AFFJOBTITLEHIST_BYSID + " DESC";
+	
 	private final String GET_BY_SID_DATE = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid = :sid and h.strDate <= :standardDate and h.endDate >= :standardDate";
 
@@ -53,6 +55,17 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	public Optional<AffJobTitleHistory_ver1> getListBySid(String cid, String sid) {
 		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
 				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID, BsymtAffJobTitleHist.class)
+				.setParameter("cid", cid).setParameter("sid", sid).getList();
+		if (listHist != null && !listHist.isEmpty()) {
+			return Optional.of(toAffJobTitleHist(listHist));
+		}
+		return Optional.empty();
+	}
+	
+	@Override
+	public Optional<AffJobTitleHistory_ver1> getListBySidDesc(String cid, String sid) {
+		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
+				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID_DESC, BsymtAffJobTitleHist.class)
 				.setParameter("cid", cid).setParameter("sid", sid).getList();
 		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toAffJobTitleHist(listHist));

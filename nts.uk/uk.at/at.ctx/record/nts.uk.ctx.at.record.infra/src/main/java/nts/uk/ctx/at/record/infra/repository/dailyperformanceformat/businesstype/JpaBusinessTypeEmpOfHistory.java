@@ -27,6 +27,8 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 	private static final String FIND_ALL;
 	private static final String FIND_BY_BASE_DATE;
 	private static final String FIND_BY_EMPLOYEE;
+	private static final String FIND_BY_EMPLOYEE_DESC;
+	
 	static {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT k ");
@@ -46,8 +48,12 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 		stringBuilder.append("SELECT k ");
 		stringBuilder.append("FROM KrcmtBusinessTypeOfHistory k ");
 		stringBuilder.append("WHERE k.sId = :sId ");
-		stringBuilder.append("ODER BY k.startDate ASC ");
+		stringBuilder.append("AND k.cID = :cId ");
+		stringBuilder.append("ORDER BY k.startDate");
 		FIND_BY_EMPLOYEE = stringBuilder.toString();
+		
+		stringBuilder.append(" DESC");
+		FIND_BY_EMPLOYEE_DESC = stringBuilder.toString();
 	}
 
 	@Override
@@ -96,9 +102,22 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 	}
 
 	@Override
-	public Optional<BusinessTypeOfEmployeeHistory> findByEmployee(String sId) {
+	public Optional<BusinessTypeOfEmployeeHistory> findByEmployee(String cid, String sId) {
 		List<KrcmtBusinessTypeOfHistory> entities = this.queryProxy()
-				.query(FIND_BY_EMPLOYEE, KrcmtBusinessTypeOfHistory.class).setParameter("sId", sId).getList();
+				.query(FIND_BY_EMPLOYEE, KrcmtBusinessTypeOfHistory.class).setParameter("sId", sId)
+				.setParameter("cId", cid).getList();
+		if (entities == null || entities.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(toDomain(entities));
+		}
+	}
+	
+	@Override
+	public Optional<BusinessTypeOfEmployeeHistory> findByEmployeeDesc(String cid, String sId) {
+		List<KrcmtBusinessTypeOfHistory> entities = this.queryProxy()
+				.query(FIND_BY_EMPLOYEE_DESC, KrcmtBusinessTypeOfHistory.class).setParameter("sId", sId)
+				.setParameter("cId", cid).getList();
 		if (entities == null || entities.isEmpty()) {
 			return Optional.empty();
 		} else {

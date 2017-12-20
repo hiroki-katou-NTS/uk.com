@@ -48,5 +48,17 @@ public class OutingTimeSheet extends DomainObject {
 	 * 戻り
 	 */
 	private TimeActualStamp comeBack;
+
+	public void setProperty(OutingFrameNo outingFrameNo, TimeActualStamp goOut, AttendanceTime outingTimeCalculation,
+			AttendanceTime outingTime, GoingOutReason reasonForGoOut, TimeActualStamp comeBack) {
+		this.outingFrameNo = outingFrameNo;
+		this.goOut = goOut;
+		this.outingTimeCalculation = outingTimeCalculation;
+		this.outingTime = outingTime;
+		this.reasonForGoOut = reasonForGoOut;
+		this.comeBack = comeBack;
+	}
+	
+	
 	
 }

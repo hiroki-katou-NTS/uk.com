@@ -96,7 +96,7 @@ public class RegisterLayoutFinder {
 
 		if (command.getCreateType() != 3) {
 
-			List<SettingItemDto> dataServer = this.getItemInitList(command);
+			List<SettingItemDto> dataServer = this.getAllSettingItemList(command);
 
 			if (CollectionUtil.isEmpty(dataServer)) {
 
@@ -268,7 +268,7 @@ public class RegisterLayoutFinder {
 	 *            : id of employee copy
 	 * @return SettingItemDto List
 	 */
-	public List<SettingItemDto> getItemInitList(AddEmployeeCommand command) {
+	public List<SettingItemDto> getAllSettingItemList(AddEmployeeCommand command) {
 
 		// Copy Type
 		if (command.getCreateType() == 1) {

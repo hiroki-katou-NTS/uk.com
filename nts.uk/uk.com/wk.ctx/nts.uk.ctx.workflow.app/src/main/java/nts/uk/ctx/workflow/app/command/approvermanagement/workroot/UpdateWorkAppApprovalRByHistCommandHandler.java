@@ -104,7 +104,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete( )== EDIT){//edit
 					CompanyApprovalRoot com = lstComByApp.get(1);
-					String sDatePre = com.getPeriod().getStartDate().toString();
+					String sDatePre = com.getEmploymentAppHistoryItems().get(0).start().toString();
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
@@ -192,7 +192,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete() == EDIT){//edit
 					//history previous
 					WorkplaceApprovalRoot wp = lstWpByApp.get(1);
-					String sDatePre = wp.getPeriod().getStartDate().toString();
+					String sDatePre = wp.getEmploymentAppHistoryItems().get(0).start().toString();
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
@@ -281,7 +281,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(objUpdateItem.getEditOrDelete()==1){//edit
 					//history previous
 					PersonApprovalRoot ps = lstPsByApp.get(1);
-					String sDatePre = ps.getPeriod().getStartDate().toString();
+					String sDatePre = ps.getEmploymentAppHistoryItems().get(0).start().toString();
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
@@ -315,7 +315,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 						repoAppPhase.deleteAllAppPhaseByBranchId(companyId, psAppRoot.getBranchId());
 					}
 					//delete history current
-					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getHistoryId());
+					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getEmploymentAppHistoryItems().get(0).getHistoryId());
 				}
 			}
 		}

@@ -12,7 +12,6 @@ import javax.enterprise.util.TypeLiteral;
 import find.person.info.PersonDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
-import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.bs.employee.app.find.classification.affiliate.AffClassificationDto;
 import nts.uk.ctx.bs.employee.app.find.department.affiliate.AffDeptHistDto;
 import nts.uk.ctx.bs.employee.app.find.employee.history.AffCompanyHistInfoDto;
@@ -22,6 +21,7 @@ import nts.uk.ctx.bs.employee.app.find.temporaryabsence.TempAbsHisItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.pereg.app.find.employment.history.EmploymentHistoryDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
+import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;;
 
 @Stateless
 @SuppressWarnings("serial")
@@ -50,7 +50,7 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			// CS00019 短時間勤務
 			new TypeLiteral<PeregFinder<ShortWorkTimeDto>>(){},
 			// CS00020 労働条件
-			//new TypeLiteral<PeregFinder<WorkingConditionDto>>(){},
+			new TypeLiteral<PeregFinder<WorkingConditionDto>>(){},
 			// CS00021 勤務種別
 			new TypeLiteral<PeregFinder<BusinessTypeDto>>(){}
 			);

@@ -375,9 +375,9 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
             if (self.itemTotalTimesDetail.countAtr()) {
-                self.itemTotalTimesDetail.countAtr(1);
-            } else {
                 self.itemTotalTimesDetail.countAtr(0);
+            } else {
+                self.itemTotalTimesDetail.countAtr(1);
             }
             // save enum
             self.itemTotalTimesDetail.summaryAtr(self.valueEnum());

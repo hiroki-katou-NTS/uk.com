@@ -25,7 +25,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHistoryRepository_ver1 {
 
-	private static String GET_BY_EID = "select h from BsymtAffClassHistory_Ver1 h where h.sid = :sid ORDER BY h.startDate";
+	private static String GET_BY_EID = "select h from BsymtAffClassHistory_Ver1 h"
+			+ " where h.sid = :sid and h.cid = :cid ORDER BY h.startDate";
+	
+	private static String GET_BY_EID_DESC = GET_BY_EID + " DESC";
 
 	private final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory_Ver1 h"
 			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
@@ -73,9 +76,17 @@ public class JpaAffClassHistory_ver1 extends JpaRepository implements AffClassHi
 	}
 
 	@Override
-	public Optional<AffClassHistory_ver1> getByEmployeeId(String employeeId) {
+	public Optional<AffClassHistory_ver1> getByEmployeeId(String cid, String employeeId) {
 		List<BsymtAffClassHistory_Ver1> entities = this.queryProxy().query(GET_BY_EID, BsymtAffClassHistory_Ver1.class)
-				.setParameter("sid", employeeId).getList();
+				.setParameter("sid", employeeId).setParameter("cid", cid).getList();
+		return toDomain(entities);
+	}
+
+	@Override
+	public Optional<AffClassHistory_ver1> getByEmployeeIdDesc(String cid, String employeeId) {
+		List<BsymtAffClassHistory_Ver1> entities = this.queryProxy()
+				.query(GET_BY_EID_DESC, BsymtAffClassHistory_Ver1.class).setParameter("sid", employeeId)
+				.setParameter("cid", cid).getList();
 		return toDomain(entities);
 	}
 

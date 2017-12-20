@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
-import nts.uk.ctx.pereg.dom.person.info.item.ItemCode;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -202,6 +201,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL AND ic.fixedAtr = 0"
 			+ " ORDER BY io.disporder";
+
+	private final static String SEL_ITEM_BY_SELECTIONS = "SELECT c FROM PpemtPerInfoItemCm c "
+			+ " WHERE  c.selectionItemRefCode =:selectionItemId";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -448,7 +450,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					}
 					dataTypeState = DataTypeState.createSelectionItem(referenceTypeState);
 				}
-				
 
 				break;
 			default:
@@ -668,8 +669,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public boolean checkExistedSelectionItemId(String ctgId, String itemId) {
-		// TODO Auto-generated method stub
+	public boolean checkExistedSelectionItemId(String selectionItemId) {
+		List<PpemtPerInfoItemCm> itemCm = this.queryProxy().query(SEL_ITEM_BY_SELECTIONS, PpemtPerInfoItemCm.class)
+				.setParameter("selectionItemId", selectionItemId).getList();
+		if (itemCm != null) {
+			if (itemCm.size() > 0) {
+				return true;
+			}
+		}
 		return false;
 	}
 

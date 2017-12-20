@@ -28,7 +28,7 @@ public class Approver extends DomainObject{
 	private String employeeId;
 	/**順序*/
 	private int orderNumber;
-	/**区分*/
+	/**承認者指定区分*/
 	private ApprovalAtr approvalAtr;
 	/**確定者*/
 	private ConfirmPerson confirmPerson;

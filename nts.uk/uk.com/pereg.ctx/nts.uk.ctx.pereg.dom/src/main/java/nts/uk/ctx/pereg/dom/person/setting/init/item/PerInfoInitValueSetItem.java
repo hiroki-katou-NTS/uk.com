@@ -50,6 +50,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 
 	// 日付
 	private GeneralDate dateValue;
+	
+	private String itemParentCd;
 
 	// thêm dataType của item defined
 	private Integer dataType;

@@ -154,7 +154,7 @@ module ksm002.d{
                 }
                 self.startMonth(Number(moment(self.dateValue().startDate).format('YYYYMMDD')));
                 self.endMonth(Number(moment(self.dateValue().endDate).format('YYYYMMDD')));
-                let object = new ObjectToUpdate(self.param.util, self.startMonth(), self.endMonth(), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), id);
+                let object = new ObjectToUpdate(self.param.util, moment(self.startMonth(), 'YYYYMMDD').format('YYYY/MM/DD'), moment(self.endMonth(), 'YYYYMMDD').format('YYYY/MM/DD'), listDayToUpdate, listTimeItemToUpdate, self.selectedId(), id);
                 if(update ==1){
                     service.updateSpecificDateSet(object).done(function(data) {
                         nts.uk.ui.windows.close(); 
@@ -211,13 +211,13 @@ module ksm002.d{
         // A object to update 
         export class ObjectToUpdate{
             util: number;
-            strDate: number;
-            endDate: number;
+            strDate: string;
+            endDate: string;
             dayofWeek: Array<number>;
             lstTimeItemId: Array<number>;
             setUpdate: number;
             workplaceId: string;
-            constructor(util: number, strDate: number, endDate:number, dayofWeek: Array<number>, lstTimeItemId: Array<number>, setUpdate: number, workplaceId: string){
+            constructor(util: number, strDate: string, endDate: string, dayofWeek: Array<number>, lstTimeItemId: Array<number>, setUpdate: number, workplaceId: string){
                 this.util = util;
                 this.strDate = strDate;
                 this.endDate =endDate;
