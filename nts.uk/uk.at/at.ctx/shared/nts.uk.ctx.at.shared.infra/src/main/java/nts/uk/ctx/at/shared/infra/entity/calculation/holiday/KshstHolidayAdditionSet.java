@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,15 +31,15 @@ public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializabl
 	
 	/** 1日 */
 	@Column(name = "ONE_DAY")
-	public GeneralDate oneDay;
+	public BigDecimal oneDay;
 	
 	/** 午前 */
 	@Column(name = "MORNING")  
-	public GeneralDate morning;
+	public BigDecimal morning;
 	
 	/** 午後 */
 	@Column(name = "AFTERNOON")
-	public GeneralDate afternoon;
+	public BigDecimal afternoon;
 	
 	/** 実績の就業時間帯を参照する */
 	@Column(name = "REFER_ACTUAL_WORK_HOURS")
