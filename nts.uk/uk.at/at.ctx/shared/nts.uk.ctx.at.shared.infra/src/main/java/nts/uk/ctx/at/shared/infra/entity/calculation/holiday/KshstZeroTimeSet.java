@@ -15,63 +15,63 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_OVER_DAY_CALC_SET")
-public class KshstOverDayCalcSet extends UkJpaEntity implements Serializable{
+@Table(name = "KSHST_ZERO_TIME_SET")
+public class KshstZeroTimeSet extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
-	public KshstOverDayCalcSetPK kshstOverDayCalcSetPK;
+	public KshstZeroTimeSetPK kshstOverDayCalcSetPK;
 	
 	/** 0時跨ぎ計算を行なう*/
-	@Column(name = "CALC_OVER_DAY_END")
+	@Column(name = "CALC_FROM_ZERO_TIME")
 	public int calcOverDayEnd;
 	
 	/** 法定内休日 */
-	@Column(name = "STATUTORY_HD")
+	@Column(name = "LEGAL_HD")
 	public int statutoryHd;
 	
 	/** 法定外休日 */
-	@Column(name = "EXCESS_HD")
+	@Column(name = "NON_LEGAL_HD")
 	public int excessHd;
 	
 	/** 法定外祝日*/
-	@Column(name = "EXCESS_SPECIAL_HOLIDAY")
+	@Column(name = "NON_LEGAL_PUBLIC_HD")
 	public int excessSpecialHoliday;
 	
 	/** 平日 */
-	@Column(name = "WEEK_DAY_STATUTORY_HD")
+	@Column(name = "WEEKDAY_1")
 	public int weekDayStatutoryHd;
 	
 	/** 法定外休日*/
-	@Column(name = "EXCESS_STATUTORY_HD")
+	@Column(name = "NON_LEGAL_HD_1")
 	public int excessStatutoryHd;
 	
 	/** 法定外祝日 */
-	@Column(name = "EXCESS_STATUTOR_SPHD")
+	@Column(name = "NON_LEGAL_PUBLIC_HD_1")
 	public int excessStatutorSphd;
 	
 	/** 平日*/
-	@Column(name = "WEEK_DAY_LEGAL_HD")
+	@Column(name = "WEEKDAY_2")
 	public int weekDayLegalHd;
 	
 	/** 法定外休日 */
-	@Column(name = "EXCESS_LEGAL_HD")
+	@Column(name = "LEGAL_HD_2")
 	public int excessLegalHd;
 	
 	/** 法定外祝日 */
-	@Column(name = "EXCESS_LEGAL_SPHD")
+	@Column(name = "NON_LEGAL_HD_2")
 	public int excessLegalSphd;
 	
 	/** 平日 */
-	@Column(name = "WEEK_DAY_PUBLIC_HD")
+	@Column(name = "WEEKDAY_3")
 	public int weekDayPublicHd;
 	
 	/** 法定外休日 */
-	@Column(name = "EXCESS_PUBLIC_HD")
+	@Column(name = "LEGAL_HD_3")
 	public int excessPublicHd;
 	
 	/** 法定外休日 */
-	@Column(name = "EXCESS_PUBLIC_SPHD")
+	@Column(name = "NON_LEGAL_PUBLIC_HD_3")
 	public int excessPublicSphd;
 	
 //	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
