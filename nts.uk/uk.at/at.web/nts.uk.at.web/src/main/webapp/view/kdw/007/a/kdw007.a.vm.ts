@@ -145,18 +145,26 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.operatorGroup1(param && param.operatorGroup1 ? param.operatorGroup1 : 0);
             selectedErrorAlarm.operatorGroup2(param && param.operatorGroup2 ? param.operatorGroup2 : 0);
             selectedErrorAlarm.erAlAtdItemConditionGroup1.forEach((condition) => {
-                param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
-                    if (conditionParam.targetNO == condition.targetNO()) {
-                        condition.setData(conditionParam);
-                    }
-                });
+                if (param && param.erAlAtdItemConditionGroup1 && param.erAlAtdItemConditionGroup1.length > 0) {
+                    param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
+                        if (conditionParam.targetNO == condition.targetNO()) {
+                            condition.setData(conditionParam);
+                        }
+                    });
+                } else {
+                    condition.setData(null);
+                }
             });
             selectedErrorAlarm.erAlAtdItemConditionGroup2.forEach((condition) => {
-                param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
-                    if (conditionParam.targetNO == condition.targetNO()) {
-                        condition.setData(conditionParam);
-                    }
-                });
+                if (param && param.erAlAtdItemConditionGroup2 && param.erAlAtdItemConditionGroup2.length > 0) {
+                    param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
+                        if (conditionParam.targetNO == condition.targetNO()) {
+                            condition.setData(conditionParam);
+                        }
+                    });
+                } else {
+                    condition.setData(null);
+                }
             });
         }
 
