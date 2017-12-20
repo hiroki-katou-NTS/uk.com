@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
@@ -16,43 +19,44 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflect;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexArrayGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexSetGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexSettingGroup;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowWorkRestSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexStampReflectTZSetMemento;
 
 /**
  * The Class JpaFlexWorkSettingSetMemento.
  */
-public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
-	
-	/** The entity. */
-	private KshmtFlexWorkSet entity;
-	
+public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
+
+	/** The entity setting. */
+	private KshmtFlexSetGroup entitySetting;
+
 	/** The entity settings. */
 	private List<KshmtFlexSettingGroup> entitySettings;
-	
-	
+
 	/** The entity OD grounp. */
-	private KshmtFlexOdGroup entityODGrounp;
-	
+	private KshmtFlexArrayGroup entityArrayGroup;
 
 	/**
 	 * Instantiates a new jpa flex work setting set memento.
 	 *
-	 * @param entity the entity
-	 * @param entitySettings the entity settings
-	 * @param entityODGrounp the entity OD grounp
+	 * @param entitySetting
+	 *            the entity setting
+	 * @param entitySettings
+	 *            the entity settings
+	 * @param entityArrayGroup
+	 *            the entity array group
 	 */
-	public JpaFlexWorkSettingSetMemento(KshmtFlexWorkSet entity, List<KshmtFlexSettingGroup> entitySettings,
-			KshmtFlexOdGroup entityODGrounp) {
+	public JpaFlexWorkSettingSetMemento(KshmtFlexSetGroup entitySetting, List<KshmtFlexSettingGroup> entitySettings,
+			KshmtFlexArrayGroup entityArrayGroup) {
 		super();
-		if(entity.getKshmtFlexWorkSetPK() == null){
-			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
-		}
-		this.entity = entity;
+		this.entitySetting = entitySetting;
 		this.entitySettings = entitySettings;
-		this.entityODGrounp = entityODGrounp;
+		this.entityArrayGroup = entityArrayGroup;
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -62,7 +66,7 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setcompanyId(String companyId) {
-		this.entity.getKshmtFlexWorkSetPK().setCid(companyId);
+		this.entitySetting.setCompanyId(companyId);
 	}
 
 	/*
@@ -73,7 +77,7 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.entity.getKshmtFlexWorkSetPK().setWorktimeCd(workTimeCode.v());
+		this.entitySetting.setWorktimeCode(workTimeCode.v());
 	}
 
 	/*
@@ -85,7 +89,9 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setCoreTimeSetting(CoreTimeSetting coreTimeSetting) {
-		// TODO Auto-generated method stub
+		if (coreTimeSetting != null) {
+			coreTimeSetting.saveToMemento(new JpaCoreTimeSettingSetMemento(this.entitySetting.getEntitySetting()));
+		}
 
 	}
 
@@ -98,8 +104,9 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setRestSetting(FlowWorkRestSetting restSetting) {
-		// TODO Auto-generated method stub
-
+		if (restSetting != null) {
+			restSetting.saveToMemento(new JpaFlexFlowWorkRestSettingSetMemento(this.entitySetting.getEntityRest()));
+		}
 	}
 
 	/*
@@ -111,8 +118,9 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setOffdayWorkTime(FlexOffdayWorkTime offdayWorkTime) {
-		// TODO Auto-generated method stub
-
+		if (offdayWorkTime != null) {
+			offdayWorkTime.saveToMemento(new JpaFlexODWorkTimeSetMemento(this.entityArrayGroup, this.entitySetting));
+		}
 	}
 
 	/*
@@ -136,7 +144,7 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setUseHalfDayShift(boolean useHalfDayShift) {
-		this.entity.setUseHalfdayShift(BooleanGetAtr.getAtrByBoolean(useHalfDayShift));
+		this.entitySetting.getEntitySetting().setUseHalfdayShift(BooleanGetAtr.getAtrByBoolean(useHalfDayShift));
 	}
 
 	/*
@@ -147,8 +155,9 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setLstHalfDayWorkTimezone(List<FlexHalfDayWorkTime> halfDayWorkTimezone) {
-		// TODO Auto-generated method stub
-
+		if(CollectionUtil.isEmpty(halfDayWorkTimezone)){
+			this.entitySettings = new ArrayList<>();
+		}
 	}
 
 	/*
@@ -159,8 +168,16 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setLstStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone) {
-		// TODO Auto-generated method stub
-
+		if(CollectionUtil.isEmpty(stampReflectTimezone)){
+			this.entityArrayGroup.setEntityStamps(new ArrayList<>());
+		}
+		else {
+			this.entityArrayGroup.setEntityStamps(stampReflectTimezone.stream().map(domain -> {
+				KshmtFlexStampReflect entity = new KshmtFlexStampReflect();
+				domain.saveToMemento(new JpaFlexStampReflectTZSetMemento(entity));
+				return entity;
+			}).collect(Collectors.toList()));
+		}
 	}
 
 	/*
@@ -172,8 +189,9 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento{
 	 */
 	@Override
 	public void setCalculateSetting(FlexCalcSetting calculateSetting) {
-		calculateSetting.saveToMemento(new JpaFlexCalcSettingSetMemento(this.entity));
-
+		if (calculateSetting != null) {
+			calculateSetting.saveToMemento(new JpaFlexCalcSettingSetMemento(this.entitySetting.getEntitySetting()));
+		}
 	}
 
 }

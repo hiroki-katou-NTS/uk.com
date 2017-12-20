@@ -4,44 +4,36 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexArrayGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexSetGroup;
 
 /**
  * The Class JpaFlexODFlWRestTzGetMemento.
  */
 public class JpaFlexODFlWRestTzGetMemento implements FlowWorkRestTimezoneGetMemento{
 	
-	/** The entity. */
-	private KshmtFlexOdRestTime entity;
+	/** The entity array group. */
+	private KshmtFlexArrayGroup entityArrayGroup;
 	
-	/** The entity fixed rests. */
-	private List<KshmtFlexOdFixRest> entityFixedRests;
+	/** The entity set group. */
+	private KshmtFlexSetGroup entitySetGroup;
 	
-	/** The entity flow rests. */
-	private List<KshmtFlexOdRestSet> entityFlowRests;
 	
 
 	/**
 	 * Instantiates a new jpa flex OD fl W rest tz get memento.
 	 *
-	 * @param entity the entity
-	 * @param entityFixedRests the entity fixed rests
-	 * @param entityFlowRests the entity flow rests
+	 * @param entityArrayGroup the entity array group
+	 * @param entitySetGroup the entity set group
 	 */
-	public JpaFlexODFlWRestTzGetMemento(KshmtFlexOdRestTime entity, List<KshmtFlexOdFixRest> entityFixedRests,
-			List<KshmtFlexOdRestSet> entityFlowRests) {
+	public JpaFlexODFlWRestTzGetMemento(KshmtFlexArrayGroup entityArrayGroup, KshmtFlexSetGroup entitySetGroup) {
 		super();
-		this.entity = entity;
-		this.entityFixedRests = entityFixedRests;
-		this.entityFlowRests = entityFlowRests;
+		this.entityArrayGroup = entityArrayGroup;
+		this.entitySetGroup = entitySetGroup;
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +41,7 @@ public class JpaFlexODFlWRestTzGetMemento implements FlowWorkRestTimezoneGetMeme
 	 */
 	@Override
 	public boolean getFixRestTime() {
-		return BooleanGetAtr.getAtrByInteger(this.entity.getFixRestTime());
+		return BooleanGetAtr.getAtrByInteger(this.entitySetGroup.getEntityOffday().getFixRestTime());
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +49,7 @@ public class JpaFlexODFlWRestTzGetMemento implements FlowWorkRestTimezoneGetMeme
 	 */
 	@Override
 	public TimezoneOfFixedRestTimeSet getFixedRestTimezone() {
-		return new TimezoneOfFixedRestTimeSet(new JpaFlexODTzOFRTimeSetGetMemento(this.entityFixedRests));
+		return new TimezoneOfFixedRestTimeSet(new JpaFlexODTzOFRTimeSetGetMemento(this.entityArrayGroup.getEntityFixedRests()));
 	}
 
 	/* (non-Javadoc)
@@ -65,7 +57,8 @@ public class JpaFlexODFlWRestTzGetMemento implements FlowWorkRestTimezoneGetMeme
 	 */
 	@Override
 	public FlowRestTimezone getFlowRestTimezone() {
-		return new FlowRestTimezone(new JpaFlexODFlowRestTzGetMemento(this.entity, this.entityFlowRests));
+		return new FlowRestTimezone(new JpaFlexODFlowRestTzGetMemento(this.entitySetGroup.getEntityOffday(),
+				this.entityArrayGroup.getEntityFlowRests()));
 	}
 
 }

@@ -12,6 +12,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexArrayGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexSetGroup;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODFlWRestTzGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODHDWTSheetGetMemento;
 
@@ -20,18 +22,22 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODHDWTSheetG
  */
 public class JpaFlexODWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento{
 	
-	/** The entity groub. */
-	private KshmtFlexOdGroup entityGroub;
+	/** The entity array group. */
+	private KshmtFlexArrayGroup entityArrayGroup;
 	
-
+	/** The entity set group. */
+	private KshmtFlexSetGroup entitySetGroup;
+	
 	/**
 	 * Instantiates a new jpa flex OD work time get memento.
 	 *
-	 * @param entityGroub the entity groub
+	 * @param entityArrayGroup the entity array group
+	 * @param entitySetGroup the entity set group
 	 */
-	public JpaFlexODWorkTimeGetMemento(KshmtFlexOdGroup entityGroub) {
+	public JpaFlexODWorkTimeGetMemento(KshmtFlexArrayGroup entityArrayGroup, KshmtFlexSetGroup entitySetGroup) {
 		super();
-		this.entityGroub = entityGroub;
+		this.entityArrayGroup = entityArrayGroup;
+		this.entitySetGroup = entitySetGroup;
 	}
 
 	/*
@@ -43,10 +49,10 @@ public class JpaFlexODWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento
 	 */
 	@Override
 	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
-		if (CollectionUtil.isEmpty(this.entityGroub.getEntityWorktimezones())) {
+		if (CollectionUtil.isEmpty(this.entityArrayGroup.getEntityWorktimezones())) {
 			return new ArrayList<>();
 		}
-		return this.entityGroub.getEntityWorktimezones().stream()
+		return this.entityArrayGroup.getEntityWorktimezones().stream()
 				.map(entity -> new HDWorkTimeSheetSetting(new JpaFlexODHDWTSheetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
@@ -56,8 +62,7 @@ public class JpaFlexODWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento
 	 */
 	@Override
 	public FlowWorkRestTimezone getRestTimezone() {
-		return new FlowWorkRestTimezone(new JpaFlexODFlWRestTzGetMemento(this.entityGroub.getEntityOffday(),
-				this.entityGroub.getEntityFixedRests(), this.entityGroub.getEntityFlowRests()));
+		return new FlowWorkRestTimezone(new JpaFlexODFlWRestTzGetMemento(this.entityArrayGroup, this.entitySetGroup));
 	}
 
 }

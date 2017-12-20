@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 
 /**
@@ -37,13 +38,14 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		// get command
 		FlexWorkSettingSaveCommand command = context.getCommand();
 		
-		// get domain flex work setting by client send
-		// FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
+		//get domain flex work setting by client send
+		FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
+		
 		// common handler
 		this.commonHandler.handler(command);
 		
 		// call repository save flex work setting
-		//this.flexWorkSettingRepository.saveFlexWorkSetting(flexWorkSetting);
+		this.flexWorkSettingRepository.save(flexWorkSetting);
 	}
 
 }
