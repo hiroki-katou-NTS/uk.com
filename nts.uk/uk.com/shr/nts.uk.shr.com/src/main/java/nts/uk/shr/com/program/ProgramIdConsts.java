@@ -344,7 +344,9 @@ public class ProgramIdConsts {
 	
 	public static final String CPS002G = "CPS002G";
 	
-	public static final String CPS002I = "CPS002Í";
+	public static final String CPS002H = "CPS002H";
+	
+	public static final String CPS002I = "CPS002I";
 	
 	public static final String CMM008 = "CMM008";
 	

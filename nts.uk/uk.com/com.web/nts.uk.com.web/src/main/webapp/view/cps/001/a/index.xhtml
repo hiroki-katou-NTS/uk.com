@@ -20,6 +20,8 @@
 			<com:stylefile path="cps001.a.style.css" />
 			<com:scriptfile path="/view/cps/007/a/layout-control-ko-ext.js"
 				of="/nts.uk.com.web" />
+
+			<com:scriptfile path="cbx-control-ko-ext.js" />
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
 			<com:scriptfile path="cps001.a.start.js" />
@@ -28,14 +30,14 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button type="button" class="proceed"
-					data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('CPS001_4')}</button>
-				<button type="button" data-bind="click: unManagerEmployee">#{i18n.getText('CPS001_5')}</button>
+					data-bind="click: saveData, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('CPS001_4')}</button>
+				<button type="button" data-bind="click: unManagerEmployee" tabindex="2">#{i18n.getText('CPS001_5')}</button>
 				<button type="button" class="danger"
-					data-bind="click: deleteEmployee">#{i18n.getText('CPS001_6')}</button>
+					data-bind="click: deleteEmployee" tabindex="3">#{i18n.getText('CPS001_6')}</button>
 				<a class="goout"
-					data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }">#{i18n.getText('CPS001_7')}</a>
+					data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }" tabindex="4">#{i18n.getText('CPS001_7')}</a>
 				<a class="goout"
-					data-bind="ntsLinkButton: { jump: '/view/cps/008/a/index.xhtml' }">#{i18n.getText('CPS001_8')}</a>
+					data-bind="ntsLinkButton: { jump: '/view/cps/008/a/index.xhtml' }" tabindex="5">#{i18n.getText('CPS001_8')}</a>
 			</div>
 			<div id="contents-area" class="cf"
 				data-bind="let: { 
@@ -53,7 +55,7 @@
 							CONTIWED: 6 /* continuos history has end date */
 						}
 					}">
-				<div id="ccgcomponent"></div>
+				<div id="ccgcomponent" tabindex="6"></div>
 				<div class="left-area">
 					<div class="bg-green caret-right caret-background"
 						data-bind="let: { emp: employee() }">
@@ -70,7 +72,7 @@
 			                			{ headerText: '', key: 'employeeName', width: 125, hidden: false }
 									],
 								}
-							}"></div>
+							},attr: { NameID: text('CPS001_09')} "></div>
 					</div>
 					<div id="lefttabs"
 						data-bind="ntsTabPanel: {
@@ -95,15 +97,15 @@
 							<div data-bind="foreach: multipleData">
 								<div
 									data-bind="ntsSearchBox: {
-										searchMode: 'highlight',
+										searchMode: 'filter',
 										targetKey: 'code',
 										comId: 'layouts',
 										items: gridlist,
 										selectedKey: 'optionValue', 
 										fields: ['optionText'], 
-										mode: 'igGrid'}"></div>
+										mode: 'igGrid'}" tabindex="8"></div>
 								<table id="grid-data"
-									data-bind="ntsGridList: {								
+									data-bind="ntsGridList: {							
 										rows: 10,
 										multiple: false,
 										columns: [
@@ -113,7 +115,7 @@
 										primaryKey: 'optionValue',
 										value: id,
 										dataSource: gridlist
-									}"></table>
+									},attr: { NameID: text('CPS001_25')}"></table>
 							</div>
 						</div>
 						<div class="categorytab" data-bind="if: tab() == TABS.CATEGORY">
@@ -121,20 +123,19 @@
 								<div data-bind="if: !$index()">
 									<div class="form-group search-box">
 										<button type="button"
-											data-bind="click: function() { id.valueHasMutated() }">#{i18n.getText('CPS001_27')}</button>
+											data-bind="click: function() { multiple.id.valueHasMutated() }" tabindex="8">#{i18n.getText('CPS001_27')}</button>
 										<div id="combo-box"
-											data-bind="ntsComboBox: {
-											options: multiple.combobox,
-											visibleItemsCount: 5,
-											value: multiple.id,
-											optionsText: 'optionText',
-											optionsValue: 'optionValue',
-											editable: false,
-											enable: true,
-											columns: [{ prop: 'optionText', length: 10 }]}"></div>
+											data-bind="ntsDropDownList: {
+												value: multiple.id,
+												dataSource: multiple.combobox,
+												textKey: 'optionText',
+												valueKey: 'optionValue',
+												visibleItemsCount: 10,
+												tabIndex: -1
+										 }" tabindex="9"></div>
 									</div>
-									<div data-bind="let: { catType: multiple.category().categoryType() }">
-										<div data-bind="text: catType"></div>
+									<div
+										data-bind="let: { catType: multiple.category().categoryType() }">
 										<div data-bind="if: catType == CAT_TYPE.SINGLE">
 											<div
 												data-bind="template: { name: 'list-data', data: { 
@@ -158,7 +159,7 @@
 														primaryKey: 'optionValue',
 														columns: [
 															{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
-								               				{ headerText: '名称', key: 'optionText', width: 232, hidden: false }
+								               				{ headerText: text('CPS001_65'), key: 'optionText', width: 232, hidden: false }
 														]
 													},
 													event: {
@@ -168,7 +169,8 @@
 												} }">
 											</div>
 										</div>
-										<div data-bind="if: [CAT_TYPE.CONTI, CAT_TYPE.CONTIWED, CAT_TYPE.DUPLI, CAT_TYPE.NODUP].indexOf(catType) > -1">
+										<div
+											data-bind="if: [CAT_TYPE.CONTI, CAT_TYPE.CONTIWED, CAT_TYPE.DUPLI, CAT_TYPE.NODUP].indexOf(catType) > -1">
 											<div
 												data-bind="template: { name: 'list-history', data: {
 												list: {
@@ -177,7 +179,7 @@
 													primaryKey: 'optionValue',
 													columns: [
 														{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
-							               				{ headerText: '名称', key: 'optionText', width: 232, hidden: false }
+							               				{ headerText: text('CPS001_65'), key: 'optionText', width: 232, hidden: false }
 													]
 												},
 												event: {
@@ -202,8 +204,8 @@
 						}">
 					<div class="top-right-area cf">
 						<div class="avatar-group">
-							<div class="active-panel" data-bind="click: chooseAvatar">
-								<img data-bind="attr: { src: _emp.avatar}" class="avatar" />
+							<div class="active-panel" data-bind="click: chooseAvatar" >
+								<img data-bind="attr: { src: _emp.avatar}" class="avatar" tabindex="13"/>
 							</div>
 						</div>
 						<div class="person-group">
@@ -248,12 +250,12 @@
 							<div class="active-panel cf">
 								<div class="column">
 									<button class="btn btn-location" type="button"
-										data-bind="click: pickLocation, enable: _auth.allowMapBrowse()">#{i18n.getText('CPS001_20')}</button>
+										data-bind="click: pickLocation, enable: _auth.allowMapBrowse()" tabindex="16">#{i18n.getText('CPS001_20')}</button>
 									<button class="btn btn-details" type="button"
-										data-bind="click: uploadebook, enable: _auth.allowDocRef()">#{i18n.getText('CPS001_19')}</button>
+										data-bind="click: uploadebook, enable: _auth.allowDocRef()" tabindex="15">#{i18n.getText('CPS001_19')}</button>
 								</div>
 								<div class="column">
-									<button class="btn btn-print" type="button">#{i18n.getText('CPS001_17')}</button>
+									<button class="btn btn-print" type="button" tabindex="14">#{i18n.getText('CPS001_17')}</button>
 								</div>
 							</div>
 							<div class="active-panel">
@@ -315,7 +317,7 @@
 						primaryKey: 'id',
 						columns: [
 							{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-               				{ headerText: '名称', key: 'name', width: 232, hidden: false }
+               				{ headerText: text('CPS001_65'), key: 'name', width: 232, hidden: false }
 						]
 					},
 					event: {
@@ -325,9 +327,9 @@
 					}
 				}">
 				<div class="form-group search-box">
-					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}">#{i18n.getText('CPS001_32')}</button>
-					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}">#{i18n.getText('CPS001_33')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: _.indexOf(_.map(ko.toJS($data.list.dataSource), function(x) { return x.optionValue; }), $data.list.value()) == 0 , ">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}" tabindex="10">#{i18n.getText('CPS001_32')}</button>
+					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}" tabindex="11">#{i18n.getText('CPS001_33')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: _.indexOf(_.map(ko.toJS($data.list.dataSource), function(x) { return x.optionValue; }), $data.list.value()) == 0 , " tabindex="12">#{i18n.getText('CPS001_34')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
@@ -337,7 +339,7 @@
 							primaryKey: $data.list.primaryKey || 'id',
 							columns: $data.list.columns || [
 								{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
-                				{ headerText: text('CPS001_25'), key: 'optionText', width: 232, hidden: false }
+                				{ headerText: text('CPS001_65'), key: 'optionText', width: 232, hidden: false }
 							]
 						}
 					}">
@@ -351,7 +353,7 @@
 						primaryKey: 'id',
 						columns: [
 							{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-               				{ headerText: '名称', key: 'name', width: 232, hidden: false }
+               				{ headerText: text('CPS001_65'), key: 'name', width: 232, hidden: false }
 						]
 					},
 					event: {
@@ -360,8 +362,8 @@
 					}
 				}">
 				<div class="form-group search-box">
-					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}">#{i18n.getText('CPS001_32')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.list.dataSource.length">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}" tabindex="10">#{i18n.getText('CPS001_30')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.list.dataSource.length" tabindex="11">#{i18n.getText('CPS001_31')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
@@ -371,7 +373,7 @@
 							primaryKey: $data.list.primaryKey || 'id',
 							columns: $data.list.columns || [
 								{ headerText: 'コード', key: 'maintenanceLayoutID', width: 100, hidden: true },
-                				{ headerText: text('CPS001_25'), key: 'layoutName', width: 232, hidden: false }
+                				{ headerText: text('CPS001_65'), key: 'layoutName', width: 232, hidden: false }
 							]
 						}
 					}">

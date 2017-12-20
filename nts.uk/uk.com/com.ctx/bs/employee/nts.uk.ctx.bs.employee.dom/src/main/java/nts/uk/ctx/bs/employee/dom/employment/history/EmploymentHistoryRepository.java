@@ -11,7 +11,7 @@ public interface EmploymentHistoryRepository {
 	 * @param sid
 	 * @return
 	 */
-	Optional<EmploymentHistory> getByEmployeeId(String sid);
+	Optional<EmploymentHistory> getByEmployeeId(String cid, String sid);
 	
 	/**
 	 * get with employeeId

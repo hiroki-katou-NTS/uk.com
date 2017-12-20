@@ -35,6 +35,7 @@ import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SyEmployeePubImp.
@@ -81,7 +82,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.collect(Collectors.toList());
 
 		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);
-
+		String cid = AppContexts.user().companyId();
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
@@ -89,7 +90,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 			EmployeeExport result = new EmployeeExport();
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid,employee.getEmployeeId());
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
@@ -189,8 +190,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
-
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(emp.getEmployeeId());
+		String cid = AppContexts.user().companyId();
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid,emp.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 
@@ -222,7 +223,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	public List<EmployeeBasicInfoExport> findBySIds(List<String> sIds) {
 
 		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
-
+		String cid = AppContexts.user().companyId();
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
@@ -247,7 +248,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				result.setBirthDay(person.getBirthDate());
 			}
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid,employee.getEmployeeId());
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 

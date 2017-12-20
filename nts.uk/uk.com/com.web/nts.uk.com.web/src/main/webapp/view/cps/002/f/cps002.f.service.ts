@@ -23,10 +23,10 @@ module cps002.f.service {
         return ajax("com", basePathPerInfoCtg + paths.updatePerInfoCtgCopy, command);
     }
 
-    export function updatePerInfoItemCopy(perInfoCtgId, perInfoItemDefIds) {
+    export function updatePerInfoItemCopy(perInfoCtgId, perInfoItemDefLst) {
         let command = {
             perInfoCtgId: perInfoCtgId,
-            perInfoItemDefIds: perInfoItemDefIds
+            perInfoItemDefLst: perInfoItemDefLst
         };
         return ajax("com", basePathPerInfoItem + paths.updatePerInfoItemCopy, command);
     }

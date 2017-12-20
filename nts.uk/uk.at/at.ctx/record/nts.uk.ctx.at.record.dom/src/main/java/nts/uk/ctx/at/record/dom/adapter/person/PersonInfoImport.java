@@ -25,14 +25,22 @@ public class PersonInfoImport {
 	/** The p mail addr. */
 	// 個人メールアドレス
 	private int gender;
+	
+	private String employeeCode;
 
-	public PersonInfoImport(String personId, String personName, GeneralDate birthDay, String pMailAddr, int gender) {
+	public PersonInfoImport(String personId, 
+			String personName, 
+			GeneralDate birthDay, 
+			String pMailAddr, 
+			int gender,
+			String employeeCode) {
 		super();
 		this.personId = personId;
 		this.personName = personName;
 		this.birthDay = birthDay;
 		this.pMailAddr = pMailAddr;
 		this.gender = gender;
+		this.employeeCode = employeeCode;
 	}
 	
 }

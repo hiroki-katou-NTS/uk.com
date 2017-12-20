@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;

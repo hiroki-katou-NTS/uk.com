@@ -454,7 +454,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 反映済み区分 ← true stamp
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
-				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
+				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(), timeLeavingWork.getAttendanceStamp(),
@@ -529,7 +529,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 反映済み区分 = true
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
-				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
+				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(), timeLeavingWork.getAttendanceStamp(),
@@ -707,7 +707,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 反映済み区分 ← true stamp
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
-				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
+				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(),
@@ -780,7 +780,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 反映済み区分 = true
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
-				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
+				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(),
 				new TimeActualStamp(actualStamp, timeLeavingWork.getAttendanceStamp().getStamp(),
@@ -1137,7 +1137,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 反映済み区分 = true
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
-				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
+				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 		return new OutingTimeSheet(o.getOutingFrameNo(),
 				new TimeActualStamp(o.getGoOut().getActualStamp(), o.getGoOut().getStamp(),
@@ -1213,7 +1213,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 反映済み区分 = true
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
-				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
+				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
 		return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(), o.getOutingTime(),
@@ -1288,7 +1288,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 反映済み区分 ← true stamp
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
-				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
+				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
 		return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(), o.getOutingTime(),
@@ -1356,7 +1356,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 反映済み区分 ← true stamp
 		StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(), x.getStampCombinationAtr(),
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
-				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
+				x.getGoOutReason(), x.getDate(), x.getEmployeeId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
 		return new OutingTimeSheet(o.getOutingFrameNo(),
@@ -1550,7 +1550,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					StampItem stampItem = new StampItem(x.getCardNumber(), x.getAttendanceTime(),
 							x.getStampCombinationAtr(), x.getSiftCd(), x.getStampMethod(), x.getStampAtr(),
 							x.getWorkLocationCd(), x.getWorkLocationName(), x.getGoOutReason(), x.getDate(),
-							x.getPersonId(), ReflectedAtr.REFLECTED);
+							x.getEmployeeId(), ReflectedAtr.REFLECTED);
 					lstStamp.add(stampItem);
 
 				}

@@ -60,13 +60,13 @@ public class GetHeaderOfCPS001Finder {
 	public EmployeeInfo getEmployeeInfo(String sid) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate date = GeneralDate.today();
-
+		String cid = AppContexts.user().companyId();
 		Optional<EmployeeInfo> empInfo = this.employeeMngRepo.findById(sid);
 		if (empInfo.isPresent()) {
 			EmployeeInfo _emp = empInfo.get();
 
-			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(sid);
-			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(sid);
+			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(cid,sid);
+			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(cid,sid);
 
 			if (tempHist.isPresent()) {
 				_emp.setNumberOfTempHist(tempHist

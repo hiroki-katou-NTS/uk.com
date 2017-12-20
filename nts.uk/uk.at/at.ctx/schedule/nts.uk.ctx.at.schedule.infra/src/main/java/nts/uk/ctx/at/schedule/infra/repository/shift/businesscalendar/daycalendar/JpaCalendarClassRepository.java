@@ -114,8 +114,8 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KsmmtCalendarClass.class)
 				.setParameter("companyId", companyId)
 				.setParameter("classId", classId)
-				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
-				.setParameter("endYM", Integer.valueOf(yearMonth+"31"))
+				.setParameter("startYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
+				.setParameter("endYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd"))
 				.getList(x -> toDomainCalendarClass(x));
 	}
 	@Override
@@ -123,8 +123,8 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
 				.setParameter("companyId", companyId)
 				.setParameter("classId", classId)
-				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
-				.setParameter("endYM", Integer.valueOf(yearMonth+"31"))
+				.setParameter("startYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
+				.setParameter("endYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd"))
 				.executeUpdate();
 	}
 	

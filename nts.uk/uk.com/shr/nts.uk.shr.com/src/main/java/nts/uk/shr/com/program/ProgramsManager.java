@@ -921,6 +921,12 @@ public class ProgramsManager {
 			"/view/cps/002/g/index.xhtml");
 	
 	/**
+	 * CPS002H
+	 */
+	public static final Program CPS002H  = new Program(WebAppId.COM, ProgramIdConsts.CPS002H, "CPS002_8",
+			"/view/cps/002/h/index.xhtml");
+	
+	/**
 	 * CPS002I
 	 */
 	public static final Program CPS002I  = new Program(WebAppId.COM, ProgramIdConsts.CPS002I, "CPS002_9",

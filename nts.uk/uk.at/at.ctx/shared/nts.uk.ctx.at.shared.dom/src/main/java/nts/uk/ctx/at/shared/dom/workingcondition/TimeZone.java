@@ -76,4 +76,12 @@ public class TimeZone extends DomainObject {
 		memento.setStart(this.start);
 		memento.setEnd(this.end);
 	}
+
+	public TimeZone(NotUseAtr useAtr, int cnt, int start, int end) {
+		super();
+		this.useAtr = useAtr;
+		this.cnt = cnt;
+		this.start = new TimeWithDayAttr(start);
+		this.end = new TimeWithDayAttr(end);
+	}
 }
