@@ -3,12 +3,12 @@ package nts.uk.ctx.at.record.ac.employee;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapterNew;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 @Stateless
-public class EmployeeRecordAdapterImpl implements EmployeeRecordAdapterNew{
+public class EmployeeRecordAdapterImpl implements EmployeeRecordAdapter{
 	@Inject
 	private SyEmployeePub employeePub;
 

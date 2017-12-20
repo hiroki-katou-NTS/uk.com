@@ -265,9 +265,9 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 */
 	private WwfmtWpApprovalRoot toEntityWpApR(WorkplaceApprovalRoot domain){
 		val entity = new WwfmtWpApprovalRoot();
-		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getWorkplaceId(), domain.getHistoryId());
-		entity.startDate = domain.getPeriod().getStartDate();
-		entity.endDate = domain.getPeriod().getEndDate();
+		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getWorkplaceId(), domain.getEmploymentAppHistoryItems().get(0).getHistoryId());
+		entity.startDate = domain.getEmploymentAppHistoryItems().get(0).start();
+		entity.endDate = domain.getEmploymentAppHistoryItems().get(0).end();
 		entity.applicationType = (domain.getApplicationType() == null ? null : domain.getApplicationType().value);
 		entity.branchId = domain.getBranchId();
 		entity.anyItemAppId = domain.getAnyItemApplicationId();

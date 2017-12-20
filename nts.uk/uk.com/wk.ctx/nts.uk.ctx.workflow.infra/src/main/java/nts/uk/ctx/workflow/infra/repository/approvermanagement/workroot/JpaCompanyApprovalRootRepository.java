@@ -249,9 +249,9 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 */
 	private WwfmtComApprovalRoot toEntityComApR(CompanyApprovalRoot domain){
 		val entity = new WwfmtComApprovalRoot();
-		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getHistoryId());
-		entity.startDate = domain.getPeriod().getStartDate();
-		entity.endDate = domain.getPeriod().getEndDate();
+		entity.wwfmtComApprovalRootPK = new WwfmtComApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmploymentAppHistoryItems().get(0).getHistoryId());
+		entity.startDate = domain.getEmploymentAppHistoryItems().get(0).start();
+		entity.endDate = domain.getEmploymentAppHistoryItems().get(0).end();
 		entity.applicationType = (domain.getApplicationType() == null ? null : domain.getApplicationType().value);
 		entity.branchId = domain.getBranchId();
 		entity.anyItemAppId = domain.getAnyItemApplicationId();

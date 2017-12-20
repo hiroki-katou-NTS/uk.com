@@ -28,10 +28,10 @@ public class ComApprovalRootDto {
 	public static ComApprovalRootDto fromDomain(CompanyApprovalRoot domain){
 		return new ComApprovalRootDto(domain.getCompanyId(),
 					domain.getApprovalId(),
-					domain.getHistoryId(),
+					domain.getEmploymentAppHistoryItems().get(0).getHistoryId(),
 					domain.getApplicationType() == null ? null : domain.getApplicationType().value,
-					domain.getPeriod().getStartDate().toString(),
-					domain.getPeriod().getEndDate().toString(),
+					domain.getEmploymentAppHistoryItems().get(0).start().toString("yyyy/MM/dd"),
+					domain.getEmploymentAppHistoryItems().get(0).end().toString("yyyy/MM/dd"),
 					domain.getBranchId(),
 					domain.getAnyItemApplicationId(),
 					domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value,

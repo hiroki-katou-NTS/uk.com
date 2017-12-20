@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.at.record.app.find.stamp.stampcard.StampCardFinder;
-import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapterNew;
+import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
@@ -21,7 +21,7 @@ public class StampFinder {
 	@Inject
 	private StampCardFinder cardFinder;
 	@Inject
-	private EmployeeRecordAdapterNew empInfor;
+	private EmployeeRecordAdapter empInfor;
 	/**
 	 * 
 	 * Get list Stamp Info by StartDate, endDate, list Card Number

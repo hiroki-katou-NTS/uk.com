@@ -261,9 +261,9 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 */
 	private WwfmtPsApprovalRoot toEntityPsApR(PersonApprovalRoot domain){
 		val entity = new WwfmtPsApprovalRoot();
-		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmployeeId(), domain.getHistoryId());
-		entity.startDate = domain.getPeriod().getStartDate();
-		entity.endDate = domain.getPeriod().getEndDate();
+		entity.wwfmtPsApprovalRootPK = new WwfmtPsApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(), domain.getEmployeeId(), domain.getEmploymentAppHistoryItems().get(0).getHistoryId());
+		entity.startDate = domain.getEmploymentAppHistoryItems().get(0).start();
+		entity.endDate = domain.getEmploymentAppHistoryItems().get(0).end();
 		entity.applicationType = (domain.getApplicationType() == null ? null : domain.getApplicationType().value);
 		entity.branchId = domain.getBranchId();
 		entity.anyItemAppId = domain.getAnyItemApplicationId();

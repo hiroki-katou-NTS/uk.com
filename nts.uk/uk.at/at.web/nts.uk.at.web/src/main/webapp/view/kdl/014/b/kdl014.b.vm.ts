@@ -3,6 +3,8 @@ module kdl014.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
+        startEndDate: string;
+        
         //Param get from test main-screen.
         startDate: string;
         endDate: string;
@@ -13,6 +15,9 @@ module kdl014.b.viewmodel {
 
         constructor() {
             var self = this;
+            
+            self.startEndDate = '';
+            
             //Init param get from test main-screen.
             self.startDate = '';
             self.endDate = '';
@@ -55,8 +60,9 @@ module kdl014.b.viewmodel {
             let lstEmployeeCode: Array<string> = data.lstEmployee;
 
             //Convert attribute to display in this screen.
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～';
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～    ';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
+            self.startEndDate = '' + self.startDate + '' + self.endDate;
 
             //Create param to get list stamp from server.
             let stampParam = new StampParam(startTemp, endTemp, lstEmployeeCode);
