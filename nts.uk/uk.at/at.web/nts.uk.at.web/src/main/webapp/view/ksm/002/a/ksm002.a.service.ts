@@ -5,8 +5,8 @@ module ksm002.a.service {
         getAllSpecDate: "at/schedule/shift/businesscalendar/specificdate/getallspecificdate",
         getSpecDateByIsUse: "at/schedule/shift/businesscalendar/specificdate/getspecificdatebyuse/{0}",
         getCompanyStartDay: "at/schedule/shift/businesscalendar/businesscalendar/getcompanystartday",
-        getComSpecDateByCompanyDate: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydate/{0}",
-        getComSpecDateByCompanyDateWithName: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydatewithname/{0}",
+        getComSpecDateByCompanyDate: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydate",
+        getComSpecDateByCompanyDateWithName: "at/schedule/shift/specificdayset/company/getcompanyspecificdaysetbydatewithname",
         insertComSpecDate: "at/schedule/shift/specificdayset/company/insertcompanyspecificdate",
         updateComSpecDate: "at/schedule/shift/specificdayset/company/updatecompanyspecificdate",
         deleteComSpecDate: "at/schedule/shift/specificdayset/company/deletecompanyspecificdate"
@@ -29,14 +29,14 @@ module ksm002.a.service {
      *get companySpecificDate 
      */
     export function getCompanySpecificDateByCompanyDate(processDate: number): JQueryPromise<any> {
-        return ajax("at", format(paths.getComSpecDateByCompanyDate,processDate));
+        return ajax("at", paths.getComSpecDateByCompanyDate,processDate);
     }
 
     /**
      *get companySpecificDate WITH NAME 
      */
     export function getCompanySpecificDateByCompanyDateWithName(processDate: string): JQueryPromise<any> {
-        return ajax("at", format(paths.getComSpecDateByCompanyDateWithName,processDate));
+        return ajax("at", paths.getComSpecDateByCompanyDateWithName,processDate);
     }
 
     /**

@@ -72,7 +72,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	}
 
 	@Override
-	public Optional<AffWorkplaceHistory_ver1> getAffWorkplaceHistByEmployeeId(String companyId, String employeeId) {
+	public Optional<AffWorkplaceHistory_ver1> getByEmployeeId(String companyId, String employeeId) {
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy()
 				.query(QUERY_GET_AFFWORKPLACEHIST_BYSID, BsymtAffiWorkplaceHist.class).setParameter("sid", employeeId)
 				.setParameter("companyId", companyId).getList();

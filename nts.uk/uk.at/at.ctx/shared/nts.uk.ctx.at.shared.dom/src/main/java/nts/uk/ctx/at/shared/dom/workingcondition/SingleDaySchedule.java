@@ -55,4 +55,15 @@ public class SingleDaySchedule extends DomainObject {
 		memento.setWorkingHours(this.workingHours);
 	}
 
+	public SingleDaySchedule(String workTypeCode, List<TimeZone> workingHours,
+			Optional<String> workTimeCode) {
+		super();
+		this.workTypeCode = new WorkTypeCode(workTypeCode);
+		this.workingHours = workingHours;
+		this.workTimeCode = Optional.empty();
+		if (workTimeCode.isPresent()){
+			this.workTimeCode = Optional.of(new WorkTimeCode(workTimeCode.get()));
+		}
+	}
+
 }

@@ -42,25 +42,25 @@ public interface WorkplaceApprovalRootRepository {
 			Integer applicationType, int employmentRootAtr);
 
 	/**
-	 * ドメインモデル「職場別就業承認ルート」を取得する(就業ルート区分(申請か、確認か、任意項目か))
-	 * 
-	 * @param cid
-	 * @param sid
-	 * @param baseDate
+	 * ドメインモデル「職場別就業承認ルート」を取得する
+	 * @param companyID
+	 * @param workplaceID
+	 * @param date
 	 * @param appType
+	 * @param rootAtr
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> findByBaseDate(String cid, String workplaceId, GeneralDate baseDate, int appType);
+	Optional<WorkplaceApprovalRoot> findByBaseDate(String companyID, String workplaceID, GeneralDate date, ApplicationType appType, EmploymentRootAtr rootAtr);
 
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(共通の)
-	 * 
-	 * @param cid
-	 * @param workplaceId
-	 * @param baseDate
-	 * @return WorkplaceApprovalRoots
+	 * @param companyID
+	 * @param workplaceID
+	 * @param date
+	 * @param appType
+	 * @return
 	 */
-	List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String cid, String workplaceId, GeneralDate baseDate);
+	List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date);
 
 	/**
 	 * add Workplace Approval Root

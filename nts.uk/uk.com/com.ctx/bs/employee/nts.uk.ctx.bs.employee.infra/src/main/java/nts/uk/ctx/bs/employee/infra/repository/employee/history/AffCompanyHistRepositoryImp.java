@@ -47,7 +47,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			"WHERE c.bsymtAffCompanyHistPk.pId = :pId");
 
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
-			"WHERE c.bsymtAffCompanyHistPk.sId = :sId ORDER BY c.startDate ");
+			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate ");
 
 	private static final String SELECT_BY_EMPLOYEE_ID_LIST = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId IN :sIdList  ORDER BY c.startDate ");
@@ -123,9 +123,10 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	}
 
 	@Override
-	public AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId) {
+	public AffCompanyHist getAffCompanyHistoryOfEmployee(String cid, String employeeId) {
 		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
-				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId).getList();
+				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId)
+				.setParameter("cid", cid).getList();
 
 		return toDomain(lstBsymtAffCompanyHist);
 	}

@@ -451,7 +451,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						.map(businessType -> businessType.krcstErAlBusinessTypePK.businessTypeCd)
 						.collect(Collectors.toList()),
 				Optional.ofNullable(entity.krcmtErAlCondition.lstJobTitle).orElse(Collections.emptyList()).stream()
-						.map(jobTitle -> jobTitle.krcstErAlJobTitlePK.eralCheckId).collect(Collectors.toList()),
+						.map(jobTitle -> jobTitle.krcstErAlJobTitlePK.jobId).collect(Collectors.toList()),
 				Optional.ofNullable(entity.krcmtErAlCondition.lstEmployment).orElse(Collections.emptyList()).stream()
 						.map(empt -> empt.krcstErAlEmploymentPK.emptcd).collect(Collectors.toList()),
 				Optional.ofNullable(entity.krcmtErAlCondition.lstClassification).orElse(Collections.emptyList())

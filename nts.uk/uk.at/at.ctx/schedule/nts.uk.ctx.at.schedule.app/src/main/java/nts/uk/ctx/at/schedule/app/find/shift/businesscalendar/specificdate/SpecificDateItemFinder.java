@@ -54,7 +54,7 @@ public class SpecificDateItemFinder {
 	 * @param lstSpecificDateItem
 	 * @return
 	 */
-	public List<SpecificDateItemDto> getSpecificDateItemByListCode(List<String> lstSpecificDateItem){
+	public List<SpecificDateItemDto> getSpecificDateItemByListCode(List<Integer> lstSpecificDateItem){
 		String companyId = AppContexts.user().companyId();
 		return specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDateItem)
 				.stream()

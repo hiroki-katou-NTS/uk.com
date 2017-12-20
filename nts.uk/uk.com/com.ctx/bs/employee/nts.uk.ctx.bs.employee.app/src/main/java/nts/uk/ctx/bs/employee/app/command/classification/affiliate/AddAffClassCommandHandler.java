@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
@@ -61,7 +60,7 @@ public class AddAffClassCommandHandler
 		// add history
 		String newHistoryId = IdentifierUtil.randomUniqueId();
 		
-		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(command.getEmployeeId());
+		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId,command.getEmployeeId());
 		
 		AffClassHistory_ver1 history = new AffClassHistory_ver1(companyId, command.getEmployeeId(), new ArrayList<>());
 		if (historyOption.isPresent()) {
