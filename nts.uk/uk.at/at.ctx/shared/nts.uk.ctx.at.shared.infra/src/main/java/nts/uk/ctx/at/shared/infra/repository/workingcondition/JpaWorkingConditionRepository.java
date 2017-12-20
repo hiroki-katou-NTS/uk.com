@@ -196,7 +196,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 
 		entities = new ArrayList<>();
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
-		this.commandProxy().updateAll(entities);
+		this.commandProxy().insertAll(entities);
 	}
 
 	/**

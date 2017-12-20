@@ -3,7 +3,10 @@ package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.businesscalendar;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-
+/**
+ * 会社開始曜日
+ *
+ */
 @Getter
 public class StartDayItem extends AggregateRoot {
 	private String companyId;
