@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workrule.outsideworktime;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 
 /**
  * 0時跨ぎを計算するしない設定(平日)

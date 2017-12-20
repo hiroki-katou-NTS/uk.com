@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -12,39 +15,63 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
-import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
-import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
+import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverDayEnd.SplitOverTimeWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodOfHoliday;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
+import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworkTime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.BreakSetOfCommon;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.OverWorkSet.StatutoryOverTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixOffdayWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixWeekdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexworkset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -54,162 +81,261 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-@Getter
-public class CalculationRangeOfOneDay extends CalculationTimeSheet{
+@Getterpublic class CalculationRangeOfOneDay {
 	
-	private FixWeekdayWorkTime fixWeekDayWorkTime;
+	private Finally<WithinWorkTimeSheet> withinWorkingTimeSheet = Finally.empty();
 	
-	private final WorkTime workTime;
-	
-	private final WorkType workType;
-	
-	private WithinWorkTimeSheet withinWorkingTimeSheet;
-	
-	private OutsideWorkTimeSheet outsideWorkTimeSheet;
+	private Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = Finally.empty();
 	
 	private TimeSpanForCalc oneDayOfRange;
 	
-	private AttendanceLeavingWorkOfDaily attendanceLeavingWork;
+	private WorkInformationOfDaily workInformationOfDaily;
+	
+	private TimeLeavingOfDailyPerformance attendanceLeavingWork;
 	
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;
 	
-	private TimevacationUseTimeOfDaily TimeVacationAdditionRemainingTime;//時間休暇加算残時間
+	private Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime = Finally.empty();//時間休暇加算残時間
 	
-	public CalculationRangeOfOneDay(FixWeekdayWorkTime fixWeekDayWorkTime,
-	WorkTime workTime,
-	WorkType workType,
-	WithinWorkTimeSheet withinWorkingTimeSheet,
-	OutsideWorkTimeSheet outsideWorkTimeSheet,
-	TimeSpanForCalc oneDayOfRange,
-	AttendanceLeavingWorkOfDaily attendanceLeavingWork,PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
-		super();
+	private Optional<DeductionTimeSheet> temporaryDeductionTimeSheet = Optional.empty(); //休憩時間の算出ロジック(概要設計)が終わるまで一時的措置のため設置 2017.11.15 by hoshina
+	
+	public CalculationRangeOfOneDay(
+									Finally<WithinWorkTimeSheet> withinWorkingTimeSheet,
+									Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet,
+									TimeSpanForCalc oneDayOfRange,
+									TimeLeavingOfDailyPerformance attendanceLeavingWork,
+									PredetermineTimeSetForCalc predetermineTimeSetForCalc,
+									Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime,
+									WorkInformationOfDaily workInformationofDaily
+									) {
+		this.withinWorkingTimeSheet = withinWorkingTimeSheet;
+		this.outsideWorkTimeSheet = outsideWorkTimeSheet;
+		this.oneDayOfRange = oneDayOfRange;
+		this.attendanceLeavingWork = attendanceLeavingWork;
+		this.predetermineTimeSetForCalc = predetermineTimeSetForCalc;
+		this.timeVacationAdditionRemainingTime = timeVacationAdditionRemainingTime;
+		this.workInformationOfDaily = workInformationofDaily;
 	}
 	
+
 	/**
 	 * 就業時間帯の作成
+	 * @param workingSystem
+	 * @param setMethod
+	 * @param clockManage
+	 * @param dailyGoOutSheet
+	 * @param CommonSet
+	 * @param fixedCalc
+	 * @param workTimeDivision
+	 * @param noStampSet
+	 * @param fluidSet
+	 * @param breakmanage
+	 * @param workTimeMethodSet
+	 * @param fluRestTime
+	 * @param fluidprefixBreakTimeSet
+	 * @param predetermineTimeSet
+	 * @param fixedWorkSetting
+	 * @param workTimeCommonSet
+	 * @param bonusPaySetting
+	 * @param overTimeHourSetList
+	 * @param fixOff
+	 * @param dayEndSet
+	 * @param overDayEndSet
+	 * @param holidayTimeWorkItem
+	 * @param beforeDay　前日の勤務種類
+	 * @param toDay　当日の勤務種類
+	 * @param afterDay　翌日の勤務種類
+	 * @param breakdownTimeDay
+	 * @param dailyTime 法定労働時間
+	 * @param autoCalculationSet
+	 * @param statutorySet
+	 * @param prioritySet
 	 */
-	public void createWithinWorkTimeSheet(WorkingSystem workingSystem) {
+	public void createWithinWorkTimeSheet(WorkingSystem workingSystem,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,
+			OutingTimeOfDailyPerformance dailyGoOutSheet,BreakSetOfCommon commonSet
+			,FixRestCalcMethod fixedCalc,WorkTimeDivision workTimeDivision, FlowRestCalcMethod fluidSet, BreakTimeManagement breakmanage
+			,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidPrefixBreakTimeSet,WorkTimeSet predetermineTimeSet,
+			  FixedWorkSetting fixedWorkSetting,WorkTimeCommonSet workTimeCommonSet,BonusPaySetting bonusPaySetting,List<OverTimeHourSet> overTimeHourSetList ,FixOffdayWorkTime fixOff,
+  			  OverDayEndCalcSet dayEndSet,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,WorkType beforeDay,WorkType toDay,WorkType afterDay,
+  			  BreakdownTimeDay breakdownTimeDay,DailyTime dailyTime,AutoCalculationOfOverTimeWork autoCalculationSet,StatutoryOverTimeWorkSet statutorySet,StatutoryPrioritySet prioritySet
+  			  ,WorkTime workTime) {
 		/*固定控除時間帯の作成*/
-//		DedcutionTimeSheet collectDeductionTimes = new DeductionTimeSheet();
-		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fixedSet, breakTimeSheet);
-		theDayOfWorkTimesLoop(workingSystem);
+		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createDedctionTimeSheet(AcquisitionConditionsAtr.All,setMethod,clockManage,
+																						   dailyGoOutSheet,this.oneDayOfRange,commonSet, attendanceLeavingWork
+																						  ,fixedCalc,workTimeDivision,fluidPrefixBreakTimeSet, fluidSet, breakmanage
+																						  ,setMethod,fluRestTime,fluidPrefixBreakTimeSet);
+		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
+		theDayOfWorkTimesLoop(workingSystem,
+				  			  predetermineTimeSet,
+				  			  fixedWorkSetting,
+				  			  workTimeCommonSet,
+				  			  bonusPaySetting,
+				  			  overTimeHourSetList ,
+				  			  fixOff,
+				  			  dayEndSet,
+				  			  holidayTimeWorkItem,
+				  			  beforeDay,
+				  			  toDay,
+				  			  afterDay,
+				  			  breakdownTimeDay,
+				  			  dailyTime,
+				  			  autoCalculationSet,
+				  			  statutorySet,
+				  			  prioritySet,
+				  			  deductionTimeSheet,
+				  			  workTime);
 	}
 
 	/**
-	 * 勤務回数分のループ
+	 * 時間帯作成(勤務回数分のループ)
 	 * 就業時間内・外の処理
+	 * @param workingSystem 労働制クラス
+	 * @param predetermineTimeSet 所定時間設定クラス
+	 * @param fixedWorkSetting 固定勤務設定クラス
+	 * @param workTimeCommonSet 就業時間帯の共通設定クラス
+	 * @param bonusPaySetting　加給設定クラス
+	 * @param overTimeHourSetList 残業時間の時間帯設定クラス
+	 * @param fixOff　固定勤務の休日出勤用勤務時間帯クラス
+	 * @param dayEndSet　0時跨ぎ計算設定クラス
+	 * @param overDayEndSet 就業時間帯の共通設定クラス
+	 * @param holidayTimeWorkItem 休出枠時間帯
+	 * @param beforeDay 勤務種類クラス
+	 * @param toDay 勤務種類クラス
+	 * @param afterDay 勤務種類クラス
+	 * @param breakdownTimeDay 1日の時間内訳クラス
+	 * @param dailyTime 法定労働時間
+	 * @param autoCalculationSet 残業時間の自動計算設定クラス
+	 * @param statutorySet 法定内残業設定
+	 * @param prioritySet 法定内優先設定
+	 * @param deductionTimeSheet 控除時間帯
 	 */
-	public void theDayOfWorkTimesLoop(WorkingSystem workingSystem) {
-		if(workingSystem.isExcludedWorkingCalculate()) {
-			theDayOfWorkTimesLoop();
-		}else{
+	public void theDayOfWorkTimesLoop(WorkingSystem workingSystem,
+									  WorkTimeSet predetermineTimeSet,
+									  FixedWorkSetting fixedWorkSetting,
+									  WorkTimeCommonSet workTimeCommonSet,
+									  BonusPaySetting bonusPaySetting,
+									  List<OverTimeHourSet> overTimeHourSetList ,
+									  FixOffdayWorkTime fixOff, 
+									  OverDayEndCalcSet dayEndSet,
+									  List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,
+									  WorkType beforeDay,
+									  WorkType toDay,
+									  WorkType afterDay,
+									  BreakdownTimeDay breakdownTimeDay,
+									  DailyTime dailyTime,
+									  AutoCalculationOfOverTimeWork autoCalculationSet,
+									  StatutoryOverTimeWorkSet statutorySet,
+									  StatutoryPrioritySet prioritySet,
+									  DeductionTimeSheet deductionTimeSheet,
+									  WorkTime workTime
+									  ) {
+		if(!workingSystem.isExcludedWorkingCalculate()) {
 			/*計算対象外の処理*/
 			return;
 		}
-		
-		for(int workNumber = 0; workNumber <= dailyOfAttendanceLeavingWork.size(); workNumber++ ) {
-			createWithinWorkTimeTimeSheet();
-			createOutOfWorkTimeSheet();
-			/*勤務時間帯の計算*/
+		for(int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++ ) {
+			/*就業内の時間帯作成*/
+			withinWorkingTimeSheet.set(WithinWorkTimeSheet.createAsFixed(toDay, 
+											  						predetermineTimeSet, 
+											  						fixedWorkSetting, 
+											  						workTimeCommonSet, 
+											  						deductionTimeSheet, 
+											  						bonusPaySetting));
+				/*就業外の時間帯作成*/
+			outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList,
+																fixOff,
+																attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(BigDecimal.valueOf(workNumber))),
+																workNumber,
+																dayEndSet,
+																workTimeCommonSet,
+																holidayTimeWorkItem,
+																beforeDay,
+																toDay,
+																afterDay,
+																workTime,
+																workingSystem,
+																breakdownTimeDay,
+																dailyTime,
+																autoCalculationSet,
+																statutorySet,
+																prioritySet));
 		}
+		
 	}
 	
-	/**
-	 * 時間の計算結果をまとめて扱う
-	 * @param withinTimeSheet 計算用就業時間帯
-	 * @param overTimeWorkSheet　計算用残業時間帯
-	 * @param holidayWorkTimeSheet　計算用休出時間帯
-	 * @param deductionTimeSheet　計算用控除時間帯
-	 * @param actualTimeAtr
-	 */
-	public IntegrationOfDaily collectCalculationResult(WithinWorkTimeSheet  withinTimeSheet,
-										  OverTimeWorkSheet    overTimeWorkSheet,
-										  HolidayWorkTimeSheet holidayWorkTimeSheet,
-										  DeductionTimeSheet deductionTimeSheet,
-										  CalculationByActualTimeAtr actualTimeAtr) {
-		
-		int calcWithinWorkTime = withinTimeSheet.calcWorkTime(actualTimeAtr, deductionTimeSheet);/*就業時間*/
-		OverTimeWorkOfDaily overTimeWorkTime = overTimeWorkSheet.calcOverTimeWork()；/*残業時間の計算*/
-		int totalOverTimeWorkTime = overTimeWorkTime.getOverTimeWorkFrameTime().stream().collect(Collectors.summarizingInt(tc -> tc.));/*残業時間の計算*/
-		HolidayWorkTimeOfDaily holidayWorkTime = holidayWorkTimeSheet.calcHolidayWorkTime();/*休日出勤の計算*/
-		int totalHolidayWorkTime = holidayWorkTime.getHolidayWorkFrameTime().stream().collect(Collectors.summarizingInt(tc -> tc.));/*休日出勤の計算*/
-		int deductionBreakTime = deductionTimeSheet.getTotalBreakTime(DeductionAtr.Deduction);/*休憩時間の計算*/
-		int recordBreakTime = deductionTimeSheet.getTotalBreakTime(DeductionAtr.Appropriate);/*計上用の休憩時間の計算*/
-		int deductionGoOutTime = deductionTimeSheet.getTotalGoOutTime(DeductionAtr.Deduction);/*控除用の外出時間の計算*/
-		int recordGoOutTime = deductionTimeSheet.getTotalGoOutTime(DeductionAtr.Appropriate);/*計上用の外出時間の計算*/
-		int totalWorkingTime = calcWithinWorkTime + overTimeWorkTime.calcTotalFrameTime() + holidayWorkTime.calcTotalFrameTime();/*総労働時間の計算*/
-		int coreDeductionTime = ;/*控除コア外出合計時間*/
-		int coreApplicationTime = ;/*計上コア外出合計時間*/
-		int totalBonusPayTime = ;
-		int totalMidNightTime = ;
-		return /*法定労働時間*/ - calcWithinWorkTime;
-	}
-
-	/**
-	 * 就業時間内時間帯の作成
-	 * @param workType 勤務種類クラス
-	 * @param predetermineTimeSet 所定時間の設定
-	 * @param fixedWorkSetting 固定勤務の設定
-	 */
-	public void createWithinWorkTimeTimeSheet() {
-		if(workType.isWeekDayAttendance()) {
-			 WithinWorkTimeSheet.createAsFixedWork(workType, workTime.getPredetermineTimeSet(), workTime.getFixedWorkSetting());
-		}
-	}
-	
-	/**
-	 * 就業時間外時間帯の作成
-	 * 	 
-	 */
-	public void createOutOfWorkTimeSheet(List<OverTimeHourSet> overTimeHourSet ,WorkType workType,FixOffdayWorkTime fixOff, AttendanceLeavingWork attendanceLeave,int workNo) {
-		if(workType.isWeekDayAttendance()) {
-			/*就業時間外時間帯の平日出勤の処理*/
-			outsideWorkTimeSheet = new OutsideWorkTimeSheet(Optional.of(OverTimeWorkSheet.createOverWorkFrame(overTimeHourSet, workingSystem, attendanceLeave,workTime.getPredetermineTimeSet().getSpecifiedTimeSheet().getTimeSheets().get(1).getStartTime(), workNo)),Optional.empty());
-		}
-		else {
-			/*休日出勤*/
-			outsideWorkTimeSheet = new OutsideWorkTimeSheet(Optional.empty(), Optional.of(HolidayWorkTimeOfDaily.getHolidayWorkTimeOfDaily(fixOff.getWorkingTimes(), attendanceLeave)));
-		}
-	}
 	
 	/**
 	 * 各深夜時間の算出結果から深夜時間の合計を算出する
 	 * @return 深夜時間
 	 */
-	public ExcessOfStatutoryTimeOfDaily calcMidNightTime(ExcessOfStatutoryTimeOfDaily excessOfDaily) {
-		ExcessOverTimeWorkMidNightTime excessMidNight = excessOfDaily.getOverTimeWork().calcMidNightTimeIncludeHolidayWorkTime();
-		int totalTime = /*残業深夜と休出深夜の合計算出*/;
-		excessOfDaily.setExcessOfStatutoryMidNightTime(new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime))));
+	public ExcessOfStatutoryTimeOfDaily calcMidNightTime(ExcessOfStatutoryTimeOfDaily excessOfDaily,AutoCalcSetOfHolidayWorkTime autoCalcSet) {
+		//ExcessOverTimeWorkMidNightTime excessHolidayWorkMidNight = excessOfDaily.getOverTimeWork().get().calcMidNightTimeIncludeOverTimeWork();
+		//HolidayMidnightWork excessMidNight = excessOfDaily.getWorkHolidayTime().get().calcMidNightTimeIncludeHolidayWorkTime(autoCalcSet);
+		int totalTime = 0/*残業深夜と休出深夜の合計算出*/;
+		excessOfDaily.setExcessOfStatutoryMidNightTime(new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime))));
 		return excessOfDaily;
 	}
 
 	/**
 	 * 加給時間の合計計算
 	 */
-	public void calcBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeWorkOfDaily overTimeWorkOfDaily) {
-		(/*区分 = 加給*/);
-		(/*区分 = 特定日加給*/);
-		
-		List<BonusPayTime> bonusPayList = withinWorkSheet.calcBonusPayTimeInWithinWorkTime();
-		bonusPayList.addAll(overTimeWorkOfDaily.calcBonusPay());
-		bonusPayList.addAll(calcSpecifiedBonusPay());
+	public RaiseSalaryTimeOfDailyPerfor calcTotalBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeOfDaily overTimeWorkOfDaily,
+											   BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+		return new RaiseSalaryTimeOfDailyPerfor(withinWorkSheet.calcBonusPayTimeInWithinWorkTime(bonusPayAutoCalcSet,bonusPayAtr,calcAtrOfDaily)
+										 ,calcTotalSpecifiedBonusPay(withinWorkSheet,overTimeWorkOfDaily,bonusPayAutoCalcSet,bonusPayAtr,calcAtrOfDaily));
 	}
 	
 	/**
 	 * 特定日加給時間の合計時間
 	 */
-	public void calcSpecifiedBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeWorkOfDaily overTimeWorkOfDaily) {
-		List<BonusPayTime> bonusPayList = withinWorkSheet.calcSpecifiedBonusPayTimeInWithinWorkTime(bonusPayAutoCalcSet, bonusPayAtr);
-		bonusPayList.addAll(overTimeWorkOfDaily.calcSpecifiedBonusPay());
-		bonusPayList.addAll(calcSpecifiedBonusPay());
+	public List<BonusPayTime> calcTotalSpecifiedBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeOfDaily overTimeWorkOfDaily,BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily) {
+		List<BonusPayTime> bonusPayList = withinWorkSheet.calcSpecifiedBonusPayTimeInWithinWorkTime(bonusPayAutoCalcSet, bonusPayAtr,calcAtrOfDaily);
+		bonusPayList.addAll(overTimeWorkOfDaily.calcSpecifiedBonusPay(bonusPayAutoCalcSet,bonusPayAtr,calcAtrOfDaily));
+		return bonusPayList;
 	}
 	
 	
 	/**
-	 * 勤務形態、就業時間帯の設定を判定し時間帯を作成　
+	 * 勤務形態、就業時間帯の設定を判定し時間帯を作成(
 	 * @param workTimeDivision
+	 * @param personalInfo
+	 * @param setMethod
+	 * @param clockManage
+	 * @param dailyGoOutSheet
+	 * @param commonSet
+	 * @param fixedCalc
+	 * @param fluidSet
+	 * @param breakmanage
+	 * @param fluRestTime
+	 * @param fluidprefixBreakTimeSet
+	 * @param predetermineTimeSet
+	 * @param fixedWorkSetting
+	 * @param workTimeCommonSet
+	 * @param bonusPaySetting
+	 * @param overTimeHourSetList
+	 * @param fixOff
+	 * @param dayEndSet
+	 * @param holidayTimeWorkItem
+	 * @param beforeDay
+	 * @param toDay
+	 * @param afterDay
+	 * @param breakdownTimeDay
+	 * @param dailyTime
+	 * @param autoCalculationSet
+	 * @param statutorySet
+	 * @param prioritySet
 	 */
-	public IntegrationOfDaily decisionWorkClassification(WorkTimeDivision workTimeDivision,DailyCalculationPersonalInformation workingSystem) {
+	public void decisionWorkClassification(WorkTimeDivision workTimeDivision,DailyCalculationPersonalInformation personalInfo,
+										   WorkTimeMethodSet  setMethod,RestClockManageAtr clockManage,
+										   OutingTimeOfDailyPerformance dailyGoOutSheet,BreakSetOfCommon  commonSet,
+										   FixRestCalcMethod fixedCalc,FlowRestCalcMethod  fluidSet,
+										   BreakTimeManagement breakmanage,Optional<FluRestTime>  fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet,
+										   WorkTimeSet predetermineTimeSet,FixedWorkSetting fixedWorkSetting,WorkTimeCommonSet workTimeCommonSet,
+										   BonusPaySetting bonusPaySetting,List<OverTimeHourSet> overTimeHourSetList ,FixOffdayWorkTime fixOff,
+										   OverDayEndCalcSet dayEndSet,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem,
+										   WorkType beforeDay,WorkType toDay,WorkType afterDay,BreakdownTimeDay breakdownTimeDay,DailyTime dailyTime,
+										   AutoCalculationOfOverTimeWork autoCalculationSet,StatutoryOverTimeWorkSet statutorySet,StatutoryPrioritySet prioritySet
+										   ,WorkTime workTime) {
 		if(workTimeDivision.getWorkTimeDailyAtr().isFlex()) {
 			/*フレックス勤務*/
 		}
@@ -217,7 +343,13 @@ public class CalculationRangeOfOneDay extends CalculationTimeSheet{
 			switch(workTimeDivision.getWorkTimeMethodSet()) {
 			case Enum_Fixed_Work:
 				/*固定*/
-				createWithinWorkTimeSheet(workingSystem.getWorkingSystem());
+				createWithinWorkTimeSheet(personalInfo.getWorkingSystem(),setMethod,clockManage,
+						dailyGoOutSheet,commonSet
+						,fixedCalc,workTimeDivision, fluidSet, breakmanage
+						,fluRestTime,fluidprefixBreakTimeSet,predetermineTimeSet,
+						 fixedWorkSetting,workTimeCommonSet,bonusPaySetting,overTimeHourSetList ,fixOff,
+			  			 dayEndSet,holidayTimeWorkItem,beforeDay,toDay,afterDay,
+			  			 breakdownTimeDay,dailyTime,autoCalculationSet,statutorySet,prioritySet,workTime);
 			case Enum_Fluid_Work:
 				/*流動勤務*/
 			case Enum_Jogging_Time:
@@ -231,8 +363,6 @@ public class CalculationRangeOfOneDay extends CalculationTimeSheet{
 		}
 		/*控除時間帯の作成*/
 		//             //
-		
-		return new IntegrationOfDaily();
 	}
 
 //	/**

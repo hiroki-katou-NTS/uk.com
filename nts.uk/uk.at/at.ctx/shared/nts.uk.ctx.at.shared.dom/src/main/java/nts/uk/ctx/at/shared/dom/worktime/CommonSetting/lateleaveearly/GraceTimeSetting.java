@@ -21,11 +21,11 @@ public class GraceTimeSetting {
 	 * @param baseTimeSheet
 	 * @return
 	 */
-	public TimeSpanForCalc createLateGraceTimeSheet(TimeSheetWithUseAtr baseTimeSheet) {
+	public TimeSpanForCalc createLateGraceTimeSheet(Timezone baseTimeSheet) {
 		//猶予時間帯の終了時刻の作成
-		val correctedEndTime = baseTimeSheet.getStartTime().forwardByMinutes(this.graceTime.minute());
+		val correctedEndTime = baseTimeSheet.getStart().forwardByMinutes(this.graceTime.minute());
 		//猶予時間帯の作成
-		return new TimeSpanForCalc(baseTimeSheet.getStartTime(), correctedEndTime);
+		return new TimeSpanForCalc(baseTimeSheet.getStart(), correctedEndTime);
 	}
 	
 	/**
@@ -33,11 +33,11 @@ public class GraceTimeSetting {
 	 * @param baseTimeSheet
 	 * @return
 	 */
-	public TimeSpanForCalc createLeaveEarlyGraceTimeSheet(TimeSheetWithUseAtr baseTimeSheet) {
+	public TimeSpanForCalc createLeaveEarlyGraceTimeSheet(Timezone baseTimeSheet) {
 		//猶予時間帯の開始時刻の作成
-		val correctedStartTime = baseTimeSheet.getEndTime().backByMinutes(this.graceTime.minute());
+		val correctedStartTime = baseTimeSheet.getEnd().backByMinutes(this.graceTime.minute());
 		//猶予時間帯の作成
-		return new TimeSpanForCalc(correctedStartTime, baseTimeSheet.getEndTime());
+		return new TimeSpanForCalc(correctedStartTime, baseTimeSheet.getEnd());
 	}
 	
 	

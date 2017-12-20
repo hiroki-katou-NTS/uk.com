@@ -11,4 +11,11 @@ public enum FluidPrefixBreakTimeOfCalcMethod {
 	ReferToSchedule,
 	StampWithoutReference;
 	
+	/**
+	 * 参照せずに打刻するであるか判定する
+	 * @return　参照せずに打刻するである
+	 */
+	public boolean isStampWithoutReference() {
+		return this.equals(StampWithoutReference);
+	}
 }

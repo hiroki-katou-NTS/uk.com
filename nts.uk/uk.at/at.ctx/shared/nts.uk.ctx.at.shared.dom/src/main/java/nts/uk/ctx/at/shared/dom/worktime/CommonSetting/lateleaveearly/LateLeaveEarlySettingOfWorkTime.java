@@ -9,8 +9,11 @@ import lombok.Value;
  */
 @Value
 public class LateLeaveEarlySettingOfWorkTime {
+	//遅刻
 	private LateLeaveEarlyEachSettingOfWorkTime lateSettingOfWorkTime;
+	//早退
 	private LateLeaveEarlyEachSettingOfWorkTime leaveEarlyEachSettingOfWorkTime;
+	//共通
 	private LateLeaveEarlyCommonSettingOfWorkTime commonSetting;
 }
 

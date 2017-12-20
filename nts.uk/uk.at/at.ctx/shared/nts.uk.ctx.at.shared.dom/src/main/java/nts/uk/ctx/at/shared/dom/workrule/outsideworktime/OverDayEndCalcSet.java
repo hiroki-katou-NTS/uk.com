@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workrule.outsideworktime;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 
 /**
  * 0時跨ぎ計算設定
@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
  */
 @Value
 public class OverDayEndCalcSet {
+	private String companyId;
 	private UseAtr calcOverDayEnd;
 	private OverDayEndAggregateFrameSet overDayEndAggregateFrameSet;
 	private OverDayEndCalcSetOfStatutoryHoliday isCalcSetOfStatutoryHoliday;

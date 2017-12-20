@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
-import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -22,7 +21,7 @@ public class DeductionTime {
 	 * @return 控除時間
 	 */
 	public AttendanceTime forLackCalcPredetermineDeduction(FlexCalcMethodOfHalfWork flexCalcMethod) {
-		return new AttendanceTime(decisionFlexCalcMethod(flexCalcMethod.getHalfHoliday().getCalcLack(), forHoliday).valueAsMinutes() + decisionFlexCalcMethod(flexCalcMethod.getHalfCompensatoryHoliday().getCalcLack(), forCompensatoryHoliday).valueAsMinutes());
+		return new AttendanceTime(decisionFlexCalcMethod(flexCalcMethod.getHalfHoliday().getCalcLack(), forHolidayTime).valueAsMinutes() + decisionFlexCalcMethod(flexCalcMethod.getHalfCompensatoryHoliday().getCalcLack(), forCompensatoryHolidayTime).valueAsMinutes());
 	}
 	
 	/**
@@ -31,7 +30,7 @@ public class DeductionTime {
 	 * @return　控除時間
 	 */
 	public AttendanceTime forPremiumCalcPredetermineDeduction(FlexCalcMethodOfHalfWork flexCalcMethod) {
-		return new AttendanceTime(decisionFlexCalcMethod(flexCalcMethod.getHalfHoliday().getCalcPremium(), forHoliday).valueAsMinutes() + decisionFlexCalcMethod(flexCalcMethod.getHalfCompensatoryHoliday().getCalcPremium(), forCompensatoryHoliday).valueAsMinutes());
+		return new AttendanceTime(decisionFlexCalcMethod(flexCalcMethod.getHalfHoliday().getCalcPremium(), forHolidayTime).valueAsMinutes() + decisionFlexCalcMethod(flexCalcMethod.getHalfCompensatoryHoliday().getCalcPremium(), forCompensatoryHolidayTime).valueAsMinutes());
 	}
 	
 	/**

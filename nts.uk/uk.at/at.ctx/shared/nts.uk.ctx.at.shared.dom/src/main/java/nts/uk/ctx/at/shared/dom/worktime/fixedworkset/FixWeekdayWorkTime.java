@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixedWorkTimeSet;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
  */
 // 固定勤務の平日出勤用勤務時間帯
 @Getter
+@AllArgsConstructor
 public class FixWeekdayWorkTime {
 
 	// 勤務時間帯

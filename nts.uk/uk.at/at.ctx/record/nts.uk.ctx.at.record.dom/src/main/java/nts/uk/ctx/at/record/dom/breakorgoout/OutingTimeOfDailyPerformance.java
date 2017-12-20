@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.AcquisitionConditionsAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinStatutoryAtr;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
@@ -31,25 +30,30 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
  */
 @AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	
 	private String employeeId;
 	
+	private GeneralDate ymd;
+	
 	private List<OutingTimeSheet> outingTimeSheets;
 	
-	private GeneralDate ymd;
+
+	
+	
 	/**
 	 * 勤務形態を見て外出時間帯の取得
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> getGoOutTimeSheet(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet
 												 		  ,Optional<FlowWorkRestTimezone> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet){
-		val goOutTimeSheetList = removeUnuseItemBaseOnAtr(acqAtr);
+		val goOutTimeSheetList = removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
 		switch(workTimeMethodSet) {
 		case Enum_Fluid_Work:
 			if(fluRestTime.isPresent()) {
 				if(fluRestTime.get().isFixRestTime()) {
-					return convertFromConvertToBreakTime(fluidprefixBreakTimeSet, goOutTimeSheetList);
+					return convertFromgoOutTimeToBreakTime(fluidprefixBreakTimeSet, goOutTimeSheetList);
 				}
 			}
 			else {
@@ -71,24 +75,19 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @param 取得条件区分 
 	 * @return 不要な項目を削除した時間帯
 	 */
-	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(AcquisitionConditionsAtr acqAtr) {
+	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet) {
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
-		if(acqAtr.isForDeduction()) {
-			for(OutingTimeSheet goOutTimeSheet:outingTimeSheets.stream()
-					 .filter(tg -> tg.getReasonForGoOut().isPrivateOrUnion())
-					 .collect(Collectors.toList())){
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanWithRounding(goOutTimeSheet.getGoOut().getEngrave().getTimesOfDay(), goOutTimeSheet.getComeBack().getEngrave().getTimesOfDay(), Finally.empty())
-																							, new TimeSpanForCalc(goOutTimeSheet.getGoOut().getEngrave().getTimesOfDay(), goOutTimeSheet.getComeBack().getEngrave().getTimesOfDay())
-																							, Collections.emptyList()
-																							, Collections.emptyList()
-																							, Collections.emptyList()
-																							, Optional.empty()
-																							, Finally.of(goOutTimeSheet.getReasonForGoOut())
-																							, Finally.empty()
-																							, DeductionClassification.GO_OUT
-																							, WithinStatutoryAtr.WithinStatutory));
-			}
-		}
+//		if(/*流動勤務の場合*/) {
+//			if((fluidprefixBreakTimeSet.getCalcMethod().isStampWithoutReference() && fluRestTime.get().getUseFixedRestTime())
+//					||(fluRestTime.get()  && fluRestTime.get().getUseFixedRestTime())) {
+//					for(OutingTimeSheet goOutTimeSheet:
+//						outingTimeSheets.stream().filter(tg -> tg.getReasonForGoOut().isPrivateOrUnion()).collect(Collectors.toList())){
+//						returnList.add(getToOutTimeSheet(acqAtr ,workTimeMethodSet, fluRestTime, fluidprefixBreakTimeSet));
+//				}
+//			}
+//		}
+			
+		/*ここに外出から休憩に変化する↓のロジックを呼ぶ*/
 		return returnList;
 	}
 	
@@ -96,25 +95,23 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * 外出時間帯から休憩時間帯への変換
 	 * @return 控除項目の時間帯
 	 */
-	public List<TimeSheetOfDeductionItem> convertFromConvertToBreakTime(FluidPrefixBreakTimeSet fluidprefixBreakTimeSet,List<TimeSheetOfDeductionItem> deductionList){
+	public List<TimeSheetOfDeductionItem> convertFromgoOutTimeToBreakTime(FluidPrefixBreakTimeSet fluidprefixBreakTimeSet,List<TimeSheetOfDeductionItem> deductionList){
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		
 		for(TimeSheetOfDeductionItem deductionItem : deductionList) {
-			if(fluidprefixBreakTimeSet.isPrivateGoOutTreatBreakTime()
-				&& deductionItem.getGoOutReason().get().isPrivate()) {
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),deductionItem.getCalcrange(),deductionItem.getDeductionTimeSheets()
-						       ,deductionItem.getBonusPayTimeSheet(),deductionItem.getSpecifiedBonusPayTimeSheet(),deductionItem.getMidNightTimeSheet(),deductionItem.getGoOutReason()
-						       ,Finally.of(BreakClassification.BREAK_STAMP),DeductionClassification.BREAK,deductionItem.getWithinStatutoryAtr()));
+			//休憩へ変換する
+			if((fluidprefixBreakTimeSet.isPrivateGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isPrivate())
+				||(fluidprefixBreakTimeSet.isUnionGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isUnion())) {
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),deductionItem.getCalcrange(),deductionItem.getDeductionTimeSheet()
+						       ,deductionItem.getBonusPayTimeSheet(),deductionItem.getSpecBonusPayTimesheet(),deductionItem.getMidNightTimeSheet(),deductionItem.getGoOutReason()
+						       ,Finally.of(BreakClassification.BREAK_STAMP),DeductionClassification.BREAK));
 			}
-			else if(fluidprefixBreakTimeSet.isUnionGoOutTreatBreakTime()
-					&& deductionItem.getGoOutReason().get().isUnion()) {
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),deductionItem.getCalcrange(),deductionItem.getDeductionTimeSheets()
-					       ,deductionItem.getBonusPayTimeSheet(),deductionItem.getSpecifiedBonusPayTimeSheet(),deductionItem.getMidNightTimeSheet(),deductionItem.getGoOutReason()
-					       ,Finally.of(BreakClassification.BREAK_STAMP),DeductionClassification.BREAK,deductionItem.getWithinStatutoryAtr()));
-			}
+			//外出のまま
 			else {
 				returnList.add(deductionItem);
 			}
 		}
+		
 		return returnList;
 	}
 }

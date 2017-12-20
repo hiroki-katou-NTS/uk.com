@@ -6,10 +6,8 @@ import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -26,17 +24,22 @@ public class VacationClass {
 	 * 日数単位の休暇時間計算
 	 * @return　1日の時間内訳時間
 	 */
-	public static AttendanceTime vacationTimeOfcalcDaily(WorkType workType,VacationCategory vacationCategory) {
-		BreakdownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, personalCondition);
-		switch(vacationCategory.) {
-		case /*1日*/:
-			return breakDownTimeDay.getOneDay();
-		case /*午前*/
-			return breakDownTimeDay.getMorning();
-		case /*午後*/
-			return breakDownTimeDay.getAfternoon();
-		default:
-			throw new RuntimeException("unknown WorkType");
+	public static AttendanceTime vacationTimeOfcalcDaily(WorkType workType,
+														 VacationCategory vacationCategory,
+														 PredetermineTimeSetForCalc predetermineTimeSet,
+														 Optional<nts.uk.ctx.at.shared.dom.worktime_old.SiftCode> siftCode,
+			 											 Optional<PersonalLaborCondition> personalCondition,
+			 											 VacationAddTimeSet vacationAddTimeSet) {
+		BreakdownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, personalCondition, vacationAddTimeSet);
+		switch(workType.getDailyWork().decisionMatchWorkType(vacationCategory.convertWorkTypeClassification())) {
+			case FULL_TIME:
+				return breakDownTimeDay.getOneDay();
+			case MORNING:
+				return breakDownTimeDay.getMorning();
+			case AFTERNOON:
+				return breakDownTimeDay.getAfternoon();
+			default:
+				throw new RuntimeException("unknown WorkType");
 		}
 	}
 	
@@ -44,19 +47,19 @@ public class VacationClass {
 	 * 休暇加算設定の取得
 	 * @return
 	 */
-	public BreakdownTimeDay getVacationAddSet(PredetermineTimeSetForCalc predetermineTimeSet,Optional<SiftCode> siftCode
-											 ,Optional<PersonalLaborCondition> personalCondition) {
+	private static BreakdownTimeDay getVacationAddSet(PredetermineTimeSetForCalc predetermineTimeSet,Optional<nts.uk.ctx.at.shared.dom.worktime_old.SiftCode> siftCode
+											 ,Optional<PersonalLaborCondition> personalCondition
+											 ,VacationAddTimeSet vacationAddTimeSet) {
 		if(siftCode.isPresent()) {
-			return predetermineTimeSet.getAdditionSet();
+			return predetermineTimeSet.getAdditionSet().getAddTime();
 		}
 		else {
 			if(personalCondition.isPresent()) {
-				return personalCondition.get().getHolidayAddTimeSet();
+				return personalCondition.get().getHolidayAddTimeSet().getAddTime();
 			}
 			else {
-				return 
+				return vacationAddTimeSet.getAdditionTime();
 			}
 		}
-		return /*1日の時間内訳*/;
 	}
 }

@@ -5,7 +5,9 @@
 package nts.uk.ctx.at.shared.dom.common.timerounding;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit.Direction;
 
 /**
  * The Class TimeRoundingSetting.
@@ -34,13 +36,26 @@ public class TimeRoundingSetting extends DomainObject{
 	}
 	
 	/**
-	 * Instantiates a new time rounding setting.
-	 *
-	 * @param roundingTime the rounding time
-	 * @param rounding the rounding
+	 * 分単位の時間値を設定にもとづき丸める
+	 * @param timeAsMinutes　丸め対象の時間
+	 * @return 丸めた時間
 	 */
-	public TimeRoundingSetting(int roundingTime, int rounding) {
-		this.roundingTime = Unit.valueOf(roundingTime);
-		this.rounding = Rounding.valueOf(rounding);
+	public int round(int timeAsMinutes) {
+		
+		int minutesInHour = timeAsMinutes % 60;
+		
+		switch (this.rounding) {
+		case ROUNDING_DOWN_OVER:
+			int mod = minutesInHour % (this.roundingTime.asTime() * 2);
+			val direction = minutesInHour < mod ? Direction.TO_BACK : Direction.TO_FORWARD;
+			return this.roundingTime.round(timeAsMinutes, direction);
+		case ROUNDING_DOWN:
+			return this.roundingTime.round(timeAsMinutes, Direction.TO_BACK);
+		case ROUNDING_UP:
+			return this.roundingTime.round(timeAsMinutes, Direction.TO_FORWARD);
+			
+		default:
+			throw new RuntimeException("invalid case: " + this.rounding);
+		}
 	}
 }

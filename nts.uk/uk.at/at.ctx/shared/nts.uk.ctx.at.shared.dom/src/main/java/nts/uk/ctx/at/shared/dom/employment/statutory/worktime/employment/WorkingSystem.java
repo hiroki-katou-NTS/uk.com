@@ -35,4 +35,12 @@ public enum WorkingSystem {
 	public boolean isVariableWorkingTimeWork() {
 		return this.equals(VariableWorkingTimeWork);
 	}
+	
+	/**
+	 * フレックス時間勤務であるか判定する
+	 * @return　フレックス勤務である
+	 */
+	public boolean isFlexTimeWork() {
+		return this.equals(FlexTimeWork);
+	}
 }

@@ -16,6 +16,7 @@ public class FixedWorkTimeSet {
 
 	/** 就業時間帯 */
 	private final List<WorkTimeOfTimeSheetSet> workingHours;
-	
+	/** 残業時間帯*/
 	private final List<OverTimeHourSet> overTimeHours;
+	
 }

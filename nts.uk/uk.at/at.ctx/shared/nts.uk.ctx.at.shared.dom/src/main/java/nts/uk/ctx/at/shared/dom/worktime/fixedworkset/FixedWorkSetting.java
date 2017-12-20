@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
  * The Class FixedWorkSetting.
  */
 @Getter
+@AllArgsConstructor
 // 固定勤務設定
 public class FixedWorkSetting extends AggregateRoot {
 

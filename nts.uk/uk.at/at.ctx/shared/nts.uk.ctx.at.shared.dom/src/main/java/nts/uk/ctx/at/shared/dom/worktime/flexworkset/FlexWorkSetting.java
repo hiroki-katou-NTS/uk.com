@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluWeekdayWorkTime;
 
 /**
  * The Class FlexWorkSetting.
+ * フレックス勤務設定
  */
 @Getter
 // フレックス勤務設定

@@ -18,7 +18,7 @@ public class FluidWorkSetting extends AggregateRoot {
 
 	/** The working code. */
 	// 就業時間帯コード
-	private SiftCode workingCode;
+	private nts.uk.ctx.at.shared.dom.worktime_old.SiftCode workingCode;
 
 	/** The offday work time. */
 	// 休日勤務時間帯

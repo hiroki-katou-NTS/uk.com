@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
+import java.util.List;
+
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
@@ -36,6 +38,7 @@ public class WorkTime extends AggregateRoot {
 
 	private WorkTimeDisplayName workTimeDisplayName;
 	
+
 	private FixedWorkSetting fixedWorkSetting;
 	
 	private FlexWorkSetting flexWorkSetting;
