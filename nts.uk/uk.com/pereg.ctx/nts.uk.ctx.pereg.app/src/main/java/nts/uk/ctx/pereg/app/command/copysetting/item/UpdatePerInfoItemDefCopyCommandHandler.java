@@ -67,24 +67,32 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 	private void addObject() {
 		// add objects
 		if (!CollectionUtil.isEmpty(command.getPerInfoItemDefLst())) {
+			List<PerInfoDefDto> itemList = command.getPerInfoItemDefLst();
 			EmpCopySetting newCtg = EmpCopySetting.createFromJavaType(ctgId, AppContexts.user().companyId());
 			this.empCopyRepo.addCtgCopySetting(newCtg);
-			List<String> itemDefIds = new ArrayList<String>();
+			List<String> itemDefCd = new ArrayList<String>();
 
-			command.getPerInfoItemDefLst().forEach(x -> {
+			itemList.forEach(x -> {
 
 				if (x.getChecked()) {
 					if (StringUtils.isEmpty(x.getItemParentCd())) {
-						itemDefIds.add(x.getId());
+						itemDefCd.add(x.getItemCd());
 					}
 				}
 			});
-			
-			command.getPerInfoItemDefLst().stream().filter(x -> {
+
+			itemList.stream().filter(x -> {
 				return !StringUtils.isEmpty(x.getItemParentCd());
 			}).collect(Collectors.toList()).forEach(item -> {
-				if (itemDefIds.contains(item.getItemParentCd())) {
-					itemDefIds.add(item.getId());
+				if (itemDefCd.contains(item.getItemParentCd())) {
+					itemDefCd.add(item.getItemCd());
+				}
+			});
+			List<String> itemDefIds = new ArrayList<String>();
+
+			itemList.forEach(x -> {
+				if (itemDefCd.indexOf(x.getItemCd()) != -1) {
+					itemDefIds.add(x.getId());
 				}
 			});
 

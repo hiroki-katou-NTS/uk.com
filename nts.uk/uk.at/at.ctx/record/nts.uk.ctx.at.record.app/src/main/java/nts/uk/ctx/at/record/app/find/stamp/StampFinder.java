@@ -31,15 +31,17 @@ public class StampFinder {
 		String companyId = AppContexts.user().companyId();
 		//打刻カード
 		List<String> cardInfors = cardFinder.findByLstSID(stampDeParaDto.sIDs);
-		StampItem domain = new StampItem(null, null, null, null, null, null, null, null, null, null, null, null);
 		List<StampDto> lstStamp = new ArrayList<>();
+
+		//If stamp card not contain sid.
 		if(cardInfors.isEmpty()){
+			StampItem domain = new StampItem(null, null, null, null, null, null, null, null, null, null, null, null);
 			EmployeeRecordImport data = empInfor.getPersonInfor(stampDeParaDto.getSIDs().get(0));
 			StampDto dto = StampDto.fromDomain(domain, data);
 			lstStamp.add(dto);
 			return lstStamp;
 		}
-		//get 打刻情報
+		//Get 打刻情報.
 		lstStamp = stampRepo.findByEmployeeID(companyId, 
 				cardInfors, 
 				stampDeParaDto.startDate, 
@@ -50,6 +52,15 @@ public class StampFinder {
 					//Set employeeName for StampDto.
 					return StampDto.fromDomain(item, data);
 				}).collect(Collectors.toList());
+		
+		//If list stamp null
+		if(lstStamp.isEmpty()){
+			StampItem domain = new StampItem(null, null, null, null, null, null, null, null, null, null, null, null);
+			EmployeeRecordImport data = empInfor.getPersonInfor(stampDeParaDto.getSIDs().get(0));
+			StampDto dto = StampDto.fromDomain(domain, data);
+			lstStamp.add(dto);
+			return lstStamp;
+		}
 		
 		return lstStamp;
 	}

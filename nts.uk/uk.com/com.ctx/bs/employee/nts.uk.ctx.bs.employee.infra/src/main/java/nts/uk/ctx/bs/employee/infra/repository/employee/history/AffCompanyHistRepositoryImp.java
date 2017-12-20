@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.criteria.Predicate;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -20,9 +19,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfoPK_;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo_;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -48,6 +44,9 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate ");
+	
+	private static final String SELECT_BY_EMPLOYEE_ID_DESC = String.join(" ", SELECT_NO_PARAM,
+			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate DESC");
 
 	private static final String SELECT_BY_EMPLOYEE_ID_LIST = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId IN :sIdList  ORDER BY c.startDate ");
@@ -126,6 +125,15 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	public AffCompanyHist getAffCompanyHistoryOfEmployee(String cid, String employeeId) {
 		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
 				.query(SELECT_BY_EMPLOYEE_ID, BsymtAffCompanyHist.class).setParameter("sId", employeeId)
+				.setParameter("cid", cid).getList();
+
+		return toDomain(lstBsymtAffCompanyHist);
+	}
+	
+	@Override
+	public AffCompanyHist getAffCompanyHistoryOfEmployeeDesc(String cid, String employeeId) {
+		List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
+				.query(SELECT_BY_EMPLOYEE_ID_DESC, BsymtAffCompanyHist.class).setParameter("sId", employeeId)
 				.setParameter("cid", cid).getList();
 
 		return toDomain(lstBsymtAffCompanyHist);

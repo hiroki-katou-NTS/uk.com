@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.find.copysetting.item;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -18,6 +21,7 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItemRepository;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -54,9 +58,9 @@ public class CopySettingItemFinder {
 		}
 
 		itemList.forEach(x -> {
-			result.add(new SettingItemDto(x.getCategoryCode(), x.getItemDefId(), x.getItemCode(), x.getItemName(),
-					x.getIsRequired().value, SettingItemDto.createSaveDataDto(1, ""), x.getDataType(),
-					x.getSelectionItemRefType()));
+			result.add(SettingItemDto.createFromJavaType(x.getCategoryCode(), x.getItemDefId(), x.getItemCode(),
+					x.getItemName(), x.getIsRequired().value, 1, GeneralDate.min(), BigDecimal.valueOf(0), "",
+					x.getDataType(), x.getSelectionItemRefType(), x.getItemParentCd()));
 		});
 
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
@@ -79,7 +83,71 @@ public class CopySettingItemFinder {
 
 			});
 		}
+
+		setDataForSetItem(result);
+
 		return result;
+
+	}
+
+	public void setDataForSetItem(List<SettingItemDto> result) {
+		List<SettingItemDto> childList = result.stream().filter(x -> !StringUtils.isEmpty(x.getItemParentCd()))
+				.collect(Collectors.toList());
+
+		if (!CollectionUtil.isEmpty(childList)) {
+			List<String> itemSetCdLst = new ArrayList<String>();
+			childList.forEach(child -> {
+
+				if (!itemSetCdLst.contains(child.getItemParentCd())) {
+					itemSetCdLst.add(child.getItemParentCd());
+				}
+
+			});
+
+			itemSetCdLst.forEach(itemCd -> {
+
+				Optional<SettingItemDto> itemSetOpt = result.stream().filter(item -> item.getItemCode().equals(itemCd))
+						.findFirst();
+				if (itemSetOpt.isPresent()) {
+
+					SettingItemDto itemSet = itemSetOpt.get();
+					String itemValue = genItemvalue(result, itemCd);
+					itemSet.setData(itemValue);
+				}
+
+			});
+		}
+
+	}
+
+	private String genItemvalue(List<SettingItemDto> result, String itemCd) {
+
+		String itemValue = "";
+		List<SettingItemDto> childItems = result.stream()
+				.filter(item -> String.valueOf(item.getItemParentCd()).equals(itemCd)).collect(Collectors.toList());
+
+		for (SettingItemDto childItem : childItems) {
+			itemValue += childItem.getValueAsString() + getBetweenChar(childItem.getDataType());
+
+		}
+
+		if (itemValue.length() > 0) {
+			return itemValue.substring(0, itemValue.length() - 1);
+		}
+		return itemValue;
+	}
+
+	private String getBetweenChar(DataTypeValue dataType) {
+
+		switch (dataType) {
+		case DATE:
+		case TIME:
+		case TIMEPOINT:
+			return "~";
+
+		default:
+			return " ";
+		}
 
 	}
 
