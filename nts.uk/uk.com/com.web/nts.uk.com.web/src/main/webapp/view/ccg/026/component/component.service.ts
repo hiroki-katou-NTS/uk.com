@@ -4,8 +4,8 @@ module nts.uk.com.view.ccg026.component {
 
     export module service {
         var paths = {
-            getListOfWorkPlaceFunctions: "at/auth/workplace/wplmanagementauthority/workplacefunction/getlistworkplacefunction",
-            getListOfWorkPlaceauthorities: "at/auth/workplace/wplmanagementauthority/workplaceauthority/getallWorkplaceauthoritybyid/{0}"
+            getListOfWorkPlaceFunctions: "auth/wplmanagementauthority/workplacefunction/getlistworkplacefunction",
+            getListOfWorkPlaceauthorities: "auth/wplmanagementauthority/workplaceauthority/getallWorkplaceauthoritybyid/{0}"
         }
         /**
          * get getListOfFunctionPermission by roleId
@@ -15,7 +15,7 @@ module nts.uk.com.view.ccg026.component {
             switch (classification) {
             
             case 1: // workplace
-                return ajax("at", paths.getListOfWorkPlaceFunctions);
+                return ajax("com", paths.getListOfWorkPlaceFunctions);
             default:
                 let dfd = $.Deferred();
             
@@ -27,7 +27,7 @@ module nts.uk.com.view.ccg026.component {
         export function getListOfAviabilityFunctionPermission(roleId : string, classification : number): JQueryPromise<Array<any>> {
             switch (classification) {
             case 1: // workplace
-                return ajax("at", format(paths.getListOfWorkPlaceauthorities, roleId));
+                return ajax("com", format(paths.getListOfWorkPlaceauthorities, roleId));
             default:
                 break;
             }

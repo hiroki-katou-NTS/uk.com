@@ -135,6 +135,7 @@ public class AttendanceItemUtil {
 
 	private static ItemValue newItemValue(String currentLayout, Field field, String layoutCode, int idx) {
 		AttendanceItemValue valueType = getItemValueAnnotation(field);
+		//TODO: Check item id new
 		return new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), valueType.itemId()[idx]);
 	}
 

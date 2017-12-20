@@ -59,6 +59,13 @@ public interface WorkingConditionRepository {
 	 * @param workingCondition the working condition
 	 */
 	void update(WorkingCondition workingCondition);
+	
+	/**
+	 * Save.
+	 *
+	 * @param workingCondition the working condition
+	 */
+	void save(WorkingCondition workingCondition);
 
 	/**
 	 * Delete.
