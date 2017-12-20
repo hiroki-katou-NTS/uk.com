@@ -144,4 +144,47 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#findByListNos(
+	 * java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<OptionalItem> findByListNos(String companyId, List<String> optionalitemNos) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<KrcstOptionalItem> cq = builder.createQuery(KrcstOptionalItem.class);
+
+		// From table
+		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Add where condition
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+				companyId));
+		predicateList.add(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo)
+				.in(optionalitemNos));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Get results
+		List<KrcstOptionalItem> results = em.createQuery(cq).getResultList();
+
+		// Check empty
+		if (CollectionUtil.isEmpty(results)) {
+			return Collections.emptyList();
+		}
+
+		// Return
+		return results.stream().map(item -> new OptionalItem(new JpaOptionalItemGetMemento(item)))
+				.collect(Collectors.toList());
+	}
+
 }
