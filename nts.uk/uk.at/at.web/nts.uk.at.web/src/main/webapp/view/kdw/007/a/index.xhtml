@@ -32,7 +32,7 @@
 					<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW007_17')}</a>
 					<button data-bind="click: setNewMode">#{i18n.getText('KDW007_2')}</button>
 					<button id="register-button" class="proceed" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
-					<button class="danger" data-bind="click: remove">#{i18n.getText('KDW007_4')}</button>
+					<button class="danger" data-bind="click: remove, enable: !isNewMode()">#{i18n.getText('KDW007_4')}</button>
 				</div>
 				<div id="contents-area">
 					<table id="lstErrorAlarm" data-bind="ntsGridList: {								
@@ -90,7 +90,7 @@
 								<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
 								<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span><br/>
 								<div id="color-label" data-bind="ntsFormLabel: { }">#{i18n.getText('KDW007_13')}</div>
-								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: true, width: 100}"/><br/>
+								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/><br/>
 								<div id="message-label" data-bind="ntsFormLabel: { required: true, constraint: 'DisplayMessage' }">#{i18n.getText('KDW007_14')}</div>
 								<textarea id="messageDisplay" class="need-check" data-bind="ntsMultilineEditor: { 
 									value: selectedErrorAlarm().displayMessage, 

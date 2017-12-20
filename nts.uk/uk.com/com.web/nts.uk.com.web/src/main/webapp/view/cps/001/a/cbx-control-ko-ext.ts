@@ -32,15 +32,20 @@ module nts.custombinding {
             });
 
             value.subscribe(v => {
-                $element.igCombo("value", v);
-            });            
+                if ($element.data("igCombo")) {
+                    $element.igCombo("value", v);
+                }
+            });
             value.valueHasMutated();
 
             dataSource.subscribe(data => {
-                $element.igCombo("option", "dataSource", _.filter(data, x => _.isObject(x)));
+                if ($element.data("igCombo")) {
+                    $element.igCombo("option", "dataSource", _.filter(data, x => _.isObject(x)));
+                }
             });
             dataSource.valueHasMutated();
         }
+        update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => { }
     }
 }
 

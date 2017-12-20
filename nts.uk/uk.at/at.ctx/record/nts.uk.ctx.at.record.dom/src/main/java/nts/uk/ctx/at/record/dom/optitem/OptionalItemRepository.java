@@ -36,6 +36,15 @@ public interface OptionalItemRepository {
 	List<OptionalItem> findAll(String companyId);
 
 	/**
+	 * Find by list nos.
+	 *
+	 * @param companyId the company id
+	 * @param optionalitemNos the optionalitem nos
+	 * @return the list
+	 */
+	List<OptionalItem> findByListNos(String companyId, List<String> optionalitemNos);
+
+	/**
 	 * Find by atr.
 	 *
 	 * @param companyId the company id

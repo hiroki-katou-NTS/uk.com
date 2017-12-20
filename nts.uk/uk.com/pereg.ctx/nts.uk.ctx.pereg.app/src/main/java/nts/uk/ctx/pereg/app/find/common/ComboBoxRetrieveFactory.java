@@ -27,8 +27,10 @@ import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.pereg.app.find.person.info.item.CodeNameRefTypeDto;
@@ -65,6 +67,12 @@ public class ComboBoxRetrieveFactory {
 	
 	@Inject
 	private TempAbsenceRepositoryFrame tempAbsFrameRepo;
+	
+	@Inject
+	private WorkplaceInfoRepository workPlaceRepo;
+	
+	@Inject
+	private JobTitleInfoRepository jobTitleRepo;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -122,15 +130,15 @@ public class ComboBoxRetrieveFactory {
 			case "M00001":
 				//部門マスタ
 				break;
-			
 			case "M00002":
 				//職場マスタ
-				return getWorkPlace(companyId);
-			
+				return workPlaceRepo.findAll(companyId, standardDate).stream()
+						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceCode().v(),
+								workPlace.getWorkplaceName().v()))
+						.collect(Collectors.toList());
 			case "M00003":
 				//雇用マスタ
 				return getEmploymentList(companyId);
-			
 			case "M00004":
 				//分類マスタ１
 				return classificationRepo.getAllManagementCategory(companyId).stream()
@@ -139,8 +147,9 @@ public class ComboBoxRetrieveFactory {
 						.collect(Collectors.toList());
 			case "M00005":
 				//職位マスタ
-				return getJobTitle(companyId);
-			
+				return jobTitleRepo.findAll(companyId, standardDate).stream().map(
+						jobTitle -> new ComboBoxObject(jobTitle.getJobTitleCode().v(), jobTitle.getJobTitleName().v()))
+						.collect(Collectors.toList());
 			case "M00006":
 				//休職休業マスタ
 				return tempAbsFrameRepo.findByCid(companyId).stream()
@@ -160,10 +169,8 @@ public class ComboBoxRetrieveFactory {
 						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(), workType.getName().v()))
 						.collect(Collectors.toList());
 			case "M00009":
-				
 				//就業時間帯マスタ
 				break;
-
 			default:
 				break;
 			}
@@ -183,22 +190,4 @@ public class ComboBoxRetrieveFactory {
 		return comboBoxList;
 	}
 	
-	private List<ComboBoxObject> getJobTitle(String companyId) {
-		List<ComboBoxObject> comboBoxList = new ArrayList<>();
-		for (int i = 0; i < 5; i++) {
-			comboBoxList.add(new ComboBoxObject(i + "", "Job Title " + i));
-
-		}
-		return comboBoxList;
-	}
-	
-	private List<ComboBoxObject> getWorkPlace(String companyId) {
-		List<ComboBoxObject> comboBoxList = new ArrayList<>();
-		for (int i = 0; i < 5; i++) {
-			comboBoxList.add(new ComboBoxObject(i + "", "Work Place " + i));
-
-		}
-		return comboBoxList;
-	}
-
 }
