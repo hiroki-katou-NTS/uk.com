@@ -30,8 +30,8 @@ public class CompanySpecificDateFinder {
 	// WITH name
 	public List<CompanySpecificDateDto> getComSpecByDateWithName(String comSpecDate) {
 		String companyId = AppContexts.user().companyId();
-		GeneralDate startDate = GeneralDate.fromString(comSpecDate + "/01", DATE_FORMAT);
-		GeneralDate endDate = GeneralDate.fromString(comSpecDate + "/31", DATE_FORMAT);
+		GeneralDate startDate = GeneralDate.fromString(comSpecDate, DATE_FORMAT);
+		GeneralDate endDate = startDate.addMonths(1).addDays(-1);
 		return companySpecDateRepo.getComSpecByDateWithName(companyId, startDate, endDate)
 				.stream()
 				.map(item -> CompanySpecificDateDto.fromDomain(item))

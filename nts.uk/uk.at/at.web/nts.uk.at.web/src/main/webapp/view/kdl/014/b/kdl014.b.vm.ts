@@ -3,6 +3,8 @@ module kdl014.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
+        startEndDate: string;
+        
         //Param get from test main-screen.
         startDate: string;
         endDate: string;
@@ -13,6 +15,9 @@ module kdl014.b.viewmodel {
 
         constructor() {
             var self = this;
+            
+            self.startEndDate = '';
+            
             //Init param get from test main-screen.
             self.startDate = '';
             self.endDate = '';
@@ -55,8 +60,9 @@ module kdl014.b.viewmodel {
             let lstEmployeeCode: Array<string> = data.lstEmployee;
 
             //Convert attribute to display in this screen.
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～';
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～    ';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
+            self.startEndDate = '' + self.startDate + '' + self.endDate;
 
             //Create param to get list stamp from server.
             let stampParam = new StampParam(startTemp, endTemp, lstEmployeeCode);
@@ -67,13 +73,8 @@ module kdl014.b.viewmodel {
                 let lstSource: Array<StampModel> = [];
                 if (lstStamp.length > 0) {
                     _.forEach(lstStamp, function(item) {
-                        lstSource.push(new StampModel(item.personId, 'name', moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-//                        _.forEach(lstEmloyee, function(employee) {
-//                            if (employee.personId == item.personId) {
-//                                lstSource.push(new StampModel(employee.employeeCd, 'name', moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-//                                return false;
-//                            }
-//                        });
+                        lstSource.push(new StampModel(item.employeeCode, item.pname, moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+
                     });
                 }
                 self.items(_.orderBy(lstSource, ['date', 'attendanceTime', 'employeeCd'], ['asc', 'asc', 'asc']));
