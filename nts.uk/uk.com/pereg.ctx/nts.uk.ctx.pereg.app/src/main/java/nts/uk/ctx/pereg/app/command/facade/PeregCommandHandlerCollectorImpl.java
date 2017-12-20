@@ -31,6 +31,7 @@ import nts.uk.ctx.bs.employee.app.command.employment.history.AddEmploymentHistor
 import nts.uk.ctx.bs.employee.app.command.employment.history.DeleteEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.history.UpdateEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.AddAffJobTitleMainCommand;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.DeleteAffJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.UpdateAffJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.DeleteJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCommand;
@@ -85,7 +86,7 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 	/** Delete handlers */
 	private static final List<TypeLiteral<?>> DELETE_HANDLER_CLASSES = Arrays.asList(
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffiliationDepartmentCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffJobTitleMainCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmploymentHistoryCommand>>(){},
