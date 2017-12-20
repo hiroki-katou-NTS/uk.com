@@ -17,12 +17,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_HOLIDAY_ADDTIME_SET")
-public class KshstHolidayAddtimeSet  extends UkJpaEntity implements Serializable{
+@Table(name = "KSHST_HOLIDAY_ADDTION_SET")
+public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
-	public KshstHolidayAddtimeSetPK kshstHolidayAddtimeSetPK;
+	public KshstHolidayAdditionSetPK kshstHolidayAddtimeSetPK;
 	
 	/** 会社単位の休暇時間を参照する */
 	@Column(name = "REFER_COM_HOLIDAY_TIME")
@@ -60,14 +60,14 @@ public class KshstHolidayAddtimeSet  extends UkJpaEntity implements Serializable
 	@Column(name = "YEARLY_RESERVED")
 	public int yearlyReserved;
 	
-//	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-//	public KshstRegularWorkSet regularWorkSet;
-//	
-//	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-//	public KshstFlexWorkSet flexWorkSet;
-//	
-//	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-//	public KshstIrregularWorkSet irregularWorkSet;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
+	public KshstWorkRegularSet regularWorkSet;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
+	public KshstWorkFlexSet flexWorkSet;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
+	public KshstWorkDepLaborSet irregularWorkSet;
 	
 	@Override
 	protected Object getKey() {

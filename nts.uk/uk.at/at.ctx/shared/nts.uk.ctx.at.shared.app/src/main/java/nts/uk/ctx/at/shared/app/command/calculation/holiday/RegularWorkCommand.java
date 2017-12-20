@@ -1,11 +1,9 @@
-package nts.uk.ctx.at.shared.dom.calculation.holiday;
+package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@AllArgsConstructor
-@Getter
-public class RegularWork {
+@Data
+public class RegularWorkCommand {
 	/** 会社ID */
 	private String companyId;
 	
@@ -30,6 +28,9 @@ public class RegularWork {
 	/** インターバル免除時間を含めて計算する */
 	private int calsIntervalTimeWork;
 	
+	/** 欠勤時間をマイナスする*/
+	private int minusAbsenceTimeWork;
+	
 	/** 実働のみで計算する */
 	private int calcActualOperaWork;
 	
@@ -41,13 +42,4 @@ public class RegularWork {
 	
 	/** 加算する */
 	private int additionTimeWork;
-	
-	public static RegularWork createFromJavaType(String companyId, int calcActualOperationPre,
-			int calcIntervalTimePre, int calcIncludCarePre, int additionTimePre, int notDeductLateleavePre,
-			int deformatExcValuePre, int calsIntervalTimeWork, int calcActualOperaWork,
-			int calcIncludCareWork, int notDeductLateleaveWork, int additionTimeWork){
-		return new RegularWork(companyId, calcActualOperationPre, calcIntervalTimePre, calcIncludCarePre,
-				additionTimePre, notDeductLateleavePre, deformatExcValuePre, calsIntervalTimeWork,
-				calcActualOperaWork, calcIncludCareWork, notDeductLateleaveWork, additionTimeWork);
-	}
 }

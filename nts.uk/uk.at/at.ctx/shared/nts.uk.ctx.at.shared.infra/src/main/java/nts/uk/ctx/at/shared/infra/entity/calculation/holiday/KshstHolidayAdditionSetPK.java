@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KshstIrregularWorkSetPK  implements Serializable{
+public class KshstHolidayAdditionSetPK  implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**会社ID*/
 	@Column(name = "CID")

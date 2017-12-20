@@ -1,12 +1,9 @@
-package nts.uk.ctx.at.shared.dom.calculation.holiday;
+package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@AllArgsConstructor
-@Getter
-public class FlexWork {
-
+@Data
+public class FlexWorkCommand {
 	/** 会社ID */
 	private String companyId;
 
@@ -28,6 +25,9 @@ public class FlexWork {
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleavePre;
 
+	/** 通常、変形の所定超過時 */
+	private int deformatExcValuePre;
+
 	/** インターバル免除時間を含めて計算する */
 	private int calsIntervalTimeWork;
 
@@ -42,23 +42,10 @@ public class FlexWork {
 
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleaveWork;
-
+	
 	/**フレックスの所定不足時*/
 	private int predeterminDeficiency;	
-	
+
 	/** 加算する */
 	private int additionTimeWork;
-
-	public static FlexWork createFromJavaType(String companyId,
-			int calcActualOperationPre, int calcIntervalTimePre, int calcIncludCarePre, 
-			int predExcessTimeflexPre,
-			int additionTimePre, int notDeductLateleavePre, int calsIntervalTimeWork,
-			int minusAbsenceTimeWork, int calcActualOperaWork, int calcIncludCareWork, 
-			int notDeductLateleaveWork,
-			int predeterminDeficiency,int additionTimeWork) {
-		return new FlexWork(companyId, calcActualOperationPre,
-				calcIntervalTimePre, calcIncludCarePre, predExcessTimeflexPre, additionTimePre, notDeductLateleavePre
-				, calsIntervalTimeWork, minusAbsenceTimeWork, calcActualOperaWork,
-				calcIncludCareWork, notDeductLateleaveWork, predeterminDeficiency, additionTimeWork);
-	}
 }

@@ -7,13 +7,13 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KshstOverDayCalcSetPK implements Serializable{
+public class KshstWorkRegularSetPK  implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**会社ID*/
 	@Column(name = "CID")
 	public String companyId;
 }
-
