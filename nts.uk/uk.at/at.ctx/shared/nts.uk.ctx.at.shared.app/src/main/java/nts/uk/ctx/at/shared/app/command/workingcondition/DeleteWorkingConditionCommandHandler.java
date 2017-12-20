@@ -51,7 +51,7 @@ public class DeleteWorkingConditionCommandHandler extends CommandHandler<DeleteW
 		}
 		workingCond.remove(itemToBeDeleted.get());
 		
-		workingConditionRepository.update(workingCond);
+		workingConditionRepository.save(workingCond);
 		
 		workingConditionItemRepository.delete(command.getHistId());
 		
