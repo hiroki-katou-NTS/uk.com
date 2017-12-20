@@ -74,14 +74,14 @@ public class KshstZeroTimeSet extends UkJpaEntity implements Serializable{
 	@Column(name = "NON_LEGAL_PUBLIC_HD_3")
 	public int excessPublicSphd;
 	
-//	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-//	public KshstWeekdayHd weekdayHd;
-//	
-//	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-//	public KshstOverdayHdAttSet overdayHdAttSet;
-//	
-//	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-//	public KshstOverDayHdSet overDayHdSet;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+	public KshstWeekdayHd weekdayHd;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+	public KshstOverdayHdAttSet overdayHdAttSet;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+	public KshstOverDayHdSet overDayHdSet;
 	
 	@Override
 	protected Object getKey() {

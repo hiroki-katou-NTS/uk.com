@@ -54,7 +54,6 @@ public class HolidayAddtimeFinder {
 		regularWorkDto.setNotDeductLateleavePre( regularWork.getNotDeductLateleavePre());
 		regularWorkDto.setDeformatExcValuePre( regularWork.getDeformatExcValuePre());
 		regularWorkDto.setCalsIntervalTimeWork( regularWork.getCalsIntervalTimeWork());
-		regularWorkDto.setMinusAbsenceTimeWork( regularWork.getMinusAbsenceTimeWork());
 		regularWorkDto.setCalcActualOperaWork( regularWork.getCalcActualOperaWork());
 		regularWorkDto.setCalcIncludCareWork( regularWork.getCalcIncludCareWork());
 		regularWorkDto.setNotDeductLateleaveWork( regularWork.getNotDeductLateleaveWork());
@@ -68,20 +67,18 @@ public class HolidayAddtimeFinder {
 		}
 		
 		FlexWorkDto flexWorkDto = new FlexWorkDto();
-		flexWorkDto.setHolidayCalcMethodSet( flexWork.getHolidayCalcMethodSet());
-		flexWorkDto.setAddWithMonthStatutory(flexWork.getAddWithMonthStatutory());
 		flexWorkDto.setCalcActualOperationPre( flexWork.getCalcActualOperationPre());
 		flexWorkDto.setCalcIntervalTimePre( flexWork.getCalcIntervalTimePre());
 		flexWorkDto.setCalcIncludCarePre( flexWork.getCalcIncludCarePre());
 		flexWorkDto.setPredExcessTimeflexPre(flexWork.getPredExcessTimeflexPre());
 		flexWorkDto.setAdditionTimePre( flexWork.getAdditionTimePre());
 		flexWorkDto.setNotDeductLateleavePre( flexWork.getNotDeductLateleavePre());
-		flexWorkDto.setDeformatExcValuePre( flexWork.getDeformatExcValuePre());
 		flexWorkDto.setCalsIntervalTimeWork( flexWork.getCalsIntervalTimeWork());
 		flexWorkDto.setMinusAbsenceTimeWork( flexWork.getMinusAbsenceTimeWork());
 		flexWorkDto.setCalcActualOperaWork( flexWork.getCalcActualOperaWork());
 		flexWorkDto.setCalcIncludCareWork( flexWork.getCalcIncludCareWork());
 		flexWorkDto.setNotDeductLateleaveWork( flexWork.getNotDeductLateleaveWork());
+		flexWorkDto.setPredeterminDeficiency(flexWork.getPredeterminDeficiency());
 		flexWorkDto.setAdditionTimeWork( flexWork.getAdditionTimeWork());
 		return flexWorkDto;
 	}

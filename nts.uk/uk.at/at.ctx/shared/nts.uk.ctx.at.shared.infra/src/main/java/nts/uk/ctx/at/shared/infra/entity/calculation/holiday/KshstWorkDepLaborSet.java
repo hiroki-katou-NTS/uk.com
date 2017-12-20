@@ -71,9 +71,9 @@ public class KshstWorkDepLaborSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "ADDITION_TIME_2")
 	public int additionTimeWork;
 	
-//	@OneToOne(optional = false)
-//		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
-//	public KshstHolidayAddtimeSet holidayAddtimeSet;
+	@OneToOne(optional = false)
+		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
+	public KshstHolidayAdditionSet holidayAddtimeSet;
 	@Override
 	protected Object getKey() {
 		return kshstIrregularWorkSetPK;

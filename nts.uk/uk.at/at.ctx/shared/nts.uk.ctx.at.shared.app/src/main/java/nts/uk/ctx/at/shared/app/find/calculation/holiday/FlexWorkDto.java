@@ -7,12 +7,6 @@ public class FlexWorkDto {
 	/** 会社ID */
 	private String companyId;
 
-	/** 休暇の計算方法の設定 */
-	private int holidayCalcMethodSet;
-
-	/** 月次法定内のみ加算 */
-	private int addWithMonthStatutory;
-
 	/** 実働のみで計算する */
 	private int calcActualOperationPre;
 
@@ -31,9 +25,6 @@ public class FlexWorkDto {
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleavePre;
 
-	/** 通常、変形の所定超過時 */
-	private int deformatExcValuePre;
-
 	/** インターバル免除時間を含めて計算する */
 	private int calsIntervalTimeWork;
 
@@ -48,7 +39,10 @@ public class FlexWorkDto {
 
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleaveWork;
-
+	
+	/**フレックスの所定不足時*/
+	private int predeterminDeficiency;
+	
 	/** 加算する */
 	private int additionTimeWork;
 }
