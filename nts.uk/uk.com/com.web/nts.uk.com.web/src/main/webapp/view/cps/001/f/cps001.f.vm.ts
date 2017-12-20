@@ -6,6 +6,7 @@ module cps001.f.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
+    import permision = service.getCurrentEmpPermision;
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
@@ -45,7 +46,6 @@ module cps001.f.vm {
             self.onfilenameclick = (fileId) => {
                 alert(fileId);
             };
-
         }
 
         start(): JQueryPromise<any> {
@@ -62,6 +62,16 @@ module cps001.f.vm {
                 });
                 dfd.resolve();
             });
+
+            permision().done((data: IPersonAuth) => {
+                if (data) {
+                    if (data.allowDocUpload == 1) {
+                        $(".browser-button").attr('disabled', 'disabled');
+                        $(".delete-button").attr('disabled', 'disabled');
+                    }
+                }
+            });
+
             return dfd.promise();
         }
 
@@ -168,6 +178,16 @@ module cps001.f.vm {
     // Object truyen tu man A sang
     interface IDataShare {
         pid: string;
+    }
+
+    interface IPersonAuth {
+        roleId: string;
+        allowMapUpload: number;
+        allowMapBrowse: number;
+        allowDocRef: number;
+        allowDocUpload: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
     }
 
 

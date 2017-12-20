@@ -1298,16 +1298,16 @@ module nts.custombinding {
                 _.each(data, (x, i) => {
                     // define common function for init new item value
                     let isStr = (item: any) => {
-                        if (item && item.itemTypeState && item.itemTypeState.dataTypeState) {
-                            switch (item.itemTypeState.dataTypeState.dataTypeValue) {
-                                default:
-                                    return false;
-                                case ITEM_SINGLE_TYPE.STRING:
-                                case ITEM_SINGLE_TYPE.SELECTION:
-                                    return true;
-                            }
-                        } else {
+                        if (!item) {
                             return false;
+                        }
+
+                        switch (item.dataTypeValue) {
+                            default:
+                                return false;
+                            case ITEM_SINGLE_TYPE.STRING:
+                            case ITEM_SINGLE_TYPE.SELECTION:
+                                return true;
                         }
                     },
                         modifitem = (def: any, item?: any) => {
@@ -1322,7 +1322,6 @@ module nts.custombinding {
 
                             def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                            def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(item) && def.value ? String(def.value) : def.value);
                             def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
@@ -1332,6 +1331,7 @@ module nts.custombinding {
                             def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
+                            def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
 
                             def.value.subscribe(x => {
                                 let inputs = [],

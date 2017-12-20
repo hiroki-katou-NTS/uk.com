@@ -55,7 +55,9 @@ module cps001.b.vm {
                     let command = { sId: dataShare.sid, reason: empDelete.reason };
                     service.deleteEmp(command).done(() => {
                         showDialog.info({ messageId: "Msg_16" }).then(function() {
-                            setShared('CPS001B_VALUES', {});
+                            setShared('CPS001B_VALUES', {
+                                status : 'deleled'
+                            });
                             close();
                         });
                     });
