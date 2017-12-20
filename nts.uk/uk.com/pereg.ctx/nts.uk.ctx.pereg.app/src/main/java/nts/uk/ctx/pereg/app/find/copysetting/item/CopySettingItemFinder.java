@@ -86,10 +86,12 @@ public class CopySettingItemFinder {
 	public List<CopySettingItemDto> getPerInfoDefById(String perInfoCategoryId) {
 		String companyId = AppContexts.user().companyId();
 		String contractId = AppContexts.user().contractCode();
-		return empCopyItemRepo.getPerInfoItemByCtgId(perInfoCategoryId, companyId, contractId).stream().map(item -> {
-			return new CopySettingItemDto(item.getItemDefId(), item.getPerInfoCtgId(), item.getItemName(),
-					item.isAlreadyCopy());
-		}).collect(Collectors.toList());
+		List<CopySettingItemDto> listData = empCopyItemRepo
+				.getPerInfoItemByCtgId(perInfoCategoryId, companyId, contractId).stream().map(item -> {
+					return CopySettingItemDto.createFromDomain(item);
+				}).collect(Collectors.toList());
+
+		return listData;
 	}
 
 }

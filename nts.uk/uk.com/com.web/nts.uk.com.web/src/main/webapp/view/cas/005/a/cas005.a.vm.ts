@@ -229,16 +229,6 @@ module nts.uk.com.view.cas005.a {
                     } else {
                         self.getEmploymentRoleById(value);
                     }
-//                    for (let i = 0; i < self.componentCcg026.listPermissions().length; i++) { //sucribe
-//                        let tempCommand = new model.WorkPlaceAuthorityCommand(
-//                            self.componentCcg026.listPermissions()[i].functionNo, self.componentCcg026.listPermissions()[i].availability());
-//                        self.listWorkPlaceAuthorityCommand([]);
-//                        for (let i = 0; i < self.componentCcg026.listPermissions().length; i++) { //sucribe
-//                            let tempCommand = new model.WorkPlaceAuthorityCommand(
-//                                self.componentCcg026.listPermissions()[i].functionNo, self.componentCcg026.listPermissions()[i].availability());
-//                            self.listWorkPlaceAuthorityCommand().push(tempCommand);
-//                        }
-//                    }
                     self.objCommandScreenB(new model.RoleCas005Command(
                         self.component.currentCode(),
                         item.roleCode,
