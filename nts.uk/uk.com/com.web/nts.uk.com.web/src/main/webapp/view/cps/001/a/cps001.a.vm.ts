@@ -362,12 +362,6 @@ module cps001.a.vm {
 
         constructor() {
             let self = this;
-
-            self.standardDate.subscribe(d => {
-                if (!d) {
-                    self.standardDate(moment.utc().format("YYYY/MM/DD"));
-                }
-            });
         }
 
         clearData() {
@@ -498,13 +492,16 @@ module cps001.a.vm {
                 if (self.id()) {
                     if (self.mode() == TABS.LAYOUT) {
                         let id = self.id(),
+                            sdate = layout().standardDate(),
+                            ddate = sdate && moment.utc(sdate).toDate() || moment.utc().toDate(),
                             query: ILayoutQuery = {
                                 layoutId: id,
                                 browsingEmpId: self.employeeId(),
-                                standardDate: moment.utc(layout().standardDate()).toDate()
+                                standardDate: ddate
                             };
                         service.getCurrentLayout(query).done((data: any) => {
                             if (data) {
+                                layout().standardDate(data.standardDate || undefined);
                                 layout().listItemCls(data.classificationItems || []);
                             }
                         });
@@ -855,5 +852,9 @@ module cps001.a.vm {
         itemCode: string;
         value: string;
         'type': number;
+    }
+
+    interface IParam {
+        employeeId: string;
     }
 }
