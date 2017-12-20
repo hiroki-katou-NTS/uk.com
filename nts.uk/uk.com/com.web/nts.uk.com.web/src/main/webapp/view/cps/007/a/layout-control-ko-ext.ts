@@ -1298,6 +1298,10 @@ module nts.custombinding {
                 _.each(data, (x, i) => {
                     // define common function for init new item value
                     let isStr = (item: any) => {
+                        if (!item) {
+                            return false;
+                        }
+
                         switch (item.dataTypeValue) {
                             default:
                                 return false;
