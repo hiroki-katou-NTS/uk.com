@@ -1,8 +1,9 @@
 package nts.uk.ctx.bs.employee.dom.holidaysetting.workplace;
 
-import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.common.Year;
 
 /**
  * The Interface WorkplaceMonthDaySettingRepository.
@@ -10,19 +11,21 @@ import java.util.Optional;
 public interface WorkplaceMonthDaySettingRepository {
 	
 	/**
-	 * Findby key.
+	 * Find by year.
 	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @param year the year
 	 * @return the optional
 	 */
-	Optional<WorkplaceMonthDaySetting> findbyKey();
-	
+	Optional<WorkplaceMonthDaySetting> findByYear(CompanyId companyId, String workplaceId, Year year);
 	
 	/**
-	 * Gets the all workplace month day setting.
+	 * Adds the.
 	 *
-	 * @return the all workplace month day setting
+	 * @param domain the domain
 	 */
-	List<WorkplaceMonthDaySetting> getAllWorkplaceMonthDaySetting();
+	void add(WorkplaceMonthDaySetting domain);
 	
 	/**
 	 * Update.
@@ -30,4 +33,13 @@ public interface WorkplaceMonthDaySettingRepository {
 	 * @param domain the domain
 	 */
 	void update(WorkplaceMonthDaySetting domain);
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @param year the year
+	 */
+	void remove(CompanyId companyId, String workplaceId, Year year);
 }

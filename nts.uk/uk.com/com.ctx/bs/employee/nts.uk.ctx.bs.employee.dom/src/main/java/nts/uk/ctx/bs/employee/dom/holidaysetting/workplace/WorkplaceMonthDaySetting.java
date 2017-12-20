@@ -32,7 +32,7 @@ public class WorkplaceMonthDaySetting extends AggregateRoot{
 	
 	/** The workplace ID. */
 	// 職場ID
-	private String workplaceID;
+	private String workplaceId;
 	
 	/** The public holiday month settings. */
 	// 月間公休日数
@@ -46,7 +46,7 @@ public class WorkplaceMonthDaySetting extends AggregateRoot{
 	public WorkplaceMonthDaySetting(WorkplaceMonthDaySettingGetMemento memento){
 		this.companyId = memento.getCompanyId();
 		this.managementYear = memento.getManagementYear();
-		this.workplaceID = memento.getWorkplaceID();
+		this.workplaceId = memento.getWorkplaceID();
 		this.publicHolidayMonthSettings = memento.getPublicHolidayMonthSettings();
 	}
 	
@@ -58,7 +58,7 @@ public class WorkplaceMonthDaySetting extends AggregateRoot{
 	public void saveToMemento(WorkplaceMonthDaySettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setManagementYear(this.managementYear);
-		memento.setWorkplaceID(this.workplaceID);
+		memento.setWorkplaceID(this.workplaceId);
 		memento.setPublicHolidayMonthSettings(this.publicHolidayMonthSettings);
 	}
 	
@@ -71,7 +71,7 @@ public class WorkplaceMonthDaySetting extends AggregateRoot{
 		int result = 1;
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		result = prime * result + ((managementYear == null) ? 0 : managementYear.hashCode());
-		result = prime * result + ((workplaceID == null) ? 0 : workplaceID.hashCode());
+		result = prime * result + ((workplaceId == null) ? 0 : workplaceId.hashCode());
 		return result;
 	}
 
@@ -97,10 +97,10 @@ public class WorkplaceMonthDaySetting extends AggregateRoot{
 				return false;
 		} else if (!managementYear.equals(other.managementYear))
 			return false;
-		if (workplaceID == null) {
-			if (other.workplaceID != null)
+		if (workplaceId == null) {
+			if (other.workplaceId != null)
 				return false;
-		} else if (!workplaceID.equals(other.workplaceID))
+		} else if (!workplaceId.equals(other.workplaceId))
 			return false;
 		return true;
 	}
