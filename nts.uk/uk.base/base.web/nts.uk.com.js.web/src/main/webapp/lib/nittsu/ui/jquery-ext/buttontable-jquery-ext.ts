@@ -140,6 +140,7 @@ module nts.uk.ui.jqueryExtentions {
             column: number;
             id: string;
             source: any;
+            originalSource: any;
             width: number;
             
             constructor(container: JQuery, option: any){
@@ -148,7 +149,8 @@ module nts.uk.ui.jqueryExtentions {
                 this.clickOnAction = option.click;
                 this.row = option.row;
                 this.column = option.column;
-                this.source = _.cloneDeep(option.source);
+                this.originalSource = _.cloneDeep(option.source);
+                this.source = this.changeSource(option.source);
                 this.id = nts.uk.util.randomId();
                 this.width = option.width;
                 
@@ -156,12 +158,24 @@ module nts.uk.ui.jqueryExtentions {
                 this.cloneContextMenu(option.contextMenu);
             }
             
+            changeSource(origin: Array<any>): Array<Array<any>>{
+                let result = [];
+                for(let rI = 0; rI < this.row; rI++){
+                    result[rI] = [];
+                    for(let cI = 0; cI < this.column; cI++){
+                        result[rI][cI] = !isNull(origin[rI+cI]) ? _.cloneDeep(origin[rI+cI]) : undefined;
+                    }
+                }
+                return result;
+            }
+            
             setDataSource(source: Array<any>){
-                this.source = _.cloneDeep(source);
+                this.originalSource = _.cloneDeep(source);
+                this.source = this.changeSource(source);
             }
             
             getDataSource(): Array<any> {
-                return _.clone(this.source);
+                return _.cloneDeep(this.originalSource);
             }
             
             setColumn(columnSize: number){
@@ -200,7 +214,7 @@ module nts.uk.ui.jqueryExtentions {
                 
                 colgroup.appendTo(table);
                 tbody.appendTo(table);
-                table.appendTo(this.container);
+                table.appendTo(this.container); 
                 this.drawTable();
             }
             
@@ -255,7 +269,7 @@ module nts.uk.ui.jqueryExtentions {
                     let c = $(this);
                     if(!c.data("empty-cell")){
                         if(c.hasClass("ntsButtonCellSelected")){
-                            c.removeClass("ntsButtonCellSelected");    
+                            c.removeClass("ntsButtonCellSelected");     
                             self.container.trigger("cellselectedchanging", {column: -1, row: -1});
                         } else {
                             self.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
@@ -264,7 +278,7 @@ module nts.uk.ui.jqueryExtentions {
                             self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx"))}); 
                         }
                     } else{
-                        let oldSelected = self.container.find(".ntsButtonCellSelected");
+                        let oldSelected = self.container.find(".ntsButtonCellSelected"); 
                         if(!nts.uk.util.isNullOrEmpty(oldSelected)){
                             let oCell = oldSelected.parent();
                             self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx"))});    
@@ -323,18 +337,26 @@ module nts.uk.ui.jqueryExtentions {
                     this.source[rowIdx] = [];
                 }
                 this.source[rowIdx][columnIdx] = data;
+                this.updateOriginalSource();
+            }
+            
+            updateOriginalSource(){
+                this.originalSource = this.toFlatSource();
                 this.container.trigger("sourcechanging", {source: this.cloneSource()});
             }
             
+            toFlatSource(){
+                let result = [];
+                _.forEach(this.source, function(row){
+                    _.forEach(row, function(cell){
+                       result.push(_.cloneDeep(cell));     
+                    });
+                });
+                return result;
+            }
+            
             cloneSource(){
-//                let clonedSource = [];
-//                _.forEach(this.source, function(row, idx){
-//                    clonedSource[idx] = [];
-//                    _.forEach(row, function(cell, idx2){
-//                        clonedSource[idx][idx2] = _.cloneDeep(cell);
-//                    });    
-//                });
-                return _.cloneDeep(this.source);
+                return this.getDataSource();
             }
         }
         
