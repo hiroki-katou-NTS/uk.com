@@ -25,5 +25,5 @@ public interface FlOffdayWtzGetMemento {
 	 *
 	 * @return the lst work timezone
 	 */
-	List<FlWorkHdTimeZone> getLstWorkTimezone();
+	List<FlowWorkHolidayTimeZone> getLstWorkTimezone();
 }

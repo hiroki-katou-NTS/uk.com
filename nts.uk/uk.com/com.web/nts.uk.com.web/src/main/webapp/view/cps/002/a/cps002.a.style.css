@@ -2,8 +2,9 @@
 
 /*A1_002*/
 #emp_reg_info_wizard>.steps {
-	height: 700px
+	height: 700px;
 }
+
 
 #init_setting_btn {
 	margin-right: 200px;
@@ -42,7 +43,7 @@
 
 .nts-wizard.vertical>.content {
 	width: 1050px;
-	min-height: 43em;
+	height: 800px;
 }
 
 #emp_reg_info_wizard {
@@ -201,6 +202,10 @@
 
 .requiredCell {
 	background-color: #FAEC82;
+}
+
+.notRequiredCell {
+	background-color: #E0F59E;
 }
 
 .disabledCell {

@@ -22,11 +22,13 @@ public class WorkplaceSpecificDateFinder {
 	// WITH name
 	public List<WokplaceSpecificDateDto> getWpSpecByDateWithName(String workplaceId, String wpSpecDate) {
 		List<WokplaceSpecificDateDto> wokplaceSpecificDateDtos = new ArrayList<WokplaceSpecificDateDto>();
-		GeneralDate startDate = GeneralDate.fromString(wpSpecDate + "/01", DATE_FORMAT);
-		GeneralDate endDate = GeneralDate.fromString(wpSpecDate + "/31", DATE_FORMAT);
+		GeneralDate startDate = GeneralDate.fromString(wpSpecDate, DATE_FORMAT);
+		GeneralDate endDate = startDate.addMonths(1).addDays(-1);
 		List<WorkplaceSpecificDateItem> resultList = workplaceSpecDateRepo.getWpSpecByDateWithName(workplaceId, startDate, endDate);
-		for(GeneralDate loopDate=startDate; loopDate.beforeOrEquals(endDate); loopDate.addDays(1)){
-			List<WorkplaceSpecificDateItem> listByDate = resultList.stream().filter(x -> x.getSpecificDate().equals(loopDate)).collect(Collectors.toList());
+		
+		while(startDate.beforeOrEquals(endDate)) {	
+			GeneralDate tmpDate = startDate;
+			List<WorkplaceSpecificDateItem> listByDate = resultList.stream().filter(x -> x.getSpecificDate().equals(tmpDate)).collect(Collectors.toList());
 			if(!listByDate.isEmpty()){
 				List<Integer> specificDateItemNo = new ArrayList<Integer>();
 				for(WorkplaceSpecificDateItem dateRecord: listByDate){
@@ -34,6 +36,7 @@ public class WorkplaceSpecificDateFinder {
 				}
 				wokplaceSpecificDateDtos.add(new WokplaceSpecificDateDto(workplaceId, listByDate.get(0).getSpecificDate(), specificDateItemNo));
 			}
+			startDate = startDate.addDays(1);
 		}
 		return wokplaceSpecificDateDtos;
 	}

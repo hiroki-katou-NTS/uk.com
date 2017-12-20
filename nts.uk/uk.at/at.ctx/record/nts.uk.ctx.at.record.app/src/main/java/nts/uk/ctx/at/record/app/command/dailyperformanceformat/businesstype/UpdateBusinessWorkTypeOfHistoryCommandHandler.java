@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfHistoryGeneralRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
@@ -50,26 +50,31 @@ public class UpdateBusinessWorkTypeOfHistoryCommandHandler
 		String employeeId = command.getEmployeeId();
 		String businessTypeCode = command.getBusinessTypeCode();
 		GeneralDate startDate = command.getStartDate();
-		GeneralDate endDate = command.getEndDate();
+		String companyId = AppContexts.user().companyId();
+		// Hop.NT update if end date is null set to maxDate
+		GeneralDate endDate = command.getEndDate()!= null? command.getEndDate():GeneralDate.max();
 		String historyId = command.getHistoryId();
-		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(employeeId);
-		BusinessTypeOfEmployeeHistory bEmployeeHistory = new BusinessTypeOfEmployeeHistory();
-		if (optional.isPresent()) {
-			bEmployeeHistory = optional.get();
-		} else {
+		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(companyId,employeeId);
+		if (!optional.isPresent()) {
 			throw new BusinessException("No data to update!");
 		}
-		DateHistoryItem currentItem = new DateHistoryItem(historyId, new DatePeriod(startDate, endDate));
-		typeOfHistoryGeneralRepos.updateBusinessTypeEmpOfHistory(bEmployeeHistory, currentItem);
-		// update typeof employee
-		if (typeOfEmployeeRepos.findByHistoryId(historyId).isPresent()) {
-			BusinessTypeOfEmployee bEmployee = new BusinessTypeOfEmployee(new BusinessTypeCode(businessTypeCode),
-					historyId, employeeId);
-			typeOfEmployeeRepos.update(bEmployee);
-		} else {
-			throw new BusinessException("No data to update!");
-		}
+		BusinessTypeOfEmployeeHistory bEmployeeHistory = optional.get();
+		Optional<DateHistoryItem> optionalHisItem = bEmployeeHistory.getHistory().stream()
+				.filter(x -> x.identifier().equals(historyId)).findFirst();
+		if (!optionalHisItem.isPresent()) {
 
+			throw new BusinessException("invalid TypeOfEmployeeHistory!");
+		}
+		bEmployeeHistory.changeSpan(optionalHisItem.get(), new DatePeriod(startDate, endDate));
+		typeOfHistoryGeneralRepos.updateBusinessTypeEmpOfHistory(bEmployeeHistory, optionalHisItem.get());
+
+		// update typeof employee
+		if (!typeOfEmployeeRepos.findByHistoryId(historyId).isPresent()) {
+			throw new BusinessException("No data to update!");
+		}
+		BusinessTypeOfEmployee bEmployee = BusinessTypeOfEmployee.createFromJavaType(businessTypeCode, historyId,
+				employeeId);
+		typeOfEmployeeRepos.update(bEmployee);
 	}
 
 }

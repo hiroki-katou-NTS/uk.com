@@ -23,12 +23,6 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	}
 
 	@Override
-	public Optional<EmpInfoCtgData> getEmpInfoCtgDataBySIdAndCtgId(String sId, String ctgId) {
-		return this.queryProxy().query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtEmpInfoCtgData.class)
-				.setParameter("employeeId", sId).setParameter("personInfoCtgId", ctgId).getSingle(x -> toDomain(x));
-	}
-
-	@Override
 	public List<EmpInfoCtgData> getByEmpIdAndCtgId(String employeeId, String categoryId) {
 		List<PpemtEmpInfoCtgData> lstEntities = this.queryProxy().query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtEmpInfoCtgData.class)
 				.setParameter("employeeId", employeeId).setParameter("personInfoCtgId", categoryId).getList();
@@ -72,7 +66,7 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	public void deleteEmpInfoCtgData(String recordId) {
 		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(recordId, PpemtEmpInfoCtgData.class);
 		if (!existItem.isPresent()) {
-			throw new RuntimeException("invalid EmpInfoCtgData");
+			return;
 		}
 		this.commandProxy().remove(PpemtEmpInfoCtgData.class, recordId);
 	}

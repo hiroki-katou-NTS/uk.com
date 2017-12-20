@@ -75,4 +75,20 @@ public class PersonalDayOfWeek extends DomainObject {
 		memento.setTuesday(this.tuesday);
 		memento.setFriday(this.friday);
 	}
+
+	public PersonalDayOfWeek(Optional<SingleDaySchedule> monday, Optional<SingleDaySchedule> tuesday,
+			Optional<SingleDaySchedule> wednesday, Optional<SingleDaySchedule> thursday,
+			Optional<SingleDaySchedule> friday, Optional<SingleDaySchedule> saturday,
+			Optional<SingleDaySchedule> sunday) {
+		super();
+		this.monday = monday;
+		this.tuesday = tuesday;
+		this.wednesday = wednesday;
+		this.thursday = thursday;
+		this.friday = friday;
+		this.saturday = saturday;
+		this.sunday = sunday;
+	}
+	
+	
 }

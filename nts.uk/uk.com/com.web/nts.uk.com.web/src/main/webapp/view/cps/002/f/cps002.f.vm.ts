@@ -15,6 +15,7 @@ module cps002.f.vm {
         columnPerInfoItemDef: KnockoutObservableArray<any>;
         currentPerInfoItem: KnockoutObservableArray<string> = ko.observableArray([]);
         txtSearch: KnockoutObservable<string> = ko.observable("");
+        lstItem: KnockoutObservableArray<string> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -35,26 +36,32 @@ module cps002.f.vm {
 
             self.currentPerInfoCtg.subscribe(id => {
                 service.getPerInfoItemDef(id).done(function(data) {
-                    self.lstPerInfoItemDef(data);
+                    self.lstItem(data);
+                    let datalist = _.filter(data, (item: any) => { return item.itemParentCd == null });
+                    self.lstPerInfoItemDef(datalist);
                     let perItemCopy = _.filter(data, function(item: IPerInfoItemDef) { return item.alreadyItemDefCopy == true; }).map(function(item) { return item.id; });
                     self.currentPerInfoItem(perItemCopy);
                 });
-                //                let dataArr = _.filter(self.data.lstPerItem, function(item){ return item.perCtgId == id;});
-                //                let perItemCopy = _.filter(dataArr, function(item){ return item.alreadyItemDefCopy == true;}).map(function(item){return item.id;});
-                //                self.currentPerInfoItem(perItemCopy);
-                //                self.lstPerInfoItemDef(dataArr);  
             });
 
             self.start();
-            $(".searchCtg .ntsSearchBox").focus();
+
         }
         register() {
             let self = this;
             // let dataBind = self.lstPerInfoItemDef();
             let itemIds = self.currentPerInfoItem();
             let categoryId = self.currentPerInfoCtg();
+            _.forEach(self.lstItem(), function(item: IPerInfoItemDef) {
 
-            service.updatePerInfoItemCopy(categoryId, itemIds).done(() => {
+                if (_.find(self.currentPerInfoItem(), function(o) { return o == item.id; })) {
+                    item.checked = true;
+                } else {
+                    item.checked = false;
+                }
+
+            });
+            service.updatePerInfoItemCopy(categoryId, self.lstItem()).done(() => {
                 alertError({ messageId: "Msg_15" }).then(() => {
                     self.start(self.currentPerInfoCtg());
                 });
@@ -74,6 +81,7 @@ module cps002.f.vm {
             service.getPerInfoCtgHasItems(ctgName).done(function(data) {
                 self.lstCategory(data);
                 self.currentPerInfoCtg(ctgid ? ctgid : data[0].id);
+                $("#searchCtg input").focus();
             }).fail(function() {
                 alertError({ messageId: "Msg_352" });
             });
@@ -112,19 +120,23 @@ module cps002.f.vm {
         id: string,
         itemName: string,
         perCtgId: string,
-        alreadyItemDefCopy: boolean
+        alreadyItemDefCopy: boolean,
+        itemParentCd: string
+        checked: boolean
     }
     class PerInforItemDef {
         id: KnockoutObservable<string> = ko.observable("");
         itemName: KnockoutObservable<string> = ko.observable("");
         perCtgId: KnockoutObservable<string> = ko.observable("");
         alreadyItemDefCopy: KnockoutObservable<boolean> = ko.observable(false);
+        itemParentCd: KnockoutObservable<string> = ko.observable("");
         constructor(param: IPerInfoItemDef) {
             let self = this;
             self.id(param.id || "");
             self.itemName(param.itemName || "");
             self.itemName(param.perCtgId || "");
             self.alreadyItemDefCopy(param.alreadyItemDefCopy || false);
+            self.itemParentCd(param.itemParentCd || "");
         }
     }
 }

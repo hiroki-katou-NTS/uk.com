@@ -20,7 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaEmploymentHistoryRepository extends JpaRepository implements EmploymentHistoryRepository {
 
 	private final String QUERY_BYEMPLOYEEID = "SELECT ep FROM BsymtEmploymentHist ep"
-			+ " WHERE ep.sid = :sid ORDER BY ep.strDate";
+			+ " WHERE ep.sid = :sid and ep.companyId = :cid ORDER BY ep.strDate";
 	
 	private final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h" 
 			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
@@ -43,9 +43,10 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 	}
 
 	@Override
-	public Optional<EmploymentHistory> getByEmployeeId(String sid) {
+	public Optional<EmploymentHistory> getByEmployeeId(String cid, String sid) {
 		List<BsymtEmploymentHist> listHist = this.queryProxy().query(QUERY_BYEMPLOYEEID, BsymtEmploymentHist.class)
-				.setParameter("sid", sid).getList();
+				.setParameter("sid", sid)
+				.setParameter("cid", cid).getList();
 		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toEmploymentHistory(listHist));
 		}
@@ -97,7 +98,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		if (!histItem.isPresent()) {
 			throw new RuntimeException("invalid BsymtEmploymentHist");
 		}
-		this.commandProxy().remove(BsymtAffiWorkplaceHist.class, histId);
+		this.commandProxy().remove(BsymtEmploymentHist.class, histId);
 
 	}
 

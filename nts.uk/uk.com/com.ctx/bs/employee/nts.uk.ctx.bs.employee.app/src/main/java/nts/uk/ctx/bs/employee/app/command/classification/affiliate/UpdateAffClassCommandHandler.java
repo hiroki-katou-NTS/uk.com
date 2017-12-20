@@ -15,6 +15,8 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
@@ -50,9 +52,10 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAffClassificationCommand> context) {
 		UpdateAffClassificationCommand command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 
 		// update history
-		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(command.getEmployeeId());
+		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId, command.getEmployeeId());
 		if (!historyOption.isPresent()) {
 			throw new RuntimeException("invalid AffClassHistory_ver1");
 		}
@@ -64,7 +67,7 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 		}
 
 		historyOption.get().changeSpan(itemToBeUpdateOpt.get(),
-				new DatePeriod(command.getStartDate(), command.getEndDate()));
+				new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		affClassHistoryRepositoryService.update(historyOption.get(), itemToBeUpdateOpt.get());
 
 		// update history item

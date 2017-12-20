@@ -12,6 +12,7 @@ import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistory;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryService;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
@@ -41,7 +42,8 @@ public class DeleteAffiliationDepartmentCommandHandler extends CommandHandler<De
 	@Override
 	protected void handle(CommandHandlerContext<DeleteAffiliationDepartmentCommand> context) {
 		val command = context.getCommand();
-		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
+		String companyId = AppContexts.user().companyId();
+		Optional<AffDepartmentHistory> itemHist = affDepartmentHistoryRepository.getByEmployeeId(companyId,command.getEmployeeId());
 		if (!itemHist.isPresent()){
 			throw new RuntimeException("Invalid AffDepartmentHistory");
 		}

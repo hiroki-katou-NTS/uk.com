@@ -171,7 +171,7 @@ module nts.uk.com.view.cdl009.a {
                     // Get Emp Id
                     let emp: any = empList.filter((item) => {
                         return item.code == self.selectedEmpCode();
-                    });
+                    })[0];
                     setShared('CDL009Output', emp.id);
                     close();
                 }
@@ -179,11 +179,11 @@ module nts.uk.com.view.cdl009.a {
             }
             
             private getEmpIds(empList: Array<any>, empCodes: Array<string>): Array<any> {
-                let data = [];
+                let data: Array<string> = [];
                 for (let empCode of empCodes) {
                     let emp: any = empList.filter((item) => {
                         return item.code == empCode;
-                    });
+                    })[0];
                     data.push(emp.id);
                 }
                 return data;

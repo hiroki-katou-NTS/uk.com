@@ -17,6 +17,7 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -59,13 +60,13 @@ public class AddAffClassCommandHandler
 		// add history
 		String newHistoryId = IdentifierUtil.randomUniqueId();
 		
-		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(command.getEmployeeId());
+		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId,command.getEmployeeId());
 		
 		AffClassHistory_ver1 history = new AffClassHistory_ver1(companyId, command.getEmployeeId(), new ArrayList<>());
 		if (historyOption.isPresent()) {
 			history = historyOption.get();
 		}
-		DateHistoryItem dateItem = new DateHistoryItem(newHistoryId, new DatePeriod(command.getStartDate(), command.getEndDate()));
+		DateHistoryItem dateItem = new DateHistoryItem(newHistoryId, new DatePeriod(command.getStartDate() != null ? command.getStartDate() : ConstantUtils.minDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		history.add(dateItem);
 		affClassHistoryRepositoryService.add(history);
 		

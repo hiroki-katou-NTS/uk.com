@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.find.initsetting.item;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -116,8 +117,22 @@ public class InitValueSetItemFinder {
 
 	private void setOptinalLoginData(List<SettingItemDto> result) {
 
-		result.addAll(
-				this.infoItemDataFinder.loadInfoItemDataList(categoryCd, AppContexts.user().companyId(), employeeId));
+		List<SettingItemDto> optList = this.infoItemDataFinder.loadInfoItemDataList(categoryCd,
+				AppContexts.user().companyId(), employeeId);
+
+		optList.forEach(itemDto -> {
+			Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
+
+					x -> x.getItemCode().equals(itemDto.getItemCode())).findFirst();
+
+			if (itemInfoOpt.isPresent()) {
+				SettingItemDto itemInfo = itemInfoOpt.get();
+
+				itemInfo.setData(itemDto.getValueAsString());
+			}
+
+		});
+
 	}
 
 	private void setSystemLoginData(List<SettingItemDto> result) {
@@ -125,25 +140,23 @@ public class InitValueSetItemFinder {
 
 		PeregDto dto = this.layoutProc.findSingle(query);
 
-		Map<String, Object> dataMap = MappingFactory.getAllItem(dto);
+		if (dto != null) {
+			Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
 
-		dataMap.forEach((k, v) -> {
+			dataMap.forEach((k, v) -> {
 
-			Optional<PerInfoInitValueSetItem> itemInfoOpt = itemList.stream().filter(
-					x -> x.getItemCode().equals(k) && x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
-					.findFirst();
+				Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
 
-			if (itemInfoOpt.isPresent()) {
-				PerInfoInitValueSetItem itemInfo = itemInfoOpt.get();
+						x -> x.getItemCode().equals(k)).findFirst();
 
-				result.add(new SettingItemDto(itemInfo.getCtgCode(), itemInfo.getPerInfoItemDefId(), k,
-						itemInfo.getItemName(), itemInfo.getIsRequired().value,
-						SettingItemDto.createSaveDataDto(itemInfo.getSaveDataType().value, v.toString()),
-						itemInfo.getDataType()));
-			}
+				if (itemInfoOpt.isPresent()) {
+					SettingItemDto itemInfo = itemInfoOpt.get();
 
-		});
+					itemInfo.setData(v != null ? v.toString() : "");
+				}
 
+			});
+		}
 	}
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
@@ -151,7 +164,8 @@ public class InitValueSetItemFinder {
 		return SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
 				domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
-				domain.getStringValue().v(), domain.getDataType());
+				domain.getStringValue().v(), domain.getDataType(),
+				BigDecimal.valueOf(domain.getSelectionItemRefType()));
 	}
 
 	private boolean isHaveItemRefType(List<PerInfoInitValueSetItem> listItem, ReferenceMethodType methodType) {

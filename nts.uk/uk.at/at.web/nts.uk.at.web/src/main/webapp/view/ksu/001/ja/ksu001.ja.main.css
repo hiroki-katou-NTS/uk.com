@@ -60,3 +60,11 @@ hr {
 #classification {
 	margin-left: 150px
 }
+
+#name {
+	vertical-align: middle
+}
+
+.color-gray {
+	color: gray
+}

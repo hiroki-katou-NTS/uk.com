@@ -1,4 +1,4 @@
-module ksu001.a.viewmodel {
+module nts.uk.at.view.ksu001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
@@ -183,6 +183,8 @@ module ksu001.a.viewmodel {
             self.initCCG001();
             self.initExTable();
             self.initShiftCondition();
+            //get data for screen Q
+            self.getDataWorkPairPattern();
         }
 
         /**
@@ -1025,13 +1027,16 @@ module ksu001.a.viewmodel {
                     }
                 });
             }
-
-            service.checkStateWorkTypeCode(lstWorkTypeCode).done((data) => {
-                self.listStateWorkTypeCode(data);
+            if (lstWorkTypeCode.length > 0) {
+                service.checkStateWorkTypeCode(lstWorkTypeCode).done((data) => {
+                    self.listStateWorkTypeCode(data);
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                });
+            } else {
                 dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
+            }
             return dfd.promise();
         }
 
@@ -1493,6 +1498,27 @@ module ksu001.a.viewmodel {
         }
 
         /**
+         * get data form COM_PATTERN and WKP_PATTERN (for screen Q)
+         */
+        getDataWorkPairPattern(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let obj: string = self.empItems()[0] ? self.empItems()[0].workplaceId : null;
+            if (obj) {
+                service.getDataWorkPairPattern(obj).done((data) => {
+                    __viewContext.viewModel.viewQ.listComPattern(data.listComPatternDto);
+                    __viewContext.viewModel.viewQ.listWkpPattern(data.listWkpPatternDto);
+                    dfd.resolve();
+                }).fail(function() {
+                    dfd.reject();
+                });
+            } else {
+                dfd.resolve();
+            }
+
+            return dfd.promise();
+        }
+
+        /**
          * open dialog C
          */
         openDialogC(): void {
@@ -1518,12 +1544,13 @@ module ksu001.a.viewmodel {
                 // in phare 2, permissionHandCorrection allow true
                 permissionHandCorrection: true,
                 listColorOfHeader: self.listColorOfHeader()
-
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
-                $.when(self.setDatasource()).done(() => {
-                    self.updateExTable();
-                });
+                if (!getShared("dataFromScreenD").clickCloseDialog) {
+                    $.when(self.setDatasource()).done(() => {
+                        self.updateExTable();
+                    });
+                }
             });
         }
         /**
@@ -1532,9 +1559,11 @@ module ksu001.a.viewmodel {
         openDialogL(): void {
             let self = this;
             $('#popup-area5').ntsPopup('hide');
-            //hiện giờ fix cứng workplaceId và truyền sang tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            nts.uk.ui.windows.setShared("workPlaceId", "000000000000000000000000000000000002");
-            nts.uk.ui.windows.setShared("listEmployee", self.empItems());
+            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
+            setShared("dataForScreenL", {
+                workplaceId: self.empItems()[0] ? self.empItems()[0].workplaceId : null,
+                empItems: self.empItems()
+            });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
         }
 

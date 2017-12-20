@@ -8,19 +8,19 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 700, height: 320 };</script>
-			<com:stylefile path="csa005.b.main.css" />
+			<com:stylefile path="cas005.b.main.css" />
 			
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="csa005.b.vm.js" />
-			<com:scriptfile path="csa005.b.service.js" />
-			<com:scriptfile path="csa005.b.start.js" />
+			<com:scriptfile path="cas005.b.vm.js" />
+			<com:scriptfile path="cas005.b.service.js" />
+			<com:scriptfile path="cas005.b.start.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.sys.auth.dom.role.RoleCode
 				nts.uk.ctx.sys.auth.dom.role.RoleName
 			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
-			<div class="container">
+			<div class="container " style="width: 700px;">
 				<div id="contents-area">
 					<div id="body-form">
 						<table id="table-label" class="from-label" style="">
@@ -44,7 +44,7 @@
 					</div>
 				</div>
 			</div>	
-			<div class="container">			
+			<div class="container" style="width: 700px;">			
 				<div id="functions-area-bottom">
 					<div style=" margin-bottom: 10px;" data-bind="ntsCheckBox: { checked: checked, style: 'warnpanel'}">#{i18n.getText('CAS005_106')}</div>
 					<div>

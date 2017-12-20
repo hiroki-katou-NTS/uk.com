@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
@@ -41,7 +41,7 @@ public class FlWorkSettingPolicyImpl implements FlWorkSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(FlWorkSetting flowSet, PredetemineTimeSetting predSet) {
+	public void validate(FlowWorkSetting flowSet, PredetemineTimeSetting predSet) {
 		// validate FlHalfDayWtz
 		this.flowHalfPolicy.validate(predSet, flowSet.getHalfDayWorkTimezone());
 

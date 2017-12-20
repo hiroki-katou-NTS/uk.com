@@ -45,4 +45,13 @@ public class ScheduleMethod extends DomainObject {
 		memento.setWorkScheduleBusCal(this.workScheduleBusCal);
 		memento.setMonthlyPatternWorkScheduleCre(this.monthlyPatternWorkScheduleCre);
 	}
+
+	public ScheduleMethod(WorkScheduleBasicCreMethod basicCreateMethod, WorkScheduleBusCal workScheduleBusCal,
+			MonthlyPatternWorkScheduleCre monthlyPatternWorkScheduleCre) {
+		super();
+		this.basicCreateMethod = basicCreateMethod;
+		this.workScheduleBusCal = workScheduleBusCal;
+		this.monthlyPatternWorkScheduleCre = monthlyPatternWorkScheduleCre;
+	}
+	
 }

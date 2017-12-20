@@ -23,11 +23,11 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 			+ " where l.ksmmtCalendarClassPK.companyId = :companyId "
 			+ " and l.ksmmtCalendarClassPK.classId = :classId ";
 	private final String SELECT_CLASS_BY_DATE = SELECT_ALL_CLASS
-			+ " and l.ksmmtCalendarClassPK.dateId = :dateId";
-	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.ksmmtCalendarClassPK.dateId >= :startYM and l.ksmmtCalendarClassPK.dateId <= :endYM";
+			+ " and l.ksmmtCalendarClassPK.date = :date";
+	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_CLASS + " and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
 	private final String DELETE_BY_YEAR_MONTH = "delete from KsmmtCalendarClass l where l.ksmmtCalendarClassPK.companyId = :companyId"
 			+ " and l.ksmmtCalendarClassPK.classId = :classId "
-			+" and l.ksmmtCalendarClassPK.dateId >= :startYM and l.ksmmtCalendarClassPK.dateId <= :endYM";
+			+" and l.ksmmtCalendarClassPK.date >= :startYM and l.ksmmtCalendarClassPK.date <= :endYM";
 	/**
 	 * class
 	 * @param entity
@@ -106,7 +106,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 		return this.queryProxy().query(SELECT_CLASS_BY_DATE,KsmmtCalendarClass.class)
 				.setParameter("companyId",companyId)
 				.setParameter("classId", classId)
-				.setParameter("dateId", date)
+				.setParameter("date", date)
 				.getSingle(c->toDomainCalendarClass(c));
 	}
 	@Override
@@ -114,8 +114,8 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KsmmtCalendarClass.class)
 				.setParameter("companyId", companyId)
 				.setParameter("classId", classId)
-				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
-				.setParameter("endYM", Integer.valueOf(yearMonth+"31"))
+				.setParameter("startYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
+				.setParameter("endYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd"))
 				.getList(x -> toDomainCalendarClass(x));
 	}
 	@Override
@@ -123,8 +123,8 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
 				.setParameter("companyId", companyId)
 				.setParameter("classId", classId)
-				.setParameter("startYM", Integer.valueOf(yearMonth+"01"))
-				.setParameter("endYM", Integer.valueOf(yearMonth+"31"))
+				.setParameter("startYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
+				.setParameter("endYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd"))
 				.executeUpdate();
 	}
 	

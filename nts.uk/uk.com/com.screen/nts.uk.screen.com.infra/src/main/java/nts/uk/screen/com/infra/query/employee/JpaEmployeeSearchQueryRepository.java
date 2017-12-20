@@ -12,7 +12,7 @@ import javax.persistence.NoResultException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtDepartmentInfo;
-import nts.uk.ctx.bs.employee.infra.entity.employee.BsymtEmployee;
+import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 
@@ -23,17 +23,17 @@ import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 public class JpaEmployeeSearchQueryRepository extends JpaRepository implements EmployeeSearchQueryRepository{
 	
 	/** The Constant SEARCH_QUERY_STRING. */
-	private static final String SEARCH_QUERY_STRING = "SELECT e, p, wp, d From BsymtEmployee e "
-			+ " LEFT JOIN BpsmtPerson p ON e.personId = p.bpsmtPersonPk.pId "
-			+ " LEFT JOIN KmnmtAffiliWorkplaceHist h ON h.kmnmtAffiliWorkplaceHistPK.empId = e.bsymtEmployeePk.sId "
-			+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate "
-			+ " AND h.endD >= :baseDate "
-			+ " LEFT JOIN BsymtWorkplaceInfo wp ON wp.bsymtWorkplaceInfoPK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId "
-			+ " AND wp.bsymtWorkplaceInfoPK.cid = e.companyId "
-			+ " LEFT JOIN BsymtWorkplaceHist wphist ON wp.bsymtWorkplaceInfoPK.historyId = wphist.bsymtWorkplaceHistPK.historyId "
+	private static final String SEARCH_QUERY_STRING = "SELECT e, p, wp, d From BsymtEmployeeDataMngInfo e "
+			+ " LEFT JOIN BpsmtPerson p ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId "
+			+ " LEFT JOIN BsymtAffiWorkplaceHist h ON h.sid = e.bsymtEmployeeDataMngInfoPk.sId "
+			+ "	AND h.strDate <= :baseDate "
+			+ " AND h.endDate >= :baseDate "
+			+ " LEFT JOIN BsymtWorkplaceHist wphist ON h.hisId  = wphist.bsymtWorkplaceHistPK.historyId "
 			+ " AND wphist.strD <= :baseDate "
 			+ " AND wphist.endD >= :baseDate "
-			+ " LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsymtEmployeePk.sId "
+			+ " LEFT JOIN BsymtWorkplaceInfo wp ON wphist.bsymtWorkplaceHistPK.wkpid = wp.bsymtWorkplaceInfoPK.wkpid"
+			+ " AND wp.bsymtWorkplaceInfoPK.cid = e.companyId "
+			+ " LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsymtEmployeeDataMngInfoPk.sId "
 			+ " AND ad.strD <= :baseDate"
 			+ " AND ad.endD >= :baseDate "
 			+ " LEFT JOIN BsymtDepartmentHist dh ON dh.bsymtDepartmentHistPK.depId = ad.depId "
@@ -64,7 +64,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		}
 		
 		// Convert query data.
-		BsymtEmployee employee = (BsymtEmployee) resultQuery[0];
+		BsymtEmployeeDataMngInfo employee = (BsymtEmployeeDataMngInfo) resultQuery[0];
 		BpsmtPerson person = (BpsmtPerson) resultQuery[1];
 		BsymtWorkplaceInfo workplace = resultQuery[2] == null ? null : (BsymtWorkplaceInfo) resultQuery[2];
 		BsymtDepartmentInfo department = resultQuery[3] == null ? null : (BsymtDepartmentInfo) resultQuery[3];
@@ -73,7 +73,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		case Employment:
 			// Get work place.
 			return Optional.of(Kcp009EmployeeSearchData.builder()
-					.employeeId(employee.bsymtEmployeePk.sId)
+					.employeeId(employee.bsymtEmployeeDataMngInfoPk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
 					.orgName(workplace != null ? workplace.getWkpName() : null)
@@ -81,7 +81,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		default:
 			// Get department
 			return Optional.of(Kcp009EmployeeSearchData.builder()
-					.employeeId(employee.bsymtEmployeePk.sId)
+					.employeeId(employee.bsymtEmployeeDataMngInfoPk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
 					.orgName(department != null ? department.getName() : null)
