@@ -8,8 +8,11 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
+import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -40,7 +43,8 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 	BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	@Inject 
 	StartCheckErrorService startCheckErrorService;
-
+	@Inject
+	IDataWorkService dataWorkService;
 	@Override
 	public GoBackDirectBasicData getSettingData(String SID) {
 		String companyID = AppContexts.user().companyId();
@@ -73,6 +77,12 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		if(workManagement.isPresent()) {
 			dataSetting.setDutiesMulti(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
+		
+		// 勤務就業ダイアログ用データ取得
+		GeneralDate appDate = GeneralDate.today();// 基準日
+		DataWork workingData = dataWorkService.getDataWork(companyID, SID, appDate, appCommonSetting);
+		dataSetting.setWorkingData(workingData);
+		
 		return dataSetting;
 	}
 

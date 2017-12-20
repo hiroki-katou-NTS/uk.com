@@ -6,8 +6,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
+import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -21,28 +24,22 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
-
 	@Inject
 	IAppWorkChangeSetRepository workChangeRepository;
-
 	@Inject
 	ApplicationReasonRepository appFormRepo;
-
 	@Inject
 	EmployeeRequestAdapter employeeAdapter;
-
 	@Inject
 	BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-
 	@Inject
 	StartCheckErrorService startCheckErrorService;
-
 	@Inject
 	private StartApprovalRootService startApprovalRootService;
-
 	@Inject 
-	WorkManagementMultipleRepository workManagerRepo;
-	
+	WorkManagementMultipleRepository workManagerRepo;	
+	@Inject
+	IDataWorkService dataWorkService;
 	@Override
 	public WorkChangeBasicData getSettingData(String companyId, String sId) {		
 		// 1-1.新規画面起動前申請共通設定を取得する
@@ -66,6 +63,12 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		if (workManagement.isPresent()) {
 			wcBasicData.setMultipleTime(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
+		
+		//勤務就業ダイアログ用データ取得
+		GeneralDate appDate = GeneralDate.today();//基準日
+		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting);
+		wcBasicData.setWorkingData(workingData);
+		
 		// 勤務変更申請基本データ
 		return wcBasicData;
 	}

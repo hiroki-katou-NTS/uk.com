@@ -43,7 +43,7 @@ public class DeleteAffWorkplaceHistoryCommandHandler extends CommandHandler<Dele
 	protected void handle(CommandHandlerContext<DeleteAffWorkplaceHistoryCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getAffWorkplaceHistByEmployeeId(companyId, command.getEmployeeId());
+		Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getByEmployeeId(companyId, command.getEmployeeId());
 		
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory"); 

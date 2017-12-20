@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class AttendanceItemIdContainer {
 
-	private Map<String, Integer> ITEM_ID_CONTAINER;
-	{
+	private static Map<String, Integer> ITEM_ID_CONTAINER;
+	static {
 		ITEM_ID_CONTAINER = new HashMap<>();
 
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．医療時間.申送時間-日勤", 750);
@@ -423,7 +423,7 @@ public class AttendanceItemIdContainer {
 
 	}
 
-	public Integer getId(String key) {
-		return this.ITEM_ID_CONTAINER.get(key);
+	public static Integer getId(String key) {
+		return ITEM_ID_CONTAINER.get(key);
 	}
 }

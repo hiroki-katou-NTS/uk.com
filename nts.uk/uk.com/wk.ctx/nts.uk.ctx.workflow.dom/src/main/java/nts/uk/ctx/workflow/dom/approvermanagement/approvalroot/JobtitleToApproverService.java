@@ -3,7 +3,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.approvalroot;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
+import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 
 public interface JobtitleToApproverService {
 	/**
