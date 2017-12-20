@@ -233,7 +233,7 @@ public class AddWorkingConditionCommandAssembler {
 			listTimeZone.add(item);
 		}
 		if (startTime2 != null && endTime2 != null){
-			TimeZone item = new TimeZone(EnumAdaptor.valueOf(1,NotUseAtr.class), 1, startTime2.intValue(), endTime2.intValue());
+			TimeZone item = new TimeZone(EnumAdaptor.valueOf(1,NotUseAtr.class), 2, startTime2.intValue(), endTime2.intValue());
 			listTimeZone.add(item);
 		}
 	}
