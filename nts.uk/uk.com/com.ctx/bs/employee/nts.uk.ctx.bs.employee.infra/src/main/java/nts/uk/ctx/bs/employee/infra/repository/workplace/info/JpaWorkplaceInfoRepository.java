@@ -311,7 +311,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.wkpcd).in(wkpIds));
+		lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid).in(wkpIds));
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD), baseDate));
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(

@@ -5,16 +5,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.DataClassification;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
+@Stateless
 public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 
+	@Inject
+	private WorkingConditionRepository wcRepo;
+	
+	@Inject
+	private WorkingConditionItemRepository wcItemRepo;
+	
 	@Override
 	public String targetCategoryCode() {
 		return "CS00020";
@@ -31,12 +45,11 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 	}
 
 	@Override
-	public PeregDomainDto getSingleData(PeregQuery query) {
-		if(query.getInfoId() == null && query.getStandardDate() == null) return null;		
+	public PeregDomainDto getSingleData(PeregQuery query) {		
 		Optional<WorkingCondition> wc = getWorkingCondition(query);
 		if(!wc.isPresent()) return null;
-		//TODO get working condition item by history id
-		Optional<WorkingConditionItem> wcItems = null; 
+		Optional<WorkingConditionItem> wcItems = wcItemRepo.getByHistoryId(wc.get().getDateHistoryItem().get(0).identifier()); 
+		if(!wcItems.isPresent()) return null;
 		return WorkingConditionDto.createWorkingConditionDto(wc.get().getDateHistoryItem().get(0), wcItems.get());
 	}
 
@@ -48,10 +61,14 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		//TODO get WorkingCondition by sid and companyId
-		Optional<WorkingCondition> wc = null;
+		Optional<WorkingCondition> wc = wcRepo.getBySid(AppContexts.user().companyId(), query.getEmployeeId());
 		if(!wc.isPresent()) return new ArrayList<>();
-		return wc.get().getDateHistoryItem().stream()
+		List<DateHistoryItem> hists = wc.get().getDateHistoryItem();
+		if(hists.size() == 0) return new ArrayList<>();
+		List<DateHistoryItem> containItemHists = hists.stream().filter(x -> {
+			return wcItemRepo.getByHistoryId(x.identifier()).isPresent();
+		}).collect(Collectors.toList());
+		return containItemHists.stream()
 				.sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 				.collect(Collectors.toList());
@@ -59,10 +76,9 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 
 	private Optional<WorkingCondition> getWorkingCondition(PeregQuery query){
 		if(query.getInfoId() == null){
-			//TODO get by employee and standard date
+			return wcRepo.getBySidAndStandardDate(query.getEmployeeId(), query.getStandardDate());
 		}else{
-			//TODO get by history id
+			return wcRepo.getByHistoryId(query.getInfoId());
 		}
-		return null;
 	}
 }

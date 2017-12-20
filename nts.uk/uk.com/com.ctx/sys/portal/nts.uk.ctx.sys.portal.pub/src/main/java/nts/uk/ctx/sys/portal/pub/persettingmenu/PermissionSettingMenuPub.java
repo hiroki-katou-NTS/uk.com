@@ -2,10 +2,10 @@ package nts.uk.ctx.sys.portal.pub.persettingmenu;
 
 import java.util.List;
 
-
 /**
- * the interface permission setting menu
+ * @author dxthuong
  *
+ * Request list 117
  */
 public interface PermissionSettingMenuPub {
 	

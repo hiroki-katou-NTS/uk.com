@@ -330,6 +330,13 @@ module nts.uk.com.view.cps005.b {
         constructor(data: IPersonInfoItem) {
             let self = this;
             self.dataType.subscribe(function(value) {
+                self.stringItem(new StringItemModel(null));
+                self.numericItem(new NumericItemModel(null));
+                self.dateItem(new DateItemModel(null));
+                self.timeItem(new TimeItemModel(null));
+                self.timePointItem(new TimePointItemModel(null));
+                self.selectionItem(new SelectionItemModel(null));
+                nts.uk.ui.errors.clearAll();
                 if (value === 6) {
                     self.selectionItem().selectionItemRefType(2);
                     let baseDate = moment(new Date()).format('YYYY-MM-DD');

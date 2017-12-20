@@ -23,7 +23,7 @@ public class DailyAttdItemAuthWebService {
 
 	@POST
 	@Path("getListDailyAttendanceItemAuthority/{authorityId}")
-	public List<DailyAttdItemAuthDto> getListDailyAttendanceItemAuthority(@PathParam("authorityId") int authorityId) {
+	public List<DailyAttdItemAuthDto> getListDailyAttendanceItemAuthority(@PathParam("authorityId") String authorityId) {
 			return this.dailyAttdItemAuthFinder.getListDailyAttendanceItemAuthority(authorityId);
 	}
 	@POST
