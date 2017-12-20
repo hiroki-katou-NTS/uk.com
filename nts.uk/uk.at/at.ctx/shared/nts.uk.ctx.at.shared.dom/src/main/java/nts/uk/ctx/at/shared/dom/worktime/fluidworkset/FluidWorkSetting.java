@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidWorkBreakSetting;
 
 /**
@@ -18,7 +17,7 @@ public class FluidWorkSetting extends AggregateRoot {
 
 	/** The working code. */
 	// 就業時間帯コード
-	private SiftCode workingCode;
+	private nts.uk.ctx.at.shared.dom.worktime_old.SiftCode workingCode;
 
 	/** The offday work time. */
 	// 休日勤務時間帯

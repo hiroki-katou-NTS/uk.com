@@ -10,7 +10,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime_old.DeductionTime;
 /**
  * The Class FixRestTimezoneSet.
  */

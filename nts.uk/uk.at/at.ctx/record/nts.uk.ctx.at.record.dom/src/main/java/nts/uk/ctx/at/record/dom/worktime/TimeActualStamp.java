@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import lombok.Setter;
  *
  */
 @Getter
-@AllArgsConstructor
 @Setter
 @NoArgsConstructor
 public class TimeActualStamp {
@@ -68,4 +66,5 @@ public class TimeActualStamp {
 		this.actualStamp = actualStamp;
 		this.stamp = stamp;
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
+	}
 }

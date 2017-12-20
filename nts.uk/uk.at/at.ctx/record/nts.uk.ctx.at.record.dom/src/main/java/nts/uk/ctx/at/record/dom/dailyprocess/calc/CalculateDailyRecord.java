@@ -60,7 +60,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfStat
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfWeekDay;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworkTime.DailyCalculationPersonalInformation;
-import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
@@ -86,7 +85,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidPrefixBreakTimeOfCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;

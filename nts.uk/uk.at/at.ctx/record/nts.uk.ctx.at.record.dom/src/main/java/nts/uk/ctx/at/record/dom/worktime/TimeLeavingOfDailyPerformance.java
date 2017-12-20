@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
  *
  */
 @Getter
-@AllArgsConstructor
 @Setter
 @NoArgsConstructor
 public class TimeLeavingOfDailyPerformance extends AggregateRoot {

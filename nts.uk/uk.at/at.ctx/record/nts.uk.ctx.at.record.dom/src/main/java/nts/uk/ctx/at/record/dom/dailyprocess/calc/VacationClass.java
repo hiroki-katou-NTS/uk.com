@@ -8,7 +8,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -28,7 +27,7 @@ public class VacationClass {
 	public static AttendanceTime vacationTimeOfcalcDaily(WorkType workType,
 														 VacationCategory vacationCategory,
 														 PredetermineTimeSetForCalc predetermineTimeSet,
-														 Optional<SiftCode> siftCode,
+														 Optional<nts.uk.ctx.at.shared.dom.worktime_old.SiftCode> siftCode,
 			 											 Optional<PersonalLaborCondition> personalCondition,
 			 											 VacationAddTimeSet vacationAddTimeSet) {
 		BreakdownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, personalCondition, vacationAddTimeSet);
@@ -48,7 +47,7 @@ public class VacationClass {
 	 * 休暇加算設定の取得
 	 * @return
 	 */
-	private static BreakdownTimeDay getVacationAddSet(PredetermineTimeSetForCalc predetermineTimeSet,Optional<SiftCode> siftCode
+	private static BreakdownTimeDay getVacationAddSet(PredetermineTimeSetForCalc predetermineTimeSet,Optional<nts.uk.ctx.at.shared.dom.worktime_old.SiftCode> siftCode
 											 ,Optional<PersonalLaborCondition> personalCondition
 											 ,VacationAddTimeSet vacationAddTimeSet) {
 		if(siftCode.isPresent()) {

@@ -9,7 +9,7 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
+import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 
 /**
  * The Class FixedWorkSetting.

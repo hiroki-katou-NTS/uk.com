@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 
 /**
  * 

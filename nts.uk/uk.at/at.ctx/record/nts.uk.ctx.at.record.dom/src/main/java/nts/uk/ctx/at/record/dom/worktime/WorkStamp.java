@@ -16,7 +16,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-@AllArgsConstructor
 @Setter
 @NoArgsConstructor
 public class WorkStamp extends DomainObject{
@@ -36,7 +35,7 @@ public class WorkStamp extends DomainObject{
 	public WorkStamp(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			StampSourceInfo stampSourceInfo) {
 		super();
-		AfterRoundingTime = afterRoundingTime;
+		this.AfterRoundingTime = afterRoundingTime;
 		this.timeWithDay = timeWithDay;
 		this.locationCode = locationCode;
 		this.stampSourceInfo = stampSourceInfo;

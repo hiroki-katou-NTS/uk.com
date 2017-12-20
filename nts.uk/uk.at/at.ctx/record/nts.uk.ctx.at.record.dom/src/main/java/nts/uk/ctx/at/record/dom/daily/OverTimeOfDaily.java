@@ -1,15 +1,18 @@
 package nts.uk.ctx.at.record.dom.daily;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
@@ -29,7 +32,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
 public class OverTimeOfDaily {
 	//残業枠時間帯
 	private List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheet;
@@ -44,13 +47,28 @@ public class OverTimeOfDaily {
 	//残業拘束時間
 	private AttendanceTime overTimeWorkSpentAtWork = new AttendanceTime(0);
 	
-	
 	public OverTimeOfDaily(List<OverTimeFrameTimeSheet> frameTimeSheetList, List<OverTimeFrameTime> frameTimeList
 							   ,Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime) {
 		this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
 		this.overTimeWorkFrameTime = frameTimeList;
 		this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
 	}
+	
+	public OverTimeOfDaily(List<OverTimeFrameTimeSheet> frameTimeSheetList,
+							List<OverTimeFrameTime> frameTimeList,
+						    Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTime,
+						    AttendanceTime irregularTime,
+						    FlexTime flexTime,
+						    AttendanceTime overTimeWork
+						    ) {
+		this.overTimeWorkFrameTimeSheet = frameTimeSheetList;
+		this.overTimeWorkFrameTime = frameTimeList;
+		this.excessOverTimeWorkMidNightTime = excessOverTimeWorkMidNightTime;
+		this.irregularWithinPrescribedOverTimeWork = irregularTime;
+		this.flexTime = flexTime;
+		this.overTimeWorkSpentAtWork = overTimeWork;
+	}
+
 	
 	/**
 	 * 勤務回数を見て開始時刻が正しいか判定する
@@ -198,5 +216,20 @@ public class OverTimeOfDaily {
 			
 			hurikaeAbleTime.minusMinutes(ableTransTime.valueAsMinutes());
 		}
+	}
+	
+	
+	public OverTimeOfDaily createFromJavaType(List<OverTimeFrameTime> frameTimeList,
+											  ExcessOverTimeWorkMidNightTime midNightTime,
+											  AttendanceTime irregularTime,
+											  FlexTime flexTime,
+											  AttendanceTime overTimeWork) {
+		return new OverTimeOfDaily(Collections.emptyList(),
+								   frameTimeList,
+								   Finally.of(midNightTime),
+								   irregularTime,
+								   flexTime,
+								   overTimeWork
+								   );
 	}
 }

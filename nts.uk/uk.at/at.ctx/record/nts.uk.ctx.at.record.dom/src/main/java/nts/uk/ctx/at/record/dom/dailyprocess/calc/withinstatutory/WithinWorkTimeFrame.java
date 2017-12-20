@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Rounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktimeset.flow;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
  * The Class FlowTimeSetting.

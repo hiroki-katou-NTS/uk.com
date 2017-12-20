@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktimeset.fluid;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
  * The Class FluidTimeSetting.

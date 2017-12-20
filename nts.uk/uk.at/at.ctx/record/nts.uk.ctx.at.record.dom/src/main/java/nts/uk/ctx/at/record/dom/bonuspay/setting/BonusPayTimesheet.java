@@ -17,10 +17,8 @@ import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Rounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 

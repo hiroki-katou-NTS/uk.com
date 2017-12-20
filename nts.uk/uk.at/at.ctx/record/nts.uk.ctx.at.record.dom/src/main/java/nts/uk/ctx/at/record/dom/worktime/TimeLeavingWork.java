@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  *
  */
 @Getter
-@AllArgsConstructor
 @Setter
 @NoArgsConstructor
 public class TimeLeavingWork extends DomainObject{

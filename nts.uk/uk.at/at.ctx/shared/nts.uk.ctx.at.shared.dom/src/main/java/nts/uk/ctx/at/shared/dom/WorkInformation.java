@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
