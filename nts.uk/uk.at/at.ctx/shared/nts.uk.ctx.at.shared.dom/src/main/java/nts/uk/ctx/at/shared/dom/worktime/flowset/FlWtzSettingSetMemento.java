@@ -25,5 +25,5 @@ public interface FlWtzSettingSetMemento {
 	 *
 	 * @param lstTzone the new lst OT timezone
 	 */
-	void setLstOTTimezone(List<FlOTTimezone> lstTzone);
+	void setLstOTTimezone(List<FlowOTTimezone> lstTzone);
 }

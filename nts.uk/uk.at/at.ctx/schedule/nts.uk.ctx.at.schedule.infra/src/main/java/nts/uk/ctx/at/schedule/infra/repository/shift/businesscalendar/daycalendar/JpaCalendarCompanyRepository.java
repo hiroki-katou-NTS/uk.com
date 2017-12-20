@@ -123,8 +123,8 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	public List<CalendarCompany> getCalendarCompanyByYearMonth(String companyId, String yearMonth) {
 		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KsmmtCalendarCompany.class)
 				.setParameter("companyId", companyId)
-				.setParameter("startDate", Integer.valueOf(yearMonth+"01"))
-				.setParameter("endDate", Integer.valueOf(yearMonth+"31"))
+				.setParameter("startDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
+				.setParameter("endDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd"))
 				.getList(x -> toDomainCalendarCompany(x));
 	}
 	/**
@@ -134,8 +134,8 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	public void deleteCalendarCompanyByYearMonth(String companyId, String yearMonth) {
 		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
 			.setParameter("companyId", companyId)
-			.setParameter("startDate", Integer.valueOf(yearMonth+"01"))
-			.setParameter("endDate", Integer.valueOf(yearMonth+"31")).executeUpdate();
+			.setParameter("startDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
+			.setParameter("endDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd")).executeUpdate();
 	}
 	
 

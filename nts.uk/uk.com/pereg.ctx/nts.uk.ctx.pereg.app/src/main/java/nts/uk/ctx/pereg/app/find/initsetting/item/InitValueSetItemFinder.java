@@ -11,7 +11,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
@@ -65,11 +64,11 @@ public class InitValueSetItemFinder {
 
 			if (categoryCd.charAt(1) == 'S') {
 
-				setSystemLoginData(result);
+				setSystemLoginData(itemList, result);
 
 			}
 
-			setOptinalLoginData(result);
+			setOptinalLoginData(itemList, result);
 
 		}
 		// set item
@@ -116,47 +115,50 @@ public class InitValueSetItemFinder {
 		}
 	}
 
-	private void setOptinalLoginData(List<SettingItemDto> result) {
+	private void setOptinalLoginData(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
 
 		List<SettingItemDto> optList = this.infoItemDataFinder.loadInfoItemDataList(categoryCd,
 				AppContexts.user().companyId(), employeeId);
 
-		optList.forEach(itemDto -> {
-			Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
+		itemList.stream().filter(x -> x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
+				.collect(Collectors.toList()).forEach(x -> {
+					Optional<SettingItemDto> itemDtoOpt = result.stream()
+							.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+					if (itemDtoOpt.isPresent()) {
+						Optional<SettingItemDto> itemDataOpt = optList.stream()
+								.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+						if (itemDataOpt.isPresent()) {
+							itemDtoOpt.get().setData(itemDataOpt.get().getValueAsString());
+						}
 
-					x -> x.getItemCode().equals(itemDto.getItemCode())).findFirst();
-
-			if (itemInfoOpt.isPresent()) {
-				SettingItemDto itemInfo = itemInfoOpt.get();
-
-				itemInfo.setData(itemDto.getValueAsString());
-			}
-
-		});
+					}
+				});
 
 	}
 
-	private void setSystemLoginData(List<SettingItemDto> result) {
+	private void setSystemLoginData(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
 
-		Map<String, Object> dataMap = MappingFactory.getAllItem(dto);
+		if (dto != null) {
+			Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
+			if (!dataMap.isEmpty()) {
 
-		dataMap.forEach((k, v) -> {
+				itemList.stream().filter(x -> x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
+						.collect(Collectors.toList()).forEach(x -> {
+							Optional<SettingItemDto> itemDtoOpt = result.stream()
+									.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+							if (itemDtoOpt.isPresent()) {
+								Object value = dataMap.get(itemDtoOpt.get().getItemCode());
+								if (value != null) {
+									itemDtoOpt.get().setData(value.toString());
+								}
+							}
+						});
 
-			Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
-
-					x -> x.getItemCode().equals(k)).findFirst();
-
-			if (itemInfoOpt.isPresent()) {
-				SettingItemDto itemInfo = itemInfoOpt.get();
-
-				itemInfo.setData(v != null ? v.toString() : "");
 			}
-
-		});
-
+		}
 	}
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
@@ -164,8 +166,8 @@ public class InitValueSetItemFinder {
 		return SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
 				domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
-				domain.getStringValue().v(), domain.getDataType(),
-				BigDecimal.valueOf(domain.getSelectionItemRefType()));
+				domain.getStringValue().v(), domain.getDataType(), BigDecimal.valueOf(domain.getSelectionItemRefType()),
+				domain.getItemParentCd());
 	}
 
 	private boolean isHaveItemRefType(List<PerInfoInitValueSetItem> listItem, ReferenceMethodType methodType) {

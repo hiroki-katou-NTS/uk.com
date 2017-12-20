@@ -904,6 +904,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                 });
             }
+            
+            self.selectedRuleCode.subscribe(value =>{
+                nts.uk.ui.errors.clearAll();
+            });
 
 
 

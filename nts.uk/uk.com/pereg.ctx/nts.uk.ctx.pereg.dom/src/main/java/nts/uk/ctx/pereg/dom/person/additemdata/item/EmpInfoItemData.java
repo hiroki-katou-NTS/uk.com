@@ -39,6 +39,8 @@ public class EmpInfoItemData extends AggregateRoot {
 	private int dataType;
 
 	private BigDecimal selectionItemRefType;
+	
+	private String itemParentCd;
 
 	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
 			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType

@@ -4,13 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.flexset.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
@@ -20,12 +15,13 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeSetMemento;
 /**
  * The Class FlexHalfDayWorkTimeDto.
  */
+
 @Getter
 @Setter
 public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeSetMemento{
 	
-	/** The lst rest timezone. */
-	private List<FlowWorkRestTimezoneDto> lstRestTimezone;
+	/** The rest timezone. */
+	private FlowWorkRestTimezoneDto restTimezone;
 	
 	/** The work timezone. */
 	private FixedWorkTimezoneSetDto workTimezone;
@@ -41,23 +37,10 @@ public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeSetMemento{
 	 * setLstRestTimezone(java.util.List)
 	 */
 	@Override
-	public void setLstRestTimezone(List<FlowWorkRestTimezone> lstRestTimezone) {
-		if (CollectionUtil.isEmpty(lstRestTimezone)) {
-			this.lstRestTimezone = new ArrayList<>();
-		} else {
-			this.lstRestTimezone = lstRestTimezone.stream().map(domain -> {
-				FlowWorkRestTimezoneDto dto = new FlowWorkRestTimezoneDto();
-				domain.saveToMemento(dto);
-				return dto;
-			}).collect(Collectors.toList());
-		}
+	public void setRestTimezone(FlowWorkRestTimezone restTimezone) {
+		restTimezone.saveToMemento(this.restTimezone);
 	}
 
-	/**
-	 * Sets the lst work timezone.
-	 *
-	 * @param workTimezone the new lst work timezone
-	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -83,5 +66,4 @@ public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeSetMemento{
 		this.ampmAtr = ampmAtr.value;
 	}
 
-	
 }

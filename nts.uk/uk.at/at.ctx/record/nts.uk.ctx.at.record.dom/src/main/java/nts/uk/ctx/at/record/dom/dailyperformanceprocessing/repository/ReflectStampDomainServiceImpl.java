@@ -38,6 +38,8 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -88,10 +90,15 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 	@Inject
 	private BreakTimeStampIncorrectOrderChecking breakTimeStampIncorrectOrderChecking;
+	
 	@Inject
 	private ReflectEmbossingDomainService ReflectEmbossingDomainService;
+	
 	@Inject
 	private StampDomainService stampDomainService;
+	
+	@Inject
+	private WorkingConditionItemService workingConditionItemService;
 
 	@Override
 	public void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
@@ -220,10 +227,13 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if (workTimeCode.equals(null)) {
 			// use workTypeCode
 			WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode();
-			// TODO - 休日出勤時の勤務情報を取得する - new wave
-			// param : companyID, employeeId, workTypeCode
-			// output : workTimeCodeResult
-			// workTimeCode = workTimeCodeResult;
+			// 休日出勤時の勤務情報を取得する - new wave
+			Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService.getHolidayWorkSchedule(companyID, employeeId, processingDate, workTypeCode.v());
+			if(!singleDaySchedule.isPresent() || (singleDaySchedule.isPresent() && !singleDaySchedule.get().getWorkTimeCode().isPresent())){
+				workTimeCode = null;
+			} else {
+				workTimeCode = new WorkTimeCode(singleDaySchedule.get().getWorkTimeCode().get().v());
+			}			
 		}
 
 		// 当日の打刻反映範囲を取得 - end get data of this day

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.workchange;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,8 +10,6 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.workchange.ApplicationDateCommand;
-import nts.uk.ctx.at.request.app.command.application.workchange.CheckChangeAppDateCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
@@ -28,10 +24,7 @@ public class WorkchangeService extends WebService {
 	
 	@Inject
 	AppWorkChangeCommonSetFinder commonFinder;
-	
-	@Inject
-	CheckChangeAppDateCommandHandler checkHander;
-	
+		
 	@Inject
 	AddAppWorkChangeCommandHandler addHandler;
 	
@@ -54,15 +47,6 @@ public class WorkchangeService extends WebService {
 	public AppWorkChangeCommonSetDto getWorkChangeCommonSetting()
 	{		
 		return commonFinder.getWorkChangeCommonSetting();
-	}
-	/**
-	 * 共通アルゴリズム「申請日を変更する」を実行する
-	 * @param command : 申請日付分　（開始日～終了日）
-	 */
-	@POST
-	@Path("checkChangeApplicationDate")
-	public void checkChangeApplicationDate(ApplicationDateCommand command){
-		checkHander.handle(command);
 	}
 	
 	/**

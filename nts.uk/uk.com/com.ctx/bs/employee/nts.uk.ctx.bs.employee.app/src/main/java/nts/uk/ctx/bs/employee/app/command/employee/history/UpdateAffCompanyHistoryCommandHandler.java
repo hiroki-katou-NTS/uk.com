@@ -8,15 +8,15 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -45,8 +45,9 @@ public class UpdateAffCompanyHistoryCommandHandler extends CommandHandler<Update
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAffCompanyHistoryCommand> context) {
 		val command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		
-		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(command.getSId());
+		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(companyId,command.getSId());
 		if (listHist == null){
 			throw new RuntimeException("Invalid AffCompanyHist");
 		}

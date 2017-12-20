@@ -24,7 +24,7 @@ public class UpdateAffWorkplaceHistoryCommand{
 	
 	/** The normalWorkplaceCode. */
 	// 通常職場コード
-	@PeregItem("IS00086")
+	@PeregItem("IS00085")
 	private String  normalWorkplaceId;
 	
 	/** 期間 */

@@ -78,8 +78,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             //A3_10 + A3_11
             self.workSchedule = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText("Enum_IncludeAtr_Include") },
-                { code: '1', name: nts.uk.resource.getText("Enum_IncludeAtr_Exclude") }
+                { code: '0', name: nts.uk.resource.getText("Enum_IncludeAtr_Exclude") },
+                { code: '1', name: nts.uk.resource.getText("Enum_IncludeAtr_Include") }
             ]);
 
             self.workScheduleSelected = ko.observable(0);
@@ -856,12 +856,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     self.singleSelectedCode(data.verticalCalCd);
                     self.singleSelectedCode.valueHasMutated();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId});
                 }).always(function() {
                     blockUI.clear();
                 });
             } else {
                 $('#checkall').ntsError('set', { messageId: "Msg_110" });
+                blockUI.clear();
             }
         }
 
@@ -1051,6 +1052,10 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
                 if (self.calculatorItems().length == 0) {
                     self.deleteLineEnable(false);
+                }
+                
+                if (self.calculatorItems().length >= 0) {
+                    self.addLineEnable(true);
                 }
             }).ifNo(() => {
                 return;

@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessType
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfHistoryGeneralRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
@@ -44,13 +45,16 @@ public class DeleteBusinessWorkTypeOfHistoryCommandHandler
 		DeleteBusinessWorkTypeOfHistoryCommand command = context.getCommand();
 		String employeeId = command.getEmployeeId();
 		String historyId = command.getHistoryId();
-		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(employeeId);
-		BusinessTypeOfEmployeeHistory bEmployeeHistory = new BusinessTypeOfEmployeeHistory();
-		if (optional.isPresent()) {
-			bEmployeeHistory = optional.get();
-		} else {
+		String companyId = AppContexts.user().companyId();
+		
+		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos.findByEmployee(companyId,employeeId);
+		
+		if (!optional.isPresent()) {
 			throw new BusinessException("No data to update!");
 		}
+		
+		BusinessTypeOfEmployeeHistory bEmployeeHistory = optional.get();
+		
 		Optional<DateHistoryItem> currentItem = bEmployeeHistory.getHistory().stream().filter(x -> {
 			return x.identifier().equals(historyId);
 		}).findFirst();
@@ -58,11 +62,11 @@ public class DeleteBusinessWorkTypeOfHistoryCommandHandler
 			bEmployeeHistory.remove(currentItem.get());
 			typeOfHistoryGeneralRepos.deleteBusinessTypeEmpOfHistory(bEmployeeHistory, currentItem.get());
 		}
-		// update typeof employee
+		// Delete typeof employee
 		if (typeOfEmployeeRepos.findByHistoryId(historyId).isPresent()) {
 			typeOfEmployeeRepos.delete(historyId);
 		} else {
-			throw new BusinessException("No data to update!");
+			throw new BusinessException("No data to delete!");
 		}
 	}
 

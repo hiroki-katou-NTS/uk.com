@@ -98,7 +98,7 @@ public class DPHeaderDto {
 			groups.add(new DPHeaderDto("名称", "Name"+key.trim().substring(1, key.trim().length()), "String", String.valueOf(withChild)+"px", "",false, "Combobox2", false, false));
 			dto.setGroup(groups);
 		}
-		if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
+		if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value || attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
 			dto.setNtsControl("TextEditorNumberSeparated");
 		}
 		if(attendanceAtr == DailyAttendanceAtr.Time.value){

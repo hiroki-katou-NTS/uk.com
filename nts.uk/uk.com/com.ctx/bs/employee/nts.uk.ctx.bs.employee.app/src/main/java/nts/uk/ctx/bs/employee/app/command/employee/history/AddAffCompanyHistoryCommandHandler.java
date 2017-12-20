@@ -7,20 +7,19 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.medsea.util.StringUtil;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
@@ -53,8 +52,9 @@ public class AddAffCompanyHistoryCommandHandler
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddAffCompanyHistoryCommand> context) {
 		val command = context.getCommand();
 		String newHistId = IdentifierUtil.randomUniqueId();
-
-		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(command.getSId());
+		String companyId = AppContexts.user().companyId();
+		
+		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(companyId, command.getSId());
 
 		AffCompanyHistByEmployee itemToBeAdded = new AffCompanyHistByEmployee(command.getSId(), new ArrayList<>());
 		if (listHist != null) {

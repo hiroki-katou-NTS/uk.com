@@ -1,4 +1,4 @@
-module ksu001.d.service {
+module nts.uk.at.view.ksu001.d.service {
     var paths = {
         updateBasicSchedule: "at/schedule/basicschedule/update"
     }

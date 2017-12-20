@@ -60,13 +60,13 @@ public class GetHeaderOfCPS001Finder {
 	public EmployeeInfo getEmployeeInfo(String sid) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate date = GeneralDate.today();
-
+		String cid = AppContexts.user().companyId();
 		Optional<EmployeeInfo> empInfo = this.employeeMngRepo.findById(sid);
 		if (empInfo.isPresent()) {
 			EmployeeInfo _emp = empInfo.get();
 
-			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(sid);
-			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(sid);
+			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(cid, sid);
+			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(cid, sid);
 
 			if (tempHist.isPresent()) {
 				_emp.setNumberOfTempHist(tempHist
@@ -83,7 +83,9 @@ public class GetHeaderOfCPS001Finder {
 				if (emp != null) {
 					_emp.setNumberOfWork(emp.getLstAffCompanyHistoryItem().stream()
 							.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
-							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(), m.end().localDate()))
+							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
+									m.end().localDate().compareTo(LocalDate.now()) <= 0 ? m.end().localDate()
+											: LocalDate.now()))
 							.mapToInt(m -> Math.abs(m.intValue())).sum());
 
 					Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,

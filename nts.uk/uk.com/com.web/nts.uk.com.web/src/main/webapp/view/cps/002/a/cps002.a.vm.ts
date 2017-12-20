@@ -79,8 +79,6 @@ module cps002.a.vm {
                 self.categorySelectedCode('');
                 self.initSettingSelectedCode('');
                 self.currentInitSetting(new InitSetting(null));
-                //  self.layout(new Layout({ id: '', code: '', name: '' }));
-
             });
 
             self.employeeBasicInfo.subscribe((data) => {
@@ -90,7 +88,7 @@ module cps002.a.vm {
                     self.createTypeId(data.employeeCreationMethod);
 
 
-                    if (data.copyEmployeeId != "" && self.employeeBasicInfo().copyEmployeeId != data.copyEmployeeId) {
+                    if (self.employeeBasicInfo().copyEmployeeId != "") {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
@@ -116,8 +114,8 @@ module cps002.a.vm {
                 });
                 if (InitSetting) {
                     service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                        self.categorySelectedCode("");
                         if (result.length) {
-                            self.categorySelectedCode("");
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
@@ -223,7 +221,6 @@ module cps002.a.vm {
                 if (layout) {
                     service.getUserSetting().done((result: IUserSetting) => {
                         if (result) {
-
                             self.getEmployeeCode(result).done((empCode) => {
                                 self.currentEmployee().employeeCode(empCode);
                                 self.getCardNumber(result);
@@ -497,13 +494,13 @@ module cps002.a.vm {
                     }));
 
                     if (self.initSettingSelectedCode() == '') {
-                        if (self.employeeBasicInfo()) {
+                        if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
                             self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
                     }
-
+                    $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
                 dialog({ messageId: error.message }).then(() => {
@@ -543,9 +540,9 @@ module cps002.a.vm {
 
             if (currentEmpInfo) {
                 if (isInit) {
-                    newEmpInfo.copyEmployeeId = !newEmpInfo.copyEmployeeId ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
+                    newEmpInfo.copyEmployeeId = newEmpInfo.copyEmployeeId == '' ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
                 } else {
-                    newEmpInfo.initialValueCode = !newEmpInfo.initialValueCode ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
+                    newEmpInfo.initialValueCode = newEmpInfo.initialValueCode == '' ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
 
                 }
 
@@ -569,11 +566,11 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
-                block.grayout();
+
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
-                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "no-close", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
                             self.backtoStep1();
@@ -587,10 +584,7 @@ module cps002.a.vm {
 
                     dialog({ messageId: error.message });
 
-                }).always(() => {
-
-                    block.clear();
-                });
+                })
             }
         }
 

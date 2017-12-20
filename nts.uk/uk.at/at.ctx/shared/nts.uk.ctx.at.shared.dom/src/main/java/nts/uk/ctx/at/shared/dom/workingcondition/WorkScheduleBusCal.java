@@ -46,4 +46,12 @@ public class WorkScheduleBusCal extends DomainObject {
 		memento.setReferenceBasicWork(this.referenceBasicWork);
 		memento.setReferenceWorkingHours(this.referenceWorkingHours);
 	}
+
+	public WorkScheduleBusCal(WorkScheduleMasterReferenceAtr referenceBusinessDayCalendar,
+			WorkScheduleMasterReferenceAtr referenceBasicWork, TimeZoneScheduledMasterAtr referenceWorkingHours) {
+		super();
+		this.referenceBusinessDayCalendar = referenceBusinessDayCalendar;
+		this.referenceBasicWork = referenceBasicWork;
+		this.referenceWorkingHours = referenceWorkingHours;
+	}
 }

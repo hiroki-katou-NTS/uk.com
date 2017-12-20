@@ -22,11 +22,11 @@ module a9 {
         /**
          * Constructor
          */
-        constructor() {
+        constructor(screenMode: any) {
             let _self = this;
             
             // Detail mode and simple mode is same
-            _self.isDetailMode = ko.observable(null);
+            _self.isDetailMode = ko.observable(true);
             _self.isDetailMode.subscribe(newValue => {
                 (newValue === true) ? _self.loadDetailMode() : _self.loadSimpleMode();
             });
@@ -35,8 +35,10 @@ module a9 {
             _self.lateSetting = new TimeRoundingModel();
             _self.leaveEarlySetting = new TimeRoundingModel();
             
-            //TODO
-            _self.isDetailMode = ko.observable(true);     
+            //TODO  
+            screenMode.subscribe((value: any) => {
+                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            });
         }
         
         /**
@@ -126,8 +128,9 @@ module a9 {
                 .mergeRelativePath('/view/kmk/003/a9/index.xhtml').serialize();
             // Get data
             let input = valueAccessor();
+            let screenMode = input.screenMode;
 
-            let screenModel = new ScreenModel();
+            let screenModel = new ScreenModel(screenMode);
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

@@ -60,19 +60,13 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		PpemtPerInfoItem personInforItem = (PpemtPerInfoItem) entity[1];
 		PpemtPerInfoCtg personInforCategory = (PpemtPerInfoCtg) entity[2];
 		PpemtPerInfoItemCm perInfoItemCm = (PpemtPerInfoItemCm) entity[3];
-		try {
-			return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
-					personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
-					personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
-					personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
-					itemData.intValue, itemData.dateValue, perInfoItemCm.dataType.intValue());
-		} catch (Exception e) {
-			return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
-					personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
-					personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
-					personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
-					itemData.intValue, itemData.dateValue, itemData.saveDataType);
-		}
+	
+		return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
+				personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
+				personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
+				personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
+				itemData.intValue, itemData.dateValue, perInfoItemCm.dataType == null ? itemData.saveDataType : perInfoItemCm.dataType.intValue());
+		
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {

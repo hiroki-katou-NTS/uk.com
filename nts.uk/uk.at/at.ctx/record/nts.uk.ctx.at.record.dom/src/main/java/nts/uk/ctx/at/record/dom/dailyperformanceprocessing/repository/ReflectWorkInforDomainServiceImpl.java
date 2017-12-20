@@ -491,15 +491,15 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 			if (errMesInfos.isEmpty()) {
 				createStamp(companyId, workInfoOfDailyPerformanceUpdate, personalLaborHasData, timeLeavingOptional, employeeID, day);
+
 //				 check tay
-				 this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
-				 employeeID, day,
-				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr );
+//				 this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
+//				 employeeID, day,
+//				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr );
+
 			}
 
 		}
-
-
 
 		if (errMesInfos.isEmpty()) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する

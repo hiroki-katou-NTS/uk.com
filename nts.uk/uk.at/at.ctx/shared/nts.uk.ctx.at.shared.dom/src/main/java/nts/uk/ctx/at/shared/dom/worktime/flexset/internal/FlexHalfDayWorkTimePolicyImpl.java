@@ -38,8 +38,8 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 		// validate FixedWorkTimezoneSet
 		this.fixedWtzSetPolicy.validate(flexHalfDay.getWorkTimezone(), predTime);
 
-		// validate list FlowWorkRestTimezone
-		flexHalfDay.getLstRestTimezone().forEach(resTime -> this.flowRestPolicy.validate(predTime, resTime));
+		// validate FlowWorkRestTimezone
+		this.flowRestPolicy.validate(predTime, flexHalfDay.getRestTimezone());
 	}
 
 }
