@@ -75,7 +75,7 @@ module a4 {
         }
     }
 
-    class KMK003A1BindingHandler implements KnockoutBindingHandler {
+    class KMK003A4BindingHandler implements KnockoutBindingHandler {
         /**
          * Constructor.
          */
@@ -122,6 +122,6 @@ module a4 {
         }
 
     }
-    ko.bindingHandlers['ntsKMK003A4'] = new KMK003A1BindingHandler();
+    ko.bindingHandlers['ntsKMK003A4'] = new KMK003A4BindingHandler();
 
 }

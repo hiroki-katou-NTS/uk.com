@@ -301,5 +301,15 @@ module nts.uk.at.view.kmk003.a {
                 this.flexWorkSetting = new FlexWorkSettingModel();
             }
         }
+        
+        export enum EnumWorkForm {
+            REGULAR,
+            FLEX
+        }
+        export enum SettingMethod {
+            FIXED,
+            DIFFTIME,
+            FLOW
+        }
     }
 }

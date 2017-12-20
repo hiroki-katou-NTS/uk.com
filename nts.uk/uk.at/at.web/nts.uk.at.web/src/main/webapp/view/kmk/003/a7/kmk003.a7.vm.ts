@@ -1,4 +1,6 @@
 module a7 {
+    import EnumWorkForm = nts.uk.at.view.kmk003.a.viewmodel.EnumWorkForm;
+    import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
     class ScreenModel {
 
         fixTableOption: any;
@@ -11,7 +13,7 @@ module a7 {
         /**
         * Constructor.
         */
-        constructor(screenMode: string, settingMethod: any, workTimeCode: string) {
+        constructor(screenMode: string, workTimeForm: any, settingMethod: any, workTimeCode: string) {
             let self = this;
 
             self.dataSource = ko.observableArray([]);
@@ -33,8 +35,10 @@ module a7 {
                 columns: self.columnSetting(),
                 tabindex: 10
             };
+            
+            //subscrible worktime ssettingmethod
             self.isFixedOrDiffTime = ko.computed(function() {
-                return (settingMethod() == "1") || (settingMethod() == "2");
+                return (workTimeForm() == EnumWorkForm.FLEX) || (settingMethod() == SettingMethod.FLOW);
             });
             
             self.useFixedRestTimeOptions = ko.observableArray([
@@ -84,9 +88,10 @@ module a7 {
             let input = valueAccessor();
             let screenMode = ko.unwrap(input.screenMode);
             let settingMethod = input.settingMethod;
+            let workTimeForm = input.workTimeForm;
             let workTimeCode = input.workTimeCode;
 
-            var screenModel = new ScreenModel(screenMode, settingMethod, workTimeCode);
+            var screenModel = new ScreenModel(screenMode,workTimeForm,settingMethod, workTimeCode);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

@@ -314,7 +314,9 @@
 											</div>
 											<div class="tab-a7">
 												<div data-bind="ntsKMK003A7: { screenMode:tabMode, 
-													settingMethod:selectedSettingMethod, workTimeCode: siftCode, 
+													workTimeForm: workTimeSettingModel.workTimeDivision.workTimeDailyAtr,
+													settingMethod: workTimeSettingModel.workTimeDivision.workTimeMethodSet,
+													workTimeCode: siftCode, 
 													saveAction: isClickSave}">
 												</div>
 											</div>
