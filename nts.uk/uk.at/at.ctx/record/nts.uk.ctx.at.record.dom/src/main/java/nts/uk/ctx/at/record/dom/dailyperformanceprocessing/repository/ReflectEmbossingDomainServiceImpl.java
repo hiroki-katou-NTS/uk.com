@@ -97,6 +97,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (lstStampItem == null) {
 			return null;
 		}
+
 		lstStampItem.forEach(x -> {
 
 			switch (x.getStampAtr().value) {
@@ -109,16 +110,33 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					String actualStampClass = "実打刻";
 					int worktNo = 1;
 
-					this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date, employeeId, x,
-							attendanceClass, actualStampClass, worktNo, companyId);
+					Optional<TimeLeavingOfDailyPerformance> timeOptional = this.timeRepo.findByKey(employeeId, date);
+					TimeLeavingOfDailyPerformance timeLeaving1 = null;
+					TimeLeavingOfDailyPerformance timeDailyPer1 = null;
+					if (timeOptional.isPresent()) {
+						TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
+						timeLeaving1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeLeaving, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					} else {
+						timeDailyPer1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					}
+
 					// 出退勤区分 = 出勤
 					attendanceClass = "出勤";
 					// 実打刻区分 = 実打刻
 					actualStampClass = "打刻";
 					worktNo = 1;
-					this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date, employeeId, x,
-							attendanceClass, actualStampClass, worktNo, companyId);
-					lstTimeLeavingOfDailyPerformance.add(timeDailyPer);
+					if (timeLeaving1 != null) {
+
+						timeLeaving1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeLeaving1, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					} else {
+						timeDailyPer1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer1, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					}
+
+					lstTimeLeavingOfDailyPerformance.add(timeLeaving1 != null ? timeLeaving1 : timeDailyPer1);
 
 					//
 
@@ -128,17 +146,30 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// 実打刻区分 = 実打刻
 					String actualStampClass = "実打刻";
 					int worktNo = 2;
-
-					this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date, employeeId, x,
-							attendanceClass, actualStampClass, worktNo, companyId);
+					Optional<TimeLeavingOfDailyPerformance> timeOptional = this.timeRepo.findByKey(employeeId, date);
+					TimeLeavingOfDailyPerformance timeLeaving1 = null;
+					TimeLeavingOfDailyPerformance timeDailyPer1 = null;
+					if (timeOptional.isPresent()) {
+						TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
+						timeLeaving1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeLeaving, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					} else {
+						timeDailyPer1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					}
 					// 出退勤区分 = 出勤
 					attendanceClass = "出勤";
 					// 実打刻区分 = 実打刻
 					actualStampClass = "打刻";
 					worktNo = 2;
-					this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date, employeeId, x,
-							attendanceClass, actualStampClass, worktNo, companyId);
-					lstTimeLeavingOfDailyPerformance.add(timeDailyPer);
+					if (timeLeaving1 != null) {
+						timeLeaving1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeLeaving1, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					} else {
+						timeDailyPer1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					}
+					lstTimeLeavingOfDailyPerformance.add(timeLeaving1 != null ? timeLeaving1 : timeDailyPer1);
 
 				} else {
 
@@ -153,15 +184,30 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// 実打刻区分 = 実打刻
 					String actualStampClass = "実打刻";
 					int worktNo = 1;
-					this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date, employeeId, x,
-							attendanceClass, actualStampClass, worktNo, companyId);
+					Optional<TimeLeavingOfDailyPerformance> timeOptional = this.timeRepo.findByKey(employeeId, date);
+					TimeLeavingOfDailyPerformance timeLeaving1 = null;
+					TimeLeavingOfDailyPerformance timeDailyPer1 = null;
+					if (timeOptional.isPresent()) {
+						TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
+						timeLeaving1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeLeaving, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					} else {
+						timeDailyPer1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					}
 					// 出退勤区分 = 退勤
 					attendanceClass = "退勤";
 					// 実打刻区分 = 打刻
 					actualStampClass = "打刻";
 					worktNo = 1;
-					this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date, employeeId, x,
-							attendanceClass, actualStampClass, worktNo, companyId);
+					if (timeLeaving1 != null) {
+						timeLeaving1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeLeaving1, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					} else {
+						timeDailyPer1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					}
+					lstTimeLeavingOfDailyPerformance.add(timeLeaving1 != null ? timeLeaving1 : timeDailyPer1);
 
 				} else if ("range2".equals(confirmReflectRangeLeavingTime)) {
 					// 出退勤区分 = 退勤
@@ -169,15 +215,30 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					// 実打刻区分 = 実打刻
 					String actualStampClass = "実打刻";
 					int worktNo = 2;
-					this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date, employeeId, x,
-							attendanceClass, actualStampClass, worktNo, companyId);
+					Optional<TimeLeavingOfDailyPerformance> timeOptional = this.timeRepo.findByKey(employeeId, date);
+					TimeLeavingOfDailyPerformance timeLeaving1 = null;
+					TimeLeavingOfDailyPerformance timeDailyPer1 = null;
+					if (timeOptional.isPresent()) {
+						TimeLeavingOfDailyPerformance timeLeaving = timeOptional.get();
+						timeLeaving1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeLeaving, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					} else {
+						timeDailyPer1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					}
 					// 出退勤区分 = 退勤
 					attendanceClass = "退勤";
 					// 実打刻区分 = 打刻
 					actualStampClass = "打刻";
 					worktNo = 2;
-					this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date, employeeId, x,
-							attendanceClass, actualStampClass, worktNo, companyId);
+					if (timeLeaving1 != null) {
+						timeLeaving1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeLeaving1, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					} else {
+						timeDailyPer1 = this.reflectActualTimeOrAttendence(lstStamp, WorkInfo, timeDailyPer, date,
+								employeeId, x, attendanceClass, actualStampClass, worktNo, companyId);
+					}
+					lstTimeLeavingOfDailyPerformance.add(timeLeaving1 != null ? timeLeaving1 : timeDailyPer1);
 
 				} else {
 
@@ -238,8 +299,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					processTimeOutput1.setTimeOfDay(new TimeWithDayAttr(attendanceTime.v()));
 					// 10*
 					// 11* Xác nhận xem có phản ảnh check tay chưa)
-					if (s.getTemporary().getStart().v() <= processTimeOutput1.getTimeOfDay().v()
-							&& s.getTemporary().getEnd().v() >= processTimeOutput1.getTimeOfDay().v()) {
+					if (s.getTemporary().getStart().v().intValue() <= processTimeOutput1.getTimeOfDay().v().intValue()
+							&& s.getTemporary().getEnd().v().intValue() >= processTimeOutput1.getTimeOfDay().v().intValue()) {
 						// reflect
 						if (x.getStampAtr().value == 8) {
 							// 開始
@@ -286,10 +347,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
 		List<TimeLeavingWork> timeLeavingWorks;
 		if (temporaryTimeOptional.isPresent()) {
-			 temporaryTimeOfDailyPerformance = temporaryTimeOptional.get();
-			 timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+			temporaryTimeOfDailyPerformance = temporaryTimeOptional.get();
+			timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
 			Collections.sort(timeLeavingWorks, new Comparator<TimeLeavingWork>() {
 				public int compare(TimeLeavingWork o1, TimeLeavingWork o2) {
+					if(o2==null||o2.getAttendanceStamp()==null||o2.getAttendanceStamp().getStamp()==null){
+						return 1;
+					}
+					if(o1==null||o1.getAttendanceStamp()==null||o1.getAttendanceStamp().getStamp()==null){
+						return -1;
+					}
 					int t1 = o1.getAttendanceStamp().getStamp().getTimeWithDay().v().intValue();
 					int t2 = o2.getAttendanceStamp().getStamp().getTimeWithDay().v().intValue();
 					if (t1 == t2)
@@ -297,96 +364,100 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					return t1 < t2 ? -1 : 1;
 				}
 			});
-		}else{
-			timeLeavingWorks =  new ArrayList<TimeLeavingWork>();
+		} else {
+			timeLeavingWorks = new ArrayList<TimeLeavingWork>();
 			timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
-			temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(employeeId, null, timeLeavingWorks, date);
+			temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(employeeId, null, timeLeavingWorks,
+					date);
 		}
-		
 
-			// *7.1 出退勤Listに最大枠数分の枠を用意する (Trong 出退勤List, chuẩn bị phần tử có số
-			// lượng phần tử lớn nhất)
-			// 臨時勤務管理 chưa có (fixed)
-			// 最大使用回数 = 11;
-			int Maxcount = 11;
-			int timeLeavingSize = timeLeavingWorks.size();
-			if (timeLeavingSize < Maxcount) {
-				for (int i = 0; i < Maxcount - timeLeavingSize; i++) {
-					timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
-				}
-			}else if(timeLeavingSize > Maxcount){
-				for (int i = 0; i < timeLeavingSize - Maxcount; i++) {
-					timeLeavingWorks.remove(timeLeavingWorks.get(timeLeavingSize-i-1));
-				}
+		// *7.1 出退勤Listに最大枠数分の枠を用意する (Trong 出退勤List, chuẩn bị phần tử có số
+		// lượng phần tử lớn nhất)
+		// 臨時勤務管理 chưa có (fixed)
+		// 最大使用回数 = 11;
+		int Maxcount = 11;
+		int timeLeavingSize = timeLeavingWorks.size();
+		if (timeLeavingSize < Maxcount) {
+			for (int i = 0; i < Maxcount - timeLeavingSize; i++) {
+				timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
 			}
-			// *7.1
-			int timeLeavingWorkSize = timeLeavingWorks.size();
-			boolean isBreak = false;
-			List<TimeLeavingWork> newTimeLeavingWorks = null;
-			for (int i = 0; i < timeLeavingWorkSize; i++) {
-				TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
-				TimeActualStamp leaveStamp = timeLeavingWork.getLeaveStamp();
-				if (leaveStamp != null && leaveStamp.getStamp() != null) {
-					// 8* 打刻時刻と臨時時刻が同一か判定する (Đánh giá xem 打刻時刻 và 臨時時刻 có giống
-					// nhau không)
-					// 臨時勤務管理 chưa có (fixed) true (đồng nhất thời gian) false
-					// (k đồng nhất)
-					boolean equal = true;
-					// 8*
-					if (equal) {
-						// 打刻を出退勤．退勤．実打刻に入れる (Set 打刻 vào 退勤．退勤．実打刻)
-						timeLeavingWork = putInActualStampOfLeaveWork(lstStamp, x, processTimeOutput, timeLeavingWork);
+		} else if (timeLeavingSize > Maxcount) {
+			for (int i = 0; i < timeLeavingSize - Maxcount; i++) {
+				timeLeavingWorks.remove(timeLeavingWorks.get(timeLeavingSize - i - 1));
+			}
+		}
+		// *7.1
+		int timeLeavingWorkSize = timeLeavingWorks.size();
+		boolean isBreak = false;
+		List<TimeLeavingWork> newTimeLeavingWorks = null;
+		for (int i = 0; i < timeLeavingWorkSize; i++) {
+			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
+			TimeActualStamp leaveStamp = timeLeavingWork.getLeaveStamp();
+			if (leaveStamp != null && leaveStamp.getStamp() != null) {
+				// 8* 打刻時刻と臨時時刻が同一か判定する (Đánh giá xem 打刻時刻 và 臨時時刻 có giống
+				// nhau không)
+				// 臨時勤務管理 chưa có (fixed) true (đồng nhất thời gian) false
+				// (k đồng nhất)
+				boolean equal = true;
+				// 8*
+				if (equal) {
+					// 打刻を出退勤．退勤．実打刻に入れる (Set 打刻 vào 退勤．退勤．実打刻)
+					TimeLeavingWork newTimeLeavingWork = putInActualStampOfLeaveWork(lstStamp, x, processTimeOutput,
+							timeLeavingWork);
+					timeLeavingWorks.get(i).setTimeLeavingWork(newTimeLeavingWork.getWorkNo(),
+							newTimeLeavingWork.getAttendanceStamp(), newTimeLeavingWork.getLeaveStamp());
+					newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
+					isBreak = true;
+					break;
+				}
+
+			} else {
+
+				if (timeLeavingWork.getAttendanceStamp() == null
+						|| timeLeavingWork.getAttendanceStamp().getStamp() == null
+						|| (timeLeavingWork.getAttendanceStamp() != null
+								&& timeLeavingWork.getAttendanceStamp().getStamp() != null
+								&& timeLeavingWork.getAttendanceStamp().getStamp().getTimeWithDay()
+										.v().intValue() <= processTimeOutput.getTimeOfDay().v().intValue())) {
+					if (i + 1 == timeLeavingWorkSize || timeLeavingWorks.get(i + 1) == null
+							|| timeLeavingWorks.get(i + 1).getAttendanceStamp() == null
+							|| timeLeavingWorks.get(i + 1).getAttendanceStamp().getStamp() == null
+							|| (i + 1 < timeLeavingWorkSize && timeLeavingWorks.get(i + 1) != null
+									&& timeLeavingWorks.get(i + 1).getAttendanceStamp() != null
+									&& timeLeavingWorks.get(i + 1).getAttendanceStamp().getStamp() != null
+									&& processTimeOutput.getTimeOfDay().v().intValue() < timeLeavingWorks.get(i + 1)
+											.getAttendanceStamp().getStamp().getTimeWithDay().v().intValue())) {
+						TimeLeavingWork newTimeLeavingWork = putTimeLeaveForActualAndStamp(lstStamp, x,
+								processTimeOutput, timeLeavingWork);
+						timeLeavingWorks.get(i).setTimeLeavingWork(newTimeLeavingWork.getWorkNo(),
+								newTimeLeavingWork.getAttendanceStamp(), newTimeLeavingWork.getLeaveStamp());
 						newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
 						isBreak = true;
 						break;
 					}
-
-				} else {
-
-					if (timeLeavingWork.getAttendanceStamp() == null
-							|| timeLeavingWork.getAttendanceStamp().getStamp() == null
-							|| (timeLeavingWork.getAttendanceStamp() != null
-									&& timeLeavingWork.getAttendanceStamp().getStamp() != null
-									&& timeLeavingWork.getAttendanceStamp().getStamp().getTimeWithDay()
-											.v() <= processTimeOutput.getTimeOfDay().v())) {
-						if (i + 1 == timeLeavingWorkSize || timeLeavingWorks.get(i + 1) == null
-								|| timeLeavingWorks.get(i + 1).getAttendanceStamp() == null
-								|| timeLeavingWorks.get(i + 1).getAttendanceStamp().getStamp() == null
-								|| (i + 1 < timeLeavingWorkSize && timeLeavingWorks.get(i + 1) != null
-										&& timeLeavingWorks.get(i + 1).getAttendanceStamp() != null
-										&& timeLeavingWorks.get(i + 1).getAttendanceStamp().getStamp() != null
-										&& processTimeOutput.getTimeOfDay().v() < timeLeavingWorks.get(i + 1)
-												.getAttendanceStamp().getStamp().getTimeWithDay().v())) {
-							timeLeavingWork = putTimeLeaveForActualAndStamp(lstStamp, x, processTimeOutput,
-									timeLeavingWork);
-							newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
-							isBreak = true;
-							break;
-						}
-					}
-
 				}
-			}
-			if (!isBreak) {
-				newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
-			}
-			if (newTimeLeavingWorks == null || newTimeLeavingWorks.size() == 0) {
-				return new TemporaryTimeOfDailyPerformance(employeeId, temporaryTimeOfDailyPerformance.getWorkTimes(),
-						timeLeavingWorks, date);
-				// this.lstTemporaryTimeOfDailyPerformance.add(new
-				// TemporaryTimeOfDailyPerformance(employeeId,
-				// temporaryTimeOfDailyPerformance.getWorkTimes(),
-				// timeLeavingWorks, date));
-			} else {
-				// this.lstTemporaryTimeOfDailyPerformance.add(new
-				// TemporaryTimeOfDailyPerformance(employeeId,
-				// temporaryTimeOfDailyPerformance.getWorkTimes(),
-				// newTimeLeavingWorks, date));
-				return new TemporaryTimeOfDailyPerformance(employeeId, temporaryTimeOfDailyPerformance.getWorkTimes(),
-						newTimeLeavingWorks, date);
-			}
 
-		
+			}
+		}
+		if (!isBreak) {
+			newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
+		}
+		if (newTimeLeavingWorks == null || newTimeLeavingWorks.size() == 0) {
+			return new TemporaryTimeOfDailyPerformance(employeeId, temporaryTimeOfDailyPerformance.getWorkTimes(),
+					timeLeavingWorks, date);
+			// this.lstTemporaryTimeOfDailyPerformance.add(new
+			// TemporaryTimeOfDailyPerformance(employeeId,
+			// temporaryTimeOfDailyPerformance.getWorkTimes(),
+			// timeLeavingWorks, date));
+		} else {
+			// this.lstTemporaryTimeOfDailyPerformance.add(new
+			// TemporaryTimeOfDailyPerformance(employeeId,
+			// temporaryTimeOfDailyPerformance.getWorkTimes(),
+			// newTimeLeavingWorks, date));
+			return new TemporaryTimeOfDailyPerformance(employeeId, temporaryTimeOfDailyPerformance.getWorkTimes(),
+					newTimeLeavingWorks, date);
+		}
+
 	}
 
 	// 打刻を出退勤．退勤（実打刻と打刻）に入れる (Set 打刻 vào 出退勤．退勤（実打刻と打刻))
@@ -457,9 +528,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
+		int numberOfReflectionStamp = 0;
+		if (timeLeavingWork.getLeaveStamp() != null) {
+			numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp();
+		}
+
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(), timeLeavingWork.getAttendanceStamp(),
-				new TimeActualStamp(actualStamp, actualStamp,
-						timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp() + 1));
+				new TimeActualStamp(actualStamp, actualStamp, numberOfReflectionStamp + 1));
 
 	}
 
@@ -519,10 +594,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						x.getWorkLocationCd(), StampSourceInfo.TIME_RECORDER);
 				break;
 			}
+			int numberOfReflectionStamp = 0;
+			if (timeLeavingWork.getLeaveStamp() != null) {
+				numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp();
+			}
 
 			return new TimeLeavingWork(timeLeavingWork.getWorkNo(), timeLeavingWork.getAttendanceStamp(),
 					new TimeActualStamp(actualStamp, timeLeavingWork.getLeaveStamp().getStamp(),
-							timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp()));
+							numberOfReflectionStamp));
 
 		}
 
@@ -532,10 +611,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
+		int numberOfReflectionStamp = 0;
+		if (timeLeavingWork.getLeaveStamp() != null) {
+			numberOfReflectionStamp = timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp();
+		}
+
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(), timeLeavingWork.getAttendanceStamp(),
 				new TimeActualStamp(timeLeavingWork.getLeaveStamp().getActualStamp(),
-						timeLeavingWork.getLeaveStamp().getStamp(),
-						timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp() + 1));
+						timeLeavingWork.getLeaveStamp().getStamp(), numberOfReflectionStamp + 1));
 
 	}
 
@@ -547,12 +630,18 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		//
 		TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
 		List<TimeLeavingWork> timeLeavingWorks;
-		
+
 		if (temporaryTimeOptional.isPresent()) {
-			 temporaryTimeOfDailyPerformance = temporaryTimeOptional.get();
-			 timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+			temporaryTimeOfDailyPerformance = temporaryTimeOptional.get();
+			timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
 			Collections.sort(timeLeavingWorks, new Comparator<TimeLeavingWork>() {
 				public int compare(TimeLeavingWork o1, TimeLeavingWork o2) {
+					if(o2==null||o2.getAttendanceStamp()==null||o2.getAttendanceStamp().getStamp()==null){
+						return 1;
+					}
+					if(o1==null||o1.getAttendanceStamp()==null||o1.getAttendanceStamp().getStamp()==null){
+						return -1;
+					}
 					int t1 = o1.getAttendanceStamp().getStamp().getTimeWithDay().v().intValue();
 					int t2 = o2.getAttendanceStamp().getStamp().getTimeWithDay().v().intValue();
 					if (t1 == t2)
@@ -560,85 +649,90 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					return t1 < t2 ? -1 : 1;
 				}
 			});
-		}else{
+		} else {
 			timeLeavingWorks = new ArrayList<TimeLeavingWork>();
 			timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
-			temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(employeeId, null, timeLeavingWorks, date);
+			temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(employeeId, null, timeLeavingWorks,
+					date);
 		}
 
-			// *7.1 出退勤Listに最大枠数分の枠を用意する (Trong 出退勤List, chuẩn bị phần tử có số
-			// lượng phần tử lớn nhất)
-			// 臨時勤務管理 chưa có (fixed)
-			// 最大使用回数 = 11;
-			int Maxcount = 11;
-			int timeLeavingSize = timeLeavingWorks.size();
-			if (timeLeavingSize < Maxcount) {
-				for (int i = 0; i < Maxcount - timeLeavingSize; i++) {
-					timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
-				}
-			}else if(timeLeavingSize > Maxcount){
-				for (int i = 0; i < timeLeavingSize - Maxcount; i++) {
-					timeLeavingWorks.remove(timeLeavingWorks.get(timeLeavingSize-i-1));
-				}
+		// *7.1 出退勤Listに最大枠数分の枠を用意する (Trong 出退勤List, chuẩn bị phần tử có số
+		// lượng phần tử lớn nhất)
+		// 臨時勤務管理 chưa có (fixed)
+		// 最大使用回数 = 11;
+		int Maxcount = 11;
+		int timeLeavingSize = timeLeavingWorks.size();
+		if (timeLeavingSize < Maxcount) {
+			for (int i = 0; i < Maxcount - timeLeavingSize; i++) {
+				timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
 			}
-			// *7.1
-			int timeLeavingWorkSize = timeLeavingWorks.size();
-			List<TimeLeavingWork> newTimeLeavingWorks = null;
-			boolean isBreak = false;
-			for (int i = 0; i < timeLeavingWorkSize; i++) {
-				TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
-				TimeActualStamp attendanceStamp = timeLeavingWork.getAttendanceStamp();
-				if (attendanceStamp != null && attendanceStamp.getStamp() != null) {
-					// 8* 打刻時刻と臨時時刻が同一か判定する (Đánh giá xem 打刻時刻 và 臨時時刻 có giống
-					// nhau không)
-					// 臨時勤務管理 chưa có (fixed) true (đồng nhất thời gian) false
-					// (k đồng nhất)
-					boolean equal = true;
-					// 8*
-					if (equal) {
-						// tiếp
-						// 打刻を出退勤．出勤．実打刻に入れる (Set 打刻 vào 出退勤．出勤．実打刻)
-						timeLeavingWork = setStampInActualStampOfTimeLeave(lstStamp, x, processTimeOutput,
-								timeLeavingWork);
-						newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
-						isBreak = true;
-						break;
-					}
+		} else if (timeLeavingSize > Maxcount) {
+			for (int i = 0; i < timeLeavingSize - Maxcount; i++) {
+				timeLeavingWorks.remove(timeLeavingWorks.get(timeLeavingSize - i - 1));
+			}
+		}
+		// *7.1
+		int timeLeavingWorkSize = timeLeavingWorks.size();
+		List<TimeLeavingWork> newTimeLeavingWorks = null;
+		boolean isBreak = false;
+		for (int i = 0; i < timeLeavingWorkSize; i++) {
+			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
+			TimeActualStamp attendanceStamp = timeLeavingWork.getAttendanceStamp();
+			if (attendanceStamp != null && attendanceStamp.getStamp() != null) {
+				// 8* 打刻時刻と臨時時刻が同一か判定する (Đánh giá xem 打刻時刻 và 臨時時刻 có giống
+				// nhau không)
+				// 臨時勤務管理 chưa có (fixed) true (đồng nhất thời gian) false
+				// (k đồng nhất)
+				boolean equal = true;
+				// 8*
+				if (equal) {
+					// tiếp
+					// 打刻を出退勤．出勤．実打刻に入れる (Set 打刻 vào 出退勤．出勤．実打刻)
+					TimeLeavingWork newTimeLeavingWork = setStampInActualStampOfTimeLeave(lstStamp, x,
+							processTimeOutput, timeLeavingWork);
+					timeLeavingWorks.get(i).setTimeLeavingWork(newTimeLeavingWork.getWorkNo(),
+							newTimeLeavingWork.getAttendanceStamp(), newTimeLeavingWork.getLeaveStamp());
+					newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
+					isBreak = true;
+					break;
+				}
 
-				} else {
-					if (timeLeavingWork.getLeaveStamp() == null || timeLeavingWork.getLeaveStamp().getStamp() == null
-							|| (timeLeavingWork.getLeaveStamp() != null
-									&& timeLeavingWork.getLeaveStamp().getStamp() != null
-									&& processTimeOutput.getTimeOfDay().v() <= timeLeavingWork.getLeaveStamp()
-											.getStamp().getTimeWithDay().v())) {
-						// 打刻を出退勤．出勤（実打刻と打刻）に入れる (Set 打刻 vào 出退勤．出勤（実打刻と打刻))
-						putDataTimeLeaveForActualAndStamp(lstStamp, x, processTimeOutput, timeLeavingWork);
-						newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
-						isBreak = true;
-						break;
-					}
-				}
-			}
-			if (!isBreak) {
-				newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
-			}
-			if (newTimeLeavingWorks == null || newTimeLeavingWorks.isEmpty()) {
-				return new TemporaryTimeOfDailyPerformance(employeeId, temporaryTimeOfDailyPerformance.getWorkTimes(),
-						timeLeavingWorks, date);
-				// this.lstTemporaryTimeOfDailyPerformance.add(new
-				// TemporaryTimeOfDailyPerformance(employeeId,
-				// temporaryTimeOfDailyPerformance.getWorkTimes(),
-				// timeLeavingWorks, date));
 			} else {
-				// this.lstTemporaryTimeOfDailyPerformance.add(new
-				// TemporaryTimeOfDailyPerformance(employeeId,
-				// temporaryTimeOfDailyPerformance.getWorkTimes(),
-				// newTimeLeavingWorks, date));
-				return new TemporaryTimeOfDailyPerformance(employeeId, temporaryTimeOfDailyPerformance.getWorkTimes(),
-						newTimeLeavingWorks, date);
+				if (timeLeavingWork.getLeaveStamp() == null || timeLeavingWork.getLeaveStamp().getStamp() == null
+						|| (timeLeavingWork.getLeaveStamp() != null
+								&& timeLeavingWork.getLeaveStamp().getStamp() != null
+								&& processTimeOutput.getTimeOfDay().v().intValue() <= timeLeavingWork.getLeaveStamp().getStamp()
+										.getTimeWithDay().v().intValue())) {
+					// 打刻を出退勤．出勤（実打刻と打刻）に入れる (Set 打刻 vào 出退勤．出勤（実打刻と打刻))
+					TimeLeavingWork newTimeLeavingWork = putDataTimeLeaveForActualAndStamp(lstStamp, x,
+							processTimeOutput, timeLeavingWork);
+					timeLeavingWorks.get(i).setTimeLeavingWork(newTimeLeavingWork.getWorkNo(),
+							newTimeLeavingWork.getAttendanceStamp(), newTimeLeavingWork.getLeaveStamp());
+					newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
+					isBreak = true;
+					break;
+				}
 			}
+		}
+		if (!isBreak) {
+			newTimeLeavingWorks = revomeEmptyTimeLeaves(timeLeavingWorks);
+		}
+		if (newTimeLeavingWorks == null || newTimeLeavingWorks.isEmpty()) {
+			return new TemporaryTimeOfDailyPerformance(employeeId, temporaryTimeOfDailyPerformance.getWorkTimes(),
+					timeLeavingWorks, date);
+			// this.lstTemporaryTimeOfDailyPerformance.add(new
+			// TemporaryTimeOfDailyPerformance(employeeId,
+			// temporaryTimeOfDailyPerformance.getWorkTimes(),
+			// timeLeavingWorks, date));
+		} else {
+			// this.lstTemporaryTimeOfDailyPerformance.add(new
+			// TemporaryTimeOfDailyPerformance(employeeId,
+			// temporaryTimeOfDailyPerformance.getWorkTimes(),
+			// newTimeLeavingWorks, date));
+			return new TemporaryTimeOfDailyPerformance(employeeId, temporaryTimeOfDailyPerformance.getWorkTimes(),
+					newTimeLeavingWorks, date);
+		}
 
-		
 	}
 
 	// 打刻を出退勤．出勤（実打刻と打刻）に入れる (Set 打刻 vào 出退勤．出勤（実打刻と打刻))
@@ -710,9 +804,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
+		int numberOfReflectionStamp = 0;
+		if (timeLeavingWork.getAttendanceStamp() != null) {
+			numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp();
+		}
+
 		return new TimeLeavingWork(timeLeavingWork.getWorkNo(),
-				new TimeActualStamp(actualStamp, actualStamp,
-						timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp() + 1),
+				new TimeActualStamp(actualStamp, actualStamp, numberOfReflectionStamp + 1),
 				timeLeavingWork.getLeaveStamp());
 	}
 
@@ -772,9 +870,13 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						x.getWorkLocationCd(), StampSourceInfo.TIME_RECORDER);
 				break;
 			}
-			return new TimeLeavingWork(timeLeavingWork.getWorkNo(),
-					new TimeActualStamp(newActualStamp, timeLeavingWork.getAttendanceStamp().getStamp(),
-							timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp()),
+			int numberOfReflectionStamp = 0;
+			if (timeLeavingWork.getAttendanceStamp() != null) {
+				numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp();
+			}
+			return new TimeLeavingWork(
+					timeLeavingWork.getWorkNo(), new TimeActualStamp(newActualStamp,
+							timeLeavingWork.getAttendanceStamp().getStamp(), numberOfReflectionStamp),
 					timeLeavingWork.getLeaveStamp());
 		}
 		// 反映済み区分 = true
@@ -782,9 +884,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
-		return new TimeLeavingWork(timeLeavingWork.getWorkNo(),
-				new TimeActualStamp(actualStamp, timeLeavingWork.getAttendanceStamp().getStamp(),
-						timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp() + 1),
+
+		int numberOfReflectionStamp = 0;
+		if (timeLeavingWork.getAttendanceStamp() != null) {
+			numberOfReflectionStamp = timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp();
+		}
+
+		return new TimeLeavingWork(
+				timeLeavingWork.getWorkNo(), new TimeActualStamp(actualStamp,
+						timeLeavingWork.getAttendanceStamp().getStamp(), numberOfReflectionStamp + 1),
 				timeLeavingWork.getLeaveStamp());
 
 	}
@@ -798,116 +906,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		OutingTimeOfDailyPerformance outDailyPer;
 		List<OutingTimeSheet> lstOutingTimeSheet;
 		if (outDailyOptional.isPresent()) {
-			 outDailyPer = outDailyOptional.get();
-			 lstOutingTimeSheet = outDailyPer.getOutingTimeSheets();
-			Collections.sort(lstOutingTimeSheet, new Comparator<OutingTimeSheet>() {
-				public int compare(OutingTimeSheet o1, OutingTimeSheet o2) {
-					int t1 = o1.getGoOut().getStamp().getTimeWithDay().v().intValue();
-					int t2 = o2.getGoOut().getStamp().getTimeWithDay().v().intValue();
-					if (t1 == t2)
-						return 0;
-					return t1 < t2 ? -1 : 1;
-				}
-			});
-		}else{
-			lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
-			lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
-			outDailyPer  = new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, date);
-		}
-
-			// *7.1 外出時間帯Listに最大枠数分の枠を用意する (Chuẩn bị )
-			// Xác nhận 最大使用回数 (最大使用回数 lấy từ 打刻反映管理 .外出管理 )
-			Optional<StampReflectionManagement> stampOptional = this.stampRepo.findByCid(companyId);
-			if (stampOptional.isPresent()) {
-				StampReflectionManagement stampReflectionManagement = stampOptional.get();
-				// stampReflectionManagement sẽ gọi .外出管理.最大使用回数
-				// (outingManager)
-				// fixed outingManager =11
-				int outingManager = 11;
-				// thiếu điều kiện giữa outingManager và
-				// lstOutingTimeSheet.size();
-				int outingTimeSize = lstOutingTimeSheet.size();
-				if (outingTimeSize < outingManager) {
-					for (int i = 0; i < outingManager - outingTimeSize; i++) {
-						lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
-					}
-				}else if(outingTimeSize > outingManager){
-					for (int i = 0; i < outingTimeSize - outingManager; i++) {
-						lstOutingTimeSheet.remove(lstOutingTimeSheet.get(outingTimeSize-i-1));
-					}
-				}
-				// *7.1
-				int lstOutingTimeSheetSize = lstOutingTimeSheet.size();
-				List<OutingTimeSheet> newOutingTimeSheets = null;
-				boolean isBreak = false;
-				for (int i = 0; i < lstOutingTimeSheetSize; i++) {
-					OutingTimeSheet o = lstOutingTimeSheet.get(i);
-					WorkStamp stamp = o.getComeBack().getStamp();
-					if (o.getComeBack() != null && stamp != null && stamp.getStampSourceInfo().value != 17) {
-						if (stamp.getTimeWithDay().v() == processTimeOutput.getTimeOfDay().v()) {
-							o = putInDataComeBack(lstStamp, x, processTimeOutput, o); // ok
-							newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
-							isBreak = true;
-							break;
-						}
-					} else {
-						// 次の枠の時間帯．外出．打刻を確認する
-						if ((o.getGoOut() == null || o.getGoOut().getStamp() == null)
-								|| (o.getGoOut() != null && o.getGoOut().getStamp() != null && o.getGoOut().getStamp()
-										.getTimeWithDay().v() <= processTimeOutput.getTimeOfDay().v())) {
-
-							if (i + 1 == lstOutingTimeSheetSize || lstOutingTimeSheet.get(i + 1) == null
-									|| lstOutingTimeSheet.get(i + 1).getGoOut() == null
-									|| lstOutingTimeSheet.get(i + 1).getGoOut().getStamp() == null
-									|| (i + 1 < lstOutingTimeSheetSize && lstOutingTimeSheet.get(i + 1) != null
-											&& lstOutingTimeSheet.get(i + 1).getGoOut() != null
-											&& lstOutingTimeSheet.get(i + 1).getGoOut().getStamp() != null
-											&& processTimeOutput.getTimeOfDay().v() < lstOutingTimeSheet.get(i + 1)
-													.getGoOut().getStamp().getTimeWithDay().v())) {
-								o = putDataComeBackForActualAndStamp(lstStamp, x, processTimeOutput, o);
-								newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
-								isBreak = true;
-								break;
-
-							}
-						}
-
-					}
-				}
-				if (!isBreak) {
-					newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
-				}
-				if (newOutingTimeSheets == null || newOutingTimeSheets.isEmpty()) {
-					return new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, date);
-					// this.lstOutingTimeOfDailyPerformance
-					// .add(new OutingTimeOfDailyPerformance(employeeId,
-					// lstOutingTimeSheet, date));
-				} else {
-					return new OutingTimeOfDailyPerformance(employeeId, newOutingTimeSheets, date);
-					// this.lstOutingTimeOfDailyPerformance
-					// .add(new OutingTimeOfDailyPerformance(employeeId,
-					// newOutingTimeSheets, date));
-				}
-
-			}
-			return outDailyPer;
-
-		
-	}
-
-	// *7 外出打刻を反映する (Phản ánh 外出打刻 (thời diểm check ra ngoài))
-	private OutingTimeOfDailyPerformance reflectTimeGoOutCheck(List<StampItem> lstStamp, GeneralDate date,
-			String employeeId, StampItem x, ProcessTimeOutput processTimeOutput, String companyId) {
-		Optional<OutingTimeOfDailyPerformance> outDailyOptional = this.OutRepo.findByEmployeeIdAndDate(employeeId,
-				date);
-		//
-		OutingTimeOfDailyPerformance outDailyPer;
-		List<OutingTimeSheet> lstOutingTimeSheet;
-		if (outDailyOptional.isPresent()) {
 			outDailyPer = outDailyOptional.get();
 			lstOutingTimeSheet = outDailyPer.getOutingTimeSheets();
 			Collections.sort(lstOutingTimeSheet, new Comparator<OutingTimeSheet>() {
 				public int compare(OutingTimeSheet o1, OutingTimeSheet o2) {
+					if(o2==null||o2.getGoOut()==null||o2.getGoOut().getStamp()==null){
+						return 1;
+					}
+					if(o1==null||o1.getGoOut()==null||o1.getGoOut().getStamp()==null){
+						return -1;
+					}
 					int t1 = o1.getGoOut().getStamp().getTimeWithDay().v().intValue();
 					int t2 = o2.getGoOut().getStamp().getTimeWithDay().v().intValue();
 					if (t1 == t2)
@@ -937,9 +945,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				for (int i = 0; i < outingManager - outingTimeSize; i++) {
 					lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
 				}
-			}else if(outingTimeSize > outingManager){
+			} else if (outingTimeSize > outingManager) {
 				for (int i = 0; i < outingTimeSize - outingManager; i++) {
-					lstOutingTimeSheet.remove(lstOutingTimeSheet.get(outingTimeSize-i-1));
+					lstOutingTimeSheet.remove(lstOutingTimeSheet.get(outingTimeSize - i - 1));
 				}
 			}
 			// *7.1
@@ -948,11 +956,125 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			boolean isBreak = false;
 			for (int i = 0; i < lstOutingTimeSheetSize; i++) {
 				OutingTimeSheet o = lstOutingTimeSheet.get(i);
-				WorkStamp stamp = o.getGoOut().getStamp();
-				if (o.getGoOut() != null && stamp != null && stamp.getStampSourceInfo().value != 17) {
-					if (stamp.getTimeWithDay().v() == processTimeOutput.getTimeOfDay().v()) {
+				//o.getComeBack().getStamp().getTimeWithDay().v().intValue();
+				if (o.getComeBack() != null &&  o.getComeBack().getStamp() != null &&  o.getComeBack().getStamp().getStampSourceInfo().value != 17) {
+					if ( o.getComeBack().getStamp().getTimeWithDay().v().intValue() == processTimeOutput.getTimeOfDay().v().intValue()) {
+						OutingTimeSheet newOutingTimeSheet  = putInDataComeBack(lstStamp, x, processTimeOutput, o); // ok
+						lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(), newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(), newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(), newOutingTimeSheet.getComeBack());
+						newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
+						isBreak = true;
+						break;
+					}
+				} else {
+					// 次の枠の時間帯．外出．打刻を確認する
+					if ((o.getGoOut() == null || o.getGoOut().getStamp() == null) || (o.getGoOut() != null
+							&& o.getGoOut().getStamp() != null
+							&& o.getGoOut().getStamp().getTimeWithDay().v().intValue() <= processTimeOutput.getTimeOfDay().v().intValue())) {
+
+						if (i + 1 == lstOutingTimeSheetSize || lstOutingTimeSheet.get(i + 1) == null
+								|| lstOutingTimeSheet.get(i + 1).getGoOut() == null
+								|| lstOutingTimeSheet.get(i + 1).getGoOut().getStamp() == null
+								|| (i + 1 < lstOutingTimeSheetSize && lstOutingTimeSheet.get(i + 1) != null
+										&& lstOutingTimeSheet.get(i + 1).getGoOut() != null
+										&& lstOutingTimeSheet.get(i + 1).getGoOut().getStamp() != null
+										&& processTimeOutput.getTimeOfDay().v().intValue() < lstOutingTimeSheet.get(i + 1)
+												.getGoOut().getStamp().getTimeWithDay().v().intValue())) {
+							OutingTimeSheet newOutingTimeSheet = putDataComeBackForActualAndStamp(lstStamp, x, processTimeOutput, o);
+							lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(), newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(), newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(), newOutingTimeSheet.getComeBack());
+							newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
+							isBreak = true;
+							break;
+
+						}
+					}
+
+				}
+			}
+			if (!isBreak) {
+				newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
+			}
+			if (newOutingTimeSheets == null || newOutingTimeSheets.isEmpty()) {
+				return new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, date);
+				// this.lstOutingTimeOfDailyPerformance
+				// .add(new OutingTimeOfDailyPerformance(employeeId,
+				// lstOutingTimeSheet, date));
+			} else {
+				return new OutingTimeOfDailyPerformance(employeeId, newOutingTimeSheets, date);
+				// this.lstOutingTimeOfDailyPerformance
+				// .add(new OutingTimeOfDailyPerformance(employeeId,
+				// newOutingTimeSheets, date));
+			}
+
+		}
+		return outDailyPer;
+
+	}
+
+	// *7 外出打刻を反映する (Phản ánh 外出打刻 (thời diểm check ra ngoài))
+	private OutingTimeOfDailyPerformance reflectTimeGoOutCheck(List<StampItem> lstStamp, GeneralDate date,
+			String employeeId, StampItem x, ProcessTimeOutput processTimeOutput, String companyId) {
+		Optional<OutingTimeOfDailyPerformance> outDailyOptional = this.OutRepo.findByEmployeeIdAndDate(employeeId,
+				date);
+		//
+		OutingTimeOfDailyPerformance outDailyPer;
+		List<OutingTimeSheet> lstOutingTimeSheet;
+		if (outDailyOptional.isPresent()) {
+			outDailyPer = outDailyOptional.get();
+			lstOutingTimeSheet = outDailyPer.getOutingTimeSheets();
+			Collections.sort(lstOutingTimeSheet, new Comparator<OutingTimeSheet>() {
+				public int compare(OutingTimeSheet o1, OutingTimeSheet o2) {
+					if(o2==null||o2.getGoOut()==null||o2.getGoOut().getStamp()==null){
+						return 1;
+					}
+					if(o1==null||o1.getGoOut()==null||o1.getGoOut().getStamp()==null){
+						return -1;
+					}
+					int t1 = o1.getGoOut().getStamp().getTimeWithDay().v().intValue();
+					int t2 = o2.getGoOut().getStamp().getTimeWithDay().v().intValue();
+					if (t1 == t2)
+						return 0;
+					return t1 < t2 ? -1 : 1;
+				}
+			});
+		} else {
+			lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
+			lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
+			outDailyPer = new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, date);
+		}
+
+		// *7.1 外出時間帯Listに最大枠数分の枠を用意する (Chuẩn bị )
+		// Xác nhận 最大使用回数 (最大使用回数 lấy từ 打刻反映管理 .外出管理 )
+		Optional<StampReflectionManagement> stampOptional = this.stampRepo.findByCid(companyId);
+		if (stampOptional.isPresent()) {
+			StampReflectionManagement stampReflectionManagement = stampOptional.get();
+			// stampReflectionManagement sẽ gọi .外出管理.最大使用回数
+			// (outingManager)
+			// fixed outingManager =11
+			int outingManager = 11;
+			// thiếu điều kiện giữa outingManager và
+			// lstOutingTimeSheet.size();
+			int outingTimeSize = lstOutingTimeSheet.size();
+			if (outingTimeSize < outingManager) {
+				for (int i = 0; i < outingManager - outingTimeSize; i++) {
+					lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
+				}
+			} else if (outingTimeSize > outingManager) {
+				for (int i = 0; i < outingTimeSize - outingManager; i++) {
+					lstOutingTimeSheet.remove(lstOutingTimeSheet.get(outingTimeSize - i - 1));
+				}
+			}
+			// *7.1
+			int lstOutingTimeSheetSize = lstOutingTimeSheet.size();
+			List<OutingTimeSheet> newOutingTimeSheets = null;
+			boolean isBreak = false;
+			for (int i = 0; i < lstOutingTimeSheetSize; i++) {
+				OutingTimeSheet o = lstOutingTimeSheet.get(i);
+				if (o.getGoOut() != null && o.getGoOut().getStamp() != null
+						&& o.getGoOut().getStamp().getStampSourceInfo().value != 17) {
+					if (o.getGoOut().getStamp().getTimeWithDay().v().intValue() == processTimeOutput.getTimeOfDay().v().intValue()) {
 						// 打刻を時間帯．外出．実打刻に入れる (put vào 打刻を時間帯．外出．実打刻)
-						o = putInDataActualStamp(lstStamp, x, processTimeOutput, o);
+						OutingTimeSheet newOutingTimeSheet = putInDataActualStamp(lstStamp, x, processTimeOutput, o);
+						lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(), newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(), newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(), newOutingTimeSheet.getComeBack());
 						// 7.1.2 Xóa những cái trống trong list
 						newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 						isBreak = true;
@@ -965,17 +1087,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						// (put
 						// 打刻を時間帯．外出)
 						OutingTimeSheet newOutingTimeSheet = putDataInGoOut(lstStamp, x, processTimeOutput, o);
-						lstOutingTimeSheet.remove(o);
-						lstOutingTimeSheet.add(newOutingTimeSheet);
+						lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(), newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(), newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(), newOutingTimeSheet.getComeBack());
 						newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 						isBreak = true;
 						break;
 						// 7.2*
 					} else {
-						if (o.getComeBack().getStamp().getTimeWithDay().v() <= processTimeOutput.getTimeOfDay().v()) {
+						if (o.getComeBack().getStamp().getTimeWithDay().v().intValue() <= processTimeOutput.getTimeOfDay().v().intValue()) {
 							OutingTimeSheet newOutingTimeSheet = putDataInGoOut(lstStamp, x, processTimeOutput, o);
-							lstOutingTimeSheet.remove(o);
-							lstOutingTimeSheet.add(newOutingTimeSheet);
+							lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(), newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(), newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(), newOutingTimeSheet.getComeBack());
 							newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 							isBreak = true;
 							break;
@@ -1005,15 +1125,29 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 	private List<TimeLeavingWork> revomeEmptyTimeLeaves(List<TimeLeavingWork> timeLeavingWorks) {
 		List<TimeLeavingWork> newTimeLeavingWorks = new ArrayList<TimeLeavingWork>();
+		List<TimeLeavingWork> newTimeLeavingWorksRemoved = new ArrayList<TimeLeavingWork>();
 		int lstOutingTimeSize = timeLeavingWorks.size();
 		for (int j = 0; j < lstOutingTimeSize; j++) {
 			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(j);
-			if (timeLeavingWork.getAttendanceStamp() == null && timeLeavingWork.getLeaveStamp() == null) {
-				timeLeavingWorks.remove(timeLeavingWork);
+			// if (timeLeavingWork.getAttendanceStamp() == null &&
+			// timeLeavingWork.getLeaveStamp() == null) {
+			// timeLeavingWorks.remove(timeLeavingWork);
+			// }
+			if (timeLeavingWork.getAttendanceStamp() != null || timeLeavingWork.getLeaveStamp() != null) {
+				newTimeLeavingWorksRemoved.add(timeLeavingWork);
 			}
+
 		}
+		timeLeavingWorks = newTimeLeavingWorksRemoved;
 		Collections.sort(timeLeavingWorks, new Comparator<TimeLeavingWork>() {
 			public int compare(TimeLeavingWork o1, TimeLeavingWork o2) {
+				if(o2==null||o2.getAttendanceStamp()==null||o2.getAttendanceStamp().getStamp()==null){
+					return 1;
+				}
+				if(o1==null||o1.getAttendanceStamp()==null||o1.getAttendanceStamp().getStamp()==null){
+					return -1;
+				}
+
 				int t1 = o1.getAttendanceStamp().getStamp().getTimeWithDay().v().intValue();
 				int t2 = o2.getAttendanceStamp().getStamp().getTimeWithDay().v().intValue();
 				if (t1 == t2)
@@ -1039,14 +1173,28 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private List<OutingTimeSheet> revomeEmptyOutingTimeSheets(List<OutingTimeSheet> lstOutingTimeSheet) {
 		int lstOutingTimeSize = lstOutingTimeSheet.size();
 		List<OutingTimeSheet> newOutingTimeSheets = new ArrayList<OutingTimeSheet>();
+		List<OutingTimeSheet> newOutingTimeSheetsRemoved = new ArrayList<OutingTimeSheet>();
 		for (int j = 0; j < lstOutingTimeSize; j++) {
 			OutingTimeSheet outingTimeSheet = lstOutingTimeSheet.get(j);
-			if (outingTimeSheet.getGoOut() == null && outingTimeSheet.getComeBack() == null) {
-				lstOutingTimeSheet.remove(outingTimeSheet);
+			// if (outingTimeSheet.getGoOut() == null &&
+			// outingTimeSheet.getComeBack() == null) {
+			// lstOutingTimeSheet.remove(outingTimeSheet);
+			// }
+			if (outingTimeSheet.getGoOut() != null || outingTimeSheet.getComeBack() != null) {
+				newOutingTimeSheetsRemoved.add(outingTimeSheet);
 			}
+
 		}
+		lstOutingTimeSheet = newOutingTimeSheetsRemoved;
+
 		Collections.sort(lstOutingTimeSheet, new Comparator<OutingTimeSheet>() {
 			public int compare(OutingTimeSheet o1, OutingTimeSheet o2) {
+				if(o2==null||o2.getGoOut()==null||o2.getGoOut().getStamp()==null){
+					return 1;
+				}
+				if(o1==null||o1.getGoOut()==null||o1.getGoOut().getStamp()==null){
+					return -1;
+				}
 				int t1 = o1.getGoOut().getStamp().getTimeWithDay().v().intValue();
 				int t2 = o2.getGoOut().getStamp().getTimeWithDay().v().intValue();
 				if (t1 == t2)
@@ -1128,7 +1276,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				break;
 			}
 			return new OutingTimeSheet(o.getOutingFrameNo(),
-					new TimeActualStamp(actualStamp, o.getGoOut().getStamp(),
+					new TimeActualStamp(newActualStamp, o.getGoOut().getStamp(),
 							o.getGoOut().getNumberOfReflectionStamp()),
 					o.getOutingTimeCalculation(), o.getOutingTime(),
 					EnumAdaptor.valueOf(x.getGoOutReason().value, GoingOutReason.class), o.getComeBack());
@@ -1202,11 +1350,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						x.getWorkLocationCd(), StampSourceInfo.TIME_RECORDER);
 				break;
 			}
+			int numberOfReflectionStamp = 0;
+			if(o.getComeBack()!=null){
+				numberOfReflectionStamp = o.getComeBack().getNumberOfReflectionStamp();
+			}
 
 			return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(),
 					o.getOutingTime(), EnumAdaptor.valueOf(x.getGoOutReason().value, GoingOutReason.class),
 					new TimeActualStamp(newActualStamp, o.getComeBack().getStamp(),
-							o.getComeBack().getNumberOfReflectionStamp()));
+							numberOfReflectionStamp));
 
 		}
 
@@ -1215,11 +1367,16 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
+		
+		int numberOfReflectionStamp = 0;
+		if(o.getComeBack()!=null){
+			numberOfReflectionStamp = o.getComeBack().getNumberOfReflectionStamp();
+		}
 
 		return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(), o.getOutingTime(),
 				EnumAdaptor.valueOf(x.getGoOutReason().value, GoingOutReason.class),
 				new TimeActualStamp(o.getComeBack().getActualStamp(), o.getComeBack().getStamp(),
-						o.getComeBack().getNumberOfReflectionStamp() + 1));
+						numberOfReflectionStamp + 1));
 	}
 
 	// 打刻を時間帯．戻り（実打刻と打刻）に入れる
@@ -1290,10 +1447,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				x.getSiftCd(), x.getStampMethod(), x.getStampAtr(), x.getWorkLocationCd(), x.getWorkLocationName(),
 				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
+		int numberOfReflectionStamp = 0;
+		if(o.getComeBack()!=null){
+			numberOfReflectionStamp = o.getComeBack().getNumberOfReflectionStamp();
+		}
+		
 
 		return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(), o.getOutingTime(),
 				EnumAdaptor.valueOf(x.getGoOutReason().value, GoingOutReason.class),
-				new TimeActualStamp(newActualStamp, newActualStamp, o.getComeBack().getNumberOfReflectionStamp() + 1));
+				new TimeActualStamp(newActualStamp, newActualStamp, numberOfReflectionStamp + 1));
 	}
 
 	private OutingTimeSheet putDataInGoOut(List<StampItem> lstStamp, StampItem x, ProcessTimeOutput processTimeOutput,
@@ -1359,8 +1521,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				x.getGoOutReason(), x.getDate(), x.getPersonId(), ReflectedAtr.REFLECTED);
 		lstStamp.add(stampItem);
 
+		int numberOfReflectionStamp = 0;
+
+		if (o.getGoOut() != null) {
+			numberOfReflectionStamp = o.getGoOut().getNumberOfReflectionStamp();
+		}
+
 		return new OutingTimeSheet(o.getOutingFrameNo(),
-				new TimeActualStamp(newActualStamp, newActualStamp, o.getGoOut().getNumberOfReflectionStamp() + 1),
+				new TimeActualStamp(newActualStamp, newActualStamp, numberOfReflectionStamp + 1),
 				o.getOutingTimeCalculation(), o.getOutingTime(),
 				EnumAdaptor.valueOf(x.getGoOutReason().value, GoingOutReason.class), o.getComeBack());
 
@@ -1369,7 +1537,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private int roudingTimeWithDay(TimeWithDayAttr timeOfDay, FontRearSection fontRearSection,
 			RoundingTimeUnit roundTimeUnit) {
 		InstantRounding instantRounding = new InstantRounding(fontRearSection, roundTimeUnit);
-		int numberMinuteTimeOfDay = timeOfDay.v();
+		int numberMinuteTimeOfDay = timeOfDay.v().intValue();
 		int timeOfDayMinute = timeOfDay.minute();
 		int roundingTimeUnit = instantRounding.getRoundingTimeUnit().value;
 		// FontRearSection.BEFOR
@@ -1392,8 +1560,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		processTimeOutput.setTimeOfDay(new TimeWithDayAttr(attendanceTime.v()));
 		// 外出
 		TimeZoneOutput goOut = s.getGoOut();
-		if (goOut.getStart().v() <= processTimeOutput.getTimeOfDay().v()
-				&& goOut.getEnd().v() >= processTimeOutput.getTimeOfDay().v()) {
+		if (goOut.getStart().v().intValue() <= processTimeOutput.getTimeOfDay().v().intValue()
+				&& goOut.getEnd().v().intValue() >= processTimeOutput.getTimeOfDay().v().intValue()) {
 			return true;
 		}
 		return false;
@@ -1406,8 +1574,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		for (int i = 0; i < n; i++) {
 			// 打刻．勤務時刻 is 打刻.時刻 ?
 			StampReflectTimezoneOutput stampReflectTimezone = lstStampReflectTimezone.get(i);
-			if (stampReflectTimezone.getStartTime().v() <= attendanceTime.v()
-					&& stampReflectTimezone.getEndTime().v() >= attendanceTime.v()
+			if (stampReflectTimezone.getStartTime().v().intValue() <= attendanceTime.v().intValue()
+					&& stampReflectTimezone.getEndTime().v().intValue() >= attendanceTime.v().intValue()
 					&& stampReflectTimezone.getClassification().value == 1) {
 				if (stampReflectTimezone.getWorkNo().v().intValue() == 1) {
 					return "range1";
@@ -1420,18 +1588,46 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		return "outrange";
 	}
 
-	private void reflectActualTimeOrAttendence(List<StampItem> lstStamp, WorkInfoOfDailyPerformance WorkInfo,
-			TimeLeavingOfDailyPerformance timeDailyPer, GeneralDate date, String employeeId, StampItem x,
-			String attendanceClass, String actualStampClass, int worktNo, String companyId) {
+	private TimeLeavingOfDailyPerformance reflectActualTimeOrAttendence(List<StampItem> lstStamp,
+			WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeDailyPer, GeneralDate date,
+			String employeeId, StampItem x, String attendanceClass, String actualStampClass, int worktNo,
+			String companyId) {
 		TimePrintDestinationOutput timePrintDestinationOutput = new TimePrintDestinationOutput();
 		// getReflecDestination Lấy dữ liệu 反映先
 
 		// confirm? timeDailyPer có cần phải update k hiện tại actualStamp đang
 		// khởi tạo đối tượng mới
-		WorkStamp actualStamp = getWorkStamp(timeDailyPer, worktNo, attendanceClass, actualStampClass);
-		timePrintDestinationOutput.setLocationCode(actualStamp.getLocationCode());
-		timePrintDestinationOutput.setStampSourceInfo(actualStamp.getStampSourceInfo());
-		timePrintDestinationOutput.setTimeOfDay(actualStamp.getTimeWithDay());
+		WorkStamp stampOrActualStamp = null;
+		TimeActualStamp timeActualStamp = null;
+		if (timeDailyPer != null && timeDailyPer.getTimeLeavingWorks() != null
+				&& !timeDailyPer.getTimeLeavingWorks().isEmpty()) {
+			timeActualStamp = this.getTimeActualStamp(timeDailyPer, worktNo, attendanceClass);
+			if (timeActualStamp != null && "実打刻".equals(actualStampClass)) {
+				stampOrActualStamp = timeActualStamp.getActualStamp();
+			} else if (timeActualStamp != null && !"実打刻".equals(actualStampClass)) {
+				stampOrActualStamp = timeActualStamp.getStamp();
+			}
+			// actualStamp = getWorkStamp(timeDailyPer, worktNo,
+			// attendanceClass, actualStampClass);
+			timePrintDestinationOutput
+					.setLocationCode(stampOrActualStamp != null ? stampOrActualStamp.getLocationCode() : null);
+			timePrintDestinationOutput
+					.setStampSourceInfo(stampOrActualStamp != null ? stampOrActualStamp.getStampSourceInfo() : null);
+			timePrintDestinationOutput
+					.setTimeOfDay(stampOrActualStamp != null ? stampOrActualStamp.getTimeWithDay() : null);
+		}
+		boolean isNullTimeActualStamp = true;
+		boolean isNullStampOrActualStamp = true;
+		if (timeActualStamp != null) {
+			isNullTimeActualStamp = false;
+		}else{
+			timeActualStamp = new TimeActualStamp();
+		}
+		if (stampOrActualStamp != null) {
+			isNullStampOrActualStamp = false;
+		}else{
+			stampOrActualStamp = new WorkStamp();
+		}
 
 		// 組み合わせ区分 != 直行 or != 直帰
 		if (x.getStampCombinationAtr().value != 6 && x.getStampCombinationAtr().value != 7) {
@@ -1492,7 +1688,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					 * timePrintDestinationCopy.getLocationCode(),
 					 * timePrintDestinationCopy.getStampSourceInfo());
 					 */
-					actualStamp.setPropertyWorkStamp(actualStamp.getAfterRoundingTime(),
+				
+
+					stampOrActualStamp.setPropertyWorkStamp(stampOrActualStamp.getAfterRoundingTime(),
 							timePrintDestinationCopy.getTimeOfDay(), timePrintDestinationCopy.getLocationCode(),
 							timePrintDestinationCopy.getStampSourceInfo());
 
@@ -1513,8 +1711,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						// (RoundingTimeUnit) 時刻丸め単位 = 1;
 						InstantRounding instantRounding = new InstantRounding(FontRearSection.AFTER,
 								RoundingTimeUnit.ONE);
-						TimeWithDayAttr timeOfDay = actualStamp.getTimeWithDay();
-						int numberMinuteTimeOfDay = actualStamp.getTimeWithDay().v();
+						TimeWithDayAttr timeOfDay = stampOrActualStamp.getTimeWithDay();
+						int numberMinuteTimeOfDay = stampOrActualStamp.getTimeWithDay().v().intValue();
 						int timeOfDayMinute = timeOfDay.minute();
 						int roundingTimeUnit = instantRounding.getRoundingTimeUnit().value;
 						// FontRearSection.BEFOR
@@ -1537,12 +1735,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						 * timePrintDestinationCopy.getLocationCode(),
 						 * timePrintDestinationCopy.getStampSourceInfo());
 						 */
-						actualStamp.setPropertyWorkStamp(new TimeWithDayAttr(numberMinuteTimeOfDayRounding),
+						stampOrActualStamp.setPropertyWorkStamp(new TimeWithDayAttr(numberMinuteTimeOfDayRounding),
 								timePrintDestinationCopy.getTimeOfDay(), timePrintDestinationCopy.getLocationCode(),
 								timePrintDestinationCopy.getStampSourceInfo());
 
-					} else {
-						// return
 					}
 
 					// 5*
@@ -1556,26 +1752,83 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				}
 
 			}
-			// 6* Update số lần phản ánh 打刻
-			if ("実打刻".equals(actualStampClass)) {
-				TimeActualStamp timeActualStamp = this.getTimeActualStamp(timeDailyPer, worktNo, attendanceClass,
-						actualStampClass);
-				// timeActualStamp.setNumberOfReflectionStamp(timeActualStamp.getNumberOfReflectionStamp()
-				// + 1);
-				/*
-				 * timeActualStamp = new
-				 * TimeActualStamp(timeActualStamp.getActualStamp(),
-				 * timeActualStamp.getStamp(),
-				 * timeActualStamp.getNumberOfReflectionStamp() + 1);
-				 */
-				timeActualStamp.setPropertyTimeActualStamp(timeActualStamp.getActualStamp(), timeActualStamp.getStamp(),
-						timeActualStamp.getNumberOfReflectionStamp() + 1);
-
-				// tăng lên 1 nhưng lưu vào đâu, cần confirm ?
-			}
-			// 6*
 
 		}
+		// 6* Update số lần phản ánh 打刻
+		if ("実打刻".equals(actualStampClass)) {
+			// TimeActualStamp timeActualStamp =
+			// this.getTimeActualStamp(timeDailyPer, worktNo, attendanceClass);
+			// timeActualStamp.setNumberOfReflectionStamp(timeActualStamp.getNumberOfReflectionStamp()
+			// + 1);
+			/*
+			 * timeActualStamp = new
+			 * TimeActualStamp(timeActualStamp.getActualStamp(),
+			 * timeActualStamp.getStamp(),
+			 * timeActualStamp.getNumberOfReflectionStamp() + 1);
+			 */
+			timeActualStamp.setPropertyTimeActualStamp(timeActualStamp.getActualStamp(), timeActualStamp.getStamp(),
+					timeActualStamp.getNumberOfReflectionStamp() + 1);
+
+			// tăng lên 1 nhưng lưu vào đâu, cần confirm ?
+		}
+		// 6*
+
+		// update data TimeLeavingOfDailyPerformance
+
+		if (isNullStampOrActualStamp && isNullTimeActualStamp) {
+			List<TimeLeavingWork> lstTimeLeave = timeDailyPer.getTimeLeavingWorks() != null
+					? timeDailyPer.getTimeLeavingWorks() : new ArrayList<TimeLeavingWork>();
+
+			if ("出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
+				lstTimeLeave
+						.add(new TimeLeavingWork(
+								new WorkNo(new BigDecimal(worktNo)), new TimeActualStamp(stampOrActualStamp,
+										timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp()),
+								null));
+
+			} else if ("出勤".equals(attendanceClass) && !"実打刻".equals(actualStampClass)) {
+				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(new BigDecimal(worktNo)),
+						new TimeActualStamp(timeActualStamp.getActualStamp(), stampOrActualStamp,
+								timeActualStamp.getNumberOfReflectionStamp()),
+						null));
+			} else if (!"出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
+				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(new BigDecimal(worktNo)), null, new TimeActualStamp(
+						stampOrActualStamp, timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp())));
+			} else {
+				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(new BigDecimal(worktNo)), null, new TimeActualStamp(
+						timeActualStamp.getStamp(), stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp())));
+			}
+
+			return new TimeLeavingOfDailyPerformance(employeeId, null, lstTimeLeave, date);
+		} else {
+			List<TimeLeavingWork> timeLeavingWorks = timeDailyPer.getTimeLeavingWorks();
+			int size = timeLeavingWorks.size();
+			for (int i = 0; i < size; i++) {
+				TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(i);
+				if (timeLeavingWork.getWorkNo().v().intValue() == worktNo) {
+					if ("出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
+						timeLeavingWorks.get(i).getAttendanceStamp().setPropertyTimeActualStamp(stampOrActualStamp,
+								timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp());
+					} else if ("出勤".equals(attendanceClass) && !"実打刻".equals(actualStampClass)) {
+						timeLeavingWorks.get(i).getAttendanceStamp().setPropertyTimeActualStamp(
+								timeActualStamp.getActualStamp(), stampOrActualStamp,
+								timeActualStamp.getNumberOfReflectionStamp());
+					} else if (!"出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
+						timeLeavingWorks.get(i).getLeaveStamp().setPropertyTimeActualStamp(stampOrActualStamp,
+								timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp());
+					} else {
+						timeLeavingWorks.get(i).getLeaveStamp().setPropertyTimeActualStamp(
+								timeActualStamp.getActualStamp(), stampOrActualStamp,
+								timeActualStamp.getNumberOfReflectionStamp());
+					}
+					break;
+
+				}
+			}
+
+			return new TimeLeavingOfDailyPerformance(employeeId, null, timeLeavingWorks, date);
+		}
+
 	}
 
 	/*
@@ -1629,19 +1882,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	}
 
 	private TimeActualStamp getTimeActualStamp(TimeLeavingOfDailyPerformance timeDailyPer, int worktNo,
-			String attendanceClass, String actualStampClass) {
-		if (timeDailyPer != null) {
-			List<TimeLeavingWork> lstTimeLeavingWork = timeDailyPer.getTimeLeavingWorks();
-			int n = lstTimeLeavingWork.size();
-			for (int i = 0; i < n; i++) {
-				TimeLeavingWork timeLeavingWork = lstTimeLeavingWork.get(i);
-				if (timeLeavingWork.getWorkNo().v().intValue() == worktNo) {
-					// 出勤
-					if ("出勤".equals(attendanceClass)) {
-						return timeLeavingWork.getAttendanceStamp();
-					} else {
-						return timeLeavingWork.getLeaveStamp();
-					}
+			String attendanceClass) {
+		List<TimeLeavingWork> lstTimeLeavingWork = timeDailyPer.getTimeLeavingWorks();
+		int n = lstTimeLeavingWork.size();
+		for (int i = 0; i < n; i++) {
+			TimeLeavingWork timeLeavingWork = lstTimeLeavingWork.get(i);
+			if (timeLeavingWork.getWorkNo().v().intValue() == worktNo) {
+				// 出勤
+				if ("出勤".equals(attendanceClass)) {
+					return timeLeavingWork.getAttendanceStamp();
+				} else {
+					return timeLeavingWork.getLeaveStamp();
 				}
 			}
 		}
@@ -1652,7 +1903,9 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	// reflect)
 	private boolean checkReflectNormal(StampItem stamp, TimePrintDestinationOutput timePrintDestinationOutput,
 			GeneralDate date, String employeeId, String companyId) {
-		if (timePrintDestinationOutput == null) {
+		if (timePrintDestinationOutput.getLocationCode() == null
+				|| timePrintDestinationOutput.getStampSourceInfo() == null
+				|| timePrintDestinationOutput.getTimeOfDay() == null) {
 			return true;
 		} else {
 			if (timePrintDestinationOutput.getStampSourceInfo().value == 6
@@ -1709,14 +1962,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			AttendanceTime attendanceTime = stamp.getAttendanceTime();
 			TimeWithDayAttr timeDestination = timePrintDestinationOutput.getTimeOfDay();
 			if (priorityAtr.value == 0) {
-				if (attendanceTime.v() >= timeDestination.v()) {
+				if (attendanceTime.v().intValue() >= timeDestination.v().intValue()) {
 					return false;
 				} else {
 					return true;
 				}
 
 			} else {
-				if (attendanceTime.v() >= timeDestination.v()) {
+				if (attendanceTime.v().intValue() >= timeDestination.v().intValue()) {
 					return true;
 				} else {
 					return false;
@@ -1815,11 +2068,15 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		// in or outrange
 		List<StampReflectTimezoneOutput> lstStampReflectTimezone = s.getLstStampReflectTimezone();
+		if(lstStampReflectTimezone==null){
+			return "outrange";
+		}
+		
 		int n = lstStampReflectTimezone.size();
 		for (int i = 0; i < n; i++) {
 			StampReflectTimezoneOutput stampReflectTimezone = lstStampReflectTimezone.get(i);
-			if (stampReflectTimezone.getStartTime().v() <= processTimeOutput.getTimeOfDay().v()
-					&& stampReflectTimezone.getEndTime().v() >= processTimeOutput.getTimeOfDay().v()
+			if (stampReflectTimezone.getStartTime().v().intValue() <= processTimeOutput.getTimeOfDay().v().intValue()
+					&& stampReflectTimezone.getEndTime().v().intValue() >= processTimeOutput.getTimeOfDay().v().intValue()
 					&& stampReflectTimezone.getClassification().value == 0) {
 				if (stampReflectTimezone.getWorkNo().v().intValue() == 1) {
 					return "range1";
