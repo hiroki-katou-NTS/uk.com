@@ -1583,6 +1583,12 @@ module nts.custombinding {
                                                     def.endDate = ko.observable(undefined);
                                                     def.startDate = prev.value;
                                                 }
+
+                                                if (def.ctgType == IT_CAT_TYPE.CONTINU) {
+                                                    if (!def.value()) {
+                                                        def.value('9999/12/31');
+                                                    }
+                                                }
                                             }
 
                                             if (!_.has(def, "endDate")) {
@@ -1713,6 +1719,7 @@ module nts.custombinding {
                         switch (item.categoryType) {
                             case IT_CAT_TYPE.SINGLE:
                             case IT_CAT_TYPE.CONTINU:
+                            case IT_CAT_TYPE.CONTINUWED:
                             case IT_CAT_TYPE.NODUPLICATE:
                                 $(ctrls.button).text(text('CPS007_11'));
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
@@ -2081,7 +2088,8 @@ module nts.custombinding {
         MULTI = 2, // Multi info
         CONTINU = 3, // Continuos history
         NODUPLICATE = 4, //No duplicate history
-        DUPLICATE = 5 // Duplicate history
+        DUPLICATE = 5, // Duplicate history
+        CONTINUWED = 6 // Continuos history with end date
     }
 
     // defined CATEGORY or GROUP mode
