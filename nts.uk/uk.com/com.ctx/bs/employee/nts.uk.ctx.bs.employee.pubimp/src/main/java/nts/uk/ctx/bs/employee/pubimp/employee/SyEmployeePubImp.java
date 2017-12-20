@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
@@ -98,7 +100,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			if (affComHistByEmp.items() != null) {
 
 				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-					return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+					return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
 				}).collect(Collectors.toList());
 
 				if (!filter.isEmpty()) {
@@ -199,7 +201,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		if (affComHistByEmp.items() != null) {
 
 			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+				return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
 			}).collect(Collectors.toList());
 
 			if (!filter.isEmpty()) {
@@ -227,6 +229,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
 		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+		
+		if(CollectionUtil.isEmpty(emps)) {
+			return null;
+		}
 
 		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
 
@@ -256,7 +262,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			if (affComHistByEmp.items() != null) {
 
 				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-					return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+					return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
 				}).collect(Collectors.toList());
 
 				if (!filter.isEmpty()) {
