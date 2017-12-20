@@ -6,7 +6,7 @@ module a7 {
         fixTableOption: any;
         dataSource: KnockoutObservableArray<any>;
         itemList: KnockoutObservableArray<any>;
-        isFixedOrDiffTime: KnockoutObservable<boolean>;
+        isFlowOrFlex: KnockoutObservable<boolean>;
         
         useFixedRestTimeOptions: KnockoutObservableArray<any>;
         useFixedRestTime: KnockoutObservable<string>;
@@ -37,8 +37,8 @@ module a7 {
             };
             
             //subscrible worktime ssettingmethod
-            self.isFixedOrDiffTime = ko.computed(function() {
-                return (workTimeForm() == EnumWorkForm.FLEX) || (settingMethod() == SettingMethod.FLOW);
+            self.isFlowOrFlex = ko.computed(function() {
+                return (workTimeForm() == "1") || (settingMethod() == "2");
             });
             
             self.useFixedRestTimeOptions = ko.observableArray([

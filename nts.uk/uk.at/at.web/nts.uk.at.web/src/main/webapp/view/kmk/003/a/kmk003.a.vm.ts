@@ -25,6 +25,7 @@ module nts.uk.at.view.kmk003.a {
 
             settingMethodOptions: KnockoutObservableArray<ItemSettingMethod>;
             selectedSettingMethod: KnockoutObservable<string>;
+            isRegularMode: KnockoutObservable<boolean>;
 
             workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
             columnWorktimeSettings: KnockoutObservable<any>;
@@ -86,6 +87,7 @@ module nts.uk.at.view.kmk003.a {
                     new ItemSettingMethod('3', "流動勤務")
                 ]);
                 self.selectedSettingMethod = ko.observable('1');
+                
                 
                 self.workTimeSettings = ko.observableArray([]);
                 self.columnWorktimeSettings = ko.observableArray([
@@ -163,6 +165,10 @@ module nts.uk.at.view.kmk003.a {
                    self.updateWorktimeCode(worktimeCode); 
                 });
                 self.dataModelOneDay = [];
+                
+                self.isRegularMode = ko.computed(function() {
+                    return self.workTimeSettingModel.workTimeDivision.workTimeDailyAtr() == EnumWorkForm.REGULAR;
+                });
             }
 
             /**
