@@ -79,8 +79,6 @@ module cps002.a.vm {
                 self.categorySelectedCode('');
                 self.initSettingSelectedCode('');
                 self.currentInitSetting(new InitSetting(null));
-                //  self.layout(new Layout({ id: '', code: '', name: '' }));
-
             });
 
             self.employeeBasicInfo.subscribe((data) => {

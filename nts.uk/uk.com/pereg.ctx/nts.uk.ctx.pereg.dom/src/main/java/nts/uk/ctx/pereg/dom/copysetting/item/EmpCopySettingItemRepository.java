@@ -12,6 +12,4 @@ public interface EmpCopySettingItemRepository {
 
 	List<EmpCopySettingItem> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd);
 
-	int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId);
-
 }

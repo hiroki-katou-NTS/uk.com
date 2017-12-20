@@ -13,5 +13,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UpdatePerInfoItemDefCopy {
 	private String perInfoCtgId;
-	private List<String> perInfoItemDefIds;
+	private List<PerInfoDefDto> perInfoItemDefLst;
 }

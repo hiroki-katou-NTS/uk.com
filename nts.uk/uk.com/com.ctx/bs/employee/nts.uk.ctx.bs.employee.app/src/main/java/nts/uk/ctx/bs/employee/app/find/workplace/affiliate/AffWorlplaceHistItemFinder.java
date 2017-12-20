@@ -87,7 +87,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getAffWorkplaceHistByEmployeeId(companyId,
+		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByEmployeeId(companyId,
 				query.getEmployeeId());
 		if (!affWrkplcHist.isPresent())
 			return new ArrayList<>();

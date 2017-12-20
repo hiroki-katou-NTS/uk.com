@@ -14,6 +14,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmployment;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPub;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
@@ -26,8 +27,8 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 
 	@Override
 	public StatusOfEmploymentExport getStatusOfEmployment(String employeeId, GeneralDate referenceDate) {
-
-		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(employeeId)
+		String cid = AppContexts.user().companyId();
+		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,employeeId)
 				.getAffCompanyHistByEmployee(employeeId);
 
 		if (employeeHistory == null) {

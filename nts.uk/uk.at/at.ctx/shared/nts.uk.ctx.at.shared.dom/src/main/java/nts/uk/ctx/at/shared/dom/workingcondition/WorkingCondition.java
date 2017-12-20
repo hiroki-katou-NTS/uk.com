@@ -98,4 +98,13 @@ public class WorkingCondition extends AggregateRoot implements PersistentResiden
 	public List<DateHistoryItem> items() {
 		return this.dateHistoryItem;
 	}
+
+	public WorkingCondition(String companyId, String employeeId, List<DateHistoryItem> dateHistoryItem) {
+		super();
+		this.companyId = companyId;
+		this.employeeId = employeeId;
+		this.dateHistoryItem = dateHistoryItem;
+	}
+	
+	
 }

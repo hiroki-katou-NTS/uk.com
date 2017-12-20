@@ -46,6 +46,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 		stringBuilder.append("SELECT k ");
 		stringBuilder.append("FROM KrcmtBusinessTypeOfHistory k ");
 		stringBuilder.append("WHERE k.sId = :sId ");
+		stringBuilder.append("AND k.cID = :cId ");
 		stringBuilder.append("ODER BY k.startDate ASC ");
 		FIND_BY_EMPLOYEE = stringBuilder.toString();
 	}
@@ -96,9 +97,10 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository implements Busine
 	}
 
 	@Override
-	public Optional<BusinessTypeOfEmployeeHistory> findByEmployee(String sId) {
+	public Optional<BusinessTypeOfEmployeeHistory> findByEmployee(String cid, String sId) {
 		List<KrcmtBusinessTypeOfHistory> entities = this.queryProxy()
-				.query(FIND_BY_EMPLOYEE, KrcmtBusinessTypeOfHistory.class).setParameter("sId", sId).getList();
+				.query(FIND_BY_EMPLOYEE, KrcmtBusinessTypeOfHistory.class).setParameter("sId", sId)
+				.setParameter("cId", cid).getList();
 		if (entities == null || entities.isEmpty()) {
 			return Optional.empty();
 		} else {
