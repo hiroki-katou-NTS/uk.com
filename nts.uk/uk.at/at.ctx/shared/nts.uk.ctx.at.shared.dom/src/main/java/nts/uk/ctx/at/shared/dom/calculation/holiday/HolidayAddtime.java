@@ -41,10 +41,13 @@ public class HolidayAddtime extends AggregateRoot {
 	/** 積立年休 */
 	private int yearlyReserved;
 
+	/** 通常勤務の加算設定*/
 	private RegularWork regularWork;
-
+	
+	/**フレックス勤務の加算設定*/
 	private FlexWork flexWork;
 
+	/**変形労働勤務の加算設定*/
 	private IrregularWork irregularWork;
 
 	@Override

@@ -39,10 +39,13 @@ public class AddHolidayAddtimeCommand {
 	/** 積立年休 */
 	private int yearlyReserved;
 
+	/** 通常勤務の加算設定*/
 	private RegularWorkCommand regularWork;
 
+	/**フレックス勤務の加算設定*/
 	private FlexWorkCommand flexWork;
 
+	/**変形労働勤務の加算設定*/
 	private IrregularWorkCommand irregularWork;
 	
 	public HolidayAddtime toDomain(String companyId){
