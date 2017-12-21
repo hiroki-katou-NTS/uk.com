@@ -27,11 +27,9 @@ public class WorkTimeCommonSaveCommand {
 	/**
 	 * To domain predetemine time setting.
 	 *
-	 * @param companyId the company id
 	 * @return the predetemine time setting
 	 */
-	public PredetemineTimeSetting toDomainPredetemineTimeSetting(String companyId) {
-		this.predseting.setCompanyId(companyId);
+	public PredetemineTimeSetting toDomainPredetemineTimeSetting() {
 		return new PredetemineTimeSetting(this.predseting);
 	}
 	
@@ -40,8 +38,7 @@ public class WorkTimeCommonSaveCommand {
 	 *
 	 * @return the work time setting
 	 */
-	public WorkTimeSetting toDomainWorkTimeSetting(String companyId) {
-		worktimeSetting.setCompanyId(companyId);
+	public WorkTimeSetting toDomainWorkTimeSetting() {
 		return new WorkTimeSetting(this.worktimeSetting);
 	}
 

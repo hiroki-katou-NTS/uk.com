@@ -40,7 +40,7 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 		FixedWorkSetting fixedWorkSetting = command.toDomainFixedWorkSetting();
 		
 		// common handler
-		this.commonHandler.handler(command);
+		this.commonHandler.handle(command);
 		
 		// call repository save flex work setting
 		this.fixedWorkSettingRepository.save(fixedWorkSetting);

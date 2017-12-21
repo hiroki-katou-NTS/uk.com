@@ -43,7 +43,7 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
 		
 		// common handler
-		this.commonHandler.handler(command);
+		this.commonHandler.handle(command);
 		
 		// call repository save flex work setting
 		this.flexWorkSettingRepository.save(flexWorkSetting);

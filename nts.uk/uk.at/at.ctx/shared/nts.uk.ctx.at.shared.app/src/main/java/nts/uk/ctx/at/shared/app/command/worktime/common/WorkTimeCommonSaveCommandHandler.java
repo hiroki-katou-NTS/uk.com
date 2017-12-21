@@ -10,9 +10,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class WorkTimeCommonSaveCommandHandler.
@@ -27,24 +26,26 @@ public class WorkTimeCommonSaveCommandHandler{
 	/** The predetemine time setting repository. */
 	@Inject 
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository; 
-	/*
+
+	/** The work time set policy. */
+	@Inject
+	private WorkTimeSettingPolicy workTimeSetPolicy;
 
 	/**
-	 * Handler.
+	 * Handle.
+	 *
+	 * @param command the command
 	 */
-	public void handler(WorkTimeCommonSaveCommand command){
-		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get company id
-		String companyId = loginUserContext.companyId();
-
+	public void handle(WorkTimeCommonSaveCommand command){
 
 		// get work time setting by client send
-		WorkTimeSetting workTimeSetting = command.toDomainWorkTimeSetting(companyId);
+		WorkTimeSetting workTimeSetting = command.toDomainWorkTimeSetting();
 
 		// get pred setting by client send
-		PredetemineTimeSetting predseting = command.toDomainPredetemineTimeSetting(companyId);
+		PredetemineTimeSetting predseting = command.toDomainPredetemineTimeSetting();
+
+		// check policy
+		this.workTimeSetPolicy.canRegister(workTimeSetting);
 
 		// call repository save work time setting
 		this.workTimeSettingRepository.save(workTimeSetting);
