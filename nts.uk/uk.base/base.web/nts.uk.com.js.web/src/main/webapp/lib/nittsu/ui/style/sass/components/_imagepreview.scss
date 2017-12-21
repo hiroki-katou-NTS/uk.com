@@ -5,6 +5,8 @@
 .image-preview {
 	width: 100%;
 	height: 100%;
+	border: none !important;
+	display: none;
 }
 .inline-container{
 	float: left;
@@ -44,4 +46,17 @@
 .cropper-crop-box{
     outline-color: rgba(255, 0, 0, 0.75) !important;
     outline: 1px solid red !important;
+}
+.image-upload-icon {
+  	background-image: url("images/icons/upload-icon.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.container-no-upload-background{
+	background-color: rgb(242, 242, 242);
+    border-radius: 20px;
+}
+.image-preview-container {
+	padding: 5px;
+    border: 1px solid #CCC;
 }
