@@ -84,6 +84,7 @@ module nts.uk.at.view.kmk008.g {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     isShowWorkPlaceName: true,
                     employeeInputList: self.employeeList,
+                    tabindex : 4
                 };
 
                 //search
