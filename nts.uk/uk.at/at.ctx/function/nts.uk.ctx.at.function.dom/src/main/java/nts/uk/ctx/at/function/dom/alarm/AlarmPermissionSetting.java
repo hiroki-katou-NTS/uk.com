@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.alarm;
 
 import java.util.List;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -9,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * アラームリスト権限設定
  */
 @Getter
-public class AlarmPermissionSetting {
+public class AlarmPermissionSetting  extends AggregateRoot {
 	
 	/**
 	 * alarm pattern code
