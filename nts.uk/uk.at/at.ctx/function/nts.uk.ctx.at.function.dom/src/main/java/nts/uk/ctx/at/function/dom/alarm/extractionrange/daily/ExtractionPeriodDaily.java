@@ -12,8 +12,12 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 @Getter
 public class ExtractionPeriodDaily extends ExtractionRangeBase{
 	
+	/** Day*/
+	// 日
 	private int day;
 	
+	/** Make it the day*/
+	// 当日とする
 	private boolean makeToDay;
 
 	public ExtractionPeriodDaily(String extractionId, ExtractionRange extractionRange, int day, boolean makeToDay) {
@@ -21,9 +25,6 @@ public class ExtractionPeriodDaily extends ExtractionRangeBase{
 		this.day = day;
 		this.makeToDay = makeToDay;
 	}
-	
-
-	
 	
 	
 }
