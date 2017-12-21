@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -49,4 +50,22 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	 * @param histId
 	 */
 	void delete(String histId);
+	
+	/**
+	 * Search job title history.
+	 *
+	 * @param baseDate the base date
+	 * @param employeeId the employee id
+	 * @return the list
+	 */
+	List<AffJobTitleHistory_ver1> searchJobTitleHistory(GeneralDate baseDate, List<String> employeeId);
+	
+	 /**
+ 	 * Find all job title history.
+ 	 *
+ 	 * @param baseDate the base date
+ 	 * @param employeeIds the employee ids
+ 	 * @return the list
+ 	 */
+ 	List<AffJobTitleHistory_ver1> findAllJobTitleHistory(GeneralDate baseDate, List<String> employeeIds) ;
 }

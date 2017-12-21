@@ -3,11 +3,13 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
@@ -24,6 +26,9 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	
 	private final String GET_BY_SID_DATE = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid = :sid and h.strDate <= :standardDate and h.endDate >= :standardDate";
+	
+	private final String GET_BY_LISTSID_DATE = "SELECT h FORM BsymtAffJobTitleHist h"
+			+ " where h.sid IN :lstSid AND h.strDate <= :standardDate and h.endDate >= :standardDate";
 
 	/**
 	 * Convert from domain to entity
@@ -140,6 +145,41 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 			return Optional.of(toDomain(optionaData.get()));
 		}
 		return Optional.empty();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.
+	 * AffJobTitleHistoryRepository_ver1#searchJobTitleHistory(nts.arc.time.
+	 * GeneralDate, java.util.List)
+	 */
+	@Override
+	public List<AffJobTitleHistory_ver1> searchJobTitleHistory(GeneralDate baseDate, List<String> employeeIds) {
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
+				.setParameter("lstSid", employeeIds).setParameter("standardDate", baseDate).getList().stream()
+				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.
+	 * AffJobTitleHistoryRepository_ver1#findAllJobTitleHistory(nts.arc.time.
+	 * GeneralDate, java.util.List)
+	 */
+	@Override
+	public List<AffJobTitleHistory_ver1> findAllJobTitleHistory(GeneralDate baseDate, List<String> employeeIds) {
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
+				.setParameter("lstSid", employeeIds).setParameter("standardDate", baseDate).getList().stream()
+				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 
 }

@@ -81,7 +81,7 @@ public class AddTemporaryAbsenceCommandHandler
 		}
 		// TODO SoInsPayCategory set to null
 		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getTempAbsenceFrNo()!= null ? command.getTempAbsenceFrNo().intValue():0,
-				newHistID, command.getEmployeeId(), command.getRemarks(), null, multiple, command.getFamilyMemberId(), sameFamily, command.getChildType() != null? command.getChildType().intValue(): null,
+				newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory().intValue(), multiple, command.getFamilyMemberId(), sameFamily, command.getChildType() != null? command.getChildType().intValue(): null,
 				command.getCreateDate(), spouseIsLeave, command.getSameFamilyDays()!= null? command.getSameFamilyDays().intValue(): null);
 		temporaryAbsenceRepository.add(temporaryAbsence);
 

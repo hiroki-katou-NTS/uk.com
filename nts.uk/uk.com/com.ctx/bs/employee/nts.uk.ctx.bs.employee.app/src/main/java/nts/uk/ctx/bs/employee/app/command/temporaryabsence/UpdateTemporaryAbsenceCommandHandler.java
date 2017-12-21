@@ -79,7 +79,7 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 		
 		// Update detail table
 		// TODO SoInsPayCategory set to null
-		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getTempAbsenceFrNo() != null? command.getTempAbsenceFrNo().intValue() : ConstantUtils.ENUM_UNDEFINE_VALUE, command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), null, multiple,
+		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getTempAbsenceFrNo() != null? command.getTempAbsenceFrNo().intValue() : ConstantUtils.ENUM_UNDEFINE_VALUE, command.getHistoyId(), command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory().intValue(), multiple,
 				command.getFamilyMemberId(), sameFamily,command.getChildType() != null ? command.getChildType().intValue() : null, command.getCreateDate(),spouseIsLeave, command.getSameFamilyDays() != null? command.getSameFamilyDays().intValue():null);
 		temporaryAbsenceRepository.update(temporaryAbsence);
 	}
