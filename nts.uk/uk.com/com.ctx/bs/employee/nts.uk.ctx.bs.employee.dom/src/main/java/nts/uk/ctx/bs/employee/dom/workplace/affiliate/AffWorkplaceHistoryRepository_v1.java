@@ -29,6 +29,8 @@ public interface AffWorkplaceHistoryRepository_v1 {
 	Optional<AffWorkplaceHistory_ver1> getByHistId(String histId);
 	
 	Optional<AffWorkplaceHistory_ver1> getByEmployeeId(String companyId, String employeeId);
+	
+	Optional<AffWorkplaceHistory_ver1> getByEmployeeIdDesc(String companyId, String employeeId);
 	/**
 	 * ドメインモデル「所属職場」を新規登録する
 	 * @param item

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class PerInfoDefDto {
 	private String id;
+	private String itemCd;
 	private String itemName;
 	private String perCtgId;
 	private String alreadyItemDefCopy;
