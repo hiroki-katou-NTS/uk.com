@@ -31,6 +31,7 @@
 								name:'#[KMK003_42]',
 								value: workdayOffTimeTransferSet.designatedTime.oneDayTime,
 								constraint:'OneDayTime',
+								mode: 'time',
 								inputFormat: 'time',
 								enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 0,
 								required: false}" />
@@ -41,6 +42,7 @@
 								name:'#[KMK003_107]',
 								value: workdayOffTimeTransferSet.designatedTime.halfDayTime,
 								constraint:'OneDayTime',
+								mode: 'time',
 								inputFormat: 'time',
 								enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 0,
 								required: false}" />
@@ -60,6 +62,7 @@
 								name:'#[KMK003_108]',
 								value: workdayOffTimeTransferSet.certainTime,
 								constraint:'OneDayTime',
+								mode: 'time',
 								inputFormat: 'time',
 								enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 1 }" />
 						</div>
@@ -84,6 +87,7 @@
 								name:'#[KMK003_42]',
 								value: fromOverTimeTransferSet.designatedTime.oneDayTime,
 								constraint:'OneDayTime',
+								mode: 'time',
 								inputFormat: 'time',
 								enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 0,
 								required: false}" />
@@ -92,8 +96,9 @@
 							<label style="margin-right: 35px;">#{i18n.getText('KMK003_107')}</label>
 							<input id="haflDayTimeOT" tabindex="142" style="width: 60px;" data-bind="ntsTimeEditor: {
 								name:'#[KMK003_107]',
-								value: workdayOffTimeTransferSet.designatedTime.halfDayTime,
+								value: fromOverTimeTransferSet.designatedTime.halfDayTime,
 								constraint:'OneDayTime',
+								mode: 'time',
 								inputFormat: 'time',
 								enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 0,
 								required: false}" />
@@ -113,6 +118,7 @@
 								name:'#[KMK003_108]',
 								value: fromOverTimeTransferSet.certainTime,
 								constraint:'OneDayTime',
+								mode: 'time',
 								inputFormat: 'time',
 								enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 1 }" />
 						</div>

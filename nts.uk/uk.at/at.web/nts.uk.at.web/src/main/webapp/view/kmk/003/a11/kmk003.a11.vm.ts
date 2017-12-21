@@ -167,17 +167,45 @@ module a11 {
             let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);
             _self.fromOverTimeTransferSet = fromOverTimeSubstitutionSet.subHolTimeSet;
             _self.workdayOffTimeTransferSet = workdayOffTimeSubstitutionSet.subHolTimeSet;
+
+            // Filter time data when switch radio button
+            _self.fromOverTimeTransferSet.subHolTransferSetAtr.subscribe((newValue) => {                            
+                if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+                    console.log(_self.fromOverTimeTransferSet.certainTime());
+                    if (typeof _self.fromOverTimeTransferSet.certainTime() !== 'number') {
+                        _self.fromOverTimeTransferSet.certainTime(0);
+                    }                  
+                } else {
+                    if (typeof _self.fromOverTimeTransferSet.designatedTime.oneDayTime() !== 'number') {
+                        _self.fromOverTimeTransferSet.designatedTime.oneDayTime(0);
+                    }  
+                    if (typeof _self.fromOverTimeTransferSet.designatedTime.halfDayTime() !== 'number') {
+                        _self.fromOverTimeTransferSet.designatedTime.halfDayTime(0);
+                    }                 
+                }
+            });
+            _self.workdayOffTimeTransferSet.subHolTransferSetAtr.subscribe((newValue) => {
+                if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+                    if (typeof _self.workdayOffTimeTransferSet.certainTime() !== 'number') {
+                        _self.workdayOffTimeTransferSet.certainTime(0);
+                    }                   
+                } else {
+                    if (typeof _self.workdayOffTimeTransferSet.designatedTime.oneDayTime() !== 'number') {
+                        _self.workdayOffTimeTransferSet.designatedTime.oneDayTime(0);
+                    }  
+                    if (typeof _self.workdayOffTimeTransferSet.designatedTime.halfDayTime() !== 'number') {
+                        _self.workdayOffTimeTransferSet.designatedTime.halfDayTime(0);
+                    }                 
+                }
+            });
         }
         
         /**
          * UI - Simple: change Binding Simple mode 
          */
         private changeBindingSimple(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
-            let _self = this;
-            let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.FROM_OVER_TIME);
-            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);
-            _self.fromOverTimeTransferSet = fromOverTimeSubstitutionSet.subHolTimeSet;
-            _self.workdayOffTimeTransferSet = workdayOffTimeSubstitutionSet.subHolTimeSet;
+            let _self = this;            
+            _self.changeBindingDetail(subHolTimeSet);          
         }     
     }
     

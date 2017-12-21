@@ -183,10 +183,7 @@ module a9 {
          */
         private changeBindingSimple(otherClassSets: OtherEmTimezoneLateEarlySetModel[]): void {
             let _self = this;
-            let otherClassSet1: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.LATE);
-            let otherClassSet2: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
-            _self.lateSetting = otherClassSet1.delTimeRoundingSet;
-            _self.leaveEarlySetting = otherClassSet2.delTimeRoundingSet;
+            _self.changeBindingDetail(otherClassSets); 
         }
     }
     

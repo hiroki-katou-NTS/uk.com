@@ -159,7 +159,7 @@ module a16 {
          */
         private changeBindingSimple(zeroHStraddCalculateSet: KnockoutObservable<boolean>): void {
             let _self = this;
-            _self.zeroHStraddCalculateSetting = zeroHStraddCalculateSet;
+            _self.changeBindingDetail(zeroHStraddCalculateSet);  
         }
     }
     
