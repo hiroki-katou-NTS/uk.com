@@ -1,8 +1,11 @@
-package nts.uk.ctx.at.shared.dom.bonuspay;
+package nts.uk.ctx.at.record.dom.bonuspay.autocalc;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.HolidayTimesheetCalculationSetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.OvertimeTimesheetCalculationSetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.WorkingTimesheetCalculationSetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.bonuspay;
+package nts.uk.ctx.at.shared.dom.bonuspay.enums;
 
 /**
  * 就業時間帯自動計算区分
