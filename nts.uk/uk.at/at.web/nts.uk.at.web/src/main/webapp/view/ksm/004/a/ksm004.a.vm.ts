@@ -480,13 +480,11 @@ module nts.uk.at.view.ksm004.a {
                         a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM1(a);
-                        $("#yearMonthPicker2").datepicker("hide");
-                        $("#yearMonthPicker2").datepicker("show");
                     }else{
                         self.cssRangerYM1([]);
-                        $("#yearMonthPicker2").datepicker("hide");
-                        $("#yearMonthPicker2").datepicker("show");
                     }
+                    $("#yearMonthPicker2").datepicker("hide");
+                    $("#yearMonthPicker2").datepicker("show");
                     dfd.resolve(); 
                 }).fail(res => {
                     dfd.reject(res);        
@@ -503,13 +501,11 @@ module nts.uk.at.view.ksm004.a {
                         a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM2(a);
-                        $("#yearMonthPicker3").datepicker("hide");
-                        $("#yearMonthPicker3").datepicker("show");
                     }else{
                         self.cssRangerYM2([]);
-                        $("#yearMonthPicker3").datepicker("hide");
-                        $("#yearMonthPicker3").datepicker("show");
                     }
+                    $("#yearMonthPicker3").datepicker("hide");
+                    $("#yearMonthPicker3").datepicker("show");
                     dfd.resolve(); 
                 }).fail(res => {
                     dfd.reject(res);              
