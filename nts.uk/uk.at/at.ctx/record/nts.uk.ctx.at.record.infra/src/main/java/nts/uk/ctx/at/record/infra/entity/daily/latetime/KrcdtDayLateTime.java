@@ -57,7 +57,7 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable{
 	}
 	
 	
-	public static KrcdtDayLateTime create(String employeeId, GeneralDate date, int workNo, LateTimeOfDaily domain) {
+	public static KrcdtDayLateTime create(String employeeId, GeneralDate date, LateTimeOfDaily domain) {
 		val entity = new KrcdtDayLateTime();
 		/*主キー*/
 		entity.krcdtDayLateTimePK = new KrcdtDayLateTimePK(employeeId,date,domain.getWorkNo().v().intValue());
