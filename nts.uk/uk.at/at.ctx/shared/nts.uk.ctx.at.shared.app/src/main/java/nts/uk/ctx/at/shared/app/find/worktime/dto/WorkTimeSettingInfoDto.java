@@ -6,9 +6,9 @@ package nts.uk.ctx.at.shared.app.find.worktime.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.app.command.worktime.fixedset.dto.FixedWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimeCommonDto;
 import nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto.DiffTimeWorkSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixedWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flexset.dto.FlexWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlWorkSettingDto;
 
