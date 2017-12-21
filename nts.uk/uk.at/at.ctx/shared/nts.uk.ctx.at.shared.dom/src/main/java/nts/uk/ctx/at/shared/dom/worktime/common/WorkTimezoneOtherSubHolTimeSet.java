@@ -24,7 +24,8 @@ public class WorkTimezoneOtherSubHolTimeSet extends DomainObject {
 
 	/** The origin atr. */
 	// 発生元区分
-	private OriginAtr originAtr;
+	private CompensatoryOccurrenceDivision originAtr;
+	
 
 	/**
 	 * Instantiates a new work timezone other sub hol time set.
