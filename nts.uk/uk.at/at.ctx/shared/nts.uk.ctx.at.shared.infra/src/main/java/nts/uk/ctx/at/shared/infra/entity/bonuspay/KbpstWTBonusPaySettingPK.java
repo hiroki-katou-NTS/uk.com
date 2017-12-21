@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.bonuspay;
+package nts.uk.ctx.at.shared.infra.entity.bonuspay;
 
 import java.io.Serializable;
 

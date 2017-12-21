@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.bonuspay;
+package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstBPUnitUseSetting;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstBPUnitUseSettingPK;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPUnitUseSetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPUnitUseSettingPK;
 
 @Stateless
 public class JpaBPUnitUseSettingRepository extends JpaRepository implements BPUnitUseSettingRepository {

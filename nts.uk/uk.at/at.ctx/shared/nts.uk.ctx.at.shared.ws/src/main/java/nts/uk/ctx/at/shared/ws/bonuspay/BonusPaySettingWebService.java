@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.bonuspay;
+package nts.uk.ctx.at.shared.ws.bonuspay;
 
 import java.util.List;
 
@@ -9,15 +9,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPSettingAddCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPSettingAddCommandHandler;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPSettingDeleteCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPSettingDeleteCommandHandler;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPSettingUpdateCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPSettingUpdateCommandHandler;
-import nts.uk.ctx.at.record.app.command.bonuspay.RegisterErrorList;
-import nts.uk.ctx.at.record.app.find.bonuspay.BPSettingDto;
-import nts.uk.ctx.at.record.app.find.bonuspay.BPSettingFinder;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingDeleteCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingDeleteCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPSettingUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.RegisterErrorList;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPSettingDto;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPSettingFinder;
 
 @Path("at/share/bonusPaySetting")
 @Produces("application/json")

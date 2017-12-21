@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.bonuspay;
+package nts.uk.ctx.at.shared.ws.bonuspay;
 
 import java.util.List;
 
@@ -8,12 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimeItemAddCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimeItemAddCommandHandler;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimeItemUpdateCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimeItemUpdateCommandhandler;
-import nts.uk.ctx.at.record.app.find.bonuspay.BPTimeItemDto;
-import nts.uk.ctx.at.record.app.find.bonuspay.BPTimeItemFinder;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemUpdateCommandhandler;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemDto;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemFinder;
 
 @Path("at/share/bonusPayTimeItem")
 @Produces("application/json")

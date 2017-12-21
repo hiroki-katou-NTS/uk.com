@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.bonuspay;
+package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,11 +6,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstWTBonusPaySetting;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstWTBonusPaySettingPK;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWTBonusPaySetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWTBonusPaySettingPK;
 
 @Stateless
 public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPaySettingRepository {

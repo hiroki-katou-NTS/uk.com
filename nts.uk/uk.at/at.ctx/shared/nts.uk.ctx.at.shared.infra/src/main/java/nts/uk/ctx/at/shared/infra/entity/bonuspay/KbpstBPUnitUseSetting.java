@@ -1,7 +1,7 @@
 /**
  * 9:59:33 AM Jun 6, 2017
  */
-package nts.uk.ctx.at.record.infra.entity.bonuspay;
+package nts.uk.ctx.at.shared.infra.entity.bonuspay;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

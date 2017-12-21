@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.bonuspay;
+package nts.uk.ctx.at.shared.ws.bonuspay;
 
 import java.util.List;
 
@@ -8,12 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimeItemSettingAddCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimeItemSettingAddCommandHandler;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimeItemSettingUpdateCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimeItemSettingUpdateCommandHandler;
-import nts.uk.ctx.at.record.app.find.bonuspay.BPTimeItemSettingDto;
-import nts.uk.ctx.at.record.app.find.bonuspay.BPTimeItemSettingFinder;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemSettingAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemSettingAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemSettingUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimeItemSettingUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemSettingDto;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimeItemSettingFinder;
 
 @Path("at/share/bpTimeItemSetting")
 @Produces("application/json")

@@ -1,6 +1,5 @@
-package nts.uk.ctx.at.shared.dom.worktime.CommomSetting.lateleaveearlysetting;
+package nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearlysetting;
 
-import nts.uk.ctx.at.shared.dom.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**

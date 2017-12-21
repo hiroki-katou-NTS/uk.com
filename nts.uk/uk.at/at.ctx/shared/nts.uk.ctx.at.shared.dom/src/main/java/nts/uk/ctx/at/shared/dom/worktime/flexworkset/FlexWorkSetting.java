@@ -5,22 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexworkset;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-<<<<<<< HEAD
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluWeekdayWorkTime;
-=======
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
->>>>>>> pj/at/calcrecord-devmarge
 
 /**
  * The Class FlexWorkSetting.
@@ -74,7 +67,7 @@ public class FlexWorkSetting extends AggregateRoot {
 		 else {
 			 throw new Exception("unknown day Atr:"+workType);
 		 }
-		 timeSpans.stream().sorted((first,second) -> first.getStart().compareTo(second.getStart()) > 0);
+		 timeSpans.stream().sorted((first,second) -> first.getStart().compareTo(second.getStart()));
 		 return timeSpans.get(0).getStart();
 	 }
 

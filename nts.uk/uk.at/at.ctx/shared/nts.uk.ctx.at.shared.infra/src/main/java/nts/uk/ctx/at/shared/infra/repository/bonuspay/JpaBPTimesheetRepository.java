@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.bonuspay;
+package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpmtBPTimesheet;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpmtBPTimesheetPK;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBPTimesheet;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBPTimesheetPK;
 
 @Stateless
 public class JpaBPTimesheetRepository extends JpaRepository implements BPTimesheetRepository {

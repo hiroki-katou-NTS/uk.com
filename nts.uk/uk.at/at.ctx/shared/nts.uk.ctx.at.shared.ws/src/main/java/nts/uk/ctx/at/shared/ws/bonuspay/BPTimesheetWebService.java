@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.bonuspay;
+package nts.uk.ctx.at.shared.ws.bonuspay;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimesheetAddCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimesheetAddCommandHandler;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimesheetDeleteCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimesheetDeleteCommandHandler;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimesheetUpdateCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.BPTimesheetUpdateCommandHandler;
-import nts.uk.ctx.at.record.app.find.bonuspay.BPTimesheetDto;
-import nts.uk.ctx.at.record.app.find.bonuspay.BPTimesheetFinder;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetAddCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetAddCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetDeleteCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetDeleteCommandHandler;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetUpdateCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.BPTimesheetUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimesheetDto;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPTimesheetFinder;
 
 @Path("at/share/bpTimesheet")
 @Produces("application/json")

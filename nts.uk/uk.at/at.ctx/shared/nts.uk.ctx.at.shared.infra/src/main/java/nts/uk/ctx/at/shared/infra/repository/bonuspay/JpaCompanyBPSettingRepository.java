@@ -1,14 +1,14 @@
-package nts.uk.ctx.at.record.infra.repository.bonuspay;
+package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstCompanyBPSetting;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstCompanyBPSettingPK;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstCompanyBPSetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstCompanyBPSettingPK;
 
 @Stateless
 public class JpaCompanyBPSettingRepository extends JpaRepository implements CPBonusPaySettingRepository {

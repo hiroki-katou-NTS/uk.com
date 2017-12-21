@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.bonuspay;
+package nts.uk.ctx.at.shared.ws.bonuspay;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.bonuspay.WPBonusPaySettingCommand;
-import nts.uk.ctx.at.record.app.command.bonuspay.WPBonusPaySettingCommandHandler;
-import nts.uk.ctx.at.record.app.find.bonuspay.WPBonusPaySettingDto;
-import nts.uk.ctx.at.record.app.find.bonuspay.WPBonusPaySettingFinder;
+import nts.uk.ctx.at.shared.app.command.bonuspay.WPBonusPaySettingCommand;
+import nts.uk.ctx.at.shared.app.command.bonuspay.WPBonusPaySettingCommandHandler;
+import nts.uk.ctx.at.shared.app.find.bonuspay.WPBonusPaySettingDto;
+import nts.uk.ctx.at.shared.app.find.bonuspay.WPBonusPaySettingFinder;
 
 @Path("at/share/wpBonusPaySetting")
 @Produces("application/json")

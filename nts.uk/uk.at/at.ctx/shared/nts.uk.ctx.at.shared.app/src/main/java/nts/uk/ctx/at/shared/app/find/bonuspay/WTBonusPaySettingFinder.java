@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.bonuspay;
+package nts.uk.ctx.at.shared.app.find.bonuspay;
 
 import java.util.List;
 import java.util.Optional;

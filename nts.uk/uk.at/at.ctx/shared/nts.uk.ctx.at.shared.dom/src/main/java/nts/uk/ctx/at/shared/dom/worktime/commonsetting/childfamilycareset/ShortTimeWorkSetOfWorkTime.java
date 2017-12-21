@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.CommomSetting.childfamilycareset;
+package nts.uk.ctx.at.shared.dom.worktime.commonsetting.childfamilycareset;
 
 import lombok.Getter;
 

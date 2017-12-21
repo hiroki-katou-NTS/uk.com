@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.bonuspay;
+package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstBPTimeItemSetting;
-import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstBPTimeItemSettingPK;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BPTimeItemSetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSettingPK;
 
 @Stateless
 public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPTimeItemSettingRepository {
