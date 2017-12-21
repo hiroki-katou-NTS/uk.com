@@ -56,8 +56,8 @@ public class GoingOutStampOrderChecking {
 		if (outingTimeOfDailyPerformance.isPresent()) {
 
 			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.get().getOutingTimeSheets();
-			outingTimeSheets.sort((e1, e2) -> e1.getGoOut().getStamp().getTimeWithDay().v()
-					.compareTo(e2.getGoOut().getStamp().getTimeWithDay().v()));
+			outingTimeSheets.sort((e1, e2) -> e1.getGoOut().getStamp().get().getTimeWithDay().v()
+					.compareTo(e2.getGoOut().getStamp().get().getTimeWithDay().v()));
 			
 			int outingFrameNo = 1;
 			for (OutingTimeSheet item : outingTimeSheets){
@@ -74,8 +74,8 @@ public class GoingOutStampOrderChecking {
 			List<BigDecimal> frameNo = outingTimeSheets.stream().map(item -> item.getOutingFrameNo().v()).collect(Collectors.toList());
 
 			for (OutingTimeSheet outingTimeSheet : outingTimeSheets) {
-				if (outingTimeSheet.getGoOut().getStamp().getTimeWithDay()
-						.lessThanOrEqualTo(outingTimeSheet.getComeBack().getStamp().getTimeWithDay())) {
+				if (outingTimeSheet.getGoOut().getStamp().get().getTimeWithDay()
+						.lessThanOrEqualTo(outingTimeSheet.getComeBack().getStamp().get().getTimeWithDay())) {
 					
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 					
@@ -114,8 +114,8 @@ public class GoingOutStampOrderChecking {
 					// list contain different 
 					outingTimeSheetsTemp = outingTimeSheets.stream().filter(item -> !frameNo.contains(item.getOutingFrameNo().v())).collect(Collectors.toList());
 					
-					TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().getStamp().getTimeWithDay();
-					TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().getStamp().getTimeWithDay();
+					TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().getStamp().get().getTimeWithDay();
+					TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().getStamp().get().getTimeWithDay();
 					TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
 					
 					List<DuplicationStatusOfTimeZone> newList = new ArrayList<>();
@@ -123,8 +123,8 @@ public class GoingOutStampOrderChecking {
 					// 他の時間帯との時間帯重複を確認する
 					// check with another outingFrameNo
 					for(OutingTimeSheet timeSheet : outingTimeSheetsTemp){						
-						TimeWithDayAttr stampStartTimeSecondTime = timeSheet.getGoOut().getStamp().getTimeWithDay();
-						TimeWithDayAttr endStartTimesecondTime = timeSheet.getComeBack().getStamp().getTimeWithDay();
+						TimeWithDayAttr stampStartTimeSecondTime = timeSheet.getGoOut().getStamp().get().getTimeWithDay();
+						TimeWithDayAttr endStartTimesecondTime = timeSheet.getComeBack().getStamp().get().getTimeWithDay();
 						TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime, endStartTimesecondTime);
 						
 						DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
@@ -155,16 +155,16 @@ public class GoingOutStampOrderChecking {
 		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = this.timeLeavingOfDailyPerformanceRepository
 				.findByKey(employeeID, processingDate);
 		
-		TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().getStamp().getTimeWithDay();
-		TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().getStamp().getTimeWithDay();
+		TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().getStamp().get().getTimeWithDay();
+		TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().getStamp().get().getTimeWithDay();
 		TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime); 
 		
 		if(timeLeavingOfDailyPerformance.isPresent()){
 			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks){
 //				if(timeLeavingWork.getAttendanceStamp().getStamp() != null){
-					TimeWithDayAttr stampStartTimeSecondTime = timeLeavingWork.getAttendanceStamp().getStamp().getTimeWithDay();
-					TimeWithDayAttr endStartTimesecondTime = timeLeavingWork.getLeaveStamp().getStamp().getTimeWithDay();
+					TimeWithDayAttr stampStartTimeSecondTime = timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay();
+					TimeWithDayAttr endStartTimesecondTime = timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay();
 					TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime, endStartTimesecondTime);
 					DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
 							.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
@@ -180,8 +180,8 @@ public class GoingOutStampOrderChecking {
 						if (temporaryTimeOfDailyPerformance.isPresent()) {
 							List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
 							for(TimeLeavingWork leavingWork : leavingWorks){
-								TimeWithDayAttr newStampStartTimeSecondTime = leavingWork.getAttendanceStamp().getStamp().getTimeWithDay();
-								TimeWithDayAttr newEndStartTimesecondTime = leavingWork.getLeaveStamp().getStamp().getTimeWithDay();
+								TimeWithDayAttr newStampStartTimeSecondTime = leavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay();
+								TimeWithDayAttr newEndStartTimesecondTime = leavingWork.getLeaveStamp().getStamp().get().getTimeWithDay();
 								TimeSpanForCalc newTimeSpanSecondTime = new TimeSpanForCalc(newStampStartTimeSecondTime, newEndStartTimesecondTime);
 								DuplicateStateAtr newDuplicateStateAtr = this.rangeOfDayTimeZoneService
 										.checkPeriodDuplication(timeSpanFirstTime, newTimeSpanSecondTime);

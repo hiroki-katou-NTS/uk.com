@@ -51,8 +51,8 @@ public class TemporaryStampOrderChecking {
 
 		if (temporaryTimeOfDailyPerformance.isPresent()) {
 			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
-			timeLeavingWorks.sort((e1, e2) -> e1.getAttendanceStamp().getStamp().getTimeWithDay().v()
-					.compareTo(e2.getAttendanceStamp().getStamp().getTimeWithDay().v()));
+			timeLeavingWorks.sort((e1, e2) -> e1.getAttendanceStamp().getStamp().get().getTimeWithDay().v()
+					.compareTo(e2.getAttendanceStamp().getStamp().get().getTimeWithDay().v()));
 
 			int workNo = 1;
 			for(TimeLeavingWork item : timeLeavingWorks){
@@ -76,8 +76,8 @@ public class TemporaryStampOrderChecking {
 				}
 
 				StateAttr duplicationStateAttr = StateAttr.NO_DUPLICATION;
-				if (timeLeavingWork.getAttendanceStamp().getStamp().getTimeWithDay()
-						.lessThanOrEqualTo(timeLeavingWork.getLeaveStamp().getStamp().getTimeWithDay())) {
+				if (timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay()
+						.lessThanOrEqualTo(timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay())) {
 					// 他の出退勤との時間帯重複を確認する
 					duplicationStateAttr = confirmDuplication(employeeID, processingDate, timeLeavingWork,
 							temporaryTimeOfDailyPerformance.get());
@@ -104,14 +104,14 @@ public class TemporaryStampOrderChecking {
 
 		if (timeLeavingOfDailyPerformance.isPresent()) {
 			// 【パラメータ】出退勤が出退勤と重複しているか確認する
-			TimeWithDayAttr stampStartTimeFirstTime = timeLeavingWork.getAttendanceStamp().getStamp().getTimeWithDay();
-			TimeWithDayAttr endStartTimeFirstTime = timeLeavingWork.getLeaveStamp().getStamp().getTimeWithDay();
+			TimeWithDayAttr stampStartTimeFirstTime = timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay();
+			TimeWithDayAttr endStartTimeFirstTime = timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay();
 			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
 
 			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
 			for (TimeLeavingWork leavingWork : timeLeavingWorks) {
-				TimeWithDayAttr stampStartTimeSecondTime = leavingWork.getAttendanceStamp().getStamp().getTimeWithDay();
-				TimeWithDayAttr endStartTimeSecondTime = leavingWork.getLeaveStamp().getStamp().getTimeWithDay();
+				TimeWithDayAttr stampStartTimeSecondTime = leavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay();
+				TimeWithDayAttr endStartTimeSecondTime = leavingWork.getLeaveStamp().getStamp().get().getTimeWithDay();
 				TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
 						endStartTimeSecondTime);
 
@@ -129,9 +129,9 @@ public class TemporaryStampOrderChecking {
 				List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
 				for (TimeLeavingWork leavingWork : leavingWorks) {
 					if (!leavingWork.getWorkNo().equals(timeLeavingWork.getWorkNo())) {
-						TimeWithDayAttr stampStartSecondTime = leavingWork.getAttendanceStamp().getStamp()
+						TimeWithDayAttr stampStartSecondTime = leavingWork.getAttendanceStamp().getStamp().get()
 								.getTimeWithDay();
-						TimeWithDayAttr endStartSecondTime = leavingWork.getLeaveStamp().getStamp().getTimeWithDay();
+						TimeWithDayAttr endStartSecondTime = leavingWork.getLeaveStamp().getStamp().get().getTimeWithDay();
 						TimeSpanForCalc spanTimeSecondTime = new TimeSpanForCalc(stampStartSecondTime,
 								endStartSecondTime);
 

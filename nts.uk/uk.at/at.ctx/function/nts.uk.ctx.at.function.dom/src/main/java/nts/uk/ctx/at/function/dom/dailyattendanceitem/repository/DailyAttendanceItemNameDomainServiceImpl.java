@@ -23,6 +23,8 @@ import nts.uk.ctx.at.function.dom.adapter.SpecificDateImport;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
@@ -174,12 +176,12 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 		// 加給時間項目 5
 		Map<Integer, BonusPayTimeItem> bonusPayTimeItems = this.bPTimeItemRepository
 				.getListBonusPayTimeItemName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(bonusPayTimeItems::getId, x -> x));
+				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
 
 		// 特定加給時間項目 6
 		Map<Integer, BonusPayTimeItem> specialBonusPayTimeItem = this.bPTimeItemRepository
 				.getListSpecialBonusPayTimeItemName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(bonusPayTimeItems::getId, x -> x));
+				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
 
 		// 乖離時間 7
 		Map<Integer, DivergenceTimeAdapterDto> divergenceTimes = this.divergenceTimeAdapter

@@ -9,10 +9,10 @@ import lombok.Getter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -136,7 +136,7 @@ public class OutsideWorkTimeSheet {
 
 		return new OutsideWorkTimeSheet(
 				new ExcessOfStatutoryTimeOfDaily(
-						new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), new AttendanceTime(0)),
 						Optional.of(overTimeWorkSheet.get().getOverWorkTimeOfDaily()),
 						Optional.of(holidayWorkTimeSheet.get().getWorkHolidayTime())),
 				overTimeWorkSheet, holidayWorkTimeSheet);
