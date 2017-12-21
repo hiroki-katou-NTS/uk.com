@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class SubHolTransferSet.
@@ -59,7 +60,12 @@ public class SubHolTransferSet extends DomainObject{
 	 *
 	 * @param other the other
 	 */
-	public void restoreData(SubHolTransferSet other) {
+	public void restoreData(ScreenMode screenMode, SubHolTransferSet other) {
+		// simple mode
+		if (screenMode == ScreenMode.SIMPLE) {
+			return;
+		}
+		
 		// not use
 		if (!this.useDivision) {
 			this.subHolTransferSetAtr = other.getSubHolTransferSetAtr();
