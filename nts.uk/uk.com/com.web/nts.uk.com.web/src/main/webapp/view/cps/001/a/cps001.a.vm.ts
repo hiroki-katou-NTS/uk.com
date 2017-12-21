@@ -508,7 +508,7 @@ module cps001.a.vm {
                                 layout().listItemCls(data.classificationItems || []);
                             }
                         });
-                    } else if (infoId) {
+                    } else if (self.category().categoryType() != IT_CAT_TYPE.SINGLE) {
                         let id = self.id(),
                             catid = self.categoryId(),
                             query = {

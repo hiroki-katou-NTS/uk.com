@@ -212,49 +212,6 @@ public class RegisterLayoutFinder {
 
 	}
 
-	// private PerInfoItemDefForLayoutDto
-	// createLayoutInfoDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto
-	// itemDef,
-	// int actionRole) {
-	//
-	// PerInfoItemDefForLayoutDto dataObject = new PerInfoItemDefForLayoutDto();
-	//
-	// dataObject.setPerInfoCtgId(itemDef.getPerInfoCtgId());
-	// dataObject.setId(itemDef.getId());
-	// dataObject.setItemName(itemDef.getItemName());
-	// dataObject.setItemCode(itemDef.getItemCode());
-	// dataObject.setRow(0);
-	// dataObject.setIsRequired(itemDef.getIsRequired());
-	// dataObject.setItemTypeState(itemDef.getItemTypeState());
-	// dataObject.setActionRole(EnumAdaptor.valueOf(actionRole,
-	// ActionRole.class));
-	//
-	// dataObject.setSelectionItemRefType(itemDef.getSelectionItemRefType());
-	// List<EnumConstant> selectionItemRefTypes =
-	// EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
-	// dataObject.setSelectionItemRefTypes(selectionItemRefTypes);
-	// if (setItem != null) {
-	// dataObject.setPerInfoCtgCd(setItem.getCategoryCode());
-	// }
-	// if (itemDef.getItemTypeState().getItemType() == 2) {
-	//
-	// SingleItemDto singleItem = (SingleItemDto) itemDef.getItemTypeState();
-	//
-	// int dataTypeValue = singleItem.getDataTypeState().getDataTypeValue();
-	// if (dataTypeValue == 6) {
-	// SelectionItemDto selectionItemDto = (SelectionItemDto)
-	// singleItem.getDataTypeState();
-	// List<ComboBoxObject> lstComboBox =
-	// comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-	// GeneralDate.today());
-	// dataObject.setLstComboxBoxValue(lstComboBox);
-	// }
-	// }
-	//
-	// return dataObject;
-	//
-	// }
-
 	/**
 	 * load All PeregDto in database by createType
 	 * 
