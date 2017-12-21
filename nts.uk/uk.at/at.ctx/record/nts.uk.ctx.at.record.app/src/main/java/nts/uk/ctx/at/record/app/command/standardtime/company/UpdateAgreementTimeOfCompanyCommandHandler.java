@@ -44,8 +44,9 @@ import nts.uk.shr.com.context.LoginUserContext;
  *
  */
 @Stateless
-public class UpdateAgreementTimeOfCompanyCommandHandler extends CommandHandlerWithResult<UpdateAgreementTimeOfCompanyCommand, List<String>> {
-	
+public class UpdateAgreementTimeOfCompanyCommandHandler
+		extends CommandHandlerWithResult<UpdateAgreementTimeOfCompanyCommand, List<String>> {
+
 	@Inject
 	private AgreementTimeOfCompanyDomainService agreementTimeOfCompanyDomainService;
 
@@ -62,20 +63,15 @@ public class UpdateAgreementTimeOfCompanyCommandHandler extends CommandHandlerWi
 				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
 
 		if (agreementTimeOfCompany.isPresent()) {
-			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(
-					agreementTimeOfCompany.get().getBasicSettingId(), new AlarmWeek(command.getAlarmWeek()),
-					new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()),
-					new AlarmTwoWeeks(command.getAlarmTwoWeeks()), new ErrorTwoWeeks(command.getErrorTwoWeeks()),
-					new LimitTwoWeeks(command.getLimitTwoWeeks()), new AlarmFourWeeks(command.getAlarmFourWeeks()),
-					new ErrorFourWeeks(command.getErrorFourWeeks()), new LimitFourWeeks(command.getLimitFourWeeks()),
-					new AlarmOneMonth(command.getAlarmOneMonth()), new ErrorOneMonth(command.getErrorOneMonth()),
-					new LimitOneMonth(command.getLimitOneMonth()), new AlarmTwoMonths(command.getAlarmTwoMonths()),
-					new ErrorTwoMonths(command.getErrorTwoMonths()), new LimitTwoMonths(command.getLimitTwoMonths()),
-					new AlarmThreeMonths(command.getAlarmThreeMonths()),
-					new ErrorThreeMonths(command.getErrorThreeMonths()),
-					new LimitThreeMonths(command.getErrorThreeMonths()), new AlarmOneYear(command.getAlarmOneYear()),
-					new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
-			
+			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(agreementTimeOfCompany.get().getBasicSettingId(),
+					new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()),
+					new AlarmTwoWeeks(command.getAlarmTwoWeeks()), new ErrorTwoWeeks(command.getErrorTwoWeeks()),new LimitTwoWeeks(command.getLimitTwoWeeks()),
+					new AlarmFourWeeks(command.getAlarmFourWeeks()),new ErrorFourWeeks(command.getErrorFourWeeks()), new LimitFourWeeks(command.getLimitFourWeeks()),
+					new AlarmOneMonth(command.getAlarmOneMonth()), new ErrorOneMonth(command.getErrorOneMonth()), new LimitOneMonth(command.getLimitOneMonth()), 
+					new AlarmTwoMonths(command.getAlarmTwoMonths()), new ErrorTwoMonths(command.getErrorTwoMonths()), new LimitTwoMonths(command.getLimitTwoMonths()),
+					new AlarmThreeMonths(command.getAlarmThreeMonths()), new ErrorThreeMonths(command.getErrorThreeMonths()), new LimitThreeMonths(command.getLimitThreeMonths()), 
+					new AlarmOneYear(command.getAlarmOneYear()), new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
+
 			return this.agreementTimeOfCompanyDomainService.update(basicAgreementSetting);
 		} else {
 			return null;
