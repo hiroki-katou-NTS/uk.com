@@ -1,7 +1,7 @@
 /**
  * 10:26:40 AM Jun 6, 2017
  */
-package nts.uk.ctx.at.record.dom.bonuspay.primitives;
+package nts.uk.ctx.at.shared.dom.bonuspay.primitives;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

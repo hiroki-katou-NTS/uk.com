@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.bonuspay.primitives;
+package nts.uk.ctx.at.shared.dom.bonuspay.primitives;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;

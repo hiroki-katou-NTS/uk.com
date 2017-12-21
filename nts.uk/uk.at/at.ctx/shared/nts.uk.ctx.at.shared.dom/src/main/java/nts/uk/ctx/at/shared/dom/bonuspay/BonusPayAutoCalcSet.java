@@ -1,8 +1,6 @@
-package nts.uk.ctx.at.record.dom.bonuspay;
+package nts.uk.ctx.at.shared.dom.bonuspay;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

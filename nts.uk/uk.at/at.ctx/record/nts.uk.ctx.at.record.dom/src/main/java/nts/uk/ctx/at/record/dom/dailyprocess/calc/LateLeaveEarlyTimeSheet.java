@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 

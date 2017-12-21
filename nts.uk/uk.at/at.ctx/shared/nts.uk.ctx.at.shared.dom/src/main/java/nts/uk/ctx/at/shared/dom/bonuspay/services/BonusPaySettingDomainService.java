@@ -1,17 +1,17 @@
-package nts.uk.ctx.at.record.dom.bonuspay.services;
+package nts.uk.ctx.at.shared.dom.bonuspay.services;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.BPSettingRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.BPTimesheetRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.SpecBPTimesheetRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 
 
 @Stateless

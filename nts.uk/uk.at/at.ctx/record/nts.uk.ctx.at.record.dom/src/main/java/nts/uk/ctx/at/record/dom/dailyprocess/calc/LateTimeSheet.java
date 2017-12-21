@@ -18,13 +18,11 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionCl
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
-import nts.uk.ctx.at.shared.dom.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.lateleaveearlysetting.LateLeaveEarlyClassification;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.lateleaveearlysetting.LateLeaveEarlySettingOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
@@ -77,7 +75,7 @@ public class LateTimeSheet{
 	
 	
 	/**
-	 * 遅刻時間の計算
+	 * 遅刻時間の計算(流動以外用)
 	 * @author ken_takasu
 	 * @param specifiedTimeSheet
 	 * @param goWorkTime

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.daily;
+package nts.uk.ctx.at.record.dom.daily.calcset;
 
 /**
  * フレックス勤務の日勤務日の場合の計算方法

@@ -1,11 +1,11 @@
 /**
  * 9:20:41 AM Jun 6, 2017
  */
-package nts.uk.ctx.at.record.dom.bonuspay.setting;
+package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 
 /**
  * @author hungnm

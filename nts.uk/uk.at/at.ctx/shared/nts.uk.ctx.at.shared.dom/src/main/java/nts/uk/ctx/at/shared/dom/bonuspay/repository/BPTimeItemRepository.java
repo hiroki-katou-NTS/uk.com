@@ -1,13 +1,14 @@
 /**
  * 9:44:12 AM Jun 6, 2017
  */
-package nts.uk.ctx.at.record.dom.bonuspay.repository;
+package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+
 
 
 /**

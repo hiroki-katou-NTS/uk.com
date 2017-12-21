@@ -1,11 +1,12 @@
 /**
  * 9:44:48 AM Jun 6, 2017
  */
-package nts.uk.ctx.at.record.dom.bonuspay.repository;
+package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.List;
 
-import nts.uk.ctx.at.record.dom.bonuspay.timeitem.BPTimeItemSetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BPTimeItemSetting;
+
 
 
 /**

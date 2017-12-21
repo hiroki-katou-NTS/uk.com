@@ -28,8 +28,8 @@ public class TimeLeavingWork extends DomainObject{
 	 * @return　計算用時間帯クラス
 	 */
 	public TimeSpanForCalc getTimeSpan() {
-		return new TimeSpanForCalc(attendanceStamp.getStamp().getTimeWithDay()
-								  ,leaveStamp.getStamp().getTimeWithDay());
+		return new TimeSpanForCalc(attendanceStamp.getStamp().get().getTimeWithDay()
+								  ,leaveStamp.getStamp().get().getTimeWithDay());
 	}
 	
 	/**

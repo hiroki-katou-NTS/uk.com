@@ -1,14 +1,14 @@
 /**
  * 9:15:47 AM Jun 6, 2017
  */
-package nts.uk.ctx.at.record.dom.bonuspay.timeitem;
+package nts.uk.ctx.at.shared.dom.bonuspay.timeitem;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.bonuspay.enums.TimeItemTypeAtr;
-import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.TimeItemName;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemName;
 
 /**
  * @author hungnm

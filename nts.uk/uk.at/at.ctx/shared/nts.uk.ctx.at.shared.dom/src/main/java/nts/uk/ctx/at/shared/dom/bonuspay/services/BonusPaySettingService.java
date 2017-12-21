@@ -1,7 +1,7 @@
-package nts.uk.ctx.at.record.dom.bonuspay.services;
+package nts.uk.ctx.at.shared.dom.bonuspay.services;
 
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 
 public interface BonusPaySettingService {
 

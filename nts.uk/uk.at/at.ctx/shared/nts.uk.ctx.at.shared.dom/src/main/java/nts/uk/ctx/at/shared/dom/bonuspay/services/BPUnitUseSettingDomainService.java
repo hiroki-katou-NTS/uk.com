@@ -1,12 +1,13 @@
-package nts.uk.ctx.at.record.dom.bonuspay.services;
+package nts.uk.ctx.at.shared.dom.bonuspay.services;
 
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
+
 
 
 @Stateless

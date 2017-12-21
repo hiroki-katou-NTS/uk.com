@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,13 +20,19 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetList;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpan;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowRestClockCalcMethod;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -55,33 +62,52 @@ public class DeductionTotalTimeForFluidCalc {
 			AttendanceTime getGoOutStartClock,/*intで渡せばよくね？*/
 			int roopNo,
 			FluidWorkSetting fluidWorkSetting,
-			DeductionTimeSheet deductionTimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheet,
 			RelationSetOfGoOutAndFluBreakTime relation,
 			FlowRestClockCalcMethod clockCalcMethod,
 			TimeLeavingWork time,
-			CalcMethodIfLeaveWorkDuringBreakTime calcMethod) {
+			CalcMethodIfLeaveWorkDuringBreakTime calcMethod,
+			WorkTimeDivision workDivision,
+			FluRestTime fluRestTime,
+			FlowRestSet flowRestSet) {
 
-		// 流動休憩開始までの間にある外出分、休憩をズラす
+		
+		
 		//外出のみの控除時間帯リストを作成する
 		List<TimeSheetOfDeductionItem> goOutDeductionTimelist = 
-				deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(ts -> ts.getGoOutReason().isPresent()).collect(Collectors.toList());
-		List<TimeSheetOfDeductionItem> restTimeSheetList = this.deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(ts -> ts);
+				deductionTimeSheet.stream().filter(ts -> ts.getGoOutReason().isPresent()).collect(Collectors.toList());
+		List<TimeSheetOfDeductionItem> restTimeSheetList = deductionTimeSheet.stream().filter(ts -> ts.getBreakAtr().isPresent()).filter(ts -> ts.getBreakAtr().get().isBreak()).collect(Collectors.toList());
 		//勤務間かつ控除種別 = 休憩　を入れる
 		if(restTimeSheetList.size()>0) {
 			goOutDeductionTimelist.addAll(restTimeSheetList);
 			goOutDeductionTimelist.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart())).collect(Collectors.toList());
 		}
-		
-		collectDeductionTotalTime(
-				goOutDeductionTimelist,
-				getGoOutStartClock,
-				fluidWorkSetting,
-				roopNo,
-				relation);
+		// 流動休憩開始までの間にある外出分、休憩をズラす
+		AttendanceTime breakStartTime = collectDeductionTotalTime(goOutDeductionTimelist,
+																	getGoOutStartClock,
+																	fluidWorkSetting,
+																	roopNo,
+																	relation);
 		//休憩時間帯クラスを作成  
-		TimeSheetOfDeductionItem breakTimeSheet = ;
+		TimeSheetOfDeductionItem breakTimeSheet = TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanWithRounding(new TimeWithDayAttr(breakStartTime.v()), new TimeWithDayAttr(breakStartTime.valueAsMinutes() + fluRestTimeSetting.getFluidRestTime().valueAsMinutes()), Finally.empty()), 
+																												 new TimeSpanForCalc(new TimeWithDayAttr(breakStartTime.v()), new TimeWithDayAttr(breakStartTime.valueAsMinutes() + fluRestTimeSetting.getFluidRestTime().valueAsMinutes())),
+																												Collections.emptyList(),
+																												 Collections.emptyList(),
+																												 Collections.emptyList(),
+																												 Optional.empty(),
+																												 Optional.empty(),
+																												 Optional.of(BreakClassification.BREAK),
+																												 DeductionClassification.BREAK);
 		//休憩と外出の重複処理
-		deductionTimeSheet  = duplicationProcessingOfFluidBreakTime(breakTimeSheet,goOutDeductionTimelist);
+		deductionTimeSheet.clear();
+		deductionTimeSheet.addAll(duplicationProcessingOfFluidBreakTime(breakTimeSheet,
+																	goOutDeductionTimelist,
+																	workDivision.getWorkTimeMethodSet(),
+																	flowRestSet.getTimeManagerSetAtr(),
+																	fluRestTime.getUseFixedRestTime().booleanValue(),
+																	FluidFixedAtr.FluidWork,
+																	workDivision.getWorkTimeDailyAtr()));
+		
 		
 		//流動休憩設定を取得する
 		if(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().isConbineStamp()) {//併用する場合 
@@ -100,10 +126,10 @@ public class DeductionTotalTimeForFluidCalc {
 		if(newTimeSpan.isPresent()) {
 			breakTimeSheet = TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanWithRounding(newTimeSpan.get().getStart(), newTimeSpan.get().getEnd(), breakTimeSheet.timeSheet.getRounding()),
 																							newTimeSpan.get(),
-																							deductionTimeSheets,
-																							bonusPayTimeSheet,
-																							specifiedBonusPayTimeSheet,
-																							midNighttimeSheet,
+																							breakTimeSheet.deductionTimeSheet,
+																							breakTimeSheet.bonusPayTimeSheet,
+																							breakTimeSheet.specBonusPayTimesheet,
+																							breakTimeSheet.midNightTimeSheet,
 																							breakTimeSheet.getGoOutReason(),
 																							breakTimeSheet.getBreakAtr(),
 																							breakTimeSheet.getDeductionAtr());
@@ -112,6 +138,9 @@ public class DeductionTotalTimeForFluidCalc {
 		return breakTimeSheet;		
 	}
 	
+	
+	
+	
 	/**
 	 * 流動休憩開始までの間にある外出分、休憩をズラす (この処理は合計時間をズラすだけ)
 	 * @param list
@@ -119,7 +148,7 @@ public class DeductionTotalTimeForFluidCalc {
 	 * @param fluidWorkSetting
 	 * @param roopNo
 	 */
-	public void collectDeductionTotalTime(
+	public AttendanceTime collectDeductionTotalTime(
 			List<TimeSheetOfDeductionItem> list,/*外出時間帯リスト*/
 			AttendanceTime getGoOutStartClock,/*intで渡せばよくね？*/
 			FluidWorkSetting fluidWorkSetting,
@@ -178,8 +207,7 @@ public class DeductionTotalTimeForFluidCalc {
 				}
 			}
 		}
-		//休憩時間を取得
-		//AttendanceTime restTime = fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getMatchElapsedTime(elpsedTime).getFluidRestTime();		
+		return startTime;
 	}
 	
 	
@@ -210,7 +238,6 @@ public class DeductionTotalTimeForFluidCalc {
 	public List<TimeSheetOfDeductionItem> duplicationProcessingOfFluidBreakTime(
 											TimeSheetOfDeductionItem timeSheetOfDeductionItem,
 											List<TimeSheetOfDeductionItem> deductionTimeList,
-											TimeSheetOfDeductionItem compareTimeSheet,
 											WorkTimeMethodSet setMethod,
 											RestClockManageAtr clockManage,
 											boolean useFixedRestTime,
@@ -221,7 +248,7 @@ public class DeductionTotalTimeForFluidCalc {
 			//控除時間帯分ループ
 			for(int itemNumber = 0 ; itemNumber < deductionTimeList.size();itemNumber++) { //TimeSheetOfDeductionItem goOutTime : duplicateList) {
 				if(timeSheetOfDeductionItem.getTimeSheet().getSpan().checkDuplication(deductionTimeList.get(itemNumber).calcrange) != TimeSpanDuplication.NOT_DUPLICATE) {
-					List<TimeSheetOfDeductionItem> splitList = timeSheetOfDeductionItem.DeplicateBreakGoOut(compareTimeSheet,setMethod,clockManage,useFixedRestTime,fluidFixedAtr,workTimeDailyAtr);
+					List<TimeSheetOfDeductionItem> splitList = timeSheetOfDeductionItem.DeplicateBreakGoOut(deductionTimeList.get(itemNumber),setMethod,clockManage,useFixedRestTime,fluidFixedAtr,workTimeDailyAtr);
 					if(splitList.size() > 0) {
 						deductionTimeList.remove(itemNumber);
 						deductionTimeList.addAll(splitList);
@@ -332,7 +359,7 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, true)
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, true)
 					 ,deductionItem.getGoOutReason()
-					 ,Finally.of(BreakClassification.BREAK_STAMP)
+					 ,Optional.of(BreakClassification.BREAK_STAMP)
 					 ,DeductionClassification.BREAK));
 			//後ろを外出のままに
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( 
@@ -357,11 +384,13 @@ public class DeductionTotalTimeForFluidCalc {
 					 ,deductionItem.specBonusPayTimesheet
 					 ,deductionItem.midNightTimeSheet
 					 ,deductionItem.getGoOutReason()
-					 ,Finally.of(BreakClassification.BREAK_STAMP)
+					 ,Optional.of(BreakClassification.BREAK_STAMP)
 					 ,DeductionClassification.BREAK));
 		}
 		return returnList;
 	}
+
+
 	
 }
 

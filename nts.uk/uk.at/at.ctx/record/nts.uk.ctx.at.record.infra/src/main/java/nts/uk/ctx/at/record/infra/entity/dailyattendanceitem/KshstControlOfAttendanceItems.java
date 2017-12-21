@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.query.DBCharPaddingAs;
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -24,7 +23,7 @@ public class KshstControlOfAttendanceItems extends UkJpaEntity implements Serial
 	public KshstControlOfAttendanceItemsPK kshstControlOfAttendanceItemsPK;
 	@Column(name = "TIME_INPUT_UNIT")
 	public BigDecimal inputUnitOfTimeItem;
-	@DBCharPaddingAs(BonusPaySettingCode.class)
+	@DBCharPaddingAs(nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode.class)
 	@Column(name = "HEADER_BACKGROUND_COLOR")
 	public String headerBackgroundColorOfDailyPerformance;
 	@Column(name = "LINE_BREAK_POSITION")

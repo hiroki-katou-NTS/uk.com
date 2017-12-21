@@ -1,12 +1,13 @@
 /**
  * 9:52:10 AM Jun 6, 2017
  */
-package nts.uk.ctx.at.record.dom.bonuspay.repository;
+package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.List;
 
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
+
 
 
 /**

@@ -85,7 +85,11 @@ public class PredetermineTimeSetForCalc implements HasTimeSpanList<Timezone>{
 		}
 	}
 
-	
+	/**
+	 * 午前終了、午後開始を基に時間帯の補正
+	 * @param start
+	 * @param end
+	 */
 	public void correctTimeSheet(TimeWithDayAttr start, TimeWithDayAttr end) {
 		  val corrected = this.extractBetween(start, end);
 		  this.timeSheets.clear();

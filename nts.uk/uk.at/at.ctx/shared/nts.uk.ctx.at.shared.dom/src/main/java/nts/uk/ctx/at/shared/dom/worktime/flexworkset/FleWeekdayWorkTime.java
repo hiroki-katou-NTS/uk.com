@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexworkset;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixedWorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 
 /**
@@ -15,11 +18,11 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 public class FleWeekdayWorkTime {
 
 	// 勤務時間帯
-	// private 固定勤務時間帯設定 workingTime;
+	 private FixedWorkTimeSet workingTime;
 
 	/** The rest time. */
 	// 休憩時間帯
-	private FluRestTime restTime;
+	private List<FluRestTime> restTime;
 
 	/** The am pm cls. */
 	// TODO: ko thấy define???

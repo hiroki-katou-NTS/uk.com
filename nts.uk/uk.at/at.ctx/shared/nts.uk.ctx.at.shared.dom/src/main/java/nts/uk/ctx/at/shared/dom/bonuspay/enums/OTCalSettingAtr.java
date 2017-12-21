@@ -1,7 +1,7 @@
 /**
  * 10:23:19 AM Jun 6, 2017
  */
-package nts.uk.ctx.at.record.dom.bonuspay.enums;
+package nts.uk.ctx.at.shared.dom.bonuspay.enums;
 
 import lombok.AllArgsConstructor;
 

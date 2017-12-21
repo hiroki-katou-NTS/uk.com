@@ -13,33 +13,27 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
-import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
+import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheetList;
-import nts.uk.ctx.at.shared.dom.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationAddTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinStatutoryAtr;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -243,22 +237,22 @@ public class WithinWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 		return clockList.get(0);
 	}
 	
-//	/**
-//	 * コアタイムのセット
-//	 * @param coreTimeSetting コアタイム時間設定
-//	 */
-//	public WithinWorkTimeSheet createWithinFlexTimeSheet(CoreTimeSetting coreTimeSetting) {
-//		List<FlexWithinWorkTimeSheet> duplicateCoreTimeList = new ArrayList<>();
-//		for(WithinWorkTimeFrame workTimeFrame : this.withinWorkTimeFrame) {
-//			Optional<TimeSpanForCalc> duplicateSpan = workTimeFrame.getCalcrange().getDuplicatedWith(coreTimeSetting.getCoreTime().getSpan()); 
-//			if(duplicateSpan.isPresent()) {
-//				duplicateCoreTimeList.add(new FlexWithinWorkTimeSheet(duplicateSpan.get().getSpan()));
-//			}
-//		}
-//		TimeSpanForCalc coreTime = new TimeSpanForCalc(new TimeWithDayAttr(),new TimeWithDayAttr())
-//		/*フレックス時間帯に入れる*/
-//		return new WithinWorkTimeSheet(this.withinWorkTimeFrame,this.leaveEarlyDecisionClock,this.lateDecisionClock,new FlexWithinWorkTimeSheet());
-//	}
+	/**
+	 * コアタイムのセット
+	 * @param coreTimeSetting コアタイム時間設定
+	 */
+	public WithinWorkTimeSheet createWithinFlexTimeSheet(CoreTimeSetting coreTimeSetting) {
+		List<FlexWithinWorkTimeSheet> duplicateCoreTimeList = new ArrayList<>();
+		for(WithinWorkTimeFrame workTimeFrame : this.withinWorkTimeFrame) {
+			Optional<TimeSpanForCalc> duplicateSpan = workTimeFrame.getCalcrange().getDuplicatedWith(coreTimeSetting.getCoreTime().getSpan()); 
+			if(duplicateSpan.isPresent()) {
+				duplicateCoreTimeList.add(new FlexWithinWorkTimeSheet(duplicateSpan.get().getSpan()));
+			}
+		}
+		TimeSpanForCalc coreTime = new TimeSpanForCalc(new TimeWithDayAttr(),new TimeWithDayAttr())
+		/*フレックス時間帯に入れる*/
+		return new WithinWorkTimeSheet(this.withinWorkTimeFrame,this.leaveEarlyDecisionClock,this.lateDecisionClock,new FlexWithinWorkTimeSheet());
+	}
 	
 	
 	/**
@@ -318,15 +312,17 @@ public class WithinWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 	 }
 
 	 
-//	/**
-//	 * 日別計算の遅刻早退時間の計算
-//	 * @return
-//	 */
-//	public int calcLateLeaveEarlyinWithinWorkTime() {
-//		for(WithinWorkTimeFrame workTimeFrame : withinWorkTimeFrame) {
-//			workTimeFrame.correctTimeSheet(dailyWork, timeSheet, predetermineTimeSetForCalc);
-//		}
-//	}
+	/**
+	 * 日別計算の遅刻早退時間の計算
+	 * @return
+	 */
+	public int calcLateLeaveEarlyinWithinWorkTime() {
+		for(WithinWorkTimeFrame workTimeFrame : withinWorkTimeFrame) {
+			workTimeFrame.correctTimeSheet(dailyWork, timeSheet, predetermineTimeSetForCalc);
+			LateTimeSheet lateTimeSheet = LateTimeSheet.lateTimeCalc(withinWorkTimeFrame, lateRangeForCalc, workTimeCommonSet, lateDecisionClock, workNo, deductionTimeSheet);
+			
+		}
+	}
 	
 //	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 //	

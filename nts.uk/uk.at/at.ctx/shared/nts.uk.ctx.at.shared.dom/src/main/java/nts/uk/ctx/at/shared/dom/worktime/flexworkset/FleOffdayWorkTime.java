@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexworkset;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.BreakTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 
 /**
@@ -14,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 // フレックス勤務の休日出勤用勤務時間帯
 public class FleOffdayWorkTime {
 	// 勤務時間帯
-	// private List<時差勤務休出時間の時間帯設定> workingTimes;
+	 private List<BreakTimezoneSet> workingTimes;
 
 	/** The break time. */
 	// 休憩時間帯

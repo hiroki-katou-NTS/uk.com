@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.Optional;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;

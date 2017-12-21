@@ -18,8 +18,6 @@ import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapterDto;
 import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.repository.AttendanceItemLinkingRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -87,12 +85,12 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 		// 加給時間項目 5
 		Map<Integer, BonusPayTimeItem> bonusPayTimeItems = this.bPTimeItemRepository
 				.getListBonusPayTimeItemName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
+				.collect(Collectors.toMap(bonusPayTimeItems::getId, x -> x));
 
 		// 特定加給時間項目 6
 		Map<Integer, BonusPayTimeItem> specialBonusPayTimeItem = this.bPTimeItemRepository
 				.getListSpecialBonusPayTimeItemName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
+				.collect(Collectors.toMap(bonusPayTimeItems::getId, x -> x));
 
 		List<DailyAttendanceItem> dailyAttendanceItemDomainServiceDtos = new ArrayList<>();
 
