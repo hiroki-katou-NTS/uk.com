@@ -24,4 +24,8 @@ public interface AffWorkplaceHistoryItemRepository_v1 {
 	List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpId(String employeeId);
 	
 	Optional<AffWorkplaceHistoryItem> getByHistId(String historyId);
+	
+	List<AffWorkplaceHistoryItem> findByHistIds(List<String> hisIds);
+	
+	List<AffWorkplaceHistoryItem> findeByWplIDs(List<String> wplIDs);
 }
