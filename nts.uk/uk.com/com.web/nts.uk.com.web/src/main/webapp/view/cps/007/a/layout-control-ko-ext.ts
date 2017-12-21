@@ -12,7 +12,8 @@ module nts.custombinding {
     import parseTime = nts.uk.time.parseTime;
     import clearError = nts.uk.ui.errors.clearAll;
 
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraints'];
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
+    let writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'];
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
@@ -441,20 +442,19 @@ module nts.custombinding {
                     <div class="add-buttons">
                         <button id="cps007_btn_add"></button>
                     </div>
-                    <div class="drag-panel" data-bind="let: {
-                                text: nts.uk.resource.getText,
-                                CAT_TYPE: {  
-                                    SINGLE : 1,
-                                    MULTI: 2,
-                                    CONTI: 3, /* continuos history hasn't end date */
-                                    NODUP: 4,
-                                    DUPLI: 5,
-                                    CONTIWED: 6 /* continuos history has end date */
-                                }
-                            }">
+                    <div class="drag-panel">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification"
                                     data-bind="let: {
+                                        text: nts.uk.resource.getText,
+                                        CAT_TYPE: {  
+                                            SINGLE : 1,
+                                            MULTI: 2,
+                                            CONTI: 3, /* continuos history hasn't end date */
+                                            NODUP: 4,
+                                            DUPLI: 5,
+                                            CONTIWED: 6 /* continuos history has end date */
+                                        },
                                         LAYOUT_TYPE: {
                                             ITEM: 'ITEM',
                                             LIST: 'LIST',
@@ -683,10 +683,27 @@ module nts.custombinding {
                                         }"></div>
                             </div>
                             <div data-bind="if: index == 2">
-                                <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1">
-                                    <div data-bind="text: value"></div>
+                                <div data-bind="if: typeof ctgType !== 'undefined'">
+                                    <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1">
+                                        <div data-bind="text: value"></div>
+                                    </div>
+                                    <div data-bind="if: [CAT_TYPE.NODUP, CAT_TYPE.DUPLI].indexOf(ctgType) > -1">
+                                        <div data-bind="ntsDatePicker: {
+                                                value: value,
+                                                startDate: startDate,
+                                                endDate: endDate,
+                                                constraint: nameid,
+                                                dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                                enable: editable,
+                                                readonly: readonly
+                                            }, attr: { 
+                                                id: nameid, 
+                                                nameid: nameid,
+                                                title: itemName
+                                            }"></div>
+                                    </div>
                                 </div>
-                                <div data-bind="if: [CAT_TYPE.NODUP, CAT_TYPE.DUPLI].indexOf(ctgType) > -1">
+                                <div data-bind="if: typeof ctgType === 'undefined'">
                                     <div data-bind="ntsDatePicker: {
                                             value: value,
                                             startDate: startDate,
@@ -703,14 +720,31 @@ module nts.custombinding {
                                 </div>
                             </div>
                         </div>
-                        <div data-bind="if: [ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(item.dataTypeValue) > -1" class="time timepoint">
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIME" class="time">
                             <input data-bind="ntsTimeEditor: {
                                         value: value,
                                         constraint: nameid,
                                         required: required,
                                         inputFormat: 'time',
                                         enable: editable,
+                                        mode: 'time',
                                         readonly: readonly
+                                    }, attr: {
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName,
+                                        placeholder: itemName
+                                    }" />
+                        </div>
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT" class="timepoint">
+                            <input data-bind="ntsTimeWithDayEditor: 
+                                    { 
+                                        name: nameid,
+                                        constraint: nameid,
+                                        value: value,
+                                        enable: editable, 
+                                        readonly: readonly,
+                                        required: required
                                     }, attr: {
                                         id: nameid, 
                                         nameid: nameid,
@@ -1079,91 +1113,92 @@ module nts.custombinding {
                     }
                 },
                 // render primative value to viewContext
-                primitiveConst = () => {
+                primitiveConst = (x) => {
+                    let dts = x.item,
+                        constraint: any = {
+                            itemName: x.itemName,
+                            itemCode: x.itemDefId.replace(/-/g, ""),
+                            required: x.required// !!x.isRequired
+                        };
+
+                    if (dts) {
+                        switch (dts.dataTypeValue) {
+                            default:
+                            case ITEM_SINGLE_TYPE.STRING:
+                                constraint.valueType = "String";
+                                constraint.maxLength = dts.stringItemLength || undefined;
+                                constraint.stringExpression = '';
+
+                                switch (dts.stringItemType) {
+                                    default:
+                                    case ITEM_STRING_TYPE.ANY:
+                                        constraint.charType = 'Any';
+                                        break;
+                                    case ITEM_STRING_TYPE.ANYHALFWIDTH:
+                                        constraint.charType = 'AnyHalfWidth';
+                                        break;
+                                    case ITEM_STRING_TYPE.ALPHANUMERIC:
+                                        constraint.charType = 'AlphaNumeric';
+                                        break;
+                                    case ITEM_STRING_TYPE.NUMERIC:
+                                        constraint.charType = 'Numeric';
+                                        if (dts.decimalPart > 0) {
+                                            constraint.valueType = "Decimal";
+                                            constraint.mantissaMaxLength = dts.decimalPart;
+                                        } else {
+                                            constraint.valueType = "Integer";
+                                        }
+                                        constraint.max = dts.numericItemMax || undefined;
+                                        constraint.min = dts.numericItemMin || 0;
+                                        break;
+                                    case ITEM_STRING_TYPE.KANA:
+                                        constraint.charType = 'Kana';
+                                        break;
+                                }
+                                break;
+                            case ITEM_SINGLE_TYPE.NUMERIC:
+                                if (dts.decimalPart == 0) {
+                                    constraint.valueType = "Integer";
+                                } else {
+                                    constraint.valueType = "Decimal";
+                                    constraint.mantissaMaxLength = dts.decimalPart;
+                                }
+                                constraint.charType = 'Numeric';
+                                constraint.max = dts.numericItemMax || undefined;
+                                constraint.min = dts.numericItemMin || 0;
+                                break;
+                            case ITEM_SINGLE_TYPE.DATE:
+                                constraint.valueType = "Date";
+                                constraint.max = parseTime(dts.max, true).format() || undefined;
+                                constraint.min = parseTime(dts.min, true).format() || undefined;
+                                break;
+                            case ITEM_SINGLE_TYPE.TIME:
+                                constraint.valueType = "Clock";
+                                constraint.max = parseTime(dts.max, true).format();
+                                constraint.min = parseTime(dts.min, true).format();
+                                break;
+                            case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                constraint.valueType = "Time";
+                                constraint.max = parseTime(dts.timePointItemMax, true).format();
+                                constraint.min = parseTime(dts.timePointItemMin, true).format();
+                                break;
+                            case ITEM_SINGLE_TYPE.SELECTION:
+                                constraint.valueType = "Selection";
+                                break;
+                        }
+                    }
+
+                    return constraint;
+                },
+                primitiveConsts = () => {
                     let constraints = _(ko.unwrap(opts.sortable.data))
                         .map((x: any) => _.has(x, "items") && ko.toJS(x.items))
                         .flatten()
                         .flatten()
                         .filter((x: any) => _.has(x, "item") && !_.isEqual(x.item, {}))
-                        .map((x: any) => {
-                            let dts = x.item,
-                                constraint: any = {
-                                    itemName: x.itemName,
-                                    itemCode: x.itemDefId.replace(/-/g, ""),
-                                    required: x.required// !!x.isRequired
-                                };
-
-                            if (dts) {
-                                switch (dts.dataTypeValue) {
-                                    default:
-                                    case ITEM_SINGLE_TYPE.STRING:
-                                        constraint.valueType = "String";
-                                        constraint.maxLength = dts.stringItemLength || undefined;
-                                        constraint.stringExpression = '';
-
-                                        switch (dts.stringItemType) {
-                                            default:
-                                            case ITEM_STRING_TYPE.ANY:
-                                                constraint.charType = 'Any';
-                                                break;
-                                            case ITEM_STRING_TYPE.ANYHALFWIDTH:
-                                                constraint.charType = 'AnyHalfWidth';
-                                                break;
-                                            case ITEM_STRING_TYPE.ALPHANUMERIC:
-                                                constraint.charType = 'AlphaNumeric';
-                                                break;
-                                            case ITEM_STRING_TYPE.NUMERIC:
-                                                constraint.charType = 'Numeric';
-                                                if (dts.decimalPart > 0) {
-                                                    constraint.valueType = "Decimal";
-                                                    constraint.mantissaMaxLength = dts.decimalPart;
-                                                } else {
-                                                    constraint.valueType = "Integer";
-                                                }
-                                                constraint.max = dts.numericItemMax || undefined;
-                                                constraint.min = dts.numericItemMin || 0;
-                                                break;
-                                            case ITEM_STRING_TYPE.KANA:
-                                                constraint.charType = 'Kana';
-                                                break;
-                                        }
-                                        break;
-                                    case ITEM_SINGLE_TYPE.NUMERIC:
-                                        if (dts.decimalPart == 0) {
-                                            constraint.valueType = "Integer";
-                                        } else {
-                                            constraint.valueType = "Decimal";
-                                            constraint.mantissaMaxLength = dts.decimalPart;
-                                        }
-                                        constraint.charType = 'Numeric';
-                                        constraint.max = dts.numericItemMax || undefined;
-                                        constraint.min = dts.numericItemMin || 0;
-                                        break;
-                                    case ITEM_SINGLE_TYPE.DATE:
-                                        constraint.valueType = "Date";
-                                        constraint.max = parseTime(dts.max, true).format() || undefined;
-                                        constraint.min = parseTime(dts.min, true).format() || undefined;
-                                        break;
-                                    case ITEM_SINGLE_TYPE.TIME:
-                                        constraint.valueType = "Time";
-                                        constraint.max = parseTime(dts.max, true).format();
-                                        constraint.min = parseTime(dts.min, true).format();
-                                        break;
-                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                        constraint.valueType = "Clock";
-                                        constraint.max = parseTime(dts.timePointItemMax, true).format();
-                                        constraint.min = parseTime(dts.timePointItemMin, true).format();
-                                        break;
-                                    case ITEM_SINGLE_TYPE.SELECTION:
-                                        constraint.valueType = "Selection";
-                                        break;
-                                }
-                            }
-
-                            return constraint;
-                        }).value();
+                        .map((x: any) => primitiveConst(x)).value();
                     if (constraints && constraints.length) {
-                        writeConstraint(constraints);
+                        writeConstraints(constraints);
                     }
                 };
 
@@ -1282,16 +1317,16 @@ module nts.custombinding {
                 _.each(data, (x, i) => {
                     // define common function for init new item value
                     let isStr = (item: any) => {
-                        if (item && item.itemTypeState && item.itemTypeState.dataTypeState) {
-                            switch (item.itemTypeState.dataTypeState.dataTypeValue) {
-                                default:
-                                    return false;
-                                case ITEM_SINGLE_TYPE.STRING:
-                                case ITEM_SINGLE_TYPE.SELECTION:
-                                    return true;
-                            }
-                        } else {
+                        if (!item) {
                             return false;
+                        }
+
+                        switch (item.dataTypeValue) {
+                            default:
+                                return false;
+                            case ITEM_SINGLE_TYPE.STRING:
+                            case ITEM_SINGLE_TYPE.SELECTION:
+                                return true;
                         }
                     },
                         modifitem = (def: any, item?: any) => {
@@ -1306,7 +1341,6 @@ module nts.custombinding {
 
                             def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                            def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(item) && def.value ? String(def.value) : def.value);
                             def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
@@ -1316,6 +1350,7 @@ module nts.custombinding {
                             def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
+                            def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
 
                             def.value.subscribe(x => {
                                 let inputs = [],
@@ -1347,16 +1382,30 @@ module nts.custombinding {
                                                     typeData: 3
                                                 };
                                             case ITEM_SINGLE_TYPE.SELECTION:
-                                                if (data.item.referenceType != ITEM_SELECT_TYPE.ENUM) {
-                                                    return {
-                                                        value: data.value ? String(data.value) : undefined,
-                                                        typeData: 1
-                                                    };
-                                                } else {
-                                                    return {
-                                                        value: data.value ? String(data.value) : undefined,
-                                                        typeData: 2
-                                                    };
+                                                switch (data.item.referenceType) {
+                                                    case ITEM_SELECT_TYPE.ENUM:
+                                                        return {
+                                                            value: data.value ? String(data.value) : undefined,
+                                                            typeData: 2
+                                                        };
+                                                    case ITEM_SELECT_TYPE.CODE_NAME:
+                                                        return {
+                                                            value: data.value ? String(data.value) : undefined,
+                                                            typeData: 1
+                                                        };
+                                                    case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                                                        let value: number = data.value ? Number(data.value) : undefined;
+                                                        if (value) {
+                                                            return {
+                                                                value: data.value ? String(data.value) : undefined,
+                                                                typeData: 2
+                                                            };
+                                                        } else {
+                                                            return {
+                                                                value: data.value ? String(data.value) : undefined,
+                                                                typeData: 1
+                                                            };
+                                                        }
                                                 }
                                         }
                                     };
@@ -1583,6 +1632,12 @@ module nts.custombinding {
                                                     def.endDate = ko.observable(undefined);
                                                     def.startDate = prev.value;
                                                 }
+
+                                                if (def.ctgType == IT_CAT_TYPE.CONTINU) {
+                                                    if (!def.value()) {
+                                                        def.value('9999/12/31');
+                                                    }
+                                                }
                                             }
 
                                             if (!_.has(def, "endDate")) {
@@ -1594,8 +1649,46 @@ module nts.custombinding {
                                             }
                                             break;
                                         case ITEM_SINGLE_TYPE.TIME:
-                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                            if (def.index == 1) {
+                                                def.value.subscribe(v => {
+                                                    let next = x.items()[2] || { value: () => ko.observable(undefined) };
+                                                    if (next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
+                                                        && _.has(next, "value")
+                                                        && ko.isObservable(next.value)) {
+                                                        let clo = _.cloneDeep(def);
+                                                        debugger;
+                                                    }
+                                                });
+                                            }
 
+                                            break;
+                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                            if (def.index == 1) {
+                                                def.value.subscribe(v => {
+                                                    let next = x.items()[2] || { value: () => ko.observable(undefined) };
+                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
+                                                        && _.has(next, "value")
+                                                        && ko.isObservable(next.value)) {
+                                                        let clone = _.cloneDeep(def);
+                                                        clone.timePointItemMax = next.value();
+                                                        primitiveConst(clone);
+                                                        debugger;
+                                                    }
+                                                });
+                                            }
+                                            if (def.index == 2) {
+                                                def.value.subscribe(v => {
+                                                    let prev = x.items()[1] || { value: () => ko.observable(undefined) };
+                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
+                                                        && _.has(prev, "value")
+                                                        && ko.isObservable(prev.value)) {
+                                                        let clone = _.cloneDeep(def);
+                                                        clone.timePointItemMin = prev.value();
+                                                        primitiveConst(clone);
+                                                        debugger;
+                                                    }
+                                                });
+                                            }
                                             break;
                                     }
                                 }
@@ -1628,7 +1721,7 @@ module nts.custombinding {
                 clearError();
 
                 // write primitive constraints to viewContext
-                primitiveConst();
+                primitiveConsts();
             });
             opts.sortable.data.valueHasMutated();
 
@@ -1713,6 +1806,7 @@ module nts.custombinding {
                         switch (item.categoryType) {
                             case IT_CAT_TYPE.SINGLE:
                             case IT_CAT_TYPE.CONTINU:
+                            case IT_CAT_TYPE.CONTINUWED:
                             case IT_CAT_TYPE.NODUPLICATE:
                                 $(ctrls.button).text(text('CPS007_11'));
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
@@ -2081,7 +2175,8 @@ module nts.custombinding {
         MULTI = 2, // Multi info
         CONTINU = 3, // Continuos history
         NODUPLICATE = 4, //No duplicate history
-        DUPLICATE = 5 // Duplicate history
+        DUPLICATE = 5, // Duplicate history
+        CONTINUWED = 6 // Continuos history with end date
     }
 
     // defined CATEGORY or GROUP mode

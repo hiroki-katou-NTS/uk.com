@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.FlexWork;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtime;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.IrregularWork;
@@ -10,20 +11,18 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.RegularWork;
 @Data
 @AllArgsConstructor
 public class AddHolidayAddtimeCommand {
-	/** 会社ID */
-	private String companyId;
 
 	/** 会社単位の休暇時間を参照する */
 	private int referComHolidayTime;
 
 	/** 1日 */
-	private GeneralDate oneDay;
+	private BigDecimal oneDay;
 
 	/** 午前 */
-	private GeneralDate morning;
+	private BigDecimal morning;
 
 	/** 午後 */
-	private GeneralDate afternoon;
+	private BigDecimal afternoon;
 
 	/** 実績の就業時間帯を参照する */
 	private int referActualWorkHours;
@@ -40,10 +39,13 @@ public class AddHolidayAddtimeCommand {
 	/** 積立年休 */
 	private int yearlyReserved;
 
+	/** 通常勤務の加算設定*/
 	private RegularWorkCommand regularWork;
 
+	/**フレックス勤務の加算設定*/
 	private FlexWorkCommand flexWork;
 
+	/**変形労働勤務の加算設定*/
 	private IrregularWorkCommand irregularWork;
 	
 	public HolidayAddtime toDomain(String companyId){

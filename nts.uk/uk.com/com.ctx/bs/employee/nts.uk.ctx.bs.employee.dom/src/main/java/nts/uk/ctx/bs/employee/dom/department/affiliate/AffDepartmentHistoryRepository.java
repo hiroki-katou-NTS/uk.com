@@ -29,6 +29,14 @@ public interface AffDepartmentHistoryRepository {
 	 * @return
 	 */
 	Optional<AffDepartmentHistory> getByEmployeeId(String cid, String employeeId);
+	
+	/**
+	 * Get affiliation department history by employeeid with descending
+	 * @param employeeId
+	 * @return
+	 */
+	Optional<AffDepartmentHistory> getByEmployeeIdDesc(String cid, String employeeId);
+	
 	/**
 	 * ドメインモデル「所属部門」を新規登録する
 	 * @param sid

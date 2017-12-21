@@ -319,7 +319,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.unitSelected.subscribe(function(value) {
                 if (!devChange) {
-                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
+                    if (!self.editMode() && !self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_125" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
@@ -344,7 +344,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.workScheduleSelected.subscribe(function(value) {
                 if (!devChange) {
-                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
+                    if (!self.editMode() && !self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_191" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
@@ -788,6 +788,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             // validate
             $(".input-code").trigger("validate");
             $(".input-name").trigger("validate");
+            $(".item-name").trigger("validate");
 
             if (nts.uk.ui.errors.hasError()) {
                 blockUI.clear();
@@ -812,6 +813,24 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var verticalCalItems = new Array<VerticalCalItemDto>();
 
             for (var i = 0; i < self.calculatorItems().length; i++) {
+                if (self.calculatorItems()[i].formula() == "") {
+                    if (self.calculatorItems()[i].settingMethod() == 0) {
+                        if (self.calculatorItems()[i].attribute() == 0) {
+                            self.dataC = null;
+                        } else if (self.calculatorItems()[i].attribute() == 1) {
+                            self.dataE = null;
+                        } else if (self.calculatorItems()[i].attribute() == 2) {
+                            self.dataD = null;
+                        } else if (self.calculatorItems()[i].attribute() == 3) {
+                            self.dataF = null;
+                        } else if (self.calculatorItems()[i].attribute() == 4) {
+                            self.dataG = null;
+                        }
+                    } else {
+                        self.dataB = null;
+                    }                    
+                }
+                
                 var dataB = self.calculatorItems()[i].formBuilt != null ? self.calculatorItems()[i].formBuilt : self.dataB;
                 var dataC = self.calculatorItems()[i].formTime != null ? self.calculatorItems()[i].formTime : self.dataC;
                 var dataD = self.calculatorItems()[i].formPeople != null ? self.calculatorItems()[i].formPeople : self.dataD;
@@ -856,7 +875,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     self.singleSelectedCode(data.verticalCalCd);
                     self.singleSelectedCode.valueHasMutated();
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId});
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId, messageParams: error.parameterIds});
                 }).always(function() {
                     blockUI.clear();
                 });
@@ -1097,7 +1116,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     curDataItem = temp[i].formPeople
                 } else if (temp[i].formulaAmount != null) {
                     curDataItem = temp[i].formulaAmount
-                } else if (temp[i].numerical.length > 0 && temp[i].numerical != null) {
+                } else if (temp[i].numerical != null && temp[i].numerical.length > 0) {
                     curDataItem = temp[i].numerical
                 } else if (temp[i].unitPrice != null) {
                     curDataItem = temp[i].unitPrice

@@ -70,14 +70,15 @@ public class PeregBusinessTypeFinder implements PeregFinder<BusinessTypeDto> {
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		String cid = AppContexts.user().companyId();
 		Optional<BusinessTypeOfEmployeeHistory> optional = typeEmployeeOfHistoryRepos
-				.findByEmployee(cid,query.getEmployeeId());
-		if (!optional.isPresent())
-			return new ArrayList<>();
-		return optional.get().getHistory().stream()
-				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
-				.collect(Collectors.toList());
+				.findByEmployeeDesc(AppContexts.user().companyId(), query.getEmployeeId());
+		if (optional.isPresent()) {
+			return optional.get().getHistory().stream()
+					.filter(x -> typeOfEmployeeRepos.findByHistoryId(x.identifier()).isPresent())
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
 	@Override

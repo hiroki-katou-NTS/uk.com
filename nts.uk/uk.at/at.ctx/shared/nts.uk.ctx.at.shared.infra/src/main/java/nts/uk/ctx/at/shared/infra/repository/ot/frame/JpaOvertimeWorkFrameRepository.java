@@ -89,6 +89,77 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 			.collect(Collectors.toList());
 	}
 	
+	@Override
+	public List<OvertimeWorkFrame> getOvertimeWorkFrameByFrameNos(String companyId, List<Integer> overtimeWorkFrNos) {
+		// get entity manager
+				EntityManager em = this.getEntityManager();
+				CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+				CriteriaQuery<KshstOvertimeFrame> cq = criteriaBuilder
+					.createQuery(KshstOvertimeFrame.class);
+				
+				// root data
+				Root<KshstOvertimeFrame> root = cq.from(KshstOvertimeFrame.class);
+
+				// select root
+				cq.select(root);
+
+				// add where
+				List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+				// eq company id
+				lstpredicateWhere
+					.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+						.get(KshstOvertimeFramePK_.cid), companyId));
+				lstpredicateWhere
+				.add(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+					.get(KshstOvertimeFramePK_.otFrNo).in(overtimeWorkFrNos));
+				// set where to SQL
+				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+				// creat query
+				TypedQuery<KshstOvertimeFrame> query = em.createQuery(cq);
+
+				// exclude select
+				return query.getResultList().stream().map(category -> toDomain(category))
+					.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<OvertimeWorkFrame> getOvertimeWorkFrameByFrameByCom(String companyId, int useAtr) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshstOvertimeFrame> cq = criteriaBuilder
+			.createQuery(KshstOvertimeFrame.class);
+		
+		// root data
+		Root<KshstOvertimeFrame> root = cq.from(KshstOvertimeFrame.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq company id
+		lstpredicateWhere
+			.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+				.get(KshstOvertimeFramePK_.cid), companyId));
+		lstpredicateWhere
+		.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.useAtr), useAtr));
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// creat query
+		TypedQuery<KshstOvertimeFrame> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category))
+			.collect(Collectors.toList());
+	}
+	
 	/**
 	 * To entity.
 	 *
@@ -110,4 +181,5 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 	private OvertimeWorkFrame toDomain(KshstOvertimeFrame entity){
 		return new OvertimeWorkFrame(new JpaOvertimeWorkFrameGetMemento(entity));
 	}
+
 }

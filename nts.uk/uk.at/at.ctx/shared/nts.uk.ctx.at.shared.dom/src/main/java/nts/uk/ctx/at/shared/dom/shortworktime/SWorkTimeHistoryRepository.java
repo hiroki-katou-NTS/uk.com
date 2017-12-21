@@ -35,6 +35,8 @@ public interface SWorkTimeHistoryRepository {
 	
 	Optional <ShortWorkTimeHistory> getBySid(String cid, String sid);
 	
+	Optional <ShortWorkTimeHistory> getBySidDesc(String cid, String sid);
+	
 	void add(String cid, String sid, DateHistoryItem histItem);
 	
 	void update(String sid, DateHistoryItem histItem);

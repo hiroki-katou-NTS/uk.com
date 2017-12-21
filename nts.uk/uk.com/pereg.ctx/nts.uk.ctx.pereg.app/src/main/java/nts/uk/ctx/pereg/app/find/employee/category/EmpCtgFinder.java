@@ -201,8 +201,10 @@ public class EmpCtgFinder {
 			List<EmpInfoItemData> lstEmpInfoCtgItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(empInfoCtgData.getRecordId());
 			if(lstEmpInfoCtgItemData.size() != 0) {
 				for(EmpInfoItemData itemData : lstEmpInfoCtgItemData){
-					if(timePerInfoItemDefIds.contains(itemData.getPerInfoDefId()))
-						optionText.add(itemData.getDataState().getDateValue().toString());				
+					if(timePerInfoItemDefIds.contains(itemData.getPerInfoDefId())){
+						Object dateValue = itemData.getDataState().getDateValue();
+						optionText.add(dateValue == null ? "" : dateValue.toString());	
+					}
 				}
 				if(optionText.size() > 0)
 					lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));

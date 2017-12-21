@@ -34,8 +34,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		implements SWorkTimeHistoryRepository {
 	
-	private final String QUERY_GET__BYSID = "SELECT ad FROM BshmtWorktimeHist ad"
+	private final String QUERY_GET_BYSID = "SELECT ad FROM BshmtWorktimeHist ad"
 			+ " WHERE ad.bshmtWorktimeHistPK.sid = :sid and ad.cId = :cid ORDER BY ad.strYmd";
+	
+	private final String QUERY_GET_BYSID_DESC = QUERY_GET_BYSID + " DESC";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -108,7 +110,18 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 
 	@Override
 	public Optional<ShortWorkTimeHistory> getBySid(String cid, String sid) {
-		List<BshmtWorktimeHist> listHist = this.queryProxy().query(QUERY_GET__BYSID,BshmtWorktimeHist.class)
+		List<BshmtWorktimeHist> listHist = this.queryProxy().query(QUERY_GET_BYSID,BshmtWorktimeHist.class)
+				.setParameter("sid", sid)
+				.setParameter("cid", cid).getList();
+		if (listHist != null && !listHist.isEmpty()){
+			return Optional.of(toWorkTime(listHist));
+		}
+		return Optional.empty();
+	}
+	
+	@Override
+	public Optional<ShortWorkTimeHistory> getBySidDesc(String cid, String sid) {
+		List<BshmtWorktimeHist> listHist = this.queryProxy().query(QUERY_GET_BYSID_DESC,BshmtWorktimeHist.class)
 				.setParameter("sid", sid)
 				.setParameter("cid", cid).getList();
 		if (listHist != null && !listHist.isEmpty()){
