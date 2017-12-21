@@ -20,14 +20,15 @@ public class KshstRoundingMonthSet  extends UkJpaEntity implements Serializable{
 	/** 主キー */
 	@EmbeddedId
 	public KshstRoundingMonthSetPK kshstRoundingMonthSetPK;
+
 	
-	/** 勤怠項目ID */
-	@Column(name = "TIME_ITEM_ID")
-	public String timeItemId;
+	/** 丸め */
+	@Column(name = "UNIT")
+	public int unit;
 	
 	/** 丸め */
 	@Column(name = "ROUNDING")
-	public String rounding;
+	public int rounding;
 	
 	@Override
 	protected Object getKey() {

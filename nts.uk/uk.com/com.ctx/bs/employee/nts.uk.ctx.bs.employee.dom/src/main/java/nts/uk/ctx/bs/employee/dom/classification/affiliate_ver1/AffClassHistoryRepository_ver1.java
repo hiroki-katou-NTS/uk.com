@@ -38,6 +38,14 @@ public interface AffClassHistoryRepository_ver1 {
 	Optional<AffClassHistory_ver1> getByEmployeeId(String cid, String employeeId);
 	
 	/**
+	 * return historyDomain with periods descending
+	 * @param cid
+	 * @param employeeId
+	 * @return
+	 */
+	Optional<AffClassHistory_ver1> getByEmployeeIdDesc(String cid, String employeeId);
+	
+	/**
 	 * add domain history
 	 * @param history
 	 * @author hop.nt

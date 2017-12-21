@@ -10,12 +10,13 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.ItemValue;
-import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -47,7 +48,7 @@ public class AddEmployeeCommandFacade {
 		List<ItemsByCategory> inputs = command.getInputs();
 
 		// merge data from client with dataServer
-		if (command.getCreateType() == 2) {
+		if (command.getCreateType() != 3) {
 
 			List<SettingItemDto> dataServer = mergeData(inputs, command);
 
@@ -123,9 +124,13 @@ public class AddEmployeeCommandFacade {
 
 			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O')
 					.collect(Collectors.toList());
+
 			if (!CollectionUtil.isEmpty(lstItem)) {
-				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), null, lstItem);
 				addInputs.add(newItemCtg);
+				// add item for get recordId in commandFacade.add
+				ItemsByCategory itemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), null);
+				addInputs.add(itemCtg);
 
 			}
 
@@ -139,13 +144,13 @@ public class AddEmployeeCommandFacade {
 
 	private List<SettingItemDto> mergeData(List<ItemsByCategory> inputs, AddEmployeeCommand command) {
 
-		List<SettingItemDto> dataList = this.layoutFinder.getAllInitItemBySetId(command);
+		List<SettingItemDto> dataList = this.layoutFinder.getAllSettingItemList(command);
 
 		dataList.forEach(x -> {
 
-			if (x.getDataType() == ItemValueType.SELECTION.value) {
+			if (x.getDataType().equals(DataTypeValue.SELECTION)) {
 				if (x.getSelectionItemRefType().intValue() == 3) {
-					x.setDataType(2);
+					x.setDataType(DataTypeValue.NUMERIC);
 				}
 			}
 
@@ -154,10 +159,9 @@ public class AddEmployeeCommandFacade {
 			if (itemVal != null) {
 				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
 						itemVal.value() != null ? itemVal.value().toString() : ""));
-
 			}
 		});
-		
+
 		return dataList;
 
 	}
@@ -184,7 +188,7 @@ public class AddEmployeeCommandFacade {
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
 			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getValueAsString(),
-					item.getDataType()));
+					item.getDataType().value));
 		});
 		if (CollectionUtil.isEmpty(items)) {
 			return null;

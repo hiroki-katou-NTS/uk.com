@@ -6,6 +6,7 @@ module cps002.g.vm {
     import alert = nts.uk.ui.dialog.alert;
     import alertError = nts.uk.ui.dialog.alertError;
     import getText = nts.uk.resource.getText;
+    import dialog = nts.uk.ui.dialog.info;
 
 
     export class ViewModel {
@@ -65,9 +66,12 @@ module cps002.g.vm {
             };
             service.setUserSetting(command).done(function() {
                 setShared("userSettingStatus", true);
+                dialog({ messageId: "Msg_15" }).then(() => {
+                    self.close();
+                });
             })
                 .fail(function() { setShared("userSettingStatus", false); })
-                .always(function() { self.close(); });
+
         }
         close() { close(); }
 

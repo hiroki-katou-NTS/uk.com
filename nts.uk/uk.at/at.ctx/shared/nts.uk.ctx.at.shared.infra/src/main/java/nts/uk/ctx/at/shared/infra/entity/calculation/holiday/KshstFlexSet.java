@@ -21,29 +21,21 @@ public class KshstFlexSet  extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public KshstFlexSetPK kshstFlexSetPK;
 	
-	/** フレックス勤務を管理する */
-	@Column(name = "MANAGING_FLEX_WORK")
-	public String managingFlexWork;
-	
-	/** 設定 */
-	@Column(name = "CONFIG_FLEX_WORK")
-	public String configFlexWork;
-	
 	/** 不足計算 */
 	@Column(name = "MISS_CALC_HD")
-	public String missCalcHd;
+	public int missCalcHd;
 	
 	/** 割増計算 */
 	@Column(name = "PREMIUM_CALC_HD")
-	public String premiumCalcHd;
+	public int premiumCalcHd;
 	
 	/** 不足計算*/
 	@Column(name = "MISS_CALC_SUBHD")
-	public String missCalcSubhd;
+	public int missCalcSubhd;
 	
 	/** 割増計算 */
 	@Column(name = "PREMIUM_CALC_SUBHD")
-	public String premiumCalcSubhd;
+	public int premiumCalcSubhd;
 	
 	@Override
 	protected Object getKey() {

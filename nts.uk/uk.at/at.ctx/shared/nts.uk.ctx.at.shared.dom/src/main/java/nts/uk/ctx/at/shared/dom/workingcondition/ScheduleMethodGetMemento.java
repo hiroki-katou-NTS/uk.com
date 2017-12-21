@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.Optional;
 
 /**
  * The Interface ScheduleMethodGetMemento.
@@ -11,19 +12,19 @@ public interface ScheduleMethodGetMemento {
 	 *
 	 * @return the basic create method
 	 */
-	public WorkScheduleBasicCreMethod getBasicCreateMethod();
+	WorkScheduleBasicCreMethod getBasicCreateMethod();
 	
 	/**
 	 * Gets the work schedule bus cal.
 	 *
 	 * @return the work schedule bus cal
 	 */
-	public WorkScheduleBusCal getWorkScheduleBusCal();
+	Optional<WorkScheduleBusCal> getWorkScheduleBusCal();
 	
 	/**
 	 * Gets the monthly pattern work schedule cre.
 	 *
 	 * @return the monthly pattern work schedule cre
 	 */
-	public MonthlyPatternWorkScheduleCre getMonthlyPatternWorkScheduleCre();
+	Optional<MonthlyPatternWorkScheduleCre> getMonthlyPatternWorkScheduleCre();
 }

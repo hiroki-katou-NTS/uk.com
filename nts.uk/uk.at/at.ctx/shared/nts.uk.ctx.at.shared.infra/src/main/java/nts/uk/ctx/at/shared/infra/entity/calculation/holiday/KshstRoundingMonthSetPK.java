@@ -16,4 +16,8 @@ public class KshstRoundingMonthSetPK implements Serializable {
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
+	
+	/** 勤怠項目ID */
+	@Column(name = "TIME_ITEM_ID")
+	public String timeItemId;
 }

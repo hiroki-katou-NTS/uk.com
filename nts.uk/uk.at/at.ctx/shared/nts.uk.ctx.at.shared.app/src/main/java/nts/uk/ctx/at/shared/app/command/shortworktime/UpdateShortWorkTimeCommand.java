@@ -9,6 +9,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
@@ -77,11 +78,24 @@ public class UpdateShortWorkTimeCommand implements SWorkTimeHistItemGetMemento {
 	@Override
 	public List<SChildCareFrame> getLstTimeSlot() {
 		List<SChildCareFrame> listSChildCare = new ArrayList<>();
+		
 		if (startTime1 != null && endTime1 != null){
+			if (startTime1.intValue() >= endTime1.intValue()){
+				throw new BusinessException("Msg_857");
+			}
 			SChildCareFrame careFrame = new SChildCareFrame(1, new TimeWithDayAttr(startTime1.intValue()), new TimeWithDayAttr(endTime1.intValue()));
 			listSChildCare.add(careFrame);
 		}
 		if (startTime2 != null && endTime2 != null){
+			
+			// 開始時刻＞＝終了時刻でなければならない	Msg_857
+			if (startTime2.intValue() >= endTime2.intValue()){
+				throw new BusinessException("Msg_857");
+			}
+			// 時間帯(List)はそれぞれ重複してはいけない  Msg_859
+			if (startTime2.intValue() == startTime1.intValue() && endTime2.intValue() == endTime1.intValue()){
+				throw new BusinessException("Msg_859");
+			}
 			SChildCareFrame careFrame = new SChildCareFrame(2, new TimeWithDayAttr(startTime2.intValue()), new TimeWithDayAttr(endTime2.intValue()));
 			listSChildCare.add(careFrame);
 		}
