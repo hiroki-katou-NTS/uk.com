@@ -41,8 +41,13 @@ module nts.uk.ui.jqueryExtentions {
                             dfd.resolve(data);
                         }
                     }).fail(function(jqXHR, textStatus, errorThrown) {
-                        // Client Exception
-                        dfd.reject({ message: "Please check your network", messageId: "0" });
+                        
+                        if (jqXHR.status === 413) {
+                            dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
+                        } else {
+                            // Client Exception
+                            dfd.reject({ message: "アップロード処理に失敗しました。", messageId: "0" });
+                        }
                     });
                 }
                 else {

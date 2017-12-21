@@ -21,6 +21,9 @@ module nts.uk.ui.koExtentions {
             let fileName: KnockoutObservable<string> = data.filename;
             let onchange: (filename: string) => void = (data.onchange !== undefined) ? data.onchange : $.noop;
             let onfilenameclick: (filename: string) => void = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
+            let immediateUpload: boolean = data.immediateUpload === true;
+            let uploadFinished: (fileInfo: any) => void = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop; 
+            let stereoType: string = data.stereoType;
             
             // Container
             let container = $(element);
@@ -55,6 +58,18 @@ module nts.uk.ui.koExtentions {
                 container.data("file-name", getSelectedFileName);
                 fileName(getSelectedFileName);
                 onchange(getSelectedFileName);
+                
+                nts.uk.ui.block.grayout();
+                $fileInput.ntsFileUpload({ stereoType: stereoType })
+                    .done(data => {
+                        uploadFinished(data[0]);
+                    })
+                    .fail(data => {
+                        nts.uk.ui.dialog.alertError(data);
+                    })
+                    .always(() => {
+                        nts.uk.ui.block.clear();
+                    });
             });
             
             $fileNameLabel.click(function() {

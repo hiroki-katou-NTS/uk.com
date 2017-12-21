@@ -10984,6 +10984,9 @@ var nts;
                         var fileName = data.filename;
                         var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
                         var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
+                        var immediateUpload = data.immediateUpload === true;
+                        var uploadFinished = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
+                        var stereoType = data.stereoType;
                         var container = $(element);
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
                         var $fileBrowserButton = $("<button class='browser-button'></button>");
@@ -11013,6 +11016,17 @@ var nts;
                             container.data("file-name", getSelectedFileName);
                             fileName(getSelectedFileName);
                             onchange(getSelectedFileName);
+                            nts.uk.ui.block.grayout();
+                            $fileInput.ntsFileUpload({ stereoType: stereoType })
+                                .done(function (data) {
+                                uploadFinished(data[0]);
+                            })
+                                .fail(function (data) {
+                                nts.uk.ui.dialog.alertError(data);
+                            })
+                                .always(function () {
+                                nts.uk.ui.block.clear();
+                            });
                         });
                         $fileNameLabel.click(function () {
                             onfilenameclick($(this).text());
@@ -23179,7 +23193,12 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                                    dfd.reject({ message: "Please check your network", messageId: "0" });
+                                    if (jqXHR.status === 413) {
+                                        dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
+                                    }
+                                    else {
+                                        dfd.reject({ message: "アップロード処理に失敗しました。", messageId: "0" });
+                                    }
                                 });
                             }
                             else {

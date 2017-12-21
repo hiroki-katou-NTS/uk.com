@@ -74,6 +74,11 @@ __viewContext.ready(function() {
                 self.fileInfo(res);
             });
         }
+        
+        finished(fileInfo: any) {
+            console.log("fileInfo!!");
+            console.log(fileInfo);
+        }
 
     }
 
