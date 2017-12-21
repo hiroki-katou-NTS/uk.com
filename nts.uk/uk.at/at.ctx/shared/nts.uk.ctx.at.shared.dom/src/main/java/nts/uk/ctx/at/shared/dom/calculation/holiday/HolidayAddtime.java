@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @Getter
@@ -42,10 +41,13 @@ public class HolidayAddtime extends AggregateRoot {
 	/** 積立年休 */
 	private int yearlyReserved;
 
+	/** 通常勤務の加算設定*/
 	private RegularWork regularWork;
-
+	
+	/**フレックス勤務の加算設定*/
 	private FlexWork flexWork;
 
+	/**変形労働勤務の加算設定*/
 	private IrregularWork irregularWork;
 
 	@Override
@@ -54,8 +56,8 @@ public class HolidayAddtime extends AggregateRoot {
 	}
 
 	public static HolidayAddtime createFromJavaType(String companyId, int referComHolidayTime, BigDecimal oneDay,
-			BigDecimal morning, BigDecimal afternoon, int referActualWorkHours, int notReferringAch,
-			int annualHoliday, int specialHoliday, int yearlyReserved, RegularWork regularWork, FlexWork flexWork,
+			BigDecimal morning, BigDecimal afternoon, int referActualWorkHours, int notReferringAch, int annualHoliday,
+			int specialHoliday, int yearlyReserved, RegularWork regularWork, FlexWork flexWork,
 			IrregularWork irregularWork) {
 		return new HolidayAddtime(companyId, referComHolidayTime, oneDay, morning, afternoon, referActualWorkHours,
 				EnumAdaptor.valueOf(notReferringAch, NotReferringAchAtr.class), annualHoliday, specialHoliday,

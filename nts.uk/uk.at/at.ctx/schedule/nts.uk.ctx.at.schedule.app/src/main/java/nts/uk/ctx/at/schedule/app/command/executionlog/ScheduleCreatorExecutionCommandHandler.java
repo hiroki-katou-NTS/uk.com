@@ -317,7 +317,8 @@ public class ScheduleCreatorExecutionCommandHandler
 			// check is use manager
 			if (workingConditionItem.isPresent()
 					&& workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE
-					&& workingConditionItem.get().getScheduleMethod()
+					&& workingConditionItem.get().getScheduleMethod().isPresent()
+					&& workingConditionItem.get().getScheduleMethod().get()
 							.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
 				this.createWorkScheduleByBusinessDayCalenda(command, domain, workingConditionItem.get(), context);
 			}

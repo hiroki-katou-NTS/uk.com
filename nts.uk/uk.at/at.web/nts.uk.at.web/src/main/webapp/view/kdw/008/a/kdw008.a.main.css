@@ -36,3 +36,19 @@
 #swap-list2_container, #swap-list_container{
 	display: inline-block;;
 }
+
+#swap-list2 col[data-role='rs'] {
+  width: 35px !important;
+}
+
+#swap-list2 .ui-icon-triangle-1-e {
+  margin-top: 1px;
+}
+
+#swap-list col[data-role='rs'] {
+  width: 35px !important;
+}
+
+#swap-list .ui-icon-triangle-1-e {
+  margin-top: 1px;
+}

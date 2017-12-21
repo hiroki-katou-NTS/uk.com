@@ -24,7 +24,7 @@ module nts.uk.at.view.kdw006 {
             }
             
             opendScreenD() {
-                nts.uk.request.jump("/view/kdw/008/b/index.xhtml");
+                nts.uk.request.jump("/view/kdw/008/d/index.xhtml");
             }
             
             opendOperationSetting() {
