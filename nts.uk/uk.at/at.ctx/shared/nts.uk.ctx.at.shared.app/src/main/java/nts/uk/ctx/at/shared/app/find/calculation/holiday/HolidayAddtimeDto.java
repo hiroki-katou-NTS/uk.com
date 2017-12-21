@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.calculation.holiday;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 @Data
@@ -11,13 +13,13 @@ public class HolidayAddtimeDto {
 	private int referComHolidayTime;
 
 	/** 1日 */
-	private GeneralDate oneDay;
+	private BigDecimal oneDay;
 
 	/** 午前 */
-	private GeneralDate morning;
+	private BigDecimal morning;
 
 	/** 午後 */
-	private GeneralDate afternoon;
+	private BigDecimal afternoon;
 
 	/** 実績の就業時間帯を参照する */
 	private int referActualWorkHours;

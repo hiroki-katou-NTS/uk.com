@@ -6,21 +6,23 @@ module cps001.e.vm {
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import permision = service.getCurrentEmpPermision;
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
 
-        empFileMn: KnockoutObservable<IEmpFileMn>= ko.observable(<IEmpFileMn>{});
+        empFileMn: KnockoutObservable<IEmpFileMn> = ko.observable(<IEmpFileMn>{});
         oldEmpFileMn = {};
         isChange: KnockoutObservable<boolean> = ko.observable(false);
+        enaBtnSave: KnockoutObservable<boolean> = ko.observable(true);
         isInit = true;
 
         constructor() {
             let self = this;
         }
         start() {
-            let self = this, 
-             params = getShared("CPS001E_PARAMS");
+            let self = this,
+                params = getShared("CPS001E_PARAMS");
             self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
             service.getAvatar(self.empFileMn().employeeId).done(function(data) {
@@ -31,7 +33,7 @@ module cps001.e.vm {
                         self.getImage();
                     else self.isChange(true);
                     self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
-                }else self.isChange(true);
+                } else self.isChange(true);
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
                         self.isChange(true);
@@ -39,26 +41,37 @@ module cps001.e.vm {
                     }
                     self.isInit = false;
                 });
-                
+
             });
+
+            permision().done((data: IPersonAuth) => {
+                if (data) {
+                    if (data.allowMapUpload != 1) {
+                        self.enaBtnSave(false);
+                        $(".upload-btn").attr('disabled', 'disabled');
+                    }
+                }
+            });
+
+            $('.upload-btn').focus();
 
         }
 
         upload() {
             let self = this;
             nts.uk.ui.block.grayout();
-            
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            
+
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
-            
+
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
                         self.empFileMn().fileId = data.id;
-                        self.oldEmpFileMn = {employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType};
+                        self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
                     });
                 } else self.close();
@@ -94,21 +107,32 @@ module cps001.e.vm {
         getImage() {
             let self = this;
             let id = self.empFileMn().fileId;
-            try{
-                 $("#test").ntsImageEditor("selectByFileId", id);
-            }catch(Error){
+            try {
+                $("#test").ntsImageEditor("selectByFileId", id);
+            } catch (Error) {
                 self.isChange(true);
             }
-           
+
         }
         close() {
             close();
         }
     }
 
+    interface IPersonAuth {
+        roleId: string;
+        allowMapUpload: number;
+        allowMapBrowse: number;
+        allowDocRef: number;
+        allowDocUpload: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
+    }
+
+
     interface IEmpFileMn {
         employeeId: string;
         fileId?: string;
         fileType?: number;
-    }   
+    }
 }

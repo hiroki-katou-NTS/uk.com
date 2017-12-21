@@ -21,6 +21,7 @@ import nts.uk.ctx.pereg.dom.person.PerInfoCtgDomainService;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
@@ -180,6 +181,9 @@ public class PeregProcessor {
 			PersonInfoCategory perInfoCtg, List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 
 		List<LayoutPersonInfoClsDto> classItemList = creatClassItemList(lstPerInfoItemDef);
+		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
+				&& query.getInfoId() == null && query.getStandardDate() == null)
+			return classItemList;
 		if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
 			// get peregDto
 			PeregDto peregDto = layoutingProcessor.findSingle(query);
@@ -207,17 +211,14 @@ public class PeregProcessor {
 		List<LayoutPersonInfoClsDto> classItemList = new ArrayList<>();
 		lstClsItem.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-			layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
 			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
 			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
 			layoutPerInfoClsDto.setClassName(item.getItemName());
-			layoutPerInfoClsDto.getListItemDf().add(item);
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, null));
 			if (item.getItemDefType() != 2) {
 				item.getLstChildItemDef().forEach(childItem -> {
 					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
-					layoutPerInfoClsDto.getListItemDf().add(childItem);
 					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, null));
 				});
 			}
