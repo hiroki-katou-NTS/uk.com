@@ -14,30 +14,30 @@ public enum VacationCategory {
 	TimeDigestVacation, // 時間消化休暇
 	YearlyReserved; // 積立年休
 	
+	 /**
+	  * 休暇種類を勤務種類の分類　に変換する
+	  */
+	 public WorkTypeClassification convertWorkTypeClassification() {
+	  switch(this) {
+	  case Absence:
+	   return WorkTypeClassification.Absence;
+	  case AnnualHoliday:
+	   return WorkTypeClassification.AnnualHoliday;
+	  case Holiday:
+	   return WorkTypeClassification.Holiday;
+	  case Pause:
+	   return WorkTypeClassification.Pause;
+	  case SpecialHoliday:
+	   return WorkTypeClassification.SpecialHoliday;
+	  case SubstituteHoliday:
+	   return WorkTypeClassification.SubstituteHoliday;
+	  case TimeDigestVacation:
+	   return WorkTypeClassification.TimeDigestVacation;
+	  case YearlyReserved:
+	   return WorkTypeClassification.YearlyReserved;
+	  default:
+	   throw new RuntimeException("unknown ");
+	  }
+	 }
 	
-	/**
-	 * 休暇種類を勤務種類の分類　に変換する
-	 */
-	public WorkTypeClassification convertWorkTypeClassification() {
-		switch(this) {
-		case Absence:
-			return WorkTypeClassification.Absence;
-		case AnnualHoliday:
-			return WorkTypeClassification.AnnualHoliday;
-		case Holiday:
-			return WorkTypeClassification.Holiday;
-		case Pause:
-			return WorkTypeClassification.Pause;
-		case SpecialHoliday:
-			return WorkTypeClassification.SpecialHoliday;
-		case SubstituteHoliday:
-			return WorkTypeClassification.SubstituteHoliday;
-		case TimeDigestVacation:
-			return WorkTypeClassification.TimeDigestVacation;
-		case YearlyReserved:
-			return WorkTypeClassification.YearlyReserved;
-		default:
-			throw new RuntimeException("unknown ");
-		}
-	}
 }

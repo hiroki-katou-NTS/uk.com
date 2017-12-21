@@ -18,4 +18,11 @@ public class AutoCalculationSetting {
 	
 	//上限の設定
 	private LimitOfOverTimeSetting upperLimitSetting;
+	
+	/**
+	 * 計算区分を打刻から計算するに変更する
+	 */
+	public void calculationAttrChangeStamp() {
+		this.calculationAttr = AutoCalculationCategoryOutsideHours.CalculateEmbossing;
+	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.daily;
+package nts.uk.ctx.at.record.dom.daily.overtimework;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,19 +7,24 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-import lombok.Getter;
 import lombok.Value;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
-import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
+import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
+import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
@@ -92,10 +97,10 @@ public class OverTimeOfDaily {
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
-		for(OverTimeFrameTimeSheet overTimeWorkFrameTime : overTimeWorkFrameTimeSheet) {
-			calcOverTimeWorkTimeList.add(overTimeWorkFrameTime.calcOverTimeWorkTime(autoCalcSet));
-			//calcOverTimeWorkTimeList.add();
-		}
+//		for(OverTimeFrameTimeSheetWork overTimeWorkFrameTime : overTimeWorkFrameTimeSheet) {
+//			calcOverTimeWorkTimeList.add(overTimeWorkFrameTime.calcOverTimeWorkTime(autoCalcSet));
+//			//calcOverTimeWorkTimeList.add();
+//		}
 		return calcOverTimeWorkTimeList;
 	}
 	
@@ -113,9 +118,9 @@ public class OverTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(OverTimeFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
-			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
-		}
+//		for(OverTimeFrameTimeSheetWork frameTimeSheet : overTimeWorkFrameTimeSheet) {
+//			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
+//		}
 		return bonusPayList;
 	}
 	
@@ -125,9 +130,9 @@ public class OverTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(OverTimeFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
-			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
-		}
+//		for(OverTimeFrameTimeSheetWork frameTimeSheet : overTimeWorkFrameTimeSheet) {
+//			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
+//		}
 		return bonusPayList;
 	}
 	/**
@@ -136,20 +141,20 @@ public class OverTimeOfDaily {
 	 */
 	public ExcessOverTimeWorkMidNightTime calcMidNightTimeIncludeOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
 		int totalTime = 0;
-		for(OverTimeFrameTimeSheet frameTime : overTimeWorkFrameTimeSheet) {
-			/*↓分岐の条件が明確になったら記述*/
-			AutoCalcSet setting;
-			if(frameTime.getWithinStatutoryAtr().isStatutory()) {
-				setting = autoCalcSet.getLegalOvertimeHours();
-			}
-			else if(frameTime.isGoEarly()) {
-				setting = autoCalcSet.getEarlyOvertimeHours();
-			}
-			else {
-				setting = autoCalcSet.getNormalOvertimeHours();
-			}
-			totalTime += frameTime.calcMidNight(setting.getCalculationClassification());
-		}
+//		for(OverTimeFrameTimeSheetWork frameTime : overTimeWorkFrameTimeSheet) {
+//			/*↓分岐の条件が明確になったら記述*/
+//			AutoCalcSet setting;
+//			if(frameTime.getWithinStatutoryAtr().isStatutory()) {
+//				setting = autoCalcSet.getLegalOvertimeHours();
+//			}
+//			else if(frameTime.isGoEarly()) {
+//				setting = autoCalcSet.getEarlyOvertimeHours();
+//			}
+//			else {
+//				setting = autoCalcSet.getNormalOvertimeHours();
+//			}
+//			totalTime += frameTime.calcMidNight(setting.getCalculationClassification());
+//		}
 		return new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime)));
 	}
 	
@@ -171,8 +176,8 @@ public class OverTimeOfDaily {
 	 * @param prioritySet
 	 * @return
 	 */
-	public static List<OverTimeFrameTimeSheet> sortedByPriority(List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheetList,StatutoryPrioritySet prioritySet){
-		List<OverTimeFrameTimeSheet> copyList = new ArrayList<>();
+	public static List<OverTimeFrameTimeSheetWork> sortedByPriority(List<OverTimeFrameTimeSheetWork> overTimeWorkFrameTimeSheetList,StatutoryPrioritySet prioritySet){
+		List<OverTimeFrameTimeSheetWork> copyList = new ArrayList<>();
 		if(prioritySet.isPriorityNormal()) {
 			/*普通を優先*/
 			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
@@ -192,30 +197,30 @@ public class OverTimeOfDaily {
 	 * @param prioritySet 振替可能時間
 	 */
 	public void hurikakesyori(AttendanceTime hurikaeAbleTime,StatutoryPrioritySet prioritySet) {
-		List<OverTimeFrameTimeSheet> hurikae = sortedByPriority(overTimeWorkFrameTimeSheet,prioritySet);
-		AttendanceTime ableTransTime = new AttendanceTime(0);
-		for(OverTimeFrameTimeSheet overTimeFrameTimeSheet : hurikae) {
-//			if(/*Not 振替大将*/) {
-//				continue;
+//		List<OverTimeFrameTimeSheetWork> hurikae = sortedByPriority(overTimeWorkFrameTimeSheet,prioritySet);
+//		AttendanceTime ableTransTime = new AttendanceTime(0);
+//		for(OverTimeFrameTimeSheetWork overTimeFrameTimeSheet : hurikae) {
+////			if(/*Not 振替大将*/) {
+////				continue;
+////			}
+//			//残業時間 >= 振替可能時間
+//			if(overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().getCalcTime().greaterThanOrEqualTo(hurikaeAbleTime.valueAsMinutes())) {
+//				ableTransTime = hurikaeAbleTime;
 //			}
-			//残業時間 >= 振替可能時間
-			if(overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().getCalcTime().greaterThanOrEqualTo(hurikaeAbleTime.valueAsMinutes())) {
-				ableTransTime = hurikaeAbleTime;
-			}
-			//残業時間 < 振替可能時間
-			else {
-				ableTransTime = overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().getCalcTime(); 
-			}
-			overTimeWorkFrameTime.stream().sorted((first,second) -> first.getOverWorkFrameNo().compareTo(second.getOverWorkFrameNo()));
-			//残業枠時間帯に対する加算
-			overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
-			overTimeFrameTimeSheet.getOverWorkFrameTime().getTransferTime().addMinutes(ableTransTime, ableTransTime);
-			//日別実績の～～が持ってる枠に対する加算
-			overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
-			overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getTransferTime().addMinutes(ableTransTime, ableTransTime);
-			
-			hurikaeAbleTime.minusMinutes(ableTransTime.valueAsMinutes());
-		}
+//			//残業時間 < 振替可能時間
+//			else {
+//				ableTransTime = overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().getCalcTime(); 
+//			}
+//			overTimeWorkFrameTime.stream().sorted((first,second) -> first.getOverWorkFrameNo().compareTo(second.getOverWorkFrameNo()));
+//			//残業枠時間帯に対する加算
+//			overTimeFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
+//			overTimeFrameTimeSheet.getOverWorkFrameTime().getTransferTime().addMinutes(ableTransTime, ableTransTime);
+//			//日別実績の～～が持ってる枠に対する加算
+//			overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
+//			overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getTransferTime().addMinutes(ableTransTime, ableTransTime);
+//			
+//			hurikaeAbleTime.minusMinutes(ableTransTime.valueAsMinutes());
+//		}
 	}
 	
 	

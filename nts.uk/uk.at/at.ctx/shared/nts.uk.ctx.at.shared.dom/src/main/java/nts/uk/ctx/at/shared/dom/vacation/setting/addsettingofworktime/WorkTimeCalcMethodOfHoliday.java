@@ -9,5 +9,6 @@ import lombok.Value;
  */
 @Value
 public class WorkTimeCalcMethodOfHoliday {
-	private CalculationByActualTimeAtr calculationByActualTime;
+	private CalculationByActualTimeAtr calculationByActualTime;//実働のみで計算する
+	private WorkTimeCalcMethodDetailOfHoliday detailSet;//詳細設定
 }

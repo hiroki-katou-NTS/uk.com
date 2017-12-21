@@ -82,7 +82,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	 */
 	public ScheduleTimeSheet getScheduleTimeSheet(WorkNo workNo) {
 		List<ScheduleTimeSheet> scheduleTimeSheetList = this.scheduleTimeSheets.stream()
-				.filter(ts -> ts.getWorkNo() == workNo).collect(Collectors.toList());
+				.filter(ts -> ts.getWorkNo().equals(workNo)).collect(Collectors.toList());
 		if(scheduleTimeSheetList.size()>1) {
 			throw new RuntimeException("Exist duplicate workNo : " + workNo);
 		}	

@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.shared.dom.common.time;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.ComparableRange;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * Calculate time from start to end. 計算時間帯
@@ -252,4 +256,21 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	public Integer endNext(boolean isIncrement) {
 		return isIncrement ? this.endValue() + 1 : this.endValue() - 1;
 	}
+	
+	/**
+	 * 計算用時間帯クラスを1つの計算用時間帯クラスとして結合する
+	 * @author ken_takasu
+	 * @param sources
+	 * @return
+	 */
+	public static Optional<TimeSpanForCalc> join(Collection<TimeSpanForCalc> sources) {
+		if (sources.isEmpty()) {
+			return Optional.empty();
+		}
+		val start = sources.stream().map(s -> s.getStart()).min(Comparator.naturalOrder()).get();
+		val end = sources.stream().map(s -> s.getEnd()).max(Comparator.naturalOrder()).get();
+		return Optional.of(new TimeSpanForCalc(start, end));
+	}
+
+	
 }

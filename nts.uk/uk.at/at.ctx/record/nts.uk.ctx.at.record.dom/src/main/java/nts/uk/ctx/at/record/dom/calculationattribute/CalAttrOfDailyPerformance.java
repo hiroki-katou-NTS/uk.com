@@ -31,8 +31,12 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 //	 * 計算区分を全て「する」に変更する
 //	 */
 //	public static CalAttrOfDailyPerformance turnAllAtrTrue() {
-//		return new CalAttrOfDailyPerformance(new RaisingSalaryCalcAtr(true, true)
-//								 ,new AutoCalculationOfOverTimeWork(legalOvertimeHours, legalOtTime, normalOvertimeHours, normalOtTime, earlyOvertimeHours, earlyOtTime)
-//								 , new AutoCalcSetOfHolidayWorkTime(new AutoCalcSet(AutoCalculationCategoryOutsideHours.CalculateEmbossing)));
+//		//残業時間の自動計算設定を打刻から計算するに
+//		this.overtimeSetting
+//		//フレックス
+//		this.flexExcessTime
+//		//休出
+//		this.holidayTimeSetting
+//		
 //	}
 }

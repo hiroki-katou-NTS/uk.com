@@ -10,5 +10,9 @@ import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
  */
 @Getter
 public class VacationAddTimeSet {
+	//加給時間
 	private BreakdownTimeDay AdditionTime;
+	//加算休暇設定
+	private AddVacationSet addVacationSet;
+	
 }
