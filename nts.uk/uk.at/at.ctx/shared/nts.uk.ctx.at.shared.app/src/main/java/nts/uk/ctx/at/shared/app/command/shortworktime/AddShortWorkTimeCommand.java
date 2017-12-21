@@ -19,6 +19,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 
+@Setter
 public class AddShortWorkTimeCommand implements SWorkTimeHistItemGetMemento{
 	
 	@PeregEmployeeId
@@ -30,7 +31,6 @@ public class AddShortWorkTimeCommand implements SWorkTimeHistItemGetMemento{
 	@Getter
 	private GeneralDate startDate;
 	
-	@Setter
 	private String historyId;
 	/**
 	 * 短時間終了日
