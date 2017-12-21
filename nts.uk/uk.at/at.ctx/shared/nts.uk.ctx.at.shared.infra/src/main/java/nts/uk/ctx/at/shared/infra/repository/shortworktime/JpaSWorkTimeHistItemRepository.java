@@ -50,7 +50,8 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	 */
 	@Override
 	public void update(ShortWorkTimeHistoryItem domain) {
-		this.commandProxy().update(this.toEntity(domain));
+		this.commandProxy().remove(this.toEntity(domain));
+		this.commandProxy().insert(this.toEntity(domain));
 	}
 
 	/*
