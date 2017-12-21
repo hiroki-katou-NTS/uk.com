@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange.daily;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeAbs;
 
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeAbs;
  */
 
 @Getter
+@Setter
 public class ExtractionPeriodDaily extends ExtractionRangeAbs{
 	
 	/** Day*/

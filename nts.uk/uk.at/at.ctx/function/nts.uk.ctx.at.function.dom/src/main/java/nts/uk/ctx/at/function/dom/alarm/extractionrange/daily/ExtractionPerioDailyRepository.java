@@ -8,6 +8,9 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeAbs;
 
 public interface ExtractionPerioDailyRepository {
 
+	/**find*/
+	ExtractionPeriodDaily findById(ExtractionRangeAbs extractionRangeAbs);
+	
 	/** Add */
 	void add(ExtractionPeriodDaily extractionPeriodDaily);
 
