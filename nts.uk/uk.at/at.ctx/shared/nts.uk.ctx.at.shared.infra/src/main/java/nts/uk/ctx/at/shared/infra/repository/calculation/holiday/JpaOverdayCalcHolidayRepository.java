@@ -19,8 +19,8 @@ import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstOverDayHdSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstOverDayHdSetPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstOverdayHdAttSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstOverdayHdAttSetPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWeekdayHd;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWeekdayHdPK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWeekdayFromHd;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWeekdayFromHdPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstZeroTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstZeroTimeSetPK;
 
@@ -88,7 +88,7 @@ public class JpaOverdayCalcHolidayRepository extends JpaRepository implements Ov
 		return calcSet;
 	}
 
-	private WeekdayHoliday convertToDomainWeekday(KshstWeekdayHd kshstWeekdayHd) {
+	private WeekdayHoliday convertToDomainWeekday(KshstWeekdayFromHd kshstWeekdayHd) {
 		WeekdayHoliday weekdayHoliday = WeekdayHoliday.createFromJavaType(kshstWeekdayHd.kshstWeekdayHdPK.companyId,
 				kshstWeekdayHd.kshstWeekdayHdPK.overworkFrameNo, kshstWeekdayHd.weekdayNo,
 				kshstWeekdayHd.excessHolidayNo, kshstWeekdayHd.excessSphdNo);
@@ -96,9 +96,9 @@ public class JpaOverdayCalcHolidayRepository extends JpaRepository implements Ov
 		return weekdayHoliday;
 	}
 
-	private KshstWeekdayHd convertToDbTypeWeekday(WeekdayHoliday holiday) {
-		KshstWeekdayHd weekdayHd = new KshstWeekdayHd();
-		KshstWeekdayHdPK weekdayHdPK = new KshstWeekdayHdPK(holiday.getCompanyId(), holiday.getOverworkFrameNo());
+	private KshstWeekdayFromHd convertToDbTypeWeekday(WeekdayHoliday holiday) {
+		KshstWeekdayFromHd weekdayHd = new KshstWeekdayFromHd();
+		KshstWeekdayFromHdPK weekdayHdPK = new KshstWeekdayFromHdPK(holiday.getCompanyId(), holiday.getOverworkFrameNo());
 				weekdayHd.weekdayNo = holiday.getWeekdayNo();
 				weekdayHd.excessHolidayNo = holiday.getExcessHolidayNo();
 				weekdayHd.excessSphdNo = holiday.getExcessSphdNo();

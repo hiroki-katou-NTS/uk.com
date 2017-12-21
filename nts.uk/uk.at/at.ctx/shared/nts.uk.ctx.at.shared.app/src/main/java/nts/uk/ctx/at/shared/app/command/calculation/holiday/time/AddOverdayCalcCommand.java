@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.app.command.calculation.holiday.time;
-
+/**
+ * @author phongtq
+ * The class Add Overday Calc Command
+ */
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,12 +55,20 @@ public class AddOverdayCalcCommand {
 	/** 法定外休日 */
 	private int excessPublicSphd;
 	
+	/**平日から休日の0時跨ぎ設定*/
 	private List<WeekdayHolidayCommand> weekdayHoliday;
 	
+	/**休日から平日への0時跨ぎ設定*/
 	private List<OverdayHolidayAttenCommand> overdayHolidayAtten;
 	
+	/**休日から休日への0時跨ぎ設定*/
 	private List<OverdayCalcHolidayCommand> overdayCalcHoliday;
 	
+	/**
+	 * Convert to Domain Overday Calc
+	 * @param companyId
+	 * @return
+	 */
 	public OverdayCalc toDomain(String companyId){
 		return OverdayCalc.builder()
 				.companyId(companyId)
@@ -80,6 +91,11 @@ public class AddOverdayCalcCommand {
 				.build();
 	}
 	
+	/**
+	 * Convert to Domain Weekday Holiday
+	 * @param companyId
+	 * @return
+	 */
 	private List<WeekdayHoliday> toDomainWeekdayHoliday(String companyId) {
 		return this.weekdayHoliday.stream().map(x -> WeekdayHoliday.createFromJavaType(
 				companyId,
@@ -89,6 +105,11 @@ public class AddOverdayCalcCommand {
 				x.getExcessSphdNo())).collect(Collectors.toList());
 	}
 	
+	/**
+	 * Convert to Domain Overday Holiday Atten
+	 * @param companyId
+	 * @return
+	 */
 	private List<OverdayHolidayAtten> toDomainOverdayHolidayAtten(String companyId) {
 		return this.overdayHolidayAtten.stream().map(x -> OverdayHolidayAtten.createFromJavaType(
 				companyId, 

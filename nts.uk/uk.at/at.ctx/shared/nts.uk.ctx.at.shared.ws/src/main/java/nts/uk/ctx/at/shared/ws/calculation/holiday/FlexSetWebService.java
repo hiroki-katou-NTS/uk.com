@@ -14,14 +14,13 @@ import nts.uk.ctx.at.shared.app.command.calculation.holiday.flex.AddFlexSetComma
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetFinder;
 
-@Path("shared/caculation/holiday/time")
+@Path("shared/caculation/holiday/flex")
 @Produces("application/json")
-public class OverdayCalcWebService extends WebService{
-
+public class FlexSetWebService extends WebService{
 	@Inject
 	private FlexSetFinder finder;
 	@Inject
-	private AddFlexSetCommandHandler addFlexSetCommandHandler;
+	private AddFlexSetCommandHandler handler;
 	
 	@Path("findByCid")
 	@POST
@@ -32,12 +31,12 @@ public class OverdayCalcWebService extends WebService{
 	@Path("add")
 	@POST
 	public JavaTypeResult<List<String>> add(AddFlexSetCommand command) {
-		return new JavaTypeResult<List<String>>(this.addFlexSetCommandHandler.handle(command));
+		return new JavaTypeResult<List<String>>(this.handler.handle(command));
 	}
 	
 	@Path("update")
 	@POST
 	public JavaTypeResult<List<String>> update(AddFlexSetCommand command) {
-		return new JavaTypeResult<List<String>>(this.addFlexSetCommandHandler.handle(command));
+		return new JavaTypeResult<List<String>>(this.handler.handle(command));
 	}
 }
