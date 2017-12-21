@@ -160,10 +160,11 @@ module nts.uk.ui.jqueryExtentions {
             
             changeSource(origin: Array<any>): Array<Array<any>>{
                 let result = [];
-                for(let rI = 0; rI < this.row; rI++){
+                for (let rI = 0; rI < this.row; rI++) {
                     result[rI] = [];
-                    for(let cI = 0; cI < this.column; cI++){
-                        result[rI][cI] = !isNull(origin[rI+cI]) ? _.cloneDeep(origin[rI+cI]) : undefined;
+                    for (let cI = 0; cI < this.column; cI++) {
+                        let cell = origin[(rI*this.column) + cI];
+                        result[rI][cI] = !isNull(cell) ? _.cloneDeep(cell) : undefined;
                     }
                 }
                 return result;
