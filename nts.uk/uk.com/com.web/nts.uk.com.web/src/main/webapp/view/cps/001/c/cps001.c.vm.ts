@@ -56,7 +56,6 @@ module cps001.c.vm {
                 emp = self.currentEmployee();
 
             emps.removeAll();
-
             service.getData().done((data: Array<IEmployee>) => {
                 if (data && data.length) {
                     emps(data);
@@ -78,6 +77,7 @@ module cps001.c.vm {
                     self.newMode();
                 }
                 dfd.resolve();
+            }).fail(() => {
             });
             return dfd.promise();
         }
@@ -102,18 +102,14 @@ module cps001.c.vm {
                 block();
                 service.restoreData(objToRestore).done(() => {
                     if (itemListLength === 1) {
-                        self.start().done(() => {
-                            unblock();
-                        });
+                        self.start();
                     } else if (itemListLength - 1 === indexItemDelete) {
-                        self.start(listItem[indexItemDelete - 1].id).done(() => {
-                            unblock();
-                        });
+                        self.start(listItem[indexItemDelete - 1].id);
                     } else if (itemListLength - 1 > indexItemDelete) {
-                        self.start(listItem[indexItemDelete + 1].id).done(() => {
-                            unblock();
-                        });
+                        self.start(listItem[indexItemDelete + 1].id);
                     }
+
+                    unblock();
 
                 }).fail((mes) => {
                     unblock();
@@ -142,17 +138,11 @@ module cps001.c.vm {
                         let itemListLength = self.listEmployee().length,
                             indexItemDelete = _.findIndex(ko.toJS(self.listEmployee), function(item: any) { return item.id == emp.id; });
                         if (itemListLength === 1) {
-                            self.start().done(() => {
-                                unblock();
-                            });
+                            self.start();
                         } else if (itemListLength - 1 === indexItemDelete) {
-                            self.start(listItem[indexItemDelete - 1].id).done(() => {
-                                unblock();
-                            });
+                            self.start(listItem[indexItemDelete - 1].id);
                         } else if (itemListLength - 1 > indexItemDelete) {
-                            self.start(listItem[indexItemDelete + 1].id).done(() => {
-                                unblock();
-                            });
+                            self.start(listItem[indexItemDelete + 1].id);
                         }
                         unblock();
                     });
