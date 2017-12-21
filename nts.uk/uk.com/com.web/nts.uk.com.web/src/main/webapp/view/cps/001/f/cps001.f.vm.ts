@@ -65,7 +65,7 @@ module cps001.f.vm {
 
             permision().done((data: IPersonAuth) => {
                 if (data) {
-                    if (data.allowDocUpload == 1) {
+                    if (data.allowDocUpload != 1) {
                         $(".browser-button").attr('disabled', 'disabled');
                         $(".delete-button").attr('disabled', 'disabled');
                     }

@@ -31,7 +31,7 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 
 	private static final String CHECK_SELF_AUTH = " AND pa.selfAuthType!=1";
 
-	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,"
+	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,i.itemCd,"
 			+ " CASE WHEN (ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId) IS NOT NULL THEN 'True' ELSE 'False' END AS alreadyCopy ,ic.itemParentCd"
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic"
@@ -85,9 +85,9 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 			String contractCd) {
 		List<EmpCopySettingItem> itemList = this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class)
 				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getList(i -> {
-					return EmpCopySettingItem.createFromJavaType(perInfoCategoryId, String.valueOf(i[0]),
-							String.valueOf(i[1]), Boolean.valueOf(i[2].toString()),
-							i[3] != null ? i[3].toString() : null);
+					return EmpCopySettingItem.createFromJavaType(perInfoCategoryId, String.valueOf(i[0]), String.valueOf(i[1]),
+							String.valueOf(i[2]), Boolean.valueOf(i[3].toString()),
+							i[4] != null ? i[4].toString() : null);
 				});
 
 		return itemList;

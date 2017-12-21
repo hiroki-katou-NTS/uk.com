@@ -67,22 +67,21 @@ public class AddTemporaryAbsenceCommandHandler
 		tempAbsHistoryService.add(itemtoBeAdded);
 		
 		BigDecimal falseValue = new BigDecimal(0);
-		boolean multiple = false;
+		Boolean multiple = null;
 		if (command.getMultiple() != null){
 			multiple = falseValue.compareTo(command.getMultiple()) == 0 ? false : true;
 		}
-		boolean sameFamily = false;
+		Boolean sameFamily = null;
 		if (command.getSameFamily() != null){
 			sameFamily = falseValue.compareTo(command.getSameFamily()) == 0 ? false : true;
 		}
-		boolean spouseIsLeave = false;
+		Boolean spouseIsLeave = null;
 		if (command.getSpouseIsLeave() != null){
 			spouseIsLeave = falseValue.compareTo(command.getSpouseIsLeave()) == 0 ? false : true;
 		}
-		
+		// TODO SoInsPayCategory set to null
 		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getTempAbsenceFrNo()!= null ? command.getTempAbsenceFrNo().intValue():0,
-				newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory()!= null? command.getSoInsPayCategory().intValue(): null,
-				multiple, command.getFamilyMemberId(), sameFamily, command.getChildType() != null? command.getChildType().intValue(): null,
+				newHistID, command.getEmployeeId(), command.getRemarks(), null, multiple, command.getFamilyMemberId(), sameFamily, command.getChildType() != null? command.getChildType().intValue(): null,
 				command.getCreateDate(), spouseIsLeave, command.getSameFamilyDays()!= null? command.getSameFamilyDays().intValue(): null);
 		temporaryAbsenceRepository.add(temporaryAbsence);
 
