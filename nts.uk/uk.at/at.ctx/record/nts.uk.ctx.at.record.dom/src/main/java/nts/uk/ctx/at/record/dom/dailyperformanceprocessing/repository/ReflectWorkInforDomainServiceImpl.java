@@ -328,7 +328,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							}
 
 							ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(
-									new BigDecimal(items.getScheduleCnt()), items.getScheduleStartClock(),
+									items.getScheduleCnt(), items.getScheduleStartClock(),
 									items.getScheduleStartClock());
 							scheduleTimeSheets.add(scheduleTimeSheet);
 						});
@@ -480,7 +480,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					for (TimezoneUse timezone : lstTimezone) {
 						if (timezone.getUseAtr() == UseSetting.USE) {
 							ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(
-									new BigDecimal(timezone.getWorkNo()), timezone.getStart().v(),
+									timezone.getWorkNo(), timezone.getStart().v(),
 									timezone.getEnd().v());
 							scheduleTimeSheets.add(scheduleTimeSheet);
 						}
@@ -628,7 +628,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							for (TimezoneUse timezone : lstTimezone) {
 								if (timezone.getUseAtr() == UseSetting.USE) {
 									TimeLeavingWorkOutput timeLeavingWorkOutput = new TimeLeavingWorkOutput();
-									timeLeavingWorkOutput.setWorkNo(new WorkNo(new BigDecimal(timezone.getWorkNo())));
+									timeLeavingWorkOutput.setWorkNo(new WorkNo(timezone.getWorkNo()));
 
 									TimeActualStampOutPut attendanceTimeActualStampOutPut = new TimeActualStampOutPut();
 									WorkStampOutPut actualStamp = new WorkStampOutPut();

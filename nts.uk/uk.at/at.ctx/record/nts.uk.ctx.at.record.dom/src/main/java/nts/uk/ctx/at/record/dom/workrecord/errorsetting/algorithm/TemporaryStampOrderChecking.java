@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -60,19 +58,19 @@ public class TemporaryStampOrderChecking {
 			for(TimeLeavingWork item : timeLeavingWorks){
 				TimeActualStamp attendanceStamp = item.getAttendanceStamp();
 				TimeActualStamp leaveStamp = item.getLeaveStamp();
-				item = new TimeLeavingWork(new WorkNo(new BigDecimal(workNo)), attendanceStamp, leaveStamp);
+				item = new TimeLeavingWork(new WorkNo((workNo)), attendanceStamp, leaveStamp);
 				workNo ++;
 			}
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 
-				if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(1)))) {
+				if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
 					attendanceItemIDList.add(51);
 					attendanceItemIDList.add(53);
-				} else if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(2)))) {
+				} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
 					attendanceItemIDList.add(59);
 					attendanceItemIDList.add(61);
-				} else if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(3)))) {
+				} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
 					attendanceItemIDList.add(67);
 					attendanceItemIDList.add(69);
 				}

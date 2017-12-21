@@ -1175,11 +1175,11 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		for (int j = 0; j < timeLeavingWorksSize; j++) {
 			TimeLeavingWork timeLeavingWork = timeLeavingWorks.get(j);
 			if (j < 3) {
-				newTimeLeavingWorks.add(new TimeLeavingWork(new WorkNo(new BigDecimal(j + 1)),
+				newTimeLeavingWorks.add(new TimeLeavingWork(new WorkNo(j + 1),
 						timeLeavingWork.getAttendanceStamp(), timeLeavingWork.getLeaveStamp()));
 
 			} else {
-				newTimeLeavingWorks.add(new TimeLeavingWork(new WorkNo(new BigDecimal(j % 3 + 1)),
+				newTimeLeavingWorks.add(new TimeLeavingWork(new WorkNo(j % 3 + 1),
 						timeLeavingWork.getAttendanceStamp(), timeLeavingWork.getLeaveStamp()));
 			}
 		}
@@ -1794,20 +1794,20 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			if ("出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
 				lstTimeLeave
 						.add(new TimeLeavingWork(
-								new WorkNo(new BigDecimal(worktNo)), new TimeActualStamp(stampOrActualStamp,
+								new WorkNo(worktNo), new TimeActualStamp(stampOrActualStamp,
 										timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp()),
 								null));
 
 			} else if ("出勤".equals(attendanceClass) && !"実打刻".equals(actualStampClass)) {
-				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(new BigDecimal(worktNo)),
+				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(worktNo),
 						new TimeActualStamp(timeActualStamp.getActualStamp(), stampOrActualStamp,
 								timeActualStamp.getNumberOfReflectionStamp()),
 						null));
 			} else if (!"出勤".equals(attendanceClass) && "実打刻".equals(actualStampClass)) {
-				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(new BigDecimal(worktNo)), null, new TimeActualStamp(
+				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(worktNo), null, new TimeActualStamp(
 						stampOrActualStamp, timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp())));
 			} else {
-				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(new BigDecimal(worktNo)), null, new TimeActualStamp(
+				lstTimeLeave.add(new TimeLeavingWork(new WorkNo(worktNo), null, new TimeActualStamp(
 						timeActualStamp.getStamp(), stampOrActualStamp, timeActualStamp.getNumberOfReflectionStamp())));
 			}
 
