@@ -27,16 +27,16 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 	//遅刻早退
 	private AutoCalOfLeaveEarlySetting leaveEarlySetting;
 	
-	/**
-	 * 計算区分を全て「する」に変更する
-	 */
-	public static CalAttrOfDailyPerformance turnAllAtrTrue() {
-		//残業時間の自動計算設定を打刻から計算するに
-		this.overtimeSetting
-		//フレックス
-		this.flexExcessTime
-		//休出
-		this.holidayTimeSetting
-		
-	}
+//	/**
+//	 * 計算区分を全て「する」に変更する
+//	 */
+//	public static CalAttrOfDailyPerformance turnAllAtrTrue() {
+//		//残業時間の自動計算設定を打刻から計算するに
+//		this.overtimeSetting
+//		//フレックス
+//		this.flexExcessTime
+//		//休出
+//		this.holidayTimeSetting
+//		
+//	}
 }

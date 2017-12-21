@@ -10,12 +10,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
@@ -26,7 +22,6 @@ import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarly
 import nts.uk.ctx.at.record.infra.entity.daily.legalworktime.KrcdtDayPrsIncldTime;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 @Stateless
 public class JpaAttendanceTimeRepository extends JpaRepository implements AttendanceTimeRepository{

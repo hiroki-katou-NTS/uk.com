@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.bonuspay.repository.BPTimeItemRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItemDomainServiceDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
@@ -19,6 +17,8 @@ import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemAdapter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemDto;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

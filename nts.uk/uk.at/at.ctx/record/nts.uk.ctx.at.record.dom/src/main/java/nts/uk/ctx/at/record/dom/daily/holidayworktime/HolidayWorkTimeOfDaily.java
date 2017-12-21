@@ -49,9 +49,9 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<HolidayWorkFrameTime> collectHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
 		List<HolidayWorkFrameTime> calcHolidayWorkTimeList = new ArrayList<>();
-		for(HolidayWorkFrameTimeSheetWORK holidyWorkFrameTimeSheet : holidayWorkFrameTimeSheet) {
-			calcHolidayWorkTimeList.add(holidyWorkFrameTimeSheet.calcOverTimeWorkTime(autoCalcSet));
-		}
+//		for(HolidayWorkFrameTimeSheetWORK holidyWorkFrameTimeSheet : holidayWorkFrameTimeSheet) {
+//			calcHolidayWorkTimeList.add(holidyWorkFrameTimeSheet.calcOverTimeWorkTime(autoCalcSet));
+//		}
 		return calcHolidayWorkTimeList;
 	}
 	
@@ -69,9 +69,9 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
-			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
-		}
+//		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
+//			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
+//		}
 		return bonusPayList;
 	}
 	
@@ -81,9 +81,9 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
-			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
-		}
+//		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
+//			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
+//		}
 		return bonusPayList;
 	}
 	/**
@@ -92,9 +92,9 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
-		for(HolidayWorkFrameTimeSheet  frameTime : holidayWorkFrameTimeSheet) {
-			eachTime.addTime(frameTime.getStatutoryAtr(), frameTime.calcMidNight(autoCalcSet.getLateNightTime().getCalculationClassification()));
-		}
+//		for(HolidayWorkFrameTimeSheet  frameTime : holidayWorkFrameTimeSheet) {
+//			eachTime.addTime(frameTime.getStatutoryAtr(), frameTime.calcMidNight(autoCalcSet.getLateNightTime().getCalculationClassification()));
+//		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(eachTime.getStatutory())),StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(eachTime.getExcess())),StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
@@ -141,30 +141,30 @@ public class HolidayWorkTimeOfDaily {
 	 * @param prioritySet 振替可能時間
 	 */
 	public void hurikakesyori(AttendanceTime hurikaeAbleTime,StatutoryPrioritySet prioritySet) {
-		List<HolidayWorkFrameTimeSheetWORK> hurikae = sortedByPriority(holidayWorkFrameTimeSheet,prioritySet);
-		AttendanceTime ableTransTime = new AttendanceTime(0);
-		for(HolidayWorkFrameTimeSheetWORK holidayWorkFrameTimeSheet : hurikae) {
-//			if(/*Not 振替大将*/) {
-//				continue;
+//		List<HolidayWorkFrameTimeSheetWORK> hurikae = sortedByPriority(holidayWorkFrameTimeSheet,prioritySet);
+//		AttendanceTime ableTransTime = new AttendanceTime(0);
+//		for(HolidayWorkFrameTimeSheetWORK holidayWorkFrameTimeSheet : hurikae) {
+////			if(/*Not 振替大将*/) {
+////				continue;
+////			}
+//			//残業時間 >= 振替可能時間
+//			if(holidayWorkFrameTimeSheet.getFrameTime().getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(hurikaeAbleTime.valueAsMinutes())) {
+//				ableTransTime = hurikaeAbleTime;
 //			}
-			//残業時間 >= 振替可能時間
-			if(holidayWorkFrameTimeSheet.getFrameTime().getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(hurikaeAbleTime.valueAsMinutes())) {
-				ableTransTime = hurikaeAbleTime;
-			}
-			//残業時間 < 振替可能時間
-			else {
-				ableTransTime = holidayWorkFrameTimeSheet.getFrameTime().getHolidayWorkTime().get().getCalcTime(); 
-			}
-			holidayWorkFrameTime.stream().sorted((first,second) -> first.getHolidayFrameNo().compareTo(second.getHolidayFrameNo()));
-			//残業枠時間帯に対する加算
-			//holidayWorkFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
-			//overTimeFrameTimeSheet.getOverWorkFrameTime().getTransferTime().addMinutes(ableTransTime, ableTransTime);
-			//日別実績の～～が持ってる枠に対する加算
-			//overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
-			//overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getTransferTime().addMinutes(ableTransTime, ableTransTime);
-			
-			hurikaeAbleTime.minusMinutes(ableTransTime.valueAsMinutes());
-		}
+//			//残業時間 < 振替可能時間
+//			else {
+//				ableTransTime = holidayWorkFrameTimeSheet.getFrameTime().getHolidayWorkTime().get().getCalcTime(); 
+//			}
+//			holidayWorkFrameTime.stream().sorted((first,second) -> first.getHolidayFrameNo().compareTo(second.getHolidayFrameNo()));
+//			//残業枠時間帯に対する加算
+//			//holidayWorkFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
+//			//overTimeFrameTimeSheet.getOverWorkFrameTime().getTransferTime().addMinutes(ableTransTime, ableTransTime);
+//			//日別実績の～～が持ってる枠に対する加算
+//			//overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getOverTimeWork().addMinutes(ableTransTime, ableTransTime);
+//			//overTimeWorkFrameTime.get(overTimeFrameTimeSheet.getFrameNo().v()).getTransferTime().addMinutes(ableTransTime, ableTransTime);
+//			
+//			hurikaeAbleTime.minusMinutes(ableTransTime.valueAsMinutes());
+//		}
 	}
 	
 	

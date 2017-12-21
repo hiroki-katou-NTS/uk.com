@@ -39,18 +39,18 @@ public class LateDecisionClock {
 										   DeductionTimeSheet deductionTimeSheet,
 										   GraceTimeSetting lateGraceTime) {
 
-		val predetermineTimeSheet = predetermineTimeSet.getTimeSheetOf(workNo);
-		TimeWithDayAttr decisionClock;
+		//val predetermineTimeSheet = predetermineTimeSet.get.getTimeSheetOf(workNo);
+		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 
 		if (lateGraceTime.isZero()) {
 			// 猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
-			decisionClock = predetermineTimeSheet.getStart();
+			//decisionClock = predetermineTimeSheet.getStart();
 		} else {
 			// 猶予時間帯の作成
-			TimeSpanForCalc graceTimeSheet = lateGraceTime.createLateGraceTimeSheet(predetermineTimeSheet);
+		//	TimeSpanForCalc graceTimeSheet = lateGraceTime.createLateGraceTimeSheet(predetermineTimeSheet);
 
-			int breakTime = deductionTimeSheet.sumBreakTimeIn(graceTimeSheet);
-			decisionClock = graceTimeSheet.getEnd().forwardByMinutes(breakTime);
+		//	int breakTime = deductionTimeSheet.sumBreakTimeIn(graceTimeSheet);
+		//	decisionClock = graceTimeSheet.getEnd().forwardByMinutes(breakTime);
 		}
 
 		//補正後の猶予時間帯の開始時刻を判断時刻とする
@@ -72,7 +72,7 @@ public class LateDecisionClock {
 			) {
 		List<LateDecisionClock> clocks = new ArrayList<LateDecisionClock>();
 		// 遅刻猶予時間の取得
-		clocks.add(create(workNo, predetermineTimeSet, deductionTimeSheet, lateGraceTime));
+		//clocks.add(create(workNo, predetermineTimeSet, deductionTimeSheet, lateGraceTime));
 		return clocks;
 	}
 	

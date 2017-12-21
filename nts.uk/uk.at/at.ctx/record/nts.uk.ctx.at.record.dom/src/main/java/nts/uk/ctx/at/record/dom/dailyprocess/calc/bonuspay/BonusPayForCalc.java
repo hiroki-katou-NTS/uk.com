@@ -77,21 +77,21 @@ public class BonusPayForCalc extends CalculationTimeSheet{
 	}
 	
 	
-	public static BonusPayForCalc createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
-			int endTime, int roundingTimeAtr, int roundingAtr) {
-		return new BonusPayForCalc(
-				new TimeSpanWithRounding(new TimeWithDayAttr(startTime),new TimeWithDayAttr(endTime),
-										 Finally.of(new TimeRoundingSetting(EnumAdaptor.valueOf(roundingTimeAtr, Unit.class),EnumAdaptor.valueOf(roundingAtr, Rounding.class)))),
-				new TimeSpanForCalc(new TimeWithDayAttr(startTime),new TimeWithDayAttr(endTime)),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Optional.empty(),
-				timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
-				new AttendanceClock(startTime), new AttendanceClock(endTime),
-				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
-				EnumAdaptor.valueOf(roundingAtr, RoundingAtr.class));
-	}
+//	public static BonusPayForCalc createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
+//			int endTime, int roundingTimeAtr, int roundingAtr) {
+//		return new BonusPayForCalc(
+//				new TimeSpanWithRounding(new TimeWithDayAttr(startTime),new TimeWithDayAttr(endTime),
+//										 Finally.of(new TimeRoundingSetting(EnumAdaptor.valueOf(roundingTimeAtr, Unit.class),EnumAdaptor.valueOf(roundingAtr, Rounding.class)))),
+//				new TimeSpanForCalc(new TimeWithDayAttr(startTime),new TimeWithDayAttr(endTime)),
+//				Collections.emptyList(),
+//				Collections.emptyList(),
+//				Collections.emptyList(),
+//				Optional.empty(),
+//				timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
+//				new AttendanceClock(startTime), new AttendanceClock(endTime),
+//				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
+//				EnumAdaptor.valueOf(roundingAtr, RoundingAtr.class));
+//	}
 	
 //                           -----------------origin---------------
 //	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
