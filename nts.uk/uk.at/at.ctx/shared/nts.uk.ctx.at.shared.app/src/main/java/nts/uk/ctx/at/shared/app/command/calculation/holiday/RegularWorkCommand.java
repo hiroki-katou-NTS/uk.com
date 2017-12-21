@@ -8,38 +8,35 @@ public class RegularWorkCommand {
 	private String companyId;
 	
 	/** 実働のみで計算する */
-	private int calcActualOperationPre;
+	private int calcActualOperation1;
 	
 	/** インターバル免除時間を含めて計算する */
-	private int calcIntervalTimePre;
+	private int exemptTaxTime1;
 	
 	/** 育児・介護時間を含めて計算する */
-	private int calcIncludCarePre;
+	private int incChildNursingCare1;
 	
 	/** 加算する */
-	private int additionTimePre;
+	private int additionTime1;
 	
 	/** 遅刻・早退を控除しない */
-	private int notDeductLateleavePre;
+	private int notDeductLateleave1;
 	
 	/** 通常、変形の所定超過時 */
-	private int deformatExcValuePre;
+	private int deformatExcValue1;
 	
 	/** インターバル免除時間を含めて計算する */
-	private int calsIntervalTimeWork;
-	
-	/** 欠勤時間をマイナスする*/
-	private int minusAbsenceTimeWork;
+	private int exemptTaxTime2;
 	
 	/** 実働のみで計算する */
-	private int calcActualOperaWork;
+	private int calcActualOperation2;
 	
 	/** 育児・介護時間を含めて計算する */
-	private int calcIncludCareWork;
+	private int incChildNursingCare2;
 	
 	/** 遅刻・早退を控除しない */
-	private int notDeductLateleaveWork;
+	private int notDeductLateleave2;
 	
 	/** 加算する */
-	private int additionTimeWork;
+	private int additionTime2;
 }

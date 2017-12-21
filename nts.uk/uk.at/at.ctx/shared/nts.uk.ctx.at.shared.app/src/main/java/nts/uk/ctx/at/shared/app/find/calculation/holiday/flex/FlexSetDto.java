@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.shared.app.find.calculation.holiday.flex;
-
+/**
+ * @author phongtq
+ * フレックス勤務の設定
+ * The class Flex Set Dto
+ */
 import lombok.Data;
 
 @Data

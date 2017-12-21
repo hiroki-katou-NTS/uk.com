@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
-
+/**
+ * @author phongtq
+ * 通常勤務の加算設定
+ */
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,44 +13,45 @@ public class RegularWork {
 	private String companyId;
 	
 	/** 実働のみで計算する */
-	private int calcActualOperationPre;
+	private int calcActualOperation1;
 	
 	/** インターバル免除時間を含めて計算する */
-	private int calcIntervalTimePre;
+	private int exemptTaxTime1;
 	
 	/** 育児・介護時間を含めて計算する */
-	private int calcIncludCarePre;
+	private int incChildNursingCare1;
 	
 	/** 加算する */
-	private int additionTimePre;
+	private int additionTime1;
 	
 	/** 遅刻・早退を控除しない */
-	private int notDeductLateleavePre;
+	private int notDeductLateleave1;
 	
 	/** 通常、変形の所定超過時 */
-	private int deformatExcValuePre;
+	private int deformatExcValue1;
 	
 	/** インターバル免除時間を含めて計算する */
-	private int calsIntervalTimeWork;
+	private int exemptTaxTime2;
 	
 	/** 実働のみで計算する */
-	private int calcActualOperaWork;
+	private int calcActualOperation2;
 	
 	/** 育児・介護時間を含めて計算する */
-	private int calcIncludCareWork;
+	private int incChildNursingCare2;
 	
 	/** 遅刻・早退を控除しない */
-	private int notDeductLateleaveWork;
+	private int notDeductLateleave2;
 	
 	/** 加算する */
-	private int additionTimeWork;
+	private int additionTime2;
+
 	
-	public static RegularWork createFromJavaType(String companyId, int calcActualOperationPre,
-			int calcIntervalTimePre, int calcIncludCarePre, int additionTimePre, int notDeductLateleavePre,
-			int deformatExcValuePre, int calsIntervalTimeWork, int calcActualOperaWork,
-			int calcIncludCareWork, int notDeductLateleaveWork, int additionTimeWork){
-		return new RegularWork(companyId, calcActualOperationPre, calcIntervalTimePre, calcIncludCarePre,
-				additionTimePre, notDeductLateleavePre, deformatExcValuePre, calsIntervalTimeWork,
-				calcActualOperaWork, calcIncludCareWork, notDeductLateleaveWork, additionTimeWork);
+	public static RegularWork createFromJavaType(String companyId, int calcActualOperation1,
+			int exemptTaxTime1, int incChildNursingCare1, int additionTime1, int notDeductLateleave1,
+			int deformatExcValue1, int exemptTaxTime2, int calcActualOperation2,
+			int incChildNursingCare2, int notDeductLateleave2, int additionTime2){
+		return new RegularWork(companyId, calcActualOperation1, exemptTaxTime1, incChildNursingCare1,
+				additionTime1, notDeductLateleave1, deformatExcValue1, exemptTaxTime2,
+				calcActualOperation2, incChildNursingCare2, notDeductLateleave2, additionTime2);
 	}
 }

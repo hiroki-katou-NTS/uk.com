@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.app.find.calculation.holiday.flex;
-
+/**
+ * @author phongtq
+ * The class Flex Set Finder
+ */
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +19,10 @@ public class FlexSetFinder {
 	@Inject
 	private FlexSetRepository repository;
 
+	/**
+	 * Find all Flex Set
+	 * @return
+	 */
 	public List<FlexSetDto> findAllFlexSet() {
 		String companyId = AppContexts.user().companyId();
 		return repository.findByCompanyId(companyId).stream().map(e -> {
@@ -23,6 +30,11 @@ public class FlexSetFinder {
 		}).collect(Collectors.toList());
 	}
 
+	/**
+	 * Convert to Database Flex Set 
+	 * @param flexSet
+	 * @return
+	 */
 	private FlexSetDto convertToDbType(FlexSet flexSet) {
 
 		FlexSetDto flexSetDto = new FlexSetDto();

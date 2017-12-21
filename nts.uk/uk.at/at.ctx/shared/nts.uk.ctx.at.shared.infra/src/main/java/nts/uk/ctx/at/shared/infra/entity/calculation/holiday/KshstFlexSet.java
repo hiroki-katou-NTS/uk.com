@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-
+/**
+ * @author phongtq
+ * フレックス勤務の設定
+ */
 import java.io.Serializable;
 
 import javax.persistence.Column;

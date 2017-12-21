@@ -29,15 +29,15 @@ public class KshstWeekdayFromHd extends UkJpaEntity implements Serializable {
 
 	/** 変更後の法定内休出NO */
 	@Column(name = "LEGAL_HD_NO")
-	public int weekdayNo;
+	public int legalHdNo;
 
 	/** 変更後の法定外休出NO */
 	@Column(name = "NON_LEGAL_HD_NO")
-	public int excessHolidayNo;
+	public int nonLegalHdNo;
 
 	/** 変更後の祝日休出NO */
 	@Column(name = "NON_LEGAL_PUBLIC_HD_NO")
-	public int excessSphdNo;
+	public int nonLegalPublicHdNo;
 
 	@ManyToOne
 	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)

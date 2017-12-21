@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
-
+/**
+ * @author phongtq
+ */
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,11 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 		SELECT_BY_CID = builderString.toString();
 	}
 
+	/**
+	 * convert To Domain Flex Set
+	 * @param kshstFlexSet
+	 * @return
+	 */
 	private FlexSet convertToDomain(KshstFlexSet kshstFlexSet) {
 		FlexSet flexSet = FlexSet.createFromJavaType(kshstFlexSet.kshstFlexSetPK.companyId, kshstFlexSet.missCalcHd,
 				kshstFlexSet.premiumCalcHd, kshstFlexSet.missCalcSubhd, kshstFlexSet.premiumCalcSubhd);
@@ -29,6 +36,11 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 		return flexSet;
 	}
 	
+	/**
+	 * convert To Db Type KshstFlexSet
+	 * @param flexSet
+	 * @return
+	 */
 	private KshstFlexSet convertToDbType(FlexSet flexSet) {
 		KshstFlexSet kshstFlexSet = new KshstFlexSet();
 		KshstFlexSetPK kshstFlexSetPK = new KshstFlexSetPK(flexSet.getCompanyId());
@@ -40,17 +52,26 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 		return kshstFlexSet;
 	}
 	
+	/**
+	 * find By CID
+	 */
 	@Override
 	public List<FlexSet> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_BY_CID, KshstFlexSet.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
 	
+	/**
+	 * Add Flex Set
+	 */
 	@Override
 	public void add(FlexSet flexSet) {
 		this.commandProxy().insert(convertToDbType(flexSet));
 	}
 	
+	/**
+	 * Update Flex Set
+	 */
 	@Override
 	public void update(FlexSet flexSet) {
 		KshstFlexSetPK primaryKey = new KshstFlexSetPK(flexSet.getCompanyId());
@@ -64,6 +85,9 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 		this.commandProxy().update(entity);
 	}
 	
+	/**
+	 * check By CID
+	 */
 	@Override
 	public Optional<FlexSet> findByCId(String companyId) {
 		return this.queryProxy().find(new KshstFlexSetPK(companyId),KshstFlexSet.class)

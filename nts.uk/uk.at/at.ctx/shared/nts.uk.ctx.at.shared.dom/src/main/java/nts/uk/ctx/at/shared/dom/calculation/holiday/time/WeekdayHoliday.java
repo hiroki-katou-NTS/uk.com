@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
-
+/**
+ * @author phongtq
+ * 平日から休日の0時跨ぎ設定
+ */
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -12,19 +15,28 @@ public class WeekdayHoliday extends DomainObject {
 	private String companyId;
 
 	/** 変更前の残業枠NO */
-	private int overworkFrameNo;
+	private int overTimeFrameNo;
 
 	/** 変更後の残業枠NO */
-	private int weekdayNo;
+	private int legalHdNo;
 
 	/** 変更後の法定外休出NO */
-	private int excessHolidayNo;
+	private int nonLegalHdNo;
 
 	/** 変更後の祝日休出NO */
-	private int excessSphdNo;
+	private int nonLegalPublicHdNo;
 
-	public static WeekdayHoliday createFromJavaType(String companyId, int overworkFrameNo, int weekdayNo,
-			int excessHolidayNo, int excessSphdNo) {
-		return new WeekdayHoliday(companyId, overworkFrameNo, weekdayNo, excessHolidayNo, excessSphdNo);
+	/**
+	 * Create from Java Type of WeekdayHoliday
+	 * @param companyId
+	 * @param overTimeFrameNo
+	 * @param legalHdNo
+	 * @param nonLegalHdNo
+	 * @param nonLegalPublicHdNo
+	 * @return
+	 */
+	public static WeekdayHoliday createFromJavaType(String companyId, int overTimeFrameNo, int legalHdNo,
+			int nonLegalHdNo, int nonLegalPublicHdNo) {
+		return new WeekdayHoliday(companyId, overTimeFrameNo, legalHdNo, nonLegalHdNo, nonLegalPublicHdNo);
 	}
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth;
-
+/**
+ * @author phongtq
+ */
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,11 @@ public class RoundingMonthFinder {
 	@Inject
 	private RoundingMonthRepository repository;
 
+	/**
+	 * Find all Rounding Month
+	 * @param timeItemId
+	 * @return
+	 */
 	public List<RoundingMonthDto> findAllRounding(String timeItemId) {
 		String companyId = AppContexts.user().companyId();
 		return repository.findByCompanyId(companyId,timeItemId).stream().map(e -> {
@@ -23,6 +30,11 @@ public class RoundingMonthFinder {
 		}).collect(Collectors.toList());
 	}
 
+	/**
+	 * Convert to Database Rounding Month
+	 * @param month
+	 * @return
+	 */
 	private RoundingMonthDto convertToDbType(RoundingMonth month) {
 
 		RoundingMonthDto roundingMonthDto = new RoundingMonthDto();

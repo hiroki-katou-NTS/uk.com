@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-
+/**
+ * @author phongtq
+ * フレックス勤務の加算設定
+ */
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -25,55 +28,55 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	
 	/** 実働のみで計算する */
 	@Column(name = "CALC_ACTUAL_OPERATION_1")
-	public int calcActualOperationPre;
+	public int calcActualOperation1;
 	
 	/** インターバル免除時間を含めて計算する */
 	@Column(name = "EXEMPT_TAX_TIME_1")
-	public int calcIntervalTimePre;
+	public int exemptTaxTime1;
 	
 	/** 育児・介護時間を含めて計算する */
 	@Column(name = "INC_CHILD_NURSING_CARE_1")
-	public int calcIncludCarePre;
+	public int incChildNursingCare1;
 	
 	/** フレックスの所定超過時 */
 	@Column(name = "PREDETERMINED_OVERTIME_1")
-	public int predExcessTimeflexPre;
+	public int predeterminedOvertime1;
 	
 	/** 加算する */
 	@Column(name = "ADDITION_TIME_1")
-	public int additionTimePre;
+	public int additionTime1;
 	
 	/** 遅刻・早退を控除しない */
 	@Column(name = "NOT_DEDUCT_LATELEAVE_1")
-	public int notDeductLateleavePre;
+	public int notDeductLateleave1;
 	
 	/** インターバル免除時間を含めて計算する */
 	@Column(name = "EXEMPT_TAX_TIME_2")
-	public int calsIntervalTimeWork;
+	public int exemptTaxTime2;
 	
 	/** 欠勤時間をマイナスする*/
 	@Column(name = "MINUS_ABSENCE_TIME_2")
-	public int minusAbsenceTimeWork;
+	public int minusAbsenceTime2;
 	
 	/** 実働のみで計算する */
 	@Column(name = "CALC_ACTUAL_OPERATION_2")
-	public int calcActualOperaWork;
+	public int calcActualOperation2;
 	
 	/** 育児・介護時間を含めて計算する */
 	@Column(name = "INC_CHILD_NURSING_CARE_2")
-	public int calcIncludCareWork;
+	public int incChildNursingCare2;
 	
 	/** 遅刻・早退を控除しない */
 	@Column(name = "NOT_DEDUCT_LATELEAVE_2")
-	public int notDeductLateleaveWork;
+	public int notDeductLateleave2;
 	
 	/** フレックスの所定不足時 */
 	@Column(name = "PREDETERMIN_DEFICIENCY_2")
-	public int predeterminDeficiency;
+	public int predeterminDeficiency2;
 	
 	/** 加算する */
 	@Column(name = "ADDITION_TIME_2")
-	public int additionTimeWork;
+	public int additionTime2;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)

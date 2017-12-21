@@ -1,0 +1,18 @@
+package nts.uk.ctx.at.shared.app.find.calculation.holiday.time;
+
+/**
+ * @author phongtq
+ * 休日から平日への0時跨ぎ設定
+ */
+import lombok.Data;
+
+@Data
+public class HdFromWeekdayDto {
+	
+	/** 変更前の休出枠NO */
+	private int hdFrameNo;
+
+	/** 変更後の残業枠NO */
+	private int overtimeFrameNo;
+
+}
