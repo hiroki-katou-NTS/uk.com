@@ -693,7 +693,7 @@ module nts.uk.ui.exTable {
                 let self = this;
                 let cData = rData[key]; 
                 let data = cData && _.isObject(cData) && cData.constructor !== Array && _.isFunction(self.options.view) ? 
-                            self.options.view(self.options.viewMode, cData) : cData;
+                            helper.viewData(self.options.view, self.options.viewMode, cData) : cData;
                 let column: any = self.columnsMap[key];
                 if (util.isNullOrUndefined(column)) return;
                 let $td = $("<td/>").data(internal.VIEW, rowIdx + "-" + key)
@@ -1116,8 +1116,9 @@ module nts.uk.ui.exTable {
             let viewFn = gen.painter.options.view;
             let viewMode = gen.painter.options.viewMode;
             let value = valueObj;
+            let fields = gen.painter.options.fields;
             if (_.isFunction(viewFn)) {
-                value = viewFn(viewMode, valueObj);
+                value = helper.viewData(viewFn, viewMode, valueObj);
             }
             let touched = false;
             let $childCells = $cell.find("." + CHILD_CELL_CLS);
@@ -1126,7 +1127,7 @@ module nts.uk.ui.exTable {
                     _.forEach(value, function(val: any, i: number) {
                         let $c = $($childCells[i]);
                         $c.text(val);
-                        let mTouch = trace(origDs, $c, rowIdx, columnKey, i, valueObj);
+                        let mTouch = trace(origDs, $c, rowIdx, columnKey, i, valueObj, fields);
                         if (!touched) touched = mTouch;
                         if (updateMode === EDIT) {
                             validation.validate($grid, $c, rowIdx, columnKey, i, val);
@@ -1135,14 +1136,14 @@ module nts.uk.ui.exTable {
                 } else {
                     let $c = $($childCells[innerIdx]);
                     $c.text(value);
-                    touched = trace(origDs, $c, rowIdx, columnKey, innerIdx, valueObj);
+                    touched = trace(origDs, $c, rowIdx, columnKey, innerIdx, valueObj, fields);
                     if (updateMode === EDIT) {
                         validation.validate($grid, $c, rowIdx, columnKey, innerIdx, value);
                     }
                 }
             } else {
                 $cell.text(value);
-                touched = trace(origDs, $cell, rowIdx, columnKey, -1, valueObj);
+                touched = trace(origDs, $cell, rowIdx, columnKey, -1, valueObj, fields);
                 if (updateMode === EDIT) {
                     validation.validate($grid, $cell, rowIdx, columnKey, -1, value);
                 }
@@ -1165,6 +1166,7 @@ module nts.uk.ui.exTable {
             let gen = $grid.data(internal.TANGI) || $grid.data(internal.CANON);
             let viewFn = gen.painter.options.view;
             let viewMode = gen.painter.options.viewMode;
+            let fields = gen.painter.options.fields;
             _.forEach(Object.keys(data), function(key: any) {
                 _.forEach(visibleColumns, function(col: any, index: number) {
                     if (col.key === key) {
@@ -1173,7 +1175,7 @@ module nts.uk.ui.exTable {
                         if (childCells.length > 0) {
                             let cData = data[key];
                             if (_.isFunction(viewFn)) {
-                                cData = viewFn(viewMode, data[key]);
+                                cData = helper.viewData(viewFn, viewMode, data[key]);
                             }
                             if (cData.constructor === Array) {
                                 _.forEach(cData, function(d, i) {
@@ -1182,22 +1184,22 @@ module nts.uk.ui.exTable {
                                     if (updateMode === EDIT) {
                                         validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                     }
-                                    trace(origDs, $c, rowIdx, key, i, data[key]);
+                                    trace(origDs, $c, rowIdx, key, i, data[key], fields);
                                 });
                                 return false;
                             }
                             $(childCells[1]).text(data[key]);
-                            trace(origDs, $(childCells[1]), rowIdx, key, 1, data[key]);
+                            trace(origDs, $(childCells[1]), rowIdx, key, 1, data[key], fields);
                             if (updateMode === EDIT) {
                                 validation.validate($exTable, $grid, $(childCells[1]), rowIdx, key, 1, data[key]);
                             }
                         } else {
                             let cData = data[key];
                             if (_.isFunction(viewFn)) {
-                                cData = viewFn(viewMode, data[key]);
+                                cData = helper.viewData(viewFn, viewMode, data[key]);
                             }
                             $target.text(cData);
-                            trace(origDs, $target, rowIdx, key, -1, data[key]);
+                            trace(origDs, $target, rowIdx, key, -1, data[key], fields);
                             if (updateMode === EDIT) {
                                 validation.validate($exTable, $grid, $target, rowIdx, key, -1, data[key]);
                             }
@@ -1211,11 +1213,11 @@ module nts.uk.ui.exTable {
         /**
          * Trace.
          */
-        function trace(ds: Array<any>, $cell: JQuery, rowIdx: any, key: any, innerIdx: any, value: any) {
+        function trace(ds: Array<any>, $cell: JQuery, rowIdx: any, key: any, innerIdx: any, value: any, fields?: any) {
             if (!ds || ds.length === 0) return;
             let oVal = ds[rowIdx][key];
             
-            if (!util.isNullOrUndefined(oVal) && helper.isEqual(oVal, value)) {
+            if (!util.isNullOrUndefined(oVal) && helper.isEqual(oVal, value, fields)) {
                 $cell.removeClass(update.EDITED_CLS);
                 return false;
             }
@@ -2091,7 +2093,9 @@ module nts.uk.ui.exTable {
             if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
                 || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) return;
             let cData = gen.dataSource[rowIdx][columnKey];
-            if (!exTable.pasteOverWrite && !util.isNullOrEmpty(cData)) return;
+            let opt = gen.options;
+            if (!exTable.pasteOverWrite 
+                && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData))) return;
             let changedData;
             if (cData.constructor === Array) {
                 if (value.constructor === Array) {
@@ -2129,8 +2133,10 @@ module nts.uk.ui.exTable {
             let changedCells = [];
             let origData = _.cloneDeep(data);
             let clonedData = _.cloneDeep(data);
+            let opt = gen.options;
             _.assignInWith(gen.dataSource[rowIdx], clonedData, function(objVal, srcVal, key, obj, src) {
-                if ((!exTable.pasteOverWrite && !util.isNullOrEmpty(objVal))
+                if ((!exTable.pasteOverWrite 
+                    && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
                     || helper.isDetCell($grid, rowIdx, key)
                     || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
                     src[key] = objVal;
@@ -2170,7 +2176,9 @@ module nts.uk.ui.exTable {
             if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
                 || helper.isXCell($grid, gen.dataSource[rowIdx][pk], columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) return;
             let cData = gen.dataSource[rowIdx][columnKey];
-            if (!exTable.stickOverWrite && !util.isNullOrEmpty(cData)) return;
+            let opt = gen.options;
+            if (!exTable.stickOverWrite 
+                && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData))) return;
             let changedData = _.cloneDeep(cData);
             gen.dataSource[rowIdx][columnKey] = value;
             let touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value);
@@ -2193,8 +2201,10 @@ module nts.uk.ui.exTable {
             let changedCells = [];
             let origData = _.cloneDeep(data);
             let clonedData = _.cloneDeep(data);
+            let opt = gen.options;
             _.assignInWith(gen.dataSource[rowIdx], clonedData, function(objVal, srcVal, key, obj, src) {
-                if ((!exTable.stickOverWrite && !util.isNullOrEmpty(objVal))
+                if ((!exTable.stickOverWrite 
+                    && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
                     || helper.isDetCell($grid, rowIdx, key)
                     || helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)) {
                     src[key] = objVal;
@@ -6113,6 +6123,25 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Is empty.
+         */
+        export function isEmpty(obj: any) {
+            if (obj && obj.constructor === Array) {
+                let empty = true;
+                _.forEach(obj, function(o) {
+                    if (!util.isNullOrUndefined(o)) {
+                        empty = false;
+                        return false;
+                    }
+                });
+                return empty;
+            }
+            
+            if (!obj) return true;
+            return false;
+        }
+        
+        /**
          * Values array.
          */
         export function valuesArray(obj: any) {
@@ -6142,11 +6171,27 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * View data.
+         */
+        export function viewData(view: any, viewMode: any, obj: any) {
+            if (!view || !viewMode) return;
+            let result = [];
+            _.forEach(view(viewMode), function(f) {
+                if (!f) return;
+                result.push(obj[f]);
+            });
+            return result.length === 1 ? result[0] : result;
+        }
+        
+        /**
          * Is equal.
          */
-        export function isEqual(one: any, two: any) {
+        export function isEqual(one: any, two: any, fields?: Array<any>) {
             if (_.isObject(one) && _.isObject(two)) {
-                return _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
+                return (fields && fields.length > 0) 
+                        ? _.isEqual(_.omitBy(one, (d, p) => fields.every(f => f !== p)),
+                                    _.omitBy(two, (d, p) => fields.every(f => f !== p)))
+                        : _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
             }
             return _.isEqual(one, two);
         }
