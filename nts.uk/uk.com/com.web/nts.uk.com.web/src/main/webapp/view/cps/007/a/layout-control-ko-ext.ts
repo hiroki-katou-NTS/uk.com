@@ -719,7 +719,23 @@ module nts.custombinding {
                                 </div>
                             </div>
                         </div>
-                        <div data-bind="if: [ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(item.dataTypeValue) > -1" class="time timepoint">
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIME" class="time">
+                            <input data-bind="ntsTimeWithDayEditor: 
+                                    { 
+                                        name: nameid,
+                                        constraint: nameid,
+                                        value: value,
+                                        enable: editable, 
+                                        readonly: readonly,
+                                        required: required
+                                    }, attr: {
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName,
+                                        placeholder: itemName
+                                    }" />
+                        </div>
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT" class="timepoint">
                             <input data-bind="ntsTimeEditor: {
                                         value: value,
                                         constraint: nameid,
@@ -1363,16 +1379,30 @@ module nts.custombinding {
                                                     typeData: 3
                                                 };
                                             case ITEM_SINGLE_TYPE.SELECTION:
-                                                if (data.item.referenceType != ITEM_SELECT_TYPE.ENUM) {
-                                                    return {
-                                                        value: data.value ? String(data.value) : undefined,
-                                                        typeData: 1
-                                                    };
-                                                } else {
-                                                    return {
-                                                        value: data.value ? String(data.value) : undefined,
-                                                        typeData: 2
-                                                    };
+                                                switch (data.item.referenceType) {
+                                                    case ITEM_SELECT_TYPE.ENUM:
+                                                        return {
+                                                            value: data.value ? String(data.value) : undefined,
+                                                            typeData: 2
+                                                        };
+                                                    case ITEM_SELECT_TYPE.CODE_NAME:
+                                                        return {
+                                                            value: data.value ? String(data.value) : undefined,
+                                                            typeData: 1
+                                                        };
+                                                    case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                                                        let value: number = data.value ? Number(data.value) : undefined;
+                                                        if (value) {
+                                                            return {
+                                                                value: data.value ? String(data.value) : undefined,
+                                                                typeData: 2
+                                                            };
+                                                        } else {
+                                                            return {
+                                                                value: data.value ? String(data.value) : undefined,
+                                                                typeData: 1
+                                                            };
+                                                        }
                                                 }
                                         }
                                     };
