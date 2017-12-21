@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -31,6 +32,10 @@ public interface AffWorkplaceHistoryRepository_v1 {
 	Optional<AffWorkplaceHistory_ver1> getByEmployeeId(String companyId, String employeeId);
 	
 	Optional<AffWorkplaceHistory_ver1> getByEmployeeIdDesc(String companyId, String employeeId);
+	
+	List<AffWorkplaceHistory_ver1> findByEmployees(List<String> employeeIds, GeneralDate date);
+	
+	Optional<AffWorkplaceHistory_ver1> getByHistIdAndBaseDate(String histId, GeneralDate date);
 	/**
 	 * ドメインモデル「所属職場」を新規登録する
 	 * @param item
