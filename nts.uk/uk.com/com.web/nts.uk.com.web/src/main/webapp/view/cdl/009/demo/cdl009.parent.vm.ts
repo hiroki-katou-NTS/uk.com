@@ -16,7 +16,7 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
         constructor() {
             var self = this;
             self.isMultiSelect = ko.observable(true);
-            self.selectedIds = ko.observableArray(['000000000000000000000000000000000006', '000000000000000000000000000000000009']);
+            self.selectedIds = ko.observableArray(['000000000000000000000000000000000002', '000000000000000000000000000000000003']);
             self.baseDate = ko.observable(moment(new Date()).toDate());
             self.target = ko.observable(TargetClassification.WORKPLACE);
             self.selectedEmployeeId = ko.observable('');
