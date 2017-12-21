@@ -687,7 +687,7 @@ module nts.custombinding {
                                     <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1">
                                         <div data-bind="text: value"></div>
                                     </div>
-                                    <div data-bind="if: [CAT_TYPE.NODUP, CAT_TYPE.DUPLI].indexOf(ctgType) > -1">
+                                    <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) == -1">
                                         <div data-bind="ntsDatePicker: {
                                                 value: value,
                                                 startDate: startDate,
@@ -1112,6 +1112,7 @@ module nts.custombinding {
                         }
                     }
                 },
+                exceptConsts: Array<string> = [],
                 // render primative value to viewContext
                 primitiveConst = (x) => {
                     let dts = x.item,
@@ -1196,8 +1197,12 @@ module nts.custombinding {
                         .flatten()
                         .flatten()
                         .filter((x: any) => _.has(x, "item") && !_.isEqual(x.item, {}))
-                        .map((x: any) => primitiveConst(x)).value();
+                        .map((x: any) => primitiveConst(x))
+                        .filter((x: any) => exceptConsts.indexOf(x.itemCode) == -1)
+                        .value();
+
                     if (constraints && constraints.length) {
+                        exceptConsts = [];
                         writeConstraints(constraints);
                     }
                 };
@@ -1396,10 +1401,17 @@ module nts.custombinding {
                                                     case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
                                                         let value: number = data.value ? Number(data.value) : undefined;
                                                         if (value) {
-                                                            return {
-                                                                value: data.value ? String(data.value) : undefined,
-                                                                typeData: 2
-                                                            };
+                                                            if (String(value) == String(data.value)) {
+                                                                return {
+                                                                    value: data.value ? String(data.value) : undefined,
+                                                                    typeData: 2
+                                                                };
+                                                            } else {
+                                                                return {
+                                                                    value: data.value ? String(data.value) : undefined,
+                                                                    typeData: 1
+                                                                };
+                                                            }
                                                         } else {
                                                             return {
                                                                 value: data.value ? String(data.value) : undefined,
@@ -1600,38 +1612,53 @@ module nts.custombinding {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
+                                    // write contraint
+                                    writeConstraint(def.itemCode, def);
+
                                     // validate date range
                                     switch (def.item.dataTypeValue) {
                                         case ITEM_SINGLE_TYPE.DATE:
                                             if (def.index == 0) {
-                                                def.endDate = ko.observable(undefined);
-                                                def.startDate = ko.observable(undefined);
+                                                def.endDate = ko.observable();
+                                                def.startDate = ko.observable();
                                             }
-                                            else if (def.index == 1) {
-                                                let next = x.items()[2] || { value: () => ko.observable(undefined) };
+
+                                            if (def.index == 1) {
+                                                let next = x.items()[2] || { value: () => ko.observable() };
                                                 if (next.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
                                                     && _.has(next, "value")
                                                     && ko.isObservable(next.value)) {
 
-                                                    def.endDate = next.value;
-                                                    def.startDate = ko.observable(undefined);
+                                                    console.log(ko.toJS(next));
 
-                                                    next.endDate = ko.observable(undefined);
-                                                    next.startDate = def.value;
+                                                    def.endDate = ko.computed(() => {
+                                                        return moment.utc(ko.toJS(next.value)).add(-1, "days").toDate();
+                                                    });
+                                                    def.startDate = ko.observable();
+
+                                                    next.endDate = ko.observable();
+                                                    next.startDate = ko.computed(() => {
+                                                        return moment.utc(ko.toJS(def.value)).add(1, "days").toDate();
+                                                    });
                                                 }
                                             }
-                                            else if (def.index == 2) {
-                                                let prev = x.items()[1] || { value: () => ko.observable(undefined) };
+
+                                            if (def.index == 2) {
+                                                /*let prev = x.items()[1] || { value: () => ko.observable() };
                                                 if (prev.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
                                                     && _.has(prev, "value")
                                                     && ko.isObservable(prev.value)) {
 
-                                                    prev.endDate = def.value;
-                                                    prev.startDate = ko.observable(undefined);
+                                                    prev.endDate = ko.computed(() => {
+                                                        return moment.utc(ko.toJS(def.value)).add(-1, "days").toDate();
+                                                    });
+                                                    prev.startDate = ko.observable();
 
-                                                    def.endDate = ko.observable(undefined);
-                                                    def.startDate = prev.value;
-                                                }
+                                                    def.endDate = ko.observable();
+                                                    def.startDate = ko.computed(() => {
+                                                        return moment.utc(ko.toJS(prev.value)).add(1, "days").toDate();
+                                                    });
+                                                }*/
 
                                                 if (def.ctgType == IT_CAT_TYPE.CONTINU) {
                                                     if (!def.value()) {
@@ -1641,53 +1668,84 @@ module nts.custombinding {
                                             }
 
                                             if (!_.has(def, "endDate")) {
-                                                def.endDate = ko.observable(undefined);
+                                                def.endDate = ko.observable();
                                             }
 
                                             if (!_.has(def, "startDate")) {
-                                                def.startDate = ko.observable(undefined);
+                                                def.startDate = ko.observable();
                                             }
                                             break;
                                         case ITEM_SINGLE_TYPE.TIME:
                                             if (def.index == 1) {
                                                 def.value.subscribe(v => {
                                                     let next = x.items()[2] || { value: () => ko.observable(undefined) };
-                                                    if (next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
-                                                        && _.has(next, "value")
-                                                        && ko.isObservable(next.value)) {
-                                                        let clo = _.cloneDeep(def);
-                                                        debugger;
-                                                    }
-                                                });
-                                            }
-
-                                            break;
-                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                            if (def.index == 1) {
-                                                def.value.subscribe(v => {
-                                                    let next = x.items()[2] || { value: () => ko.observable(undefined) };
                                                     if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
                                                         && _.has(next, "value")
                                                         && ko.isObservable(next.value)) {
-                                                        let clone = _.cloneDeep(def);
-                                                        clone.timePointItemMax = next.value();
-                                                        primitiveConst(clone);
-                                                        debugger;
+                                                        let clone = _.cloneDeep(next);
+                                                        clone.item.min = def.value() + 1;
+
+                                                        let primi = primitiveConst(v ? clone : next);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
                                                     }
                                                 });
+                                                def.value.valueHasMutated();
                                             }
+
                                             if (def.index == 2) {
                                                 def.value.subscribe(v => {
                                                     let prev = x.items()[1] || { value: () => ko.observable(undefined) };
                                                     if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
                                                         && _.has(prev, "value")
                                                         && ko.isObservable(prev.value)) {
-                                                        let clone = _.cloneDeep(def);
-                                                        clone.timePointItemMin = prev.value();
-                                                        primitiveConst(clone);
-                                                        debugger;
+                                                        let clone = _.cloneDeep(prev);
+                                                        clone.item.max = def.value() - 1;
+
+                                                        let primi = primitiveConst(v ? clone : prev);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
                                                     }
                                                 });
+                                                def.value.valueHasMutated();
+                                            }
+                                            break;
+                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                            if (def.index == 1) {
+                                                def.value.subscribe(v => {
+                                                    let next = x.items()[2] || { value: () => ko.observable(undefined) };
+                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT
+                                                        && _.has(next, "value")
+                                                        && ko.isObservable(next.value)) {
+                                                        let clone = _.cloneDeep(next);
+                                                        clone.item.timePointItemMin = def.value() + 1;
+
+                                                        let primi = primitiveConst(v ? clone : next);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    }
+                                                });
+                                                def.value.valueHasMutated();
+                                            }
+                                            if (def.index == 2) {
+                                                def.value.subscribe(v => {
+                                                    let prev = x.items()[1] || { value: () => ko.observable(undefined) };
+                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT
+                                                        && _.has(prev, "value")
+                                                        && ko.isObservable(prev.value)) {
+                                                        let clone = _.cloneDeep(prev);
+                                                        clone.item.timePointItemMax = def.value() - 1;
+
+                                                        let primi = primitiveConst(v ? clone : prev);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    }
+                                                });
+                                                def.value.valueHasMutated();
                                             }
                                             break;
                                     }
