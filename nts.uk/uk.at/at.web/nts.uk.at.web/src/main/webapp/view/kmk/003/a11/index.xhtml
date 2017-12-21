@@ -4,6 +4,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	
+	<!-- DETAIL MODE -->
+	<com:ko tag="if" bind="isDetailMode()">
 	<div class="tab_11_setting_rows">
 		<div class="tab_11_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
 	</div>
@@ -12,119 +14,177 @@
 		<hr/>
 	</div>
 	
-	<table style="margin-left: 20px;">
-		<tbody>
-			<!-- BEGIN A40_3 ~ A40_11 -->
-			<td width="300px">
-				<div data-bind="ntsCheckBox: { checked: workdayOffTimeTransferSet.useDivision }" tabindex="139">#{i18n.getText('KMK003_105')}</div>
-				<div tabindex="140">
-					<div class="padding-radio">
-						<label class="ntsRadioBox">
-							<input class="inputRadioHol" type="radio" data-bind="checkedValue: 0, 
-									checked: workdayOffTimeTransferSet.subHolTransferSetAtr, 
-									enable: workdayOffTimeTransferSet.useDivision" />
-							<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
-						</label>
-						<div class="padding-time">
-							<label style="margin-right: 40px;">#{i18n.getText('KMK003_42')}</label>
-							<input id="oneDayTimeHol" tabindex="141" style="width: 60px;" data-bind="ntsTimeEditor: {
-								name:'#[KMK003_42]',
-								value: workdayOffTimeTransferSet.designatedTime.oneDayTime,
-								constraint:'OneDayTime',
-								mode: 'time',
-								inputFormat: 'time',
-								enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 0,
-								required: false}" />
+	<div class="tab_11_setting_rows">
+		<table style="margin-left: 20px;">
+			<tbody>
+				<!-- BEGIN A40_3 ~ A40_11 -->
+				<td width="300px">
+					<div data-bind="ntsCheckBox: { checked: workdayOffTimeTransferSet.useDivision }" tabindex="139">#{i18n.getText('KMK003_105')}</div>
+					<div tabindex="140">
+						<div class="padding-radio">
+							<label class="ntsRadioBox">
+								<input class="inputRadioHol" type="radio" data-bind="checkedValue: 0, 
+										checked: workdayOffTimeTransferSet.subHolTransferSetAtr, 
+										enable: workdayOffTimeTransferSet.useDivision" />
+								<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
+							</label>
+							<div class="padding-time">
+								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+									<label>#{i18n.getText('KMK003_42')}</label>
+								</div>
+								<input id="oneDayTimeHol" tabindex="141" style="width: 60px;" data-bind="ntsTimeEditor: {
+									name:'#[KMK003_42]',
+									value: workdayOffTimeTransferSet.designatedTime.oneDayTime,
+									constraint:'OneDayTime',
+									mode: 'time',
+									inputFormat: 'time',
+									enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 0,
+									required: false}" />
+							</div>
+							<div class="padding-time">
+								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+									<label>#{i18n.getText('KMK003_107')}</label>
+								</div>
+								<input id="haflDayTimeHol" tabindex="142" style="width: 60px;" data-bind="ntsTimeEditor: {
+									name:'#[KMK003_107]',
+									value: workdayOffTimeTransferSet.designatedTime.halfDayTime,
+									constraint:'OneDayTime',
+									mode: 'time',
+									inputFormat: 'time',
+									enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 0,
+									required: false}" />
+							</div>
 						</div>
-						<div class="padding-time">
-							<label style="margin-right: 35px;">#{i18n.getText('KMK003_107')}</label>
-							<input id="haflDayTimeHol" tabindex="142" style="width: 60px;" data-bind="ntsTimeEditor: {
-								name:'#[KMK003_107]',
-								value: workdayOffTimeTransferSet.designatedTime.halfDayTime,
-								constraint:'OneDayTime',
-								mode: 'time',
-								inputFormat: 'time',
-								enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 0,
-								required: false}" />
+						
+						<div class="padding-radio">
+							<label class="ntsRadioBox">
+								<input class="inputRadioHol" type="radio" data-bind="checkedValue: 1, 
+										checked: workdayOffTimeTransferSet.subHolTransferSetAtr, 
+										enable: workdayOffTimeTransferSet.useDivision" />
+								<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
+							</label>
+							<div class="padding-time">
+								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+									<label>#{i18n.getText('KMK003_108')}</label>
+								</div>
+								<input id="certainDayTimeHol" tabindex="143" style="width: 60px;" data-bind="ntsTimeEditor: {
+									name:'#[KMK003_108]',
+									value: workdayOffTimeTransferSet.certainTime,
+									constraint:'OneDayTime',
+									mode: 'time',
+									inputFormat: 'time',
+									enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 1 }" />
+							</div>
 						</div>
 					</div>
-					
-					<div class="padding-radio">
-						<label class="ntsRadioBox">
-							<input class="inputRadioHol" type="radio" data-bind="checkedValue: 1, 
-									checked: workdayOffTimeTransferSet.subHolTransferSetAtr, 
-									enable: workdayOffTimeTransferSet.useDivision" />
-							<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
-						</label>
-						<div class="padding-time">
-							<label style="margin-right: 8px;">#{i18n.getText('KMK003_108')}</label>
-							<input id="certainDayTimeHol" tabindex="143" style="width: 60px;" data-bind="ntsTimeEditor: {
-								name:'#[KMK003_108]',
-								value: workdayOffTimeTransferSet.certainTime,
-								constraint:'OneDayTime',
-								mode: 'time',
-								inputFormat: 'time',
-								enable: workdayOffTimeTransferSet.useDivision() &amp;&amp; workdayOffTimeTransferSet.subHolTransferSetAtr() == 1 }" />
+				</td><!-- END A40_3 ~ A40_11 -->
+				
+				<!-- BEGIN A41_1 ~ A41_9 -->
+				<td width="300px">
+					<div tabindex="144" data-bind="ntsCheckBox: { checked: fromOverTimeTransferSet.useDivision }">#{i18n.getText('KMK003_109')}</div>
+					<div tabindex="145">
+						<div class="padding-radio">
+							<label class="ntsRadioBox">
+								<input class="inputRadioOT" type="radio" data-bind="checkedValue: 0, 
+										checked: fromOverTimeTransferSet.subHolTransferSetAtr, 
+										enable: fromOverTimeTransferSet.useDivision" />
+								<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
+							</label>
+							<div class="padding-time">
+								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+									<label>#{i18n.getText('KMK003_42')}</label>
+								</div>
+								<input id="oneDayTimeOT" tabindex="141" style="width: 60px;" data-bind="ntsTimeEditor: {
+									name:'#[KMK003_42]',
+									value: fromOverTimeTransferSet.designatedTime.oneDayTime,
+									constraint:'OneDayTime',
+									mode: 'time',
+									inputFormat: 'time',
+									enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 0,
+									required: false}" />
+							</div>
+							<div class="padding-time">
+								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+									<label>#{i18n.getText('KMK003_107')}</label>
+								</div>
+								<input id="haflDayTimeOT" tabindex="142" style="width: 60px;" data-bind="ntsTimeEditor: {
+									name:'#[KMK003_107]',
+									value: fromOverTimeTransferSet.designatedTime.halfDayTime,
+									constraint:'OneDayTime',
+									mode: 'time',
+									inputFormat: 'time',
+									enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 0,
+									required: false}" />
+							</div>
+						</div>
+						
+						<div class="padding-radio">
+							<label class="ntsRadioBox">
+								<input class="inputRadioOT" type="radio" data-bind="checkedValue: 1, 
+										checked: fromOverTimeTransferSet.subHolTransferSetAtr, 
+										enable: fromOverTimeTransferSet.useDivision" />
+								<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
+							</label>
+							<div class="padding-time">
+								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+									<label>#{i18n.getText('KMK003_108')}</label>
+								</div>
+								<input id="certainDayTimeOT" tabindex="143" style="width: 60px;" data-bind="ntsTimeEditor: {
+									name:'#[KMK003_108]',
+									value: fromOverTimeTransferSet.certainTime,
+									constraint:'OneDayTime',
+									mode: 'time',
+									inputFormat: 'time',
+									enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 1 }" />
+							</div>
 						</div>
 					</div>
+				</td><!-- END A41_1 ~ A41_9 -->
+			</tbody>
+		</table>
+	</div>
+	</com:ko>
+	
+	<!-- SIMPLE MODE -->
+	<com:ko tag="if" bind="!isDetailMode()">
+	<div class="tab_11_setting_rows">
+		<div class="tab_11_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
+	</div>
+	
+	<div style="width: 330px; margin-left: 20px;">		
+		<hr/>
+	</div>
+	
+	<div style="margin-left: 40px;">		
+		<div class="tab_11_setting_rows">
+			<label>#{i18n.getText('KMK003_105')}</label>
+		</div>
+		<div style="margin-top: 10px;">
+			<div style="padding: 5px 0px;">
+				<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+					<label>#{i18n.getText('KMK003_42')}</label>
 				</div>
-			</td><!-- END A40_3 ~ A40_11 -->
-			
-			<!-- BEGIN A41_1 ~ A41_9 -->
-			<td width="300px">
-				<div tabindex="144" data-bind="ntsCheckBox: { checked: fromOverTimeTransferSet.useDivision }">#{i18n.getText('KMK003_109')}</div>
-				<div tabindex="145">
-					<div class="padding-radio">
-						<label class="ntsRadioBox">
-							<input class="inputRadioOT" type="radio" data-bind="checkedValue: 0, 
-									checked: fromOverTimeTransferSet.subHolTransferSetAtr, 
-									enable: fromOverTimeTransferSet.useDivision" />
-							<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
-						</label>
-						<div class="padding-time">
-							<label style="margin-right: 40px;">#{i18n.getText('KMK003_42')}</label>
-							<input id="oneDayTimeOT" tabindex="141" style="width: 60px;" data-bind="ntsTimeEditor: {
-								name:'#[KMK003_42]',
-								value: fromOverTimeTransferSet.designatedTime.oneDayTime,
-								constraint:'OneDayTime',
-								mode: 'time',
-								inputFormat: 'time',
-								enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 0,
-								required: false}" />
-						</div>
-						<div class="padding-time">
-							<label style="margin-right: 35px;">#{i18n.getText('KMK003_107')}</label>
-							<input id="haflDayTimeOT" tabindex="142" style="width: 60px;" data-bind="ntsTimeEditor: {
-								name:'#[KMK003_107]',
-								value: fromOverTimeTransferSet.designatedTime.halfDayTime,
-								constraint:'OneDayTime',
-								mode: 'time',
-								inputFormat: 'time',
-								enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 0,
-								required: false}" />
-						</div>
-					</div>
-					
-					<div class="padding-radio">
-						<label class="ntsRadioBox">
-							<input class="inputRadioOT" type="radio" data-bind="checkedValue: 1, 
-									checked: fromOverTimeTransferSet.subHolTransferSetAtr, 
-									enable: fromOverTimeTransferSet.useDivision" />
-							<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
-						</label>
-						<div class="padding-time">
-							<label style="margin-right: 8px;">#{i18n.getText('KMK003_108')}</label>
-							<input id="certainDayTimeOT" tabindex="143" style="width: 60px;" data-bind="ntsTimeEditor: {
-								name:'#[KMK003_108]',
-								value: fromOverTimeTransferSet.certainTime,
-								constraint:'OneDayTime',
-								mode: 'time',
-								inputFormat: 'time',
-								enable: fromOverTimeTransferSet.useDivision() &amp;&amp; fromOverTimeTransferSet.subHolTransferSetAtr() == 1 }" />
-						</div>
-					</div>
-				</div>
-			</td><!-- END A41_1 ~ A41_9 -->
-		</tbody>
-	</table>
+				<input id="oneDayTimeHol" tabindex="2" style="width: 60px;" data-bind="ntsTimeEditor: {
+						name:'#[KMK003_42]',
+						value: workdayOffTimeTransferSet.designatedTime.oneDayTime,
+						constraint:'OneDayTime',
+						mode: 'time',
+						inputFormat: 'time',
+						required: false}" />
+			</div>
+			<div style="padding: 5px 0px;">
+				<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+					<label>#{i18n.getText('KMK003_107')}</label>
+				</div>				
+				<input id="haflDayTimeHol" tabindex="3" style="width: 60px;" data-bind="ntsTimeEditor: {
+						name:'#[KMK003_107]',
+						value: workdayOffTimeTransferSet.designatedTime.halfDayTime,
+						constraint:'OneDayTime',
+						mode: 'time',
+						inputFormat: 'time',
+						required: false}" />
+			</div>
+		</div>
+	</div>
+	</com:ko>
 </ui:composition>

@@ -79,12 +79,17 @@ module a12 {
             screenMode.subscribe((value: any) => {
                 value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
-            
-            // Binding value 
-            screenMode == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+        }       
+                
+        /**
+         * Start tab
+         */
+        public startTab(screenMode: any): void {
+            let _self = this;
+            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
-        }       
+        }
         
         /**
          * UI - All: change WorkSetting mode
@@ -200,6 +205,7 @@ module a12 {
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                screenModel.startTab(screenMode);
             });
         }
 

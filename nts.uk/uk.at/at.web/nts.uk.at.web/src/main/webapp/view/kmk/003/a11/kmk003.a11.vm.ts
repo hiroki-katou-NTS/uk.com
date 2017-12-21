@@ -72,14 +72,19 @@ module a11 {
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            });
-            
-            // Binding value 
-            screenMode == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            });                       
+        }
+
+        /**
+         * Start tab
+         */
+        public startTab(screenMode: any): void {
+            let _self = this;
+            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
-
+        
         /**
          * UI - All: change WorkSetting mode
          */
@@ -205,7 +210,10 @@ module a11 {
          */
         private changeBindingSimple(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
             let _self = this;            
-            _self.changeBindingDetail(subHolTimeSet);          
+            
+            // Handle workdayOffTimeTransferSet.designatedTime only
+            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);
+            _self.workdayOffTimeTransferSet = workdayOffTimeSubstitutionSet.subHolTimeSet;
         }     
     }
     
@@ -255,6 +263,7 @@ module a11 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                screenModel.startTab(screenMode);
                 
                 // update name id for radio
                 $('.inputRadioHol').attr('name', nts.uk.util.randomId() + '_Hol');
