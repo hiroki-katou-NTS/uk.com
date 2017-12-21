@@ -53,4 +53,33 @@ public class SubHolTransferSet extends DomainObject{
 		memento.setDesignatedTime(this.designatedTime);
 		memento.setSubHolTransferSetAtr(this.subHolTransferSetAtr);
 	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param other the other
+	 */
+	public void restoreData(SubHolTransferSet other) {
+		// not use
+		if (!this.useDivision) {
+			this.subHolTransferSetAtr = other.getSubHolTransferSetAtr();
+			this.certainTime = other.getCertainTime();
+			this.designatedTime.restoreData(other.getDesignatedTime());
+			return;
+		}
+		
+		switch (this.subHolTransferSetAtr) {
+		
+		case SPECIFIED_TIME_SUB_HOL:
+			this.certainTime = other.getCertainTime();
+			break;
+
+		case CERTAIN_TIME_EXC_SUB_HOL:
+			this.designatedTime.restoreData(other.getDesignatedTime());
+			break;
+
+		default:
+			throw new RuntimeException("SubHolTransferType not found.");
+		}
+	}
 }

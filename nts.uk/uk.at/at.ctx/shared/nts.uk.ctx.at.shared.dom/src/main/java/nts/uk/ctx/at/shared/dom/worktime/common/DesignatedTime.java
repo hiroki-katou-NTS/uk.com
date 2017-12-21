@@ -53,4 +53,14 @@ public class DesignatedTime extends DomainObject {
 		memento.setOneDayTime(this.oneDayTime);
 		memento.setHalfDayTime(this.halfDayTime);
 	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param otherDomain the other domain
+	 */
+	public void restoreData(DesignatedTime other) {
+		this.oneDayTime = other.getOneDayTime();
+		this.halfDayTime = other.getHalfDayTime();
+	}
 }
