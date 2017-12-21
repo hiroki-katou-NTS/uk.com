@@ -35,4 +35,10 @@ public class HolidayAddtimeWebService extends WebService{
 	public JavaTypeResult<List<String>> add(AddHolidayAddtimeCommand command) {
 		return new JavaTypeResult<List<String>>(this.addtimeCommandHandler.handle(command));
 	}
+	
+	@Path("update")
+	@POST
+	public JavaTypeResult<List<String>> update(AddHolidayAddtimeCommand command) {
+		return new JavaTypeResult<List<String>>(this.addtimeCommandHandler.handle(command));
+	}
 }

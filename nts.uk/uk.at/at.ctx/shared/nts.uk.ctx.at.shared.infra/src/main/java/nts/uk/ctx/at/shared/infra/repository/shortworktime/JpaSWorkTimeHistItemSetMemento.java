@@ -79,11 +79,12 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 
 			BshmtSchildCareFramePK pk = new BshmtSchildCareFramePK(this.entity.getBshmtWorktimeHistItemPK().getSid(),
 					this.entity.getBshmtWorktimeHistItemPK().getHistId(), schildCareFrame.getStartTime().v());
-
-			BshmtSchildCareFrame newEntity = this.entity.getLstBshmtSchildCareFrame().stream().filter(
-					entity -> entity.getBshmtSchildCareFramePK().getStrClock() == schildCareFrame.getStartTime().v())
-					.findFirst().orElse(new BshmtSchildCareFrame(pk));
-			
+			BshmtSchildCareFrame newEntity = new BshmtSchildCareFrame(pk);
+			if (this.entity.getLstBshmtSchildCareFrame() != null){
+				newEntity = this.entity.getLstBshmtSchildCareFrame().stream().filter(
+						entity -> entity.getBshmtSchildCareFramePK().getStrClock() == schildCareFrame.getStartTime().v())
+						.findFirst().orElse(new BshmtSchildCareFrame(pk));
+			}
 			newEntity.setTimeNo(schildCareFrame.getTimeSlot());
 			newEntity.setEndClock(schildCareFrame.getEndTime().v());
 			

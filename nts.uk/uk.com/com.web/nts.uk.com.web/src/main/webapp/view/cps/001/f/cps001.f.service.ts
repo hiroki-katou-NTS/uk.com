@@ -7,7 +7,8 @@ module cps001.f.service {
         'savedata': 'basic/organization/empfilemanagement/savedocfile',
         'updateCtgdata': 'basic/organization/empfilemanagement/updatectgdocfile',
         'updatedata': 'basic/organization/empfilemanagement/updatedata',
-        'deletedata': 'basic/organization/empfilemanagement/deletedata/{0}'
+        'deletedata': 'basic/organization/empfilemanagement/deletedata/{0}',
+        'permision': 'ctx/pereg/roles/auth/get-self-auth'
     };
 
     export function getData(employeeId: any) {
@@ -28,5 +29,9 @@ module cps001.f.service {
 
     export function updateCtgdata(command: any) {
         return ajax(paths.updateCtgdata, command);
+    }
+
+    export function getCurrentEmpPermision() {
+        return ajax(paths.permision);
     }
 }

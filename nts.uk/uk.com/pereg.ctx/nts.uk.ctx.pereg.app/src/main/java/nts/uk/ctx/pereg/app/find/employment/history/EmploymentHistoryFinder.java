@@ -80,7 +80,7 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		Optional<EmploymentHistory> optHis = this.empHistRepo.getByEmployeeIdDesc(AppContexts.user().companyId(),
 				query.getEmployeeId());
 		if (optHis.isPresent()) {
-			optHis.get().getHistoryItems().stream()
+			return optHis.get().getHistoryItems().stream()
 					.filter(x -> empHistItemRepo.getByHistoryId(x.identifier()).isPresent())
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 					.collect(Collectors.toList());

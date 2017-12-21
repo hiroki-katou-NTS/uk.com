@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
@@ -60,17 +61,9 @@ public class InitValueSetItemFinder {
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
 		// set item SAMEASLOGIN
-		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
 
-			if (categoryCd.charAt(1) == 'S') {
+		setItemSameLogin(itemList, result);
 
-				setSystemLoginData(itemList, result);
-
-			}
-
-			setOptinalLoginData(itemList, result);
-
-		}
 		// set item
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYEECODE, command.getEmployeeCode());
@@ -80,6 +73,19 @@ public class InitValueSetItemFinder {
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
 
 		return result;
+	}
+
+	private void setItemSameLogin(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
+		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
+
+			if (categoryCd.charAt(1) == 'S') {
+
+				setSystemLoginData(itemList, result);
+
+			}
+
+			setOptinalLoginData(itemList, result);
+		}
 	}
 
 	private void setDataByRefType(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result,
@@ -163,11 +169,18 @@ public class InitValueSetItemFinder {
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
 
-		return SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
+		int dataType = domain.getDataType();
+
+		SettingItemDto itemDto = SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
 				domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
-				domain.getStringValue().v(), domain.getDataType(), BigDecimal.valueOf(domain.getSelectionItemRefType()),
+				domain.getStringValue().v(), dataType, BigDecimal.valueOf(domain.getSelectionItemRefType()),
 				domain.getItemParentCd());
+
+		if (dataType == DataTypeValue.SELECTION.value) {
+
+		}
+		return itemDto;
 	}
 
 	private boolean isHaveItemRefType(List<PerInfoInitValueSetItem> listItem, ReferenceMethodType methodType) {

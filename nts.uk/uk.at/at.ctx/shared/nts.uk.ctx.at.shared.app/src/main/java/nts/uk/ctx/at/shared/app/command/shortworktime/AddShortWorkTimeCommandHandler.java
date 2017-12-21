@@ -45,9 +45,8 @@ public class AddShortWorkTimeCommandHandler extends CommandHandlerWithResult<Add
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddShortWorkTimeCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
-		String newHistID = IdentifierUtil.randomUniqueId();
-		DateHistoryItem dateItem = new DateHistoryItem(newHistID, new DatePeriod(command.getStartDate()!=null?command.getStartDate():GeneralDate.min(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.max()));
+		command.setHistoryId(IdentifierUtil.randomUniqueId());
+		DateHistoryItem dateItem = new DateHistoryItem(command.getHistoryId(), new DatePeriod(command.getStartDate()!=null?command.getStartDate():GeneralDate.min(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.max()));
 		Optional<ShortWorkTimeHistory> existHist = sWorkTimeHistoryRepository.getBySid(companyId, command.getEmployeeId());
 		
 		ShortWorkTimeHistory itemtoBeAdded = new ShortWorkTimeHistory(companyId, command.getEmployeeId(),new ArrayList<>());
@@ -63,7 +62,7 @@ public class AddShortWorkTimeCommandHandler extends CommandHandlerWithResult<Add
 		ShortWorkTimeHistoryItem sWorkTime = new ShortWorkTimeHistoryItem(command);
 		sWorkTimeHistItemRepository.add(sWorkTime);
 		
-		return new PeregAddCommandResult(newHistID);
+		return new PeregAddCommandResult(command.getHistoryId());
 	}
 
 }
