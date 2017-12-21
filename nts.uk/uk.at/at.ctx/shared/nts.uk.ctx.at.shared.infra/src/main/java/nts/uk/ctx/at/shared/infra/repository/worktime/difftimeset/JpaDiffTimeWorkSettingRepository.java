@@ -32,4 +32,16 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository
 		return null;
 	}
 
+	@Override
+	public void save(DiffTimeWorkSetting diffTimeWorkSetting) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean remove(String workTimeCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -146,4 +146,10 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 
 	}
 
+	@Override
+	public void remove(String companyId, String workTimeCode) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -151,4 +151,10 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		return entity;
 	}
 
+	@Override
+	public void remove(String companyId, String workTimeCode) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

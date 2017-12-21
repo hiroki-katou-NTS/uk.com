@@ -62,4 +62,12 @@ public interface WorkTimeSettingRepository {
 	 * @param domain the domain
 	 */
 	public void save(WorkTimeSetting domain);
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param workTimeCode the work time code
+	 */
+	public void remove(String companyId,String workTimeCode);
 }
