@@ -16,7 +16,7 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
         constructor() {
             var self = this;
             self.isMultiSelect = ko.observable(true);
-            self.selectedIds = ko.observableArray([]);
+            self.selectedIds = ko.observableArray(['000000000000000000000000000000000006', '000000000000000000000000000000000009']);
             self.baseDate = ko.observable(moment(new Date()).toDate());
             self.target = ko.observable(TargetClassification.WORKPLACE);
             self.selectedEmployeeId = ko.observable('');
@@ -54,7 +54,7 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
             // Set Param
             setShared('CDL009Params', {
                 // isMultiSelect For Employee List Kcp005
-                isMultiSelect: self.isMultiSelect(),
+                isMultiple: self.isMultiSelect(),
                 // For Workplace List Kcp004
                 selectedIds: self.selectedIds(),
                 // For Workplace List Kcp004
