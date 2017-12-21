@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktimeset.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestCalcMethod;
 
 /**
  * The Class FlowFixedRestSet.

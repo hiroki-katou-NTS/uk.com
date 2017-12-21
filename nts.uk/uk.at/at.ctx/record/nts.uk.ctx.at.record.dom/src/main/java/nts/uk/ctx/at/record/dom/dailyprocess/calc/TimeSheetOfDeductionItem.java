@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;

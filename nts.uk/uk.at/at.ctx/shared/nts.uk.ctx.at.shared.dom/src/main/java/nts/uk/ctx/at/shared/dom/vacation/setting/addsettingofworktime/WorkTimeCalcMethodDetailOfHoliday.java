@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
 
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearly.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.GraceTimeSetting;
 
 /**
  * 休暇の就業時間計算方法詳細

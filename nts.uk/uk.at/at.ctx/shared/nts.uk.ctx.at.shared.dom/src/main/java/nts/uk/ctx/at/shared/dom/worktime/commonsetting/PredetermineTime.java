@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.commonsetting;
+package nts.uk.ctx.at.shared.dom.worktime.CommonSetting;
 /**
  * 所定時間
  * @author keisuke_hoshina

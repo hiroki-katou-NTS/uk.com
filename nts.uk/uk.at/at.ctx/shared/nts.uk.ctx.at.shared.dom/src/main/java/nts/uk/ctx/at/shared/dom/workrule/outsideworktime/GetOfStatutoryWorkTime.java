@@ -49,15 +49,9 @@ public class GetOfStatutoryWorkTime {
 	 * 法定労働時間の取得
 	 * @return 日別計算用の社員情報
 	 */
-	public DailyTime getDailyTimeFromStaturoyWorkTime() {
-		Optional<StatutoryWorkTime> statutoryTime =;  
 	public DailyCalculationPersonalInformation getDailyTimeFromStaturoyWorkTime(WorkingSystem workingSystem,String companyId,String placeId,String employmentCd,String employeerId,GeneralDate targetDate) {	
 		try {
 			return getStatutoryWorkTime(workingSystem,companyId,placeId,employmentCd,employeerId,targetDate);
-	public DailyTime getDailyTimeFromStaturoyWorkTime() {
-		//TODO: get StatutoryWorkTime
-		Optional<StatutoryWorkTime> statutoryTime = Optional.empty();  
-			return statutoryTime.get().getStatutoryWorkTime();
 		}
 		catch(RuntimeException e){
 			return new DailyCalculationPersonalInformation(Optional.of(new DailyTime(0)), new DailyTime(0), workingSystem);
@@ -167,17 +161,11 @@ public class GetOfStatutoryWorkTime {
 			return Optional.empty();
 		}
 		else {
-			val statutorySet = companyWtSettingRepository.find(companyId, targetDate.year());
-		}
-		return new (statutorySet); 
 			Optional<CompanyWtSetting> companyWtSetting = companyWtSettingRepository.find(companyId, targetDate.year());
 			if(companyWtSetting.isPresent()) {
 				return Optional.of(StatutoryWorkTimeSet.createFromCompany(companyWtSetting.get()));
 			}
 			return Optional.empty();
 		} 
-			val statutorySet = companyWtSettingRepository.find(companyId, targetDate.year());
-		}
-		return 0; 
 	}
 }

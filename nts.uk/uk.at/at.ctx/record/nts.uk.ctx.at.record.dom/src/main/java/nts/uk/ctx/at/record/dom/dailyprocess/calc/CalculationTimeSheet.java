@@ -257,12 +257,12 @@ public abstract class CalculationTimeSheet {
 			if(bonusPay.contains(baseTime)) {
 				bonusPayList.add(bonusPay.reCreateOwn(baseTime,isDateBefore));
 			}
-			else if(bonusPay.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
-				bonusPayList.add(bonusPay);
-			}
-			else if(bonusPay.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
-				bonusPayList.add(bonusPay);
-			}
+//			else if(bonusPay.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
+//				bonusPayList.add(bonusPay);
+//			}
+//			else if(bonusPay.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
+//				bonusPayList.add(bonusPay);
+//			}
 		}
 		return bonusPayList; 
 	}
@@ -279,12 +279,12 @@ public abstract class CalculationTimeSheet {
 			if(specifiedBonusPay.contains(baseTime)) {
 				specifiedBonusPayList.add(specifiedBonusPay.reCreateOwn(baseTime,isDateBefore));
 			}
-			else if(specifiedBonusPay.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
-				specifiedBonusPayList.add(specifiedBonusPay);
-			}
-			else if(specifiedBonusPay.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
-				specifiedBonusPayList.add(specifiedBonusPay);
-			}
+//			else if(specifiedBonusPay.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
+//				specifiedBonusPayList.add(specifiedBonusPay);
+//			}
+//			else if(specifiedBonusPay.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
+//				specifiedBonusPayList.add(specifiedBonusPay);
+//			}
 		}
 		return specifiedBonusPayList; 
 	}
@@ -392,11 +392,11 @@ public abstract class CalculationTimeSheet {
 	public List<BonusPayTime> calcBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, BonusPayAutoCalcSet bonusPayCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily) {
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		for(BonusPayTimesheet bonusPaySheet : this.bonusPayTimeSheet){
-			int calcTime = bonusPaySheet.calcTotalTime().valueAsMinutes();
-			bonusPayTimeList.add(new BonusPayTime(bonusPayCalcSet.getBonusPayItemNo()
-												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
-												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
-												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))));
+//			int calcTime = bonusPaySheet.calcTotalTime().valueAsMinutes();
+//			bonusPayTimeList.add(new BonusPayTime(bonusPayCalcSet.getBonusPayItemNo()
+//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
+//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
+//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))));
 		}
 		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().getSalaryCalSetting().isUse(), calcAtrOfDaily, bonusPayCalcSet, actualWorkAtr)) {
 			bonusPayTimeList.forEach(tc ->{tc.getBonusPay().setTime(new AttendanceTime(0));});
@@ -414,11 +414,11 @@ public abstract class CalculationTimeSheet {
 	public List<BonusPayTime> calcSpacifiedBonusPay(ActualWorkTimeSheetAtr actualWorkAtr, BonusPayAutoCalcSet bonusPayCalcSet, CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
 		for(SpecBonusPayTimesheet bonusPaySheet : this.specBonusPayTimesheet){
-			int calcTime = bonusPaySheet.calcTotalTime().valueAsMinutes();
-			bonusPayTimeList.add(new BonusPayTime(bonusPayCalcSet.getBonusPayItemNo()
-												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
-												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
-												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))));
+//			int calcTime = bonusPaySheet.calcTotalTime().valueAsMinutes();
+//			bonusPayTimeList.add(new BonusPayTime(bonusPayCalcSet.getBonusPayItemNo()
+//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
+//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))
+//												 ,TimeWithCalculation.sameTime(new AttendanceTime(calcTime))));
 		}
 		if(!GetCalcAtr.isCalc(calcAtrOfDaily.getRasingSalarySetting().getSpecificSalaryCalSetting().isUse(), calcAtrOfDaily, bonusPayCalcSet, actualWorkAtr)) {
 			bonusPayTimeList.forEach(tc ->{tc.getBonusPay().setTime(new AttendanceTime(0));});

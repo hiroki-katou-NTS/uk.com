@@ -10,12 +10,14 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidOverTimeWorkSheet;
@@ -31,28 +33,28 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	/**残業時間帯NO**/
 	private final int frameNo;
-	private final OverTimeWorkFrameTime overWorkFrameTime;
+	private final OverTimeFrameTime overWorkFrameTime;
 	private final boolean goEarly;
 	
 
-	private final WithinStatutoryAtr withinStatutoryAtr;
+	private final StatutoryAtr withinStatutoryAtr;
 	
 	public OverTimeWorkFrameTimeSheet(
 			TimeSpanWithRounding timesheet,
 			TimeSpanForCalc calculationTimeSheet,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet,
-			List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet,
+			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet,
 			Optional<MidNightTimeSheet> midNighttimeSheet
 			,int frameNo
-			,OverTimeWorkFrameTime overTimeWorkFrameTime
+			,OverTimeFrameTime overTimeWorkFrameTime
 			,boolean goEarly
-			,WithinStatutoryAtr withinStatutoryAtr) {
+			,StatutoryAtr atr) {
 		super(timesheet,calculationTimeSheet,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.frameNo = frameNo;
 		this.overWorkFrameTime = overTimeWorkFrameTime;
 		this.goEarly = goEarly;
-		this.withinStatutoryAtr = withinStatutoryAtr;
+		this.withinStatutoryAtr = atr;
 	}
 	
 	/**
@@ -61,12 +63,12 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @param newTimeSpan　　  重複している時間帯
 	 * @return
 	 */
-	public OverTimeWorkFrameTimeSheet reCreate(WithinStatutoryAtr statutoryAtr, TimeSpanForCalc newTimeSpan) {
+	public OverTimeWorkFrameTimeSheet reCreate(StatutoryAtr statutoryAtr, TimeSpanForCalc newTimeSpan) {
 		return new OverTimeWorkFrameTimeSheet(this.getTimeSheet(),
 				  							  newTimeSpan,
-											  this.deductionTimeSheets,
+											  this.deductionTimeSheet,
 											  this.bonusPayTimeSheet,
-											  this.specifiedBonusPayTimeSheet,
+											  this.specBonusPayTimesheet,
 											  this.midNightTimeSheet,
 											  this.getFrameNo(),
 											  this.overWorkFrameTime,
@@ -94,13 +96,13 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 											  Collections.emptyList(),
 											  Collections.emptyList(),
 											  Optional.empty(),
-											  overTimeHourSet.getFrameNo(),
-											  new OverTimeWorkFrameTime(overTimeHourSet.getFrameNo(),
+											  overTimeHourSet.getFrameNo().v(),
+											  new OverTimeFrameTime(new OverTimeFrameNo(overTimeHourSet.getFrameNo().v()),
 													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
 													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
 													  					new AttendanceTime(0)),
 											 overTimeHourSet.isTreatAsGoEarlyOverTimeWork(),
-				  							 WithinStatutoryAtr.WithinStatutory);
+											 StatutoryAtr.Statutory);
 	}
 	
 
@@ -109,17 +111,17 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @param autoCalcSet 時間外の自動計算区分
 	 * @return 残業時間枠時間帯クラス
 	 */
-	public OverTimeWorkFrameTime calcOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
-		int overTimeWorkTime;
+	public OverTimeFrameTime calcOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
+		AttendanceTime overTimeWorkTime;
 		if(getExcessTimeAutoCalcAtr(autoCalcSet).isCalculateEmbossing()) {
-			overTimeWorkTime = 0;
+			overTimeWorkTime = new AttendanceTime(0);
 		}
 		else {
 			overTimeWorkTime = this.calcTotalTime();
 		}
-		return new OverTimeWorkFrameTime(this.overWorkFrameTime.getOverWorkFrameNo()
+		return new OverTimeFrameTime(this.overWorkFrameTime.getOverWorkFrameNo()
 				,this.overWorkFrameTime.getTransferTime()
-				,TimeWithCalculation.sameTime(new AttendanceTime(overTimeWorkTime))
+				,TimeWithCalculation.sameTime(overTimeWorkTime)
 				,this.overWorkFrameTime.getBeforeApplicationTime());
 	}
 	
@@ -132,19 +134,20 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	 */
 	public AutoCalculationCategoryOutsideHours getExcessTimeAutoCalcAtr(AutoCalculationOfOverTimeWork autoCalcSet) {
 		switch(withinStatutoryAtr) {
-			case ExcessOfStatutory:
-				if(goEarly) {
-					return autoCalcSet.getEarlyOvertimeHours().getCalculationClassification();
-				}
-				else {
-					return autoCalcSet.getNormalOvertimeHours().getCalculationClassification();
-				}
-			case WithinStatutory:
-				return autoCalcSet.getLegalOvertimeHours().getCalculationClassification();
-			default:
-				throw new RuntimeException("unkwon WithinStatutory Atr:" + withinStatutoryAtr);
-		
-		}
+		case DeformationCriterion:
+		case Excess:
+			if(goEarly) {
+				return autoCalcSet.getEarlyOvertimeHours().getCalculationClassification();
+			}
+			else {
+				return autoCalcSet.getNormalOvertimeHours().getCalculationClassification();
+			}
+		case Statutory:
+			return autoCalcSet.getLegalOvertimeHours().getCalculationClassification();
+		default:
+			throw new RuntimeException("unkwon WithinStatutory Atr:" + withinStatutoryAtr);
+	
+	}
 	}
 	
 	/**
@@ -160,9 +163,9 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 		else {
 			returnList.add(new OverTimeWorkFrameTimeSheet(this.timeSheet
 														 ,new TimeSpanForCalc(this.calcrange.getStart(), baseTime)
-														 ,this.deductionTimeSheets
+														 ,this.deductionTimeSheet
 														 ,this.bonusPayTimeSheet
-														 ,this.specifiedBonusPayTimeSheet
+														 ,this.specBonusPayTimesheet
 														 ,this.midNightTimeSheet
 														 ,this.frameNo
 														 ,this.getOverWorkFrameTime()

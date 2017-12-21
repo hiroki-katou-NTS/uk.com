@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 
 /**
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
  * 日別実績の外出時間帯 - root
  *
  */
-@AllArgsConstructor
 @Getter
 @AllArgsConstructor
 public class OutingTimeOfDailyPerformance extends AggregateRoot {
@@ -47,12 +47,12 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> getGoOutTimeSheet(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet
-												 		  ,Optional<FlowWorkRestTimezone> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet){
+												 		  ,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet){
 		val goOutTimeSheetList = removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
 		switch(workTimeMethodSet) {
 		case Enum_Fluid_Work:
 			if(fluRestTime.isPresent()) {
-				if(fluRestTime.get().isFixRestTime()) {
+				if(fluRestTime.get().getUseFixedRestTime()) {
 					return convertFromgoOutTimeToBreakTime(fluidprefixBreakTimeSet, goOutTimeSheetList);
 				}
 			}

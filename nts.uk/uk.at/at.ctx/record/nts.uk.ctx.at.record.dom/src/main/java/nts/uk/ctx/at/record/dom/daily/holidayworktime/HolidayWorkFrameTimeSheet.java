@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTi
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.primitive.WorkTimeNo;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.primitive.WorkTimeNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.HolidayWorkTimeSheetSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;

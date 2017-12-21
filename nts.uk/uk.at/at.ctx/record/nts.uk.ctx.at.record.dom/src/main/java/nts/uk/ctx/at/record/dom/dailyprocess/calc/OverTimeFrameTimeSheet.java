@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.Working
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.OverWorkSet.StatutoryOverTimeWorkSet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.primitive.WorkTimeNo;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.overworkset.StatutoryOverTimeWorkSet;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.primitive.WorkTimeNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;

@@ -7,7 +7,7 @@ import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.PredetermineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexworkset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;

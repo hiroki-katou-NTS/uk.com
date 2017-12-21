@@ -4,19 +4,20 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinStatutoryAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
@@ -56,7 +57,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 			TimeSpanForCalc calculationTimeSheet,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet, 
-			List<SpecifiedbonusPayTimeSheet> specifiedbonusPayTimeSheet,
+			List<SpecBonusPayTimesheet> specifiedbonusPayTimeSheet,
 			Optional<MidNightTimeSheet> midNighttimeSheet, 
 			HolidayWorkFrameTime frameTime,
 			boolean treatAsTimeSpentAtWork,
@@ -73,16 +74,16 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @return 残業時間枠時間帯クラス
 	 */
 	public HolidayWorkFrameTime calcOverTimeWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
-		int holidayWorkTime;
+		AttendanceTime holidayWorkTime;
 		if(autoCalcSet.getLateNightTime().getCalculationClassification().isCalculateEmbossing()) {
-			holidayWorkTime = 0;
+			holidayWorkTime = new AttendanceTime(0);
 		}
 		else {
 			holidayWorkTime = this.calcTotalTime();
 		}
 		return  new HolidayWorkFrameTime(this.frameTime.getHolidayFrameNo()
 				,this.frameTime.getTransferTime()
-				,TimeWithCalculation.sameTime(new AttendanceTime(holidayWorkTime))
+				,Finally.of(TimeWithCalculation.sameTime(holidayWorkTime))
 				,this.frameTime.getBeforeApplicationTime());
 	}
 	

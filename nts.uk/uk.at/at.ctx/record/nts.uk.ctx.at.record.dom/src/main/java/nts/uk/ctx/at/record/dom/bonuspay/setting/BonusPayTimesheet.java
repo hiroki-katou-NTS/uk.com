@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -27,7 +28,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class BonusPayTimesheet extends CalculationTimeSheet{
+public class BonusPayTimesheet {
 
 	private int timeSheetId;
 
@@ -43,16 +44,10 @@ public class BonusPayTimesheet extends CalculationTimeSheet{
 
 	private RoundingAtr roundingAtr;
 
-	public BonusPayTimesheet(TimeSpanWithRounding withRounding
-			,TimeSpanForCalc timeSpan
-			,List<TimeSheetOfDeductionItem> deductionTimeSheets
-			,List<BonusPayTimesheet> bonusPayTimeSheet
-			,List<SpecBonusPayTimesheet> SpecBonusPayTimesheet
-			,Optional<MidNightTimeSheet> midNighttimeSheet,
+	public BonusPayTimesheet(
 			int timeSheetId, UseAtr useAtr, String timeItemId,
 			AttendanceClock startTime, AttendanceClock endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr) {
-		super(withRounding,timeSpan,deductionTimeSheets,bonusPayTimeSheet,SpecBonusPayTimesheet,midNighttimeSheet);
 		this.timeSheetId = timeSheetId;
 		this.useAtr = useAtr;
 		this.timeItemId = timeItemId;
@@ -69,13 +64,6 @@ public class BonusPayTimesheet extends CalculationTimeSheet{
 	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
 			int endTime, int roundingTimeAtr, int roundingAtr) {
 		return new BonusPayTimesheet(
-				new TimeSpanWithRounding(new TimeWithDayAttr(startTime),new TimeWithDayAttr(endTime),
-										 Finally.of(new TimeRoundingSetting(EnumAdaptor.valueOf(roundingTimeAtr, Unit.class),EnumAdaptor.valueOf(roundingAtr, Rounding.class)))),
-				new TimeSpanForCalc(new TimeWithDayAttr(startTime),new TimeWithDayAttr(endTime)),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Optional.empty(),
 				timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
 				new AttendanceClock(startTime), new AttendanceClock(endTime),
 				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
@@ -97,12 +85,6 @@ public class BonusPayTimesheet extends CalculationTimeSheet{
 	 */
 	public BonusPayTimesheet reCreateCalcRange(TimeSpanForCalc newRange) {
 		return new BonusPayTimesheet(
-									new TimeSpanWithRounding(newRange.getStart(), newRange.getEnd(), this.timeSheet.getRounding()),
-									this.calcrange,
-									this.deductionTimeSheet,
-									this.bonusPayTimeSheet,
-									this.specBonusPayTimesheet,
-									this.midNightTimeSheet,
 									this.timeSheetId,
 									this.useAtr,
 									this.timeItemId,
@@ -152,17 +134,12 @@ public class BonusPayTimesheet extends CalculationTimeSheet{
 	 * @return
 	 */
 	public BonusPayTimesheet reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
-			List<TimeSheetOfDeductionItem> deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
-			List<BonusPayTimesheet>        bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
-			Optional<MidNightTimeSheet>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
-			TimeSpanForCalc renewSpan = decisionNewSpan(this.calcrange,baseTime,isDateBefore);
+//			List<TimeSheetOfDeductionItem> deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
+//			List<BonusPayTimesheet>        bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
+//			Optional<MidNightTimeSheet>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
+//			TimeSpanForCalc renewSpan = decisionNewSpan(this.calcrange,baseTime,isDateBefore);
 			
-			return new BonusPayTimesheet(new TimeSpanWithRounding(renewSpan.getStart(), renewSpan.getEnd(), this.timeSheet.getRounding()),
-										 renewSpan,
-										 deductionTimeSheets,
-										 bonusPayTimeSheet,
-										 this.specBonusPayTimesheet,
-										 midNighttimeSheet,
+			return new BonusPayTimesheet(
 										 this.timeSheetId,
 										 this.useAtr,
 										 this.timeItemId,

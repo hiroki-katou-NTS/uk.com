@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
@@ -178,7 +177,8 @@ public class DeductionTotalTimeForFluidCalc {
 		//休憩時間を取得
 		//AttendanceTime restTime = fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getMatchElapsedTime(elpsedTime).getFluidRestTime();
 		//経過時間を取得
-		AttendanceTime fluidElapsedTime = fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getMatchElapsedTime(elpsedTime).getFluidRestTime();
+		//AttendanceTime fluidElapsedTime = fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFlowRes.getMatchElapsedTime(elpsedTime).getFluidRestTime();
+		AttendanceTime fluidElapsedTime = new AttendanceTime(0);
 		//休憩時間を控除合計時間．合計時間に加算
 		this.totalTime.addMinutes(fluidElapsedTime.valueAsMinutes());		
 	}

@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndSetOfHolidayH
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndSetOfWeekDayHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.primitive.WorkTimeNo;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.primitive.WorkTimeNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
@@ -191,29 +191,29 @@ public class OverDayEnd {
 		public SplitHolidayWorkTime(OverDayEndCalcSet dayEndSet,WorkTimeCommonSet overDayEndSet ,List<HolidayWorkFrameTimeSheet> holidayTimeWorkItems,
 														WorkType beforeDay,WorkType toDay,WorkType afterDay) {
 			if(judge(dayEndSet,overDayEndSet)) {
-				for(HolidayWorkFrameTimeSheet holidayTimeWorkItem : holidayTimeWorkItems) {
-					if(isSplit(holidayTimeWorkItem.calcrange,0,beforeDay.getDailyWork().isHolidayWork() , beforeDay.getDailyWork(),toDay.getDailyWork(),dayEndSet)) {
-						daySplit(new TimeWithDayAttr(0),
-								dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayAttendance().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
-								,holidayTimeWorkItem
-								,toDay
-								,beforeDay
-								,dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayHoliday().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
-								);
-					}
-					else if(isSplit(holidayTimeWorkItem.calcrange,1440,beforeDay.getDailyWork().isHolidayWork(), beforeDay.getDailyWork(),toDay.getDailyWork(),dayEndSet)) {
-						daySplit(new TimeWithDayAttr(1440),
-								dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayAttendance().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
-								,holidayTimeWorkItem
-								,toDay
-								,afterDay
-								,dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayHoliday().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
-								);
-					}
-					else {
-						holList.add(holidayTimeWorkItem);
-					}
-				}
+//				for(HolidayWorkFrameTimeSheet holidayTimeWorkItem : holidayTimeWorkItems) {
+//					if(isSplit(holidayTimeWorkItem.calcrange,0,beforeDay.getDailyWork().isHolidayWork() , beforeDay.getDailyWork(),toDay.getDailyWork(),dayEndSet)) {
+//						daySplit(new TimeWithDayAttr(0),
+//								dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayAttendance().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
+//								,holidayTimeWorkItem
+//								,toDay
+//								,beforeDay
+//								,dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayHoliday().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
+//								);
+//					}
+//					else if(isSplit(holidayTimeWorkItem.calcrange,1440,beforeDay.getDailyWork().isHolidayWork(), beforeDay.getDailyWork(),toDay.getDailyWork(),dayEndSet)) {
+//						daySplit(new TimeWithDayAttr(1440),
+//								dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayAttendance().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
+//								,holidayTimeWorkItem
+//								,toDay
+//								,afterDay
+//								,dayEndSet.getOverDayEndAggregateFrameSet().getOverDayEndSetOfHolidayHoliday().stream().filter(tc -> tc.getHolidayWorkFrameNo().v().intValue() == holidayTimeWorkItem.getHolidayWorkTimeSheetNo().v().intValue()).findFirst().get()
+//								);
+//					}
+//					else {
+//						holList.add(holidayTimeWorkItem);
+//					}
+//				}
 			}
 			else {
 				holList.addAll(holidayTimeWorkItems);

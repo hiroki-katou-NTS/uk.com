@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearly;
+package nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly;
 
 /**
  * 遅刻早退区分

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.primitive.WorkTimeNo;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.primitive.WorkTimeNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 

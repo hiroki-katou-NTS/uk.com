@@ -812,7 +812,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		}else{
 			lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
 			lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
-			outDailyPer  = new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, date);
+			outDailyPer  = new OutingTimeOfDailyPerformance(employeeId,  date,lstOutingTimeSheet);
 		}
 
 			// *7.1 外出時間帯Listに最大枠数分の枠を用意する (Chuẩn bị )
@@ -878,12 +878,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 				}
 				if (newOutingTimeSheets == null || newOutingTimeSheets.isEmpty()) {
-					return new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, date);
+					return new OutingTimeOfDailyPerformance(employeeId, date , lstOutingTimeSheet);
 					// this.lstOutingTimeOfDailyPerformance
 					// .add(new OutingTimeOfDailyPerformance(employeeId,
 					// lstOutingTimeSheet, date));
 				} else {
-					return new OutingTimeOfDailyPerformance(employeeId, newOutingTimeSheets, date);
+					return new OutingTimeOfDailyPerformance(employeeId, date, newOutingTimeSheets);
 					// this.lstOutingTimeOfDailyPerformance
 					// .add(new OutingTimeOfDailyPerformance(employeeId,
 					// newOutingTimeSheets, date));
@@ -918,7 +918,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		} else {
 			lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
 			lstOutingTimeSheet.add(new OutingTimeSheet(null, null, null, null, null, null));
-			outDailyPer = new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, date);
+			outDailyPer = new OutingTimeOfDailyPerformance(employeeId, date, lstOutingTimeSheet);
 		}
 
 		// *7.1 外出時間帯Listに最大枠数分の枠を用意する (Chuẩn bị )
@@ -987,12 +987,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 			}
 			if (newOutingTimeSheets == null || newOutingTimeSheets.isEmpty()) {
-				return new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, date);
+				return new OutingTimeOfDailyPerformance(employeeId, date, lstOutingTimeSheet);
 				// this.lstOutingTimeOfDailyPerformance
 				// .add(new OutingTimeOfDailyPerformance(employeeId,
 				// lstOutingTimeSheet, date));
 			} else {
-				return new OutingTimeOfDailyPerformance(employeeId, newOutingTimeSheets, date);
+				return new OutingTimeOfDailyPerformance(employeeId, date, newOutingTimeSheets);
 				// this.lstOutingTimeOfDailyPerformance
 				// .add(new OutingTimeOfDailyPerformance(employeeId,
 				// newOutingTimeSheets, date));

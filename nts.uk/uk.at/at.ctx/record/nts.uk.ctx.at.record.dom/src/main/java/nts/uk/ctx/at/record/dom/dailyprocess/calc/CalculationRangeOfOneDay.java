@@ -55,8 +55,8 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworkTime.DailyCalculationPerso
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.BreakSetOfCommon;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.OverWorkSet.StatutoryOverTimeWorkSet;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.BreakSetOfCommon;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.overworkset.StatutoryOverTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixWeekdayWorkTime;

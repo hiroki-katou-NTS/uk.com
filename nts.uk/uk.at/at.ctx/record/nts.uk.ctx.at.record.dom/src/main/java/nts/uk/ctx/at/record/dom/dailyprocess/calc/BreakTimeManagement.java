@@ -51,8 +51,8 @@ public class BreakTimeManagement {
 		for(Optional<BreakTimeOfDailyPerformance> OptionalTimeSheet : timeSheets) {
 			
 			for(BreakTimeSheet timeSheet : OptionalTimeSheet.get().getBreakTimeSheets())
-				dedTimeSheet.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanWithRounding(timeSheet.getStartTime().getStamp().getTimeWithDay(),timeSheet.getEndTime().getStamp().getTimeWithDay(),Finally.empty())
-																			, new TimeSpanForCalc(timeSheet.getStartTime().getStamp().getTimeWithDay(),timeSheet.getEndTime().getStamp().getTimeWithDay())
+				dedTimeSheet.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanWithRounding(timeSheet.getStartTime().getTimeWithDay(),timeSheet.getEndTime().getTimeWithDay(),Finally.empty())
+																			, new TimeSpanForCalc(timeSheet.getStartTime().getTimeWithDay(),timeSheet.getEndTime().getTimeWithDay())
 																			, Collections.emptyList()
 																			, Collections.emptyList()
 																			, Collections.emptyList()

@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTime;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.PredetermineTime;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -125,8 +126,8 @@ public class WorkTimeSet extends AggregateRoot {
 	 */
 	public TimeSpanForCalc getOneDaySpan() {
 		return new TimeSpanForCalc(startDateClock,new TimeWithDayAttr(startDateClock.valueAsMinutes()+rangeTimeDay.valueAsMinutes()));
-		return new TimeSpanForCalc(new TimeWithDayAttr(startDateClock),new TimeWithDayAttr(startDateClock+rangeTimeDay));
 	}
+	
 	
 	/* Update end time shift 2.
 	 *

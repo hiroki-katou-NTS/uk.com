@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.bonuspay.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
@@ -30,14 +30,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Value
 public class OverTimeWorkOfDaily {
 	
-	private List<OverTimeWorkFrameTimeSheet> overTimeWorkFrameTimeSheet;
+	private List<OverTimeFrameTimeSheet> OverTimeFrameTimeSheet;
 	
-	private List<OverTimeWorkFrameTime> overTimeWorkFrameTime;
+	private List<OverTimeFrameTime> OverTimeFrameTime;
 	
-	private OverTimeWorkOfDaily(List<OverTimeWorkFrameTimeSheet> frameTimeList) {
-		this.overTimeWorkFrameTimeSheet = frameTimeList;
-		//TODO: init overTimeWorkFrameTimeSheet list
-		this.overTimeWorkFrameTime = new ArrayList<>();
+	private OverTimeWorkOfDaily(List<OverTimeFrameTimeSheet> frameTimeList) {
+		this.OverTimeFrameTimeSheet = frameTimeList;
+		//TODO: init OverTimeFrameTimeSheet list
+		this.OverTimeFrameTime = new ArrayList<>();
 	}
 	
 	/**
@@ -60,10 +60,10 @@ public class OverTimeWorkOfDaily {
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * @param autoCalcSet 時間外時間の自動計算設定
 	 */
-	public List<OverTimeWorkFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
-		List<OverTimeWorkFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
-		for(OverTimeWorkFrameTimeSheet overTimeWorkFrameTime : overTimeWorkFrameTimeSheet) {
-			calcOverTimeWorkTimeList.add(overTimeWorkFrameTime.calcOverTimeWorkTime(autoCalcSet));
+	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
+		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
+		for(OverTimeFrameTimeSheet OverTimeFrameTime : OverTimeFrameTimeSheet) {
+			calcOverTimeWorkTimeList.add(OverTimeFrameTime.calcOverTimeWorkTime(autoCalcSet));
 			//calcOverTimeWorkTimeList.add();
 		}
 		return calcOverTimeWorkTimeList;
@@ -74,7 +74,7 @@ public class OverTimeWorkOfDaily {
 	 * @param hasAddListClass 残業時間帯の集計を行った後の残業枠時間クラス
 	 */
 	public void addToList(ControlOverFrameTime hasAddListClass) {
-		this.overTimeWorkFrameTime.addAll(hasAddListClass.getOverTimeWorkFrameTime());
+		this.OverTimeFrameTime.addAll(hasAddListClass.getOverTimeWorkFrameTime());
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class OverTimeWorkOfDaily {
 	 */
 	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(OverTimeWorkFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
+		for(OverTimeFrameTimeSheet frameTimeSheet : OverTimeFrameTimeSheet) {
 			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
 		}
 		return bonusPayList;
@@ -95,7 +95,7 @@ public class OverTimeWorkOfDaily {
 	 */
 	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(OverTimeWorkFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
+		for(OverTimeFrameTimeSheet frameTimeSheet : OverTimeFrameTimeSheet) {
 			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
 		}
 		return bonusPayList;
@@ -106,10 +106,10 @@ public class OverTimeWorkOfDaily {
 	 */
 	public ExcessOfStatutoryMidNightTime calcMidNightTimeIncludeOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
 		int totalTime = 0;
-		for(OverTimeWorkFrameTimeSheet frameTime : overTimeWorkFrameTimeSheet) {
+		for(OverTimeFrameTimeSheet frameTime : OverTimeFrameTimeSheet) {
 			/*↓分岐の条件が明確になったら記述*/
 			AutoCalcSet setting;
-			if(frameTime.getWithinStatutoryAtr().isWithinStatutory()) {
+			if(frameTime.getWithinStatutoryAtr().isStatutory()) {
 				setting = autoCalcSet.getLegalOvertimeHours();
 			}
 			else if(frameTime.isGoEarly()) {
@@ -129,8 +129,8 @@ public class OverTimeWorkOfDaily {
 	 */
 	public int calcTotalFrameTime() {
 		int totalTime = 0;
-		for(OverTimeWorkFrameTime overTimeWorkFrameTime :overTimeWorkFrameTime) {
-			totalTime += overTimeWorkFrameTime.getOverTimeWork().getTime().valueAsMinutes();
+		for(OverTimeFrameTime OverTimeFrameTime :OverTimeFrameTime) {
+			totalTime += OverTimeFrameTime.getOverTimeWork().getTime().valueAsMinutes();
 		}
 		return totalTime;
 	}

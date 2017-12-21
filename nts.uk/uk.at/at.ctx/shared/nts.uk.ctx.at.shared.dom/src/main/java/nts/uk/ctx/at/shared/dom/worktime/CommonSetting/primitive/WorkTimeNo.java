@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.CommomSetting.primitive;
+package nts.uk.ctx.at.shared.dom.worktime.CommonSetting.primitive;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

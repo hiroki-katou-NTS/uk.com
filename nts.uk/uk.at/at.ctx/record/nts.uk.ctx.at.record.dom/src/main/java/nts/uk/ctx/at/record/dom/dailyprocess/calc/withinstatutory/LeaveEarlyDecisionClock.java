@@ -36,12 +36,13 @@ public class LeaveEarlyDecisionClock {
 			// 猶予時間が0：00の場合、所定時間の終了時刻を判断時刻にする
 			decisionClock = predetermineTimeSheet.getEnd();
 		} else {
-			// 猶予時間帯の作成
-			TimeSpanForCalc graceTimeSheet = leaveEarlyGraceTime.createLeaveEarlyGraceTimeSheet(predetermineTimeSheet);
-			//猶予時間帯に重複する休憩時間帯の時間を取得する
-			int breakTime = deductionTimeSheet.sumBreakTimeIn(graceTimeSheet);
+//			// 猶予時間帯の作成
+//			TimeSpanForCalc graceTimeSheet = leaveEarlyGraceTime.createLeaveEarlyGraceTimeSheet(predetermineTimeSheet);
+//			//猶予時間帯に重複する休憩時間帯の時間を取得する
+//			int breakTime = deductionTimeSheet.sumBreakTimeIn(graceTimeSheet);
 			//猶予時間帯の開始時間を控除時間と重複する時間分ズラした時刻を早退判断時刻とする
-			decisionClock = graceTimeSheet.getStart().backByMinutes(breakTime);
+			//decisionClock = graceTimeSheet.getStart().backByMinutes(breakTime);
+			decisionClock = new TimeWithDayAttr(0);
 		}
 
 		// 補正後の猶予時間帯の開始時刻を判断時刻とする

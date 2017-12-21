@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.commonsetting.overworkset;
+package nts.uk.ctx.at.shared.dom.worktime.CommonSetting.overworkset;
 
 import lombok.Value;
 

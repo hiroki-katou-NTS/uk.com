@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTi
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.OverWorkSet.StatutoryOverTimeWorkSet;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.overworkset.StatutoryOverTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
