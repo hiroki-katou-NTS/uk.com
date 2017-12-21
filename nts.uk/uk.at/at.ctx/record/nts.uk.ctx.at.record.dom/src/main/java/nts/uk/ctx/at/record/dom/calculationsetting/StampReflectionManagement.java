@@ -3,13 +3,13 @@ package nts.uk.ctx.at.record.dom.calculationsetting;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.ActualStampOfPriorityClass;
+import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampReflectionClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.BreakSwitchClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.GoBackOutCorrectionClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.ReflectWorkingTimeClass;
-import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
 /**
  * 

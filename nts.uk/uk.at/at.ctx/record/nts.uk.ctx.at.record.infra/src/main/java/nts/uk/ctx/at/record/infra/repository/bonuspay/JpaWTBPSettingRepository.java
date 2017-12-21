@@ -6,11 +6,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.WorkingTimesheetCode;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.WTBonusPaySettingRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstWTBonusPaySetting;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstWTBonusPaySettingPK;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 
 @Stateless
 public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPaySettingRepository {

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.CommonSetting;
+package nts.uk.ctx.at.shared.dom.worktime.commonsetting;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -24,7 +25,7 @@ public class PredetermineTimeSheetSetting extends AggregateRoot{
 	@Getter
 	private final TimeWithDayAttr PMStartTime;
 	
-	public PredetermineTimeSheetSetting(List<TimeSheetWithUseAtr> timeSheets, TimeWithDayAttr AMEndTime, TimeWithDayAttr PMStartTime) {
+	public PredetermineTimeSheetSetting(List<Timezone> timeSheets, TimeWithDayAttr AMEndTime, TimeWithDayAttr PMStartTime) {
 		this.timeSheets = new TimeSheetList(timeSheets);
 		this.AMEndTime = AMEndTime;
 		this.PMStartTime = PMStartTime;
@@ -39,8 +40,8 @@ public class PredetermineTimeSheetSetting extends AggregateRoot{
 	 * @param workNo
 	 * @return 時間帯(使用区分付き)
 	 */
-	public TimeSheetWithUseAtr getMatchWorkNoTimeSheet(int workNo) {
-		List<TimeSheetWithUseAtr> timeSheetWithUseAtrList = timeSheets.getTimeSpanList().stream().filter(tc -> tc.getCount() == workNo).collect(Collectors.toList());
+	public Timezone getMatchWorkNoTimeSheet(int workNo) {
+		List<Timezone> timeSheetWithUseAtrList = timeSheets.getTimeSpanList().stream().filter(tc -> tc.getWorkNo() == workNo).collect(Collectors.toList());
 		if(timeSheetWithUseAtrList.size()>1) {
 			throw new RuntimeException("Exist duplicate workNo : " + workNo);
 		}

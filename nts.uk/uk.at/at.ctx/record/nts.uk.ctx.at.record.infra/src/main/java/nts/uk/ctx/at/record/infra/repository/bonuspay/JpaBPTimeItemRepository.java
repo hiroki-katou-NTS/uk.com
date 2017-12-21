@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.BPTimeItemRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstBonusPayTimeItem;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstBonusPayTimeItemPK;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 
 @Stateless
 public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItemRepository {

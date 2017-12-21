@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidWorkBreakSetting;
-import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 
 /**
  * The Class FixedWorkSetting.

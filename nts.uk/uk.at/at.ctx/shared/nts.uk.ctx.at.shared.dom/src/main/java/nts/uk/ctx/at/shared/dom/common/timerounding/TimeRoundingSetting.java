@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.common.timerounding;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit.Direction;
 
@@ -33,6 +34,11 @@ public class TimeRoundingSetting extends DomainObject{
 	public TimeRoundingSetting(Unit roundingTime, Rounding rounding) {
 		this.roundingTime = roundingTime;
 		this.rounding = rounding;
+	}
+	
+	public TimeRoundingSetting(int roundingTime, int rounding) {
+		this.roundingTime = EnumAdaptor.valueOf(roundingTime, Unit.class);
+		this.rounding = EnumAdaptor.valueOf(rounding, Rounding.class);
 	}
 	
 	/**

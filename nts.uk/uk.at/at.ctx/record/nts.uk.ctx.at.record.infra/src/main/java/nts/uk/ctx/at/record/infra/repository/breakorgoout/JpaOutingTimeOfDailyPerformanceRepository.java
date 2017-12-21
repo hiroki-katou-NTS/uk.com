@@ -14,8 +14,10 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.daily.WorkStamp;
-import nts.uk.ctx.at.record.dom.daily.WorkStampWithActualStamp;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
+import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiOutingTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -66,31 +68,27 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public Optional<OutingTimeOfDailyPerformance> findByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
-		 List<KrcdtDaiOutingTime> lstKrcdtDaiOutingTime = this.queryProxy().query(SELECT_BY_EMPLOYEE_AND_DATE,KrcdtDaiOutingTime.class).setParameter("employeeId", employeeId)
-		.setParameter("ymd", ymd).getList();
+		List<KrcdtDaiOutingTime> lstKrcdtDaiOutingTime = this.queryProxy().query(SELECT_BY_EMPLOYEE_AND_DATE,KrcdtDaiOutingTime.class).setParameter("employeeId", employeeId)
+				.setParameter("ymd", ymd).getList();
 		 if(lstKrcdtDaiOutingTime==null || lstKrcdtDaiOutingTime.isEmpty()){
 			 return Optional.empty();
 		 }
 		 List<OutingTimeSheet> lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
 		 
 		 lstKrcdtDaiOutingTime.forEach(x->{
-//			 WorkStamp outStamp  = new WorkStamp(new TimeWithDayAttr(x.outStampRoundingTimeDay.intValue()),new TimeWithDayAttr(x.outStampTime.intValue()),new WorkLocationCD(x.outStampPlaceCode) , EnumAdaptor.valueOf(x.outStampSourceInfo.intValue(), StampSourceInfo.class));
-//			 WorkStamp outActualStamp = new WorkStamp(new TimeWithDayAttr(x.outActualRoundingTimeDay.intValue()),new TimeWithDayAttr(x.outActualTime.intValue()),new WorkLocationCD(x.outActualPlaceCode) , EnumAdaptor.valueOf(x.outActualSourceInfo.intValue(), StampSourceInfo.class));
-			 WorkStamp outStamp  = new WorkStamp(new TimeWithDayAttr(x.outStampTime.intValue()));
-			 WorkStamp outActualStamp = new WorkStamp(new TimeWithDayAttr(x.outActualTime.intValue()));
-			 WorkStampWithActualStamp goOut = new WorkStampWithActualStamp(outActualStamp, outStamp, x.outNumberStamp.intValue());
-//			 WorkStamp backStamp  = new WorkStamp(new TimeWithDayAttr(x.backStampRoundingTimeDay.intValue()),new TimeWithDayAttr(x.backStampTime.intValue()),new WorkLocationCD(x.backStampPlaceCode) , EnumAdaptor.valueOf(x.backStampSourceInfo.intValue(), StampSourceInfo.class));
-//			 WorkStamp backActualStamp = new WorkStamp(new TimeWithDayAttr(x.backActualRoundingTimeDay.intValue()),new TimeWithDayAttr(x.backActualTime.intValue()),new WorkLocationCD(x.backActualPlaceCode) , EnumAdaptor.valueOf(x.backActualSourceInfo.intValue(), StampSourceInfo.class));
-			 WorkStamp backStamp  = new WorkStamp(new TimeWithDayAttr(x.backStampTime.intValue()));
-			 WorkStamp backActualStamp = new WorkStamp(new TimeWithDayAttr(x.backActualTime.intValue()));
-			 WorkStampWithActualStamp comeBack = new WorkStampWithActualStamp(backActualStamp, backStamp, x.backNumberStamp.intValue());
+			 WorkStamp outStamp  = new WorkStamp(new TimeWithDayAttr(x.outStampRoundingTimeDay.intValue()),new TimeWithDayAttr(x.outStampTime.intValue()),new WorkLocationCD(x.outStampPlaceCode) , EnumAdaptor.valueOf(x.outStampSourceInfo.intValue(), StampSourceInfo.class));
+			 WorkStamp outActualStamp = new WorkStamp(new TimeWithDayAttr(x.outActualRoundingTimeDay.intValue()),new TimeWithDayAttr(x.outActualTime.intValue()),new WorkLocationCD(x.outActualPlaceCode) , EnumAdaptor.valueOf(x.outActualSourceInfo.intValue(), StampSourceInfo.class));
+			 TimeActualStamp goOut = new TimeActualStamp(outActualStamp, outStamp, x.outNumberStamp.intValue());
+			 WorkStamp backStamp  = new WorkStamp(new TimeWithDayAttr(x.backStampRoundingTimeDay.intValue()),new TimeWithDayAttr(x.backStampTime.intValue()),new WorkLocationCD(x.backStampPlaceCode) , EnumAdaptor.valueOf(x.backStampSourceInfo.intValue(), StampSourceInfo.class));
+			 WorkStamp backActualStamp = new WorkStamp(new TimeWithDayAttr(x.backActualRoundingTimeDay.intValue()),new TimeWithDayAttr(x.backActualTime.intValue()),new WorkLocationCD(x.backActualPlaceCode) , EnumAdaptor.valueOf(x.backActualSourceInfo.intValue(), StampSourceInfo.class));
+			 TimeActualStamp comeBack = new TimeActualStamp(backActualStamp, backStamp, x.backNumberStamp.intValue());
 			 GoingOutReason reasonForGoOut = EnumAdaptor.valueOf(x.outingReason.intValue(), GoingOutReason.class);
 			 AttendanceTime outingTimeCalculation = new AttendanceTime(x.outingTimeCalculation.intValue());
 			 AttendanceTime outingTime = new AttendanceTime(x.outingTime.intValue());
 			 OutingTimeSheet outingTimeSheet = new OutingTimeSheet(new OutingFrameNo(x.krcdtDaiOutingTimePK.outingFrameNo),goOut,outingTimeCalculation, outingTime, reasonForGoOut , comeBack);
 			 lstOutingTimeSheet.add(outingTimeSheet);
 		 });
-		 return Optional.ofNullable(new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, ymd));
+		 return Optional.ofNullable(new OutingTimeOfDailyPerformance(employeeId, ymd, lstOutingTimeSheet));
 	}
 	
 	

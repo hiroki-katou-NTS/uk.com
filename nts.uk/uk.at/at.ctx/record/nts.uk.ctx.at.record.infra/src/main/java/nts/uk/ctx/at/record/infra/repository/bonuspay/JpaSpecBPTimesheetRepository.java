@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.SpecBPTimesheetRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpmtSpecBPTimesheet;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpmtSpecBPTimesheetPK;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 
 @Stateless
 public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecBPTimesheetRepository {

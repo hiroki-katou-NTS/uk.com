@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstBPUnitUseSetting;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstBPUnitUseSettingPK;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 
 @Stateless
 public class JpaBPUnitUseSettingRepository extends JpaRepository implements BPUnitUseSettingRepository {

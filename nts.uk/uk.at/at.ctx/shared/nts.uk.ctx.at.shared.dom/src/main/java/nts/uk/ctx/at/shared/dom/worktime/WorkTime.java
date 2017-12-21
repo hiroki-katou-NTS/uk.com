@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
-import java.util.List;
-
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.PredetermineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexworkset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
@@ -73,7 +71,7 @@ public class WorkTime extends AggregateRoot {
 		if(workTimeDivision.getWorkTimeDailyAtr().isFlex()&& flexWorkSetting.getCoreTimeSetting().getUse().isUse()) {
 			return new TimeSpanForCalc(flexWorkSetting.getCoreTimeSetting().getCoreTime().getStart(),goWorkTime);
 		}
-		return new TimeSpanForCalc(predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getStartTime(),goWorkTime);
+		return new TimeSpanForCalc(predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getStart(),goWorkTime);
 	}
 	
 	
@@ -87,7 +85,7 @@ public class WorkTime extends AggregateRoot {
 		if(workTimeDivision.getWorkTimeDailyAtr().isFlex()&& flexWorkSetting.getCoreTimeSetting().getUse().isUse()) {
 			return new TimeSpanForCalc(leaveWorkTime,flexWorkSetting.getCoreTimeSetting().getCoreTime().getEnd());
 		}
-		return new TimeSpanForCalc(leaveWorkTime,predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getEndTime());
+		return new TimeSpanForCalc(leaveWorkTime,predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getEnd());
 	}
 	
 	

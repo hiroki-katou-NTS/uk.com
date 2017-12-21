@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly;
+package nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearly;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;

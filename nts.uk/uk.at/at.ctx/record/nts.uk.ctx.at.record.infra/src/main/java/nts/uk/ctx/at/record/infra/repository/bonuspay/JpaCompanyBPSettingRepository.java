@@ -5,10 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.CPBonusPaySettingRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.CompanyBonusPaySetting;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstCompanyBPSetting;
 import nts.uk.ctx.at.record.infra.entity.bonuspay.KbpstCompanyBPSettingPK;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 
 @Stateless
 public class JpaCompanyBPSettingRepository extends JpaRepository implements CPBonusPaySettingRepository {

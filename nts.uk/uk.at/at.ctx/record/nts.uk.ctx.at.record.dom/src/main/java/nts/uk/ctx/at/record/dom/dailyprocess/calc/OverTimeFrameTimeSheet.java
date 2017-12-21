@@ -4,28 +4,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.DailyTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.enums.StatutoryAtr;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.common.DailyTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
-import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.overworkset.StatutoryOverTimeWorkSet;
-import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.primitive.WorkTimeNo;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.overworkset.StatutoryOverTimeWorkSet;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.primitive.WorkTimeNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -344,6 +343,27 @@ public class OverTimeFrameTimeSheet extends CalculationTimeSheet{
 					 									 ,this.getOverWorkFrameTime()
 					 									 ,this.goEarly
 					 									 ,statutoryAtr));
+			return returnList;
+		}
+	}
+	
+	/**
+	 * 時間帯の分割
+	 * 
+	 * @return
+	 */
+	public List<OverTimeFrameTimeSheet> gege(TimeWithDayAttr baseTime, StatutoryAtr statutoryAtr) {
+		List<OverTimeFrameTimeSheet> returnList = new ArrayList<>();
+		if (this.calcrange.getEnd().equals(baseTime)) {
+			returnList.add(this);
+			return returnList;
+		} else {
+			returnList.add(new OverTimeFrameTimeSheet(this.timeSheet,
+					new TimeSpanForCalc(this.calcrange.getStart(), baseTime), this.deductionTimeSheet,
+					this.bonusPayTimeSheet, this.specBonusPayTimesheet, this.midNightTimeSheet, this.frameNo,
+					this.getOverWorkFrameTime(), this.goEarly, statutoryAtr));
+			// TODO: add ??
+			// returnList.add();
 			return returnList;
 		}
 	}

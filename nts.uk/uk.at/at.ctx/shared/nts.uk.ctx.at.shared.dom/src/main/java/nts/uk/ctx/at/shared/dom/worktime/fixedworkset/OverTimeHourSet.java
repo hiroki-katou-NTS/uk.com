@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.primitive.WorkTimeNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 /**
  * 残業時間の時間帯設定
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRound
 @Value
 public class OverTimeHourSet{
 	/** 就業時間枠NO */
-	private final nts.uk.ctx.at.shared.dom.worktime.CommonSetting.primitive.WorkTimeNo frameNo;
+	private final WorkTimeNo frameNo;
 	
 	/** 残業枠No*/
 	private final OverTimeFrameNo overTimeWorkFrameNo;

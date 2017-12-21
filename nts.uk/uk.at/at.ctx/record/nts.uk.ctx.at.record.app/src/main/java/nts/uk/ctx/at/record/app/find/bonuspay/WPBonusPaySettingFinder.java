@@ -8,9 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.record.dom.bonuspay.primitives.WorkplaceId;
-import nts.uk.ctx.at.record.dom.bonuspay.repository.WPBonusPaySettingRepository;
-import nts.uk.ctx.at.record.dom.bonuspay.setting.WorkplaceBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 
 @Stateless
 @Transactional

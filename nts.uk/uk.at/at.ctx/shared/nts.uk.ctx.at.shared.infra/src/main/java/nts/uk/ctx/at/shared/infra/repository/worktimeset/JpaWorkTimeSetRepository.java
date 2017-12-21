@@ -10,16 +10,13 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTime;
-import nts.uk.ctx.at.shared.dom.worktimeset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktimeset.KwtdtWorkTimeDay;
-import nts.uk.ctx.at.shared.infra.entity.worktimeset.KwtspWorkTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktimeset.KwtstWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.infra.entity.worktimeset_old.KwtdtWorkTimeDay;
+import nts.uk.ctx.at.shared.infra.entity.worktimeset_old.KwtspWorkTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktimeset_old.KwtstWorkTimeSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -215,15 +212,11 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		TimeWithDayAttr afternoonStartTime = new TimeWithDayAttr(kwtstWorkTimeSet.afternoonStartTime);
 		List<Timezone> timezones = kwtstWorkTimeSet.kwtdtWorkTimeDay.stream().map(x -> convertToDomainTimezone(x))
 				.collect(Collectors.toList());
-		
-		return new WorkTimeSet(kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, new AttendanceTime(kwtstWorkTimeSet.rangeTimeDay),
-				kwtstWorkTimeSet.kwtspWorkTimeSetPK.siftCD,
-				new PredetermineTime(new BreakdownTimeDay(new AttendanceTime(4), new AttendanceTime(4),new AttendanceTime(4))
-									,new BreakdownTimeDay(new AttendanceTime(4), new AttendanceTime(4),new AttendanceTime(4))),
-				//kwtstWorkTimeSet.additionSetID,
+		return new WorkTimeSet(kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, kwtstWorkTimeSet.rangeTimeDay,
+				kwtstWorkTimeSet.kwtspWorkTimeSetPK.siftCD, kwtstWorkTimeSet.additionSetID,
 				kwtstWorkTimeSet.nightShiftAtr == TRUE_NUMBER ? true : false,
 				new PrescribedTimezoneSetting(morningEndTime, afternoonStartTime, timezones),
-				new TimeWithDayAttr(kwtstWorkTimeSet.startDateClock), kwtstWorkTimeSet.predetermineAtr == TRUE_NUMBER ? true : false);
+				kwtstWorkTimeSet.startDateClock, kwtstWorkTimeSet.predetermineAtr == TRUE_NUMBER ? true : false);
 	}
 	
 	/**

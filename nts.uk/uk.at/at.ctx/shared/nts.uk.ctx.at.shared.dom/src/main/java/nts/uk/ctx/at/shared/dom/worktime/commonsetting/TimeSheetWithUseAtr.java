@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime.CommonSetting;
+package nts.uk.ctx.at.shared.dom.worktime.commonsetting;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
