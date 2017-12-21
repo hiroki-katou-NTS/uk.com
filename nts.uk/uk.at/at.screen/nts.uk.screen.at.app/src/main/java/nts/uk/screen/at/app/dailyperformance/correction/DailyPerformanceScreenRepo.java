@@ -61,6 +61,8 @@ public interface DailyPerformanceScreenRepo {
 	ClosureDto getClosure(String sId, GeneralDate baseDate);
 	
 	ClosureDto getClosureId(String sId, GeneralDate baseDate);
+	
+	List<ClosureDto> getClosureId(List<String> sId, GeneralDate baseDate);
 
 	/** Query select KALMT_ANNUAL_PAID_LEAVE by company id */
 	YearHolidaySettingDto getYearHolidaySetting();

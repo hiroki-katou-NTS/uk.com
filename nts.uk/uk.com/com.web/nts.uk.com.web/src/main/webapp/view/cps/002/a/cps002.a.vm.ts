@@ -65,6 +65,9 @@ module cps002.a.vm {
             onApplyEmployee: (dataEmployee: Array<any>) => {
                 let self = this;
                 self.copyEmployee(new EmployeeCopy(dataEmployee[0]));
+            }, onSearchOnlyClicked: function(data: any) {
+                let self = this;
+                self.copyEmployee(data);
             }
         };
 

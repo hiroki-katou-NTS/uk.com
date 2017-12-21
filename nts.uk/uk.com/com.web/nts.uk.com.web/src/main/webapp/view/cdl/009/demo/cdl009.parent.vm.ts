@@ -4,6 +4,7 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
     export class ScreenModel {
         isMultiSelect: KnockoutObservable<boolean>;
         selectedIds: KnockoutObservableArray<string>;
+        inputWorkplaceIds: KnockoutObservable<string>;
         baseDate: KnockoutObservable<Date>;
         target: KnockoutObservable<number>;
         selectedEmployeeId: KnockoutObservable<string>;
@@ -16,7 +17,15 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
         constructor() {
             var self = this;
             self.isMultiSelect = ko.observable(true);
+            self.inputWorkplaceIds = ko.observable('');
             self.selectedIds = ko.observableArray([]);
+            self.inputWorkplaceIds.subscribe(function(item: string) {
+                if (item) {
+                    self.selectedIds(item.split(","));
+                } else {
+                    self.selectedIds([]);
+                }
+            });
             self.baseDate = ko.observable(moment(new Date()).toDate());
             self.target = ko.observable(TargetClassification.WORKPLACE);
             self.selectedEmployeeId = ko.observable('');
@@ -50,11 +59,16 @@ module nts.uk.com.view.cdl009.parent.viewmodel {
         // Open Dialog CDL009
         private openDialog() {
             let self = this;
+//            self.inputWorkplaceIds.subscribe(function(item: string) {
+//                if (item) {
+//                    self.selectedIds(item.split(","));
+//                }
+//            });
             
             // Set Param
             setShared('CDL009Params', {
                 // isMultiSelect For Employee List Kcp005
-                isMultiSelect: self.isMultiSelect(),
+                isMultiple: self.isMultiSelect(),
                 // For Workplace List Kcp004
                 selectedIds: self.selectedIds(),
                 // For Workplace List Kcp004

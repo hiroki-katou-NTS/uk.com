@@ -14,19 +14,22 @@ public class LayoutPersonInfoClassificationWithCtgCd extends LayoutPersonInfoCla
 
 	private String personInfoCategoryCD;
 
+	private int ctgType;
+
 	public static LayoutPersonInfoClassificationWithCtgCd createFromJavaType(String layoutID, int dispOrder,
-			String personInfoCategoryID, int layoutItemType, String personInfoCategoryCD) {
+			String personInfoCategoryID, int layoutItemType, String personInfoCategoryCD, int ctgType) {
 
 		return new LayoutPersonInfoClassificationWithCtgCd(layoutID, dispOrder, personInfoCategoryID, layoutItemType,
-				personInfoCategoryCD);
+				personInfoCategoryCD, ctgType);
 
 	}
 
 	public LayoutPersonInfoClassificationWithCtgCd(String layoutID, int dispOrder, String personInfoCategoryID,
-			int layoutItemType, String personInfoCategoryCD) {
+			int layoutItemType, String personInfoCategoryCD, int ctgType) {
 		super(layoutID, new DispOrder(dispOrder), personInfoCategoryID,
 				EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class));
 		this.personInfoCategoryCD = personInfoCategoryCD;
+		this.ctgType = ctgType;
 	}
 
 }
