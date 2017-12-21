@@ -15,6 +15,8 @@ import javax.ws.rs.Produces;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommand;
+import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.worktime_old.WorkTimeFinder;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 
@@ -31,6 +33,10 @@ public class WorkTimeWebService extends WebService {
 	/** The work time finder. */
 	@Inject
 	private WorkTimeFinder workTimeFinder;
+
+	/** The flow handler. */
+	@Inject
+	private FlowWorkSettingSaveCommandHandler flowHandler;
 
 	/**
 	 * Find by company ID.
@@ -101,6 +107,17 @@ public class WorkTimeWebService extends WebService {
 	@Path("findById/{workTimeCode}")
 	public WorkTimeDto findById(@PathParam("workTimeCode") String workTimeCode){
 		return this.workTimeFinder.findById(workTimeCode);
+	}
+
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("flowset/save")
+	public void save(FlowWorkSettingSaveCommand command){
+		this.flowHandler.handle(command);
 	}
 }
 
