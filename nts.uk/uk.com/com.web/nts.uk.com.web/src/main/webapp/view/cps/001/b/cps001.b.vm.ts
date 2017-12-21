@@ -59,6 +59,7 @@ module cps001.b.vm {
                             setShared('CPS001B_VALUES', {
                                 status: 'deleled'
                             });
+                            unblock();
                             close();
                         });
                     }).fail((mes) => {
