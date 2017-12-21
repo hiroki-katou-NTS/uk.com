@@ -39,6 +39,8 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimeSettingEnumDto {
                     workTimeDailyAtr: EnumConstantDto[];
                     workTimeMethodSet: EnumConstantDto[];
+                    roundingBreakTimezone: EnumConstantDto[];
+                    roundingBreakTime: EnumConstantDto[];
                     roundingTime: EnumConstantDto[];
                     rounding: EnumConstantDto[];
                     roundingSimple: EnumConstantDto[];

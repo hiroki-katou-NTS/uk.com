@@ -33,7 +33,7 @@ module a9 {
         listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
         listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
         
-        // Simple mode - Data        
+        // Simple mode - Data (nothing)        
         
         
         /**
@@ -59,25 +59,22 @@ module a9 {
             _self.listRoundingValue = ko.observableArray([]);
             
             _self.listRoundingTimeValue(_self.settingEnum.roundingTime);
-            _self.listRoundingValue(_self.settingEnum.roundingSimple.reverse());        
+            _self.listRoundingValue(_self.settingEnum.roundingSimple);        
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                console.log('change to ' + (newValue ? 'detail' : 'simple'));
                 _self.changeWorkSettingMode();
             });                                   
             // Subscribe Work Setting Regular/Flex mode
             _self.workTimeDailyAtr = ko.observable(0);
             _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                console.log('change workTimeDailyAtr');
                 _self.workTimeDailyAtr(newValue);
                 _self.changeWorkSettingMode();
             });  
             // Subscribe Work Setting Fixed/Diff/Flow mode
             _self.workTimeMethodSet = ko.observable(0); 
             _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                console.log('change workTimeMethodSet');
                 _self.workTimeMethodSet(newValue);
                 _self.changeWorkSettingMode();
             });                          
@@ -97,13 +94,11 @@ module a9 {
          */
         private changeWorkSettingMode(): void {
             let _self = this;        
-                       
-            //TODO Remove console.log          
+                              
             if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
                 // Regular work
                 switch (_self.workTimeMethodSet()) {
                     case WorkTimeMethodSet.FIXED_WORK: {
-                        console.log("fixed");
                         if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets) || 
                                 _self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets.length === 0) {
                             _self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets = _self.createBinding();                           
@@ -111,7 +106,6 @@ module a9 {
                         _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets);                                
                     } break;
                     case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        console.log("diff");
                         if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.lateEarlySet.otherClassSets) || 
                                 _self.model.diffWorkSetting.commonSet.lateEarlySet.otherClassSets.length === 0) {
                             _self.model.diffWorkSetting.commonSet.lateEarlySet.otherClassSets = _self.createBinding();                           
@@ -119,7 +113,6 @@ module a9 {
                         _self.changeBinding(_self.model.diffWorkSetting.commonSet.lateEarlySet.otherClassSets);
                     } break;
                     case WorkTimeMethodSet.FLOW_WORK: {
-                        console.log("flow");
                         if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets) ||
                                 _self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets.length === 0) {
                             _self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets = _self.createBinding();                           
@@ -127,7 +120,6 @@ module a9 {
                         _self.changeBinding(_self.model.flowWorkSetting.commonSetting.lateEarlySet.otherClassSets);
                     } break;               
                     default: {
-                        console.log("fixed default");
                         if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets) || 
                                 _self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets.length === 0) {
                             _self.model.fixedWorkSetting.commonSetting.lateEarlySet.otherClassSets = _self.createBinding();                           
@@ -137,7 +129,6 @@ module a9 {
                 } 
             } else {
                 // Flex work
-                console.log("flex");
                 if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets) || 
                         _self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets.length === 0) {
                     _self.model.flexWorkSetting.commonSetting.lateEarlySet.otherClassSets = _self.createBinding();                           

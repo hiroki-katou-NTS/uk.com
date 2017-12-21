@@ -55,7 +55,7 @@ module a13 {
             _self.listRoundingValue = ko.observableArray([]);
             
             _self.listRoundingTimeValue(_self.settingEnum.roundingTime);
-            _self.listRoundingValue(_self.settingEnum.roundingSimple.reverse());          
+            _self.listRoundingValue(_self.settingEnum.roundingSimple);          
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);

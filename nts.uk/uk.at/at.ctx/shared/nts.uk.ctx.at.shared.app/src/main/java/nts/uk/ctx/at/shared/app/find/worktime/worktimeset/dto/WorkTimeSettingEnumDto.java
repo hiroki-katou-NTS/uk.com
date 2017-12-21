@@ -13,6 +13,7 @@ import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -31,6 +32,12 @@ public class WorkTimeSettingEnumDto {
 
 	/** The work time method set. */
 	private List<EnumConstant> workTimeMethodSet;
+	
+	/** The rounding time. */
+	private List<EnumConstant> roundingBreakTimezone;
+	
+	/** The rounding time. */
+	private List<EnumConstant> roundingBreakTime;
 	
 	/** The rounding time. */
 	private List<EnumConstant> roundingTime;
@@ -60,6 +67,10 @@ public class WorkTimeSettingEnumDto {
 		WorkTimeSettingEnumDto dto = new WorkTimeSettingEnumDto();
 		dto.setWorkTimeDailyAtr(EnumAdaptor.convertToValueNameList(WorkTimeDailyAtr.class, i18n));
 		dto.setWorkTimeMethodSet(EnumAdaptor.convertToValueNameList(WorkTimeMethodSet.class, i18n));
+		//TODO confirm duplicate enum
+		dto.setRoundingBreakTimezone(EnumAdaptor.convertToValueNameList(GoOutTimeRoundingMethod.class, i18n));
+		dto.setRoundingBreakTime(EnumAdaptor.convertToValueNameList(GoOutTimeRoundingMethod.class, i18n));
+		//TODO confirm duplicate enum
 		dto.setRoundingTime(EnumAdaptor.convertToValueNameList(Unit.class, i18n));
 		dto.setRounding(EnumAdaptor.convertToValueNameList(Rounding.class, i18n));
 		List<EnumConstant> roundingSimple = EnumAdaptor.convertToValueNameList(Rounding.class, i18n);
