@@ -79,9 +79,9 @@ module nts.uk.com.view.cdl009.a {
              */
             private searchEmp(): void {
                 let self = this;
-                let treeList = $('#workplace-component').getDataList();
-                let isInGrid: boolean = this.hasSelectedInTreeGrid();
-                    if (treeList.length == 0 || !isInGrid) {
+                let treeData = $('#workplace-component').getDataList();
+                let selectedRow = $('#workplace-component').getRowSelected();
+                    if (treeData.length == 0 || selectedRow.length <= 0) {
                     if (self.target() == TargetClassification.WORKPLACE) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => {
                             close();
@@ -97,37 +97,6 @@ module nts.uk.com.view.cdl009.a {
                 // Search Employees
                 self.findEmployee();
                 $('#emp-component').focus();
-            }
-            
-            /**
-             * Check Selected Workplace id(s) exist in Tree Grid or not 
-             */
-            private hasSelectedInTreeGrid(): boolean {
-                let self = this;
-                let treeList = $('#workplace-component').getDataList();
-                // Multiple Selection
-                if (self.isMultiSelect()) {
-                    let data: Array<string> = [];
-                    for (let empId of self.multiSelectedTree()) {
-                        let wkp: UnitModel = treeList.filter((item) => {
-                            return item.workplaceId == empId;
-                        })[0];
-                        if (wkp) {
-                            return true;
-                        }
-                    }
-                }
-                // Single Selection
-                else {
-                    let wkp: UnitModel = treeList.filter((item) => {
-                        return item.workplaceId == self.multiSelectedTree().toString();
-                    })[0];
-                    
-                    if (wkp) {
-                        return true;
-                    }
-                }
-                return false;
             }
             
             /**
