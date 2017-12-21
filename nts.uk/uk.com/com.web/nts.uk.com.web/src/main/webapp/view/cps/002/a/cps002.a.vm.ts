@@ -90,8 +90,8 @@ module cps002.a.vm {
 
                     self.createTypeId(data.employeeCreationMethod);
 
-
-                    if (self.employeeBasicInfo().copyEmployeeId != "") {
+                    let copyEmployeeId = data.copyEmployeeId;
+                    if (copyEmployeeId != "" && copyEmployeeId != self.copyEmployee().employeeId) {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
@@ -196,7 +196,6 @@ module cps002.a.vm {
                 baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
 
             if (currentCopyEmployeeId != "" && categorySelectedCode) {
-
 
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
                     if (result.length) {
@@ -579,6 +578,8 @@ module cps002.a.vm {
                             self.backtoStep1();
 
                         } else {
+
+                            setShared('CPS002A_PARAMS', { sid: employeeId });
                             jump('/view/cps/001/a/index.xhtml');
                         }
                     });
