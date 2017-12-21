@@ -788,6 +788,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             // validate
             $(".input-code").trigger("validate");
             $(".input-name").trigger("validate");
+            $(".item-name").trigger("validate");
 
             if (nts.uk.ui.errors.hasError()) {
                 blockUI.clear();

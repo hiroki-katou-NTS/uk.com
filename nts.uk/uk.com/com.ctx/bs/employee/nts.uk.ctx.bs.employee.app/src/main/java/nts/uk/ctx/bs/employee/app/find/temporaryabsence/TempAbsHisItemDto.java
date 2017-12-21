@@ -27,8 +27,8 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 	/**
 	 * 休職期間
 	 */
-	// @PeregItem("IS00087")
-	// private DateHistoryItem dateHistoryItem;
+	@PeregItem("IS00086")
+	private String periodName;
 
 	/**
 	 * 休業開始日
@@ -94,13 +94,13 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 	 * 社会保険支給対象区分
 	 */
 	@PeregItem("IS00097")
-	private String remarks;
+	private Integer soInsPayCategory;
 
 	/**
 	 * 備考
 	 */
 	@PeregItem("IS00098")
-	private Integer soInsPayCategory;
+	private String remarks;
 
 	public TempAbsHisItemDto() {
 

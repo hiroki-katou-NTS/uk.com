@@ -508,7 +508,7 @@ module cps001.a.vm {
                                 layout().listItemCls(data.classificationItems || []);
                             }
                         });
-                    } else {
+                    } else if (self.category().categoryType() != IT_CAT_TYPE.SINGLE) {
                         let id = self.id(),
                             catid = self.categoryId(),
                             query = {
@@ -535,7 +535,7 @@ module cps001.a.vm {
                             categoryId: catid || id,
                             personId: self.personId(),
                             employeeId: self.employeeId(),
-                            standardDate: moment.utc(),
+                            standardDate: undefined,
                             categoryCode: category.categoryCode()
                         };
                     switch (t) {

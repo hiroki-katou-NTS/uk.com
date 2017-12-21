@@ -1,6 +1,7 @@
 #contents-area{
-	margin-top: 14px;
-    margin-left: 20px;
+	padding-top: 14px;
+    padding-left: 30px;
+    box-sizing: border-box;
 }
 
 #button24 {
