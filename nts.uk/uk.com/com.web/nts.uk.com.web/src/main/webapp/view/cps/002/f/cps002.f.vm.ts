@@ -121,6 +121,7 @@ module cps002.f.vm {
     interface IPerInfoItemDef {
         id: string,
         itemName: string,
+        itemCd:string,
         perCtgId: string,
         alreadyItemDefCopy: boolean,
         itemParentCd: string
