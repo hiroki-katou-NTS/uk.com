@@ -63,7 +63,7 @@ module nts.uk.ui.koExtentions {
 
             constructSite.buildImageDropEvent();
             
-            $element.find(".image-holder").width(width).height(height);
+            $element.find(".image-holder").width(width - 12).height(height - 12);
 
             return { 'controlsDescendantBindings': true };
         }
@@ -152,7 +152,8 @@ module nts.uk.ui.koExtentions {
             this.$previewArea.appendTo(this.$root.find(".image-editor-container"));
             let imagePreviewId = nts.uk.util.randomId();
 
-            let $imageHolder = $("<div>", { "class": "image-holder image-editor-component" }).appendTo(this.$previewArea);
+            let $imageContainer = $("<div>", { "class": "image-container container-no-upload-background" }).appendTo(this.$previewArea);
+            let $imageHolder = $("<div>", { "class": "image-holder image-editor-component image-upload-icon" }).appendTo($imageContainer);
             this.$imagePreview = $("<img>", { "class": "image-preview", "id": imagePreviewId }).appendTo($imageHolder);
         }
 
@@ -259,6 +260,8 @@ module nts.uk.ui.koExtentions {
                                         fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
                                     self.backupData(null, fileName, fileType, xhr.response.size);
                                     self.$imagePreview.attr("src", reader.result);
+                                    self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
+                                    self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
                                 });
                             };    
                         } else {
@@ -267,7 +270,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         self.destroyImg();
                     }
-                };
+                }; 
                 xhr.send();
             });
         }
@@ -278,6 +281,8 @@ module nts.uk.ui.koExtentions {
             self.$root.data("img-status", self.buildImgStatus("load fail", 3));
             self.backupData(null, "", "", 0);
             self.$imagePreview.attr("src", "");
+            self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
+            self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
             self.$imageSizeLbl.text("");
             if(!nts.uk.util.isNullOrUndefined(self.cropper)){
                 self.cropper.destroy();     
@@ -350,17 +355,22 @@ module nts.uk.ui.koExtentions {
     }
 
     class ImageEditorHelper {
-        IMAGE_EXTENSION: Array<string> = [".png", ".jpg", ".jpeg"]; 
+        IMAGE_EXTENSION: Array<string> = [".png",".PNG", ".jpg",".JPG",".JPEG", ".jpeg"]; 
         data: SrcChangeQuery;
         BYTE_SIZE: number = 1024;
         SIZE_UNITS: Array<string> = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
         msgIdForUnknownFile: string;
 
         constructor(extensions?: Array<string>, msgIdForUnknownFile?: string, query?: SrcChangeQuery) {
-            this.data = query;
-            this.msgIdForUnknownFile = msgIdForUnknownFile;
+            let self = this;
+            self.data = query;
+            self.msgIdForUnknownFile = msgIdForUnknownFile;
             if (!nts.uk.util.isNullOrEmpty(extensions)) {
-                this.IMAGE_EXTENSION = extensions;
+                self.IMAGE_EXTENSION = [];
+                _.forEach(extensions, function(ex: string){
+                    self.IMAGE_EXTENSION.push(ex.toLowerCase());
+                    self.IMAGE_EXTENSION.push(ex.toUpperCase());
+                });
             }
         }
 

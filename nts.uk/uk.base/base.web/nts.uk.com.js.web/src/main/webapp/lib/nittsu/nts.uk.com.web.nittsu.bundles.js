@@ -25169,7 +25169,7 @@ var nts;
                         constructSite.buildImageLoadedHandler(zoomble, customOption);
                         constructSite.buildSrcChangeHandler();
                         constructSite.buildImageDropEvent();
-                        $element.find(".image-holder").width(width).height(height);
+                        $element.find(".image-holder").width(width - 12).height(height - 12);
                         return { 'controlsDescendantBindings': true };
                     };
                     /**
@@ -25229,7 +25229,8 @@ var nts;
                         this.$previewArea = $("<div>", { "class": "image-preview-container image-editor-area" });
                         this.$previewArea.appendTo(this.$root.find(".image-editor-container"));
                         var imagePreviewId = nts.uk.util.randomId();
-                        var $imageHolder = $("<div>", { "class": "image-holder image-editor-component" }).appendTo(this.$previewArea);
+                        var $imageContainer = $("<div>", { "class": "image-container container-no-upload-background" }).appendTo(this.$previewArea);
+                        var $imageHolder = $("<div>", { "class": "image-holder image-editor-component image-upload-icon" }).appendTo($imageContainer);
                         this.$imagePreview = $("<img>", { "class": "image-preview", "id": imagePreviewId }).appendTo($imageHolder);
                     };
                     ImageEditorConstructSite.prototype.buildUploadAction = function () {
@@ -25327,6 +25328,8 @@ var nts;
                                                 var fileType = xhr.response.type.split("/")[1], fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
                                                 self.backupData(null, fileName, fileType, xhr.response.size);
                                                 self.$imagePreview.attr("src", reader.result);
+                                                self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
+                                                self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
                                             });
                                         };
                                     }
@@ -25347,6 +25350,8 @@ var nts;
                         self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                         self.backupData(null, "", "", 0);
                         self.$imagePreview.attr("src", "");
+                        self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
+                        self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
                         self.$imageSizeLbl.text("");
                         if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
                             self.cropper.destroy();
@@ -25418,13 +25423,18 @@ var nts;
                 }());
                 var ImageEditorHelper = (function () {
                     function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
-                        this.IMAGE_EXTENSION = [".png", ".jpg", ".jpeg"];
+                        this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
                         this.BYTE_SIZE = 1024;
                         this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-                        this.data = query;
-                        this.msgIdForUnknownFile = msgIdForUnknownFile;
+                        var self = this;
+                        self.data = query;
+                        self.msgIdForUnknownFile = msgIdForUnknownFile;
                         if (!nts.uk.util.isNullOrEmpty(extensions)) {
-                            this.IMAGE_EXTENSION = extensions;
+                            self.IMAGE_EXTENSION = [];
+                            _.forEach(extensions, function (ex) {
+                                self.IMAGE_EXTENSION.push(ex.toLowerCase());
+                                self.IMAGE_EXTENSION.push(ex.toUpperCase());
+                            });
                         }
                     }
                     ImageEditorHelper.prototype.toStringExtension = function () {
