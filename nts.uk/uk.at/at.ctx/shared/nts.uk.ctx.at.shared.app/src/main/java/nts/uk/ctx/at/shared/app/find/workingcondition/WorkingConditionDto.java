@@ -927,21 +927,23 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {
-		if(holidayTime.getWorkTypeCode()!= null)
-		dto.setHolidayWorkTypeCode(holidayTime.getWorkTypeCode().v());
+		if(holidayTime != null)
+			dto.setHolidayWorkTypeCode(holidayTime.getWorkTypeCode().v());
 	}
 
 	private static void setWeekDay(WorkingConditionDto dto, SingleDaySchedule weekDay) {
-		dto.setWeekdayWorkTypeCode(weekDay.getWorkTypeCode().v());
-		dto.setWeekdayWorkTimeCode(weekDay.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setWeekDayStartTime1(timeZone1.getStart().v());
-		dto.setWeekDayEndTime1(timeZone1.getEnd().v());
-		dto.setWeekDayStartTime2(timeZone2.getStart().v());
-		dto.setWeekDayEndTime2(timeZone2.getEnd().v());
+		if(weekDay != null){
+			dto.setWeekdayWorkTypeCode(weekDay.getWorkTypeCode().v());
+			dto.setWeekdayWorkTimeCode(weekDay.getWorkTimeCode().get().v());
+			TimeZone timeZone1 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
+					.get();
+			TimeZone timeZone2 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
+					.get();
+			dto.setWeekDayStartTime1(timeZone1.getStart().v());
+			dto.setWeekDayEndTime1(timeZone1.getEnd().v());
+			dto.setWeekDayStartTime2(timeZone2.getStart().v());
+			dto.setWeekDayEndTime2(timeZone2.getEnd().v());
+		}
 	}
 
 	private static void setWorkInHoliday(WorkingConditionDto dto, SingleDaySchedule workInHoliday) {
