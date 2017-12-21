@@ -15,7 +15,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemNote;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AffJobTitleHistoryItem extends AggregateRoot{
+public class AffJobTitleHistoryItem_ver1 extends AggregateRoot{
 
 	
 	/** The history Id. */
@@ -34,7 +34,7 @@ public class AffJobTitleHistoryItem extends AggregateRoot{
 	// 備考
 	private AffJobTitleHistoryItemNote note;
 	
-	public static AffJobTitleHistoryItem createFromJavaType(String histId, String employeeId, String jobTitleId, String note){
-		return new AffJobTitleHistoryItem(histId,employeeId, jobTitleId, new AffJobTitleHistoryItemNote(note));
+	public static AffJobTitleHistoryItem_ver1 createFromJavaType(String histId, String employeeId, String jobTitleId, String note){
+		return new AffJobTitleHistoryItem_ver1(histId,employeeId, jobTitleId, new AffJobTitleHistoryItemNote(note));
 	}
 }
