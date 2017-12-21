@@ -6,13 +6,13 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHistItem;
 
 @Stateless
 public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
-		implements AffJobTitleHistoryItemRepository_v1 {
+		implements AffJobTitleHistoryItemRepository_ver1 {
 	
 	private final String GET_BY_SID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " inner join BsymtAffJobTitleHist h on hi.hisId = h.hisId"
@@ -24,7 +24,7 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	 * @param domain
 	 * @return
 	 */
-	private BsymtAffJobTitleHistItem toEntity(AffJobTitleHistoryItem domain) {
+	private BsymtAffJobTitleHistItem toEntity(AffJobTitleHistoryItem_ver1 domain) {
 		return new BsymtAffJobTitleHistItem(domain.getHistoryId(), domain.getEmployeeId(), domain.getJobTitleId(),
 				domain.getNote().v());
 	}
@@ -35,7 +35,7 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	 * @param domain
 	 * @param entity
 	 */
-	private void updateEntity(AffJobTitleHistoryItem domain, BsymtAffJobTitleHistItem entity) {
+	private void updateEntity(AffJobTitleHistoryItem_ver1 domain, BsymtAffJobTitleHistItem entity) {
 		if (domain.getJobTitleId() != null){
 			entity.jobTitleId = domain.getJobTitleId();
 		}
@@ -45,12 +45,12 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	}
 
 	@Override
-	public void add(AffJobTitleHistoryItem domain) {
+	public void add(AffJobTitleHistoryItem_ver1 domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	public void update(AffJobTitleHistoryItem domain) {
+	public void update(AffJobTitleHistoryItem_ver1 domain) {
 
 		Optional<BsymtAffJobTitleHistItem> existItem = this.queryProxy().find(domain.getHistoryId(),
 				BsymtAffJobTitleHistItem.class);
@@ -74,13 +74,13 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 		this.commandProxy().remove(BsymtAffJobTitleHistItem.class, histId);
 	}
 
-	private AffJobTitleHistoryItem toDomain(BsymtAffJobTitleHistItem ent) {
-		return AffJobTitleHistoryItem.createFromJavaType(ent.hisId, ent.sid, ent.jobTitleId,
+	private AffJobTitleHistoryItem_ver1 toDomain(BsymtAffJobTitleHistItem ent) {
+		return AffJobTitleHistoryItem_ver1.createFromJavaType(ent.hisId, ent.sid, ent.jobTitleId,
 				ent.note);
 	}
 
 	@Override
-	public Optional<AffJobTitleHistoryItem> findByHitoryId(String historyId) {
+	public Optional<AffJobTitleHistoryItem_ver1> findByHitoryId(String historyId) {
 		Optional<BsymtAffJobTitleHistItem> optionData = this.queryProxy().find(historyId,
 				BsymtAffJobTitleHistItem.class);
 		if (optionData.isPresent()) {
@@ -90,13 +90,13 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	}
 	
 	@Override
-	public Optional<AffJobTitleHistoryItem> getByEmpIdAndReferDate(String employeeId, GeneralDate referDate) {
+	public Optional<AffJobTitleHistoryItem_ver1> getByEmpIdAndReferDate(String employeeId, GeneralDate referDate) {
 		Optional<BsymtAffJobTitleHistItem> optionData = this.queryProxy()
 				.query(GET_BY_SID_DATE, BsymtAffJobTitleHistItem.class).setParameter("sid", employeeId)
 				.setParameter("referDate", referDate).getSingle();
 		if (optionData.isPresent()) {
 			BsymtAffJobTitleHistItem ent = optionData.get();
-			return Optional.of(AffJobTitleHistoryItem.createFromJavaType(ent.hisId, ent.sid,
+			return Optional.of(AffJobTitleHistoryItem_ver1.createFromJavaType(ent.hisId, ent.sid,
 					ent.jobTitleId, ent.note));
 		}
 		return Optional.empty();
