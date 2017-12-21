@@ -228,7 +228,7 @@ module nts.uk.at.view.kmk003.a {
                     morning.amPmAtr(1);
                     let afternoon = new DiffTimeHalfDayWorkTimezoneModel();
                     afternoon.amPmAtr(2);
-                    let list = [];
+                    let list: any[] = [];
                     list.push(oneday);
                     list.push(morning);
                     list.push(afternoon);

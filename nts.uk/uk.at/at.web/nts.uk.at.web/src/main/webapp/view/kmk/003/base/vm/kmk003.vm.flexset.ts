@@ -135,7 +135,7 @@ module nts.uk.at.view.kmk003.a {
                     morning.ampmAtr(1);
                     let afternoon = new FlexHalfDayWorkTimeModel();
                     afternoon.ampmAtr(2);
-                    let list = [];
+                    let list: any[] = [];
                     list.push(oneday);
                     list.push(morning);
                     list.push(afternoon);

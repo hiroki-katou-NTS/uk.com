@@ -27,7 +27,7 @@ public class WorkTimezoneCommonSet extends DomainObject {
 
 	/** The sub hol time set. */
 	// 代休時間設定
-	private WorkTimezoneOtherSubHolTimeSet subHolTimeSet;
+	private List<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet;
 
 	/** The raising salary set. */
 	// 加給設定

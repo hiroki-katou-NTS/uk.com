@@ -248,7 +248,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimezoneCommonSetDto {
                     zeroHStraddCalculateSet: boolean;
                     intervalSet: IntervalTimeSettingDto;
-                    subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto;
+                    subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[];
                     raisingSalarySet: string;
                     medicalSet: WorkTimezoneMedicalSetDto[];
                     goOutSet: WorkTimezoneGoOutSetDto;

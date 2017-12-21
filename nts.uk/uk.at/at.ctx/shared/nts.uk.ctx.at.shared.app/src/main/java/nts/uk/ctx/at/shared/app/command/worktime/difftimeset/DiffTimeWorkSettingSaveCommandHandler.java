@@ -42,7 +42,7 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 		DiffTimeWorkSetting diffTimeDomain = command.toDomainDiffTimeWorkSetting();
 
 		// save common
-		this.workTimeCommonSaveCommandHandler.handler(command);
+		this.workTimeCommonSaveCommandHandler.handle(command);
 
 		// save difftime to DB
 		this.diffTimeWorkSettingRepository.save(diffTimeDomain);

@@ -35,7 +35,7 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	private IntervalTimeSettingDto intervalSet;
 
 	/** The sub hol time set. */
-	private WorkTimezoneOtherSubHolTimeSetDto subHolTimeSet;
+	private List<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeSet;
 
 	/** The raising salary set. */
 	private String raisingSalarySet;
@@ -93,8 +93,8 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	 * getSubHolTimeSet()
 	 */
 	@Override
-	public WorkTimezoneOtherSubHolTimeSet getSubHolTimeSet() {
-		return new WorkTimezoneOtherSubHolTimeSet(this.subHolTimeSet);
+	public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {
+		return this.subHolTimeSet.stream().map(item -> new WorkTimezoneOtherSubHolTimeSet(item)).collect(Collectors.toList());
 	}
 
 	/*

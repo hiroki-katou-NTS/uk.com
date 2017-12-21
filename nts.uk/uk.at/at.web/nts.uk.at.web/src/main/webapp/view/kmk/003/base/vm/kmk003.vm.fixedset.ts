@@ -70,7 +70,7 @@ module nts.uk.at.view.kmk003.a {
                     morning.dayAtr(1);
                     let afternoon = new FixHalfDayWorkTimezoneModel();
                     afternoon.dayAtr(2);
-                    let list = [];
+                    let list: any[] = [];
                     list.push(oneday);
                     list.push(morning);
                     list.push(afternoon);

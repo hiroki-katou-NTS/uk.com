@@ -32,14 +32,14 @@ public interface WorkTimezoneCommonSetSetMemento {
 	 *
 	 * @param shtSet the new sub hol time set
 	 */
-	 void setSubHolTimeSet(WorkTimezoneOtherSubHolTimeSet shtSet);
+	 void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet);
 
 	/**
 	 * Sets the raising salary set.
 	 *
 	 * @param set the new raising salary set
 	 */
-void setRaisingSalarySet(BonusPaySettingCode set);
+	 void setRaisingSalarySet(BonusPaySettingCode set);
 
 	/**
 	 * Sets the medical set.

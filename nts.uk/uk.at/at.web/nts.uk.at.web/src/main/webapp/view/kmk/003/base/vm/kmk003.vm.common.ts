@@ -181,7 +181,7 @@ module nts.uk.at.view.kmk003.a {
             export class WorkTimezoneCommonSetModel {
                 zeroHStraddCalculateSet: KnockoutObservable<boolean>;
                 intervalSet: IntervalTimeSettingModel;
-                subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel;
+                subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[];
                 raisingSalarySet: KnockoutObservable<string>;
                 medicalSet: WorkTimezoneMedicalSetModel[];
                 goOutSet: WorkTimezoneGoOutSetModel;
@@ -194,7 +194,7 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.zeroHStraddCalculateSet = ko.observable(false);
                     this.intervalSet = new IntervalTimeSettingModel();
-                    this.subHolTimeSet = new WorkTimezoneOtherSubHolTimeSetModel();
+                    this.subHolTimeSet = [];
                     this.raisingSalarySet = ko.observable('');
                     this.medicalSet = [];
                     this.goOutSet = new WorkTimezoneGoOutSetModel();
@@ -209,11 +209,15 @@ module nts.uk.at.view.kmk003.a {
                     if (data) {
                         this.zeroHStraddCalculateSet(data.zeroHStraddCalculateSet);
                         this.intervalSet.updateData(data.intervalSet);
-                        this.subHolTimeSet.updateData(data.subHolTimeSet);
+                        for (let dataDTO of data.subHolTimeSet) {
+                            let dataModel: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
+                            dataModel.updateData(dataDTO);
+                            this.subHolTimeSet.push(dataModel);
+                        }
                         this.raisingSalarySet(data.raisingSalarySet);
                         this.medicalSet = [];
-                        for (var dataDTO of data.medicalSet) {
-                            var dataModel: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
+                        for (let dataDTO of data.medicalSet) {
+                            let dataModel: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
                             dataModel.updateData(dataDTO);
                             this.medicalSet.push(dataModel);
                         }
@@ -227,14 +231,18 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): WorkTimezoneCommonSetDto {
-                    var medicalSet: WorkTimezoneMedicalSetDto[] = [];
-                    for (var dataModel of this.medicalSet) {
+                    let subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[] = [];    
+                    for (let dataModel of this.subHolTimeSet) {
+                        subHolTimeSet.push(dataModel.toDto());
+                    }
+                    let medicalSet: WorkTimezoneMedicalSetDto[] = [];                    
+                    for (let dataModel of this.medicalSet) {
                         medicalSet.push(dataModel.toDto());
                     }
                     var dataDTO: WorkTimezoneCommonSetDto = {
                         zeroHStraddCalculateSet: this.zeroHStraddCalculateSet(),
                         intervalSet: this.intervalSet.toDto(),
-                        subHolTimeSet: this.subHolTimeSet.toDto(),
+                        subHolTimeSet: subHolTimeSet,
                         raisingSalarySet: this.raisingSalarySet(),
                         medicalSet: medicalSet,
                         goOutSet: this.goOutSet.toDto(),
