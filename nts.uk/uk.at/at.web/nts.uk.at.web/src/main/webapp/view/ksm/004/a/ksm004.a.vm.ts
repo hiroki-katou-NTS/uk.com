@@ -183,8 +183,8 @@ module nts.uk.at.view.ksm004.a {
                                 self.currentCalendarWorkPlace().name(item.name);
                             } else {
                                 self.currentCalendarWorkPlace().name('');
-                            }    
-                            self.getCalenderWorkPlaceByCode(value)
+                            }
+                            $.when(self.getCalendarWorkplaceSet(value),self.getCalenderWorkPlaceByCode(value))
                             .done(()=>{ nts.uk.ui.block.clear(); })
                             .fail((res) => {
                                 nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
@@ -200,8 +200,8 @@ module nts.uk.at.view.ksm004.a {
                                 self.currentCalendarClass().name(item.name);
                             } else {
                                 self.currentCalendarClass().name('');
-                            }   
-                            self.getCalendarClassById(value)
+                            }
+                            $.when(self.getCalendarClassSet(value),self.getCalendarClassById(value))
                             .done(()=>{nts.uk.ui.block.clear();})
                             .fail((res) => {
                                 nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
@@ -482,6 +482,10 @@ module nts.uk.at.view.ksm004.a {
                         self.cssRangerYM1(a);
                         $("#yearMonthPicker2").datepicker("hide");
                         $("#yearMonthPicker2").datepicker("show");
+                    }else{
+                        self.cssRangerYM1([]);
+                        $("#yearMonthPicker2").datepicker("hide");
+                        $("#yearMonthPicker2").datepicker("show");
                     }
                     dfd.resolve(); 
                 }).fail(res => {
@@ -499,6 +503,10 @@ module nts.uk.at.view.ksm004.a {
                         a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM2(a);
+                        $("#yearMonthPicker3").datepicker("hide");
+                        $("#yearMonthPicker3").datepicker("show");
+                    }else{
+                        self.cssRangerYM2([]);
                         $("#yearMonthPicker3").datepicker("hide");
                         $("#yearMonthPicker3").datepicker("show");
                     }
