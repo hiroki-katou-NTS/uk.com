@@ -32,6 +32,7 @@ public class WorkTimeSettingFinder {
 	@Inject
 	private PredetemineTimeSetFinder predetemineTimeSetFinder;
 
+	
 	/**
 	 * Find all simple.
 	 *

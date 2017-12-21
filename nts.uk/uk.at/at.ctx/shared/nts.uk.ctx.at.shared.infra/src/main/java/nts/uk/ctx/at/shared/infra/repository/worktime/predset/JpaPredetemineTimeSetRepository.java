@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -38,50 +39,82 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	 * java.lang.String)
 	 */
 	@Override
-	public PredetemineTimeSetting findByWorkTimeCode(String companyId, String workTimeCode) {
+	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+
+		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.findById(companyId, workTimeCode);
+
+		if (optionalEntityTimeSet.isPresent()) {
+			return Optional.ofNullable(new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(
+					optionalEntityTimeSet.get(), this.findWorktimeSheet(companyId, workTimeCode))));
+		}
+
+		return Optional.empty();
+	}
+
+	/**
+	 * Find worktime sheet.
+	 *
+	 * @param companyId the company id
+	 * @param worktimeCode the worktime code
+	 * @return the list
+	 */
+	private List<KshmtWorkTimeSheetSet> findWorktimeSheet(String companyId, String worktimeCode) {
+
 		// get entity manager
-		EntityManager em1 = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder1 = em1.getCriteriaBuilder();
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		EntityManager em2 = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder2 = em2.getCriteriaBuilder();
-
-		CriteriaQuery<KshmtPredTimeSet> cq = criteriaBuilder1.createQuery(KshmtPredTimeSet.class);
-		Root<KshmtPredTimeSet> root = cq.from(KshmtPredTimeSet.class);
-
-		CriteriaQuery<KshmtWorkTimeSheetSet> cq2 = criteriaBuilder2.createQuery(KshmtWorkTimeSheetSet.class);
-		Root<KshmtWorkTimeSheetSet> root2 = cq2.from(KshmtWorkTimeSheetSet.class);
+		CriteriaQuery<KshmtWorkTimeSheetSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSheetSet.class);
+		Root<KshmtWorkTimeSheetSet> root = cq.from(KshmtWorkTimeSheetSet.class);
 
 		cq.select(root);
-		cq2.select(root2);
-
-		// add where
+		// +++++++++++++++++++++++++++++++++++
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder1
-				.equal(root.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.cid), companyId));
 
-		lstpredicateWhere.add(criteriaBuilder1.equal(
-				root.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.worktimeCd), workTimeCode));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.worktimeCd),
+				worktimeCode));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		KshmtPredTimeSet kwtstWorkTimeSet = em1.createQuery(cq).getSingleResult();
+		return em.createQuery(cq).getResultList();
+	}
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param companyId the company id
+	 * @param worktimeCode the worktime code
+	 * @return the optional
+	 */
+	private Optional<KshmtPredTimeSet> findById(String companyId, String worktimeCode) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// +++++++++++++++++++++++++++++++++++
-		List<Predicate> lstpredicateWhere2 = new ArrayList<>();
-		lstpredicateWhere2.add(criteriaBuilder2.equal(
-				root2.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.cid),
-				companyId));
+		CriteriaQuery<KshmtPredTimeSet> cq = criteriaBuilder.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> root = cq.from(KshmtPredTimeSet.class);
 
-		lstpredicateWhere2.add(criteriaBuilder2.equal(
-				root2.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.worktimeCd),
-				workTimeCode));
+		cq.select(root);
 
-		cq2.where(lstpredicateWhere2.toArray(new Predicate[] {}));
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyId));
 
-		List<KshmtWorkTimeSheetSet> lstKshmtWorkTimeSheetSet = em2.createQuery(cq2).getResultList();
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.worktimeCd), worktimeCode));
 
-		return new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(kwtstWorkTimeSet, lstKshmtWorkTimeSheetSet));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		try {
+			KshmtPredTimeSet entity = em.createQuery(cq).getSingleResult();
+			return Optional.ofNullable(entity);
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 	/*
@@ -93,11 +126,24 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	 */
 	@Override
 	public void save(PredetemineTimeSetting domain) {
-		KshmtPredTimeSet entity = new KshmtPredTimeSet();
-		List<KshmtWorkTimeSheetSet> lstEntityTime = new ArrayList<>();
-		domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity, lstEntityTime));
-		this.commandProxy().update(entity);
-		this.commandProxy().updateAll(lstEntityTime);
+
+		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.findById(domain.getCompanyId(),
+				domain.getWorkTimeCode().v());
+		if (optionalEntityTimeSet.isPresent()) {
+			KshmtPredTimeSet entity = optionalEntityTimeSet.get();
+			List<KshmtWorkTimeSheetSet> lstEntityTime = this.findWorktimeSheet(domain.getCompanyId(),
+					domain.getWorkTimeCode().v());
+			domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity, lstEntityTime));
+			this.commandProxy().update(entity);
+			this.commandProxy().updateAll(lstEntityTime);
+		} else {
+			KshmtPredTimeSet entity = new KshmtPredTimeSet();
+			List<KshmtWorkTimeSheetSet> lstEntityTime = new ArrayList<>();
+			domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity, lstEntityTime));
+			this.commandProxy().insert(entity);
+			this.commandProxy().insertAll(lstEntityTime);
+		}
+
 	}
 
 }

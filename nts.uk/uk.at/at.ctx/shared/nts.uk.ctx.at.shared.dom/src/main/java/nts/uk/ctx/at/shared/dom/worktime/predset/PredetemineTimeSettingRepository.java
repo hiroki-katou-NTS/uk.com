@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.util.Optional;
+
 /**
  * The Interface PredetemineTimeSetRepository.
  */
@@ -16,7 +18,7 @@ public interface PredetemineTimeSettingRepository {
 	 * @param workTimeCode the work time code
 	 * @return the predetemine time set
 	 */
-	public PredetemineTimeSetting findByWorkTimeCode(String companyId, String workTimeCode);
+	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
 	
 	/**
 	 * Save.
