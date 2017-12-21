@@ -202,10 +202,7 @@ module a8 {
          */
         private changeBindingSimple(goOutSet: WorkTimezoneGoOutSetModel): void {
             let _self = this;
-            _self.totalRoundingModel = goOutSet.totalRoundingSet;  
-            _self.pubHolWorkTimezoneModel = goOutSet.diffTimezoneSetting.pubHolWorkTimezone;
-            _self.workTimezoneModel = goOutSet.diffTimezoneSetting.workTimezone;
-            _self.otTimezoneModel = goOutSet.diffTimezoneSetting.ottimezone;      
+            _self.changeBindingDetail(goOutSet);
         } 
     }
     

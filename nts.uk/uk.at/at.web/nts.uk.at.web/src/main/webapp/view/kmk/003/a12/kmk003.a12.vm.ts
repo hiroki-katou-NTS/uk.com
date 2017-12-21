@@ -164,7 +164,7 @@ module a12 {
          */
         private changeBindingSimple(lateNightSetting: TimeRoundingSettingModel): void {
             let _self = this;
-            _self.lateNightSetting = lateNightSetting;
+            _self.changeBindingDetail(lateNightSetting);    
         }
     }
       

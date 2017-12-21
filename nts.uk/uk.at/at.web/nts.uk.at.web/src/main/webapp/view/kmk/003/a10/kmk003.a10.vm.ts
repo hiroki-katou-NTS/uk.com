@@ -153,7 +153,7 @@ module a10 {
          */
         private changeBindingSimple(raisingSalarySet: KnockoutObservable<string>): void {
             let _self = this;
-            _self.bonusPaySettingCode = raisingSalarySet;
+            _self.changeBindingDetail(raisingSalarySet);
         }              
     }
     

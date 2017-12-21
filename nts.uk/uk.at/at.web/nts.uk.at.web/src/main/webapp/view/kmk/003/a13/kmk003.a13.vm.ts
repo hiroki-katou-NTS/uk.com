@@ -163,7 +163,7 @@ module a13 {
          */
         private changeBindingSimple(temporaryWorkTimeSetting: TimeRoundingSettingModel): void {
             let _self = this;
-            _self.temporaryWorkTimeSetting = temporaryWorkTimeSetting;
+            _self.changeBindingDetail(temporaryWorkTimeSetting);  
         }
     }
     

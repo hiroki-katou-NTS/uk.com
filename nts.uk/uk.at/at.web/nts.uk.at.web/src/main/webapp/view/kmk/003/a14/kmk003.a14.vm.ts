@@ -169,8 +169,7 @@ module a14 {
          */
         private changeBindingSimple(shortTimeWorkSet: WorkTimezoneShortTimeWorkSetModel): void {
             let _self = this;
-            _self.childCareWorkUse = shortTimeWorkSet.childCareWorkUse;
-            _self.nursingTimeWorkUse = shortTimeWorkSet.nursTimezoneWorkUse;
+            _self.changeBindingDetail(shortTimeWorkSet);  
         }
     }
     

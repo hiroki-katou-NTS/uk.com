@@ -188,12 +188,7 @@ module a15 {
          */
         private changeBindingSimple(medicalSet: WorkTimezoneMedicalSetModel[]): void {
             let _self = this;
-            let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
-            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);
-            _self.dayShiftApplicationTime = dayShiftMedicalSet.applicationTime;   
-            _self.dayShiftSetting = dayShiftMedicalSet.roundingSet;
-            _self.nightShiftApplicationTime = nightShiftMedicalSet.applicationTime;   
-            _self.nightShiftSetting = nightShiftMedicalSet.roundingSet;
+            _self.changeBindingDetail(medicalSet);  
         }
     }
     
