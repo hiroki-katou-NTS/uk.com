@@ -15,8 +15,16 @@ import javax.ws.rs.Produces;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.DiffTimeWorkSettingSaveCommand;
+import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.DiffTimeWorkSettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.worktime.fixedset.FixedWorkSettingSaveCommand;
+import nts.uk.ctx.at.shared.app.command.worktime.fixedset.FixedWorkSettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.worktime.flexset.FlexWorkSettingSaveCommand;
+import nts.uk.ctx.at.shared.app.command.worktime.flexset.FlexWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommand;
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeSettingInfoFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime_old.WorkTimeFinder;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 
@@ -36,8 +44,23 @@ public class WorkTimeWebService extends WebService {
 
 	/** The flow handler. */
 	@Inject
-	private FlowWorkSettingSaveCommandHandler flowHandler;
+	private FixedWorkSettingSaveCommandHandler fixedHandler;
 
+	/** The flow handler. */
+	@Inject
+	private DiffTimeWorkSettingSaveCommandHandler diffTimeHandler;
+	
+	/** The flow handler. */
+	@Inject
+	private FlowWorkSettingSaveCommandHandler flowHandler;
+	
+	/** The flow handler. */
+	@Inject
+	private FlexWorkSettingSaveCommandHandler flexHandler;
+	
+	@Inject
+	private WorkTimeSettingInfoFinder workTimeSettingInfoFinder;
+	
 	/**
 	 * Find by company ID.
 	 *
@@ -105,7 +128,7 @@ public class WorkTimeWebService extends WebService {
 	 */
 	@POST
 	@Path("findById/{workTimeCode}")
-	public WorkTimeDto findById(@PathParam("workTimeCode") String workTimeCode){
+	public WorkTimeDto findByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode){
 		return this.workTimeFinder.findById(workTimeCode);
 	}
 
@@ -115,9 +138,54 @@ public class WorkTimeWebService extends WebService {
 	 * @param command the command
 	 */
 	@POST
+	@Path("fixedset/save")
+	public void save(FixedWorkSettingSaveCommand command){
+		this.fixedHandler.handle(command);
+	}
+	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
 	@Path("flowset/save")
 	public void save(FlowWorkSettingSaveCommand command){
 		this.flowHandler.handle(command);
+	}
+	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("difftimeset/save")
+	public void save(DiffTimeWorkSettingSaveCommand command){
+		this.diffTimeHandler.handle(command);
+	}
+	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("flexset/save")
+	public void save(FlexWorkSettingSaveCommand command){
+		this.flexHandler.handle(command);
+	}
+	
+	/**
+	 * Find info by work time code.
+	 *
+	 * @param workTimeCode the work time code
+	 * @return the work time setting info dto
+	 */
+	@POST
+	@Path("findInfo/{workTimeCode}")
+	public WorkTimeSettingInfoDto findInfoByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode){
+		return this.workTimeSettingInfoFinder.find(workTimeCode);
 	}
 }
 
