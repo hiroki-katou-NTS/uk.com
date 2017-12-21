@@ -20,28 +20,8 @@ module a1 {
 
         afterUpdateWorkTimeOption: KnockoutObservable<any>;
 
-        firstFixedStartTime: KnockoutObservable<number>;
-        firstFixedEndTime: KnockoutObservable<number>;
 
-        includeOTTime: KnockoutObservable<boolean>;
         secondTimes: KnockoutObservable<boolean>;
-
-        secondFixedStartTime: KnockoutObservable<number>;
-        secondFixedEndTime: KnockoutObservable<number>;
-
-        useCoreTimeOptions: KnockoutObservableArray<Item>;
-        useCoreTime: KnockoutObservable<string>;
-
-        coreTimeStart: KnockoutObservable<number>;
-        coreTimeEnd: KnockoutObservable<number>;
-
-        leastWorkTime: KnockoutObservable<number>;
-        morningEndTime: KnockoutObservable<number>;
-        afternoonStartTime: KnockoutObservable<number>;
-
-        oneDay: KnockoutObservable<number>;
-        morning: KnockoutObservable<number>;
-        afternoon: KnockoutObservable<number>;
 
         isDiffTimeMode: KnockoutObservable<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
@@ -84,32 +64,9 @@ module a1 {
             self.afterUpdateWorkTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
                 width: "50"
             }));
-            self.firstFixedStartTime = ko.observable(0);
-            self.firstFixedEndTime = ko.observable(0);
 
-            self.includeOTTime = ko.observable(true);
             self.secondTimes = ko.observable(true);
 
-            self.secondFixedStartTime = ko.observable(0);
-            self.secondFixedEndTime = ko.observable(0);
-
-            self.useCoreTimeOptions = ko.observableArray([
-                new Item('0', nts.uk.resource.getText("KMK003_158")),
-                new Item('1', nts.uk.resource.getText("KMK003_159"))
-            ]);
-
-            self.useCoreTime = ko.observable('0');
-
-            self.coreTimeStart = ko.observable(0);
-            self.coreTimeEnd = ko.observable(0);
-
-            self.leastWorkTime = ko.observable(0);
-            self.morningEndTime = ko.observable(0);
-            self.afternoonStartTime = ko.observable(0);
-
-            self.oneDay = ko.observable(0);
-            self.morning = ko.observable(0);
-            self.afternoon = ko.observable(0);
             self.isFlexMode = ko.observable(SettingModel.isFlex(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr()));
             self.isDiffTimeMode = ko.observable(SettingModel.isDifftime(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet()));
             self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(function(settingMethod: number){
@@ -133,32 +90,6 @@ module a1 {
                 self.isViewTimezoneTwo(predetermine || self.isDetailMode());
             });
             
-        }
-
-        //bind data to screen items
-        public bindDataToScreen(data: any) {
-            let self = this;
-//            self.dayStartTime(data().startDateClock);
-//            self.oneDayRangeTime(data().rangeTimeDay);
-//            self.nightWorkShift(data().nightShift);
-//            // self.beforeUpdateWorkTime();//diff time
-//            // self.afterUpdateWorkTime();//diff time
-//            let timezone1 = data().prescribedTimezoneSetting.timezone[0];
-//            let timezone2 = data().prescribedTimezoneSetting.timezone[1];
-
-//            self.firstFixedStartTime(timezone1.start.inDayTimeWithFormat);
-//            self.firstFixedEndTime(timezone1.end.inDayTimeWithFormat);
-//            self.secondFixedStartTime(timezone2.start.inDayTimeWithFormat);
-//            self.secondFixedEndTime(timezone2.end.inDayTimeWithFormat);
-            self.useCoreTime();
-            self.coreTimeStart();
-            self.coreTimeEnd();
-            self.leastWorkTime();
-            self.morningEndTime();
-            self.afternoonStartTime();
-            self.oneDay();
-            self.morning();
-            self.afternoon();
         }
 
         public collectData(oldData: any) {

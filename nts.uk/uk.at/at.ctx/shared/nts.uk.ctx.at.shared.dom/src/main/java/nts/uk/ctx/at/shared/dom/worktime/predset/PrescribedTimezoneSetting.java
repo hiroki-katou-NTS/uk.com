@@ -193,4 +193,13 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) && tzWorkNo2.consistOf(this.getAfternoonStartTime());
 	}
 	
+	/**
+	 * Restore disabled data from.
+	 *
+	 * @param domain the domain
+	 */
+	public void restoreDisabledDataFrom(PrescribedTimezoneSetting domain) {
+		TimezoneUse timeTwo = this.getTimezoneShiftTwo();
+	}
+
 }
