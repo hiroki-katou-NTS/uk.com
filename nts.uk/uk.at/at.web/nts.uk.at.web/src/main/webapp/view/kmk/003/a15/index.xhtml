@@ -7,14 +7,20 @@
 	<div class="tab_15_setting_rows">
 		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_118')}</div>
 		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
-			<input tabindex="159" style="width: 80px;" data-bind="ntsTimeEditor: {value: dayShiftApplicationTime, inputFormat: 'time'}" />
+			<input tabindex="159" style="width: 80px;" data-bind="ntsTimeEditor: {
+					value: dayShiftApplicationTime, 
+					inputFormat: 'time',
+					constraint:'OneDayTime' }" />
 		</div>		
 	</div>
 	
 	<div class="tab_15_setting_rows">
 		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_119')}</div>
 		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
-			<input tabindex="160" style="width: 80px;" data-bind="ntsTimeEditor: {value: nightShiftApplicationTime, inputFormat: 'time'}" />
+			<input tabindex="160" style="width: 80px;" data-bind="ntsTimeEditor: {
+					value: nightShiftApplicationTime, 
+					inputFormat: 'time',
+					constraint:'OneDayTime' }" />
 		</div>		
 	</div>
 	

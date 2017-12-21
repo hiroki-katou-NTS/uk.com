@@ -44,6 +44,7 @@ module nts.uk.at.view.kmk003.a {
                     roundingTime: EnumConstantDto[];
                     rounding: EnumConstantDto[];
                     roundingSimple: EnumConstantDto[];
+                    subHolTransferSetAtr: EnumConstantDto[];
                     lstLateEarlyAtr: EnumConstantDto[];
                     workSystemAtr: EnumConstantDto[];
                 }

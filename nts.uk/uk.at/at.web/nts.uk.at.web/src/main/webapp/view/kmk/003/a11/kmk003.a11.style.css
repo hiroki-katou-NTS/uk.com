@@ -16,9 +16,10 @@
 }
 
 .padding-radio {
-	padding: 6px 33px;
+	padding: 10px 40px;
 }
 
 .padding-time {
-	padding: 5px 45px;
+	padding: 5px 20px;
+	display: inline-block;
 }

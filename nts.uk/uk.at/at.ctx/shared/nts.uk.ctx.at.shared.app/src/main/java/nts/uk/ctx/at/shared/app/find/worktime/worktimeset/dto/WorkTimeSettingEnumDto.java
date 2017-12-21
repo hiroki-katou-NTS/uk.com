@@ -12,7 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
@@ -33,10 +33,10 @@ public class WorkTimeSettingEnumDto {
 	/** The work time method set. */
 	private List<EnumConstant> workTimeMethodSet;
 	
-	/** The rounding time. */
+	/** The rounding break timezone. */
 	private List<EnumConstant> roundingBreakTimezone;
 	
-	/** The rounding time. */
+	/** The rounding break time. */
 	private List<EnumConstant> roundingBreakTime;
 	
 	/** The rounding time. */

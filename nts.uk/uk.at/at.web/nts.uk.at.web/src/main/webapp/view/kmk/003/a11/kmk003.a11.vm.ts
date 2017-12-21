@@ -6,6 +6,7 @@ module a11 {
     import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
     
     import WorkTimezoneOtherSubHolTimeSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneOtherSubHolTimeSetModel;
+    import SubHolTransferSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.SubHolTransferSetModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     
@@ -26,13 +27,10 @@ module a11 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        
-        // Simple mode - Data  
+        fromOverTimeTransferSet: SubHolTransferSetModel;
+        workdayOffTimeTransferSet: SubHolTransferSetModel;
     
-        // 休日出勤
-        timeSetHol: KnockoutObservable<TimeSetModel>;
-        // 残業
-        timeSetOT: KnockoutObservable<TimeSetModel>;
+        // Simple mode - Data (nothing)
         
         /**
         * Constructor.
@@ -50,54 +48,149 @@ module a11 {
             _self.model = model; 
             _self.settingEnum = settingEnum;
     
-            // initial data
-            _self.timeSetHol = ko.observable(new TimeSetModel(_self));
-            _self.timeSetOT = ko.observable(new TimeSetModel(_self));
+            // Init all data          
+            _self.fromOverTimeTransferSet = new SubHolTransferSetModel();
+            _self.workdayOffTimeTransferSet = new SubHolTransferSetModel();
+    
+            // Detail mode and simple mode is same
+            _self.isDetailMode = ko.observable(null);
+            _self.isDetailMode.subscribe(newValue => {
+                _self.changeWorkSettingMode();
+            });                                   
+            // Subscribe Work Setting Regular/Flex mode
+            _self.workTimeDailyAtr = ko.observable(0);
+            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
+                _self.workTimeDailyAtr(newValue);
+                _self.changeWorkSettingMode();
+            });  
+            // Subscribe Work Setting Fixed/Diff/Flow mode
+            _self.workTimeMethodSet = ko.observable(0); 
+            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
+                _self.workTimeMethodSet(newValue);
+                _self.changeWorkSettingMode();
+            });                          
+            // Subscribe Detail/Simple mode 
+            screenMode.subscribe((value: any) => {
+                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            });
+            
+            // Binding value 
+            screenMode == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
+            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
 
         /**
-         * bindDataToScreen
+         * UI - All: change WorkSetting mode
          */
-    }
-    
-    /**
-     * TimeSetModel
-     */
-    class TimeSetModel {
-        
-        timeOption: KnockoutObservable<any>;
-        isCertainDaySet: KnockoutObservable<boolean>;
-        
-        checked: KnockoutObservable<boolean>;
-        subTransferSelected: KnockoutObservable<number>;
-        oneDayTime: KnockoutObservable<string>;
-        halfDayTime: KnockoutObservable<string>;
-        certainDayTime: KnockoutObservable<string>;
-        nameIdRadioGroup: string;
+        private changeWorkSettingMode(): void {
+            let _self = this;        
+
+            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
+                // Regular work
+                switch (_self.workTimeMethodSet()) {
+                    case WorkTimeMethodSet.FIXED_WORK: {
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.subHolTimeSet) || 
+                                _self.model.fixedWorkSetting.commonSetting.subHolTimeSet.length === 0) {
+                            _self.model.fixedWorkSetting.commonSetting.subHolTimeSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.subHolTimeSet);                                    
+                    } break;
+                    case WorkTimeMethodSet.DIFFTIME_WORK: {
+                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.subHolTimeSet) || 
+                                _self.model.diffWorkSetting.commonSet.subHolTimeSet.length === 0) {
+                            _self.model.diffWorkSetting.commonSet.subHolTimeSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.subHolTimeSet);                                      
+                    } break;
+                    case WorkTimeMethodSet.FLOW_WORK: {
+                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.subHolTimeSet) || 
+                                _self.model.flowWorkSetting.commonSetting.subHolTimeSet.length === 0) {
+                            _self.model.flowWorkSetting.commonSetting.subHolTimeSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.subHolTimeSet);                 
+                    } break;               
+                    default: {
+                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.subHolTimeSet) || 
+                                _self.model.fixedWorkSetting.commonSetting.subHolTimeSet.length === 0) {
+                            _self.model.fixedWorkSetting.commonSetting.subHolTimeSet = _self.createBinding();                           
+                        } 
+                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.subHolTimeSet);                 
+                    }
+                } 
+            } else {
+                // Flex work
+                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.subHolTimeSet) || 
+                        _self.model.flexWorkSetting.commonSetting.subHolTimeSet.length === 0) {
+                    _self.model.flexWorkSetting.commonSetting.subHolTimeSet = _self.createBinding();                           
+                } 
+                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.subHolTimeSet);           
+            }               
+        }       
         
         /**
-         * Constructor
+         * UI - All: create new Binding data
          */
-        constructor(parentModel: ScreenModel) {
-            let self = this;
+        private createBinding(): WorkTimezoneOtherSubHolTimeSetModel[] {
+            let _self = this;           
+            let result: WorkTimezoneOtherSubHolTimeSetModel[] = [];
             
-            self.timeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
-                width: "50"
-            }));
+            let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
+            fromOverTimeSubstitutionSet.originAtr(OriginAtr.FROM_OVER_TIME);
+            result.push(fromOverTimeSubstitutionSet);
             
-            self.checked = ko.observable(true);
-            self.subTransferSelected = ko.observable(0);
-            self.oneDayTime = ko.observable(null);
-            self.halfDayTime = ko.observable(null);
-            self.certainDayTime = ko.observable(null);
-            self.nameIdRadioGroup = nts.uk.util.randomId();
+            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
+            workdayOffTimeSubstitutionSet.originAtr(OriginAtr.WORK_DAY_OFF_TIME);
+            result.push(workdayOffTimeSubstitutionSet);
             
-            self.isCertainDaySet = ko.computed(() => {
-                return self.subTransferSelected() == 1;
-            });
+            return result;
         }
+        
+        /**
+         * UI - All: change Binding mode
+         */
+        private changeBinding(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
+            let _self = this;
+            if (_self.isDetailMode()) {
+                _self.changeBindingDetail(subHolTimeSet); 
+            } else {
+                _self.changeBindingSimple(subHolTimeSet); 
+            }  
+        }
+        
+        /**
+         * UI - Detail: change Binding Detail mode
+         */
+        private changeBindingDetail(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
+            let _self = this;           
+            let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.FROM_OVER_TIME);
+            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);
+            _self.fromOverTimeTransferSet = fromOverTimeSubstitutionSet.subHolTimeSet;
+            _self.workdayOffTimeTransferSet = workdayOffTimeSubstitutionSet.subHolTimeSet;
+        }
+        
+        /**
+         * UI - Simple: change Binding Simple mode 
+         */
+        private changeBindingSimple(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
+            let _self = this;
+            let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.FROM_OVER_TIME);
+            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);
+            _self.fromOverTimeTransferSet = fromOverTimeSubstitutionSet.subHolTimeSet;
+            _self.workdayOffTimeTransferSet = workdayOffTimeSubstitutionSet.subHolTimeSet;
+        }     
     }
     
+    enum OriginAtr {
+        FROM_OVER_TIME,
+        WORK_DAY_OFF_TIME
+    }
+
+    enum SubHolTransferSetAtr {
+        SPECIFIED_TIME_SUB_HOL,
+        CERTAIN_TIME_EXC_SUB_HOL
+    }
+   
     /**
      * Knockout Binding Handler - Tab 11
      */
@@ -136,8 +229,8 @@ module a11 {
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
                 
                 // update name id for radio
-                $('.inputRadioHol').attr('name', screenModel.timeSetHol().nameIdRadioGroup);
-                $('.inputRadioOT').attr('name', screenModel.timeSetOT().nameIdRadioGroup);
+                $('.inputRadioHol').attr('name', nts.uk.util.randomId() + '_Hol');
+                $('.inputRadioOT').attr('name', nts.uk.util.randomId() + '_Ot');
             });
         }
 
