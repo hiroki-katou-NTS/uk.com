@@ -2,11 +2,10 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
 
 @Getter
 @Setter
-public abstract class ExtractionRangeAbs extends DomainObject {
+public abstract class ExtractionRangeAbs {
 
 	private String ExtractionId;
 	
