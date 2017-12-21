@@ -52,12 +52,12 @@ module a5 {
         morningFlexTimezoneOption: FixTableOption;
         afternoonFlexTimezoneOption: FixTableOption;
 
-        // flex timezones option
+        // difftime timezones option
         oneDayDiffTimezoneOption: FixTableOption;
         morningDiffTimezoneOption: FixTableOption;
         afternoonDiffTimezoneOption: FixTableOption;
 
-        // flex timezones option
+        // fixed timezones option
         oneDayFixedTimezoneOption: FixTableOption;
         morningFixedTimezoneOption: FixTableOption;
         afternoonFixedTimezoneOption: FixTableOption;
@@ -73,8 +73,8 @@ module a5 {
 
         // switch
         switchDs: Array<any>;
-        flexFixedRestTime: KnockoutObservable<number>; // 0 = not use, 1 = use
-        flowFixedRestTime: KnockoutObservable<number>; // 0 = not use, 1 = use
+        flexFixedRestTime: KnockoutObservable<boolean>;
+        flowFixedRestTime: KnockoutObservable<boolean>;
 
         // flag
         isFlex: KnockoutObservable<boolean>;
@@ -87,6 +87,7 @@ module a5 {
         //isTzOfFlexOrFixedOrDiff: KnockoutComputed<boolean>; // ( flex and suru ) or (fix or diff) *23
         isFlowTimezone: KnockoutComputed<boolean>; // flow and suru *24
         isFlowRestTime: KnockoutComputed<boolean>; // flow and nashi *25
+        isFlexTimezone: KnockoutComputed<boolean>; // flex and suru *26
         isFlexRestTime: KnockoutComputed<boolean>; // flex and nashi *26
         display27: KnockoutComputed<boolean>; // A23_7 is checked *27
 
@@ -109,6 +110,11 @@ module a5 {
             self.flowTimezones = ko.observableArray([]);
             self.flowRestSets = ko.observableArray([]);
 
+            // 111
+            self.oneDayAfterRestSet = new FlowRestSettingModel();
+            self.morningAfterRestSet = new FlowRestSettingModel();
+            self.afternoonAfterRestSet = new FlowRestSettingModel();
+
             // checkbox
             self.oneDayAfterRestSetUse = ko.observable(false);
             self.morningAfterRestSetUse = ko.observable(false);
@@ -117,11 +123,11 @@ module a5 {
 
             // switch button
             self.switchDs = [
-                { code: 1, name: nts.uk.resource.getText("KMK003_142") }, // used
-                { code: 0, name: nts.uk.resource.getText("KMK003_143") } // not used
+                { code: true, name: nts.uk.resource.getText("KMK003_142") },
+                { code: false, name: nts.uk.resource.getText("KMK003_143") }
             ];
-            self.flexFixedRestTime = ko.observable(0);
-            self.flowFixedRestTime = ko.observable(0);
+            self.flexFixedRestTime = ko.observable(true); // initial value = lead
+            self.flowFixedRestTime = ko.observable(true); // initial value = lead
             self.flexFixedRestTime.subscribe(vl => console.log(vl));
 
             // init computed
@@ -203,23 +209,30 @@ module a5 {
                 return workTimeAtr() == 1;
             });
             self.isFlow = ko.computed(() => {
-                return workTimeAtr() != 1 && workTimeMethod() == 2;
+                //return workTimeAtr() != 1 && workTimeMethod() == 2;//TODO: hien tai chi lam flex va fixed.
+                return false;
             });
             self.isFixed = ko.computed(() => {
                 return workTimeAtr() != 1 && workTimeMethod() == 0;
             });
             self.isDiffTime = ko.computed(() => {
-                return workTimeAtr() != 1 && workTimeMethod() == 1;
+                //return workTimeAtr() != 1 && workTimeMethod() == 1;//TODO: hien tai chi lam flex va fixed.
+                return false;
             });
 
             self.isFlowTimezone = ko.computed(() => {
-                return self.isFlow() && self.flowFixedRestTime() == 1;
+                //return self.isFlow() && self.flowFixedRestTime() == 1;//TODO: hien tai chi lam flex va fixed.
+                return false;
             });
             self.isFlowRestTime = ko.computed(() => {
-                return self.isFlow() && self.flowFixedRestTime() == 0;
+                //return self.isFlow() && self.flowFixedRestTime() == 0; //TODO: hien tai chi lam flex va fixed.
+                return false;
+            });
+            self.isFlexTimezone = ko.computed(() => {
+                return self.isFlex() && self.flexFixedRestTime() == true;
             });
             self.isFlexRestTime = ko.computed(() => {
-                return self.isFlex() && self.flexFixedRestTime() == 0;
+                return self.isFlex() && self.flexFixedRestTime() == false;
             });
         }
 
@@ -305,7 +318,7 @@ module a5 {
                     headerText: nts.uk.resource.getText("KMK003_174"),
                     key: "startCol",
                     //defaultValue: ko.observable(0),
-                    width: 200,
+                    width: 120,
                     template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 },
@@ -313,7 +326,7 @@ module a5 {
                     headerText: nts.uk.resource.getText("KMK003_176"),
                     key: "endCol",
                     //defaultValue: ko.observable(0),
-                    width: 200,
+                    width: 120,
                     template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 }

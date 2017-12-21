@@ -69,6 +69,40 @@
 	</com:ko>
 	<!-- Fixed timezones -->
 
+	<!-- Flex timezones -->
+	<com:ko tag="if" bind="isFlexTimezone">
+		<!-- One day -->
+		<div tabindex="-1" class="accordion"
+			data-bind="ntsAccordion: {enable: true} ">
+			<h3>
+				<label>#{i18n.getText('KMK003_51')}</label>
+			</h3>
+			<div data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
+		</div>
+		<!-- One day -->
+
+		<!-- Morning -->
+		<div tabindex="-1" class="accordion"
+			data-bind="ntsAccordion: {enable: true} ">
+			<h3>
+				<label>#{i18n.getText('KMK003_60')}</label>
+			</h3>
+			<div data-bind="ntsFixTableCustom: {option: morningFlexTimezoneOption}"></div>
+		</div>
+		<!-- Morning -->
+
+		<!-- Afternoon -->
+		<div tabindex="-1" class="accordion"
+			data-bind="ntsAccordion: {enable: true} ">
+			<h3>
+				<label>#{i18n.getText('KMK003_61')}</label>
+			</h3>
+			<div data-bind="ntsFixTableCustom: {option: afternoonFlexTimezoneOption}"></div>
+		</div>
+		<!-- Afternoon -->
+	</com:ko>
+	<!-- Flex timezones -->
+
 	<!-- Flex rest time -->
 
 	<com:ko tag="if" bind="isFlexRestTime">
@@ -79,12 +113,25 @@
 				<label>#{i18n.getText('KMK003_51')}</label>
 			</h3>
 			<div>
-				<div data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
+				<div
+					data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
 				<div
 					data-bind="ntsCheckBox: {
                  checked: oneDayAfterRestSetUse,
                  enable: true,
                  text: nts.uk.resource.getText('KMK003_144') }"></div>
+				<table class="tbl-after-restset" data-bind="with: oneDayAfterRestSet">
+					<tr>
+                 		<th>#{i18n.getText('KMK003_174')}</th>
+                 		<th>#{i18n.getText('KMK003_176')}</th>
+                 	</tr>
+					<tr>
+						<td><input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
+                        required: true, inputFormat: 'time', mode: 'time', enable: $parent.oneDayAfterRestSetUse }" /></td>
+						<td><input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
+                        required: true, inputFormat: 'time', mode: 'time', enable: $parent.oneDayAfterRestSetUse }" /></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 
@@ -95,12 +142,24 @@
 				<label>#{i18n.getText('KMK003_60')}</label>
 			</h3>
 			<div class="control-group">
-				<div data-bind="ntsFixTableCustom: {option: morningFlexTimezoneOption}"></div>
+				<div data-bind="ntsFixTableCustom: {option: morningFlexRestSetOption}"></div>
 				<div
 					data-bind="ntsCheckBox: {
                  checked: morningAfterRestSetUse,
                  enable: true,
                  text: nts.uk.resource.getText('KMK003_144') }"></div>
+                 <table class="tbl-after-restset" data-bind="with: morningAfterRestSet">
+                 	<tr>
+                 		<th>#{i18n.getText('KMK003_174')}</th>
+                 		<th>#{i18n.getText('KMK003_176')}</th>
+                 	</tr>
+					<tr>
+						<td><input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
+                        required: true, inputFormat: 'time', mode: 'time', enable: $parent.morningAfterRestSetUse }" /></td>
+						<td><input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
+                        required: true, inputFormat: 'time', mode: 'time', enable: $parent.morningAfterRestSetUse }" /></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 
@@ -112,12 +171,24 @@
 			</h3>
 			<div class="control-group">
 				<div id="ntsft-a5-afternoonFlex"
-					data-bind="ntsFixTableCustom: {option: afternoonFlexTimezoneOption}"></div>
+					data-bind="ntsFixTableCustom: {option: morningFlexRestSetOption}"></div>
 				<div
 					data-bind="ntsCheckBox: {
                  checked: afternoonAfterRestSetUse,
                  enable: true,
                  text: nts.uk.resource.getText('KMK003_144') }"></div>
+                 <table class="tbl-after-restset" data-bind="with: afternoonAfterRestSet">
+                 	<tr>
+                 		<th>#{i18n.getText('KMK003_174')}</th>
+                 		<th>#{i18n.getText('KMK003_176')}</th>
+                 	</tr>
+					<tr>
+						<td><input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
+                        required: true, inputFormat: 'time', mode: 'time', enable: $parent.afternoonAfterRestSetUse }" /></td>
+						<td><input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
+                        required: true, inputFormat: 'time', mode: 'time', enable: $parent.afternoonAfterRestSetUse }" /></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 
@@ -139,12 +210,6 @@
                  checked: flowRestSetUse,
                  enable: true,
                  text: nts.uk.resource.getText('KMK003_144') }"></div>
-		<table>
-			<tr>
-				<th></th>
-				<th></th>
-			</tr>
-		</table>
 	</com:ko>
 	<!-- End of flow timezones -->
 
