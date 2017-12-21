@@ -4,6 +4,10 @@ package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
  * JPA Overday Calc Holiday
  */
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverdayCalc;
@@ -20,6 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWeekdayHdPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstZeroTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstZeroTimeSetPK;
 
+@Stateless
 public class JpaOverdayCalcHolidayRepository extends JpaRepository implements OverdayCalcHolidayRepository {
 	private static final String SELECT_BY_CID;
 	static {
@@ -36,9 +41,9 @@ public class JpaOverdayCalcHolidayRepository extends JpaRepository implements Ov
 	 * @return
 	 */
 	private OverdayCalc convertToDomain(KshstZeroTimeSet kshstOverDayCalcSet) {
-		WeekdayHoliday weekdayHoliday = convertToDomainWeekday(kshstOverDayCalcSet.weekdayHd);
-		OverdayHolidayAtten overdayHolidayAtten = convertToDomainHolidayAtten(kshstOverDayCalcSet.overdayHdAttSet);
-		OverdayCalcHoliday overdayCalcHoliday = convertToDomainCalcHoliday(kshstOverDayCalcSet.overDayHdSet);
+		List<WeekdayHoliday> weekdayHoliday = kshstOverDayCalcSet.weekdayHd.stream().map(c -> convertToDomainWeekday(c)).collect(Collectors.toList());
+		List<OverdayHolidayAtten> overdayHolidayAtten = kshstOverDayCalcSet.overdayHdAttSet.stream().map(c -> convertToDomainHolidayAtten(c)).collect(Collectors.toList());
+		List<OverdayCalcHoliday> overdayCalcHoliday = kshstOverDayCalcSet.overDayHdSet.stream().map(c-> convertToDomainCalcHoliday(c)).collect(Collectors.toList());
 		
 		OverdayCalc calcHoliday = OverdayCalc.createFromJavaType(kshstOverDayCalcSet.kshstOverDayCalcSetPK.companyId,
 				kshstOverDayCalcSet.calcOverDayEnd, kshstOverDayCalcSet.statutoryHd, kshstOverDayCalcSet.excessHd,
@@ -75,9 +80,9 @@ public class JpaOverdayCalcHolidayRepository extends JpaRepository implements Ov
 				calcSet.weekDayPublicHd = overdayCalc.getWeekDayPublicHd();
 				calcSet.excessPublicHd = overdayCalc.getExcessPublicHd();
 				calcSet.excessPublicSphd = overdayCalc.getExcessPublicSphd();
-				calcSet.weekdayHd = convertToDbTypeWeekday(overdayCalc.getWeekdayHoliday());
-				calcSet.overdayHdAttSet = convertToDbTypeHolidayAtten(overdayCalc.getOverdayHolidayAtten());
-				calcSet.overDayHdSet = convertToDbTypeCalcHoliday(overdayCalc.getOverdayCalcHoliday());
+				calcSet.weekdayHd = overdayCalc.getWeekdayHoliday().stream().map(c -> convertToDbTypeWeekday(c)).collect(Collectors.toList());
+				calcSet.overdayHdAttSet = overdayCalc.getOverdayHolidayAtten().stream().map(c -> convertToDbTypeHolidayAtten(c)).collect(Collectors.toList());
+				calcSet.overDayHdSet = overdayCalc.getOverdayCalcHoliday().stream().map(c -> convertToDbTypeCalcHoliday(c)).collect(Collectors.toList());
 				calcSet.kshstOverDayCalcSetPK = calcSetPK;
 				
 		return calcSet;
@@ -178,12 +183,17 @@ public class JpaOverdayCalcHolidayRepository extends JpaRepository implements Ov
 				entity.weekDayPublicHd = overdayCalc.getWeekDayPublicHd();
 				entity.excessPublicHd = overdayCalc.getExcessPublicHd();
 				entity.excessPublicSphd = overdayCalc.getExcessPublicSphd();
-				entity.weekdayHd = convertToDbTypeWeekday(overdayCalc.getWeekdayHoliday());
-				entity.overdayHdAttSet = convertToDbTypeHolidayAtten(overdayCalc.getOverdayHolidayAtten());
-				entity.overDayHdSet = convertToDbTypeCalcHoliday(overdayCalc.getOverdayCalcHoliday());
+				entity.weekdayHd = overdayCalc.getWeekdayHoliday().stream().map(c -> convertToDbTypeWeekday(c)).collect(Collectors.toList());
+				entity.overdayHdAttSet = overdayCalc.getOverdayHolidayAtten().stream().map(c -> convertToDbTypeHolidayAtten(c)).collect(Collectors.toList());
+				entity.overDayHdSet = overdayCalc.getOverdayCalcHoliday().stream().map(c -> convertToDbTypeCalcHoliday(c)).collect(Collectors.toList());
 				
 				entity.kshstOverDayCalcSetPK = primaryKey;
 		this.commandProxy().update(entity);
 	}
-	
+
+	@Override
+	public Optional<OverdayCalc> findByCId(String companyId) {
+		return this.queryProxy().find(new KshstZeroTimeSetPK(companyId),KshstZeroTimeSet.class)
+				.map(c->convertToDomain(c));
+	}
 }

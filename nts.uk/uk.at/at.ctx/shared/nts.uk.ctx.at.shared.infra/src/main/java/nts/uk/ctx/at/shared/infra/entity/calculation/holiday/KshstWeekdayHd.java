@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -34,7 +35,7 @@ public class KshstWeekdayHd extends UkJpaEntity implements Serializable{
 	@Column(name = "NON_LEGAL_PUBLIC_HD_NO")
 	public int excessSphdNo;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)
 	public KshstZeroTimeSet overDayCalcSet;
 	
