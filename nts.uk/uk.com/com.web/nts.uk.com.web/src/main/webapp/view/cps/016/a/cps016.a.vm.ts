@@ -215,26 +215,37 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 command = ko.toJS(currentItem),
                 lastIndex = items.length - 1;
 
+
             if (items.length > 0) {
                 confirm({ messageId: "Msg_551" }).ifYes(() => {
-                    service.removeDataSelectionItem(command).done(function() {
-                        self.listItems.removeAll();
-                        service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                            if (itemList && itemList.length) {
-                                itemList.forEach(x => self.listItems.push(x));
-                                if (oldIndex == lastIndex) {
-                                    oldIndex--;
-                                }
-                                let newItem = itemList[oldIndex];
-                                currentItem.selectionItemId(newItem.selectionItemId);
-                            } else {
-                                self.registerDataSelectioItem();
-                            }
-                        });
-                        $("#selectionItemName").focus();
-                        self.listItems.valueHasMutated();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    service.checkExistedSelectionItemId(currentItem.selectionItemId()).done(data => {
+                        if (data) {
+                            alertError({ messageId: "Msg_521" });
+                        } else {
+                            service.removeDataSelectionItem(command).done(function() {
+                                self.listItems.removeAll();
+                                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                                    if (itemList && itemList.length) {
+                                        itemList.forEach(x => self.listItems.push(x));
+                                        if (oldIndex == lastIndex) {
+                                            oldIndex--;
+                                        }
+                                        let newItem = itemList[oldIndex];
+                                        currentItem.selectionItemId(newItem.selectionItemId);
+                                    } else {
+                                        self.registerDataSelectioItem();
+                                    }
+                                });
+                                $("#selectionItemName").focus();
+                                self.listItems.valueHasMutated();
+                                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                            });
+
+                        }
+                    }).fail(error => {
+                        alertError({ messageId: "Msg_521" });
                     });
+
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();
                     return;

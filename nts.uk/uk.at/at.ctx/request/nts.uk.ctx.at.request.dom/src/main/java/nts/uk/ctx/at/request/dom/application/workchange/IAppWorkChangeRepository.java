@@ -16,8 +16,6 @@ public interface IAppWorkChangeRepository
     void add(AppWorkChange domain);
 
     void update(AppWorkChange domain);
-
-    void remove(AppWorkChange domain);
     
     void remove(String cid, String appId);
 }

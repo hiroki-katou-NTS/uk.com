@@ -13,12 +13,16 @@ module nts.uk.at.view.kaf007.share {
             application: KnockoutObservable<ApplicationCommand>;
             //Phase list
             appApprovalPhases: Array<AppApprovalPhase>;
+            
+            //Data working
+            dataWork:KnockoutObservable<DataWork>;
             constructor()
             {
                 let self = this;
                 self.workChange = ko.observable(new AppWorkChange());
                 self.application = ko.observable(new ApplicationCommand());
                 self.appApprovalPhases = [];
+                self.dataWork= ko.observable(new DataWork());
             }
         }
        /**
@@ -61,12 +65,12 @@ module nts.uk.at.view.kaf007.share {
                    self.backHomeAtr1  = ko.observable(1);
                    self.goWorkAtr2  = ko.observable(1);
                    self.backHomeAtr2  = ko.observable(1);
-                   self.breakTimeStart1  = ko.observable(0);
-                   self.breakTimeEnd1  = ko.observable(0);
-                   self.workTimeStart1  = ko.observable(0);
-                   self.workTimeEnd1  = ko.observable(0);
-                   self.workTimeStart2  = ko.observable(0);
-                   self.workTimeEnd2  = ko.observable(0);                    
+                   self.breakTimeStart1  = ko.observable(null);
+                   self.breakTimeEnd1  = ko.observable(null);
+                   self.workTimeStart1  = ko.observable(null);
+                   self.workTimeEnd1  = ko.observable(null);
+                   self.workTimeStart2  = ko.observable(null);
+                   self.workTimeEnd2  = ko.observable(null);                    
            }
        }
        
@@ -294,6 +298,23 @@ module nts.uk.at.view.kaf007.share {
             StartDate = 0,
             //1:申請終了日
             EndDate
+        }
+        export class DataWork{
+            workTypeCodes : KnockoutObservableArray<string>;
+            workTimeCodes : KnockoutObservableArray<string>;
+            selectedWorkTypeCd : KnockoutObservable<string>;
+            selectedWorkTypeName : KnockoutObservable<string>;
+            selectedWorkTimeCd : KnockoutObservable<string>;
+            selectedWorkTimeName : KnockoutObservable<string>;
+            constructor(){
+                let self = this;
+                self.workTypeCodes = ko.observableArray([]);
+                self.workTimeCodes = ko.observableArray([]);
+                self.selectedWorkTypeCd = ko.observable('');
+                self.selectedWorkTypeName = ko.observable('');
+                self.selectedWorkTimeCd = ko.observable('');
+                self.selectedWorkTimeName = ko.observable('');
+            }
         }
     }
 }

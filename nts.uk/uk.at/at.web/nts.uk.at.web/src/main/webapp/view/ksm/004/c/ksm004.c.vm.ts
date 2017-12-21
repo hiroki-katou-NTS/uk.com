@@ -177,7 +177,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             if (self.currentCode() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     nts.uk.ui.block.invisible();
-                    service.deletePublicHoliday({ date: self.selectedPublicHoliday().date() }).done(() => {
+                    service.deletePublicHoliday({ date: moment(self.selectedPublicHoliday().date()).format('YYYY/MM/DD') }).done(() => {
                         var index = _.findIndex(self.filterHolidays(), (item) => {
                             return item.date == self.currentCode();
                         });
@@ -245,7 +245,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         year: number;
 
         constructor(date: string, holidayName: string) {
-            this.date = date;
+            this.date = moment(date).format('YYYY/MM/DD');
             this.holidayName = holidayName;
             this.displayDate = moment(date, 'YYYYMMDD').format('MM月DD日');
             this.year = Number(moment(date, 'YYYYMMDD').format('YYYY'));

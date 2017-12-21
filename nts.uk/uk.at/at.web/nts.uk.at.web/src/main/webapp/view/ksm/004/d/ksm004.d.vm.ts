@@ -19,8 +19,8 @@ module ksm004.d.viewmodel {
         selectedFri: KnockoutObservable<number>;
         selectedSat: KnockoutObservable<number>;
         selectedSun: KnockoutObservable<number>;
-        //dateId,workingDayAtr
-        dateId: KnockoutObservable<number>;
+        //date,workingDayAtr
+        date: KnockoutObservable<number>;
         workingDayAtr: KnockoutObservable<number>;
         //classId
         classId: KnockoutObservable<string>;
@@ -54,7 +54,7 @@ module ksm004.d.viewmodel {
             //checkUpdate
             self.checkOverwrite = ko.observable(true);
             //date , workingDayAtr
-            self.dateId = ko.observable(0);
+            self.date = ko.observable(0);
             self.workingDayAtr = ko.observable(0);
 
             //workdayGroup
@@ -111,7 +111,7 @@ module ksm004.d.viewmodel {
                             let dateOfMonth = startYM.date(); //value : 1-31
                             //date or week
                             let dateOfWeek = startYM.day();   //value : 0-6
-                            let date = parseInt(startYM.format("YYYYMMDD"));
+                            let date = (startYM.format("YYYYMMDD"));
 
                             // set value workingDayAtr
                             switch (dateOfWeek) {
@@ -137,7 +137,7 @@ module ksm004.d.viewmodel {
                                 }
                             }
                             let objTest = {
-                                dateId: date,
+                                date: moment(date).format("YYYY/MM/DD"),
                                 workingDayAtr: self.workingDayAtr()
                             };
                             self.list().push(objTest);
@@ -297,40 +297,40 @@ module ksm004.d.viewmodel {
     export module model {
         //class calendar company
         export class CalendarCompany {
-            dateId: number;
+            date: any;
             workingDayAtr: number;
-            constructor(dateId: number, workingDayAtr: number) {
-                this.dateId = dateId;
+            constructor(date: any, workingDayAtr: number) {
+                this.date = date;
                 this.workingDayAtr = workingDayAtr;
             }
         }
         // class calendar class
         export class CalendarClass {
             classId: string;
-            dateId: number;
+            date: any;
             workingDayAtr: number;
-            constructor(classId: string, dateId: number, workingDayAtr: number) {
+            constructor(classId: string, date: any, workingDayAtr: number) {
                 this.classId = classId;
-                this.dateId = dateId;
+                this.date = date;
                 this.workingDayAtr = workingDayAtr;
             }
         }
         //class calendar workplace
         export class CalendarWorkplace {
             workPlaceId: string;
-            dateId: number;
+            date: any;
             workingDayAtr: number;
-            constructor(workPlaceId: string, dateId: number, workingDayAtr: number) {
+            constructor(workPlaceId: string, date: any, workingDayAtr: number) {
                 this.workPlaceId = workPlaceId;
-                this.dateId = dateId;
+                this.date = date;
                 this.workingDayAtr = workingDayAtr;
             }
         }
         //class holiday
         export class Holiday {
-            date: number;
+            date: any;
             holidayName: string;
-            constructor(date: number, holidayName: string) {
+            constructor(date: any, holidayName: string) {
                 this.date = date;
                 this.holidayName = holidayName;
             }

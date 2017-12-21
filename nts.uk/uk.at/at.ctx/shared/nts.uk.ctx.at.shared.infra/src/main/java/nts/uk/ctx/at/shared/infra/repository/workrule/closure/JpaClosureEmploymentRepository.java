@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -29,6 +30,18 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		builderString.append("WHERE a.kclmpClosureEmploymentPK.employmentCD IN :employmentCDs ");
 		FIND = builderString.toString();
 	}
+	
+	/**
+	 * Add list ClosureEmployment by delete all and insert.
+	 */
+	@Override
+	public void addListClousureEmp(String companyID, List<ClosureEmployment> listClosureEmpDom) {
+		List<KclmtClosureEmployment> lstEntity = listClosureEmpDom.stream().map(item -> {
+			return new KclmtClosureEmployment(new KclmpClosureEmploymentPK(companyID, item.getEmploymentCD()), item.getClosureId());
+		}).collect(Collectors.toList());
+		this.commandProxy().insertAll(lstEntity);
+
+	}
 
 	@Override
 	public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
@@ -38,8 +51,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	}
 
 	/**
-	 * get list by list employmentCD
-	 * for KIF 001
+	 * get list by list employmentCD for KIF 001
 	 */
 	@Override
 	public List<ClosureEmployment> findListEmployment(String companyId, List<String> employmentCDs) {
@@ -51,4 +63,5 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		return new ClosureEmployment(kclmtClosureEmployment.kclmpClosureEmploymentPK.companyId,
 				kclmtClosureEmployment.kclmpClosureEmploymentPK.employmentCD, kclmtClosureEmployment.closureId);
 	}
+
 }

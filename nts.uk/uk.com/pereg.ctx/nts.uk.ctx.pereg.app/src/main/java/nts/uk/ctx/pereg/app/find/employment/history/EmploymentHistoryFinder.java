@@ -12,6 +12,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -76,7 +77,8 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		Optional<EmploymentHistory> optHis = this.empHistRepo.getByEmployeeId(query.getEmployeeId());
+		String cid = AppContexts.user().companyId();
+		Optional<EmploymentHistory> optHis = this.empHistRepo.getByEmployeeId(cid,query.getEmployeeId());
 		if(!optHis.isPresent()) return new ArrayList<>();
 		List<DateHistoryItem> items = optHis.get().getHistoryItems();
 		if(items.size() == 0) return new ArrayList<>();

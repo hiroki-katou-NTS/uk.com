@@ -60,42 +60,42 @@ public class KrqstAppWorkChangeSet extends UkJpaEntity implements Serializable
     /**
     * コメント
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "COMMENT_CONTENT1")
     public String commentContent1;
     
     /**
     * 太字
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "COMMENT_FONT_WEIGHT1")
     public int commentFontWeight1;
     
     /**
     * 文字色
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "COMMENT_FONT_COLOR1")
     public String commentFontColor1;
     
     /**
     * コメント
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "COMMENT_CONTENT2")
     public String commentContent2;
     
     /**
     * 太字
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "COMMENT_FONT_WEIGHT2")
     public int commentFontWeight2;
     
     /**
     * 文字色
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "COMMENT_FONT_COLOR2")
     public String commentFontColor2;
     
