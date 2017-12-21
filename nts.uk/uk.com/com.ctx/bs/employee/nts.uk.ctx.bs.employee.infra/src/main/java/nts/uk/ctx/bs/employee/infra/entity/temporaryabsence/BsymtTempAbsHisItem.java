@@ -45,7 +45,7 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 	
 	@Basic(optional = true)
 	@Column(name = "SO_INS_PAY_CATEGORY")
-	public int soInsPayCategory;
+	public Integer soInsPayCategory;
 	
 	// -------------- extend object ----------------------
 	
