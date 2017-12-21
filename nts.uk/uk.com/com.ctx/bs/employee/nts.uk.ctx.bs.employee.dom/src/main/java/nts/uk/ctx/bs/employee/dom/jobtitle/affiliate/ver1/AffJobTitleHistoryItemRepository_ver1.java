@@ -4,35 +4,35 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
-public interface AffJobTitleHistoryItemRepository_v1 {
+public interface AffJobTitleHistoryItemRepository_ver1 {
 	
 	/**
 	 * @param employeeId
 	 * @param referDate
 	 * @return
 	 */
-	Optional<AffJobTitleHistoryItem> getByEmpIdAndReferDate(String employeeId, GeneralDate referDate);
+	Optional<AffJobTitleHistoryItem_ver1> getByEmpIdAndReferDate(String employeeId, GeneralDate referDate);
 	
 	/**
 	 * find with primary key
 	 * @param historyId
 	 * @return
 	 */
-	Optional<AffJobTitleHistoryItem> findByHitoryId(String historyId);
+	Optional<AffJobTitleHistoryItem_ver1> findByHitoryId(String historyId);
 	
 	/**
 	 * ドメインモデル「職務職位」を新規登録する
 	 * 
 	 * @param domain
 	 */
-	void add(AffJobTitleHistoryItem domain);
+	void add(AffJobTitleHistoryItem_ver1 domain);
 
 	/**
 	 * 取得した「職務職位」を更新する
 	 * 
 	 * @param domain
 	 */
-	void update(AffJobTitleHistoryItem domain);
+	void update(AffJobTitleHistoryItem_ver1 domain);
 
 	/**
 	 * ドメインモデル「職務職位」を削除する

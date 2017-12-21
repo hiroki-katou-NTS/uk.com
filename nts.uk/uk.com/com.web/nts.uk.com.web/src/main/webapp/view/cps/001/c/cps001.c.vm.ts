@@ -27,7 +27,7 @@ module cps001.c.vm {
             emp.id.subscribe(x => {
                 if (x) {
                     self.enableControl();
-                    
+
                     let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
 
                     service.getDetail(x).done((data: IEmployee) => {
@@ -38,6 +38,7 @@ module cps001.c.vm {
 
                             emp.reason(data.reason || '');
                             emp.dateDelete(data.dateDelete || undefined);
+                            $('#code').focus();
                         }
                     });
                 } else {
@@ -98,21 +99,28 @@ module cps001.c.vm {
                         code: emp.code,
                         name: emp.name
                     };
-
+                block();
                 service.restoreData(objToRestore).done(() => {
                     if (itemListLength === 1) {
-                        self.start();
+                        self.start().done(() => {
+                            unblock();
+                        });
                     } else if (itemListLength - 1 === indexItemDelete) {
                         self.start(listItem[indexItemDelete - 1].id).done(() => {
+                            unblock();
                         });
                     } else if (itemListLength - 1 > indexItemDelete) {
                         self.start(listItem[indexItemDelete + 1].id).done(() => {
+                            unblock();
                         });
                     }
+
+                }).fail((mes) => {
+                    unblock();
                 });
 
             }).ifCancel(() => {
-
+                unblock();
             });
         }
 
@@ -128,25 +136,33 @@ module cps001.c.vm {
 
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let sid = emp.id;
+                block();
                 service.removedata(sid).done(() => {
                     showDialog.info({ messageId: "Msg_464" }).then(function() {
                         let itemListLength = self.listEmployee().length,
                             indexItemDelete = _.findIndex(ko.toJS(self.listEmployee), function(item: any) { return item.id == emp.id; });
                         if (itemListLength === 1) {
-                            self.start();
+                            self.start().done(() => {
+                                unblock();
+                            });
                         } else if (itemListLength - 1 === indexItemDelete) {
                             self.start(listItem[indexItemDelete - 1].id).done(() => {
+                                unblock();
                             });
                         } else if (itemListLength - 1 > indexItemDelete) {
                             self.start(listItem[indexItemDelete + 1].id).done(() => {
+                                unblock();
                             });
                         }
+                        unblock();
                     });
 
 
+                }).fail((mes) => {
+                    unblock();
                 });
             }).ifCancel(() => {
-
+                unblock();
             });
         }
 
