@@ -13,7 +13,7 @@ public abstract class ExtractionRangeAbs {
 
 	public ExtractionRangeAbs(String extractionId, ExtractionRange extractionRange) {
 		super();
-		ExtractionId = extractionId;
+		this.ExtractionId = extractionId;
 		this.extractionRange = extractionRange;
 	}
 }
