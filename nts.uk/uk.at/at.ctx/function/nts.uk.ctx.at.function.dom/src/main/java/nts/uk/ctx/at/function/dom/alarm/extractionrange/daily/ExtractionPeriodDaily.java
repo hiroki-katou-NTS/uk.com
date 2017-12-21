@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange.daily;
 
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeAbs;
 
 /**
  * @author thanhpv
@@ -10,7 +10,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
  */
 
 @Getter
-public class ExtractionPeriodDaily extends ExtractionRangeBase{
+public class ExtractionPeriodDaily extends ExtractionRangeAbs{
 	
 	/** Day*/
 	// 日
