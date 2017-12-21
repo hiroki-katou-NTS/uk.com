@@ -9,7 +9,7 @@
 //import org.junit.Test;
 //
 //import lombok.val;
-//import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+//import nts.uk.ctx.at.record.dom.bonuspay.enums.UseAtr;
 //import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 //import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 //import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;

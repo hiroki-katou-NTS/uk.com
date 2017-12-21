@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
+import javax.print.attribute.standard.SheetCollate;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -29,11 +31,18 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	//滞在時間
 	private AttendanceTime stayingTime;
 	
+	//予実差異時間
+	private AttendanceTime budgetTimeVariance;
+	
 	//不就労時間
 	private AttendanceTime unEmployedTime;
 	
 	//日別実績の勤怠時間
-	private AttendanceTimeOfDailyPerformance attendanceTimeOfDaily;
+	//private AttendanceTimeOfDailyPerformance attendanceTimeOfDaily;
+	
+//	public AttendanceTimeOfDailyPerformance createFromJavaType() {
+//		
+//	}
 	
 	/**
 	 * Constructor
@@ -43,6 +52,21 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		this.actualWorkingTimeOfDaily = actualWorkingTimeOfDaily;
 	}
 	
+	public AttendanceTimeOfDailyPerformance (String employeeId,
+											 GeneralDate ymd,
+											 WorkScheduleTimeOfDaily schedule,
+											 ActualWorkingTimeOfDaily actual,
+											 AttendanceTime stay,
+											 AttendanceTime budget,
+											 AttendanceTime unEmploy) {
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.workScheduleTimeOfDaily = schedule;
+		this.actualWorkingTimeOfDaily = actual;
+		this.stayingTime = stay;
+		this.budgetTimeVariance = budget;
+		this.unEmployedTime = unEmploy;
+	}
 	
 	/**
 	 * 日別実績の勤怠時間の計算

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -92,7 +95,7 @@ public abstract class CalculationTimeSheet {
 	 * 指定時間を終了とする時間帯作成
 	 * @return
 	 */
-	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheet overTimeWork) {
+	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheetWork overTimeWork) {
 		TimeSpanForCalc copySpan = calcrange;
 		return overTimeWork.reduceUntilSpecifiedTime(new AttendanceTime(copySpan.lengthAsMinutes() - transTime.valueAsMinutes()));
 	}
@@ -464,4 +467,37 @@ public abstract class CalculationTimeSheet {
 			return 0;
 		}
 	}
+	
+//	/**
+//	 * 計算時間帯Listを結合し、計算時間帯を返す         2017/11/29 高須　多分不要
+//	 * @author ken_takasu
+//	 * @param source
+//	 * @return
+//	 */
+//	public CalculationTimeSheet join(Collection<CalculationTimeSheet> source) {
+//		//時間帯（丸め付）Listを1つに結合
+//		List<TimeSpanWithRounding> timeSheets = source.stream().map(s -> s.getTimeSheet()).collect(Collectors.toList());
+//		val joinedTimeSheet = TimeSpanWithRounding.joinedTimeSpanWithRounding(timeSheets);
+//		//計算用時間帯Listを1つに結合
+//		val calcRanges = source.stream().map(s -> s.getCalcrange()).collect(Collectors.toList());
+//		val joinedCalcRange = TimeSpanForCalc.join(calcRanges);
+//		//控除時間帯Listを1つに結合
+//		val deductionTimeList =  source.stream().map(s -> s.getDeductionTimeSheet().collectDeductionTimeSheet()).collect(Collectors.toList());
+//		//加給時間帯Listを1つに結合
+//		val bonusPayTimesheetList = joinedBonusPayTimeSheet();
+//		//深夜時間帯Listを1つに結合
+//		val midNightTimeSheet = source.stream().map(s -> s.getMidNightTimeSheet()).collect(Collectors.toList());
+//		val joinedMidNightTimeSheet = this.midNightTimeSheet.get().joinedMidNightTimeSheet(midNightTimeSheet);
+//		//特定日加給時間帯Listを1つに結合
+//		val specifiedbonusPayTimeSheetList = collectSpecifiedbonusPayTimeSheet();
+//		
+//		CalculationTimeSheet calculationTimeSheet = new CalculationTimeSheet(joinedTimeSheet,
+//																			joinedCalcRange,
+//																			deductionTimeList,
+//																			bonusPayTimesheetList,
+//																			specifiedbonusPayTimeSheetList,
+//																			joinedMidNightTimeSheet);
+//		return calculationTimeSheet;
+//	}
+	
 }

@@ -4,14 +4,22 @@
 package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.RoundingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.SpecBonusPayNumber;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Rounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -45,6 +53,7 @@ public class SpecBonusPayTimesheet {
 			int timeSheetId, UseAtr useAtr, String timeItemId,
 			AttendanceClock startTime, AttendanceClock endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr, int dateCode,SpecBonusPayNumber specBonusPayNumber) {
+		//super(timeSheetId, useAtr, timeItemId, startTime, endTime, roundingTimeAtr, roundingAtr);
 		this.timeSheetId = timeSheetId;
 		this.useAtr = useAtr;
 		this.timeItemId = timeItemId;
@@ -106,36 +115,4 @@ public class SpecBonusPayTimesheet {
 		}
 	}
 	
-	/**
-	 * 再帰中に自分自身を作り直す処理
-	 * @param baseTime
-	 * @return
-	 */
-	public SpecBonusPayTimesheet reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
-//			List<TimeSheetOfDeductionItem> deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
-//			List<BonusPayTimesheet>        bonusPayTimeSheet  = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
-//			List<SpecBonusPayTimesheet>    specBonusTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
-//			Optional<MidNightTimeSheet>    midNighttimeSheet  = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
-//			TimeSpanForCalc renewSpan = decisionNewSpan(this.calcrange,baseTime,isDateBefore);
-			
-			return new SpecBonusPayTimesheet(//new TimeSpanWithRounding(renewSpan.getStart(), renewSpan.getEnd(), this.timeSheet.getRounding()),
-//											 renewSpan,
-//											 deductionTimeSheets,
-//											 bonusPayTimeSheet,
-//											 specBonusTimeSheet,
-//											 midNighttimeSheet,
-											 this.timeSheetId,
-											 this.useAtr,
-											 this.timeItemId,
-											 this.getStartTime(),
-//											 new AttendanceClock(renewSpan.getStart().valueAsMinutes()),
-											 this.getEndTime(),
-//											 new AttendanceClock(renewSpan.getEnd().valueAsMinutes()),
-											 this.roundingTimeAtr,
-											 this.roundingAtr,
-											 this.dateCode,
-											 this.specBonusPayNumber
-											 );
-	}
-
 }

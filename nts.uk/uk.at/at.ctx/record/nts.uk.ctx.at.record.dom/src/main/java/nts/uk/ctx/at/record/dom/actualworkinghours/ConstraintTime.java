@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 /**
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  *
  */
 @Getter
+@AllArgsConstructor
 public class ConstraintTime {
 	
 	//深夜拘束時間

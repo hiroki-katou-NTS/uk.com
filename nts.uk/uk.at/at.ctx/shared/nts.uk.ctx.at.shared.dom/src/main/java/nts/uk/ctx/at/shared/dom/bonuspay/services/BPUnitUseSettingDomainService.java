@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 
 
+
 @Stateless
 public class BPUnitUseSettingDomainService implements BPUnitUseSettingService {
 	@Inject

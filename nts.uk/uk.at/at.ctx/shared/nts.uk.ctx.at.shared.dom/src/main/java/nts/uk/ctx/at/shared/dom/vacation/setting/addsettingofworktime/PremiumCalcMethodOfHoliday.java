@@ -9,5 +9,6 @@ import lombok.Value;
  */
 @Value
 public class PremiumCalcMethodOfHoliday {
-	private CalculationByActualTimeAtr calculationByActualTime;
+	private PremiumCalcMethodDetailOfHoliday detailSet;//詳細設定
+	private CalculationByActualTimeAtr calculationByActualTime;//実働時間のみで計算する
 }

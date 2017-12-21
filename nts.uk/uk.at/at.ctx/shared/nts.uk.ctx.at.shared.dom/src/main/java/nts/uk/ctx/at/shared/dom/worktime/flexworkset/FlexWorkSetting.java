@@ -4,10 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexworkset;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluWeekdayWorkTime;
+=======
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+>>>>>>> pj/at/calcrecord-devmarge
 
 /**
  * The Class FlexWorkSetting.
@@ -43,5 +56,26 @@ public class FlexWorkSetting extends AggregateRoot {
 
 	// コアタイム時間帯設定
 	 private CoreTimeSetting coreTimeSetting;
+	 
+	 /**
+	  * 時間帯の中で一番早い時刻を取得
+	  * @param workType 勤務種類
+	  * @return 時刻
+	  */
+	 public TimeWithDayAttr getMostEarlyTime(WorkType workType) {
+		 List<TimeSpanWithRounding> timeSpans = new ArrayList<>();
+		 if(workType/*平日*/) {
+			 timeSpans.addAll(weekdayWorkTime.getWorkingTime().getWorkingHours().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
+			 timeSpans.addAll(weekdayWorkTime.getWorkingTime().getWorkingHours().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
+		 }
+		 else if(/*休日*/) {
+			 timeSpans.addAll(offdayWorkTime.getWorkingTimes().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
+		 }
+		 else {
+			 throw new Exception("unknown day Atr:"+workType);
+		 }
+		 timeSpans.stream().sorted((first,second) -> first.getStart().compareTo(second.getStart()) > 0);
+		 return timeSpans.get(0).getStart();
+	 }
 
 }

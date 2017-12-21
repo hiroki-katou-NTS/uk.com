@@ -26,20 +26,20 @@
 // */
 //@Getter
 //public class SchedulePerformance {
-//	private WorkInformation workInformation;
-//	private WorkScheduleTimeOfDaily actualTime;
-//	//private  出退勤
 //	
 //	public static SchedulePerformance createScheduleTimeSheet(WorkInformationOfDaily workInformationOfDaily,TimeLeavingOfDailyPerformance attendanceLeaving,
-//															  Optional<FixRestSetting> fixRestSetting ,Optional<FlowWorkRestSetting> flowWorkRestSetting) {
+//															  Optional<FixRestSetting> fixRestSetting ,Optional<FlowWorkRestSetting> flowWorkRestSetting
+//															  String employeeId, GeneralDate ymd,IntegrationOfDaily integrationOfDaily) {
 //		/*勤務予定を取得*/
 //		/*勤務予定を日別実績に変換*/
-//		convertScheduleToRecord(workInformationOfDaily,attendanceLeaving);
+//		convertScheduleToRecord(workInformationOfDaily.getScheduleTimeSheet,attendanceLeaving);
 //		/*計算区分を変更*/
-//		changeCalcAtr();
+//		integrationOfDaily
 //		/*休憩情報を変更*/
-//		changeBreakSet(fixRestSetting ,flowWorkRestSetting);
+//		setfixedBreakTimeSet(workTimeDivision, fluRestTime);
+//		changeBreakSet(workTimeDivision,fixRestSetting ,flowWorkRestSetting);
 //		/*時間帯を作成*/
+//		//return ;
 //	}
 //	
 //	/**
@@ -47,10 +47,11 @@
 //	 * @param 日別実績の勤務情報
 //	 * @param 日別実績の出退勤
 //	 */
-//	public static void convertScheduleToRecord(WorkInformationOfDaily workInformationOfDaily,TimeLeavingOfDailyPerformance attendanceLeaving) {
+//	public static void convertScheduleToRecord(List<ScheduleTimeSheet> workInformationOfDaily,TimeLeavingOfDailyPerformance attendanceLeaving
+//											   String employeeId, GeneralDate ymd) {
 //		workInformationOfDaily.shiftFromScheduleToRecord();
 //		List<TimeLeavingWork> scheduleTimeSheetList = new ArrayList<TimeLeavingWork>(); 
-//		for(ScheduleTimeSheet schedule : workInformationOfDaily.getWorkScheduleTimeSheet()) {
+//		for(ScheduleTimeSheet schedule : workInformationOfDaily) {
 //			//勤怠打刻(打刻元情報、勤務場所コード、時刻、丸め後の時刻)
 //			WorkStamp workStamp = new WorkStamp();
 //			//実打刻付き(回数、勤怠打刻、勤怠打刻)
@@ -63,41 +64,25 @@
 //	/**
 //	 * 休憩設定の変更
 //	 */
-//	public static void changeBreakSet(Optional<FixRestSetting> fixRestSetting ,Optional<FlowWorkRestSetting> flowWorkRestSetting) {
+//	public static void changeBreakSet(WorkTimeDivision workTimeDivision,Optional<FixRestSetting> fixRestSetting ,Optional<FlowWorkRestSetting> flowWorkRestSetting) {
 //		//流動休憩
-//		if() {
+//		if(workTimeDivision.) {
 //			flowWorkRestSetting.get().getFlowRestSetting().getFlowFixedRestSetting().changeCalcMethodToSchedule();
 //			flowWorkRestSetting.get().getCommonRestSetting().changeCalcMethodToRecordUntilLeaveWork();
 //		}
 //		//固定休憩
 //		else {
 //			fixRestSetting.get().changeCalcMethodToSchedule();
-//			fixRestSetting.get().changeCalcMethodToSchedule();
+//			fixRestSetting.get().getCommonRestSetting().changeCalcMethodToRecordUntilLeaveWork();
 //		}
 //	}
 //	
 //	/**
 //	 * 固定休憩設定にする
 //	 */
-//	public static void create(WorkTimeDivision workTimeDivision, FluRestTime fluRestTime) {
+//	public static void setfixedBreakTimeSet(WorkTimeDivision workTimeDivision, FluRestTime fluRestTime) {
 //		if(workTimeDivision.isfluidorFlex()) {
 //			fluRestTime.changeTrueUseFixedRestTime();
 //		}
 //	}
-//	
-//	/**
-//	 * 計算区分を変更する
-//	 */
-//	public static void changeCalcAtr(){
-//		
-//	}
-//	
-//
-//	
-//
-//	
-//	
-//	
-//	
-//
 //}

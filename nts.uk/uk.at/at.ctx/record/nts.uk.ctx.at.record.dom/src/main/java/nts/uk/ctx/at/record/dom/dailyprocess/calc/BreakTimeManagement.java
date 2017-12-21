@@ -57,8 +57,8 @@ public class BreakTimeManagement {
 																			, Collections.emptyList()
 																			, Collections.emptyList()
 																			, Optional.empty()
-																			, Finally.empty()
-																			, Finally.of(BreakClassification.BREAK)
+																			, Optional.empty()
+																			, Optional.of(BreakClassification.BREAK)
 																			, DeductionClassification.BREAK));
 		}
 		return dedTimeSheet;

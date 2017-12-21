@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
 
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearly.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.lateleaveearlysetting.GraceTimeSetting;
 
 /**
  * 休暇の就業時間計算方法詳細
@@ -9,7 +11,10 @@ import nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearly.GraceTimeS
  *
  */
 public class WorkTimeCalcMethodDetailOfHoliday {
-	private UseSetting deductLateLeaveEarly;
+	@Getter
+	private NotUseAtr deductLateLeaveEarly;//遅刻・早退を控除する
+	@Getter
+	private IncludeHolidaysWorkCalcDetailSet IncludeHolidaysWorkCalcDetailSet;
 	
 	/**
 	 * 就業時間内時間帯から控除するか判断
@@ -25,4 +30,20 @@ public class WorkTimeCalcMethodDetailOfHoliday {
 		}
 		return false;	
 	}
+	
+	/**
+	 * 遅刻・早退を控除するか判断する
+	 * @return
+	 */
+	public boolean isDeductLateLeaveEarly() {
+		switch(this.deductLateLeaveEarly) {
+			case To:
+				return true;
+			case Donot:
+				return false;
+			default:
+				throw new RuntimeException("unknown DeductionAtr" + deductLateLeaveEarly);
+		}	
+	}
+	
 }

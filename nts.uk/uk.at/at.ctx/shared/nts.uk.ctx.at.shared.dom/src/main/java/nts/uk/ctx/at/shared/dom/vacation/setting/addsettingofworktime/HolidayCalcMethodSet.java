@@ -9,6 +9,6 @@ import lombok.Value;
  */
 @Value
 public class HolidayCalcMethodSet {
-	private WorkTimeCalcMethodOfHoliday workTimeCalcMethodOfHoliday;
-	private PremiumCalcMethodOfHoliday  premiumCalcMethodOfHoliday;
+	private WorkTimeCalcMethodOfHoliday workTimeCalcMethodOfHoliday;//休暇の就業時間計算方法
+	private PremiumCalcMethodOfHoliday  premiumCalcMethodOfHoliday;//休暇の割増計算方法
 }

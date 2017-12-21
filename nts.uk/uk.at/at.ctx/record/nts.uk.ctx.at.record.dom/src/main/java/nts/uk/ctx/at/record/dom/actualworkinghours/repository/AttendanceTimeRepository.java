@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -11,5 +12,8 @@ public interface AttendanceTimeRepository {
 	void update(AttendanceTimeOfDailyPerformance attendanceTime);
 	
 	Optional<AttendanceTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd);
-
+	
+	List<AttendanceTimeOfDailyPerformance> findAllOf(String employeeId, List<GeneralDate> ymd);
+	
+	
 }

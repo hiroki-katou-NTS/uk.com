@@ -6,8 +6,10 @@ import java.util.List;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearly.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.lateleaveearlysetting.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -20,28 +22,29 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Value
 public class LateDecisionClock {
 	private TimeWithDayAttr lateDecisionClock;
-	private int workNo;
+	private WorkNo workNo;
 
 	
 	/**
 	 * 遅刻判断時刻を作成する
+	 * @author ken_takasu
 	 * @param workNo
 	 * @param predetermineTimeSet
 	 * @param deductionTimeSheet
 	 * @param lateGraceTime
 	 * @return
 	 */
-	public static LateDecisionClock create(
-			int workNo, WorkTimeSet predetermineTimeSet,
-			DeductionTimeSheet deductionTimeSheet,
-			GraceTimeSetting lateGraceTime) {
+	public static LateDecisionClock create(WorkNo workNo, 
+										   PredetermineTimeSetForCalc predetermineTimeSet,
+										   DeductionTimeSheet deductionTimeSheet,
+										   GraceTimeSetting lateGraceTime) {
 
 		val predetermineTimeSheet = predetermineTimeSet.getTimeSheetOf(workNo);
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 
 		if (lateGraceTime.isZero()) {
 			// 猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
-			decisionClock = predetermineTimeSheet.getStart();
+			//decisionClock = predetermineTimeSheet.getStart();
 		} else {
 			// 猶予時間帯の作成
 			//TimeSpanForCalc graceTimeSheet = lateGraceTime.createLateGraceTimeSheet(predetermineTimeSheet);
@@ -64,14 +67,12 @@ public class LateDecisionClock {
 	public static List<LateDecisionClock> createListOfAllWorks(
 			WorkTimeSet predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
-			GraceTimeSetting lateGraceTime) {
-
+			GraceTimeSetting lateGraceTime,
+			WorkNo workNo
+			) {
 		List<LateDecisionClock> clocks = new ArrayList<LateDecisionClock>();
-		for (int workNo = 1; workNo < 3; workNo++) {// 勤務回数分ループ　→　workNoは引数として渡すように修正
-			// 遅刻猶予時間の取得
-			clocks.add(LateDecisionClock.create(workNo, predetermineTimeSet, deductionTimeSheet, lateGraceTime));
-		}
-		
+		// 遅刻猶予時間の取得
+		//clocks.add(create(workNo, predetermineTimeSet, deductionTimeSheet, lateGraceTime));
 		return clocks;
 	}
 	

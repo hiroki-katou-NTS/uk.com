@@ -10,19 +10,19 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum StatutoryDivision {
- 
- Nomal(0, "Enum_StatutoryDivision_Nomal"),//通常
- Premium(1, "Enum_StatutoryDivision_Premium");//割増
- 
- public final int value;
+	
+	Nomal(0, "Enum_StatutoryDivision_Nomal"),//通常
+	Premium(1, "Enum_StatutoryDivision_Premium");//割増
+	
+	public final int value;
 
- public final String nameId;
- 
- /**
-  * 通常か判定する
-  * @return 
-  */
- public boolean isNomal() {
-	return Nomal.equals(this);
- }
+	public final String nameId;
+	
+	/**
+	 * 通常か判定する
+	 * @return 
+	 */
+	public boolean isNomal() {
+		return Nomal.equals(this);
+	}
 }

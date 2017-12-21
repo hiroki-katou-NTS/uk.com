@@ -7,7 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheetWORK;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
@@ -29,16 +29,17 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-public class HolidayWorkTimeSheet{
-	@Getter
-	private HolidayWorkTimeOfDaily workHolidayTime;
+public class HolidayWorkTimeSheet extends LateLeaveEarlyManagementTimeSheet{
 	
-	/**
-	 * Constructor
-	 */
-	public HolidayWorkTimeSheet(HolidayWorkTimeOfDaily holidayWorkOfDaily) {
-		this.workHolidayTime = holidayWorkOfDaily;
-	}
+	@Getter
+	 private HolidayWorkTimeOfDaily workHolidayTime;
+	 
+	 /**
+	  * Constructor
+	  */
+	 public HolidayWorkTimeSheet(HolidayWorkTimeOfDaily holidayWorkOfDaily) {
+	  this.workHolidayTime = holidayWorkOfDaily;
+	 }
 	
 	
 	/**
