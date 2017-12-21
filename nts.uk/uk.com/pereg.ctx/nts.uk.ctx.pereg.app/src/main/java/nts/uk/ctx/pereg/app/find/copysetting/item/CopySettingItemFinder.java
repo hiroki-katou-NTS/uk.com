@@ -127,13 +127,13 @@ public class CopySettingItemFinder {
 				.filter(item -> String.valueOf(item.getItemParentCd()).equals(itemCd)).collect(Collectors.toList());
 
 		for (SettingItemDto childItem : childItems) {
-			itemValue += childItem.getValueAsString() + getBetweenChar(childItem.getDataType());
 
+			if (!StringUtils.isEmpty(childItem.getValueAsString())) {
+				itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue,
+						childItem.getValueAsString());
+			}
 		}
 
-		if (itemValue.length() > 0) {
-			return itemValue.substring(0, itemValue.length() - 1);
-		}
 		return itemValue;
 	}
 

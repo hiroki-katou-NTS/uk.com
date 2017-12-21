@@ -683,7 +683,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         0, data.preAppOvertimeDto.overTimeInputsPre[i].frameName +" : ",
                         data.preAppOvertimeDto.overTimeInputsPre[i].startTime,
                         data.preAppOvertimeDto.overTimeInputsPre[i].endTime,
-                        self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime) ,null));
+                        self.convertIntToTime(data.preAppOvertimeDto.overTimeInputsPre[i].applicationTime),null));
                         }
                     }else{
                         continue;    

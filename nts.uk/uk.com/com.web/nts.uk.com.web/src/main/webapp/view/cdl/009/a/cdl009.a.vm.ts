@@ -78,11 +78,16 @@ module nts.uk.com.view.cdl009.a {
              */
             private searchEmp(): void {
                 let self = this;
-                if (!self.multiSelectedTree() || self.multiSelectedTree().length == 0) {
+                let treeList = $('#workplace-component').getDataList();
+                if (treeList.length == 0 || !self.multiSelectedTree() || self.multiSelectedTree().length == 0) {
                     if (self.target() == TargetClassification.WORKPLACE) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => {
+                            close();
+                        });
                     } else {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_647" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_647" }).then(() => {
+                            close();
+                        });
                     }
                     return;
                 }
@@ -158,7 +163,9 @@ module nts.uk.com.view.cdl009.a {
                 var isNoSelectRowSelected = $("#emp-component").isNoSelectRowSelected();
                 if (self.isMultiSelect()) {
                     if ((!self.selectedEmps() || self.selectedEmps().length == 0)) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_644" }).then(() => {
+                            close();
+                        });
                     } else {
                         let empIds = self.getEmpIds(empList, self.selectedEmps());
                         setShared('CDL009Output', empIds);
@@ -166,7 +173,9 @@ module nts.uk.com.view.cdl009.a {
                     }
                     
                 } else if (!self.selectedEmpCode() && !isNoSelectRowSelected) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_644" }).then(() => {
+                        close();
+                    });
                 } else {
                     // Get Emp Id
                     let emp: any = empList.filter((item) => {

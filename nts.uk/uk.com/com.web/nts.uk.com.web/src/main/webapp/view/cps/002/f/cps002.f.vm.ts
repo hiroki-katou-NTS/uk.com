@@ -80,13 +80,15 @@ module cps002.f.vm {
             //self.lstCategory(dataArr);
             //self.currentPerInfoCtg(dataArr[0].id);
             let ctgName = "";
-            service.getPerInfoCtgHasItems(ctgName).done(function(data) {
-                self.lstCategory(data);
-                self.currentPerInfoCtg(ctgid ? ctgid : data[0].id);
-                $("#searchCtg input").focus();
-            }).fail(function() {
-                alertError({ messageId: "Msg_352" });
-            });
+            service.getPerInfoCtgHasItems(ctgName).done(function(data: Array<any>) {
+                if (data.length > 0) {
+                    self.lstCategory(data);
+                    self.currentPerInfoCtg(ctgid ? ctgid : data[0].id);
+                    $("#searchCtg input").focus();
+                } else {
+                    alertError({ messageId: "Msg_352" });
+                }
+            })
 
         }
 
@@ -121,7 +123,7 @@ module cps002.f.vm {
     interface IPerInfoItemDef {
         id: string,
         itemName: string,
-        itemCd:string,
+        itemCd: string,
         perCtgId: string,
         alreadyItemDefCopy: boolean,
         itemParentCd: string

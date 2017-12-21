@@ -124,9 +124,13 @@ public class AddEmployeeCommandFacade {
 
 			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O')
 					.collect(Collectors.toList());
+
 			if (!CollectionUtil.isEmpty(lstItem)) {
-				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), null, lstItem);
 				addInputs.add(newItemCtg);
+				// add item for get recordId in commandFacade.add
+				ItemsByCategory itemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), null);
+				addInputs.add(itemCtg);
 
 			}
 

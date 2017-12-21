@@ -291,11 +291,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				// 存在する - has data
 				else {
 					workInfoOfDailyPerformanceUpdate.setScheduleWorkInformation(
-							new WorkInformation(basicScheduleHasData.get().getWorkTypeCode(),
-									basicScheduleHasData.get().getWorkTimeCode()));
+							new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
+									basicScheduleHasData.get().getWorkTypeCode()));
 					workInfoOfDailyPerformanceUpdate
-							.setRecordWorkInformation(new WorkInformation(basicScheduleHasData.get().getWorkTypeCode(),
-									basicScheduleHasData.get().getWorkTimeCode()));
+							.setRecordWorkInformation(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
+									basicScheduleHasData.get().getWorkTypeCode()));
 
 					// Imported(就業.勤務実績)「勤務予定時間帯」を取得する
 					List<WorkScheduleSidImport> workScheduleHasData = basicScheduleHasData.get()
