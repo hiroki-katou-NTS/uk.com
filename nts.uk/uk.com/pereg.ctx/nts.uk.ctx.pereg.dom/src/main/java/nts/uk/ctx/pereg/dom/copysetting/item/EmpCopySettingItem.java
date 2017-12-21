@@ -45,12 +45,13 @@ public class EmpCopySettingItem extends AggregateRoot {
 		this.itemParentCd = itemParentCd;
 	}
 
-	public EmpCopySettingItem(String perInfoCtgId, String itemDefId, String itemName, Boolean isAlreadyCopy,
+	public EmpCopySettingItem(String perInfoCtgId, String itemDefId, String itemName, String itemCode, Boolean isAlreadyCopy,
 			String itemParentCd) {
 		super();
 		this.perInfoCtgId = perInfoCtgId;
 		this.itemDefId = itemDefId;
 		this.itemName = itemName;
+		this.itemCode = itemCode;
 		this.isAlreadyCopy = isAlreadyCopy;
 		this.itemParentCd = itemParentCd;
 	}
@@ -64,9 +65,9 @@ public class EmpCopySettingItem extends AggregateRoot {
 
 	}
 
-	public static EmpCopySettingItem createFromJavaType(String perInfoCtgId, String itemDefId, String itemName,
+	public static EmpCopySettingItem createFromJavaType(String perInfoCtgId, String itemDefId, String itemCode, String itemName,
 			Boolean isAlreadyCopy, String itemParentCd) {
-		return new EmpCopySettingItem(perInfoCtgId, itemDefId, itemName, isAlreadyCopy, itemParentCd);
+		return new EmpCopySettingItem(perInfoCtgId, itemDefId,itemCode, itemName, isAlreadyCopy, itemParentCd);
 	}
 
 }

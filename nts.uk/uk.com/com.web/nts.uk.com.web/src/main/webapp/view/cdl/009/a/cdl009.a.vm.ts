@@ -27,7 +27,7 @@ module nts.uk.com.view.cdl009.a {
                 var params = getShared('CDL009Params');
                 self.multiSelectedTree = ko.observableArray([]);
                 self.multiSelectedTree(params.selectedIds ? params.selectedIds : []);
-                self.isMultiSelect = ko.observable(params.isMultiSelect);
+                self.isMultiSelect = ko.observable(params.isMultiple);
                 self.baseDate = ko.observable(params.baseDate ? params.baseDate : moment(new Date()).toDate());
                 self.target = ko.observable(params.target ? params.target : TargetClassification.WORKPLACE);
 
