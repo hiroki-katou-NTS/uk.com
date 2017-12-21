@@ -26,7 +26,8 @@ module a12 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        lateNightSetting: TimeRoundingSettingModel;
+        lateNightSettingRoundingTime: KnockoutObservable<number>;
+        lateNightSettingRounding: KnockoutObservable<number>;
            
         listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
         listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
@@ -51,7 +52,9 @@ module a12 {
             _self.settingEnum = settingEnum;
             
             // Init all data                                            
-            _self.lateNightSetting = new TimeRoundingSettingModel();
+            _self.lateNightSettingRoundingTime = ko.observable(0);
+            _self.lateNightSettingRounding = ko.observable(0);
+            
             _self.listRoundingTimeValue = ko.observableArray([]);
             _self.listRoundingValue = ko.observableArray([]);
             
@@ -160,8 +163,9 @@ module a12 {
          * UI - Detail: change Binding Detail mode
          */
         private changeBindingDetail(lateNightSetting: TimeRoundingSettingModel): void {
-            let _self = this;           
-            _self.lateNightSetting = lateNightSetting;
+            let _self = this;                           
+            _self.lateNightSettingRoundingTime = lateNightSetting.roundingTime;
+            _self.lateNightSettingRounding = lateNightSetting.rounding;
         }
         
         /**

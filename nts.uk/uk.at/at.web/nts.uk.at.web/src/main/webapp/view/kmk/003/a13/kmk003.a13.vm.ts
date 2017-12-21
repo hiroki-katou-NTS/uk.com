@@ -26,7 +26,8 @@ module a13 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        temporaryWorkTimeSetting: TimeRoundingSettingModel;
+        temporaryWorkTimeSettingRoundingTime: KnockoutObservable<number>;
+        temporaryWorkTimeSettingRounding: KnockoutObservable<number>;
            
         listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
         listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
@@ -50,7 +51,9 @@ module a13 {
             _self.settingEnum = settingEnum;
             
             // Init all data                                            
-            _self.temporaryWorkTimeSetting = new TimeRoundingSettingModel();
+            _self.temporaryWorkTimeSettingRoundingTime = ko.observable(0);
+            _self.temporaryWorkTimeSettingRounding = ko.observable(0);
+
             _self.listRoundingTimeValue = ko.observableArray([]);
             _self.listRoundingValue = ko.observableArray([]);
             
@@ -160,7 +163,8 @@ module a13 {
          */
         private changeBindingDetail(temporaryWorkTimeSetting: TimeRoundingSettingModel): void {
             let _self = this;           
-            _self.temporaryWorkTimeSetting = temporaryWorkTimeSetting;
+            _self.temporaryWorkTimeSettingRoundingTime = temporaryWorkTimeSetting.roundingTime;
+            _self.temporaryWorkTimeSettingRounding = temporaryWorkTimeSetting.rounding;
         }
         
         /**

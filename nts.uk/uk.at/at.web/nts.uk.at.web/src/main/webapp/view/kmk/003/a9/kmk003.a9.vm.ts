@@ -27,8 +27,10 @@ module a9 {
         settingEnum: WorkTimeSettingEnumDto;
 
         // Detail mode - Data
-        lateSetting: TimeRoundingSettingModel;
-        leaveEarlySetting: TimeRoundingSettingModel;     
+        lateSettingRoundingTime: KnockoutObservable<number>;
+        lateSettingRounding: KnockoutObservable<number>;
+        leaveEarlySettingRoundingTime: KnockoutObservable<number>;
+        leaveEarlySettingRounding: KnockoutObservable<number>;   
         
         listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
         listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
@@ -52,9 +54,12 @@ module a9 {
             _self.model = model; 
             _self.settingEnum = settingEnum;
             
-            // Init all data                                            
-            _self.lateSetting = new TimeRoundingSettingModel();
-            _self.leaveEarlySetting = new TimeRoundingSettingModel();
+            // Init all data                           
+            _self.lateSettingRoundingTime = ko.observable(0);
+            _self.lateSettingRounding = ko.observable(0);
+            _self.leaveEarlySettingRoundingTime = ko.observable(0);
+            _self.leaveEarlySettingRounding = ko.observable(0);
+                             
             _self.listRoundingTimeValue = ko.observableArray([]);
             _self.listRoundingValue = ko.observableArray([]);
             
@@ -179,8 +184,11 @@ module a9 {
             let _self = this;
             let otherClassSetLate: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.LATE);
             let otherClassSetLeaveEarly: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
-            _self.lateSetting = otherClassSetLate.delTimeRoundingSet;
-            _self.leaveEarlySetting = otherClassSetLeaveEarly.delTimeRoundingSet;
+            
+            _self.lateSettingRoundingTime = otherClassSetLate.delTimeRoundingSet.roundingTime;
+            _self.lateSettingRounding = otherClassSetLate.delTimeRoundingSet.rounding;
+            _self.leaveEarlySettingRoundingTime = otherClassSetLeaveEarly.delTimeRoundingSet.roundingTime;
+            _self.leaveEarlySettingRounding = otherClassSetLeaveEarly.delTimeRoundingSet.rounding;
         }
         
         /**

@@ -16,20 +16,20 @@
 		<div class="tab_8_round_setting">
 			<label>#{i18n.getText('KMK003_213')}</label>
 			<div tabindex="99" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
-				options: listRoundingBreakTimezone,
-				optionsValue: 'value',
-				optionsText: 'localizedName',
-				value: totalRoundingModel.setSameFrameRounding,
-				enable: true}"></div>
+					options: listRoundingBreakTimezone,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					value: totalRoundingSameFrameRoundingSet,
+					enable: true }"></div>
 		</div>
 		<div class="tab_8_round_setting">
 			<label>#{i18n.getText('KMK003_214')}</label>
 			<div tabindex="100" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
-				options: listRoundingBreakTimezone,
-				optionsValue: 'value',
-				optionsText: 'localizedName',
-				value: totalRoundingModel.frameStraddRoundingSet,
-				enable: true}"></div>
+					options: listRoundingBreakTimezone,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					value: totalRoundingFrameStraddRoundingSet,
+					enable: true }"></div>
 		</div>
 	</div>
 	
@@ -56,7 +56,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingMethod,
+									value: otTimePersonApproTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -65,16 +65,17 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: otTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.roundingTime,
+									value: otTimePersonApproTimeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: otTimePersonApproTimeRoundingEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="104" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: otTimePersonApproTimeRounding,
+									enable: otTimePersonApproTimeRoundingEnable }"></div>
 						</td>											
 					</tr>
 					
@@ -86,7 +87,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingMethod,
+									value: workTimePersonApproTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -95,7 +96,7 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: workTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.roundingTime,
+									value: workTimePersonApproTimeRoundingTime,
 									editable: false,
 									enable: true }"></div>
 						</td>
@@ -104,7 +105,7 @@
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: workTimePersonApproTimeRounding }"></div>
 						</td>						
 					</tr>
 					
@@ -116,7 +117,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingMethod,
+									value: pubHolWorkTimePersonApproTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -125,7 +126,7 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: pubHolWorkTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.roundingTime,
+									value: pubHolWorkTimePersonApproTimeRoundingTime,
 									editable: false,
 									enable: true }"></div>
 						</td>
@@ -134,7 +135,7 @@
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimezoneModel.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: pubHolWorkTimePersonApproTimeRounding }"></div>
 						</td>						
 					</tr>
 				</table>					
@@ -154,7 +155,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod,
+									value: otTimePersonDeductTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -163,7 +164,7 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: otTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.roundingTime,
+									value: otTimePersonDeductTimeRoundingTime,
 									editable: false,
 									enable: true }"></div>
 						</td>
@@ -172,7 +173,7 @@
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: otTimePersonDeductTimeRounding }"></div>
 						</td>		
 					</tr>
 					
@@ -183,7 +184,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod,
+									value: workTimePersonDeductTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -192,7 +193,7 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: workTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.roundingTime,
+									value: workTimePersonDeductTimeRoundingTime,
 									editable: false,
 									enable: true }"></div>
 						</td>
@@ -201,7 +202,7 @@
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: workTimePersonDeductTimeRounding }"></div>
 						</td>
 					</tr>
 					
@@ -212,7 +213,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod,
+									value: pubHolWorkTimePersonDeductTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -221,7 +222,7 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: pubHolWorkTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.roundingTime,
+									value: pubHolWorkTimePersonDeductTimeRoundingTime,
 									editable: false,
 									enable: true }"></div>
 						</td>
@@ -230,7 +231,7 @@
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimezoneModel.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: pubHolWorkTimePersonDeductTimeRounding }"></div>
 						</td>
 					</tr>
 				</table>
@@ -253,7 +254,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod,
+									value: otTimePublicApproTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -262,7 +263,7 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: otTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.roundingTime,
+									value: otTimePublicApproTimeRoundingTime,
 									editable: false,
 									enable: true }"></div>
 						</td>
@@ -271,7 +272,7 @@
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: otTimePublicApproTimeRounding }"></div>
 						</td>
 					</tr>
 					
@@ -283,7 +284,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod,
+									value: workTimePublicApproTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -292,7 +293,7 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: workTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.roundingTime,
+									value: workTimePublicApproTimeRoundingTime,
 									editable: false,
 									enable: true }"></div>
 						</td>
@@ -301,7 +302,7 @@
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: workTimePublicApproTimeRounding }"></div>
 						</td>
 					</tr>
 					
@@ -313,7 +314,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod,
+									value: pubHolWorkTimePublicApproTimeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -322,7 +323,7 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: pubHolWorkTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.roundingTime,
+									value: pubHolWorkTimePublicApproTimeRoundingTime,
 									editable: false,
 									enable: true }"></div>
 						</td>
@@ -331,7 +332,7 @@
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimezoneModel.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.rounding }"></div>
+									value: pubHolWorkTimePublicApproTimeRounding }"></div>
 						</td>
 					</tr>
 				</table>	

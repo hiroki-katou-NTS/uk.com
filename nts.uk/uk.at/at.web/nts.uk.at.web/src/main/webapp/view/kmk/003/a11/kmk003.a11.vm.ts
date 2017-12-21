@@ -27,8 +27,17 @@ module a11 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        fromOverTimeTransferSet: SubHolTransferSetModel;
-        workdayOffTimeTransferSet: SubHolTransferSetModel;
+        workdayOffTimeUseDivision: KnockoutObservable<boolean>;
+        workdayOffTimeSubHolTransferSetAtr: KnockoutObservable<number>;
+        workdayOffTimeOneDayTime: KnockoutObservable<number>;
+        workdayOffTimeHalfDayTime: KnockoutObservable<number>;
+        workdayOffTimeCertainTime: KnockoutObservable<number>;
+        
+        fromOverTimeUseDivision: KnockoutObservable<boolean>;
+        fromOverTimeSubHolTransferSetAtr: KnockoutObservable<number>;
+        fromOverTimeOneDayTime: KnockoutObservable<number>;
+        fromOverTimeHalfDayTime: KnockoutObservable<number>;
+        fromOverTimeCertainTime: KnockoutObservable<number>;
     
         // Simple mode - Data (nothing)
         
@@ -49,8 +58,17 @@ module a11 {
             _self.settingEnum = settingEnum;
     
             // Init all data          
-            _self.fromOverTimeTransferSet = new SubHolTransferSetModel();
-            _self.workdayOffTimeTransferSet = new SubHolTransferSetModel();
+            _self.workdayOffTimeUseDivision = ko.observable(false);
+            _self.workdayOffTimeSubHolTransferSetAtr = ko.observable(0);
+            _self.workdayOffTimeOneDayTime = ko.observable(0);
+            _self.workdayOffTimeHalfDayTime = ko.observable(0);
+            _self.workdayOffTimeCertainTime = ko.observable(0);
+            
+            _self.fromOverTimeUseDivision = ko.observable(false);
+            _self.fromOverTimeSubHolTransferSetAtr = ko.observable(0);
+            _self.fromOverTimeOneDayTime = ko.observable(0);
+            _self.fromOverTimeHalfDayTime = ko.observable(0);
+            _self.fromOverTimeCertainTime = ko.observable(0);
     
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -167,42 +185,51 @@ module a11 {
          * UI - Detail: change Binding Detail mode
          */
         private changeBindingDetail(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
-            let _self = this;           
+            let _self = this;    
+            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);       
             let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.FROM_OVER_TIME);
-            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);
-            _self.fromOverTimeTransferSet = fromOverTimeSubstitutionSet.subHolTimeSet;
-            _self.workdayOffTimeTransferSet = workdayOffTimeSubstitutionSet.subHolTimeSet;
 
+            _self.workdayOffTimeUseDivision = workdayOffTimeSubstitutionSet.subHolTimeSet.useDivision;
+            _self.workdayOffTimeSubHolTransferSetAtr = workdayOffTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr;
+            _self.workdayOffTimeOneDayTime = workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime;
+            _self.workdayOffTimeHalfDayTime = workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime;
+            _self.workdayOffTimeCertainTime = workdayOffTimeSubstitutionSet.subHolTimeSet.certainTime;
+            
+            _self.fromOverTimeUseDivision = fromOverTimeSubstitutionSet.subHolTimeSet.useDivision;
+            _self.fromOverTimeSubHolTransferSetAtr = fromOverTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr;
+            _self.fromOverTimeOneDayTime = fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime;
+            _self.fromOverTimeHalfDayTime = fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime;
+            _self.fromOverTimeCertainTime = fromOverTimeSubstitutionSet.subHolTimeSet.certainTime;
+            
             // Filter time data when switch radio button
-            _self.fromOverTimeTransferSet.subHolTransferSetAtr.subscribe((newValue) => {                            
+            _self.workdayOffTimeSubHolTransferSetAtr.subscribe((newValue) => {
                 if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    console.log(_self.fromOverTimeTransferSet.certainTime());
-                    if (typeof _self.fromOverTimeTransferSet.certainTime() !== 'number') {
-                        _self.fromOverTimeTransferSet.certainTime(0);
-                    }                  
-                } else {
-                    if (typeof _self.fromOverTimeTransferSet.designatedTime.oneDayTime() !== 'number') {
-                        _self.fromOverTimeTransferSet.designatedTime.oneDayTime(0);
-                    }  
-                    if (typeof _self.fromOverTimeTransferSet.designatedTime.halfDayTime() !== 'number') {
-                        _self.fromOverTimeTransferSet.designatedTime.halfDayTime(0);
-                    }                 
-                }
-            });
-            _self.workdayOffTimeTransferSet.subHolTransferSetAtr.subscribe((newValue) => {
-                if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    if (typeof _self.workdayOffTimeTransferSet.certainTime() !== 'number') {
-                        _self.workdayOffTimeTransferSet.certainTime(0);
+                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {
+                        _self.workdayOffTimeCertainTime(0);
                     }                   
                 } else {
-                    if (typeof _self.workdayOffTimeTransferSet.designatedTime.oneDayTime() !== 'number') {
-                        _self.workdayOffTimeTransferSet.designatedTime.oneDayTime(0);
+                    if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
+                        _self.workdayOffTimeOneDayTime(0);
                     }  
-                    if (typeof _self.workdayOffTimeTransferSet.designatedTime.halfDayTime() !== 'number') {
-                        _self.workdayOffTimeTransferSet.designatedTime.halfDayTime(0);
+                    if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
+                        _self.workdayOffTimeHalfDayTime(0);
                     }                 
                 }
             });
+            _self.fromOverTimeSubHolTransferSetAtr.subscribe((newValue) => {                            
+                if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+                    if (typeof _self.fromOverTimeCertainTime() !== 'number') {
+                        _self.fromOverTimeCertainTime(0);
+                    }                  
+                } else {
+                    if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
+                        _self.fromOverTimeOneDayTime(0);
+                    }  
+                    if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
+                        _self.fromOverTimeHalfDayTime(0);
+                    }                 
+                }
+            });            
         }
         
         /**
@@ -213,7 +240,8 @@ module a11 {
             
             // Handle workdayOffTimeTransferSet.designatedTime only
             let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);
-            _self.workdayOffTimeTransferSet = workdayOffTimeSubstitutionSet.subHolTimeSet;
+            _self.workdayOffTimeOneDayTime = workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime;
+            _self.workdayOffTimeHalfDayTime = workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime;
         }     
     }
     

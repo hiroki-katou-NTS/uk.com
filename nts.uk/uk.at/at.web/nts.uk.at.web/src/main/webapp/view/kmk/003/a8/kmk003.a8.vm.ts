@@ -32,12 +32,41 @@ module a8 {
         workTimeTabs: KnockoutObservableArray<any>;
         workTimeSelectedTab: KnockoutObservable<string>;
         
-        // Detail mode - Data
-        totalRoundingModel: TotalRoundingSetModel;
+        // Detail mode - Data       
+        totalRoundingSameFrameRoundingSet: KnockoutObservable<number>;
+        totalRoundingFrameStraddRoundingSet: KnockoutObservable<number>;
+               
+        //TODO create model
+        otTimePersonApproTimeRoundingEnable: KnockoutObservable<boolean>;
+        otTimePersonApproTimeRoundingMethod: KnockoutObservable<number>;
+        otTimePersonApproTimeRoundingTime: KnockoutObservable<number>;
+        otTimePersonApproTimeRounding: KnockoutObservable<number>;
+        workTimePersonApproTimeRoundingMethod: KnockoutObservable<number>;
+        workTimePersonApproTimeRoundingTime: KnockoutObservable<number>;
+        workTimePersonApproTimeRounding: KnockoutObservable<number>;
+        pubHolWorkTimePersonApproTimeRoundingMethod: KnockoutObservable<number>;
+        pubHolWorkTimePersonApproTimeRoundingTime: KnockoutObservable<number>;
+        pubHolWorkTimePersonApproTimeRounding: KnockoutObservable<number>;
         
-        otTimezoneModel: GoOutTypeRoundingSetModel;     
-        workTimezoneModel: GoOutTypeRoundingSetModel;
-        pubHolWorkTimezoneModel: GoOutTypeRoundingSetModel;
+        otTimePersonDeductTimeRoundingMethod: KnockoutObservable<number>;
+        otTimePersonDeductTimeRoundingTime: KnockoutObservable<number>;
+        otTimePersonDeductTimeRounding: KnockoutObservable<number>;
+        workTimePersonDeductTimeRoundingMethod: KnockoutObservable<number>;
+        workTimePersonDeductTimeRoundingTime: KnockoutObservable<number>;
+        workTimePersonDeductTimeRounding: KnockoutObservable<number>;
+        pubHolWorkTimePersonDeductTimeRoundingMethod: KnockoutObservable<number>;
+        pubHolWorkTimePersonDeductTimeRoundingTime: KnockoutObservable<number>;
+        pubHolWorkTimePersonDeductTimeRounding: KnockoutObservable<number>;
+        
+        otTimePublicApproTimeRoundingMethod: KnockoutObservable<number>;
+        otTimePublicApproTimeRoundingTime: KnockoutObservable<number>;
+        otTimePublicApproTimeRounding: KnockoutObservable<number>;
+        workTimePublicApproTimeRoundingMethod: KnockoutObservable<number>;
+        workTimePublicApproTimeRoundingTime: KnockoutObservable<number>;
+        workTimePublicApproTimeRounding: KnockoutObservable<number>;
+        pubHolWorkTimePublicApproTimeRoundingMethod: KnockoutObservable<number>;
+        pubHolWorkTimePublicApproTimeRoundingTime: KnockoutObservable<number>;
+        pubHolWorkTimePublicApproTimeRounding: KnockoutObservable<number>;
         
         listRoundingBreakTimezone: KnockoutObservableArray<any>;
         listRoundingBreakTime: KnockoutObservableArray<any>;
@@ -70,10 +99,46 @@ module a8 {
             _self.workTimeSelectedTab = ko.observable('personal-setting-tab');
             
             // Init all data                        
-            _self.totalRoundingModel = new TotalRoundingSetModel();    
-            _self.pubHolWorkTimezoneModel = new GoOutTypeRoundingSetModel();
-            _self.workTimezoneModel = new GoOutTypeRoundingSetModel();
-            _self.otTimezoneModel = new GoOutTypeRoundingSetModel();                
+            _self.totalRoundingSameFrameRoundingSet = ko.observable(0);
+            _self.totalRoundingFrameStraddRoundingSet = ko.observable(0);
+            
+            _self.otTimePersonApproTimeRoundingEnable = ko.observable(null);
+            _self.otTimePersonApproTimeRoundingMethod = ko.observable(0); 
+            _self.otTimePersonApproTimeRoundingMethod.subscribe((v) => {
+                if (v === 1) {
+                    _self.otTimePersonApproTimeRoundingEnable(true);
+                } else {
+                    _self.otTimePersonApproTimeRoundingEnable(false);
+                }
+            });
+            _self.otTimePersonApproTimeRoundingTime = ko.observable(0);
+            _self.otTimePersonApproTimeRounding = ko.observable(0);
+            _self.workTimePersonApproTimeRoundingMethod = ko.observable(0);
+            _self.workTimePersonApproTimeRoundingTime = ko.observable(0);
+            _self.workTimePersonApproTimeRounding = ko.observable(0);
+            _self.pubHolWorkTimePersonApproTimeRoundingMethod = ko.observable(0);
+            _self.pubHolWorkTimePersonApproTimeRoundingTime = ko.observable(0);
+            _self.pubHolWorkTimePersonApproTimeRounding = ko.observable(0);
+            
+            _self.otTimePersonDeductTimeRoundingMethod = ko.observable(0);
+            _self.otTimePersonDeductTimeRoundingTime = ko.observable(0);
+            _self.otTimePersonDeductTimeRounding = ko.observable(0);
+            _self.workTimePersonDeductTimeRoundingMethod = ko.observable(0);
+            _self.workTimePersonDeductTimeRoundingTime = ko.observable(0);
+            _self.workTimePersonDeductTimeRounding = ko.observable(0);
+            _self.pubHolWorkTimePersonDeductTimeRoundingMethod = ko.observable(0);
+            _self.pubHolWorkTimePersonDeductTimeRoundingTime = ko.observable(0);
+            _self.pubHolWorkTimePersonDeductTimeRounding = ko.observable(0);
+            
+            _self.otTimePublicApproTimeRoundingMethod = ko.observable(0);
+            _self.otTimePublicApproTimeRoundingTime = ko.observable(0);
+            _self.otTimePublicApproTimeRounding = ko.observable(0);
+            _self.workTimePublicApproTimeRoundingMethod = ko.observable(0);
+            _self.workTimePublicApproTimeRoundingTime = ko.observable(0);
+            _self.workTimePublicApproTimeRounding = ko.observable(0);
+            _self.pubHolWorkTimePublicApproTimeRoundingMethod = ko.observable(0);
+            _self.pubHolWorkTimePublicApproTimeRoundingTime = ko.observable(0);
+            _self.pubHolWorkTimePublicApproTimeRounding = ko.observable(0);          
             
             //_self.listRoundingBreakTimezone = ko.observableArray([]);
             //_self.listRoundingBreakTime = ko.observableArray([]);
@@ -196,10 +261,39 @@ module a8 {
          */
         private changeBindingDetail(goOutSet: WorkTimezoneGoOutSetModel): void {
             let _self = this;
-            _self.totalRoundingModel = goOutSet.totalRoundingSet;  
-            _self.pubHolWorkTimezoneModel = goOutSet.diffTimezoneSetting.pubHolWorkTimezone;
-            _self.workTimezoneModel = goOutSet.diffTimezoneSetting.workTimezone;
-            _self.otTimezoneModel = goOutSet.diffTimezoneSetting.ottimezone;      
+            
+            _self.totalRoundingSameFrameRoundingSet = goOutSet.totalRoundingSet.setSameFrameRounding;
+            _self.totalRoundingFrameStraddRoundingSet = goOutSet.totalRoundingSet.frameStraddRoundingSet;
+            
+            _self.otTimePersonApproTimeRoundingMethod = goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod;
+            _self.otTimePersonApproTimeRoundingTime = goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.otTimePersonApproTimeRounding = goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.rounding;
+            _self.workTimePersonApproTimeRoundingMethod = goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod;
+            _self.workTimePersonApproTimeRoundingTime = goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.workTimePersonApproTimeRounding = goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.rounding;
+            _self.pubHolWorkTimePersonApproTimeRoundingMethod = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingMethod;
+            _self.pubHolWorkTimePersonApproTimeRoundingTime = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.pubHolWorkTimePersonApproTimeRounding = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.approTimeRoundingSetting.roundingSetting.rounding;
+            
+            _self.otTimePersonDeductTimeRoundingMethod = goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod;
+            _self.otTimePersonDeductTimeRoundingTime = goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.otTimePersonDeductTimeRounding = goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.rounding;
+            _self.workTimePersonDeductTimeRoundingMethod = goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod;
+            _self.workTimePersonDeductTimeRoundingTime = goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.workTimePersonDeductTimeRounding = goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.rounding;
+            _self.pubHolWorkTimePersonDeductTimeRoundingMethod = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingMethod;
+            _self.pubHolWorkTimePersonDeductTimeRoundingTime = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.pubHolWorkTimePersonDeductTimeRounding = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.deductTimeRoundingSetting.roundingSetting.rounding;
+            
+            _self.otTimePublicApproTimeRoundingMethod = goOutSet.diffTimezoneSetting.ottimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod;
+            _self.otTimePublicApproTimeRoundingTime = goOutSet.diffTimezoneSetting.ottimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.otTimePublicApproTimeRounding = goOutSet.diffTimezoneSetting.ottimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.rounding;
+            _self.workTimePublicApproTimeRoundingMethod = goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod;
+            _self.workTimePublicApproTimeRoundingTime = goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.workTimePublicApproTimeRounding = goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.rounding;
+            _self.pubHolWorkTimePublicApproTimeRoundingMethod = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingMethod;
+            _self.pubHolWorkTimePublicApproTimeRoundingTime = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.roundingTime;
+            _self.pubHolWorkTimePublicApproTimeRounding = goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting.roundingSetting.rounding;          
         }
         
         /**

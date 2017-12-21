@@ -29,11 +29,13 @@ module a15 {
         // Detail mode - Data
         dayShiftApplicationTime: KnockoutObservable<number>;
         nightShiftApplicationTime: KnockoutObservable<number>;
-        dayShiftSetting: TimeRoundingSettingModel;
-        nightShiftSetting: TimeRoundingSettingModel;     
+        dayShiftSettingRoundingTime: KnockoutObservable<number>;
+        dayShiftSettingRounding: KnockoutObservable<number>;
+        nightShiftSettingRoundingTime: KnockoutObservable<number>;
+        nightShiftSettingRounding: KnockoutObservable<number>;   
         
         listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
-        listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
+        listRoundingValue: KnockoutObservableArray<EnumConstantDto>;       
         
         // Simple mode - Data  
         
@@ -56,10 +58,13 @@ module a15 {
             // Init all data                                      
             _self.dayShiftApplicationTime = ko.observable(null);
             _self.nightShiftApplicationTime = ko.observable(null);
-            _self.dayShiftSetting = new TimeRoundingSettingModel();
-            _self.nightShiftSetting = new TimeRoundingSettingModel();
+            _self.dayShiftSettingRoundingTime = ko.observable(0);
+            _self.dayShiftSettingRounding = ko.observable(0);
+            _self.nightShiftSettingRoundingTime = ko.observable(0);
+            _self.nightShiftSettingRounding = ko.observable(0);
+
             _self.listRoundingTimeValue = ko.observableArray([]);
-            _self.listRoundingValue = ko.observableArray([]);
+            _self.listRoundingValue = ko.observableArray([]);           
             
             _self.listRoundingTimeValue(_self.settingEnum.roundingTime);
             _self.listRoundingValue(_self.settingEnum.roundingSimple); 
@@ -181,11 +186,14 @@ module a15 {
         private changeBindingDetail(medicalSet: WorkTimezoneMedicalSetModel[]): void {
             let _self = this;        
             let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
-            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);
-            _self.dayShiftApplicationTime = dayShiftMedicalSet.applicationTime;   
-            _self.dayShiftSetting = dayShiftMedicalSet.roundingSet;
+            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);             
+            
+            _self.dayShiftApplicationTime = dayShiftMedicalSet.applicationTime;  
             _self.nightShiftApplicationTime = nightShiftMedicalSet.applicationTime;   
-            _self.nightShiftSetting = nightShiftMedicalSet.roundingSet;
+            _self.dayShiftSettingRoundingTime = dayShiftMedicalSet.roundingSet.roundingTime;
+            _self.dayShiftSettingRounding = dayShiftMedicalSet.roundingSet.rounding;
+            _self.nightShiftSettingRoundingTime = nightShiftMedicalSet.roundingSet.roundingTime;
+            _self.nightShiftSettingRounding = nightShiftMedicalSet.roundingSet.rounding;
         }
         
         /**
