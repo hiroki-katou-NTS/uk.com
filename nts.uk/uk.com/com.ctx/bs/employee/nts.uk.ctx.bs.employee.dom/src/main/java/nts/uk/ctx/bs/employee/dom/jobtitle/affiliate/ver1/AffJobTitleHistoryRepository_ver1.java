@@ -24,6 +24,8 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	
 	// get listbypid
 	Optional<AffJobTitleHistory_ver1> getListBySid(String cid, String sid);
+	
+	Optional<AffJobTitleHistory_ver1> getListBySidDesc(String cid, String sid);
 
 	/**
 	 * ドメインモデル「職務職位」を新規登録する

@@ -46,7 +46,7 @@ public class SpecificDateItemWebService extends WebService {
 	
 	@POST
 	@Path("getspecificdatebylistcode")
-	public List<SpecificDateItemDto> getSpecificDateByListCode(List<String> lstSpecificDateItem){
+	public List<SpecificDateItemDto> getSpecificDateByListCode(List<Integer> lstSpecificDateItem){
 		return this.find.getSpecificDateItemByListCode(lstSpecificDateItem);
 	}
 	@POST

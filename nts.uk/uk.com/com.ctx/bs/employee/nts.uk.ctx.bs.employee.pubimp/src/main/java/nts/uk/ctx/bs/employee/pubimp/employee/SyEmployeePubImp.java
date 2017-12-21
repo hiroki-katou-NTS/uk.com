@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
@@ -35,6 +37,7 @@ import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SyEmployeePubImp.
@@ -81,7 +84,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.collect(Collectors.toList());
 
 		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);
-
+		String cid = AppContexts.user().companyId();
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
@@ -89,7 +92,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 			EmployeeExport result = new EmployeeExport();
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid,employee.getEmployeeId());
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
@@ -98,7 +101,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			if (affComHistByEmp.items() != null) {
 
 				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-					return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+					return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
 				}).collect(Collectors.toList());
 
 				if (!filter.isEmpty()) {
@@ -189,8 +192,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
-
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(emp.getEmployeeId());
+		String cid = AppContexts.user().companyId();
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid,emp.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 
@@ -199,7 +202,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		if (affComHistByEmp.items() != null) {
 
 			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+				return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
 			}).collect(Collectors.toList());
 
 			if (!filter.isEmpty()) {
@@ -222,11 +225,15 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	public List<EmployeeBasicInfoExport> findBySIds(List<String> sIds) {
 
 		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
-
+		String cid = AppContexts.user().companyId();
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
 		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+		
+		if(CollectionUtil.isEmpty(emps)) {
+			return null;
+		}
 
 		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
 
@@ -247,7 +254,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				result.setBirthDay(person.getBirthDate());
 			}
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid,employee.getEmployeeId());
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
@@ -256,7 +263,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			if (affComHistByEmp.items() != null) {
 
 				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-					return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+					return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
 				}).collect(Collectors.toList());
 
 				if (!filter.isEmpty()) {

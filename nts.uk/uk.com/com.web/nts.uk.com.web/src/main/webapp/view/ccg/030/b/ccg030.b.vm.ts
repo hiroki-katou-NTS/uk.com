@@ -19,7 +19,7 @@ module ccg030.b.viewmodel {
                 self.flowmenu(flowmenu);
             _.defer(() => { self.setupPositionAndSize(self.flowmenu()); });
             //view image
-            liveviewcontainer.html($("<img width = '100%' height = '100%' />").attr("src", nts.uk.request.liveView(fileID)));
+            liveviewcontainer.html($("<iframe width = '100%' height = '100%' />").attr("src", nts.uk.request.liveView(fileID)));
         }
 
 

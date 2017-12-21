@@ -10,12 +10,13 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.ItemValue;
-import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -29,7 +30,6 @@ public class AddEmployeeCommandFacade {
 
 	@Inject
 	private RegisterLayoutFinder layoutFinder;
-	// từ từ ,luong sai @@
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addNewFromInputs(AddEmployeeCommand command, String personId, String employeeId, String comHistId) {
@@ -48,10 +48,9 @@ public class AddEmployeeCommandFacade {
 		List<ItemsByCategory> inputs = command.getInputs();
 
 		// merge data from client with dataServer
-		if (command.getCreateType() == 2) {
+		if (command.getCreateType() != 3) {
 
-			List<SettingItemDto> dataServer = new ArrayList<SettingItemDto>();
-			mergeData(dataServer, inputs, command);
+			List<SettingItemDto> dataServer = mergeData(inputs, command);
 
 			// inputs = new ArrayList<ItemsByCategory>();
 			List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
@@ -65,23 +64,24 @@ public class AddEmployeeCommandFacade {
 			});
 
 			return categoryCodeList.stream()
-					.map(c -> createNewItemsByCategoryCode(dataServer, c, employeeId, personId, comHistId))
-					.filter(c -> c != null).collect(Collectors.toList());
+					.map(ctgCode -> createNewItemsByCategoryCode(dataServer, ctgCode, employeeId, personId, comHistId))
+					.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
 		}
-		return inputs;
+		return inputs.stream().map(c -> createNewItemsByCategoryCode(c, employeeId, personId, comHistId))
+				.filter(c -> c != null).collect(Collectors.toList());
 
 	}
 
 	public void updateRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		List<ItemsByCategory> fixedInputs = inputs.stream().filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1)
-				.collect(Collectors.toList());
+		List<ItemsByCategory> requiredInputs = inputs.stream()
+				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1).collect(Collectors.toList());
 
-		if (!CollectionUtil.isEmpty(fixedInputs)) {
+		if (!CollectionUtil.isEmpty(requiredInputs)) {
 
-			updateRequiredSystemInputs(fixedInputs, personId, employeeId);
+			updateRequiredSystemInputs(requiredInputs, personId, employeeId);
 
-			addRequiredOptinalInputs(fixedInputs, personId, employeeId);
+			addRequiredOptinalInputs(requiredInputs, personId, employeeId);
 
 		}
 
@@ -109,10 +109,10 @@ public class AddEmployeeCommandFacade {
 
 	public void addNoRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
 
-		inputs = inputs.stream().filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) == -1)
-				.collect(Collectors.toList());
+		List<ItemsByCategory> noRequiredInputs = inputs.stream()
+				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) == -1).collect(Collectors.toList());
 		// call add commandFacade
-		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, inputs);
+		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noRequiredInputs);
 
 		this.commandFacade.add(addContainer);
 	}
@@ -138,15 +138,15 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private void mergeData(List<SettingItemDto> dataList, List<ItemsByCategory> inputs, AddEmployeeCommand command) {
+	private List<SettingItemDto> mergeData(List<ItemsByCategory> inputs, AddEmployeeCommand command) {
 
-		dataList = this.layoutFinder.getAllInitItemBySetId(command);
+		List<SettingItemDto> dataList = this.layoutFinder.getAllSettingItemList(command);
 
 		dataList.forEach(x -> {
 
-			if (x.getDataType() == ItemValueType.SELECTION.value) {
+			if (x.getDataType().equals(DataTypeValue.SELECTION)) {
 				if (x.getSelectionItemRefType().intValue() == 3) {
-					x.setDataType(2);
+					x.setDataType(DataTypeValue.NUMERIC);
 				}
 			}
 
@@ -155,9 +155,10 @@ public class AddEmployeeCommandFacade {
 			if (itemVal != null) {
 				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
 						itemVal.value() != null ? itemVal.value().toString() : ""));
-
 			}
 		});
+
+		return dataList;
 
 	}
 
@@ -183,7 +184,7 @@ public class AddEmployeeCommandFacade {
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
 			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getValueAsString(),
-					item.getDataType()));
+					item.getDataType().value));
 		});
 		if (CollectionUtil.isEmpty(items)) {
 			return null;
@@ -200,6 +201,34 @@ public class AddEmployeeCommandFacade {
 		}
 
 		if (categoryCd == "CS00003") {
+			recordId = comHistId;
+
+		}
+
+		return new ItemsByCategory(categoryCd, recordId, items);
+	}
+
+	private ItemsByCategory createNewItemsByCategoryCode(ItemsByCategory itemByCtg, String employeeId, String personId,
+			String comHistId) {
+
+		List<ItemValue> items = itemByCtg.getItems();
+
+		if (CollectionUtil.isEmpty(items)) {
+			return null;
+		}
+		String recordId = null;
+		String categoryCd = itemByCtg.getCategoryCd();
+
+		if (categoryCd.equals("CS00001")) {
+
+			recordId = employeeId;
+		}
+
+		if (categoryCd.equals("CS00002")) {
+			recordId = personId;
+		}
+
+		if (categoryCd.equals("CS00003")) {
 			recordId = comHistId;
 
 		}

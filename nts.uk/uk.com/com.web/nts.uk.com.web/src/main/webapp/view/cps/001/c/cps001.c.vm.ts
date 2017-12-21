@@ -15,9 +15,9 @@ module cps001.c.vm {
     export class ViewModel {
         listEmployee: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
-        
-        enaBtnRes : KnockoutObservable<boolean> = ko.observable(true);
-        enaBtnDel : KnockoutObservable<boolean> = ko.observable(true);
+
+        enaBtnRes: KnockoutObservable<boolean> = ko.observable(true);
+        enaBtnDel: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this,
@@ -26,6 +26,8 @@ module cps001.c.vm {
 
             emp.id.subscribe(x => {
                 if (x) {
+                    self.enableControl();
+                    
                     let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
 
                     service.getDetail(x).done((data: IEmployee) => {
@@ -38,6 +40,8 @@ module cps001.c.vm {
                             emp.dateDelete(data.dateDelete || undefined);
                         }
                     });
+                } else {
+                    self.newMode();
                 }
             });
 
@@ -55,7 +59,7 @@ module cps001.c.vm {
             service.getData().done((data: Array<IEmployee>) => {
                 if (data && data.length) {
                     emps(data);
-
+                    $('#code').focus();
                     if (!sid) {
                         emp.id(data[0].id);
                     } else {
@@ -81,7 +85,7 @@ module cps001.c.vm {
             let self = this,
                 emp: IEmployee = ko.toJS(self.currentEmployee),
                 listItem: Array<IEmployee> = ko.toJS(self.listEmployee);
-            
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -121,7 +125,7 @@ module cps001.c.vm {
                 return;
             }
 
-            
+
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let sid = emp.id;
                 service.removedata(sid).done(() => {
@@ -151,10 +155,10 @@ module cps001.c.vm {
         }
 
         newMode() {
-           let self = this,
+            let self = this,
                 emps = self.listEmployee(),
                 emp = self.currentEmployee();
-            
+
             emp.enableCode(false);
             emp.enableName(false);
             emp.code('');
@@ -164,6 +168,19 @@ module cps001.c.vm {
             self.enaBtnRes(false);
             self.enaBtnDel(false);
         }
+
+        enableControl() {
+            let self = this,
+                emps = self.listEmployee(),
+                emp = self.currentEmployee();
+
+            emp.enableCode(true);
+            emp.enableName(true);
+            self.enaBtnRes(true);
+            self.enaBtnDel(true);
+        }
+
+
     }
 
     interface IEmployee {

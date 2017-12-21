@@ -29,8 +29,8 @@
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator" >#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator" class="active" tabindex="1">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" tabindex="2">#{i18n.getText('Com_Workplace')}</a></li>
 			</ul>
 		</ui:define>
 
@@ -41,10 +41,10 @@
 			<div id="tabpanel-1" role="tabpanel" data-bind="with: viewModelA">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
-					<button class="proceed" data-bind="click: Register" tabindex="1">#{i18n.getText('KSM002_6')}</button>
-					<button id="btnSpecSetting" data-bind="click: openKsm002CDialog" tabindex="2">#{i18n.getText('KSM002_7')}</button>
-					<button data-bind="click: openKsm002DDialog" tabindex="3">#{i18n.getText('KSM002_8')}</button>
-					<button class="danger" data-bind="click : DeleteOneMonth, disable : isNew" tabindex="4">#{i18n.getText('KSM002_9')}</button>
+					<button class="proceed" data-bind="click: Register" tabindex="3" id = 'btnRegistry'>#{i18n.getText('KSM002_6')}</button>
+					<button id="btnSpecSetting" data-bind="click: openKsm002CDialog" tabindex="4">#{i18n.getText('KSM002_7')}</button>
+					<button data-bind="click: openKsm002DDialog" tabindex="5">#{i18n.getText('KSM002_8')}</button>
+					<button class="danger" data-bind="click : DeleteOneMonth, disable : isNew" tabindex="6">#{i18n.getText('KSM002_9')}</button>
 				</div>
 				<div id="screenA" class="contents-area">
 					<div class="panel panel-frame">

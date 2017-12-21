@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface HolidayAddtimeRepository {
 
@@ -10,7 +11,7 @@ public interface HolidayAddtimeRepository {
 	 * @return
 	 */
 	List<HolidayAddtime> findByCompanyId(String companyId);
-
+	Optional<HolidayAddtime >findByCId(String companyId);
 	/**
 	 * Add Holiday Addtime
 	 * @param holidayAddtime

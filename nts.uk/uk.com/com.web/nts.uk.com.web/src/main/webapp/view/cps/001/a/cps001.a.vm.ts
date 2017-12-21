@@ -2,6 +2,7 @@ module cps001.a.vm {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -86,9 +87,10 @@ module cps001.a.vm {
             let self = this,
                 categories = self.multipleData().map(x => x.categories());
 
-            return [{ optionValue: 'cat1', optionText: 'Category First' }, { optionValue: 'cat2', optionText: 'Category Second' }];
-            //return categories[0] || [{ optionValue: 'cat1', optionText: 'Category First' }, { optionValue: 'cat1', optionText: 'Category First' }];
+            return categories[0] || [];
         });
+
+        combobox: KnockoutObservableArray<any> = ko.observableArray([]);
 
         // resource id for title in category mode
         titleResource: KnockoutComputed<string> = ko.computed(() => {
@@ -175,13 +177,15 @@ module cps001.a.vm {
 
                                 service.getCats(employeeId).done((data: Array<ICategory>) => {
                                     if (data && data.length) {
-                                        layoutData.combobox(data.map(x => {
+                                        let sources = data.map(x => {
                                             return {
-                                                item: x,
+                                                item: _.cloneDeep(x),
                                                 optionValue: x.id,
                                                 optionText: x.categoryName
                                             };
-                                        }));
+                                        });
+                                        layoutData.combobox(sources);
+                                        layoutData.id(sources[0].optionValue);
                                     }
                                 });
                             }
@@ -359,12 +363,6 @@ module cps001.a.vm {
 
         constructor() {
             let self = this;
-
-            self.standardDate.subscribe(d => {
-                if (!d) {
-                    self.standardDate(moment.utc().format("YYYY/MM/DD"));
-                }
-            });
         }
 
         clearData() {
@@ -422,17 +420,19 @@ module cps001.a.vm {
                 let self = this,
                     category = self.category();
 
-                let query = {
-                    recordId: self.infoId(),
-                    personId: self.personId(),
-                    employeeId: self.employeeId(),
-                    categoryId: category.categoryCode()
-                };
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    let query = {
+                        recordId: self.infoId(),
+                        personId: self.personId(),
+                        employeeId: self.employeeId(),
+                        categoryId: category.categoryCode()
+                    };
 
-                service.removeCurrentCategoryData(query).done(x => {
-                    info({ messageId: "Msg_16" }).then(() => {
-                        self.infoId(undefined);
-                        category.categoryType.valueHasMutated();
+                    service.removeCurrentCategoryData(query).done(x => {
+                        info({ messageId: "Msg_16" }).then(() => {
+                            self.infoId(undefined);
+                            category.categoryType.valueHasMutated();
+                        });
                     });
                 });
             },
@@ -495,17 +495,20 @@ module cps001.a.vm {
                 if (self.id()) {
                     if (self.mode() == TABS.LAYOUT) {
                         let id = self.id(),
+                            sdate = layout().standardDate(),
+                            ddate = sdate && moment.utc(sdate).toDate() || moment.utc().toDate(),
                             query: ILayoutQuery = {
                                 layoutId: id,
                                 browsingEmpId: self.employeeId(),
-                                standardDate: moment.utc(layout().standardDate()).toDate()
+                                standardDate: ddate
                             };
                         service.getCurrentLayout(query).done((data: any) => {
                             if (data) {
+                                layout().standardDate(data.standardDate || undefined);
                                 layout().listItemCls(data.classificationItems || []);
                             }
                         });
-                    } else {
+                    } else if (infoId) {
                         let id = self.id(),
                             catid = self.categoryId(),
                             query = {
@@ -532,7 +535,7 @@ module cps001.a.vm {
                             categoryId: catid || id,
                             personId: self.personId(),
                             employeeId: self.employeeId(),
-                            standardDate: moment.utc(),
+                            standardDate: undefined,
                             categoryCode: category.categoryCode()
                         };
                     switch (t) {
@@ -852,5 +855,9 @@ module cps001.a.vm {
         itemCode: string;
         value: string;
         'type': number;
+    }
+
+    interface IParam {
+        employeeId: string;
     }
 }

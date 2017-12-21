@@ -108,7 +108,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 			// TODO lay thong tin Imported
 			
 			for(String employeeId: converList){
-				String mail = employeeAdapter.getEmployeeInfor(employeeId).getCompanyMail();
+				String mail = employeeAdapter.getEmployeeInfor(employeeId).getSMail();
 				if(Strings.isBlank(mail)) {
 					continue;
 				}

@@ -29,8 +29,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -53,7 +53,7 @@ public class CheckConvertPrePost {
 	private WorkTypeRepository workTypeRepository;
 	
 	@Inject
-	private OvertimeFrameRepository overtimeFrameRepository;
+	private OvertimeWorkFrameRepository overtimeFrameRepository;
 	
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
@@ -169,11 +169,11 @@ public class CheckConvertPrePost {
 				overtimeInputDtos.add(overtimeInputDto);
 				frameNo.add(overTimeInput.getFrameNo());
 			}
-			List<OvertimeFrame> overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameNo);
+			List<OvertimeWorkFrame> overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameNos(companyID,frameNo);
 			for (OvertimeInputDto overtimeInputDto : overtimeInputDtos) {
-				for (OvertimeFrame overtimeFrame : overtimeFrames) {
-					if (overtimeInputDto.getFrameNo() == overtimeFrame.getOtFrameNo()) {
-						overtimeInputDto.setFrameName(overtimeFrame.getOvertimeFrameName().toString());
+				for (OvertimeWorkFrame overtimeFrame : overtimeFrames) {
+					if (overtimeInputDto.getFrameNo() == overtimeFrame.getOvertimeWorkFrNo().v().intValueExact()) {
+						overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
 						continue;
 					}
 				}

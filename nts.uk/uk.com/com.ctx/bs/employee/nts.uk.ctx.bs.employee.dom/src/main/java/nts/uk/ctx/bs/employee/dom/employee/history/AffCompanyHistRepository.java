@@ -25,7 +25,9 @@ public interface AffCompanyHistRepository {
 
 	AffCompanyHist getAffCompanyHistoryOfPerson(String personId);
 
-	AffCompanyHist getAffCompanyHistoryOfEmployee(String employeeId);
+	AffCompanyHist getAffCompanyHistoryOfEmployee(String cid, String employeeId);
+	
+	AffCompanyHist getAffCompanyHistoryOfEmployeeDesc(String cid, String employeeId);
 	
 	List<AffCompanyHist> getAffCompanyHistoryOfEmployees(List<String> employeeIds);
 

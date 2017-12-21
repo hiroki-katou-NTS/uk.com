@@ -85,7 +85,6 @@ public class EmployeeInfoFinder {
 		if (value.equals(""))
 			throw new BusinessException(errMsgId);
 		else {
-			value = value.trim();
 			int length = value.length();
 			// neeus chuỗi toàn là z hoặc Z
 			if (value.matches("[zZ]+"))

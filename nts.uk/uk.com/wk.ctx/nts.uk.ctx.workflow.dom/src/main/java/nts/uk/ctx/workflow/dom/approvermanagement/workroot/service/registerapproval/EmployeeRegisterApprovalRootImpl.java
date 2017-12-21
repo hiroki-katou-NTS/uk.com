@@ -20,7 +20,6 @@ import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.ApprovalRootService;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalPhaseOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalRootOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -40,6 +39,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeOrderApproverAsAppOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
+import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 
 @Stateless
 public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprovalRoot {

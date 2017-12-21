@@ -19,6 +19,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -178,7 +179,12 @@ public class EmployeeInDesignatedFinder {
 		Map<String, EmploymentStatusDto> empStatusMap = employmentStatus.stream()
 				.collect(Collectors.toMap(EmploymentStatusDto::getEmployeeId, Function.identity()));
 		
-		return empIdList.stream().map(empId -> {
+			// TODO: Solution for temporary case: can't get Status of Employment is in proportion to empId
+			List<String> empIdWithSttList = employmentStatus.stream().map(EmploymentStatusDto::getEmployeeId)
+					.collect(Collectors.toList());
+			// End of solution (replace empIdList by newEmpIdList. As below)
+			
+			return empIdWithSttList.stream().map(empId -> {
 			// Initialize EmployeeInDesignatedDto
 			EmployeeInDesignatedDto empInDes = EmployeeInDesignatedDto.builder().build();
 			EmploymentStatusDto empStatusOfMap = empStatusMap.get(empId);
@@ -208,57 +214,81 @@ public class EmployeeInDesignatedFinder {
 	 * @return the status of employment
 	 */
 	public List<EmploymentStatusDto> getStatusOfEmployments(List<String> employeeIds, GeneralDate referenceDate) {
-		List<EmployeeDataMngInfo> employees = employeeDataRepo.findByListEmployeeId(AppContexts.user().companyId(), employeeIds);
-		if (CollectionUtil.isEmpty(employees)) {
+		// Get Domain [所属会社履歴 （社員別）]
+		List<AffCompanyHist> affCompanyHistList = this.affCompanyHistRepo.getAffCompanyHistoryOfEmployees(employeeIds);
+
+		if (CollectionUtil.isEmpty(affCompanyHistList)) {
 			return Collections.emptyList();
 		}
-
+		// List AffCompanyHistByEmployee
+		List<AffCompanyHistByEmployee> affComHistByEmpList = new ArrayList<>();
+		affCompanyHistList.stream().forEach(affComHist -> {
+			AffCompanyHistByEmployee histByEmp = affComHist.getLstAffCompanyHistByEmployee().get(0);
+			affComHistByEmpList.add(histByEmp);
+		});
 		// Convert to dto
-		return employees.stream().map(employeeInfo -> {
-			String employeeId = employeeInfo.getEmployeeId();
+		return affComHistByEmpList.stream().map(affComHistByEmp -> {
 			EmploymentStatusDto statusOfEmploymentExport = new EmploymentStatusDto();
-			statusOfEmploymentExport.setEmployeeId(employeeId);
+			statusOfEmploymentExport.setEmployeeId(affComHistByEmp.getSId());
 			statusOfEmploymentExport.setRefereneDate(referenceDate);
-			AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(employeeId)
-					.getAffCompanyHistByEmployee(employeeId);
-			
-			// employeeHistory is null
-			if (employeeHistory == null) {
+
+			// Get List AffCompanyHistItem
+			List<AffCompanyHistItem> affCompanyHistItem = affComHistByEmp.getLstAffCompanyHistoryItem();
+
+			// TODO: Solution for a Temporary Case (DB is unavailable: List of AffCompanyHistItem is empty)
+			if (CollectionUtil.isEmpty(affCompanyHistItem)) {
 				statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
 				return statusOfEmploymentExport;
+				// throw new RuntimeException("Data is invalid. Please check again!");
+			}
+			// End of Solution
+			// Filter Condition: 履歴．期間．開始日 <= パラメータ．基準日 <= 履歴．期間．終了日の「履歴」が存在する場合
+			List<AffCompanyHistItem> filteredAffComHistItem = affCompanyHistItem.stream().filter(h -> {
+				return h.getDatePeriod().start().beforeOrEquals(referenceDate)
+						&& h.getDatePeriod().end().afterOrEquals(referenceDate);
+			}).collect(Collectors.toList());
+
+			if (filteredAffComHistItem.isEmpty()) { // Case: Filtered AffComHistItemList 
+				// (Condition: History.Period.StartDate <= BaseDate <= History.Period.Endate) is empty
+
+				// AffComHistItemList List (Condition: History.Period.StartDate < BaseDate)
+				List<AffCompanyHistItem> histBeforeBaseDate = affCompanyHistItem.stream().filter(item -> {
+					return item.getDatePeriod().start().before(referenceDate);
+				}).collect(Collectors.toList());
+
+				if (CollectionUtil.isEmpty(histBeforeBaseDate)) {
+					// StatusOfEmployment = BEFORE_JOINING
+					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
+				} else {
+					// StatusOfEmployment = RETIREMENT
+					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.RETIREMENT.value);
 			}
 
-			Optional<AffCompanyHistItem> employeeHitoryItem = employeeHistory.getHistoryWithReferDate(referenceDate);
-			if (!employeeHitoryItem.isPresent()) {
-				
-				if (employeeHistory.getHistoryBeforeReferDate(referenceDate).isPresent()) {
-					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.RETIREMENT.value);
-				} else if (employeeHistory.getHistoryAfterReferDate(referenceDate).isPresent()) {
-					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.BEFORE_JOINING.value);
-				}
-				
-			} else {
+			} else {// Case: Filtered ListEntryJobHist 
+				// (Condition: History.Period.StartDate <= BaseDate <= History.Period.Endate) is not empty
 
-				// Get TemporaryAbsence By employee ID and BaseDate
-				Optional<TempAbsenceHisItem> tempAbsItemDomain = temporaryAbsenceItemRepo
-						.getByEmpIdAndStandardDate(employeeInfo.getEmployeeId(), referenceDate);
-				if (tempAbsItemDomain.isPresent()) {
-					// Domain TemporaryAbsence is Present
-					// set LeaveHolidayType
-					int tempAbsNo = tempAbsItemDomain.get().getTempAbsenceFrNo().v().intValue();
-					int tempAbsenceType = tempAbsNo <= 6 ? tempAbsNo : 7;
+				// Get "TempAbsenceHistory", "TempAbsenceHisItem"
+				Optional<TempAbsenceHisItem> tempAbsItem = temporaryAbsenceItemRepo
+						.getByEmpIdAndStandardDate(affComHistByEmp.getSId(), referenceDate);
+
+				if (tempAbsItem.isPresent()) {
+					// Domain TempAbsenceHisItem is Present
+
+					int tempAbsFrNo = tempAbsItem.get().getTempAbsenceFrNo().v().intValue();
+					int tempAbsenceType = tempAbsFrNo <= 6 ? tempAbsFrNo : 7;
+					// Set LeaveHolidayType to statusOfEmploymentExport
 					statusOfEmploymentExport.setLeaveHolidayType(tempAbsenceType);
 
-					// Check if TempAbsenceType = TEMP_LEAVE
+					// Check 休職休業区分＝休職? : LeaveHolidayType(TempAbsenceFrameNo) == LEAVE_OF_ABSENCE
 					if (tempAbsenceType == LeaveHolidayType.LEAVE_OF_ABSENCE.value) {
-						// StatusOfEmployment = LEAVE_OF_ABSENCE
+						// StatusOfEmployment = LEAVE_OF_ABSENCE (在籍状態＝休職)
 						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
 					} else {
-						// StatusOfEmployment = HOLIDAY
+						// StatusOfEmployment = HOLIDAY (在籍状態＝休業)
 						statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.HOLIDAY.value);
 					}
 				} else {
-					// StatusOfEmployment = INCUMBENT 在籍
+					// StatusOfEmployment = INCUMBENT (在籍状態＝在籍)
 					statusOfEmploymentExport.setStatusOfEmployment(StatusOfEmployment.INCUMBENT.value);
 				}
 			}

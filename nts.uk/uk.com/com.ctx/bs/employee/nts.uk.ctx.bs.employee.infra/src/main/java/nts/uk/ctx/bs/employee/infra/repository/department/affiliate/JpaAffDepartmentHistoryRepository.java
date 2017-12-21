@@ -17,7 +17,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements AffDepartmentHistoryRepository{
 	private final String QUERY_GET_AFFDEPARTMENT_BYSID = "SELECT ad FROM BsymtAffiDepartmentHist ad"
-			+ " WHERE ad.sid = :sid ORDER BY ad.strDate";
+			+ " WHERE ad.sid = :sid and ad.cid = :cid ORDER BY ad.strDate";
+	
+	private final String QUERY_GET_AFFDEPARTMENT_BYSID_DESC = QUERY_GET_AFFDEPARTMENT_BYSID + " DESC";
 	
 	private static final String SELECT_BY_EMPID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate "
@@ -37,11 +39,26 @@ public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements
 	}
 	
 	@Override
-	public Optional<AffDepartmentHistory> getByEmployeeId(String employeeId) {
-		
-		List<BsymtAffiDepartmentHist> listHist = this.queryProxy().query(QUERY_GET_AFFDEPARTMENT_BYSID,BsymtAffiDepartmentHist.class)
-				.setParameter("sid", employeeId).getList();
-		if (listHist != null && !listHist.isEmpty()){
+	public Optional<AffDepartmentHistory> getByEmployeeId(String cid, String employeeId) {
+
+		List<BsymtAffiDepartmentHist> listHist = this.queryProxy()
+				.query(QUERY_GET_AFFDEPARTMENT_BYSID, BsymtAffiDepartmentHist.class)
+				.setParameter("sid", employeeId)
+				.setParameter("cid", cid).getList();
+		if (listHist != null && !listHist.isEmpty()) {
+			return Optional.of(toAffDepartment(listHist));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<AffDepartmentHistory> getByEmployeeIdDesc(String cid, String employeeId) {
+
+		List<BsymtAffiDepartmentHist> listHist = this.queryProxy()
+				.query(QUERY_GET_AFFDEPARTMENT_BYSID_DESC, BsymtAffiDepartmentHist.class)
+				.setParameter("sid", employeeId).
+				setParameter("cid", cid).getList();
+		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toAffDepartment(listHist));
 		}
 		return Optional.empty();
