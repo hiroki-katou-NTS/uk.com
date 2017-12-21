@@ -3,6 +3,8 @@ module nts.uk.com.view.cdl009.a {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import SelectType = kcp.share.list.SelectType;
+    import UnitModel = kcp.share.tree.UnitModel;
+    import ListType = kcp.share.list.ListType;
     export module viewmodel {
         export class ScreenModel {
             multiSelectedTree: KnockoutObservableArray<string>;
@@ -52,7 +54,6 @@ module nts.uk.com.view.cdl009.a {
                     selectType: SelectType.NO_SELECT,
                     selectedCode: ko.observable(),
                     isDialog: true,
-//                    isShowSelectAllButton: false,
                     employeeInputList: self.employeeList,
                     maxRows: 12,
                     tabindex: 3,
@@ -79,7 +80,8 @@ module nts.uk.com.view.cdl009.a {
             private searchEmp(): void {
                 let self = this;
                 let treeList = $('#workplace-component').getDataList();
-                if (treeList.length == 0 || !self.multiSelectedTree() || self.multiSelectedTree().length == 0) {
+                let isInGrid: boolean = this.hasSelectedInTreeGrid();
+                    if (treeList.length == 0 || !isInGrid) {
                     if (self.target() == TargetClassification.WORKPLACE) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => {
                             close();
@@ -95,6 +97,37 @@ module nts.uk.com.view.cdl009.a {
                 // Search Employees
                 self.findEmployee();
                 $('#emp-component').focus();
+            }
+            
+            /**
+             * Check Selected Workplace id(s) exist in Tree Grid or not 
+             */
+            private hasSelectedInTreeGrid(): boolean {
+                let self = this;
+                let treeList = $('#workplace-component').getDataList();
+                // Multiple Selection
+                if (self.isMultiSelect()) {
+                    let data: Array<string> = [];
+                    for (let empId of self.multiSelectedTree()) {
+                        let wkp: UnitModel = treeList.filter((item) => {
+                            return item.workplaceId == empId;
+                        })[0];
+                        if (wkp) {
+                            return true;
+                        }
+                    }
+                }
+                // Single Selection
+                else {
+                    let wkp: UnitModel = treeList.filter((item) => {
+                        return item.workplaceId == self.multiSelectedTree().toString();
+                    })[0];
+                    
+                    if (wkp) {
+                        return true;
+                    }
+                }
+                return false;
             }
             
             /**
@@ -186,7 +219,9 @@ module nts.uk.com.view.cdl009.a {
                 }
                 
             }
-            
+            /**
+             * Get employee Ids
+             */
             private getEmpIds(empList: Array<any>, empCodes: Array<string>): Array<any> {
                 let data: Array<string> = [];
                 for (let empCode of empCodes) {
@@ -218,15 +253,6 @@ module nts.uk.com.view.cdl009.a {
             static WORK_PLACE = 1;
             static DEPARTMENT = 2;
         }
-        /**
-        * List Type
-        */
-        export class ListType {
-            static EMPLOYMENT = 1;
-            static Classification = 2;
-            static JOB_TITLE = 3;
-            static EMPLOYEE = 4;
-        }
 
         /**
      * Class TargetClassification
@@ -236,20 +262,6 @@ module nts.uk.com.view.cdl009.a {
             static DEPARTMENT = 2;
         }
 
-        /**
-         * interface UnitModel
-         */
-        export interface UnitModel {
-            workplaceId: string;
-            code: string;
-            name: string;
-            nodeText?: string;
-            level: number;
-            heirarchyCode: string;
-            isAlreadySetting?: boolean;
-            childs: Array<UnitModel>;
-        }
-        
         /**
          * class EnrollmentStatus
          */
