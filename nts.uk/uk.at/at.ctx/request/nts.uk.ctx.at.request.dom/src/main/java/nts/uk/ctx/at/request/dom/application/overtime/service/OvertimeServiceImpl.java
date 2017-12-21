@@ -151,7 +151,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				// 1.職場別就業時間帯を取得
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
 				
-				if(listWorkTimeCodes != null){
+				if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
 					List<WorkTime> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
 					for(WorkTime workTime : workTimes){
 						SiftType siftType = new SiftType();

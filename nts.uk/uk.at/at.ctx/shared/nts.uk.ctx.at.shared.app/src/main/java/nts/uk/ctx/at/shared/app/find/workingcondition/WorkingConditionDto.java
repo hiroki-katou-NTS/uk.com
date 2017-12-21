@@ -905,9 +905,11 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr());
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr());
-		dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().getOneDay().v());
-		dto.setMorning(workingConditionItem.getHolidayAddTimeSet().getMorning().v());
-		dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().getAfternoon().v());
+		if(workingConditionItem.getHolidayAddTimeSet() != null){
+			dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().getOneDay().v());
+			dto.setMorning(workingConditionItem.getHolidayAddTimeSet().getMorning().v());
+			dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().getAfternoon().v());
+		}
 		dto.setLaborSystem(workingConditionItem.getLaborSystem());
 		dto.setContractTime(workingConditionItem.getContractTime().v());
 
@@ -916,12 +918,16 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 	private static void setScheduleMethod(WorkingConditionDto dto, ScheduleMethod scheduleMethod) {
 		dto.setBasicCreateMethod(scheduleMethod.getBasicCreateMethod().value);
+		if(scheduleMethod.getWorkScheduleBusCal() != null)
 		dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().getReferenceBusinessDayCalendar().value);
+		if(scheduleMethod.getWorkScheduleBusCal() != null)
 		dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().getReferenceBasicWork().value);
+		if(scheduleMethod.getMonthlyPatternWorkScheduleCre() != null)
 		dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().getReferenceType().value);
 	}
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {
+		if(holidayTime.getWorkTypeCode()!= null)
 		dto.setHolidayWorkTypeCode(holidayTime.getWorkTypeCode().v());
 	}
 
