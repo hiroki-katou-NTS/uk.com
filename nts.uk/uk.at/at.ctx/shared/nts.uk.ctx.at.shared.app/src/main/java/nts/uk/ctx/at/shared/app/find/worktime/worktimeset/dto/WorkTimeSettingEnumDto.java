@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
@@ -57,6 +58,9 @@ public class WorkTimeSettingEnumDto {
 	/** The compensatory occurrence division. */
 	private List<EnumConstant> compensatoryOccurrenceDivision;
 	
+	/** The apply atr. */
+	private List<EnumConstant> applyAtr;
+	
 	/**
 	 * Inits the.
 	 *
@@ -79,6 +83,7 @@ public class WorkTimeSettingEnumDto {
 		dto.setLstLateEarlyAtr(EnumAdaptor.convertToValueNameList(LateEarlyAtr.class, i18n));
 		dto.setWorkSystemAtr(EnumAdaptor.convertToValueNameList(WorkSystemAtr.class, i18n));
 		dto.setCompensatoryOccurrenceDivision(EnumAdaptor.convertToValueNameList(CompensatoryOccurrenceDivision.class, i18n));
+		dto.setApplyAtr(EnumAdaptor.convertToValueNameList(ApplyAtr.class, i18n));
 		return dto;
 		
 	}

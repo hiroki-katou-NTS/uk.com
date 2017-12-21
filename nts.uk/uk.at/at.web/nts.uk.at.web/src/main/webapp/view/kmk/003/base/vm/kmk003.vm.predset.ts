@@ -105,12 +105,53 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: PrescribedTimezoneSettingDto) {
                     this.morningEndTime(data.morningEndTime);
                     this.afternoonStartTime(data.afternoonStartTime);
-                    this.lstTimezone = [];
-                    for (var dataDTO of data.lstTimezone) {
-                        var dataModel: TimezoneModel = new TimezoneModel();
-                        dataModel.updateData(dataDTO);
-                        this.lstTimezone.push(dataModel);
+                    this.updateTimeZone(data.lstTimezone);
+                }
+
+                updateTimeZone(data: TimezoneDto[]) {
+                    for (var dataDTO of data) {
+                        var dataModel: TimezoneModel = this.getTimezoneByWorkNo(dataDTO.workNo);
+                        if (!dataModel) {
+                            dataModel = new TimezoneModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstTimezone.push(dataModel);
+                        }
+                        else {
+                            dataModel.updateData(dataDTO);
+                        }
                     }
+                }
+                
+                // get time zone one
+                getTimezoneOne(): TimezoneModel {
+                    var self = this;
+                    var data: TimezoneModel = _.find(self.lstTimezone, timezone => timezone.workNo() == 1);
+                    if (!data) {
+                        data = new TimezoneModel();
+                        data.workNo(1);
+                        this.lstTimezone.push(data);
+                        return data;
+                    }
+                    return data;
+                }
+                
+               
+                getTimezoneByWorkNo(workNo: number): TimezoneModel {
+                    var self = this;
+                    var data: TimezoneModel = _.find(self.lstTimezone, timezone => timezone.workNo() == 2);
+                    if (!data) {
+                        data = new TimezoneModel();
+                        data.workNo(2);
+                        this.lstTimezone.push(data);
+                        return data;
+                    }
+                    return data;
+                }
+
+                // get time zone two
+                getTimezoneTwo(): TimezoneModel {
+                    var self = this;
+                    return _.find(self.lstTimezone, timezone => timezone.workNo() == 1);
                 }
 
                 toDto(): PrescribedTimezoneSettingDto {

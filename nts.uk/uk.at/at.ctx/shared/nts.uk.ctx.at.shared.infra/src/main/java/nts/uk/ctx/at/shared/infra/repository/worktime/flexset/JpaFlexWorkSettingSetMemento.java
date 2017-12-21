@@ -92,7 +92,6 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 		if (coreTimeSetting != null) {
 			coreTimeSetting.saveToMemento(new JpaCoreTimeSettingSetMemento(this.entitySetting.getEntitySetting()));
 		}
-
 	}
 
 	/*

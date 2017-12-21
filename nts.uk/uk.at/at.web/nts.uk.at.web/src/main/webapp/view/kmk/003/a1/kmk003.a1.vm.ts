@@ -1,19 +1,23 @@
 module a1 {
     
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
+    
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
+    import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
+    import EmTimezoneChangeExtentModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.EmTimezoneChangeExtentModel;
+    import CoreTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.CoreTimeSettingModel
+    import SettingModel = nts.uk.at.view.kmk003.a.viewmodel.SettingModel;
+    import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     
     class ScreenModel {
 
         dayStartTime: KnockoutObservable<number>;
         dayStartTimeOption: KnockoutObservable<any>;
 
-        oneDayRangeTime: KnockoutObservable<string>;
         oneDayRangeTimeOption: KnockoutObservable<any>;
 
-        beforeUpdateWorkTime: KnockoutObservable<number>;
         beforeUpdateWorkTimeOption: KnockoutObservable<any>;
 
-        afterUpdateWorkTime: KnockoutObservable<number>;
         afterUpdateWorkTimeOption: KnockoutObservable<any>;
 
         firstFixedStartTime: KnockoutObservable<number>;
@@ -39,15 +43,27 @@ module a1 {
         morning: KnockoutObservable<number>;
         afternoon: KnockoutObservable<number>;
 
+        isDiffTimeMode: KnockoutObservable<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
+        isViewTimezoneTwo: KnockoutObservable<boolean>;
+        mainSettingModel: MainSettingModel;
         predseting: PredetemineTimeSettingModel;
+        changeExtent: EmTimezoneChangeExtentModel;
+        timeZoneModelOne: TimezoneModel;
+        timeZoneModelTwo: TimezoneModel;
+        coreTimeSettingModel: CoreTimeSettingModel;
+        settingEnum: WorkTimeSettingEnumDto;
         /**
         * Constructor.
         */
-        constructor(screenMode: any, settingMethod: string, workTimeCode: string, isClickSave: any,
-            predseting: PredetemineTimeSettingModel) {
+        constructor(screenMode: any, settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
             let self = this;
-
+            self.mainSettingModel = mainSettingModel;
+            self.predseting = mainSettingModel.predetemineTimeSetting;
+            self.timeZoneModelOne = mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
+            self.timeZoneModelTwo = mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneTwo();
+            self.coreTimeSettingModel = mainSettingModel.flexWorkSetting.coreTimeSetting;
+            self.settingEnum = settingEnum;
             //day start Time
             self.dayStartTime = ko.observable(0);
             self.dayStartTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
@@ -55,18 +71,15 @@ module a1 {
             }));
 
             //one day range Time
-            self.oneDayRangeTime = ko.observable('');
             self.oneDayRangeTimeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
                 width: "50",
                 textmode: "text",
             }));
 
 
-            self.beforeUpdateWorkTime = ko.observable(0);
             self.beforeUpdateWorkTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
                 width: "50"
             }));
-            self.afterUpdateWorkTime = ko.observable(0);
             self.afterUpdateWorkTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
                 width: "50"
             }));
@@ -97,15 +110,25 @@ module a1 {
             self.morning = ko.observable(0);
             self.afternoon = ko.observable(0);
 
-            self.isDetailMode = ko.observable(true);
-            screenMode.subscribe(function(value: any) {
-                value == "2" ? self.isDetailMode(true) : self.isDetailMode(false);
+            self.isDiffTimeMode = ko.observable(SettingModel.isDifftime(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet()));
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(function(settingMethod: number){
+                self.isDiffTimeMode(SettingModel.isDifftime(settingMethod));
             });
-            isClickSave.subscribe(function(value: any) {
-                if (value) {
+            self.isDiffTimeMode.subscribe(function(isDifftime: boolean){
+                if(isDifftime && !(self.changeExtent)){
+                    self.changeExtent = self.mainSettingModel.diffWorkSetting.changeExtent;
                 }
             });
-            self.predseting = predseting;
+            self.isViewTimezoneTwo = ko.observable(false);
+            self.isDetailMode = ko.observable(false);
+            screenMode.subscribe(function(value: any) {
+                self.isDetailMode(value == "2");
+                self.isViewTimezoneTwo(self.isDetailMode() || self.predseting.predetermine());
+            });
+            self.predseting.predetermine.subscribe(function(predetermine: boolean) {
+                self.isViewTimezoneTwo(predetermine || self.isDetailMode());
+            });
+            
         }
 
         //bind data to screen items
@@ -165,7 +188,7 @@ module a1 {
 
         private getData() {
             let self = this;
-            //            service.findWorkTimeSetByCode()
+            // service.findWorkTimeSetByCode()
         }
 
         /**
@@ -178,12 +201,10 @@ module a1 {
             //get data
             let input = valueAccessor();
             let screenMode = input.screenMode;
-            let settingMethod = ko.unwrap(input.settingMethod);
-            let workTimeCode = input.workTimeCode;
-            let isClickSave = input.saveAction;
-            let predseting: PredetemineTimeSettingModel = input.predseting;
+            let mainSettingModel: MainSettingModel = input.mainSettingModel;
+            var settingEnum: WorkTimeSettingEnumDto = input.enum;
 
-            let screenModel = new ScreenModel(screenMode, settingMethod, workTimeCode, isClickSave, predseting);
+            let screenModel = new ScreenModel(screenMode, settingEnum, mainSettingModel);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

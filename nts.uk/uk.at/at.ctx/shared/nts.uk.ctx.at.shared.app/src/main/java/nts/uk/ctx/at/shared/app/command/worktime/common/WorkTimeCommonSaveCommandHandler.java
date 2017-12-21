@@ -45,7 +45,7 @@ public class WorkTimeCommonSaveCommandHandler{
 		PredetemineTimeSetting predseting = command.toDomainPredetemineTimeSetting();
 
 		// check policy
-		this.workTimeSetPolicy.canRegister(workTimeSetting);
+		//this.workTimeSetPolicy.canRegister(workTimeSetting);
 
 		// call repository save work time setting
 		this.workTimeSettingRepository.save(workTimeSetting);

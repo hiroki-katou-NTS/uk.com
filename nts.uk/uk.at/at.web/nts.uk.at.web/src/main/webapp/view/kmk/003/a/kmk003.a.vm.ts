@@ -159,8 +159,8 @@ module nts.uk.at.view.kmk003.a {
                 
                 self.mainSettingModel = new MainSettingModel();
                 //TODO: xoa model khong dung den
-                self.workTimeSettingModel = new WorkTimeSettingModel();
-                self.predetemineTimeSettingModel = new PredetemineTimeSettingModel();
+                self.workTimeSettingModel = self.mainSettingModel.workTimeSetting;
+                self.predetemineTimeSettingModel = self.mainSettingModel.predetemineTimeSetting;
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
                    self.updateWorktimeCode(worktimeCode); 
                 });
@@ -199,8 +199,6 @@ module nts.uk.at.view.kmk003.a {
                 service.findWorktimeSetingInfoByCode(worktimeCode).done(function(worktimeSettingInfo) {
                     self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
                     self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
-                    self.mainSettingModel.workTimeSetting = self.workTimeSettingModel;
-                    self.mainSettingModel.predetemineTimeSetting = self.predetemineTimeSettingModel;
                     service.findByCodeFlexWorkSetting(worktimeCode).done(function(flexdata) {
                         if (flexdata) {
                             self.updateDataFlexMode(flexdata);
@@ -254,7 +252,7 @@ module nts.uk.at.view.kmk003.a {
              */
             private updateDataFlexMode(data: FlexWorkSettingDto) {
                 var self = this;
-                self.mainSettingModel.flexWorkSetting.updateData(data);
+                //self.mainSettingModel.flexWorkSetting.updateData(data);
                 if (data.useHalfDayShift) {
                     self.useHalfDay('1');
                 } else {
@@ -263,9 +261,6 @@ module nts.uk.at.view.kmk003.a {
             }
           
         }
-        
-        
-       
         
         export class ItemWorkForm {
             code: string;
@@ -305,6 +300,30 @@ module nts.uk.at.view.kmk003.a {
                 this.flowWorkSetting = new FlowWorkSettingModel();
                 this.diffWorkSetting = new DiffTimeWorkSettingModel();
                 this.flexWorkSetting = new FlexWorkSettingModel();
+            }
+        }
+        
+        // class setting common
+        export class SettingModel {
+            
+            public static isFlex(settingMethod: number) {
+                return settingMethod == EnumWorkForm.FLEX;
+            }
+
+            public static isRegular(settingMethod: number) {
+                return settingMethod == EnumWorkForm.REGULAR;
+            }
+
+            public static isFixed(settingMethod: number) {
+                return settingMethod == SettingMethod.FIXED;
+            }
+
+            public static isDifftime(settingMethod: number) {
+                return settingMethod == SettingMethod.DIFFTIME;
+            }
+
+            public static isFlow(settingMethod: number) {
+                return settingMethod == SettingMethod.FLOW;
             }
         }
         

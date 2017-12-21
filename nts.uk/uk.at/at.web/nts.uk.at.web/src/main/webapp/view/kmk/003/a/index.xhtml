@@ -23,6 +23,7 @@
 			<com:scriptfile path="../base/vm/kmk003.vm.difftimeset.js" />
 			<com:scriptfile path="../base/vm/kmk003.vm.predset.js" />
 			<com:scriptfile path="../base/vm/kmk003.vm.worktimeset.js" />
+			<com:scriptfile path="kmk003.a.vm.js" />
 			<com:scriptfile path="../a1/kmk003.a1.vm.js" />
 			<com:stylefile path="../a1/kmk003.a1.style.css" />
 			<com:scriptfile path="../a2/kmk003.a2.vm.js" />
@@ -78,7 +79,6 @@
 			<com:stylefile path="kmk003.a.style.css" />
 			<com:scriptfile path="kmk003.a.start.js" />
 			<com:scriptfile path="kmk003.a.service.js" />
-			<com:scriptfile path="kmk003.a.vm.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName
 				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName
@@ -282,8 +282,8 @@
 											active: selectedTab,direction: 'vertical' }">
 											<div class="tab-a1">
 												<div data-bind="ntsKMK003A1: {screenMode:tabMode, 
-													settingMethod:selectedSettingMethod, workTimeCode: siftCode, 
-													saveAction: isClickSave, predseting: predetemineTimeSettingModel}">
+													enum: settingEnum,
+													mainSettingModel: mainSettingModel}">
 												</div>
 											</div>
 											<div class="tab-a2">
