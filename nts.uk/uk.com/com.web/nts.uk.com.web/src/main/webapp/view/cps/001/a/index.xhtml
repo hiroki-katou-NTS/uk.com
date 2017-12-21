@@ -98,13 +98,14 @@
 								<div
 									data-bind="ntsSearchBox: {
 										searchMode: 'filter',
-										targetKey: 'code',
-										comId: 'layouts',
+										targetKey: 'optionValue',
+										comId: 'layout-data',
 										items: gridlist,
+										selected: id,
 										selectedKey: 'optionValue', 
 										fields: ['optionText'], 
 										mode: 'igGrid'}" tabindex="8"></div>
-								<table id="grid-data"
+								<table id="layout-data"
 									data-bind="ntsGridList: {							
 										rows: 10,
 										multiple: false,

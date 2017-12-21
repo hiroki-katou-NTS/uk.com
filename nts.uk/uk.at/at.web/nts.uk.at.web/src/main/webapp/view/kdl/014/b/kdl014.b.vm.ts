@@ -60,7 +60,7 @@ module kdl014.b.viewmodel {
             let lstEmployeeCode: Array<string> = data.lstEmployee;
 
             //Convert attribute to display in this screen.
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～    ';
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '　～　';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
             self.startEndDate = '' + self.startDate + '' + self.endDate;
 
@@ -73,8 +73,10 @@ module kdl014.b.viewmodel {
                 let lstSource: Array<StampModel> = [];
                 if (lstStamp.length > 0) {
                     _.forEach(lstStamp, function(item) {
-                        lstSource.push(new StampModel(item.employeeCode, item.pname, moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-
+                        //When cardNumber != '';
+                        if(item.cardNumber != ''){
+                            lstSource.push(new StampModel(item.employeeCode, item.pname, moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));    
+                        }
                     });
                 }
                 self.items(_.orderBy(lstSource, ['date', 'attendanceTime', 'employeeCd'], ['asc', 'asc', 'asc']));

@@ -74,7 +74,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 		workTypeOutput = workTypeRepository.findByPK(companyID, workTypeOutput.getWorkTypeCode())
 			.map(x -> new WorkTypeOutput(x.getWorkTypeCode().v(), x.getName().v()))
 			.orElse(new WorkTypeOutput("", ""));
-		workTimeOutput = WorkTimeRepository.findByCode(companyID, workTypeOutput.getWorkTypeCode())
+		workTimeOutput = WorkTimeRepository.findByCode(companyID, workTimeOutput.getWorkTimeCD())
 				.map(x -> new WorkTimeOutput(x.getSiftCD().v(), x.getWorkTimeDisplayName().getWorkTimeName().v()))
 				.orElse(new WorkTimeOutput("", ""));
 		return new AchievementOutput(appDate, workTypeOutput, workTimeOutput, startTime1, endTime1, startTime2, endTime2);

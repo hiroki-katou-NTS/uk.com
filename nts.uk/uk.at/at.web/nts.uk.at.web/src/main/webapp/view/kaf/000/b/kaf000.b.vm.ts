@@ -628,7 +628,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 service.deleteApp(self.inputCommandEvent()).done(function(data) {
                     nts.uk.ui.dialog.alert({ messageId: 'Msg_16' }).then(function() {
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
-                        if (!nts.uk.util.isNullOrUndefined(data)) {
+                        if (!nts.uk.util.isNullOrEmpty(data)) {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(function(){
                                 self.setScreenAfterDelete();    
                             });

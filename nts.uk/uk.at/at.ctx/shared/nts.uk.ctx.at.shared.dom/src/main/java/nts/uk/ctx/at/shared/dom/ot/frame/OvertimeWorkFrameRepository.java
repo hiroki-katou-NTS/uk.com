@@ -38,4 +38,21 @@ public interface OvertimeWorkFrameRepository {
 	 * @return the all overtime work frame
 	 */
 	List<OvertimeWorkFrame> getAllOvertimeWorkFrame(String companyId);
+	
+	/**
+	 * getOvertimeWorkFrameByFrameNos
+	 * @param companyId
+	 * @param overtimeWorkFrNos
+	 * @return
+	 */
+	List<OvertimeWorkFrame> getOvertimeWorkFrameByFrameNos(String companyId,List<Integer> overtimeWorkFrNos);
+	/**
+	 * getOvertimeWorkFrameByFrameByCom
+	 * @param companyId
+	 * @param useAtr
+	 * @return
+	 */
+	List<OvertimeWorkFrame> getOvertimeWorkFrameByFrameByCom(String companyId,int useAtr);
+	
+	
 }
