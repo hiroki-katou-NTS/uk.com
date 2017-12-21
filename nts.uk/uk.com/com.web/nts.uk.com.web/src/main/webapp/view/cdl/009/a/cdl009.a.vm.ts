@@ -99,6 +99,9 @@ module nts.uk.com.view.cdl009.a {
                 $('#emp-component').focus();
             }
             
+            /**
+             * Check Selected Workplace id(s) exist in Tree Grid or not 
+             */
             private hasSelectedInTreeGrid(): boolean {
                 let self = this;
                 let treeList = $('#workplace-component').getDataList();
@@ -124,7 +127,6 @@ module nts.uk.com.view.cdl009.a {
                         return true;
                     }
                 }
-                
                 return false;
             }
             
@@ -217,7 +219,9 @@ module nts.uk.com.view.cdl009.a {
                 }
                 
             }
-            
+            /**
+             * Get employee Ids
+             */
             private getEmpIds(empList: Array<any>, empCodes: Array<string>): Array<any> {
                 let data: Array<string> = [];
                 for (let empCode of empCodes) {
@@ -249,15 +253,6 @@ module nts.uk.com.view.cdl009.a {
             static WORK_PLACE = 1;
             static DEPARTMENT = 2;
         }
-//        /**
-//        * List Type
-//        */
-//        export class ListType {
-//            static EMPLOYMENT = 1;
-//            static Classification = 2;
-//            static JOB_TITLE = 3;
-//            static EMPLOYEE = 4;
-//        }
 
         /**
      * Class TargetClassification
