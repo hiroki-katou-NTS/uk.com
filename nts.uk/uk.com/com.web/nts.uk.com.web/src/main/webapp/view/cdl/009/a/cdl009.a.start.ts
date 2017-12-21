@@ -9,7 +9,7 @@ module nts.uk.com.view.cdl009.a {
             $('#emp-component').ntsListComponent(screenModel.listComponentOpt).done(function() {
                 // Clear Block UI
                 nts.uk.ui.block.clear();
-                $('#workplace-component').focus();
+                $('#workplace-component').focusTreeGridComponent();
             });
         });
     });
