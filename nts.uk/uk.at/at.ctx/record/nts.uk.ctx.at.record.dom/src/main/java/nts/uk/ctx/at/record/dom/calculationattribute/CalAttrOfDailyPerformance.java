@@ -27,4 +27,12 @@ public class CalAttrOfDailyPerformance extends AggregateRoot {
 	//遅刻早退
 	private AutoCalOfLeaveEarlySetting leaveEarlySetting;
 	
+//	/**
+//	 * 計算区分を全て「する」に変更する
+//	 */
+//	public static CalAttrOfDailyPerformance turnAllAtrTrue() {
+//		return new CalAttrOfDailyPerformance(new RaisingSalaryCalcAtr(true, true)
+//								 ,new AutoCalculationOfOverTimeWork(legalOvertimeHours, legalOtTime, normalOvertimeHours, normalOtTime, earlyOvertimeHours, earlyOtTime)
+//								 , new AutoCalcSetOfHolidayWorkTime(new AutoCalcSet(AutoCalculationCategoryOutsideHours.CalculateEmbossing)));
+//	}
 }

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.actualworkinghours;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-
 /**
  * 
  * @author nampt

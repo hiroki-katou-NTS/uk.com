@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,7 +42,7 @@ public class WorkStamp extends DomainObject{
 	public WorkStamp(TimeWithDayAttr afterRoundingTime, TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
 			StampSourceInfo stampSourceInfo) {
 		super();
-		AfterRoundingTime = afterRoundingTime;
+		this.AfterRoundingTime = afterRoundingTime;
 		this.timeWithDay = timeWithDay;
 		this.locationCode = locationCode;
 		this.stampSourceInfo = stampSourceInfo;

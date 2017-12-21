@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -261,5 +262,11 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 				
 				entity.kshstHolidayAddtimeSetPK = primaryKey;
 		this.commandProxy().update(entity);
+	}
+
+	@Override
+	public Optional<HolidayAddtime> findByCId(String companyId) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
 	}
 }
