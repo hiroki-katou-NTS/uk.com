@@ -78,7 +78,6 @@ public class EmployeeInfoFinder {
 	}
 
 	public String generateCardNo(String startLetters) {
-
 		String returnString = "";
 		String companyId = AppContexts.user().companyId();
 		String lastCardNo = personRepository.getLastCardNo(companyId, startLetters);
