@@ -74,12 +74,20 @@ public class ScheCreExeWorkTypeHandler {
 		WorkTypeGetterCommand commandWorktypeGetter = new WorkTypeGetterCommand();
 		commandWorktypeGetter.setBaseGetter(command.toBaseCommand());
 		commandWorktypeGetter.setEmployeeId(workingConditionItem.getEmployeeId());
-		commandWorktypeGetter.setReferenceBasicWork(
-				workingConditionItem.getScheduleMethod().getWorkScheduleBusCal().getReferenceBasicWork().value);
-		commandWorktypeGetter.setReferenceBusinessDayCalendar(workingConditionItem.getScheduleMethod()
-				.getWorkScheduleBusCal().getReferenceBusinessDayCalendar().value);
-		commandWorktypeGetter.setReferenceWorkingHours(
-				workingConditionItem.getScheduleMethod().getWorkScheduleBusCal().getReferenceWorkingHours().value);
+		if (workingConditionItem.getScheduleMethod().isPresent() && workingConditionItem
+				.getScheduleMethod().get().getWorkScheduleBusCal().isPresent()) {
+			commandWorktypeGetter.setReferenceBasicWork(workingConditionItem.getScheduleMethod()
+					.get().getWorkScheduleBusCal().get().getReferenceBasicWork().value);
+		}
+		if (workingConditionItem.getScheduleMethod().isPresent() && workingConditionItem
+				.getScheduleMethod().get().getWorkScheduleBusCal().isPresent()) {
+			commandWorktypeGetter
+					.setReferenceBusinessDayCalendar(workingConditionItem.getScheduleMethod().get()
+							.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);
+			commandWorktypeGetter.setReferenceWorkingHours(
+					workingConditionItem.getScheduleMethod().get().getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
+		}
+		
 		
 		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter);
 

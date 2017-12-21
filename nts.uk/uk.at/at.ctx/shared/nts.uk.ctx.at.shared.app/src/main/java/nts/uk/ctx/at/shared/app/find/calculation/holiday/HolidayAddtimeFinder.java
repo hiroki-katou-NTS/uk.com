@@ -34,6 +34,7 @@ public class HolidayAddtimeFinder {
 		holidayAddtimeDto.setReferActualWorkHours(holidayAddtime.getReferActualWorkHours());
 		holidayAddtimeDto.setNotReferringAch(holidayAddtime.getNotReferringAch().value);
 		holidayAddtimeDto.setAnnualHoliday(holidayAddtime.getAnnualHoliday());
+		holidayAddtimeDto.setSpecialHoliday(holidayAddtime.getSpecialHoliday());
 		holidayAddtimeDto.setYearlyReserved(holidayAddtime.getYearlyReserved());
 		holidayAddtimeDto.setRegularWork(convertToDbTypeRegularWork(holidayAddtime.getRegularWork()));
 		holidayAddtimeDto.setFlexWork(convertToDbTypeFlexWork(holidayAddtime.getFlexWork()));

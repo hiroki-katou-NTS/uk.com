@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.calculation.holiday;
+package nts.uk.ctx.at.shared.dom.calculation.holiday.flex;
 
 import lombok.AllArgsConstructor;
 

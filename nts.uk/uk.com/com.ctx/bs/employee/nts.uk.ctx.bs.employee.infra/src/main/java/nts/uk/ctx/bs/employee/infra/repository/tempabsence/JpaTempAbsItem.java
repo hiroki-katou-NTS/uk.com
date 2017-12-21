@@ -95,35 +95,35 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		case 1:
 			Leave leave = (Leave) domain;
 			return new BsymtTempAbsHisItem(leave.getHistoryId(), leave.getEmployeeId(),
-					tempAbsenceFrNo, leave.getRemarks().v(), leave.getSoInsPayCategory());
+					tempAbsenceFrNo, leave.getRemarks() != null? leave.getRemarks().v():null, leave.getSoInsPayCategory());
 		case 2:
 			MidweekClosure midweek = (MidweekClosure) domain;
 			return new BsymtTempAbsHisItem(midweek.getHistoryId(), midweek.getEmployeeId(),
-					tempAbsenceFrNo, midweek.getRemarks().v(), midweek.getSoInsPayCategory(),
+					tempAbsenceFrNo, midweek.getRemarks() != null? midweek.getRemarks().v():null, midweek.getSoInsPayCategory(),
 					midweek.getMultiple());
 		case 3:
 			AfterChildbirth childBirth = (AfterChildbirth) domain;
 			return new BsymtTempAbsHisItem(childBirth.getHistoryId(), childBirth.getEmployeeId(),
-					tempAbsenceFrNo, childBirth.getRemarks().v(),
+					tempAbsenceFrNo, childBirth.getRemarks() != null? childBirth.getRemarks().v():null,
 					childBirth.getSoInsPayCategory(),childBirth.getFamilyMemberId());
 		case 4:
 			ChildCareHoliday childCare = (ChildCareHoliday) domain;
 			return new BsymtTempAbsHisItem(childCare.getHistoryId(), childCare.getEmployeeId(),
-					tempAbsenceFrNo, childCare.getRemarks().v(), childCare.getSoInsPayCategory(), childCare.getSameFamily(), childCare.getChildType(),childCare.getFamilyMemberId(), 
+					tempAbsenceFrNo,childCare.getRemarks() != null? childCare.getRemarks().v():null, childCare.getSoInsPayCategory(), childCare.getSameFamily(), childCare.getChildType(),childCare.getFamilyMemberId(), 
 					childCare.getCreateDate(), childCare.getSpouseIsLeave());
 		case 5:
 			CareHoliday careLeave = (CareHoliday) domain;
 			return new BsymtTempAbsHisItem(careLeave.getHistoryId(), careLeave.getEmployeeId(),
-					tempAbsenceFrNo, careLeave.getRemarks().v(), careLeave.getSoInsPayCategory(), careLeave.getSameFamily() ,
+					tempAbsenceFrNo,careLeave.getRemarks() != null? careLeave.getRemarks().v():null, careLeave.getSoInsPayCategory(), careLeave.getSameFamily() ,
 					careLeave.getSameFamilyDays(), careLeave.getFamilyMemberId());
 		case 6:
 			SickLeave sickLeave = (SickLeave) domain;
 			return new BsymtTempAbsHisItem(sickLeave.getHistoryId(), sickLeave.getEmployeeId(),
-					tempAbsenceFrNo, sickLeave.getRemarks().v(), sickLeave.getSoInsPayCategory());
+					tempAbsenceFrNo, sickLeave.getRemarks() != null? sickLeave.getRemarks().v():null, sickLeave.getSoInsPayCategory());
 		case 7:
 			AnyLeave anyLeave = (AnyLeave) domain;
 			return new BsymtTempAbsHisItem(anyLeave.getHistoryId(), anyLeave.getEmployeeId(),
-					tempAbsenceFrNo, anyLeave.getRemarks().v(), anyLeave.getSoInsPayCategory());
+					tempAbsenceFrNo,anyLeave.getRemarks() != null? anyLeave.getRemarks().v():null, anyLeave.getSoInsPayCategory());
 		default:
 			return null;
 		}

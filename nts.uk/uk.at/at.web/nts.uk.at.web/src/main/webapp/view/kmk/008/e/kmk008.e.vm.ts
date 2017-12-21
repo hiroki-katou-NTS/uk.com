@@ -129,6 +129,7 @@ module nts.uk.at.view.kmk008.e {
                             self.getalreadySettingList();
                             self.getDetail(self.selectedWorkplaceId());
                         });
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
 
             }
