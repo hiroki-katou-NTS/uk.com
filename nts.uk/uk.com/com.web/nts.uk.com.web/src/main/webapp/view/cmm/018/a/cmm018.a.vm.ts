@@ -2021,7 +2021,8 @@ module nts.uk.com.view.cmm018.a {
                         approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,index,approvalAtr,confirmedPerson,confirmName));
                     });
                    let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'','',length == 0 ? 0 : data.formSetting,length == 0 ? '' : data.approvalFormName,0,int);
-                    let color: boolean = length > 0 ? true : tmp.color;
+                    let lstAPhase = [tmp.appPhase1,tmp.appPhase2,tmp.appPhase3,tmp.appPhase4,tmp.appPhase5];
+                    let color: boolean = length > 0 ? true : __viewContext.viewModel.viewmodelA.checkColor(lstAPhase,int);
                     switch(int){
                     case 1:
                          a = new vmbase.CompanyAppRootADto(color,tmp.employRootAtr, appTypeValue, tmp.appTypeName, approvalId, tmp.historyId,
