@@ -63,11 +63,11 @@ module cps002.a.vm {
             isMutipleCheck: false,
             isSelectAllEmployee: false,
             onApplyEmployee: (dataEmployee: Array<any>) => {
-                let self = this;
+                let self: ViewModel = __viewContext['viewModel'];
                 self.copyEmployee(new EmployeeCopy(dataEmployee[0]));
             }, onSearchOnlyClicked: function(data: any) {
-                let self = this;
-                self.copyEmployee(data);
+                let self: ViewModel = __viewContext['viewModel'];
+                self.copyEmployee(new EmployeeCopy(data));
             }
         };
 

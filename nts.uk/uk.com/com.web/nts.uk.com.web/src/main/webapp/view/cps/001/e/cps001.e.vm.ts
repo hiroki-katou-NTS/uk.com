@@ -7,7 +7,10 @@ module cps001.e.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import permision = service.getCurrentEmpPermision;
-    let __viewContext: any = window['__viewContext'] || {};
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
 
@@ -25,6 +28,7 @@ module cps001.e.vm {
                 params = getShared("CPS001E_PARAMS");
             self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
+            block();
             service.getAvatar(self.empFileMn().employeeId).done(function(data) {
                 if (data) {
                     self.empFileMn().fileId = data.fileId ? data.fileId : "";
@@ -41,7 +45,10 @@ module cps001.e.vm {
                     }
                     self.isInit = false;
                 });
+                unblock();
 
+            }).fail((mes) => {
+                unblock();
             });
 
             permision().done((data: IPersonAuth) => {
@@ -87,19 +94,29 @@ module cps001.e.vm {
                 if (isExist) {
                     confirm({ messageId: "Msg_386", messageParams: "CPS001_69" }).ifYes(() => {
                         //insert employee file management
+                        block();
                         service.removeAvaOrMap(oldEmpFileMn).done(function() {
                             service.insertAvaOrMap(currentEmpFileMn).done(function() {
                                 setShared("CPS001E_VALUES", ko.unwrap(self.empFileMn));
+                                unblock();
                                 self.close();
                             }).always(function() { nts.uk.ui.block.clear(); });
+                        }).fail((mes) => {
+                            unblock();
                         });
                     }).ifNo(() => { nts.uk.ui.block.clear(); });
                 } else {
                     //insert employee file management
+                    block();
                     service.insertAvaOrMap(currentEmpFileMn).done(function() {
                         setShared("CPS001E_VALUES", ko.unwrap(self.empFileMn));
+                         unblock();
                         self.close();
-                    }).always(function() { nts.uk.ui.block.clear(); });
+                    }).fail((mes) => {
+                        unblock();
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
                 }
             });
         }
