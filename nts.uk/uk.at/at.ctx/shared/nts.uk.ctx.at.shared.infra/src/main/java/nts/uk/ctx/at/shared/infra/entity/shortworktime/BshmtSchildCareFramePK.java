@@ -30,10 +30,11 @@ public class BshmtSchildCareFramePK implements Serializable {
 	/** The hist id. */
 	@Column(name = "HIST_ID")
 	private String histId;
-
-	/** The str clock. */
-	@Column(name = "STR_CLOCK")
-	private Integer strClock;
+	
+	/** The time no. */
+	@Column(name = "CNT")
+	private Integer timeNo;
+	
 
 	/**
 	 * Instantiates a new bshmt schild care frame PK.
@@ -52,10 +53,10 @@ public class BshmtSchildCareFramePK implements Serializable {
 	 * @param strClock
 	 *            the str clock
 	 */
-	public BshmtSchildCareFramePK(String sid, String histId, Integer strClock) {
+	public BshmtSchildCareFramePK(String sid, String histId, Integer timeNo) {
 		this.sid = sid;
 		this.histId = histId;
-		this.strClock = strClock;
+		this.timeNo = timeNo;
 	}
 
 	/*
@@ -68,7 +69,7 @@ public class BshmtSchildCareFramePK implements Serializable {
 		int hash = 0;
 		hash += (sid != null ? sid.hashCode() : 0);
 		hash += (histId != null ? histId.hashCode() : 0);
-		hash += (int) strClock;
+		hash += (int) timeNo;
 		return hash;
 	}
 
@@ -90,7 +91,7 @@ public class BshmtSchildCareFramePK implements Serializable {
 				|| (this.histId != null && !this.histId.equals(other.histId))) {
 			return false;
 		}
-		if (this.strClock != other.strClock) {
+		if (this.timeNo != other.timeNo) {
 			return false;
 		}
 		return true;
