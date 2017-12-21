@@ -97,6 +97,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.Sched
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInformationDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -711,7 +712,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 						c.scheduleTimes.isEmpty() ? null
 								: c.scheduleTimes.stream()
 										.map(s -> new ScheduleTimeSheetDto(s.krcdtWorkScheduleTimePK.workNo,
-												s.attendance, s.leaveWork))
+												new TimeWithDayAttr(s.attendance), new TimeWithDayAttr(s.leaveWork)))
 										.collect(Collectors.toList())));
 	}
 

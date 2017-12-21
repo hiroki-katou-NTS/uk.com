@@ -208,10 +208,10 @@ public class CalculationRangeOfOneDay {
 			withinWorkingTimeSheet.set(WithinWorkTimeSheet.createAsFixed(toDay, predetermineTimeSet, fixedWorkSetting,
 					workTimeCommonSet, deductionTimeSheet, bonusPaySetting));
 			/* 就業外の時間帯作成 */
-			outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
-					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
-					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
-					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet));
+//			outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
+//					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
+//					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
+//					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet));
 		}
 
 	}

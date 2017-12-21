@@ -25,16 +25,16 @@ public class LateLeaveEarlyEachSettingOfWorkTime {
 		return this.lateLeaveEarlyClassification.equals(t);
 	}
 	
-	/**
-	 * 指定された控除区分に対応する丸め設定を返す
-	 * @param category
-	 * @return　控除区分＝控除の場合：控除時間丸め設定　控除区分＝計上の場合：時間丸め
-	 */
-	public TimeRoundingSetting getTimeRoundingSetting(DeductionAtr category) {
-		if(category.isDeduction()) {
-			return this.forDeductionTimeRoundingSetting;
-		}else {
-			return this.forRecordTimeRoundingSetting;
-		}
-	}
+//	/**
+//	 * 指定された控除区分に対応する丸め設定を返す
+//	 * @param category
+//	 * @return　控除区分＝控除の場合：控除時間丸め設定　控除区分＝計上の場合：時間丸め
+//	 */
+//	public TimeRoundingSetting getTimeRoundingSetting(DeductionAtr category) {
+//		if(category.isDeduction()) {
+//			return this.forDeductionTimeRoundingSetting;
+//		}else {
+//			return this.forRecordTimeRoundingSetting;
+//		}
+//	}
 }

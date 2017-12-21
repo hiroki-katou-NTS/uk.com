@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.SpecBonusPayNumber;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Rounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit;
 import nts.uk.shr.com.time.AttendanceClock;

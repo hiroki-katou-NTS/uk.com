@@ -88,7 +88,7 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 		
 		return new LeaveEarlyTimeOfDaily(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.leaveEarlyTime), new AttendanceTime(this.calcLeaveEarlyTime)),
 										 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.leaveEarlyDedctTime), new AttendanceTime(this.calcLeaveEarlyDedctTime)),
-										 new WorkNo(BigDecimal.valueOf(this.krcdtDayLeaveEarlyTimePK.workNo)),
+										 new WorkNo(this.krcdtDayLeaveEarlyTimePK.workNo),
 										 timeVacation,
 										 new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
 										 );

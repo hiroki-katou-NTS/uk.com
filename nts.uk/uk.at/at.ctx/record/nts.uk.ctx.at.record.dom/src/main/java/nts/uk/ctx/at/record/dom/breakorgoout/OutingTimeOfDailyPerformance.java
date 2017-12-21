@@ -100,16 +100,16 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 		
 		for(TimeSheetOfDeductionItem deductionItem : deductionList) {
 			//休憩へ変換する
-			if((fluidprefixBreakTimeSet.isPrivateGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isPrivate())
-				||(fluidprefixBreakTimeSet.isUnionGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isUnion())) {
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),deductionItem.getCalcrange(),deductionItem.getDeductionTimeSheet()
-						       ,deductionItem.getBonusPayTimeSheet(),deductionItem.getSpecBonusPayTimesheet(),deductionItem.getMidNightTimeSheet(),deductionItem.getGoOutReason()
-						       ,Optional.of(BreakClassification.BREAK_STAMP),DeductionClassification.BREAK));
-			}
-			//外出のまま
-			else {
-				returnList.add(deductionItem);
-			}
+//			if((fluidprefixBreakTimeSet.isPrivateGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isPrivate())
+//				||(fluidprefixBreakTimeSet.isUnionGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isUnion())) {
+//				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),deductionItem.getCalcrange(),deductionItem.getDeductionTimeSheet()
+//						       ,deductionItem.getBonusPayTimeSheet(),deductionItem.getSpecBonusPayTimesheet(),deductionItem.getMidNightTimeSheet(),deductionItem.getGoOutReason()
+//						       ,Optional.of(BreakClassification.BREAK_STAMP),DeductionClassification.BREAK));
+//			}
+//			//外出のまま
+//			else {
+//				returnList.add(deductionItem);
+//			}
 		}
 		
 		return returnList;

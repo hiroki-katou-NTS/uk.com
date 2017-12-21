@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.lateleaveearlysetting.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 
 /**
  * 休暇の就業時間計算方法詳細
@@ -24,7 +24,7 @@ public class WorkTimeCalcMethodDetailOfHoliday {
 	 */
 	public boolean deductsFromWithinWorkTimeSheet(int deductTime, GraceTimeSetting graceTimeSetting) {
 		if(this.deductLateLeaveEarly.isUse()) {//早退設定を控除項目にするかをチェックする
-			if(deductTime > 0 || !graceTimeSetting.isIncludeInWorkingHours()) {
+			if(deductTime > 0 || !graceTimeSetting.isIncludeWorkingHour()) {
 				return true;
 			}
 		}

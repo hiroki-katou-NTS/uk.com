@@ -93,7 +93,8 @@ public abstract class CalculationTimeSheet {
 	 */
 	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(AttendanceTime transTime,OverTimeFrameTimeSheet overTimeWork) {
 		TimeSpanForCalc copySpan = calcrange;
-		return overTimeWork.reduceUntilSpecifiedTime(new AttendanceTime(copySpan.lengthAsMinutes() - transTime.valueAsMinutes()));
+		//return overTimeWork.reduceUntilSpecifiedTime(new AttendanceTime(copySpan.lengthAsMinutes() - transTime.valueAsMinutes()));
+		return copySpan;
 	}
 	
 	/**
@@ -253,9 +254,9 @@ public abstract class CalculationTimeSheet {
 	public List<BonusPayTimesheet> recreateBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		List<BonusPayTimesheet> bonusPayList = new ArrayList<>();
 		for(BonusPayTimesheet bonusPay : bonusPayList) {
-			if(bonusPay.contains(baseTime)) {
-				bonusPayList.add(bonusPay.reCreateOwn(baseTime,isDateBefore));
-			}
+//			if(bonusPay..contains(baseTime)) {
+//				bonusPayList.add(bonusPay.reCreateOwn(baseTime,isDateBefore));
+//			}
 //			else if(bonusPay.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 //				bonusPayList.add(bonusPay);
 //			}
@@ -275,9 +276,9 @@ public abstract class CalculationTimeSheet {
 	public List<SpecBonusPayTimesheet> recreateSpecifiedBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		List<SpecBonusPayTimesheet> specifiedBonusPayList = new ArrayList<>();
 		for(SpecBonusPayTimesheet specifiedBonusPay : specifiedBonusPayList) {
-			if(specifiedBonusPay.contains(baseTime)) {
-				specifiedBonusPayList.add(specifiedBonusPay.reCreateOwn(baseTime,isDateBefore));
-			}
+//			if(specifiedBonusPay.contains(baseTime)) {
+//				specifiedBonusPayList.add(specifiedBonusPay.reCreateOwn(baseTime,isDateBefore));
+//			}
 //			else if(specifiedBonusPay.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 //				specifiedBonusPayList.add(specifiedBonusPay);
 //			}

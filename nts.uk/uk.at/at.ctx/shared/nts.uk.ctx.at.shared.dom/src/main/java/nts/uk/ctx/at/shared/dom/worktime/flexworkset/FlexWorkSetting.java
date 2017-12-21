@@ -57,16 +57,16 @@ public class FlexWorkSetting extends AggregateRoot {
 	  */
 	 public TimeWithDayAttr getMostEarlyTime(WorkType workType) {
 		 List<TimeSpanWithRounding> timeSpans = new ArrayList<>();
-		 if(workType/*平日*/) {
-			 timeSpans.addAll(weekdayWorkTime.getWorkingTime().getWorkingHours().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
-			 timeSpans.addAll(weekdayWorkTime.getWorkingTime().getWorkingHours().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
-		 }
-		 else if(/*休日*/) {
-			 timeSpans.addAll(offdayWorkTime.getWorkingTimes().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
-		 }
-		 else {
-			 throw new Exception("unknown day Atr:"+workType);
-		 }
+//		 if(workType/*平日*/) {
+//			 timeSpans.addAll(weekdayWorkTime.getWorkingTime().getWorkingHours().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
+//			 timeSpans.addAll(weekdayWorkTime.getWorkingTime().getWorkingHours().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
+//		 }
+////		 else if(/*休日*/) {
+////			 timeSpans.addAll(offdayWorkTime.getWorkingTimes().stream().map(tc -> tc.getTimeSpan()).collect(Collectors.toList()));
+////		 }
+//		 else {
+//			 throw new Exception("unknown day Atr:"+workType);
+//		 }
 		 timeSpans.stream().sorted((first,second) -> first.getStart().compareTo(second.getStart()));
 		 return timeSpans.get(0).getStart();
 	 }

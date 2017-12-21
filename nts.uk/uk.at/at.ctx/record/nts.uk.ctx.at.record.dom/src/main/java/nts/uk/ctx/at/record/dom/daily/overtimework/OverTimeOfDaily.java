@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
@@ -168,16 +167,16 @@ public class OverTimeOfDaily {
 	 * @param prioritySet
 	 * @return
 	 */
-	public static List<OverTimeFrameTimeSheetWork> sortedByPriority(List<OverTimeFrameTimeSheetWork> overTimeWorkFrameTimeSheetList,StatutoryPrioritySet prioritySet){
-		List<OverTimeFrameTimeSheetWork> copyList = new ArrayList<>();
+	public static List<OverTimeFrameTimeSheet> sortedByPriority(List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheetList,StatutoryPrioritySet prioritySet){
+		List<OverTimeFrameTimeSheet> copyList = new ArrayList<>();
 		if(prioritySet.isPriorityNormal()) {
 			/*普通を優先*/
-			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
-			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> tc.isGoEarly()).collect(Collectors.toList()));
+			//copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
+			//copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> tc.isGoEarly()).collect(Collectors.toList()));
 		}else {
 			/*早出を優先*/
-			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> tc.isGoEarly()).collect(Collectors.toList()));
-			copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
+			//copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> tc.isGoEarly()).collect(Collectors.toList()));
+			//copyList.addAll(overTimeWorkFrameTimeSheetList.stream().filter(tc -> !tc.isGoEarly()).collect(Collectors.toList()));
 		}
 		return copyList;
 	}
