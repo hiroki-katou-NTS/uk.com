@@ -126,17 +126,30 @@
 		/>
 	</div>
 	</com:ko>
-	<div class="setting_rows">
-		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_157')}</div>
-		<div data-bind="ntsSwitchButton: {
-			options: settingEnum.applyAtr,
-			optionsValue: 'value',
-			optionsText: 'localizedName',
-			value: coreTimeSettingModel.timesheet,
-			enable: true }">
-		</div>
+	<com:ko tag="if" bind="isFlexMode">
+		<div class="setting_rows">
+			<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_157')}</div>
+			<div data-bind="ntsSwitchButton: {
+				options: settingEnum.applyAtr,
+				optionsValue: 'value',
+				optionsText: 'localizedName',
+				value: coreTimeSettingModel.timesheet,
+				enable: true }">
+			</div>
+			<input data-bind="ntsTimeEditor: {
+				value: coreTimeSettingModel.coreTimeSheet.startTime,
+				constraint: 'TimeWithDayAttr',
+				inputFormat: 'time',
+				mode: 'time',
+				option: afterUpdateWorkTimeOption,
+				required: true,
+				enable: true,
+				readonly: false,
+				immediate: false}" 
+			/>
+		<label>#{i18n.getText('KMK003_160')}</label>
 		<input data-bind="ntsTimeEditor: {
-			value: coreTimeSettingModel.coreTimeSheet.startTime,
+			value: coreTimeSettingModel.coreTimeSheet.endTime,
 			constraint: 'TimeWithDayAttr',
 			inputFormat: 'time',
 			mode: 'time',
@@ -146,33 +159,22 @@
 			readonly: false,
 			immediate: false}" 
 		/>
-	<label>#{i18n.getText('KMK003_160')}</label>
-	<input data-bind="ntsTimeEditor: {
-		value: coreTimeSettingModel.coreTimeSheet.endTime,
-		constraint: 'TimeWithDayAttr',
-		inputFormat: 'time',
-		mode: 'time',
-		option: afterUpdateWorkTimeOption,
-		required: true,
-		enable: true,
-		readonly: false,
-		immediate: false}" 
-	/>
-</div>
-<div class="setting_rows">
-	<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_184')}</div>
-	<input data-bind="ntsTimeEditor: {
-		value: coreTimeSettingModel.minWorkTime,
-		constraint: 'AttendanceTime',
-		inputFormat: 'time',
-		mode: 'time',
-		option: beforeUpdateWorkTimeOption,
-		required: true,
-		enable: true,
-		readonly: false,
-		immediate: false}" 
-	/>
-</div>
+	</div>
+	<div class="setting_rows">
+		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_184')}</div>
+		<input data-bind="ntsTimeEditor: {
+			value: coreTimeSettingModel.minWorkTime,
+			constraint: 'AttendanceTime',
+			inputFormat: 'time',
+			mode: 'time',
+			option: beforeUpdateWorkTimeOption,
+			required: true,
+			enable: true,
+			readonly: false,
+			immediate: false}" 
+		/>
+	</div>
+</com:ko>
 <div class="setting_rows">
 	<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_39')}</div>
 	<input data-bind="ntsTimeEditor: {

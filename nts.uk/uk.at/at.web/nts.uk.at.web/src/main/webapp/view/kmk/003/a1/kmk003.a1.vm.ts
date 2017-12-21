@@ -46,6 +46,7 @@ module a1 {
         isDiffTimeMode: KnockoutObservable<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
         isViewTimezoneTwo: KnockoutObservable<boolean>;
+        isFlexMode: KnockoutObservable<boolean>;
         mainSettingModel: MainSettingModel;
         predseting: PredetemineTimeSettingModel;
         changeExtent: EmTimezoneChangeExtentModel;
@@ -109,7 +110,7 @@ module a1 {
             self.oneDay = ko.observable(0);
             self.morning = ko.observable(0);
             self.afternoon = ko.observable(0);
-
+            self.isFlexMode = ko.observable(SettingModel.isFlex(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr()));
             self.isDiffTimeMode = ko.observable(SettingModel.isDifftime(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet()));
             self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(function(settingMethod: number){
                 self.isDiffTimeMode(SettingModel.isDifftime(settingMethod));
@@ -118,6 +119,9 @@ module a1 {
                 if(isDifftime && !(self.changeExtent)){
                     self.changeExtent = self.mainSettingModel.diffWorkSetting.changeExtent;
                 }
+            });
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(function(settingMethod: number){
+                self.isFlexMode(SettingModel.isFlex(settingMethod));
             });
             self.isViewTimezoneTwo = ko.observable(false);
             self.isDetailMode = ko.observable(false);
