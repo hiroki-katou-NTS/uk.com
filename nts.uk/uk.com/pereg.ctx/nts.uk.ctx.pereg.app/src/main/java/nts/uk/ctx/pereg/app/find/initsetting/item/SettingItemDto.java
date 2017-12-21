@@ -6,6 +6,7 @@ import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 
 /**
@@ -27,12 +28,14 @@ public class SettingItemDto {
 
 	private SaveDataDto saveData;
 
-	private int dataType;
+	private DataTypeValue dataType;
 
 	private BigDecimal selectionItemRefType;
 
+	private String itemParentCd;
+
 	public SettingItemDto(String categoryCode, String itemDefId, String itemCode, String itemName, int isRequired,
-			SaveDataDto saveData, Integer dataType, BigDecimal selectionItemRefType) {
+			SaveDataDto saveData, DataTypeValue dataType, BigDecimal selectionItemRefType, String itemParentCd) {
 		super();
 		this.categoryCode = categoryCode;
 		this.itemDefId = itemDefId;
@@ -42,6 +45,7 @@ public class SettingItemDto {
 		this.saveData = saveData;
 		this.dataType = dataType;
 		this.selectionItemRefType = selectionItemRefType;
+		this.itemParentCd = itemParentCd;
 	}
 
 	private static SaveDataDto createSaveDataDto(int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
@@ -89,9 +93,10 @@ public class SettingItemDto {
 
 	public static SettingItemDto createFromJavaType(String categoryCode, String itemDefId, String itemCode,
 			String itemName, int isRequired, int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
-			String stringValue, Integer dataType, BigDecimal selectionItemRefType) {
+			String stringValue, int dataType, BigDecimal selectionItemRefType, String itemParentCd) {
 		SettingItemDto itemDto = new SettingItemDto(categoryCode, itemDefId, itemCode, itemName, isRequired,
-				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue), dataType, selectionItemRefType);
+				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue),
+				EnumAdaptor.valueOf(dataType, DataTypeValue.class), selectionItemRefType, itemParentCd);
 		return itemDto;
 	}
 
@@ -113,7 +118,7 @@ public class SettingItemDto {
 				domain.getItemCode().v(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getDataState().getDataStateType().value, domain.getDataState().getDateValue(),
 				domain.getDataState().getNumberValue(), domain.getDataState().getStringValue(), domain.getDataType(),
-				domain.getSelectionItemRefType());
+				domain.getSelectionItemRefType(), domain.getItemParentCd());
 
 	}
 

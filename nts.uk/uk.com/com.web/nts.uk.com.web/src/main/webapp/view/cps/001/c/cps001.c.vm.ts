@@ -26,6 +26,8 @@ module cps001.c.vm {
 
             emp.id.subscribe(x => {
                 if (x) {
+                    self.enableControl();
+                    
                     let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
 
                     service.getDetail(x).done((data: IEmployee) => {
@@ -38,6 +40,8 @@ module cps001.c.vm {
                             emp.dateDelete(data.dateDelete || undefined);
                         }
                     });
+                } else {
+                    self.newMode();
                 }
             });
 
@@ -164,6 +168,19 @@ module cps001.c.vm {
             self.enaBtnRes(false);
             self.enaBtnDel(false);
         }
+
+        enableControl() {
+            let self = this,
+                emps = self.listEmployee(),
+                emp = self.currentEmployee();
+
+            emp.enableCode(true);
+            emp.enableName(true);
+            self.enaBtnRes(true);
+            self.enaBtnDel(true);
+        }
+
+
     }
 
     interface IEmployee {

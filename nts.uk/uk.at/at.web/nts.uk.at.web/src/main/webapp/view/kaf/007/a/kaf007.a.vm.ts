@@ -205,7 +205,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //共通設定.複数回勤務　＝　利用する
             if(self.isMultipleTime()){
                 //has input time 2
-                if ( !nts.uk.util.isNullOrUndefined(workchange.workTimeStart2()) && workchange.workTimeStart2() != "") {
+                if ( !nts.uk.util.isNullOrEmpty(workchange.workTimeStart2())) {
                     //開始時刻　＞　終了時刻
                     if(workchange.workTimeStart2() > workchange.workTimeEnd2()){
                         dialog.alertError({messageId:"Msg_580"}).then(function(){nts.uk.ui.block.clear();});
@@ -221,7 +221,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 }
             }
             //３．休憩時間１（開始時刻：終了時刻）大小チェック
-            if ( !nts.uk.util.isNullOrUndefined(workchange.breakTimeStart1()) && workchange.breakTimeStart1() != "") {
+            if ( !nts.uk.util.isNullOrEmpty(workchange.breakTimeStart1())) {
                 //開始時刻　＞　終了時刻
                 if(workchange.breakTimeStart1() > workchange.breakTimeEnd1()){
                     dialog.alertError({messageId:"Msg_582"}).then(function(){nts.uk.ui.block.clear();});
@@ -252,7 +252,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     break;
             }
             //申請日付開始日を基準に共通アルゴリズム「申請日を変更する」を実行する
-            self.checkChangeAppDate(date);
+            //self.checkChangeAppDate(date);
             //申請日付分　（開始日～終了日）
             //基準日　≦　終了日
             while(moment(startDate, self.dateFormat).isSameOrBefore(moment(endDate, self.dateFormat))){
@@ -265,8 +265,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 //Binding data
                 ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
             }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                nts.uk.ui.block.clear();
+                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
             });
         }
         /**
@@ -343,8 +342,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             workchange = self.appWorkChange().workChange();
             //
             if ( !self.isMultipleTime() 
-                    ||  nts.uk.util.isNullOrUndefined( workchange.workTimeStart2() ) 
-                    || workchange.workTimeStart2() == ""  ) {
+                    ||  nts.uk.util.isNullOrEmpty( workchange.workTimeStart2() )) {
                 workchange.goWorkAtr2( null );
                 workchange.backHomeAtr2( null );
                 workchange.workTimeStart2( null );

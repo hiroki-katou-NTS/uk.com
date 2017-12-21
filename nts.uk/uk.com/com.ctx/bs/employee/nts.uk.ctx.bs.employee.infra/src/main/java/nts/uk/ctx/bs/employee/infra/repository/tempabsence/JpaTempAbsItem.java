@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.infra.repository.tempabsence;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -44,12 +43,6 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			return Optional.of(toDomain(optionData.get()));
 		}
 		return Optional.empty();
-	}
-	
-	@Override
-	public List<TempAbsenceHisItem> getListItemByEmpId(String employeeId) {
-		// TODO
-		return null;
 	}
 	
 	private TempAbsenceHisItem toDomain(BsymtTempAbsHisItem ent) {
