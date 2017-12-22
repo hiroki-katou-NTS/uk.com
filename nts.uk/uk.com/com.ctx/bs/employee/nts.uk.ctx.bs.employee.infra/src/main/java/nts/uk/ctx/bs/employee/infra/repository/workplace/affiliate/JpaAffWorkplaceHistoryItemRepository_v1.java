@@ -113,7 +113,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	@Override
 	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate, String employeeId) {
 		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("employeeIds", employeeId).setParameter("standDate", basedate)
+				.setParameter("employeeId", employeeId).setParameter("standDate", basedate)
 				.getList();
 		if(listHistItem.isEmpty()){
 			return null;

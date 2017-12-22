@@ -26,8 +26,6 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
@@ -46,15 +44,10 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class SyEmployeePubImp implements SyEmployeePub {
 
-
 	/** The person repository. */
 	@Inject
 	private SyPersonAdapter syPersonAdapter;
 
-	/** The workplace history repository. */
-	@Inject
-	private AffWorkplaceHistoryRepository workplaceHistoryRepository;
-	
 	@Inject
 	private AffWorkplaceHistoryRepository_v1 workplaceHistoryRepository_v1;
 
@@ -66,9 +59,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private PersonRepository personRepository;
 
+	/** The emp data mng repo. */
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
 
+	/** The aff com hist repo. */
 	@Inject
 	private AffCompanyHistRepository affComHistRepo;
 
@@ -81,10 +76,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<EmployeeExport> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate) {
 		// Query
-//		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository.searchWorkplaceHistory(baseDate,
-//				workplaceIds);
-		
-		//TODO: anh ThanhNC review
 		// update use AffWorkplaceHistory_ver1 - get list Aff WorkplaceHistory by list wkpIds and base data
 		List<AffWorkplaceHistory_ver1> affWorkplaceHistories = this.workplaceHistoryRepository_v1.getWorkplaceHistoryByWkpIdsAndDate(baseDate, workplaceIds);
 
@@ -186,7 +177,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		}
 		// Get Person
 		Person person = personOpt.get();
-		String pname = person.getPersonNameGroup().getPersonName().getFullName().v();
+		// String pname = person.getPersonNameGroup().getPersonName().getFullName().v();
 		// EmployeeMail comMailAddr = emp.getCompanyMail();
 
 		result.setPId(person.getPersonId());
