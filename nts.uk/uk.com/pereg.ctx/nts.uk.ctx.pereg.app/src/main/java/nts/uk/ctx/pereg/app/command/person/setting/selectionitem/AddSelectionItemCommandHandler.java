@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -19,7 +18,6 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRe
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
