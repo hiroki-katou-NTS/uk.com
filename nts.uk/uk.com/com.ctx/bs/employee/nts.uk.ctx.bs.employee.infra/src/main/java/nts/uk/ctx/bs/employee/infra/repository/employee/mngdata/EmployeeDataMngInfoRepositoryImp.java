@@ -48,7 +48,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " ORDER BY  c.employeeCode DESC";
 
 	// Lanlt end
-	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday, p.gender "
+	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday, p.gender, p.bpsmtPersonPk.pId "
 			+ " FROM BsymtEmployeeDataMngInfo e " + " INNER JOIN BpsmtPerson p"
 			+ " ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sid";
@@ -189,6 +189,12 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				} else if (Integer.valueOf(entity[4].toString()) == 2) {
 					emp.setGender("女");
 				}
+
+			}
+
+			if (entity[5] != null) {
+
+				emp.setPId(entity[5].toString());
 
 			}
 
