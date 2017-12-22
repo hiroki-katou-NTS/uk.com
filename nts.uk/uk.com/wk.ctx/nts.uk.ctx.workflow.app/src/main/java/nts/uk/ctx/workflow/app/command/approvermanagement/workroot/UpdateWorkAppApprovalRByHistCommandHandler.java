@@ -108,7 +108,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
-						throw new BusinessException("Msg_156");
+						throw new BusinessException("Msg_156",sDatePre);
 					}
 					//history previous 
 					CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateEdate(com, endDateUpdate);
@@ -196,7 +196,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
-						throw new BusinessException("Msg_156");
+						throw new BusinessException("Msg_156",sDatePre);
 					}
 					//history previous 
 					WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateEdate(wp, endDateUpdate);
@@ -285,7 +285,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 					if(startDate.compareTo(sDatePre) <= 0){
 						//エラーメッセージ(Msg_156)(error message (Msg_156))
-						throw new BusinessException("Msg_156");
+						throw new BusinessException("Msg_156",sDatePre);
 					}
 					//history previous 
 					PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateEdate(ps,  endDateUpdate);
