@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /** 勤怠打刻 */
 @Data
+@AllArgsConstructor
 public class TimeStampDto {
 
 	/** 打刻元情報: 打刻元情報 */

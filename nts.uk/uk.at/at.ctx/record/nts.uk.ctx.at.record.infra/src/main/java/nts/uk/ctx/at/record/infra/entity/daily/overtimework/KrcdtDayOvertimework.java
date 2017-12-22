@@ -8,9 +8,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.val;
@@ -22,7 +19,6 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
-import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -299,56 +295,66 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	}
 
 	public OverTimeOfDaily toDomain() {
-		List<OverTimeFrameTime> list = new ArrayList();
+		List<OverTimeFrameTime> list = new ArrayList<>();
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(1),
 									   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime1), new AttendanceTime(this.calcOverTime1)),
 									   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime1), new AttendanceTime(this.calcTransTime1)),
-									   new AttendanceTime(this.preOverTimeAppTime1)));
+									   new AttendanceTime(this.preOverTimeAppTime1),
+									   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(2),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime2), new AttendanceTime(this.calcOverTime2)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime2), new AttendanceTime(this.calcTransTime2)),
-				   new AttendanceTime(this.preOverTimeAppTime2)));
+				   new AttendanceTime(this.preOverTimeAppTime2),
+				   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(3),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime3), new AttendanceTime(this.calcOverTime3)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime3), new AttendanceTime(this.calcTransTime3)),
-				   new AttendanceTime(this.preOverTimeAppTime3)));
+				   new AttendanceTime(this.preOverTimeAppTime3),
+				   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(4),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime4), new AttendanceTime(this.calcOverTime4)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime4), new AttendanceTime(this.calcTransTime4)),
-				   new AttendanceTime(this.preOverTimeAppTime4)));
+				   new AttendanceTime(this.preOverTimeAppTime4),
+				   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(5),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime5), new AttendanceTime(this.calcOverTime5)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime5), new AttendanceTime(this.calcTransTime5)),
-				   new AttendanceTime(this.preOverTimeAppTime5)));
+				   new AttendanceTime(this.preOverTimeAppTime5),
+				   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(6),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime6), new AttendanceTime(this.calcOverTime6)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime6), new AttendanceTime(this.calcTransTime6)),
-				   new AttendanceTime(this.preOverTimeAppTime6)));
+				   new AttendanceTime(this.preOverTimeAppTime6),
+				   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(7),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime7), new AttendanceTime(this.calcOverTime7)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime7), new AttendanceTime(this.calcTransTime7)),
-				   new AttendanceTime(this.preOverTimeAppTime7)));
+				   new AttendanceTime(this.preOverTimeAppTime7),
+				   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(8),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime8), new AttendanceTime(this.calcOverTime8)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime8), new AttendanceTime(this.calcTransTime8)),
-				   new AttendanceTime(this.preOverTimeAppTime8)));
+				   new AttendanceTime(this.preOverTimeAppTime8),
+				   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(9),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime9), new AttendanceTime(this.calcOverTime9)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime9), new AttendanceTime(this.calcTransTime9)),
-				   new AttendanceTime(this.preOverTimeAppTime9)));
+				   new AttendanceTime(this.preOverTimeAppTime9),
+				   new AttendanceTime(0)));
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(100),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime10), new AttendanceTime(this.calcOverTime10)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime10), new AttendanceTime(this.calcTransTime10)),
-				   new AttendanceTime(this.preOverTimeAppTime10)));
+				   new AttendanceTime(this.preOverTimeAppTime10),
+				   new AttendanceTime(0)));
 		
 		return new OverTimeOfDaily(Collections.emptyList(), 
 								   list,

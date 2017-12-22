@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +40,6 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -198,10 +196,10 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			// fake data
 			List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
 			StampReflectTimezoneOutput stampReflectTimezoneOutput1 = new StampReflectTimezoneOutput(
-					new WorkNo(new BigDecimal(1)), GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(720),
+					new WorkNo(1), GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(720),
 					new TimeWithDayAttr(480));
 			StampReflectTimezoneOutput stampReflectTimezoneOutput2 = new StampReflectTimezoneOutput(
-					new WorkNo(new BigDecimal(1)), GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1320),
+					new WorkNo(1), GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1320),
 					new TimeWithDayAttr(1020));
 			lstStampReflectTimezone.add(stampReflectTimezoneOutput1);
 			lstStampReflectTimezone.add(stampReflectTimezoneOutput2);

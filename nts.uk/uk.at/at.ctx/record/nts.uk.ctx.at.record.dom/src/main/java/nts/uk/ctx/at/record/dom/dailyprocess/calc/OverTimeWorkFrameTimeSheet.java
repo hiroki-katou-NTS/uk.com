@@ -100,6 +100,7 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 											  new OverTimeFrameTime(new OverTimeFrameNo(overTimeHourSet.getFrameNo().v()),
 													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
 													  					TimeWithCalculation.sameTime(new AttendanceTime(0)),
+													  					new AttendanceTime(0),
 													  					new AttendanceTime(0)),
 											 overTimeHourSet.isTreatAsGoEarlyOverTimeWork(),
 											 StatutoryAtr.Statutory);
@@ -122,7 +123,8 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 		return new OverTimeFrameTime(this.overWorkFrameTime.getOverWorkFrameNo()
 				,this.overWorkFrameTime.getTransferTime()
 				,TimeWithCalculation.sameTime(overTimeWorkTime)
-				,this.overWorkFrameTime.getBeforeApplicationTime());
+				,this.overWorkFrameTime.getBeforeApplicationTime(),
+					new AttendanceTime(0));
 	}
 	
 	

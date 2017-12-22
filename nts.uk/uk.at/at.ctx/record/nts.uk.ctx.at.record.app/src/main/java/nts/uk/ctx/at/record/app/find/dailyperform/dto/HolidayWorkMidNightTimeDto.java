@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 
 /** 休出深夜時間 */
 @Data
+@AllArgsConstructor
 public class HolidayWorkMidNightTimeDto {
 
 	/** 時間: 計算付き時間 */

@@ -92,7 +92,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		val pk = new KrcdtDayAttendanceTimePK(employeeId,ymd);
 		return this.queryProxy().find(pk, KrcdtDayAttendanceTime.class)
 				//find(pk,対象テーブル)
-				.map(e -> e.toDomain(ymd,e));
+				.map(e -> e.toDomain(ymd));
 	}
 
 	@Override

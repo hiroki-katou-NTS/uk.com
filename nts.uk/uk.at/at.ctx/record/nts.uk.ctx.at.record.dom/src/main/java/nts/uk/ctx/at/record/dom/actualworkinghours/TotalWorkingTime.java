@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
@@ -66,7 +67,8 @@ public class TotalWorkingTime {
 	//勤務回数
 	private WorkTimes workTimes;
 	
-	
+	/*日別実績の臨時時間*/
+	private TemporaryTimeOfDaily temporaryTime;
 	
 	/**
 	 * 

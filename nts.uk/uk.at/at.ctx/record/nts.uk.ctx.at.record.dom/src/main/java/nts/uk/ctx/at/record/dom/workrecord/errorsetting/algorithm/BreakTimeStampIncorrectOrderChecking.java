@@ -44,7 +44,7 @@ public class BreakTimeStampIncorrectOrderChecking {
 			for (BreakTimeSheet item : breakTimeSheets) {
 				WorkStamp startTime = item.getStartTime();
 				WorkStamp endTime = item.getEndTime();
-				item = new BreakTimeSheet(new BreakFrameNo(new BigDecimal(breakFrameNo)), startTime, endTime);
+				item = new BreakTimeSheet(new BreakFrameNo(new BigDecimal(breakFrameNo)), startTime, endTime, item.getBreakTime());
 				breakFrameNo++;
 			}
 

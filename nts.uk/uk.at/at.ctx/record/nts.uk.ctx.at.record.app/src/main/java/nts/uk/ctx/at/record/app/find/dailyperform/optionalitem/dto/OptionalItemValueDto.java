@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 
 @Data
-public class OptionalItemValue {
+@AllArgsConstructor
+public class OptionalItemValueDto {
 
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "値")
 	@AttendanceItemValue(itemId = { 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 656, 657,
