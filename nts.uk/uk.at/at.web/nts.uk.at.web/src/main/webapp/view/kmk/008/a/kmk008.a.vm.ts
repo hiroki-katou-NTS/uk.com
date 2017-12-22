@@ -7,6 +7,7 @@ module nts.uk.at.view.kmk008.a {
             startPage(): JQueryPromise<any> {
                 let dfd = $.Deferred();
                 dfd.resolve();
+                $("#button").focus();
                 return dfd.promise();
             }
 
