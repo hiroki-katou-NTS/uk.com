@@ -210,11 +210,18 @@ module cps002.a.vm {
                 });
             }
         }
+        clearEmployeeData() {
+            let self = this;
+            self.currentEmployee().employeeName("");
+            self.currentEmployee().employeeCode("");
+            self.currentEmployee().loginId("");
+            self.currentEmployee().password("");
+        }
 
         start() {
 
             let self = this;
-
+            self.clearEmployeeData();
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
@@ -817,11 +824,34 @@ module cps002.a.vm {
         itemName: string;
         isRequired: number;
         saveData: any;
+        dataType: string;
+        dateType: string;
         constructor(param?: any) {
             this.itemCode = param ? param.itemCode : '';
             this.itemName = param ? param.itemName : '';
             this.isRequired = param ? param.isRequired : 0;
             this.saveData = param ? param.saveData : null;
+            this.dataType = param ? param.dataType : '';
+            this.dateType = param ? param.dateType : '';
+            if (this.dataType === "DATE") {
+                this.saveData.value = this.genDateString(this.saveData.value, this.dateType);
+
+            }
+        }
+        genDateString(value, dateType) {
+            let formatString = "yyyy/MM/dd";
+            switch (dateType) {
+                case "YEARMONTHDAY":
+                    formatString = "yyyy/MM/dd";
+                    break;
+                case "YEARMONTH":
+                    formatString = "yyyy/MM";
+                    break;
+                case "YEAR":
+                    formatString = "yyyy";
+                    break;
+            }
+            return nts.uk.time.formatDate(new Date(value), formatString);
         }
     }
 

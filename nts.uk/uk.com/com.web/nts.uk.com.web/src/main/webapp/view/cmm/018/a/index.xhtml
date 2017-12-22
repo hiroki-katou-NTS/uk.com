@@ -804,8 +804,8 @@
 					<!-- E1_8: Button マスタリスト -->
 					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
-				<div class="contents-area">
-					<div class="contents-area" data-bind="with: viewmodelA">
+				<div class="contents-area-tabpanel-3">
+					<div class="contents-area-tabpanel-3" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
 						<table>
 							<tr>
@@ -835,7 +835,7 @@
 						<!-- SCREEN E -->
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
 							<!-- A2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 40px;">
+							<div id = "left-contents" style="float: left;margin-left: 90px;">
 								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
@@ -1003,7 +1003,7 @@
 						<!-- SCREEN F -->
 						<div class="mode_Private" data-bind="visible: selectedModeCode">
 							<!-- F2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
+							<div id = "left-contents" style="float: left;margin-left: 86px;" data-bind="with: $parent.viewmodelB">
 								<div style="width: 310px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- F2_2: -->
@@ -1015,7 +1015,7 @@
 									<div>
 									<table id="treegrid2"
 											data-bind="ntsTreeGridView:{
-												width: 300,
+												width: 310,
 												dataSource: dataDisplay,
 												value: singleSelectedCode,
 												optionsValue: 'approvalId',

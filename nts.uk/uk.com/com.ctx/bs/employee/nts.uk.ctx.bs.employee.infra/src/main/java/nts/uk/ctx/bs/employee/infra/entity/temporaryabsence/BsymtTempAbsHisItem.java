@@ -113,7 +113,9 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 		this.tempAbsFrameNo = tempAbsFrameNo;
 		this.remarks = remarks;
 		this.soInsPayCategory = soInsPayCategory;
-		this.multiple = multiple ? 1: 0;
+		if (multiple != null){
+			this.multiple = multiple ? 1: 0;
+		}
 	}
 	/**
 	 * createAfterChildbirth
@@ -152,11 +154,15 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 		this.tempAbsFrameNo = tempAbsFrameNo;
 		this.remarks = remarks;
 		this.soInsPayCategory = soInsPayCategory;
-		this.sameFamily = sameFamily ? 1: 0;
+		if (sameFamily != null){
+			this.sameFamily = sameFamily ? 1: 0;
+		}
 		this.childType = childType;
 		this.familyMemberId = familyMemberId;
 		this.createDate = createDate;
-		this.spouseIsLeave = spouseIsLeave ? 1 : 0;
+		if (spouseIsLeave != null){
+			this.spouseIsLeave = spouseIsLeave ? 1 : 0;
+		}
 	}
 	/**
 	 * createCareHoliday
@@ -174,8 +180,12 @@ public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
 		this.sid = employeeId;
 		this.tempAbsFrameNo = tempAbsFrameNo;
 		this.remarks = remarks;
-		this.soInsPayCategory = soInsPayCategory;
-		this.sameFamily = sameFamily ? 1: 0;
+		if (soInsPayCategory != null){
+			this.soInsPayCategory = soInsPayCategory;
+		}
+		if (sameFamily != null){
+			this.sameFamily = sameFamily ? 1: 0;
+		}
 		this.familyMemberId = familyMemberId;
 		this.sameFamilyDays = sameFamilyDays;
 	}

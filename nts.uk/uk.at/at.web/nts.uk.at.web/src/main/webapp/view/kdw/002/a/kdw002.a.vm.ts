@@ -28,7 +28,7 @@ module nts.uk.at.view.kdw002.a {
                     var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
                     self.txtItemName(attendanceItem.attendanceItemName);
                     // self.txtItemName(cAttendanceItem.attandanceItemName);
-                    if (attendanceItem.dailyAttendanceAtr == 6) {
+                    if (attendanceItem.dailyAttendanceAtr == 5) {
                         self.unitRoundings([
                             { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
                             { timeInputValue: 3, timeInputName: '15分' }, { timeInputValue: 4, timeInputName: '30分' }
