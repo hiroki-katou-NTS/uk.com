@@ -128,7 +128,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         clear():void{
             let self = this;
             self.listWorkTimeComboBox([]);
-            self. findDataForComboBox();
+            self.listWorkTimeComboBox(self.listWorkTime());
         }
         /**
          * Get data workType-workTime for 2 combo-box
