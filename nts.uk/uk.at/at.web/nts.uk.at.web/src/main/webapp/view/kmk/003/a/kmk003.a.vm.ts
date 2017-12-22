@@ -54,7 +54,7 @@ module nts.uk.at.view.kmk003.a {
 
             //tab mode
             tabModeOptions: KnockoutObservableArray<any>;
-            tabMode: KnockoutObservable<string>;
+            tabMode: KnockoutObservable<number>;
 
             //use half day
             useHalfDayOptions: KnockoutObservableArray<any>;
@@ -114,11 +114,11 @@ module nts.uk.at.view.kmk003.a {
 
                 //tab mode
                 self.tabModeOptions = ko.observableArray([
-                    { code: "1", name: nts.uk.resource.getText("KMK003_190") },
-                    { code: "2", name: nts.uk.resource.getText("KMK003_191") }
+                    { code: TabMode.SIMPLE, name: nts.uk.resource.getText("KMK003_190") },
+                    { code: TabMode.DETAIL, name: nts.uk.resource.getText("KMK003_191") }
                 ]);
 
-                self.tabMode = ko.observable("2");
+                self.tabMode = ko.observable(TabMode.DETAIL);
 
                 //use half day
 
@@ -310,6 +310,11 @@ module nts.uk.at.view.kmk003.a {
             FIXED,
             DIFFTIME,
             FLOW
+        }
+        
+        export enum TabMode {
+            SIMPLE,
+            DETAIL
         }
     }
 }
