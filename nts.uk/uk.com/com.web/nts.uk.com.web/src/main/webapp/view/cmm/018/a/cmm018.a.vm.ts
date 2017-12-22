@@ -594,6 +594,7 @@ module nts.uk.com.view.cmm018.a {
                         self.cpA([]);
                         self.enableRegister(false);
                         self.enableDelete(false);
+                        self.lstPerson(data.lstPerson);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
