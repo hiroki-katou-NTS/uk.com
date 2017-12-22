@@ -187,7 +187,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 		Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,baseDate);
 		
-		if(!personalLablorCodition.isPresent()){
+		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
 			if(!CollectionUtil.isEmpty(workTypes)){
 				workTypeAndSiftType.setWorkType(workTypes.get(0));
 			}
