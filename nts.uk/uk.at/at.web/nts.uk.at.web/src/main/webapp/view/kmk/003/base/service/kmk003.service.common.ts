@@ -270,6 +270,12 @@ module nts.uk.at.view.kmk003.a {
                     flowWorkSetting: flowset.FlWorkSettingDto;
                     diffTimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
                 }
+                
+                export interface FixedWorkTimezoneSetDto {
+                    lstWorkingTimezone: EmTimeZoneSetDto[];
+                    lstOTTimezone: OverTimeOfTimeZoneSetDto[];
+                }
+
             }
         }
     }

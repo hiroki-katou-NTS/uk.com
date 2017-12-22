@@ -42,6 +42,7 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkRestTimezoneDto = service.model.common.FlowWorkRestTimezoneDto;
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
     import FixedWorkRestSetDto = service.model.common.FixedWorkRestSetDto;
+    import FixedWorkTimezoneSetDto = service.model.common.FixedWorkTimezoneSetDto;
 
     export module viewmodel {
         export module common {
@@ -1303,6 +1304,67 @@ module nts.uk.at.view.kmk003.a {
                     let dataDTO: FixedWorkRestSetDto = {
                         commonRestSet: this.commonRestSet.toDto(),
                         fixedRestCalculateMethod: this.fixedRestCalculateMethod()
+                    };
+                    return dataDTO;
+                }
+            }
+            
+             export class FixedWorkTimezoneSetModel {
+                lstWorkingTimezone: common.EmTimeZoneSetModel[];
+                lstOTTimezone: common.OverTimeOfTimeZoneSetModel[];
+                
+                constructor() {
+                    this.lstWorkingTimezone = [];
+                    this.lstOTTimezone = [];
+                }
+                
+                updateData(data: FixedWorkTimezoneSetDto) {
+                    this.updateWorkingTimezone(data.lstWorkingTimezone);                
+                    this.updateOvertimeZone(data.lstOTTimezone);
+                }
+                
+                updateOvertimeZone(lstOTTimezone: OverTimeOfTimeZoneSetDto[]) {
+                    for (var dataDTO of lstOTTimezone) {
+                        var dataModel: OverTimeOfTimeZoneSetModel = this.getOvertimeZoneByWorkTimezoneNo(dataDTO.workTimezoneNo);
+                        if (dataModel) {
+                            dataModel.updateData(dataDTO);
+                        }
+                        else {
+                            dataModel = new OverTimeOfTimeZoneSetModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstOTTimezone.push(dataModel);
+                        }
+                    }
+                }
+                
+                getOvertimeZoneByWorkTimezoneNo(workTimezoneNo: number) {
+                    return _.find(this.lstOTTimezone, timezone => timezone.workTimezoneNo() == workTimezoneNo);
+                }
+                
+                updateWorkingTimezone(lstWorkingTimezone: EmTimeZoneSetDto[]){
+                    for(var dataDTO of lstWorkingTimezone){
+                        var dataModel: EmTimeZoneSetModel = this.getWorkingTimezoneByEmploymentTimeFrameNo(dataDTO.employmentTimeFrameNo);
+                        if(dataModel){
+                            dataModel.updateData(dataDTO);    
+                        }
+                        else {
+                            dataModel = new EmTimeZoneSetModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstWorkingTimezone.push(dataModel);    
+                        }
+                    }
+                }
+                
+                getWorkingTimezoneByEmploymentTimeFrameNo(employmentTimeFrameNo: number) {
+                    return _.find(this.lstWorkingTimezone, workingtimezone => workingtimezone.employmentTimeFrameNo() == employmentTimeFrameNo);
+                }
+                toDto(): FixedWorkTimezoneSetDto {
+                    let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone, (dataModel) => dataModel.toDto());
+                    let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone, (dataModel) => dataModel.toDto());
+                    
+                    let dataDTO: FixedWorkTimezoneSetDto = {
+                        lstWorkingTimezone: lstWorkingTimezone,
+                        lstOTTimezone: lstOTTimezone
                     };
                     return dataDTO;
                 }
