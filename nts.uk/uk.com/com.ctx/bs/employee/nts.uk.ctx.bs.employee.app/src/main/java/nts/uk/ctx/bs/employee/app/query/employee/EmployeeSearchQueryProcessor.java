@@ -29,7 +29,11 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepositor
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -77,6 +81,12 @@ public class EmployeeSearchQueryProcessor {
 	@Inject
 	private AffWorkplaceHistoryRepository workplaceHistoryRepository;
 	
+	@Inject
+	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepo_v1;
+	
+	@Inject
+	private AffWorkplaceHistoryItemRepository_v1 affWorkplaceHistoryItemRepo_v1;
+	
 //	@Inject
 //	private EmpInDesignatedPub empInDesignatedPub;
 
@@ -99,12 +109,20 @@ public class EmployeeSearchQueryProcessor {
 			throw new BusinessException("Msg_317");
 		}
 
-		// get work place history by employee
-		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
-				.searchWorkplaceOfCompanyId(employeeIds, baseDate);
+		// get work place history by employee - old
+		//List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		//		.searchWorkplaceOfCompanyId(employeeIds, baseDate);
+		
+//		List<AffWorkplaceHistory_ver1> workplaceHistory = this.affWorkplaceHistoryRepo_v1.getWorkplaceHistoryByEmpIdsAndDate(baseDate, employeeIds);
+		List<AffWorkplaceHistoryItem> affWorkplaceHistoryItems = 
+				this.affWorkplaceHistoryItemRepo_v1.getAffWrkplaHistItemByListEmpIdAndDate(baseDate, employeeIds);
 
-		// check exist data work place
-		if (CollectionUtil.isEmpty(workplaceHistory)) {
+		// check exist data work place - old
+		//if (CollectionUtil.isEmpty(workplaceHistory)) {
+		//	throw new BusinessException("Msg_177");
+		//}
+		
+		if (CollectionUtil.isEmpty(affWorkplaceHistoryItems)) {
 			throw new BusinessException("Msg_177");
 		}
 
@@ -116,8 +134,13 @@ public class EmployeeSearchQueryProcessor {
 			return workplace.getWorkplaceId();
 		}, Function.identity()));
 
-		// to map work place history
-		Map<String, AffWorkplaceHistory> workplaceHistoryMap = workplaceHistory.stream()
+		// to map work place history - old
+		//Map<String, AffWorkplaceHistory> workplaceHistoryMap = workplaceHistory.stream()
+		//		.collect(Collectors.toMap((workplace) -> {
+		//			return workplace.getEmployeeId();
+		//		}, Function.identity()));
+		
+		Map<String, AffWorkplaceHistoryItem> workplaceHistoryItemMap = affWorkplaceHistoryItems.stream()
 				.collect(Collectors.toMap((workplace) -> {
 					return workplace.getEmployeeId();
 				}, Function.identity()));
@@ -134,16 +157,31 @@ public class EmployeeSearchQueryProcessor {
 		List<EmployeeSearchData> employeeSearchData = new ArrayList<>();
 
 		employeeDatas.forEach(employee -> {
-			// check exist data
-			if (workplaceHistoryMap.containsKey(employee.getEmployeeId()) && personMap.containsKey(employee.getPersonId())
-					&& workplaceMap.containsKey(workplaceHistoryMap.get(employee.getEmployeeId()).getWorkplaceId().v())) {
+			// check exist data - old
+//			if (workplaceHistoryMap.containsKey(employee.getEmployeeId()) && personMap.containsKey(employee.getPersonId())
+//					&& workplaceMap.containsKey(workplaceHistoryMap.get(employee.getEmployeeId()).getWorkplaceId().v())) {
+//
+//				// add to dto
+//				EmployeeSearchData dto = new EmployeeSearchData();
+//				dto.setEmployeeId(employee.getEmployeeId());
+//				dto.setEmployeeCode(employee.getEmployeeCode().v());
+//				dto.setEmployeeName(personMap.get(employee.getPersonId()).getPersonName());
+//				dto.setWorkplaceId(workplaceHistoryMap.get(employee.getEmployeeId()).getWorkplaceId().v());
+//
+//				dto.setWorkplaceCode(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceCode().v());
+//				dto.setWorkplaceName(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceName().v());
+//				employeeSearchData.add(dto);
+//			}
+			
+			if (workplaceHistoryItemMap.containsKey(employee.getEmployeeId()) && personMap.containsKey(employee.getPersonId())
+					&& workplaceMap.containsKey(workplaceHistoryItemMap.get(employee.getEmployeeId()).getWorkplaceId())) {
 
 				// add to dto
 				EmployeeSearchData dto = new EmployeeSearchData();
 				dto.setEmployeeId(employee.getEmployeeId());
 				dto.setEmployeeCode(employee.getEmployeeCode().v());
 				dto.setEmployeeName(personMap.get(employee.getPersonId()).getPersonName());
-				dto.setWorkplaceId(workplaceHistoryMap.get(employee.getEmployeeId()).getWorkplaceId().v());
+				dto.setWorkplaceId(workplaceHistoryItemMap.get(employee.getEmployeeId()).getWorkplaceId());
 
 				dto.setWorkplaceCode(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceCode().v());
 				dto.setWorkplaceName(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceName().v());
@@ -239,12 +277,19 @@ public class EmployeeSearchQueryProcessor {
 								.map(classification -> classification.getEmployeeId())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getJobTitleCodes());
-		// find by work place
-		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
-				.searchWorkplaceHistory(
+		// find by work place - old
+		//List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		//		.searchWorkplaceHistory(
+		//				jobTitleHistory.stream().map(jobtitle -> jobtitle.getEmployeeId())
+		//						.collect(Collectors.toList()),
+		//				input.getBaseDate(), input.getWorkplaceCodes());
+		
+		List<AffWorkplaceHistory_ver1> workplaceHistory = 
+				this.affWorkplaceHistoryRepo_v1.getWorkplaceHistoryByWkpIdsAndEmpIdsAndDate(
+						input.getBaseDate(),
 						jobTitleHistory.stream().map(jobtitle -> jobtitle.getEmployeeId())
 								.collect(Collectors.toList()),
-						input.getBaseDate(), input.getWorkplaceCodes());
+						input.getWorkplaceCodes());
 		// to employees
 		List<EmployeeDataMngInfo> employeeDatas = this.employeeRepository.findByListEmployeeId(companyId,
 				workplaceHistory.stream().map(workplace -> workplace.getEmployeeId())
@@ -272,9 +317,12 @@ public class EmployeeSearchQueryProcessor {
 
 		// get employee id
 		String employeeId = loginUserContext.employeeId();
-
-		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
-				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
+		
+		// old
+		//List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		//		.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
+		
+		List<AffWorkplaceHistory_ver1> workplaceHistory = this.affWorkplaceHistoryRepo_v1.getWorkplaceHistoryByEmployeeIdAndDate(baseDate, employeeId);
 
 		// check exist data
 		if (CollectionUtil.isEmpty(workplaceHistory)) {
@@ -305,26 +353,44 @@ public class EmployeeSearchQueryProcessor {
 		// get employee id
 		String employeeId = loginUserContext.employeeId();
 
-		// get data work place history
-		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
-				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
+		// get data work place history - old
+		//List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		//		.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
+		
+		List<AffWorkplaceHistoryItem> affWorkplaceHistoryItems = 
+				this.affWorkplaceHistoryItemRepo_v1.getAffWrkplaHistItemByEmpIdAndDate(baseDate, employeeId);
 
-		// check exist data
-		if (CollectionUtil.isEmpty(workplaceHistory)) {
+		// check exist data - old
+		//if (CollectionUtil.isEmpty(workplaceHistory)) {
+		//	throw new BusinessException("Msg_177");
+		//}
+		
+		if (CollectionUtil.isEmpty(affWorkplaceHistoryItems)) {
 			throw new BusinessException("Msg_177");
 		}
 
-		// get data child
+		// get data child - old
 		List<WorkplaceHierarchy> workPlaceHierarchies = new ArrayList<>();
-		workplaceHistory.forEach(work -> {
+		//workplaceHistory.forEach(work -> {
+		//	workPlaceHierarchies.addAll(this.workplaceConfigInfoRepo
+		//			.findAllByParentWkpId(companyId, baseDate, work.getWorkplaceId().v()).get()
+		//			.getLstWkpHierarchy());
+		//});
+		affWorkplaceHistoryItems.forEach(work -> {
 			workPlaceHierarchies.addAll(this.workplaceConfigInfoRepo
-					.findAllByParentWkpId(companyId, baseDate, work.getWorkplaceId().v()).get()
+					.findAllByParentWkpId(companyId, baseDate, work.getWorkplaceId()).get()
 					.getLstWkpHierarchy());
 		});
-
-		workplaceHistory = this.workplaceHistoryRepository.searchWorkplaceHistory(baseDate,
+		
+		// old
+		//workplaceHistory = this.workplaceHistoryRepository.searchWorkplaceHistory(baseDate,
+		//		workPlaceHierarchies.stream().map(workplace -> workplace.getWorkplaceId())
+		//				.collect(Collectors.toList()));
+		
+		List<AffWorkplaceHistory_ver1> workplaceHistory = this.affWorkplaceHistoryRepo_v1.getWorkplaceHistoryByWkpIdsAndDate(baseDate,
 				workPlaceHierarchies.stream().map(workplace -> workplace.getWorkplaceId())
 						.collect(Collectors.toList()));
+		
 		// return data
 		return this.toEmployee(baseDate, workplaceHistory.stream()
 				.map(workplace -> workplace.getEmployeeId()).collect(Collectors.toList()),
@@ -345,12 +411,16 @@ public class EmployeeSearchQueryProcessor {
 		// get employee id
 		String employeeId = loginUserContext.employeeId();
 
-		// get data work place history
-		List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
-				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
-
-		// return data
-		return workplaceHistory.stream().map(workplace -> workplace.getWorkplaceId().v())
+		// get data work place history - old
+		//List<AffWorkplaceHistory> workplaceHistory = this.workplaceHistoryRepository
+		//		.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
+		
+		List<AffWorkplaceHistoryItem> workplaceHistoryItem = this.affWorkplaceHistoryItemRepo_v1.getAffWrkplaHistItemByEmpIdAndDate(baseDate,employeeId);
+		
+		// return data - old
+		//return workplaceHistory.stream().map(workplace -> workplace.getWorkplaceId().v())
+		//		.collect(Collectors.toList());
+		return workplaceHistoryItem.stream().map(workplace -> workplace.getWorkplaceId())
 				.collect(Collectors.toList());
 	}
 
@@ -403,9 +473,15 @@ public class EmployeeSearchQueryProcessor {
 					return person.getPersonId();
 				}, Function.identity()));
 
-		// get map work place history
-		Map<String, AffWorkplaceHistory> mapWorkplaceHistory = this.workplaceHistoryRepository
-				.searchWorkplaceOfCompanyId(query.getEmployeeIds(), query.getBaseDate()).stream()
+		// get map work place history - old
+//		Map<String, AffWorkplaceHistory> mapWorkplaceHistory = this.workplaceHistoryRepository
+//				.searchWorkplaceOfCompanyId(query.getEmployeeIds(), query.getBaseDate()).stream()
+//				.collect(Collectors.toMap((workplace) -> {
+//					return workplace.getEmployeeId();
+//				}, Function.identity()));
+		
+		Map<String, AffWorkplaceHistoryItem> mapWorkplaceHistoryItem = 
+				this.affWorkplaceHistoryItemRepo_v1.getAffWrkplaHistItemByListEmpIdAndDate(query.getBaseDate(), query.getEmployeeIds()).stream()
 				.collect(Collectors.toMap((workplace) -> {
 					return workplace.getEmployeeId();
 				}, Function.identity()));
@@ -442,11 +518,19 @@ public class EmployeeSearchQueryProcessor {
 				data.setEmployeeName(personMap.get(employeeData.getPersonId()).getPersonName());
 			}
 
-			// check exist work place history
-			if (mapWorkplaceHistory.containsKey(employeeData.getEmployeeId()) && mapWorkplace.containsKey(
-					(mapWorkplaceHistory.get(employeeData.getEmployeeId()).getWorkplaceId().v()))) {
-				AffWorkplaceHistory workplaceHistory = mapWorkplaceHistory.get(employeeData.getEmployeeId());
-				WorkplaceInfo workplace = mapWorkplace.get(workplaceHistory.getWorkplaceId());
+			// check exist work place history - old
+			//if (mapWorkplaceHistory.containsKey(employeeData.getEmployeeId()) && mapWorkplace.containsKey(
+			//		(mapWorkplaceHistory.get(employeeData.getEmployeeId()).getWorkplaceId().v()))) {
+			//	AffWorkplaceHistory workplaceHistory = mapWorkplaceHistory.get(employeeData.getEmployeeId());
+			//	WorkplaceInfo workplace = mapWorkplace.get(workplaceHistory.getWorkplaceId());
+			//	data.setWorkplaceId(workplace.getWorkplaceId());
+			//	data.setWorkplaceCode(workplace.getWorkplaceCode().v());
+			//	data.setWorkplaceName(workplace.getWorkplaceName().v());
+			//}
+			if (mapWorkplaceHistoryItem.containsKey(employeeData.getEmployeeId()) && mapWorkplace.containsKey(
+					(mapWorkplaceHistoryItem.get(employeeData.getEmployeeId()).getWorkplaceId()))) {
+				AffWorkplaceHistoryItem workplaceHistoryItem = mapWorkplaceHistoryItem.get(employeeData.getEmployeeId());
+				WorkplaceInfo workplace = mapWorkplace.get(workplaceHistoryItem.getWorkplaceId());
 				data.setWorkplaceId(workplace.getWorkplaceId());
 				data.setWorkplaceCode(workplace.getWorkplaceCode().v());
 				data.setWorkplaceName(workplace.getWorkplaceName().v());

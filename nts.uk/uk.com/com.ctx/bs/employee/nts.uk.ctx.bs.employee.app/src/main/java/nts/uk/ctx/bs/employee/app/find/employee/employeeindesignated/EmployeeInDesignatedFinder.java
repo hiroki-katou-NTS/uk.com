@@ -17,9 +17,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
-import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
@@ -27,7 +27,11 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -43,7 +47,13 @@ public class EmployeeInDesignatedFinder {
 	/** The aff workplace history repo. */
 	@Inject
 	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepo;
-
+	
+	@Inject
+	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepo_ver1;
+	
+	@Inject
+	private AffWorkplaceHistoryItemRepository_v1 affWorkplaceHistoryItemRepo_v1;
+	
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataRepo;
 	
@@ -89,15 +99,23 @@ public class EmployeeInDesignatedFinder {
 		// Employee Id List from Employees In Designated
 		List<String> empIdList = empListInDesignated.stream().map(EmployeeInDesignatedDto::getEmployeeId)
 				.collect(Collectors.toList());
-		// Get All AffWorkplaceHistory
-		List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo
-				.searchWorkplaceOfCompanyId(empIdList, input.getReferenceDate());
-		if (CollectionUtil.isEmpty(affWorkplaceHistList)) {
+		
+		// Get All AffWorkplaceHistory - old
+		//List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo
+		//		.searchWorkplaceOfCompanyId(empIdList, input.getReferenceDate());
+		
+		List<AffWorkplaceHistoryItem> affWorkplaceHistItemList = 
+				this.affWorkplaceHistoryItemRepo_v1.getAffWrkplaHistItemByListEmpIdAndDate(input.getReferenceDate(),empIdList);
+		if (CollectionUtil.isEmpty(affWorkplaceHistItemList)) {
 			return Collections.emptyList();
 		}
-		// Get Workplace Id list from All AffWorkplaceHistory acquired above
-		List<String> workplaceList = affWorkplaceHistList.stream().map(a -> {
-			return a.getWorkplaceId().v();
+		// Get Workplace Id list from All AffWorkplaceHistory acquired above - old
+		//List<String> workplaceList = affWorkplaceHistList.stream().map(a -> {
+		//	return a.getWorkplaceId().v();
+		//}).collect(Collectors.toList());
+		
+		List<String> workplaceList = affWorkplaceHistItemList.stream().map(a -> {
+			return a.getWorkplaceId();
 		}).collect(Collectors.toList());
 
 		// List WorkplaceInfo
@@ -122,24 +140,51 @@ public class EmployeeInDesignatedFinder {
 				}).findFirst().orElse(null);
 			}
 
-			// Get AffWorkplaceHistory
-			AffWorkplaceHistory affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
+			// Get AffWorkplaceHistory - old
+			//AffWorkplaceHistory affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
+			//return employeeInfo.getEmployeeId().equals(aff.getEmployeeId());
+			//}).findFirst().orElse(null);
+			
+			// update use AffWorkplaceHistory_ver1
+			List<AffWorkplaceHistory_ver1> affWorkplaceHistList = 
+					this.affWorkplaceHistoryRepo_ver1.getWorkplaceHistoryByEmpIdsAndDate(input.getReferenceDate(), empIdList);
+			
+			AffWorkplaceHistory_ver1 affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
 				return employeeInfo.getEmployeeId().equals(aff.getEmployeeId());
 			}).findFirst().orElse(null);
-
-			// Get WorkplaceInfo
+			
+			AffWorkplaceHistoryItem affWkpHistItem = 
+					this.affWorkplaceHistoryItemRepo_v1.getByHistId(affWkpHist.getHistoryItems().get(0).identifier()).get();
+			// Get WorkplaceInfo - old
+//			WorkplaceInfo wkpInfo = workplaceInfoList.stream().filter(wkp -> {
+//				return affWkpHist.getWorkplaceId().v() == wkp.getWorkplaceId();
+//			}).findFirst().orElse(null);
+			
 			WorkplaceInfo wkpInfo = workplaceInfoList.stream().filter(wkp -> {
-				return affWkpHist.getWorkplaceId().v() == wkp.getWorkplaceId();
+				return affWkpHistItem.getWorkplaceId() == wkp.getWorkplaceId();
 			}).findFirst().orElse(null);
 
-			// Employee Data
+			// Employee Data - old
+//			EmployeeSearchOutput empData = EmployeeSearchOutput.builder().employeeId(employeeInfo.getEmployeeId())
+//					.employeeCode((employeeInfo.getEmployeeCode() == null) ? null : employeeInfo.getEmployeeCode().v())
+//					.employeeName((person == null || person.getPersonNameGroup() == null
+//							|| (person.getPersonNameGroup().getPersonName() == null)) ? null
+//									: person.getPersonNameGroup().getPersonName().getFullName().v())
+//					.workplaceId(affWkpHist == null || (affWkpHist.getWorkplaceId() == null) ? null
+//							: affWkpHist.getWorkplaceId().v())
+//					.workplaceCode((wkpInfo == null) || (wkpInfo.getWorkplaceCode() == null) ? null
+//							: wkpInfo.getWorkplaceCode().v())
+//					.workplaceName((wkpInfo == null) || (wkpInfo.getWorkplaceName() == null) ? null
+//							: wkpInfo.getWorkplaceName().v())
+//					.build();
+			
 			EmployeeSearchOutput empData = EmployeeSearchOutput.builder().employeeId(employeeInfo.getEmployeeId())
 					.employeeCode((employeeInfo.getEmployeeCode() == null) ? null : employeeInfo.getEmployeeCode().v())
 					.employeeName((person == null || person.getPersonNameGroup() == null
 							|| (person.getPersonNameGroup().getPersonName() == null)) ? null
 									: person.getPersonNameGroup().getPersonName().getFullName().v())
-					.workplaceId(affWkpHist == null || (affWkpHist.getWorkplaceId() == null) ? null
-							: affWkpHist.getWorkplaceId().v())
+					.workplaceId(affWkpHistItem == null || (affWkpHistItem.getWorkplaceId() == null) ? null
+							: affWkpHistItem.getWorkplaceId())
 					.workplaceCode((wkpInfo == null) || (wkpInfo.getWorkplaceCode() == null) ? null
 							: wkpInfo.getWorkplaceCode().v())
 					.workplaceName((wkpInfo == null) || (wkpInfo.getWorkplaceName() == null) ? null
@@ -163,14 +208,20 @@ public class EmployeeInDesignatedFinder {
 	 */
 	public List<EmployeeInDesignatedDto> getEmpInDesignated(List<String> workplaceIds, GeneralDate referenceDate,
 			List<Integer> empStatus) {
-		List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo.getByWorkplaceIDs(workplaceIds,
-				referenceDate);
+		//old
+		//List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo.getByWorkplaceIDs(workplaceIds,
+		//		referenceDate);
+		
+		List<AffWorkplaceHistory_ver1> affWorkplaceHistList = this.affWorkplaceHistoryRepo_ver1.getWorkplaceHistoryByWkpIdsAndDate(referenceDate, workplaceIds);
 		// check exist data
 		if (CollectionUtil.isEmpty(affWorkplaceHistList)) {
 			Collections.emptyList();
 		}
-		// Get List of Employee Id
-		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory::getEmployeeId)
+		// Get List of Employee Id - old
+		//List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory::getEmployeeId)
+		//		.collect(Collectors.toList());
+		
+		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory_ver1::getEmployeeId)
 				.collect(Collectors.toList());
 		// Output List
 		List<EmploymentStatusDto> employmentStatus =  this.getStatusOfEmployments(empIdList,
