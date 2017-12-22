@@ -54,7 +54,7 @@ module nts.uk.com.view.ccg026.component {
 
                 service.getListOfDescriptionFunctionPermission(self.setting.classification)
                     .done((dataDescriptions: Array<model.IFunctionPermission>) => {
-                        dataDescriptions = _.orderBy(dataDescriptions, ['assignAtr', 'functionNo'], ['asc', 'asc']);
+                        dataDescriptions = _.orderBy(dataDescriptions, ['assignAtr', 'displayOrder'], ['asc', 'asc']);
                         for (var i = 0, len = dataDescriptions.length; i < len; i++) {
                             self.listPermissions.push(new model.FunctionPermission
                                 ({

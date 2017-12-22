@@ -49,9 +49,9 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		Boolean multiple = ent.multiple == null ? null : ent.multiple == 1;
 		Boolean sameFamily = ent.sameFamily == null ? null : ent.sameFamily == 1;
 		Boolean spouseIsLeave = ent.spouseIsLeave == null ? null : ent.spouseIsLeave == 1;
-		return TempAbsenceHisItem.createTempAbsenceHisItem(ent.tempAbsFrameNo, ent.histId, ent.sid,
-				ent.remarks, Integer.valueOf(ent.soInsPayCategory), multiple, ent.familyMemberId, sameFamily,
-				ent.childType, ent.createDate, spouseIsLeave, ent.sameFamilyDays);
+		return TempAbsenceHisItem.createTempAbsenceHisItem(ent.tempAbsFrameNo, ent.histId, ent.sid, ent.remarks,
+				ent.soInsPayCategory, multiple, ent.familyMemberId, sameFamily, ent.childType, ent.createDate,
+				spouseIsLeave, ent.sameFamilyDays);
 	}
 
 	@Override
