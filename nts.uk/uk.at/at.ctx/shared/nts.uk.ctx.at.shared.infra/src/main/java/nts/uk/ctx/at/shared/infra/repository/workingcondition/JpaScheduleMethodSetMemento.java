@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethodSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
@@ -53,8 +55,14 @@ public class JpaScheduleMethodSetMemento implements ScheduleMethodSetMemento {
 	 * WorkScheduleBusCal)
 	 */
 	@Override
-	public void setWorkScheduleBusCal(WorkScheduleBusCal workScheduleBusCal) {
-		workScheduleBusCal.saveToMemento(new JpaWorkScheduleBusCalSetMemento(this.entity));
+	public void setWorkScheduleBusCal(Optional<WorkScheduleBusCal> workScheduleBusCal) {
+		if (!workScheduleBusCal.isPresent()) {
+			this.entity.setRefBusinessDayCalendar(null);
+			this.entity.setRefBasicWork(null);
+			this.entity.setRefWorkingHours(null);
+			return;
+		}
+		workScheduleBusCal.get().saveToMemento(new JpaWorkScheduleBusCalSetMemento(this.entity));
 	}
 
 	/*
@@ -66,8 +74,13 @@ public class JpaScheduleMethodSetMemento implements ScheduleMethodSetMemento {
 	 */
 	@Override
 	public void setMonthlyPatternWorkScheduleCre(
-			MonthlyPatternWorkScheduleCre monthlyPatternWorkScheduleCre) {
-		monthlyPatternWorkScheduleCre
+			Optional<MonthlyPatternWorkScheduleCre> monthlyPatternWorkScheduleCre) {
+		if (!monthlyPatternWorkScheduleCre.isPresent()) {
+			this.entity.setMPatternWorkScheCreate(null);
+			return;
+		}
+
+		monthlyPatternWorkScheduleCre.get()
 				.saveToMemento(new JpaMPatternWorkScheCreSetMemento(this.entity));
 	}
 

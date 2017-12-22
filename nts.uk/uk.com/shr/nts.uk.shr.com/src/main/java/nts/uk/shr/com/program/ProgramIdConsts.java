@@ -342,6 +342,8 @@ public class ProgramIdConsts {
 
 	public static final String CPS005B = "CPS005B";
 	
+	public static final String CPS002A = "CPS002A";
+	
 	public static final String CPS002E = "CPS002E";
 	
 	public static final String CPS002F = "CPS002F";

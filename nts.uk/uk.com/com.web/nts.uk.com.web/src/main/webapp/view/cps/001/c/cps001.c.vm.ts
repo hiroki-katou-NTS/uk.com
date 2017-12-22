@@ -26,6 +26,8 @@ module cps001.c.vm {
 
             emp.id.subscribe(x => {
                 if (x) {
+                    self.enableControl();
+
                     let iem: IEmployee = _.find(self.listEmployee(), e => e.id == x);
 
                     service.getDetail(x).done((data: IEmployee) => {
@@ -36,8 +38,11 @@ module cps001.c.vm {
 
                             emp.reason(data.reason || '');
                             emp.dateDelete(data.dateDelete || undefined);
+                            $('#code').focus();
                         }
                     });
+                } else {
+                    self.newMode();
                 }
             });
 
@@ -51,7 +56,6 @@ module cps001.c.vm {
                 emp = self.currentEmployee();
 
             emps.removeAll();
-
             service.getData().done((data: Array<IEmployee>) => {
                 if (data && data.length) {
                     emps(data);
@@ -73,6 +77,7 @@ module cps001.c.vm {
                     self.newMode();
                 }
                 dfd.resolve();
+            }).fail(() => {
             });
             return dfd.promise();
         }
@@ -94,21 +99,24 @@ module cps001.c.vm {
                         code: emp.code,
                         name: emp.name
                     };
-
+                block();
                 service.restoreData(objToRestore).done(() => {
                     if (itemListLength === 1) {
                         self.start();
                     } else if (itemListLength - 1 === indexItemDelete) {
-                        self.start(listItem[indexItemDelete - 1].id).done(() => {
-                        });
+                        self.start(listItem[indexItemDelete - 1].id);
                     } else if (itemListLength - 1 > indexItemDelete) {
-                        self.start(listItem[indexItemDelete + 1].id).done(() => {
-                        });
+                        self.start(listItem[indexItemDelete + 1].id);
                     }
+
+                    unblock();
+
+                }).fail((mes) => {
+                    unblock();
                 });
 
             }).ifCancel(() => {
-
+                unblock();
             });
         }
 
@@ -124,6 +132,7 @@ module cps001.c.vm {
 
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let sid = emp.id;
+                block();
                 service.removedata(sid).done(() => {
                     showDialog.info({ messageId: "Msg_464" }).then(function() {
                         let itemListLength = self.listEmployee().length,
@@ -131,18 +140,19 @@ module cps001.c.vm {
                         if (itemListLength === 1) {
                             self.start();
                         } else if (itemListLength - 1 === indexItemDelete) {
-                            self.start(listItem[indexItemDelete - 1].id).done(() => {
-                            });
+                            self.start(listItem[indexItemDelete - 1].id);
                         } else if (itemListLength - 1 > indexItemDelete) {
-                            self.start(listItem[indexItemDelete + 1].id).done(() => {
-                            });
+                            self.start(listItem[indexItemDelete + 1].id);
                         }
+                        unblock();
                     });
 
 
+                }).fail((mes) => {
+                    unblock();
                 });
             }).ifCancel(() => {
-
+                unblock();
             });
         }
 
@@ -164,6 +174,19 @@ module cps001.c.vm {
             self.enaBtnRes(false);
             self.enaBtnDel(false);
         }
+
+        enableControl() {
+            let self = this,
+                emps = self.listEmployee(),
+                emp = self.currentEmployee();
+
+            emp.enableCode(true);
+            emp.enableName(true);
+            self.enaBtnRes(true);
+            self.enaBtnDel(true);
+        }
+
+
     }
 
     interface IEmployee {

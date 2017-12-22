@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
@@ -60,17 +61,9 @@ public class InitValueSetItemFinder {
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
 		// set item SAMEASLOGIN
-		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
 
-			if (categoryCd.charAt(1) == 'S') {
+		setItemSameLogin(itemList, result);
 
-				setSystemLoginData(result);
-
-			}
-
-			setOptinalLoginData(result);
-
-		}
 		// set item
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYEECODE, command.getEmployeeCode());
@@ -80,6 +73,19 @@ public class InitValueSetItemFinder {
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
 
 		return result;
+	}
+
+	private void setItemSameLogin(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
+		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
+
+			if (categoryCd.charAt(1) == 'S') {
+
+				setSystemLoginData(itemList, result);
+
+			}
+
+			setOptinalLoginData(itemList, result);
+		}
 	}
 
 	private void setDataByRefType(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result,
@@ -115,57 +121,66 @@ public class InitValueSetItemFinder {
 		}
 	}
 
-	private void setOptinalLoginData(List<SettingItemDto> result) {
+	private void setOptinalLoginData(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
 
 		List<SettingItemDto> optList = this.infoItemDataFinder.loadInfoItemDataList(categoryCd,
 				AppContexts.user().companyId(), employeeId);
 
-		optList.forEach(itemDto -> {
-			Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
+		itemList.stream().filter(x -> x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
+				.collect(Collectors.toList()).forEach(x -> {
+					Optional<SettingItemDto> itemDtoOpt = result.stream()
+							.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+					if (itemDtoOpt.isPresent()) {
+						Optional<SettingItemDto> itemDataOpt = optList.stream()
+								.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+						if (itemDataOpt.isPresent()) {
+							itemDtoOpt.get().setData(itemDataOpt.get().getValueAsString());
+						}
 
-					x -> x.getItemCode().equals(itemDto.getItemCode())).findFirst();
-
-			if (itemInfoOpt.isPresent()) {
-				SettingItemDto itemInfo = itemInfoOpt.get();
-
-				itemInfo.setData(itemDto.getValueAsString());
-			}
-
-		});
+					}
+				});
 
 	}
 
-	private void setSystemLoginData(List<SettingItemDto> result) {
+	private void setSystemLoginData(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
 
 		if (dto != null) {
 			Map<String, Object> dataMap = MappingFactory.getFullDtoValue(dto);
+			if (!dataMap.isEmpty()) {
 
-			dataMap.forEach((k, v) -> {
+				itemList.stream().filter(x -> x.getRefMethodType().equals(ReferenceMethodType.SAMEASLOGIN))
+						.collect(Collectors.toList()).forEach(x -> {
+							Optional<SettingItemDto> itemDtoOpt = result.stream()
+									.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
+							if (itemDtoOpt.isPresent()) {
+								Object value = dataMap.get(itemDtoOpt.get().getItemCode());
+								if (value != null) {
+									itemDtoOpt.get().setData(value.toString());
+								}
+							}
+						});
 
-				Optional<SettingItemDto> itemInfoOpt = result.stream().filter(
-
-						x -> x.getItemCode().equals(k)).findFirst();
-
-				if (itemInfoOpt.isPresent()) {
-					SettingItemDto itemInfo = itemInfoOpt.get();
-
-					itemInfo.setData(v != null ? v.toString() : "");
-				}
-
-			});
+			}
 		}
 	}
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
 
-		return SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
+		int dataType = domain.getDataType();
+
+		SettingItemDto itemDto = SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
 				domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
-				domain.getStringValue().v(), domain.getDataType(),
-				BigDecimal.valueOf(domain.getSelectionItemRefType()));
+				domain.getStringValue().v(), dataType, BigDecimal.valueOf(domain.getSelectionItemRefType()),
+				domain.getItemParentCd());
+
+		if (dataType == DataTypeValue.SELECTION.value) {
+
+		}
+		return itemDto;
 	}
 
 	private boolean isHaveItemRefType(List<PerInfoInitValueSetItem> listItem, ReferenceMethodType methodType) {

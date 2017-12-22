@@ -1,7 +1,12 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -16,6 +21,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
 			+ " WHERE aw.hisId = :historyId";
 	
+	/** The Constant SELECT_BY_HISTIDS. */
+	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
+			+ " WHERE aw.hisId IN :historyId";
+	
+	private static final String SELECT_BY_WPLIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
+			+ " WHERE aw.workPlaceId IN :wplIds";
 	/**
 	 * Convert from entity to domain
 	 * 
@@ -79,6 +90,20 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	public Optional<AffWorkplaceHistoryItem> getByHistId(String historyId) {
 		return this.queryProxy().query(SELECT_BY_HISTID, BsymtAffiWorkplaceHistItem.class)
 				.setParameter("historyId", historyId).getSingle(x -> toDomain(x));
+	}
+
+	@Override
+	public List<AffWorkplaceHistoryItem> findByHistIds(List<String> hisIds) {
+		return this.queryProxy().query(SELECT_BY_HISTIDS, BsymtAffiWorkplaceHistItem.class)
+				.setParameter("historyId", hisIds).getList().stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AffWorkplaceHistoryItem> findeByWplIDs(List<String> wplIDs) {
+		return this.queryProxy().query(SELECT_BY_WPLIDS, BsymtAffiWorkplaceHistItem.class)
+				.setParameter("wplIds", wplIDs).getList().stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
 	}
 
 }

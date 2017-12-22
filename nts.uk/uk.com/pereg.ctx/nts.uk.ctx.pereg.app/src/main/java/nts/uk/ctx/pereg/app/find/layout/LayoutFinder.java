@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
@@ -144,8 +145,13 @@ public class LayoutFinder {
 		String cid = AppContexts.user().companyId();
 		EmployeeDataMngInfo employee = employeeDataRepo.findByEmpId(browsingEmpId).get();
 		String browsingPeronId = employee.getPersonId();
-		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,browsingEmpId)
-				.getAffCompanyHistByEmployee(browsingEmpId);
+		
+		AffCompanyHist affCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,browsingEmpId);
+		if ( affCompanyHist == null ) {
+			throw new RuntimeException("Affliate Company Histoty can't be null!");
+		}
+		AffCompanyHistByEmployee employeeHistory = affCompanyHist.getAffCompanyHistByEmployee(browsingEmpId);
+		
 		// validate standard date
 		standardDate = validateStandardDate(standardDate, employeeHistory, result);
 

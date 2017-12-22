@@ -101,7 +101,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	private WorkingConditionItemService workingConditionItemService;
 
 	@Override
-	public void reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
+	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 			ExecutionType reCreateAttr) {
@@ -115,7 +115,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		// result data
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
-
+		
+		
+		
 		// after check 打刻反映時の出勤休日扱いチェック
 		// 終了状態：休日扱い - 休日系の打刻範囲を取得する
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
@@ -131,15 +133,10 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		createStampReflectRangeInaDay(stampReflectRangeOutput);
 
 		// 外出の打刻反映範囲を取得する
-		// StampReflectTimezoneOutput stampReflectGoLeaving =
-		// stampReflectRangeOutput.getLstStampReflectTimezone().stream().filter(item
-		// -> item.getWorkNo().v() == new BigDecimal(1) &&
-		// item.getClassification() == GoLeavingWorkAtr.GO_WORK)
-		// .findFirst().get();
 		stampReflectRangeOutput.setGoOut(stampReflectRangeOutput.getStampRange());
 		stampReflectRangeOutput.setTemporary(stampReflectRangeOutput.getStampRange());
 
-		// part of Dung - param : stampReflectRangeOutput
+		// 打刻を反映する - Dung code
 		List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput, reCreateAttr,
 				empCalAndSumExecLogID, processingDate, employeeID, companyID);
 		ReflectStampOutput reflectStamp = null;
@@ -152,6 +149,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// エラーチェック
 		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
 				timeLeavingOfDailyPerformance);
+		
+		return reflectStamp;
 	}
 
 	/*
@@ -259,15 +258,21 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				companyID, 3);
 		stampReflectOnHolidayOutPut.setStampReflectNextDay(stampNextDay);
 
-		// 前々日との関係から打刻反映範囲を補正
-		this.stampReflectCorrection(stampTwoDay);
-
-		// 前日との関係から打刻範囲範囲を補正
-		this.stampReflectCorrection(stampPreviousDay);
-
-		// 翌日との関係から打刻反映範囲を補正
-		this.nextDayCorrection(stampNextDay);
-
+		if(stampTwoDay != null){
+			// 前々日との関係から打刻反映範囲を補正
+			this.stampReflectCorrection(stampTwoDay);	
+		}
+		
+		if(stampPreviousDay != null){
+			// 前日との関係から打刻範囲範囲を補正
+			this.stampReflectCorrection(stampPreviousDay);			
+		}
+		
+		if (stampNextDay != null) {
+			// 翌日との関係から打刻反映範囲を補正
+			this.nextDayCorrection(stampNextDay);
+		}
+		
 		return stampReflectRangeOutput;
 	}
 
@@ -287,7 +292,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		WorkStyle workStyle = basicScheduleService
 				.checkWorkDay(workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v());
 
-		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
+		StampReflectRangeOutput stampReflectRangeOutput = null;
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
 			// get workTimeCode of processingDate
@@ -448,11 +453,11 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 
 		// 出勤系打刻漏れをチェックする
-		OutPutProcess outPutLackOfStamping = this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate);
+		OutPutProcess outPutLackOfStamping = this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
 
 		// 出勤系打刻順序不正をチェックする
 		OutPutProcess outPutIncorrectOrder = this.stampIncorrectOrderAlgorithm.stampIncorrectOrder(companyID,
-				employeeID, processingDate);
+				employeeID, processingDate, timeLeavingOfDailyPerformance);
 
 		// 出勤系二重打刻をチェックする
 		this.doubleStampAlgorithm.doubleStamp(companyID, employeeID, processingDate, timeLeavingOfDailyPerformance);

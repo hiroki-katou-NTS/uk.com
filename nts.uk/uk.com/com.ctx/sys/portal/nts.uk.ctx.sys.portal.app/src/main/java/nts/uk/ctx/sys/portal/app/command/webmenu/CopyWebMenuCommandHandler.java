@@ -29,6 +29,7 @@ public class CopyWebMenuCommandHandler extends CommandHandler<CopyWebMenuCommand
 		String companyId = AppContexts.user().companyId();
 
 		Optional<WebMenu> currentWebMenuOp = webMenuRepository.find(companyId, command.getCurrentWebMenuCode());
+		
 		if (!currentWebMenuOp.isPresent()) {
 			throw new RuntimeException("Error: web menu " + command.getCurrentWebMenuCode() + " not found");
 		}
@@ -41,9 +42,16 @@ public class CopyWebMenuCommandHandler extends CommandHandler<CopyWebMenuCommand
 		if (webMenu.isPresent()) {
 			if (!command.isAllowOverwrite()) {
 				throw new BusinessException("Msg_3");
-			}
-
-			webMenuRepository.update(newWebMenu);
+			} 
+			
+			Optional<WebMenu> tempCopy = webMenuRepository.find(companyId, command.getWebMenuCode());
+			
+			if(tempCopy.isPresent() && tempCopy.get().isDefault()) {
+				WebMenu newWebMenuWithDefault = new WebMenu(companyId, new WebMenuCode(command.getWebMenuCode()), new WebMenuName(command.getWebMenuName()), DefaultMenu.DefaultMenu, currentWebMenu.getMenuBars());
+				webMenuRepository.update(newWebMenuWithDefault);
+			} else {
+				webMenuRepository.update(newWebMenu);
+			}			
 		} else {
 			webMenuRepository.add(newWebMenu);
 		}

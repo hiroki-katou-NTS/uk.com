@@ -1,7 +1,9 @@
 package nts.uk.ctx.bs.employee.app.find.temporaryabsence;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +11,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -76,8 +80,16 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Optional<TempAbsenceHistory> history = tempAbsHistRepo.getByEmployeeIdDesc(AppContexts.user().companyId(),
+				query.getEmployeeId());
+		if (history.isPresent()) {
+			return history.get().getDateHistoryItems().stream()
+					.filter(item -> tempAbsItemRepo.getItemByHitoryID(item.identifier()).isPresent())
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
 }

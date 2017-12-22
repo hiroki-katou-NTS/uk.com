@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecordPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -68,8 +69,11 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	@Override
 	public void removeErrorAlarmWorkRecord(String code) {
+		KwrmtErAlWorkRecord targetEntity = this.queryProxy()
+				.find(new KwrmtErAlWorkRecordPK(AppContexts.user().companyId(), code), KwrmtErAlWorkRecord.class).get();
 		this.commandProxy().remove(KwrmtErAlWorkRecord.class,
 				new KwrmtErAlWorkRecordPK(AppContexts.user().companyId(), code));
+		this.commandProxy().remove(KrcmtErAlCondition.class, targetEntity.eralCheckId);
 	}
 
 }

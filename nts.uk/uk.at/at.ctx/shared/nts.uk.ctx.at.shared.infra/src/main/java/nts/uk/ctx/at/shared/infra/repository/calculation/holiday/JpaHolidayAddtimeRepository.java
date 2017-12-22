@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -10,14 +11,15 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtime;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtimeRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.IrregularWork;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.RegularWork;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstFlexWorkSetPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHolidayAddtimeSet;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHolidayAddtimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstIrregularWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstIrregularWorkSetPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstRegularWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstRegularWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHolidayAdditionSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHolidayAdditionSetPK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSetPK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSetPK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSetPK;
+
 
 @Stateless
 public class JpaHolidayAddtimeRepository extends JpaRepository implements HolidayAddtimeRepository {
@@ -26,7 +28,7 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KshstHolidayAddtimeSet e");
+		builderString.append(" FROM KshstHolidayAdditionSet e");
 		builderString.append(" WHERE e.kshstHolidayAddtimeSetPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 	}
@@ -36,11 +38,11 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 * @param holidayAddtimeSet
 	 * @return
 	 */
-	private HolidayAddtime convertToDomain(KshstHolidayAddtimeSet holidayAddtimeSet){
+	private HolidayAddtime convertToDomain(KshstHolidayAdditionSet holidayAddtimeSet){
 		
-//		RegularWork regularWork = convertToDomainRegularWork(holidayAddtimeSet.regularWorkSet);
-//		FlexWork flexWork = convertToDomainFlexWork(holidayAddtimeSet.flexWorkSet);
-//		IrregularWork irregularWork = convertToDomainIrregularWork(holidayAddtimeSet.irregularWorkSet);
+		RegularWork regularWork = convertToDomainRegularWork(holidayAddtimeSet.regularWorkSet);
+		FlexWork flexWork = convertToDomainFlexWork(holidayAddtimeSet.flexWorkSet);
+		IrregularWork irregularWork = convertToDomainIrregularWork(holidayAddtimeSet.irregularWorkSet);
 
 		HolidayAddtime addtime = HolidayAddtime.createFromJavaType(holidayAddtimeSet.kshstHolidayAddtimeSetPK.companyId, 
 				holidayAddtimeSet.referComHolidayTime,
@@ -52,9 +54,9 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 				holidayAddtimeSet.annualHoliday, 
 				holidayAddtimeSet.specialHoliday, 
 				holidayAddtimeSet.yearlyReserved, 
-				null, 
-				null, 
-				null);
+				regularWork, 
+				flexWork, 
+				irregularWork);
 		return addtime;
 	}
 	
@@ -63,16 +65,15 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 * @param regularWork
 	 * @return
 	 */
-	private KshstRegularWorkSet convertToDbTypeRegularWork(RegularWork regularWork) {
-			KshstRegularWorkSet kshstRegularWorkSet = new KshstRegularWorkSet();
-			KshstRegularWorkSetPK kshstRegularWorkSetPK = new KshstRegularWorkSetPK(regularWork.getCompanyId());
+	private KshstWorkRegularSet convertToDbTypeRegularWork(RegularWork regularWork) {
+			KshstWorkRegularSet kshstRegularWorkSet = new KshstWorkRegularSet();
+			KshstWorkRegularSetPK kshstRegularWorkSetPK = new KshstWorkRegularSetPK(regularWork.getCompanyId());
 				kshstRegularWorkSet.calcActualOperationPre = regularWork.getCalcActualOperationPre();
 				kshstRegularWorkSet.calcIntervalTimePre = regularWork.getCalcIntervalTimePre();
 				kshstRegularWorkSet.calcIncludCarePre = regularWork.getCalcIncludCarePre();
 				kshstRegularWorkSet.additionTimePre  = regularWork.getAdditionTimePre();
 				kshstRegularWorkSet.notDeductLateleavePre = regularWork.getNotDeductLateleavePre();
 				kshstRegularWorkSet.deformatExcValuePre = regularWork.getDeformatExcValuePre();
-				kshstRegularWorkSet.minusAbsenceTimeWork = regularWork.getMinusAbsenceTimeWork();
 				kshstRegularWorkSet.calcActualOperaWork = regularWork.getCalcActualOperaWork();
 				kshstRegularWorkSet.calcIncludCareWork = regularWork.getCalcIncludCareWork();
 				kshstRegularWorkSet.notDeductLateleaveWork = regularWork.getNotDeductLateleaveWork();
@@ -86,7 +87,7 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 * @param irregularWorkSet
 	 * @return
 	 */
-	private IrregularWork convertToDomainIrregularWork(KshstIrregularWorkSet irregularWorkSet) {
+	private IrregularWork convertToDomainIrregularWork(KshstWorkDepLaborSet irregularWorkSet) {
 		IrregularWork irregularWork = IrregularWork.createFromJavaType(irregularWorkSet.kshstIrregularWorkSetPK.companyId, 
 				irregularWorkSet.calcActualOperationPre, 
 				irregularWorkSet.calcIntervalTimePre, 
@@ -108,22 +109,20 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 * @param flexWorkSet
 	 * @return
 	 */
-	private FlexWork convertToDomainFlexWork(KshstFlexWorkSet flexWorkSet) {
+	private FlexWork convertToDomainFlexWork(KshstWorkFlexSet flexWorkSet) {
 		FlexWork flexWork = FlexWork.createFromJavaType(flexWorkSet.kshstFlexWorkSetPK.companyId, 
-				flexWorkSet.holidayCalcMethodSet, 
-				flexWorkSet.addWithMonthStatutory, 
 				flexWorkSet.calcActualOperationPre, 
 				flexWorkSet.calcIntervalTimePre, 
 				flexWorkSet.calcIncludCarePre, 
 				flexWorkSet.predExcessTimeflexPre, 
 				flexWorkSet.additionTimePre, 
 				flexWorkSet.notDeductLateleavePre, 
-				flexWorkSet.deformatExcValuePre, 
 				flexWorkSet.calsIntervalTimeWork, 
 				flexWorkSet.minusAbsenceTimeWork, 
 				flexWorkSet.calcActualOperaWork, 
 				flexWorkSet.calcIncludCareWork, 
-				flexWorkSet.notDeductLateleaveWork,  
+				flexWorkSet.notDeductLateleaveWork, 
+				flexWorkSet.predeterminDeficiency, 
 				flexWorkSet.additionTimeWork);
 		return flexWork;
 	}
@@ -133,7 +132,7 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 * @param regularWorkSet
 	 * @return
 	 */
-	private RegularWork convertToDomainRegularWork(KshstRegularWorkSet regularWorkSet) {
+	private RegularWork convertToDomainRegularWork(KshstWorkRegularSet regularWorkSet) {
 		RegularWork regularWork = RegularWork.createFromJavaType(regularWorkSet.kshstRegularWorkSetPK.companyId, 
 				regularWorkSet.calcActualOperationPre, 
 				regularWorkSet.calcIntervalTimePre, 
@@ -142,7 +141,6 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 				regularWorkSet.notDeductLateleavePre, 
 				regularWorkSet.deformatExcValuePre, 
 				regularWorkSet.calsIntervalTimeWork, 
-				regularWorkSet.minusAbsenceTimeWork, 
 				regularWorkSet.calcActualOperaWork, 
 				regularWorkSet.calcIncludCareWork, 
 				regularWorkSet.notDeductLateleaveWork, 
@@ -155,9 +153,9 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 * @param holidayAddtime
 	 * @return
 	 */
-	private KshstHolidayAddtimeSet convertToDbType(HolidayAddtime holidayAddtime){
-			KshstHolidayAddtimeSet kshstHolidayAddtimeSet = new KshstHolidayAddtimeSet();
-			KshstHolidayAddtimeSetPK kshstHolidayAddtimeSetPK = new KshstHolidayAddtimeSetPK(holidayAddtime.getCompanyId());
+	private KshstHolidayAdditionSet convertToDbType(HolidayAddtime holidayAddtime){
+			KshstHolidayAdditionSet kshstHolidayAddtimeSet = new KshstHolidayAdditionSet();
+			KshstHolidayAdditionSetPK kshstHolidayAddtimeSetPK = new KshstHolidayAdditionSetPK(holidayAddtime.getCompanyId());
 				kshstHolidayAddtimeSet.referComHolidayTime = holidayAddtime.getReferComHolidayTime();
 				kshstHolidayAddtimeSet.oneDay = holidayAddtime.getOneDay();
 				kshstHolidayAddtimeSet.morning = holidayAddtime.getMorning();
@@ -167,9 +165,9 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 				kshstHolidayAddtimeSet.annualHoliday = holidayAddtime.getAnnualHoliday();
 				kshstHolidayAddtimeSet.specialHoliday = holidayAddtime.getSpecialHoliday();
 				kshstHolidayAddtimeSet.yearlyReserved = holidayAddtime.getYearlyReserved();
-//				kshstHolidayAddtimeSet.regularWorkSet = convertToDbTypeRegularWork(holidayAddtime.getRegularWork());
-//				kshstHolidayAddtimeSet.flexWorkSet = convertToDbTypeFlexWork(holidayAddtime.getFlexWork());
-//				kshstHolidayAddtimeSet.irregularWorkSet = convertToDbTypeIrregularWork(holidayAddtime.getIrregularWork());
+				kshstHolidayAddtimeSet.regularWorkSet = convertToDbTypeRegularWork(holidayAddtime.getRegularWork());
+				kshstHolidayAddtimeSet.flexWorkSet = convertToDbTypeFlexWork(holidayAddtime.getFlexWork());
+				kshstHolidayAddtimeSet.irregularWorkSet = convertToDbTypeIrregularWork(holidayAddtime.getIrregularWork());
 				kshstHolidayAddtimeSet.kshstHolidayAddtimeSetPK = kshstHolidayAddtimeSetPK;
 		return kshstHolidayAddtimeSet;
 	} 
@@ -179,9 +177,9 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 * @param irregularWork
 	 * @return
 	 */
-	private KshstIrregularWorkSet convertToDbTypeIrregularWork(IrregularWork irregularWork) {
-			KshstIrregularWorkSet kshstIrregularWorkSet = new KshstIrregularWorkSet();
-			KshstIrregularWorkSetPK kshstIrregularWorkSetPK = new KshstIrregularWorkSetPK(irregularWork.getCompanyId());
+	private KshstWorkDepLaborSet convertToDbTypeIrregularWork(IrregularWork irregularWork) {
+			KshstWorkDepLaborSet kshstIrregularWorkSet = new KshstWorkDepLaborSet();
+			KshstWorkDepLaborSetPK kshstIrregularWorkSetPK = new KshstWorkDepLaborSetPK(irregularWork.getCompanyId());
 				kshstIrregularWorkSet.calcActualOperationPre = irregularWork.getCalcActualOperationPre();
 				kshstIrregularWorkSet.calcIntervalTimePre = irregularWork.getCalcIntervalTimePre();
 				kshstIrregularWorkSet.calcIncludCarePre = irregularWork.getCalcIncludCarePre();
@@ -203,21 +201,22 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 * @param flexWork
 	 * @return
 	 */
-	private KshstFlexWorkSet convertToDbTypeFlexWork(FlexWork flexWork) {
-			KshstFlexWorkSet kshstFlexWorkSet = new KshstFlexWorkSet();
-			KshstFlexWorkSetPK kshstFlexWorkSetPK = new KshstFlexWorkSetPK(flexWork.getCompanyId());
-				kshstFlexWorkSet.holidayCalcMethodSet = flexWork.getHolidayCalcMethodSet();
-				kshstFlexWorkSet.addWithMonthStatutory = flexWork.getAddWithMonthStatutory();
+	private KshstWorkFlexSet convertToDbTypeFlexWork(FlexWork flexWork) {
+			KshstWorkFlexSet kshstFlexWorkSet = new KshstWorkFlexSet();
+			KshstWorkFlexSetPK kshstFlexWorkSetPK = new KshstWorkFlexSetPK(flexWork.getCompanyId());
+				
 				kshstFlexWorkSet.calcActualOperationPre = flexWork.getCalcActualOperationPre();
 				kshstFlexWorkSet.calcIntervalTimePre = flexWork.getCalcIntervalTimePre();
 				kshstFlexWorkSet.calcIncludCarePre = flexWork.getCalcIncludCarePre();
+				kshstFlexWorkSet.predExcessTimeflexPre = flexWork.getPredExcessTimeflexPre();
 				kshstFlexWorkSet.additionTimePre  = flexWork.getAdditionTimePre();
 				kshstFlexWorkSet.notDeductLateleavePre = flexWork.getNotDeductLateleavePre();
-				kshstFlexWorkSet.deformatExcValuePre = flexWork.getDeformatExcValuePre();
+				kshstFlexWorkSet.calsIntervalTimeWork = flexWork.getCalsIntervalTimeWork();
 				kshstFlexWorkSet.minusAbsenceTimeWork = flexWork.getMinusAbsenceTimeWork();
 				kshstFlexWorkSet.calcActualOperaWork = flexWork.getCalcActualOperaWork();
 				kshstFlexWorkSet.calcIncludCareWork = flexWork.getCalcIncludCareWork();
 				kshstFlexWorkSet.notDeductLateleaveWork = flexWork.getNotDeductLateleaveWork();
+				kshstFlexWorkSet.predeterminDeficiency = flexWork.getPredeterminDeficiency();
 				kshstFlexWorkSet.additionTimeWork = flexWork.getAdditionTimeWork();
 				kshstFlexWorkSet.kshstFlexWorkSetPK = kshstFlexWorkSetPK;
 		return kshstFlexWorkSet;
@@ -228,7 +227,7 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 */
 	@Override
 	public List<HolidayAddtime> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KshstHolidayAddtimeSet.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KshstHolidayAdditionSet.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
 	
@@ -245,8 +244,8 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 	 */
 	@Override
 	public void update(HolidayAddtime holidayAddtime) {
-			KshstHolidayAddtimeSetPK primaryKey = new KshstHolidayAddtimeSetPK(holidayAddtime.getCompanyId());
-			KshstHolidayAddtimeSet entity = this.queryProxy().find(primaryKey, KshstHolidayAddtimeSet.class).get();
+			KshstHolidayAdditionSetPK primaryKey = new KshstHolidayAdditionSetPK(holidayAddtime.getCompanyId());
+			KshstHolidayAdditionSet entity = this.queryProxy().find(primaryKey, KshstHolidayAdditionSet.class).get();
 				entity.referComHolidayTime = holidayAddtime.getReferComHolidayTime();
 				entity.oneDay = holidayAddtime.getOneDay();
 				entity.morning = holidayAddtime.getMorning();
@@ -256,12 +255,18 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 				entity.annualHoliday = holidayAddtime.getAnnualHoliday();
 				entity.specialHoliday = holidayAddtime.getSpecialHoliday();
 				entity.yearlyReserved = holidayAddtime.getYearlyReserved();
-//				
-//				entity.regularWorkSet = convertToDbTypeRegularWork(holidayAddtime.getRegularWork());
-//				entity.flexWorkSet = convertToDbTypeFlexWork(holidayAddtime.getFlexWork());
-//				entity.irregularWorkSet = convertToDbTypeIrregularWork(holidayAddtime.getIrregularWork());
+				
+				entity.regularWorkSet = convertToDbTypeRegularWork(holidayAddtime.getRegularWork());
+				entity.flexWorkSet = convertToDbTypeFlexWork(holidayAddtime.getFlexWork());
+				entity.irregularWorkSet = convertToDbTypeIrregularWork(holidayAddtime.getIrregularWork());
 				
 				entity.kshstHolidayAddtimeSetPK = primaryKey;
 		this.commandProxy().update(entity);
+	}
+
+	@Override
+	public Optional<HolidayAddtime> findByCId(String companyId) {
+		return this.queryProxy().find(new KshstHolidayAdditionSetPK(companyId),KshstHolidayAdditionSet.class)
+				.map(c->convertToDomain(c));
 	}
 }

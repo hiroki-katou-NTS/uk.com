@@ -6,7 +6,9 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -25,11 +27,22 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implements AffWorkplaceHistoryRepository_v1 {
 	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID = "SELECT aw FROM BsymtAffiWorkplaceHist aw "
 			+ "WHERE aw.sid = :sid and aw.cid = :companyId ORDER BY aw.strDate";
+	
+	private final String QUERY_GET_AFFWORKPLACEHIST_BYSID_DESC = QUERY_GET_AFFWORKPLACEHIST_BYSID + " DESC";
+	
 	private static final String SELECT_BY_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 
 	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.hisId = :histId";
+	
+	/** The Constant SELECT_BY_COMPANY. */
+	private static final String SELECT_BY_EMPIDS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :baseDate AND :baseDate <= aw.endDate";
+	
+	/** The Constant SELECT_BY_HISTID_AND_DATE. */
+	private static final String SELECT_BY_HISTID_AND_DATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " WHERE aw.hisId = :histId AND aw.strDate <= :baseDate AND :baseDate <= aw.endDate";
 
 	/**
 	 * Convert from domain to entity
@@ -74,7 +87,20 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	@Override
 	public Optional<AffWorkplaceHistory_ver1> getByEmployeeId(String companyId, String employeeId) {
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy()
-				.query(QUERY_GET_AFFWORKPLACEHIST_BYSID, BsymtAffiWorkplaceHist.class).setParameter("sid", employeeId)
+				.query(QUERY_GET_AFFWORKPLACEHIST_BYSID, BsymtAffiWorkplaceHist.class)
+				.setParameter("sid", employeeId)
+				.setParameter("companyId", companyId).getList();
+		if (listHist != null && !listHist.isEmpty()) {
+			return Optional.of(toDomainTemp(listHist));
+		}
+		return Optional.empty();
+	}
+	
+	@Override
+	public Optional<AffWorkplaceHistory_ver1> getByEmployeeIdDesc(String companyId, String employeeId) {
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy()
+				.query(QUERY_GET_AFFWORKPLACEHIST_BYSID_DESC, BsymtAffiWorkplaceHist.class)
+				.setParameter("sid", employeeId)
 				.setParameter("companyId", companyId).getList();
 		if (listHist != null && !listHist.isEmpty()) {
 			return Optional.of(toDomainTemp(listHist));
@@ -123,6 +149,35 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	public Optional<AffWorkplaceHistory_ver1> getByHistId(String histId) {
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_HISTID, BsymtAffiWorkplaceHist.class)
 				.setParameter("histId", histId).getList();
+		if (!listHist.isEmpty()) {
+			return Optional.of(toDomainTemp(listHist));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public List<AffWorkplaceHistory_ver1> findByEmployees(List<String> employeeIds, GeneralDate date) {
+		// Query.
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_EMPIDS, BsymtAffiWorkplaceHist.class)
+				.setParameter("employeeIds", employeeIds)
+				.setParameter("baseDate", date)
+				.getList();
+		
+		// Group by his id.
+		Map<String, List<BsymtAffiWorkplaceHist>> resultMap = listHist.stream()
+				.collect(Collectors.groupingBy(BsymtAffiWorkplaceHist::getHisId));
+		
+		// Convert to domain.
+		return resultMap.keySet().stream().map(key -> {
+			return this.toDomainTemp(resultMap.get(key));
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<AffWorkplaceHistory_ver1> getByHistIdAndBaseDate(String histId, GeneralDate date) {
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_HISTID_AND_DATE, BsymtAffiWorkplaceHist.class)
+				.setParameter("histId", histId)
+				.setParameter("baseDate", date).getList();
 		if (!listHist.isEmpty()) {
 			return Optional.of(toDomainTemp(listHist));
 		}

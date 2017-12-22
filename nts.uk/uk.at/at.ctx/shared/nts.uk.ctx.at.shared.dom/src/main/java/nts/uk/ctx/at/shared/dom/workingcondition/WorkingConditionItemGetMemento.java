@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.Optional;
+
 /**
  * The Interface WorkingConditionGetMemento.
  */
@@ -80,12 +82,12 @@ public interface WorkingConditionItemGetMemento {
 	 *
 	 * @return the schedule method
 	 */
-	ScheduleMethod getScheduleMethod();
+	Optional<ScheduleMethod> getScheduleMethod();
 
 	/**
 	 * Gets the holiday add time set.
 	 *
 	 * @return the holiday add time set
 	 */
-	BreakdownTimeDay getHolidayAddTimeSet();
+	Optional<BreakdownTimeDay> getHolidayAddTimeSet();
 }
