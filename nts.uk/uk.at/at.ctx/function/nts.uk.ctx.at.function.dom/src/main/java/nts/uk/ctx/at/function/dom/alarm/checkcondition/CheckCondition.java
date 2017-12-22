@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.checkcondition;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
@@ -43,7 +44,7 @@ public class CheckCondition  extends AggregateRoot {
 		super();
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
 		this.companyID = new CompanyId(companyID);
-		this.alarmCategory = AlarmCategory.valueOf(alarmCategory);
+		this.alarmCategory = EnumAdaptor.valueOf(alarmCategory, AlarmCategory.class);
 		this.checkConditionList = checkConditionList;
 		this.extractPeriod = extractPeriod;
 	}
@@ -52,7 +53,7 @@ public class CheckCondition  extends AggregateRoot {
 		super();
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
 		this.companyID = new CompanyId(companyID);
-		this.alarmCategory = AlarmCategory.valueOf(alarmCategory);
+		this.alarmCategory = EnumAdaptor.valueOf(alarmCategory, AlarmCategory.class);
 	}
 	
 	public boolean selectedCheckCodition() {
