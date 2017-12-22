@@ -266,7 +266,7 @@ public class JpaHolidayAddtimeRepository extends JpaRepository implements Holida
 
 	@Override
 	public Optional<HolidayAddtime> findByCId(String companyId) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		return this.queryProxy().find(new KshstHolidayAdditionSetPK(companyId),KshstHolidayAdditionSet.class)
+				.map(c->convertToDomain(c));
 	}
 }

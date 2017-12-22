@@ -5,7 +5,7 @@
 .placement-container.overflow-y {width: 977px; margin-right:5px; overflow-y: scroll;}
 .placement-container.overflow-x {height: 657px; margin-bottom:5px; overflow-x: scroll;}
 .placement-container .empty-message {position:absolute; top:50%; left:0; right:0; margin-top:-0.5em; text-align: center; font-size: 1.4rem;}
-#contents-area{overflow: hidden }
+
 /* Layout Grid container */
 .layout-container {}
 .layout-row {overflow:visible; white-space:nowrap; font-size:0;}

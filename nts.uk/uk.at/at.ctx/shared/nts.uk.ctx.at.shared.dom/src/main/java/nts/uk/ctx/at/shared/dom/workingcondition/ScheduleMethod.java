@@ -1,4 +1,10 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
+
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -16,11 +22,11 @@ public class ScheduleMethod extends DomainObject {
 	
 	/** The work schedule bus cal. */
 	// 営業日カレンダーによる勤務予定作成
-	private WorkScheduleBusCal workScheduleBusCal;
+	private Optional<WorkScheduleBusCal> workScheduleBusCal;
 	
 	/** The monthly pattern work schedule cre. */
 	// 月間パターンによる勤務予定作成
-	private MonthlyPatternWorkScheduleCre monthlyPatternWorkScheduleCre;
+	private Optional<MonthlyPatternWorkScheduleCre> monthlyPatternWorkScheduleCre;
 	
 	
 	/**
@@ -46,12 +52,19 @@ public class ScheduleMethod extends DomainObject {
 		memento.setMonthlyPatternWorkScheduleCre(this.monthlyPatternWorkScheduleCre);
 	}
 
+	/**
+	 * Instantiates a new schedule method.
+	 *
+	 * @param basicCreateMethod the basic create method
+	 * @param workScheduleBusCal the work schedule bus cal
+	 * @param monthlyPatternWorkScheduleCre the monthly pattern work schedule cre
+	 */
 	public ScheduleMethod(WorkScheduleBasicCreMethod basicCreateMethod, WorkScheduleBusCal workScheduleBusCal,
 			MonthlyPatternWorkScheduleCre monthlyPatternWorkScheduleCre) {
 		super();
 		this.basicCreateMethod = basicCreateMethod;
-		this.workScheduleBusCal = workScheduleBusCal;
-		this.monthlyPatternWorkScheduleCre = monthlyPatternWorkScheduleCre;
+		this.workScheduleBusCal = Optional.ofNullable(workScheduleBusCal);
+		this.monthlyPatternWorkScheduleCre = Optional.ofNullable(monthlyPatternWorkScheduleCre);
 	}
 	
 }

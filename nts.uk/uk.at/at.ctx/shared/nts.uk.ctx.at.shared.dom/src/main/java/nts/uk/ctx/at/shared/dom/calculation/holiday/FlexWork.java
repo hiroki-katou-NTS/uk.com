@@ -2,10 +2,11 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 @AllArgsConstructor
 @Getter
-public class FlexWork {
+public class FlexWork extends DomainObject{
 
 	/** 会社ID */
 	private String companyId;

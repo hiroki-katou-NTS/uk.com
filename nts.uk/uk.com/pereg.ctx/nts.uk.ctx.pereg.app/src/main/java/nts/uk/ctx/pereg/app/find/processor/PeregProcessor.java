@@ -211,17 +211,14 @@ public class PeregProcessor {
 		List<LayoutPersonInfoClsDto> classItemList = new ArrayList<>();
 		lstClsItem.forEach(item -> {
 			LayoutPersonInfoClsDto layoutPerInfoClsDto = new LayoutPersonInfoClsDto();
-			layoutPerInfoClsDto.setListItemDf(new ArrayList<>());
 			layoutPerInfoClsDto.setPersonInfoCategoryID(item.getPerInfoCtgId());
 			layoutPerInfoClsDto.setLayoutItemType(LayoutItemType.ITEM);
 			layoutPerInfoClsDto.setClassName(item.getItemName());
-			layoutPerInfoClsDto.getListItemDf().add(item);
 			layoutPerInfoClsDto.setDispOrder(item.getDispOrder());
 			layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(item, null));
 			if (item.getItemDefType() != 2) {
 				item.getLstChildItemDef().forEach(childItem -> {
 					layoutPerInfoClsDto.setDispOrder(childItem.getDispOrder());
-					layoutPerInfoClsDto.getListItemDf().add(childItem);
 					layoutPerInfoClsDto.getItems().add(LayoutPersonInfoValueDto.initData(childItem, null));
 				});
 			}

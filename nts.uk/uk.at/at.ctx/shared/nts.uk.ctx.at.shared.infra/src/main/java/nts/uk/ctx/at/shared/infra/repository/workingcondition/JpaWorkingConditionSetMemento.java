@@ -82,30 +82,30 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 	 */
 	@Override
 	public void setDateHistoryItem(List<DateHistoryItem> dateHistoryItems) {
-		List<String> histIds = dateHistoryItems.stream().map(DateHistoryItem::identifier)
-				.collect(Collectors.toList());
-
-		Map<String, DatePeriod> mapHistoryItems = dateHistoryItems.stream()
-				.collect(Collectors.toMap(DateHistoryItem::identifier, DateHistoryItem::span));
-
-		// Remove not save entities
-		this.entities = this.entities.stream()
-				.filter(item -> histIds.contains(item.getKshmtWorkingCondPK().getHistoryId()))
-				.collect(Collectors.toList());
-
-		List<String> entityHistIds = new ArrayList<>();
-
-		this.entities.stream().forEach(item -> {
-			KshmtWorkingCondPK kshmtWorkingCondPK = item.getKshmtWorkingCondPK();
-			entityHistIds.add(kshmtWorkingCondPK.getHistoryId());
-			if (mapHistoryItems.keySet().contains(kshmtWorkingCondPK.getHistoryId())) {
-				item.setStrD(mapHistoryItems.get(kshmtWorkingCondPK.getHistoryId()).start());
-				item.setEndD(mapHistoryItems.get(kshmtWorkingCondPK.getHistoryId()).end());
-			}
-		});
+//		List<String> histIds = dateHistoryItems.stream().map(DateHistoryItem::identifier)
+//				.collect(Collectors.toList());
+//
+//		Map<String, DatePeriod> mapHistoryItems = dateHistoryItems.stream()
+//				.collect(Collectors.toMap(DateHistoryItem::identifier, DateHistoryItem::span));
+//
+//		// Remove not save entities
+//		this.entities = this.entities.stream()
+//				.filter(item -> histIds.contains(item.getKshmtWorkingCondPK().getHistoryId()))
+//				.collect(Collectors.toList());
+//
+//		List<String> entityHistIds = new ArrayList<>();
+//
+//		this.entities.stream().forEach(item -> {
+//			KshmtWorkingCondPK kshmtWorkingCondPK = item.getKshmtWorkingCondPK();
+//			entityHistIds.add(kshmtWorkingCondPK.getHistoryId());
+//			if (mapHistoryItems.keySet().contains(kshmtWorkingCondPK.getHistoryId())) {
+//				item.setStrD(mapHistoryItems.get(kshmtWorkingCondPK.getHistoryId()).start());
+//				item.setEndD(mapHistoryItems.get(kshmtWorkingCondPK.getHistoryId()).end());
+//			}
+//		});
 
 		dateHistoryItems.stream().forEach(item -> {
-			if (!entityHistIds.contains(item.identifier())) {
+//			if (!entityHistIds.contains(item.identifier())) {
 				KshmtWorkingCond entity = new KshmtWorkingCond();
 				KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(companyId,
 						item.identifier());
@@ -114,7 +114,7 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 				entity.setStrD(item.start());
 				entity.setEndD(item.end());
 				this.entities.add(entity);
-			}
+//			}
 		});
 
 	}
