@@ -6,7 +6,6 @@ module a1 {
     import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
     import EmTimezoneChangeExtentModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.EmTimezoneChangeExtentModel;
     import CoreTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.CoreTimeSettingModel
-    import SettingModel = nts.uk.at.view.kmk003.a.viewmodel.SettingModel;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     
     class ScreenModel {
@@ -67,18 +66,12 @@ module a1 {
 
             self.secondTimes = ko.observable(true);
 
-            self.isFlexMode = ko.observable(SettingModel.isFlex(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr()));
-            self.isDiffTimeMode = ko.observable(SettingModel.isDifftime(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet()));
-            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(function(settingMethod: number){
-                self.isDiffTimeMode(SettingModel.isDifftime(settingMethod));
-            });
+            self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
+            self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             self.isDiffTimeMode.subscribe(function(isDifftime: boolean){
                 if(isDifftime && !(self.changeExtent)){
                     self.changeExtent = self.mainSettingModel.diffWorkSetting.changeExtent;
                 }
-            });
-            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(function(settingMethod: number){
-                self.isFlexMode(SettingModel.isFlex(settingMethod));
             });
             self.isViewTimezoneTwo = ko.observable(false);
             self.isDetailMode = ko.observable(false);

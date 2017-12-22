@@ -218,7 +218,6 @@ module nts.uk.at.view.kmk003.a {
                 service.savePred(data).done(function() {
                     self.isClickSave(false);
                 });*/
-                console.log(self.dataModelOneDay);
                 service.saveFlexWorkSetting(self.collectDataFlex()).done(function() {
 
                 }).fail(function(error) {
@@ -300,30 +299,6 @@ module nts.uk.at.view.kmk003.a {
                 this.flowWorkSetting = new FlowWorkSettingModel();
                 this.diffWorkSetting = new DiffTimeWorkSettingModel();
                 this.flexWorkSetting = new FlexWorkSettingModel();
-            }
-        }
-        
-        // class setting common
-        export class SettingModel {
-            
-            public static isFlex(settingMethod: number) {
-                return settingMethod == EnumWorkForm.FLEX;
-            }
-
-            public static isRegular(settingMethod: number) {
-                return settingMethod == EnumWorkForm.REGULAR;
-            }
-
-            public static isFixed(settingMethod: number) {
-                return settingMethod == SettingMethod.FIXED;
-            }
-
-            public static isDifftime(settingMethod: number) {
-                return settingMethod == SettingMethod.DIFFTIME;
-            }
-
-            public static isFlow(settingMethod: number) {
-                return settingMethod == SettingMethod.FLOW;
             }
         }
         

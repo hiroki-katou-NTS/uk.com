@@ -45,22 +45,22 @@ module nts.uk.at.view.kmk003.a {
 
             export class FlTimeSettingModel {
                 rounding: TimeRoundingSettingModel;
-                passageTime: KnockoutObservable<number>;
+                elapsedTime: KnockoutObservable<number>;
 
                 constructor() {
                     this.rounding = new TimeRoundingSettingModel();
-                    this.passageTime = ko.observable(0);
+                    this.elapsedTime = ko.observable(0);
                 }
 
                 updateData(data: FlTimeSettingDto) {
                     this.rounding.updateData(data.rounding);
-                    this.passageTime(data.passageTime);
+                    this.elapsedTime(data.elapsedTime);
                 }
 
                 toDto(): FlTimeSettingDto {
                     var dataDTO: FlTimeSettingDto = {
                         rounding: this.rounding.toDto(),
-                        passageTime: this.passageTime()
+                        elapsedTime: this.elapsedTime()
                     };
                     return dataDTO;
                 }
@@ -116,12 +116,26 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: FlWorkTzSettingDto) {
                     this.workTimeRounding.updateData(data.workTimeRounding);
-                    this.lstOTTimezone = [];
-                    for (var dataDTO of data.lstOTTimezone) {
-                        var dataModel: FlOTTimezoneModel = new FlOTTimezoneModel();
-                        dataModel.updateData(dataDTO);
-                        this.lstOTTimezone.push(dataModel);
+                    this.updateTimezone(data.lstOTTimezone);
+                }
+                
+                updateTimezone(lstOTTimezone: FlOTTimezoneDto[]) {
+                    for (var dataDTO of lstOTTimezone) {
+                        var dataModel: FlOTTimezoneModel = this.getTimezoneByWorkNo(dataDTO.worktimeNo);
+                        if (dataModel) {
+                            dataModel.updateData(dataDTO);
+                        }
+                        else {
+                            dataModel = new FlOTTimezoneModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstOTTimezone.push(dataModel);
+                        }
                     }
+                }
+                
+                getTimezoneByWorkNo(worktimeNo: number) {
+                    var self = this;
+                    return _.find(self.lstOTTimezone, timezone => timezone.worktimeNo() == worktimeNo);
                 }
 
                 toDto(): FlWorkTzSettingDto {
