@@ -41,7 +41,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	
 	private static final String SELECT_BY_WKPID_BASEDATE = "SELECT * FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
-			+ " WHERE awit.sid = :employeeId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE awit.workPlaceId = :workplaceId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_LIST_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.sid IN (:employeeIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
@@ -193,7 +193,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	public List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWorkplaceIdAndDate(GeneralDate baseDate,
 			String workplaceId) {
 		List<BsymtAffiWorkplaceHist> listWkpHist = this.queryProxy().query(SELECT_BY_WKPID_BASEDATE, BsymtAffiWorkplaceHist.class)
-				.setParameter("wkpId", workplaceId).setParameter("standDate", baseDate).getList();
+				.setParameter("workplaceId", workplaceId).setParameter("standDate", baseDate).getList();
 		if(listWkpHist.isEmpty()){
 			return null;
 		}
