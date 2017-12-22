@@ -18,9 +18,15 @@
 							enable: true }"></div>
 			</td>
 		</tr>
-		<tr>
+		<tr data="visible: isFixedRestTime()">
 			<td class="td-cell">
-				<div id="nts-fix-table-a7" data-bind="ntsFixTableCustom: {option: fixTableOption}"></div>
+				<div id="nts-fix-table-a7-yes" data-bind="ntsFixTableCustom: {option: fixTableOption}"></div>
+			</td>
+		</tr>
+		
+		<tr data="visible: !isFixedRestTime()">
+			<td class="td-cell">
+				<div id="nts-fix-table-a7-no" data-bind="ntsFixTableCustom: {option: fixTableOption}"></div>
 			</td>
 		</tr>
 	</table>

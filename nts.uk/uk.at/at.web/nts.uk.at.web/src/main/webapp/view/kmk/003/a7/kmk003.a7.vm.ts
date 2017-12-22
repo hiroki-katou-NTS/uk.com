@@ -1,30 +1,37 @@
 module a7 {
     import EnumWorkForm = nts.uk.at.view.kmk003.a.viewmodel.EnumWorkForm;
     import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
+    import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     class ScreenModel {
 
+        tabMode: KnockoutObservable<TabMode>;
+        
+        mainSettingModel: KnockoutObservable<MainSettingModel>;
         fixTableOption: any;
         dataSource: KnockoutObservableArray<any>;
-        itemList: KnockoutObservableArray<any>;
         isFlowOrFlex: KnockoutObservable<boolean>;
         
         useFixedRestTimeOptions: KnockoutObservableArray<any>;
         useFixedRestTime: KnockoutObservable<string>;
+        
+        isFixedRestTime: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
-        constructor(screenMode: string, workTimeForm: any, settingMethod: any, workTimeCode: string) {
+        constructor(tabMode: any, enumSetting: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
             let self = this;
-
+            
+            self.tabMode = tabMode;
+            
+            //main model
+            self.mainSettingModel = ko.observable(mainSettingModel);
+            
             self.dataSource = ko.observableArray([]);
             self.dataSource.subscribe((newList) => {
                 console.log(newList);
             });
-            self.itemList = ko.observableArray([
-                { code: 1, name: '基本給1' },
-                { code: 2, name: '役職手当2' },
-                { code: 3, name: '基本給3' }
-            ]);
             self.fixTableOption = {
                 maxRow: 7,
                 minRow: 0,
@@ -38,7 +45,7 @@ module a7 {
             
             //subscrible worktime ssettingmethod
             self.isFlowOrFlex = ko.computed(function() {
-                return (workTimeForm() == "1") || (settingMethod() == "2");
+                return (mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() == EnumWorkForm.FLEX) || (mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet() == SettingMethod.FLOW);
             });
             
             self.useFixedRestTimeOptions = ko.observableArray([
@@ -46,6 +53,10 @@ module a7 {
                 { code: 2, name: 　nts.uk.resource.getText("KMK003_143") },
             ]);
             self.useFixedRestTime = ko.observable('1');
+            
+            self.isFixedRestTime = ko.computed(function(){
+                return self.useFixedRestTime() =='1';
+            });
         }
 
         private columnSetting(): Array<any> {
@@ -86,12 +97,11 @@ module a7 {
 
             //get data
             let input = valueAccessor();
-            let screenMode = ko.unwrap(input.screenMode);
-            let settingMethod = input.settingMethod;
-            let workTimeForm = input.workTimeForm;
-            let workTimeCode = input.workTimeCode;
+            let tabMode = input.tabMode;
+            let enumSetting = input.enum;
+            let mainSettingModel = input.mainSettingModel;
 
-            var screenModel = new ScreenModel(screenMode,workTimeForm,settingMethod, workTimeCode);
+            var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
