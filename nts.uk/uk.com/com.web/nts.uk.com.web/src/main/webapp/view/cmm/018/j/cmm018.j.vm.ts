@@ -60,6 +60,7 @@ module nts.uk.com.view.cmm018.j {
                         });
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError({ messageId:res.messageId, messageParams: res.parameterIds}).then(function(res){
+                            $("#startDateInput").focus();
                                 block.clear();
                         });      
                     });
@@ -92,6 +93,7 @@ module nts.uk.com.view.cmm018.j {
                             });
                         }).fail(function(res){
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds}).then(function(res){
+                                 $("#startDateInput").focus();
                                 block.clear();
                             });
 //                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
