@@ -26,8 +26,8 @@ public class AddTemporaryAbsenceCommand{
 	private String remarks;
 	
 	// TODO update later, in item define type is string but domain is integer
-//	@PeregItem("IS00097")
-//	private BigDecimal soInsPayCategory;
+	@PeregItem("IS00097")
+	private BigDecimal soInsPayCategory;
 	
 	// -------------- extend object ----------------------
 	/**
