@@ -108,7 +108,7 @@ module cmm001.a {
                     self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 } else {
                     self.sel001Data(_.filter(self.listCom(), function(obj:ICompany) {
-                        return obj.isAbolition == 1;
+                        return obj.isAbolition == 0;
                     }));
                     if (self.sel001Data().length == 0) {
                         self.innit();

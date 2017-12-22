@@ -3,6 +3,8 @@ module nts.uk.com.view.cdl009.a {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import SelectType = kcp.share.list.SelectType;
+    import UnitModel = kcp.share.tree.UnitModel;
+    import ListType = kcp.share.list.ListType;
     export module viewmodel {
         export class ScreenModel {
             multiSelectedTree: KnockoutObservableArray<string>;
@@ -27,7 +29,7 @@ module nts.uk.com.view.cdl009.a {
                 var params = getShared('CDL009Params');
                 self.multiSelectedTree = ko.observableArray([]);
                 self.multiSelectedTree(params.selectedIds ? params.selectedIds : []);
-                self.isMultiSelect = ko.observable(params.isMultiSelect);
+                self.isMultiSelect = ko.observable(params.isMultiple);
                 self.baseDate = ko.observable(params.baseDate ? params.baseDate : moment(new Date()).toDate());
                 self.target = ko.observable(params.target ? params.target : TargetClassification.WORKPLACE);
 
@@ -52,7 +54,6 @@ module nts.uk.com.view.cdl009.a {
                     selectType: SelectType.NO_SELECT,
                     selectedCode: ko.observable(),
                     isDialog: true,
-//                    isShowSelectAllButton: false,
                     employeeInputList: self.employeeList,
                     maxRows: 12,
                     tabindex: 3,
@@ -78,7 +79,9 @@ module nts.uk.com.view.cdl009.a {
              */
             private searchEmp(): void {
                 let self = this;
-                if (!self.multiSelectedTree() || self.multiSelectedTree().length == 0) {
+                let treeData = $('#workplace-component').getDataList();
+                let selectedRow = $('#workplace-component').getRowSelected();
+                    if (treeData.length == 0 || selectedRow.length <= 0) {
                     if (self.target() == TargetClassification.WORKPLACE) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                     } else {
@@ -177,7 +180,9 @@ module nts.uk.com.view.cdl009.a {
                 }
                 
             }
-            
+            /**
+             * Get employee Ids
+             */
             private getEmpIds(empList: Array<any>, empCodes: Array<string>): Array<any> {
                 let data: Array<string> = [];
                 for (let empCode of empCodes) {
@@ -209,15 +214,6 @@ module nts.uk.com.view.cdl009.a {
             static WORK_PLACE = 1;
             static DEPARTMENT = 2;
         }
-        /**
-        * List Type
-        */
-        export class ListType {
-            static EMPLOYMENT = 1;
-            static Classification = 2;
-            static JOB_TITLE = 3;
-            static EMPLOYEE = 4;
-        }
 
         /**
      * Class TargetClassification
@@ -227,20 +223,6 @@ module nts.uk.com.view.cdl009.a {
             static DEPARTMENT = 2;
         }
 
-        /**
-         * interface UnitModel
-         */
-        export interface UnitModel {
-            workplaceId: string;
-            code: string;
-            name: string;
-            nodeText?: string;
-            level: number;
-            heirarchyCode: string;
-            isAlreadySetting?: boolean;
-            childs: Array<UnitModel>;
-        }
-        
         /**
          * class EnrollmentStatus
          */

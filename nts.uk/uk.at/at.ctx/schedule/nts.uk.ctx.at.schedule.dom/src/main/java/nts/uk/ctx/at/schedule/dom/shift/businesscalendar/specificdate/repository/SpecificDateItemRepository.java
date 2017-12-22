@@ -37,6 +37,6 @@ public interface SpecificDateItemRepository {
 	 * @param lstSpecificDateItem
 	 * @return
 	 */
-	List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<String> lstSpecificDateItem);
+	List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<Integer> lstSpecificDateItem);
 
 }

@@ -833,7 +833,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 		dto.setScheduleManagementAtr(workingConditionItem.getScheduleManagementAtr().value);
 
 		// 予定作成方法
-		setScheduleMethod(dto, workingConditionItem.getScheduleMethod());
+		setScheduleMethod(dto, workingConditionItem.getScheduleMethod().get());
 
 		PersonalWorkCategory workCategory = workingConditionItem.getWorkCategory();
 
@@ -905,9 +905,11 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr());
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr());
-		dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().getOneDay().v());
-		dto.setMorning(workingConditionItem.getHolidayAddTimeSet().getMorning().v());
-		dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().getAfternoon().v());
+		if(workingConditionItem.getHolidayAddTimeSet().isPresent()){
+			dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().get().getOneDay().v());
+			dto.setMorning(workingConditionItem.getHolidayAddTimeSet().get().getMorning().v());
+			dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().get().getAfternoon().v());
+		}
 		dto.setLaborSystem(workingConditionItem.getLaborSystem());
 		dto.setContractTime(workingConditionItem.getContractTime().v());
 
@@ -916,26 +918,32 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 	private static void setScheduleMethod(WorkingConditionDto dto, ScheduleMethod scheduleMethod) {
 		dto.setBasicCreateMethod(scheduleMethod.getBasicCreateMethod().value);
-		dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().getReferenceBusinessDayCalendar().value);
-		dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().getReferenceBasicWork().value);
-		dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().getReferenceType().value);
+		if(scheduleMethod.getWorkScheduleBusCal().isPresent())
+		dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);
+		if(scheduleMethod.getWorkScheduleBusCal().isPresent())
+		dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value);
+		if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
+		dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
 	}
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {
-		dto.setHolidayWorkTypeCode(holidayTime.getWorkTypeCode().v());
+		if(holidayTime != null)
+			dto.setHolidayWorkTypeCode(holidayTime.getWorkTypeCode().v());
 	}
 
 	private static void setWeekDay(WorkingConditionDto dto, SingleDaySchedule weekDay) {
-		dto.setWeekdayWorkTypeCode(weekDay.getWorkTypeCode().v());
-		dto.setWeekdayWorkTimeCode(weekDay.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setWeekDayStartTime1(timeZone1.getStart().v());
-		dto.setWeekDayEndTime1(timeZone1.getEnd().v());
-		dto.setWeekDayStartTime2(timeZone2.getStart().v());
-		dto.setWeekDayEndTime2(timeZone2.getEnd().v());
+		if(weekDay != null){
+			dto.setWeekdayWorkTypeCode(weekDay.getWorkTypeCode().v());
+			dto.setWeekdayWorkTimeCode(weekDay.getWorkTimeCode().get().v());
+			TimeZone timeZone1 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
+					.get();
+			TimeZone timeZone2 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
+					.get();
+			dto.setWeekDayStartTime1(timeZone1.getStart().v());
+			dto.setWeekDayEndTime1(timeZone1.getEnd().v());
+			dto.setWeekDayStartTime2(timeZone2.getStart().v());
+			dto.setWeekDayEndTime2(timeZone2.getEnd().v());
+		}
 	}
 
 	private static void setWorkInHoliday(WorkingConditionDto dto, SingleDaySchedule workInHoliday) {

@@ -14,6 +14,14 @@ public interface EmploymentHistoryRepository {
 	Optional<EmploymentHistory> getByEmployeeId(String cid, String sid);
 	
 	/**
+	 * Get employment history by employee id with descending
+	 * @param cid
+	 * @param sid
+	 * @return
+	 */
+	Optional<EmploymentHistory> getByEmployeeIdDesc(String cid, String sid);
+	
+	/**
 	 * get with employeeId
 	 * startDate <= standardDate <= endDate 
 	 * @param employeeId

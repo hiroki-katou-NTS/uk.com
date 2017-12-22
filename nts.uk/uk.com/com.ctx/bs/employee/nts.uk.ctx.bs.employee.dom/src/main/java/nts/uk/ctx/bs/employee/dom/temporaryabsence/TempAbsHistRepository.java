@@ -19,6 +19,15 @@ public interface TempAbsHistRepository {
 	 * @return
 	 */
 	Optional<TempAbsenceHistory> getByEmployeeId(String cid, String employeeId);
+	
+	/**
+	 * Get TemporaryAbsenceHist by employeeId
+	 * @param employeeId
+	 * @param histId
+	 * @return
+	 */
+	Optional<TempAbsenceHistory> getByEmployeeIdDesc(String cid, String employeeId);
+	
 	/**
 	 * Get TemporaryAbsenceHist by histId
 	 * @param employeeId

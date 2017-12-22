@@ -17,6 +17,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class LayoutPersonInfoClsFinder {
@@ -42,7 +43,8 @@ public class LayoutPersonInfoClsFinder {
 	}
 
 	public List<LayoutPersonInfoClsDto> getListClsDtoHasCtgCd(String layoutId) {
-		List<LayoutPersonInfoClsDto> listItemCls = itemClsRepo.getAllWithCtdCdByLayoutId(layoutId).stream()
+		List<LayoutPersonInfoClsDto> listItemCls = itemClsRepo
+				.getAllWithCtdCdByLayoutId(layoutId, AppContexts.user().contractCode()).stream()
 				.map(item -> LayoutPersonInfoClsDto.fromDomainWithCtgCD(item)).collect(Collectors.toList());
 
 		return mapItemCls(listItemCls);

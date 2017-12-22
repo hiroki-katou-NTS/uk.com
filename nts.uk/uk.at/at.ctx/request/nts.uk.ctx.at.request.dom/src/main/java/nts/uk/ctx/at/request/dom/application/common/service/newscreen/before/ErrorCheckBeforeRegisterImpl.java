@@ -66,7 +66,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			// 終了
 			return;
 		}
-		for (RequestAppDetailSetting appSetting : requestSetting.getRequestAppDetailSettings()) {
+		List<RequestAppDetailSetting> requestAppDetailSettings = requestSetting.getRequestAppDetailSettings().stream().filter(x -> x.getAppType().value == ApplicationType.OVER_TIME_APPLICATION.value).collect(Collectors.toList());
+		if(requestAppDetailSettings == null){
+			return;
+		}
+		for (RequestAppDetailSetting appSetting : requestAppDetailSettings) {
 			// 申請詳細設定.時刻計算利用区分=利用する
 			if (appSetting.getTimeCalUseAtr().equals(UseAtr.USE)) {
 				// 計算フラグのチェック

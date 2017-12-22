@@ -1,13 +1,14 @@
 #linkButton {
 	margin-left: 50px;
-	margin-top: 10px;
 }
-html{
+
+html {
 	overflow-y: hidden;
-	}
+}
+
 #pannel-top {
 	margin-left: 50px;
-	margin-top: 30px;
+	margin-top: 20px;
 }
 
 #button-search {
@@ -15,13 +16,6 @@ html{
 	width: 100px;
 }
 
-/* table {
-	border-collapse: collapse;
-    overflow-y: scroll;
-    height: 498px;
-    display: block;
-    width: 954px;
-} */
 table, td, th {
 	border: 1px solid gray;
 }

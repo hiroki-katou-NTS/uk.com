@@ -22,10 +22,11 @@ public class UpdateTemporaryAbsenceCommand {
 	private BigDecimal tempAbsenceFrNo;
 	
 	/** 備考 */
-	@PeregItem("IS00097")
+	@PeregItem("IS00098")
 	private String remarks;
 	
-	@PeregItem("IS00098")
+	// TODO update later, in item define type is string but domain is integer
+	@PeregItem("IS00097")
 	private BigDecimal soInsPayCategory;
 	
 	// -------------- extend object ----------------------

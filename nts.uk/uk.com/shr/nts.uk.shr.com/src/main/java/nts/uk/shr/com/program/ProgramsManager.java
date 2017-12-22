@@ -879,6 +879,18 @@ public class ProgramsManager {
 			"/view/kdw/007/a/index.xhtml");
 	
 	/**
+	 * KDW007B
+	 */
+	public static final Program KDW007B  = new Program(WebAppId.AT, ProgramIdConsts.KDW007B, "",
+			"/view/kdw/007/b/index.xhtml");
+	
+	/**
+	 * KDW007C
+	 */
+	public static final Program KDW007C  = new Program(WebAppId.AT, ProgramIdConsts.KDW007C, "#KDW007_92",
+			"/view/kdw/007/c/index.xhtml");
+	
+	/**
 	 * KDW007A
 	 */
 	public static final Program KDW008B  = new Program(WebAppId.AT, ProgramIdConsts.KDW008B, "",
@@ -901,6 +913,13 @@ public class ProgramsManager {
 	 */
 	public static final Program CPS006B  = new Program(WebAppId.COM, ProgramIdConsts.CPS006B, "CPS005_37",
 			"/view/cps/006/b/index.xhtml");
+	
+	
+	/**
+	 * CPS002A
+	 */
+	public static final Program CPS002A  = new Program(WebAppId.COM, ProgramIdConsts.CPS002A, "CPS002_1",
+			"/view/cps/002/a/index.xhtml");
 	
 	/**
 	 * CPS002E
