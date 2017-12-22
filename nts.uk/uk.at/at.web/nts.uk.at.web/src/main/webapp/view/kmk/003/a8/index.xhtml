@@ -48,7 +48,7 @@
 						</td>						
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: otTimePersonApproTimeSetting">
 						<td width="100px"><label>#{i18n.getText('KMK003_86')}</label></td>
 						<!-- approTime -->
 						<td width="150px">
@@ -56,7 +56,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimePersonApproTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -65,21 +65,21 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: otTimePersonApproTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: otTimePersonApproTimeRoundingEnable }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="104" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimePersonApproTimeRounding,
-									enable: otTimePersonApproTimeRoundingEnable }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>											
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: workTimePersonApproTimeSetting">
 						<td width="100px"><label>#{i18n.getText('KMK003_89')}</label></td>
 						<!-- approTime -->
 						<td width="150px">
@@ -87,7 +87,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimePersonApproTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -96,20 +96,21 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: workTimePersonApproTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="107" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimePersonApproTimeRounding }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>						
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: pubHolWorkTimePersonApproTimeSetting">
 						<td width="100px"><label>#{i18n.getText('KMK003_90')}</label></td>
 						<!-- approTime -->
 						<td width="150px">
@@ -117,7 +118,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimePersonApproTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -126,16 +127,17 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: pubHolWorkTimePersonApproTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="110" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimePersonApproTimeRounding }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>						
 					</tr>
 				</table>					
@@ -148,14 +150,14 @@
 						</td>
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: otTimePersonDeductTimeSetting">
 						<!-- deductTime -->
 						<td width="150px">
 							<div tabindex="111" class="tab_8_radio" data-bind="ntsRadioBoxGroup: {
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimePersonDeductTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -164,27 +166,28 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: otTimePersonDeductTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="113" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimePersonDeductTimeRounding }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>		
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: workTimePersonDeductTimeSetting">
 						<!-- deductTime -->
 						<td width="150px">
 							<div tabindex="114" class="tab_8_radio" data-bind="ntsRadioBoxGroup: {
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimePersonDeductTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -193,27 +196,28 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: workTimePersonDeductTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="116" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimePersonDeductTimeRounding }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: pubHolWorkTimePersonDeductTimeSetting">
 						<!-- deductTime -->
 						<td width="150px">
 							<div tabindex="117" class="tab_8_radio" data-bind="ntsRadioBoxGroup: {
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimePersonDeductTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -222,16 +226,17 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: pubHolWorkTimePersonDeductTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="119" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimePersonDeductTimeRounding }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>
 					</tr>
 				</table>
@@ -246,7 +251,7 @@
 						</td>
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: otTimePublicApproTimeSetting">
 						<td width="100px"><label>#{i18n.getText('KMK003_86')}</label></td>
 						<!-- approTime -->
 						<td width="150px">
@@ -254,7 +259,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimePublicApproTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -263,20 +268,21 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: otTimePublicApproTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="123" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: otTimePublicApproTimeRounding }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: workTimePublicApproTimeSetting">
 						<td width="100px"><label>#{i18n.getText('KMK003_89')}</label></td>
 						<!-- approTime -->
 						<td width="150px">
@@ -284,7 +290,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimePublicApproTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -293,20 +299,21 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: workTimePublicApproTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="126" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: workTimePublicApproTimeRounding }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>
 					</tr>
 					
-					<tr>
+					<tr data-bind="with: pubHolWorkTimePublicApproTimeSetting">
 						<td width="100px"><label>#{i18n.getText('KMK003_90')}</label></td>
 						<!-- approTime -->
 						<td width="150px">
@@ -314,7 +321,7 @@
 									options: listRoundingBreakTime,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimePublicApproTimeRoundingMethod,
+									value: timeRoundingMethod,
 									enable: true }"></div>
 						</td>
 						<td width="100px" style="padding-left: 10px; padding-right: 10px;">
@@ -323,16 +330,17 @@
 									optionsValue: 'value',
 									optionsText: 'localizedName',
 									visibleItemsCount: 8,
-									value: pubHolWorkTimePublicApproTimeRoundingTime,
+									value: timeRoundingTime,
 									editable: false,
-									enable: true }"></div>
+									enable: isEnable }"></div>
 						</td>
 						<td width="150px" style="padding-left: 10px; padding-right: 10px;">
 							<div tabindex="129" class="cf" data-bind="ntsSwitchButton: {
 									options: listRoundingValue,
 									optionsValue: 'value',
 									optionsText: 'localizedName',
-									value: pubHolWorkTimePublicApproTimeRounding }"></div>
+									value: timeRounding,
+									enable: isEnable }"></div>
 						</td>
 					</tr>
 				</table>	

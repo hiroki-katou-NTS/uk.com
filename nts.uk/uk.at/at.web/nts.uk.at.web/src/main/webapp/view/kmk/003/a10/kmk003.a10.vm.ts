@@ -45,7 +45,7 @@ module a10 {
             _self.settingEnum = settingEnum;
             
             // Init all data           
-            _self.bonusPaySettingCode = ko.observable('');                                 
+            _self.bonusPaySettingCode = ko.observable("");                                 
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -74,7 +74,7 @@ module a10 {
          * Start tab
          */
         public startTab(screenMode: any): void {
-            let _self = this;
+            let _self = this;  
             screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
@@ -129,7 +129,7 @@ module a10 {
         private createBinding(): KnockoutObservable<string> {
             let _self = this;
             
-            let result: KnockoutObservable<string> = ko.observable('');           
+            let result: KnockoutObservable<string> = ko.observable("");           
             return result;
         }
         
@@ -150,7 +150,10 @@ module a10 {
          */
         private changeBindingDetail(raisingSalarySet: KnockoutObservable<string>): void {
             let _self = this;           
-            _self.bonusPaySettingCode = raisingSalarySet;
+            _self.bonusPaySettingCode(raisingSalarySet());
+            _self.bonusPaySettingCode.subscribe(newValue => {
+                raisingSalarySet(newValue);
+            });
         }
         
         /**
@@ -159,7 +162,27 @@ module a10 {
         private changeBindingSimple(raisingSalarySet: KnockoutObservable<string>): void {
             let _self = this;
             _self.changeBindingDetail(raisingSalarySet);
-        }              
+        }             
+        
+        /**
+         * UI handler: open referral dialog
+         */
+        public openReferralDialog(): void {
+            let _self = this;
+            let param: any = {
+                isMulti: false,
+                selecteds: [
+                    _self.bonusPaySettingCode()
+                ]
+            }
+            nts.uk.ui.windows.setShared('KDL007_PARAM', param, true);
+            nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
+                let listResult = nts.uk.ui.windows.getShared('KDL007_VALUES');
+                if (listResult.selecteds[0]) {                    
+                    _self.bonusPaySettingCode(listResult.selecteds[0]);
+                }
+            });
+        }
     }
     
     /**
