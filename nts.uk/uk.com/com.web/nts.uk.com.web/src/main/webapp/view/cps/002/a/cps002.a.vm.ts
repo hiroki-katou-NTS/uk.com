@@ -210,11 +210,18 @@ module cps002.a.vm {
                 });
             }
         }
+        clearEmployeeData() {
+            let self = this;
+            self.currentEmployee().employeeName("");
+            self.currentEmployee().employeeCode("");
+            self.currentEmployee().loginId("");
+            self.currentEmployee().password("");
+        }
 
         start() {
 
             let self = this;
-
+            self.clearEmployeeData();
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
