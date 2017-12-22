@@ -341,27 +341,30 @@
 											
 											<!-- timeitem   -->
 											<com:ko-if bind="(dataType() === 4)">
-												<com:ko-if bind="(isRequired() === 1)">
-													<input id="timeItem" class="sub-input-units save-error "
-														data-bind="ntsTimeWithDayEditor: {
-														name: itemName, 
-														constraint: itemCode, 
-														value: dateWithDay, 
-														enable: true, 
-														readonly: false,
-														required: true},
-														attr: { NameID: itemName }" />
+												<com:ko-if bind="(isRequired() === 1)">														
+													<input id="timeItem"  class="sub-input-units save-error "
+														data-bind="ntsTimeEditor: {
+															name: itemName,
+															value: dateWithDay,
+															constraint: itemCode,
+															inputFormat: 'time', 
+													 		mode: 'time',
+															required: true,
+															enable: true,
+															readonly: false}" />
 												</com:ko-if> 	
 																							
 												<com:ko-if bind="(isRequired() === 0)">
-													<input id="timeItem" class="sub-input-units save-error"
-														data-bind="ntsTimeWithDayEditor: {
-														name: itemName, 
-														constraint: itemCode, 
-														value: dateWithDay, 
-														enable: true, 
-														readonly: false},
-														attr: { NameID: itemName }"  />
+													<input id="timeItem"  class="sub-input-units save-error "
+														data-bind="ntsTimeEditor: {
+															value: dateWithDay,
+															constraint: itemCode,
+															inputFormat: 'time', 
+													 		mode: 'time',
+															required: false,
+															enable: true,
+															readonly: false}" />														
+														
 												</com:ko-if> 	
 											</com:ko-if>
 											
