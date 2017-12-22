@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+
 /**
  * The Interface WorkTimeSettingRepository.
  */
@@ -54,7 +56,34 @@ public interface WorkTimeSettingRepository {
 	 * @return the list
 	 */
 	public List<WorkTimeSetting> findByCodeList(String companyId, List<String> worktimeCode);
+
 	
+	/**
+	 * Find by work atr.
+	 *
+	 * @param companyId the company id
+	 * @param atr the atr
+	 * @return the list
+	 */
+	public List<WorkTimeSetting> findByWorkAtr(String companyId, WorkTimeDailyAtr atr);
+	
+	/**
+	 * Find by work method.
+	 *
+	 * @param companyId the company id
+	 * @param method the method
+	 * @return the list
+	 */
+	public List<WorkTimeSetting> findByWorkMethod(String companyId, WorkTimeMethodSet method);
+	
+	/**
+	 * Find by abolish atr.
+	 *
+	 * @param companyId the company id
+	 * @param atr the atr
+	 * @return the list
+	 */
+	public List<WorkTimeSetting> findByAbolishAtr(String companyId, AbolishAtr atr);
 	
 	/**
 	 * Save.

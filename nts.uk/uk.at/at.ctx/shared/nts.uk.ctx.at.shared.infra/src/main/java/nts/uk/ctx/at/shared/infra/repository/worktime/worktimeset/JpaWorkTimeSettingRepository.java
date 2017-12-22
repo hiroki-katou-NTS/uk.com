@@ -17,6 +17,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet;
@@ -155,6 +158,24 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	public void remove(String companyId, String workTimeCode) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<WorkTimeSetting> findByWorkAtr(String companyId, WorkTimeDailyAtr atr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<WorkTimeSetting> findByWorkMethod(String companyId, WorkTimeMethodSet method) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<WorkTimeSetting> findByAbolishAtr(String companyId, AbolishAtr atr) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
