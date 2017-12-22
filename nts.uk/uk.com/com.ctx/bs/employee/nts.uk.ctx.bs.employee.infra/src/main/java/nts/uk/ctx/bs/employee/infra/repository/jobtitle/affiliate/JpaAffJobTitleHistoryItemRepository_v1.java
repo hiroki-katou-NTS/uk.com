@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -155,7 +156,7 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	public List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate) {
 		List<BsymtAffJobTitleHistItem> data = this.queryProxy()
 				.query(GET_BY_LIST_EID_DATE, BsymtAffJobTitleHistItem.class)
-				.setParameter("sid", lstSid)
+				.setParameter("sid", lstSid.toArray().toString())
 				.setParameter("referDate", referDate).getList();
 		
 		List<AffJobTitleHistoryItem> lstAffJobTitleHistoryItems = new ArrayList<>();
