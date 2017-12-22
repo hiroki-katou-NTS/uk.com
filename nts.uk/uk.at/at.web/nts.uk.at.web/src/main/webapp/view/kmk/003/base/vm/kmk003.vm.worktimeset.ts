@@ -71,6 +71,12 @@ module nts.uk.at.view.kmk003.a {
                 siftRemarkOption: KnockoutObservable<any>;
                 memoOption: KnockoutObservable<any>;
 
+                // flag
+                isFlex: KnockoutObservable<boolean>;
+                isFlow: KnockoutObservable<boolean>;
+                isFixed: KnockoutObservable<boolean>;
+                isDiffTime: KnockoutObservable<boolean>;
+
                 constructor() {
                     var self = this;
                     self.worktimeCode = ko.observable('');
@@ -99,6 +105,26 @@ module nts.uk.at.view.kmk003.a {
                         width: "300"
                     }));
                     self.isUpdateMode = ko.observable(false);
+                    self.initComputed();
+                }
+
+                initComputed(): void {
+                    let self = this;
+                    self.isFlex = ko.computed(() => {
+                        return this.workTimeDivision.workTimeDailyAtr() == 1;
+                    });
+                    self.isFlow = ko.computed(() => {
+                        return this.workTimeDivision.workTimeDailyAtr() != 1
+                            && this.workTimeDivision.workTimeMethodSet() == 2;
+                    });
+                    self.isFixed = ko.computed(() => {
+                        return this.workTimeDivision.workTimeDailyAtr() != 1
+                            && this.workTimeDivision.workTimeMethodSet() == 0;
+                    });
+                    self.isDiffTime = ko.computed(() => {
+                        return this.workTimeDivision.workTimeDailyAtr() != 1
+                            && this.workTimeDivision.workTimeMethodSet() == 1;
+                    });
                 }
 
                 updateData(data: WorkTimeSettingDto) {
