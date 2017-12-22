@@ -513,26 +513,24 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class TimezoneOfFixedRestTimeSetModel {
-                timezones: DeductionTimeModel[];
+                timezones: KnockoutObservableArray<DeductionTimeModel>;
 
                 constructor() {
-                    this.timezones = [];
+                    this.timezones = ko.observableArray([]);;
                 }
 
                 updateData(data: TimezoneOfFixedRestTimeSetDto) {
-                    this.timezones = [];
-                    for (var dataItem of data.timezones) {
-                        var dataModel: DeductionTimeModel = new DeductionTimeModel();
-                        dataModel.updateData(dataItem);
-                        this.timezones.push(dataModel);
-                    }
+                    let mapped = _.map(data.timezones, dto => {
+                        let model = new DeductionTimeModel();
+                        model.updateData(dto);
+                        return model
+                    });
+                    this.timezones(mapped);
                 }
 
                 toDto(): TimezoneOfFixedRestTimeSetDto {
                     var timezones: DeductionTimeDto[] = [];
-                    for (var dataModel of this.timezones) {
-                        timezones.push(dataModel.toDto());
-                    }
+                    _.forEach(this.timezones(), tz => timezones.push(tz.toDto()));
                     var dataDTO: TimezoneOfFixedRestTimeSetDto = {
                         timezones: timezones
                     };
@@ -564,32 +562,30 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FlowRestTimezoneModel {
-                flowRestSets: FlowRestSettingModel[];
+                flowRestSets: KnockoutObservableArray<FlowRestSettingModel>;
                 useHereAfterRestSet: KnockoutObservable<boolean>;
                 hereAfterRestSet: FlowRestSettingModel;
 
                 constructor() {
-                    this.flowRestSets = [];
+                    this.flowRestSets = ko.observableArray([]);;
                     this.useHereAfterRestSet = ko.observable(false);
                     this.hereAfterRestSet = new FlowRestSettingModel();
                 }
 
                 updateData(data: FlowRestTimezoneDto) {
-                    this.flowRestSets = [];
-                    for (var dataDTO of data.flowRestSets) {
-                        var dataModel: FlowRestSettingModel = new FlowRestSettingModel();
-                        dataModel.updateData(dataDTO);
-                        this.flowRestSets.push(dataModel);
-                    }
+                    let mapped = _.map(data.flowRestSets, dto => {
+                        let model = new FlowRestSettingModel();
+                        model.updateData(dto);
+                        return model
+                    });
+                    this.flowRestSets(mapped);
                     this.useHereAfterRestSet(data.useHereAfterRestSet);
                     this.hereAfterRestSet.updateData(data.hereAfterRestSet);
                 }
 
                 toDto(): FlowRestTimezoneDto {
                     var flowRestSets: FlowRestSettingDto[] = [];
-                    for (var dataModel of this.flowRestSets) {
-                        flowRestSets.push(dataModel.toDto());
-                    }
+                    _.forEach(this.flowRestSets(), model => flowRestSets.push(model.toDto()));
                     var dataDTO: FlowRestTimezoneDto = {
                         flowRestSets: flowRestSets,
                         useHereAfterRestSet: this.useHereAfterRestSet(),
