@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.workinformation;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
@@ -24,7 +22,7 @@ public class ScheduleTimeSheet extends DomainObject{
 	
 	private TimeWithDayAttr leaveWork;
 
-	public ScheduleTimeSheet(BigDecimal workNo, int attendance, int leaveWork) {
+	public ScheduleTimeSheet(Integer workNo, int attendance, int leaveWork) {
 		super();
 		this.workNo = new WorkNo(workNo);
 		this.attendance = new TimeWithDayAttr(attendance);

@@ -44,7 +44,9 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
-		this.entity.setWorkTypeCode(workTypeCode.v());
+		if (workTypeCode !=null){
+			this.entity.setWorkTypeCode(workTypeCode.v());
+		}
 	}
 
 	/*
@@ -69,7 +71,9 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkTimeCode(Optional<WorkTimeCode> workTimeCode) {
-		this.entity.setWorkTimeCode(workTimeCode.get().v());
+		if (workTimeCode.isPresent() && workTimeCode != null){
+			this.entity.setWorkTimeCode(workTimeCode.get().v());
+		}
 	}
 
 }
