@@ -21,9 +21,12 @@
 
 .nts-wizard>.steps>ul>li.current>.nts-steps-middle>.nts-bridge>.nts-horizontal-line
 	{
-	width: calc(100% - 57px);
+	width: calc(100% - 53px);
 }
 
+.nts-wizard>.steps>ul>li>.nts-steps-middle {
+	padding-left: 31px;
+}
 /* step1 */
 .step1_top_left_col1 {
 	width: 100px;
