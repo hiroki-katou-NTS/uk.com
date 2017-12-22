@@ -468,6 +468,7 @@ module nts.uk.com.view.cmm018.a {
                         self.listHistory([]);
                         self.cpA([]);
                         self.enableRegister(false); 
+                        self.lstCompany([]);
                         self.enableDelete(false);
                         block.clear();
                         dfd.resolve();
@@ -534,6 +535,7 @@ module nts.uk.com.view.cmm018.a {
                         self.cpA([]);
                         self.enableRegister(false);
                         self.listHistory([]);
+                        self.lstWorkplace([]);
                         self.enableDelete(false);
                         block.clear();
                         dfd.resolve();
@@ -594,7 +596,7 @@ module nts.uk.com.view.cmm018.a {
                         self.cpA([]);
                         self.enableRegister(false);
                         self.enableDelete(false);
-                        self.lstPerson(data.lstPerson);
+                        self.lstPerson([]);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
@@ -1640,6 +1642,7 @@ module nts.uk.com.view.cmm018.a {
                         self.dataSourceB();
                         self.cpA([]);
                         self.enableDeleteB(false);
+                        self.lstCompany([]);
                         self.singleSelectedCode(null);
                         self.dataDisplay(self.convert(lstRoot));
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
@@ -1693,6 +1696,7 @@ module nts.uk.com.view.cmm018.a {
                         self.dataSourceB();
                         self.cpA([]);
                         self.singleSelectedCode(null);
+                        self.lstWorkplace([]);
                         self.dataDisplay(self.convert(lstRoot));
                         self.enableDeleteB(false);
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
@@ -1744,6 +1748,7 @@ module nts.uk.com.view.cmm018.a {
                         self.dataSourceB();
                         self.cpA([]);
                         self.singleSelectedCode(null);
+                        self.lstPerson([]);
                         self.dataDisplay(self.convert(lstRoot));
                         self.enableDeleteB(false);
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
