@@ -7,7 +7,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeAbs;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -36,10 +36,10 @@ public class CheckCondition  extends AggregateRoot {
 	/**
 	 * Extraction Range abstract class
 	 */
-	private ExtractionRangeAbs extractPeriod;
+	private ExtractionRangeBase extractPeriod;
 	
 	public CheckCondition(String alarmPatternCD, String companyID, int alarmCategory,
-			List<AlarmCheckConditionCode> checkConditionList, ExtractionRangeAbs  extractPeriod) {
+			List<AlarmCheckConditionCode> checkConditionList, ExtractionRangeBase  extractPeriod) {
 		super();
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
 		this.companyID = new CompanyId(companyID);

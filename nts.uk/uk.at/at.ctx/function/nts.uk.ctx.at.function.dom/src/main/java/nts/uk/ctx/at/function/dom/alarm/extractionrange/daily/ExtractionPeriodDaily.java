@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange.daily;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeAbs;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 
 /**
  * @author thanhpv
@@ -12,21 +12,24 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeAbs;
 
 @Getter
 @Setter
-public class ExtractionPeriodDaily extends ExtractionRangeAbs{
+public class ExtractionPeriodDaily extends ExtractionRangeBase{
 	
-	/** Day*/
-	// 日
-	private int day;
 	
-	/** Make it the day*/
-	// 当日とする
-	private boolean makeToDay;
+	private int NumberOfDays;
+	
+	private StartDate startDate;
+	
+	private EndDate endDate;
 
-	public ExtractionPeriodDaily(String extractionId, ExtractionRange extractionRange, int day, boolean makeToDay) {
+	public ExtractionPeriodDaily(String extractionId, ExtractionRange extractionRange, int numberOfDays,
+			StartDate startDate, EndDate endDate) {
 		super(extractionId, extractionRange);
-		this.day = day;
-		this.makeToDay = makeToDay;
+		NumberOfDays = numberOfDays;
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
+
+	
 	
 	
 }
