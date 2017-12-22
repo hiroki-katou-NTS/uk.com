@@ -489,6 +489,20 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
+            export class TimeRangeModel {
+                startTime: number;
+                endTime: number;
+            }
+
+            export abstract class TimeRangeModelConverter<T> {
+                abstract toListTimeRange(): KnockoutObservableArray<KnockoutObservable<TimeRangeModel>>;
+                abstract fromListTimeRange(newList: Array<KnockoutObservable<TimeRangeModel>>): Array<T>;
+
+                public toTimeRangeItem(start: number, end: number): KnockoutObservable<TimeRangeModel> {
+                    return ko.observable({ startTime: start, endTime: end });
+                }
+            }
+
             export class DeductionTimeModel {
                 start: KnockoutObservable<number>;
                 end: KnockoutObservable<number>;
@@ -512,11 +526,27 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class TimezoneOfFixedRestTimeSetModel {
+            export class TimezoneOfFixedRestTimeSetModel extends TimeRangeModelConverter<DeductionTimeModel> {
                 timezones: KnockoutObservableArray<DeductionTimeModel>;
 
                 constructor() {
-                    this.timezones = ko.observableArray([]);;
+                    super();
+                    this.timezones = ko.observableArray([]);
+                }
+
+                toListTimeRange(): KnockoutObservableArray<KnockoutObservable<TimeRangeModel>> {
+                    let self = this;
+                    let mapped = ko.observableArray(_.map(self.timezones(), tz => self.toTimeRangeItem(tz.start(), tz.end())));
+                    return mapped;
+                }
+
+                fromListTimeRange(newList: Array<KnockoutObservable<TimeRangeModel>>): Array<DeductionTimeModel> {
+                    return _.map(newList, newVl => {
+                        let vl = new DeductionTimeModel();
+                        vl.start(newVl().startTime);
+                        vl.end(newVl().endTime);
+                        return vl;
+                    });
                 }
 
                 updateData(data: TimezoneOfFixedRestTimeSetDto) {
@@ -567,7 +597,7 @@ module nts.uk.at.view.kmk003.a {
                 hereAfterRestSet: FlowRestSettingModel;
 
                 constructor() {
-                    this.flowRestSets = ko.observableArray([]);;
+                    this.flowRestSets = ko.observableArray([]);
                     this.useHereAfterRestSet = ko.observable(false);
                     this.hereAfterRestSet = new FlowRestSettingModel();
                 }

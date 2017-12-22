@@ -13,12 +13,14 @@ module nts.uk.at.view.kmk003.a {
     import FixHalfDayWorkTimezoneDto = service.model.fixedset.FixHalfDayWorkTimezoneDto;
     
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
+    import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     import FixedWorkRestSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkRestSetModel;
     import HDWorkTimeSheetSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.HDWorkTimeSheetSettingModel;
     import StampReflectTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.StampReflectTimezoneModel;
     import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
     import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
+    import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
     
     export module viewmodel {
         export module fixedset {
@@ -93,11 +95,27 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
             
-            export class FixRestTimezoneSetModel {
+            export class FixRestTimezoneSetModel extends TimeRangeModelConverter<DeductionTimeModel> {
                 lstTimezone: KnockoutObservableArray<DeductionTimeModel>;
                 
                 constructor() {
+                    super();
                     this.lstTimezone = ko.observableArray([]);
+                }
+
+                toListTimeRange(): KnockoutObservableArray<KnockoutObservable<TimeRangeModel>> {
+                    let self = this;
+                    let mapped = ko.observableArray(_.map(self.lstTimezone(), tz => self.toTimeRangeItem(tz.start(), tz.end())));
+                    return mapped;
+                }
+
+                fromListTimeRange(newList: Array<KnockoutObservable<TimeRangeModel>>): Array<DeductionTimeModel> {
+                    return _.map(newList, newVl => {
+                        let vl = new DeductionTimeModel();
+                        vl.start(newVl().startTime);
+                        vl.end(newVl().endTime);
+                        return vl;
+                    });
                 }
                 
                 updateData(data: FixRestTimezoneSetDto) {
