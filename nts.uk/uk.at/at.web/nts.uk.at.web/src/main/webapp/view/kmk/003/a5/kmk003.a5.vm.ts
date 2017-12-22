@@ -1,6 +1,5 @@
 module a5 {
     import FixTableOption = nts.uk.at.view.kmk003.base.fixedtable.FixTableOption;
-    import FlowRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestTimezoneModel;
     import FlowRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestSettingModel;
     import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
     import DeductionTimeDto = nts.uk.at.view.kmk003.a.service.model.common.DeductionTimeDto;
@@ -42,7 +41,7 @@ module a5 {
 
         // flow restSet
         flowRestSets: KnockoutObservableArray<FlowRestSettingModel>;
-        afterFlowRestSet: FlowRestTimezoneModel;
+        afterFlowRestSet: FlowRestSettingModel;
         flowRestSetUse: KnockoutObservable<boolean>;
 
         // ntsFixTableCustom options
@@ -98,7 +97,7 @@ module a5 {
             self.oneDayFlexTimezones = ko.observableArray([]);self.oneDayFlexTimezones.subscribe(vl => console.log(vl));
             self.morningFlexTimezones = ko.observableArray([]);
             self.afternoonFlexTimezones = ko.observableArray([]);
-            self.oneDayFlexRestSets = ko.observableArray([]);self.oneDayFlexTimezones.subscribe(vl => console.log(vl));
+            self.oneDayFlexRestSets = ko.observableArray([]);
             self.morningFlexRestSets = ko.observableArray([]);
             self.afternoonFlexRestSets = ko.observableArray([]);
             self.oneDayFixedTimezones = ko.observableArray([]);self.oneDayFixedTimezones.subscribe(vl => console.log(vl));
@@ -174,13 +173,31 @@ module a5 {
          */
         private initComputed(valueAccessor: any): void {
             let self = this;
-            let workTimeAtr = valueAccessor.workTimeAtr; // flex = 1
-            let workTimeMethod = valueAccessor.workTimeMethod; // fix = 1, diff = 2, flow = 3
-            workTimeAtr.subscribe(vl => console.log(vl));
-            workTimeMethod.subscribe(vl => console.log(vl));
 
             let ms: MainSettingModel = valueAccessor.mainSettingModel;
-            let test = ms.fixedWorkSetting.getHDWtzOneday();
+            let workTimeSetting = ms.workTimeSetting;
+            let flex = ms.flexWorkSetting;
+
+            let flexOneday = flex.getHDWtzOneday();
+            let flexMorning = flex.getHDWtzMorning();
+            let flexAfternoon = flex.getHDWtzAfternoon();
+
+            let fixedOneday = ms.fixedWorkSetting.getHDWtzOneday();
+            let fixedMorning = ms.fixedWorkSetting.getHDWtzMorning();
+            let fixedAfternoon = ms.fixedWorkSetting.getHDWtzAfternoon();
+
+            let onedayRest = flexOneday.restTimezone.flowRestTimezone;
+            let morningRest = flexMorning.restTimezone.flowRestTimezone;
+            let afternoonRest = flexAfternoon.restTimezone.flowRestTimezone;
+
+            // set value
+            self.oneDayAfterRestSetUse = onedayRest.useHereAfterRestSet;
+            self.oneDayAfterRestSet = onedayRest.hereAfterRestSet;
+            self.morningAfterRestSetUse = morningRest.useHereAfterRestSet;
+            self.morningAfterRestSet = morningRest.hereAfterRestSet;
+            self.afternoonAfterRestSetUse = afternoonRest.useHereAfterRestSet;
+            self.afternoonAfterRestSet = afternoonRest.hereAfterRestSet;
+
 //            test.restTimezone.lstTimezone.subscribe(newList => {
 //                let mapped = _.map(newList, item => self.toTimeRangeArray(item));
 //                self.oneDayFixedTimezones(mapped);
@@ -205,20 +222,10 @@ module a5 {
 
             // get one day, morning, afternoon;
 
-            self.isFlex = ko.computed(() => {
-                return workTimeAtr() == 1;
-            });
-            self.isFlow = ko.computed(() => {
-                //return workTimeAtr() != 1 && workTimeMethod() == 2;//TODO: hien tai chi lam flex va fixed.
-                return false;
-            });
-            self.isFixed = ko.computed(() => {
-                return workTimeAtr() != 1 && workTimeMethod() == 0;
-            });
-            self.isDiffTime = ko.computed(() => {
-                //return workTimeAtr() != 1 && workTimeMethod() == 1;//TODO: hien tai chi lam flex va fixed.
-                return false;
-            });
+            self.isFlex = workTimeSetting.isFlex;
+            self.isFlow = workTimeSetting.isFlow;
+            self.isFixed = workTimeSetting.isFixed;
+            self.isDiffTime = workTimeSetting.isDiffTime;
 
             self.isFlowTimezone = ko.computed(() => {
                 //return self.isFlow() && self.flowFixedRestTime() == 1;//TODO: hien tai chi lam flex va fixed.
