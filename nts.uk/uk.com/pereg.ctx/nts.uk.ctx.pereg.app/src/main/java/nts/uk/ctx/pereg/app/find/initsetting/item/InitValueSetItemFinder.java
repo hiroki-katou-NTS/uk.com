@@ -72,7 +72,19 @@ public class InitValueSetItemFinder {
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
 
+		setDateTypeValue(result);
+
 		return result;
+	}
+
+	private void setDateTypeValue(List<SettingItemDto> result) {
+		result.forEach(x -> {
+			if (x.getDataType().equals(DataTypeValue.DATE)) {
+
+			}
+
+		});
+
 	}
 
 	private void setItemSameLogin(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
@@ -134,7 +146,7 @@ public class InitValueSetItemFinder {
 						Optional<SettingItemDto> itemDataOpt = optList.stream()
 								.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
 						if (itemDataOpt.isPresent()) {
-							itemDtoOpt.get().setData(itemDataOpt.get().getValueAsString());
+							itemDtoOpt.get().setData(itemDataOpt.get().getSaveData().getValue());
 						}
 
 					}
@@ -175,7 +187,7 @@ public class InitValueSetItemFinder {
 				domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
 				domain.getStringValue().v(), dataType, BigDecimal.valueOf(domain.getSelectionItemRefType()),
-				domain.getItemParentCd());
+				domain.getItemParentCd(), domain.getDateType());
 
 		if (dataType == DataTypeValue.SELECTION.value) {
 
