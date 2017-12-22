@@ -24,6 +24,7 @@ import nts.uk.ctx.bs.employee.app.command.department.AddAffiliationDepartmentCom
 import nts.uk.ctx.bs.employee.app.command.department.DeleteAffiliationDepartmentCommand;
 import nts.uk.ctx.bs.employee.app.command.department.UpdateAffiliationDepartmentCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.AddAffCompanyHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.history.DeleteAffCompanyHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.UpdateAffCompanyHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.mngdata.AddEmployeeDataMngInfoCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.mngdata.UpdateEmployeeDataMngInfoCommand;
@@ -93,7 +94,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteBusinessWorkTypeOfHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteShortWorkTimeCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteWorkingConditionCommand>>(){}
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteWorkingConditionCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffCompanyHistoryCommand>>(){}
 			);
 	
 	@Override

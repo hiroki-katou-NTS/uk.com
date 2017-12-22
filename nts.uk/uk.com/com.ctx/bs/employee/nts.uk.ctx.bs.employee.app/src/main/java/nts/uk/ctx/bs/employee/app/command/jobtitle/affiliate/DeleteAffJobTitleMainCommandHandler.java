@@ -9,7 +9,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryService;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,7 +23,7 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 	private AffJobTitleHistoryRepository_ver1 affJobTitleHistoryRepository_ver1;
 	
 	@Inject
-	private AffJobTitleHistoryItemRepository_v1 affJobTitleHistoryItemRepository_v1;
+	private AffJobTitleHistoryItemRepository_ver1 affJobTitleHistoryItemRepository_v1;
 	
 	@Inject 
 	private AffJobTitleHistoryService affJobTitleHistoryService;

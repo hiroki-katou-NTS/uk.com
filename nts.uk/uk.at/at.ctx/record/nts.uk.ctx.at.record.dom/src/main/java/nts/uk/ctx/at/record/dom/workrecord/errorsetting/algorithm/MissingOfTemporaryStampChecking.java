@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,33 +28,35 @@ public class MissingOfTemporaryStampChecking {
 	
 	public void missingOfTemporaryStampChecking(String companyID, String employeeID, GeneralDate processingDate) {
 //		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
-		TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, processingDate).get();
-		List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
+		if (temporaryTimeOfDailyPerformance.isPresent()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
 
-		List<Integer> attendanceItemIds = new ArrayList<>();
-		
-		for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
-			if (timeLeavingWork.getAttendanceStamp() == null || (timeLeavingWork.getAttendanceStamp() != null
-					&& timeLeavingWork.getAttendanceStamp().getStamp() == null)) {
-				if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-					attendanceItemIds.add(51);
-				} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-					attendanceItemIds.add(59);
-				} else if (timeLeavingWork.getWorkNo().v().intValue() == 3) {
-					attendanceItemIds.add(67);
+			List<Integer> attendanceItemIds = new ArrayList<>();
+			
+			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
+				if (timeLeavingWork.getAttendanceStamp() == null || (timeLeavingWork.getAttendanceStamp() != null
+						&& timeLeavingWork.getAttendanceStamp().getStamp() == null)) {
+					if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
+						attendanceItemIds.add(51);
+					} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
+						attendanceItemIds.add(59);
+					} else if (timeLeavingWork.getWorkNo().v().intValue() == 3) {
+						attendanceItemIds.add(67);
+					}
 				}
-			}
-			if (timeLeavingWork.getLeaveStamp() == null || (timeLeavingWork.getLeaveStamp() != null
-					&& timeLeavingWork.getLeaveStamp().getStamp() == null)) {
-				if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-					attendanceItemIds.add(53);
-				} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-					attendanceItemIds.add(61);
-				} else if (timeLeavingWork.getWorkNo().v().intValue() == 3) {
-					attendanceItemIds.add(69);
+				if (timeLeavingWork.getLeaveStamp() == null || (timeLeavingWork.getLeaveStamp() != null
+						&& timeLeavingWork.getLeaveStamp().getStamp() == null)) {
+					if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
+						attendanceItemIds.add(53);
+					} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
+						attendanceItemIds.add(61);
+					} else if (timeLeavingWork.getWorkNo().v().intValue() == 3) {
+						attendanceItemIds.add(69);
+					}
 				}
+				createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);
 			}
-			createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);
 		}
 
 //		return outPutProcess;

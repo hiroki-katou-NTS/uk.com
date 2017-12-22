@@ -76,6 +76,17 @@ public class PersonalDayOfWeek extends DomainObject {
 		memento.setFriday(this.friday);
 	}
 
+	/**
+	 * Instantiates a new personal day of week.
+	 *
+	 * @param monday the monday
+	 * @param tuesday the tuesday
+	 * @param wednesday the wednesday
+	 * @param thursday the thursday
+	 * @param friday the friday
+	 * @param saturday the saturday
+	 * @param sunday the sunday
+	 */
 	public PersonalDayOfWeek(Optional<SingleDaySchedule> monday, Optional<SingleDaySchedule> tuesday,
 			Optional<SingleDaySchedule> wednesday, Optional<SingleDaySchedule> thursday,
 			Optional<SingleDaySchedule> friday, Optional<SingleDaySchedule> saturday,
