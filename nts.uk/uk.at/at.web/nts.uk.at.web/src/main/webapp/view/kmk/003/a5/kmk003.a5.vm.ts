@@ -1,9 +1,9 @@
 module a5 {
     import FixTableOption = nts.uk.at.view.kmk003.base.fixedtable.FixTableOption;
     import FlowRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestTimezoneModel;
-    import FlowRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestSettingModel;
     import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
     import DeductionTimeDto = nts.uk.at.view.kmk003.a.service.model.common.DeductionTimeDto;
+    import WorkTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeSettingModel;
     import FixHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixHalfDayWorkTimezoneModel;
     import DiffTimeHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeHalfDayWorkTimezoneModel;
     import FlexHalfDayWorkTimeModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexHalfDayWorkTimeModel;
@@ -30,20 +30,12 @@ module a5 {
         flowTimezones: KnockoutObservableArray<any>;
 
         // flex restSet
-        oneDayFlexRestSets: KnockoutObservableArray<FlowRestSettingModel>;
-        oneDayAfterRestSet: FlowRestSettingModel;
-        oneDayAfterRestSetUse: KnockoutObservable<boolean>;
-        morningFlexRestSets: KnockoutObservableArray<FlowRestSettingModel>;
-        morningAfterRestSet: FlowRestSettingModel;
-        morningAfterRestSetUse: KnockoutObservable<boolean>;
-        afternoonFlexRestSets: KnockoutObservableArray<FlowRestSettingModel>;
-        afternoonAfterRestSet: FlowRestSettingModel;
-        afternoonAfterRestSetUse: KnockoutObservable<boolean>;
+        oneDayFlexRestSet: FlowRestTimezoneModel;
+        morningFlexRestSet: FlowRestTimezoneModel;
+        afternoonFlexRestSet: FlowRestTimezoneModel;
 
         // flow restSet
-        flowRestSets: KnockoutObservableArray<FlowRestSettingModel>;
-        afterFlowRestSet: FlowRestTimezoneModel;
-        flowRestSetUse: KnockoutObservable<boolean>;
+        flowRestSet: FlowRestTimezoneModel;
 
         // ntsFixTableCustom options
 
@@ -93,14 +85,12 @@ module a5 {
 
         constructor(valueAccessor: any) {
             let self = this;
+            let mainSettingModel: MainSettingModel = valueAccessor.mainSettingModel;
 
             // nts fix table data source
             self.oneDayFlexTimezones = ko.observableArray([]);self.oneDayFlexTimezones.subscribe(vl => console.log(vl));
             self.morningFlexTimezones = ko.observableArray([]);
             self.afternoonFlexTimezones = ko.observableArray([]);
-            self.oneDayFlexRestSets = ko.observableArray([]);self.oneDayFlexTimezones.subscribe(vl => console.log(vl));
-            self.morningFlexRestSets = ko.observableArray([]);
-            self.afternoonFlexRestSets = ko.observableArray([]);
             self.oneDayFixedTimezones = ko.observableArray([]);self.oneDayFixedTimezones.subscribe(vl => console.log(vl));
             self.morningFixedTimezones = ko.observableArray([]);
             self.afternoonFixedTimezones = ko.observableArray([]);
@@ -108,18 +98,14 @@ module a5 {
             self.morningDiffTimezones = ko.observableArray([]);
             self.afternoonDiffTimezones = ko.observableArray([]);
             self.flowTimezones = ko.observableArray([]);
-            self.flowRestSets = ko.observableArray([]);
 
-            // 111
-            self.oneDayAfterRestSet = new FlowRestSettingModel();
-            self.morningAfterRestSet = new FlowRestSettingModel();
-            self.afternoonAfterRestSet = new FlowRestSettingModel();
+            // flex rest set initial value
+            self.oneDayFlexRestSet = new FlowRestTimezoneModel();
+            self.morningFlexRestSet = new FlowRestTimezoneModel();
+            self.afternoonFlexRestSet = new FlowRestTimezoneModel();
 
-            // checkbox
-            self.oneDayAfterRestSetUse = ko.observable(false);
-            self.morningAfterRestSetUse = ko.observable(false);
-            self.afternoonAfterRestSetUse = ko.observable(false);
-            self.flowRestSetUse = ko.observable(false);
+            // flow rest set initial value
+            self.flowRestSet = new FlowRestTimezoneModel();
 
             // switch button
             self.switchDs = [
@@ -128,97 +114,71 @@ module a5 {
             ];
             self.flexFixedRestTime = ko.observable(true); // initial value = lead
             self.flowFixedRestTime = ko.observable(true); // initial value = lead
-            self.flexFixedRestTime.subscribe(vl => console.log(vl));
-
-            // init computed
-            self.initComputed(valueAccessor);
 
             // fix table option
             self.setFixedTableOption();
 
+            // load data from main setting model
+            self.loadData(mainSettingModel);
+
         }
 
-        public toTimeRangeArray(before: DeductionTimeModel): any {
-            return {startTime: before.start(), endTime: before.end()};
-        }
-
-        public toDeductionTimeDto(before: any): DeductionTimeDto {
-            let dto =  <DeductionTimeDto>{};
-            dto.start = before.startTime;
-            dto.end = before.endTime;
-            return dto;
-        }
-
-        public loadData(): void {
+        public loadData(mainSettingModel: MainSettingModel): void {
             let self = this;
-            // TODO need to check
-//            if (self.display23()) {
-//                $('#ntsft-a5-oneday').ntsFixTableCustom(self.oneDayTimezoneOption);
-//                $('#ntsft-a5-morning').ntsFixTableCustom(self.morningTimezoneOption);
-//                $('#ntsft-a5-afternoon').ntsFixTableCustom(self.afternoonTimezoneOption);
-//            }
-//            if (self.display26()) {
-//                $('#ntsft-a5-onedayFlex').ntsFixTableCustom(self.oneDayFlexOption);
-//                $('#ntsft-a5-morningFlex').ntsFixTableCustom(self.morningFlexOption);
-//                $('#ntsft-a5-afternoonFlex').ntsFixTableCustom(self.afternoonFlexOption);
-//
-//                // single list
-//                $('#ntsft-a5-onedayFlex2').ntsFixTableCustom(self.oneDayFlexOption2);
-//                $('#ntsft-a5-morningFlex2').ntsFixTableCustom(self.morningFlexOption2);
-//                $('#ntsft-a5-afternoonFlex2').ntsFixTableCustom(self.afternoonFlexOption2);
-//            }
+
+            let flex = mainSettingModel.flexWorkSetting;
+
+            let flexOneday = flex.getHDWtzOneday();
+            let flexMorning = flex.getHDWtzMorning();
+            let flexAfternoon = flex.getHDWtzAfternoon();
+
+            let fixedOneday = mainSettingModel.fixedWorkSetting.getHDWtzOneday();
+            let fixedMorning = mainSettingModel.fixedWorkSetting.getHDWtzMorning();
+            let fixedAfternoon = mainSettingModel.fixedWorkSetting.getHDWtzAfternoon();
+
+            // set flex timezones
+            self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.toListTimeRange();
+            self.oneDayFlexTimezones.subscribe(vl => flexOneday.restTimezone.fixedRestTimezone.fromListTimeRange(vl));
+
+            self.morningFlexTimezones = flexMorning.restTimezone.fixedRestTimezone.toListTimeRange();
+            self.morningFlexTimezones.subscribe(vl => flexMorning.restTimezone.fixedRestTimezone.fromListTimeRange(vl));
+
+            self.afternoonFlexTimezones = flexAfternoon.restTimezone.fixedRestTimezone.toListTimeRange();
+            self.afternoonFlexTimezones.subscribe(vl => flexAfternoon.restTimezone.fixedRestTimezone.fromListTimeRange(vl));
+
+            // set fixed timezones
+            self.oneDayFixedTimezones = fixedOneday.restTimezone.toListTimeRange();
+            self.oneDayFixedTimezones.subscribe(vl => fixedOneday.restTimezone.fromListTimeRange(vl));
+
+            self.morningFixedTimezones = fixedMorning.restTimezone.toListTimeRange();
+            self.morningFixedTimezones.subscribe(vl => fixedMorning.restTimezone.fromListTimeRange(vl));
+
+            self.afternoonFixedTimezones = fixedAfternoon.restTimezone.toListTimeRange();
+            self.afternoonFixedTimezones.subscribe(vl => fixedAfternoon.restTimezone.fromListTimeRange(vl));
+
+            // set flex rest set value
+            self.oneDayFlexRestSet = flexOneday.restTimezone.flowRestTimezone;
+            self.morningFlexRestSet = flexMorning.restTimezone.flowRestTimezone;
+            self.afternoonFlexRestSet = flexAfternoon.restTimezone.flowRestTimezone;
+
+            // set flow rest set value
+            //TODO: chua lam
+
+            // computed value initial
+            self.initComputed(mainSettingModel.workTimeSetting);
         }
 
         /**
          * Initial computed.
          */
-        private initComputed(valueAccessor: any): void {
+        private initComputed(workTimeSetting: WorkTimeSettingModel): void {
             let self = this;
-            let workTimeAtr = valueAccessor.workTimeAtr; // flex = 1
-            let workTimeMethod = valueAccessor.workTimeMethod; // fix = 1, diff = 2, flow = 3
-            workTimeAtr.subscribe(vl => console.log(vl));
-            workTimeMethod.subscribe(vl => console.log(vl));
 
-            let ms: MainSettingModel = valueAccessor.mainSettingModel;
-            let test = ms.fixedWorkSetting.getHDWtzOneday();
-//            test.restTimezone.lstTimezone.subscribe(newList => {
-//                let mapped = _.map(newList, item => self.toTimeRangeArray(item));
-//                self.oneDayFixedTimezones(mapped);
-//            });
-//            self.oneDayFixedTimezones.subscribe(newList => {
-//                let mapped = _.map(newList, item => self.toDeductionTimeDto(item));
-//                test.restTimezone.updateData({lstTimezone: mapped});
-//            });
-            //TODO testing
-
-            let flexHdWtOneday: FlexHalfDayWorkTimeModel;
-            let flexHdWtMorning: FlexHalfDayWorkTimeModel;
-            let flexHdWtAfternoon: FlexHalfDayWorkTimeModel;
-
-            let fixedHdWtOneday: FixHalfDayWorkTimezoneModel;
-            let fixedHdWtMorning: FixHalfDayWorkTimezoneModel;
-            let fixedHdWtAfternoon: FixHalfDayWorkTimezoneModel;
-
-            let diffHdWtOneday: DiffTimeHalfDayWorkTimezoneModel;
-            let diffHdWtMorning: DiffTimeHalfDayWorkTimezoneModel;
-            let diffHdWtAfternoon: DiffTimeHalfDayWorkTimezoneModel;
-
-            // get one day, morning, afternoon;
-
-            self.isFlex = ko.computed(() => {
-                return workTimeAtr() == 1;
-            });
-            self.isFlow = ko.computed(() => {
-                //return workTimeAtr() != 1 && workTimeMethod() == 2;//TODO: hien tai chi lam flex va fixed.
-                return false;
-            });
-            self.isFixed = ko.computed(() => {
-                return workTimeAtr() != 1 && workTimeMethod() == 0;
-            });
-            self.isDiffTime = ko.computed(() => {
-                //return workTimeAtr() != 1 && workTimeMethod() == 1;//TODO: hien tai chi lam flex va fixed.
-                return false;
-            });
+            // set flag
+            self.isFlex = workTimeSetting.isFlex;
+            self.isFlow = workTimeSetting.isFlow;
+            self.isFixed = workTimeSetting.isFixed;
+            self.isDiffTime = workTimeSetting.isDiffTime;
 
             self.isFlowTimezone = ko.computed(() => {
                 //return self.isFlow() && self.flowFixedRestTime() == 1;//TODO: hien tai chi lam flex va fixed.
@@ -268,11 +228,11 @@ module a5 {
 
             // flex restSet option
             self.oneDayFlexRestSetOption = self.getDefaultRestSetOption();
-            self.oneDayFlexRestSetOption.dataSource = self.oneDayFlexRestSets;
+            self.oneDayFlexRestSetOption.dataSource = self.oneDayFlexRestSet.flowRestSets;
             self.morningFlexRestSetOption = self.getDefaultRestSetOption();
-            self.morningFlexRestSetOption.dataSource = self.morningFlexRestSets;
+            self.morningFlexRestSetOption.dataSource = self.morningFlexRestSet.flowRestSets;
             self.afternoonFlexRestSetOption = self.getDefaultRestSetOption();
-            self.afternoonFlexRestSetOption.dataSource = self.afternoonFlexRestSets;
+            self.afternoonFlexRestSetOption.dataSource = self.afternoonFlexRestSet.flowRestSets;
 
             // flow timezone option
             self.flowTimezoneOption = self.getDefaultTimezoneOption();
@@ -280,7 +240,7 @@ module a5 {
 
             // flow restSet option
             self.flowRestSetOption = self.getDefaultRestSetOption();
-            self.flowRestSetOption.dataSource = self.flowRestSets;
+            self.flowRestSetOption.dataSource = self.flowRestSet.flowRestSets;
         }
 
         private getDefaultTimezoneOption(): FixTableOption {
@@ -317,7 +277,7 @@ module a5 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_174"),
                     key: "startCol",
-                    //defaultValue: ko.observable(0),
+                    defaultValue: ko.observable(0),
                     width: 120,
                     template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
@@ -325,7 +285,7 @@ module a5 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"),
                     key: "endCol",
-                    //defaultValue: ko.observable(0),
+                    defaultValue: ko.observable(0),
                     width: 120,
                     template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
@@ -366,7 +326,6 @@ module a5 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.loadData();
             });
         }
 

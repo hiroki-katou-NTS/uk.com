@@ -16,11 +16,6 @@ module nts.uk.at.view.kmk003.a {
                     minWorkTime: number;
                 }
 
-                export interface FixedWorkTimezoneSetDto {
-                    lstWorkingTimezone: common.EmTimeZoneSetDto[];
-                    lstOTTimezone: common.OverTimeOfTimeZoneSetDto[];
-                }
-
                 export interface FlexCalcSettingDto {
                     removeFromWorkTime: number;
                     calculateSharing: number;
@@ -28,7 +23,7 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface FlexHalfDayWorkTimeDto {
                     restTimezone: common.FlowWorkRestTimezoneDto;
-                    workTimezone: FixedWorkTimezoneSetDto;
+                    workTimezone: common.FixedWorkTimezoneSetDto;
                     ampmAtr: number;
                 }
 

@@ -11,7 +11,7 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface FlTimeSettingDto {
                     rounding: common.TimeRoundingSettingDto;
-                    passageTime: number;
+                    elapsedTime: number;
                 }
 
                 export interface FlOTTimezoneDto {

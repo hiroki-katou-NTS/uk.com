@@ -4,11 +4,11 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkRestTimezoneDto = service.model.common.FlowWorkRestTimezoneDto;
     import HDWorkTimeSheetSettingDto = service.model.common.HDWorkTimeSheetSettingDto;
     import StampReflectTimezoneDto = service.model.common.StampReflectTimezoneDto;
+    import FixedWorkTimezoneSetDto = service.model.common.FixedWorkTimezoneSetDto;
 
     import TimeSheetDto = service.model.flexset.TimeSheetDto;
     import CoreTimeSettingDto = service.model.flexset.CoreTimeSettingDto;
     import FlexHalfDayWorkTimeDto = service.model.flexset.FlexHalfDayWorkTimeDto;
-    import FixedWorkTimezoneSetDto = service.model.flexset.FixedWorkTimezoneSetDto;
     import FlexCalcSettingDto = service.model.flexset.FlexCalcSettingDto;
     import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
     import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
@@ -20,6 +20,7 @@ module nts.uk.at.view.kmk003.a {
     import StampReflectTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.StampReflectTimezoneModel;
     import FlowWorkRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
+    import FixedWorkTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkTimezoneSetModel;
 
     export module viewmodel {
         export module flexset {
@@ -73,50 +74,6 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FixedWorkTimezoneSetModel {
-                lstWorkingTimezone: EmTimeZoneSetModel[];
-                lstOTTimezone: OverTimeOfTimeZoneSetModel[];
-
-                constructor() {
-                    this.lstWorkingTimezone = [];
-                    this.lstOTTimezone = [];
-                }
-
-                updataData(data: FixedWorkTimezoneSetDto) {
-                    this.lstWorkingTimezone = [];
-                    for (var dataTimezoneDTO of data.lstWorkingTimezone) {
-                        var dataTimezoneModel: EmTimeZoneSetModel = new EmTimeZoneSetModel();
-                        dataTimezoneModel.updateData(dataTimezoneDTO);
-                        this.lstWorkingTimezone.push(dataTimezoneModel);
-                    }
-
-                    this.lstOTTimezone = [];
-                    for (var dataOvertimeDTO of data.lstOTTimezone) {
-                        var dataOvertimeModel: OverTimeOfTimeZoneSetModel = new OverTimeOfTimeZoneSetModel();
-                        dataOvertimeModel.updateData(dataOvertimeDTO);
-                        this.lstOTTimezone.push(dataOvertimeModel);
-                    }
-                }
-
-                toDto(): FixedWorkTimezoneSetDto {
-
-                    var lstWorkingTimezone: EmTimeZoneSetDto[] = [];
-                    for (var dataTimezoneModel of this.lstWorkingTimezone) {
-                        lstWorkingTimezone.push(dataTimezoneModel.toDto());
-                    }
-
-                    var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
-                    for (var dataOvertimeModel of this.lstOTTimezone) {
-                        lstOTTimezone.push(dataOvertimeModel.toDto());
-                    }
-                    var dataDTO: FixedWorkTimezoneSetDto = {
-                        lstWorkingTimezone: lstWorkingTimezone,
-                        lstOTTimezone: lstOTTimezone
-                    };
-                    return dataDTO;
-                }
-            }
-
             export class FlexHalfDayWorkTimeModel {
                 restTimezone: FlowWorkRestTimezoneModel;
                 workTimezone: FixedWorkTimezoneSetModel;
@@ -144,7 +101,7 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: FlexHalfDayWorkTimeDto) {
                     this.restTimezone.updateData(data.restTimezone);
-                    this.workTimezone.updataData(data.workTimezone);
+                    this.workTimezone.updateData(data.workTimezone);
                     this.ampmAtr(data.ampmAtr);
                 }
 

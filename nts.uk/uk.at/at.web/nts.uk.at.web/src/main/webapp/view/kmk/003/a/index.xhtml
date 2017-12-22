@@ -292,19 +292,19 @@
 												</div>
 											</div>
 											<div class="tab-a3">
-												<div data-bind="ntsKMK003A3: { settingMethod: selectedSettingMethod,
-													 settingTab: selectedTab, settingWorkFrom: selectedWorkForm}">
+												<div data-bind="ntsKMK003A3: {enum: settingEnum, 
+													mainModel: mainSettingModel}">
 												</div>
 											</div>
 											<div class="tab-a4">
-												<div data-bind="ntsKMK003A4: { screenMode:tabMode, 
-													settingMethod:selectedSettingMethod, workTimeCode: siftCode}">
+												<div data-bind="ntsKMK003A4: { 
+													tabMode: tabMode, 
+													mainSettingModel: mainSettingModel,
+													saveAction: isClickSave}">
 												</div>
 											</div>
 											<div class="tab-a5">
-												<div data-bind="ntsKMK003A5: { screenMode: tabMode(), 
-													workTimeAtr: workTimeSettingModel.workTimeDivision.workTimeDailyAtr,
-													workTimeMethod: workTimeSettingModel.workTimeDivision.workTimeMethodSet,
+												<div data-bind="ntsKMK003A5: { screenMode: tabMode(),
 													mainSettingModel: mainSettingModel }">
 												</div>
 											</div>

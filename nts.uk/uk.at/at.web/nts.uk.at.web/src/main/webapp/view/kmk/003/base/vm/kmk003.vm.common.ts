@@ -42,6 +42,7 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkRestTimezoneDto = service.model.common.FlowWorkRestTimezoneDto;
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
     import FixedWorkRestSetDto = service.model.common.FixedWorkRestSetDto;
+    import FixedWorkTimezoneSetDto = service.model.common.FixedWorkTimezoneSetDto;
 
     export module viewmodel {
         export module common {
@@ -489,6 +490,20 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
+            export class TimeRangeModel {
+                startTime: number;
+                endTime: number;
+            }
+
+            export abstract class TimeRangeModelConverter<T> {
+                abstract toListTimeRange(): KnockoutObservableArray<KnockoutObservable<TimeRangeModel>>;
+                abstract fromListTimeRange(newList: Array<KnockoutObservable<TimeRangeModel>>): Array<T>;
+
+                public toTimeRangeItem(start: number, end: number): KnockoutObservable<TimeRangeModel> {
+                    return ko.observable({ startTime: start, endTime: end });
+                }
+            }
+
             export class DeductionTimeModel {
                 start: KnockoutObservable<number>;
                 end: KnockoutObservable<number>;
@@ -512,27 +527,41 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class TimezoneOfFixedRestTimeSetModel {
-                timezones: DeductionTimeModel[];
+            export class TimezoneOfFixedRestTimeSetModel extends TimeRangeModelConverter<DeductionTimeModel> {
+                timezones: KnockoutObservableArray<DeductionTimeModel>;
 
                 constructor() {
-                    this.timezones = [];
+                    super();
+                    this.timezones = ko.observableArray([]);
+                }
+
+                toListTimeRange(): KnockoutObservableArray<KnockoutObservable<TimeRangeModel>> {
+                    let self = this;
+                    let mapped = ko.observableArray(_.map(self.timezones(), tz => self.toTimeRangeItem(tz.start(), tz.end())));
+                    return mapped;
+                }
+
+                fromListTimeRange(newList: Array<KnockoutObservable<TimeRangeModel>>): Array<DeductionTimeModel> {
+                    return _.map(newList, newVl => {
+                        let vl = new DeductionTimeModel();
+                        vl.start(newVl().startTime);
+                        vl.end(newVl().endTime);
+                        return vl;
+                    });
                 }
 
                 updateData(data: TimezoneOfFixedRestTimeSetDto) {
-                    this.timezones = [];
-                    for (var dataItem of data.timezones) {
-                        var dataModel: DeductionTimeModel = new DeductionTimeModel();
-                        dataModel.updateData(dataItem);
-                        this.timezones.push(dataModel);
-                    }
+                    let mapped = _.map(data.timezones, dto => {
+                        let model = new DeductionTimeModel();
+                        model.updateData(dto);
+                        return model
+                    });
+                    this.timezones(mapped);
                 }
 
                 toDto(): TimezoneOfFixedRestTimeSetDto {
                     var timezones: DeductionTimeDto[] = [];
-                    for (var dataModel of this.timezones) {
-                        timezones.push(dataModel.toDto());
-                    }
+                    _.forEach(this.timezones(), tz => timezones.push(tz.toDto()));
                     var dataDTO: TimezoneOfFixedRestTimeSetDto = {
                         timezones: timezones
                     };
@@ -564,32 +593,30 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FlowRestTimezoneModel {
-                flowRestSets: FlowRestSettingModel[];
+                flowRestSets: KnockoutObservableArray<FlowRestSettingModel>;
                 useHereAfterRestSet: KnockoutObservable<boolean>;
                 hereAfterRestSet: FlowRestSettingModel;
 
                 constructor() {
-                    this.flowRestSets = [];
+                    this.flowRestSets = ko.observableArray([]);
                     this.useHereAfterRestSet = ko.observable(false);
                     this.hereAfterRestSet = new FlowRestSettingModel();
                 }
 
                 updateData(data: FlowRestTimezoneDto) {
-                    this.flowRestSets = [];
-                    for (var dataDTO of data.flowRestSets) {
-                        var dataModel: FlowRestSettingModel = new FlowRestSettingModel();
-                        dataModel.updateData(dataDTO);
-                        this.flowRestSets.push(dataModel);
-                    }
+                    let mapped = _.map(data.flowRestSets, dto => {
+                        let model = new FlowRestSettingModel();
+                        model.updateData(dto);
+                        return model
+                    });
+                    this.flowRestSets(mapped);
                     this.useHereAfterRestSet(data.useHereAfterRestSet);
                     this.hereAfterRestSet.updateData(data.hereAfterRestSet);
                 }
 
                 toDto(): FlowRestTimezoneDto {
                     var flowRestSets: FlowRestSettingDto[] = [];
-                    for (var dataModel of this.flowRestSets) {
-                        flowRestSets.push(dataModel.toDto());
-                    }
+                    _.forEach(this.flowRestSets(), model => flowRestSets.push(model.toDto()));
                     var dataDTO: FlowRestTimezoneDto = {
                         flowRestSets: flowRestSets,
                         useHereAfterRestSet: this.useHereAfterRestSet(),
@@ -1277,6 +1304,67 @@ module nts.uk.at.view.kmk003.a {
                     let dataDTO: FixedWorkRestSetDto = {
                         commonRestSet: this.commonRestSet.toDto(),
                         fixedRestCalculateMethod: this.fixedRestCalculateMethod()
+                    };
+                    return dataDTO;
+                }
+            }
+            
+             export class FixedWorkTimezoneSetModel {
+                lstWorkingTimezone: common.EmTimeZoneSetModel[];
+                lstOTTimezone: common.OverTimeOfTimeZoneSetModel[];
+                
+                constructor() {
+                    this.lstWorkingTimezone = [];
+                    this.lstOTTimezone = [];
+                }
+                
+                updateData(data: FixedWorkTimezoneSetDto) {
+                    this.updateWorkingTimezone(data.lstWorkingTimezone);                
+                    this.updateOvertimeZone(data.lstOTTimezone);
+                }
+                
+                updateOvertimeZone(lstOTTimezone: OverTimeOfTimeZoneSetDto[]) {
+                    for (var dataDTO of lstOTTimezone) {
+                        var dataModel: OverTimeOfTimeZoneSetModel = this.getOvertimeZoneByWorkTimezoneNo(dataDTO.workTimezoneNo);
+                        if (dataModel) {
+                            dataModel.updateData(dataDTO);
+                        }
+                        else {
+                            dataModel = new OverTimeOfTimeZoneSetModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstOTTimezone.push(dataModel);
+                        }
+                    }
+                }
+                
+                getOvertimeZoneByWorkTimezoneNo(workTimezoneNo: number) {
+                    return _.find(this.lstOTTimezone, timezone => timezone.workTimezoneNo() == workTimezoneNo);
+                }
+                
+                updateWorkingTimezone(lstWorkingTimezone: EmTimeZoneSetDto[]){
+                    for(var dataDTO of lstWorkingTimezone){
+                        var dataModel: EmTimeZoneSetModel = this.getWorkingTimezoneByEmploymentTimeFrameNo(dataDTO.employmentTimeFrameNo);
+                        if(dataModel){
+                            dataModel.updateData(dataDTO);    
+                        }
+                        else {
+                            dataModel = new EmTimeZoneSetModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstWorkingTimezone.push(dataModel);    
+                        }
+                    }
+                }
+                
+                getWorkingTimezoneByEmploymentTimeFrameNo(employmentTimeFrameNo: number) {
+                    return _.find(this.lstWorkingTimezone, workingtimezone => workingtimezone.employmentTimeFrameNo() == employmentTimeFrameNo);
+                }
+                toDto(): FixedWorkTimezoneSetDto {
+                    let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone, (dataModel) => dataModel.toDto());
+                    let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone, (dataModel) => dataModel.toDto());
+                    
+                    let dataDTO: FixedWorkTimezoneSetDto = {
+                        lstWorkingTimezone: lstWorkingTimezone,
+                        lstOTTimezone: lstOTTimezone
                     };
                     return dataDTO;
                 }
