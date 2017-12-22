@@ -4,10 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 
+/**
+ * @author thanhpv
+ * 日数指定
+ */
 @Getter
 @Setter
 public class NumberOfDays {
 
+	//Specify number of days
+	/**日数指定*/
+	private PreviousClassification previousClassification;
+		
 	/** Day*/
 	// 日
 	private int day;
@@ -15,9 +23,12 @@ public class NumberOfDays {
 	/** Make it the day*/
 	// 当日とする
 	private boolean makeToDay;
-	
-	//Specify number of days
-	//日数指定
-	private PreviousClassification previousClassification;
+
+	public NumberOfDays(PreviousClassification previousClassification, int day, boolean makeToDay) {
+		super();
+		this.previousClassification = previousClassification;
+		this.day = day;
+		this.makeToDay = makeToDay;
+	}
 	
 }

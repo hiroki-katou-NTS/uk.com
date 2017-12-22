@@ -15,14 +15,14 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 public class ExtractionPeriodDaily extends ExtractionRangeBase{
 	
 	
-	private int NumberOfDays;
+	private NumberOfDays NumberOfDays;
 	
-	private StartDate startDate;
+	private SpecifyStartDate startDate;
 	
-	private EndDate endDate;
+	private SpecifyEndDate endDate;
 
-	public ExtractionPeriodDaily(String extractionId, ExtractionRange extractionRange, int numberOfDays,
-			StartDate startDate, EndDate endDate) {
+	public ExtractionPeriodDaily(String extractionId, ExtractionRange extractionRange, NumberOfDays numberOfDays,
+			SpecifyStartDate startDate, SpecifyEndDate endDate) {
 		super(extractionId, extractionRange);
 		NumberOfDays = numberOfDays;
 		this.startDate = startDate;
