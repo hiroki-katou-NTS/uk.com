@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 public interface AffJobTitleHistoryRepository_ver1 {
@@ -30,7 +29,7 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	Optional<AffJobTitleHistory_ver1> getListBySidDesc(String cid, String sid);
 
 	/**
-	 * ドメインモッ�「�務�位」を新規登録する
+	 * ドメインモッ�「�務�位」を新規登録する
 	 * 
 	 * @param item
 	 * @param sid
@@ -39,18 +38,22 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	void add(String cid, String sid, DateHistoryItem item);
 
 	/**
-	 * 取得した「�務�位」を更新する
+	 * 取得した「�務�位」を更新する
 	 * 
 	 * @param item
 	 */
 	void update(DateHistoryItem item);
 
 	/**
-	 * ドメインモッ�「�務�位」を削除する
+	 * ドメインモッ�「�務�位」を削除する
 	 * 
 	 * @param histId
 	 */
 	void delete(String histId);
+	
+	List<AffJobTitleHistory_ver1> getAllBySid(String sid);
+	
+	Optional<AffJobTitleHistory_ver1> getListByHidSid(String hid, String sid);
 	
 	/**
 	 * Search job title history.

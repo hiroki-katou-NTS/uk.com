@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +8,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHistItem;
 
 @Stateless
@@ -117,15 +116,15 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	}
 
 	@Override
-	public List<AffJobTitleHistoryItem> getByJobIdAndReferDate(String jobId, GeneralDate referDate) {
+	public List<AffJobTitleHistoryItem_ver1> getByJobIdAndReferDate(String jobId, GeneralDate referDate) {
 		List<BsymtAffJobTitleHistItem> lstData = this.queryProxy()
 				.query(GET_BY_JID_DATE, BsymtAffJobTitleHistItem.class).setParameter("jobTitleId", jobId)
 				.setParameter("referDate", referDate).getList();
-		List<AffJobTitleHistoryItem> lstObj = new ArrayList<>();
+		List<AffJobTitleHistoryItem_ver1> lstObj = new ArrayList<>();
 		if (!lstData.isEmpty()) {
 			for (BsymtAffJobTitleHistItem data: lstData) {
 				BsymtAffJobTitleHistItem ent = data;
-				lstObj.add(AffJobTitleHistoryItem.createFromJavaType(ent.hisId, ent.sid, ent.jobTitleId, ent.note));
+				lstObj.add(AffJobTitleHistoryItem_ver1.createFromJavaType(ent.hisId, ent.sid, ent.jobTitleId, ent.note));
 			}
 			return lstObj;
 		}
@@ -133,16 +132,16 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	}
 
 	@Override
-	public List<AffJobTitleHistoryItem> getAllBySid(String sid) {
+	public List<AffJobTitleHistoryItem_ver1> getAllBySid(String sid) {
 		List<BsymtAffJobTitleHistItem> optionData = this.queryProxy()
 				.query(GET_ALL_BY_SID, BsymtAffJobTitleHistItem.class)
 				.setParameter("sid", sid).getList();
 		
-		List<AffJobTitleHistoryItem> lstAffJobTitleHistoryItems = new ArrayList<>();
+		List<AffJobTitleHistoryItem_ver1> lstAffJobTitleHistoryItems = new ArrayList<>();
 		
 		if (optionData != null && !optionData.isEmpty()) {
 			optionData.stream().forEach((item) -> {
-				lstAffJobTitleHistoryItems.add(AffJobTitleHistoryItem.createFromJavaType(item.hisId, item.sid, item.jobTitleId, item.note));
+				lstAffJobTitleHistoryItems.add(AffJobTitleHistoryItem_ver1.createFromJavaType(item.hisId, item.sid, item.jobTitleId, item.note));
 			});
 		}
 		
@@ -153,17 +152,17 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 	}
 
 	@Override
-	public List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate) {
+	public List<AffJobTitleHistoryItem_ver1> getAllByListSidDate(List<String> lstSid, GeneralDate referDate) {
 		List<BsymtAffJobTitleHistItem> data = this.queryProxy()
 				.query(GET_BY_LIST_EID_DATE, BsymtAffJobTitleHistItem.class)
 				.setParameter("sid", lstSid.toArray().toString())
 				.setParameter("referDate", referDate).getList();
 		
-		List<AffJobTitleHistoryItem> lstAffJobTitleHistoryItems = new ArrayList<>();
+		List<AffJobTitleHistoryItem_ver1> lstAffJobTitleHistoryItems = new ArrayList<>();
 		
 		if (data != null && !data.isEmpty()) {
 			data.stream().forEach((item) -> {
-				lstAffJobTitleHistoryItems.add(AffJobTitleHistoryItem.createFromJavaType(item.hisId, item.sid, item.jobTitleId, item.note));
+				lstAffJobTitleHistoryItems.add(AffJobTitleHistoryItem_ver1.createFromJavaType(item.hisId, item.sid, item.jobTitleId, item.note));
 			});
 		}
 		

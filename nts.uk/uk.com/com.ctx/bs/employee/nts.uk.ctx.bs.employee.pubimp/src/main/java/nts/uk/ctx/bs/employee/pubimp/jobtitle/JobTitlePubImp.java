@@ -8,7 +8,6 @@ package nts.uk.ctx.bs.employee.pubimp.jobtitle;
  * All right reserved.                                            *
  *****************************************************************/
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,14 +18,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
@@ -59,10 +55,6 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Inject
 	private JobTitleRepository jobTitleRepository;
 
-	/** The job title history repository. */
-	@Inject
-	private AffJobTitleHistoryRepository jobTitleHistoryRepository;
-	
 	/** The sequence master repository. */
 	@Inject
 	private SequenceMasterRepository sequenceMasterRepository;
@@ -100,8 +92,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		}).collect(Collectors.toList());*/
 		
 		List<AffJobTitleHistory_ver1> affJobTitleHistories = this.affJobTitleHisRepo_ver1.getAllBySid(employeeId);
-		List<AffJobTitleHistoryItem> affJobTitleHistoryItem = this.affJobTitleHisItemRepo_ver1.getAllBySid(employeeId);
+		List<AffJobTitleHistoryItem_ver1> affJobTitleHistoryItem = this.affJobTitleHisItemRepo_ver1.getAllBySid(employeeId);
 
+		// TODO : Hoang check lại
 		// TODO: key of mapMerge is eid_hid distinct
 		Map<String, List<Object>> mapMerge = new HashMap<>();
 		affJobTitleHistories.stream().forEach((temp1) -> {
@@ -265,14 +258,14 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		
 		
 		// Query 
-		Optional<AffJobTitleHistoryItem> optAffJobTitleHistoryItem = affJobTitleHisItemRepo_ver1.getByEmpIdAndReferDate(employeeId, baseDate);
+		Optional<AffJobTitleHistoryItem_ver1> optAffJobTitleHistoryItem = affJobTitleHisItemRepo_ver1.getByEmpIdAndReferDate(employeeId, baseDate);
 		
 		// Check exist
 		if(!optAffJobTitleHistoryItem.isPresent()) {
 			return Optional.empty();
 		}
 		
-		AffJobTitleHistoryItem affJobTitleHist =  optAffJobTitleHistoryItem.get();
+		AffJobTitleHistoryItem_ver1 affJobTitleHist =  optAffJobTitleHistoryItem.get();
 		
 		// Query
 		Optional<AffJobTitleHistory_ver1> optAffJobTitleHistory = affJobTitleHisRepo_ver1.getListByHidSid(affJobTitleHist.getHistoryId(), employeeId);

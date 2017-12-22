@@ -172,6 +172,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		return null;
 	}
 
+	// TODO: HoangDD check lại, không nhất thiết phải truyền cả SID
 	@Override
 	public Optional<AffJobTitleHistory_ver1> getListByHidSid(String hid, String sid) {
 		List<BsymtAffJobTitleHist> listHist = this.queryProxy()

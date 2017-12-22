@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.app.query.employee;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,10 +25,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
@@ -75,17 +72,9 @@ public class EmployeeSearchQueryProcessor {
 	/** The classification history repository. */
 	@Inject
 	private AffClassHistoryRepository classificationHistoryRepository;
-
-	/** The job title history repository. */
-	@Inject
-	private AffJobTitleHistoryRepository jobTitleHistoryRepository;
-	
-	/** The aff workplace history repo v 1. */
-	@Inject
-	private AffJobTitleHistoryRepository_ver1 jobTitleHistoryRepository_ver1;
 	
 	@Inject
-	private AffJobTitleHistoryItemRepository_v1 jobTitleHistoryItemRepository_v1;
+	private AffJobTitleHistoryItemRepository_ver1 jobTitleHistoryItemRepository_v1;
 
 	@Inject
 	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepo_v1;
@@ -252,14 +241,14 @@ public class EmployeeSearchQueryProcessor {
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getJobTitleCodes());*/
 		
-		List<AffJobTitleHistoryItem> jobTitleHistory = new ArrayList<>();
+		List<AffJobTitleHistoryItem_ver1> jobTitleHistory = new ArrayList<>();
 		List<String> lstEid = employmentHistory.stream().map(employment -> employment.getEmployeeId())
 				.collect(Collectors.toList());
 		for (String eid: lstEid) {
 			for (String hid: input.getClassificationCodes()) {
-				Optional<AffJobTitleHistoryItem> option = this.jobTitleHistoryItemRepository_v1.getByEmpIdAndReferDate(eid, input.getBaseDate());
+				Optional<AffJobTitleHistoryItem_ver1> option = this.jobTitleHistoryItemRepository_v1.getByEmpIdAndReferDate(eid, input.getBaseDate());
 				if (option.isPresent()) {
-					AffJobTitleHistoryItem affJobTitleHistoryItem = option.get();
+					AffJobTitleHistoryItem_ver1 affJobTitleHistoryItem = option.get();
 					if (affJobTitleHistoryItem.getHistoryId().equals(hid)) {
 						jobTitleHistory.add(affJobTitleHistoryItem);
 					}
@@ -454,9 +443,9 @@ public class EmployeeSearchQueryProcessor {
 				}, Function.identity()));*/
 
 		// get map job title history		
-		Map<String, AffJobTitleHistoryItem> mapJobTitleHistory = this.jobTitleHistoryItemRepository_v1.
+		Map<String, AffJobTitleHistoryItem_ver1> mapJobTitleHistory = this.jobTitleHistoryItemRepository_v1.
 				getAllByListSidDate(query.getEmployeeIds(), query.getBaseDate()).stream()
-				.collect(Collectors.toMap(AffJobTitleHistoryItem::getEmployeeId,
+				.collect(Collectors.toMap(AffJobTitleHistoryItem_ver1::getEmployeeId,
 											Function.identity()));
 		
 		/*Map<String, AffJobTitleHistoryItem> mapJobTitleHistory = new HashMap<>();
@@ -503,7 +492,7 @@ public class EmployeeSearchQueryProcessor {
 			// check exist job title history
 			if (mapJobTitleHistory.containsKey(employeeData.getEmployeeId()) && mapJobTitle
 					.containsKey(mapJobTitleHistory.get(employeeData.getEmployeeId()).getJobTitleId())) {
-				AffJobTitleHistoryItem jobTitleHistory = mapJobTitleHistory.get(employeeData.getEmployeeId());
+				AffJobTitleHistoryItem_ver1 jobTitleHistory = mapJobTitleHistory.get(employeeData.getEmployeeId());
 				JobTitleInfo jobTitleInfo = mapJobTitle.get(jobTitleHistory.getJobTitleId());
 				data.setJobTitleId(jobTitleInfo.getJobTitleId());
 				data.setJobTitleCode(jobTitleInfo.getJobTitleCode().v());

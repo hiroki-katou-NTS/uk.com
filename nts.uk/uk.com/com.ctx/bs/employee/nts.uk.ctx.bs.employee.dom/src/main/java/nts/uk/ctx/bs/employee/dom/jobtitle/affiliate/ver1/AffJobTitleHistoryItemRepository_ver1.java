@@ -42,9 +42,9 @@ public interface AffJobTitleHistoryItemRepository_ver1 {
 	 */
 	void delete(String jobTitleMainId);
 	
-	List<AffJobTitleHistoryItem> getByJobIdAndReferDate(String jobId, GeneralDate referDate);
+	List<AffJobTitleHistoryItem_ver1> getByJobIdAndReferDate(String jobId, GeneralDate referDate);
 	
-	List<AffJobTitleHistoryItem> getAllBySid(String sid);
+	List<AffJobTitleHistoryItem_ver1> getAllBySid(String sid);
 	
-	List<AffJobTitleHistoryItem> getAllByListSidDate(List<String> lstSid, GeneralDate referDate);
+	List<AffJobTitleHistoryItem_ver1> getAllByListSidDate(List<String> lstSid, GeneralDate referDate);
 }

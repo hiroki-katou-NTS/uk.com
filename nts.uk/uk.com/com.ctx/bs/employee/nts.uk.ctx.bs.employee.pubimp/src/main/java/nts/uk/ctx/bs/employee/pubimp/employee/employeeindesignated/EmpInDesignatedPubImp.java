@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee.employeeindesignated;
@@ -12,8 +12,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.pub.employee.employeeindesignated.EmpInDesignatedPub;
@@ -25,11 +23,8 @@ import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPu
  * The Class EmpInDesignatedPubImp.
  */
 public class EmpInDesignatedPubImp implements EmpInDesignatedPub {
-
-	/** The aff workplace history repo. */
-	@Inject
-	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepo;
 	
+	/** The aff workplace history repo v 1. */
 	@Inject
 	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepo_v1;
 
