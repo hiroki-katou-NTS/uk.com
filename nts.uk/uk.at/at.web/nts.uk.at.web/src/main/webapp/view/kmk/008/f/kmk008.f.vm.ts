@@ -114,6 +114,7 @@ module nts.uk.at.view.kmk008.f {
                             self.getalreadySettingList();
                             self.getDetail(self.selectedCode());
                         });
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
 
             }

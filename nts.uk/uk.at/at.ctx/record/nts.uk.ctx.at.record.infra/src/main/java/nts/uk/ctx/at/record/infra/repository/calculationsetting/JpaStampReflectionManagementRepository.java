@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
-import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcdtStampReflect;
+import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcdtStampImprint;
 
 @Stateless
 public class JpaStampReflectionManagementRepository extends JpaRepository
@@ -25,11 +25,11 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 
 	@Override
 	public Optional<StampReflectionManagement> findByCid(String companyId) {
-		return this.queryProxy().query(FIND, KrcdtStampReflect.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(FIND, KrcdtStampImprint.class).setParameter("companyId", companyId)
 				.getSingle(f -> toDomain(f));
 	}
 
-	private static StampReflectionManagement toDomain(KrcdtStampReflect krcdtStampReflect) {
+	private static StampReflectionManagement toDomain(KrcdtStampImprint krcdtStampReflect) {
 		StampReflectionManagement stampReflectionManagement = StampReflectionManagement.createJavaType(
 				krcdtStampReflect.krcdtStampReflectPK.companyId, krcdtStampReflect.breakSwitchClass.intValue(),
 				krcdtStampReflect.autoStampReflectionClass.intValue(),

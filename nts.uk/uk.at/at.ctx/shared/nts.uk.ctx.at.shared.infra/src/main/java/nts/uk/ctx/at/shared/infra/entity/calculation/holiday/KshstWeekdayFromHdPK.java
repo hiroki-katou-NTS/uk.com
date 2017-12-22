@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
  * 平日から休日の0時跨ぎ設定
  */
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -23,5 +24,5 @@ public class KshstWeekdayFromHdPK implements Serializable {
 
 	/** 変更前の残業枠NO */
 	@Column(name = "OVERTIME_FRAME_NO")
-	public int overworkFrameNo;
+	public BigDecimal overTimeFrameNo;
 }

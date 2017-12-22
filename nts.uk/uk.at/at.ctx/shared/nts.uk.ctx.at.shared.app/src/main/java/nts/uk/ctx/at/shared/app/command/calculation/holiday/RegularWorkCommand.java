@@ -11,10 +11,10 @@ public class RegularWorkCommand {
 	private int calcActualOperationPre;
 	
 	/** インターバル免除時間を含めて計算する */
-	private int calcIntervalTimePre;
+	private int exemptTaxTimePre;
 	
 	/** 育児・介護時間を含めて計算する */
-	private int calcIncludCarePre;
+	private int incChildNursingCarePre;
 	
 	/** 加算する */
 	private int additionTimePre;
@@ -26,16 +26,13 @@ public class RegularWorkCommand {
 	private int deformatExcValuePre;
 	
 	/** インターバル免除時間を含めて計算する */
-	private int calsIntervalTimeWork;
-	
-	/** 欠勤時間をマイナスする*/
-	private int minusAbsenceTimeWork;
+	private int exemptTaxTimeWork;
 	
 	/** 実働のみで計算する */
-	private int calcActualOperaWork;
+	private int calcActualOperationWork;
 	
 	/** 育児・介護時間を含めて計算する */
-	private int calcIncludCareWork;
+	private int incChildNursingCareWork;
 	
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleaveWork;

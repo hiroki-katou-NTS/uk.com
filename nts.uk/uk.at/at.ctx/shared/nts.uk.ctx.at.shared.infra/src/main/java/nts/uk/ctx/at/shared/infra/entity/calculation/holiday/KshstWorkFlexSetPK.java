@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-
+/**
+ * @author phongtq
+ */
 import java.io.Serializable;
 
 import javax.persistence.Column;

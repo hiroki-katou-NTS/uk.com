@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-
+/**
+ * @author phongtq
+ * 0時跨ぎ計算設定
+ */
 import java.io.Serializable;
 import java.util.List;
 
@@ -25,64 +28,64 @@ public class KshstZeroTimeSet extends UkJpaEntity implements Serializable{
 	
 	/** 0時跨ぎ計算を行なう*/
 	@Column(name = "CALC_FROM_ZERO_TIME")
-	public int calcOverDayEnd;
+	public int calcFromZeroTime;
 	
 	/** 法定内休日 */
-	@Column(name = "LEGAL_HD")
-	public int statutoryHd;
+	@Column(name = "WKD_LEGAL_HD")
+	public int legalHd;
 	
 	/** 法定外休日 */
-	@Column(name = "NON_LEGAL_HD")
-	public int excessHd;
+	@Column(name = "WKD_NON_LEGAL_HD")
+	public int nonLegalHd;
 	
 	/** 法定外祝日*/
-	@Column(name = "NON_LEGAL_PUBLIC_HD")
-	public int excessSpecialHoliday;
+	@Column(name = "WKD_NON_LEGAL_PUBLIC_HD")
+	public int nonLegalPublicHd;
 	
 	/** 平日 */
-	@Column(name = "WEEKDAY_1")
-	public int weekDayStatutoryHd;
+	@Column(name = "LHD_WEEKDAY")
+	public int weekday1;
 	
 	/** 法定外休日*/
-	@Column(name = "NON_LEGAL_HD_1")
-	public int excessStatutoryHd;
+	@Column(name = "LHD_NON_LEGAL_HD")
+	public int nonLegalHd1;
 	
 	/** 法定外祝日 */
-	@Column(name = "NON_LEGAL_PUBLIC_HD_1")
-	public int excessStatutorSphd;
+	@Column(name = "LHD_NON_LEGAL_PUBLIC_HD")
+	public int nonLegalPublicHd1;
 	
 	/** 平日*/
-	@Column(name = "WEEKDAY_2")
-	public int weekDayLegalHd;
+	@Column(name = "SHD_WEEKDAY")
+	public int weekday2;
 	
 	/** 法定外休日 */
-	@Column(name = "LEGAL_HD_2")
-	public int excessLegalHd;
+	@Column(name = "SHD_LEGAL_HD")
+	public int legalHd2;
 	
 	/** 法定外祝日 */
-	@Column(name = "NON_LEGAL_HD_2")
-	public int excessLegalSphd;
+	@Column(name = "SHD_NON_LEGAL_HD")
+	public int nonLegalHd2;
 	
 	/** 平日 */
-	@Column(name = "WEEKDAY_3")
-	public int weekDayPublicHd;
+	@Column(name = "SFT_WEEKDAY")
+	public int weekday3;
 	
 	/** 法定外休日 */
-	@Column(name = "LEGAL_HD_3")
-	public int excessPublicHd;
+	@Column(name = "SFT_LEGAL_HD")
+	public int legalHd3;
 	
 	/** 法定外休日 */
-	@Column(name = "NON_LEGAL_PUBLIC_HD_3")
-	public int excessPublicSphd;
+	@Column(name = "SFT_NON_LEGAL_PUBLIC_HD")
+	public int nonLegalPublicHd3;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
 	public List<KshstWeekdayFromHd> weekdayHd;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-	public List<KshstOverdayHdAttSet> overdayHdAttSet;
+	public List<KshstHdFromWeekday> overdayHdAttSet;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-	public List<KshstOverDayHdSet> overDayHdSet;
+	public List<KshstHdFromHd> overDayHdSet;
 	
 	@Override
 	protected Object getKey() {

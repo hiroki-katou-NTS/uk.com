@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth;
-
+/**
+ * @author phongtq
+ */
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -22,6 +24,14 @@ public class RoundingMonth extends AggregateRoot{
 	/** 端数処理 */
 	public Rounding rounding;
 	
+	/**
+	 * Create from Java Type of Rounding Month
+	 * @param companyId
+	 * @param timeItemId
+	 * @param unit
+	 * @param rounding
+	 * @return
+	 */
 	public static RoundingMonth createFromJavaType(String companyId, String timeItemId, int unit, int rounding){
 		return new RoundingMonth(companyId,new TimeItemId(timeItemId), EnumAdaptor.valueOf(unit, RoundingTimeUnit.class), EnumAdaptor.valueOf(rounding, Rounding.class));
 	}

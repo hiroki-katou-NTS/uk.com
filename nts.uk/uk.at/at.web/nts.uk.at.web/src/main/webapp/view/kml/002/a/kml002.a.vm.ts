@@ -319,7 +319,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.unitSelected.subscribe(function(value) {
                 if (!devChange) {
-                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
+                    if (!self.editMode() && !self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_125" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
@@ -344,7 +344,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             self.workScheduleSelected.subscribe(function(value) {
                 if (!devChange) {
-                    if (!self.isparentCall() && self.calculatorItems().length > 0) {
+                    if (!self.editMode() && !self.isparentCall() && self.calculatorItems().length > 0) {
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_191" }).ifYes(() => {
                             devChange = false;
                             self.calculatorItems([]);
