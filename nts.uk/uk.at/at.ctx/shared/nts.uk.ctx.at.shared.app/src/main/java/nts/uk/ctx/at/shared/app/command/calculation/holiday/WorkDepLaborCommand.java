@@ -24,6 +24,9 @@ public class WorkDepLaborCommand {
 
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleave1;
+	
+	/**通常、変形の所定超過時*/
+	private int deformatExcValue;
 
 	/** インターバル免除時間を含めて計算する */
 	private int exemptTaxTime2;

@@ -108,10 +108,10 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 */
 	private KshstWeekdayFromHd convertToDbTypeWeekday(WeekdayHoliday holiday) {
 		KshstWeekdayFromHd weekdayHd = new KshstWeekdayFromHd();
-		KshstWeekdayFromHdPK weekdayHdPK = new KshstWeekdayFromHdPK(holiday.getCompanyId(), holiday.getOverTimeFrameNo());
-				weekdayHd.legalHdNo = holiday.getLegalHdNo();
-				weekdayHd.nonLegalHdNo = holiday.getNonLegalHdNo();
-				weekdayHd.nonLegalPublicHdNo = holiday.getNonLegalPublicHdNo();
+		KshstWeekdayFromHdPK weekdayHdPK = new KshstWeekdayFromHdPK(holiday.getCompanyId(), holiday.getOverTimeFrameNo().v());
+				weekdayHd.legalHdNo = holiday.getLegalHdNo().v();
+				weekdayHd.nonLegalHdNo = holiday.getNonLegalHdNo().v();
+				weekdayHd.nonLegalPublicHdNo = holiday.getNonLegalPublicHdNo().v();
 				weekdayHd.kshstWeekdayHdPK = weekdayHdPK;
 				
 		return weekdayHd;
@@ -142,7 +142,7 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	
 	private HdFromHd convertToDomainCalcHoliday(KshstHdFromHd dayHdSet){
 		HdFromHd calcHoliday = HdFromHd.createFromJavaType(dayHdSet.kshstOverDayHdSetPK.companyId, 
-				dayHdSet.kshstOverDayHdSetPK.overtimeFrameNo, 
+				dayHdSet.kshstOverDayHdSetPK.breakFrameNo, 
 				dayHdSet.legalHdNo, 
 				dayHdSet.nonLegalHdNo, 
 				dayHdSet.nonLegalPublicHdNo);
@@ -152,10 +152,10 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	
 	private KshstHdFromHd convertToDbTypeCalcHoliday(HdFromHd overdayCalcHoliday){
 		KshstHdFromHd dayHdSet = new KshstHdFromHd();
-		KshstHdFromHdPK dayHdSetPK = new KshstHdFromHdPK(overdayCalcHoliday.getCompanyId(), overdayCalcHoliday.getOvertimeFrameNo());
-		dayHdSet.legalHdNo = overdayCalcHoliday.getLegalHdNo();
-		dayHdSet.nonLegalHdNo = overdayCalcHoliday.getNonLegalHdNo();
-		dayHdSet.nonLegalPublicHdNo = overdayCalcHoliday.getNonLegalPublicHdNo();
+		KshstHdFromHdPK dayHdSetPK = new KshstHdFromHdPK(overdayCalcHoliday.getCompanyId(), overdayCalcHoliday.getOvertimeFrameNo().v());
+		dayHdSet.legalHdNo = overdayCalcHoliday.getLegalHdNo().v();
+		dayHdSet.nonLegalHdNo = overdayCalcHoliday.getNonLegalHdNo().v();
+		dayHdSet.nonLegalPublicHdNo = overdayCalcHoliday.getNonLegalPublicHdNo().v();
 		dayHdSet.kshstOverDayHdSetPK = dayHdSetPK;
 		
 		return dayHdSet;

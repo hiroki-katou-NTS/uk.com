@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday;
  */
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
 @Getter
@@ -13,7 +14,7 @@ public class RegularWork {
 	private String companyId;
 	
 	/** 実働のみで計算する */
-	private int calcActualOperation1;
+	private CalcActualOperationAtr calcActualOperation1;
 	
 	/** インターバル免除時間を含めて計算する */
 	private int exemptTaxTime1;
@@ -28,13 +29,13 @@ public class RegularWork {
 	private int notDeductLateleave1;
 	
 	/** 通常、変形の所定超過時 */
-	private int deformatExcValue1;
+	private DeformatExcValueAtr deformatExcValue1;
 	
 	/** インターバル免除時間を含めて計算する */
 	private int exemptTaxTime2;
 	
 	/** 実働のみで計算する */
-	private int calcActualOperation2;
+	private CalcActualOperationAtr calcActualOperation2;
 	
 	/** 育児・介護時間を含めて計算する */
 	private int incChildNursingCare2;
@@ -45,13 +46,28 @@ public class RegularWork {
 	/** 加算する */
 	private int additionTime2;
 
-	
+	/**
+	 * create From Java Type Regular Work
+	 * @param companyId
+	 * @param calcActualOperation1
+	 * @param exemptTaxTime1
+	 * @param incChildNursingCare1
+	 * @param additionTime1
+	 * @param notDeductLateleave1
+	 * @param deformatExcValue1
+	 * @param exemptTaxTime2
+	 * @param calcActualOperation2
+	 * @param incChildNursingCare2
+	 * @param notDeductLateleave2
+	 * @param additionTime2
+	 * @return
+	 */
 	public static RegularWork createFromJavaType(String companyId, int calcActualOperation1,
 			int exemptTaxTime1, int incChildNursingCare1, int additionTime1, int notDeductLateleave1,
 			int deformatExcValue1, int exemptTaxTime2, int calcActualOperation2,
 			int incChildNursingCare2, int notDeductLateleave2, int additionTime2){
-		return new RegularWork(companyId, calcActualOperation1, exemptTaxTime1, incChildNursingCare1,
-				additionTime1, notDeductLateleave1, deformatExcValue1, exemptTaxTime2,
-				calcActualOperation2, incChildNursingCare2, notDeductLateleave2, additionTime2);
+		return new RegularWork(companyId, EnumAdaptor.valueOf(calcActualOperation1, CalcActualOperationAtr.class), exemptTaxTime1, incChildNursingCare1,
+				additionTime1, notDeductLateleave1, EnumAdaptor.valueOf(deformatExcValue1, DeformatExcValueAtr.class), exemptTaxTime2,
+				EnumAdaptor.valueOf(calcActualOperation2, CalcActualOperationAtr.class), incChildNursingCare2, notDeductLateleave2, additionTime2);
 	}
 }

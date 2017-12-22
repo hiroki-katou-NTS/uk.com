@@ -7,10 +7,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum PredExcessTimeflexAtr {
 
-	/** 実働時間のみで計算する*/
-	CALC_FLEX_EXCESS(0),
-	/** 実働時間以外も含めて計算する*/
-	DO_NOT_CALC_FLEX_EXCESS(1);
+	/** フレックス超過を計算しない*/
+	DO_NOT_CALC_FLEX_EXCESS(0),
+	/** フレックス超過を計算する*/
+	CALC_FLEX_EXCESS(1);
 
 	public final int value;
 }
