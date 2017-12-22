@@ -14,22 +14,20 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 @Setter
 public class ExtractionPeriodDaily extends ExtractionRangeBase{
 	
-	
+	/**日数指定*/
 	private NumberOfDays NumberOfDays;
 	
-	private SpecifyStartDate startDate;
+	/**開始日の指定方法*/
+	private SpecifyStartDate specifyStartDate;
 	
-	private SpecifyEndDate endDate;
+	/**終了日の指定方法*/
+	private SpecifyEndDate specifyEndDate;
 
 	public ExtractionPeriodDaily(String extractionId, ExtractionRange extractionRange, NumberOfDays numberOfDays,
-			SpecifyStartDate startDate, SpecifyEndDate endDate) {
+			SpecifyStartDate specifyStartDate, SpecifyEndDate specifyEndDate) {
 		super(extractionId, extractionRange);
 		NumberOfDays = numberOfDays;
-		this.startDate = startDate;
-		this.endDate = endDate;
+		this.specifyStartDate = specifyStartDate;
+		this.specifyEndDate = specifyEndDate;
 	}
-
-	
-	
-	
 }
