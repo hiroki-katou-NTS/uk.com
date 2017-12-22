@@ -3,8 +3,8 @@ package nts.uk.ctx.at.function.infra.enity.alarm.extractionrange.daily;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -21,41 +21,30 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 
 /**抽出する範囲*/
-public class ExtractionPeriodDaily extends UkJpaEntity implements Serializable{
+public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	@EmbeddedId
+	public KfnmtExtractionPeriodDailyPK kfnmtExtractionPeriodDailyPK;
+
 	@Override
 	protected Object getKey() {
-		return null;
+		return kfnmtExtractionPeriodDailyPK;
 	}
 	
-	/**Id*/
-	@Id
-	@Column(name = "EXTRACTION_ID")
-	private String extractionId;
-	
-	/**抽出する範囲*/
-	@Column(name = "EXTRACTION_RANGE")
-	private int extractionRange;
-	
-	/**前・先区分*/
 	@Column(name = "PREVIOUS_CLASSIFICATION")
-	private int previousClassification;
+	public int previousClassification;
 	
-	/**日*/
 	@Column(name = "DAY")
-	private int day;
+	public int day;
 	
-	/**本年度とする*/
 	@Column(name = "MAKE_TO_DAY")
-	private boolean makeToDay;
+	public boolean makeToDay;
 	
-	/**開始日の指定方法*/
 	@Column(name = "SPECIFY_STARTDATE")
-	private int specifyStartDate;
+	public int specifyStartDate;
 	
-	/**終了日の指定方法*/
 	@Column(name = "SPECIFY_ENDDATE")
-	private int specifyEndDate;
+	public int specifyEndDate;
 }
