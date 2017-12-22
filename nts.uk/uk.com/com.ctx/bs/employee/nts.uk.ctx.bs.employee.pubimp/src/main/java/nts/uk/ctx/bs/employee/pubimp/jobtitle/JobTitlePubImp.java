@@ -8,7 +8,9 @@ package nts.uk.ctx.bs.employee.pubimp.jobtitle;
  * All right reserved.                                            *
  *****************************************************************/
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,10 +19,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
@@ -79,22 +82,57 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Override
 	public List<JobTitleExport> findJobTitleBySid(String employeeId) {
 		// Query
-		List<AffJobTitleHistory> affJobTitleHistories = this.jobTitleHistoryRepository
+		/*List<AffJobTitleHistory> affJobTitleHistories = this.jobTitleHistoryRepository
 				.findBySid(employeeId);
-
+		
 		String companyId = AppContexts.user().companyId();
-
+		
 		// Return
 		return affJobTitleHistories.stream().map(item -> {
 			JobTitleInfo jobTitleInfo = this.jobTitleInfoRepository.find(companyId,
-					item.getJobTitleId().v(), item.getPeriod().start()).get();
+					mapMerge.get(item.getEmployeeId()).get(1), mapMerge.get(item.getEmployeeId()).get(0)).get();
 			return JobTitleExport.builder().companyId(jobTitleInfo.getCompanyId().v())
 					.jobTitleId(jobTitleInfo.getJobTitleId())
 					.jobTitleCode(jobTitleInfo.getJobTitleCode().v())
 					.jobTitleName(jobTitleInfo.getJobTitleName().v())
 					.sequenceCode(jobTitleInfo.getSequenceCode().v())
 					.startDate(item.getPeriod().start()).endDate(item.getPeriod().end()).build();
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList());*/
+		
+		List<AffJobTitleHistory_ver1> affJobTitleHistories = this.affJobTitleHisRepo_ver1.getAllBySid(employeeId);
+		List<AffJobTitleHistoryItem> affJobTitleHistoryItem = this.affJobTitleHisItemRepo_ver1.getAllBySid(employeeId);
+
+		// TODO: key of mapMerge is eid_hid distinct
+		Map<String, List<Object>> mapMerge = new HashMap<>();
+		affJobTitleHistories.stream().forEach((temp1) -> {
+			affJobTitleHistoryItem.stream().forEach((temp2) -> { 
+				if (temp1.getEmployeeId().equals(temp2.getEmployeeId()) 
+						&& temp1.getHistoryItems().get(0).identifier().equals(temp2.getHistoryId())) {
+					mapMerge.put(temp2.getEmployeeId() + "_" + temp2.getHistoryId(), 
+							Arrays.asList(new Object[]{temp1.getHistoryItems().get(0).start(), 
+														temp2.getJobTitleId(), 
+														temp1.getHistoryItems().get(0).end()}));
+				}
+			});
+		});
+		
+		String companyId = AppContexts.user().companyId();
+		
+		// Return
+		List<JobTitleExport> lstJobTitleExport 
+						= mapMerge.entrySet().stream()
+							.map(e -> {
+								JobTitleInfo jobTitleInfo = this.jobTitleInfoRepository.find(companyId, 
+										e.getValue().get(1).toString(), (GeneralDate)e.getValue().get(0)).get();
+								return JobTitleExport.builder().companyId(jobTitleInfo.getCompanyId().v())
+										.jobTitleId(jobTitleInfo.getJobTitleId())
+										.jobTitleCode(jobTitleInfo.getJobTitleCode().v())
+										.jobTitleName(jobTitleInfo.getJobTitleName().v())
+										.sequenceCode(jobTitleInfo.getSequenceCode().v())
+										.startDate((GeneralDate)e.getValue().get(0)).endDate((GeneralDate)e.getValue().get(2)).build();
+							})
+							.collect(Collectors.toList());
+		return lstJobTitleExport;
 	}
 
 	@Override
@@ -197,7 +235,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	 */
 	@Override
 	public Optional<EmployeeJobHistExport> findSJobHistBySId(String employeeId, GeneralDate baseDate) {
-		// Query 
+/*		// Query 
 		Optional<AffJobTitleHistory> optAffJobTitleHistory = jobTitleHistoryRepository.findBySid(employeeId, baseDate);
 		
 		// Check exist
@@ -223,7 +261,41 @@ public class JobTitlePubImp implements SyJobTitlePub {
 				.jobTitleID(jobTitleInfo.getJobTitleId())
 				.jobTitleName(jobTitleInfo.getJobTitleName().v())
 				.startDate(affJobTitleHist.getPeriod().start())
-				.endDate(affJobTitleHist.getPeriod().end()).build());
+				.endDate(affJobTitleHist.getPeriod().end()).build());*/
+		
+		
+		// Query 
+		Optional<AffJobTitleHistoryItem> optAffJobTitleHistoryItem = affJobTitleHisItemRepo_ver1.getByEmpIdAndReferDate(employeeId, baseDate);
+		
+		// Check exist
+		if(!optAffJobTitleHistoryItem.isPresent()) {
+			return Optional.empty();
+		}
+		
+		AffJobTitleHistoryItem affJobTitleHist =  optAffJobTitleHistoryItem.get();
+		
+		// Query
+		Optional<AffJobTitleHistory_ver1> optAffJobTitleHistory = affJobTitleHisRepo_ver1.getListByHidSid(affJobTitleHist.getHistoryId(), employeeId);
+		
+		AffJobTitleHistory_ver1 affJobTitleHistory = optAffJobTitleHistory.get();
+		
+		// Query 
+		Optional<JobTitleInfo>  optJobTitleInfo = this.jobTitleInfoRepository.find(affJobTitleHist.getJobTitleId(), baseDate);
+
+		// Check exist		
+		if(!optJobTitleInfo.isPresent()) {
+			return Optional.empty();
+		}
+
+		JobTitleInfo jobTitleInfo = optJobTitleInfo.get();
+		
+		// Return
+		return Optional.of(EmployeeJobHistExport.builder().
+				employeeId(affJobTitleHist.getEmployeeId())
+				.jobTitleID(jobTitleInfo.getJobTitleId())
+				.jobTitleName(jobTitleInfo.getJobTitleName().v())
+				.startDate(affJobTitleHistory.items().get(0).start())
+				.endDate(affJobTitleHistory.items().get(0).end()).build());
 	}
 
 	/*

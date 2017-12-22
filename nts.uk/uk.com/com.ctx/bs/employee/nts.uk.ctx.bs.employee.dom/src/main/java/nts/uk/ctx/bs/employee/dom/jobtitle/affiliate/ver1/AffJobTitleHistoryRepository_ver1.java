@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 public interface AffJobTitleHistoryRepository_ver1 {
@@ -49,4 +51,8 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	 * @param histId
 	 */
 	void delete(String histId);
+	
+	List<AffJobTitleHistory_ver1> getAllBySid(String sid);
+	
+	Optional<AffJobTitleHistory_ver1> getListByHidSid(String hid, String sid);
 }

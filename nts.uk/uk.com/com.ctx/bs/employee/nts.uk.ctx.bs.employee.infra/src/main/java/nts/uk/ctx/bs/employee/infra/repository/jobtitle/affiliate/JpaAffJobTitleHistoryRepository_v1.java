@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -24,6 +25,9 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	
 	private final String GET_BY_SID_DATE = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid = :sid and h.strDate <= :standardDate and h.endDate >= :standardDate";
+	
+	private final String GET_BY_HID_SID = "select h from BsymtAffJobTitleHist h"
+			+ " where h.sid = :sid and h.hisId = :hid";
 
 	/**
 	 * Convert from domain to entity
@@ -138,6 +142,39 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
 		if ( optionaData.isPresent()) {
 			return Optional.of(toDomain(optionaData.get()));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public List<AffJobTitleHistory_ver1> getAllBySid(String sid) {
+		String cid = AppContexts.user().companyId();
+		List<AffJobTitleHistory_ver1> lstAffJobTitleHistory = new ArrayList<>();
+		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
+				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID, BsymtAffJobTitleHist.class)
+				.setParameter("cid", cid).setParameter("sid", sid).getList();
+		if (listHist != null && !listHist.isEmpty()) {
+			for (BsymtAffJobTitleHist item : listHist) {
+				AffJobTitleHistory_ver1 domain = new AffJobTitleHistory_ver1(item.getCid(), item.getSid(), new ArrayList<>());
+				DateHistoryItem dateItem = null;
+				dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
+				domain.getHistoryItems().add(dateItem);
+				lstAffJobTitleHistory.add(domain);
+			}
+		}
+		if (lstAffJobTitleHistory != null && !lstAffJobTitleHistory.isEmpty()) {
+			return lstAffJobTitleHistory;
+		}
+		return null;
+	}
+
+	@Override
+	public Optional<AffJobTitleHistory_ver1> getListByHidSid(String hid, String sid) {
+		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
+				.query(GET_BY_HID_SID, BsymtAffJobTitleHist.class)
+				.setParameter("hisId", hid).setParameter("sid", sid).getList();
+		if (listHist != null && !listHist.isEmpty()) {
+			return Optional.of(toAffJobTitleHist(listHist));
 		}
 		return Optional.empty();
 	}

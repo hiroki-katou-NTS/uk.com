@@ -23,8 +23,9 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
@@ -55,6 +56,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	/** The aff job title history repository. */
 	@Inject
 	private AffJobTitleHistoryRepository affJobTitleHistoryRepository;
+	
+	@Inject
+	private AffJobTitleHistoryItemRepository_v1 jobTitleHistoryItemRepository_v1;
 
 	/** The person repository. */
 	@Inject
@@ -128,9 +132,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate) {
 		// Query
-		List<AffJobTitleHistory> affJobTitleHistories = this.affJobTitleHistoryRepository.findByJobId(jobId, baseDate);
+//		List<AffJobTitleHistory> affJobTitleHistories = this.affJobTitleHistoryRepository.findByJobId(jobId, baseDate);
+		
+		List<AffJobTitleHistoryItem> affJobTitleHistories = this.jobTitleHistoryItemRepository_v1.getByJobIdAndReferDate(jobId, baseDate);
 
-		List<String> employeeIds = affJobTitleHistories.stream().map(AffJobTitleHistory::getEmployeeId)
+		List<String> employeeIds = affJobTitleHistories.stream().map(AffJobTitleHistoryItem::getEmployeeId)
 				.collect(Collectors.toList());
 
 		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);
