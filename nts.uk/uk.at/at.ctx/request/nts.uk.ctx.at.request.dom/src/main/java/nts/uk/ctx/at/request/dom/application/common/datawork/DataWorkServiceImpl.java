@@ -49,7 +49,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			return null;
 		}
 		List<RequestAppDetailSetting> requestAppDetailSetting = requestAppDetailSettings.stream()
-				.filter(c -> c.appType == ApplicationType.WORK_CHANGE_APPLICATION).collect(Collectors.toList());
+				.filter(c -> c.appType == appCommonSetting.appTypeDiscreteSettings.get(0).getAppType()).collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(requestAppDetailSetting)) {
 			return null;
 		}

@@ -32,11 +32,7 @@ module nts.uk.com.view.cas011.c.viewmodel {
                     listDefaultRoleSets(itemList);
                     self.settingSelectedDefaultRoleSet();
                     $('#combo-box').focus();
-                } else { //in case number of RoleSet is zero
-                    self.closeDialog();
-                }    
-            }).fail(error => {
-                self.closeDialog();
+                }   
             }).always(() => {
                 dfd.resolve();
             });
@@ -61,6 +57,9 @@ module nts.uk.com.view.cas011.c.viewmodel {
                     if (listDefaultRoleSets && listDefaultRoleSets().length > 0) {
                         currentDefaultRoleSet.roleSetCd(listDefaultRoleSets()[0].roleSetCd);
                         currentDefaultRoleSet.roleSetName(listDefaultRoleSets()[0].roleSetName);
+                    } else {
+                        currentDefaultRoleSet.roleSetCd('');
+                        currentDefaultRoleSet.roleSetName('');
                     }
                 }
 
