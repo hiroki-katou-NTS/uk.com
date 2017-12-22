@@ -204,7 +204,7 @@ public class RegisterLayoutFinder {
 		}
 		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
 		if (setItem != null) {
-			dataObject.setValue(setItem.getValueAsString());
+			dataObject.setValue(setItem.getSaveData().getValue());
 		}
 		dataObject.setCategoryCode(itemCls.getPersonInfoCategoryCD());
 		return dataObject;

@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.pereg.dom.person.info.item.IsRequired;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemCode;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataState;
@@ -41,6 +42,8 @@ public class EmpInfoItemData extends AggregateRoot {
 	private BigDecimal selectionItemRefType;
 	
 	private String itemParentCd;
+	
+	private DateType dateType;
 
 	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
 			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType
