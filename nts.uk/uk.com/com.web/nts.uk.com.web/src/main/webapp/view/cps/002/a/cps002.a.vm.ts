@@ -833,7 +833,7 @@ module cps002.a.vm {
             this.saveData = param ? param.saveData : null;
             this.dataType = param ? param.dataType : '';
             this.dateType = param ? param.dateType : '';
-            if (this.dataType === "DATE") {
+            if (this.dataType === "DATE" && this.saveData.value) {
                 this.saveData.value = this.genDateString(this.saveData.value, this.dateType);
 
             }
