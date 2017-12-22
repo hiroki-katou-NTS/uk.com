@@ -61,7 +61,7 @@ public class SettingItemDto {
 
 		switch (saveDataType) {
 		case DATE:
-			resultDto.setValue(getDateString(dateType, dateValue));
+			resultDto.setValue(dateValue.toString());
 			break;
 		case NUMBERIC:
 			resultDto.setValue(intValue.toString());
@@ -101,25 +101,8 @@ public class SettingItemDto {
 	}
 
 	public void setData(GeneralDate value) {
-		String stringValue = getDateString(this.dateType, value);
-		this.setSaveData(new SaveDataDto(SaveDataType.DATE, stringValue));
+		this.setSaveData(new SaveDataDto(SaveDataType.DATE, value.toString()));
 
-	}
-
-	private static String getDateString(DateType dateType, GeneralDate value) {
-		String formatString = "yyyy/MM/dd";
-		switch (dateType) {
-		case YEARMONTHDAY:
-			formatString = "yyyy/MM/dd";
-			break;
-		case YEARMONTH:
-			formatString = "yyyy/MM";
-			break;
-		case YEAR:
-			formatString = "yyyy";
-			break;
-		}
-		return value.toString(formatString);
 	}
 
 }
