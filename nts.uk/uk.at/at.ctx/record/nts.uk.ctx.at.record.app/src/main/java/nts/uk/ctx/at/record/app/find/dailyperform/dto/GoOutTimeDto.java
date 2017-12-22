@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import lombok.Data;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 
 /** 外出時間帯 */
 @Data
@@ -8,11 +9,11 @@ public class GoOutTimeDto {
 
 	/** 戻り: 勤怠打刻(実打刻付き) */
 //	@AttendanceItemLayout(layout = "A")
-	private ActualTimeStampDto comeBack;
+	private WithActualTimeStampDto comeBack;
 
 	/** 外出: 勤怠打刻(実打刻付き) */
 //	@AttendanceItemLayout(layout = "B")
-	private ActualTimeStampDto outing;
+	private WithActualTimeStampDto outing;
 
 	/** 外出時間: 勤怠時間 */
 //	@AttendanceItemLayout(layout = "C")

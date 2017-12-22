@@ -1,12 +1,21 @@
-package nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime;
+package nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime; 
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -46,5 +55,42 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 	@Override
 	protected Object getKey() {
 		return this.krcdtDayLeaveEarlyTimePK;
+	}
+	
+	public static KrcdtDayLeaveEarlyTime create(String employeeId, GeneralDate ymd, LeaveEarlyTimeOfDaily leaveEarlyTime) {
+		val entity = new KrcdtDayLeaveEarlyTime();
+		entity.krcdtDayLeaveEarlyTimePK = new KrcdtDayLeaveEarlyTimePK(employeeId, ymd, leaveEarlyTime.getWorkNo().v().intValue());
+		//早退時間
+		entity.leaveEarlyTime = leaveEarlyTime.getLeaveEarlyTime().getTime().valueAsMinutes();
+		entity.calcLeaveEarlyTime = leaveEarlyTime.getLeaveEarlyTime().getCalcTime().valueAsMinutes();
+		//早退控除時間
+		entity.leaveEarlyDedctTime = leaveEarlyTime.getLeaveEarlyDeductionTime().getTime().valueAsMinutes();
+		entity.calcLeaveEarlyDedctTime = leaveEarlyTime.getLeaveEarlyDeductionTime().getCalcTime().valueAsMinutes();
+		//休暇使用時間
+		//年休
+		entity.timeAnallvUseTime = leaveEarlyTime.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes();
+		//代休
+		entity.timeCmpnstlvUseTime = leaveEarlyTime.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+		//超過
+		entity.overPayVactnUseTime = leaveEarlyTime.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes();
+		//特別休暇
+		entity.spVactnUseTime = leaveEarlyTime.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes();
+		return entity;
+	}
+	
+	
+	
+	public LeaveEarlyTimeOfDaily toDomain() {
+		TimevacationUseTimeOfDaily timeVacation = new TimevacationUseTimeOfDaily(new AttendanceTime(this.timeAnallvUseTime),
+																				 new AttendanceTime(this.timeCmpnstlvUseTime),
+																				 new AttendanceTime(this.overPayVactnUseTime),
+																				 new AttendanceTime(this.spVactnUseTime));
+		
+		return new LeaveEarlyTimeOfDaily(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.leaveEarlyTime), new AttendanceTime(this.calcLeaveEarlyTime)),
+										 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.leaveEarlyDedctTime), new AttendanceTime(this.calcLeaveEarlyDedctTime)),
+										 new WorkNo(this.krcdtDayLeaveEarlyTimePK.workNo),
+										 timeVacation,
+										 new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0))
+										 );
 	}
 }

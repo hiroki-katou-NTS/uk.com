@@ -1,12 +1,25 @@
 package nts.uk.ctx.at.record.infra.entity.daily.overtimework;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -82,5 +95,74 @@ public class KrcdtDayOvertimeworkTs extends UkJpaEntity implements Serializable{
 	@Override
 	protected Object getKey() {
 		return this.krcdtDayOvertimeworkTsPK;
+	}
+	
+	/**
+	 * create entity
+	 * @param employeeId
+	 * @param generalDate
+	 * @return
+	 */
+	public static KrcdtDayOvertimeworkTs create(String employeeId, GeneralDate generalDate, OverTimeOfDaily overTimeOfDaily) {
+		val entity = new  KrcdtDayOvertimeworkTs();
+		entity.krcdtDayOvertimeworkTsPK = new KrcdtDayOvertimeworkTsPK(employeeId,generalDate);
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 0) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(0).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(0).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 1) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(1).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(1).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 2) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(2).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(2).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 3) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(3).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(3).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 4) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(4).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(4).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 5) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(5).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(5).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 6) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(6).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(6).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 7) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(7).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(7).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 8) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(8).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(8).getTimeSpan().endValue();
+		}
+		if(overTimeOfDaily.getOverTimeWorkFrameTimeSheet().size() > 9) {
+			entity.overTime1StrClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(9).getTimeSpan().startValue();
+			entity.overTime1EndClc = overTimeOfDaily.getOverTimeWorkFrameTimeSheet().get(9).getTimeSpan().endValue();
+		}
+		return entity;
+	}
+	
+	
+	public OverTimeOfDaily toDomain() {
+		List<OverTimeFrameTimeSheet> timeSheet = new ArrayList<>();
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime1StrClc),new TimeWithDayAttr(this.overTime1EndClc)),new OverTimeFrameNo(1)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime2StrClc),new TimeWithDayAttr(this.overTime2EndClc)),new OverTimeFrameNo(2)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime3StrClc),new TimeWithDayAttr(this.overTime3EndClc)),new OverTimeFrameNo(3)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime4StrClc),new TimeWithDayAttr(this.overTime4EndClc)),new OverTimeFrameNo(4)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime5StrClc),new TimeWithDayAttr(this.overTime5EndClc)),new OverTimeFrameNo(5)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime6StrClc),new TimeWithDayAttr(this.overTime6EndClc)),new OverTimeFrameNo(6)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime7StrClc),new TimeWithDayAttr(this.overTime7EndClc)),new OverTimeFrameNo(7)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime8StrClc),new TimeWithDayAttr(this.overTime8EndClc)),new OverTimeFrameNo(8)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime9StrClc),new TimeWithDayAttr(this.overTime9EndClc)),new OverTimeFrameNo(9)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(this.overTime10StrClc),new TimeWithDayAttr(this.overTime10EndClc)),new OverTimeFrameNo(10)));
+		
+		return new OverTimeOfDaily(timeSheet,Collections.emptyList(),Finally.empty());
 	}
 }
