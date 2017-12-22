@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SaveDataDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
@@ -124,9 +125,13 @@ public class AddEmployeeCommandFacade {
 
 			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'O')
 					.collect(Collectors.toList());
+
 			if (!CollectionUtil.isEmpty(lstItem)) {
-				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
+				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), null, lstItem);
 				addInputs.add(newItemCtg);
+				// add item for get recordId in commandFacade.add
+				ItemsByCategory itemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), null);
+				addInputs.add(itemCtg);
 
 			}
 
@@ -153,8 +158,7 @@ public class AddEmployeeCommandFacade {
 			ItemValue itemVal = getItemById(inputs, x.getItemCode(), x.getCategoryCode());
 
 			if (itemVal != null) {
-				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
-						itemVal.value() != null ? itemVal.value().toString() : ""));
+				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(), itemVal.value().toString()));
 			}
 		});
 
@@ -183,7 +187,7 @@ public class AddEmployeeCommandFacade {
 
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
-			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getValueAsString(),
+			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getSaveData().getValue(),
 					item.getDataType().value));
 		});
 		if (CollectionUtil.isEmpty(items)) {

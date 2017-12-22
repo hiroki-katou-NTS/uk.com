@@ -11,6 +11,12 @@ public interface HolidayAddtimeRepository {
 	 * @return
 	 */
 	List<HolidayAddtime> findByCompanyId(String companyId);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
 	Optional<HolidayAddtime >findByCId(String companyId);
 	/**
 	 * Add Holiday Addtime

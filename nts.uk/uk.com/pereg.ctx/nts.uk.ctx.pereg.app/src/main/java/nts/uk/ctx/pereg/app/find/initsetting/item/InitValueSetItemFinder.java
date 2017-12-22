@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
@@ -60,6 +61,33 @@ public class InitValueSetItemFinder {
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
 		// set item SAMEASLOGIN
+
+		setItemSameLogin(itemList, result);
+
+		// set item
+
+		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYEECODE, command.getEmployeeCode());
+
+		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASNAME, command.getEmployeeName());
+
+		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
+
+		setDateTypeValue(result);
+
+		return result;
+	}
+
+	private void setDateTypeValue(List<SettingItemDto> result) {
+		result.forEach(x -> {
+			if (x.getDataType().equals(DataTypeValue.DATE)) {
+
+			}
+
+		});
+
+	}
+
+	private void setItemSameLogin(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result) {
 		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
 
 			if (categoryCd.charAt(1) == 'S') {
@@ -69,17 +97,7 @@ public class InitValueSetItemFinder {
 			}
 
 			setOptinalLoginData(itemList, result);
-
 		}
-		// set item
-
-		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYEECODE, command.getEmployeeCode());
-
-		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASNAME, command.getEmployeeName());
-
-		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
-
-		return result;
 	}
 
 	private void setDataByRefType(List<PerInfoInitValueSetItem> itemList, List<SettingItemDto> result,
@@ -128,7 +146,7 @@ public class InitValueSetItemFinder {
 						Optional<SettingItemDto> itemDataOpt = optList.stream()
 								.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
 						if (itemDataOpt.isPresent()) {
-							itemDtoOpt.get().setData(itemDataOpt.get().getValueAsString());
+							itemDtoOpt.get().setData(itemDataOpt.get().getSaveData().getValue());
 						}
 
 					}
@@ -163,11 +181,18 @@ public class InitValueSetItemFinder {
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
 
-		return SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
+		int dataType = domain.getDataType();
+
+		SettingItemDto itemDto = SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
 				domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
-				domain.getStringValue().v(), domain.getDataType(), BigDecimal.valueOf(domain.getSelectionItemRefType()),
-				domain.getItemParentCd());
+				domain.getStringValue().v(), dataType, BigDecimal.valueOf(domain.getSelectionItemRefType()),
+				domain.getItemParentCd(), domain.getDateType());
+
+		if (dataType == DataTypeValue.SELECTION.value) {
+
+		}
+		return itemDto;
 	}
 
 	private boolean isHaveItemRefType(List<PerInfoInitValueSetItem> listItem, ReferenceMethodType methodType) {

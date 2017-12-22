@@ -114,6 +114,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_CLOSURE;
 
 	private final static String SEL_CLOSURE_ID;
+	
+	private final static String SEL_CLOSURE_IDS;
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE;
 
@@ -224,6 +226,21 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
 		builderString.append("AND closure.kclmtClosurePK.closureId = emp.closureId");
 		SEL_CLOSURE_ID = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT NEW ");
+		builderString.append(ClosureDto.class.getName());
+		builderString.append(" (closure.kclmtClosurePK.cid, closure.kclmtClosurePK.closureId , closure.useClass, closure.closureMonth, hist.kmnmtEmploymentHistPK.empId) ");
+		builderString.append("FROM KclmtClosure closure JOIN ");
+		builderString.append("KclmtClosureEmployment emp JOIN ");
+		builderString.append("KmnmtAffiliEmploymentHist hist ");
+		builderString.append("WHERE hist.kmnmtEmploymentHistPK.empId IN :sIds ");
+		builderString.append("AND hist.kmnmtEmploymentHistPK.strD <= :baseDate AND hist.endD >= :baseDate ");
+		builderString.append("AND emp.kclmpClosureEmploymentPK.companyId = :companyId ");
+		builderString.append("AND emp.kclmpClosureEmploymentPK.employmentCD = hist.kmnmtEmploymentHistPK.emptcd ");
+		builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
+		builderString.append("AND closure.kclmtClosurePK.closureId = emp.closureId");
+		SEL_CLOSURE_IDS = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM BsymtEmployment e WHERE e.bsymtEmploymentPK.cid = :companyId");
@@ -399,7 +416,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (entity.isPresent()) {
 			return entity.map(c -> {
 				return new ClosureDto(c.getKclmtClosurePK().getCid(), c.getKclmtClosurePK().getClosureId(),
-						c.getUseClass() == 1 ? true : false, c.getClosureMonth());
+						c.getUseClass(), c.getClosureMonth());
 			}).get();
 		}
 		return null;
@@ -413,10 +430,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (entity.isPresent()) {
 			return entity.map(c -> {
 				return new ClosureDto(c.getKclmtClosurePK().getCid(), c.getKclmtClosurePK().getClosureId(),
-						c.getUseClass() == 1 ? true : false, c.getClosureMonth());
+						c.getUseClass(), c.getClosureMonth());
 			}).get();
 		}
 		return null;
+	}
+	
+	@Override
+	public List<ClosureDto> getClosureId(List<String> sIds, GeneralDate baseDate) {
+		return this.queryProxy().query(SEL_CLOSURE_IDS, ClosureDto.class)
+				.setParameter("companyId", AppContexts.user().companyId()).setParameter("baseDate", baseDate).setParameter("sIds", sIds).getList();
 	}
 
 	@Override

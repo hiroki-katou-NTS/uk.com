@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.app.find.calculation.holiday;
 import java.math.BigDecimal;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 @Data
 public class HolidayAddtimeDto {
 	/** 会社ID */
@@ -36,9 +35,12 @@ public class HolidayAddtimeDto {
 	/** 積立年休 */
 	private int yearlyReserved;
 
+	/** 通常勤務の加算設定*/
 	private RegularWorkDto regularWork;
 
+	/**フレックス勤務の加算設定*/
 	private FlexWorkDto flexWork;
 
+	/**変形労働勤務の加算設定*/
 	private IrregularWorkDto irregularWork;
 }

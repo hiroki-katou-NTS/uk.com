@@ -124,7 +124,7 @@ public class ShortWorkTimeDto extends PeregDomainDto {
 		}
 		
 		if ( secondItemOpt.isPresent()) {
-			SChildCareFrame secondItem = firstItemOpt.get();
+			SChildCareFrame secondItem = secondItemOpt.get();
 			dto.setStartTime2(secondItem.getStartTime().v());
 			dto.setEndTime2(secondItem.getEndTime().v());
 		}

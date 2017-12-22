@@ -2,10 +2,11 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 @AllArgsConstructor
 @Getter
-public class WeekdayHoliday {
+public class WeekdayHoliday extends DomainObject {
 
 	/** 会社ID */
 	private String companyId;
