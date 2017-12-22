@@ -3,6 +3,7 @@ module a4 {
     import EnumWorkForm = nts.uk.at.view.kmk003.a.viewmodel.EnumWorkForm;
     import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     class ScreenModel {
 
         tabMode: KnockoutObservable<TabMode>;
@@ -32,7 +33,7 @@ module a4 {
         /**
         * Constructor.
         */
-        constructor(tabMode: any, mainSettingModel: MainSettingModel) {
+        constructor(tabMode: any,enumSetting: WorkTimeSettingEnumDto,mainSettingModel: MainSettingModel) {
             let self = this;
             
             self.tabMode = tabMode;
@@ -47,11 +48,12 @@ module a4 {
             self.priorityGoWork = ko.observable(0);
             self.priorityLeaveWork = ko.observable(0);
 
-
-            self.stampComboBoxOptions = ko.observableArray([
-                //                new Item(),
-                //                new Item()
-            ]);
+            let roundTimes:Item[] = [];
+            enumSetting.roundingTime.forEach(function(item, index) {
+                roundTimes.push(new Item(index, item.localizedName));
+            });
+            
+            self.stampComboBoxOptions = ko.observableArray(roundTimes);
 
             self.stampGoWork = ko.observable(0);
             self.stampLeaveWork = ko.observable(0);
@@ -148,9 +150,10 @@ module a4 {
             //get data
             let input = valueAccessor();
             let tabMode = input.tabMode;
+            let enumSetting = input.enum;
             let mainSettingModel = input.mainSettingModel;
 
-            var screenModel = new ScreenModel(tabMode, mainSettingModel);
+            var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
