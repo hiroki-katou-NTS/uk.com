@@ -79,7 +79,7 @@
 										columns: columns,
 										value: approverList,
 										searchMode: 'filter',
-										searchCriterion: ['code'],
+										searchCriterion: ['code']['name'],
 										draggable: true,
 										multipleDrag: { left: true, right: false },
 										innerDrag: { left: false, right: true },
@@ -107,6 +107,7 @@
 																	value: selectedCbbCode,
 																	optionsText: 'name',
 																	editable: false,
+																	dropDownAttachedToBody: true,
 																	enable: cbbEnable,
 																	columns: [
 																		{ prop: 'name', length: 10 },

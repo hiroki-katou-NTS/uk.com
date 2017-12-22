@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,7 +30,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 
 	@Inject
-	private AffJobTitleHistoryItemRepository_v1 affJobTitleItemRepo;
+	private AffJobTitleHistoryItemRepository_ver1 affJobTitleItemRepo;
 
 	@Inject
 	private AffJobTitleHistoryRepository_ver1 affJobTitleRepo;
@@ -61,7 +61,7 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 		}
 		
 		if ( historyOpt.isPresent()) {
-			Optional<AffJobTitleHistoryItem> histItemOpt = affJobTitleItemRepo
+			Optional<AffJobTitleHistoryItem_ver1> histItemOpt = affJobTitleItemRepo
 					.findByHitoryId(historyOpt.get().getHistoryItems().get(0).identifier());
 			if ( histItemOpt.isPresent()) {
 				return AffJobTitleDto.createFromDomain(histItemOpt.get(), historyOpt.get());

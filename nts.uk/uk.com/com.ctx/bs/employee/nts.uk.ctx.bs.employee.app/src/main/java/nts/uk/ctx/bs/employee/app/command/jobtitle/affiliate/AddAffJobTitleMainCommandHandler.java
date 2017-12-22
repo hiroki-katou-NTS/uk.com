@@ -11,8 +11,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
@@ -31,7 +31,7 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 	private AffJobTitleHistoryRepository_ver1 affJobTitleHistoryRepository_ver1;
 	
 	@Inject
-	private AffJobTitleHistoryItemRepository_v1 affJobTitleHistoryItemRepository_v1;
+	private AffJobTitleHistoryItemRepository_ver1 affJobTitleHistoryItemRepository_v1;
 	
 	@Inject 
 	private AffJobTitleHistoryService affJobTitleHistoryService;
@@ -65,7 +65,7 @@ public class AddAffJobTitleMainCommandHandler extends CommandHandlerWithResult<A
 		
 		affJobTitleHistoryService.add(itemtoBeAdded);
 		
-		AffJobTitleHistoryItem histItem = AffJobTitleHistoryItem.createFromJavaType(histId, command.getSid(), command.getJobTitleId(), command.getNote());
+		AffJobTitleHistoryItem_ver1 histItem = AffJobTitleHistoryItem_ver1.createFromJavaType(histId, command.getSid(), command.getJobTitleId(), command.getNote());
 		affJobTitleHistoryItemRepository_v1.add(histItem);
 		
 		return new PeregAddCommandResult(histId);

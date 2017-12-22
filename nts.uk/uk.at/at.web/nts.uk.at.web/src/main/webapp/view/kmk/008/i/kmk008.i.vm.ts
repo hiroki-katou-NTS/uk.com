@@ -72,7 +72,7 @@ module nts.uk.at.view.kmk008.i {
             selectedStartingMonth: KnockoutObservable<string>;
             selectedClosingDateType: KnockoutObservable<string>;
             selectedClosingDateAtr: number;
-            selectedNumberTimesOverLimitType: KnockoutObservable<string>;
+            selectedNumberTimesOverLimitType: KnockoutObservable<number>;
             selectedAlarmListAtr: KnockoutObservable<string>;
             selectedYearlyWorkTableAtr: KnockoutObservable<string>;
             constructor(data: any) {
@@ -87,8 +87,8 @@ module nts.uk.at.view.kmk008.i {
                     
                     self.selectedStartingMonth = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.startingMonth : "1");
                     self.selectedClosingDateType = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.closingDateType : "1");
-                    self.selectedClosingDateAtr = data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.closingDateAtr : "0";
-                    self.selectedNumberTimesOverLimitType = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.numberTimesOverLimitType : "6");
+                    self.selectedClosingDateAtr = data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.closingDateAtr : 0;
+                    self.selectedNumberTimesOverLimitType = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.numberTimesOverLimitType : 6);
                     self.selectedAlarmListAtr = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.alarmListAtr : "0");
                     self.selectedYearlyWorkTableAtr = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.yearlyWorkTableAtr : "0");
                 } else {
@@ -101,7 +101,7 @@ module nts.uk.at.view.kmk008.i {
                     self.selectedStartingMonth = ko.observable("1");
                     self.selectedClosingDateType = ko.observable("1");
                     self.selectedClosingDateAtr = 0;
-                    self.selectedNumberTimesOverLimitType = ko.observable("6");
+                    self.selectedNumberTimesOverLimitType = ko.observable(6);
                     self.selectedAlarmListAtr = ko.observable("0");
                     self.selectedYearlyWorkTableAtr = ko.observable("0");
                 }

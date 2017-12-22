@@ -63,8 +63,11 @@ module cps002.a.vm {
             isMutipleCheck: false,
             isSelectAllEmployee: false,
             onApplyEmployee: (dataEmployee: Array<any>) => {
-                let self = this;
+                let self: ViewModel = __viewContext['viewModel'];
                 self.copyEmployee(new EmployeeCopy(dataEmployee[0]));
+            }, onSearchOnlyClicked: function(data: any) {
+                let self: ViewModel = __viewContext['viewModel'];
+                self.copyEmployee(new EmployeeCopy(data));
             }
         };
 
@@ -87,8 +90,8 @@ module cps002.a.vm {
 
                     self.createTypeId(data.employeeCreationMethod);
 
-
-                    if (self.employeeBasicInfo().copyEmployeeId != "") {
+                    let copyEmployeeId = data.copyEmployeeId;
+                    if (copyEmployeeId != "" && copyEmployeeId != self.copyEmployee().employeeId) {
                         let command = {
                             baseDate: moment().toDate(),
                             employeeIds: [data.copyEmployeeId]
@@ -194,7 +197,6 @@ module cps002.a.vm {
 
             if (currentCopyEmployeeId != "" && categorySelectedCode) {
 
-
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
                     if (result.length) {
                         self.itemSettingList(_.map(result, item => {
@@ -208,11 +210,18 @@ module cps002.a.vm {
                 });
             }
         }
+        clearEmployeeData() {
+            let self = this;
+            self.currentEmployee().employeeName("");
+            self.currentEmployee().employeeCode("");
+            self.currentEmployee().loginId("");
+            self.currentEmployee().password("");
+        }
 
         start() {
 
             let self = this;
-
+            self.clearEmployeeData();
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
@@ -576,6 +585,8 @@ module cps002.a.vm {
                             self.backtoStep1();
 
                         } else {
+
+                            setShared('CPS002A_PARAMS', { sid: employeeId });
                             jump('/view/cps/001/a/index.xhtml');
                         }
                     });
@@ -813,11 +824,34 @@ module cps002.a.vm {
         itemName: string;
         isRequired: number;
         saveData: any;
+        dataType: string;
+        dateType: string;
         constructor(param?: any) {
             this.itemCode = param ? param.itemCode : '';
             this.itemName = param ? param.itemName : '';
             this.isRequired = param ? param.isRequired : 0;
             this.saveData = param ? param.saveData : null;
+            this.dataType = param ? param.dataType : '';
+            this.dateType = param ? param.dateType : '';
+            if (this.dataType === "DATE") {
+                this.saveData.value = this.genDateString(this.saveData.value, this.dateType);
+
+            }
+        }
+        genDateString(value, dateType) {
+            let formatString = "yyyy/MM/dd";
+            switch (dateType) {
+                case "YEARMONTHDAY":
+                    formatString = "yyyy/MM/dd";
+                    break;
+                case "YEARMONTH":
+                    formatString = "yyyy/MM";
+                    break;
+                case "YEAR":
+                    formatString = "yyyy";
+                    break;
+            }
+            return nts.uk.time.formatDate(new Date(value), formatString);
         }
     }
 

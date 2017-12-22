@@ -22,8 +22,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
@@ -68,7 +68,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	private AffJobTitleHistoryRepository_ver1 affJobTitleHisRepo_ver1;
 	
 	@Inject
-	private AffJobTitleHistoryItemRepository_v1 affJobTitleHisItemRepo_ver1;
+	private AffJobTitleHistoryItemRepository_ver1 affJobTitleHisItemRepo_ver1;
 
 	/*
 	 * (non-Javadoc)
@@ -107,7 +107,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 
 			DateHistoryItem dateHistoryItem = optAffJobTitleHist.get().getHistoryItems().get(0);
 
-			AffJobTitleHistoryItem affJobTitleHistItem = affJobTitleHisItemRepo_ver1
+			AffJobTitleHistoryItem_ver1 affJobTitleHistItem = affJobTitleHisItemRepo_ver1
 					.findByHitoryId(dateHistoryItem.identifier()).get();
 
 			// Get information of employee

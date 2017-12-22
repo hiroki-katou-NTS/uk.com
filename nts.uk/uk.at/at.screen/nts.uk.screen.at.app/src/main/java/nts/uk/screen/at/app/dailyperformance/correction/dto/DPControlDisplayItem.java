@@ -12,6 +12,7 @@ import java.util.Set;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 
 /**
  * @author hungnm
@@ -29,6 +30,14 @@ public class DPControlDisplayItem {
 	private Set<String> formatCode;
 	
 	private List<ColumnSetting> columnSettings;
+	
+	private boolean settingUnit;
+	
+	private List<EnumCodeName> comboItemCalc;
+	
+	private List<EnumCodeName> comboItemDoWork;
+	
+	private List<EnumCodeName> comboItemReason;
 
 	public DPControlDisplayItem() {
 		super();

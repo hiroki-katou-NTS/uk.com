@@ -29,7 +29,7 @@ public class ClosureEmpAddCommandHandler extends CommandHandler<ClousureEmpAddCo
 		ClousureEmpAddCommand command = context.getCommand();
 
 		// Convert to list ClousureEmploy from command
-		List<ClosureEmployment> listClosureEmpDom = command.getListEmpCdNameDto().stream().map(item -> {
+		List<ClosureEmployment> listClosureEmpDom = command.getEmpCdNameList().stream().map(item -> {
 			return new ClosureEmployment(companyId, item.getCode(), item.getClosureId());
 		}).collect(Collectors.toList());
 		
