@@ -148,15 +148,27 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: FlexOffdayWorkTimeDto) {
-                    this.lstWorkTimezone = [];
-                    for (var dataDTO of data.lstWorkTimezone) {
-                        var dataModel: HDWorkTimeSheetSettingModel = new HDWorkTimeSheetSettingModel();
-                        dataModel.updateData(dataDTO);
-                        this.lstWorkTimezone.push(dataModel);
-                    }
+                    this.updateHDTimezone(data.lstWorkTimezone);
                     this.restTimezone.updateData(data.restTimezone);
                 }
 
+                updateHDTimezone(lstWorkTimezone: HDWorkTimeSheetSettingDto[]) {
+                    for (var dataDTO of lstWorkTimezone) {
+                        var dataModel: HDWorkTimeSheetSettingModel = this.getHDTimezoneByWorktimeNo(dataDTO.workTimeNo);
+                        if (dataModel) {
+                            dataModel.updateData(dataDTO);
+                        }
+                        else {
+                            dataModel = new HDWorkTimeSheetSettingModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstWorkTimezone.push(dataModel);
+                        }
+                    }
+                }
+
+                getHDTimezoneByWorktimeNo(worktimeNo: number) : HDWorkTimeSheetSettingModel{
+                    return _.find(this.lstWorkTimezone, hdtimezone => hdtimezone.workTimeNo() == worktimeNo);
+                }
                 toDto(): FlexOffdayWorkTimeDto {
                     var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
                     for (var dataModel of this.lstWorkTimezone) {
