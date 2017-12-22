@@ -9,6 +9,7 @@ module a15 {
     import WorkTimezoneMedicalSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneMedicalSetModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     
     /**
      * Screen Model - Tab 15
@@ -88,7 +89,7 @@ module a15 {
             });                          
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
-                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+                value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
         }
                 
@@ -97,7 +98,7 @@ module a15 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
@@ -188,12 +189,21 @@ module a15 {
             let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
             let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);             
             
-            _self.dayShiftApplicationTime = dayShiftMedicalSet.applicationTime;  
-            _self.nightShiftApplicationTime = nightShiftMedicalSet.applicationTime;   
-            _self.dayShiftSettingRoundingTime = dayShiftMedicalSet.roundingSet.roundingTime;
-            _self.dayShiftSettingRounding = dayShiftMedicalSet.roundingSet.rounding;
-            _self.nightShiftSettingRoundingTime = nightShiftMedicalSet.roundingSet.roundingTime;
-            _self.nightShiftSettingRounding = nightShiftMedicalSet.roundingSet.rounding;
+            // Get model value into view model
+            _self.dayShiftApplicationTime(dayShiftMedicalSet.applicationTime());  
+            _self.nightShiftApplicationTime(nightShiftMedicalSet.applicationTime());   
+            _self.dayShiftSettingRoundingTime(dayShiftMedicalSet.roundingSet.roundingTime());
+            _self.dayShiftSettingRounding(dayShiftMedicalSet.roundingSet.rounding());
+            _self.nightShiftSettingRoundingTime(nightShiftMedicalSet.roundingSet.roundingTime());
+            _self.nightShiftSettingRounding(nightShiftMedicalSet.roundingSet.rounding());
+            
+            // Update into model in case of data change
+            _self.dayShiftApplicationTime.subscribe(newValue => dayShiftMedicalSet.applicationTime(newValue));  
+            _self.nightShiftApplicationTime.subscribe(newValue => nightShiftMedicalSet.applicationTime(newValue));   
+            _self.dayShiftSettingRoundingTime.subscribe(newValue => dayShiftMedicalSet.roundingSet.roundingTime(newValue));
+            _self.dayShiftSettingRounding.subscribe(newValue => dayShiftMedicalSet.roundingSet.rounding(newValue));
+            _self.nightShiftSettingRoundingTime.subscribe(newValue => nightShiftMedicalSet.roundingSet.roundingTime(newValue));
+            _self.nightShiftSettingRounding.subscribe(newValue => nightShiftMedicalSet.roundingSet.rounding(newValue));
         }
         
         /**

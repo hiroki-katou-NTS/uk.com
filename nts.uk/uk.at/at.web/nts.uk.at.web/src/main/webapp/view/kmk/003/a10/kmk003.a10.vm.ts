@@ -6,6 +6,7 @@ module a10 {
     import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     
     /**
      * Screen Model - Tab 10
@@ -66,7 +67,7 @@ module a10 {
             });                          
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
-                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+                value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
         }
                 
@@ -75,7 +76,7 @@ module a10 {
          */
         public startTab(screenMode: any): void {
             let _self = this;  
-            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
@@ -150,7 +151,11 @@ module a10 {
          */
         private changeBindingDetail(raisingSalarySet: KnockoutObservable<string>): void {
             let _self = this;           
+            
+            // Get model value into view model
             _self.bonusPaySettingCode(raisingSalarySet());
+            
+            // Update into model in case of data change
             _self.bonusPaySettingCode.subscribe(newValue => {
                 raisingSalarySet(newValue);
             });

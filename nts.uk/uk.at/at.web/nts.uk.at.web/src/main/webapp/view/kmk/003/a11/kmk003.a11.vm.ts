@@ -9,6 +9,7 @@ module a11 {
     import SubHolTransferSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.SubHolTransferSetModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     
     /**
      * Screen Model - Tab 11
@@ -89,7 +90,7 @@ module a11 {
             });                          
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
-                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+                value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });                       
         }
 
@@ -98,9 +99,9 @@ module a11 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);            
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
+            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());        
         }
         
         /**
@@ -189,20 +190,22 @@ module a11 {
             let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);       
             let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.FROM_OVER_TIME);
 
-            _self.workdayOffTimeUseDivision = workdayOffTimeSubstitutionSet.subHolTimeSet.useDivision;
-            _self.workdayOffTimeSubHolTransferSetAtr = workdayOffTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr;
-            _self.workdayOffTimeOneDayTime = workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime;
-            _self.workdayOffTimeHalfDayTime = workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime;
-            _self.workdayOffTimeCertainTime = workdayOffTimeSubstitutionSet.subHolTimeSet.certainTime;
+            // Get model value into view model
+            _self.workdayOffTimeUseDivision(workdayOffTimeSubstitutionSet.subHolTimeSet.useDivision());
+            _self.workdayOffTimeSubHolTransferSetAtr(workdayOffTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr());
+            _self.workdayOffTimeOneDayTime(workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime());
+            _self.workdayOffTimeHalfDayTime(workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime());
+            _self.workdayOffTimeCertainTime(workdayOffTimeSubstitutionSet.subHolTimeSet.certainTime());
             
-            _self.fromOverTimeUseDivision = fromOverTimeSubstitutionSet.subHolTimeSet.useDivision;
-            _self.fromOverTimeSubHolTransferSetAtr = fromOverTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr;
-            _self.fromOverTimeOneDayTime = fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime;
-            _self.fromOverTimeHalfDayTime = fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime;
-            _self.fromOverTimeCertainTime = fromOverTimeSubstitutionSet.subHolTimeSet.certainTime;
+            _self.fromOverTimeUseDivision(fromOverTimeSubstitutionSet.subHolTimeSet.useDivision());
+            _self.fromOverTimeSubHolTransferSetAtr(fromOverTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr());
+            _self.fromOverTimeOneDayTime(fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime());
+            _self.fromOverTimeHalfDayTime(fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime());
+            _self.fromOverTimeCertainTime(fromOverTimeSubstitutionSet.subHolTimeSet.certainTime());
             
-            // Filter time data when switch radio button
-            _self.workdayOffTimeSubHolTransferSetAtr.subscribe((newValue) => {
+            // Update into model in case of data change
+            _self.workdayOffTimeUseDivision.subscribe(newValue => workdayOffTimeSubstitutionSet.subHolTimeSet.useDivision(newValue));            
+            _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
                 if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
                     if (typeof _self.workdayOffTimeCertainTime() !== 'number') {
                         _self.workdayOffTimeCertainTime(0);
@@ -215,8 +218,14 @@ module a11 {
                         _self.workdayOffTimeHalfDayTime(0);
                     }                 
                 }
-            });
-            _self.fromOverTimeSubHolTransferSetAtr.subscribe((newValue) => {                            
+                workdayOffTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr(newValue);
+            });           
+            _self.workdayOffTimeOneDayTime.subscribe(newValue => workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime(newValue));
+            _self.workdayOffTimeHalfDayTime.subscribe(newValue => workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime(newValue));
+            _self.workdayOffTimeCertainTime.subscribe(newValue => workdayOffTimeSubstitutionSet.subHolTimeSet.certainTime(newValue));          
+            
+            _self.fromOverTimeUseDivision.subscribe(newValue => fromOverTimeSubstitutionSet.subHolTimeSet.useDivision(newValue));
+            _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {                            
                 if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
                     if (typeof _self.fromOverTimeCertainTime() !== 'number') {
                         _self.fromOverTimeCertainTime(0);
@@ -229,7 +238,11 @@ module a11 {
                         _self.fromOverTimeHalfDayTime(0);
                     }                 
                 }
-            });            
+                fromOverTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr(newValue);
+            }); 
+            _self.fromOverTimeOneDayTime.subscribe(newValue => fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime(newValue));
+            _self.fromOverTimeHalfDayTime.subscribe(newValue => fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime(newValue));
+            _self.fromOverTimeCertainTime.subscribe(newValue => fromOverTimeSubstitutionSet.subHolTimeSet.certainTime(newValue));           
         }
         
         /**

@@ -8,6 +8,7 @@ module a14 {
     import WorkTimezoneShortTimeWorkSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneShortTimeWorkSetModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     
      /**
      * Screen Model - Tab 14
@@ -81,7 +82,7 @@ module a14 {
             });                          
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
-                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+                value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
         }
         
@@ -90,7 +91,7 @@ module a14 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
@@ -164,9 +165,15 @@ module a14 {
          * UI - Detail: change Binding Detail mode
          */
         private changeBindingDetail(shortTimeWorkSet: WorkTimezoneShortTimeWorkSetModel): void {
-            let _self = this;           
-            _self.childCareWorkUse = shortTimeWorkSet.childCareWorkUse;
-            _self.nursingTimeWorkUse = shortTimeWorkSet.nursTimezoneWorkUse;
+            let _self = this;          
+            
+            // Get model value into view model
+            _self.childCareWorkUse(shortTimeWorkSet.childCareWorkUse());
+            _self.nursingTimeWorkUse(shortTimeWorkSet.nursTimezoneWorkUse());
+            
+            // Update into model in case of data change
+            _self.childCareWorkUse.subscribe(newValue => shortTimeWorkSet.childCareWorkUse(newValue));
+            _self.nursingTimeWorkUse.subscribe(newValue => shortTimeWorkSet.nursTimezoneWorkUse(newValue));
         }
         
         /**

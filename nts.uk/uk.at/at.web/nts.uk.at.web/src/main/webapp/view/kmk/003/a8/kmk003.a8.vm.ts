@@ -12,6 +12,7 @@ module a8 {
     import TimeRoundingSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRoundingSettingModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     
     /**
      * Screen Model - Tab 8
@@ -120,7 +121,7 @@ module a8 {
             });                          
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
-                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+                value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
         }
         
@@ -129,7 +130,7 @@ module a8 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
@@ -213,6 +214,7 @@ module a8 {
             _self.totalRoundingSameFrameRoundingSet.subscribe(newValue => goOutSet.totalRoundingSet.setSameFrameRounding(newValue));
             _self.totalRoundingFrameStraddRoundingSet.subscribe(newValue => goOutSet.totalRoundingSet.frameStraddRoundingSet(newValue));
             
+            // Update binding for Time Setting model
             _self.otTimePersonApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting);
             _self.workTimePersonApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.workTimezone.privateUnionGoOut.approTimeRoundingSetting);
             _self.pubHolWorkTimePersonApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.pubHolWorkTimezone.privateUnionGoOut.approTimeRoundingSetting);

@@ -8,6 +8,7 @@ module a13 {
     import TimeRoundingSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRoundingSettingModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     
     /**
      * Screen Model - Tab 13
@@ -79,7 +80,7 @@ module a13 {
             });                          
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
-                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+                value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
         }
                         
@@ -88,7 +89,7 @@ module a13 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
@@ -163,8 +164,14 @@ module a13 {
          */
         private changeBindingDetail(temporaryWorkTimeSetting: TimeRoundingSettingModel): void {
             let _self = this;           
-            _self.temporaryWorkTimeSettingRoundingTime = temporaryWorkTimeSetting.roundingTime;
-            _self.temporaryWorkTimeSettingRounding = temporaryWorkTimeSetting.rounding;
+            
+            // Get model value into view model          
+            _self.temporaryWorkTimeSettingRoundingTime(temporaryWorkTimeSetting.roundingTime());
+            _self.temporaryWorkTimeSettingRounding(temporaryWorkTimeSetting.rounding());
+            
+            // Update into model in case of data change
+            _self.temporaryWorkTimeSettingRoundingTime.subscribe(newValue => temporaryWorkTimeSetting.roundingTime(newValue));
+            _self.temporaryWorkTimeSettingRounding.subscribe(newValue => temporaryWorkTimeSetting.rounding(newValue));
         }
         
         /**

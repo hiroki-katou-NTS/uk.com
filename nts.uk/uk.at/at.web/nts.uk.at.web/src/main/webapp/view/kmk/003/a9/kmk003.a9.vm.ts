@@ -9,6 +9,7 @@ module a9 {
     import OtherEmTimezoneLateEarlySetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OtherEmTimezoneLateEarlySetModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     
     /**
      * Screen Model - Tab 9
@@ -85,7 +86,7 @@ module a9 {
             });                          
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
-                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+                value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
         }            
         
@@ -94,7 +95,7 @@ module a9 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
             _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
@@ -185,10 +186,17 @@ module a9 {
             let otherClassSetLate: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.LATE);
             let otherClassSetLeaveEarly: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
             
-            _self.lateSettingRoundingTime = otherClassSetLate.delTimeRoundingSet.roundingTime;
-            _self.lateSettingRounding = otherClassSetLate.delTimeRoundingSet.rounding;
-            _self.leaveEarlySettingRoundingTime = otherClassSetLeaveEarly.delTimeRoundingSet.roundingTime;
-            _self.leaveEarlySettingRounding = otherClassSetLeaveEarly.delTimeRoundingSet.rounding;
+            // Get model value into view model
+            _self.lateSettingRoundingTime(otherClassSetLate.delTimeRoundingSet.roundingTime());
+            _self.lateSettingRounding(otherClassSetLate.delTimeRoundingSet.rounding());
+            _self.leaveEarlySettingRoundingTime(otherClassSetLeaveEarly.delTimeRoundingSet.roundingTime());
+            _self.leaveEarlySettingRounding(otherClassSetLeaveEarly.delTimeRoundingSet.rounding());
+            
+            // Update into model in case of data change
+            _self.lateSettingRoundingTime.subscribe(newValue => otherClassSetLate.delTimeRoundingSet.roundingTime(newValue));
+            _self.lateSettingRounding.subscribe(newValue => otherClassSetLate.delTimeRoundingSet.rounding(newValue));
+            _self.leaveEarlySettingRoundingTime.subscribe(newValue => otherClassSetLeaveEarly.delTimeRoundingSet.roundingTime(newValue));
+            _self.leaveEarlySettingRounding.subscribe(newValue => otherClassSetLeaveEarly.delTimeRoundingSet.rounding(newValue));
         }
         
         /**
