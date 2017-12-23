@@ -37,15 +37,15 @@ public class KshmtFixedHalfRestSet extends UkJpaEntity implements Serializable {
 
 	/** The period no. */
 	@Column(name = "PERIOD_NO")
-	private short periodNo;
+	private int periodNo;
 
 	/** The start time. */
 	@Column(name = "START_TIME")
-	private short startTime;
+	private int startTime;
 
 	/** The end time. */
 	@Column(name = "END_TIME")
-	private short endTime;
+	private int endTime;
 
 	/**
 	 * Instantiates a new kshmt fixed half rest set.

@@ -37,31 +37,31 @@ public class KshmtFlexWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The core time str. */
 	@Column(name = "CORE_TIME_STR")
-	private short coreTimeStr;
+	private int coreTimeStr;
 
 	/** The core time end. */
 	@Column(name = "CORE_TIME_END")
-	private short coreTimeEnd;
+	private int coreTimeEnd;
 
 	/** The coretime use atr. */
 	@Column(name = "CORETIME_USE_ATR")
-	private short coretimeUseAtr;
+	private int coretimeUseAtr;
 
 	/** The least work time. */
 	@Column(name = "LEAST_WORK_TIME")
-	private short leastWorkTime;
+	private int leastWorkTime;
 
 	/** The deduct from work time. */
 	@Column(name = "DEDUCT_FROM_WORK_TIME")
-	private short deductFromWorkTime;
+	private int deductFromWorkTime;
 
 	/** The especial calc. */
 	@Column(name = "ESPECIAL_CALC")
-	private short especialCalc;
+	private int especialCalc;
 
 	/** The use halfday shift. */
 	@Column(name = "USE_HALFDAY_SHIFT")
-	private short useHalfdayShift;
+	private int useHalfdayShift;
 
 	/**
 	 * Instantiates a new kshmt flex work set.

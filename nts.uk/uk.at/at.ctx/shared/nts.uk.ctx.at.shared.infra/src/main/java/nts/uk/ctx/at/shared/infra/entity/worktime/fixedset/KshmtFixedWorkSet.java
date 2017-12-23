@@ -37,19 +37,19 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The use half day. */
 	@Column(name = "USE_HALF_DAY")
-	private short useHalfDay;
+	private int useHalfDay;
 
 	/** The legal ot set. */
 	@Column(name = "LEGAL_OT_SET")
-	private short legalOtSet;
+	private int legalOtSet;
 
 	/** The calc method. */
 	@Column(name = "CALC_METHOD")
-	private short calcMethod;
+	private int calcMethod;
 
 	/** The lev rest calc type. */
 	@Column(name = "LEV_REST_CALC_TYPE")
-	private short levRestCalcType;
+	private int levRestCalcType;
 
 	/**
 	 * Instantiates a new kshmt fixed work set.

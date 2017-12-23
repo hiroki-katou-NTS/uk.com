@@ -37,31 +37,31 @@ public class KshmtOtherLateEarly extends UkJpaEntity implements Serializable {
 
 	/** The deduction unit. */
 	@Column(name = "DEDUCTION_UNIT")
-	private short deductionUnit;
+	private int deductionUnit;
 
 	/** The deduction rounding. */
 	@Column(name = "DEDUCTION_ROUNDING")
-	private short deductionRounding;
+	private int deductionRounding;
 
 	/** The extract late early time. */
 	@Column(name = "EXTRACT_LATE_EARLY_TIME")
-	private short extractLateEarlyTime;
+	private int extractLateEarlyTime;
 
 	/** The include worktime. */
 	@Column(name = "INCLUDE_WORKTIME")
-	private short includeWorktime;
+	private int includeWorktime;
 
 	/** The grace time. */
 	@Column(name = "GRACE_TIME")
-	private short graceTime;
+	private int graceTime;
 
 	/** The record unit. */
 	@Column(name = "RECORD_UNIT")
-	private short recordUnit;
+	private int recordUnit;
 
 	/** The record rounding. */
 	@Column(name = "RECORD_ROUNDING")
-	private short recordRounding;
+	private int recordRounding;
 
 	/**
 	 * Instantiates a new kshmt other late early.

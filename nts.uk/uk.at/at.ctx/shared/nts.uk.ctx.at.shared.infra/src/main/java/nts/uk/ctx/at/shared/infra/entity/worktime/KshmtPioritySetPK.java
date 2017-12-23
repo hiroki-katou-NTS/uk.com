@@ -33,15 +33,15 @@ public class KshmtPioritySetPK implements Serializable {
 
 	/** The work form atr. */
 	@Column(name = "WORK_FORM_ATR")
-	private short workFormAtr;
+	private int workFormAtr;
 
 	/** The work time set method. */
 	@Column(name = "WORK_TIME_SET_METHOD")
-	private short workTimeSetMethod;
+	private int workTimeSetMethod;
 
 	/** The stamp atr. */
 	@Column(name = "STAMP_ATR")
-	private short stampAtr;
+	private int stampAtr;
 
 	/**
 	 * Instantiates a new kshmt piority set PK.

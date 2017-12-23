@@ -37,43 +37,43 @@ public class KshmtFixedHolTimeSet extends UkJpaEntity implements Serializable {
 
 	/** The unit. */
 	@Column(name = "UNIT")
-	private short unit;
+	private int unit;
 
 	/** The rounding. */
 	@Column(name = "ROUNDING")
-	private short rounding;
+	private int rounding;
 
 	/** The time str. */
 	@Column(name = "TIME_STR")
-	private short timeStr;
+	private int timeStr;
 
 	/** The time end. */
 	@Column(name = "TIME_END")
-	private short timeEnd;
+	private int timeEnd;
 
 	/** The hol time. */
 	@Column(name = "HOL_TIME")
-	private short holTime;
+	private int holTime;
 
 	/** The hol frame no. */
 	@Column(name = "HOL_FRAME_NO")
-	private short holFrameNo;
+	private int holFrameNo;
 
 	/** The out hol time. */
 	@Column(name = "OUT_HOL_TIME")
-	private short outHolTime;
+	private int outHolTime;
 
 	/** The out hol frame no. */
 	@Column(name = "OUT_HOL_FRAME_NO")
-	private short outHolFrameNo;
+	private int outHolFrameNo;
 
 	/** The pub hol time. */
 	@Column(name = "PUB_HOL_TIME")
-	private short pubHolTime;
+	private int pubHolTime;
 
 	/** The pub hol frame no. */
 	@Column(name = "PUB_HOL_FRAME_NO")
-	private short pubHolFrameNo;
+	private int pubHolFrameNo;
 
 	/**
 	 * Instantiates a new kshmt fixed hol time set.

@@ -37,7 +37,7 @@ public class KwtstWorkTimeSet extends UkJpaEntity implements Serializable {
 
 	/** The range time day. */
 	@Column(name = "RANGE_TIME_DAY")
-	private short rangeTimeDay;
+	private int rangeTimeDay;
 
 	/** The addition set id. */
 	@Column(name = "ADDITION_SET_ID")
@@ -45,23 +45,23 @@ public class KwtstWorkTimeSet extends UkJpaEntity implements Serializable {
 
 	/** The night shift atr. */
 	@Column(name = "NIGHT_SHIFT_ATR")
-	private short nightShiftAtr;
+	private int nightShiftAtr;
 
 	/** The start date clock. */
 	@Column(name = "START_DATE_CLOCK")
-	private short startDateClock;
+	private int startDateClock;
 
 	/** The predetermine atr. */
 	@Column(name = "PREDETERMINE_ATR")
-	private short predetermineAtr;
+	private int predetermineAtr;
 
 	/** The morning end time. */
 	@Column(name = "MORNING_END_TIME")
-	private short morningEndTime;
+	private int morningEndTime;
 
 	/** The afternoon start time. */
 	@Column(name = "AFTERNOON_START_TIME")
-	private short afternoonStartTime;
+	private int afternoonStartTime;
 
 	/**
 	 * Instantiates a new kwtst work time set.

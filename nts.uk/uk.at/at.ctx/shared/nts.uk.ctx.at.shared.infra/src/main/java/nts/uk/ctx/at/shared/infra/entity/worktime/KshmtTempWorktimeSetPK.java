@@ -33,11 +33,11 @@ public class KshmtTempWorktimeSetPK implements Serializable {
 
 	/** The work form atr. */
 	@Column(name = "WORK_FORM_ATR")
-	private short workFormAtr;
+	private int workFormAtr;
 
 	/** The worktime set method. */
 	@Column(name = "WORKTIME_SET_METHOD")
-	private short worktimeSetMethod;
+	private int worktimeSetMethod;
 
 	/**
 	 * Instantiates a new kshmt temp worktime set PK.

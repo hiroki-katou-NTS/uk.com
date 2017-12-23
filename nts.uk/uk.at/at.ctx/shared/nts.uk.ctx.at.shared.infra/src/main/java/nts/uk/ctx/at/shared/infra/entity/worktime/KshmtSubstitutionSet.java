@@ -37,23 +37,23 @@ public class KshmtSubstitutionSet extends UkJpaEntity implements Serializable {
 
 	/** The use atr. */
 	@Column(name = "USE_ATR")
-	private short useAtr;
+	private int useAtr;
 
 	/** The tranfer atr. */
 	@Column(name = "TRANFER_ATR")
-	private short tranferAtr;
+	private int tranferAtr;
 
 	/** The one day time. */
 	@Column(name = "ONE_DAY_TIME")
-	private short oneDayTime;
+	private int oneDayTime;
 
 	/** The half day time. */
 	@Column(name = "HALF_DAY_TIME")
-	private short halfDayTime;
+	private int halfDayTime;
 
 	/** The certain time. */
 	@Column(name = "CERTAIN_TIME")
-	private short certainTime;
+	private int certainTime;
 
 	/**
 	 * Instantiates a new kshmt substitution set.

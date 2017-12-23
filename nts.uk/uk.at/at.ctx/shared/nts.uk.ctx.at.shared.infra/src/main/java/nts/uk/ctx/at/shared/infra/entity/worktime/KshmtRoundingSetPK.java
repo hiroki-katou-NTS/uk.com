@@ -33,15 +33,15 @@ public class KshmtRoundingSetPK implements Serializable {
 
 	/** The work form atr. */
 	@Column(name = "WORK_FORM_ATR")
-	private short workFormAtr;
+	private int workFormAtr;
 
 	/** The work time set method. */
 	@Column(name = "WORK_TIME_SET_METHOD")
-	private short workTimeSetMethod;
+	private int workTimeSetMethod;
 
 	/** The atr. */
 	@Column(name = "ATR")
-	private short atr;
+	private int atr;
 
 	/**
 	 * Instantiates a new kshmt rounding set PK.
