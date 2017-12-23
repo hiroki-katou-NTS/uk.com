@@ -321,7 +321,7 @@ module nts.uk.request {
 
         export function donwloadFile(fileId: string) {
             var dfd = $.Deferred();
-            $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+            $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
                 successCallback: function(url) {
                     dfd.resolve();
                 },
@@ -332,6 +332,10 @@ module nts.uk.request {
                 }
             });
             return dfd.promise();
+        }
+        
+        export function deleteFile(fileId: string) {
+            return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
         }
         
         export function isFileExist(fileId: string): boolean {
