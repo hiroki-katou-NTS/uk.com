@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.entity.worktime.flexset;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -21,49 +20,40 @@ import lombok.Setter;
 @Embeddable
 public class KshmtFlexWorkSetPK implements Serializable {
 
-    /** The Constant serialVersionUID. */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The cid. */
-	@Basic(optional = false)
-    @Column(name = "CID")
-    private String cid;
-    
-    /** The worktime cd. */
-    @Basic(optional = false)
-    @Column(name = "WORKTIME_CD")
-    private String worktimeCd;
+	@Column(name = "CID")
+	private String cid;
 
-    /**
-     * Instantiates a new kshmt flex work set PK.
-     */
-    public KshmtFlexWorkSetPK() {
-    }
+	/** The worktime cd. */
+	@Column(name = "WORKTIME_CD")
+	private String worktimeCd;
 
-    /**
-     * Instantiates a new kshmt flex work set PK.
-     *
-     * @param cid the cid
-     * @param worktimeCd the worktime cd
-     */
-    public KshmtFlexWorkSetPK(String cid, String worktimeCd) {
-        this.cid = cid;
-        this.worktimeCd = worktimeCd;
-    }
+	/**
+	 * Instantiates a new kshmt flex work set PK.
+	 */
+	public KshmtFlexWorkSetPK() {
+		super();
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
+		return hash;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-        return hash;
-    }
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -72,7 +62,8 @@ public class KshmtFlexWorkSetPK implements Serializable {
 			return false;
 		}
 		KshmtFlexWorkSetPK other = (KshmtFlexWorkSetPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if ((this.worktimeCd == null && other.worktimeCd != null)
@@ -81,14 +72,4 @@ public class KshmtFlexWorkSetPK implements Serializable {
 		}
 		return true;
 	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.KshmtFlexWorkSetPK[ cid=" + cid + ", worktimeCd=" + worktimeCd + " ]";
-	}
-
-	
 }

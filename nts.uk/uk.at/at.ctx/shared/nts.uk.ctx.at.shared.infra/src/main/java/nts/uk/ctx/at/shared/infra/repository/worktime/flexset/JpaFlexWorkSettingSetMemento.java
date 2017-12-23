@@ -19,10 +19,10 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexArrayGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexSetGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexSettingGroup;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflect;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexArrayGroup;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexSetGroup;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexSettingGroup;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowWorkRestSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexStampReflectTZSetMemento;
 

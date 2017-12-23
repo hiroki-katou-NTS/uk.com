@@ -10,8 +10,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaGroup;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexHaGroup;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFixedWorkTimezoneSetGetMemento;
 
 /**

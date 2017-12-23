@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexArrayGroup;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexSetGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexArrayGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexSetGroup;
 
 /**
  * The Class JpaFlexODFlWRestTzGetMemento.
