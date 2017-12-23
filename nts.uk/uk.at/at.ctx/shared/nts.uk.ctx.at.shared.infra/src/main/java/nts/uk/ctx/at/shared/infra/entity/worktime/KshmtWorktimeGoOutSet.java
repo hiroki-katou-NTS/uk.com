@@ -37,11 +37,11 @@ public class KshmtWorktimeGoOutSet extends UkJpaEntity implements Serializable {
 
 	/** The rounding same frame. */
 	@Column(name = "ROUNDING_SAME_FRAME")
-	private short roundingSameFrame;
+	private int roundingSameFrame;
 
 	/** The rounding cross frame. */
 	@Column(name = "ROUNDING_CROSS_FRAME")
-	private short roundingCrossFrame;
+	private int roundingCrossFrame;
 
 	/**
 	 * Instantiates a new kshmt worktime go out set.

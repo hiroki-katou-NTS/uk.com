@@ -37,39 +37,39 @@ public class KshmtTempWorktimeSet extends UkJpaEntity implements Serializable {
 
 	/** The calc method. */
 	@Column(name = "CALC_METHOD")
-	private short calcMethod;
+	private int calcMethod;
 
 	/** The out legal break frame no. */
 	@Column(name = "OUT_LEGAL_BREAK_FRAME_NO")
-	private short outLegalBreakFrameNo;
+	private int outLegalBreakFrameNo;
 
 	/** The out legal pub hol frame no. */
 	@Column(name = "OUT_LEGAL_PUB_HOL_FRAME_NO")
-	private short outLegalPubHolFrameNo;
+	private int outLegalPubHolFrameNo;
 
 	/** The unit. */
 	@Column(name = "UNIT")
-	private short unit;
+	private int unit;
 
 	/** The rounding. */
 	@Column(name = "ROUNDING")
-	private short rounding;
+	private int rounding;
 
 	/** The ot frame no. */
 	@Column(name = "OT_FRAME_NO")
-	private short otFrameNo;
+	private int otFrameNo;
 
 	/** The il legal ot frame no. */
 	@Column(name = "IL_LEGAL_OT_FRAME_NO")
-	private short ilLegalOtFrameNo;
+	private int ilLegalOtFrameNo;
 
 	/** The in legal break frame no. */
 	@Column(name = "IN_LEGAL_BREAK_FRAME_NO")
-	private short inLegalBreakFrameNo;
+	private int inLegalBreakFrameNo;
 
 	/** The settlement order. */
 	@Column(name = "SETTLEMENT_ORDER")
-	private short settlementOrder;
+	private int settlementOrder;
 
 	/**
 	 * Instantiates a new kshmt temp worktime set.

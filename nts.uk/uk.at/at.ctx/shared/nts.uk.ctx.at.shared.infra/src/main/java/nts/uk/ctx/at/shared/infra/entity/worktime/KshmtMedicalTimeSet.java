@@ -37,15 +37,15 @@ public class KshmtMedicalTimeSet extends UkJpaEntity implements Serializable {
 
 	/** The app time. */
 	@Column(name = "APP_TIME")
-	private short appTime;
+	private int appTime;
 
 	/** The unit. */
 	@Column(name = "UNIT")
-	private short unit;
+	private int unit;
 
 	/** The rounding. */
 	@Column(name = "ROUNDING")
-	private short rounding;
+	private int rounding;
 
 	/**
 	 * Instantiates a new kshmt medical time set.

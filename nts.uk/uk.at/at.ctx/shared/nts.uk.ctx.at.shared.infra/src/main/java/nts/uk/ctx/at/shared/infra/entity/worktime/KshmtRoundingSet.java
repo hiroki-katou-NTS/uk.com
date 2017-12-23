@@ -37,11 +37,11 @@ public class KshmtRoundingSet extends UkJpaEntity implements Serializable {
 
 	/** The front rear atr. */
 	@Column(name = "FRONT_REAR_ATR")
-	private short frontRearAtr;
+	private int frontRearAtr;
 
 	/** The rounding time unit. */
 	@Column(name = "ROUNDING_TIME_UNIT")
-	private short roundingTimeUnit;
+	private int roundingTimeUnit;
 
 	/**
 	 * Instantiates a new kshmt rounding set.

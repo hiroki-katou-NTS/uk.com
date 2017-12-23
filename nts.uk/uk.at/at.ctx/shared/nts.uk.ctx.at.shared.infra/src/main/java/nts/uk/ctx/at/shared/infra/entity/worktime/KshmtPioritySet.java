@@ -37,7 +37,7 @@ public class KshmtPioritySet extends UkJpaEntity implements Serializable {
 
 	/** The piority atr. */
 	@Column(name = "PIORITY_ATR")
-	private short piorityAtr;
+	private int piorityAtr;
 
 	/**
 	 * Instantiates a new kshmt piority set.

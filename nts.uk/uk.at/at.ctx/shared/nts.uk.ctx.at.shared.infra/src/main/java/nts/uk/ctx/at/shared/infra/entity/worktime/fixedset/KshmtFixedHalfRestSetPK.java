@@ -33,7 +33,7 @@ public class KshmtFixedHalfRestSetPK implements Serializable {
 
 	/** The am pm atr. */
 	@Column(name = "AM_PM_ATR")
-	private short amPmAtr;
+	private int amPmAtr;
 
 	/**
 	 * Instantiates a new kshmt fixed half rest set PK.

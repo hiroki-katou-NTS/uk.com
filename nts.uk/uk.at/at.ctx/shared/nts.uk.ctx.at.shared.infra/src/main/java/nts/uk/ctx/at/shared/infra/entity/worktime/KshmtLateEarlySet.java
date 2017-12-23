@@ -37,7 +37,7 @@ public class KshmtLateEarlySet extends UkJpaEntity implements Serializable {
 
 	/** The is deducte from time. */
 	@Column(name = "IS_DEDUCTE_FROM_TIME")
-	private short isDeducteFromTime;
+	private int isDeducteFromTime;
 
 	/**
 	 * Instantiates a new kshmt late early set.

@@ -33,7 +33,7 @@ public class KshmtFixedHolTimeSetPK implements Serializable {
 
 	/** The worktime no. */
 	@Column(name = "WORKTIME_NO")
-	private short worktimeNo;
+	private int worktimeNo;
 
 	/**
 	 * Instantiates a new kshmt fixed hol time set PK.

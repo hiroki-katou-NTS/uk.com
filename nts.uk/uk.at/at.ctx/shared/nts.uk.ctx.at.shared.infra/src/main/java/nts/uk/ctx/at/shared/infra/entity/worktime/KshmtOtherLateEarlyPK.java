@@ -33,15 +33,15 @@ public class KshmtOtherLateEarlyPK implements Serializable {
 
 	/** The work form atr. */
 	@Column(name = "WORK_FORM_ATR")
-	private short workFormAtr;
+	private int workFormAtr;
 
 	/** The worktime set method. */
 	@Column(name = "WORKTIME_SET_METHOD")
-	private short worktimeSetMethod;
+	private int worktimeSetMethod;
 
 	/** The late early atr. */
 	@Column(name = "LATE_EARLY_ATR")
-	private short lateEarlyAtr;
+	private int lateEarlyAtr;
 
 	/**
 	 * Instantiates a new kshmt other late early PK.

@@ -33,15 +33,15 @@ public class KshmtSubstitutionSetPK implements Serializable {
 
 	/** The work form atr. */
 	@Column(name = "WORK_FORM_ATR")
-	private short workFormAtr;
+	private int workFormAtr;
 
 	/** The worktime set method. */
 	@Column(name = "WORKTIME_SET_METHOD")
-	private short worktimeSetMethod;
+	private int worktimeSetMethod;
 
 	/** The origin atr. */
 	@Column(name = "ORIGIN_ATR")
-	private short originAtr;
+	private int originAtr;
 
 	/**
 	 * Instantiates a new kshmt substitution set PK.

@@ -33,15 +33,15 @@ public class KshmtMedicalTimeSetPK implements Serializable {
 
 	/** The work form atr. */
 	@Column(name = "WORK_FORM_ATR")
-	private short workFormAtr;
+	private int workFormAtr;
 
 	/** The worktime set method. */
 	@Column(name = "WORKTIME_SET_METHOD")
-	private short worktimeSetMethod;
+	private int worktimeSetMethod;
 
 	/** The work sys atr. */
 	@Column(name = "WORK_SYS_ATR")
-	private short workSysAtr;
+	private int workSysAtr;
 
 	/**
 	 * Instantiates a new kshmt medical time set PK.

@@ -37,51 +37,51 @@ public class KshmtSpecialRoundOut extends UkJpaEntity implements Serializable {
 
 	/** The pub deduct method. */
 	@Column(name = "PUB_DEDUCT_METHOD")
-	private short pubDeductMethod;
+	private int pubDeductMethod;
 
 	/** The pub deduct unit. */
 	@Column(name = "PUB_DEDUCT_UNIT")
-	private short pubDeductUnit;
+	private int pubDeductUnit;
 
 	/** The pub deduct rounding. */
 	@Column(name = "PUB_DEDUCT_ROUNDING")
-	private short pubDeductRounding;
+	private int pubDeductRounding;
 
 	/** The pub rounding method. */
 	@Column(name = "PUB_ROUNDING_METHOD")
-	private short pubRoundingMethod;
+	private int pubRoundingMethod;
 
 	/** The pub rounding unit. */
 	@Column(name = "PUB_ROUNDING_UNIT")
-	private short pubRoundingUnit;
+	private int pubRoundingUnit;
 
 	/** The pub rounding. */
 	@Column(name = "PUB_ROUNDING")
-	private short pubRounding;
+	private int pubRounding;
 
 	/** The personal deduct method. */
 	@Column(name = "PERSONAL_DEDUCT_METHOD")
-	private short personalDeductMethod;
+	private int personalDeductMethod;
 
 	/** The personal deduct unit. */
 	@Column(name = "PERSONAL_DEDUCT_UNIT")
-	private short personalDeductUnit;
+	private int personalDeductUnit;
 
 	/** The personal deduct rounding. */
 	@Column(name = "PERSONAL_DEDUCT_ROUNDING")
-	private short personalDeductRounding;
+	private int personalDeductRounding;
 
 	/** The personal rounding method. */
 	@Column(name = "PERSONAL_ROUNDING_METHOD")
-	private short personalRoundingMethod;
+	private int personalRoundingMethod;
 
 	/** The personal rounding unit. */
 	@Column(name = "PERSONAL_ROUNDING_UNIT")
-	private short personalRoundingUnit;
+	private int personalRoundingUnit;
 
 	/** The personal rounding. */
 	@Column(name = "PERSONAL_ROUNDING")
-	private short personalRounding;
+	private int personalRounding;
 
 	/**
 	 * Instantiates a new kshmt special round out.
