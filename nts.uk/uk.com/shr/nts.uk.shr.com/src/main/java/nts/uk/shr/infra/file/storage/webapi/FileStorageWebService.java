@@ -14,7 +14,7 @@ import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
-import nts.uk.shr.infra.file.storage.filetype.FileTypeDescriptionExtend;
+import nts.uk.shr.infra.file.storage.filestereotype.FileStereoTypeDescriptionExtend;
 
 @Path("/shr/infra/file/storage")
 public class FileStorageWebService {
@@ -46,7 +46,7 @@ public class FileStorageWebService {
 
 	private Response buildFileResponse(StoredFileInfo fileInfo) {
 		
-		val fileInfoOpt = FileTypeDescriptionExtend.of(fileInfo.getFileType());
+		val fileInfoOpt = FileStereoTypeDescriptionExtend.of(fileInfo.getFileType());
 		if (fileInfoOpt.isPresent()) {
 			if (fileInfoOpt.get().isPack()) {
 				return Response.status(404).build();

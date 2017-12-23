@@ -1,13 +1,13 @@
-package nts.uk.shr.infra.file.storage.filetype.defines;
+package nts.uk.shr.infra.file.storage.filestereotype.defines;
 
 import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.shr.infra.file.storage.filetype.FileTypeDescription;
+import nts.uk.shr.infra.file.storage.filestereotype.FileStereoTypeDescription;
 
 @Getter
-public class SampleFileType implements FileTypeDescription {
+public class SampleFileStereoType implements FileStereoTypeDescription {
 
 	@Override
 	public String name() {

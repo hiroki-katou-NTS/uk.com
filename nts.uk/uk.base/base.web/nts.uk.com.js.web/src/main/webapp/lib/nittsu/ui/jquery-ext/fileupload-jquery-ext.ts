@@ -51,11 +51,11 @@ module nts.uk.ui.jqueryExtentions {
                     });
                 }
                 else {
-                    dfd.reject({ message: "Please select file", messageId: "0" });
+                    dfd.reject({ message: "ファイルを選択してください。", messageId: "0" });
                 }
             }
             else {
-                dfd.reject({ messageId: "0", message: "Can not find control" });
+                dfd.reject({ messageId: "0", message: "ファイルを読み込めません。" });
             }
             return dfd.promise();
         }

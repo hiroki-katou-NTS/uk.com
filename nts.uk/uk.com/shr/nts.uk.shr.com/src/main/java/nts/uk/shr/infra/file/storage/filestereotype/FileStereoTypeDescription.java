@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.file.storage.filetype;
+package nts.uk.shr.infra.file.storage.filestereotype;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.uk.shr.infra.file.storage.info.StoredFileSecurityInfo;
 
-public interface FileTypeDescription {
+public interface FileStereoTypeDescription {
 	
 	String name();
 	

@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.file.storage.filetype;
+package nts.uk.shr.infra.file.storage.filestereotype;
 
 import java.util.Optional;
 
@@ -9,12 +9,12 @@ import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.uk.shr.infra.file.storage.info.StoredFileSecurityInfo;
 
 @RequiredArgsConstructor
-public class FileTypeDescriptionExtend {
+public class FileStereoTypeDescriptionExtend {
 
-	private final FileTypeDescription description;
+	private final FileStereoTypeDescription description;
 
-	public static Optional<FileTypeDescriptionExtend> of(String nameOfFileType) {
-		return FileTypeDef.of(nameOfFileType).map(d -> new FileTypeDescriptionExtend(d));
+	public static Optional<FileStereoTypeDescriptionExtend> of(String nameOfFileType) {
+		return FileStereoTypeDef.of(nameOfFileType).map(d -> new FileStereoTypeDescriptionExtend(d));
 	}
 	
 	public boolean isPack() {
