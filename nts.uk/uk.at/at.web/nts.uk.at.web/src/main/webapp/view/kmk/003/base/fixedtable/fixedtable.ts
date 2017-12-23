@@ -254,7 +254,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             let self = this;
             let row: any = {};
             _.forEach(self.columns, (column: FixColumn) => {
-                row[column.key] = ko.observable(ko.utils.unwrapObservable(column.defaultValue));
+                row[column.key] = ko.observable(ko.unwrap(column.defaultValue));
             });
             self.itemList.push(row);
         }
@@ -381,7 +381,8 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            rowHtml += "<td style='text-align: center;'><div data-bind=\"visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
+            rowHtml += "<td style='text-align: center;'><div data-bind=\"attr: {tabindex: $parent.tabindex}, " 
+                    + "visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
             
             // add html column base setting
@@ -467,6 +468,16 @@ module nts.uk.at.view.kmk003.base.fixedtable {
                     "$parent.lstDataSource." + columnSetting.key);
             }
 
+            // update tabindex
+            let idxSpace: number = template.indexOf(' ');
+            template = template.substring(0, idxSpace) + " tabindex=\"" + self.tabindex + "\" "
+                + template.substring(idxSpace + 1, template.length);
+            
+            // ==== add tabindex for ntsTimeRangeEditor ====
+            if (template.indexOf('ntsTimeRangeEditor') != -1) {
+                newProperties = newProperties + ",tabindex:" + self.tabindex;
+            }
+            
             template = template.replace(oldProperties, newProperties.replace(/"/g, "'"));
             
             // update width control
