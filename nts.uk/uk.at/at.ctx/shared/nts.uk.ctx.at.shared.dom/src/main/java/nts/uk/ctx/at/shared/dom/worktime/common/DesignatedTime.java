@@ -59,8 +59,8 @@ public class DesignatedTime extends DomainObject {
 	 *
 	 * @param otherDomain the other domain
 	 */
-	public void restoreData(DesignatedTime other) {
-		this.oneDayTime = other.getOneDayTime();
-		this.halfDayTime = other.getHalfDayTime();
+	public void restoreData(DesignatedTime oldDomain) {
+		this.oneDayTime = oldDomain.getOneDayTime();
+		this.halfDayTime = oldDomain.getHalfDayTime();
 	}
 }

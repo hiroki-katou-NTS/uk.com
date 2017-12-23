@@ -60,32 +60,37 @@ public class SubHolTransferSet extends DomainObject{
 	 *
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, SubHolTransferSet other) {
-		// simple mode
+	public void restoreData(ScreenMode screenMode, SubHolTransferSet oldDomain) {
+		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
+			// Only designatedTime not get restore
+			this.certainTime = oldDomain.getCertainTime();
+			this.useDivision = oldDomain.isUseDivision();
+			this.subHolTransferSetAtr = oldDomain.getSubHolTransferSetAtr();
 			return;
 		}
 		
-		// not use
+		// Detail mode				
+		// Setting not use - restore old data
 		if (!this.useDivision) {
-			this.subHolTransferSetAtr = other.getSubHolTransferSetAtr();
-			this.certainTime = other.getCertainTime();
-			this.designatedTime.restoreData(other.getDesignatedTime());
+			this.certainTime = oldDomain.getCertainTime();
+			this.subHolTransferSetAtr = oldDomain.getSubHolTransferSetAtr();			
+			this.designatedTime.restoreData(oldDomain.getDesignatedTime());
 			return;
-		}
+		} 
 		
-		switch (this.subHolTransferSetAtr) {
-		
-		case SPECIFIED_TIME_SUB_HOL:
-			this.certainTime = other.getCertainTime();
-			break;
-
-		case CERTAIN_TIME_EXC_SUB_HOL:
-			this.designatedTime.restoreData(other.getDesignatedTime());
-			break;
-
-		default:
-			throw new RuntimeException("SubHolTransferType not found.");
+		// Setting being used
+		switch (this.subHolTransferSetAtr) {		
+			case SPECIFIED_TIME_SUB_HOL:
+				this.certainTime = oldDomain.getCertainTime();
+				break;
+	
+			case CERTAIN_TIME_EXC_SUB_HOL:
+				this.designatedTime.restoreData(oldDomain.getDesignatedTime());
+				break;
+	
+			default:
+				throw new RuntimeException("SubHolTransferType not found.");
 		}
 	}
 }

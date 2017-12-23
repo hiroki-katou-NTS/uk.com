@@ -34,11 +34,12 @@ public class FixedWorkSettingFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.find(companyId, worktimeCode);
-		FixedWorkSetting fixedWorkSetting = opFixedWorkSetting.get();
-		
-		FixedWorkSettingDto fixedWorkSettingDto = new FixedWorkSettingDto();
-		fixedWorkSetting.saveToMemento(fixedWorkSettingDto);
-		return fixedWorkSettingDto;
+		if (opFixedWorkSetting.isPresent()) {		
+			FixedWorkSettingDto fixedWorkSettingDto = new FixedWorkSettingDto();
+			opFixedWorkSetting.get().saveToMemento(fixedWorkSettingDto);
+			return fixedWorkSettingDto;
+		}
+		return null;
 	}
 	
 }

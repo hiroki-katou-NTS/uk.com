@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class GoOutTimezoneRoundingSet.
@@ -46,5 +47,17 @@ public class GoOutTimezoneRoundingSet extends DomainObject {
 		memento.setPubHolWorkTimezone(this.pubHolWorkTimezone);
 		memento.setWorkTimezone(this.workTimezone);
 		memento.setOttimezone(this.ottimezone);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, GoOutTimezoneRoundingSet oldDomain) {
+		this.pubHolWorkTimezone.restoreData(screenMode, oldDomain.getPubHolWorkTimezone());
+		this.workTimezone.restoreData(screenMode, oldDomain.getWorkTimezone());
+		this.ottimezone.restoreData(screenMode, oldDomain.getOttimezone());		
 	}
 }
