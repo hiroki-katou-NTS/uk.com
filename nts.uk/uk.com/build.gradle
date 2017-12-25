@@ -988,8 +988,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
 		
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2'
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.7'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.7'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: '0.3'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: '0.3'
 		compile group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.2'
