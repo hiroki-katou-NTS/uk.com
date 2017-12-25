@@ -15,6 +15,8 @@ import javax.ws.rs.Produces;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommand;
+import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.DiffTimeWorkSettingSaveCommand;
 import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.DiffTimeWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktime.fixedset.FixedWorkSettingSaveCommand;
@@ -25,8 +27,11 @@ import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveComm
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeSettingInfoFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime_old.WorkTimeFinder;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 
 /**
  * 
@@ -37,6 +42,10 @@ import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 @Path("at/shared/worktime")
 @Produces("application/json")
 public class WorkTimeWebService extends WebService {
+
+	/** The work time set finder. */
+	@Inject
+	private WorkTimeSettingFinder workTimeSetFinder;
 
 	/** The work time finder. */
 	@Inject
@@ -61,6 +70,9 @@ public class WorkTimeWebService extends WebService {
 	@Inject
 	private WorkTimeSettingInfoFinder workTimeSettingInfoFinder;
 	
+	/** The work time common delete command handler. */
+	@Inject
+	private WorkTimeCommonDeleteCommandHandler workTimeCommonDeleteCommandHandler;
 	/**
 	 * Find by company ID.
 	 *
@@ -93,6 +105,18 @@ public class WorkTimeWebService extends WebService {
 	@Path("findByCodes")
 	public List<WorkTimeDto> findByCodes(List<String> codes) {
 		return this.workTimeFinder.findByCodes(codes);
+	}
+
+	/**
+	 * Find with condition.
+	 *
+	 * @param condition the condition
+	 * @return the list
+	 */
+	@POST
+	@Path("findwithcondition")
+	public List<SimpleWorkTimeSettingDto> findWithCondition(WorkTimeSettingCondition condition) {
+		return this.workTimeSetFinder.findWithCondition(condition);
 	}
 
 	/**
@@ -186,6 +210,17 @@ public class WorkTimeWebService extends WebService {
 	@Path("findInfo/{workTimeCode}")
 	public WorkTimeSettingInfoDto findInfoByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode){
 		return this.workTimeSettingInfoFinder.find(workTimeCode);
+	}
+	
+	/**
+	 * Removes the by work time code.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("remove")
+	public void removeByWorkTimeCode(WorkTimeCommonDeleteCommand command) {
+		this.workTimeCommonDeleteCommandHandler.handle(command);
 	}
 }
 

@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk003.a {
     import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
     import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
     
+    import FixedWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FixedWorkSettingSaveCommand;
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
     
     export module viewmodel {
@@ -244,11 +245,33 @@ module nts.uk.at.view.kmk003.a {
                 service.savePred(data).done(function() {
                     self.isClickSave(false);
                 });*/
-                service.saveFlexWorkSetting(self.collectDataFlex()).done(function() {
+                //TODO need check mode save new or update here 
+                switch(self.workTimeSettingModel.workTimeDivision.workTimeDailyAtr()){
+                    case EnumWorkForm.REGULAR: 
+                        switch (self.workTimeSettingModel.workTimeDivision.workTimeMethodSet()) {
+                            case SettingMethod.FIXED: 
+                                service.saveFixedWorkSetting(self.collectDataFixed()).done(function() {
 
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                });
+                                }).fail(function(error) {
+                                    nts.uk.ui.dialog.alertError(error);
+                                });
+                                break;
+                            //for flow and difftime
+                            case SettingMethod.DIFFTIME: break;
+                            case SettingMethod.FLOW: break;
+                            default: break;
+                        }
+                        break;
+                    case EnumWorkForm.FLEX:
+                        service.saveFlexWorkSetting(self.collectDataFlex()).done(function() {
+
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError(error);
+                        });
+                        break;
+                    default: break;
+                }
+                
             }
             
             /**
@@ -256,6 +279,20 @@ module nts.uk.at.view.kmk003.a {
              */
             private getFlowModeBySelected(selectedSettingMethod: string): boolean {
                 return (selectedSettingMethod === '3');
+            }
+            
+            /**
+             * function collection data fixed mode 
+             */
+            private collectDataFixed():any{
+                let _self = this;
+                let command: FixedWorkSettingSaveCommand = {
+                    predseting: _self.predetemineTimeSettingModel.toDto(),
+                    worktimeSetting: _self.workTimeSettingModel.toDto(),
+                    fixedWorkSetting: _self.mainSettingModel.fixedWorkSetting.toDto(),
+                    screenMode: _self.tabMode()
+                };
+                return command;  
             }
             
             /**
@@ -284,7 +321,24 @@ module nts.uk.at.view.kmk003.a {
                     self.useHalfDay(HalfDayEnum.NOT_USE);
                 }
             }
-          
+            
+             /**
+             * remove worktime by code
+             */
+            private removeWorkTime(): JQueryPromise<void>
+            {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    service.removeWorkTime(self.selectedWorkTimeCode()).done(function() {
+                        dfd.resolve();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
+                    });
+                }).ifNo(function() {
+                });
+                return dfd.promise();
+            }
         }
         
         export class ItemWorkForm {

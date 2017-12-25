@@ -4,10 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.common;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -15,6 +21,8 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class WorkTimeCommonDeleteCommandHandler.
  */
+@Stateless
+@Transactional
 public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeCommonDeleteCommand> {
 
 	/** The work time setting repository. */
@@ -24,6 +32,22 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 	/** The predetemine time setting repository. */
 	@Inject 
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository; 
+
+	/** The fixed work setting repository. */
+	@Inject 
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+
+	/** The flow work setting repository. */
+	@Inject 
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+
+	/** The diff time work setting repository. */
+	@Inject 
+	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
+	
+	/** The flex work setting repository. */
+	@Inject 
+	private FlexWorkSettingRepository flexWorkSettingRepository;
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -42,6 +66,18 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 		
 		//remove worktimeset
 		this.workTimeSettingRepository.remove(companyId,workTimeCode);
+		
+		//remove fixed
+		this.fixedWorkSettingRepository.remove(companyId, workTimeCode);
+		
+		//remove flow
+		this.flowWorkSettingRepository.remove(companyId, workTimeCode);
+		
+		//remove difftime
+		this.diffTimeWorkSettingRepository.remove(companyId, workTimeCode);
+		
+		//remove flex
+		this.flexWorkSettingRepository.remove(companyId, workTimeCode);
 	}
 
 }

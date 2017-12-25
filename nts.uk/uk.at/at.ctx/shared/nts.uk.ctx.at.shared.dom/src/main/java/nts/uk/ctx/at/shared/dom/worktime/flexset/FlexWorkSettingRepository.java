@@ -26,5 +26,14 @@ public interface FlexWorkSettingRepository {
 	 * @param domain the domain
 	 */
 	public void save(FlexWorkSetting domain);
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param workTimeCode the work time code
+	 * @return true, if successful
+	 */
+	public boolean remove(String companyId,String workTimeCode);
 
 }

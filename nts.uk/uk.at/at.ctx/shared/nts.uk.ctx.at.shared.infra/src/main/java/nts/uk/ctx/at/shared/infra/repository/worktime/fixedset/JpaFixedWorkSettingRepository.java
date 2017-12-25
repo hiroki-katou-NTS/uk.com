@@ -30,10 +30,18 @@ public class JpaFixedWorkSettingRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<FixedWorkSetting> find(String companyId, String workTimeCode) {
-		// TODO
-		return null;
-		// return this.findFixedSettingGroup(companyId, workTimeCode).map(entity
-		// -> this.toDomain(entity));
+		
+		// Query
+		Optional<KshmtFixedWorkSet> optionalEntityTimeSet = this.queryProxy()
+				.find(new KshmtFixedWorkSetPK(companyId, workTimeCode), KshmtFixedWorkSet.class);
+
+		// Check exist
+		if (!optionalEntityTimeSet.isPresent()) {
+			return Optional.empty();
+		}
+
+		return Optional.ofNullable(new FixedWorkSetting(
+				new JpaFixedWorkSettingGetMemento(optionalEntityTimeSet.get())));
 	}
 
 	/*
@@ -45,7 +53,17 @@ public class JpaFixedWorkSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void add(FixedWorkSetting domain) {
+		
+		// Query
+		Optional<KshmtFixedWorkSet> optionalEntityTimeSet = this.queryProxy().find(
+				new KshmtFixedWorkSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()),
+				KshmtFixedWorkSet.class);
 
+		KshmtFixedWorkSet entity = optionalEntityTimeSet.orElse(new KshmtFixedWorkSet());
+
+		// Insert into DB
+		domain.saveToMemento(new JpaFixedWorkSettingSetMemento(entity));
+		this.commandProxy().insert(entity);
 	}
 
 	/* (non-Javadoc)
@@ -53,8 +71,17 @@ public class JpaFixedWorkSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void update(FixedWorkSetting domain) {
-		// TODO Auto-generated method stub
-		
+
+		// Query
+		Optional<KshmtFixedWorkSet> optionalEntityTimeSet = this.queryProxy().find(
+				new KshmtFixedWorkSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()),
+				KshmtFixedWorkSet.class);
+
+		KshmtFixedWorkSet entity = optionalEntityTimeSet.orElse(new KshmtFixedWorkSet());
+
+		// Update into DB
+		domain.saveToMemento(new JpaFixedWorkSettingSetMemento(entity));
+		this.commandProxy().update(entity);
 	}
 
 	/* (non-Javadoc)

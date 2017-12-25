@@ -46,4 +46,10 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 
 	}
 
+	@Override
+	public boolean remove(String companyId, String workTimeCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

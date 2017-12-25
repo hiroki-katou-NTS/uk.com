@@ -5,12 +5,17 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -61,7 +66,6 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 	private int useIntervalTime;
 
 	/** The raising salary set. */
-	@Size(min = 1, max = 3)
 	@Column(name = "RAISING_SALARY_SET")
 	private String raisingSalarySet;
 
@@ -84,6 +88,24 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 	/** The late night rounding. */
 	@Column(name = "LATE_NIGHT_ROUNDING")
 	private int lateNightRounding;
+
+	/** The kshmt substitution sets. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
+	private List<KshmtSubstitutionSet> kshmtSubstitutionSets;
+
+	/** The kshmt medical time sets. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
+	private List<KshmtMedicalTimeSet> kshmtMedicalTimeSets;
 
 	/*
 	 * (non-Javadoc)

@@ -9,8 +9,7 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 
 /**
  * The Class JpaCoreTimeSettingGetMemento.
@@ -18,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
 public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtFlexWorkSet entity;
+	private KshmtFixedWorkSet entity;
 
 	/**
 	 * Instantiates a new jpa core time setting get memento.
@@ -26,7 +25,7 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixOffdayWorkTimezoneGetMemento(KshmtFlexWorkSet entity) {
+	public JpaFixOffdayWorkTimezoneGetMemento(KshmtFixedWorkSet entity) {
 		super();
 		this.entity = entity;
 	}
@@ -38,6 +37,7 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 
 	@Override
 	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
+		//TODO
 		return null;
 	}
 

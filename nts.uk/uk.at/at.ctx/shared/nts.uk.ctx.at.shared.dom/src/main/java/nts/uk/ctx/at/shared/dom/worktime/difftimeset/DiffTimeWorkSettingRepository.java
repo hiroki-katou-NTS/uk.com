@@ -30,8 +30,9 @@ public interface DiffTimeWorkSettingRepository {
 	/**
 	 * Removes the.
 	 *
+	 * @param companyId the company id
 	 * @param workTimeCode the work time code
 	 * @return true, if successful
 	 */
-	boolean remove(String workTimeCode);
+	boolean remove(String companyId, String workTimeCode);
 }

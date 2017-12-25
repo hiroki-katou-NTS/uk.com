@@ -6,16 +6,25 @@ package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtFlexOdRtSet.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSHMT_FLEX_OD_RT_SET")
 public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
@@ -93,5 +102,11 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexOdRtSetPK;
 	}
+	
+	/** The kshmt flex od fix rest. */
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
+	private KshmtFlexOdFixRest kshmtFlexOdFixRest;
 
 }

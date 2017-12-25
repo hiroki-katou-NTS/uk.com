@@ -81,7 +81,7 @@ module a7 {
                 isShowButton: true,
                 dataSource: self.dataSourceForFlowOrFlexNotUse1,
                 isMultipleSelect: true,
-                columns: self.columnSetting(),
+                columns: self.columnSetting2(),
                 tabindex: 10
             };
             
@@ -97,7 +97,7 @@ module a7 {
                 isShowButton: true,
                 dataSource: self.dataSourceForFlowOrFlexNotUse2,
                 isMultipleSelect: true,
-                columns: self.columnSetting(),
+                columns: self.columnSetting2(),
                 tabindex: 10
             };
             
@@ -144,6 +144,18 @@ module a7 {
                         required: true, enable: true, inputFormat: 'time'}"/>`}
             ];
         }
+        
+        private columnSetting2(): Array<any> {
+            let self = this;
+            return [
+                {
+                    headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
+                        required: true, enable: true, inputFormat: 'time'}"/>`},
+                {
+                    headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
+                        required: true, enable: true, inputFormat: 'time'}"/>`}
+            ];
+        }
     }
 
     class KMK003A7BindingHandler implements KnockoutBindingHandler {
@@ -182,9 +194,6 @@ module a7 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-
-                // TODO: need to check
-//                $('#nts-fix-table-a7').ntsFixTableCustom(screenModel.fixTableOption);
             });
         }
 

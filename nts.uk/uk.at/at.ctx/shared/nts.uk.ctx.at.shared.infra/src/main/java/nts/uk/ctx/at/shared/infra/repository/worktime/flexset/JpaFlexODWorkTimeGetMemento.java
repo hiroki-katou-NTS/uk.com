@@ -9,29 +9,25 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
 
 /**
  * The Class JpaFlexODWorkTimeGetMemento.
  */
 public class JpaFlexODWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento{
 	
-//	/** The entity array group. */
-//	private KshmtFlexArrayGroup entityArrayGroup;
-//	
-//	/** The entity set group. */
-//	private KshmtFlexSetGroup entitySetGroup;
-//	
-//	/**
-//	 * Instantiates a new jpa flex OD work time get memento.
-//	 *
-//	 * @param entityArrayGroup the entity array group
-//	 * @param entitySetGroup the entity set group
-//	 */
-//	public JpaFlexODWorkTimeGetMemento(KshmtFlexArrayGroup entityArrayGroup, KshmtFlexSetGroup entitySetGroup) {
-//		super();
-//		this.entityArrayGroup = entityArrayGroup;
-//		this.entitySetGroup = entitySetGroup;
-//	}
+	/** The entity. */
+	private KshmtFlexOdRtSet entity;
+	
+	/**
+	 * Instantiates a new jpa flex OD work time get memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFlexODWorkTimeGetMemento(KshmtFlexOdRtSet entity) {
+		super();
+		this.entity = entity;
+	}
 
 	/*
 	 * (non-Javadoc)

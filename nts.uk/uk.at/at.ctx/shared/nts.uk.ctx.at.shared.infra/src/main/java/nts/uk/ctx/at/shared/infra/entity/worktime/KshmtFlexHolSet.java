@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -57,7 +58,7 @@ public class KshmtFlexHolSet extends UkJpaEntity implements Serializable {
 
 	/** The hol frame no. */
 	@Column(name = "HOL_FRAME_NO")
-	private int holFrameNo;
+	private BigDecimal holFrameNo;
 
 	/** The out hol time. */
 	@Column(name = "OUT_HOL_TIME")
@@ -65,7 +66,7 @@ public class KshmtFlexHolSet extends UkJpaEntity implements Serializable {
 
 	/** The out hol frame no. */
 	@Column(name = "OUT_HOL_FRAME_NO")
-	private int outHolFrameNo;
+	private BigDecimal outHolFrameNo;
 
 	/** The pub hol time. */
 	@Column(name = "PUB_HOL_TIME")
@@ -73,7 +74,7 @@ public class KshmtFlexHolSet extends UkJpaEntity implements Serializable {
 
 	/** The pub hol frame no. */
 	@Column(name = "PUB_HOL_FRAME_NO")
-	private int pubHolFrameNo;
+	private BigDecimal pubHolFrameNo;
 
 	/**
 	 * Instantiates a new kshmt flex hol set.
