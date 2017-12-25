@@ -544,12 +544,22 @@ module cps001.a.vm {
                                 if (rep == 1) {
                                     setShared(REPL_KEY, 2);
                                     self.infoId(undefined);
-                                    let first: any = _.first(data.classificationItems);
-                                    if (first && _.has(first, "items") && _.isArray(first.items)) {
-                                        _.each(first.items, m => {
-                                            m.value = undefined;
-                                        });
-                                    }
+                                    _.each(data.classificationItems, (c: any, i: number) => {
+                                        if (_.has(c, "items") && _.isArray(c.items)) {
+                                            _.each(c.items, m => {
+                                                if (!_.isArray(m)) {
+                                                    if (i == 0) {
+                                                        m.value = undefined;
+                                                    }
+                                                    m.recordId = undefined;
+                                                } else {
+                                                    _.each(m, k => {
+                                                        k.recordId = undefined;
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                                 layout().listItemCls(data.classificationItems);
                             });
