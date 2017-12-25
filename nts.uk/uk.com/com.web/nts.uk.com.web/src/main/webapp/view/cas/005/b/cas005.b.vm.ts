@@ -18,7 +18,7 @@ module nts.uk.com.view.csa005.b {
                 self.newRoleCode = ko.observable("");
                 self.newRoleName = ko.observable("");
                 //checker
-                self.checked = ko.observable(true);
+                self.checked = ko.observable(false);
                 self.enable = ko.observable(true)
                 self.roleCode = ko.observable("");
                 self.roleName = ko.observable("");
