@@ -9,14 +9,23 @@ module a7 {
         tabMode: KnockoutObservable<TabMode>;
         
         mainSettingModel: KnockoutObservable<MainSettingModel>;
-        fixTableOption: any;
-        dataSource: KnockoutObservableArray<any>;
+        fixTableOptionForFixedOrDiffTime: any;
+        fixTableOptionForFlowOrFlexUse: any;
+        fixTableOptionForFlowOrFlexNotUse1: any;
+        fixTableOptionForFlowOrFlexNotUse2: any;
+ 
+        dataSourceForFixedOrDiffTime: KnockoutObservableArray<any>;
+        dataSourceForFlowOrFlexUse: KnockoutObservableArray<any>;
+        dataSourceForFlowOrFlexNotUse1: KnockoutObservableArray<any>;
+        dataSourceForFlowOrFlexNotUse2: KnockoutObservableArray<any>;
+        
         isFlowOrFlex: KnockoutObservable<boolean>;
         
         useFixedRestTimeOptions: KnockoutObservableArray<any>;
-        useFixedRestTime: KnockoutObservable<string>;
+        useFixedRestTime: KnockoutObservable<number>;
         
         isFixedRestTime: KnockoutObservable<boolean>;
+        isFlexOrFlowNotUse: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
@@ -28,16 +37,65 @@ module a7 {
             //main model
             self.mainSettingModel = ko.observable(mainSettingModel);
             
-            self.dataSource = ko.observableArray([]);
-            self.dataSource.subscribe((newList) => {
+            /////////////
+            self.dataSourceForFixedOrDiffTime = ko.observableArray([]);
+            self.dataSourceForFixedOrDiffTime.subscribe((newList) => {
                 console.log(newList);
             });
-            self.fixTableOption = {
+            self.fixTableOptionForFixedOrDiffTime = {
                 maxRow: 7,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
-                dataSource: self.dataSource,
+                dataSource: self.dataSourceForFixedOrDiffTime,
+                isMultipleSelect: true,
+                columns: self.columnSetting(),
+                tabindex: 10
+            };
+            
+            /////////////
+            self.dataSourceForFlowOrFlexUse = ko.observableArray([]);
+            self.dataSourceForFlowOrFlexUse.subscribe((newList) => {
+                console.log(newList);
+            });
+            self.fixTableOptionForFlowOrFlexUse = {
+                maxRow: 7,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceForFlowOrFlexUse,
+                isMultipleSelect: true,
+                columns: self.columnSetting(),
+                tabindex: 10
+            };
+            
+            /////////////
+            self.dataSourceForFlowOrFlexNotUse1 = ko.observableArray([]);
+            self.dataSourceForFlowOrFlexNotUse1.subscribe((newList) => {
+                console.log(newList);
+            });
+            self.fixTableOptionForFlowOrFlexNotUse1 = {
+                maxRow: 7,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceForFlowOrFlexNotUse1,
+                isMultipleSelect: true,
+                columns: self.columnSetting(),
+                tabindex: 10
+            };
+            
+            /////////////
+            self.dataSourceForFlowOrFlexNotUse2 = ko.observableArray([]);
+            self.dataSourceForFlowOrFlexNotUse2.subscribe((newList) => {
+                console.log(newList);
+            });
+            self.fixTableOptionForFlowOrFlexNotUse2 = {
+                maxRow: 7,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceForFlowOrFlexNotUse2,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
                 tabindex: 10
@@ -45,6 +103,7 @@ module a7 {
             
             //subscrible worktime ssettingmethod
             self.isFlowOrFlex = ko.computed(function() {
+                
                 return (mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() == EnumWorkForm.FLEX) || (mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet() == SettingMethod.FLOW);
             });
             
@@ -52,13 +111,31 @@ module a7 {
                 { code: 1, name: 　nts.uk.resource.getText("KMK003_142") },
                 { code: 2, name: 　nts.uk.resource.getText("KMK003_143") },
             ]);
-            self.useFixedRestTime = ko.observable('1');
+            self.useFixedRestTime = ko.observable(1);
             
             self.isFixedRestTime = ko.computed(function(){
-                return self.useFixedRestTime() =='1';
+                return self.useFixedRestTime() == 1 && self.isFlowOrFlex();
             });
+            self.isFlexOrFlowNotUse = ko.computed(function() {
+                return self.useFixedRestTime() == 2 && self.isFlowOrFlex();
+            });
+            
+            
         }
 
+        private loadDataToScreen(mainSettingModel: MainSettingModel) {
+            let self =this;
+            
+            //TODO recheck 
+            self.dataSourceForFixedOrDiffTime = mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone;
+            //TODO check 休憩時間を固定にする=true
+            self.dataSourceForFlowOrFlexUse = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones;
+            //TODO check 休憩時間を固定にする=false
+            self.dataSourceForFlowOrFlexNotUse1 = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets;
+            //TODO check 休憩時間を固定にする=false
+//            self.dataSourceForFlowOrFlexNotUse1 = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone;
+            
+        }
         private columnSetting(): Array<any> {
             let self = this;
             return [
