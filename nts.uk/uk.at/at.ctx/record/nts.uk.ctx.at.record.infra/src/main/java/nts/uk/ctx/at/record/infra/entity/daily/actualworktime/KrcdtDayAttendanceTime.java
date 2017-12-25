@@ -6,9 +6,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.val;
@@ -100,13 +105,46 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	@Column(name = "AFT_PC_LOGOFF_TIME")
 	public int aftPcLogoffTime;
 
+	@OneToOne
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayOvertimework krcdtDayOvertimework;
+
+	@OneToOne
+	@JoinColumns(value = {
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayOvertimeworkTs krcdtDayOvertimeworkTs;
+
+	@OneToOne
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayPrsIncldTime krcdtDayPrsIncldTime;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime")
 	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayAttendanceTime")
 	public List<KrcdtDayLateTime> krcdtDayLateTime;
+
+	@OneToOne
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayHolidyWork krcdtDayHolidyWork;
+
+	@OneToOne
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayHolidyWorkTs krcdtDayHolidyWorkTs;
+
+	@OneToOne
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayWorkScheTime krcdtDayWorkScheTime;
 
 	@Override
@@ -206,8 +244,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 								TimeWithCalculation.sameTime(new AttendanceTime(0)))),
 				Collections.emptyList(),
 				new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
-				new WorkTimes(this.workTimes),
-				new TemporaryTimeOfDaily());
+				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily());
 
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,

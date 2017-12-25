@@ -1577,12 +1577,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         paidHours: string;
         fundedPaid: string;
         constructor(compensation: string, substitute: string, paidYear: string, paidHalf: string, paidHours: string, fundedPaid: string) {
-            this.compensation = nts.uk.resource.getText("KDW003_8", compensation)
-            this.substitute = nts.uk.resource.getText("KDW003_8", substitute)
-            this.paidYear = nts.uk.resource.getText("KDW003_9", paidYear)
-            this.paidHalf = nts.uk.resource.getText("KDW003_10", paidHalf)
-            this.paidHours = nts.uk.resource.getText("KDW003_11", paidHours)
-            this.fundedPaid = nts.uk.resource.getText("KDW003_8", fundedPaid)
+            this.compensation = nts.uk.resource.getText("KDW003_8", [compensation])
+            this.substitute = nts.uk.resource.getText("KDW003_8",[substitute])
+            this.paidYear = nts.uk.resource.getText("KDW003_8", [paidYear])
+//            this.paidHalf = nts.uk.resource.getText("KDW003_10", paidHalf)
+//            this.paidHours = nts.uk.resource.getText("KDW003_11", paidHours)
+            this.fundedPaid = nts.uk.resource.getText("KDW003_8", [fundedPaid])
         }
     }
 }

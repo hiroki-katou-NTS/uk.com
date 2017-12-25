@@ -133,17 +133,22 @@
 #fixed-table .ui-widget-header{
 	background-color: #CFF1A5;
 	border: 1px solid #CCC;
-	margin-left: 10px;
+	text-align: center;
+	height: 29px;
 }
 #fixed-table .ui-widget-body{
 	border: 1px solid #CCC;
+	text-align: right;
+    height: 29px;
+}
+#fixed-table .ui-widget-body .text-holiday{ 
+	margin-right: 10px;
 }
 #fixed-table {
 	border: 2px solid #CCC;
 	text-align: center;
 	padding: 0 2px;
 	width: 400px;
-	height: 80px;
 }
 #numberHoliday{
     margin-left: 5px;
