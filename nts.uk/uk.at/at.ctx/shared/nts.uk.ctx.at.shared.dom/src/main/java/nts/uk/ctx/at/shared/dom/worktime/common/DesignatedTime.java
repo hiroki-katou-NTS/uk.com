@@ -11,19 +11,35 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class DesignatedTime.
  */
-//指定時間
+// 指定時間
 @Getter
 public class DesignatedTime extends DomainObject {
-	
+
 	/** The one day time. */
-	//1日の時間
+	// 1日の時間
 	private OneDayTime oneDayTime;
-	
+
 	/** The half day time. */
-	//半日の時間
+	// 半日の時間
 	private OneDayTime halfDayTime;
 
-	/* (non-Javadoc)
+	/**
+	 * Instantiates a new designated time.
+	 *
+	 * @param oneDayTime
+	 *            the one day time
+	 * @param halfDayTime
+	 *            the half day time
+	 */
+	public DesignatedTime(OneDayTime oneDayTime, OneDayTime halfDayTime) {
+		super();
+		this.oneDayTime = oneDayTime;
+		this.halfDayTime = halfDayTime;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
@@ -35,32 +51,14 @@ public class DesignatedTime extends DomainObject {
 	}
 
 	/**
-	 * Instantiates a new designated time.
-	 *
-	 * @param memento the memento
-	 */
-	public DesignatedTime(DesignatedTimeGetMemento memento) {
-		this.oneDayTime = memento.getOneDayTime();
-		this.halfDayTime = memento.getHalfDayTime();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(DesignatedTimeSetMemento memento) {
-		memento.setOneDayTime(this.oneDayTime);
-		memento.setHalfDayTime(this.halfDayTime);
-	}
-	
-	/**
 	 * Restore data.
 	 *
-	 * @param otherDomain the other domain
+	 * @param otherDomain
+	 *            the other domain
 	 */
 	public void restoreData(DesignatedTime oldDomain) {
 		this.oneDayTime = oldDomain.getOneDayTime();
 		this.halfDayTime = oldDomain.getHalfDayTime();
 	}
+
 }
