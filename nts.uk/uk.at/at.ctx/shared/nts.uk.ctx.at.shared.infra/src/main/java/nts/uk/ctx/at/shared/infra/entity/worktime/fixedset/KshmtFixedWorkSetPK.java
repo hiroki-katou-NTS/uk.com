@@ -38,6 +38,20 @@ public class KshmtFixedWorkSetPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kshmt fixed work set PK.
+	 *
+	 * @param cid
+	 *            the cid
+	 * @param worktimeCd
+	 *            the worktime cd
+	 */
+	public KshmtFixedWorkSetPK(String cid, String worktimeCd) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -72,4 +86,5 @@ public class KshmtFixedWorkSetPK implements Serializable {
 		}
 		return true;
 	}
+
 }
