@@ -1,7 +1,3 @@
-package nts.uk.ctx.at.record.dom.daily.latetime;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
