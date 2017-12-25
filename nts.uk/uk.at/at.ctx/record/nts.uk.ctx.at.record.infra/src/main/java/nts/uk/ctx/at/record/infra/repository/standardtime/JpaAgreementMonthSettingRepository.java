@@ -20,6 +20,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 	private static final String UPDATE_BY_KEY;
 	
 	private static final String DEL_BY_KEY;
+	
+	private static final String IS_EXIST_DATA;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -41,6 +43,14 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
 		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
 		DEL_BY_KEY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KmkmtAgreementMonthSet a ");
+		builderString
+				.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
+		IS_EXIST_DATA = builderString.toString();
 	}
 
 	@Override
@@ -69,6 +79,12 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 				.setParameter("yearmonthValue", agreementMonthSetting.getYearMonthValue().v())
 				.setParameter("errorOneMonth", agreementMonthSetting.getErrorOneMonth().v())
 				.setParameter("alarmOneMonth", agreementMonthSetting.getAlarmOneMonth().v()).executeUpdate();
+	}
+
+	@Override
+	public boolean checkExistData(String employeeId, BigDecimal yearMonthValue) {
+		return this.queryProxy().query(IS_EXIST_DATA, long.class).setParameter("employeeId", employeeId)
+				.setParameter("yearmonthValue", yearMonthValue).getSingle().get() > 0;
 	}
 
 	private static AgreementMonthSetting toDomain(KmkmtAgreementMonthSet kmkmtAgreementMonthSet) {

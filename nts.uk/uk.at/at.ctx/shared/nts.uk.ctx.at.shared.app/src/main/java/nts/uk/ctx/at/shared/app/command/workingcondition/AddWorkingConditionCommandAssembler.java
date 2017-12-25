@@ -111,22 +111,27 @@ public class AddWorkingConditionCommandAssembler {
 		
 		
 		// ----------------------- BreakdownTimeDay
-		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(command.getOneDay().intValue()), new AttendanceTime(command.getMorning().intValue()), new AttendanceTime(command.getAfternoon().intValue()));
+		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(command.getOneDay()!= null? command.getOneDay().intValue():0), new AttendanceTime(command.getMorning() != null? command.getMorning().intValue(): 0), new AttendanceTime(command.getAfternoon()!=null?command.getAfternoon().intValue():0));
 		// ------------------------
 		
 		
 		// ScheduleMethod
 		// WorkScheduleBusCal - 営業日カレンダーによる勤務予定作成
 		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
-				EnumAdaptor.valueOf(command.getReferenceBusinessDayCalendar().intValue(),
+				EnumAdaptor.valueOf(
+						command.getReferenceBusinessDayCalendar() != null
+								? command.getReferenceBusinessDayCalendar().intValue() : 0,
 						WorkScheduleMasterReferenceAtr.class),
-				EnumAdaptor.valueOf(command.getReferenceBasicWork().intValue(), WorkScheduleMasterReferenceAtr.class),
-				EnumAdaptor.valueOf(command.getReferenceType().intValue(), TimeZoneScheduledMasterAtr.class));
+				EnumAdaptor.valueOf(
+						command.getReferenceBasicWork() != null ? command.getReferenceBasicWork().intValue() : 0,
+						WorkScheduleMasterReferenceAtr.class),
+				EnumAdaptor.valueOf(command.getReferenceType() != null ? command.getReferenceType().intValue() : 0,
+						TimeZoneScheduledMasterAtr.class));
 		// MonthlyPatternWorkScheduleCre
 		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
-				EnumAdaptor.valueOf(command.getReferenceType().intValue(), TimeZoneScheduledMasterAtr.class));
+				EnumAdaptor.valueOf(command.getReferenceType()!=null?command.getReferenceType().intValue():0, TimeZoneScheduledMasterAtr.class));
 		ScheduleMethod scheduleMethod = new ScheduleMethod(
-				EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(), WorkScheduleBasicCreMethod.class),
+				EnumAdaptor.valueOf(command.getBasicCreateMethod()!=null?command.getBasicCreateMethod().intValue():0, WorkScheduleBasicCreMethod.class),
 				busCal, monthlySchedule);
 		WorkingConditionItem workingCond = new WorkingConditionItem(histId,
 				EnumAdaptor.valueOf(command.getScheduleManagementAtr() != null? command.getScheduleManagementAtr().intValue() : 0, NotUseAtr.class), workDayOfWeek,
@@ -222,17 +227,28 @@ public class AddWorkingConditionCommandAssembler {
 		
 		
 		// ----------------------- BreakdownTimeDay
-		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(command.getOneDay().intValue()), new AttendanceTime(command.getMorning().intValue()), new AttendanceTime(command.getAfternoon().intValue()));
+		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(command.getOneDay()!= null? command.getOneDay().intValue():0), new AttendanceTime(command.getMorning() != null? command.getMorning().intValue(): 0), new AttendanceTime(command.getAfternoon()!=null?command.getAfternoon().intValue():0));
 		// ------------------------
 		
 		
 		// ScheduleMethod
 		// WorkScheduleBusCal - 営業日カレンダーによる勤務予定作成
-		WorkScheduleBusCal busCal = new WorkScheduleBusCal(EnumAdaptor.valueOf(command.getReferenceBusinessDayCalendar().intValue(),WorkScheduleMasterReferenceAtr.class), EnumAdaptor.valueOf(command.getReferenceBasicWork().intValue(), WorkScheduleMasterReferenceAtr.class), EnumAdaptor.valueOf(command.getReferenceType().intValue(), TimeZoneScheduledMasterAtr.class));
+		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
+				EnumAdaptor.valueOf(
+						command.getReferenceBusinessDayCalendar() != null
+								? command.getReferenceBusinessDayCalendar().intValue() : 0,
+						WorkScheduleMasterReferenceAtr.class),
+				EnumAdaptor.valueOf(
+						command.getReferenceBasicWork() != null ? command.getReferenceBasicWork().intValue() : 0,
+						WorkScheduleMasterReferenceAtr.class),
+				EnumAdaptor.valueOf(command.getReferenceType() != null ? command.getReferenceType().intValue() : 0,
+						TimeZoneScheduledMasterAtr.class));
 		// MonthlyPatternWorkScheduleCre
-		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(EnumAdaptor.valueOf(command.getReferenceType().intValue(),TimeZoneScheduledMasterAtr.class));
-		ScheduleMethod scheduleMethod = new ScheduleMethod(EnumAdaptor.valueOf(command.getBasicCreateMethod().intValue(),WorkScheduleBasicCreMethod.class),
-				busCal,monthlySchedule);
+		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
+				EnumAdaptor.valueOf(command.getReferenceType()!=null?command.getReferenceType().intValue():0, TimeZoneScheduledMasterAtr.class));
+		ScheduleMethod scheduleMethod = new ScheduleMethod(
+				EnumAdaptor.valueOf(command.getBasicCreateMethod()!=null?command.getBasicCreateMethod().intValue():0, WorkScheduleBasicCreMethod.class),
+				busCal, monthlySchedule);
 		WorkingConditionItem workingCond = new WorkingConditionItem(command.getHistId(),
 				EnumAdaptor.valueOf(command.getScheduleManagementAtr() != null? command.getScheduleManagementAtr().intValue() : 0, NotUseAtr.class), workDayOfWeek,
 				workCategory, EnumAdaptor.valueOf(command.getAutoStampSetAtr() != null ? command.getAutoStampSetAtr().intValue(): 0, NotUseAtr.class),

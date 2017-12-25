@@ -22,4 +22,52 @@ public enum GoingOutReason {
 	
 	public final int value;
 
+	/**
+	 * 私用か組合であるか判定する
+	 * @return　私用か組合である
+	 */
+	public boolean isPrivateOrUnion() {
+		return this.equals(PRIVATE)||this.equals(UNION);
+	}
+	
+	/**
+	 * 公用か有償であるか判定する
+	 * @return　公用か有償である
+	 */
+	public boolean isPublicOrCmpensation() {
+		return !isPrivateOrUnion();
+	}
+
+	
+	/**
+	 * 私用であるか判定する
+	 * @return 私用である
+	 */
+	public boolean isPrivate(){
+		return PRIVATE.equals(this);
+	}
+	
+	/**
+	 * 公用であるか判定する
+	 * @return 公用である
+	 */
+	public boolean isPublic() {
+		return PUBLIC.equals(this);
+	}
+	
+	/**
+	 * 有償であるか判定する
+	 * @return　有償である
+	 */
+	public boolean isCompensation() {
+		return COMPENSATION.equals(this);
+	}
+	
+	/**
+	 * 組合であるか判定する
+	 * @return　組合である
+	 */
+	public boolean isUnion() {
+		return UNION.equals(this);
+	}
 }
