@@ -585,9 +585,7 @@ module cps002.a.vm {
                             self.backtoStep1();
 
                         } else {
-
-                            setShared('CPS001A_PARAMS', { employeeId: employeeId });
-                            jump('/view/cps/001/a/index.xhtml');
+                            jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
 
