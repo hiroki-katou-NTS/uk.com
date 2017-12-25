@@ -10,36 +10,39 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaGroup;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFixedWorkTimezoneSetGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSet;
 
 /**
  * The Class JpaFlexHalfDayWorkTimeGetMemento.
  */
-public class JpaFlexHalfDayWorkTimeGetMemento implements FlexHalfDayWorkTimeGetMemento{
-	
+public class JpaFlexHalfDayWorkTimeGetMemento implements FlexHalfDayWorkTimeGetMemento {
+
 	/** The entity. */
 	private List<KshmtFlexOtTimeSet> entity;
-		
+
 	/** The entity group. */
-	private KshmtFlexHaGroup entityGroup;
-	
+	// private KshmtFlexHaGroup entityGroup;
 
 	/**
 	 * Instantiates a new jpa flex half day work time get memento.
 	 *
-	 * @param entity the entity
-	 * @param entityGroup the entity group
+	 * @param entity
+	 *            the entity
+	 * @param entityGroup
+	 *            the entity group
 	 */
-	public JpaFlexHalfDayWorkTimeGetMemento(List<KshmtFlexOtTimeSet> entity, KshmtFlexHaGroup entityGroup) {
-		super();
-		this.entity = entity;
-		this.entityGroup = entityGroup;
-	}
+//	public JpaFlexHalfDayWorkTimeGetMemento(List<KshmtFlexOtTimeSet> entity,
+//			KshmtFlexHaGroup entityGroup) {
+//		super();
+//		// this.entity = entity;
+//	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento#getRestTimezone()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento#
+	 * getRestTimezone()
 	 */
 	@Override
 	public FlowWorkRestTimezone getRestTimezone() {
@@ -47,16 +50,26 @@ public class JpaFlexHalfDayWorkTimeGetMemento implements FlexHalfDayWorkTimeGetM
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento#getWorkTimezone()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento#
+	 * getWorkTimezone()
 	 */
 	@Override
 	public FixedWorkTimezoneSet getWorkTimezone() {
-		return new FixedWorkTimezoneSet(new JpaFlexFixedWorkTimezoneSetGetMemento(this.entity));
+		return null;
+		// return new FixedWorkTimezoneSet(new
+		// JpaFlexFixedWorkTimezoneSetGetMemento(this.entity));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento#getAmpmAtr()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento#
+	 * getAmpmAtr()
 	 */
 	@Override
 	public AmPmAtr getAmpmAtr() {
