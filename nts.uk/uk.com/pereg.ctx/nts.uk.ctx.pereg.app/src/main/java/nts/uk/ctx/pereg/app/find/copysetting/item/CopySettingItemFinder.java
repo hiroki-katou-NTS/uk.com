@@ -60,7 +60,7 @@ public class CopySettingItemFinder {
 		itemList.forEach(x -> {
 			result.add(SettingItemDto.createFromJavaType(x.getCategoryCode(), x.getItemDefId(), x.getItemCode(),
 					x.getItemName(), x.getIsRequired().value, 1, GeneralDate.min(), BigDecimal.valueOf(0), "",
-					x.getDataType(), x.getSelectionItemRefType(), x.getItemParentCd()));
+					x.getDataType(), x.getSelectionItemRefType(), x.getItemParentCd(), x.getDateType().value));
 		});
 
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
@@ -128,9 +128,14 @@ public class CopySettingItemFinder {
 
 		for (SettingItemDto childItem : childItems) {
 
-			if (!StringUtils.isEmpty(childItem.getValueAsString())) {
-				itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue,
-						childItem.getValueAsString());
+			if (!StringUtils.isEmpty(childItem.getSaveData().getValue())) {
+				if (itemValue == "") {
+
+					itemValue = childItem.getSaveData().getValue();
+				} else {
+					itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue,
+							childItem.getSaveData().getValue());
+				}
 			}
 		}
 

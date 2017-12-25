@@ -1521,7 +1521,7 @@ module nts.custombinding {
                                     if (!def) {
                                         def = {
                                             index: i,
-                                            categoryCode: x.personInfoCategoryID, // miss categoryCode;
+                                            categoryCode: x.categoryCode || x.personInfoCategoryID, // miss categoryCode;
                                             itemCode: item.itemCode,
                                             itemName: item.itemName,
                                             itemDefId: item.id,
@@ -1556,7 +1556,7 @@ module nts.custombinding {
                                         if (!def) {
                                             def = {
                                                 index: j,
-                                                categoryCode: x.personInfoCategoryID, // miss categoryCode;
+                                                categoryCode: x.categoryCode || x.personInfoCategoryID, // miss categoryCode;
                                                 itemCode: item.itemCode,
                                                 itemName: item.itemName,
                                                 itemDefId: item.id,
@@ -2124,6 +2124,7 @@ module nts.custombinding {
     interface IItemClassification {
         layoutID?: string;
         dispOrder?: number;
+        categoryCode?: string;
         className?: string; // only for display if classification is set or duplication item
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;

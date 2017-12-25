@@ -194,7 +194,7 @@ public class UpdateErrorAlarmWrCommand {
 		// Set AttendanceItemCondition
 		List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = erAlAtdItemConditionGroup1.stream()
 				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
-		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = erAlAtdItemConditionGroup1.stream()
+		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = erAlAtdItemConditionGroup2.stream()
 				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
 		condition.createAttendanceItemCondition(operatorBetweenGroups)
 				.setAttendanceItemConditionGroup1(operatorGroup1, conditionsGroup1)

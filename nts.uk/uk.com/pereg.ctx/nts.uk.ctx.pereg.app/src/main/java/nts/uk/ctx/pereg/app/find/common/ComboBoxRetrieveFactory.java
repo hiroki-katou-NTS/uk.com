@@ -4,6 +4,7 @@
 package nts.uk.ctx.pereg.app.find.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -173,7 +174,7 @@ public class ComboBoxRetrieveFactory {
 						.collect(Collectors.toList());
 			case "M00009":
 				// 就業時間帯マスタ
-				break;
+				return Arrays.asList(new ComboBoxObject("001", "固定名"));
 			default:
 				break;
 			}
