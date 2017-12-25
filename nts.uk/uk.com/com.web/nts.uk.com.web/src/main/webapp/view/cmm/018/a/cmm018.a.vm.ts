@@ -1511,12 +1511,18 @@ module nts.uk.com.view.cmm018.a {
                modal("/view/cmm/018/n/index.xhtml");
             }
             checkColor(lstAppPhase: Array<vmbase.ApprovalPhaseDto>, int: number): boolean{
+                let check = false;
                 _.each(lstAppPhase, function(appPhase, index){
-                    if(index != int){
-                        if(appPhase.approvalForm != 0) return true;
+                    if(appPhase.approvalForm != 0) {
+                        if((index+1) != int){
+                            check = true;
+                        }
+                            
                     }
+                        
+                    
                 });
-                return false;
+                return check;
             }
         }
     }
