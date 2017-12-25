@@ -35,6 +35,7 @@ public class KshmtFixedHolRestSetPK implements Serializable {
 	 * Instantiates a new kshmt fixed hol rest set PK.
 	 */
 	public KshmtFixedHolRestSetPK() {
+		super();
 	}
 
 	/*

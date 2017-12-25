@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSetPK;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

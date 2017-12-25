@@ -51,6 +51,7 @@ public class KshmtFixedHalfRestSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt fixed half rest set.
 	 */
 	public KshmtFixedHalfRestSet() {
+		super();
 	}
 
 	/*

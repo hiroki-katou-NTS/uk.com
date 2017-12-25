@@ -35,6 +35,7 @@ public class KshmtFlexWorkSetPK implements Serializable {
 	 * Instantiates a new kshmt flex work set PK.
 	 */
 	public KshmtFlexWorkSetPK() {
+		super();
 	}
 
 	/*
@@ -71,5 +72,4 @@ public class KshmtFlexWorkSetPK implements Serializable {
 		}
 		return true;
 	}
-
 }

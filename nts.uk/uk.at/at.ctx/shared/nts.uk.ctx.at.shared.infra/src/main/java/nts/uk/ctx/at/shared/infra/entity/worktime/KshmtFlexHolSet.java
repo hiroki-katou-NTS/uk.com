@@ -79,12 +79,13 @@ public class KshmtFlexHolSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flex hol set.
 	 */
 	public KshmtFlexHolSet() {
+		super();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -96,7 +97,7 @@ public class KshmtFlexHolSet extends UkJpaEntity implements Serializable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object object) {
@@ -112,14 +113,11 @@ public class KshmtFlexHolSet extends UkJpaEntity implements Serializable {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return this.kshmtFlexHolSetPK;
 	}
 

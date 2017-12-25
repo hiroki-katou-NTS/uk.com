@@ -39,6 +39,7 @@ public class KshmtFixedHolTimeSetPK implements Serializable {
 	 * Instantiates a new kshmt fixed hol time set PK.
 	 */
 	public KshmtFixedHolTimeSetPK() {
+		super();
 	}
 
 	/*

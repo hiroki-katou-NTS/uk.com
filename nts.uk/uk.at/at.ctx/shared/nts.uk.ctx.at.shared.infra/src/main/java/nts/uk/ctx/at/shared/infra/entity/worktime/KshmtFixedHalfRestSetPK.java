@@ -39,6 +39,7 @@ public class KshmtFixedHalfRestSetPK implements Serializable {
 	 * Instantiates a new kshmt fixed half rest set PK.
 	 */
 	public KshmtFixedHalfRestSetPK() {
+		super();
 	}
 
 	/*

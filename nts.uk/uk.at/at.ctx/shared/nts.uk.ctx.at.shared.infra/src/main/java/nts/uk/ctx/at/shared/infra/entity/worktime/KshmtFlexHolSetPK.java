@@ -39,6 +39,7 @@ public class KshmtFlexHolSetPK implements Serializable {
 	 * Instantiates a new kshmt flex hol set PK.
 	 */
 	public KshmtFlexHolSetPK() {
+		super();
 	}
 
 	/*
@@ -79,4 +80,5 @@ public class KshmtFlexHolSetPK implements Serializable {
 		}
 		return true;
 	}
+
 }
