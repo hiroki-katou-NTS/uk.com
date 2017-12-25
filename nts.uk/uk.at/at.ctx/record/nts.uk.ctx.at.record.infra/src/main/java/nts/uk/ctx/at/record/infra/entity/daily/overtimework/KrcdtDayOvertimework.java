@@ -214,7 +214,6 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 		return this.krcdtDayOvertimeworkPK;
 	}
 	
-	
 	/**
 	 * create entity
 	 * @param employeeId
