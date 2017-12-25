@@ -31,7 +31,7 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstZeroTimeSet e");
-		builderString.append(" WHERE e.kshstZeroTimeSet CalcSetPK.companyId = :companyId");
+		builderString.append(" WHERE e.kshstOverDayCalcSetPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 	}
 
@@ -107,8 +107,9 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 * @return
 	 */
 	private KshstWeekdayFromHd convertToDbTypeWeekday(WeekdayHoliday holiday) {
-		KshstWeekdayFromHd weekdayHd = new KshstWeekdayFromHd();
+		
 		KshstWeekdayFromHdPK weekdayHdPK = new KshstWeekdayFromHdPK(holiday.getCompanyId(), holiday.getOverTimeFrameNo().v());
+		KshstWeekdayFromHd weekdayHd = this.queryProxy().find(weekdayHdPK, KshstWeekdayFromHd.class).get();
 				weekdayHd.legalHdNo = holiday.getLegalHdNo().v();
 				weekdayHd.nonLegalHdNo = holiday.getNonLegalHdNo().v();
 				weekdayHd.nonLegalPublicHdNo = holiday.getNonLegalPublicHdNo().v();
@@ -131,10 +132,10 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	}
 
 	private KshstHdFromWeekday convertToDbTypeHolidayAtten(HdFromWeekday atten) {
-		KshstHdFromWeekday attSet = new KshstHdFromWeekday();
 		KshstHdFromWeekdayPK attSetPK = new KshstHdFromWeekdayPK(atten.getCompanyId(),
-				atten.getHdFrameNo());
-				attSet.overtimeFrameNo = atten.getOvertimeFrameNo();
+				atten.getHdFrameNo().v());
+		KshstHdFromWeekday attSet = this.queryProxy().find(attSetPK, KshstHdFromWeekday.class).get();
+				attSet.overtimeFrameNo = atten.getOvertimeFrameNo().v();
 				attSet.kshstOverdayHdAttSetPK = attSetPK;
 
 		return attSet;
@@ -151,8 +152,8 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	}
 	
 	private KshstHdFromHd convertToDbTypeCalcHoliday(HdFromHd overdayCalcHoliday){
-		KshstHdFromHd dayHdSet = new KshstHdFromHd();
 		KshstHdFromHdPK dayHdSetPK = new KshstHdFromHdPK(overdayCalcHoliday.getCompanyId(), overdayCalcHoliday.getOvertimeFrameNo().v());
+		KshstHdFromHd dayHdSet = this.queryProxy().find(dayHdSetPK, KshstHdFromHd.class).get();
 		dayHdSet.legalHdNo = overdayCalcHoliday.getLegalHdNo().v();
 		dayHdSet.nonLegalHdNo = overdayCalcHoliday.getNonLegalHdNo().v();
 		dayHdSet.nonLegalPublicHdNo = overdayCalcHoliday.getNonLegalPublicHdNo().v();
