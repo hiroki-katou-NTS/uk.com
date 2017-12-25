@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="KWTST_WORK_TIME_SET")
-public class KwtstWorkTimeSet extends UkJpaEntity{
+public class KwtstWorkTimeSet_old extends UkJpaEntity{
 	@EmbeddedId
 	public KwtspWorkTimeSetPK kwtspWorkTimeSetPK;
 	
