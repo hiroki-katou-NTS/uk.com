@@ -22,9 +22,9 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet_;
 
 /**
  * The Class JpaWorkTimeSettingRepository.

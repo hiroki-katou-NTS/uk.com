@@ -20,6 +20,9 @@ import lombok.Setter;
 @Embeddable
 public class KshmtWorkTimeSetPK implements Serializable {
 
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
@@ -32,6 +35,7 @@ public class KshmtWorkTimeSetPK implements Serializable {
 	 * Instantiates a new kshmt work time set PK.
 	 */
 	public KshmtWorkTimeSetPK() {
+		super();
 	}
 
 	/*

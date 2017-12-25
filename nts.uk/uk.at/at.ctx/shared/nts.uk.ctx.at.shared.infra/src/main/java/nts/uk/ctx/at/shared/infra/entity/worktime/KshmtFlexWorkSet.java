@@ -67,6 +67,7 @@ public class KshmtFlexWorkSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flex work set.
 	 */
 	public KshmtFlexWorkSet() {
+		super();
 	}
 
 	/*

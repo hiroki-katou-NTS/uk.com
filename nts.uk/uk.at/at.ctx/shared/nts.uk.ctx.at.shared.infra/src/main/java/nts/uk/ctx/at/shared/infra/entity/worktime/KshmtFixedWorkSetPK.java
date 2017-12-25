@@ -35,6 +35,7 @@ public class KshmtFixedWorkSetPK implements Serializable {
 	 * Instantiates a new kshmt fixed work set PK.
 	 */
 	public KshmtFixedWorkSetPK() {
+		super();
 	}
 
 	/*

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtFixedWorkSet.
@@ -21,7 +22,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "KSHMT_FIXED_WORK_SET")
-public class KshmtFixedWorkSet implements Serializable {
+public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -54,12 +55,13 @@ public class KshmtFixedWorkSet implements Serializable {
 	 * Instantiates a new kshmt fixed work set.
 	 */
 	public KshmtFixedWorkSet() {
+		super();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#hashCode()
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -71,7 +73,7 @@ public class KshmtFixedWorkSet implements Serializable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object object) {
@@ -86,4 +88,15 @@ public class KshmtFixedWorkSet implements Serializable {
 		}
 		return true;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.kshmtFixedWorkSetPK;
+	}
+
 }
