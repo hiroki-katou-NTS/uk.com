@@ -8,21 +8,19 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexSettingGroup;
 
 /**
  * The Class JpaFlexHAWorkTimeGetMemento.
  */
-public class JpaFlexHAWorkTimeGetMemento implements FlexHalfDayWorkTimeGetMemento{
+public class JpaFlexHAWorkTimeGetMemento implements FlexHalfDayWorkTimeGetMemento {
 
 	/** The entity setting. */
-	private KshmtFlexSettingGroup entitySetting;
+	// private KshmtFlexSettingGroup entitySetting;
 
-
-	public JpaFlexHAWorkTimeGetMemento(KshmtFlexSettingGroup entitySetting) {
-		super();
-		this.entitySetting = entitySetting;
-	}
+	// public JpaFlexHAWorkTimeGetMemento(KshmtFlexSettingGroup entitySetting) {
+	// super();
+	//// this.entitySetting = entitySetting;
+	// }
 
 	/*
 	 * (non-Javadoc)

@@ -56,7 +56,8 @@ public class JpaCoreTimeSettingSetMemento implements CoreTimeSettingSetMemento {
 	 */
 	@Override
 	public void setTimesheet(ApplyAtr timesheet) {
-		this.entity.setUseAtr(timesheet.value);
+		// TODO: check again
+//		this.entity.setUseAtr(timesheet.value);
 	}
 
 	/*
