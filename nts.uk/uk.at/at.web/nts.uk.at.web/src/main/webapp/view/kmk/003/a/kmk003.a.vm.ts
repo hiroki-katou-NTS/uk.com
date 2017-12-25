@@ -2,6 +2,8 @@ module nts.uk.at.view.kmk003.a {
 
     import SimpleWorkTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.SimpleWorkTimeSettingDto;
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
+    import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
+    import WorkTimeSettingCondition = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingCondition;
 
     import FlexWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.flexset.FlexWorkSettingDto;
     
@@ -21,11 +23,6 @@ module nts.uk.at.view.kmk003.a {
 
         export class ScreenModel {
 
-            workFormOptions: KnockoutObservableArray<ItemWorkForm>;
-            selectedWorkForm: KnockoutObservable<string>;
-
-            settingMethodOptions: KnockoutObservableArray<ItemSettingMethod>;
-            selectedSettingMethod: KnockoutObservable<string>;
             isRegularMode: KnockoutObservable<boolean>;
 
             workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
@@ -69,6 +66,7 @@ module nts.uk.at.view.kmk003.a {
             isClickSave: KnockoutObservable<boolean>;
             
             mainSettingModel: MainSettingModel;
+            workTimeCondition: WorkTimeSettingConditionModel;
             
             workTimeSettingModel: WorkTimeSettingModel;
             predetemineTimeSettingModel: PredetemineTimeSettingModel;
@@ -77,18 +75,8 @@ module nts.uk.at.view.kmk003.a {
             dataModelOneDay: EmTimeZoneSetModel[];
             constructor() {
                 let self = this;
-                self.workFormOptions = ko.observableArray([
-                    new ItemWorkForm('1', '通常勤務・変形労働用'),
-                    new ItemWorkForm('2', 'フレックス勤務用')
-                ]);
-                self.selectedWorkForm = ko.observable('1');
-                self.settingMethodOptions = ko.observableArray([
-                    new ItemSettingMethod('1', "固定勤務"),
-                    new ItemSettingMethod('2', "時差勤務"),
-                    new ItemSettingMethod('3', "流動勤務")
-                ]);
-                self.selectedSettingMethod = ko.observable('1');
-                
+
+                self.workTimeCondition = new WorkTimeSettingConditionModel();
                 
                 self.workTimeSettings = ko.observableArray([]);
                 self.columnWorktimeSettings = ko.observableArray([
@@ -188,6 +176,7 @@ module nts.uk.at.view.kmk003.a {
                 let dfd = $.Deferred<void>();
                 service.getEnumWorktimeSeting().done(function(setting) {
                     self.settingEnum = setting;
+                    self.workTimeCondition.setEnums(setting);
 //                    service.findAllWorkTimeSet().done(function(worktime) {
 //                        self.workTimeSettings(worktime);
 //                        if (worktime && worktime.length > 0) {
@@ -275,13 +264,6 @@ module nts.uk.at.view.kmk003.a {
             }
             
             /**
-             * function get flow mode by selection ui
-             */
-            private getFlowModeBySelected(selectedSettingMethod: string): boolean {
-                return (selectedSettingMethod === '3');
-            }
-            
-            /**
              * function collection data fixed mode 
              */
             private collectDataFixed():any{
@@ -340,27 +322,7 @@ module nts.uk.at.view.kmk003.a {
                 return dfd.promise();
             }
         }
-        
-        export class ItemWorkForm {
-            code: string;
-            name: string;
 
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
-
-        export class ItemSettingMethod {
-            code: string;
-            name: string;
-
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
-        
         /**
          * Tab Item
          */
@@ -402,6 +364,72 @@ module nts.uk.at.view.kmk003.a {
                 this.flowWorkSetting = new FlowWorkSettingModel();
                 this.diffWorkSetting = new DiffTimeWorkSettingModel();
                 this.flexWorkSetting = new FlexWorkSettingModel();
+            }
+        }
+
+        export class WorkTimeSettingConditionModel extends WorkTimeSettingModel {
+            workTimeAtrEnums: EnumConstantDto[];
+            workTimeMethodEnums: EnumConstantDto[];
+            constructor() {
+                super();
+                this.workTimeDivision.workTimeDailyAtr(3);
+                this.workTimeDivision.workTimeMethodSet(3);
+                this.workTimeDivision.workTimeDailyAtr.subscribe(() => {
+                    this.loadWorkSetting();
+                });
+                this.workTimeDivision.workTimeMethodSet.subscribe(() => {
+                    this.loadWorkSetting();
+                });
+                this.isAbolish.subscribe(() => {
+                    this.loadWorkSetting();
+                });
+            }
+
+            // TODO: testing
+            loadWorkSetting() {
+                let self = this;
+                service.findWithCondition(self.getCondition());
+            }
+
+            getCondition(): WorkTimeSettingCondition {
+                let self = this;
+                let cond = <WorkTimeSettingCondition>{};
+                cond.workTimeDailyAtr = self.workTimeDivision.workTimeDailyAtr();
+                cond.workTimeMethodSet = self.workTimeDivision.workTimeMethodSet();
+                cond.isAbolish = this.isAbolish();
+
+                // in case of all work atr
+                if (self.isAllWorkAtr()) {
+                    cond.workTimeDailyAtr = null;
+                    cond.workTimeMethodSet = null;
+                }
+
+                // in case of flex or all work method
+                if (self.isFlex() || self.isAllWorkMethod()) {
+                    cond.workTimeMethodSet = null;
+                }
+                return cond;
+            }
+
+            setEnums(enums: WorkTimeSettingEnumDto): void {
+                let self = this;
+                self.workTimeAtrEnums = _.cloneDeep(enums.workTimeDailyAtr);
+                self.workTimeMethodEnums = _.cloneDeep(enums.workTimeMethodSet);
+                let all = <EnumConstantDto>{};
+                all.value = 3; //TODO: nen cho thanh so may?
+                all.localizedName = "ALL";
+                self.workTimeAtrEnums.unshift(all);
+                self.workTimeMethodEnums.unshift(all);
+            }
+
+            isAllWorkAtr(): boolean {
+                let self = this;
+                return self.workTimeDivision.workTimeDailyAtr() == 3;
+            }
+
+            isAllWorkMethod(): boolean {
+                let self = this;
+                return self.workTimeDivision.workTimeMethodSet() == 3;
             }
         }
         

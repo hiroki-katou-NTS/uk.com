@@ -105,36 +105,38 @@
 						<td class="screen-content-left">
 							<div class="caret-left-width caret-right caret-background bg-green">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<com:ko tag="with" bind="workTimeCondition">
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-									options: workFormOptions,
-									optionsValue: 'code',
-									visibleItemsCount: 3,
-									value: selectedWorkForm,
-									optionsText: 'name',
+									options: workTimeAtrEnums,
+									optionsValue: 'value',
+									visibleItemsCount: 5,
+									value: workTimeDivision.workTimeDailyAtr,
+									optionsText: 'localizedName',
 									editable: false,
 									enable: true,
 									columns: [
-									{ prop: 'name', length: 10 },]}">
+									{ prop: 'localizedName', length: 10 }]}">
 								</div>
 								<br />
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
 								<div id="combo-box" 
 									data-bind="ntsComboBox: {
-									options: settingMethodOptions,
-									optionsValue: 'code',
-									visibleItemsCount: 3,
-									value: selectedSettingMethod,
-									optionsText: 'name',
+									options: workTimeMethodEnums,
+									optionsValue: 'value',
+									visibleItemsCount: 5,
+									value: workTimeDivision.workTimeMethodSet,
+									optionsText: 'localizedName',
 									editable: false,
-									enable: true,
+									enable: isRegularWork,
 									columns: [
-									{ prop: 'name', length: 6 },]}">
+									{ prop: 'localizedName', length: 6 }]}">
 								</div>
 								<br />
 								<div class="checkbox_display"
-									data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMK003_9')}
+									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
 								</div>
+								</com:ko>
 								<div style="width: 300px"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
 									comId: 'single-list', items: workTimeSettings,  selectedKey: 'worktimeCode', 
