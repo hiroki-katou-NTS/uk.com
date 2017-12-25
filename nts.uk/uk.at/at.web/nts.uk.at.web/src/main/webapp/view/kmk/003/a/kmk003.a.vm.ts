@@ -199,12 +199,12 @@ module nts.uk.at.view.kmk003.a {
                 service.findWorktimeSetingInfoByCode(worktimeCode).done(function(worktimeSettingInfo) {
                     self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
                     self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
-                    service.findByCodeFlexWorkSetting(worktimeCode).done(function(flexdata) {
+                    /*service.findByCodeFlexWorkSetting(worktimeCode).done(function(flexdata) {
                         if (flexdata) {
                             self.updateDataFlexMode(flexdata);
                         }
-                        dfd.resolve();
-                    });
+                    });*/
+                   dfd.resolve();
                 });
                 return dfd.promise();
             }

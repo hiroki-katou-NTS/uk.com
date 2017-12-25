@@ -2,6 +2,7 @@ module a6 {
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import FlTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlTimeSettingDto;
     import TimeRoundingSettingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeRoundingSettingDto;
+    import TimeZoneRoundingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeZoneRoundingDto;
     import HDWorkTimeSheetSettingDto = nts.uk.at.view.kmk003.a.service.model.common.HDWorkTimeSheetSettingDto;
     import FlWorkHdTimeZoneDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkHdTimeZoneDto;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
@@ -9,11 +10,14 @@ module a6 {
 
         fixTableOptionFlow: any;
         fixTableOptionFlex: any;
+        fixTableOptionFixed: any;
         selectedTab: KnockoutObservable<string>;
         isFlowMode: KnockoutObservable<boolean>;
-        isActiveTab: KnockoutObservable<boolean>;
+        isFlexMode: KnockoutObservable<boolean>;
+        isFixedMode: KnockoutObservable<boolean>;
         dataSourceFlow: KnockoutObservableArray<any>;
         dataSourceFlex: KnockoutObservableArray<any>;
+        dataSourceFixed: KnockoutObservableArray<any>;
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
         lstSelectOrderModel: SettlementOrder[];
@@ -26,8 +30,26 @@ module a6 {
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
+            self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
+            self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
             self.dataSourceFlow = ko.observableArray([]);
+            var dataFlow: any[] = [];
+            for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.lstWorkTimezone) {
+                dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
+            }
+            self.dataSourceFlow(dataFlow);
             self.dataSourceFlex = ko.observableArray([]);
+            var dataFlex: any[] = [];
+            for (var dataModelFlex of self.mainSettingModel.flexWorkSetting.offdayWorkTime.lstWorkTimezone) {
+                dataFlex.push(self.toModelOtherFlowColumnSetting(dataModelFlex.toDto()));
+            }
+            self.dataSourceFlex(dataFlex);
+            self.dataSourceFixed = ko.observableArray([]);
+             var dataFixed: any[] = [];
+            for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.lstWorkTimezone) {
+                dataFixed.push(self.toModelOtherFlowColumnSetting(dataModelFixed.toDto()));
+            }
+            self.dataSourceFixed(dataFixed);
             self.lstSelectOrderModel = [];
             for (var i: number = 1; i <= 10; i++) {
                 self.lstSelectOrderModel.push({ code: '' + i, name: '' + i });
@@ -52,27 +74,47 @@ module a6 {
                 columns: self.columnSettingOtherFlow(),
                 tabindex: -1
             };
+            self.fixTableOptionFixed = {
+                maxRow: 7,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceFixed,
+                isMultipleSelect: true,
+                columns: self.columnSettingOtherFlow(),
+                tabindex: -1
+            };
             
             self.dataSourceFlow.subscribe(function(dataFlow: any[]) {
-                var lstOTTimezone: FlWorkHdTimeZoneDto[] = [];
+                var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
                 var workTimezoneNo: number = 0;
                 for (var dataModel of dataFlow) {
                     workTimezoneNo++;
-                    lstOTTimezone.push(self.toModelFlowDto(dataModel, workTimezoneNo));
+                    lstWorkTimezone.push(self.toModelFlowDto(dataModel, workTimezoneNo));
                 }
-                self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.updateHDTimezone(lstOTTimezone);
+                self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
             });
             
             self.dataSourceFlex.subscribe(function(dataFlex: any[]) {
-                var lstOTTimezone: HDWorkTimeSheetSettingDto[] = [];
+                var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
                 var workTimezoneNo: number = 0;
                 for (var dataModel of dataFlex) {
                     workTimezoneNo++;
-                    lstOTTimezone.push(self.toModelFlexDto(dataModel, workTimezoneNo));
+                    lstWorkTimezone.push(self.toModelOtherFlowDto(dataModel, workTimezoneNo));
                 }
-                self.mainSettingModel.flexWorkSetting.offdayWorkTime.updateHDTimezone(lstOTTimezone);
+                self.mainSettingModel.flexWorkSetting.offdayWorkTime.updateHDTimezone(lstWorkTimezone);
             });
             
+            self.dataSourceFixed.subscribe(function(dataFixed: any[]) {
+                var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFixed) {
+                    workTimezoneNo++;
+                    lstWorkTimezone.push(self.toModelOtherFlowDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
+            });
+
         }
         /**
          * function convert dto to model
@@ -115,7 +157,7 @@ module a6 {
         /**
          * function convert dto to model
          */
-        private toModelFlexColumnSetting(dataDTO: HDWorkTimeSheetSettingDto): any {
+        private toModelOtherFlowColumnSetting(dataDTO: HDWorkTimeSheetSettingDto): any {
             return {
                 timezone: ko.observable({starTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end}),
                 rounding: ko.observable(dataDTO.timezone.rounding.rounding),
@@ -129,10 +171,15 @@ module a6 {
         /**
          * function convert data model of client to parent
          */
-        private toModelFlexDto(dataModel: any, worktimeNo: number): HDWorkTimeSheetSettingDto {
-            var timezone: TimeRoundingSettingDto = {
+        private toModelOtherFlowDto(dataModel: any, worktimeNo: number): HDWorkTimeSheetSettingDto {
+            var rounding :TimeRoundingSettingDto = {
                 roundingTime: dataModel.roundingTime(),
-                rounding: dataModel.rounding()
+                rounding: dataModel.rounding(),
+            };
+            var timezone: TimeZoneRoundingDto = {
+                rounding: rounding,
+                start: dataModel.timezone().startTime,
+                end: dataModel.timezone().startTime,
             };
             var dataDTO: HDWorkTimeSheetSettingDto = {
                 workTimeNo: worktimeNo,

@@ -37,13 +37,26 @@ module nts.uk.at.view.kmk003.a {
                 
                 updateData(data: FixOffdayWorkTimezoneDto) {
                     this.restTimezone.updateData(data.restTimezone);
-                    this.lstWorkTimezone = _.map(data.lstWorkTimezone, (dataDTO) => {
-                        let dataModel: HDWorkTimeSheetSettingModel = new HDWorkTimeSheetSettingModel();
-                        dataModel.updateData(dataDTO);
-                        return dataModel;
-                    });  
+                    this.updateHDTimezone(data.lstWorkTimezone);
                 }
                 
+                updateHDTimezone(lstWorkTimezone: HDWorkTimeSheetSettingDto[]) {
+                    for (var dataDTO of lstWorkTimezone) {
+                        var dataModel: HDWorkTimeSheetSettingModel = this.getHDTimezoneByWorktimeNo(dataDTO.workTimeNo);
+                        if (dataModel) {
+                            dataModel.updateData(dataDTO);
+                        }
+                        else {
+                            dataModel = new HDWorkTimeSheetSettingModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstWorkTimezone.push(dataModel);
+                        }
+                    }
+                }
+
+                getHDTimezoneByWorktimeNo(worktimeNo: number): HDWorkTimeSheetSettingModel {
+                    return _.find(this.lstWorkTimezone, hdtimezone => hdtimezone.workTimeNo() == worktimeNo);
+                }
                 toDto(): FixOffdayWorkTimezoneDto {
                     let lstWorkTimezone: HDWorkTimeSheetSettingDto[] = _.map(this.lstWorkTimezone, (dataModel) => dataModel.toDto());
                     
