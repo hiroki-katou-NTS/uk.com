@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,11 +33,11 @@ public class RangeOfDayTimeZoneServiceImpl implements RangeOfDayTimeZoneService 
 			return null;
 		}
 		WorkTimeSet workTimeSet = optional.get();
-		int startTime = workTimeSet.getStartDateClock();
-		int rangeTimeDay = workTimeSet.getRangeTimeDay();
-		int endTime = startTime + rangeTimeDay;
-		timeSpanForCalc.setEnd(new TimeWithDayAttr(endTime));
-		timeSpanForCalc.setStart(new TimeWithDayAttr(startTime));
+		TimeWithDayAttr startTime = workTimeSet.getStartDateClock();
+		AttendanceTime rangeTimeDay = workTimeSet.getRangeTimeDay();
+		TimeWithDayAttr endTime = startTime.forwardByHours(rangeTimeDay.valueAsMinutes());
+		timeSpanForCalc.setEnd(endTime);
+		timeSpanForCalc.setStart(startTime);
 		return timeSpanForCalc;
 	}
 

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearlysetting;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
 
 /**
  * 猶予時間設定

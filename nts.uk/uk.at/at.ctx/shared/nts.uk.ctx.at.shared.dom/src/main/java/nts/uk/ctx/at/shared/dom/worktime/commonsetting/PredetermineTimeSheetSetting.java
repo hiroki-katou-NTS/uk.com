@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
