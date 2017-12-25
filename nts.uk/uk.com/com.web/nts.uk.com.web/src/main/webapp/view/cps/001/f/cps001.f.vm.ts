@@ -6,7 +6,11 @@ module cps001.f.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
-    let __viewContext: any = window['__viewContext'] || {};
+    import permision = service.getCurrentEmpPermision;
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
 
@@ -45,7 +49,6 @@ module cps001.f.vm {
             self.onfilenameclick = (fileId) => {
                 alert(fileId);
             };
-
         }
 
         start(): JQueryPromise<any> {
@@ -62,6 +65,16 @@ module cps001.f.vm {
                 });
                 dfd.resolve();
             });
+
+            permision().done((data: IPersonAuth) => {
+                if (data) {
+                    if (data.allowDocUpload != 1) {
+                        $(".browser-button").attr('disabled', 'disabled');
+                        $(".delete-button").attr('disabled', 'disabled');
+                    }
+                }
+            });
+
             return dfd.promise();
         }
 
@@ -73,7 +86,8 @@ module cps001.f.vm {
 
                 self.start();
 
-                // upload file 
+                // upload file
+                block();
                 $("#file-upload").ntsFileUpload({ stereoType: "document" }).done(function(res) {
                     self.fileId(res[0].id);
                     var fileSize = ((res[0].originalSize) / 1024).toFixed(2);
@@ -110,8 +124,10 @@ module cps001.f.vm {
 
                     });
 
+                    unblock();
 
                 }).fail(function(err) {
+                    unblock();
                     showDialog.alertError(err);
                 });
                 setShared('CPS001F_VALUES', {});
@@ -132,8 +148,12 @@ module cps001.f.vm {
         deleteItem(rowItem: IEmpFileMana) {
             let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block();
                 service.deletedata(rowItem.fileId).done(() => {
+                    unblock();
                     self.restart();
+                }).fail((mes) => {
+                    unblock();
                 });
             }).ifCancel(() => {
 
@@ -168,6 +188,16 @@ module cps001.f.vm {
     // Object truyen tu man A sang
     interface IDataShare {
         pid: string;
+    }
+
+    interface IPersonAuth {
+        roleId: string;
+        allowMapUpload: number;
+        allowMapBrowse: number;
+        allowDocRef: number;
+        allowDocUpload: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
     }
 
 

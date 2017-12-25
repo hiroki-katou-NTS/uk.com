@@ -106,7 +106,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.isNewMode(false);
                     self.selectedTab('tab-1');
                 } else {
+                    self.lstErrorAlarm([]);
+                    self.selectedErrorAlarmCode(null);
+                    self.reSetData(self.selectedErrorAlarm(), null);
                     self.isNewMode(true);
+                    self.selectedTab('tab-1');
                 }
                 dfd.resolve();
             });
@@ -132,7 +136,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.typeAtr(param && param.typeAtr ? param.typeAtr : 0);
             selectedErrorAlarm.displayMessage(param && param.displayMessage ? param.displayMessage : '');
             selectedErrorAlarm.boldAtr(param && param.boldAtr ? param.boldAtr : 0);
-            selectedErrorAlarm.messageColor(param && param.messageColor ? param.messageColor : '');
+            selectedErrorAlarm.messageColor(param && param.messageColor ? param.messageColor : null);
             selectedErrorAlarm.cancelableAtr(param && param.cancelableAtr ? param.cancelableAtr : 0);
             selectedErrorAlarm.errorDisplayItem(param && param.errorDisplayItem ? param.errorDisplayItem : null);
             selectedErrorAlarm.errorDisplayItemName("");
@@ -148,22 +152,22 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 if (param && param.erAlAtdItemConditionGroup1 && param.erAlAtdItemConditionGroup1.length > 0) {
                     param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
-                            condition.setData(conditionParam);
+                            condition.setData(conditionParam.targetNO, conditionParam);
                         }
                     });
                 } else {
-                    condition.setData(null);
+                    condition.setData(condition.targetNO(), null);
                 }
             });
             selectedErrorAlarm.erAlAtdItemConditionGroup2.forEach((condition) => {
                 if (param && param.erAlAtdItemConditionGroup2 && param.erAlAtdItemConditionGroup2.length > 0) {
                     param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
-                            condition.setData(conditionParam);
+                            condition.setData(conditionParam.targetNO, conditionParam);
                         }
                     });
                 } else {
-                    condition.setData(null);
+                    condition.setData(condition.targetNO(), null);
                 }
             });
         }
@@ -443,9 +447,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         initListAtdItemCondition() {
             let resultList = [];
+            resultList.push(new ErAlAtdItemCondition(0, null));
             resultList.push(new ErAlAtdItemCondition(1, null));
             resultList.push(new ErAlAtdItemCondition(2, null));
-            resultList.push(new ErAlAtdItemCondition(3, null));
             return resultList;
         }
     }
@@ -635,7 +639,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.comparePlanAndActual = param ? ko.observable(param.comparePlanAndActual) : ko.observable(0);
             this.planFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
             this.planLstWorkType = param ? ko.observable(param.planLstWorkType) : ko.observableArray([]);
-            this.actualFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
+            this.actualFilterAtr = param ? ko.observable(param.actualFilterAtr) : ko.observable(false);
             this.actualLstWorkType = param ? ko.observable(param.actualLstWorkType) : ko.observableArray([]);
             this.planFilterAtr.subscribe((val) => {
                 if (!val) {
@@ -714,7 +718,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.comparePlanAndActual(param ? param.comparePlanAndActual : 0);
             this.planFilterAtr(param ? param.planFilterAtr : false);
             this.planLstWorkType(param ? param.planLstWorkType : []);
-            this.actualFilterAtr(param ? param.planFilterAtr : false);
+            this.actualFilterAtr(param ? param.actualFilterAtr : false);
             this.actualLstWorkType(param ? param.actualLstWorkType : []);
         }
     }
@@ -740,7 +744,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.comparePlanAndActual = param ? ko.observable(param.comparePlanAndActual) : ko.observable(0);
             this.planFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
             this.planLstWorkTime = param ? ko.observable(param.planLstWorkTime) : ko.observableArray([]);
-            this.actualFilterAtr = param ? ko.observable(param.planFilterAtr) : ko.observable(false);
+            this.actualFilterAtr = param ? ko.observable(param.actualFilterAtr) : ko.observable(false);
             this.actualLstWorkTime = param ? ko.observable(param.actualLstWorkTime) : ko.observableArray([]);
             this.planFilterAtr.subscribe((val) => {
                 if (!val) {
@@ -819,7 +823,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.comparePlanAndActual(param ? param.comparePlanAndActual : 0);
             this.planFilterAtr(param ? param.planFilterAtr : false);
             this.planLstWorkTime(param ? param.planLstWorkTime : []);
-            this.actualFilterAtr(param ? param.planFilterAtr : false);
+            this.actualFilterAtr(param ? param.actualFilterAtr : false);
             this.actualLstWorkTime(param ? param.actualLstWorkTime : []);
         }
     }
@@ -850,8 +854,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
             self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
             self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
-            self.countableAddAtdItems = param ? ko.observableArray(param.countableAddAtdItems) : ko.observableArray([]);
-            self.countableSubAtdItems = param ? ko.observableArray(param.countableSubAtdItems) : ko.observableArray([]);
+            self.countableAddAtdItems = param && param.countableAddAtdItems ? ko.observableArray(param.countableAddAtdItems) : ko.observableArray([]);
+            self.countableSubAtdItems = param && param.countableSubAtdItems ? ko.observableArray(param.countableSubAtdItems) : ko.observableArray([]);
             self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
@@ -1008,7 +1012,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {
-                    self.NO(output.NO);
+                    self.targetNO(output.targetNO);
                     self.conditionAtr(output.conditionAtr);
                     self.useAtr(true);
                     self.uncountableAtdItem(output.uncountableAtdItem);
@@ -1024,18 +1028,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             });
         }
 
-        setData(param) {
+        setData(NO, param) {
             let self = this;
-            self.targetNO(param ? param.targetNO : 0);
+            self.targetNO(NO);
             self.conditionAtr(param ? param.conditionAtr : 0);
             self.useAtr(param ? param.useAtr : false);
             self.uncountableAtdItem(param ? param.uncountableAtdItem : null);
-            self.countableAddAtdItems(param ? param.countableAddAtdItems : []);
-            self.countableSubAtdItems(param ? param.countableSubAtdItems : []);
+            self.countableAddAtdItems(param && param.countableAddAtdItems ? param.countableAddAtdItems : []);
+            self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.conditionType(param ? param.conditionType : 0);
             self.singleAtdItem(param ? param.singleAtdItem : null);
-            self.compareStartValue(param ? param.compareStartValue : 0);
-            self.compareEndValue(param ? param.compareEndValue : 0);
+            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : 0);
+            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : 0);
             self.compareOperator(param ? param.compareOperator : 0);
             self.setTextDisplay();
         }

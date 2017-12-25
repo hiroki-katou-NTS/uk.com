@@ -34,10 +34,11 @@ public class BshmtSchildCareFrame extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	protected BshmtSchildCareFramePK bshmtSchildCareFramePK;
 
-	/** The time no. */
-	@Column(name = "CNT")
-	private Integer timeNo;
-
+	
+	/** The str clock. */
+	@Column(name = "STR_CLOCK")
+	private Integer strClock;
+	
 	/** The end clock. */
 	@Column(name = "END_CLOCK")
 	private Integer endClock;

@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @Getter
@@ -17,13 +18,13 @@ public class HolidayAddtime extends AggregateRoot {
 	private int referComHolidayTime;
 
 	/** 1日 */
-	private GeneralDate oneDay;
+	private BigDecimal oneDay;
 
 	/** 午前 */
-	private GeneralDate morning;
+	private BigDecimal morning;
 
 	/** 午後 */
-	private GeneralDate afternoon;
+	private BigDecimal afternoon;
 
 	/** 実績の就業時間帯を参照する */
 	private int referActualWorkHours;
@@ -40,10 +41,13 @@ public class HolidayAddtime extends AggregateRoot {
 	/** 積立年休 */
 	private int yearlyReserved;
 
+	/** 通常勤務の加算設定*/
 	private RegularWork regularWork;
-
+	
+	/**フレックス勤務の加算設定*/
 	private FlexWork flexWork;
 
+	/**変形労働勤務の加算設定*/
 	private IrregularWork irregularWork;
 
 	@Override
@@ -51,9 +55,9 @@ public class HolidayAddtime extends AggregateRoot {
 		super.validate();
 	}
 
-	public static HolidayAddtime createFromJavaType(String companyId, int referComHolidayTime, GeneralDate oneDay,
-			GeneralDate morning, GeneralDate afternoon, int referActualWorkHours, int notReferringAch,
-			int annualHoliday, int specialHoliday, int yearlyReserved, RegularWork regularWork, FlexWork flexWork,
+	public static HolidayAddtime createFromJavaType(String companyId, int referComHolidayTime, BigDecimal oneDay,
+			BigDecimal morning, BigDecimal afternoon, int referActualWorkHours, int notReferringAch, int annualHoliday,
+			int specialHoliday, int yearlyReserved, RegularWork regularWork, FlexWork flexWork,
 			IrregularWork irregularWork) {
 		return new HolidayAddtime(companyId, referComHolidayTime, oneDay, morning, afternoon, referActualWorkHours,
 				EnumAdaptor.valueOf(notReferringAch, NotReferringAchAtr.class), annualHoliday, specialHoliday,

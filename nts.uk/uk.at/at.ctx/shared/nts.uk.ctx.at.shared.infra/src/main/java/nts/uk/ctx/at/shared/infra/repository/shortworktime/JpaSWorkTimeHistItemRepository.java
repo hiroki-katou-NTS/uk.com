@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
@@ -26,7 +27,7 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem_;
 /**
  * The Class JpaSWorkTimeHistItemRepository.
  */
-@Stateless
+@RequestScoped
 public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWorkTimeHistItemRepository {
 
 	/*
@@ -37,8 +38,10 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	 * nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem)
 	 */
 	@Override
+	@Transactional
 	public void add(ShortWorkTimeHistoryItem domain) {
 		this.commandProxy().insert(this.toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	/*
@@ -49,8 +52,11 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	 * (nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem)
 	 */
 	@Override
+	@Transactional
 	public void update(ShortWorkTimeHistoryItem domain) {
-		this.commandProxy().update(this.toEntity(domain));
+		this.delete(domain.getEmployeeId(), domain.getHistoryId());
+		
+		this.add(domain);
 	}
 
 	/*
@@ -60,6 +66,7 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	 * findByKey(java.lang.String, java.lang.String)
 	 */
 	@Override
+	@Transactional
 	public Optional<ShortWorkTimeHistoryItem> findByKey(String empId, String histId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -98,9 +105,11 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	}
 
 	@Override
+	@Transactional
 	public void delete(String sid, String hist) {
 		BshmtWorktimeHistItemPK key = new BshmtWorktimeHistItemPK(sid, hist);
 		this.commandProxy().remove(BshmtWorktimeHistItem.class,key);
+		this.getEntityManager().flush();
 	}
 
 }

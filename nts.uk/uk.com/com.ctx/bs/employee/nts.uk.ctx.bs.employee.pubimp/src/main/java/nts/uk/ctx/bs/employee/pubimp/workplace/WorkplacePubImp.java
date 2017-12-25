@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
@@ -34,9 +33,6 @@ import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
 @Stateless
 public class WorkplacePubImp implements SyWorkplacePub {
 
-	/** The first item index. */
-	private final int FIRST_ITEM_INDEX = 0;
-
 	/** The workplace config info repository. */
 	@Inject
 	private WorkplaceConfigInfoRepository workplaceConfigInfoRepo;
@@ -44,10 +40,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	/** The workplace info repository. */
 	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepo;
-
-	/** The workplace history repository. */
-	@Inject
-	private AffWorkplaceHistoryRepository workplaceHistoryRepo;
 	
 	/**AffWorkplaceHistoryRepository_v1*/
 	@Inject
@@ -138,17 +130,17 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 */
 	@Override
 	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate baseDate) {
-		Optional<AffWorkplaceHistoryItem> affWrkPlcItem  = getAffWrkPlcHistItem(employeeId, baseDate);
+		Optional<AffWorkplaceHistory_ver1> affWrkPlc = affWorkplaceHistoryRepository_v1.getByEmployeeId(companyId, employeeId);
+		if(!affWrkPlc.isPresent()) 
+			return new ArrayList<>();
+		List<String> histIds = affWrkPlc.get().getHistoryItems().stream().map(x -> x.identifier()).collect(Collectors.toList());		
 		List<String> lstWpkIds = new ArrayList<>();		
+		for(String histId : histIds){
+			Optional<AffWorkplaceHistoryItem> affWrkPlcItem = affWorkplaceHistoryItemRepository_v1.getByHistId(histId);
+			if(affWrkPlcItem.isPresent())
+				lstWpkIds.add(affWrkPlcItem.get().getWorkplaceId());
+		}
 		return lstWpkIds;
-//		// Query
-//		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepo
-//				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
-//
-//		// Return
-//		return affWorkplaceHistories.stream().map(item -> {
-//			return item.getWorkplaceId().v();
-//		}).collect(Collectors.toList());
 	}
 
 	/*
@@ -211,19 +203,5 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		// Return
 		return optWorkplaceConfigInfo.get().getLstWkpHierarchy().stream()
 				.map(WorkplaceHierarchy::getWorkplaceId).collect(Collectors.toList());
-	}
-	
-	private Optional<AffWorkplaceHistoryItem> getAffWrkPlcHistItem(String employeeId, GeneralDate baseDate){
-		//get AffWorkplaceHistory_ver1
-		Optional<AffWorkplaceHistory_ver1> affWrkPlc = affWorkplaceHistoryRepository_v1.getByEmpIdAndStandDate(employeeId, baseDate);
-		if(!affWrkPlc.isPresent()) 
-			return Optional.empty();
-		
-		//get AffWorkplaceHistoryItem
-		String historyId = affWrkPlc.get().getHistoryItems().get(0).identifier();
-		Optional<AffWorkplaceHistoryItem> affWrkPlcItem = affWorkplaceHistoryItemRepository_v1.getByHistId(historyId);
-		if(!affWrkPlcItem.isPresent())
-			return Optional.empty();
-		return affWrkPlcItem;
 	}
 }

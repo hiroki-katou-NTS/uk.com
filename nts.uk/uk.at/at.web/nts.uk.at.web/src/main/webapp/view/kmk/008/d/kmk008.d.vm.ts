@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk008.d {
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             currentEmpName: KnockoutObservable<string>;
+            textOvertimeName: KnockoutObservable<string>;
     
             maxRows : number;
             listComponentOption: any;
@@ -15,16 +16,19 @@ module nts.uk.at.view.kmk008.d {
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
+            isRemove: KnockoutObservable<boolean>;
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfEmploymentModel(null));
                 self.currentEmpName = ko.observable("");
+                self.textOvertimeName = ko.observable(nts.uk.resource.getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
                 self.alreadySettingList = ko.observableArray([]);
+                self.isRemove = ko.observable(false);
 
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
@@ -47,13 +51,21 @@ module nts.uk.at.view.kmk008.d {
                     let empSelect = _.find(self.employmentList(), emp => {
                         return emp.code == newValue;
                     });
-                    if (empSelect) { self.currentEmpName(empSelect.name); }
+                    if (empSelect) {
+                         self.currentEmpName(empSelect.name); 
+                        self.isRemove(empSelect.isAlreadySetting);
+                    }
                 });
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                if (self.laborSystemAtr == 0) {
+                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Employment}']));
+                } else {
+                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
+                }
                 self.getalreadySettingList();
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
                     self.employmentList($('#empt-list-setting').getDataList());
@@ -103,7 +115,7 @@ module nts.uk.at.view.kmk008.d {
                             self.getalreadySettingList();
                             self.getDetail(self.selectedCode());
                         });
-
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
             }
 
@@ -117,6 +129,7 @@ module nts.uk.at.view.kmk008.d {
                         }));
                     }
                 })
+                self.isRemove(self.isShowAlreadySet());
             }
 
             getDetail(employmentCategoryCode: string) {

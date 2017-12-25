@@ -4,8 +4,7 @@
 
 <body>
 	<div class="sidebar-content-header">
-		<span class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
-			'#Com_Company'])}</span> <a tabindex="2"
+		<span class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
 		<button class="proceed" tabindex="3" data-bind="click: addUpdateData, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 	</div>
@@ -22,7 +21,7 @@
 				</tr>
 				<tr>
 					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_22')}</td>
-					<td><input class= "time-editor-custom-width" tabindex="6"
+					<td><input id="errorCheckInput" class= "time-editor-custom-width" tabindex="6"
 						data-bind="ntsTimeEditor: {
 						name: '#[KMK008_22, KMK008_42]',
 						constraint: 'ErrorWeek',
