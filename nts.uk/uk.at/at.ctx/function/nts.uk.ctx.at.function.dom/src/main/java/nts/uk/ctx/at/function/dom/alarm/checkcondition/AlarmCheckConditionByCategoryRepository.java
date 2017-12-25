@@ -10,11 +10,11 @@ import java.util.Optional;
  */
 public interface AlarmCheckConditionByCategoryRepository {
 	
-	public Optional<AlarmCheckConditionByCategory> find();
+	public Optional<AlarmCheckConditionByCategory> find(String companyId, int category, String code);
 
 	public List<AlarmCheckConditionByCategory> findAll();
 
-	public List<AlarmCheckConditionByCategory> findByCategory();
+	public List<AlarmCheckConditionByCategory> findByCategory(String companyId, int category);
 
 	public void add(AlarmCheckConditionByCategory domain);
 
