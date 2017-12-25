@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.Optional;
 
 /**
  * The Interface ScheduleMethodSetMemento.
@@ -18,12 +19,12 @@ public interface ScheduleMethodSetMemento {
 	 *
 	 * @param workScheduleBusCal the new work schedule bus cal
 	 */
-	public void setWorkScheduleBusCal(WorkScheduleBusCal workScheduleBusCal);
+	public void setWorkScheduleBusCal(Optional<WorkScheduleBusCal> workScheduleBusCal);
 	
 	/**
 	 * Sets the monthly pattern work schedule cre.
 	 *
 	 * @param monthlyPatternWorkScheduleCre the new monthly pattern work schedule cre
 	 */
-	public void setMonthlyPatternWorkScheduleCre(MonthlyPatternWorkScheduleCre monthlyPatternWorkScheduleCre);
+	public void setMonthlyPatternWorkScheduleCre(Optional<MonthlyPatternWorkScheduleCre> monthlyPatternWorkScheduleCre);
 }

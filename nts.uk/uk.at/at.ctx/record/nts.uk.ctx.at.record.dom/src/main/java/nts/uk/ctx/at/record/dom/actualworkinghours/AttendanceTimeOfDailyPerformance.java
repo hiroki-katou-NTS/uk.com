@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
-import javax.print.attribute.standard.SheetCollate;
-
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -31,7 +32,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	private ActualWorkingTimeOfDaily actualWorkingTimeOfDaily;
 	
 	//滞在時間 - 日別実績の滞在時間 change tyle
-	private AttendanceTime stayingTime;
+	private StayingTimeOfDaily stayingTime;
 	
 	//不就労時間 - 勤怠時間
 	private AttendanceTime unEmployedTime;
@@ -40,6 +41,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	private AttendanceTime budgetTimeVariance;
 	
 	//医療時間 - 日別実績の医療時間
+	private MedicalCareTimeOfDaily medicalCareTime;
 	
 	//日別実績の勤怠時間
 	//private AttendanceTimeOfDailyPerformance attendanceTimeOfDaily;
@@ -60,7 +62,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 											 GeneralDate ymd,
 											 WorkScheduleTimeOfDaily schedule,
 											 ActualWorkingTimeOfDaily actual,
-											 AttendanceTime stay,
+											 StayingTimeOfDaily stay,
 											 AttendanceTime budget,
 											 AttendanceTime unEmploy) {
 		this.employeeId = employeeId;

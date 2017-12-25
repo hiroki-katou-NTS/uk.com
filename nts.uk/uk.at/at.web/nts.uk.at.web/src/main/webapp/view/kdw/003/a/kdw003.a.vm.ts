@@ -93,6 +93,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         employmentCode: KnockoutObservable<any> = ko.observable("");
 
         editValue: KnockoutObservableArray<InfoCellEdit> = ko.observableArray([]);
+        
+        lockMessage: KnockoutObservable<any> = ko.observable("");
 
         dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("12","13","11","11","11","11"));
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
@@ -101,6 +103,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         comboColumns: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 4 },
             { prop: 'name', length: 8 }]);
+         comboItemsDoWork : KnockoutObservable<any> = ko.observableArray([]);
+         comboItemsReason : KnockoutObservable<any> = ko.observableArray([]);
+         comboItemsCalc : KnockoutObservable<any> = ko.observableArray([]);
+        
 
         constructor() {
             var self = this;
@@ -126,12 +132,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
         }
-         helps(event){
+         helps(event, data){
              var self = this;
              $('#tooltip').css({
                  'left': event.pageX+40,
                  'top':  event.pageY-20
              });
+             self.lockMessage(data);
              $("#tooltip").show();
          }
         initLegendButton() {
@@ -184,6 +191,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     startDate: moment(self.dateRanger().startDate).utc().toISOString(),
                     endDate: moment(self.dateRanger().endDate).utc().toISOString()
                 },
+                displayFormat : 0,
                 lstEmployee: [],
                 formatCodes: self.formatCodes()
             };
@@ -203,19 +211,26 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 self.columnSettings(data.lstControlDisplayItem.columnSettings);
                 });
+                // combo box
+                self.comboItemsCalc(data.lstControlDisplayItem.comboItemCalc);
+                self.comboItemsReason(data.lstControlDisplayItem.comboItemReason);
+                self.comboItemsDoWork(data.lstControlDisplayItem.comboItemDoWork);
+                
                 self.employmentCode(data.employmentCode);
                 self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
-                self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto));
+                self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
                 self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr, self.showButton()));
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                 self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
                 self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
-
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
                 self.receiveData(data);
-                self.selectedEmployee(self.lstEmployee()[0].id);
+                let employeeLogin: any = _.find(self.lstEmployee(), function(data){
+                    return data.loginUser == true;
+                });
+                self.selectedEmployee(employeeLogin.id);
                 self.extractionData();
                 self.loadGrid();
                 //  self.extraction();
@@ -249,7 +264,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             });
                             self.employmentCode(data.employmentCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
-                            self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto));
+                            self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
                             self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr, self.showButton()));
                             // Fixed Header
                             self.fixHeaders(data.lstFixedHeader);
@@ -259,7 +274,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                             self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
                             self.receiveData(data);
-                            self.selectedEmployee(self.lstEmployee()[0].id);
+                            let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
+                                return data.loginUser == true;
+                            });
+                            self.selectedEmployee(employeeLogin.id);
                             self.extractionData();
                             self.loadGrid();
                             //  self.extraction();
@@ -324,6 +342,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         startDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         endDate: moment(self.dateRanger().endDate).utc().toISOString()
                     },
+                    displayFormat : 1,
                     lstEmployee: lstEmployee,
                     formatCodes: self.formatCodes()
                 };
@@ -870,7 +889,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
-//                enter: self.selectedDirection() == 0 ? 'below' : 'right',
+                enter: self.selectedDirection() == 0 ? 'below' : 'right',
                 autoFitWindow: false,
                 preventEditInError: false,
                 avgRowHeight: 20,
@@ -912,9 +931,27 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     },
                     { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
                     { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
-                    { name: 'Combobox2', options: self.comboItems(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
-                    { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' },
-                    ]
+                    { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
+                    { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
+                    { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
+                    {
+                        name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
+                            let data = $("#dpGrid").igGrid("getCellValue", rowId, key);
+                            if(data!= ""){
+                                 let lock = data.split("|");
+                                 let tempD = "<span>";
+                                 for (let i =1 ; i< lock.length ; i++){
+                                     if(lock[i]=="D") tempD +=  nts.uk.resource.getText("KDW003_69")+'<br/>'; 
+                                     if(lock[i]=="M") tempD += nts.uk.resource.getText("KDW003_68")+'<br/>'; 
+                                     if(lock[i]=="C") tempD += nts.uk.resource.getText("KDW003_67")+'</span>'; 
+                                     $('#textLock').html(tempD);
+                                }
+                                }
+                            self.helps(evt, "");
+                        },
+                        controlType: 'FlexImage'
+                    },
+                ]
             });
             $(document).delegate("#dpGrid", 'iggridupdatingeditcellending', function(evt, ui) {
                 //information data edit 
@@ -1150,6 +1187,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         available3: KnockoutObservable<boolean> = ko.observable(true);
         available5: KnockoutObservable<boolean> = ko.observable(true);
         available8: KnockoutObservable<boolean> = ko.observable(true);
+        available8Authority: KnockoutObservable<boolean> = ko.observable(true);
         available22: KnockoutObservable<boolean> = ko.observable(true);
         available24: KnockoutObservable<boolean> = ko.observable(true);
         available7: KnockoutObservable<boolean> = ko.observable(true);
@@ -1160,7 +1198,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         available19: KnockoutObservable<boolean> = ko.observable(true);
         available20: KnockoutObservable<boolean> = ko.observable(true);
         available21: KnockoutObservable<boolean> = ko.observable(true);
-        constructor(data: Array<DailyPerformanceAuthorityDto>) {
+        constructor(data: Array<DailyPerformanceAuthorityDto>, authority : any) {
             var self = this;
             if (!data) return;
             this.available1(self.checkAvailable(data, 1));
@@ -1179,6 +1217,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available19(self.checkAvailable(data, 19));
             this.available20(self.checkAvailable(data, 20));
             this.available21(self.checkAvailable(data, 21));
+            this.available8Authority(this.available8() && authority)
 
         }
         checkAvailable(data: Array<DailyPerformanceAuthorityDto>, value: number): boolean {
@@ -1502,13 +1541,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         lineBreakPosition: number;
         attendanceAtr: number;
         /*DUTY(1, "勤務種類"),
-          WORK_HOURS(2, "就業時間帯"),   
-          SERVICE_PLACE(3, "勤務場所"),   
-          REASON(4, "乖離理由"),   
-          WORKPLACE(5, "職場"),    
-          CLASSIFICATION(6, "分類"),  
-          POSSITION(7, "職位"),   
-          EMPLOYMENT(8, "雇用区分");*/
+        WORK_HOURS(2, "就業時間帯"), 
+        SERVICE_PLACE(3, "勤務場所"), 
+        REASON(4, "乖離理由"),
+        WORKPLACE(5, "職場"),
+        CLASSIFICATION(6, "分類") 
+        POSSITION(7, "職位") 
+        EMPLOYMENT(8, "雇用区分") */
         typeGroup: number;
     }
 

@@ -35,12 +35,12 @@ public class StampIncorrectOrderAlgorithm {
 	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	public OutPutProcess stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate) {
+	public OutPutProcess stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
 		List<Integer> attendanceItemIds = new ArrayList<>();
 
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository
-					.findByKey(employeeID, processingDate).get();
+//		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository
+//					.findByKey(employeeID, processingDate).get();
 		// ペアの逆転がないか確認する			
 		List<OutPutProcess> pairOutPutList = checkPairReversed(timeLeavingOfDailyPerformance.getTimeLeavingWorks());
 

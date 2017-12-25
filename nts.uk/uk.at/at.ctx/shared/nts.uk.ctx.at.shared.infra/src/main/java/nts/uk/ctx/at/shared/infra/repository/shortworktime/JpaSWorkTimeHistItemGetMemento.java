@@ -74,8 +74,8 @@ public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemen
 	public List<SChildCareFrame> getLstTimeSlot() {
 		return this.entity.getLstBshmtSchildCareFrame().stream().map(entity -> {
 			return SChildCareFrame.builder()
-					.timeSlot(entity.getTimeNo())
-					.startTime(new TimeWithDayAttr(entity.getBshmtSchildCareFramePK().getStrClock()))
+					.timeSlot(entity.getBshmtSchildCareFramePK().getTimeNo())
+					.startTime(new TimeWithDayAttr(entity.getStrClock()))
 					.endTime(new TimeWithDayAttr(entity.getEndClock()))
 					.build();
 		}).collect(Collectors.toList());

@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.PrescribedWorkingTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 

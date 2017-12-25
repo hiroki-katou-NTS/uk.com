@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,11 +16,14 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFomatDailyDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AuthorityFormatSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
@@ -44,24 +48,26 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DailyPerformanceSelectItemProcessor {
 
 	@Inject
 	private DailyPerformanceScreenRepo repo;
+	
+	@Inject
+	private ClosureService closureService;
 
 	/**
 	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
 	 */
 	private DPControlDisplayItem getControlDisplayItems(List<String> lstEmployeeId, DateRange dateRange,
-			CorrectionOfDailyPerformance correct, List<String> formatCodes) {
+			CorrectionOfDailyPerformance correct, List<String> formatCodes, OperationOfDailyPerformanceDto dailyPerformanceDto) {
 		DPControlDisplayItem result = new DPControlDisplayItem();
 		String companyId = AppContexts.user().companyId();
 		if (lstEmployeeId.size() > 0) {
 			// 対応するドメインモデル「日別実績の運用」を取得する | Acquire corresponding domain model
-			// "Operation of daily performance"
-			OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
 			// 取得したドメインモデル「日別実績の運用」をチェックする | Check the acquired domain model
 			// "Operation of daily performance"
 			List<FormatDPCorrectionDto> lstFormat = new ArrayList<FormatDPCorrectionDto>();
@@ -98,6 +104,10 @@ public class DailyPerformanceSelectItemProcessor {
 					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 					lstSheet = authorityFormatSheets.stream().map(x -> new DPSheetDto(x.getSheetNo().toString(), x.getSheetName().toString()))
 							.collect(Collectors.toList());
+					Set<String> lstSheetNo = lstSheet.stream().map(DPSheetDto :: getName).collect(Collectors.toSet());
+					if(lstSheetNo.size() != lstSheet.size()){
+						lstSheet = lstSheet.stream().map(x -> new DPSheetDto(x.getName(), x.getName())).collect(Collectors.toList());
+					}
 					lstFormat = authorityFomatDailys.stream()
 							.map(x -> new FormatDPCorrectionDto(companyId, x.getDailyPerformanceFormatCode(),
 									x.getAttendanceItemId(), x.getSheetNo().toString(), x.getDisplayOrder(),
@@ -128,6 +138,10 @@ public class DailyPerformanceSelectItemProcessor {
 				if (lstBusinessTypeCode.size() > 0) {
 
 					lstSheet = this.repo.getFormatSheets(lstBusinessTypeCode);
+					Set<String> lstSheetNo = lstSheet.stream().map(DPSheetDto :: getName).collect(Collectors.toSet());
+					if(lstSheetNo.size() != lstSheet.size()){
+						lstSheet = lstSheet.stream().map(x -> new DPSheetDto(x.getName(), x.getName())).collect(Collectors.toList());
+					}
 					/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
 					lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode);
 					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
@@ -205,17 +219,17 @@ public class DailyPerformanceSelectItemProcessor {
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
 		// employee's daily performance"--
 		// roleId = AppContexts.user().roles().forPersonalInfo() fixed
-		List<DailyPerformanceAuthorityDto> dailyPerformans = repo.findDailyAuthority("001");
+		List<DailyPerformanceAuthorityDto> dailyPerformans = repo
+				.findDailyAuthority("00000000-0000-0000-0000-000000000001");
 		if (dailyPerformans.isEmpty()) {
 			throw new BusinessException("Msg_671");
 		} else {
 			// NO.15
 			screenDto.setAuthorityDto(dailyPerformans);
 		}
-		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
-		// Corresponding to Employees"--
-		ClosureDto closureDto = repo.getClosureId(sId, dateRange.getEndDate());
-
+		// get employmentCode
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
+		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data
 		getHolidaySettingData(screenDto);
 
@@ -224,25 +238,32 @@ public class DailyPerformanceSelectItemProcessor {
 		 * display format"
 		 */
 		// アルゴリズム「対象者を抽出する」を実行する | Execute "Extract subject"
-		if (lstEmployee.size() > 0 && lstEmployee != null) {
+		if (lstEmployee.size() > 0) {
 			screenDto.setLstEmployee(lstEmployee);
 		} else {
 			screenDto.setLstEmployee(getListEmployee(sId, screenDto.getDateRange()));
 		}
-
+		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
+		if(displayFormat == 0){
+			lstEmployeeData = screenDto.getLstEmployee().stream().filter(x-> x.getId().equals(sId)).collect(Collectors.toList());
+		}else{
+			lstEmployeeData = screenDto.getLstEmployee();
+		}
 		// 表示形式をチェックする | Check display format => UI
 		// Create lstData: Get by listEmployee & listDate
 		// 日付別の情報を取得する + 個人別の情報を取得する + エラーアラームの情報を取得する | Acquire information by
 		// date + Acquire personalized information + Acquire error alarm
 		// information
-		screenDto.setLstData(getListData(screenDto.getLstEmployee(), dateRange));
+		
+		screenDto.setLstData(getListData(lstEmployeeData, dateRange));
 		/// 対応する「日別実績」をすべて取得する | Acquire all corresponding "daily performance"
-		List<String> listEmployeeId = screenDto.getLstEmployee().stream().map(e -> e.getId())
+		List<String> listEmployeeId = lstEmployeeData.stream().map(e -> e.getId())
 				.collect(Collectors.toList());
 		/// 対応する「日別実績」をすべて取得する-- lay tat ca thanh tich theo ngay tuong ung
 		//// 日別実績の勤務情報
-//		List<WorkInfoOfDailyPerformanceDetailDto> workInfoOfDailyPerformanceDetailDtos = repo.find(listEmployeeId,
-//				dateRange);
+		// List<WorkInfoOfDailyPerformanceDetailDto>
+		/// workInfoOfDailyPerformanceDetailDtos = repo.find(listEmployeeId,
+		/// dateRange);
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// thai sua cua thanh tich nhan vien tuong ung
@@ -265,24 +286,43 @@ public class DailyPerformanceSelectItemProcessor {
 			}
 		}
 
+		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
+		// Corresponding to Employees"--
+		List<ClosureDto> closureDtos = repo.getClosureId(listEmployeeId, dateRange.getEndDate());
 		/// TODO : アルゴリズム「対象日に対応する承認者確認情報を取得する」を実行する | Execute "Acquire Approver
 		/// Confirmation Information Corresponding to Target Date"
-
 		// アルゴリズム「就業確定情報を取得する」を実行する
-		/// アルゴリズム「日別実績のロックを取得する」を実行する (Tiến hành xử lý "Lấy về lock của thành
-		// tích theo ngày")
-//		Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(),
-//				closureDto.getClosureId());
-//		// アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
-//		Optional<WorkFixedDto> workFixedOp = repo.findWorkFixed(closureDto.getClosureId(),
-//				closureDto.getClosureMonth());
+		/// アルゴリズム「日別実績のロックを取得する」を実行する (Tiến hành xử lý "Lấy về lock của thành tích theo ngày")
+		Map<String, DatePeriod> employeeAndDateRange = new HashMap<>();
+		if(!closureDtos.isEmpty()){
+			closureDtos.forEach(x ->{
+				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(), new YearMonth(x.getClosureMonth()));
+				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(), x.getClosureId());
+				if(actualLockDto.isPresent()){
+					if(actualLockDto.get().getDailyLockState()==1){
+						employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+"D", datePeriod);
+					};
+					if(actualLockDto.get().getMonthlyLockState()==1){
+						employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+"M", datePeriod);
+					}
+				}
+				//アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
+				Optional<WorkFixedDto> workFixedOp =repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
+				if(workFixedOp.isPresent()){
+					employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+workFixedOp.get().getWkpId()+"|"+"C", datePeriod);
+				}
+			});
+		}
 
+		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+		screenDto.setComment(dailyPerformanceDto != null && dailyPerformanceDto.getComment() != null
+				? dailyPerformanceDto.getComment() : null);
 		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
-				correct, formatCodes);
+				correct, formatCodes, dailyPerformanceDto);
+		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		screenDto.getLstFixedHeader().forEach(column ->{
 			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
-		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
 		// Map<Integer, Integer> typeControl =
 		//// lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::
@@ -295,22 +335,75 @@ public class DailyPerformanceSelectItemProcessor {
 						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
 				: new HashMap<>();
 		for (DPDataDto data : screenDto.getLstData()) {
+			boolean lock = false;
+			if(!employeeAndDateRange.isEmpty()){
+				for(int i = 1; i<= 5 ; i++){
+					DatePeriod dateD = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+"D");
+					DatePeriod dateM = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+"M");
+					DatePeriod dateC = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+data.getWorkplaceId()+"|"+"C");
+					String lockD="";
+					String lockM="";
+					String lockC="";
+					if((dateD != null && (data.getDate().afterOrEquals(dateD.start()) && data.getDate().beforeOrEquals(dateD.end())))){
+						lockD ="|"+"D";
+					}
+					if((dateM != null && (data.getDate().afterOrEquals(dateM.start()) && data.getDate().beforeOrEquals(dateM.end())))){
+						lockM ="|"+"M";
+					}
+					if((dateC != null && (data.getDate().afterOrEquals(dateC.start()) && data.getDate().beforeOrEquals(dateC.end())))){
+						lockC ="|"+"C";
+					}
+					if(!lockD.equals("")|| !lockM.equals("")|| !lockC.equals("")){
+						data.setState("lock"+lockD+lockM+lockC);
+					    lock = true;
+					}
+				}
+			}
+			if(lock){
+				screenDto.setLock(data.getId(), "date");
+			    screenDto.setLock(data.getId(), "employeeCode");
+			    screenDto.setLock(data.getId(), "employeeName");
+			    screenDto.setLock(data.getId(), "error");
+			    screenDto.setLock(data.getId(), "sign");
+			    screenDto.setLock(data.getId(), "picture-person");
+			    
+			}
 			List<DPCellDataDto> cellDatas = new ArrayList<>();
 			if (dPControlDisplayItem.getLstAttendanceItem() != null) {
-				dPControlDisplayItem.getLstAttendanceItem().forEach(item -> {
+				for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()){
 					Random rn = new Random();
-					int a = rn.nextInt(100);
+					int a = 2;
 					int attendanceAtr = mapDP.get(item.getId()).getAttendanceAtr();
-					if (attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value) {
-						cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), String.valueOf(a),
-								String.valueOf(item.getAttendanceAtr()), "label"));
-						cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
-								"Link Name" + item.getId(), String.valueOf(item.getAttendanceAtr()), "Link2"));
+					if (attendanceAtr == DailyAttendanceAtr.Code.value
+							|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
+						if(attendanceAtr == DailyAttendanceAtr.Code.value){
+							if(lock){
+								screenDto.setLock(data.getId(), "Code" + String.valueOf(item.getId()));
+								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
+							}
+							cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), String.valueOf(a),
+									String.valueOf(item.getAttendanceAtr()), "label"));
+							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
+									"Link Name" + item.getId(), String.valueOf(item.getAttendanceAtr()), "Link2"));
+						}else{
+							if(lock){
+								screenDto.setLock(data.getId(), "NO" + String.valueOf(item.getId()));
+								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
+							}
+							cellDatas.add(new DPCellDataDto("NO" + String.valueOf(item.getId()), String.valueOf(a),
+									String.valueOf(item.getAttendanceAtr()), "label"));
+							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
+									String.valueOf(a), String.valueOf(item.getAttendanceAtr()), "Link2"));
+						}
+						
 					} else {
-						cellDatas.add(new DPCellDataDto("A"+String.valueOf(item.getId()), String.valueOf(a),
+						if(lock){
+							screenDto.setLock(data.getId(), "A" + String.valueOf(item.getId()));
+						}
+						cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), String.valueOf(a),
 								String.valueOf(item.getAttendanceAtr()), "label"));
 					}
-				});
+				};
 			}
 			data.setCellDatas(cellDatas);
 			lstData.add(data);
@@ -354,7 +447,7 @@ public class DailyPerformanceSelectItemProcessor {
 				DailyPerformanceEmployeeDto employee = listEmployee.get(j);
 				for (int i = 0; i < lstDate.size(); i++) {
 					GeneralDate filterDate = lstDate.get(i);
-					result.add(new DPDataDto(dataId, "1", "", filterDate, false, employee.getId(), employee.getCode(),
+					result.add(new DPDataDto(dataId, "", "", filterDate, false, employee.getId(), employee.getCode(),
 							employee.getBusinessName(),  employee.getWorkplaceId()));
 					dataId++;
 				}

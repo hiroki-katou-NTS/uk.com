@@ -92,7 +92,7 @@ public class ShortWorkTimeFinder implements PeregFinder<ShortWorkTimeDto> {
 				query.getEmployeeId());
 		if (history.isPresent()) {
 			return history.get().getHistoryItems().stream()
-					.filter(item -> shortTimeHistoryRepo.findByKey(employeeId, item.identifier()).isPresent())
+					.filter(item -> shortTimeHistoryItemRepo.findByKey(employeeId, item.identifier()).isPresent())
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 					.collect(Collectors.toList());
 		}

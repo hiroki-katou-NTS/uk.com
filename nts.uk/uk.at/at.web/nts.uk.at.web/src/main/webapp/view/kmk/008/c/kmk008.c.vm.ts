@@ -4,16 +4,23 @@ module nts.uk.at.view.kmk008.c {
             timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
+            textOvertimeName: KnockoutObservable<string>;
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
+                self.textOvertimeName = ko.observable(nts.uk.resource.getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                if (self.laborSystemAtr == 0) {
+                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
+                } else {
+                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
+                }
                 new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
                     if (data) {
                         self.timeOfCompany(new TimeOfCompanyModel(data));
@@ -21,6 +28,7 @@ module nts.uk.at.view.kmk008.c {
                     } else {
                         self.isUpdate = false;
                     }
+                    $("#errorCheckInput").focus();
                     dfd.resolve();
                 }).fail(error => {
 

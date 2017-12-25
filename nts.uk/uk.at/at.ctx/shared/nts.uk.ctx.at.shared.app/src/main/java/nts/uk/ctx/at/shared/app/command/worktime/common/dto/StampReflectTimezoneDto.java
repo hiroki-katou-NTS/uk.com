@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento;
@@ -19,7 +17,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class StampReflectTimezoneDto implements StampReflectTimezoneGetMemento {
 
 	/** The work no. */
-	private BigDecimal workNo;
+	private Integer workNo;
 
 	/** The classification. */
 	private Integer classification;

@@ -135,18 +135,18 @@ module nts.uk.at.view.kmk008.k {
                     return;
                 }
                 if (self.isYearMonth) {
-                    new service.Service().addAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done(() => {
+                    new service.Service().addAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(yearOrYearMonth);
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['#KMK008_42', '#KMK008_44']));
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
                     });
                 } else {
-                    new service.Service().addAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done(() => {
+                    new service.Service().addAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(yearOrYearMonth);
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['#KMK008_42', '#KMK008_44']));
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
                     });
                 }
             }
@@ -157,18 +157,18 @@ module nts.uk.at.view.kmk008.k {
                     return;
                 }
                 if (self.isYearMonth) {
-                    new service.Service().updateAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done(() => {
+                    new service.Service().updateAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(self.currentCodeSelect());
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['#KMK008_42', '#KMK008_44']));
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
                     });
                 } else {
-                    new service.Service().updateAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done(() => {
+                    new service.Service().updateAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(self.currentCodeSelect());
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['#KMK008_42', '#KMK008_44']));
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
                     });
                 }
             }

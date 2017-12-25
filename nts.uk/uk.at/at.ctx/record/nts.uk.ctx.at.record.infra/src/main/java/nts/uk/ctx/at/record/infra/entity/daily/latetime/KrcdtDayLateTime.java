@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.daily.latetime;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,8 +12,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -60,7 +60,7 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable{
 	public static KrcdtDayLateTime create(String employeeId, GeneralDate date, LateTimeOfDaily domain) {
 		val entity = new KrcdtDayLateTime();
 		/*主キー*/
-		entity.krcdtDayLateTimePK = new KrcdtDayLateTimePK(employeeId,date,domain.getWorkNo());
+		entity.krcdtDayLateTimePK = new KrcdtDayLateTimePK(employeeId,date,domain.getWorkNo().v());
 		/*遅刻時間*/
 		entity.lateTime = domain.getLateTime().getTime().valueAsMinutes();
 		/*計算遅刻時間*/
@@ -83,11 +83,12 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable{
 	public LateTimeOfDaily toDomain() {
 		return new LateTimeOfDaily(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.lateTime),new AttendanceTime(this.calcLateTime)),
 								   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.lateDedctTime),new AttendanceTime(this.calcLateDedctTime)),
-								   this.krcdtDayLateTimePK.workNo,
+								   new WorkNo(this.krcdtDayLateTimePK.workNo),
 								   new TimevacationUseTimeOfDaily(new AttendanceTime(this.timeAnallvUseTime),
 										   						  new AttendanceTime(this.timeCmpnstlvUseTime),
 										   						  new AttendanceTime(this.overPayVactnUseTime),
-										   						  new AttendanceTime(this.spVactnUseTime)));
+										   						  new AttendanceTime(this.spVactnUseTime)),
+								   new IntervalExemptionTime());
 	}
 	
 }

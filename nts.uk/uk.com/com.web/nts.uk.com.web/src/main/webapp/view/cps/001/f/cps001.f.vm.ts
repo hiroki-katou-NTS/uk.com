@@ -7,7 +7,10 @@ module cps001.f.vm {
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
     import permision = service.getCurrentEmpPermision;
-    let __viewContext: any = window['__viewContext'] || {};
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
 
@@ -65,7 +68,7 @@ module cps001.f.vm {
 
             permision().done((data: IPersonAuth) => {
                 if (data) {
-                    if (data.allowDocUpload == 1) {
+                    if (data.allowDocUpload != 1) {
                         $(".browser-button").attr('disabled', 'disabled');
                         $(".delete-button").attr('disabled', 'disabled');
                     }
@@ -83,7 +86,8 @@ module cps001.f.vm {
 
                 self.start();
 
-                // upload file 
+                // upload file
+                block();
                 $("#file-upload").ntsFileUpload({ stereoType: "document" }).done(function(res) {
                     self.fileId(res[0].id);
                     var fileSize = ((res[0].originalSize) / 1024).toFixed(2);
@@ -120,8 +124,10 @@ module cps001.f.vm {
 
                     });
 
+                    unblock();
 
                 }).fail(function(err) {
+                    unblock();
                     showDialog.alertError(err);
                 });
                 setShared('CPS001F_VALUES', {});
@@ -142,8 +148,12 @@ module cps001.f.vm {
         deleteItem(rowItem: IEmpFileMana) {
             let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block();
                 service.deletedata(rowItem.fileId).done(() => {
+                    unblock();
                     self.restart();
+                }).fail((mes) => {
+                    unblock();
                 });
             }).ifCancel(() => {
 

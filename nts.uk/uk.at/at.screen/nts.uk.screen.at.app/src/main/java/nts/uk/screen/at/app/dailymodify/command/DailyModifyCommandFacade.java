@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
+import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 
 @Stateless
 @Transactional
@@ -45,9 +46,9 @@ public class DailyModifyCommandFacade {
 		ADD_COMMAND_CLASSES.put("AttendanceTimeOfDailyPerformance", new TypeLiteral<CommandFacade<AttendanceTimeOfDailyPerformCommand>>(){});
 	}
 
-	public void handle(Map<String, List<ItemValue>> itemValues, String employeeId, GeneralDate baseDate) {
+	public void handle(Map<String, List<ItemValue>> itemValues, DailyModifyQuery query) {
 		itemValues.entrySet().stream().forEach(entry -> {
-			handle(ADD_COMMAND_CLASSES.get(entry.getKey()), toDto(entry, employeeId, baseDate));
+			handle(ADD_COMMAND_CLASSES.get(entry.getKey()), toDto(entry, query.getEmployeeId(), query.getBaseDate()));
 		});
 	}
 

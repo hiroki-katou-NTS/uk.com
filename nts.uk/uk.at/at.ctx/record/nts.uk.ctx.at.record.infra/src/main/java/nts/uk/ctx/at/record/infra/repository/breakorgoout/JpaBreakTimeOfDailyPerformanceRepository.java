@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -96,7 +97,8 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 								EnumAdaptor.valueOf(item.endStampSourceInfo.intValue(), StampSourceInfo.class));
 
 						return new BreakTimeSheet(new BreakFrameNo(item.krcdtDaiBreakTimePK.breakFrameNo),
-								startActualStamp, endActualStamp);
+								startActualStamp, endActualStamp,
+								   new AttendanceTime(0));
 					}).collect(Collectors.toList()), ymd);
 			breakTimeOfDailyPerformances.add(breakTimeOfDailyPerformance);
 		});
