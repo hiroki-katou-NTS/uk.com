@@ -13,11 +13,11 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 控除項目の時間帯

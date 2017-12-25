@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
  * 控除時間帯の重複部分を調整する処理を担うクラス

@@ -13,8 +13,6 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.BreakSetOfCommon;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
@@ -22,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
  * 控除時間帯
