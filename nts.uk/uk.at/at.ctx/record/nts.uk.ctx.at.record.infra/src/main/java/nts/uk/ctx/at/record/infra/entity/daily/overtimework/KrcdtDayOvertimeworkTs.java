@@ -8,15 +8,15 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -91,6 +91,9 @@ public class KrcdtDayOvertimeworkTs extends UkJpaEntity implements Serializable{
 	/*残業10終了時刻*/
 	@Column(name = "OVER_TIME_10_END_CLC")
 	public int overTime10EndClc;
+	
+	@OneToOne(mappedBy="krcdtDayOvertimeworkTs")
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 	
 	@Override
 	protected Object getKey() {

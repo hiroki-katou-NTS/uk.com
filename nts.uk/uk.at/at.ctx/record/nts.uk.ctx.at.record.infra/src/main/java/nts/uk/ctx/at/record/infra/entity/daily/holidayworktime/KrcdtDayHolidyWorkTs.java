@@ -9,12 +9,14 @@ import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -89,6 +91,8 @@ public class KrcdtDayHolidyWorkTs extends UkJpaEntity implements Serializable{
 	@Column(name = "HOLI_WORK_10_END_CLC")
 	public int holiWork10EndClc;
 	
+	@OneToOne(mappedBy="krcdtDayHolidyWorkTs")
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 	
 	@Override
 	protected Object getKey() {
