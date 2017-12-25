@@ -65,13 +65,19 @@ public class EmployeeInfoFinder {
 		String returnString = "";
 		String companyId = AppContexts.user().companyId();
 		String lastEmployeeCode = empDataMngInfoRepo.findLastEml(companyId, startLetters);
+		int length = lastEmployeeCode.length();
+		if(length <12){
+			for(int i = 0; i < (12 - length); i++){
+				lastEmployeeCode += " ";
+			}
+		}
+		length = lastEmployeeCode.length();
 		returnString = generateCode(lastEmployeeCode, "Msg_505");
 		return returnString;
 
 	}
 
 	public String generateCardNo(String startLetters) {
-
 		String returnString = "";
 		String companyId = AppContexts.user().companyId();
 		String lastCardNo = personRepository.getLastCardNo(companyId, startLetters);

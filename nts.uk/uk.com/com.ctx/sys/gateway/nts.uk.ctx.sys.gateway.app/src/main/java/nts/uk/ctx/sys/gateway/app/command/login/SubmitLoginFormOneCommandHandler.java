@@ -14,8 +14,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.gateway.dom.login.Contract;
-import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 
@@ -29,10 +27,6 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	@Inject
 	private UserRepository userRepository;
 	
-	/** The contract repository. */
-	@Inject
-	private ContractRepository contractRepository;
-	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -45,11 +39,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		// check validate input
 		this.checkInput(command);
 
-		//reCheck contract
-		//pre check contract
-		this.checkContractInput(command);
-		//contract auth
-		this.contractAccAuth(command);
+		this.reCheckContract(command.getContractCode(), command.getContractPassword());
 		
 		// find user by login id
 		Optional<User> user = userRepository.getByLoginId(loginId);
@@ -83,42 +73,6 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		}
 	}
 	
-	/**
-	 * Check contract input.
-	 *
-	 * @param command the command
-	 */
-	private void checkContractInput(SubmitLoginFormOneCommand command) {
-		if (StringUtil.isNullOrEmpty(command.getContractCode(),true)) {
-			throw new RuntimeException();
-		}
-		if (StringUtil.isNullOrEmpty(command.getContractPassword(),true)) {
-			throw new RuntimeException();
-		}
-	}
-
-	/**
-	 * Contract acc auth.
-	 *
-	 * @param command the command
-	 */
-	private void contractAccAuth(SubmitLoginFormOneCommand command) {
-		Optional<Contract> contract = contractRepository.getContract(command.getContractCode());
-		if (contract.isPresent()) {
-			// check contract pass
-			if (!PasswordHash.verifyThat(command.getContractPassword(), contract.get().getContractCode().v())
-					.isEqualTo(contract.get().getPassword().v())) {
-				throw new RuntimeException();
-			}
-			// check contract time
-			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
-					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
-				throw new RuntimeException();
-			}
-		} else {
-			throw new RuntimeException();
-		}
-	}
 	
 	/**
 	 * Compare hash password.

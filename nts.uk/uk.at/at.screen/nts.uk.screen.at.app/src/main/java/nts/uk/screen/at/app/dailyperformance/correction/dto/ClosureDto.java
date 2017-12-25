@@ -15,6 +15,14 @@ import lombok.Data;
 public class ClosureDto {
 	private String companyId;
 	private Integer closureId;
-	private boolean useAtr;
+	private Integer useAtr;
 	private Integer closureMonth;
+	private String sid;
+	public ClosureDto(String companyId, Integer closureId, Integer useAtr, Integer closureMonth){
+		this.companyId = companyId;
+		this.closureId = closureId;
+		this.useAtr = useAtr;
+		this.closureMonth = closureMonth;
+	}
 }
+

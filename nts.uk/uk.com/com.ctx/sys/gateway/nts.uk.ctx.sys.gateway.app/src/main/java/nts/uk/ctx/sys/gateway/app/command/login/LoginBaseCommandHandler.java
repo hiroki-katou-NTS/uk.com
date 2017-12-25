@@ -12,6 +12,14 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.dom.login.Contract;
+import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
+import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
+import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
+import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
@@ -51,6 +59,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	@Inject
 	private LoginUserContextManager manager;
 	
+	/** The system config repository. */
+	@Inject
+	private SystemConfigRepository systemConfigRepository;
+	
+	/** The contract repository. */
+	@Inject
+	private ContractRepository contractRepository;
+	
 	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
 	/*
@@ -72,6 +88,58 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 */
 	protected abstract void internalHanler(CommandHandlerContext<T> context);
 
+	
+	protected void reCheckContract(String contractCode, String contractPassword) {
+		SystemConfig systemConfig = this.getSystemConfig();
+		// case Cloud
+		if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
+			// reCheck contract
+			// pre check contract
+			this.checkContractInput(contractCode, contractPassword);
+			// contract auth
+			this.contractAccAuth(contractCode, contractPassword);
+		}
+	}
+
+	/**
+	 * Check contract input.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	private void checkContractInput(String contractCode, String contractPassword) {
+		if (StringUtil.isNullOrEmpty(contractCode, true)) {
+			throw new RuntimeException();
+		}
+		if (StringUtil.isNullOrEmpty(contractPassword, true)) {
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * Contract acc auth.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	private void contractAccAuth(String contractCode, String contractPassword) {
+		Optional<Contract> contract = contractRepository.getContract(contractCode);
+		if (contract.isPresent()) {
+			// check contract pass
+			if (!PasswordHash.verifyThat(contractPassword, contract.get().getContractCode().v())
+					.isEqualTo(contract.get().getPassword().v())) {
+				throw new RuntimeException();
+			}
+			// check contract time
+			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
+					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
+				throw new RuntimeException();
+			}
+		} else {
+			throw new RuntimeException();
+		}
+	}
+	
 	/**
 	 * Sets the logged info.
 	 *
@@ -169,5 +237,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 			return null;
 		}
 		return roleImport.getRoleId();
+	}
+	
+	/**
+	 * Gets the system config.
+	 *
+	 * @return the system config
+	 */
+	private SystemConfig getSystemConfig() {
+		Optional<SystemConfig> systemConfig = systemConfigRepository.getSystemConfig();
+		if (systemConfig.isPresent()) {
+			return systemConfig.get();
+		}
+		return null;
 	}
 }

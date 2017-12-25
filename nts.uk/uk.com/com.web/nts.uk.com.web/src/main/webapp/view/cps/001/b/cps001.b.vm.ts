@@ -26,7 +26,7 @@ module cps001.b.vm {
                 service.getEmployeeInfo(dataShare.sid).done((data: IModelDto) => {
                     if (data) {
                         empDelete.code(data.code); // scd
-                        //empDelete.reason(data.reason); // reason delete
+                        empDelete.reason(data.reason); // reason delete
                     }
                 });
 
@@ -43,26 +43,31 @@ module cps001.b.vm {
         pushData() {
             let self = this,
                 empDelete: IModelDto = ko.toJS(self.empDelete);
-            
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            
+
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this,
                     dataShare: IDataShare = getShared('CPS001B_PARAMS') || null;
                 if (dataShare) {
                     let command = { sId: dataShare.sid, reason: empDelete.reason };
+                    block();
                     service.deleteEmp(command).done(() => {
                         showDialog.info({ messageId: "Msg_16" }).then(function() {
                             setShared('CPS001B_VALUES', {
-                                status : 'deleled'
+                                status: 'deleled'
                             });
+                            unblock();
                             close();
                         });
+                    }).fail((mes) => {
+                        unblock();
                     });
                 }
             }).ifCancel(() => {
+                unblock();
             });
         }
 

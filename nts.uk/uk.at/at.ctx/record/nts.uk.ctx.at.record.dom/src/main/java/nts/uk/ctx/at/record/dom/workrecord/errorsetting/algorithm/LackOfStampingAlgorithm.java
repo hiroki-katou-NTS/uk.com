@@ -38,26 +38,27 @@ public class LackOfStampingAlgorithm {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
-	public OutPutProcess lackOfStamping(String companyID, String employeeID, GeneralDate processingDate) {
+	public OutPutProcess lackOfStamping(String companyID, String employeeID, GeneralDate processingDate, WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 
 		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
 
-		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = workInformationRepository
-				.find(employeeID, processingDate).get();
+//		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = workInformationRepository
+//				.find(employeeID, processingDate).get();
 
 		WorkStyle workStyle = basicScheduleService
 				.checkWorkDay(workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v());
 
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
 
-			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository
-					.findByKey(employeeID, processingDate).get();
+//			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository
+//					.findByKey(employeeID, processingDate).get();
 
 			List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
 			List<Integer> attendanceItemIDList = new ArrayList<>();
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorkList) {
-				WorkStamp leavingStamp = timeLeavingWork.getLeaveStamp().getStamp();
-				WorkStamp attendanceStamp = timeLeavingWork.getAttendanceStamp().getStamp();
+				WorkStamp leavingStamp = timeLeavingWork.getLeaveStamp().getStamp().get();
+				WorkStamp attendanceStamp = timeLeavingWork.getAttendanceStamp().getStamp().get();
 				if (leavingStamp != null && attendanceStamp == null) {
 					if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 						attendanceItemIDList.add(31);

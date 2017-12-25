@@ -35,12 +35,12 @@ public class StampIncorrectOrderAlgorithm {
 	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	public OutPutProcess stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate) {
+	public OutPutProcess stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
 		List<Integer> attendanceItemIds = new ArrayList<>();
 
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository
-					.findByKey(employeeID, processingDate).get();
+//		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository
+//					.findByKey(employeeID, processingDate).get();
 		// ペアの逆転がないか確認する			
 		List<OutPutProcess> pairOutPutList = checkPairReversed(timeLeavingOfDailyPerformance.getTimeLeavingWorks());
 
@@ -52,12 +52,12 @@ public class StampIncorrectOrderAlgorithm {
 				outPutProcess = OutPutProcess.HAS_ERROR;
 			} else {
 				// 重複の判断処理
-				TimeWithDayAttr stampStartTimeFirstTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().getStamp().getTimeWithDay();
-				TimeWithDayAttr endStartTimeFirstTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().getStamp().getTimeWithDay();
+				TimeWithDayAttr stampStartTimeFirstTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().getStamp().get().getTimeWithDay();
+				TimeWithDayAttr endStartTimeFirstTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().getStamp().get().getTimeWithDay();
 				TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
 				
-				TimeWithDayAttr stampStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().getStamp().getTimeWithDay();
-				TimeWithDayAttr endStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().getStamp().getTimeWithDay();
+				TimeWithDayAttr stampStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().getStamp().get().getTimeWithDay();
+				TimeWithDayAttr endStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().getStamp().get().getTimeWithDay();
 				TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime, endStartTimeSecondTime);
 				
 				DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
@@ -84,7 +84,7 @@ public class StampIncorrectOrderAlgorithm {
 		OutPutProcess pairOutPut = OutPutProcess.HAS_ERROR;
 		
 		for(TimeLeavingWork timeLeavingWorking : timeLeavingWorks){
-			if (timeLeavingWorking.getLeaveStamp().getStamp().getAfterRoundingTime().greaterThanOrEqualTo(timeLeavingWorking.getLeaveStamp().getStamp().getAfterRoundingTime())) {
+			if (timeLeavingWorking.getLeaveStamp().getStamp().get().getAfterRoundingTime().greaterThanOrEqualTo(timeLeavingWorking.getLeaveStamp().getStamp().get().getAfterRoundingTime())) {
 				pairOutPut = OutPutProcess.NO_ERROR;
 			}
 			outPutProcessList.add(pairOutPut);

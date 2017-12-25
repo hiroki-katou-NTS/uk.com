@@ -95,11 +95,11 @@ public class RoleSetServiceImp implements RoleSetService{
 
         // ロールセット個人別付与で使用されている場合は削除できない
         if (isGrantedForPerson(roleSetDom.getCompanyId(), roleSetCd)) {
-            throw new BusinessException("Msg_580");
+            throw new BusinessException("Msg_850");
         }
         // ロールセット職位別付与で使用されている場合は削除できない
         if (isGrantedForPosition(roleSetDom.getCompanyId(), roleSetCd)) {
-            throw new BusinessException("Msg_580");
+            throw new BusinessException("Msg_850");
         }
 
         // ドメインモデル「既定のロールセット」を取得する

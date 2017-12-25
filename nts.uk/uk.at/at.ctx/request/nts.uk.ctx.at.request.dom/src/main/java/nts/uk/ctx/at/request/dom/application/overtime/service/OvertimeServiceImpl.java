@@ -151,7 +151,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				// 1.職場別就業時間帯を取得
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
 				
-				if(listWorkTimeCodes != null){
+				if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
 					List<WorkTime> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
 					for(WorkTime workTime : workTimes){
 						SiftType siftType = new SiftType();
@@ -187,7 +187,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 		Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeID,baseDate);
 		
-		if(!personalLablorCodition.isPresent()){
+		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
 			if(!CollectionUtil.isEmpty(workTypes)){
 				workTypeAndSiftType.setWorkType(workTypes.get(0));
 			}

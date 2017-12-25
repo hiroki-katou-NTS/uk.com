@@ -33,6 +33,8 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment
 @Stateless
 public class JpaClosureEmploymentRepository extends JpaRepository implements ClosureEmploymentRepository {
 
+	private final String DELETE_ALL = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId";
+	
 	private static final String FIND;
 
 	static {
@@ -49,11 +51,16 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	 */
 	@Override
 	public void addListClousureEmp(String companyID, List<ClosureEmployment> listClosureEmpDom) {
-		List<KclmtClosureEmployment> lstEntity = listClosureEmpDom.stream().map(item -> {
+		//List Clousure Employment to add new.
+		List<KclmtClosureEmployment> lstEntityAdd = listClosureEmpDom.stream().map(item -> {
 			return new KclmtClosureEmployment(new KclmpClosureEmploymentPK(companyID, item.getEmploymentCD()), item.getClosureId());
 		}).collect(Collectors.toList());
-		this.commandProxy().insertAll(lstEntity);
-
+		
+		//List Clousure Employment to delete all
+		this.getEntityManager().createQuery(DELETE_ALL).setParameter("companyId", companyID)
+			.executeUpdate();
+		//Then, add new all row in table.
+		this.commandProxy().insertAll(lstEntityAdd);
 	}
 
 	@Override
@@ -74,7 +81,8 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 
 	private ClosureEmployment convertToDomain(KclmtClosureEmployment kclmtClosureEmployment) {
 		return new ClosureEmployment(kclmtClosureEmployment.kclmpClosureEmploymentPK.companyId,
-				kclmtClosureEmployment.kclmpClosureEmploymentPK.employmentCD, kclmtClosureEmployment.closureId);
+				kclmtClosureEmployment.kclmpClosureEmploymentPK.employmentCD, 
+				kclmtClosureEmployment.closureId);
 	}
 
 	/* (non-Javadoc)

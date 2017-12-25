@@ -12,5 +12,5 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceIt
 public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem {
 
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", isList = true)
-	private List<OptionalItemValue> optionalItems;
+	private List<OptionalItemValueDto> optionalItems;
 }

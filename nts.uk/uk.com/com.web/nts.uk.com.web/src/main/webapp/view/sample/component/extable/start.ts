@@ -90,6 +90,7 @@ __viewContext.ready(function () {
                 else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
+                else if (i === 6) this["_" + i] = new ExCell(null, null, null, null);
                 else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
         }
@@ -335,16 +336,17 @@ __viewContext.ready(function () {
             name: "TimeRange",
             ranges: timeRanges
         }],
-        view: function(mode, obj) {
+        view: function(mode) {
             switch (mode) {
                 case "shortName":
-                    return [ obj.workTypeName, obj.workTimeName ];
+                    return [ "workTypeName", "workTimeName" ];
                 case "symbol": 
-                    return obj.symbol;
+                    return [ "symbol" ];
                 case "time":
-                    return [ obj.startTime, obj.endTime ]; 
+                    return [ "startTime", "endTime" ]; 
             }
         },
+        fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime" ],
         upperInput: "startTime",
         lowerInput: "endTime"
     };
@@ -625,7 +627,16 @@ __viewContext.ready(function () {
         });
         $("#set-sticker-single").click(function() {
 //            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
-            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
+//            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
+            $("#extable").exTable("stickData", 
+            { workTypeCode: "001",
+                workTypeName: "出勤A0",
+                workTimeCode: "1",
+                workTimeName: "通常８ｈ0",
+                symbol: "◯",
+                startTime: "8:30",
+                endTime: "17:30",
+                state: 1, register: 0 });
         });
         $("#stick-undo").click(function() {
             $("#extable").exTable("stickUndo");

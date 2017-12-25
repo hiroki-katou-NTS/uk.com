@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.breakorgoout;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
@@ -24,9 +23,7 @@ public class OutingTimeSheet extends DomainObject {
 	 */
 	private OutingFrameNo outingFrameNo;
 	
-	/*
-	 * 外出
-	 */
+	// 外出: 勤怠打刻(実打刻付き) - primitive value
 	private TimeActualStamp goOut;
 	
 	/*
@@ -44,9 +41,7 @@ public class OutingTimeSheet extends DomainObject {
 	 */
 	private GoingOutReason reasonForGoOut;
 	
-	/*
-	 * 戻り
-	 */
+	// 戻り: 勤怠打刻(実打刻付き) - primitive value
 	private TimeActualStamp comeBack;
 
 	public void setProperty(OutingFrameNo outingFrameNo, TimeActualStamp goOut, AttendanceTime outingTimeCalculation,

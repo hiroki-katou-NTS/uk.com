@@ -91,17 +91,19 @@ public class AgreementTimeOfClassificationFinder {
 		// get basicSettingId of Company
 		Optional<AgreementTimeOfCompany> agreementTimeOfCompany = agreementTimeCompanyRepository.find(companyId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
-		// get Limit Time of company
-		Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
-				.find(agreementTimeOfCompany.get().getBasicSettingId());
-		// set limit time
-		agreementTimeOfClassificationDetail.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
-		agreementTimeOfClassificationDetail.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
-		agreementTimeOfClassificationDetail.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
-		agreementTimeOfClassificationDetail.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
-		agreementTimeOfClassificationDetail.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
-		agreementTimeOfClassificationDetail.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
-		agreementTimeOfClassificationDetail.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
+		if (agreementTimeOfCompany.isPresent()) {
+			// get Limit Time of company
+			Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
+					.find(agreementTimeOfCompany.get().getBasicSettingId());
+			// set limit time
+			agreementTimeOfClassificationDetail.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
+			agreementTimeOfClassificationDetail.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
+			agreementTimeOfClassificationDetail.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
+			agreementTimeOfClassificationDetail.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
+			agreementTimeOfClassificationDetail.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
+			agreementTimeOfClassificationDetail.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
+			agreementTimeOfClassificationDetail.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
+		}
 
 		return agreementTimeOfClassificationDetail;
 	}

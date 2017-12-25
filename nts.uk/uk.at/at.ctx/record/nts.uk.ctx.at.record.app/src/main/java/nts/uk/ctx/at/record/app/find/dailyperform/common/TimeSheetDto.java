@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 
 @Data
 /**　時間帯　*/
+@AllArgsConstructor
 public class TimeSheetDto {
 	
 	private Integer timeSheetNo;
