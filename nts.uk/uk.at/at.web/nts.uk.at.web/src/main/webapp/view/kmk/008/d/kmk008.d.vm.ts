@@ -15,6 +15,7 @@ module nts.uk.at.view.kmk008.d {
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
+            isRemove: KnockoutObservable<boolean>;
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
@@ -25,6 +26,7 @@ module nts.uk.at.view.kmk008.d {
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
                 self.alreadySettingList = ko.observableArray([]);
+                self.isRemove = ko.observable(false);
 
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
@@ -47,7 +49,10 @@ module nts.uk.at.view.kmk008.d {
                     let empSelect = _.find(self.employmentList(), emp => {
                         return emp.code == newValue;
                     });
-                    if (empSelect) { self.currentEmpName(empSelect.name); }
+                    if (empSelect) {
+                         self.currentEmpName(empSelect.name); 
+                        self.isRemove(empSelect.isAlreadySetting);
+                    }
                 });
             }
 
@@ -103,7 +108,7 @@ module nts.uk.at.view.kmk008.d {
                             self.getalreadySettingList();
                             self.getDetail(self.selectedCode());
                         });
-
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
             }
 
@@ -117,6 +122,7 @@ module nts.uk.at.view.kmk008.d {
                         }));
                     }
                 })
+                self.isRemove(self.isShowAlreadySet());
             }
 
             getDetail(employmentCategoryCode: string) {

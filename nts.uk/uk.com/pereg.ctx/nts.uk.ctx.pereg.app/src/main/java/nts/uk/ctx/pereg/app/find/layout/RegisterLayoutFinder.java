@@ -122,7 +122,7 @@ public class RegisterLayoutFinder {
 			if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
 				itemCls.getListItemDf().forEach(itemDef -> {
 					LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
-							ActionRole.EDIT.value, itemCls.getPersonInfoCategoryCD());
+							ActionRole.EDIT.value, itemCls);
 
 					if (CollectionUtil.isEmpty(itemCls.getItems())) {
 						List<Object> itemList = new ArrayList<Object>();
@@ -160,12 +160,10 @@ public class RegisterLayoutFinder {
 				LayoutPersonInfoValueDto infoValue = null;
 				if (setItemOpt.isPresent()) {
 					SettingItemDto setItem = setItemOpt.get();
-					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value,
-							itemCls.getPersonInfoCategoryCD());
+					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls);
 				} else {
 					if (itemDef.getItemTypeState().getItemType() == 1 || createType == 1) {
-						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value,
-								itemCls.getPersonInfoCategoryCD());
+						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
 					}
 
 				}
@@ -182,10 +180,11 @@ public class RegisterLayoutFinder {
 	}
 
 	private LayoutPersonInfoValueDto createPersonInfoValueDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
-			int actionRole, String ctgCd) {
+			int actionRole, LayoutPersonInfoClsDto itemCls) {
 
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+		dataObject.setCtgType(itemCls.getCtgType());
 		dataObject.setItemDefId(itemDef.getId());
 		dataObject.setItemName(itemDef.getItemName());
 		dataObject.setItemCode(itemDef.getItemCode());
@@ -205,9 +204,9 @@ public class RegisterLayoutFinder {
 		}
 		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
 		if (setItem != null) {
-			dataObject.setValue(setItem.getValueAsString());
+			dataObject.setValue(setItem.getSaveData().getValue());
 		}
-		dataObject.setCategoryCode(ctgCd);
+		dataObject.setCategoryCode(itemCls.getPersonInfoCategoryCD());
 		return dataObject;
 
 	}

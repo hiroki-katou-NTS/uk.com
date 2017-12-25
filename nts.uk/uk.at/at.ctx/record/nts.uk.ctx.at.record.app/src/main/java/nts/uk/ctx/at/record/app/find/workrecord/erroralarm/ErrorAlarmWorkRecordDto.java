@@ -76,7 +76,7 @@ public class ErrorAlarmWorkRecordDto {
 		ErAlAtdItemConditionDto erAlAtdItemConditionDto = new ErAlAtdItemConditionDto();
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
-		erAlAtdItemConditionDto.setUseAtr(true);
+		erAlAtdItemConditionDto.setUseAtr(itemDomain.getUseAtr());
 		// Check Target
 		// チェック対象
 		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
@@ -95,25 +95,25 @@ public class ErrorAlarmWorkRecordDto {
 				erAlAtdItemConditionDto.setCompareStartValue(
 						new BigDecimal(((CheckedAmountValue) itemDomain.getCompareRange().getStartValue()).v()));
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedAmountValue) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((CheckedAmountValue) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
 			case TIME_DURATION:
 				erAlAtdItemConditionDto.setCompareStartValue(
 						new BigDecimal(((CheckedTimeDuration) itemDomain.getCompareRange().getStartValue()).v()));
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedTimeDuration) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((CheckedTimeDuration) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
 			case TIME_WITH_DAY:
 				erAlAtdItemConditionDto.setCompareStartValue(
 						new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareRange().getStartValue()).v()));
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
 			case TIMES:
 				erAlAtdItemConditionDto.setCompareStartValue(
 						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
 			}
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareRange().getCompareOperator().value);

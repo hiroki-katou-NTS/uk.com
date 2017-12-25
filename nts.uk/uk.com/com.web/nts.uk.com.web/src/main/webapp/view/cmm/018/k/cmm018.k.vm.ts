@@ -96,9 +96,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             
             //選択された承認者一覧
             self.columns = ko.observableArray([
-                    { headerText: 'id', prop: 'id', width: '0%', hidden: true },
-                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '40%' },
-                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '60%' }
+                    { headerText: 'id', prop: 'id', width: '0px', hidden: true },
+                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '120px' },
+                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '210px' }
                 ])
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){

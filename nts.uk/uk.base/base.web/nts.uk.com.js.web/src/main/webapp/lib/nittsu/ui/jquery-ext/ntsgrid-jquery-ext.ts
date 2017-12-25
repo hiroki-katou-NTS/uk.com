@@ -80,8 +80,7 @@ module nts.uk.ui.jqueryExtentions {
             var self = this;
             
             if (typeof options === "string") {
-                functions.ntsAction($(self), options, [].slice.call(arguments).slice(1));
-                return;
+                return functions.ntsAction($(self), options, [].slice.call(arguments).slice(1));
             }
             if (options.ntsControls === undefined) {
                 $(this).igGrid(options);
@@ -527,6 +526,7 @@ module nts.uk.ui.jqueryExtentions {
                     $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: columnKey, value: cellValue }]);
                 }
                 gridUpdate._notifyCellUpdated(rId);
+                notifyUpdate($grid, rowId, columnKey, cellValue);
             }
             
             /**
@@ -542,6 +542,7 @@ module nts.uk.ui.jqueryExtentions {
                 let origData = gridUpdate._getLatestValues(rId); 
                 grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                 _.forEach(Object.keys(updatedRowData), function(key: any) {
+                    notifyUpdate($grid, rowId, key, updatedRowData[key]);
                     let isControl = utils.isNtsControl($grid, key);
                     if (isControl) {
                         $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: key, value: updatedRowData[key] }]);
@@ -566,6 +567,26 @@ module nts.uk.ui.jqueryExtentions {
                     }
                 });
                 gridUpdate._notifyRowUpdated(rId, null);
+            }
+            
+            /**
+             * Notify update.
+             */
+            function notifyUpdate($grid: JQuery, rowId: any, columnKey: any, value: any) {
+                let updatedCells = $grid.data(internal.UPDATED_CELLS);
+                if (!updatedCells) {
+                    $grid.data(internal.UPDATED_CELLS, []);
+                    updatedCells = $grid.data(internal.UPDATED_CELLS);
+                }
+                let index = -1;
+                let tCell = _.find(updatedCells, function(c, i) {
+                    if (c.rowId === rowId && c.columnKey === columnKey) {
+                        index = i;
+                        return true;
+                    }
+                });
+                if (tCell) updatedCells[index].value = value;
+                else updatedCells.push({ rowId: rowId, columnKey: columnKey, value: value });
             }
             
             /**
@@ -1111,6 +1132,7 @@ module nts.uk.ui.jqueryExtentions {
 
         module functions {
             export let UPDATE_ROW: string = "updateRow";
+            export let UPDATED_CELLS: string = "updatedCells";
             export let ENABLE_CONTROL: string = "enableNtsControlAt";
             export let ENABLE_ALL_CONTROLS: string = "enableNtsControls";
             export let DISABLE_CONTROL: string = "disableNtsControlAt";
@@ -1160,6 +1182,8 @@ module nts.uk.ui.jqueryExtentions {
                     case DESTROY:
                         destroy($grid);
                         break;
+                    case UPDATED_CELLS:
+                        return $grid.data(internal.UPDATED_CELLS);
                 }
             }
     
@@ -3627,6 +3651,7 @@ module nts.uk.ui.jqueryExtentions {
             export let CONTROL_TYPES = "ntsControlTypesGroup";
             export let COMBO_SELECTED = "ntsComboSelection";
             export let CB_SELECTED = "ntsCheckboxSelection";
+            export let UPDATED_CELLS = "ntsUpdatedCells";
             // Full columns options
             export let GRID_OPTIONS = "ntsGridOptions";
             export let SELECTED_CELL = "ntsSelectedCell";

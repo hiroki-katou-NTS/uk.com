@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -74,14 +75,14 @@ public class KshstZeroTimeSet extends UkJpaEntity implements Serializable{
 	@Column(name = "NON_LEGAL_PUBLIC_HD_3")
 	public int excessPublicSphd;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-	public KshstWeekdayHd weekdayHd;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+	public List<KshstWeekdayFromHd> weekdayHd;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-	public KshstOverdayHdAttSet overdayHdAttSet;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+	public List<KshstOverdayHdAttSet> overdayHdAttSet;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
-	public KshstOverDayHdSet overDayHdSet;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)
+	public List<KshstOverDayHdSet> overDayHdSet;
 	
 	@Override
 	protected Object getKey() {

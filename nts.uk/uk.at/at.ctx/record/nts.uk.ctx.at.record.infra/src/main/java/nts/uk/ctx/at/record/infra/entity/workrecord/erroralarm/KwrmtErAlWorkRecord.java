@@ -18,7 +18,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -117,7 +116,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	@Column(name = "ERAL_CHECK_ID")
 	public String eralCheckId;
 
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false)
 	public KrcmtErAlCondition krcmtErAlCondition;
 
@@ -160,19 +159,19 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			if (atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()));
+						new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()));
+						new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()));
+						new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()));
+						new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue.intValue()));
 			}
 		} else if (atdItemCon.erAlCompareSingle != null) {
 			if (atdItemCon.erAlCompareSingle.conditionType.intValue() == ConditionType.FIXED_VALUE.value) {
@@ -196,7 +195,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			} else {
 				atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
 						atdItemCon.erAlCompareSingle.conditionType.intValue(),
-						atdItemCon.erAlSingleFixed.fixedValue.intValue());
+						atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId.intValue());
 			}
 		}
 		return atdItemConDomain;
@@ -289,8 +288,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			}
 		}
 		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, new BigDecimal(erAlAtdItemCon.getConditionAtr().value),
-				new BigDecimal(1), lstAtdItemTarget, erAlCompareSingle, erAlCompareRange, erAlSingleFixed,
-				erAlSingleAtd);
+				new BigDecimal(erAlAtdItemCon.getUseAtr() ? 1 : 0), lstAtdItemTarget, erAlCompareSingle,
+				erAlCompareRange, erAlSingleFixed, erAlSingleAtd);
 	}
 
 	public static KwrmtErAlWorkRecord fromDomain(ErrorAlarmWorkRecord domain) {
@@ -308,7 +307,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		BigDecimal errorDisplayItem = domain.getErrorDisplayItem();
 		String eralCheckId = domain.getErrorAlarmCheckID();
 		List<KrcstErAlApplication> krcstErAlApplication = domain.getLstApplication().stream()
-				.map(appTypeCd -> new KrcstErAlApplication(new KrcstErAlApplicationPK(domain.getCompanyId(),
+				.map(appTypeCd -> new KrcstErAlApplication(new KrcstErAlApplicationPK(AppContexts.user().companyId(),
 						domain.getCode().v(), new BigDecimal(appTypeCd))))
 				.collect(Collectors.toList());
 		String cancelRoleId = domain.getCancelRoleId();
