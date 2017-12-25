@@ -1075,7 +1075,7 @@ project (':query:nts.uk.query.infra') {
 		compile project (':wk.ctx:nts.uk.ctx.workflow.infra')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.infra')
 		
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2.7'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: '0.3'
 		compile group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.4'
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: '0.3'
