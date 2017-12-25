@@ -207,16 +207,28 @@ module cps001.a.vm {
 
         start() {
             let self = this,
-                employee = self.employee();
+                employee = self.employee(),
+                params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
-                $('.btn-quick-search[tabindex=4]').click();
-                setInterval(() => {
-                    if (!employee.employeeId()) {
-                        let employees = self.employees()
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
-                    }
-                }, 0);
+                if (params && params.employeeId) {
+                    $('.btn-quick-search[tabindex=3]').click();
+                    setInterval(() => {
+                        if (!employee.employeeId()) {
+                            let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
+                            self.employees(employees);
+                            employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        }
+                    }, 0);
+                } else {
+                    $('.btn-quick-search[tabindex=4]').click();
+                    setInterval(() => {
+                        if (!employee.employeeId()) {
+                            let employees = self.employees();
+                            employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        }
+                    }, 0);
+                }
             });
         }
 
@@ -589,7 +601,10 @@ module cps001.a.vm {
     }
 
     interface IEmployee {
+        pid?: string;
         employeeId: string;
+        gender?: string;
+        birthday?: string;
 
         employeeCode?: string;
         employeeName?: string;
@@ -619,7 +634,7 @@ module cps001.a.vm {
         numberOfWork: KnockoutObservable<number> = ko.observable(0);
 
         avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
-        personInfo: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
+        personInfo: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo());
 
         // calc days of work process
         entire: KnockoutComputed<string> = ko.computed(() => {
@@ -632,18 +647,7 @@ module cps001.a.vm {
 
         constructor(param?: IEmployee) {
             let self = this,
-                person = self.personInfo(),
-                perInfo = (data?: IPersonInfo) => {
-                    if (data) {
-                        person.personId(data.personId);
-                        person.birthDate(data.birthDate);
-                        person.fullName(data.personNameGroup ? data.personNameGroup.businessName : '');
-                    } else {
-                        person.personId('');
-                        person.birthDate(undefined);
-                        person.fullName(self.employeeName());
-                    }
-                };
+                person = self.personInfo();
 
             if (param) {
                 self.employeeId(param.employeeId);
@@ -655,15 +659,10 @@ module cps001.a.vm {
 
             self.employeeId.subscribe(id => {
                 if (id) {
-                    service.getPerson(id).done((data: IPersonInfo) => {
-                        perInfo(data);
-                    }).fail(() => {
-                        perInfo();
-                    });
-
                     // get employee && employment info
                     service.getEmpInfo(id).done((data: IEmployee) => {
                         if (data) {
+                            person.personId(data.pid);
                             self.employeeCode(data.employeeCode);
                             self.employeeName(data.employeeName);
 
@@ -672,6 +671,9 @@ module cps001.a.vm {
 
                             self.position(data.position);
                             self.contractType(data.contractCodeType);
+
+                            person.gender(data.gender);
+                            person.birthDate(moment.utc(data.birthday).toDate());
 
                             self.departmentCode(data.departmentCode);
                             self.departmentName(data.departmentName);
@@ -711,7 +713,9 @@ module cps001.a.vm {
                         }
                     });
                 } else {
-                    perInfo();
+                    person.gender(undefined);
+                    person.personId(undefined);
+                    person.birthDate(undefined);
                 }
             });
 
@@ -724,9 +728,9 @@ module cps001.a.vm {
     }
 
     interface IPersonInfo {
-        personId: string;
+        pid: string;
         birthDate?: Date;
-        gender?: number;
+        gender?: string;
         countryId?: number;
         mailAddress?: string;
         personMobile?: string;
@@ -749,15 +753,19 @@ module cps001.a.vm {
 
     class PersonInfo {
         personId: KnockoutObservable<string> = ko.observable('');
+        gender: KnockoutObservable<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
         fullName: KnockoutObservable<string> = ko.observable('');
         birthDate: KnockoutObservable<Date> = ko.observable(undefined);
-        constructor(param: IPersonInfo) {
+        constructor(param?: IPersonInfo) {
             let self = this;
 
-            self.personId(param.personId || '');
-            self.code(param.code || '');
-            self.fullName(param.personNameGroup ? param.personNameGroup.businessName : '');
+            if (param) {
+                self.personId(param.pid || '');
+                self.code(param.code || '');
+                self.fullName(param.personNameGroup ? param.personNameGroup.businessName : '');
+                self.gender(param.gender || '');
+            }
         }
 
         age: KnockoutComputed<string> = ko.computed(() => {

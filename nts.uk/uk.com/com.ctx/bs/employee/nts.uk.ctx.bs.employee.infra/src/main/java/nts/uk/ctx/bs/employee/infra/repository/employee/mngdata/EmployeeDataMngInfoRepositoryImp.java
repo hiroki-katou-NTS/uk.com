@@ -48,7 +48,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " ORDER BY  c.employeeCode DESC";
 
 	// Lanlt end
-	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday, p.gender "
+	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday, p.gender, p.bpsmtPersonPk.pId "
 			+ " FROM BsymtEmployeeDataMngInfo e " + " INNER JOIN BpsmtPerson p"
 			+ " ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sid";
@@ -189,6 +189,12 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				} else if (Integer.valueOf(entity[4].toString()) == 2) {
 					emp.setGender("女");
 				}
+
+			}
+
+			if (entity[5] != null) {
+
+				emp.setPId(entity[5].toString());
 
 			}
 
@@ -361,9 +367,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@Override
 	public String findLastEml(String companyId, String startLetters) {
 		if (startLetters == null)
-			startLetters = "";
+			startLetters = " ";
 		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
-				.setParameter("emlCode", startLetters).getList();
+				.setParameter("emlCode", Character.toString(startLetters.charAt(0))).getList();
 		String returnStr = "";
 		if (lst.size() > 0) {
 			Object obj = lst.get(0);
