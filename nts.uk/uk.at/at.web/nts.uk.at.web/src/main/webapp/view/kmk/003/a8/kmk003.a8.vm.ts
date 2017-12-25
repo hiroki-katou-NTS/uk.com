@@ -51,9 +51,6 @@ module a8 {
         pubHolWorkTimePublicApproTimeSetting: TimeRoundingSetting;
         
         listRoundingBreakTimezone: KnockoutObservableArray<any>;
-        listRoundingBreakTime: KnockoutObservableArray<any>;
-        listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
-        listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
         
         // Simple mode - Data (nothing)      
         
@@ -244,8 +241,8 @@ module a8 {
         isEnable: KnockoutObservable<boolean>;
         
         listRoundingBreakTime: KnockoutObservableArray<any>;
-        listRoundingTimeValue: KnockoutObservableArray<any>;
-        listRoundingValue: KnockoutObservableArray<any>;
+        listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
+        listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
         
         constructor(settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
@@ -257,7 +254,7 @@ module a8 {
             _self.listRoundingTimeValue = ko.observableArray([]);
             _self.listRoundingValue = ko.observableArray([]);
             
-            //_self.listRoundingBreakTime(settingEnum.roundingBreakTime);   
+            //_self.listRoundingBreakTime(settingEnum.roundingBreakTime);
             _self.listRoundingTimeValue(settingEnum.roundingTime);
             _self.listRoundingValue(settingEnum.roundingSimple);   
             
