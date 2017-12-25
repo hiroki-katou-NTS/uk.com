@@ -1571,6 +1571,7 @@ module nts.uk.com.view.cmm018.a {
                     self.enableDeleteB(true);
                     //TH: company
                     if(self.tabSelectedB()==0){
+                        self.enableCreatNewB(true);
                         if(self.dataIB() != null){
                             self.getDataCompanyPr();
                         }
@@ -1591,6 +1592,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: work place
                     else if(self.tabSelectedB()==1){
+                        self.enableCreatNewB(true);
                         if(self.dataIB() != null){
                             self.getDataWorkplacePr();
                         }
@@ -1610,6 +1612,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: person
                     else{
+                        self.enableCreatNewB(true);
                         if(self.dataIB() != null){
                             self.getDataPersonPr();
                         }
@@ -2129,6 +2132,7 @@ module nts.uk.com.view.cmm018.a {
                                     checkAddHist, self.workplaceIdB(),
                                     self.employeeId(),startDate, endDate,self.dataIB(), listType, root);
                 servicebase.updateRoot(data).done(function(){
+                    self.enableCreatNewB(true);
                     block.clear();
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
                    if(self.tabSelectedB() == 0){//company
@@ -2155,6 +2159,7 @@ module nts.uk.com.view.cmm018.a {
                 let name = '';
                 let typeApp = null;
                 let employRootAtr = null;
+                self.enableCreatNewB(false);
                 let lstAppType: Array<vmbase.ApplicationType> = [];
                 if(self.singleSelectedCode() == getText("CMM018_7") || self.singleSelectedCode() == null){//2
                     dialog.alertError({ messageId: "Msg_181" });
@@ -2227,6 +2232,7 @@ module nts.uk.com.view.cmm018.a {
                     block.clear();
                     let data: vmbase.IData = getShared('CMM018I_DATA');
                     if(data == null){
+                        self.enableCreatNewB(true);
                         return;
                     }
                     self.singleSelectedCode('-1');
@@ -2517,6 +2523,7 @@ module nts.uk.com.view.cmm018.a {
                 self.historyStr('');
                 self.singleSelectedCode(null);
                 self.dataDisplay([]);
+                self.enableCreatNewB(true);
 //                self.comRoot(null);
                 let lstRoot: Array<vmbase.DataCheckModeB> = [];
                 //TH: tab company
