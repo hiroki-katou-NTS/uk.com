@@ -90,9 +90,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         changeSelectedErrorAlarm(foundItem) {
             let self = this;
-            $(".nts-input").ntsError("clear");
+            nts.uk.ui.errors.clearAll();
             self.reSetData(self.selectedErrorAlarm(), foundItem);
             self.selectedTab('tab-1');
+            $("#errorAlarmWorkRecordName").focus();
         }
 
         startPage(code): JQueryPromise<any> {
@@ -125,6 +126,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.reSetData(self.selectedErrorAlarm(), null);
             self.isNewMode(true);
             self.selectedTab('tab-1');
+            $("#errorAlarmWorkRecordCode").focus();
         }
 
         reSetData(selectedErrorAlarm, param) {
@@ -206,10 +208,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     item.countableSubAtdItems = Object.values(item.countableSubAtdItems);
                 });
                 if (self.isNewMode() && self.isExistedCode()) {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_3" }).then(() => {
+                        $("#errorAlarmWorkRecordCode").focus();
+                    });
                 } else {
                     service.update(data).done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            if (self.lstErrorAlarm().length > 0) {
+                                $("#errorAlarmWorkRecordName").focus();
+                            } else {
+                                $("#errorAlarmWorkRecordCode").focus();
+                            }
+                        });
                         self.startPage(self.isNewMode() ? "U" + data.code : data.code);
                     });
                 }
@@ -222,7 +232,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             let data = self.selectedErrorAlarm().code();
             nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                 service.remove(data).done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        if (self.lstErrorAlarm().length > 0) {
+                            $("#errorAlarmWorkRecordName").focus();
+                        } else {
+                            $("#errorAlarmWorkRecordCode").focus();
+                        }
+                    });
                     self.startPage(null);
                 });
             })
