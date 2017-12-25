@@ -33,7 +33,7 @@ public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 	public int breakFrameNo ;
 
 	/** 変更後の法定内休出NO */
-	@Column(name = "WEEKDAY_NO")
+	@Column(name = "LEGAL_HD_NO")
 	public int legalHdNo;
 
 	/** 変更後の法定外休出NO */
