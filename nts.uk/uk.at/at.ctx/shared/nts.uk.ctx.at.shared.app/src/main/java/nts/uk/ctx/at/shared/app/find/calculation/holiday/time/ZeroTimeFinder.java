@@ -92,7 +92,7 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		HdFromHdDto overdayHolidayDto = new HdFromHdDto();
-			overdayHolidayDto.setOvertimeFrameNo(overdayCalcHoliday.getOvertimeFrameNo().v());
+			overdayHolidayDto.setOvertimeFrameNo(overdayCalcHoliday.getBreakFrameNo().v());
 			overdayHolidayDto.setLegalHdNo(overdayCalcHoliday.getLegalHdNo().v());
 			overdayHolidayDto.setNonLegalHdNo(overdayCalcHoliday.getNonLegalHdNo().v());
 			overdayHolidayDto.setNonLegalPublicHdNo(overdayCalcHoliday.getNonLegalPublicHdNo().v());

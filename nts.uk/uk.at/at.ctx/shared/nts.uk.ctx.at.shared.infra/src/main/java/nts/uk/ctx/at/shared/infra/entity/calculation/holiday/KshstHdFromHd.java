@@ -26,6 +26,11 @@ public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 	/** 主キー */
 	@EmbeddedId
 	public KshstHdFromHdPK kshstOverDayHdSetPK;
+	 
+	
+	/** 変更前の休出枠NO */
+	@Column(name = "BREAK_FRAME_NO")
+	public int breakFrameNo ;
 
 	/** 変更後の法定内休出NO */
 	@Column(name = "WEEKDAY_NO")

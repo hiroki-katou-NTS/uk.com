@@ -152,7 +152,7 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	}
 	
 	private KshstHdFromHd convertToDbTypeCalcHoliday(HdFromHd overdayCalcHoliday){
-		KshstHdFromHdPK dayHdSetPK = new KshstHdFromHdPK(overdayCalcHoliday.getCompanyId(), overdayCalcHoliday.getOvertimeFrameNo().v());
+		KshstHdFromHdPK dayHdSetPK = new KshstHdFromHdPK(overdayCalcHoliday.getCompanyId(), overdayCalcHoliday.getBreakFrameNo().v());
 		KshstHdFromHd dayHdSet = this.queryProxy().find(dayHdSetPK, KshstHdFromHd.class).get();
 		dayHdSet.legalHdNo = overdayCalcHoliday.getLegalHdNo().v();
 		dayHdSet.nonLegalHdNo = overdayCalcHoliday.getNonLegalHdNo().v();
