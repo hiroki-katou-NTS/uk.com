@@ -37,6 +37,7 @@ import nts.uk.ctx.bs.employee.pub.jobtitle.SimpleJobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JobTitlePubImp.
@@ -93,11 +94,34 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		
 		List<AffJobTitleHistory_ver1> affJobTitleHistories = this.affJobTitleHisRepo_ver1.getAllBySid(employeeId);
 		List<AffJobTitleHistoryItem_ver1> affJobTitleHistoryItem = this.affJobTitleHisItemRepo_ver1.getAllBySid(employeeId);
-
+		
+		Map<String, List<Object>> mapMerge = new HashMap<>();
+//		Map<String, AffJobTitleHistory_ver1> mapHisIDDate = new HashMap<>();
+		Map<String, DatePeriod> mapHisIDDate = new HashMap<>();
+		Map<String, String> mapHisIdSid = new HashMap<>();
+		
+		affJobTitleHistories.stream().forEach((jobEmp) -> {
+			jobEmp.getHistoryItems().stream().forEach((dateHistory) -> {
+				mapHisIDDate.put(dateHistory.identifier(), dateHistory.span());
+				mapHisIdSid.put(dateHistory.identifier(), jobEmp.getEmployeeId());
+			});
+		});
+		
+		affJobTitleHistoryItem.stream().forEach((temp2) -> {
+			String hisId = temp2.getHistoryId();
+			if (mapHisIDDate.get(hisId) != null 
+					&& temp2.getEmployeeId().equals(mapHisIdSid.get(hisId))) {
+				mapMerge.put(temp2.getEmployeeId() + "_" + hisId, 
+						Arrays.asList(new Object[]{mapHisIDDate.get(hisId).start(), 
+													temp2.getJobTitleId(), 
+													mapHisIDDate.get(hisId).end()}));
+			}
+		});
+		
 		// TODO : Hoang check lại
 		// TODO: key of mapMerge is eid_hid distinct
-		Map<String, List<Object>> mapMerge = new HashMap<>();
-		affJobTitleHistories.stream().forEach((temp1) -> {
+		
+		/*affJobTitleHistories.stream().forEach((temp1) -> {
 			affJobTitleHistoryItem.stream().forEach((temp2) -> { 
 				if (temp1.getEmployeeId().equals(temp2.getEmployeeId()) 
 						&& temp1.getHistoryItems().get(0).identifier().equals(temp2.getHistoryId())) {
@@ -107,7 +131,9 @@ public class JobTitlePubImp implements SyJobTitlePub {
 														temp1.getHistoryItems().get(0).end()}));
 				}
 			});
-		});
+		});*/
+		
+		
 		
 		String companyId = AppContexts.user().companyId();
 		

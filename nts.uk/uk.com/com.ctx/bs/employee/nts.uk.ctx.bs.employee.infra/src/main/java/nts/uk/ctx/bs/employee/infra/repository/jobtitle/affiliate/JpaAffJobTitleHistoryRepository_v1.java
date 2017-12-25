@@ -175,11 +175,14 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	// TODO: HoangDD check lại, không nhất thiết phải truyền cả SID
 	@Override
 	public Optional<AffJobTitleHistory_ver1> getListByHidSid(String hid, String sid) {
-		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
+		Optional<BsymtAffJobTitleHist> optHist = this.queryProxy()
 				.query(GET_BY_HID_SID, BsymtAffJobTitleHist.class)
-				.setParameter("hisId", hid).setParameter("sid", sid).getList();
-		if (listHist != null && !listHist.isEmpty()) {
-			return Optional.of(toAffJobTitleHist(listHist));
+				.setParameter("hisId", hid).setParameter("sid", sid).getSingle();
+		if (optHist.isPresent()) {
+			BsymtAffJobTitleHist affJobTitleHist = optHist.get();
+			List<BsymtAffJobTitleHist> listHist = new ArrayList<>();
+			listHist.add(affJobTitleHist);
+			return Optional.of(toAffJobTitleHist(listHist)); 
 		}
 		return Optional.empty();
 	}
