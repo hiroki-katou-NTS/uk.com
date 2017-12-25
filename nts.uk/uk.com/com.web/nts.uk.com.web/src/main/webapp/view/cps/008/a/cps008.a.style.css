@@ -89,3 +89,13 @@ i.icon.icon-searchbox {
 .layout-control .drag-panel{
 	height: 500px !important;
 }
+
+.nosetarea {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 810px;
+    height: 500px;
+    padding: 10px;
+    padding-top: 10px;
+    box-sizing: border-box;
+}
