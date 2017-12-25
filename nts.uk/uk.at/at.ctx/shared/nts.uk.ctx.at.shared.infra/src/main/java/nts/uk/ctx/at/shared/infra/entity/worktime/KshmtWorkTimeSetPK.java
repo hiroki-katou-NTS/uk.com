@@ -38,6 +38,18 @@ public class KshmtWorkTimeSetPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kshmt work time set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 */
+	public KshmtWorkTimeSetPK(String cid, String worktimeCd) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

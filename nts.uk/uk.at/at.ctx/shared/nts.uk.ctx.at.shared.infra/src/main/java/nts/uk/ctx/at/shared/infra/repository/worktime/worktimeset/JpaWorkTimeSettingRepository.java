@@ -42,28 +42,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public List<WorkTimeSetting> findByCompanyId(String companyId) {
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
-		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
-
-		// select root
-		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
-
-		return lstKwtstWorkTimeSet.stream().map(item -> {
-			WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
-			return worktimeSetting;
-		}).collect(Collectors.toList());
+		return this.findWithCondition(companyId, null, null, null);
 	}
 
 	/*
@@ -112,11 +91,8 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	public Optional<WorkTimeSetting> findByCode(String companyId, String worktimeCode) {
 		Optional<KshmtWorkTimeSet> entity = this.findByPk(companyId, worktimeCode);
 
-		if (entity.isPresent()) {
-			return Optional.of(new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(entity.get())));
-		} else {
-			return Optional.empty();
-		}
+		return entity.isPresent() ? Optional.of(new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(entity.get())))
+				: Optional.empty();
 	}
 
 	/*
@@ -142,37 +118,69 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public void update(WorkTimeSetting domain) {
-		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK();
-		pk.setCid(domain.getCompanyId());
-		pk.setWorktimeCd(domain.getWorktimeCode().v());
+		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK(domain.getCompanyId(), domain.getWorktimeCode().v());
 
 		KshmtWorkTimeSet entity = this.queryProxy().find(pk, KshmtWorkTimeSet.class).get();
 		domain.saveToMemento(new JpaWorkTimeSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#
+	 * remove(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().remove(KshmtWorkTimeSet.class, new KshmtWorkTimeSetPK(companyId, workTimeCode));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository#
+	 * findWithCondition(java.lang.String,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr,
+	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet,
+	 * nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr)
+	 */
 	@Override
-	public List<WorkTimeSetting> findByWorkAtr(String companyId, WorkTimeDailyAtr atr) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public List<WorkTimeSetting> findWithCondition(String companyId, WorkTimeDailyAtr atr, WorkTimeMethodSet method,
+			AbolishAtr abolished) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-	@Override
-	public List<WorkTimeSetting> findByWorkMethod(String companyId, WorkTimeMethodSet method) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
+		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
 
-	@Override
-	public List<WorkTimeSetting> findByAbolishAtr(String companyId, AbolishAtr atr) {
-		// TODO Auto-generated method stub
-		return null;
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
+		if (atr != null) {
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.dailyWorkAtr), atr.value));
+		}
+		if (method != null) {
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.worktimeSetMethod), method.value));
+		}
+		if (abolished != null) {
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), method.value));
+		}
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
+
+		return lstKwtstWorkTimeSet.stream().map(item -> {
+			WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
+			return worktimeSetting;
+		}).collect(Collectors.toList());
 	}
 
 	/**
@@ -183,9 +191,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 * @return the optional
 	 */
 	private Optional<KshmtWorkTimeSet> findByPk(String companyId, String worktimeCode) {
-		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK();
-		pk.setCid(companyId);
-		pk.setWorktimeCd(worktimeCode);
+		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK(companyId, worktimeCode);
 		return this.queryProxy().find(pk, KshmtWorkTimeSet.class);
 	}
 }

@@ -40,34 +40,18 @@ public interface WorkTimeSettingRepository {
 	 */
 	public Optional<WorkTimeSetting> findByCode(String companyId, String workTimeCode);
 
-	
 	/**
-	 * Find by work atr.
+	 * Find with condition.
 	 *
 	 * @param companyId the company id
 	 * @param atr the atr
-	 * @return the list
-	 */
-	public List<WorkTimeSetting> findByWorkAtr(String companyId, WorkTimeDailyAtr atr);
-	
-	/**
-	 * Find by work method.
-	 *
-	 * @param companyId the company id
 	 * @param method the method
+	 * @param abolished the abolished
 	 * @return the list
 	 */
-	public List<WorkTimeSetting> findByWorkMethod(String companyId, WorkTimeMethodSet method);
-	
-	/**
-	 * Find by abolish atr.
-	 *
-	 * @param companyId the company id
-	 * @param atr the atr
-	 * @return the list
-	 */
-	public List<WorkTimeSetting> findByAbolishAtr(String companyId, AbolishAtr atr);
-	
+	public List<WorkTimeSetting> findWithCondition(String companyId, WorkTimeDailyAtr atr,
+			WorkTimeMethodSet method, AbolishAtr abolished);
+
 	/**
 	 * Insert.
 	 *
@@ -81,7 +65,7 @@ public interface WorkTimeSettingRepository {
 	 * @param domain the domain
 	 */
 	public void update(WorkTimeSetting domain);
-	
+
 	/**
 	 * Removes the.
 	 *
