@@ -1200,7 +1200,7 @@ module nts.custombinding {
                         .map((x: any) => primitiveConst(x))
                         .filter((x: any) => exceptConsts.indexOf(x.itemCode) == -1)
                         .value();
-                    debugger;
+
                     if (constraints && constraints.length) {
                         exceptConsts = [];
                         writeConstraints(constraints);
