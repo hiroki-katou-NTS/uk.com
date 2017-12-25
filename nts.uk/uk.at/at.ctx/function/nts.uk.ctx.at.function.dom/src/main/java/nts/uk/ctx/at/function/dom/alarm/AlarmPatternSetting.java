@@ -26,7 +26,7 @@ public class AlarmPatternSetting  extends AggregateRoot {
 	/**
 	 * companyId
 	 */
-	private CompanyId companyID;
+	private String companyID;
 	/**
 	 * alarm permission setting
 	 */
@@ -41,7 +41,7 @@ public class AlarmPatternSetting  extends AggregateRoot {
 		super();
 		this.checkConList = checkConList;
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
-		this.companyID = new CompanyId(companyID);
+		this.companyID = companyID;
 		this.alarmPerSet = alarmPerSet;
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
 	}

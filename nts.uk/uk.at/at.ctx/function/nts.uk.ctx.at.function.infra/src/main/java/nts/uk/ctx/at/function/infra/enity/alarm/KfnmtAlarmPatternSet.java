@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.enity.alarm;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.infra.enity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -26,14 +28,14 @@ public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	private KfnmtAlarmPatternSetPK pk;
+	public KfnmtAlarmPatternSetPK pk;
 	
 	@Column(name = "ALARM_PATTERN_NAME")
-	public boolean alarmPatternName;
+	public String alarmPatternName;
 	
     @OneToMany(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL)
     @JoinTable(name = "KFNMT_CHECK_CONDITION")
-    private List<KfnmtCheckCondition> checkConList;
+    public List<KfnmtCheckCondition> checkConList;
 	
 	@OneToOne(mappedBy="alarmPatternSet", cascade = CascadeType.ALL)
 	@JoinTable(name = "KFNMT_ALARM_PER_SET")
@@ -42,5 +44,10 @@ public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable{
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	public AlarmPatternSetting toDomain() {
+		return new AlarmPatternSetting(this.checkConList.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+				pk.alarmPatternCD,pk.companyID, alarmPerSet.toDomain(), alarmPatternName);
 	}
 }

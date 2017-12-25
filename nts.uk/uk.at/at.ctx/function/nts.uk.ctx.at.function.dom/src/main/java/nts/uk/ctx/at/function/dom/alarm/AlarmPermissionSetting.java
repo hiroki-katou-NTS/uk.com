@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.alarm;
 
 import java.util.List;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * アラームリスト権限設定
  */
 @Getter
-public class AlarmPermissionSetting  extends AggregateRoot {
+public class AlarmPermissionSetting  extends DomainObject {
 	
 	/**
 	 * alarm pattern code
@@ -19,7 +19,7 @@ public class AlarmPermissionSetting  extends AggregateRoot {
 	/**
 	 *  companyID
 	 */
-	private CompanyId companyID;
+	private String companyID;
 	/**
 	 * authentication setting
 	 */
@@ -33,17 +33,9 @@ public class AlarmPermissionSetting  extends AggregateRoot {
 			List<String> roleIds) {
 		super();
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
-		this.companyID = new CompanyId(companyID);
+		this.companyID = companyID;
 		this.authSetting = authSetting;
 		this.roleIds = roleIds;
 	}
-
-	public AlarmPermissionSetting(String alarmPatternCD, String companyID, boolean authSetting) {
-		super();
-		this.alarmPatternCD = new  AlarmPatternCode(alarmPatternCD);
-		this.companyID = new CompanyId(companyID);
-		this.authSetting = authSetting;
-	}
-	
 	
 }
