@@ -61,7 +61,7 @@ module nts.uk.at.view.kmk003.a {
             useHalfDay: KnockoutObservable<number>;
 
             //tabs
-            tabs: KnockoutObservableArray<any>;
+            tabs: KnockoutObservableArray<TabItem>;
             selectedTab: KnockoutObservable<string>;
 
             //data
@@ -118,7 +118,14 @@ module nts.uk.at.view.kmk003.a {
                     { code: TabMode.DETAIL, name: nts.uk.resource.getText("KMK003_191") }
                 ]);
                 self.tabMode = ko.observable(TabMode.DETAIL);
-
+                self.tabMode.subscribe(newValue => {
+                    if (newValue === TabMode.DETAIL) {
+                        self.changeTabMode(true);
+                    } else {                       
+                        self.changeTabMode(false);
+                    }   
+                });
+                
                 //use half day
 
                 self.useHalfDayOptions = ko.observableArray([
@@ -135,24 +142,24 @@ module nts.uk.at.view.kmk003.a {
                 });
 
                 //
-                self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: nts.uk.resource.getText("KMK003_17"), content: '.tab-a1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: nts.uk.resource.getText("KMK003_18"), content: '.tab-a2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-3', title: nts.uk.resource.getText("KMK003_89"), content: '.tab-a3', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-4', title: nts.uk.resource.getText("KMK003_19"), content: '.tab-a4', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-5', title: nts.uk.resource.getText("KMK003_20"), content: '.tab-a5', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-6', title: nts.uk.resource.getText("KMK003_90"), content: '.tab-a6', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-7', title: nts.uk.resource.getText("KMK003_21"), content: '.tab-a7', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-8', title: nts.uk.resource.getText("KMK003_200"), content: '.tab-a8', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-9', title: nts.uk.resource.getText("KMK003_23"), content: '.tab-a9', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-10', title: nts.uk.resource.getText("KMK003_24"), content: '.tab-a10', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-11', title: nts.uk.resource.getText("KMK003_25"), content: '.tab-a11', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-12', title: nts.uk.resource.getText("KMK003_26"), content: '.tab-a12', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-13', title: nts.uk.resource.getText("KMK003_27"), content: '.tab-a13', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-14', title: nts.uk.resource.getText("KMK003_28"), content: '.tab-a14', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-15', title: nts.uk.resource.getText("KMK003_29"), content: '.tab-a15', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-16', title: nts.uk.resource.getText("KMK003_30"), content: '.tab-a16', enable: ko.observable(true), visible: ko.observable(true) },
-                ]);
+                self.tabs = ko.observableArray([]);
+                self.tabs.push(new TabItem('tab-1', nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true));
+                self.tabs.push(new TabItem('tab-2', nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true));
+                self.tabs.push(new TabItem('tab-3', nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true));
+                self.tabs.push(new TabItem('tab-4', nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true));
+                self.tabs.push(new TabItem('tab-5', nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true));
+                self.tabs.push(new TabItem('tab-6', nts.uk.resource.getText("KMK003_90"), '.tab-a6', true, true));
+                self.tabs.push(new TabItem('tab-7', nts.uk.resource.getText("KMK003_21"), '.tab-a7', true, true));
+                self.tabs.push(new TabItem('tab-8', nts.uk.resource.getText("KMK003_200"), '.tab-a8', true, true));
+                self.tabs.push(new TabItem('tab-9', nts.uk.resource.getText("KMK003_23"), '.tab-a9', true, true));
+                self.tabs.push(new TabItem('tab-10', nts.uk.resource.getText("KMK003_24"), '.tab-a10', true, true));
+                self.tabs.push(new TabItem('tab-11', nts.uk.resource.getText("KMK003_25"), '.tab-a11', true, true));
+                self.tabs.push(new TabItem('tab-12', nts.uk.resource.getText("KMK003_26"), '.tab-a12', true, true));
+                self.tabs.push(new TabItem('tab-13', nts.uk.resource.getText("KMK003_27"), '.tab-a13', true, true));
+                self.tabs.push(new TabItem('tab-14', nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true));
+                self.tabs.push(new TabItem('tab-15', nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true));
+                self.tabs.push(new TabItem('tab-16', nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true));
+                
                 self.selectedTab = ko.observable('tab-1');
 
                 //data get from service
@@ -171,7 +178,7 @@ module nts.uk.at.view.kmk003.a {
                     return self.workTimeSettingModel.workTimeDivision.workTimeDailyAtr() == EnumWorkForm.REGULAR;
                 });
             }
-
+           
             /**
              * Start page.
              */
@@ -210,6 +217,24 @@ module nts.uk.at.view.kmk003.a {
                 return dfd.promise();
             }
             
+            /**
+             * Change tab mode
+             */
+            private changeTabMode(isDetail: boolean): void {
+                let _self = this;
+                if (isDetail) {
+                    _.forEach(_self.tabs(), tab => tab.setVisible(true));
+                } else {
+                    let simpleTabsId: string[] = ['tab-1','tab-2','tab-3','tab-4','tab-5','tab-6','tab-7','tab-9','tab-10','tab-11','tab-12'];
+                    _.forEach(_self.tabs(), tab => {
+                        if (_.findIndex(simpleTabsId, id => tab.id === id) === -1) {
+                            tab.setVisible(false);
+                        } else {
+                            tab.setVisible(true);
+                        }                        
+                    });
+                }
+            }
             
             private save() {
                 let self = this;
@@ -279,6 +304,29 @@ module nts.uk.at.view.kmk003.a {
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+        
+        /**
+         * Tab Item
+         */
+        export class TabItem { 
+            id: string;
+            title: string; 
+            content: string; 
+            enable: KnockoutObservable<boolean>; 
+            visible: KnockoutObservable<boolean>; 
+            
+            constructor(id: string, title: string, content: string, enable: boolean, visible: boolean) {
+                this.id = id;
+                this.title = title;
+                this.content = content;
+                this.enable = ko.observable(enable);
+                this.visible = ko.observable(visible);
+            }
+            
+            public setVisible(visible: boolean): void {
+                this.visible(visible);
             }
         }
         
