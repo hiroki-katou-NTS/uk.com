@@ -59,7 +59,7 @@ module nts.uk.at.view.kmk003.a {
         /**
          * function save flex work setting by call service
          */
-        export function saveFixedWorkSetting(command: any): JQueryPromise<void> {
+        export function saveFixedWorkSetting(command: model.command.FixedWorkSettingSaveCommand): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.saveFixedWorkSetting, command);
         }
     }

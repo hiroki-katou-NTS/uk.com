@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk003.a {
     import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
     import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
     
+    import FixedWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FixedWorkSettingSaveCommand;
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
     
     export module viewmodel {
@@ -256,8 +257,8 @@ module nts.uk.at.view.kmk003.a {
                                 });
                                 break;
                             //for flow and difftime
-                            case SettingMethod.FIXED: break;
-                            case SettingMethod.FIXED: break;
+                            case SettingMethod.DIFFTIME: break;
+                            case SettingMethod.FLOW: break;
                             default: break;
                         }
                         break;
@@ -284,12 +285,12 @@ module nts.uk.at.view.kmk003.a {
              * function collection data fixed mode 
              */
             private collectDataFixed():any{
-                var self = this;
-                var command: any;
-                command = {
-                    flexWorkSetting: self.mainSettingModel.fixedWorkSetting.toDto(),
-                    predseting: self.predetemineTimeSettingModel.toDto(),
-                    worktimeSetting: self.workTimeSettingModel.toDto()
+                let _self = this;
+                let command: FixedWorkSettingSaveCommand = {
+                    predseting: _self.predetemineTimeSettingModel.toDto(),
+                    worktimeSetting: _self.workTimeSettingModel.toDto(),
+                    fixedWorkSetting: _self.mainSettingModel.fixedWorkSetting.toDto(),
+                    screenMode: _self.tabMode()
                 };
                 return command;  
             }
