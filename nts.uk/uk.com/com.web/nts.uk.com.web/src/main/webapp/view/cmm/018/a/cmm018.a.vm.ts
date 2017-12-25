@@ -82,7 +82,7 @@ module nts.uk.com.view.cmm018.a {
                 self.startPage(transferData);
                 //---subscribe currentCode (list left)---
                 self.currentCode.subscribe(function(codeChanged) {
-                    self.enableCreatNew(true);
+                    
                     if(codeChanged == -1){
                         return;
                     }
@@ -99,6 +99,7 @@ module nts.uk.com.view.cmm018.a {
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
                     //TH: tab company
                     if(self.tabSelected() == vmbase.RootType.COMPANY){
+                        self.enableCreatNew(true);
                         //check add history new
                         if(self.checkAddHistory()){
                             self.getDataCompany(0);
@@ -125,6 +126,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: tab work place
                     else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
+                        self.enableCreatNew(true);
                         //check add history new
                         if(self.checkAddHistory()){
                             self.getDataWorkplace(0);
@@ -150,6 +152,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: tab person: vmbase.RootType.PERSON
                     else{
+                        self.enableCreatNew(true);
                         //check add history new
                         if(self.checkAddHistory()){
                             self.getDataPerson(0);
