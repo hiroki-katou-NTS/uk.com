@@ -208,8 +208,8 @@ module a2 {
                     }
                     let emTime: EmTimeZoneSetModel = _.find(dataSourceAllDay, (emTime: EmTimeZoneSetModel) => emTime.employmentTimeFrameNo === item.workNo);
 
-                    self.dataSourceOneDay().push(new TimeZoneModel(timeRange, emTime.timezone.rounding.roundingTime,
-                        emTime.timezone.rounding.rounding));
+                    //self.dataSourceOneDay().push(new TimeZoneModel(timeRange, emTime.timezone.rounding.roundingTime,
+                    //    emTime.timezone.rounding.rounding));
                 });
             }
             // Detail mode

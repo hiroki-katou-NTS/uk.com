@@ -6,7 +6,8 @@ module a4 {
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     class ScreenModel {
 
-        tabMode: KnockoutObservable<TabMode>;
+        // Screen mode
+        isDetailMode: KnockoutObservable<boolean>;
         
         priorityOptions: KnockoutObservableArray<Item>;
         priorityGoWork: KnockoutObservable<number>;
@@ -36,7 +37,13 @@ module a4 {
         constructor(tabMode: any,enumSetting: WorkTimeSettingEnumDto,mainSettingModel: MainSettingModel) {
             let self = this;
             
-            self.tabMode = tabMode;
+            // Subscribe Detail/Simple mode 
+            self.isDetailMode = ko.observable(null);
+            tabMode.subscribe((value: any) => {
+                value == TabMode.DETAIL ? self.isDetailMode(true) : self.isDetailMode(false);
+            });
+            tabMode() == TabMode.DETAIL ? self.isDetailMode(true) : self.isDetailMode(false);
+            
             //main model
             self.mainSettingModel = ko.observable(mainSettingModel);
             

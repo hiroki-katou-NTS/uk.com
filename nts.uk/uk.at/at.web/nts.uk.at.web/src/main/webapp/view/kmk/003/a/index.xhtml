@@ -253,7 +253,7 @@
 							<table style="width: 100%;">
 								
 								<tr>
-									<td colspan="2" class="td-cell">
+									<td class="td-cell" width="300px">
 										<div class="cf"
 											data-bind="ntsSwitchButton: {
 											options: tabModeOptions,
@@ -263,10 +263,10 @@
 											enable: true }">
 										</div>
 									</td>
-									<td class="td-cell">
+									<td class="td-cell" width="100px">
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
 									</td>
-									<td colspan="2" class="td-cell">
+									<td class="td-cell">
 										<div class="cf"
 											data-bind="ntsSwitchButton: {
 											options: useHalfDayOptions,
@@ -279,7 +279,7 @@
 								</tr>
 								<!-- panels -->
 								<tr>
-									<td colspan="10" class="td-cell">
+									<td colspan="3" class="td-cell">
 										<div id="tab-panel"
 											data-bind="ntsTabPanel: {width:300, dataSource: tabs, 
 											active: selectedTab,direction: 'vertical' }">
@@ -290,7 +290,9 @@
 												</div>
 											</div>
 											<div class="tab-a2">
-												<div data-bind="ntsKMK003A2: {screenMode: tabMode, enum: settingEnum,
+												<div data-bind="ntsKMK003A2: {
+													screenMode: tabMode, 
+													enum: settingEnum,
 													mainModel: mainSettingModel }">
 												</div>
 											</div>
