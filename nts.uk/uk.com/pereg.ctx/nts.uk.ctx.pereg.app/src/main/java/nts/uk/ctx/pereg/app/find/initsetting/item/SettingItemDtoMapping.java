@@ -31,7 +31,11 @@ public class SettingItemDtoMapping {
 
 				comboxList.forEach(cbItem -> {
 					if (cbItem.getOptionValue().equals(item.getSaveData().getValue())) {
-						item.getSaveData().setValue(cbItem.getOptionText());
+
+						String text = cbItem.getOptionText().contains(item.getSaveData().getValue())
+								? cbItem.getOptionText().replace(item.getSaveData().getValue() + "　", "")
+								: cbItem.getOptionText();
+						item.getSaveData().setValue(text);
 					}
 				});
 			});
