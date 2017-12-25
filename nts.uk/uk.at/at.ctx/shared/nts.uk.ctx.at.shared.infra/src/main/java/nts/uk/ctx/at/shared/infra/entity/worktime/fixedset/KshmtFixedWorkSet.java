@@ -5,10 +5,16 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -51,6 +57,27 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 	@Column(name = "LEV_REST_CALC_TYPE")
 	private int levRestCalcType;
 
+	/** The kshmt fixed half rest sets. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true)})
+	private List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets;
+	
+	/** The kshmt fixed work time sets. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true)})
+	private List<KshmtFixedWorkTimeSet> kshmtFixedWorkTimeSets;
+	
+	/** The kshmt fixed ot time sets. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true)})
+	private List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets;
+	
 	/**
 	 * Instantiates a new kshmt fixed work set.
 	 */
