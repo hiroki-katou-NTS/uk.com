@@ -17,10 +17,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK;
@@ -42,7 +40,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public List<WorkTimeSetting> findByCompanyId(String companyId) {
-		return this.findWithCondition(companyId, null, null, null);
+		return this.findWithCondition(companyId, new WorkTimeSettingCondition(null, null, null));
 	}
 
 	/*
@@ -148,8 +146,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 * nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr)
 	 */
 	@Override
-	public List<WorkTimeSetting> findWithCondition(String companyId, WorkTimeDailyAtr atr, WorkTimeMethodSet method,
-			AbolishAtr abolished) {
+	public List<WorkTimeSetting> findWithCondition(String companyId, WorkTimeSettingCondition condition) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -164,14 +161,17 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
-		if (atr != null) {
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.dailyWorkAtr), atr.value));
+		if (condition.getWorkTimeDailyAtr() != null) {
+			lstpredicateWhere.add(
+					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.dailyWorkAtr), condition.getWorkTimeDailyAtr()));
 		}
-		if (method != null) {
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.worktimeSetMethod), method.value));
+		if (condition.getWorkTimeMethodSet() != null) {
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.worktimeSetMethod),
+					condition.getWorkTimeMethodSet()));
 		}
-		if (abolished != null) {
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), method.value));
+		if (condition.getIsAbolish() != null) {
+			lstpredicateWhere
+					.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), condition.getIsAbolish()));
 		}
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

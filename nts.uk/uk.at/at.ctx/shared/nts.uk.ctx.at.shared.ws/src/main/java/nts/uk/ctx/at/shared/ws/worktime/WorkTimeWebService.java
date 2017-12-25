@@ -25,8 +25,11 @@ import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveComm
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeSettingInfoFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime_old.WorkTimeFinder;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 
 /**
  * 
@@ -37,6 +40,10 @@ import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 @Path("at/shared/worktime")
 @Produces("application/json")
 public class WorkTimeWebService extends WebService {
+
+	/** The work time set finder. */
+	@Inject
+	private WorkTimeSettingFinder workTimeSetFinder;
 
 	/** The work time finder. */
 	@Inject
@@ -93,6 +100,18 @@ public class WorkTimeWebService extends WebService {
 	@Path("findByCodes")
 	public List<WorkTimeDto> findByCodes(List<String> codes) {
 		return this.workTimeFinder.findByCodes(codes);
+	}
+
+	/**
+	 * Find with condition.
+	 *
+	 * @param condition the condition
+	 * @return the list
+	 */
+	@POST
+	@Path("findwithcondition")
+	public List<SimpleWorkTimeSettingDto> findWithCondition(WorkTimeSettingCondition condition) {
+		return this.workTimeSetFinder.findWithCondition(condition);
 	}
 
 	/**

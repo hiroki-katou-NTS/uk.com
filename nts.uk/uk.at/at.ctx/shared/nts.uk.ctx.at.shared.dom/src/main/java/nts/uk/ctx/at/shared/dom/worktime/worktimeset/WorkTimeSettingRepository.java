@@ -7,8 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
-
 /**
  * The Interface WorkTimeSettingRepository.
  */
@@ -44,13 +42,10 @@ public interface WorkTimeSettingRepository {
 	 * Find with condition.
 	 *
 	 * @param companyId the company id
-	 * @param atr the atr
-	 * @param method the method
-	 * @param abolished the abolished
+	 * @param condition the condition
 	 * @return the list
 	 */
-	public List<WorkTimeSetting> findWithCondition(String companyId, WorkTimeDailyAtr atr,
-			WorkTimeMethodSet method, AbolishAtr abolished);
+	public List<WorkTimeSetting> findWithCondition(String companyId, WorkTimeSettingCondition condition);
 
 	/**
 	 * Insert.

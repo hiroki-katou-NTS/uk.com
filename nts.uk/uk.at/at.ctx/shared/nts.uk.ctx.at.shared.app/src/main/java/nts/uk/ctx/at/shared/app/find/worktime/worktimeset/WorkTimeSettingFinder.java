@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.predset.PredetemineTimeSetFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -41,6 +42,22 @@ public class WorkTimeSettingFinder {
 	public List<SimpleWorkTimeSettingDto> findAllSimple() {
 		String companyId = AppContexts.user().companyId();
 		List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findByCompanyId(companyId);
+		return lstWorktimeSetting.stream().map(item -> {
+			return SimpleWorkTimeSettingDto.builder().companyId(item.getCompanyId())
+					.worktimeCode(item.getWorktimeCode().v())
+					.workTimeName(item.getWorkTimeDisplayName().getWorkTimeName().v()).build();
+		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * Find with condition.
+	 *
+	 * @param condition the condition
+	 * @return the list
+	 */
+	public List<SimpleWorkTimeSettingDto> findWithCondition(WorkTimeSettingCondition condition) {
+		String companyId = AppContexts.user().companyId();
+		List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findWithCondition(companyId, condition);
 		return lstWorktimeSetting.stream().map(item -> {
 			return SimpleWorkTimeSettingDto.builder().companyId(item.getCompanyId())
 					.worktimeCode(item.getWorktimeCode().v())
