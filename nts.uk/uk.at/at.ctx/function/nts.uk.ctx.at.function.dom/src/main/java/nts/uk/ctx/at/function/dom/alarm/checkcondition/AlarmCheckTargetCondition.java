@@ -1,15 +1,13 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 /**
- * @author hungnm
+ * @author hungtt
  *
  */
 // アラームチェック対象者の条件
@@ -17,28 +15,28 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 public class AlarmCheckTargetCondition extends DomainObject {
 
 	// 勤務種別でしぼり込む
-	private Boolean filterByBusinessType;
+	private boolean filterByBusinessType;
 
 	// 職位でしぼり込む
-	private Boolean filterByJobTitle;
+	private boolean filterByJobTitle;
 
 	// 雇用でしぼり込む
-	private Boolean filterByEmployment;
+	private boolean filterByEmployment;
 
 	// 分類でしぼり込む
-	private Boolean filterByClassification;
+	private boolean filterByClassification;
 
 	// 対象勤務種別
-	private List<BusinessTypeCode> lstBusinessTypeCode;
+	private List<String> lstBusinessTypeCode = new ArrayList<>();
 
 	// 対象職位
-	private List<String> lstJobTitleId;
+	private List<String> lstJobTitleId = new ArrayList<>();
 
 	// 対象雇用
-	private List<EmploymentCode> lstEmploymentCode;
+	private List<String> lstEmploymentCode = new ArrayList<>();
 
 	// 対象分類
-	private List<ClassificationCode> lstClassificationCode;
+	private List<String> lstClassificationCode = new ArrayList<>();
 
 	public AlarmCheckTargetCondition(Boolean filterByBusinessType, Boolean filterByJobTitle, Boolean filterByEmployment,
 			Boolean filterByClassification, List<String> lstBusinessTypeCode, List<String> lstJobTitleId,
@@ -48,16 +46,10 @@ public class AlarmCheckTargetCondition extends DomainObject {
 		this.filterByJobTitle = filterByJobTitle;
 		this.filterByEmployment = filterByEmployment;
 		this.filterByClassification = filterByClassification;
-		this.lstBusinessTypeCode = lstBusinessTypeCode.stream().map((code) -> {
-			return new BusinessTypeCode(code);
-		}).collect(Collectors.toList());
+		this.lstBusinessTypeCode = lstBusinessTypeCode;
 		this.lstJobTitleId = lstJobTitleId;
-		this.lstEmploymentCode = lstEmploymentCode.stream().map((code) -> {
-			return new EmploymentCode(code);
-		}).collect(Collectors.toList());
-		this.lstClassificationCode = lstClassificationCode.stream().map((code) -> {
-			return new ClassificationCode(code);
-		}).collect(Collectors.toList());
+		this.lstEmploymentCode = lstEmploymentCode;
+		this.lstClassificationCode = lstClassificationCode;
 	}
 
 }
