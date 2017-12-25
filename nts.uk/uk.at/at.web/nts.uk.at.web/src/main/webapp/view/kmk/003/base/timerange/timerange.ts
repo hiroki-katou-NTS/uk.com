@@ -40,6 +40,9 @@ module kmk003.base.timerange {
                 }
                 self.value().startTime = newValue;
                 self.value().endTime = self.endTime();
+                
+                // event callback
+                self.value.valueHasMutated();
             });
             self.endTime.subscribe((newValue) => {
                 if (!self.validTimeRange(self.startTime(), newValue)) {
@@ -47,6 +50,9 @@ module kmk003.base.timerange {
                 }
                 self.value().startTime = self.startTime();
                 self.value().endTime = newValue;
+                
+                // event callback
+                self.value.valueHasMutated();
             });
         }
 
@@ -65,6 +71,15 @@ module kmk003.base.timerange {
          */
         private validTimeRange(startTime: number, endTime: number): boolean {
             let self = this;
+            
+            // clear error
+            $('#start-time').ntsEditor('clear');
+            $('#end-time').ntsEditor('clear');
+            
+            // validate
+            $('#start-time').ntsEditor('validate');
+            $('#end-time').ntsEditor('validate');
+            
             $('#time-range-editor').ntsError('clear');
             if (startTime >= endTime) {
                 $('#time-range-editor').ntsError('set', {messageId:'Msg_770',messageParams:[]});

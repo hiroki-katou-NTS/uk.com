@@ -181,6 +181,9 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             // add properties isChecked when multiple select
             self.addCheckBoxItemAtr();
             
+            // add event callback
+            self.callBackChangeDataSource();
+            
             self.isSelectAll = ko.observable(false);
             
             self.isVisibleSelectAll = ko.computed(() => {
@@ -255,6 +258,10 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             let row: any = {};
             _.forEach(self.columns, (column: FixColumn) => {
                 row[column.key] = ko.observable(ko.unwrap(column.defaultValue));
+                
+                row[column.key].subscribe((newValue: any) => {
+                    self.itemList.valueHasMutated();
+                });
             });
             self.itemList.push(row);
         }
@@ -271,6 +278,25 @@ module nts.uk.at.view.kmk003.base.fixedtable {
                 return;
             }
             self.itemList(self.itemList().filter(item => item.isChecked() == false));
+        }
+        
+        /**
+         * CallBack change dataSource when item of table update.
+         */
+        private callBackChangeDataSource() {
+            let self = this;
+            let isSubcriber: boolean = false;
+            _.forEach(self.itemList(), (item: any) => {
+                _.forEach(self.columns, (column: FixColumn, index: number) => {
+                    if (isSubcriber) {
+                        return;
+                    }
+                    item[column.key].subscribe((newValue: any) => {
+                        isSubcriber = true;
+                        self.itemList.valueHasMutated();
+                    });
+                });
+            });
         }
         
         /**
@@ -364,7 +390,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             let dfd = $.Deferred<void>();
             
             // add tbody table
-            self.$tableSelector.append("<tbody data-bind='foreach: itemList'>");
+            self.$tableSelector.append("<tbody data-bind='rended: itemList, foreach: itemList'>");
             
             // add html row
             self.renderRowHtml();

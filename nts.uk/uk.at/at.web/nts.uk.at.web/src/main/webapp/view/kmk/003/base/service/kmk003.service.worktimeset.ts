@@ -47,6 +47,8 @@ module nts.uk.at.view.kmk003.a {
                     lstLateEarlyAtr: EnumConstantDto[];
                     workSystemAtr: EnumConstantDto[];
                     applyAtr: EnumConstantDto[];
+                    lstFixedChangeAtr: EnumConstantDto[];
+                    lstAmPmAtr: EnumConstantDto[];
                 }
 
 

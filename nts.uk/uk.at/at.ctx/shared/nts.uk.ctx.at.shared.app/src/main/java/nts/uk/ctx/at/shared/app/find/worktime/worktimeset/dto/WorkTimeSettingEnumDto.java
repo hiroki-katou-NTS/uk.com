@@ -13,10 +13,12 @@ import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -61,6 +63,12 @@ public class WorkTimeSettingEnumDto {
 	/** The apply atr. */
 	private List<EnumConstant> applyAtr;
 	
+	/** The lst fixed change atr. */
+	private List<EnumConstant> lstFixedChangeAtr;
+	
+	/** The lst am pm atr. */
+	private List<EnumConstant> lstAmPmAtr;
+	
 	/**
 	 * Inits the.
 	 *
@@ -84,6 +92,8 @@ public class WorkTimeSettingEnumDto {
 		dto.setWorkSystemAtr(EnumAdaptor.convertToValueNameList(WorkSystemAtr.class, i18n));
 		dto.setCompensatoryOccurrenceDivision(EnumAdaptor.convertToValueNameList(CompensatoryOccurrenceDivision.class, i18n));
 		dto.setApplyAtr(EnumAdaptor.convertToValueNameList(ApplyAtr.class, i18n));
+		dto.setLstFixedChangeAtr(EnumAdaptor.convertToValueNameList(FixedChangeAtr.class, i18n));
+		dto.setLstAmPmAtr(EnumAdaptor.convertToValueNameList(AmPmAtr.class, i18n));
 		return dto;
 		
 	}

@@ -58,7 +58,7 @@ module nts.uk.at.view.kmk003.a {
 
             //use half day
             useHalfDayOptions: KnockoutObservableArray<any>;
-            useHalfDay: KnockoutObservable<string>;
+            useHalfDay: KnockoutObservable<number>;
 
             //tabs
             tabs: KnockoutObservableArray<any>;
@@ -117,20 +117,21 @@ module nts.uk.at.view.kmk003.a {
                     { code: TabMode.SIMPLE, name: nts.uk.resource.getText("KMK003_190") },
                     { code: TabMode.DETAIL, name: nts.uk.resource.getText("KMK003_191") }
                 ]);
-
                 self.tabMode = ko.observable(TabMode.DETAIL);
 
                 //use half day
 
                 self.useHalfDayOptions = ko.observableArray([
-                    { code: "1", name: nts.uk.resource.getText("KMK003_49") },
-                    { code: "0", name: nts.uk.resource.getText("KMK003_50") }
+                    { code: HalfDayEnum.USE, name: nts.uk.resource.getText("KMK003_49") },
+                    { code: HalfDayEnum.NOT_USE, name: nts.uk.resource.getText("KMK003_50") }
                 ]);
 
-                self.useHalfDay = ko.observable("0");
+                self.useHalfDay = ko.observable(HalfDayEnum.NOT_USE);
                 
                 self.useHalfDay.subscribe(function(userHalfDay) {
-                    self.mainSettingModel.flexWorkSetting.useHalfDayShift(userHalfDay === "1");
+                    self.mainSettingModel.fixedWorkSetting.useHalfDayShift(userHalfDay === HalfDayEnum.USE);
+                    self.mainSettingModel.flexWorkSetting.useHalfDayShift(userHalfDay === HalfDayEnum.USE);
+                    self.mainSettingModel.diffWorkSetting.isUseHalfDayShift(userHalfDay === HalfDayEnum.USE);
                 });
 
                 //
@@ -179,13 +180,13 @@ module nts.uk.at.view.kmk003.a {
                 let dfd = $.Deferred<void>();
                 service.getEnumWorktimeSeting().done(function(setting) {
                     self.settingEnum = setting;
-                    service.findAllWorkTimeSet().done(function(worktime) {
-                        self.workTimeSettings(worktime);
-                        if (worktime && worktime.length > 0) {
-                            self.selectedWorkTimeCode(worktime[0].worktimeCode);
+//                    service.findAllWorkTimeSet().done(function(worktime) {
+//                        self.workTimeSettings(worktime);
+//                        if (worktime && worktime.length > 0) {
+//                            self.selectedWorkTimeCode(worktime[0].worktimeCode);
                             dfd.resolve();
-                        }
-                    });
+//                        }
+//                    });
                 });
                 
                 
@@ -253,9 +254,9 @@ module nts.uk.at.view.kmk003.a {
                 var self = this;
                 //self.mainSettingModel.flexWorkSetting.updateData(data);
                 if (data.useHalfDayShift) {
-                    self.useHalfDay('1');
+                    self.useHalfDay(HalfDayEnum.USE);
                 } else {
-                    self.useHalfDay('0');
+                    self.useHalfDay(HalfDayEnum.NOT_USE);
                 }
             }
           
@@ -316,6 +317,14 @@ module nts.uk.at.view.kmk003.a {
         export enum TabMode {
             SIMPLE,
             DETAIL
+        }
+        
+        /**
+         * HalfDayEnum
+         */
+        export enum HalfDayEnum {
+            NOT_USE,
+            USE
         }
     }
 }
