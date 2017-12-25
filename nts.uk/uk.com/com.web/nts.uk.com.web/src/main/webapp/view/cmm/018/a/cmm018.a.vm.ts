@@ -45,6 +45,8 @@ module nts.uk.com.view.cmm018.a {
             itemOld: KnockoutObservable<any> = ko.observable(null);
             //_____button Edit History___
             enableDelete: KnockoutObservable<boolean> = ko.observable(true);
+            // _____button creatNew History___
+            enableCreatNew: KnockoutObservable<boolean> = ko.observable(true);
             //param transfer to dialog K
             approverInfor : KnockoutObservableArray<vmbase.ApproverDtoK> = ko.observableArray([]);
             selectTypeSet : KnockoutObservable<number> = ko.observable(0);
@@ -648,6 +650,7 @@ module nts.uk.com.view.cmm018.a {
                 let checkReload = false;
                 let itemCurrent = null;
                 self.enableDelete(false);
+                self.enableCreatNew(false);
                 let paramI: vmbase.IData_Param = null;
                 self.checkAddHistory(false);
                 let overLap = false;
@@ -757,6 +760,7 @@ module nts.uk.com.view.cmm018.a {
                     //Xu ly sau khi dong dialog I
                     let data: vmbase.IData = getShared('CMM018I_DATA');
                     if(data == null){
+                        self.enableCreatNew(true);
                         self.enableDelete(true);
                         block.clear();
                         return;
@@ -1261,6 +1265,7 @@ module nts.uk.com.view.cmm018.a {
                                     checkAddHist,self.workplaceId(), self.selectedItem(),
                                     history.startDate, history.endDate,self.dataI(), listType == undefined ? [] : listType, root);
                 servicebase.updateRoot(data).done(function(){
+                    self.enableCreatNew(true);
                     self.enableDelete(true);
                     if(self.tabSelected() == vmbase.RootType.COMPANY){
                        self.getDataCompany(0);
@@ -1545,6 +1550,7 @@ module nts.uk.com.view.cmm018.a {
             ENDDATE_LATEST:string = '9999/12/31';
             //_____button Edit History___
             enableDeleteB: KnockoutObservable<boolean> = ko.observable(true);
+            enableCreatNewB: KnockoutObservable<boolean> = ko.observable(true);
             constructor(){
                 let self = this;
                 //----SCREEN B
