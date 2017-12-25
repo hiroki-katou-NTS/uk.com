@@ -442,6 +442,7 @@ module nts.uk.com.view.cmm018.a {
                                     self.lstCompany([]);
                                     self.cpA([]);
                                     self.listHistory([]);
+                                    self.enableRegister(false);
                                 }else{
                                     //list company
                                 self.lstCompany(data.lstCompany);
@@ -2371,7 +2372,7 @@ module nts.uk.com.view.cmm018.a {
                                 self.comRoot(new vmbase.CompanyAppRootADto(false,employRootAtr, 
                                     appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
                                     '',b,b,b,b,b));
-                            }
+                            }   
                         }
 //                        self.singleSelectedCode('-1');
                     }
