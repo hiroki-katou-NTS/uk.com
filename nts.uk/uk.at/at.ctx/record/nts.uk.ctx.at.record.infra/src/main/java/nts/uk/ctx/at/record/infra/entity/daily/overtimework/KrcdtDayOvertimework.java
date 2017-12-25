@@ -7,6 +7,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -194,5 +196,4 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	protected Object getKey() {
 		return this.krcdtDayOvertimeworkPK;
 	}
-	
 }

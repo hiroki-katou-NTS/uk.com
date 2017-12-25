@@ -75,5 +75,4 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable{
 		return this.krcdtDayAttendanceTimePK;
 	}
 	
-	
 }
