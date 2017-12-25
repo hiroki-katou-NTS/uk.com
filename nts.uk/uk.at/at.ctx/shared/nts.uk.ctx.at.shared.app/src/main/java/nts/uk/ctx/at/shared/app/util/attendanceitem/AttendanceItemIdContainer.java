@@ -16,12 +16,12 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．医療時間.勤務時間-日勤", 754);
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．医療時間.勤務時間-夜勤", 755);
 
-		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．休出深夜時間．時間.時間-法定内休出", 568);
-		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．休出深夜時間．時間.計算時間-法定内休出", 569);
-		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．休出深夜時間．時間.時間-法定外休出", 570);
-		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．休出深夜時間．時間.計算時間-法定外休出", 571);
-		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．休出深夜時間．時間.時間-祝日休出", 572);
-		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．休出深夜時間．時間.計算時間-祝日休出", 573);
+		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．法定内休出.時間", 568);
+		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．法定内休出.計算時間", 569);
+		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．法定外休出.時間", 570);
+		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．法定外休出.計算時間", 571);
+		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．祝日休出.時間", 572);
+		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出深夜．祝日休出.計算時間", 573);
 
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出枠時間．休出時間.時間1", 266);
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出枠時間．休出時間.計算時間1", 268);
@@ -121,6 +121,9 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．早退時間．早退時間.計算時間1", 605);
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．早退時間．早退時間.時間2", 610);
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．早退時間．早退時間.計算時間2", 611);
+		
+		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．早退時間．早退控除時間.時間1", 606);
+		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．早退時間．早退控除時間.時間2", 612);
 
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．遅刻時間．遅刻控除時間.時間1", 594);
 		ITEM_ID_CONTAINER.put("日別実績の勤怠時間．実績時間．総労働時間．遅刻時間．遅刻控除時間.時間2", 600);
@@ -380,46 +383,46 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put("日別実績の休憩時間帯．時間帯．開始時間.時刻-スケジュールから参照.10", 25);
 		ITEM_ID_CONTAINER.put("日別実績の休憩時間帯．時間帯．終了時間.時刻-スケジュールから参照.10", 26);
 
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード1", 87);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻1", 88);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード1", 90);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻1", 91);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード2", 94);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻2", 95);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード2", 97);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻2", 98);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯.外出.場所コード3", 101);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻3", 102);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード3", 104);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻3", 105);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード4", 108);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻4", 109);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード4", 111);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻4", 112);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード5", 115);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻5", 116);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード5", 118);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻5", 119);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード6", 122);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻6", 123);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード6", 125);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻6", 126);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード7", 129);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻7", 130);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード7", 132);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻7", 133);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード8", 136);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻8", 137);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード8", 139);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻8", 140);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード9", 143);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻9", 144);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード9", 146);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻9", 147);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.場所コード10", 150);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.時刻10", 151);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.場所コード10", 153);
-		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.時刻10", 154);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード1", 87);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻1", 88);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード1", 90);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻1", 91);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード2", 94);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻2", 95);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード2", 97);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻2", 98);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯.外出.実打刻.場所コード3", 101);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻3", 102);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード3", 104);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻3", 105);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード4", 108);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻4", 109);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード4", 111);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻4", 112);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード5", 115);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻5", 116);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード5", 118);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻5", 119);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード6", 122);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻6", 123);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード6", 125);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻6", 126);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード7", 129);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻7", 130);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード7", 132);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻7", 133);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード8", 136);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻8", 137);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード8", 139);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻8", 140);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード9", 143);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻9", 144);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード9", 146);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻9", 147);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.場所コード10", 150);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻10", 151);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード10", 153);
+		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻10", 154);
 
 	}
 

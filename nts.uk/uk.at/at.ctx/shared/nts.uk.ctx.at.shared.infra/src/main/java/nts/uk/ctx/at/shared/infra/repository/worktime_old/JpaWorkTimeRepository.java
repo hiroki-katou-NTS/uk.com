@@ -13,20 +13,19 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
 import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeAbName;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeName;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeSymbol;
 import nts.uk.ctx.at.shared.infra.entity.worktime_old.KwtmpWorkTimePK;
 import nts.uk.ctx.at.shared.infra.entity.worktime_old.KwtmtWorkTime;
-
 /**
  * 
  * @author Doan Duy Hung
@@ -119,9 +118,10 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 				new WorkTimeDivision(EnumAdaptor.valueOf(kwtmtWorkTime.workTimeDailyAtr, WorkTimeDailyAtr.class),
 						EnumAdaptor.valueOf(kwtmtWorkTime.workTimeMethodSet, WorkTimeMethodSet.class)),
 				EnumAdaptor.valueOf(kwtmtWorkTime.displayAtr, UseSetting.class),
-				new WorkTimeDisplayName(new WorkTimeName(kwtmtWorkTime.workTimeName),
-						new WorkTimeAbName(kwtmtWorkTime.workTimeAbName),
-						new WorkTimeSymbol(kwtmtWorkTime.workTimeSymbol)));
+				WorkTimeDisplayName.builder().workTimeName(new WorkTimeName(kwtmtWorkTime.workTimeName))
+						.workTimeAbName(new WorkTimeAbName(kwtmtWorkTime.workTimeAbName))
+						.workTimeSymbol(new WorkTimeSymbol(kwtmtWorkTime.workTimeSymbol)).build(),
+				null,null,null,null);
 	}
 
 	/*
