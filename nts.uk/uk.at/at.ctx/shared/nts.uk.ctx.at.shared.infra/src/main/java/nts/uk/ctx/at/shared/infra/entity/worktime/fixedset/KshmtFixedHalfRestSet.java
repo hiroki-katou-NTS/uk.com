@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
 

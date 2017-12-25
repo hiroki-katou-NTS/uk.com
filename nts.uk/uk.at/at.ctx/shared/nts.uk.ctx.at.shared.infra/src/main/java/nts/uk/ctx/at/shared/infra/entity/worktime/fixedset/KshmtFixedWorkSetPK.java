@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
 
@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshmtFixedStampReflectPK.
+ * The Class KshmtFixedWorkSetPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KshmtFixedStampReflectPK implements Serializable {
+public class KshmtFixedWorkSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,14 +31,11 @@ public class KshmtFixedStampReflectPK implements Serializable {
 	@Column(name = "WORKTIME_CD")
 	private String worktimeCd;
 
-	/** The work no. */
-	@Column(name = "WORK_NO")
-	private int workNo;
-
 	/**
-	 * Instantiates a new kshmt fixed stamp reflect PK.
+	 * Instantiates a new kshmt fixed work set PK.
 	 */
-	public KshmtFixedStampReflectPK() {
+	public KshmtFixedWorkSetPK() {
+		super();
 	}
 
 	/*
@@ -51,7 +48,6 @@ public class KshmtFixedStampReflectPK implements Serializable {
 		int hash = 0;
 		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) workNo;
 		return hash;
 	}
 
@@ -62,19 +58,16 @@ public class KshmtFixedStampReflectPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFixedStampReflectPK)) {
+		if (!(object instanceof KshmtFixedWorkSetPK)) {
 			return false;
 		}
-		KshmtFixedStampReflectPK other = (KshmtFixedStampReflectPK) object;
+		KshmtFixedWorkSetPK other = (KshmtFixedWorkSetPK) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if ((this.worktimeCd == null && other.worktimeCd != null)
 				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
-			return false;
-		}
-		if (this.workNo != other.workNo) {
 			return false;
 		}
 		return true;

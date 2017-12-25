@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
 
@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshmtFixedWorkSetPK.
+ * The Class KshmtFixedOtTimeSetPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KshmtFixedWorkSetPK implements Serializable {
+public class KshmtFixedOtTimeSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,11 +31,18 @@ public class KshmtFixedWorkSetPK implements Serializable {
 	@Column(name = "WORKTIME_CD")
 	private String worktimeCd;
 
+	/** The am pm atr. */
+	@Column(name = "AM_PM_ATR")
+	private int amPmAtr;
+
+	/** The worktime no. */
+	@Column(name = "WORKTIME_NO")
+	private int worktimeNo;
+
 	/**
-	 * Instantiates a new kshmt fixed work set PK.
+	 * Instantiates a new kshmt fixed ot time set PK.
 	 */
-	public KshmtFixedWorkSetPK() {
-		super();
+	public KshmtFixedOtTimeSetPK() {
 	}
 
 	/*
@@ -48,6 +55,8 @@ public class KshmtFixedWorkSetPK implements Serializable {
 		int hash = 0;
 		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
+		hash += (int) amPmAtr;
+		hash += (int) worktimeNo;
 		return hash;
 	}
 
@@ -58,10 +67,10 @@ public class KshmtFixedWorkSetPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFixedWorkSetPK)) {
+		if (!(object instanceof KshmtFixedOtTimeSetPK)) {
 			return false;
 		}
-		KshmtFixedWorkSetPK other = (KshmtFixedWorkSetPK) object;
+		KshmtFixedOtTimeSetPK other = (KshmtFixedOtTimeSetPK) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
@@ -70,6 +79,13 @@ public class KshmtFixedWorkSetPK implements Serializable {
 				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
 			return false;
 		}
+		if (this.amPmAtr != other.amPmAtr) {
+			return false;
+		}
+		if (this.worktimeNo != other.worktimeNo) {
+			return false;
+		}
 		return true;
 	}
+
 }

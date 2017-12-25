@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
 
@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshmtFixedOtTimeSetPK.
+ * The Class KshmtFixedWorkTimeSetPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KshmtFixedOtTimeSetPK implements Serializable {
+public class KshmtFixedWorkTimeSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -35,14 +35,14 @@ public class KshmtFixedOtTimeSetPK implements Serializable {
 	@Column(name = "AM_PM_ATR")
 	private int amPmAtr;
 
-	/** The worktime no. */
-	@Column(name = "WORKTIME_NO")
-	private int worktimeNo;
+	/** The time frame no. */
+	@Column(name = "TIME_FRAME_NO")
+	private int timeFrameNo;
 
 	/**
-	 * Instantiates a new kshmt fixed ot time set PK.
+	 * Instantiates a new kshmt fixed work time set PK.
 	 */
-	public KshmtFixedOtTimeSetPK() {
+	public KshmtFixedWorkTimeSetPK() {
 	}
 
 	/*
@@ -56,7 +56,7 @@ public class KshmtFixedOtTimeSetPK implements Serializable {
 		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
 		hash += (int) amPmAtr;
-		hash += (int) worktimeNo;
+		hash += (int) timeFrameNo;
 		return hash;
 	}
 
@@ -67,10 +67,10 @@ public class KshmtFixedOtTimeSetPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFixedOtTimeSetPK)) {
+		if (!(object instanceof KshmtFixedWorkTimeSetPK)) {
 			return false;
 		}
-		KshmtFixedOtTimeSetPK other = (KshmtFixedOtTimeSetPK) object;
+		KshmtFixedWorkTimeSetPK other = (KshmtFixedWorkTimeSetPK) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
@@ -82,7 +82,7 @@ public class KshmtFixedOtTimeSetPK implements Serializable {
 		if (this.amPmAtr != other.amPmAtr) {
 			return false;
 		}
-		if (this.worktimeNo != other.worktimeNo) {
+		if (this.timeFrameNo != other.timeFrameNo) {
 			return false;
 		}
 		return true;

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
 
@@ -16,45 +16,46 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KshmtFixedWorkTimeSet.
+ * The Class KshmtFixedWorkSet.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHMT_FIXED_WORK_TIME_SET")
-public class KshmtFixedWorkTimeSet extends UkJpaEntity implements Serializable {
+@Table(name = "KSHMT_FIXED_WORK_SET")
+public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The kshmt fixed work time set PK. */
+	/** The kshmt fixed work set PK. */
 	@EmbeddedId
-	protected KshmtFixedWorkTimeSetPK kshmtFixedWorkTimeSetPK;
+	protected KshmtFixedWorkSetPK kshmtFixedWorkSetPK;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The unit. */
-	@Column(name = "UNIT")
-	private int unit;
+	/** The use half day. */
+	@Column(name = "USE_HALF_DAY")
+	private int useHalfDay;
 
-	/** The rounding. */
-	@Column(name = "ROUNDING")
-	private int rounding;
+	/** The legal ot set. */
+	@Column(name = "LEGAL_OT_SET")
+	private int legalOtSet;
 
-	/** The time str. */
-	@Column(name = "TIME_STR")
-	private int timeStr;
+	/** The calc method. */
+	@Column(name = "CALC_METHOD")
+	private int calcMethod;
 
-	/** The time end. */
-	@Column(name = "TIME_END")
-	private int timeEnd;
+	/** The lev rest calc type. */
+	@Column(name = "LEV_REST_CALC_TYPE")
+	private int levRestCalcType;
 
 	/**
-	 * Instantiates a new kshmt fixed work time set.
+	 * Instantiates a new kshmt fixed work set.
 	 */
-	public KshmtFixedWorkTimeSet() {
+	public KshmtFixedWorkSet() {
+		super();
 	}
 
 	/*
@@ -65,7 +66,7 @@ public class KshmtFixedWorkTimeSet extends UkJpaEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshmtFixedWorkTimeSetPK != null ? kshmtFixedWorkTimeSetPK.hashCode() : 0);
+		hash += (kshmtFixedWorkSetPK != null ? kshmtFixedWorkSetPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -76,13 +77,13 @@ public class KshmtFixedWorkTimeSet extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFixedWorkTimeSet)) {
+		if (!(object instanceof KshmtFixedWorkSet)) {
 			return false;
 		}
-		KshmtFixedWorkTimeSet other = (KshmtFixedWorkTimeSet) object;
-		if ((this.kshmtFixedWorkTimeSetPK == null && other.kshmtFixedWorkTimeSetPK != null)
-				|| (this.kshmtFixedWorkTimeSetPK != null
-						&& !this.kshmtFixedWorkTimeSetPK.equals(other.kshmtFixedWorkTimeSetPK))) {
+		KshmtFixedWorkSet other = (KshmtFixedWorkSet) object;
+		if ((this.kshmtFixedWorkSetPK == null && other.kshmtFixedWorkSetPK != null)
+				|| (this.kshmtFixedWorkSetPK != null
+						&& !this.kshmtFixedWorkSetPK.equals(other.kshmtFixedWorkSetPK))) {
 			return false;
 		}
 		return true;
@@ -95,7 +96,7 @@ public class KshmtFixedWorkTimeSet extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshmtFixedWorkTimeSetPK;
+		return this.kshmtFixedWorkSetPK;
 	}
 
 }
