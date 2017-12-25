@@ -82,6 +82,7 @@ module nts.uk.com.view.cmm018.a {
                 self.startPage(transferData);
                 //---subscribe currentCode (list left)---
                 self.currentCode.subscribe(function(codeChanged) {
+                    self.enableCreatNew(true);
                     if(codeChanged == -1){
                         return;
                     }
@@ -179,6 +180,7 @@ module nts.uk.com.view.cmm018.a {
                     self.currentCode();
                     self.historyStr('');
                     self.enableDelete(true);
+                    self.enableCreatNew(true);
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
                     //TH: tab company
                     if(codeChanged == 0){
@@ -215,6 +217,7 @@ module nts.uk.com.view.cmm018.a {
                 self.lstNameAppType = ko.observableArray([]);
                 //___subscribe selected mode code______
                 self.selectedModeCode.subscribe(function(codeChanged) {
+                    self.enableCreatNew(true);
                     self.enableDelete(true);
                     if(codeChanged==1){//private
                         __viewContext.viewModel.viewmodelB.singleSelectedCode(null);
@@ -761,7 +764,10 @@ module nts.uk.com.view.cmm018.a {
                     let data: vmbase.IData = getShared('CMM018I_DATA');
                     if(data == null){
                         self.enableCreatNew(true);
-                        self.enableDelete(true);
+                        if(self.listHistory() != null && self.listHistory().length > 0){
+                            self.enableDelete(true);
+                        }
+                        
                         block.clear();
                         return;
                     }
