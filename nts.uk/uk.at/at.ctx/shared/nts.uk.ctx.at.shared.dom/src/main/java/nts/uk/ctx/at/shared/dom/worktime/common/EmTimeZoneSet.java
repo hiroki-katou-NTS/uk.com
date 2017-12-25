@@ -42,6 +42,16 @@ public class EmTimeZoneSet extends DomainObject {
 		memento.setTimezone(this.timezone);
 	}
 	
+	/**
+	 * Restore data.
+	 *
+	 * @param other the other
+	 */
+	public void restoreData(EmTimeZoneSet other) {
+		this.employmentTimeFrameNo = other.employmentTimeFrameNo;
+		this.timezone = other.getTimezone();
+	}
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
