@@ -233,12 +233,25 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: FlOffdayWorkTzDto) {
                     this.restTimeZone.updateData(data.restTimeZone);
-                    this.lstWorkTimezone = [];
-                    for (var dataDTO of data.lstWorkTimezone) {
-                        var dataModel: FlWorkHdTimeZoneModel = new FlWorkHdTimeZoneModel();
-                        dataModel.updateData(dataDTO);
-                        this.lstWorkTimezone.push(dataModel);
+                    this.updateHDTimezone(data.lstWorkTimezone);
+                }
+                
+                updateHDTimezone(lstWorkTimezone: FlWorkHdTimeZoneDto[]) {
+                    for (var dataDTO of lstWorkTimezone) {
+                        var dataModel: FlWorkHdTimeZoneModel = this.getHDTimezoneByWorktimeNo(dataDTO.worktimeNo);
+                        if (dataModel) {
+                            dataModel.updateData(dataDTO);
+                        }
+                        else {
+                            dataModel = new FlWorkHdTimeZoneModel();
+                            dataModel.updateData(dataDTO);
+                            this.lstWorkTimezone.push(dataModel);
+                        }
                     }
+                }
+                
+                getHDTimezoneByWorktimeNo(worktimeNo: number) {
+                    return _.find(this.lstWorkTimezone, hdtimezone => hdtimezone.worktimeNo() == worktimeNo);
                 }
 
                 toDto(): FlOffdayWorkTzDto {
