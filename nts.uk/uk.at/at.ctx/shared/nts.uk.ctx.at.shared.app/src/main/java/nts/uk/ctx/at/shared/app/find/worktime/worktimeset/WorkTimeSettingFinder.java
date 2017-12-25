@@ -40,7 +40,7 @@ public class WorkTimeSettingFinder {
 	 */
 	public List<SimpleWorkTimeSettingDto> findAllSimple() {
 		String companyId = AppContexts.user().companyId();
-		List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findAll(companyId);
+		List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findByCompanyId(companyId);
 		return lstWorktimeSetting.stream().map(item -> {
 			return SimpleWorkTimeSettingDto.builder().companyId(item.getCompanyId())
 					.worktimeCode(item.getWorktimeCode().v())

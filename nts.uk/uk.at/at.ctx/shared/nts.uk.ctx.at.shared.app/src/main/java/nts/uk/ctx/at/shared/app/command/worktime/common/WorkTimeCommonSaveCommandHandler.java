@@ -48,7 +48,7 @@ public class WorkTimeCommonSaveCommandHandler{
 		//this.workTimeSetPolicy.canRegister(workTimeSetting);
 
 		// call repository save work time setting
-		this.workTimeSettingRepository.save(workTimeSetting);
+		this.workTimeSettingRepository.insert(workTimeSetting);
 
 		// call repository save pred setting
 		this.predetemineTimeSettingRepository.save(predseting);
