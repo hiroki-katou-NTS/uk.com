@@ -106,18 +106,18 @@ module a7 {
                 
                 return (mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() == EnumWorkForm.FLEX) || (mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet() == SettingMethod.FLOW);
             });
-            
+           
             self.useFixedRestTimeOptions = ko.observableArray([
-                { code: 1, name: 　nts.uk.resource.getText("KMK003_142") },
-                { code: 2, name: 　nts.uk.resource.getText("KMK003_143") },
+                { code: UseDivision.USE, name: 　nts.uk.resource.getText("KMK003_142") },
+                { code: UseDivision.NOTUSE, name: 　nts.uk.resource.getText("KMK003_143") },
             ]);
             self.useFixedRestTime = ko.observable(1);
             
             self.isFixedRestTime = ko.computed(function(){
-                return self.useFixedRestTime() == 1 && self.isFlowOrFlex();
+                return self.useFixedRestTime() == UseDivision.USE && self.isFlowOrFlex();
             });
             self.isFlexOrFlowNotUse = ko.computed(function() {
-                return self.useFixedRestTime() == 2 && self.isFlowOrFlex();
+                return self.useFixedRestTime() == UseDivision.NOTUSE && self.isFlowOrFlex();
             });
             
             
@@ -156,6 +156,10 @@ module a7 {
                         required: true, enable: true, inputFormat: 'time'}"/>`}
             ];
         }
+        
+        export enum UseDivision {
+        NOTUSE,
+        USE
     }
 
     class KMK003A7BindingHandler implements KnockoutBindingHandler {
