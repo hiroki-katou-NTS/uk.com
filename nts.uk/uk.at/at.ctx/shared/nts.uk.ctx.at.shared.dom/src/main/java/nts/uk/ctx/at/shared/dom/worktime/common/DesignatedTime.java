@@ -26,15 +26,33 @@ public class DesignatedTime extends DomainObject {
 	/**
 	 * Instantiates a new designated time.
 	 *
-	 * @param oneDayTime
-	 *            the one day time
-	 * @param halfDayTime
-	 *            the half day time
+	 * @param oneDayTime the one day time
+	 * @param halfDayTime the half day time
 	 */
 	public DesignatedTime(OneDayTime oneDayTime, OneDayTime halfDayTime) {
 		super();
 		this.oneDayTime = oneDayTime;
 		this.halfDayTime = halfDayTime;
+	}
+	/**
+	 * Instantiates a new designated time.
+	 *
+	 * @param oneDayTime the one day time
+	 * @param halfDayTime the half day time
+	 */
+	public void saveToMemento(DesignatedTimeSetMemento memento) {
+		memento.setOneDayTime(this.oneDayTime);
+		memento.setHalfDayTime(this.halfDayTime);
+	}
+	
+	/**
+	 * Instantiates a new designated time.
+	 *
+	 * @param memento the memento
+	 */
+	public DesignatedTime(DesignatedTimeGetMemento memento){
+		this.oneDayTime = memento.getOneDayTime();
+		this.halfDayTime = memento.getHalfDayTime();
 	}
 
 	/*
