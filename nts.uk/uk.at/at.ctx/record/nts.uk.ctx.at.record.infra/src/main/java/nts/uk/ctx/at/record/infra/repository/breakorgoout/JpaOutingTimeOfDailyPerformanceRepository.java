@@ -68,8 +68,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public Optional<OutingTimeOfDailyPerformance> findByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
-		 List<KrcdtDaiOutingTime> lstKrcdtDaiOutingTime = this.queryProxy().query(SELECT_BY_EMPLOYEE_AND_DATE,KrcdtDaiOutingTime.class).setParameter("employeeId", employeeId)
-		.setParameter("ymd", ymd).getList();
+		List<KrcdtDaiOutingTime> lstKrcdtDaiOutingTime = this.queryProxy().query(SELECT_BY_EMPLOYEE_AND_DATE,KrcdtDaiOutingTime.class).setParameter("employeeId", employeeId)
+				.setParameter("ymd", ymd).getList();
 		 if(lstKrcdtDaiOutingTime==null || lstKrcdtDaiOutingTime.isEmpty()){
 			 return Optional.empty();
 		 }
@@ -88,7 +88,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 			 OutingTimeSheet outingTimeSheet = new OutingTimeSheet(new OutingFrameNo(x.krcdtDaiOutingTimePK.outingFrameNo),goOut,outingTimeCalculation, outingTime, reasonForGoOut , comeBack);
 			 lstOutingTimeSheet.add(outingTimeSheet);
 		 });
-		 return Optional.ofNullable(new OutingTimeOfDailyPerformance(employeeId, lstOutingTimeSheet, ymd));
+		 return Optional.ofNullable(new OutingTimeOfDailyPerformance(employeeId, ymd, lstOutingTimeSheet));
 	}
 	
 	

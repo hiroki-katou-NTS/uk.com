@@ -1,16 +1,22 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 /** 日別実績の医療時間 */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MedicalTimeDailyPerformDto {
 
+	
 	/** 日勤夜勤区分: 日勤夜勤区分 */
-	/** 日勤 Day_Shift(0), 夜勤 Night_Shift(1) */
+	/** @see nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift 日勤 Day_Shift(0), 夜勤 Night_Shift(1) */
 	// @AttendanceItemLayout(layout = "A")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private int dayNightAtr;
@@ -30,6 +36,7 @@ public class MedicalTimeDailyPerformDto {
 	@AttendanceItemValue(itemId = { 754, 755 }, type = ValueType.INTEGER, getIdFromUtil = true)
 	private Integer workTime;
 
+	/** @see nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift */
 	public String dayNightAtr() {
 		switch (this.dayNightAtr) {
 		case 0:
@@ -39,5 +46,13 @@ public class MedicalTimeDailyPerformDto {
 		default:
 			return "";
 		}
+	}
+	
+	public static MedicalTimeDailyPerformDto fromMedicalCareTime(MedicalCareTimeOfDaily domain) {
+		return domain == null ? null : new MedicalTimeDailyPerformDto(
+				domain.getDayNightAtr().value, 
+				domain.getTakeOverTime().valueAsMinutes(), 
+				domain.getDeductionTime().valueAsMinutes(), 
+				domain.getWorkTime().valueAsMinutes());
 	}
 }

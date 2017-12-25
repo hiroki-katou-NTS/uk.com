@@ -1,4 +1,4 @@
-module nts.uk.com.view.kal003.b.service {
+module nts.uk.at.view.kal003.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
 
@@ -7,7 +7,8 @@ module nts.uk.com.view.kal003.b.service {
             
             getAllDailyAttendanceItemBy:             "getAllDailyAttendanceItemBy",
             getOptionItemByAtr:                     "findByAtr",
-            getAllAttendanceAndFrameLinking:         "getAllAttendanceAndFrameLinking"
+            getAllAttendanceAndFrameLinking:         "getAllAttendanceAndFrameLinking",
+            getAllEnums                     :         "getAllEnums"
                 
                 
     }
@@ -21,9 +22,11 @@ module nts.uk.com.view.kal003.b.service {
         return ajax(paths.getOptionItemByAtr, command);
     }
 
-    // add Default Role Set:
-    export function getAllAttendanceAndFrameLinking(command) : JQueryPromise<any> {
-        return ajax(paths.getAllAttendanceAndFrameLinking, command);
+    // get all Enums:
+    export function getAllEnums() : JQueryPromise<any> {
+        return ajax(paths.getAllEnums);
     }
+    
+    
 }
 

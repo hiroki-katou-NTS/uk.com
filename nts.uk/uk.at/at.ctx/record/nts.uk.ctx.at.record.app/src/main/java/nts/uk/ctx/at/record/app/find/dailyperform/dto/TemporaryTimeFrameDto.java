@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
@@ -7,6 +8,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 /** 日別実績の臨時枠時間 */
 @Data
+@AllArgsConstructor
 public class TemporaryTimeFrameDto {
 
 	/** 勤務NO */
