@@ -2,22 +2,24 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.find.workplace.config.dto;
+package nts.uk.ctx.sys.auth.app.find.role.workplace;
+
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+
 
 /**
- * The Class WkpConfigInfoFindObject.
+ * The Class WorkplaceIdDto.
  */
-@Getter
 @Setter
-public class WkpConfigInfoFindObject {
-
-	/** The base date. */
-	private GeneralDate baseDate;
+@Getter
+public class WorkplaceIdDto {
 	
-	/** The system type. */
-	private Integer systemType;
+	/** The list workplace ids. */
+	private List<String> listWorkplaceIds;
+	
+	/** The is all emp. */
+	private Boolean isAllEmp;
 }
