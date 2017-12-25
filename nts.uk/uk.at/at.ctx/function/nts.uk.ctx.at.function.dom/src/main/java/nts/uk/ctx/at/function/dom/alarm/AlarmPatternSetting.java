@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -43,6 +44,13 @@ public class AlarmPatternSetting  extends AggregateRoot {
 		this.companyID = new CompanyId(companyID);
 		this.alarmPerSet = alarmPerSet;
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
+	}
+	
+
+	public boolean selectedCheckCodition() {
+		if(this.checkConList.isEmpty())
+			throw new BusinessException("Msg_811");
+		return true;
 	}
 
 }

@@ -50,10 +50,4 @@ public class CheckCondition  extends AggregateRoot {
 		this.extractPeriod = extractPeriod;
 	}
 
-	public boolean selectedCheckCodition() {
-		if(this.checkConditionList.isEmpty())
-			throw new BusinessException("Msg_811");
-		return true;
-	}
-
 }
