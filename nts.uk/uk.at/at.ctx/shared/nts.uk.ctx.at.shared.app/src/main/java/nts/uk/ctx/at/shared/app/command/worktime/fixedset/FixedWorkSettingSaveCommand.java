@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommand;
 import nts.uk.ctx.at.shared.app.command.worktime.fixedset.dto.FixedWorkSettingDto;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FixedWorkSettingSaveCommand.
@@ -20,8 +21,11 @@ public class FixedWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
 	/** The fixed work setting. */
 	private FixedWorkSettingDto fixedWorkSetting;
 	
+	/** The screen mode. */
+	private ScreenMode screenMode;
+	
 	/**
-	 * To domain flex work setting.
+	 * To domain fixed work setting.
 	 *
 	 * @return the fixed work setting
 	 */

@@ -11,6 +11,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 
 /**
  * The Class JpaFixedWorkSettingRepository.
@@ -30,12 +32,29 @@ public class JpaFixedWorkSettingRepository extends JpaRepository
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository#save(nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository#add(nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting)
 	 */
 	@Override
-	public void save(FixedWorkSetting domain) {
+	public void add(FixedWorkSetting domain) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository#update(nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting)
+	 */
+	@Override
+	public void update(FixedWorkSetting domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository#remove(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void remove(String companyId, String workTimeCode) {
+		this.commandProxy().remove(KshmtFixedWorkSet.class, new KshmtFixedWorkSetPK(companyId, workTimeCode));
 	}
 
 }

@@ -306,6 +306,7 @@ module nts.uk.at.view.kmk003.a {
             REGULAR,
             FLEX
         }
+        
         export enum SettingMethod {
             FIXED,
             DIFFTIME,
