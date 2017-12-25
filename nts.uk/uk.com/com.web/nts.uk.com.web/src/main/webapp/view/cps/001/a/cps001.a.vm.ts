@@ -207,16 +207,28 @@ module cps001.a.vm {
 
         start() {
             let self = this,
-                employee = self.employee();
+                employee = self.employee(),
+                params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
-                $('.btn-quick-search[tabindex=4]').click();
-                setInterval(() => {
-                    if (!employee.employeeId()) {
-                        let employees = self.employees()
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
-                    }
-                }, 0);
+                if (params && params.employeeId) {
+                    $('.btn-quick-search[tabindex=3]').click();
+                    setInterval(() => {
+                        if (!employee.employeeId()) {
+                            let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
+                            self.employees(employees);
+                            employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        }
+                    }, 0);
+                } else {
+                    $('.btn-quick-search[tabindex=4]').click();
+                    setInterval(() => {
+                        if (!employee.employeeId()) {
+                            let employees = self.employees();
+                            employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        }
+                    }, 0);
+                }
             });
         }
 
