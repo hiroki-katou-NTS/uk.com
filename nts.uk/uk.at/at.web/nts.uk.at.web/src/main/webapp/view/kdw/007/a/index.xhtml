@@ -123,7 +123,7 @@
 									    	<button data-bind="click: chooseEmployment, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_51')}</button>
 									    </td> 
 									    <td>
-									    	<input class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().alCheckTargetCondition.displayLstEmployment, 
+									    	<input id="displayLstEmployment" class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().alCheckTargetCondition.displayLstEmployment, 
 																					    	readonly: true, 
 																					    	required: selectedErrorAlarm().alCheckTargetCondition.filterByEmployment}" />
 									    </td>
@@ -137,7 +137,7 @@
 									    	<button data-bind="click: chooseClassification, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_53')}</button>
 									    </td> 
 									    <td>
-									    	<input class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().alCheckTargetCondition.displayLstClassification, 
+									    	<input id="displayLstClassification" class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().alCheckTargetCondition.displayLstClassification, 
 																					    	readonly: true, 
 																					    	required: selectedErrorAlarm().alCheckTargetCondition.filterByClassification}" />
 									    </td>
@@ -151,7 +151,7 @@
 									    	<button data-bind="click: chooseJobTitle, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_54')}</button>
 									    </td> 
 									    <td>
-									    	<input class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().alCheckTargetCondition.displayLstJobTitle, 
+									    	<input id="displayLstJobTitle" class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().alCheckTargetCondition.displayLstJobTitle, 
 																					    	readonly: true, 
 																					    	required: selectedErrorAlarm().alCheckTargetCondition.filterByJobTitle}" />
 									    </td>
@@ -165,7 +165,7 @@
 									    	<button data-bind="click: chooseBusinessType, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_58')}</button>
 									    </td> 
 									    <td>
-									    	<input class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().alCheckTargetCondition.displayLstBusinessType, 
+									    	<input id="displayLstBusinessType" class="display-list-label need-check" data-bind="ntsTextEditor: {value: selectedErrorAlarm().alCheckTargetCondition.displayLstBusinessType, 
 																					    	readonly: true, 
 																					    	required: selectedErrorAlarm().alCheckTargetCondition.filterByBusinessType}" />
 									    </td>

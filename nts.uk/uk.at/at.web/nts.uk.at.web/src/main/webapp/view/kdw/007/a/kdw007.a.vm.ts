@@ -487,22 +487,22 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.lstClassification = param ? ko.observableArray(param.lstClassification) : ko.observableArray([]);
             this.filterByBusinessType.subscribe((val) => {
                 if (!val) {
-                    $(".display-list-label").trigger("validate");
+                    $("#displayLstBusinessType").trigger("validate");
                 }
             });
             this.filterByJobTitle.subscribe((val) => {
                 if (!val) {
-                    $(".display-list-label").trigger("validate");
+                    $("#displayLstJobTitle").trigger("validate");
                 }
             });
             this.filterByEmployment.subscribe((val) => {
                 if (!val) {
-                    $(".display-list-label").trigger("validate");
+                    $("#displayLstEmployment").trigger("validate");
                 }
             });
             this.filterByClassification.subscribe((val) => {
                 if (!val) {
-                    $(".display-list-label").trigger("validate");
+                    $("#displayLstClassification").trigger("validate");
                 }
             });
             this.displayLstBusinessType = ko.observable("");
@@ -522,14 +522,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                                 if (i === lstBussinessType.length - 1) {
                                     this.displayLstBusinessType(displayText);
-                                    $(".need-check").trigger('validate');
+                                    $("#displayLstBusinessType").trigger('validate');
                                 }
                             }
                         });
                     }
                 } else {
                     this.displayLstBusinessType("");
-                    $(".need-check").trigger('validate');
                 }
             });
             this.lstJobTitle.subscribe((lstJobTitle) => {
@@ -551,7 +550,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                     }
                                     if (i === lstJobTitle.length - 1) {
                                         this.displayLstJobTitle(displayText);
-                                        $(".need-check").trigger('validate');
+                                        $("#displayLstJobTitle").trigger('validate');
                                     }
                                 }
                             }
@@ -559,7 +558,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     });
                 } else {
                     this.displayLstJobTitle("");
-                    $(".need-check").trigger('validate');
                 }
             });
             this.lstEmployment.subscribe((lstEmpt) => {
@@ -575,14 +573,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                                 if (i === lstEmpt.length - 1) {
                                     this.displayLstEmployment(displayText);
-                                    $(".need-check").trigger('validate');
+                                    $("#displayLstEmployment").trigger('validate');
                                 }
                             }
                         });
                     }
                 } else {
                     this.displayLstEmployment("");
-                    $(".need-check").trigger('validate');
                 }
             });
             this.lstClassification.subscribe((lstClss) => {
@@ -598,14 +595,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 }
                                 if (i === lstClss.length - 1) {
                                     this.displayLstClassification(displayText);
-                                    $(".need-check").trigger('validate');
+                                    $("#displayLstClassification").trigger('validate');
                                 }
                             }
                         });
                     }
                 } else {
                     this.displayLstClassification("");
-                    $(".need-check").trigger('validate');
                 }
             });
             this.lstBusinessType.valueHasMutated();
