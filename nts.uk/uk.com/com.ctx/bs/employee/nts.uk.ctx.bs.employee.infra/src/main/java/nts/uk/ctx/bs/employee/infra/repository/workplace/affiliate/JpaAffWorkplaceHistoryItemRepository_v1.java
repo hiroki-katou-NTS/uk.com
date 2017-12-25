@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.CollectionUtil;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
@@ -23,12 +23,18 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
 			+ " WHERE aw.hisId = :historyId";
 	
-	/** The Constant SELECT_BY_HISTIDS. */
-	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
-			+ " WHERE aw.hisId IN :historyId";
+	private static final String SELECT_BY_LIST_EMPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
+			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
+			+ " WHERE aw.sid IN (:employeeIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
-	private static final String SELECT_BY_WPLIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
-			+ " WHERE aw.workPlaceId IN :wplIds";
+	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
+			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
+			+ " WHERE aw.sid = :employeeId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+	
+	private static final String SELECT_BY_LIST_WKPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
+			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
+			+ " WHERE awit.workPlaceId IN (:workplaceIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+	
 	/**
 	 * Convert from entity to domain
 	 * 
@@ -95,23 +101,47 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	}
 
 	@Override
-	public List<AffWorkplaceHistoryItem> findByHistIds(List<String> hisIds) {
-		if (CollectionUtil.isEmpty(hisIds)) {
-			return new ArrayList<>();
+	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListEmpIdAndDate(GeneralDate basedate,
+			List<String> employeeId) {
+		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_LIST_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+				.setParameter("employeeIds", employeeId).setParameter("standDate", basedate)
+				.getList();
+		if(listHistItem.isEmpty()){
+			return null;
 		}
-		return this.queryProxy().query(SELECT_BY_HISTIDS, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("historyId", hisIds).getList().stream().map(item -> toDomain(item))
-				.collect(Collectors.toList());
+		return listHistItem.stream().map(e -> {
+			AffWorkplaceHistoryItem domain = this.toDomain(e);
+			return domain;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<AffWorkplaceHistoryItem> findeByWplIDs(List<String> wplIDs) {
-		if (CollectionUtil.isEmpty(wplIDs)) {
-			return new ArrayList<>();
+	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate, String employeeId) {
+		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+				.setParameter("employeeId", employeeId).setParameter("standDate", basedate)
+				.getList();
+		if(listHistItem.isEmpty()){
+			return null;
 		}
-		return this.queryProxy().query(SELECT_BY_WPLIDS, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("wplIds", wplIDs).getList().stream().map(item -> toDomain(item))
-				.collect(Collectors.toList());
+		return listHistItem.stream().map(e -> {
+			AffWorkplaceHistoryItem domain = this.toDomain(e);
+			return domain;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListWkpIdAndDate(GeneralDate basedate,
+			List<String> workplaceId) {
+		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_LIST_WKPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+				.setParameter("workplaceIds", workplaceId).setParameter("standDate", basedate)
+				.getList();
+		if(listHistItem.isEmpty()){
+			return null;
+		}
+		return listHistItem.stream().map(e -> {
+			AffWorkplaceHistoryItem domain = this.toDomain(e);
+			return domain;
+		}).collect(Collectors.toList());
 	}
 
 }
