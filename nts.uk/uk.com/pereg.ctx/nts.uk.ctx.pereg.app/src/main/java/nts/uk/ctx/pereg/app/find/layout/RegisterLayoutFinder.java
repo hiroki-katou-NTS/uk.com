@@ -27,9 +27,11 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**
@@ -104,11 +106,6 @@ public class RegisterLayoutFinder {
 			}
 
 			setData(dataServer, listItemCls, command.getCreateType());
-			if (command.getCreateType() == 1) {
-
-				return listItemCls;
-
-			}
 
 			if (command.getCreateType() == 2) {
 
@@ -117,25 +114,6 @@ public class RegisterLayoutFinder {
 			}
 
 		}
-
-		listItemCls.forEach(itemCls -> {
-			if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
-				itemCls.getListItemDf().forEach(itemDef -> {
-					LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
-							ActionRole.EDIT.value, itemCls);
-
-					if (CollectionUtil.isEmpty(itemCls.getItems())) {
-						List<Object> itemList = new ArrayList<Object>();
-						itemList.add(newLayoutDto);
-						itemCls.setItems(itemList);
-					} else {
-
-						itemCls.getItems().add(newLayoutDto);
-					}
-				});
-			}
-
-		});
 
 		return listItemCls;
 	}
@@ -162,10 +140,9 @@ public class RegisterLayoutFinder {
 					SettingItemDto setItem = setItemOpt.get();
 					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls);
 				} else {
-					if (itemDef.getItemTypeState().getItemType() == 1 || createType == 1) {
+					if (itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM.value || createType == 1) {
 						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
 					}
-
 				}
 
 				if (infoValue != null) {
@@ -173,6 +150,18 @@ public class RegisterLayoutFinder {
 				}
 
 			});
+			itemCls.getListItemDf().clear();
+
+			boolean isSetItem = itemDataList.stream().filter(x -> {
+				LayoutPersonInfoValueDto infoValue = (LayoutPersonInfoValueDto) x;
+				return infoValue.getType() == ItemType.SET_ITEM.value;
+			}).findFirst().isPresent();
+
+			if (isSetItem) {
+				if (itemDataList.size() < 2) {
+					itemDataList.clear();
+				}
+			}
 
 			itemCls.setItems(itemDataList);
 		}
