@@ -12,28 +12,32 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 /**
  * The Class JpaFlexCommonRestSettingGetMemento.
  */
-public class JpaFlexCommonRestSettingGetMemento implements CommonRestSettingGetmemento{
-	
+public class JpaFlexCommonRestSettingGetMemento implements CommonRestSettingGetmemento {
+
 	/** The entity. */
+	// 共通の休憩設定
 	private KshmtFlexRestSet entity;
-	
 
 	/**
 	 * Instantiates a new jpa flex common rest setting get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaFlexCommonRestSettingGetMemento(KshmtFlexRestSet entity) {
 		super();
-		if(entity.getKshmtFlexRestSetPK() == null){
+		if (entity.getKshmtFlexRestSetPK() == null) {
 			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
 		}
 		this.entity = entity;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSettingGetmemento#getCalculateMethod()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSettingGetmemento#
+	 * getCalculateMethod()
 	 */
 	@Override
 	public RestTimeOfficeWorkCalcMethod getCalculateMethod() {

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class DeductGoOutRoundingSet.
@@ -41,4 +42,12 @@ public class DeductGoOutRoundingSet extends DomainObject {
 		memento.setDeductTimeRoundingSetting(this.deductTimeRoundingSetting);
 		memento.setApproTimeRoundingSetting(this.approTimeRoundingSetting);
 	} 
+	
+	/**
+	 * Restore data.
+	 */
+	public void restoreData(ScreenMode screenMode, DeductGoOutRoundingSet oldDomain) {
+		this.deductTimeRoundingSetting.restoreData(screenMode, oldDomain.getDeductTimeRoundingSetting());
+		this.approTimeRoundingSetting.restoreData(screenMode, oldDomain.getApproTimeRoundingSetting());
+	}
 }

@@ -86,7 +86,7 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 	public WorkTimeDisplayName getWorkTimeDisplayName() {
 		return WorkTimeDisplayName.builder()
 				.workTimeName(new WorkTimeName(this.entity.getName()))
-				.workTimeAbName(new WorkTimeAbName(this.entity.getAbName()))
+				.workTimeAbName(new WorkTimeAbName(this.entity.getAbname()))
 				.workTimeSymbol(new WorkTimeSymbol(this.entity.getSymbol()))
 				.build();
 	}

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class GoOutTypeRoundingSet.
@@ -40,5 +41,16 @@ public class GoOutTypeRoundingSet extends DomainObject {
 	public void saveToMemento(GoOutTypeRoundingSetSetMemento memento){
 		memento.setOfficalUseCompenGoOut(this.officalUseCompenGoOut);
 		memento.setPrivateUnionGoOut(this.privateUnionGoOut);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, GoOutTypeRoundingSet oldDomain) {
+		this.officalUseCompenGoOut.restoreData(screenMode, oldDomain.getOfficalUseCompenGoOut());
+		this.privateUnionGoOut.restoreData(screenMode, oldDomain.getPrivateUnionGoOut());		
 	}
 }

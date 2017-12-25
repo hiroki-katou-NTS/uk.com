@@ -12,8 +12,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexArrayGroup;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.group.KshmtFlexSetGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexArrayGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexSetGroup;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODFlWRestTzGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODHDWTSheetGetMemento;
 

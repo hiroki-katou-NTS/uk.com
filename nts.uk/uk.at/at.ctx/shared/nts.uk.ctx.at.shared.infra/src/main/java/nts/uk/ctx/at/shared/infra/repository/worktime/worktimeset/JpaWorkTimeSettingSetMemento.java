@@ -110,7 +110,7 @@ public class JpaWorkTimeSettingSetMemento implements WorkTimeSettingSetMemento {
 	@Override
 	public void setWorkTimeDisplayName(WorkTimeDisplayName workTimeDisplayName) {
 		this.entity.setName(workTimeDisplayName.getWorkTimeName().v());
-		this.entity.setAbName(workTimeDisplayName.getWorkTimeAbName().v());
+		this.entity.setAbname(workTimeDisplayName.getWorkTimeAbName().v());
 		this.entity.setSymbol(workTimeDisplayName.getWorkTimeSymbol().v());
 	}
 

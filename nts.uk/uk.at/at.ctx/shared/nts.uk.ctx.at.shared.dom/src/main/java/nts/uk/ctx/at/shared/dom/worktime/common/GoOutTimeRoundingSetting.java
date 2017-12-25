@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class GoOutTimeRoundingSetting.
@@ -42,5 +43,34 @@ public class GoOutTimeRoundingSetting extends DomainObject {
 	public void saveToMemento(GoOutTimeRoundingSettingSetMemento memento){
 		memento.setRoundingMethod(this.roundingMethod);
 		memento.setRoundingSetting(this.roundingSetting);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, GoOutTimeRoundingSetting oldDomain) {
+		// Simple mode
+		if (screenMode == ScreenMode.SIMPLE) {
+			this.roundingMethod = oldDomain.getRoundingMethod();
+			this.roundingSetting.restoreData(oldDomain.getRoundingSetting());			
+			return;
+		} 
+		
+		// Detail mode
+		switch (this.roundingMethod) {		
+			case TOTAL_AND_ROUNDING:
+				this.roundingSetting.restoreData(oldDomain.getRoundingSetting());
+				break;
+	
+			case ROUNDING_AND_TOTAL:
+				// Nothing change
+				break;
+	
+			default:
+				throw new RuntimeException("GoOutTimeRoundingMethod not found.");
+		}
 	}
 }

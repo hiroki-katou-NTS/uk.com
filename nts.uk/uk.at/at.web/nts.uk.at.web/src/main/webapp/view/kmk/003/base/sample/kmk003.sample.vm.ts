@@ -89,11 +89,11 @@ module nts.uk.at.view.kmk003.sample {
                 let self = this;
                 return [
                     {headerText: "カラム1", key: "column1", defaultValue: ko.observable(1200), width: 107, template: `<input data-bind="ntsTimeEditor: {
-                        inputFormat: 'time'}" />`, cssClassName: 'column-time-editor'},
+                        inputFormat: 'time', mode: 'time'}" />`, cssClassName: 'column-time-editor'},
                     {headerText: "カラム2", key: "column2", defaultValue: ko.observable(true), width: 60, template: `<div data-bind="ntsCheckBox: {
                         enable: true}"></div>`},
                     {headerText: "カラム3", key: "column3", defaultValue: ko.observable({startTime: 1000, endTime: 1200}), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`},
+                        name: 'Duration', required: true, enable: true, inputFormat: 'time'}"/>`},
                     {headerText: "カラム4", key: "column4", defaultValue: ko.observable(1), width: 300, dataSource: self.itemList(), template: `<div data-bind="ntsComboBox: {
                                             optionsValue: 'code',
                                             visibleItemsCount: 5,

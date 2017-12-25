@@ -41,4 +41,15 @@ public class TotalRoundingSet extends DomainObject {
 		memento.setSetSameFrameRounding(this.setSameFrameRounding);
 		memento.setFrameStraddRoundingSet(this.frameStraddRoundingSet);
 	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(TotalRoundingSet oldDomain) {
+		this.setSameFrameRounding = oldDomain.getFrameStraddRoundingSet();
+		this.frameStraddRoundingSet = oldDomain.getFrameStraddRoundingSet();
+	}
 }

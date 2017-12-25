@@ -4,15 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -20,27 +19,23 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * The Class JpaPrescribedTimezoneSettingSetMemento.
  */
 public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezoneSettingSetMemento {
-	
 
 	/** The entity. */
 	private KshmtPredTimeSet entity;
 
-	/** The lst entity time. */
-	private List<KshmtWorkTimeSheetSet> lstEntityTime;
-	
 	/**
-	 * Instantiates a new jpa prescribed timezone setting get memento.
+	 * Instantiates a new jpa prescribed timezone setting set memento.
 	 *
-	 * @param entity the entity
-	 * @param lstEntityTime the lst entity time
+	 * @param cid
+	 *            the cid
+	 * @param worktimeCd
+	 *            the worktime cd
+	 * @param entity
+	 *            the entity
 	 */
-	public JpaPrescribedTimezoneSettingSetMemento(KshmtPredTimeSet entity, List<KshmtWorkTimeSheetSet> lstEntityTime) {
+	public JpaPrescribedTimezoneSettingSetMemento(KshmtPredTimeSet entity) {
 		super();
-		if(entity.getKshmtPredTimeSetPK() == null){
-			entity.setKshmtPredTimeSetPK(new KshmtPredTimeSetPK());
-		}
 		this.entity = entity;
-		this.lstEntityTime = lstEntityTime;
 	}
 
 	/*
@@ -75,16 +70,23 @@ public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezon
 	 */
 	@Override
 	public void setLstTimezone(List<TimezoneUse> lstTimezone) {
-		if (CollectionUtil.isEmpty(lstTimezone)) {
-			this.lstEntityTime = new ArrayList<>();
-		} else {
-			this.lstEntityTime = lstTimezone.stream().map(domain -> {
-				KshmtWorkTimeSheetSet entity = new KshmtWorkTimeSheetSet();
-				domain.saveToMemento(new JpaTimezoneSetMemento(entity));
-				return entity;
-			}).collect(Collectors.toList());
-		}
-	}
 
+		List<KshmtWorkTimeSheetSet> kshmtWorkTimeSheetSets = this.entity
+				.getKshmtWorkTimeSheetSets();
+
+		Map<Integer, KshmtWorkTimeSheetSet> mapKshmtWorkTimeSheetSet = kshmtWorkTimeSheetSets
+				.stream()
+				.collect(Collectors.toMap(item -> item.getKshmtWorkTimeSheetSetPK().getWorkNo(),
+						Function.identity()));
+
+		this.entity.setKshmtWorkTimeSheetSets(lstTimezone.stream().map(domain -> {
+			KshmtWorkTimeSheetSet entity = mapKshmtWorkTimeSheetSet.getOrDefault(domain.getWorkNo(),
+					new KshmtWorkTimeSheetSet());
+			domain.saveToMemento(
+					new JpaTimezoneSetMemento(this.entity.getKshmtPredTimeSetPK().getCid(),
+							this.entity.getKshmtPredTimeSetPK().getWorktimeCd(), entity));
+			return entity;
+		}).collect(Collectors.toList()));
+	}
 
 }

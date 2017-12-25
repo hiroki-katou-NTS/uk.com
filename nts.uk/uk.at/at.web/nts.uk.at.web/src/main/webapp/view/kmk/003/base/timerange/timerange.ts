@@ -9,6 +9,7 @@ module kmk003.base.timerange {
         required: boolean;
         enable: boolean;
         inputFormat: string;
+        tabindex: number;
         
         startTime: KnockoutObservable<number>;
         endTime: KnockoutObservable<number>;
@@ -27,9 +28,10 @@ module kmk003.base.timerange {
             self.required = ko.unwrap(input.required);
             self.enable = ko.unwrap(input.enable);
             self.inputFormat = ko.unwrap(input.inputFormat);
+            self.tabindex = ko.unwrap(input.tabindex);
             
-            self.startTime = ko.observable(input.value().startTime);
-            self.endTime = ko.observable(input.value().endTime);
+            self.startTime = ko.observable(0);
+            self.endTime = ko.observable(0);
             
             // subscribe
             self.startTime.subscribe((newValue) => {
@@ -54,8 +56,8 @@ module kmk003.base.timerange {
         public bindDataToScreen(value: KnockoutObservable<TimePeriod>) {
             let self = this;
             
-            self.startTime(value().startTime ? value().startTime : null);
-            self.endTime(value().endTime ? value().endTime : null);
+            self.startTime(value().startTime ? value().startTime : 0);
+            self.endTime(value().endTime ? value().endTime : 0);
         }
 
         /**
@@ -65,7 +67,7 @@ module kmk003.base.timerange {
             let self = this;
             $('#time-range-editor').ntsError('clear');
             if (startTime >= endTime) {
-                $('#time-range-editor').ntsError('set', '期間入力フォームの開始と終了が逆転しています');
+                $('#time-range-editor').ntsError('set', {messageId:'Msg_770',messageParams:[]});
                 return false;
             }
             return true

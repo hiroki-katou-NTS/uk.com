@@ -14,7 +14,7 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class TimeRoundingSetting extends DomainObject{
 	
-	/** The unit. */
+	/** The rounding time. */
 	// 単位
 	private Unit roundingTime;
 	
@@ -42,5 +42,15 @@ public class TimeRoundingSetting extends DomainObject{
 	public TimeRoundingSetting(int roundingTime, int rounding) {
 		this.roundingTime = Unit.valueOf(roundingTime);
 		this.rounding = Rounding.valueOf(rounding);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(TimeRoundingSetting oldDomain) {
+		this.roundingTime = oldDomain.getRoundingTime();
+		this.rounding = oldDomain.getRounding();
 	}
 }

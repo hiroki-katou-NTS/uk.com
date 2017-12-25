@@ -13,9 +13,16 @@ import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FixedWorkSetting.
+ */
+
+/**
+ * Gets the legal OT setting.
+ *
+ * @return the legal OT setting
  */
 @Getter
 // 固定勤務設定
@@ -128,4 +135,17 @@ public class FixedWorkSetting extends AggregateRoot {
 		return true;
 	}
 
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, FixedWorkSetting oldDomain) {
+		if (screenMode == ScreenMode.SIMPLE) {
+			//TODO restore data simple mode
+		} else {
+			//TODO restore data detail mode
+		}
+	}
 }

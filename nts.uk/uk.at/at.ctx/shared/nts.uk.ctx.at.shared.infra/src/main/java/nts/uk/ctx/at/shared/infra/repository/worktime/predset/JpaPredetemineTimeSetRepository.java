@@ -29,7 +29,8 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet_
  * The Class JpaPredetemineTimeSetRepository.
  */
 @Stateless
-public class JpaPredetemineTimeSetRepository extends JpaRepository implements PredetemineTimeSettingRepository {
+public class JpaPredetemineTimeSetRepository extends JpaRepository
+		implements PredetemineTimeSettingRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -39,54 +40,26 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	 * java.lang.String)
 	 */
 	@Override
-	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
+	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId,
+			String workTimeCode) {
 
 		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.findById(companyId, workTimeCode);
 
 		if (optionalEntityTimeSet.isPresent()) {
-			return Optional.ofNullable(new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(
-					optionalEntityTimeSet.get(), this.findWorktimeSheet(companyId, workTimeCode))));
+			return Optional.ofNullable(new PredetemineTimeSetting(
+					new JpaPredetemineTimeSettingGetMemento(optionalEntityTimeSet.get())));
 		}
 
 		return Optional.empty();
 	}
 
 	/**
-	 * Find worktime sheet.
-	 *
-	 * @param companyId the company id
-	 * @param worktimeCode the worktime code
-	 * @return the list
-	 */
-	private List<KshmtWorkTimeSheetSet> findWorktimeSheet(String companyId, String worktimeCode) {
-
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		CriteriaQuery<KshmtWorkTimeSheetSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSheetSet.class);
-		Root<KshmtWorkTimeSheetSet> root = cq.from(KshmtWorkTimeSheetSet.class);
-
-		cq.select(root);
-		// +++++++++++++++++++++++++++++++++++
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.cid), companyId));
-
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.worktimeCd),
-				worktimeCode));
-
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		return em.createQuery(cq).getResultList();
-	}
-	
-	/**
 	 * Find by id.
 	 *
-	 * @param companyId the company id
-	 * @param worktimeCode the worktime code
+	 * @param companyId
+	 *            the company id
+	 * @param worktimeCode
+	 *            the worktime code
 	 * @return the optional
 	 */
 	private Optional<KshmtPredTimeSet> findById(String companyId, String worktimeCode) {
@@ -101,11 +74,13 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid),
+				companyId));
 
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.worktimeCd), worktimeCode));
+				root.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.worktimeCd),
+				worktimeCode));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -131,8 +106,8 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 				domain.getWorkTimeCode().v());
 		if (optionalEntityTimeSet.isPresent()) {
 			KshmtPredTimeSet entity = optionalEntityTimeSet.get();
-			List<KshmtWorkTimeSheetSet> lstEntityTime = this.findWorktimeSheet(domain.getCompanyId(),
-					domain.getWorkTimeCode().v());
+			List<KshmtWorkTimeSheetSet> lstEntityTime = this
+					.findWorktimeSheet(domain.getCompanyId(), domain.getWorkTimeCode().v());
 			domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity, lstEntityTime));
 			this.commandProxy().update(entity);
 			this.commandProxy().updateAll(lstEntityTime);
@@ -149,7 +124,7 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	@Override
 	public void remove(String companyId, String workTimeCode) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
