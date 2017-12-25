@@ -305,7 +305,6 @@ module nts.uk.com.view.cas005.a {
                             self.selectRoleCodeByIndex(0);
                         else
                             self.createButton();
-                        $("#roleNameFocus").focus(); 
                         dfd.resolve();
                     });
                 });

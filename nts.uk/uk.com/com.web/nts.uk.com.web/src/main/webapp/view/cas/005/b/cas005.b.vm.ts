@@ -40,7 +40,6 @@ module nts.uk.com.view.csa005.b {
              */
             startPage(): JQueryPromise<any> {
                 let self = this;
-                $("#newRoleCode").focus();
                 let dfd = $.Deferred();
                 dfd.resolve();
                 return dfd.promise();
