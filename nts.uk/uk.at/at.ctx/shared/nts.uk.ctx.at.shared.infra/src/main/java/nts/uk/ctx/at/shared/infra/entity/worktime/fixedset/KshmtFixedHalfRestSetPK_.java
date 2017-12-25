@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;

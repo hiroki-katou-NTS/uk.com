@@ -21,23 +21,31 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 public class JpaFixedWorkSettingRepository extends JpaRepository
 		implements FixedWorkSettingRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository#find(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository#
+	 * find(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<FixedWorkSetting> find(String companyId, String workTimeCode) {
-		//TODO 
+		// TODO
 		return null;
-		//return this.findFixedSettingGroup(companyId, workTimeCode).map(entity -> this.toDomain(entity));
+		// return this.findFixedSettingGroup(companyId, workTimeCode).map(entity
+		// -> this.toDomain(entity));
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository#add(nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository#
+	 * save(nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting)
 	 */
 	@Override
 	public void add(FixedWorkSetting domain) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)

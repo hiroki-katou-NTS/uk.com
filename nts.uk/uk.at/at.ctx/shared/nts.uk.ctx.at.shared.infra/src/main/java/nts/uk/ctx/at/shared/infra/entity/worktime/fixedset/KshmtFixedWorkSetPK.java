@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
 
@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshmtFixedHalfRestSetPK.
+ * The Class KshmtFixedWorkSetPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KshmtFixedHalfRestSetPK implements Serializable {
+public class KshmtFixedWorkSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,15 +31,25 @@ public class KshmtFixedHalfRestSetPK implements Serializable {
 	@Column(name = "WORKTIME_CD")
 	private String worktimeCd;
 
-	/** The am pm atr. */
-	@Column(name = "AM_PM_ATR")
-	private int amPmAtr;
+	/**
+	 * Instantiates a new kshmt fixed work set PK.
+	 */
+	public KshmtFixedWorkSetPK() {
+		super();
+	}
 
 	/**
-	 * Instantiates a new kshmt fixed half rest set PK.
+	 * Instantiates a new kshmt fixed work set PK.
+	 *
+	 * @param cid
+	 *            the cid
+	 * @param worktimeCd
+	 *            the worktime cd
 	 */
-	public KshmtFixedHalfRestSetPK() {
+	public KshmtFixedWorkSetPK(String cid, String worktimeCd) {
 		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
 	}
 
 	/*
@@ -52,7 +62,6 @@ public class KshmtFixedHalfRestSetPK implements Serializable {
 		int hash = 0;
 		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) amPmAtr;
 		return hash;
 	}
 
@@ -63,19 +72,16 @@ public class KshmtFixedHalfRestSetPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFixedHalfRestSetPK)) {
+		if (!(object instanceof KshmtFixedWorkSetPK)) {
 			return false;
 		}
-		KshmtFixedHalfRestSetPK other = (KshmtFixedHalfRestSetPK) object;
+		KshmtFixedWorkSetPK other = (KshmtFixedWorkSetPK) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if ((this.worktimeCd == null && other.worktimeCd != null)
 				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
-			return false;
-		}
-		if (this.amPmAtr != other.amPmAtr) {
 			return false;
 		}
 		return true;

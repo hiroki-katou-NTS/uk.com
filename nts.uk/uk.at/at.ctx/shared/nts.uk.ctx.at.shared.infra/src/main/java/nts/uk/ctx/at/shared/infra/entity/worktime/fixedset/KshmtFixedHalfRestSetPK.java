@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
 
@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshmtFixedStampReflectPK.
+ * The Class KshmtFixedHalfRestSetPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KshmtFixedStampReflectPK implements Serializable {
+public class KshmtFixedHalfRestSetPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,14 +31,15 @@ public class KshmtFixedStampReflectPK implements Serializable {
 	@Column(name = "WORKTIME_CD")
 	private String worktimeCd;
 
-	/** The work no. */
-	@Column(name = "WORK_NO")
-	private int workNo;
+	/** The am pm atr. */
+	@Column(name = "AM_PM_ATR")
+	private int amPmAtr;
 
 	/**
-	 * Instantiates a new kshmt fixed stamp reflect PK.
+	 * Instantiates a new kshmt fixed half rest set PK.
 	 */
-	public KshmtFixedStampReflectPK() {
+	public KshmtFixedHalfRestSetPK() {
+		super();
 	}
 
 	/*
@@ -51,7 +52,7 @@ public class KshmtFixedStampReflectPK implements Serializable {
 		int hash = 0;
 		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) workNo;
+		hash += (int) amPmAtr;
 		return hash;
 	}
 
@@ -62,10 +63,10 @@ public class KshmtFixedStampReflectPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFixedStampReflectPK)) {
+		if (!(object instanceof KshmtFixedHalfRestSetPK)) {
 			return false;
 		}
-		KshmtFixedStampReflectPK other = (KshmtFixedStampReflectPK) object;
+		KshmtFixedHalfRestSetPK other = (KshmtFixedHalfRestSetPK) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
@@ -74,9 +75,10 @@ public class KshmtFixedStampReflectPK implements Serializable {
 				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
 			return false;
 		}
-		if (this.workNo != other.workNo) {
+		if (this.amPmAtr != other.amPmAtr) {
 			return false;
 		}
 		return true;
 	}
+
 }
