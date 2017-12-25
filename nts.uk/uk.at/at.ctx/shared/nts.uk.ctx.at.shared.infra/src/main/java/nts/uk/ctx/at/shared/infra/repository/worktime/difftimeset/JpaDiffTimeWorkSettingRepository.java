@@ -39,7 +39,7 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository
 	}
 
 	@Override
-	public boolean remove(String workTimeCode) {
+	public boolean remove(String companyId, String workTimeCode) {
 		// TODO Auto-generated method stub
 		return false;
 	}

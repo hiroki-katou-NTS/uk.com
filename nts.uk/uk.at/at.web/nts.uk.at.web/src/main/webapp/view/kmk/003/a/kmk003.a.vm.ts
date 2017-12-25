@@ -321,7 +321,24 @@ module nts.uk.at.view.kmk003.a {
                     self.useHalfDay(HalfDayEnum.NOT_USE);
                 }
             }
-          
+            
+             /**
+             * remove worktime by code
+             */
+            private removeWorkTime(): JQueryPromise<void>
+            {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    service.removeWorkTime(self.selectedWorkTimeCode()).done(function() {
+                        dfd.resolve();
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
+                    });
+                }).ifNo(function() {
+                });
+                return dfd.promise();
+            }
         }
         
         export class ItemWorkForm {

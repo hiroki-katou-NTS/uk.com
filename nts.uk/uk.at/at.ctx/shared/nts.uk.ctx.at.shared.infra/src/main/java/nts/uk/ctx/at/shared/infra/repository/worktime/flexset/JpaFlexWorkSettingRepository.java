@@ -79,6 +79,12 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 //						new ArrayList<>(), new ArrayList<>())));
 //	}
 
+	@Override
+	public boolean remove(String companyId, String workTimeCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	/**
 	 * Find flex setting group.
 	 *

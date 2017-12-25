@@ -12,7 +12,8 @@ module nts.uk.at.view.kmk003.a {
             savePred: "at/shared/pred/save",
             findByCodeFlexWorkSetting: "ctx/at/shared/worktime/flexset/findByCode",
             saveFlexWorkSetting: "ctx/at/shared/worktime/flexset/save",
-            saveFixedWorkSetting: "ctx/at/shared/worktime/fixed/save"
+            saveFixedWorkSetting: "ctx/at/shared/worktime/fixed/save",
+            removeWorkTimeByCode: "ctx/at/shared/worktime/remove"
         };
 
         /**
@@ -61,6 +62,10 @@ module nts.uk.at.view.kmk003.a {
          */
         export function saveFixedWorkSetting(command: model.command.FixedWorkSettingSaveCommand): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.saveFixedWorkSetting, command);
+        }
+        
+        export function removeWorkTime(workTimeCode: string): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.removeWorkTimeByCode, { workTimeCode: workTimeCode });
         }
     }
 }

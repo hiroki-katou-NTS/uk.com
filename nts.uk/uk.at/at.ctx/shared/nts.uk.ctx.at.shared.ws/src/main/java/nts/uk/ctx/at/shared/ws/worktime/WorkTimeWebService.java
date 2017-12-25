@@ -15,6 +15,8 @@ import javax.ws.rs.Produces;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommand;
+import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.DiffTimeWorkSettingSaveCommand;
 import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.DiffTimeWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktime.fixedset.FixedWorkSettingSaveCommand;
@@ -68,6 +70,9 @@ public class WorkTimeWebService extends WebService {
 	@Inject
 	private WorkTimeSettingInfoFinder workTimeSettingInfoFinder;
 	
+	/** The work time common delete command handler. */
+	@Inject
+	private WorkTimeCommonDeleteCommandHandler workTimeCommonDeleteCommandHandler;
 	/**
 	 * Find by company ID.
 	 *
@@ -205,6 +210,17 @@ public class WorkTimeWebService extends WebService {
 	@Path("findInfo/{workTimeCode}")
 	public WorkTimeSettingInfoDto findInfoByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode){
 		return this.workTimeSettingInfoFinder.find(workTimeCode);
+	}
+	
+	/**
+	 * Removes the by work time code.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("remove")
+	public void removeByWorkTimeCode(WorkTimeCommonDeleteCommand command) {
+		this.workTimeCommonDeleteCommandHandler.handle(command);
 	}
 }
 
