@@ -2235,6 +2235,7 @@ module nts.uk.com.view.cmm018.a {
                         self.enableCreatNewB(true);
                         return;
                     }
+                    let singleSelectedCodeOld  =  self.singleSelectedCode();
                     self.singleSelectedCode('-1');
                     self.enableDeleteB(false);
                     __viewContext.viewModel.viewmodelA.enableRegister(true);
@@ -2252,7 +2253,7 @@ module nts.uk.com.view.cmm018.a {
                     if(self.tabSelectedB() == 0){//company
                         let a = null;
                         _.each(self.lstCompany(), function(item){
-                            if(item.company.approvalId != self.singleSelectedCode()){//bo them ls cua cai dang sua
+                            if(item.company.approvalId != singleSelectedCodeOld){//bo them ls cua cai dang sua
                                 data2.push(new vmbase.DataCheckModeB(item.company.approvalId, item.company.startDate, item.company.endDate, 
                                             item.company.applicationType, item.company.employmentRootAtr));
                             }else{
@@ -2294,7 +2295,7 @@ module nts.uk.com.view.cmm018.a {
                     }else if(self.tabSelectedB() == 1){//workplace
                         let a = null;
                         _.each(self.lstWorkplace(), function(item){
-                            if(item.workplace.approvalId != self.singleSelectedCode()){//bo them ls cua cai dang sua
+                            if(item.workplace.approvalId != singleSelectedCodeOld){//bo them ls cua cai dang sua
                                 data2.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate, item.workplace.endDate, 
                                             item.workplace.applicationType, item.workplace.employmentRootAtr));
                             }else{
@@ -2335,7 +2336,7 @@ module nts.uk.com.view.cmm018.a {
                     }else{//person
                         let a = null;
                         _.each(self.lstPerson(), function(item){
-                            if(item.person.approvalId != self.singleSelectedCode()){//bo them ls cua cai dang sua
+                            if(item.person.approvalId != singleSelectedCodeOld){//bo them ls cua cai dang sua
                                 data2.push(new vmbase.DataCheckModeB(item.person.approvalId, item.person.startDate, item.person.endDate, 
                                             item.person.applicationType, item.person.employmentRootAtr));
                             }else{
