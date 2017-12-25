@@ -96,44 +96,24 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		List<AffJobTitleHistoryItem_ver1> affJobTitleHistoryItem = this.affJobTitleHisItemRepo_ver1.getAllBySid(employeeId);
 		
 		Map<String, List<Object>> mapMerge = new HashMap<>();
-//		Map<String, AffJobTitleHistory_ver1> mapHisIDDate = new HashMap<>();
 		Map<String, DatePeriod> mapHisIDDate = new HashMap<>();
-		Map<String, String> mapHisIdSid = new HashMap<>();
 		
+		/* Change list AffJobTitleHistory_ver1 to map */
 		affJobTitleHistories.stream().forEach((jobEmp) -> {
 			jobEmp.getHistoryItems().stream().forEach((dateHistory) -> {
 				mapHisIDDate.put(dateHistory.identifier(), dateHistory.span());
-				mapHisIdSid.put(dateHistory.identifier(), jobEmp.getEmployeeId());
 			});
 		});
 		
+		/* Matching history in mapHisIDDate with list affJobTitleHistoryItem */
 		affJobTitleHistoryItem.stream().forEach((temp2) -> {
 			String hisId = temp2.getHistoryId();
-			if (mapHisIDDate.get(hisId) != null 
-					&& temp2.getEmployeeId().equals(mapHisIdSid.get(hisId))) {
-				mapMerge.put(temp2.getEmployeeId() + "_" + hisId, 
-						Arrays.asList(new Object[]{mapHisIDDate.get(hisId).start(), 
+			if (mapHisIDDate.get(hisId) != null) {
+				mapMerge.put(hisId,Arrays.asList(new Object[]{mapHisIDDate.get(hisId).start(), 
 													temp2.getJobTitleId(), 
 													mapHisIDDate.get(hisId).end()}));
 			}
 		});
-		
-		// TODO : Hoang check lại
-		// TODO: key of mapMerge is eid_hid distinct
-		
-		/*affJobTitleHistories.stream().forEach((temp1) -> {
-			affJobTitleHistoryItem.stream().forEach((temp2) -> { 
-				if (temp1.getEmployeeId().equals(temp2.getEmployeeId()) 
-						&& temp1.getHistoryItems().get(0).identifier().equals(temp2.getHistoryId())) {
-					mapMerge.put(temp2.getEmployeeId() + "_" + temp2.getHistoryId(), 
-							Arrays.asList(new Object[]{temp1.getHistoryItems().get(0).start(), 
-														temp2.getJobTitleId(), 
-														temp1.getHistoryItems().get(0).end()}));
-				}
-			});
-		});*/
-		
-		
 		
 		String companyId = AppContexts.user().companyId();
 		

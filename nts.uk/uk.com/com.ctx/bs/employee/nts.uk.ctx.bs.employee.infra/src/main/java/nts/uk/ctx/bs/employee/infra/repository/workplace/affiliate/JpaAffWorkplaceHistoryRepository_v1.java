@@ -51,6 +51,14 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	private static final String SELECT_BY_LIST_EMPID_BY_LIST_WKPIDS_BASEDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE aw.sid IN (:employeeIds) AND awit.workPlaceId IN (:wkpIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+	
+	private static final String SELECT_BY_HISTID_AND_DATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
+			+ " WHERE aw.hisId = :histId AND aw.strDate <= :baseDate AND :baseDate <= aw.endDate"; 
+	
+	private static final String SELECT_BY_EMPIDS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
+			+ " WHERE aw.sid IN (:employeeIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 
 	/**
 	 * Convert from domain to entity
@@ -171,7 +179,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		// Query.
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_EMPIDS, BsymtAffiWorkplaceHist.class)
 				.setParameter("employeeIds", employeeIds)
-				.setParameter("baseDate", date)
+				.setParameter("standDate", date)
 				.getList();
 		
 		// Group by his id.
