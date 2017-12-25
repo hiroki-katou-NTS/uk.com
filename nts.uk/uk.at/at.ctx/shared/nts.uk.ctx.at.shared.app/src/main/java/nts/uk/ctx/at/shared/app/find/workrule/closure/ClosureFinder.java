@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workrule.closure;
@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.EmpCdNameDto;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -93,6 +94,33 @@ public class ClosureFinder {
 		});
 		
 		return new ClosureEmployDto(empCdNameDtoList, closureCdNameDtoList);
+	}
+	
+	/**
+	 * Gets the closure id name.
+	 *
+	 * @param referDate the refer date
+	 * @return the closure id name
+	 */
+	public List<ClosureIdNameDto> getClosureIdName(int referDate) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Find All Closure in use
+		List<Closure> closureList = this.repository.findAllUse(companyId);
+		
+		// Get List ClosureHistory Domain by companyID, closureID, startDay.
+		List<ClosureHistory> lstClosureHistory = new ArrayList<>();
+		closureList.stream().forEach(x -> {
+			ClosureHistory closureInf = repository.findById(companyId, x.getClosureId().value, referDate).get();
+			lstClosureHistory.add(closureInf);
+		});
+		
+		// Get List ClosureIdNameDto from ClosureHistory Domain.
+		List<ClosureIdNameDto> closureIdNameDtoList = lstClosureHistory.stream().map(x -> {
+			return ClosureIdNameDto.fromDomain(x);
+		}).collect(Collectors.toList());
+		return closureIdNameDtoList;
 	}
 
 	/**
