@@ -43,14 +43,14 @@ module a7 {
                 console.log(newList);
             });
             self.fixTableOptionForFixedOrDiffTime = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceForFixedOrDiffTime,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
-                tabindex: 10
+                tabindex: 92
             };
             
             /////////////
@@ -59,14 +59,14 @@ module a7 {
                 console.log(newList);
             });
             self.fixTableOptionForFlowOrFlexUse = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceForFlowOrFlexUse,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
-                tabindex: 10
+                tabindex: 94
             };
             
             /////////////
@@ -75,14 +75,14 @@ module a7 {
                 console.log(newList);
             });
             self.fixTableOptionForFlowOrFlexNotUse1 = {
-                maxRow: 7,
+                maxRow: 5,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceForFlowOrFlexNotUse1,
                 isMultipleSelect: true,
                 columns: self.columnSetting2(),
-                tabindex: 10
+                tabindex: 95
             };
             
             /////////////
@@ -98,7 +98,7 @@ module a7 {
                 dataSource: self.dataSourceForFlowOrFlexNotUse2,
                 isMultipleSelect: true,
                 columns: self.columnSetting2(),
-                tabindex: 10
+                tabindex: 97
             };
             
             //subscrible worktime ssettingmethod
