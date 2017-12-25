@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -33,7 +34,7 @@ public class KshmtFlexStampReflectPK implements Serializable {
 
 	/** The work no. */
 	@Column(name = "WORK_NO")
-	private int workNo;
+	private BigDecimal workNo;
 
 	/**
 	 * Instantiates a new kshmt flex stamp reflect PK.
@@ -41,43 +42,49 @@ public class KshmtFlexStampReflectPK implements Serializable {
 	public KshmtFlexStampReflectPK() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) workNo;
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + ((workNo == null) ? 0 : workNo.hashCode());
+		result = prime * result + ((worktimeCd == null) ? 0 : worktimeCd.hashCode());
+		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFlexStampReflectPK)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		KshmtFlexStampReflectPK other = (KshmtFlexStampReflectPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if ((this.worktimeCd == null && other.worktimeCd != null)
-				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
+		KshmtFlexStampReflectPK other = (KshmtFlexStampReflectPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
 			return false;
-		}
-		if (this.workNo != other.workNo) {
+		if (workNo == null) {
+			if (other.workNo != null)
+				return false;
+		} else if (!workNo.equals(other.workNo))
 			return false;
-		}
+		if (worktimeCd == null) {
+			if (other.worktimeCd != null)
+				return false;
+		} else if (!worktimeCd.equals(other.worktimeCd))
+			return false;
 		return true;
 	}
+
+
 
 }

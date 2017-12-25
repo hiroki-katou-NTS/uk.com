@@ -5,10 +5,19 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -62,6 +71,28 @@ public class KshmtFlexWorkSet extends UkJpaEntity implements Serializable {
 	/** The use halfday shift. */
 	@Column(name = "USE_HALFDAY_SHIFT")
 	private int useHalfdayShift;
+	
+	
+	/** The kshmt working cond item. */
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
+	private KshmtFlexRestSet kshmtFlexRestSet;
+	
+	/** The kshmt flex ha rt sets. */
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexHaRtSet> kshmtFlexHaRtSets;
+	
+	/** The kshmt flex stamp reflects. */
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexStampReflect> kshmtFlexStampReflects;
+
 
 	/**
 	 * Instantiates a new kshmt flex work set.

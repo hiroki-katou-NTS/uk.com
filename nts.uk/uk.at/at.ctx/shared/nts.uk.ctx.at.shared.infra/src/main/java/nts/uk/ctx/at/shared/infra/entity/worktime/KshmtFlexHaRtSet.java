@@ -5,10 +5,16 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -98,4 +104,21 @@ public class KshmtFlexHaRtSet extends UkJpaEntity implements Serializable {
 		return this.kshmtFlexHaRtSetPK;
 	}
 
+	
+
+	/** The kshmt flex work time sets. */
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+			@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexWorkTimeSet> kshmtFlexWorkTimeSets;
+	
+	
+	/** The kshmt flex ot time sets. */
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+		@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexOtTimeSet> kshmtFlexOtTimeSets;
+	
 }

@@ -6,27 +6,24 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRestPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class JpaFlexOffdayDeductionTimeSetMemento.
+ * The Class JpaFlexDeductionTimeSetMemento.
  */
-public class JpaFlexOffdayDeductionTimeSetMemento implements DeductionTimeSetMemento{
+public class JpaFlexHAFixDeductionTimeSetMemento implements DeductionTimeSetMemento{
 	
 	/** The entity. */
 	private KshmtFlexHaFixRest entity;
 	
+
 	/**
-	 * Instantiates a new jpa flex offday deduction time set memento.
+	 * Instantiates a new jpa flex HA fix deduction time set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexOffdayDeductionTimeSetMemento(KshmtFlexHaFixRest entity) {
+	public JpaFlexHAFixDeductionTimeSetMemento(KshmtFlexHaFixRest entity) {
 		super();
-		if(entity.getKshmtFlexHaFixRestPK() == null){
-			entity.setKshmtFlexHaFixRestPK(new KshmtFlexHaFixRestPK());
-		}
 		this.entity = entity;
 	}
 
@@ -54,5 +51,4 @@ public class JpaFlexOffdayDeductionTimeSetMemento implements DeductionTimeSetMem
 		this.entity.setEndTime(end.valueAsMinutes());
 	}
 	
-
 }

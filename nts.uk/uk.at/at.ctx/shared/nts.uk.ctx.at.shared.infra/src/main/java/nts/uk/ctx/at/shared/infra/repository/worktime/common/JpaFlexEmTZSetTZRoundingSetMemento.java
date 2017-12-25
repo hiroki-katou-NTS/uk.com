@@ -6,27 +6,27 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkTimeSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class JpaFlexOTTimeZoneRoundingSetMemento.
+ * The Class JpaFlexEmTZSetTZRoundingSetMemento.
  */
-public class JpaFlexOTTimeZoneRoundingSetMemento implements TimeZoneRoundingSetMemento{
+public class JpaFlexEmTZSetTZRoundingSetMemento implements TimeZoneRoundingSetMemento{
 	
 	/** The entity. */
-	private KshmtFlexOtTimeSet entity;
+	private KshmtFlexWorkTimeSet entity;
 	
 	/**
-	 * Instantiates a new jpa flex OT time zone rounding set memento.
+	 * Instantiates a new jpa flex em TZ set TZ rounding set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexOTTimeZoneRoundingSetMemento(KshmtFlexOtTimeSet entity) {
+	public JpaFlexEmTZSetTZRoundingSetMemento(KshmtFlexWorkTimeSet entity) {
 		super();
-		if(entity.getKshmtFlexOtTimeSetPK() == null){
-			entity.setKshmtFlexOtTimeSetPK(new KshmtFlexOtTimeSetPK());
+		if(entity.getKshmtFlexWorkTimeSetPK() == null){
+			entity.setKshmtFlexWorkTimeSetPK(new KshmtFlexWorkTimeSetPK());
 		}
 		this.entity = entity;
 	}
@@ -34,8 +34,7 @@ public class JpaFlexOTTimeZoneRoundingSetMemento implements TimeZoneRoundingSetM
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingSetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingSetMemento#
 	 * setRounding(nts.uk.ctx.at.shared.dom.common.timerounding.
 	 * TimeRoundingSetting)
 	 */
@@ -48,8 +47,7 @@ public class JpaFlexOTTimeZoneRoundingSetMemento implements TimeZoneRoundingSetM
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingSetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingSetMemento#
 	 * setStart(nts.uk.shr.com.time.TimeWithDayAttr)
 	 */
 	@Override
@@ -60,14 +58,13 @@ public class JpaFlexOTTimeZoneRoundingSetMemento implements TimeZoneRoundingSetM
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.TimeZoneRoundingSetMemento#
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingSetMemento#
 	 * setEnd(nts.uk.shr.com.time.TimeWithDayAttr)
 	 */
 	@Override
 	public void setEnd(TimeWithDayAttr end) {
 		this.entity.setTimeEnd(end.valueAsMinutes());
 	}
-
+	
 
 }
