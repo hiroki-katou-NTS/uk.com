@@ -230,6 +230,7 @@ public class RegisterLayoutFinder {
 		if (command.getCreateType() == 1) {
 
 			return getAllCopyItem(command);
+
 		} else {
 			// Init Value Type
 
@@ -242,6 +243,7 @@ public class RegisterLayoutFinder {
 	public List<SettingItemDto> getAllInitItemBySetId(AddEmployeeCommand command) {
 		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+
 		this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
 
 			listQuery.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
@@ -251,7 +253,7 @@ public class RegisterLayoutFinder {
 
 			findInitItemDto findInitCommand = new findInitItemDto(command.getInitSettingId(), command.getHireDate(),
 					x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(), command.getHireDate());
-			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(findInitCommand));
+			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand));
 		});
 		return result;
 	}
@@ -264,8 +266,8 @@ public class RegisterLayoutFinder {
 		});
 
 		listQuery.forEach(x -> {
-			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(x.getCategoryCode(), command.getEmployeeCopyId(),
-					command.getHireDate()));
+			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(false, x.getCategoryCode(),
+					command.getEmployeeCopyId(), command.getHireDate()));
 		});
 		return result;
 	}

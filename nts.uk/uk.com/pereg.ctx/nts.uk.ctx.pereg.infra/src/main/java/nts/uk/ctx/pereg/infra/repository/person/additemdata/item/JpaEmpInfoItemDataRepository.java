@@ -23,7 +23,7 @@ import nts.uk.shr.pereg.app.ItemValueType;
 @Stateless
 public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpInfoItemDataRepository {
 
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,pc.ppemtPerInfoCtgPK.perInfoCtgId,pc.categoryCd,pm.itemType,pm.selectionItemRefType"
+	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,pc.ppemtPerInfoCtgPK.perInfoCtgId,pc.categoryCd,pm.itemType,pm.selectionItemRefType,pm.selectionItemRefCode"
 			+ " FROM PpemtEmpInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc ON id.ppemtEmpInfoItemDataPk.recordId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -60,13 +60,14 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		PpemtPerInfoItem personInforItem = (PpemtPerInfoItem) entity[1];
 		PpemtPerInfoCtg personInforCategory = (PpemtPerInfoCtg) entity[2];
 		PpemtPerInfoItemCm perInfoItemCm = (PpemtPerInfoItemCm) entity[3];
-	
+
 		return EmpInfoItemData.createFromJavaType(personInforItem.itemCd,
 				personInforItem.ppemtPerInfoItemPK.perInfoItemDefId, itemData.ppemtEmpInfoItemDataPk.recordId,
 				personInforCategory.ppemtPerInfoCtgPK.perInfoCtgId, personInforCategory.categoryCd,
 				personInforItem.itemName, personInforItem.requiredAtr, itemData.saveDataType, itemData.stringValue,
-				itemData.intValue, itemData.dateValue, perInfoItemCm.dataType == null ? itemData.saveDataType : perInfoItemCm.dataType.intValue());
-		
+				itemData.intValue, itemData.dateValue,
+				perInfoItemCm.dataType == null ? itemData.saveDataType : perInfoItemCm.dataType.intValue());
+
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {
@@ -83,11 +84,16 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 		int selectionItemRefType = Integer.parseInt(entity[14] != null ? entity[14].toString() : "0");
 
+		String selectionItemRefCd = entity[15] != null ? entity[15].toString() : "";
+
 		EmpInfoItemData newInfoItem = EmpInfoItemData.createFromJavaType(entity[10].toString(), entity[0].toString(),
 				entity[1].toString(), entity[11].toString(), entity[12].toString(), entity[9].toString(), isRequired,
 				dataStateType, entity[5].toString(), intValue, dateValue, dataType);
 
-		newInfoItem.setSelectionItemRefType(BigDecimal.valueOf(selectionItemRefType));
+		newInfoItem.setSelectionItemRefType(selectionItemRefType);
+
+		newInfoItem.setSelectionItemRefCd(selectionItemRefCd);
+		
 		return newInfoItem;
 
 	}

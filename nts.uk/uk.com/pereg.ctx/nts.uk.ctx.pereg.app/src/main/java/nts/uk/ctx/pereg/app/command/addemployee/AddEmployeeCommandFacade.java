@@ -16,6 +16,7 @@ import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SaveDataDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
@@ -150,7 +151,7 @@ public class AddEmployeeCommandFacade {
 		dataList.forEach(x -> {
 
 			if (x.getDataType().equals(DataTypeValue.SELECTION)) {
-				if (x.getSelectionItemRefType().intValue() == 3) {
+				if (x.getSelectionItemRefType().equals(ReferenceTypes.ENUM)) {
 					x.setDataType(DataTypeValue.NUMERIC);
 				}
 			}
