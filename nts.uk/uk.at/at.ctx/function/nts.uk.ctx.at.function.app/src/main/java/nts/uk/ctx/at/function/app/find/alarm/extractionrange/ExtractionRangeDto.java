@@ -26,13 +26,13 @@ public class ExtractionRangeDto {
 		ExtractionRangeDto rangeDto = new ExtractionRangeDto();
 		if(extractionRangeBase.getExtractionRange().equals(ExtractionRange.PERIOD)){
 			ExtractionPeriodDaily daily = (ExtractionPeriodDaily)extractionRangeBase;
-			rangeDto.extractionId = daily.getExtractionId();
+			/*rangeDto.extractionId = daily.getExtractionId();
 			rangeDto.extractionRange = daily.getExtractionRange().value;
 			rangeDto.previousClassification = daily.getNumberOfDays().getPreviousClassification().value;
 			rangeDto.day = daily.getNumberOfDays().getDay();
 			rangeDto.makeToDay = daily.getNumberOfDays().isMakeToDay();
 			rangeDto.specifyStartDate = daily.getSpecifyStartDate().value;
-			rangeDto.specifyEndDate =  daily.getSpecifyEndDate().value;
+			rangeDto.specifyEndDate =  daily.getSpecifyEndDate().value;*/
 			
 		}
 		return rangeDto;

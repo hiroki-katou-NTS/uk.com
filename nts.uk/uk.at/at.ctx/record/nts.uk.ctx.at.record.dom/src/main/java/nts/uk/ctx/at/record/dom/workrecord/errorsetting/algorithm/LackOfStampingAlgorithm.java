@@ -57,8 +57,8 @@ public class LackOfStampingAlgorithm {
 			List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
 			List<Integer> attendanceItemIDList = new ArrayList<>();
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorkList) {
-				WorkStamp leavingStamp = timeLeavingWork.getLeaveStamp().getStamp();
-				WorkStamp attendanceStamp = timeLeavingWork.getAttendanceStamp().getStamp();
+				WorkStamp leavingStamp = timeLeavingWork.getLeaveStamp().getStamp().get();
+				WorkStamp attendanceStamp = timeLeavingWork.getAttendanceStamp().getStamp().get();
 				if (leavingStamp != null && attendanceStamp == null) {
 					if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 						attendanceItemIDList.add(31);

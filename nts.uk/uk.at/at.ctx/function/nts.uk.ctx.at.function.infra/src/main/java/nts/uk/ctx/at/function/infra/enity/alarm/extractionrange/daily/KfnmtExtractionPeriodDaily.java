@@ -40,7 +40,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 	public int day;
 	
 	@Column(name = "MAKE_TO_DAY")
-	public boolean makeToDay;
+	public int makeToDay;
 	
 	@Column(name = "SPECIFY_STARTDATE")
 	public int specifyStartDate;

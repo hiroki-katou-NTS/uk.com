@@ -87,18 +87,21 @@ public class AgreementTimeOfEmploymentFinder {
 		// get basicSettingId of Company
 		Optional<AgreementTimeOfCompany> agreementTimeOfCompany = agreementTimeCompanyRepository.find(companyId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
-		// get Limit Time of company
-		Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
-				.find(agreementTimeOfCompany.get().getBasicSettingId());
-		
-		// set limit time
-		agreementTimeOfEmploymentDetailDto.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
-		agreementTimeOfEmploymentDetailDto.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
-		agreementTimeOfEmploymentDetailDto.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
-		agreementTimeOfEmploymentDetailDto.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
-		agreementTimeOfEmploymentDetailDto.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
-		agreementTimeOfEmploymentDetailDto.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
-		agreementTimeOfEmploymentDetailDto.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
+		if (agreementTimeOfCompany.isPresent()) {
+
+			// get Limit Time of company
+			Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
+					.find(agreementTimeOfCompany.get().getBasicSettingId());
+			
+			// set limit time
+			agreementTimeOfEmploymentDetailDto.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
+			agreementTimeOfEmploymentDetailDto.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
+			agreementTimeOfEmploymentDetailDto.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
+			agreementTimeOfEmploymentDetailDto.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
+			agreementTimeOfEmploymentDetailDto.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
+			agreementTimeOfEmploymentDetailDto.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
+			agreementTimeOfEmploymentDetailDto.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
+		}
 
 		return agreementTimeOfEmploymentDetailDto;
 	}

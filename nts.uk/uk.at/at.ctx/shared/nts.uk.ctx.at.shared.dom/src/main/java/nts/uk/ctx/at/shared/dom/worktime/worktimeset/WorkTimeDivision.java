@@ -23,4 +23,12 @@ public class WorkTimeDivision extends DomainObject {
 	/** The work time method set. */
 	// 就業時間帯の設定方法
 	private WorkTimeMethodSet workTimeMethodSet;
+	
+	/**
+	 * フレックス勤務or流動勤務のどちらかに該当するか判定する
+	 * @return　フレックスか流動である
+	 */
+	public boolean isfluidorFlex() {
+		return workTimeDailyAtr.isFlex()||workTimeMethodSet.isFluidWork();
+	}
 }
