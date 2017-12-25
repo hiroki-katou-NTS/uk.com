@@ -57,10 +57,27 @@ public class KshmtFlexHaRtSet extends UkJpaEntity implements Serializable {
 	@Column(name = "AFTER_PASSAGE_TIME")
 	private int afterPassageTime;
 
+	/** The kshmt flex work time sets. */
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+			@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexWorkTimeSet> kshmtFlexWorkTimeSets;
+
+	/** The kshmt flex ot time sets. */
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+			@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexOtTimeSet> kshmtFlexOtTimeSets;
+
 	/**
 	 * Instantiates a new kshmt flex ha rt set.
 	 */
 	public KshmtFlexHaRtSet() {
+		super();
 	}
 
 	/*
@@ -104,21 +121,4 @@ public class KshmtFlexHaRtSet extends UkJpaEntity implements Serializable {
 		return this.kshmtFlexHaRtSetPK;
 	}
 
-	
-
-	/** The kshmt flex work time sets. */
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
-			@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtFlexWorkTimeSet> kshmtFlexWorkTimeSets;
-	
-	
-	/** The kshmt flex ot time sets. */
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
-		@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtFlexOtTimeSet> kshmtFlexOtTimeSets;
-	
 }

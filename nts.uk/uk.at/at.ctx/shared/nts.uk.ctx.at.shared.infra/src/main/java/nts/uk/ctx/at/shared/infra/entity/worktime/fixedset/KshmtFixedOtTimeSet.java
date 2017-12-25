@@ -11,11 +11,15 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtFixedOtTimeSet.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSHMT_FIXED_OT_TIME_SET")
 public class KshmtFixedOtTimeSet extends UkJpaEntity implements Serializable {
@@ -55,6 +59,7 @@ public class KshmtFixedOtTimeSet extends UkJpaEntity implements Serializable {
 	@Column(name = "TIME_END")
 	private int timeEnd;
 
+	// TODO: Move into PK
 	/** The ot frame no. */
 	@Column(name = "OT_FRAME_NO")
 	private int otFrameNo;
@@ -71,6 +76,7 @@ public class KshmtFixedOtTimeSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt fixed ot time set.
 	 */
 	public KshmtFixedOtTimeSet() {
+		super();
 	}
 
 	/*
