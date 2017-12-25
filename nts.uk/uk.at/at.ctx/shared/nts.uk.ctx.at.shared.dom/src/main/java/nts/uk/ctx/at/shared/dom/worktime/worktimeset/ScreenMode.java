@@ -7,13 +7,11 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 /**
  * The Enum ScreenMode.
  */
-
-// TODO: need to review
 public enum ScreenMode {
 
 	/** The simple. */
 	// 簡易
-	SIMPLE(1, "Enum_ScreenMode_Simple", "簡易"),
+	SIMPLE(0, "Enum_ScreenMode_Simple", "簡易"),
 
 	/** The detail. */
 	// 詳細

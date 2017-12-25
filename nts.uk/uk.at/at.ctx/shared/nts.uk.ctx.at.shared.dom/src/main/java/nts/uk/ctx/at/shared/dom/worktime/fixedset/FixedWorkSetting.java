@@ -142,10 +142,6 @@ public class FixedWorkSetting extends AggregateRoot {
 	 * @param oldDomain the old domain
 	 */
 	public void restoreData(ScreenMode screenMode, FixedWorkSetting oldDomain) {
-		if (screenMode == ScreenMode.SIMPLE) {
-			//TODO restore data simple mode
-		} else {
-			//TODO restore data detail mode
-		}
+		this.commonSetting.restoreData(screenMode, oldDomain.getCommonSetting());
 	}
 }
