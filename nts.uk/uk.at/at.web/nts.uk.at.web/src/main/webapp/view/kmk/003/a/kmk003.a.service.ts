@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk003.a {
         *  Service paths
         */
         let servicePath: any = {
+            findWithCondition: "at/shared/worktime/findwithcondition",
             findAllWorktime: "at/shared/worktimeset/findAll",
             findWorktimeSetingInfoByCode: "at/shared/worktimeset/findByCode",
             getEnumWorktimeSeting: "at/shared/worktimeset/getenum",
@@ -21,6 +22,14 @@ module nts.uk.at.view.kmk003.a {
          */
         export function findAllWorkTimeSet(): JQueryPromise<model.worktimeset.SimpleWorkTimeSettingDto[]> {
             return nts.uk.request.ajax(servicePath.findAllWorktime);
+        }
+
+        /**
+         * Find worktimeset with condition
+         */
+        export function findWithCondition(condition: model.worktimeset.WorkTimeSettingCondition):
+            JQueryPromise<model.worktimeset.SimpleWorkTimeSettingDto[]> {
+            return nts.uk.request.ajax(servicePath.findWithCondition, condition);
         }
         
          /**

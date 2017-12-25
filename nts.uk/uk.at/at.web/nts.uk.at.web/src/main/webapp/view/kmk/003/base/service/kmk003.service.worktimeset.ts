@@ -4,6 +4,12 @@ module nts.uk.at.view.kmk003.a {
 
             export module worktimeset {
 
+                export interface WorkTimeSettingCondition {
+                    workTimeDailyAtr: Object;
+                    workTimeMethodSet: Object;
+                    isAbolish: Object;
+                }
+
                 export interface WorkTimeDivisionDto {
                     workTimeDailyAtr: number;
                     workTimeMethodSet: number;

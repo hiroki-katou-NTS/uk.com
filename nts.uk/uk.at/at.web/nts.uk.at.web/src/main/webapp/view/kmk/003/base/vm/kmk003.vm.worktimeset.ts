@@ -73,6 +73,7 @@ module nts.uk.at.view.kmk003.a {
 
                 // flag
                 isFlex: KnockoutObservable<boolean>;
+                isRegularWork: KnockoutObservable<boolean>;
                 isFlow: KnockoutObservable<boolean>;
                 isFixed: KnockoutObservable<boolean>;
                 isDiffTime: KnockoutObservable<boolean>;
@@ -111,19 +112,19 @@ module nts.uk.at.view.kmk003.a {
                 initComputed(): void {
                     let self = this;
                     self.isFlex = ko.computed(() => {
-                        return this.workTimeDivision.workTimeDailyAtr() == 1;
+                        return self.workTimeDivision.workTimeDailyAtr() == 1;
                     });
-                    self.isFlow = ko.computed(() => {
-                        return this.workTimeDivision.workTimeDailyAtr() != 1
-                            && this.workTimeDivision.workTimeMethodSet() == 2;
+                    self.isRegularWork = ko.computed(() => {
+                        return self.workTimeDivision.workTimeDailyAtr() == 0;
                     });
                     self.isFixed = ko.computed(() => {
-                        return this.workTimeDivision.workTimeDailyAtr() != 1
-                            && this.workTimeDivision.workTimeMethodSet() == 0;
+                        return self.isRegularWork() && self.workTimeDivision.workTimeMethodSet() == 0;
                     });
                     self.isDiffTime = ko.computed(() => {
-                        return this.workTimeDivision.workTimeDailyAtr() != 1
-                            && this.workTimeDivision.workTimeMethodSet() == 1;
+                        return self.isRegularWork() && self.workTimeDivision.workTimeMethodSet() == 1;
+                    });
+                    self.isFlow = ko.computed(() => {
+                        return self.isRegularWork() && self.workTimeDivision.workTimeMethodSet() == 2;
                     });
                 }
 
