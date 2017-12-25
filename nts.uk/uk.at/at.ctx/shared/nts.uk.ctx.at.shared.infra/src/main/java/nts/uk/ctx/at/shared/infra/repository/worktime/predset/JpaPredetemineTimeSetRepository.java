@@ -104,19 +104,15 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository
 
 		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.findById(domain.getCompanyId(),
 				domain.getWorkTimeCode().v());
+
 		if (optionalEntityTimeSet.isPresent()) {
 			KshmtPredTimeSet entity = optionalEntityTimeSet.get();
-			List<KshmtWorkTimeSheetSet> lstEntityTime = this
-					.findWorktimeSheet(domain.getCompanyId(), domain.getWorkTimeCode().v());
-			domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity, lstEntityTime));
+			domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity));
 			this.commandProxy().update(entity);
-			this.commandProxy().updateAll(lstEntityTime);
 		} else {
 			KshmtPredTimeSet entity = new KshmtPredTimeSet();
-			List<KshmtWorkTimeSheetSet> lstEntityTime = new ArrayList<>();
-			domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity, lstEntityTime));
+			domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity));
 			this.commandProxy().insert(entity);
-			this.commandProxy().insertAll(lstEntityTime);
 		}
 
 	}
