@@ -1141,15 +1141,20 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 	private static void setFriday(WorkingConditionDto dto, SingleDaySchedule friday) {
 		dto.setFridayWorkTypeCode(friday.getWorkTypeCode().v());
-		dto.setFridayWorkTimeCode(friday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setFridayStartTime1(timeZone1.getStart().v());
-		dto.setFridayEndTime1(timeZone1.getEnd().v());
-		dto.setFridayStartTime2(timeZone2.getStart().v());
-		dto.setFridayEndTime2(timeZone2.getEnd().v());
+		if(friday.getWorkTimeCode().isPresent())
+			dto.setFridayWorkTimeCode(friday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setFridayStartTime1(tz.getStart().v());
+			dto.setFridayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setFridayStartTime2(tz.getStart().v());
+			dto.setFridayEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setSaturday(WorkingConditionDto dto, SingleDaySchedule saturday) {
