@@ -503,7 +503,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
 								.intValue(),
 						conditionsGroup1)
-				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcmtErAlCondition.krcstErAlConGroup1)
+				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcmtErAlCondition.krcstErAlConGroup2)
 						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
 								.intValue(),
 						conditionsGroup2);

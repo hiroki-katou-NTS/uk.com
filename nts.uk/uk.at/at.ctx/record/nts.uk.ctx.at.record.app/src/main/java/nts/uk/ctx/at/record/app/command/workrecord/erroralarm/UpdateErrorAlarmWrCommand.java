@@ -198,7 +198,7 @@ public class UpdateErrorAlarmWrCommand {
 				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
 		condition.createAttendanceItemCondition(operatorBetweenGroups)
 				.setAttendanceItemConditionGroup1(operatorGroup1, conditionsGroup1)
-				.setAttendanceItemConditionGroup2(operatorGroup1, conditionsGroup2);
+				.setAttendanceItemConditionGroup2(operatorGroup2, conditionsGroup2);
 		domain.setCondition(condition);
 		return domain;
 	}
