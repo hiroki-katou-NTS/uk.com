@@ -26,8 +26,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 public class AggregateMonthlyRecord implements AggregateMonthlyRecordService {
 
 	/** 労働契約履歴 */
-	@Inject
-	private EmploymentContractHistoryAdopter employmentContractHistoryAdopter;
+//	@Inject
+//	private EmploymentContractHistoryAdopter employmentContractHistoryAdopter;
 	
 	/** 社員 */
 	@Inject

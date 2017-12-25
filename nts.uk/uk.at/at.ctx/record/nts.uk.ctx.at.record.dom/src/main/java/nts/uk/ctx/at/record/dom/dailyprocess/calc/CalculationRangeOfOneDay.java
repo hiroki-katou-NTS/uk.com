@@ -19,7 +19,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -31,9 +30,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTi
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworkTime.DailyCalculationPersonalInformation;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.BreakSetOfCommon;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.overworkset.StatutoryOverTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixOffdayWorkTime;
@@ -45,7 +41,10 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -305,18 +304,18 @@ public class CalculationRangeOfOneDay {
 			/* フレックス勤務 */
 		} else {
 			switch (workTimeDivision.getWorkTimeMethodSet()) {
-			case Enum_Fixed_Work:
+			case FIXED_WORK:
 				/* 固定 */
 				createWithinWorkTimeSheet(personalInfo.getWorkingSystem(), setMethod, clockManage, dailyGoOutSheet,
 						commonSet, fixedCalc, workTimeDivision, fluidSet, breakmanage, fluRestTime,
 						fluidprefixBreakTimeSet, predetermineTimeSet, fixedWorkSetting, workTimeCommonSet,
 						bonusPaySetting, overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay,
 						afterDay, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet, workTime);
-			case Enum_Fluid_Work:
+			case FLOW_WORK:
 				/* 流動勤務 */
-			case Enum_Jogging_Time:
+			case DIFFTIME_WORK:
 				/* 時差勤務 */
-			case Enum_Overtime_Work:
+//			case Enum_Overtime_Work:
 			default:
 				throw new RuntimeException("unknown workTimeMethodSet" + workTimeDivision.getWorkTimeMethodSet());
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.HasTimeSpanList;
-import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
