@@ -285,6 +285,14 @@ module nts.uk.at.view.kmk003.a {
                     this.behindChange = ko.observable(0);
                 }
 
+                //TODO chua lam
+                public resetData(): void {
+                    let self = this;
+                    self.aheadChange(0);
+                    //self.unit.resetData();
+                    self.behindChange(0);
+                }
+
                 updateData(data: EmTimezoneChangeExtentDto) {
                     this.aheadChange(data.aheadChange);
                     this.unit.updateData(data.unit);
@@ -302,7 +310,6 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class DiffTimeWorkSettingModel {
-                companyId: KnockoutObservable<string>;
                 workTimeCode: KnockoutObservable<string>;
                 restSet: FixedWorkRestSetModel;
                 dayoffWorkTimezone: DiffTimeDayOffWorkTimezoneModel;
@@ -314,7 +321,6 @@ module nts.uk.at.view.kmk003.a {
                 overtimeSetting: KnockoutObservable<number>;
 
                 constructor() {
-                    this.companyId = ko.observable('');
                     this.workTimeCode = ko.observable('');
                     this.restSet = new FixedWorkRestSetModel();
                     this.dayoffWorkTimezone = new DiffTimeDayOffWorkTimezoneModel();
@@ -339,8 +345,21 @@ module nts.uk.at.view.kmk003.a {
                     return _.find(self.halfDayWorkTimezones, time => time.amPmAtr() == 2);
                 }
 
+                //TODO chua lam
+                public resetData(): void {
+                    let self = this;
+                    self.workTimeCode('');
+                    //self.restSet.resetData();
+                    //self.dayoffWorkTimezone.resetData();
+                    //self.commonSet.resetData();
+                    self.isUseHalfDayShift(false);
+                    self.changeExtent.resetData();
+                    //self.updateListHalfDay();
+                    //self.stampReflectTimezone.resetData();
+                    self.overtimeSetting(0);
+                }
+
                 updateData(data: DiffTimeWorkSettingDto) {
-                    this.companyId(data.companyId);
                     this.workTimeCode(data.workTimeCode);
                     this.restSet.updateData(data.restSet);
                     this.dayoffWorkTimezone.updateData(data.dayoffWorkTimezone);
@@ -365,7 +384,6 @@ module nts.uk.at.view.kmk003.a {
                         halfDayWorkTimezones.push(dataModel.toDto());
                     }
                     var dataDTO: DiffTimeWorkSettingDto = {
-                        companyId: this.companyId(),
                         workTimeCode: this.workTimeCode(),
                         restSet: this.restSet.toDto(),
                         dayoffWorkTimezone: this.dayoffWorkTimezone.toDto(),

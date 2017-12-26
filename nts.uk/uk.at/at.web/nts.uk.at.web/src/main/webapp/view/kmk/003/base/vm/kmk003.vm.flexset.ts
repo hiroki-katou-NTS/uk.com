@@ -34,6 +34,12 @@ module nts.uk.at.view.kmk003.a {
                     this.endTime = ko.observable(0);
                 }
 
+                public resetData(): void {
+                    let self = this;
+                    self.startTime(0);
+                    self.endTime(0);
+                }
+
                 updateData(data: TimeSheetDto) {
                     this.startTime(data.startTime);
                     this.endTime(data.endTime);
@@ -56,6 +62,13 @@ module nts.uk.at.view.kmk003.a {
                     this.coreTimeSheet = new TimeSheetModel();
                     this.timesheet = ko.observable(0);
                     this.minWorkTime = ko.observable(0);
+                }
+
+                public resetData(): void {
+                    let self = this;
+                    self.coreTimeSheet.resetData();
+                    self.timesheet(0);
+                    self.minWorkTime(0);
                 }
 
                 updateData(data: CoreTimeSettingDto) {
@@ -124,6 +137,12 @@ module nts.uk.at.view.kmk003.a {
                     this.calculateSharing = ko.observable(0);
                 }
 
+                public resetData(): void {
+                    let self = this;
+                    self.removeFromWorkTime(0);
+                    self.calculateSharing(0);
+                }
+
                 updateData(data: FlexCalcSettingDto) {
                     this.removeFromWorkTime(data.removeFromWorkTime);
                     this.calculateSharing(data.calculateSharing);
@@ -146,6 +165,12 @@ module nts.uk.at.view.kmk003.a {
                     this.lstWorkTimezone = [];
                     this.restTimezone = new FlowWorkRestTimezoneModel();
                 }
+
+                public resetData(): void {
+                    let self = this;
+                    //TODO: reset list
+                    self.restTimezone.resetData();
+                } 
 
                 updateData(data: FlexOffdayWorkTimeDto) {
                     this.updateHDTimezone(data.lstWorkTimezone);
@@ -204,6 +229,18 @@ module nts.uk.at.view.kmk003.a {
                     self.lstHalfDayWorkTimezone = FlexHalfDayWorkTimeModel.getDefaultData();
                     self.lstStampReflectTimezone = [];
                     self.calculateSetting = new FlexCalcSettingModel();
+                }
+
+                public resetData(): void {
+                    let self = this;
+                    self.workTimeCode('0');
+                    self.useHalfDayShift(false);
+                    self.coreTimeSetting.resetData();
+                    self.restSetting.resetData();
+                    self.offdayWorkTime.resetData();
+                    self.commonSetting.resetData();
+                    //TODO 2 cai list
+                    self.calculateSetting.resetData();
                 }
 
                 public getHDWtzOneday(): FlexHalfDayWorkTimeModel {
