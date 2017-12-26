@@ -13,8 +13,12 @@ module nts.uk.at.view.kal002.a.viewmodel {
             return dfd.promise();
         }
 
-        openKAL003() { nts.uk.ui.windows.sub.modal("/view/kal/003/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => )};
-        openKAL004() { nts.uk.ui.windows.sub.modal("/view/kal/004/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => )};
-    }
+        openKAL003() { 
+        nts.uk.request.jump("/view/kal/003/a/index.xhtml");
+        }   
+        openKAL004() { 
+        nts.uk.request.jump("/view/kal/004/a/index.xhtml");
+        }  
+    }   
 }
 
