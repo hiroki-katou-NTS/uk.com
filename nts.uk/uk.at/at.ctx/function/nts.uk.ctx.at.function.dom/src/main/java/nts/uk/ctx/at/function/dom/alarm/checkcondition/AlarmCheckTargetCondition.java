@@ -14,6 +14,8 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class AlarmCheckTargetCondition extends DomainObject {
 
+	private String id;
+	
 	// 勤務種別でしぼり込む
 	private boolean filterByBusinessType;
 
@@ -38,10 +40,11 @@ public class AlarmCheckTargetCondition extends DomainObject {
 	// 対象分類
 	private List<String> lstClassificationCode = new ArrayList<>();
 
-	public AlarmCheckTargetCondition(Boolean filterByBusinessType, Boolean filterByJobTitle, Boolean filterByEmployment,
-			Boolean filterByClassification, List<String> lstBusinessTypeCode, List<String> lstJobTitleId,
+	public AlarmCheckTargetCondition(String id, boolean filterByBusinessType, boolean filterByJobTitle, boolean filterByEmployment,
+			boolean filterByClassification, List<String> lstBusinessTypeCode, List<String> lstJobTitleId,
 			List<String> lstEmploymentCode, List<String> lstClassificationCode) {
 		super();
+		this.id = id;
 		this.filterByBusinessType = filterByBusinessType;
 		this.filterByJobTitle = filterByJobTitle;
 		this.filterByEmployment = filterByEmployment;

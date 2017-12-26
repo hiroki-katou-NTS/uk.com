@@ -71,8 +71,10 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 
 	public static AlarmCheckConditionByCategory toDomain(KfnmtAlarmCheckConditionCategory entity) {
 		return new AlarmCheckConditionByCategory(entity.pk.companyId, entity.pk.category, entity.pk.code, entity.name,
-				new AlarmCheckTargetCondition(entity.targetCondition.filterByBusinessType == 1 ? true : false,
-						entity.targetCondition.filterByJobTitle == 1 ? true : false, entity.targetCondition.filterByEmployment == 1 ? true : false,
+				new AlarmCheckTargetCondition(entity.targetConditionId,
+						entity.targetCondition.filterByBusinessType == 1 ? true : false,
+						entity.targetCondition.filterByJobTitle == 1 ? true : false,
+						entity.targetCondition.filterByEmployment == 1 ? true : false,
 						entity.targetCondition.filterByClassification == 1 ? true : false,
 						entity.targetCondition.listBusinessType.stream().map(item -> item.pk.businessTypeCode)
 								.collect(Collectors.toList()),
@@ -86,7 +88,33 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	}
 
 	public static KfnmtAlarmCheckConditionCategory fromDomain(AlarmCheckConditionByCategory domain) {
-		return new KfnmtAlarmCheckConditionCategory();
+		return new KfnmtAlarmCheckConditionCategory(domain.getCompanyId(), domain.getCategory().value,
+				domain.getCode().v(), domain.getName().v(),
+				new KfnmtAlarmCheckTargetCondition(domain.getExtractTargetCondition().getId(),
+						domain.getExtractTargetCondition().isFilterByEmployment() ? 1 : 0,
+						domain.getExtractTargetCondition().isFilterByClassification() ? 1 : 0,
+						domain.getExtractTargetCondition().isFilterByJobTitle() ? 1 : 0,
+						domain.getExtractTargetCondition().isFilterByBusinessType() ? 1 : 0,
+						domain.getExtractTargetCondition().getLstEmploymentCode().stream()
+								.map(item -> new KfnmtAlarmCheckTargetEmployment(
+										domain.getExtractTargetCondition().getId(), item))
+								.collect(Collectors.toList()),
+						domain.getExtractTargetCondition().getLstClassificationCode().stream()
+								.map(item -> new KfnmtAlarmCheckTargetClassification(
+										domain.getExtractTargetCondition().getId(), item))
+								.collect(Collectors.toList()),
+						domain.getExtractTargetCondition().getLstJobTitleId().stream()
+								.map(item -> new KfnmtAlarmCheckTargetJobTitle(
+										domain.getExtractTargetCondition().getId(), item))
+								.collect(Collectors.toList()),
+						domain.getExtractTargetCondition().getLstBusinessTypeCode().stream()
+								.map(item -> new KfnmtAlarmCheckTargetBusinessType(
+										domain.getExtractTargetCondition().getId(), item))
+								.collect(Collectors.toList())),
+				domain.getListRoleId().stream()
+						.map(item -> new KfnmtAlarmCheckConditionCategoryRole(domain.getCompanyId(),
+								domain.getCategory().value, domain.getCode().v(), item))
+						.collect(Collectors.toList()));
 	}
 
 }

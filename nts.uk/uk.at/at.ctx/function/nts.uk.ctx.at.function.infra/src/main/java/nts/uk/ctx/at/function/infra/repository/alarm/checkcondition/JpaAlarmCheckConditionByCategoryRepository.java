@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.repository.alarm.checkcondition;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryPk;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryRole;
 
 /**
  * 
@@ -58,7 +60,34 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 
 	@Override
 	public void update(AlarmCheckConditionByCategory domain) {
-		// TODO Auto-generated method stub
+		Optional<KfnmtAlarmCheckConditionCategory> entityOpt = this.queryProxy()
+				.find(new KfnmtAlarmCheckConditionCategoryPk(domain.getCompanyId(), domain.getCategory().value,
+						domain.getCode().v()), KfnmtAlarmCheckConditionCategory.class);
+		if (entityOpt.isPresent()) {
+			KfnmtAlarmCheckConditionCategory entity = entityOpt.get();
+			entity.name = domain.getName().v();
+			List<KfnmtAlarmCheckConditionCategoryRole> oldListRole = entity.listAvailableRole;
+			List<KfnmtAlarmCheckConditionCategoryRole> newListRole = domain.getListRoleId().stream()
+					.map(item -> new KfnmtAlarmCheckConditionCategoryRole(domain.getCompanyId(),
+							domain.getCategory().value, domain.getCode().v(), item))
+					.collect(Collectors.toList());
+			for (KfnmtAlarmCheckConditionCategoryRole newRole : newListRole) {
+				for (KfnmtAlarmCheckConditionCategoryRole oldRole : oldListRole) {
+					if (oldRole.pk.equals(newRole.pk)) {
+						newListRole.set(newListRole.indexOf(newRole), oldRole);
+						break;
+					}
+				}
+			}
+			entity.listAvailableRole = newListRole;
+
+			entity.targetCondition.filterByBusinessType = domain.getExtractTargetCondition().isFilterByBusinessType() ? 1 : 0;
+			entity.targetCondition.filterByClassification = domain.getExtractTargetCondition().isFilterByClassification() ? 1 : 0;
+			entity.targetCondition.filterByEmployment = domain.getExtractTargetCondition().isFilterByEmployment() ? 1 : 0;
+			entity.targetCondition.filterByJobTitle = domain.getExtractTargetCondition().isFilterByJobTitle() ? 1 : 0;
+
+			this.commandProxy().update(entity);
+		}
 
 	}
 
@@ -70,6 +99,12 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 	public void delete(AlarmCheckConditionByCategory domain) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean isCodeExist(String companyId, int category, String code) {
+		return this.queryProxy().find(new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code),
+				KfnmtAlarmCheckConditionCategory.class).isPresent();
 	}
 
 }

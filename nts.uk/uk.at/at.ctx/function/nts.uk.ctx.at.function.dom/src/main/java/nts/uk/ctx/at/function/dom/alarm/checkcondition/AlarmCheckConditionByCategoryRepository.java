@@ -22,4 +22,6 @@ public interface AlarmCheckConditionByCategoryRepository {
 
 	public void delete(AlarmCheckConditionByCategory domain);
 	
+	public boolean isCodeExist(String companyId, int category, String code);
+	
 }
