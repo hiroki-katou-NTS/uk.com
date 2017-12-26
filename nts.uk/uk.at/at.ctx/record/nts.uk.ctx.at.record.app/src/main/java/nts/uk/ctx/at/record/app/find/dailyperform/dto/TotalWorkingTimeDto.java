@@ -63,7 +63,7 @@ public class TotalWorkingTimeDto {
 
 	/** 短時間勤務時間: 日別実績の短時間勤務時間 */
 	// @AttendanceItemLayout(layout = "K", jpPropertyName = "短時間勤務時間")
-	private ShortWorkTimeSheetDto shortWorkTimeSheet;
+	private ShortWorkTimeDto shortWorkTimeSheet;
 
 	/** 加給時間: 日別実績の加給時間 */
 	// @AttendanceItemLayout(layout = "L", jpPropertyName = "加給時間")

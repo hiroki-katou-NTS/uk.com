@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 /** 日別実績の短時間勤務時間 */
 @Data
-public class ShortWorkTimeSheetDto {
+public class ShortWorkTimeDto {
 
 	/** 合計控除時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "合計控除時間", needCheckIDWithMethod = "childCareAttr")
