@@ -150,7 +150,7 @@ module kcp.share.tree {
         $input: JQuery;
         data: TreeComponentOption
         maxRows: number;
-        systemType: number;
+        systemType: SystemType;
 
         isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
@@ -196,7 +196,13 @@ module kcp.share.tree {
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
-            self.systemType =  data.systemType;
+            
+            if (data.systemType) {
+                self.systemType =  data.systemType;
+            } else {
+                // TODO: need to check value default.
+                self.systemType = SystemType.EMPLOYMENT;
+            }
             
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
