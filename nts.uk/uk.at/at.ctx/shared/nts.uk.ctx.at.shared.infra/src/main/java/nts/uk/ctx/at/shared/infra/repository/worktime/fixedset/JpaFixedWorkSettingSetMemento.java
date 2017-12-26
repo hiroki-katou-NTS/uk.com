@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflec
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 
 /**
  * The Class JpaFixedWorkSettingSetMemento.
@@ -115,8 +116,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
-		// TODO Auto-generated method stub
-
+		fixedWorkRestSetting.saveToMemento(new JpaFixedWorkRestSetSetMemento<KshmtFixedWorkSet>(this.entity));
 	}
 
 	/*
@@ -128,8 +128,8 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setLstHalfDayWorkTimezone(List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone) {
-		// TODO Auto-generated method stub
-
+		lstHalfDayWorkTimezone.forEach(domain -> domain
+				.saveToMemento(new JpaFixHalfDayWorkTimezoneSetMemento(this.entity, domain.getDayAtr())));
 	}
 
 	/*
@@ -141,7 +141,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setLstStampReflectTimezone(List<StampReflectTimezone> lstStampReflectTimezone) {
-		
+
 		String companyId = this.entity.getKshmtFixedWorkSetPK().getCid();
 		String workTimeCd = this.entity.getKshmtFixedWorkSetPK().getWorktimeCd();
 		
@@ -177,8 +177,6 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setLegalOTSetting(LegalOTSetting legalOTSetting) {
-		// TODO Auto-generated method stub
-
+		this.entity.setLegalOtSet(legalOTSetting.value);
 	}
-
 }

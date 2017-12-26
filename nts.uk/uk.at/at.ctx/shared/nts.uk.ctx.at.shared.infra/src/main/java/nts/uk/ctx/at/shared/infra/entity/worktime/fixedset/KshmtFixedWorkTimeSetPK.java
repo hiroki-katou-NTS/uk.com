@@ -45,6 +45,22 @@ public class KshmtFixedWorkTimeSetPK implements Serializable {
 	public KshmtFixedWorkTimeSetPK() {
 	}
 
+	/**
+	 * Instantiates a new kshmt fixed work time set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param amPmAtr the am pm atr
+	 * @param timeFrameNo the time frame no
+	 */
+	public KshmtFixedWorkTimeSetPK(String cid, String worktimeCd, int amPmAtr, int timeFrameNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.amPmAtr = amPmAtr;
+		this.timeFrameNo = timeFrameNo;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

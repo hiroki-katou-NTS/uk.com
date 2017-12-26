@@ -41,6 +41,21 @@ public class KshmtFixedHalfRestSetPK implements Serializable {
 	public KshmtFixedHalfRestSetPK() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new kshmt fixed half rest set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param amPmAtr the am pm atr
+	 */
+	public KshmtFixedHalfRestSetPK(String cid, String worktimeCd, int amPmAtr) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.amPmAtr = amPmAtr;
+	}
+
 
 	/*
 	 * (non-Javadoc)

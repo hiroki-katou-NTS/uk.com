@@ -24,6 +24,18 @@ public class GoOutTimeRoundingSetting extends DomainObject {
 	//丸め設定
 	private TimeRoundingSetting roundingSetting;
 	
+	/**
+	 * Instantiates a new go out time rounding setting.
+	 *
+	 * @param roundingMethod the rounding method
+	 * @param roundingSetting the rounding setting
+	 */
+	public GoOutTimeRoundingSetting(GoOutTimeRoundingMethod roundingMethod,
+			TimeRoundingSetting roundingSetting) {
+		super();
+		this.roundingMethod = roundingMethod;
+		this.roundingSetting = roundingSetting;
+	}
 	
 	/**
 	 * Instantiates a new go out time rounding setting.
