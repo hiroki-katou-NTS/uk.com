@@ -155,7 +155,7 @@ public class ComboBoxRetrieveFactory {
 				return getEmploymentList(companyId);
 			case "M00004":
 				// 分類マスタ１
-<<<<<<< HEAD
+
 				if (cps001) {
 					return classificationRepo
 							.getAllManagementCategory(companyId).stream().map(
@@ -170,13 +170,6 @@ public class ComboBoxRetrieveFactory {
 									classification.getClassificationName().v()))
 							.collect(Collectors.toList());
 				}
-=======
-				return classificationRepo.getAllManagementCategory(companyId)
-						.stream().map(
-								classification -> new ComboBoxObject(classification.getClassificationCode().v(),
-										classification.getClassificationCode().v() + JP_SPACE
-												+ classification.getClassificationName().v()))
-						.collect(Collectors.toList());
 			case "M00005":
 				// 職位マスタ
 				return jobTitleRepo.findAll(companyId, standardDate).stream()
@@ -256,63 +249,31 @@ public class ComboBoxRetrieveFactory {
 										classification.getClassificationCode().v() + JP_SPACE
 												+ classification.getClassificationName().v()))
 						.collect(Collectors.toList());
->>>>>>> c0624d91e74b62511d6c33cc4563901955292d38
 			case "M00005":
 				// 職位マスタ
-				if (cps001) {
-					return jobTitleRepo.findAll(companyId, standardDate).stream()
-							.map(jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(),
-									jobTitle.getJobTitleCode() + JP_SPACE + jobTitle.getJobTitleName().v()))
-							.collect(Collectors.toList());
-				} else {
-					return jobTitleRepo.findAll(companyId, standardDate).stream().map(
-							jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(), jobTitle.getJobTitleName().v()))
-							.collect(Collectors.toList());
-
-				}
+				return jobTitleRepo.findAll(companyId, standardDate).stream()
+						.map(jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(),
+								jobTitle.getJobTitleCode() + JP_SPACE + jobTitle.getJobTitleName().v()))
+						.collect(Collectors.toList());
 			case "M00006":
 				// 休職休業マスタ
-				if (cps001) {
-					return tempAbsFrameRepo.findByCid(companyId).stream()
-							.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
-							.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
-									frame.getTempAbsenceFrName().v()))
-							.collect(Collectors.toList());
-				} else {
-					return tempAbsFrameRepo.findByCid(companyId).stream()
-							.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
-							.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
-									frame.getTempAbsenceFrName().v()))
-							.collect(Collectors.toList());
-				}
+				return tempAbsFrameRepo.findByCid(companyId).stream()
+						.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
+						.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
+								frame.getTempAbsenceFrName().v()))
+						.collect(Collectors.toList());
 			case "M00007":
 				// 勤務種別マスタ
-				if (cps001) {
 				return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
 						businessType.getBusinessTypeCode().v(),
 						businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
 						.collect(Collectors.toList());
-				} else {
-					return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
-							businessType.getBusinessTypeCode().v(),
-							businessType.getBusinessTypeName().v()))
-							.collect(Collectors.toList());					
-					
-				}
 			case "M00008":
 				// 勤務種類マスタ
-				if (cps001) {
 				return workTypeRepo.findByCompanyId(companyId).stream()
 						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
 								workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
 						.collect(Collectors.toList());
-				}else {
-					return workTypeRepo.findByCompanyId(companyId).stream()
-							.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
-									 workType.getName().v()))
-							.collect(Collectors.toList());					
-					
-				}
 			case "M00009":
 				// 就業時間帯マスタ
 				return Arrays.asList(new ComboBoxObject("001", "固定名"));
