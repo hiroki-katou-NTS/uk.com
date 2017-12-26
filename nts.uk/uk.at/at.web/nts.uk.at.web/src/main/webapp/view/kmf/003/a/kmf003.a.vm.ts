@@ -73,6 +73,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
                 
+                self.isNewMode(true);
+                
                 if(value.length > 0){
                     service.findByCode(value).done(function(data) {
                         self.editMode(false);
@@ -170,7 +172,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.code("");
             self.name("");              
             self.useConditionCls(false);            
-            self.grantDate(""); 
+            self.grantDate("101"); 
             self.A6_2SelectedRuleCode(0);  
             self.A7_4SelectedRuleCode(0);
             self.symbols("%");
@@ -568,6 +570,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 var result = 0;
                 
                 if(count >= 1) {
+                    count = 0;
                     return false;
                 }
                 
@@ -584,7 +587,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     }
                 }
                 
-                if(self.A7_4SelectedRuleCode() == 0 && Number(value) > 366){
+                if(self.A7_4SelectedRuleCode() == 1 && Number(value) > 366){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_263" });
                 } else {
                     if(self.useCls02()) {
