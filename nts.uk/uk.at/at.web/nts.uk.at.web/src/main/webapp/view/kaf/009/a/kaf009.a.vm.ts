@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     export class ScreenModel {
+        dateType: string = 'YYYY/MM/DD';
         isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
         isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
         //kaf000
@@ -14,7 +15,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         workState : KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
+        appDate: KnockoutObservable<string> = ko.observable(moment().format(this.dateType));
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(0);
         timeEnd1: KnockoutObservable<number> = ko.observable(0);   
@@ -73,7 +74,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
         prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
         useMulti : KnockoutObservable<boolean> = ko.observable(true);
-        dateType: string = 'YYYY/MM/DD';
+        
         //data work
         workTypeCodes: KnockoutObservableArray<string> = ko.observableArray([]);
         workTimeCodes: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -88,16 +89,17 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 textalign: "left",
             }));
             //startPage 009a AFTER start 000_A
-            self.startPage().done(function(){
-                self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
-                    self.approvalSource = self.kaf000_a.approvalList;
-                    nts.uk.ui.block.clear();
-                })    
+            //self.startPage().done(function(){
+            //    self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
+            //        self.approvalSource = self.kaf000_a.approvalList;
+            //        nts.uk.ui.block.clear();
+            //    })    
+            //});(appType: number, appDate: string, isStartup: boolean)
+            self.kaf000_a.getAppDataDate(4, moment(new Date()).format(self.dateType), true).done(function(){
+                 nts.uk.ui.block.clear();
             });
             self.appDate.subscribe(value => {
-                self.kaf000_a.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
-                self.kaf000_a.getAllApprovalRoot();
-                self.kaf000_a.getMessageDeadline(4, value);
+                self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
             });
             
         }
@@ -365,7 +367,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
                 txtReasonTmp,
                 self.prePostSelected(),
-                moment().format('YYYY/MM/DD'),
+                moment().format(self.dateType),
                 self.employeeID,
                 "",
                 self.appDate(),
