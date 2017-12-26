@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.workingcondition;
 
+import java.util.Optional;
+
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -918,10 +920,10 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 	private static void setScheduleMethod(WorkingConditionDto dto, ScheduleMethod scheduleMethod) {
 		dto.setBasicCreateMethod(scheduleMethod.getBasicCreateMethod().value);
-		if(scheduleMethod.getWorkScheduleBusCal().isPresent())
-		dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);
-		if(scheduleMethod.getWorkScheduleBusCal().isPresent())
-		dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value);
+		if(scheduleMethod.getWorkScheduleBusCal().isPresent()){
+			dto.setReferenceBusinessDayCalendar(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value);			
+			dto.setReferenceBasicWork(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value);
+		}
 		if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent())
 		dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
 	}
@@ -934,172 +936,243 @@ public class WorkingConditionDto extends PeregDomainDto {
 	private static void setWeekDay(WorkingConditionDto dto, SingleDaySchedule weekDay) {
 		if(weekDay != null){
 			dto.setWeekdayWorkTypeCode(weekDay.getWorkTypeCode().v());
-			dto.setWeekdayWorkTimeCode(weekDay.getWorkTimeCode().get().v());
-			TimeZone timeZone1 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-					.get();
-			TimeZone timeZone2 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-					.get();
-			dto.setWeekDayStartTime1(timeZone1.getStart().v());
-			dto.setWeekDayEndTime1(timeZone1.getEnd().v());
-			dto.setWeekDayStartTime2(timeZone2.getStart().v());
-			dto.setWeekDayEndTime2(timeZone2.getEnd().v());
+			if(weekDay.getWorkTimeCode().isPresent())
+				dto.setWeekdayWorkTimeCode(weekDay.getWorkTimeCode().get().v());
+			Optional<TimeZone> timeZone1 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+			Optional<TimeZone> timeZone2 = weekDay.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+			if(timeZone1.isPresent()){
+				TimeZone tz = timeZone1.get();
+				dto.setWeekDayStartTime1(tz.getStart().v());
+				dto.setWeekDayEndTime1(tz.getEnd().v());
+			}
+			if(timeZone2.isPresent()){
+				TimeZone tz = timeZone2.get();
+				dto.setWeekDayStartTime2(tz.getStart().v());
+				dto.setWeekDayEndTime2(tz.getEnd().v());
+			}
 		}
 	}
 
 	private static void setWorkInHoliday(WorkingConditionDto dto, SingleDaySchedule workInHoliday) {
 		dto.setWorkInHolidayWorkTypeCode(workInHoliday.getWorkTypeCode().v());
-		dto.setWorkInHolidayWorkTimeCode(workInHoliday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = workInHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
-				.findFirst().get();
-		TimeZone timeZone2 = workInHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
-				.findFirst().get();
-		dto.setWorkInHolidayStartTime1(timeZone1.getStart().v());
-		dto.setWorkInHolidayEndTime1(timeZone1.getEnd().v());
-		dto.setWorkInHolidayStartTime2(timeZone2.getStart().v());
-		dto.setWorkInHolidayEndTime2(timeZone2.getEnd().v());
+		if(workInHoliday.getWorkTimeCode().isPresent())
+			dto.setWorkInHolidayWorkTimeCode(workInHoliday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = workInHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = workInHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setWorkInHolidayStartTime1(tz.getStart().v());
+			dto.setWorkInHolidayEndTime1(tz.getEnd().v());
+		}
+		
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setWorkInHolidayStartTime2(tz.getStart().v());
+			dto.setWorkInHolidayEndTime2(tz.getEnd().v());
+		}
+		
 	}
 
 	private static void setWorkInPublicHoliday(WorkingConditionDto dto, SingleDaySchedule workInPublicHoliday) {
 		dto.setWorkInPublicHolidayWorkTypeCode(workInPublicHoliday.getWorkTypeCode().v());
-		dto.setWorkInPublicHolidayWorkTimeCode(workInPublicHoliday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = workInPublicHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
-				.findFirst().get();
-		TimeZone timeZone2 = workInPublicHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
-				.findFirst().get();
-		dto.setWorkInPublicHolidayStartTime1(timeZone1.getStart().v());
-		dto.setWorkInPublicHolidayEndTime1(timeZone1.getEnd().v());
-		dto.setWorkInPublicHolidayStartTime2(timeZone2.getStart().v());
-		dto.setWorkInPublicHolidayEndTime2(timeZone2.getEnd().v());
+		if(workInPublicHoliday.getWorkTimeCode().isPresent())
+			dto.setWorkInPublicHolidayWorkTimeCode(workInPublicHoliday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = workInPublicHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = workInPublicHoliday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setWorkInPublicHolidayStartTime1(tz.getStart().v());
+			dto.setWorkInPublicHolidayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setWorkInPublicHolidayStartTime2(tz.getStart().v());
+			dto.setWorkInPublicHolidayEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setInLawBreakTime(WorkingConditionDto dto, SingleDaySchedule inLawBreakTime) {
 		dto.setInLawBreakTimeWorkTypeCode(inLawBreakTime.getWorkTypeCode().v());
-		dto.setInLawBreakTimeWorkTimeCode(inLawBreakTime.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = inLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
-				.findFirst().get();
-		TimeZone timeZone2 = inLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
-				.findFirst().get();
-		dto.setInLawBreakTimeStartTime1(timeZone1.getStart().v());
-		dto.setInLawBreakTimeEndTime1(timeZone1.getStart().v());
-		dto.setInLawBreakTimeStartTime2(timeZone2.getStart().v());
-		dto.setInLawBreakTimeEndTime2(timeZone2.getEnd().v());
+		if(inLawBreakTime.getWorkTimeCode().isPresent())
+			dto.setInLawBreakTimeWorkTimeCode(inLawBreakTime.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = inLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = inLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setInLawBreakTimeStartTime1(tz.getStart().v());
+			dto.setInLawBreakTimeEndTime1(tz.getStart().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setInLawBreakTimeStartTime2(tz.getStart().v());
+			dto.setInLawBreakTimeEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setOutsideLawBreakTime(WorkingConditionDto dto, SingleDaySchedule outsideLawBreakTime) {
 		dto.setOutsideLawBreakTimeWorkTypeCode(outsideLawBreakTime.getWorkTypeCode().v());
-		dto.setOutsideLawBreakTimeWorkTimeCode(outsideLawBreakTime.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = outsideLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
-				.findFirst().get();
-		TimeZone timeZone2 = outsideLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
-				.findFirst().get();
-		dto.setOutsideLawBreakTimeStartTime1(timeZone1.getStart().v());
-		dto.setOutsideLawBreakTimeEndTime1(timeZone1.getEnd().v());
-		dto.setOutsideLawBreakTimeStartTime2(timeZone2.getStart().v());
-		dto.setOutsideLawBreakTimeEndTime2(timeZone2.getEnd().v());
+		if(outsideLawBreakTime.getWorkTimeCode().isPresent())
+			dto.setOutsideLawBreakTimeWorkTimeCode(outsideLawBreakTime.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = outsideLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = outsideLawBreakTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setOutsideLawBreakTimeStartTime1(tz.getStart().v());
+			dto.setOutsideLawBreakTimeEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setOutsideLawBreakTimeStartTime2(tz.getStart().v());
+			dto.setOutsideLawBreakTimeEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setHolidayAttendanceTime(WorkingConditionDto dto, SingleDaySchedule holidayAttendanceTime) {
 		dto.setHolidayAttendanceTimeWorkTypeCode(holidayAttendanceTime.getWorkTypeCode().v());
-		dto.setHolidayAttendanceTimeWorkTimeCode(holidayAttendanceTime.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = holidayAttendanceTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
-				.findFirst().get();
-		TimeZone timeZone2 = holidayAttendanceTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
-				.findFirst().get();
-		dto.setHolidayAttendanceTimeStartTime1(timeZone1.getStart().v());
-		dto.setHolidayAttendanceTimeEndTime1(timeZone1.getEnd().v());
-		dto.setHolidayAttendanceTimeStartTime2(timeZone2.getStart().v());
-		dto.setHolidayAttendanceTimeEndTime2(timeZone2.getEnd().v());
+		if(holidayAttendanceTime.getWorkTimeCode().isPresent())
+			dto.setHolidayAttendanceTimeWorkTimeCode(holidayAttendanceTime.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = holidayAttendanceTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
+				.findFirst();
+		Optional<TimeZone> timeZone2 = holidayAttendanceTime.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2)
+				.findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setHolidayAttendanceTimeStartTime1(tz.getStart().v());
+			dto.setHolidayAttendanceTimeEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setHolidayAttendanceTimeStartTime2(tz.getStart().v());
+			dto.setHolidayAttendanceTimeEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setSunday(WorkingConditionDto dto, SingleDaySchedule sunday) {
 		dto.setSundayWorkTypeCode(sunday.getWorkTypeCode().v());
-		dto.setSundayWorkTimeCode(sunday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = sunday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = sunday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setSundayStartTime1(timeZone1.getStart().v());
-		dto.setSundayEndTime1(timeZone1.getEnd().v());
-		dto.setSundayStartTime2(timeZone2.getStart().v());
-		dto.setSundayEndTime2(timeZone2.getEnd().v());
+		if(sunday.getWorkTimeCode().isPresent())
+			dto.setSundayWorkTimeCode(sunday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = sunday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = sunday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setSundayStartTime1(tz.getStart().v());
+			dto.setSundayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setSundayStartTime2(tz.getStart().v());
+			dto.setSundayEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setMonday(WorkingConditionDto dto, SingleDaySchedule monday) {
 		dto.setMondayWorkTypeCode(monday.getWorkTypeCode().v());
-		dto.setMondayWorkTimeCode(monday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = monday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = monday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setMondayStartTime1(timeZone1.getStart().v());
-		dto.setMondayEndTime1(timeZone1.getEnd().v());
-		dto.setMondayStartTime2(timeZone2.getStart().v());
-		dto.setMondayEndTime2(timeZone2.getEnd().v());
+		if(monday.getWorkTimeCode().isPresent())
+			dto.setMondayWorkTimeCode(monday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = monday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = monday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setMondayStartTime1(tz.getStart().v());
+			dto.setMondayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setMondayStartTime2(tz.getStart().v());
+			dto.setMondayEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setTuesday(WorkingConditionDto dto, SingleDaySchedule tuesday) {
 		dto.setTuesdayWorkTypeCode(tuesday.getWorkTypeCode().v());
-		dto.setTuesdayWorkTimeCode(tuesday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = tuesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = tuesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setTuesdayStartTime1(timeZone1.getStart().v());
-		dto.setTuesdayEndTime1(timeZone1.getEnd().v());
-		dto.setTuesdayStartTime2(timeZone2.getStart().v());
-		dto.setTuesdayEndTime2(timeZone2.getEnd().v());
+		if(tuesday.getWorkTimeCode().isPresent())
+			dto.setTuesdayWorkTimeCode(tuesday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = tuesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = tuesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setTuesdayStartTime1(tz.getStart().v());
+			dto.setTuesdayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setTuesdayStartTime2(tz.getStart().v());
+			dto.setTuesdayEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setWednesday(WorkingConditionDto dto, SingleDaySchedule wednesday) {
 		dto.setWednesdayWorkTypeCode(wednesday.getWorkTypeCode().v());
-		dto.setWednesdayWorkTimeCode(wednesday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = wednesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = wednesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setWednesdayStartTime1(timeZone1.getStart().v());
-		dto.setWednesdayEndTime1(timeZone1.getEnd().v());
-		dto.setWednesdayStartTime2(timeZone2.getStart().v());
-		dto.setWednesdayEndTime2(timeZone2.getEnd().v());
+		if(wednesday.getWorkTimeCode().isPresent())
+			dto.setWednesdayWorkTimeCode(wednesday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = wednesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = wednesday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setWednesdayStartTime1(tz.getStart().v());
+			dto.setWednesdayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setWednesdayStartTime2(tz.getStart().v());
+			dto.setWednesdayEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setThursday(WorkingConditionDto dto, SingleDaySchedule thursday) {
 		dto.setThursdayWorkTypeCode(thursday.getWorkTypeCode().v());
-		dto.setThursdayWorkTimeCode(thursday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = thursday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = thursday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setThursdayStartTime1(timeZone1.getStart().v());
-		dto.setThursdayEndTime1(timeZone1.getEnd().v());
-		dto.setThursdayStartTime2(timeZone2.getStart().v());
-		dto.setThursdayEndTime2(timeZone2.getEnd().v());
+		if(thursday.getWorkTimeCode().isPresent())
+			dto.setThursdayWorkTimeCode(thursday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = thursday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = thursday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setThursdayStartTime1(tz.getStart().v());
+			dto.setThursdayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setThursdayStartTime2(tz.getStart().v());
+			dto.setThursdayEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setFriday(WorkingConditionDto dto, SingleDaySchedule friday) {
 		dto.setFridayWorkTypeCode(friday.getWorkTypeCode().v());
-		dto.setFridayWorkTimeCode(friday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setFridayStartTime1(timeZone1.getStart().v());
-		dto.setFridayEndTime1(timeZone1.getEnd().v());
-		dto.setFridayStartTime2(timeZone2.getStart().v());
-		dto.setFridayEndTime2(timeZone2.getEnd().v());
+		if(friday.getWorkTimeCode().isPresent())
+			dto.setFridayWorkTimeCode(friday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = friday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setFridayStartTime1(tz.getStart().v());
+			dto.setFridayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setFridayStartTime2(tz.getStart().v());
+			dto.setFridayEndTime2(tz.getEnd().v());
+		}
 	}
 
 	private static void setSaturday(WorkingConditionDto dto, SingleDaySchedule saturday) {
 		dto.setSaturdayWorkTypeCode(saturday.getWorkTypeCode().v());
-		dto.setSaturdayWorkTimeCode(saturday.getWorkTimeCode().get().v());
-		TimeZone timeZone1 = saturday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst()
-				.get();
-		TimeZone timeZone2 = saturday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst()
-				.get();
-		dto.setSaturdayStartTime1(timeZone1.getStart().v());
-		dto.setSaturdayEndTime1(timeZone1.getEnd().v());
-		dto.setSaturdayStartTime2(timeZone2.getStart().v());
-		dto.setSaturdayEndTime2(timeZone2.getEnd().v());
+		if(saturday.getWorkTimeCode().isPresent())
+			dto.setSaturdayWorkTimeCode(saturday.getWorkTimeCode().get().v());
+		Optional<TimeZone> timeZone1 = saturday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+		Optional<TimeZone> timeZone2 = saturday.getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+		if(timeZone1.isPresent()){
+			TimeZone tz = timeZone1.get();
+			dto.setSaturdayStartTime1(tz.getStart().v());
+			dto.setSaturdayEndTime1(tz.getEnd().v());
+		}
+		if(timeZone2.isPresent()){
+			TimeZone tz = timeZone2.get();
+			dto.setSaturdayStartTime2(tz.getStart().v());
+			dto.setSaturdayEndTime2(tz.getEnd().v());
+		}
 	}
 
 }
