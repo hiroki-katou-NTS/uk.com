@@ -5,15 +5,13 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
-import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * The Class OTFrameNo.
  */
 // 残業枠NO
-@DecimalRange(min = "1", max = "10")
-@DecimalMantissaMaxLength(2)
+@IntegerRange(min = 1, max = 10)
 public class OTFrameNo extends IntegerPrimitiveValue<OTFrameNo> {
 
 	private static final long serialVersionUID = 1L;
