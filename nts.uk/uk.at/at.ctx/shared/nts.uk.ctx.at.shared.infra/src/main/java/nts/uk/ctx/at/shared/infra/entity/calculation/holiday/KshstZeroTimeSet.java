@@ -57,8 +57,8 @@ public class KshstZeroTimeSet extends UkJpaEntity implements Serializable{
 	/** 平日*/
 	@Column(name = "SHD_WEEKDAY")
 	public int weekday2;
-	
-	/** 法定外休日 */
+
+	/** 法定内休日 */
 	@Column(name = "SHD_LEGAL_HD")
 	public int legalHd2;
 	
@@ -70,7 +70,7 @@ public class KshstZeroTimeSet extends UkJpaEntity implements Serializable{
 	@Column(name = "SFT_WEEKDAY")
 	public int weekday3;
 	
-	/** 法定外休日 */
+	/** 法定内休日 */
 	@Column(name = "SFT_LEGAL_HD")
 	public int legalHd3;
 	

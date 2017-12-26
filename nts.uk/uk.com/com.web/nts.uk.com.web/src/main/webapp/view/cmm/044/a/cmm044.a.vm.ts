@@ -178,7 +178,7 @@ module cmm044.a.viewmodel {
             self.employeeNameScreen3 = ko.observable('');
             self.employeeNameScreen4 = ko.observable('');
 
-            self.ccgcomponent = ko.observable();
+            self.ccgcomponent = {};
             self.selectedCode = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(true);
             self.selectedEmployee = ko.observableArray([]);

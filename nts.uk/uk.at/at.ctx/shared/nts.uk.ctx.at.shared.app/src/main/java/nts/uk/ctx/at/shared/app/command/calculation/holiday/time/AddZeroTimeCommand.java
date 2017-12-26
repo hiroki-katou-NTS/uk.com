@@ -40,7 +40,7 @@ public class AddZeroTimeCommand {
 	/** 平日 */
 	private int weekday2;
 
-	/** 法定外休日 */
+	/** 法定内休日 */
 	private int legalHd2;
 
 	/** 法定外祝日 */
@@ -49,7 +49,7 @@ public class AddZeroTimeCommand {
 	/** 平日 */
 	private int weekday3;
 
-	/** 法定外休日 */
+	/** 法定内休日 */
 	private int legalHd3;
 
 	/** 法定外休日 */
