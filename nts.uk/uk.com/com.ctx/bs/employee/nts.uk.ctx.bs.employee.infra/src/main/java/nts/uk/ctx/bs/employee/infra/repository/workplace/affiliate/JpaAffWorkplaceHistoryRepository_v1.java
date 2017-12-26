@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHist;
@@ -157,6 +158,9 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 
 	@Override
 	public List<AffWorkplaceHistory_ver1> findByEmployees(List<String> employeeIds, GeneralDate date) {
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
 		// Query.
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_EMPIDS, BsymtAffiWorkplaceHist.class)
 				.setParameter("employeeIds", employeeIds)

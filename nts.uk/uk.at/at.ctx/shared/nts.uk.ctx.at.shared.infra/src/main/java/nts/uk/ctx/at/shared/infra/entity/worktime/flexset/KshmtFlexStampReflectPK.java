@@ -39,7 +39,7 @@ public class KshmtFlexStampReflectPK implements Serializable {
     /** The work no. */
     @Basic(optional = false)
     @Column(name = "WORK_NO")
-    private BigDecimal workNo;
+    private Integer workNo;
 
     /**
      * Instantiates a new kshmt flex stamp reflect PK.
@@ -54,7 +54,7 @@ public class KshmtFlexStampReflectPK implements Serializable {
      * @param worktimeCd the worktime cd
      * @param workNo the work no
      */
-    public KshmtFlexStampReflectPK(String cid, String worktimeCd, BigDecimal workNo) {
+    public KshmtFlexStampReflectPK(String cid, String worktimeCd, Integer workNo) {
         this.cid = cid;
         this.worktimeCd = worktimeCd;
         this.workNo = workNo;

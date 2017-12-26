@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.dom.alarm;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
@@ -15,7 +17,7 @@ public class AlarmPatternSetting  extends AggregateRoot {
 	/**
 	 * list check condition
 	 */
-	private List<CheckCondition> checkConList;
+	private List<CheckCondition> checkConList = new ArrayList<CheckCondition>();
 	/**
 	 * alarm pattern code
 	 */
@@ -42,11 +44,5 @@ public class AlarmPatternSetting  extends AggregateRoot {
 		this.alarmPerSet = alarmPerSet;
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
 	}
-	public AlarmPatternSetting(String alarmPatternCD, String companyID,
-			String alarmPatternName) {
-		super();
-		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
-		this.companyID = new CompanyId(companyID);
-		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
-	}
+
 }

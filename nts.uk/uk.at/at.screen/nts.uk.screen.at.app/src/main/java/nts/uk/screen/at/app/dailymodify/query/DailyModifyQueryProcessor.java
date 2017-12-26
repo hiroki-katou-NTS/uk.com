@@ -27,7 +27,7 @@ public class DailyModifyQueryProcessor {
 
 	public DailyModifyResult initScreen(DailyModifyQuery query){
 		DailyModifyResult result = new DailyModifyResult();
-		AttendanceTimeDailyPerformDto itemDtos = this.attendanceItemFinder.find();
+		AttendanceTimeDailyPerformDto itemDtos = this.attendanceItemFinder.find(query.getEmployeeId(), query.getBaseDate());
 		List<ItemValue> viewItems = AttendanceItemUtil.toItemValues(itemDtos);
 		Map<String, List<ItemValue>> items = new HashMap<>();
 		items.put("AttendanceTimeOfDailyPerformance", viewItems);

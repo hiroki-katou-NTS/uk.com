@@ -10,4 +10,8 @@ public enum UseSetting {
 	UseAtr_Use(1);
 	
 	public final int value;
+	
+	public boolean isUse() {
+		return UseAtr_NotUse.equals(this);
+	}
 }

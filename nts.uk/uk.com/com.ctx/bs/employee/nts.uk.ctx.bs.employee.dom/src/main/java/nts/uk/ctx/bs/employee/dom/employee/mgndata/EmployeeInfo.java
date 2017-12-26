@@ -14,6 +14,8 @@ public class EmployeeInfo {
 	private String employeeCode;
 	private String employeeName;
 	private String personName;
+	private String gender;
+	private String pId;
 	private String departmentCode;
 	private String departmentName;
 	private String position;
