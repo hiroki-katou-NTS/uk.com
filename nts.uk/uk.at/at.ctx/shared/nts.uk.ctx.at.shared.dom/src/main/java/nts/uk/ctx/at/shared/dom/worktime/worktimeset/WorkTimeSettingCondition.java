@@ -19,6 +19,6 @@ public class WorkTimeSettingCondition {
 	private Integer workTimeMethodSet;
 
 	/** The is abolish. */
-	private Integer isAbolish;
+	private Boolean isAbolish;
 
 }
