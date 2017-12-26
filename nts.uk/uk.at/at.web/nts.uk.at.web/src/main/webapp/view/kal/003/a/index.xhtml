@@ -38,7 +38,7 @@
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_48')}</label>
 								<div id="combo-box" data-bind="ntsComboBox: {
-									options: itemList,
+									options: cbbItemList,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
 									value: selectedCode,
@@ -46,7 +46,7 @@
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'code', length: 3 },
+										{ prop: 'code', length: 3, hidden: true },
 										{ prop: 'name', length: 8 },
 									]}"></div>
 							</div>
@@ -56,8 +56,8 @@
  									dataSource: listAlarmCheckCondition, 
  									primaryKey: 'code', 
  									columns: [
-						                { headerText: '#{i18n.getText('KAL003_11')}', key: 'code', width: 100, formatter: _.escape },
-						                { headerText: '#{i18n.getText('KAL003_12')}', key: 'name', width: 170, formatter: _.escape }
+						                { headerText: '#{i18n.getText('KAL003_11')}', key: 'code()', width: 100, formatter: _.escape },
+						                { headerText: '#{i18n.getText('KAL003_12')}', key: 'name()', width: 170, formatter: _.escape }
 						            ], 
  									multiple: false, 
  									value: selectedAlarmCheckCondition 
@@ -81,11 +81,20 @@
 								<input data-bind="ntsTextEditor: {value: displayAvailableRoles}" />
 								<button tabindex="9">#{i18n.getText('KAL003_14')}</button>
 							</div>
+							<div class="valign-center control-group">
+								<label>#{i18n.getText('KAL003_50')}</label>
+								<div data-bind="ntsRadioBoxGroup: {
+									options: $parent.radioItemList,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $parent.selectedId,
+									enable: true}"></div>
+							</div>
 						</div>
 						<div id="tab-panel"
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
 							<div class="tab-content-1" data-bind="with: targetCondition">
-								<ui:include src="tab1/tab1.xhtml" />
+								<ui:include src="common/scopecheck.xhtml" />
 							</div>
 							<div class="tab-content-2">
 								<span>Tab Content 2</span><br />
