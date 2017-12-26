@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Days;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Month;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Month;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class EndDate {
 
 	/**終了日の指定方法*/
@@ -26,9 +29,9 @@ public class EndDate {
 	// 日数指定
 	private Days endDays;
 
-	public EndDate(EndSpecify endSpecify, Month endMonth, Days endDays) {
+	public EndDate(int endSpecify, Days endDays, Month endMonth) {
 		super();
-		this.endSpecify = endSpecify;
+		this.endSpecify = EnumAdaptor.valueOf(endSpecify, EndSpecify.class);
 		this.endMonth = endMonth;
 		this.endDays = endDays;
 	}
