@@ -278,7 +278,7 @@ module a5 {
                     headerText: nts.uk.resource.getText("KMK003_174"),
                     key: "startCol",
                     defaultValue: ko.observable(0),
-                    width: 120,
+                    width: 110,
                     template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 },
@@ -286,7 +286,7 @@ module a5 {
                     headerText: nts.uk.resource.getText("KMK003_176"),
                     key: "endCol",
                     defaultValue: ko.observable(0),
-                    width: 120,
+                    width: 110,
                     template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
                 }

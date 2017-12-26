@@ -1,7 +1,6 @@
 .tbl-after-restset td, .tbl-after-restset th {
 	border: 1px solid #CCC;
-	padding: 2px 0px;
-	width: 120px;
+	padding: 2px;
 	text-align: center;
 }
 .tbl-after-restset th {
@@ -10,6 +9,6 @@
 	background-color: #CFF1A5;
 	font-size: 14px;
 }
-.tbl-after-restset input {
+.default-input-width input {
 	width: 80px;
 }
