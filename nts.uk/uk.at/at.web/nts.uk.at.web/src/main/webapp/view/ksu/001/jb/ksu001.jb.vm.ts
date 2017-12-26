@@ -51,7 +51,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             //                }
             //                return nameWTT;
             //                 
-            //get workTypeCode, workTimeCode, workTypeName, workTimeName, startTime and endTime
+            //get workTypeCode, workTimeCode, workTypeName, workTimeName, startTime, endTime, symbolName
             self.nameWorkTimeType = ko.pureComputed(() => {
                 let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
                 let startTime, endTime: any;
