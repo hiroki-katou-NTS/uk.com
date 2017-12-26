@@ -2409,7 +2409,6 @@ module nts.uk.com.view.cmm018.a {
                         endDate = history.company.endDate;
                         appType = history.company.applicationType;
                         employRootAtr = history.company.employmentRootAtr;
-                        name = history.company.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }else if(self.tabSelectedB() == 1){
                     history = self.findRootWpD(self.singleSelectedCode());
@@ -2420,7 +2419,6 @@ module nts.uk.com.view.cmm018.a {
                         endDate = history.workplace.endDate;
                         appType = history.workplace.applicationType;
                         employRootAtr = history.workplace.employmentRootAtr;
-                        name = history.workplace.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }else{
                     history = self.findRootPsF(self.singleSelectedCode());
@@ -2431,7 +2429,6 @@ module nts.uk.com.view.cmm018.a {
                         endDate = history.person.endDate;
                         appType = history.person.applicationType;
                         employRootAtr = history.person.employmentRootAtr;
-                        name = history.person.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }
                 
@@ -2454,6 +2451,7 @@ module nts.uk.com.view.cmm018.a {
                 }
                 let lst: Array<vmbase.UpdateHistoryDto> = [];
                 lst.push(new vmbase.UpdateHistoryDto(approvalId, historyId, appType, employRootAtr));
+                name = self.findNameApp(appType, employRootAtr);
                 let paramJ: vmbase.JData_Param = {
                     name: name,
                     startDate: startDate,
