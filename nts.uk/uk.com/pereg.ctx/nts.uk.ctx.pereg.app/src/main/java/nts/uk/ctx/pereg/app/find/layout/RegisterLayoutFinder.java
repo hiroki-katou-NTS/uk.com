@@ -198,7 +198,7 @@ public class RegisterLayoutFinder {
 			if (dataTypeValue == 6) {
 				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
 				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-						GeneralDate.today());
+						GeneralDate.today(), true);
 				dataObject.setLstComboBoxValue(lstComboBox);
 			}
 		}
