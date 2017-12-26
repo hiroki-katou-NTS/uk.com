@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
-import nts.uk.ctx.at.function.infra.enity.alarm.KfnmtAlarmPatternSet;
+import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 
 @Stateless
 public class JpaAlarmPatternSettingRepository extends JpaRepository implements AlarmPatternSettingRepository {

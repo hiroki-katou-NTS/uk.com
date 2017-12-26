@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.repository.AttendanceItemLinkingRepository;
-import nts.uk.ctx.at.function.infra.enity.attendanceItemAndFrameLinking.KfnmtAttendanceLink;
+import nts.uk.ctx.at.function.infra.entity.attendanceItemAndFrameLinking.KfnmtAttendanceLink;
 
 @Stateless
 public class JpaAttendanceItemLinkingRepository extends JpaRepository implements AttendanceItemLinkingRepository {
