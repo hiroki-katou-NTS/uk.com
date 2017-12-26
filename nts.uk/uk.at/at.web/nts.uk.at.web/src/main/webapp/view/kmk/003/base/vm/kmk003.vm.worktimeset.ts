@@ -27,6 +27,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.workTimeDailyAtr(0);
+                    this.workTimeMethodSet(0);    
+                }
             }
 
             export class WorkTimeDisplayNameModel {
@@ -53,6 +58,12 @@ module nts.uk.at.view.kmk003.a {
                         workTimeSymbol: this.workTimeSymbol()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.workTimeName('');
+                    this.workTimeAbName('');
+                    this.workTimeSymbol('');    
                 }
             }
             export class WorkTimeSettingModel {
@@ -153,6 +164,16 @@ module nts.uk.at.view.kmk003.a {
 
                 updateMode(isUpdateMode: boolean) {
                     this.isUpdateMode(isUpdateMode);
+                }
+                
+                resetData(){
+                    this.worktimeCode('');
+                    this.workTimeDivision.resetData();
+                    this.isAbolish(false);   
+                    this.colorCode(''); 
+                    this.workTimeDisplayName.resetData();
+                    this.memo('');
+                    this.note('');
                 }
             }
         }

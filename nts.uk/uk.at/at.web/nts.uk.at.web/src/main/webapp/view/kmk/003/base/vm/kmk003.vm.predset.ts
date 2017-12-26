@@ -34,6 +34,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.oneDay(0);
+                    this.morning(0);
+                    this.afternoon(0);
+                }
             }
 
             export class PredetermineTimeModel {
@@ -56,6 +62,11 @@ module nts.uk.at.view.kmk003.a {
                         predTime: this.predTime.toDto()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.addTime.resetData();
+                    this.predTime.resetData();    
                 }
             }
 
@@ -166,6 +177,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.morningEndTime(0);
+                    this.afternoonStartTime(0);
+                    // TODO resetData list
+                }
             }
 
 
@@ -209,6 +226,16 @@ module nts.uk.at.view.kmk003.a {
                         predetermine: this.predetermine()
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    this.rangeTimeDay(0);
+                    this.workTimeCode('');
+                    this.predTime.resetData();
+                    this.nightShift(0);  
+                    this.prescribedTimezoneSetting.resetData();
+                    this.startDateClock(0);
+                    this.predetermine(false);
                 }
             }
         }

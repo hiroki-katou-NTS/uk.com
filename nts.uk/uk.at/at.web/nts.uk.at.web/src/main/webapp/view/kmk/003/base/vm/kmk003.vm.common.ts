@@ -122,6 +122,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.roundingTime(0);
+                    this.rounding(0);    
+                }
             }
 
             export class WorkTimezoneOtherSubHolTimeSetModel {
@@ -255,6 +260,15 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.zeroHStraddCalculateSet(false);
+                    this.intervalSet.resetData();
+                    this.subHolTimeSet = [];
+                    this.raisingSalarySet('');
+                    this.medicalSet = [];
+                    this.goOutSet
+                }
 
             }
 
@@ -279,6 +293,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.setSameFrameRounding(0);
+                    this.frameStraddRoundingSet(0);    
+                }
             }
 
 
@@ -299,6 +318,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.calculateMethod(0);    
+                }
+                
             }
 
             export class FlowRestSetModel {
@@ -331,6 +355,13 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;
 
                 }
+                
+                resetData(){
+                    this.useStamp(false);
+                    this.useStampCalcMethod(0);
+                    this.timeManagerSetAtr(0);
+                    this.calculateMethod(0);    
+                }
             }
 
             export class FlowFixedRestSetModel {
@@ -362,6 +393,13 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.isReferRestTime(false);
+                    this.usePrivateGoOutRest(false);
+                    this.useAssoGoOutRest(false);
+                    this.calculateMethod(0);    
+                }
             }
 
             export class FlowWorkRestSettingDetailModel {
@@ -389,6 +427,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.flowRestSetting.resetData();
+                    this.flowFixedRestSetting.resetData();
+                    this.usePluralWorkRestTime(false);
+                }
             }
 
             export class FlowWorkRestSettingModel {
@@ -411,6 +455,11 @@ module nts.uk.at.view.kmk003.a {
                         flowRestSetting: this.flowRestSetting.toDto()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.commonRestSetting.resetData();
+                    this.flowRestSetting.resetData();    
                 }
             }
 
@@ -567,6 +616,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.timezones([]);    
+                }
             }
 
             export class FlowRestSettingModel {
@@ -589,6 +642,11 @@ module nts.uk.at.view.kmk003.a {
                         flowPassageTime: this.flowPassageTime()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.flowRestTime(0);
+                    this.flowPassageTime(0);    
                 }
             }
 
@@ -624,6 +682,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.flowRestSets([]);
+                    this.useHereAfterRestSet(false);
+                    this.hereAfterRestSet.resetData();    
+                }
             }
 
 
@@ -651,6 +715,12 @@ module nts.uk.at.view.kmk003.a {
                         flowRestTimezone: this.flowRestTimezone.toDto()
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    this.fixRestTime(false);
+                    this.fixedRestTimezone.resetData();
+                    this.flowRestTimezone.resetData();
                 }
             }
 
@@ -708,6 +778,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.useIntervalExemptionTime(false);
+                        
+                }
             }
 
             export class GoOutTimeRoundingSettingModel {
@@ -730,6 +805,11 @@ module nts.uk.at.view.kmk003.a {
                         roundingSetting: this.roundingSetting.toDto()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.roundingMethod(0);
+                    this.roundingSetting.resetData();  
                 }
             }
 
@@ -754,6 +834,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.deductTimeRoundingSetting.resetData();
+                    this.approTimeRoundingSetting.resetData();    
+                }
             }
 
 
@@ -777,6 +862,11 @@ module nts.uk.at.view.kmk003.a {
                         privateUnionGoOut: this.privateUnionGoOut.toDto()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.officalUseCompenGoOut.resetData();
+                    this.privateUnionGoOut.resetData();    
                 }
             }
 
@@ -805,6 +895,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.pubHolWorkTimezone.resetData();
+                    this.workTimezone.resetData();    
+                    this.ottimezone.resetData();
+                }
             }
 
 
@@ -828,6 +924,10 @@ module nts.uk.at.view.kmk003.a {
                         diffTimezoneSetting: this.diffTimezoneSetting.toDto()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.totalRoundingSet    
                 }
             }
 
@@ -1307,6 +1407,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.commonRestSet.resetData();
+                    this.fixedRestCalculateMethod(0);    
+                }
             }
             
              export class FixedWorkTimezoneSetModel {
@@ -1368,7 +1473,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-            }
+                 
+                resetData() {
+                    this.lstWorkingTimezone = [];
+                    this.lstOTTimezone = [];
+                }
+             }
 
         }
     }

@@ -66,6 +66,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.restTimezone.resetData();
+                    this.lstWorkTimezone = [];
+                }
             }
             
             export class FixHalfDayWorkTimezoneModel {
@@ -106,6 +111,10 @@ module nts.uk.at.view.kmk003.a {
                         dayAtr: this.dayAtr()
                     };
                     return dataDTO;
+                }
+                resetData(){
+                    this.restTimezone.resetData();
+                    this.workTimezone.resetData();    
                 }
             }
             
@@ -148,6 +157,10 @@ module nts.uk.at.view.kmk003.a {
                         lstTimezone: lstTimezone
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.lstTimezone([]);    
                 }
             }
             
@@ -222,6 +235,19 @@ module nts.uk.at.view.kmk003.a {
                         legalOTSetting: this.legalOTSetting()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.workTimeCode('');
+                    this.offdayWorkTimezone.resetData();
+                    this.commonSetting.resetData();
+                    this.useHalfDayShift(false);
+                    this.fixedWorkRestSetting.resetData();
+                    this.getHDWtzOneday().resetData();
+                    this.getHDWtzMorning().resetData();
+                    this.getHDWtzAfternoon().resetData();
+                    this.lstHalfDayWorkTimezone = [];
+                    this.lstStampReflectTimezone = [];
                 }
             }
             

@@ -356,6 +356,20 @@ module nts.uk.at.view.kmk003.a {
                 this.flowWorkSetting = new FlowWorkSettingModel();
                 this.diffWorkSetting = new DiffTimeWorkSettingModel();
                 this.flexWorkSetting = new FlexWorkSettingModel();
+                this.workTimeSetting.worktimeCode.subscribe(worktimeCode => {
+                    this.predetemineTimeSetting.workTimeCode(worktimeCode);
+                    this.fixedWorkSetting.workTimeCode(worktimeCode);
+                    this.flowWorkSetting.workingCode(worktimeCode);
+                    this.diffWorkSetting.workTimeCode(worktimeCode);
+                    this.flexWorkSetting.workTimeCode(worktimeCode);
+                });
+            }
+            
+            resetData(){
+                this.workTimeSetting.resetData();    
+                this.predetemineTimeSetting.resetData();
+                this.fixedWorkSetting.resetData();
+                this.flexWorkSetting.resetData();
             }
         }
 
