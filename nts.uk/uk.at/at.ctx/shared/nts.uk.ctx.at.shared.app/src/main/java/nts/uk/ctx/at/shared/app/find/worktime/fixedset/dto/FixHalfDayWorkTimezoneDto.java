@@ -37,7 +37,10 @@ public class FixHalfDayWorkTimezoneDto implements FixHalfDayWorkTimezoneSetMemen
 	 */
 	@Override
 	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
-		restTimezone.saveToMemento(this.restTimezone);
+		if (restTimezone != null) {
+			this.restTimezone = new FixRestTimezoneSetDto();
+			restTimezone.saveToMemento(this.restTimezone);
+		}
 	}
 
 	/*
@@ -49,7 +52,10 @@ public class FixHalfDayWorkTimezoneDto implements FixHalfDayWorkTimezoneSetMemen
 	 */
 	@Override
 	public void setWorkTimezone(FixedWorkTimezoneSet workTimezone) {
-		workTimezone.saveToMemento(this.workTimezone);
+		if (workTimezone != null) {
+			this.workTimezone = new FixedWorkTimezoneSetDto();
+			workTimezone.saveToMemento(this.workTimezone);
+		}
 	}
 
 	/*

@@ -32,7 +32,10 @@ public class FixedWorkRestSetDto implements FixedWorkRestSetSetMemento {
 	 */
 	@Override
 	public void setCommonRestSet(CommonRestSetting set) {
-		set.saveToMemento(this.commonRestSet);
+		if (set != null) {
+			this.commonRestSet = new CommonRestSettingDto();
+			set.saveToMemento(this.commonRestSet);
+		}
 	}
 
 	/*
