@@ -126,6 +126,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.reSetData(self.selectedErrorAlarm(), null);
             self.isNewMode(true);
             self.selectedTab('tab-1');
+            nts.uk.ui.errors.clearAll();
             $("#errorAlarmWorkRecordCode").focus();
         }
 
@@ -188,17 +189,17 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 data.workTypeCondition.actualFilterAtr = data.workTypeCondition.actualFilterAtr ? 1 : 0;
                 data.workTimeCondition.planFilterAtr = data.workTimeCondition.planFilterAtr ? 1 : 0;
                 data.workTimeCondition.actualFilterAtr = data.workTimeCondition.actualFilterAtr ? 1 : 0;
-                data.alCheckTargetCondition.lstBusinessType = Object.values(data.alCheckTargetCondition.lstBusinessType);
-                data.alCheckTargetCondition.lstJobTitle = Object.values(data.alCheckTargetCondition.lstJobTitle);
-                data.alCheckTargetCondition.lstEmployment = Object.values(data.alCheckTargetCondition.lstEmployment);
-                data.alCheckTargetCondition.lstClassification = Object.values(data.alCheckTargetCondition.lstClassification);
-                data.workTypeCondition.planLstWorkType = Object.values(data.workTypeCondition.planLstWorkType);
-                data.workTypeCondition.actualLstWorkType = Object.values(data.workTypeCondition.actualLstWorkType);
-                data.workTimeCondition.planLstWorkTime = Object.values(data.workTimeCondition.planLstWorkTime);
-                data.workTimeCondition.actualLstWorkTime = Object.values(data.workTimeCondition.actualLstWorkTime);
-                data.lstApplicationTypeCode = Object.values(data.lstApplicationTypeCode);
-                data.erAlAtdItemConditionGroup1 = Object.values(data.erAlAtdItemConditionGroup1);
-                data.erAlAtdItemConditionGroup2 = Object.values(data.erAlAtdItemConditionGroup2);
+                data.alCheckTargetCondition.lstBusinessType = Object.values(data.alCheckTargetCondition.lstBusinessType ? data.alCheckTargetCondition.lstBusinessType : []);
+                data.alCheckTargetCondition.lstJobTitle = Object.values(data.alCheckTargetCondition.lstJobTitle ? data.alCheckTargetCondition.lstJobTitle : []);
+                data.alCheckTargetCondition.lstEmployment = Object.values(data.alCheckTargetCondition.lstEmployment ? data.alCheckTargetCondition.lstEmployment : []);
+                data.alCheckTargetCondition.lstClassification = Object.values(data.alCheckTargetCondition.lstClassification ? data.alCheckTargetCondition.lstClassification : []);
+                data.workTypeCondition.planLstWorkType = Object.values(data.workTypeCondition.planLstWorkType ? data.workTypeCondition.planLstWorkType : []);
+                data.workTypeCondition.actualLstWorkType = Object.values(data.workTypeCondition.actualLstWorkType ? data.workTypeCondition.actualLstWorkType : []);
+                data.workTimeCondition.planLstWorkTime = Object.values(data.workTimeCondition.planLstWorkTime ? data.workTimeCondition.planLstWorkTime : []);
+                data.workTimeCondition.actualLstWorkTime = Object.values(data.workTimeCondition.actualLstWorkTime ? data.workTimeCondition.actualLstWorkTime : []);
+                data.lstApplicationTypeCode = Object.values(data.lstApplicationTypeCode ? data.lstApplicationTypeCode : []);
+                data.erAlAtdItemConditionGroup1 = Object.values(data.erAlAtdItemConditionGroup1 ? data.erAlAtdItemConditionGroup1 : []);
+                data.erAlAtdItemConditionGroup2 = Object.values(data.erAlAtdItemConditionGroup2 ? data.erAlAtdItemConditionGroup2 : []);
                 _.forEach(data.erAlAtdItemConditionGroup1, (item) => {
                     item.countableAddAtdItems = Object.values(item.countableAddAtdItems);
                     item.countableSubAtdItems = Object.values(item.countableSubAtdItems);
@@ -663,12 +664,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.actualLstWorkType = param ? ko.observable(param.actualLstWorkType) : ko.observableArray([]);
             this.planFilterAtr.subscribe((val) => {
                 if (!val) {
-                    $(".display-list-label").trigger("validate");
+                    $("#displayLstWorkTypePlan").ntsError("clear");
                 }
             });
             this.actualFilterAtr.subscribe((val) => {
                 if (!val) {
-                    $(".display-list-label").trigger("validate");
+                    $("#displayLstWorkTypeActual").ntsError("clear");
                 }
             });
             this.displayLstWorkTypePlan = ko.observable("");
@@ -739,7 +740,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.planFilterAtr(param ? param.planFilterAtr : false);
             this.planLstWorkType(param ? param.planLstWorkType : []);
             this.actualFilterAtr(param ? param.actualFilterAtr : false);
-            this.actualLstWorkType(param ? param.actualLstWorkType : []);
+            this.actualLstWorkType(param && param.actualLstWorkType ? param.actualLstWorkType : []);
         }
     }
 
@@ -768,12 +769,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.actualLstWorkTime = param ? ko.observable(param.actualLstWorkTime) : ko.observableArray([]);
             this.planFilterAtr.subscribe((val) => {
                 if (!val) {
-                    $(".display-list-label").trigger("validate");
+                    $("#displayLstWorkTimePlan").ntsError("clear");
                 }
             });
             this.actualFilterAtr.subscribe((val) => {
                 if (!val) {
-                    $(".display-list-label").trigger("validate");
+                    $("#displayLstWorkTimeActual").ntsError("clear");
                 }
             });
             this.displayLstWorkTimePlan = ko.observable("");
@@ -844,7 +845,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.planFilterAtr(param ? param.planFilterAtr : false);
             this.planLstWorkTime(param ? param.planLstWorkTime : []);
             this.actualFilterAtr(param ? param.actualFilterAtr : false);
-            this.actualLstWorkTime(param ? param.actualLstWorkTime : []);
+            this.actualLstWorkTime(param && param.actualLstWorkTime ? param.actualLstWorkTime : []);
         }
     }
 
