@@ -18,8 +18,8 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 import nts.uk.shr.pereg.app.ItemValue;
-import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -101,11 +101,6 @@ public class AddEmployeeCommandFacade {
 
 			if (!CollectionUtil.isEmpty(lstItem)) {
 
-				addNewFixedItem(ctg, lstItem, "CS00002", "IS00003", ItemValueType.STRING, command.getEmployeeName());
-
-				addNewFixedItem(ctg, lstItem, "CS00003", "IS00020", ItemValueType.DATE,
-						command.getHireDate().toString());
-
 				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
 				updateInputs.add(newItemCtg);
 			}
@@ -115,21 +110,6 @@ public class AddEmployeeCommandFacade {
 		PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
 
 		this.commandFacade.update(updateContainer);
-
-	}
-
-	private void addNewFixedItem(ItemsByCategory ctg, List<ItemValue> lstItem, String ctgCode, String itemCode,
-			ItemValueType itemType, String value) {
-		if (ctg.getCategoryCd().equals(ctgCode)) {
-
-			Optional<ItemValue> itemValOpt = lstItem.stream().filter(item -> item.itemCode().equals(itemCode))
-					.findFirst();
-
-			if (!itemValOpt.isPresent()) {
-				lstItem.add(new ItemValue("", itemCode, value, itemType.value));
-			}
-
-		}
 
 	}
 
@@ -180,10 +160,32 @@ public class AddEmployeeCommandFacade {
 				}
 			}
 
-			ItemValue itemVal = getItemById(inputs, x.getItemCode(), x.getCategoryCode());
+			String itemCD = x.getItemCode();
+			ItemValue itemVal = getItemById(inputs, itemCD, x.getCategoryCode());
 
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(), itemVal.value().toString()));
+			} else {
+
+				// set fixed itemvalue
+				if (itemCD.equals("IS00001")) {
+
+					x.setSaveData(new SaveDataDto(SaveDataType.STRING, command.getEmployeeCode()));
+
+				}
+
+				if (itemCD.equals("IS00003")) {
+
+					x.setSaveData(new SaveDataDto(SaveDataType.STRING, command.getEmployeeName()));
+
+				}
+
+				if (itemCD.equals("IS00020")) {
+
+					x.setSaveData(new SaveDataDto(SaveDataType.DATE, command.getHireDate().toString()));
+
+				}
+
 			}
 		});
 

@@ -94,24 +94,22 @@ public class RegisterLayoutFinder {
 	private List<LayoutPersonInfoClsDto> getlistItemCls(AddEmployeeCommand command, NewLayout _layout) {
 
 		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDtoHasCtgCd(_layout.getLayoutID());
+		List<SettingItemDto> dataServer = new ArrayList<SettingItemDto>();
 
 		if (command.getCreateType() != 3) {
-
-			List<SettingItemDto> dataServer = this.getAllSettingItemList(command);
+			dataServer = this.getAllSettingItemList(command);
 
 			if (CollectionUtil.isEmpty(dataServer)) {
 
 				return null;
 			}
+		}
+		setData(dataServer, listItemCls, command.getCreateType());
 
-			setData(dataServer, listItemCls, command.getCreateType());
+		if (command.getCreateType() == 2) {
 
-			if (command.getCreateType() == 2) {
-
-				return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
-						.collect(Collectors.toList());
-			}
-
+			return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
+					.collect(Collectors.toList());
 		}
 
 		return listItemCls;
@@ -139,7 +137,7 @@ public class RegisterLayoutFinder {
 					SettingItemDto setItem = setItemOpt.get();
 					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls);
 				} else {
-					if (itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM.value || createType == 1) {
+					if (itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM.value || createType != 2) {
 						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
 					}
 				}

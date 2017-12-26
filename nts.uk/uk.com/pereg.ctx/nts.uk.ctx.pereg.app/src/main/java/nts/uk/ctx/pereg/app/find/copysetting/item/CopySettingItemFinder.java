@@ -90,15 +90,17 @@ public class CopySettingItemFinder {
 			});
 		}
 
-		setDataForSetItem(result);
 		if (isSetText) {
+
+			setTextForSetItem(result);
+
 			this.settingItemMap.setTextForSelectionItem(result);
 		}
 		return result;
 
 	}
 
-	public void setDataForSetItem(List<SettingItemDto> result) {
+	public void setTextForSetItem(List<SettingItemDto> result) {
 		List<SettingItemDto> childList = result.stream().filter(x -> !StringUtils.isEmpty(x.getItemParentCd()))
 				.collect(Collectors.toList());
 
