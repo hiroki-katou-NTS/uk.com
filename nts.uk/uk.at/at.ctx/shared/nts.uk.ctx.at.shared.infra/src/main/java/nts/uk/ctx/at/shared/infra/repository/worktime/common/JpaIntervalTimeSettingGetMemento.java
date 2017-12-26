@@ -37,7 +37,7 @@ public class JpaIntervalTimeSettingGetMemento implements IntervalTimeSettingGetM
 	 */
 	@Override
 	public boolean getuseIntervalExemptionTime() {
-		return this.entity.getUseIntervalExempTime() == 1 ? true : false;
+		return this.entity.getUseIntervalExempTime() == 1 ;
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class JpaIntervalTimeSettingGetMemento implements IntervalTimeSettingGetM
 	 */
 	@Override
 	public boolean getuseIntervalTime() {
-		return this.entity.getUseIntervalTime() == 1 ? true : false;
+		return this.entity.getUseIntervalTime() == 1 ;
 	}
 
 }

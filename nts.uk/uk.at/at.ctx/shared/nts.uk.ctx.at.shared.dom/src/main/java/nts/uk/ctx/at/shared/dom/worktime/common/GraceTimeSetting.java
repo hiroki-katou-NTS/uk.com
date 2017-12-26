@@ -10,37 +10,52 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class GraceTimeSetting.
  */
-//猶予時間設定
+// 猶予時間設定
 @Getter
 public class GraceTimeSetting extends DomainObject {
 
 	/** The include working hour. */
-	//就業時間に含める
+	// 就業時間に含める
 	private boolean includeWorkingHour;
-	
+
 	/** The grace time. */
-	//猶予時間
+	// 猶予時間
 	private LateEarlyGraceTime graceTime;
-	
-	
+
 	/**
 	 * Instantiates a new grace time setting.
 	 *
-	 * @param memento the memento
+	 * @param includeWorkingHour
+	 *            the include working hour
+	 * @param graceTime
+	 *            the grace time
+	 */
+	public GraceTimeSetting(boolean includeWorkingHour, LateEarlyGraceTime graceTime) {
+		super();
+		this.includeWorkingHour = includeWorkingHour;
+		this.graceTime = graceTime;
+	}
+
+	/**
+	 * Instantiates a new grace time setting.
+	 *
+	 * @param memento
+	 *            the memento
 	 */
 	public GraceTimeSetting(GraceTimeSettingGetMemento memento) {
 		this.includeWorkingHour = memento.getIncludeWorkingHour();
 		this.graceTime = memento.getGraceTime();
 	}
-	
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(GraceTimeSettingSetMemento memento){
+	public void saveToMemento(GraceTimeSettingSetMemento memento) {
 		memento.setIncludeWorkingHour(this.includeWorkingHour);
 		memento.setGraceTime(this.graceTime);
 	}
+
 }
