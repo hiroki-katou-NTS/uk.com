@@ -28,9 +28,11 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSDayScheWorkCatSetMemento(KshmtPerWorkCat entity) {
+	public JpaSDayScheWorkCatSetMemento(String historyId, KshmtPerWorkCat entity) {
 		if (entity.getKshmtPerWorkCatPK() == null) {
-			entity.setKshmtPerWorkCatPK(new KshmtPerWorkCatPK());
+			KshmtPerWorkCatPK kshmtPerWorkCatPK = new KshmtPerWorkCatPK();
+			kshmtPerWorkCatPK.setHistoryId(historyId);
+			entity.setKshmtPerWorkCatPK(kshmtPerWorkCatPK);
 		}
 		this.entity = entity;
 	}

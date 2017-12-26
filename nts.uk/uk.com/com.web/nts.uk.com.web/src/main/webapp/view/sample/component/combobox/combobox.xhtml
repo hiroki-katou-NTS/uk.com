@@ -24,7 +24,18 @@
 						<h1>ComboBox</h1>
 						<h2>Overview</h2>
 						<div class="control-group valign-center">
-							<div id="combo-box" data-bind="ntsComboBox: {options: itemList,
+							<div id="combo-box" tabindex="1" data-bind="ntsComboBox: {options: itemList,
+												optionsValue: 'code',
+												visibleItemsCount: 5,
+												value: selectedCode,
+												optionsText: 'name',
+												editable: isEditable,
+												enable: isEnable,
+												columns: [
+														{ prop: 'code', length: 4 },
+														{ prop: 'name', length: 10 },
+													]}"></div>
+													<div id="combo-box2" tabindex="2" data-bind="ntsComboBox: {options: itemList,
 												optionsValue: 'code',
 												visibleItemsCount: 5,
 												value: selectedCode,
@@ -38,7 +49,7 @@
 						</div>
 						<div class="status">
 							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
-							<span data-bind="ntsCheckBox: { checked: isEditable }">Editable</span>
+							<span tabindex="4" data-bind="ntsCheckBox: { checked: isEditable }">Editable</span>
 						</div>
 						<div>
 							Your selected code: <span data-bind="text:selectedCode"></span>
