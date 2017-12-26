@@ -1929,10 +1929,29 @@ module nts.custombinding {
                 opts.sortable.pushItem(item);
             });
 
+            $(ctrls.sortable)
+                .on('mouseover', '.form-group.item-classification', (evt) => {
+                    $(evt.target).removeClass('selected');
+                });
+
+
             $(ctrls.button).on('click', () => {
                 // アルゴリズム「項目追加処理」を実行する
                 // Execute the algorithm "項目追加処理"
-                let ids: Array<string> = ko.toJS(opts.listbox.value);
+                let ids: Array<string> = ko.toJS(opts.listbox.value),
+                    scrollDown = () => {
+                        // remove old selected items
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification')
+                            .removeClass('selected');
+                        // scroll to bottom
+                        $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
+                        // select lastest item
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification:last-child')
+                            .addClass('selected');
+                    };
+
                 if (!ids || !ids.length) {
                     alert(text('Msg_203'));
                     return;
@@ -1983,6 +2002,7 @@ module nts.custombinding {
                                             };
                                             opts.sortable.data.push(item);
                                             opts.listbox.value.removeAll();
+                                            scrollDown();
                                         });
                                     });
                                 }
@@ -1996,6 +2016,7 @@ module nts.custombinding {
                                 services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
                                     if (defs && defs.length) {
                                         opts.sortable.pushItems(defs, false);
+                                        scrollDown();
                                     }
                                 });
                             }
@@ -2024,6 +2045,7 @@ module nts.custombinding {
                             let items = _.filter(_.flatten(arguments) as Array<IItemDefinition>, x => !x.isAbolition);
                             if (items && items.length) {
                                 opts.sortable.pushItems(items, true);
+                                scrollDown();
                             }
                         });
                     }
