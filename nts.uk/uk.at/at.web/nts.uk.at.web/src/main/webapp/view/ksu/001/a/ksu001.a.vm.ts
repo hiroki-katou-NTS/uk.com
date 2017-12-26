@@ -421,13 +421,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 view: function(mode, obj) {
                     switch (mode) {
                         case "shortName":
-                            return [obj.workTypeName, obj.workTimeName];
-                        case "time":
-                            return [obj.startTime, obj.endTime];
+                            return ["workTypeName", "workTimeName"];
                         case "symbol":
-                            return obj.symbolName;
+                            return ["symbolName"];
+                        case "time":
+                            return ["startTime", "endTime"];
                     }
                 },
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbolName", "startTime", "endTime"],
                 upperInput: "startTime",
                 lowerInput: "endTime"
             };
@@ -1868,7 +1869,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         endTime: nts.uk.time.parseTime(obj.scheduleEndClock, true).format()
                     });
                 } else {
-                    //                    this['_' + arrDay[i].yearMonthDay] = null;
+                    //  this['_' + arrDay[i].yearMonthDay] = null;
                     this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({
                         workTypeCode: null,
                         workTypeName: null,
