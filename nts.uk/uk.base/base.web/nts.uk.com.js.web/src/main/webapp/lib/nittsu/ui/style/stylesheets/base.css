@@ -2398,25 +2398,25 @@ button.nts-switch-button[disabled]:hover {
   border: none;
 }
 /* line 4, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-nav {
+.ui-widget.ui-tabs > .ui-tabs-nav {
   background: transparent;
   border: none;
   padding: .2em .4em 0;
 }
 /* line 9, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-nav li {
+.ui-widget.ui-tabs > .ui-tabs-nav > li {
   border-color: #B1B1B1;
   border-radius: 5px 5px 0 0;
   box-sizing: border-box;
 }
 /* line 14, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-nav li a {
+.ui-widget.ui-tabs > .ui-tabs-nav > li > a {
   float: none;
   display: block;
   outline: none;
 }
 /* line 19, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+.ui-widget.ui-tabs > .ui-tabs-nav > li.ui-tabs-active {
   background-color: #00B050;
   border-color: #B1B1B1;
   margin-top: -2px;
@@ -2426,7 +2426,7 @@ button.nts-switch-button[disabled]:hover {
   border-radius: 5px;
 }
 /* line 31, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-panel {
+.ui-widget.ui-tabs > .ui-tabs-panel {
   border: 2px solid #B1B1B1;
   border-radius: 7px;
   display: block !important;
@@ -2436,13 +2436,13 @@ button.nts-switch-button[disabled]:hover {
   display: flex;
 }
 /* line 40, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav {
+.ui-widget.ui-tabs.vertical > .ui-tabs-nav {
   float: left;
   padding: .4em 0;
   border-radius: 0;
 }
 /* line 45, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav li {
+.ui-widget.ui-tabs.vertical > .ui-tabs-nav > li {
   clear: left;
   width: 100%;
   margin: -1px 0 0 0;
@@ -2450,13 +2450,13 @@ button.nts-switch-button[disabled]:hover {
   border-width: 1px 0;
 }
 /* line 52, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav li.ui-tabs-active {
+.ui-widget.ui-tabs.vertical > .ui-tabs-nav > li.ui-tabs-active {
   padding: 0;
   margin: 0;
   border-color: #00B050;
 }
 /* line 59, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-panel {
+.ui-widget.ui-tabs.vertical > .ui-tabs-panel {
   width: 100%;
   overflow: hidden;
   padding: 1em;
@@ -4434,39 +4434,39 @@ div .ex-area-line.x-stay {
 .image-preview {
   width: 100%;
   height: 100%;
-	border: none !important;
-	display: none;
+  border: none !important;
+  display: none;
 }
 
-/* line 9, ../sass/components/_imagepreview.scss */
+/* line 11, ../sass/components/_imagepreview.scss */
 .inline-container {
   float: left;
   padding: 5px 10px;
 }
 
-/* line 13, ../sass/components/_imagepreview.scss */
+/* line 15, ../sass/components/_imagepreview.scss */
 .info-label {
   display: block;
 }
 
-/* line 16, ../sass/components/_imagepreview.scss */
+/* line 18, ../sass/components/_imagepreview.scss */
 .checkbox-holder {
   padding: 10px 10px;
 }
 
-/* line 19, ../sass/components/_imagepreview.scss */
+/* line 21, ../sass/components/_imagepreview.scss */
 .crop-icon {
   border: 1px red solid;
   height: 15px;
   width: 25px;
 }
 
-/* line 24, ../sass/components/_imagepreview.scss */
+/* line 26, ../sass/components/_imagepreview.scss */
 .crop-description {
   padding: 5px 5px;
 }
 
-/* line 27, ../sass/components/_imagepreview.scss */
+/* line 29, ../sass/components/_imagepreview.scss */
 .mouse-icon {
   height: 15px;
   width: 15px;
@@ -4476,40 +4476,46 @@ div .ex-area-line.x-stay {
   padding: 5px 5px;
 }
 
-/* line 35, ../sass/components/_imagepreview.scss */
+/* line 37, ../sass/components/_imagepreview.scss */
 .mouse-description-text {
   padding: 5px 0px;
 }
 
-/* line 38, ../sass/components/_imagepreview.scss */
+/* line 40, ../sass/components/_imagepreview.scss */
 .cropper-line {
   background-color: red !important;
 }
 
-/* line 41, ../sass/components/_imagepreview.scss */
+/* line 43, ../sass/components/_imagepreview.scss */
 .cropper-point {
   background-color: red !important;
 }
 
-/* line 44, ../sass/components/_imagepreview.scss */
+/* line 46, ../sass/components/_imagepreview.scss */
 .cropper-crop-box {
   outline-color: rgba(255, 0, 0, 0.75) !important;
   outline: 1px solid red !important;
 }
-/* line 48, ../sass/components/_imagepreview.scss */
+
+/* line 50, ../sass/components/_imagepreview.scss */
 .image-upload-icon {
-  	background-image: url("images/icons/upload-icon.png");
-    background-repeat: no-repeat;
-    background-position: center;
+  background-image: url("images/icons/upload-icon.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
-.container-no-upload-background{
-	background-color: rgb(242, 242, 242);
-    border-radius: 20px;
+
+/* line 55, ../sass/components/_imagepreview.scss */
+.container-no-upload-background {
+  background-color: #f2f2f2;
+  border-radius: 20px;
 }
+
+/* line 59, ../sass/components/_imagepreview.scss */
 .image-preview-container {
-	padding: 5px;
-    border: 1px solid #CCC;
+  padding: 5px;
+  border: 1px solid #CCC;
 }
+
 /* line 2, ../sass/components/_buttontable.scss */
 .ntsTable td {
   border: 0px;
