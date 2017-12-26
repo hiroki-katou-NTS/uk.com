@@ -22,6 +22,10 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 
 	private final String DELETE_ALL = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId";
 	
+	private final String FIND_BY_CLOSURE_ID = "SELECT c FROM KclmtClosureEmployment c "
+			+ "WHERE  c.kclmpClosureEmploymentPK.companyId = :companyId  "
+			+ "AND c.closureId = :closureId";
+	
 	private static final String FIND;
 
 	static {
@@ -72,4 +76,13 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 				kclmtClosureEmployment.closureId);
 	}
 
+	@Override
+	public List<ClosureEmployment> findByClosureId(String companyId, int closureId) {
+		return this.queryProxy().query(FIND_BY_CLOSURE_ID, KclmtClosureEmployment.class)
+				.setParameter("companyId", companyId)
+				.setParameter("closureId", closureId)
+				.getList(f -> convertToDomain(f));
+	}
+
+	
 }

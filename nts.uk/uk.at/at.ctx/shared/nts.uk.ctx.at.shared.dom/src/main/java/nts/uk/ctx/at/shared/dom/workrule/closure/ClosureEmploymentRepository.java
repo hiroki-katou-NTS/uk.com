@@ -17,5 +17,12 @@ public interface ClosureEmploymentRepository {
 	 * @return
 	 */
 	List<ClosureEmployment> findListEmployment(String companyId, List<String> employmentCDs);
+	/**
+	 * get data by closureId
+	 * @param companyId
+	 * @param closureId
+	 * @return
+	 */
+	List<ClosureEmployment> findByClosureId(String companyId, int closureId);
 	
 }
