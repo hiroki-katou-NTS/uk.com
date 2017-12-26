@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition;
+package nts.uk.ctx.at.function.infra.enity.alarm.checkcondition;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,8 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -38,24 +36,21 @@ public class KfnmtAlarmCheckTargetCondition extends UkJpaEntity implements Seria
 	
 	@Basic
 	@Column(name = "FILTER_BY_EMP")
-	public boolean filterByEmployment;
+	public int filterByEmployment;
 	
 	@Basic
 	@Column(name = "FILTER_BY_CLS")
-	public boolean filterByClassification;
+	public int filterByClassification;
 	
 	@Basic
 	@Column(name = "FILTER_BY_JOB")
-	public boolean filterByJobTitle;
+	public int filterByJobTitle;
 	
 	@Basic
 	@Column(name = "FILTER_BY_BUSINESSTYPE")
-	public boolean filterByBusinessType;
+	public int filterByBusinessType;
 	
-	@OneToOne
-	@JoinColumns({
-        @JoinColumn(name = "ID", referencedColumnName = "EXTRACT_TARGET_COND_ID", insertable = false, updatable = false)
-    })
+	@OneToOne(mappedBy = "targetCondition")
 	public KfnmtAlarmCheckConditionCategory alarmCheckConditionByCategory;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="targetCondition", orphanRemoval = true)
@@ -75,8 +70,8 @@ public class KfnmtAlarmCheckTargetCondition extends UkJpaEntity implements Seria
 		return this.id;
 	}
 
-	public KfnmtAlarmCheckTargetCondition(String id, boolean filterByEmployment, boolean filterByClassification,
-			boolean filterByJobTitle, boolean filterByBusinessType,
+	public KfnmtAlarmCheckTargetCondition(String id, int filterByEmployment, int filterByClassification,
+			int filterByJobTitle, int filterByBusinessType,
 			List<KfnmtAlarmCheckTargetEmployment> listEmployment,
 			List<KfnmtAlarmCheckTargetClassification> listClassification,
 			List<KfnmtAlarmCheckTargetJobTitle> listJobTitle,
@@ -92,7 +87,6 @@ public class KfnmtAlarmCheckTargetCondition extends UkJpaEntity implements Seria
 		this.listJobTitle = listJobTitle;
 		this.listBusinessType = listBusinessType;
 	}
-	
 	
 
 }

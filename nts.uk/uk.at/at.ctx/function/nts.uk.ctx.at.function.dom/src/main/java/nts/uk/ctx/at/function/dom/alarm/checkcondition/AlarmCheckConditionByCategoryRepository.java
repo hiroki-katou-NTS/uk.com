@@ -12,7 +12,7 @@ public interface AlarmCheckConditionByCategoryRepository {
 	
 	public Optional<AlarmCheckConditionByCategory> find(String companyId, int category, String code);
 
-	public List<AlarmCheckConditionByCategory> findAll();
+	public List<AlarmCheckConditionByCategory> findAll(String companyId);
 
 	public List<AlarmCheckConditionByCategory> findByCategory(String companyId, int category);
 
