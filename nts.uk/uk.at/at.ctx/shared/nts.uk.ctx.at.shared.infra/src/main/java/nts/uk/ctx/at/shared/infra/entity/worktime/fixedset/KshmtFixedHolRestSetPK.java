@@ -38,6 +38,17 @@ public class KshmtFixedHolRestSetPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kshmt fixed hol rest set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 */
+	public KshmtFixedHolRestSetPK(String cid, String worktimeCd) {
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

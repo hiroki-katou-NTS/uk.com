@@ -4,44 +4,97 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 
 /**
- * The Class JpaCoreTimeSettingGetMemento.
+ * The Class JpaFixOffdayWorkTimezoneSetMemento.
  */
 public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezoneSetMemento {
-//	/** The entity. */
-//	private KshmtFlexWorkSet entity;
-//	
-//	/**
-//	 * Instantiates a new jpa core time setting get memento.
-//	 *
-//	 * @param entity the entity
-//	 */
-//	public JpaCoreTimeSettingGetMemento(KshmtFlexWorkSet entity) {
-//		super();
-//		if(entity.getKshmtFlexWorkSetPK() == null){
-//			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
-//		}
-//		this.entity = entity;
-//	}
+	
+	/** The entity. */
+	private KshmtFixedWorkSet entity;
+	
+	/** The company id. */
+	private String companyId;
+	
+	/** The work time cd. */
+	private String workTimeCd;
+	
+	/** The Constant EQUAL. */
+	private static final Integer EQUAL = 0;
+	
+	/**
+	 * Instantiates a new jpa fix offday work timezone set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFixOffdayWorkTimezoneSetMemento(KshmtFixedWorkSet entity) {
+		this.entity = entity;
+		
+		// initial data
+		this.initialData();
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * FixOffdayWorkTimezoneSetMemento#setRestTimezone(nts.uk.ctx.at.shared.dom.
+	 * worktime.fixedset.FixRestTimezoneSet)
+	 */
 	@Override
 	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
-		// TODO Auto-generated method stub
-
+		restTimezone.saveToMemento(new JpaFixedOffDayRestTimeSetMemento(this.entity));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * FixOffdayWorkTimezoneSetMemento#setLstWorkTimezone(java.util.List)
+	 */
 	@Override
 	public void setLstWorkTimezone(List<HDWorkTimeSheetSetting> lstWorkTimezone) {
-		// TODO Auto-generated method stub
-
+		
+		// get list entity
+		List<KshmtFixedHolTimeSet> lstEntity = this.entity.getLstKshmtFixedHolTimeSet();
+		
+		List<KshmtFixedHolTimeSet> newListEntity = new ArrayList<>();
+		
+		for (HDWorkTimeSheetSetting holDayTime : lstWorkTimezone) {
+			
+			// get entity existed
+			KshmtFixedHolTimeSet entity = lstEntity.stream().filter(item -> {
+				KshmtFixedHolTimeSetPK pk = item.getKshmtFixedHolTimeSetPK();
+						return pk.getCid().compareTo(companyId) == EQUAL
+								&& pk.getWorktimeCd().compareTo(workTimeCd) == EQUAL;
+					})
+					.findFirst()
+					.orElse(new KshmtFixedHolTimeSet());
+			
+			// save to memento
+			holDayTime.saveToMemento(new JpaFixedHDWorkTimeSheetSetMemento(this.companyId, this.workTimeCd, entity));
+			
+			// add list
+			newListEntity.add(entity);
+		}
+		this.entity.setLstKshmtFixedHolTimeSet(newListEntity);
+		
 	}
-
+	
+	/**
+	 * Initial data.
+	 */
+	private void initialData() {
+		this.companyId = this.entity.getKshmtFixedWorkSetPK().getCid();
+		this.workTimeCd = this.entity.getKshmtFixedWorkSetPK().getWorktimeCd();
+	}
 }

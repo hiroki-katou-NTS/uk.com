@@ -81,7 +81,19 @@ public class KshmtFixedHolTimeSet extends UkJpaEntity implements Serializable {
 	public KshmtFixedHolTimeSet() {
 		super();
 	}
-
+	
+	/**
+	 * Instantiates a new kshmt fixed hol time set.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param worktimeNo the worktime no
+	 */
+	public KshmtFixedHolTimeSet(String cid, String worktimeCd, Integer worktimeNo) {
+		super();
+		this.kshmtFixedHolTimeSetPK = new KshmtFixedHolTimeSetPK(cid, worktimeCd, worktimeNo);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

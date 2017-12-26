@@ -56,6 +56,16 @@ public class KshmtFixedHolRestSet extends UkJpaEntity implements Serializable {
     public KshmtFixedHolRestSet() {
     	super();
     }
+    
+    /**
+     * Instantiates a new kshmt fixed hol rest set.
+     *
+     * @param cid the cid
+     * @param worktimeCd the worktime cd
+     */
+    public KshmtFixedHolRestSet(String cid, String worktimeCd) {
+		this.kshmtFixedHolRestSetPK = new KshmtFixedHolRestSetPK(cid, worktimeCd);
+	}
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()

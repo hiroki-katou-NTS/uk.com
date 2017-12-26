@@ -41,6 +41,20 @@ public class KshmtFixedHolTimeSetPK implements Serializable {
 	public KshmtFixedHolTimeSetPK() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new kshmt fixed hol time set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param worktimeNo the worktime no
+	 */
+	public KshmtFixedHolTimeSetPK(String cid, String worktimeCd, Integer worktimeNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.worktimeNo = worktimeNo;
+	}
 
 	/*
 	 * (non-Javadoc)

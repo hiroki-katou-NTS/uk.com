@@ -35,7 +35,7 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 	 */
 	@Override
 	public FixRestTimezoneSet getRestTimezone() {
-		return new FixRestTimezoneSet(new JpaFixedOffDayRestTimeGetMemento(this.entity.getKshmtFixedHolRestSets()));
+		return new FixRestTimezoneSet(new JpaFixedOffDayRestTimeGetMemento(this.entity.getLstKshmtFixedHolRestSet()));
 	}
 
 	/* (non-Javadoc)
