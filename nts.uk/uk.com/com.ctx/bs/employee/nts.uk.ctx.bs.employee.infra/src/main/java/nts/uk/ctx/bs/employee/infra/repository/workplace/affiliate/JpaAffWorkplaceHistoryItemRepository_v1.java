@@ -111,9 +111,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	@Override
 	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListEmpIdAndDate(GeneralDate basedate,
 			List<String> employeeId) {
-		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_LIST_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("employeeIds", employeeId).setParameter("standDate", basedate)
-				.getList();
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(employeeId, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+				.setParameter("employeeIds", subList).setParameter("standDate", basedate)
+				.getList());
+		});
 		if(listHistItem.isEmpty()){
 			return null;
 		}
@@ -140,9 +143,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	@Override
 	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListWkpIdAndDate(GeneralDate basedate,
 			List<String> workplaceId) {
-		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_LIST_WKPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("workplaceIds", workplaceId).setParameter("standDate", basedate)
-				.getList();
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(workplaceId, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+					.setParameter("workplaceIds", subList).setParameter("standDate", basedate)
+					.getList());
+		});
 		if(listHistItem.isEmpty()){
 			return null;
 		}
@@ -161,8 +167,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 		if (CollectionUtil.isEmpty(hisIds)) {
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(SELECT_BY_HISTIDS, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("historyId", hisIds).getList().stream().map(item -> toDomain(item))
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(hisIds, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_HISTIDS, BsymtAffiWorkplaceHistItem.class)
+					.setParameter("historyId", subList).getList());
+		});
+		return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 	}
 
@@ -175,8 +185,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 		if (CollectionUtil.isEmpty(wplIDs)) {
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(SELECT_BY_WPLIDS, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("wplIds", wplIDs).getList().stream().map(item -> toDomain(item))
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(wplIDs, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_WPLIDS, BsymtAffiWorkplaceHistItem.class)
+					.setParameter("wplIds", subList).getList());
+		});
+		return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 	}
 
