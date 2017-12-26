@@ -78,12 +78,12 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	private List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets;
 
-	/** The kshmt fixed hol rest sets. */
+	/** The lst kshmt fixed hol rest set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtFixedHolRestSet> kshmtFixedHolRestSets;
+	private List<KshmtFixedHolRestSet> lstKshmtFixedHolRestSet;
 	
 	/** The lst kshmt fixed hol time set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

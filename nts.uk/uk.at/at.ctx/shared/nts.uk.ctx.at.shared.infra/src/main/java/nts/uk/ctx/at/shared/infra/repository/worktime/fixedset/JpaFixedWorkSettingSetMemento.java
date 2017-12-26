@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 import java.util.ArrayList;
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
@@ -27,7 +28,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 
 	/** The entity. */
 	private KshmtFixedWorkSet entity;
-
+	
 	/**
 	 * Instantiates a new jpa fixed work setting set memento.
 	 *
@@ -75,8 +76,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setOffdayWorkTimezone(FixOffdayWorkTimezone offdayWorkTimezone) {
-		// TODO Auto-generated method stub
-
+		offdayWorkTimezone.saveToMemento(new JpaFixOffdayWorkTimezoneSetMemento(this.entity));
 	}
 
 	/*
@@ -102,8 +102,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setUseHalfDayShift(Boolean useHalfDayShift) {
-		// TODO Auto-generated method stub
-
+		this.entity.setUseHalfDay(BooleanGetAtr.getAtrByBoolean(useHalfDayShift));
 	}
 
 	/*
