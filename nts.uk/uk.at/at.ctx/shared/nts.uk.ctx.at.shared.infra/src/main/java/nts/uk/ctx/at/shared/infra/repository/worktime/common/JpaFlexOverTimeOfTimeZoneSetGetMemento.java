@@ -11,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSetPK;
 
 /**
  * The Class JpaFlexOverTimeOfTimeZoneSetGetMemento.
@@ -28,9 +27,6 @@ public class JpaFlexOverTimeOfTimeZoneSetGetMemento implements OverTimeOfTimeZon
 	 */
 	public JpaFlexOverTimeOfTimeZoneSetGetMemento(KshmtFlexOtTimeSet entity) {
 		super();
-		if(entity.getKshmtFlexOtTimeSetPK() == null){
-			entity.setKshmtFlexOtTimeSetPK(new KshmtFlexOtTimeSetPK());
-		}
 		this.entity = entity;
 	}
 

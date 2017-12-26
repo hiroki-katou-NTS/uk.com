@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSet;
 
 /**
- * The Class JpaFlexOffdayFlowRestGetMemento.
+ * The Class JpaFlexHAFlowRestGetMemento.
  */
 public class JpaFlexHAFlowRestGetMemento implements FlowRestSettingGetMemento{
 

@@ -52,12 +52,7 @@ public class JpaFlexODFlWRestTzGetMemento implements FlowWorkRestTimezoneGetMeme
 	 */
 	@Override
 	public FlowRestTimezone getFlowRestTimezone() {
-		return null;
-		/*
-		 * new FlowRestTimezone(new
-		 * JpaFlexODFlowRestTzGetMemento(this.entitySetGroup.getEntityOffday(),
-		 * this.entityArrayGroup.getEntityFlowRests()));
-		 */
+		return new FlowRestTimezone(new JpaFlexODFlowRestTzGetMemento(this.entity));
 	}
 
 }

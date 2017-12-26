@@ -94,8 +94,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public FlexOffdayWorkTime getOffdayWorkTime() {
-		return null;
-		//return new FlexOffdayWorkTime(new JpaFlexODWorkTimeGetMemento(this.entityArrayGroup, this.entitySetting));
+		return new FlexOffdayWorkTime(new JpaFlexODWorkTimeGetMemento(this.entity.getKshmtFlexOdRtSet()));
 	}
 
 	/*
@@ -106,7 +105,6 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSetting() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -129,13 +127,12 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public List<FlexHalfDayWorkTime> getLstHalfDayWorkTimezone() {
-		return new ArrayList<>();
-		/*
-		 * if(CollectionUtil.isEmpty(this.entity .getKshmtFlexHaFixRests())){ }
-		 * return this.entitySettings.stream() .map(entitySetting -> new
-		 * FlexHalfDayWorkTime(new JpaFlexHAWorkTimeGetMemento(entitySetting)))
-		 * .collect(Collectors.toList());
-		 */
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaRtSets())) {
+			return new ArrayList<>();
+		}
+		return this.entity.getKshmtFlexHaRtSets().stream()
+				.map(entity -> new FlexHalfDayWorkTime(new JpaFlexHAWorkTimeGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/*

@@ -4,12 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODFlWRestTzGetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODHDWTSheetGetMemento;
 
 /**
  * The Class JpaFlexODWorkTimeGetMemento.
@@ -38,13 +43,12 @@ public class JpaFlexODWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento
 	 */
 	@Override
 	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
-		return null;
-//		if (CollectionUtil.isEmpty(this.entityArrayGroup.getEntityWorktimezones())) {
-//			return new ArrayList<>();
-//		}
-//		return this.entityArrayGroup.getEntityWorktimezones().stream()
-//				.map(entity -> new HDWorkTimeSheetSetting(new JpaFlexODHDWTSheetGetMemento(entity)))
-//				.collect(Collectors.toList());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHolSets())) {
+			return new ArrayList<>();
+		}
+		return this.entity.getKshmtFlexHolSets().stream()
+				.map(entity -> new HDWorkTimeSheetSetting(new JpaFlexODHDWTSheetGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -52,8 +56,7 @@ public class JpaFlexODWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento
 	 */
 	@Override
 	public FlowWorkRestTimezone getRestTimezone() {
-		return null;
-//		return new FlowWorkRestTimezone(new JpaFlexODFlWRestTzGetMemento(this.entityArrayGroup, this.entitySetGroup));
+		return new FlowWorkRestTimezone(new JpaFlexODFlWRestTzGetMemento(this.entity));
 	}
 
 }

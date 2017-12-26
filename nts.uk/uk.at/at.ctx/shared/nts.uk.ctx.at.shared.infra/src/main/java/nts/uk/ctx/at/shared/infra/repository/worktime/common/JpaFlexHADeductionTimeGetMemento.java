@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRestPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -24,9 +23,6 @@ public class JpaFlexHADeductionTimeGetMemento implements DeductionTimeGetMemento
 	 */
 	public JpaFlexHADeductionTimeGetMemento(KshmtFlexHaFixRest entity) {
 		super();
-		if(entity.getKshmtFlexHaFixRestPK() == null){
-			entity.setKshmtFlexHaFixRestPK(new KshmtFlexHaFixRestPK());
-		}
 		this.entity = entity;
 	}
 
