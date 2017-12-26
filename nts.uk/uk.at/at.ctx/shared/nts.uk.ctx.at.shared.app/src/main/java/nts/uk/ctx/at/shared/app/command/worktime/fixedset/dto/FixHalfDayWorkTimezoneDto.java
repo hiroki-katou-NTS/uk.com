@@ -6,10 +6,10 @@ package nts.uk.ctx.at.shared.app.command.worktime.fixedset.dto;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.worktime.flexset.dto.FixedWorkTimezoneSetDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 
 /**
  * The Class FixHalfDayWorkTimezoneDto.
@@ -52,8 +52,8 @@ public class FixHalfDayWorkTimezoneDto implements FixHalfDayWorkTimezoneGetMemen
 	 * @return the day atr
 	 */
 	@Override
-	public AmPmClassification getDayAtr() {
-		return AmPmClassification.valueOf(this.dayAtr);
+	public AmPmAtr getDayAtr() {
+		return AmPmAtr.valueOf(this.dayAtr);
 	}
 
 }
