@@ -550,7 +550,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     self.limitedValue01("100");
                     self.setConditionValueChanges();
                     
-                    if(Number(self.conditionValue01()) > 100 && !self.isNewMode()) {
+                    if((Number(self.conditionValue01()) > 100 || Number(self.conditionValue01()) < 0) && !self.isNewMode()) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
                     }
                 } else if(value == 1) {
@@ -558,7 +558,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     self.limitedValue01("366");
                     self.setConditionValueChanges();
                     
-                    if(Number(self.conditionValue01()) > 366 && !self.isNewMode()) {
+                    if((Number(self.conditionValue01()) > 366 || Number(self.conditionValue01()) < 0) && !self.isNewMode()) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
                     }
                 }
@@ -578,7 +578,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     return false;
                 }
                 
-                if(self.A7_4SelectedRuleCode() == 0 && Number(value) > 100){
+                if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > 100 || Number(self.conditionValue01()) < 0)){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
                 } else {
                     if(self.useCls02()) {
@@ -587,7 +587,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     }
                 }
                 
-                if(self.A7_4SelectedRuleCode() == 1 && Number(value) > 366){
+                if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > 366 || Number(self.conditionValue01()) < 0)){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_263" });
                 } else {
                     if(self.useCls02()) {
