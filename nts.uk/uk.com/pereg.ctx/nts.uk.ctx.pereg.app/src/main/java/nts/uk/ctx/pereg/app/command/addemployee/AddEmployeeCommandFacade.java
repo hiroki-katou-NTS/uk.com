@@ -103,7 +103,7 @@ public class AddEmployeeCommandFacade {
 
 				addNewFixedItem(ctg, lstItem, "CS00002", "IS00003", ItemValueType.STRING, command.getEmployeeName());
 
-				addNewFixedItem(ctg, lstItem, "CS00003", "IS00020", ItemValueType.STRING,
+				addNewFixedItem(ctg, lstItem, "CS00003", "IS00020", ItemValueType.DATE,
 						command.getHireDate().toString());
 
 				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
