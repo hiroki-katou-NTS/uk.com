@@ -6,25 +6,27 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSet;
 
 /**
- * The Class JpaFlexOffdayFlowRestSetMemento.
+ * The Class JpaFlexODFlowRestSetMemento.
  */
-public class JpaFlexHAFlowRestSetMemento implements FlowRestSettingSetMemento{
+public class JpaFlexODFlowRestSetMemento implements FlowRestSettingSetMemento{
 
 	/** The entity. */
-	private KshmtFlexHaRestSet entity;
+	private KshmtFlexOdRestSet entity;
 	
+
 	/**
-	 * Instantiates a new jpa flex HA flow rest set memento.
+	 * Instantiates a new jpa flex OD flow rest set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHAFlowRestSetMemento(KshmtFlexHaRestSet entity) {
+	public JpaFlexODFlowRestSetMemento(KshmtFlexOdRestSet entity) {
 		super();
 		this.entity = entity;
 	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -35,6 +37,7 @@ public class JpaFlexHAFlowRestSetMemento implements FlowRestSettingSetMemento{
 	@Override
 	public void setFlowRestTime(AttendanceTime time) {
 		this.entity.setFlowRestTime(time.valueAsMinutes());
+		
 	}
 
 	/*
@@ -46,6 +49,8 @@ public class JpaFlexHAFlowRestSetMemento implements FlowRestSettingSetMemento{
 	@Override
 	public void setFlowPassageTime(AttendanceTime time) {
 		this.entity.setFlowPassageTime(time.valueAsMinutes());
+		
 	}
+	
 
 }

@@ -12,6 +12,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdFixRest;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdFixRestPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.
@@ -19,17 +21,19 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdFixRest;
 public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento{
 	
 	/** The entitys. */
-	private List<KshmtFlexOdFixRest> entitys;
+	private KshmtFlexOdRtSet entity;
 
+	/** The period no. */
+	private int periodNo = 0;
 
 	/**
-	 * Instantiates a new jpa flex OD tz OFR time set get memento.
+	 * Instantiates a new jpa flex OD tz OFR time set set memento.
 	 *
-	 * @param entitys the entitys
+	 * @param entity the entity
 	 */
-	public JpaFlexODTzOFRTimeSetSetMemento(List<KshmtFlexOdFixRest> entitys) {
+	public JpaFlexODTzOFRTimeSetSetMemento(KshmtFlexOdRtSet entity) {
 		super();
-		this.entitys = entitys;
+		this.entity = entity;
 	}
 
 
@@ -39,13 +43,17 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	@Override
 	public void setTimezones(List<DeductionTime> timzones) {
 		if (CollectionUtil.isEmpty(timzones)) {
-			this.entitys = new ArrayList<>();
+			this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
 		} else {
-			this.entitys = timzones.stream().map(domain -> {
-				KshmtFlexOdFixRest entity = new KshmtFlexOdFixRest();
+			periodNo = 0;
+			this.entity.setKshmtFlexOdFixRests(timzones.stream().map(domain -> {
+				periodNo++;
+				KshmtFlexOdFixRest entity = new KshmtFlexOdFixRest(
+						new KshmtFlexOdFixRestPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
+								this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), periodNo));
 				domain.saveToMemento(new JpaFlexODDeductionTimeSetMemento(entity));
 				return entity;
-			}).collect(Collectors.toList());
+			}).collect(Collectors.toList()));
 		}
 
 	}

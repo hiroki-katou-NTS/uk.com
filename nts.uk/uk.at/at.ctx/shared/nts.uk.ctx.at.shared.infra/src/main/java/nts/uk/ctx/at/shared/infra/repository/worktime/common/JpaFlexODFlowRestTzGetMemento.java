@@ -42,7 +42,7 @@ public class JpaFlexODFlowRestTzGetMemento implements FlowRestTimezoneGetMemento
 			return new ArrayList<>();
 		}
 		return this.entity.getKshmtFlexOdRestSets().stream()
-				.map(entity -> new FlowRestSetting(new JpaFlexHAFlowRestGetMemento(entity)))
+				.map(entity -> new FlowRestSetting(new JpaFlexODFlowRestGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 

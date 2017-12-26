@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
 
 /**
@@ -22,20 +23,18 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 	
 	/** The entity. */
 	private KshmtFlexOdRtSet entity;
-	
-	/** The entity flow rests. */
-	private List<KshmtFlexOdRestSet> entityFlowRests;
 
+	/** The period no. */
+	private int periodNo = 0;
+	
 	/**
 	 * Instantiates a new jpa flex OD flow rest tz set memento.
 	 *
 	 * @param entity the entity
-	 * @param entityFlowRests the entity flow rests
 	 */
-	public JpaFlexODFlowRestTzSetMemento(KshmtFlexOdRtSet entity, List<KshmtFlexOdRestSet> entityFlowRests) {
+	public JpaFlexODFlowRestTzSetMemento(KshmtFlexOdRtSet entity) {
 		super();
 		this.entity = entity;
-		this.entityFlowRests = entityFlowRests;
 	}
 
 	/* (non-Javadoc)
@@ -44,13 +43,17 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 	@Override
 	public void setFlowRestSet(List<FlowRestSetting> set) {
 		if (CollectionUtil.isEmpty(set)) {
-			this.entityFlowRests = new ArrayList<>();
+			this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
 		} else {
-			this.entityFlowRests = set.stream().map(domain -> {
-				KshmtFlexOdRestSet entity = new KshmtFlexOdRestSet();
-				domain.saveToMemento(new JpaFlexHAFlowRestSetMemento(entity));
+			periodNo = 0;
+			this.entity.setKshmtFlexOdRestSets(set.stream().map(domain -> {
+				periodNo++;
+				KshmtFlexOdRestSet entity = new KshmtFlexOdRestSet(
+						new KshmtFlexOdRestSetPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
+								this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), periodNo));
+				domain.saveToMemento(new JpaFlexODFlowRestSetMemento(entity));
 				return entity;
-			}).collect(Collectors.toList());
+			}).collect(Collectors.toList()));
 		}
 	}
 

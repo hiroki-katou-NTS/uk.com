@@ -8,31 +8,34 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRtSet;
 
 /**
- * The Class JpaFlexODFlWRestTzGetMemento.
+ * The Class JpaFlexHAFWRestTZSetMemento.
  */
-public class JpaFlexODFlWRestTzSetMemento implements FlowWorkRestTimezoneSetMemento{
+public class JpaFlexHAFWRestTZSetMemento implements FlowWorkRestTimezoneSetMemento{
 	
-	/** The entity. */
-	private KshmtFlexOdRtSet entity;
-
-
+	/** The entity group. */
+	private KshmtFlexHaRtSet entity;
+	
 
 	/**
-	 * Instantiates a new jpa flex OD fl W rest tz set memento.
+	 * Instantiates a new jpa flex HAFW rest TZ get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODFlWRestTzSetMemento(KshmtFlexOdRtSet entity) {
+	public JpaFlexHAFWRestTZSetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneSetMemento#setFixRestTime(boolean)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneSetMemento#
+	 * setFixRestTime(boolean)
 	 */
 	@Override
 	public void setFixRestTime(boolean fixRestTime) {
@@ -50,7 +53,7 @@ public class JpaFlexODFlWRestTzSetMemento implements FlowWorkRestTimezoneSetMeme
 	@Override
 	public void setFixedRestTimezone(TimezoneOfFixedRestTimeSet fixedRestTimezone) {
 		if (fixedRestTimezone != null) {
-			fixedRestTimezone.saveToMemento(new JpaFlexODTzOFRTimeSetSetMemento(this.entity));
+			fixedRestTimezone.saveToMemento(new JpaFlexHATzOFRTimeSetSetMemento(this.entity));
 		}
 	}
 
@@ -64,9 +67,10 @@ public class JpaFlexODFlWRestTzSetMemento implements FlowWorkRestTimezoneSetMeme
 	 */
 	@Override
 	public void setFlowRestTimezone(FlowRestTimezone flowRestTimezone) {
-		if (flowRestTimezone != null) {
-			flowRestTimezone.saveToMemento(new JpaFlexODFlowRestTzSetMemento(this.entity));
+		if(flowRestTimezone!=null){
+			flowRestTimezone.saveToMemento(new JpaFlexHAFlowRestTzSetMemento(this.entity));
 		}
+		
 	}
 
 }

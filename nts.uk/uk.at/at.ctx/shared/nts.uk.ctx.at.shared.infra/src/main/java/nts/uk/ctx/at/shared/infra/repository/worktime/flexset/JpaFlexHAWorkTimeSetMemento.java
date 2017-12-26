@@ -8,25 +8,28 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRtSet;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFixedWorkTimezoneSetSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexHAFWRestTZSetMemento;
 
 /**
  * The Class JpaFlexHAWorkTimeSetMemento.
  */
 public class JpaFlexHAWorkTimeSetMemento implements FlexHalfDayWorkTimeSetMemento{
-//
-//	/** The entity setting. */
-//	private KshmtFlexSettingGroup entitySetting;
-//
-//
-//	/**
-//	 * Instantiates a new jpa flex HA work time set memento.
-//	 *
-//	 * @param entitySetting the entity setting
-//	 */
-//	public JpaFlexHAWorkTimeSetMemento(KshmtFlexSettingGroup entitySetting) {
-//		super();
-//		this.entitySetting = entitySetting;
-//	}
+
+
+	/** The entity. */
+	 private KshmtFlexHaRtSet entity;
+
+	/**
+	 * Instantiates a new jpa flex HA work time set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFlexHAWorkTimeSetMemento(KshmtFlexHaRtSet entity) {
+		super();
+		this.entity = entity;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +41,9 @@ public class JpaFlexHAWorkTimeSetMemento implements FlexHalfDayWorkTimeSetMement
 	 */
 	@Override
 	public void setRestTimezone(FlowWorkRestTimezone lstRestTimezone) {
-		// TODO Auto-generated method stub
+		if(lstRestTimezone!=null){
+			lstRestTimezone.saveToMemento(new JpaFlexHAFWRestTZSetMemento(this.entity));
+		}
 
 	}
 
@@ -52,8 +57,9 @@ public class JpaFlexHAWorkTimeSetMemento implements FlexHalfDayWorkTimeSetMement
 	 */
 	@Override
 	public void setWorkTimezone(FixedWorkTimezoneSet workTimezone) {
-		// TODO Auto-generated method stub
-
+		if(workTimezone!=null){
+			workTimezone.saveToMemento(new JpaFlexFixedWorkTimezoneSetSetMemento(this.entity));
+		}
 	}
 
 	/*
@@ -65,8 +71,7 @@ public class JpaFlexHAWorkTimeSetMemento implements FlexHalfDayWorkTimeSetMement
 	 */
 	@Override
 	public void setAmpmAtr(AmPmAtr ampmAtr) {
-		// TODO Auto-generated method stub
-
+		this.entity.getKshmtFlexHaRtSetPK().setAmPmAtr(ampmAtr.value);
 	}
 
 }

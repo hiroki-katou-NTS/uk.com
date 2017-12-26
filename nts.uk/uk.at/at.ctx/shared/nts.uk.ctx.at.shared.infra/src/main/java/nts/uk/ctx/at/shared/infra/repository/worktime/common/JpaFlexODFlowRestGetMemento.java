@@ -6,23 +6,23 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSet;
 
 /**
- * The Class JpaFlexHAFlowRestGetMemento.
+ * The Class JpaFlexODFlowRestGetMemento.
  */
-public class JpaFlexHAFlowRestGetMemento implements FlowRestSettingGetMemento{
+public class JpaFlexODFlowRestGetMemento implements FlowRestSettingGetMemento{
 
 	/** The entity. */
-	private KshmtFlexHaRestSet entity;
+	private KshmtFlexOdRestSet entity;
 	
-	
+
 	/**
-	 * Instantiates a new jpa flex HA flow rest get memento.
+	 * Instantiates a new jpa flex OD flow rest get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHAFlowRestGetMemento(KshmtFlexHaRestSet entity) {
+	public JpaFlexODFlowRestGetMemento(KshmtFlexOdRestSet entity) {
 		super();
 		this.entity = entity;
 	}

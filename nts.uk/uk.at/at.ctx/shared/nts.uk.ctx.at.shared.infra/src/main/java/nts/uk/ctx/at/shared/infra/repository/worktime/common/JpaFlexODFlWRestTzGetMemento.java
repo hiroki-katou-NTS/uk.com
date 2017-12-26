@@ -43,8 +43,7 @@ public class JpaFlexODFlWRestTzGetMemento implements FlowWorkRestTimezoneGetMeme
 	 */
 	@Override
 	public TimezoneOfFixedRestTimeSet getFixedRestTimezone() {
-		return new TimezoneOfFixedRestTimeSet(new JpaFlexODTzOFRTimeSetGetMemento(this.entity
-				.getKshmtFlexOdFixRest()));
+		return new TimezoneOfFixedRestTimeSet(new JpaFlexODTzOFRTimeSetGetMemento(this.entity));
 	}
 
 	/* (non-Javadoc)
