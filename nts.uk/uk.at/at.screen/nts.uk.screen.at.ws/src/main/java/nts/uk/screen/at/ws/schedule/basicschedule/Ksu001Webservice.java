@@ -21,6 +21,8 @@ import nts.uk.screen.at.app.shift.businesscalendar.holiday.PublicHolidayScreenPr
 import nts.uk.screen.at.app.shift.specificdayset.company.ComSpecificDateSetScreenProcessor;
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScreenParams;
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenProcessor;
+import nts.uk.screen.at.app.shift.workpairpattern.ComPatternScreenDto;
+import nts.uk.screen.at.app.shift.workpairpattern.WkpPatternScreenDto;
 
 /**
  * 
@@ -52,10 +54,22 @@ public class Ksu001Webservice extends WebService {
 	 * @return List WorkType WorkTime
 	 */
 	@POST
-	public ListWorkTypeWorkTimeScreenDto init() {
-		ListWorkTypeWorkTimeScreenDto result = new ListWorkTypeWorkTimeScreenDto(
-				this.bScheduleScreenProces.findByCIdAndDeprecateCls(), this.bScheduleScreenProces.getListWorkTime());
+	public ListDataInitScreenDto init() {
+		ListDataInitScreenDto result = new ListDataInitScreenDto(this.bScheduleScreenProces.findByCIdAndDeprecateCls(),
+				this.bScheduleScreenProces.getListWorkTime());
 		return result;
+	}
+
+	@POST
+	@Path("getDataComPattern")
+	public List<ComPatternScreenDto> getDataComPattern() {
+		return this.bScheduleScreenProces.getDataComPattern();
+	}
+	
+	@POST
+	@Path("getDataWkpPattern")
+	public List<WkpPatternScreenDto> getDataWkpPattern(String workplaceId) {
+		return this.bScheduleScreenProces.getDataWkpPattern(workplaceId);
 	}
 
 	@POST
