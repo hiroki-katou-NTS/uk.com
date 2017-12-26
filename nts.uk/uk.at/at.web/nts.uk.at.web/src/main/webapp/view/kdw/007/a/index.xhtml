@@ -86,6 +86,7 @@
 									optionsText: 'name',
 									value: selectedErrorAlarm().typeAtr,
 									enable: selectedErrorAlarm().fixedAtr() != 1 }"></div><br/>
+								<span id="noticed-label">#{i18n.getText('KDW007_91')}</span><br/>
 								<div id="color-display-target-item-label" data-bind="ntsFormLabel: { }">#{i18n.getText('KDW007_11')}</div>
 								<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
 								<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span><br/>
