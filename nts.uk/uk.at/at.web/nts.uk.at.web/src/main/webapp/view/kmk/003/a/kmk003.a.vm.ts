@@ -49,6 +49,8 @@ module nts.uk.at.view.kmk003.a {
             
             settingEnum: WorkTimeSettingEnumDto;
             dataModelOneDay: EmTimeZoneSetModel[];
+            
+            screenMode: KnockoutObservable<number>;
             constructor() {
                 let self = this;
 
@@ -123,6 +125,8 @@ module nts.uk.at.view.kmk003.a {
                    self.updateWorktimeCode(worktimeCode); 
                 });
                 self.dataModelOneDay = [];
+                
+                self.screenMode = ko.observable(ScreenMode.NEW);
             }
            
             /**
@@ -131,6 +135,8 @@ module nts.uk.at.view.kmk003.a {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                
+                //get all enums
                 service.getEnumWorktimeSeting().done(function(setting) {
                     self.settingEnum = setting;
                     self.workTimeCondition.setEnums(setting);
@@ -348,12 +354,12 @@ module nts.uk.at.view.kmk003.a {
                 service.findWithCondition(self.getCondition());
             }
 
-            getCondition(): WorkTimeSettingCondition {
+            public getCondition(): WorkTimeSettingCondition {
                 let self = this;
                 let cond = <WorkTimeSettingCondition>{};
                 cond.workTimeDailyAtr = self.workTimeDivision.workTimeDailyAtr();
                 cond.workTimeMethodSet = self.workTimeDivision.workTimeMethodSet();
-                cond.isAbolish = this.isAbolish();
+                cond.isAbolish = self.isAbolish();
 
                 // in case of all work atr
                 if (self.isAllWorkAtr()) {
@@ -368,23 +374,23 @@ module nts.uk.at.view.kmk003.a {
                 return cond;
             }
 
-            setEnums(enums: WorkTimeSettingEnumDto): void {
+            public setEnums(enums: WorkTimeSettingEnumDto): void {
                 let self = this;
                 self.workTimeAtrEnums = _.cloneDeep(enums.workTimeDailyAtr);
                 self.workTimeMethodEnums = _.cloneDeep(enums.workTimeMethodSet);
                 let all = <EnumConstantDto>{};
                 all.value = 3; //TODO: nen cho thanh so may?
-                all.localizedName = "ALL";
+                all.localizedName = "全て";
                 self.workTimeAtrEnums.unshift(all);
                 self.workTimeMethodEnums.unshift(all);
             }
 
-            isAllWorkAtr(): boolean {
+            public isAllWorkAtr(): boolean {
                 let self = this;
                 return self.workTimeDivision.workTimeDailyAtr() == 3;
             }
 
-            isAllWorkMethod(): boolean {
+            public isAllWorkMethod(): boolean {
                 let self = this;
                 return self.workTimeDivision.workTimeMethodSet() == 3;
             }
@@ -406,6 +412,10 @@ module nts.uk.at.view.kmk003.a {
             DETAIL
         }
         
+        export enum ScreenMode {
+            NEW,
+            UPDATE
+        }
         /**
          * HalfDayEnum
          */
