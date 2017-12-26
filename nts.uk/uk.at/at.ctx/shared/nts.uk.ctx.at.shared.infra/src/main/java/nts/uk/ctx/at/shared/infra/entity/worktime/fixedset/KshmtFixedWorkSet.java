@@ -78,19 +78,34 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	private List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets;
 
-	/** The kshmt fixed hol time sets. */
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
-	private List<KshmtFixedHolTimeSet> kshmtFixedHolTimeSets;
-
 	/** The kshmt fixed hol rest sets. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	private List<KshmtFixedHolRestSet> kshmtFixedHolRestSets;
+	
+	/** The lst kshmt fixed hol time set. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+	private List<KshmtFixedHolTimeSet> lstKshmtFixedHolTimeSet;
+	
+	/** The lst kshmt fixed stamp reflect. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+	private List<KshmtFixedStampReflect> lstKshmtFixedStampReflect;
+	
+	/** The kshmt worktime common set. */
+//	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//	@JoinColumns({
+//		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+//		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true)
+//	})
+//	private KshmtWorktimeCommonSet kshmtWorktimeCommonSet;
 
 	/**
 	 * Instantiates a new kshmt fixed work set.
@@ -98,7 +113,16 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 	public KshmtFixedWorkSet() {
 		super();
 	}
-
+	
+	/**
+	 * Instantiates a new kshmt fixed work set.
+	 *
+	 * @param kshmtFixedWorkSetPK the kshmt fixed work set PK
+	 */
+	public KshmtFixedWorkSet(KshmtFixedWorkSetPK kshmtFixedWorkSetPK) {
+		super();
+		this.kshmtFixedWorkSetPK = kshmtFixedWorkSetPK;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
