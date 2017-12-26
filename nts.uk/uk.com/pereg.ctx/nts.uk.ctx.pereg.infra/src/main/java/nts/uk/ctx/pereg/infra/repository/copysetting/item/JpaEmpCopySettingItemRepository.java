@@ -17,8 +17,8 @@ import nts.uk.ctx.pereg.infra.entity.copysetting.item.PpestEmployeeCopySettingIt
 public class JpaEmpCopySettingItemRepository extends JpaRepository implements EmpCopySettingItemRepository {
 
 	private static final String SELECT_EMP_COPY_SETTING_ITEM_BY_CTG_ID_QUERY_STRING = "SELECT DISTINCT pi.perInfoCtgId,pc.categoryCd,pi.ppemtPerInfoItemPK.perInfoItemDefId,pi.itemCd,pi.itemName,pi.requiredAtr,"
-			+ " pm.dataType,pm.selectionItemRefType,pm.itemParentCd" + " FROM PpestEmployeeCopySettingItem ci"
-			+ " INNER JOIN PpestEmployeeCopySetting cs "
+			+ " pm.dataType,pm.selectionItemRefType,pm.itemParentCd ,pm.dateItemType"
+			+ " FROM PpestEmployeeCopySettingItem ci" + " INNER JOIN PpestEmployeeCopySetting cs "
 			+ " ON ci.categoryId = cs.ppestEmployeeCopySettingPk.categoryId" + " INNER JOIN PpemtPerInfoCtg pc"
 			+ " ON ci.categoryId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId=pi.ppemtPerInfoItemPK.perInfoItemDefId"
@@ -60,7 +60,7 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 		int dataType = entity[6] != null ? Integer.parseInt(entity[6].toString()) : 1;
 		int selectionItemRefType = entity[7] != null ? Integer.parseInt(entity[7].toString()) : 0;
 		String itemParentCd = entity[8] != null ? entity[8].toString() : null;
-		int dateType = entity[9] != null ? Integer.parseInt(entity[9].toString()) : 0;
+		int dateType = entity[9] != null ? Integer.parseInt(entity[9].toString()) : 1;
 
 		return EmpCopySettingItem.createFromJavaType(perInfoCtgId, categoryCd, perInfoItemDefId, itemCode, itemName,
 				isRequired, dataType, BigDecimal.valueOf(selectionItemRefType), itemParentCd, dateType);

@@ -129,8 +129,13 @@ public class CopySettingItemFinder {
 		for (SettingItemDto childItem : childItems) {
 
 			if (!StringUtils.isEmpty(childItem.getSaveData().getValue())) {
-				itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue,
-						childItem.getSaveData().getValue());
+				if (itemValue == "") {
+
+					itemValue = childItem.getSaveData().getValue();
+				} else {
+					itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue,
+							childItem.getSaveData().getValue());
+				}
 			}
 		}
 

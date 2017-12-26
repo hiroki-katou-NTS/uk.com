@@ -247,7 +247,6 @@ module nts.uk.ui.koExtentions {
             this.swapper.Model.$container.bind("swaplistgridsizeexceed", function(evt, data){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_887" });
             });
-            
         }
 
         /**

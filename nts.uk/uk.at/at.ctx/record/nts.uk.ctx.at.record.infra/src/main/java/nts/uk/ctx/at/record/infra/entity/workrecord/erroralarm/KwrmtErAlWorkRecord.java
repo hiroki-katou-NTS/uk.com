@@ -347,7 +347,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		BigDecimal wtActualFilterAtr = new BigDecimal(0);
 		List<KrcstErAlWtPlan> lstWtPlan = new ArrayList<>();
 		List<KrcstErAlWtActual> lstWtActual = new ArrayList<>();
-		if (wtCompareAtr.intValue() == 0) {
+		if (wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
 			PlanActualWorkType wtypeCondition = (PlanActualWorkType) domain.getErrorAlarmCondition()
 					.getWorkTypeCondition();
 			wtPlanActualOperator = new BigDecimal(wtypeCondition.getOperatorBetweenPlanActual().value);
@@ -376,7 +376,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		BigDecimal whActualFilterAtr = new BigDecimal(0);
 		List<KrcstErAlWhPlan> lstWhPlan = new ArrayList<>();
 		List<KrcstErAlWhActual> lstWhActual = new ArrayList<>();
-		if (whCompareAtr.intValue() == 0) {
+		if (whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
 			PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) domain.getErrorAlarmCondition()
 					.getWorkTimeCondition();
 			whPlanActualOperator = new BigDecimal(wtimeCondition.getOperatorBetweenPlanActual().value);
@@ -458,7 +458,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		// Set WorkTypeCondition
 		condition.createWorkTypeCondition(entity.krcmtErAlCondition.workTypeUseAtr.intValue() == 1,
 				entity.krcmtErAlCondition.wtCompareAtr.intValue());
-		if (entity.krcmtErAlCondition.wtCompareAtr.intValue() == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (entity.krcmtErAlCondition.wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
 			condition.setWorkTypePlan(entity.krcmtErAlCondition.wtPlanFilterAtr.intValue() == 1,
 					Optional.ofNullable(entity.krcmtErAlCondition.lstWtPlan).orElse(Collections.emptyList()).stream()
 							.map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode).collect(Collectors.toList()));
@@ -474,7 +474,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		// Set WorkTimeCondtion
 		condition.createWorkTimeCondition(entity.krcmtErAlCondition.workingHoursUseAtr.intValue() == 1,
 				entity.krcmtErAlCondition.whCompareAtr.intValue());
-		if (entity.krcmtErAlCondition.whCompareAtr.intValue() == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (entity.krcmtErAlCondition.whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
 			condition.setWorkTimePlan(entity.krcmtErAlCondition.whPlanFilterAtr.intValue() == 1,
 					Optional.ofNullable(entity.krcmtErAlCondition.lstWhPlan).orElse(Collections.emptyList()).stream()
 							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
@@ -503,7 +503,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
 								.intValue(),
 						conditionsGroup1)
-				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcmtErAlCondition.krcstErAlConGroup1)
+				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcmtErAlCondition.krcstErAlConGroup2)
 						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
 								.intValue(),
 						conditionsGroup2);
