@@ -534,41 +534,54 @@ module nts.uk.at.view.kmf003.a.viewmodel {
          */
         conditionSettingForm() {
             var self = this;
+            var count = 0;
             
             self.A7_4SelectedRuleCode.subscribe(function(value) {
                 if(value == 0){
                     self.symbols("%");
                     self.limitedValue01("100");
                     self.setConditionValueChanges();
+                    
+                    if(Number(self.conditionValue01()) > 100) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
+                    }
                 } else if(value == 1) {
                     self.symbols("日");
                     self.limitedValue01("366");
                     self.setConditionValueChanges();
+                    
+                    if(Number(self.conditionValue01()) > 366) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
+                    }
                 }
             });
             
             self.conditionValue01.subscribe(function(value) {
                 var result = 0;
                 
-                if(self.A7_4SelectedRuleCode() == 0){
-                    if(Number(value) > 100){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
-                    } else {
-                        if(self.useCls02()) {
-                            result = Number(value) - 1;
-                            self.limitedValue02(result <= 0 ? "" : result.toString());
-                        }
-                    }
+                if(count >= 1) {
+                    return false;
+                }
+                
+                if(self.A7_4SelectedRuleCode() == 0 && Number(value) > 100){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
                 } else {
-                    if(Number(value) > 366){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_263" });
-                    } else {
-                        if(self.useCls02()) {
-                            result = Number(value) - 1;
-                            self.limitedValue02(result <= 0 ? "" : result.toString());
-                        }
+                    if(self.useCls02()) {
+                        result = Number(value) - 1;
+                        self.limitedValue02(result <= 0 ? "" : result.toString());
                     }
                 }
+                
+                if(self.A7_4SelectedRuleCode() == 0 && Number(value) > 366){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_263" });
+                } else {
+                    if(self.useCls02()) {
+                        result = Number(value) - 1;
+                        self.limitedValue02(result <= 0 ? "" : result.toString());
+                    }
+                }
+                
+                count = 1;
             });
             
             self.conditionValue02.subscribe(function(value) {
