@@ -66,7 +66,11 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			// 終了
 			return;
 		}
-		for (RequestAppDetailSetting appSetting : requestSetting.getRequestAppDetailSettings()) {
+		List<RequestAppDetailSetting> requestAppDetailSettings = requestSetting.getRequestAppDetailSettings().stream().filter(x -> x.getAppType().value == ApplicationType.OVER_TIME_APPLICATION.value).collect(Collectors.toList());
+		if(requestAppDetailSettings == null){
+			return;
+		}
+		for (RequestAppDetailSetting appSetting : requestAppDetailSettings) {
 			// 申請詳細設定.時刻計算利用区分=利用する
 			if (appSetting.getTimeCalUseAtr().equals(UseAtr.USE)) {
 				// 計算フラグのチェック
@@ -106,10 +110,9 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 		// 事前申請否認チェック
 		// 否認以外：
-		// 反映情報.実績反映状態＝未反映、反映済、反映待ち
+		// 反映情報.実績反映状態＝ 否認、差し戻し
 		ReflectPlanPerState refPlan = beforeApplication.get(0).getReflectPerState();
-		if (!refPlan.equals(ReflectPlanPerState.NOTREFLECTED) && !refPlan.equals(ReflectPlanPerState.REFLECTED)
-				&& !refPlan.equals(ReflectPlanPerState.WAITREFLECTION)) {
+		if (!refPlan.equals(ReflectPlanPerState.DENIAL) && !refPlan.equals(ReflectPlanPerState.REMAND)) {
 			// 背景色を設定する
 			result.setErrorCode(1);
 			return result;

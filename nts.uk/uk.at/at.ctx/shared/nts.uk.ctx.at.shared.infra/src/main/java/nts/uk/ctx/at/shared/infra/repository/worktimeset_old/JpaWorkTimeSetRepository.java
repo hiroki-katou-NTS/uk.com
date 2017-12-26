@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
@@ -212,11 +214,12 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		TimeWithDayAttr afternoonStartTime = new TimeWithDayAttr(kwtstWorkTimeSet.afternoonStartTime);
 		List<Timezone> timezones = kwtstWorkTimeSet.kwtdtWorkTimeDay.stream().map(x -> convertToDomainTimezone(x))
 				.collect(Collectors.toList());
-		return new WorkTimeSet(kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, kwtstWorkTimeSet.rangeTimeDay,
-				kwtstWorkTimeSet.kwtspWorkTimeSetPK.siftCD, kwtstWorkTimeSet.additionSetID,
+		//TODO: set kwtstWorkTimeSet.additionSetID for PredetermineTime additionSetID
+		return new WorkTimeSet(kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, new AttendanceTime(kwtstWorkTimeSet.rangeTimeDay),
+				kwtstWorkTimeSet.kwtspWorkTimeSetPK.siftCD, null,
 				kwtstWorkTimeSet.nightShiftAtr == TRUE_NUMBER ? true : false,
 				new PrescribedTimezoneSetting(morningEndTime, afternoonStartTime, timezones),
-				kwtstWorkTimeSet.startDateClock, kwtstWorkTimeSet.predetermineAtr == TRUE_NUMBER ? true : false);
+				new TimeWithDayAttr(kwtstWorkTimeSet.startDateClock), kwtstWorkTimeSet.predetermineAtr == TRUE_NUMBER ? true : false);
 	}
 	
 	/**

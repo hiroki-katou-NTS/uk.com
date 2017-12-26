@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -56,11 +58,11 @@ public class WorkingConditionItem extends AggregateRoot {
 
 	/** The holiday add time set. */
 	// 休暇加算時間設定
-	private BreakdownTimeDay holidayAddTimeSet;
+	private Optional<BreakdownTimeDay> holidayAddTimeSet;
 
 	/** The schedule method. */
 	// 予定作成方法
-	private ScheduleMethod scheduleMethod;
+	private Optional<ScheduleMethod> scheduleMethod;
 
 	/**
 	 * Instantiates a new working condition item.
@@ -137,6 +139,54 @@ public class WorkingConditionItem extends AggregateRoot {
 		} else if (!historyId.equals(other.historyId))
 			return false;
 		return true;
+	}
+
+	/**
+	 * Instantiates a new working condition item.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @param scheduleManagementAtr
+	 *            the schedule management atr
+	 * @param workDayOfWeek
+	 *            the work day of week
+	 * @param workCategory
+	 *            the work category
+	 * @param autoStampSetAtr
+	 *            the auto stamp set atr
+	 * @param autoIntervalSetAtr
+	 *            the auto interval set atr
+	 * @param employeeId
+	 *            the employee id
+	 * @param vacationAddedTimeAtr
+	 *            the vacation added time atr
+	 * @param contractTime
+	 *            the contract time
+	 * @param laborSystem
+	 *            the labor system
+	 * @param holidayAddTimeSet
+	 *            the holiday add time set
+	 * @param scheduleMethod
+	 *            the schedule method
+	 */
+	public WorkingConditionItem(String historyId, NotUseAtr scheduleManagementAtr,
+			PersonalDayOfWeek workDayOfWeek, PersonalWorkCategory workCategory,
+			NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr, String employeeId,
+			NotUseAtr vacationAddedTimeAtr, int contractTime, WorkingSystem laborSystem,
+			BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod) {
+		super();
+		this.historyId = historyId;
+		this.scheduleManagementAtr = scheduleManagementAtr;
+		this.workDayOfWeek = workDayOfWeek;
+		this.workCategory = workCategory;
+		this.autoStampSetAtr = autoStampSetAtr;
+		this.autoIntervalSetAtr = autoIntervalSetAtr;
+		this.employeeId = employeeId;
+		this.vacationAddedTimeAtr = vacationAddedTimeAtr;
+		this.contractTime = new LaborContractTime(contractTime);
+		this.laborSystem = laborSystem;
+		this.holidayAddTimeSet = Optional.ofNullable(holidayAddTimeSet);
+		this.scheduleMethod = Optional.ofNullable(scheduleMethod);
 	}
 
 }

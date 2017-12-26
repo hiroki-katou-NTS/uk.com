@@ -88,8 +88,35 @@ module kcp.share.tree {
          * set tabIndex
          */
         tabindex?: number;
+        
+        /**
+         * system type
+         */
+        systemType: number;
     }
 
+    /**
+     * System type ~ システム区分
+     *
+     */
+    export class SystemType {
+               
+        // 個人情報
+        static PERSONAL_INFORMATION: number = 1;
+        
+         // 就業
+        static EMPLOYMENT: number = 2;
+        
+         // 給与
+        static SALARY: number = 3;
+        
+        // 人事
+        static HUMAN_RESOURCES: number = 4;
+                      
+        // 管理者
+        static ADMINISTRATOR: number = 5;
+    }
+    
     export class TreeType {
         static WORK_PLACE = 1;
     }
@@ -123,6 +150,7 @@ module kcp.share.tree {
         $input: JQuery;
         data: TreeComponentOption
         maxRows: number;
+        systemType: number;
 
         isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
@@ -168,6 +196,8 @@ module kcp.share.tree {
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
+            self.systemType =  data.systemType;
+            
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
             }
@@ -199,7 +229,7 @@ module kcp.share.tree {
             });
 
             // Find data.
-            service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
+            service.findWorkplaceTree(self.baseDate(), self.systemType).done(function(res: Array<UnitModel>) {
                 if (res && res.length > 0) {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
@@ -502,7 +532,7 @@ module kcp.share.tree {
             if (!self.baseDate()) {
                 return;
             }
-            service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
+            service.findWorkplaceTree(self.baseDate(), self.systemType ).done(function(res: Array<UnitModel>) {
                 if (!res || res.length <= 0) {
                     self.itemList([]);
                     self.backupItemList([]);
@@ -671,8 +701,8 @@ module kcp.share.tree {
         /**
          * Find workplace list.
          */
-        export function findWorkplaceTree(baseDate: Date): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, { baseDate: baseDate });
+        export function findWorkplaceTree(baseDate: Date, systemType: number): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, { baseDate: baseDate, systemType: systemType });
         }
     }
 }

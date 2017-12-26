@@ -2,7 +2,7 @@
 
 /*A1_002*/
 #emp_reg_info_wizard>.steps {
-	height: 700px
+	height: 700px;
 }
 
 #init_setting_btn {
@@ -14,6 +14,19 @@
 	background: none;
 }
 
+.nts-wizard .header .content {
+	margin: 4px 0 5px 0;
+	padding: 0.5em 1em 1em 3em;
+}
+
+.nts-wizard>.steps>ul>li.current>.nts-steps-middle>.nts-bridge>.nts-horizontal-line
+	{
+	width: calc(100% - 53px);
+}
+
+.nts-wizard>.steps>ul>li>.nts-steps-middle {
+	padding-left: 31px;
+}
 /* step1 */
 .step1_top_left_col1 {
 	width: 100px;
@@ -42,7 +55,7 @@
 
 .nts-wizard.vertical>.content {
 	width: 1050px;
-	min-height: 43em;
+	height: 800px;
 }
 
 #emp_reg_info_wizard {
@@ -201,6 +214,10 @@
 
 .requiredCell {
 	background-color: #FAEC82;
+}
+
+.notRequiredCell {
+	background-color: #E0F59E;
 }
 
 .disabledCell {

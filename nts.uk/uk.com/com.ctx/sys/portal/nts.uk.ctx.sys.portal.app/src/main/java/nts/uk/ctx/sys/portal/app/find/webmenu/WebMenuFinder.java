@@ -1,10 +1,8 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,37 +10,43 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.I18NResources;
 import nts.arc.scoped.request.RequestContextProvider;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.MenuBarDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TitleBarDetailDto;
-import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TreeMenuDetailDto;
-import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
+import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
+import nts.uk.ctx.sys.portal.dom.adapter.role.AffJobHistoryDto;
+import nts.uk.ctx.sys.portal.dom.adapter.role.EmployeeDto;
+import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
+import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedJobTitleDetailDto;
+import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedPersonDto;
+import nts.uk.ctx.sys.portal.dom.adapter.role.UserDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
-import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.JobPosition;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.SelectedAtr;
 import nts.uk.ctx.sys.portal.dom.webmenu.TitleBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTying;
-import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.AppContextsConfig;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.program.Program;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
-import nts.uk.ctx.sys.portal.dom.enums.System;
 
 @Stateless
 public class WebMenuFinder {
@@ -60,10 +64,13 @@ public class WebMenuFinder {
 	private PersonalTyingRepository personalTyingRepository;
 	
 	@Inject
-	private JobTitleTyingRepository jobTitleTyingRepository;
+	private RoleByRoleTiesRepository roleTiesRepository;
 	
 	@Inject
-	private TopPageSelfSetRepository topPageRepository;
+	private RoleSetLinkWebMenuRepository roleSetLinkMenuRepo;
+	
+	@Inject
+	private RoleGrantAdapter roleAdapter;
 
 	/**
 	 * Find a web menu by code
@@ -131,36 +138,73 @@ public class WebMenuFinder {
 	public List<WebMenuDetailDto> findAllDetails() {
 		LoginUserContext userCtx = AppContexts.user();
 		String companyId = userCtx.companyId();
-		String employeeId = userCtx.employeeId();
-		List<PersonalTying> personTyings = null;
-		List<JobTitleTying> jobTitleTyings = null;
-		WebMenuDetailDto defaultMenu = null;
-		// TODO: Change later, get menu by companyId and userId
-		List<WebMenu> menus = webMenuRepository.findAll(companyId);
-		if (userCtx.isEmployee()) {
-			personTyings = personalTyingRepository.findAll(companyId, employeeId);
-			Optional<JobPosition> jobPositionOpt = topPageRepository.getJobPosition(employeeId, GeneralDate.today());
-			if (jobPositionOpt.isPresent()) {
-				 jobTitleTyings = jobTitleTyingRepository.findWebMenuCode(companyId, Arrays.asList(jobPositionOpt.get().getJobId()));
-			}
-			if (!jobPositionOpt.isPresent() || jobTitleTyings == null || jobTitleTyings.size() == 0) {
-				 defaultMenu = findDefault();
+		List<String> menus = getMenuSet(companyId, userCtx.userId());
+		return menus != null && !menus.isEmpty() ? find(menus) : Arrays.asList(findDefault());
+	}
+	
+	/**
+	 * Get menu set.
+	 * @param companyId companyId
+	 * @param userId userId
+	 * @return list of menu codes
+	 */
+	private List<String> getMenuSet(String companyId, String userId) {
+		if (companyId == null || userId == null) return null;
+		// Get role ties
+		Optional<String> roleId = roleAdapter.getRoleId(userId);
+		Optional<RoleByRoleTies> roleTies = Optional.empty();
+		if (roleId.isPresent()) {
+			roleTies = roleTiesRepository.getRoleByRoleTiesById(roleId.get());
+		}
+		
+		// Get role set
+		UserDto user = roleAdapter.getUserInfo(userId)
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage("User not found.")));
+		if (user.getAssociatedPersonID() == null) throw new BusinessException(new RawErrorMessage("Personal ID not existed."));
+		EmployeeDto employee = roleAdapter.getEmployee(companyId, user.getAssociatedPersonID())
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Employee not found.")));
+		Optional<RoleSetGrantedPersonDto> roleSetGrantedPerson = roleAdapter.getRoleSetPersonGrant(employee.getEmployeeId());
+		
+		String roleSetCd = null;
+		if (roleSetGrantedPerson.isPresent()) {
+			roleSetCd = roleSetGrantedPerson.get().getRoleSetCd();
+		} else {
+			Optional<AffJobHistoryDto> jobHistory = roleAdapter.getAffJobHist(employee.getEmployeeId(), GeneralDate.today());
+			if (jobHistory.isPresent()) {
+				Optional<RoleSetGrantedJobTitleDetailDto> roleSetGrantedJobTitle = roleAdapter.getRoleSetJobTitleGrant(companyId, jobHistory.get().getJobTitleId());
+				if (roleSetGrantedJobTitle.isPresent()) {
+					roleSetCd = roleSetGrantedJobTitle.get().getRoleSetCd();
+				} else {
+					// TODO: Get 兼務職位履歴 and check if not present, then get default role set 
+					// otherwise, get RoleSetGrantedJobTitleDetailDto with retrieved job title Id
+					// and applyToConcurrentPerson = true
+					roleSetCd = getDefaultRoleSet(companyId);
+				}
+			} else {
+				roleSetCd = getDefaultRoleSet(companyId);
 			}
 		}
 		
-		Set<String> resultSet = new HashSet<>();
-		resultSet = menus.stream().map(m -> m.getWebMenuCode().v()).collect(Collectors.toSet());
-		if (personTyings != null) {
-			resultSet.addAll(personTyings.stream().map(p -> p.getWebMenuCode()).collect(Collectors.toSet()));
+		List<RoleSetLinkWebMenu> menus = roleSetLinkMenuRepo.findByRoleSetCd(companyId, roleSetCd);
+		List<String> menuCodes = menus.stream().map(m -> m.getWebMenuCd().v()).collect(Collectors.toList());
+		if (roleTies.isPresent()) {
+			String menuCode = roleTies.get().getWebMenuCd().v();
+			if (menuCodes.stream().noneMatch(m -> menuCode.equals(m))) {
+				menuCodes.add(menuCode);
+			}
 		}
-		if (jobTitleTyings != null) {
-			resultSet.addAll(jobTitleTyings.stream().map(j -> j.getWebMenuCode()).collect(Collectors.toSet()));
-		}
-		if (defaultMenu != null) {
-			resultSet.add(defaultMenu.getWebMenuCode());
-		}
-		
-		return find(resultSet.stream().collect(Collectors.toList()));
+		return menuCodes;
+	}
+	
+	/**
+	 * Get default role set.
+	 * @param companyId company Id
+	 * @return default role set
+	 */
+	private String getDefaultRoleSet(String companyId) {
+		return roleAdapter.getDefaultRoleSet(companyId)
+				.orElseThrow(() -> new RuntimeException("Default role set not found."))
+				.getRoleSetCd();
 	}
 	
 	/**
@@ -291,7 +335,10 @@ public class WebMenuFinder {
 		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, internationalization);
 		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
-		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
+		int webMenuSetting = 1;
+		int menuAtr = 0;
+		//List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
+		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, webMenuSetting, menuAtr)
 				.stream().map(item -> StandardMenuDto.fromDomain(item))
 				.collect(Collectors.toList());
 		return new EditMenuBarDto(listSelectedAtr, listSystem, listMenuClassification, listStandardMenu);

@@ -2,8 +2,9 @@ module nts.uk.request {
 
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
 
-    export type WebAppId = 'com' | 'pr' | 'at';
+    export type WebAppId = 'comjs' | 'com' | 'pr' | 'at';
     export const WEB_APP_NAME = {
+        comjs: 'nts.uk.com.js.web',
         com: 'nts.uk.com.web',
         pr: 'nts.uk.pr.web',
         at: 'nts.uk.at.web'
@@ -189,6 +190,8 @@ module nts.uk.request {
             } else {
                 dfd.resolve(res);
             }
+        }).fail(function () {
+            specials.errorPages.systemError();
         });
 
         return dfd.promise();
@@ -232,8 +235,7 @@ module nts.uk.request {
                 }
             },
             error: function(xhr,status, error) {
-                alert(error);
-                dfd.reject(); 
+                specials.errorPages.systemError();
             }
         });
 
@@ -319,7 +321,7 @@ module nts.uk.request {
 
         export function donwloadFile(fileId: string) {
             var dfd = $.Deferred();
-            $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+            $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
                 successCallback: function(url) {
                     dfd.resolve();
                 },
@@ -332,14 +334,25 @@ module nts.uk.request {
             return dfd.promise();
         }
         
-        export function createPathToFile(fileId: string) {
-            return resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId);
+        export function deleteFile(fileId: string) {
+            return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
         }
         
         export function isFileExist(fileId: string): boolean {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
         }
         
+        export module errorPages {
+            
+            export function systemError() {
+                //jump('com', '/view/common/error/system/index.xhtml');
+            }
+            
+            export function sessionTimeout() {
+                jump('com', '/view/common/error/sessiontimeout/index.xhtml');
+            }
+            
+        }
     }
 
 
@@ -358,6 +371,23 @@ module nts.uk.request {
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
 
         window.location.href = path;
+    }
+    
+    export module login {
+        
+        var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+        
+        export function keepUsedLoginPage() {
+            uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+        }
+        
+        export function jumpToUsedLoginPage() {
+            uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
+                window.location.href = path;
+            }).ifEmpty(() => {
+                request.jump('/view/ccg007/a/index.xhtml');
+            });
+        }
     }
 
     export function resolvePath(path: string) {

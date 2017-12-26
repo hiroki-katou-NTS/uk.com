@@ -68,9 +68,9 @@ public class PernfoItemDefWebservice extends WebService {
 	}
 
 	@POST
-	@Path("findby/itemId/{Id}")
-	public PerInfoItemChangeDefDto getPerInfoItemDefById(@PathParam("Id") String Id) {
-		return itemDefFinder.getPerInfoItemDefById(Id);
+	@Path("findby/itemId/{Id}/{personEmployeeType}")
+	public PerInfoItemChangeDefDto getPerInfoItemDefById(@PathParam("Id") String Id, @PathParam("personEmployeeType") int personEmployeeType) {
+		return itemDefFinder.getPerInfoItemDefById(Id, personEmployeeType);
 	}
 
 	@POST
@@ -134,5 +134,11 @@ public class PernfoItemDefWebservice extends WebService {
 	@Path("SetOrder")
 	public void updateItemChange(UpdateOrderItemChangeCommand command) {
 		this.updateOrderItemChange.handle(command);
+	}
+	
+	@POST
+	@Path("checkExistItem/{selectionItemId}")
+	public boolean checkExistedSelectionItemId(@PathParam("selectionItemId") String selectionItemId) {
+		return this.itemDefFinder.checkExistedSelectionItemId(selectionItemId);
 	}
 }

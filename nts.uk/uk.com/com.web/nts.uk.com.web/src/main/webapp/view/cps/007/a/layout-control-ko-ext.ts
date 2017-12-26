@@ -10,8 +10,10 @@ module nts.custombinding {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import parseTime = nts.uk.time.parseTime;
+    import clearError = nts.uk.ui.errors.clearAll;
 
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraints'];
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
+    let writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'];
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
@@ -276,7 +278,7 @@ module nts.custombinding {
 
                     .layout-control .item-classification .item-control textarea.nts-editor,
                     .layout-control .item-classification .item-controls textarea.nts-editor {
-                        width: 280px;
+                        width: 368px;
                         height: 70px;
                         overflow-y: scroll;
                     }
@@ -308,6 +310,11 @@ module nts.custombinding {
                         content: '▾';
                         display: block;
                         position: absolute;
+                    }
+
+                    .layout-control .item-classification .ui-igcombo-wrapper {
+                        width: auto;
+                        width: initial;                            
                     }
 
                     .layout-control .item-classification .form-label {
@@ -438,16 +445,54 @@ module nts.custombinding {
                     <div class="drag-panel">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification"
-                                    data-bind="let: { 
+                                    data-bind="let: {
+                                        text: nts.uk.resource.getText,
+                                        CAT_TYPE: {  
+                                            SINGLE : 1,
+                                            MULTI: 2,
+                                            CONTI: 3, /* continuos history hasn't end date */
+                                            NODUP: 4,
+                                            DUPLI: 5,
+                                            CONTIWED: 6 /* continuos history has end date */
+                                        },
+                                        LAYOUT_TYPE: {
+                                            ITEM: 'ITEM',
+                                            LIST: 'LIST',
+                                            SEPRL: 'SeparatorLine'
+                                        },
+                                        ITEM_TYPE: {
+                                            STRING: 1,
+                                            NUMERIC: 2,
+                                            DATE: 3,
+                                            TIME: 4,
+                                            TIMEPOINT: 5,
+                                            SELECTION: 6
+                                        },
+                                        STRING_TYPE: {
+                                            ANY: 1,
+                                            ANYHALFWIDTH: 2,
+                                            ALPHANUMERIC: 3,
+                                            NUMERIC: 4,
+                                            KANA: 5
+                                        },
+                                        DATE_TYPE: {
+                                            YYYYMMDD: 1,
+                                            YYYYMM: 2,
+                                            YYYY: 3
+                                        },
+                                        CTRL_TYPE: {
+                                            SET: 1,
+                                            SINGLE: 2
+                                        },
                                         cls: $data, 
                                         _item: items && _.find(items(), function(x, i) { return i == 0}), 
                                         _items: items && _.filter(items(), function(x, i) { return i > 0}),
                                         __items: items && _.filter(items(), function(x, i) { return i >= 0})
                                     }">
-                               <div data-bind="if: layoutItemType == 'ITEM'">
+                               <div data-bind="if: layoutItemType == LAYOUT_TYPE.ITEM">
                                     <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
-                                            .filter(function(x) { return [3, 4, 5, 6].indexOf((x.item||{}).dataTypeValue) == -1})
-                                            .map(function(x) { return x.itemDefId.replace(/-/g, '') })
+                                            .filter(function(x) { return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((x.item||{}).dataTypeValue) == -1})
+                                            .map(function(x) { return x.itemDefId.replace(/[-_]/g, '') })
                                             .value() }">
                                         <div data-bind="ntsFormLabel: { 
                                             text: className || '',
@@ -459,26 +504,30 @@ module nts.custombinding {
                                             }),
                                             required: !!_.find(__items, function(x) { return x.required }),
                                             constraint: _constraint.length && _constraint || undefined  }"></div>
-                                        <div data-bind="if: (_item || {}).type == 1" class="set-items">
+                                        <div data-bind="if: (_item || {}).type == CTRL_TYPE.SET" class="set-items">
                                             <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
-                                                <div class="set-item set-item-sperator" data-bind="css: { 'hidden': $index() == 0 }">~</div>
+                                                <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
+                                                    <div data-bind="if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1">
+                                                        <span data-bind="text: text('CPS001_89')"></span>
+                                                    </div>
+                                                </div>
                                                 <div data-bind="template: {
                                                         data: set,
-                                                        name: 'itemtemplate'
+                                                        name: 'ctr_template'
                                                     }" class="set-item"></div>
                                             </div>
                                         </div>
-                                        <div data-bind="if: (_item || {}).type == 2" class="single-items">
+                                        <div data-bind="if: (_item || {}).type == CTRL_TYPE.SINGLE" class="single-items">
                                             <div data-bind="foreach: {data: __items, as: 'single'}" class="single-item-list">
                                                 <div data-bind="template: { 
                                                         data: single,
-                                                        name: 'itemtemplate'
+                                                        name: 'ctr_template'
                                                     }" class="single-item"></div>
                                             </div>            
                                         </div>
                                     </div>
                                 </div>
-                                <div data-bind="if: layoutItemType == 'LIST'">            
+                                <div data-bind="if: layoutItemType == LAYOUT_TYPE.LIST">            
                                     <div class="item-controls">
                                         <div data-bind="ntsFormLabel: { required: !!_.find(_items, function(x) { return !!x.required }), text: className || '' }"></div>
                                         <div class="multiple-items table-container header-1rows">
@@ -490,7 +539,11 @@ module nts.custombinding {
                                                             <th class="index"><div>⁝</div></th>
                                                             <!-- /ko -->
                                                             <th data-bind="template: { afterRender: function(childs, data) { let div = $(childs[1]); setInterval(function() { div.css('width', (div.parent().width() - 3) + 'px') }, 0); } }">
-                                                                <div data-bind="ntsFormLabel: { constraint: [3, 4, 5, 6].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/-/g, '') : undefined, required: header.required, text: header.itemName || '', inline: true }"></div>
+                                                                <div data-bind="ntsFormLabel: { 
+                                                                    constraint: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/[-_]/g, '') : undefined,
+                                                                    required: header.required, 
+                                                                    text: header.itemName || '',
+                                                                    inline: true }"></div>
                                                             </th>
                                                         </tr>
                                                     </thead>
@@ -505,7 +558,7 @@ module nts.custombinding {
                                                             <!-- /ko -->
                                                             <td data-bind="template: { 
                                                                     data: _column,
-                                                                    name: 'itemtemplate'
+                                                                    name: 'ctr_template'
                                                                 }, click: function(data, event) { $(event.target).find('input').focus(); }">
                                                             </td>
                                                         </tr>
@@ -541,7 +594,7 @@ module nts.custombinding {
                                         </div>
                                     </div>
                                 </div>
-                                <div data-bind="if: layoutItemType == 'SeparatorLine'" class="item-sperator">
+                                <div data-bind="if: layoutItemType == LAYOUT_TYPE.SEPRL" class="item-sperator">
                                     <hr />
                                 </div>
                                 <span class="close-btn" data-bind="click: function($data, event) { ko.bindingHandlers['ntsLayoutControl'].remove(cls, event); }">✖</span>
@@ -550,88 +603,171 @@ module nts.custombinding {
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
-                <script type="text/html" id="itemtemplate">
-                    <div data-bind="if: item.dataTypeValue == 1" class="string">
-                        <div data-bind="if: item.stringItemType == 4 || item.stringItemLength < 40">
-                            <input data-bind="attr: { title: itemName, id: itemCode },
-                                ntsTextEditor: {
-                                    value: value,
-                                    constraint: itemDefId.replace(/-/g, ''),
-                                    required: false, 
-                                    option: {
-                                        textmode: 'text',
+                <script type="text/html" id="ctr_template">
+                    <!--<div data-bind="text: $data.ctgType"></div>-->
+                    <div data-bind="let: {
+                            nameid : itemDefId.replace(/[-_]/g, '')
+                        }">
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.STRING" class="string">
+                            <div data-bind="if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
+                                <input data-bind=" ntsTextEditor: {
+                                        value: value,
+                                        constraint: nameid,
+                                        required: required,
+                                        option: {
+                                            textmode: 'text',
+                                            placeholder: itemName
+                                        },
+                                        enable: editable,
+                                        readonly: readonly,
+                                        immediate: false
+                                    },  attr: {
+                                        id: nameid,
+                                        nameid: nameid,
+                                        title: itemName
+                                    }," />
+                            </div>
+                            <div data-bind="if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80))">
+                                <textarea data-bind="ntsMultilineEditor: {
+                                        value: value,
+                                        constraint: nameid,
+                                        required: required,
+                                        option: {
+                                            textmode: 'text',
+                                            placeholder: itemName
+                                        },
+                                        enable: editable,
+                                        readonly: readonly,
+                                        immediate: false 
+                                    }, attr: { 
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName
+                                    }" />
+                            </div>
+                        </div>
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.NUMERIC" class="numeric">
+                            <input data-bind="ntsNumberEditor: { 
+                                        value: value,
+                                        constraint: nameid,
+                                        required: required,
+                                        option: {
+                                            grouplength: 3,
+                                            decimallength: 2,
+                                            placeholder: itemName,
+                                            width: '',
+                                            textalign: 'left'
+                                        },
+                                        enable: editable,
+                                        readonly: readonly
+                                    }, attr: {
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName
+                                    }" />
+                        </div>
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.DATE" class="date">
+                            <div data-bind="if: index <= 1">
+                                <div data-bind="ntsDatePicker: {
+                                            value: value,
+                                            startDate: startDate,
+                                            endDate: endDate,
+                                            constraint: nameid,
+                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                            enable: editable,
+                                            readonly: readonly
+                                        }, attr: { 
+                                            id: nameid, 
+                                            nameid: nameid,
+                                            title: itemName
+                                        }"></div>
+                            </div>
+                            <div data-bind="if: index == 2">
+                                <div data-bind="if: typeof ctgType !== 'undefined'">
+                                    <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1">
+                                        <div data-bind="text: value"></div>
+                                    </div>
+                                    <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) == -1">
+                                        <div data-bind="ntsDatePicker: {
+                                                value: value,
+                                                startDate: startDate,
+                                                endDate: endDate,
+                                                constraint: nameid,
+                                                dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                                enable: editable,
+                                                readonly: readonly
+                                            }, attr: { 
+                                                id: nameid, 
+                                                nameid: nameid,
+                                                title: itemName
+                                            }"></div>
+                                    </div>
+                                </div>
+                                <div data-bind="if: typeof ctgType === 'undefined'">
+                                    <div data-bind="ntsDatePicker: {
+                                            value: value,
+                                            startDate: startDate,
+                                            endDate: endDate,
+                                            constraint: nameid,
+                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                            enable: editable,
+                                            readonly: readonly
+                                        }, attr: { 
+                                            id: nameid, 
+                                            nameid: nameid,
+                                            title: itemName
+                                        }"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIME" class="time">
+                            <input data-bind="ntsTimeEditor: {
+                                        value: value,
+                                        constraint: nameid,
+                                        required: required,
+                                        inputFormat: 'time',
+                                        enable: editable,
+                                        mode: 'time',
+                                        readonly: readonly
+                                    }, attr: {
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName,
                                         placeholder: itemName
-                                    },
-                                    enable: editable,
-                                    readonly: readonly,
-                                    immediate: false
-                                }" />
+                                    }" />
                         </div>
-                        <div data-bind="if: item.stringItemType != 4 && item.stringItemLength >= 40">
-                            <textarea data-bind="ntsMultilineEditor: {
-                                value: value,
-                                constraint: itemDefId.replace(/-/g, ''),
-                                option: {
-                                    textmode: 'text',
-                                    placeholder: itemName
-                                },
-                                enable: editable,
-                                readonly: readonly,
-                                immediate: false}, attr: {id: itemCode}" />
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT" class="timepoint">
+                            <input data-bind="ntsTimeWithDayEditor: 
+                                    { 
+                                        name: nameid,
+                                        constraint: nameid,
+                                        value: value,
+                                        enable: editable, 
+                                        readonly: readonly,
+                                        required: required
+                                    }, attr: {
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName,
+                                        placeholder: itemName
+                                    }" />
                         </div>
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 2" class="numeric">
-                        <input data-bind="ntsNumberEditor: { 
-                                    value: value,
-                                    constraint: itemDefId.replace(/-/g, ''),
-                                    option: {
-                                        grouplength: 3,
-                                        decimallength: 2,
-                                        placeholder: itemName,
-                                        width: '',
-                                        textalign: 'left'
-                                    },
-                                    enable: editable,
-                                    readonly: readonly }, attr: {id: itemCode}" />
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 3" class="date">
-                        <div data-bind="ntsDatePicker: {
-                                    value: value,
-                                    constraint: itemDefId.replace(/-/g, ''),
-                                    dateFormat: item.dateItemType == 1 ? 'YYYY/MM/DD' : (item.dateItemType == 2 ? 'YYYY/MM' : 'YYYY'),
-                                    enable: editable,
-                                    readonly: readonly
-                                }"></div>
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 4" class="time">
-                        <input data-bind="ntsTimeEditor: {
-                            value: value,
-                            constraint: itemDefId.replace(/-/g, ''),
-                            inputFormat: 'HH:mm',
-                            enable: editable,
-                            readonly: readonly }, attr: { placeholder: itemName, id: itemCode }" />
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 5" class="timepoint">
-                        <input data-bind="ntsTimeEditor: {
-                            value: value, 
-                            constraint: itemDefId.replace(/-/g, ''),
-                            inputFormat: 'HH:mm',
-                            enable: editable,
-                            readonly: readonly
-                        }, attr: { placeholder: itemName, id: itemCode }" />
-                    </div>
-                    <div data-bind="if: item.dataTypeValue == 6" class="selection">
-                        <div data-bind="ntsComboBox: {
-                            options: ko.observableArray(lstComboBoxValue || []),
-                            optionsValue: 'optionValue',
-                            visibleItemsCount: 5,
-                            value: value,
-                            /*constraint: itemCode,*/
-                            optionsText: 'optionText',
-                            /*editable: !editable,*/
-                            enable: editable,
-                            dropDownAttachedToBody: true,
-                            columns: [{ prop: 'optionText', length: 10 }]}, attr: {id: itemCode}"></div>
+                        <div data-bind="if: item.dataTypeValue == ITEM_TYPE.SELECTION" class="selection">
+                            <div data-bind="ntsComboBox: {
+                                        value: value,
+                                        options: ko.observableArray(lstComboBoxValue || []),
+                                        optionsText: 'optionText',
+                                        optionsValue: 'optionValue',
+                                        enable: editable,
+                                        visibleItemsCount: 5,
+                                        dropDownAttachedToBody: true,
+                                        columns: [{ prop: 'optionText', length: 10 }]
+                                    }, attr: {
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName
+                                    }"></div>
+                        </div>
                     </div>
                 </script>`;
 
@@ -786,23 +922,6 @@ module nts.custombinding {
                                     data.cancelDrop = true;
                                 }
                             }
-                        },
-                        afterMove: (data, evt, ui) => {
-                            /*let self = this,
-                                opts = self.options,
-                                source: Array<any> = ko.unwrap(opts.sortable.data),
-                                maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
-                                    .filter(x => x != -1).value();
-        
-                            // remove next line if two line is sibling
-                            _.each(maps, (x, i) => {
-                                if (maps[i + 1] == x + 1) {
-                                    opts.sortable.data.remove(m => {
-                                        let item = ko.unwrap(opts.sortable.data)[maps[i + 1]];
-                                        return item.typeId == IT_CLA_TYPE.SPER && item.id == m.id;
-                                    });
-                                }
-                            });*/
                         },
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
                             let items = opts.sortable.data;
@@ -993,124 +1112,102 @@ module nts.custombinding {
                         }
                     }
                 },
+                exceptConsts: Array<string> = [],
                 // render primative value to viewContext
-                primitiveConst = () => {
-                    //xx
-                    /*
-                    ConstraintDescriptor{
-                        itemCode: string;
-                        required?: boolean;
-                    }
-                    
-                    StringConstraintDescriptor extends ConstraintDescriptor{
-                        maxLength: number;
-                        charType: string;
-                        paddingCharacter: string;
-                        isPaddingLeft: boolean;
-                        isPadding: boolean;
-                        stringExpression: string;
-                    }
-                    
-                    NumericConstraintDescriptor extends ConstraintDescriptor{
-                        min: number;
-                        max: number;
-                        valueType: string;
-                        mantissaMaxLength: number; 
-                    }
-                    
-                    TimeConstraintDescriptor extends ConstraintDescriptor{
-                        min: string;
-                        max: string;
-                        valueType: string;
-                    }*/
+                primitiveConst = (x) => {
+                    let dts = x.item,
+                        constraint: any = {
+                            itemName: x.itemName,
+                            itemCode: x.itemDefId.replace(/[-_]/g, ""),
+                            required: x.required// !!x.isRequired
+                        };
 
-                    let constraints = _(ko.unwrap(opts.sortable.data))
-                        .map((x: IItemClassification) => x.items && x.items())
-                        .flatten()
-                        .flatten()
-                        .filter((x: any) => !!x && !_.isEqual(x.item, {}))
-                        .map((x: any) => {
-                            let dts = x.item,//(x.itemTypeState || <IItemTypeState>{}).dataTypeState,
-                                constraint: any = {
-                                    itemName: x.itemName,
-                                    itemCode: x.itemDefId.replace(/-/g, ""),
-                                    required: x.required// !!x.isRequired
-                                };
+                    if (dts) {
+                        switch (dts.dataTypeValue) {
+                            default:
+                            case ITEM_SINGLE_TYPE.STRING:
+                                constraint.valueType = "String";
+                                constraint.maxLength = dts.stringItemLength || undefined;
+                                constraint.stringExpression = '';
 
-                            if (dts) {
-                                switch (dts.dataTypeValue) {
+                                switch (dts.stringItemType) {
                                     default:
-                                    case ITEM_SINGLE_TYPE.STRING:
-                                        constraint.valueType = "String";
-                                        constraint.maxLength = dts.stringItemLength || undefined;
-                                        constraint.stringExpression = '';
-
-                                        switch (dts.stringItemType) {
-                                            default:
-                                            case ITEM_STRING_TYPE.ANY:
-                                                constraint.charType = 'Any';
-                                                break;
-                                            case ITEM_STRING_TYPE.ANYHALFWIDTH:
-                                                constraint.charType = 'AnyHalfWidth';
-                                                break;
-                                            case ITEM_STRING_TYPE.ALPHANUMERIC:
-                                                constraint.charType = 'AlphaNumeric';
-                                                break;
-                                            case ITEM_STRING_TYPE.NUMERIC:
-                                                constraint.charType = 'Numeric';
-                                                if (dts.decimalPart > 0) {
-                                                    constraint.valueType = "Decimal";
-                                                    constraint.mantissaMaxLength = dts.decimalPart;
-                                                } else {
-                                                    constraint.valueType = "Integer";
-                                                }
-                                                constraint.max = dts.numericItemMax || undefined;
-                                                constraint.min = dts.numericItemMin || 0;
-                                                break;
-                                            case ITEM_STRING_TYPE.KANA:
-                                                constraint.charType = 'Kana';
-                                                break;
-                                        }
+                                    case ITEM_STRING_TYPE.ANY:
+                                        constraint.charType = 'Any';
                                         break;
-                                    case ITEM_SINGLE_TYPE.NUMERIC:
-                                        if (dts.decimalPart == 0) {
-                                            constraint.valueType = "Integer";
-                                        } else {
+                                    case ITEM_STRING_TYPE.ANYHALFWIDTH:
+                                        constraint.charType = 'AnyHalfWidth';
+                                        break;
+                                    case ITEM_STRING_TYPE.ALPHANUMERIC:
+                                        constraint.charType = 'AlphaNumeric';
+                                        break;
+                                    case ITEM_STRING_TYPE.NUMERIC:
+                                        constraint.charType = 'Numeric';
+                                        if (dts.decimalPart > 0) {
                                             constraint.valueType = "Decimal";
                                             constraint.mantissaMaxLength = dts.decimalPart;
+                                        } else {
+                                            constraint.valueType = "Integer";
                                         }
-                                        constraint.charType = 'Numeric';
                                         constraint.max = dts.numericItemMax || undefined;
                                         constraint.min = dts.numericItemMin || 0;
                                         break;
-                                    case ITEM_SINGLE_TYPE.DATE:
-                                        constraint.valueType = "Date";
-                                        constraint.max = parseTime(dts.max, true).format() || undefined;
-                                        constraint.min = parseTime(dts.min, true).format() || undefined;
-                                        break;
-                                    case ITEM_SINGLE_TYPE.TIME:
-                                        constraint.valueType = "Time";
-                                        constraint.max = parseTime(dts.max, true).format();
-                                        constraint.min = parseTime(dts.min, true).format();
-                                        break;
-                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                        constraint.valueType = "Clock";
-                                        constraint.max = parseTime(dts.timePointItemMax, true).format();
-                                        constraint.min = parseTime(dts.timePointItemMin, true).format();
-                                        break;
-                                    case ITEM_SINGLE_TYPE.SELECTION:
-                                        constraint.valueType = "Selection";
+                                    case ITEM_STRING_TYPE.KANA:
+                                        constraint.charType = 'Kana';
                                         break;
                                 }
-                            }
+                                break;
+                            case ITEM_SINGLE_TYPE.NUMERIC:
+                                if (dts.decimalPart == 0) {
+                                    constraint.valueType = "Integer";
+                                } else {
+                                    constraint.valueType = "Decimal";
+                                    constraint.mantissaMaxLength = dts.decimalPart;
+                                }
+                                constraint.charType = 'Numeric';
+                                constraint.max = dts.numericItemMax || undefined;
+                                constraint.min = dts.numericItemMin || 0;
+                                break;
+                            case ITEM_SINGLE_TYPE.DATE:
+                                constraint.valueType = "Date";
+                                constraint.max = parseTime(dts.max, true).format() || undefined;
+                                constraint.min = parseTime(dts.min, true).format() || undefined;
+                                break;
+                            case ITEM_SINGLE_TYPE.TIME:
+                                constraint.valueType = "Time";
+                                constraint.max = parseTime(dts.max, true).format();
+                                constraint.min = parseTime(dts.min, true).format();
+                                break;
+                            case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                constraint.valueType = "Clock";
+                                constraint.max = parseTime(dts.timePointItemMax, true).format();
+                                constraint.min = parseTime(dts.timePointItemMin, true).format();
+                                break;
+                            case ITEM_SINGLE_TYPE.SELECTION:
+                                constraint.valueType = "Selection";
+                                break;
+                        }
+                    }
 
-                            return constraint;
-                        }).value();
+                    return constraint;
+                },
+                primitiveConsts = () => {
+                    let constraints = _(ko.unwrap(opts.sortable.data))
+                        .map((x: any) => _.has(x, "items") && ko.toJS(x.items))
+                        .flatten()
+                        .flatten()
+                        .filter((x: any) => _.has(x, "item") && !_.isEqual(x.item, {}))
+                        .map((x: any) => primitiveConst(x))
+                        .filter((x: any) => exceptConsts.indexOf(x.itemCode) == -1)
+                        .value();
+
                     if (constraints && constraints.length) {
-                        writeConstraint(constraints);
+                        exceptConsts = [];
+                        writeConstraints(constraints);
                     }
                 };
 
+            // add style to <head> on first run
             if (!$('#layout_style').length) {
                 $('head').append(self.style);
             }
@@ -1224,137 +1321,182 @@ module nts.custombinding {
                 opts.sortable.isEditable.valueHasMutated();
                 _.each(data, (x, i) => {
                     // define common function for init new item value
-                    let modifitem = (def: any, item: any) => {
-                        def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
-                        def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
-                        def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
-                        def.required = _.has(def, "required") && def.required || !!item.isRequired;
+                    let isStr = (item: any) => {
+                        if (!item) {
+                            return false;
+                        }
 
-                        def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
+                        switch (item.dataTypeValue) {
+                            default:
+                                return false;
+                            case ITEM_SINGLE_TYPE.STRING:
+                            case ITEM_SINGLE_TYPE.SELECTION:
+                                return true;
+                        }
+                    },
+                        modifitem = (def: any, item?: any) => {
+                            if (!item) {
+                                item = {};
+                            }
 
-                        def.value = ko.isObservable(def.value) ? def.value : ko.observable(def.value);
-                        def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
+                            def.itemCode = _.has(def, "itemCode") && def.itemCode || item.itemCode;
+                            def.itemName = _.has(def, "itemName") && def.itemName || item.itemName;
+                            def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
+                            def.required = _.has(def, "required") && def.required || !!item.isRequired;
 
-                        def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
-                        def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
-                        def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
+                            def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                        def.type = _.has(def, "itemType") ? def.itemType : (item.itemTypeState || <any>{}).itemType;
-                        def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
+                            def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
 
+                            def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
+                            def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
+                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
 
-                        def.value.subscribe(x => {
-                            let inputs = [],
-                                proc = function(data: any): any {
-                                    if (!data.item) {
-                                        return {
-                                            value: String(data.value),
-                                            typeData: 1
-                                        };
-                                    }
+                            def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
+                            def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
-                                    switch (data.item.dataTypeValue) {
-                                        default:
-                                        case ITEM_SINGLE_TYPE.STRING:
+                            def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
+
+                            def.value.subscribe(x => {
+                                let inputs = [],
+                                    proc = function(data: any): any {
+                                        if (!data.item) {
                                             return {
-                                                value: data.value ? String(data.value) : undefined,
+                                                value: String(data.value),
                                                 typeData: 1
                                             };
-                                        case ITEM_SINGLE_TYPE.TIME:
-                                        case ITEM_SINGLE_TYPE.NUMERIC:
-                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                            return {
-                                                value: data.value ? String(data.value).replace(/:/g, '') : undefined,
-                                                typeData: 2
-                                            };
-                                        case ITEM_SINGLE_TYPE.DATE:
-                                            return {
-                                                value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
-                                                typeData: 3
-                                            };
-                                        case ITEM_SINGLE_TYPE.SELECTION:
-                                            if (data.item.referenceType != ITEM_SELECT_TYPE.ENUM) {
+                                        }
+
+                                        switch (data.item.dataTypeValue) {
+                                            default:
+                                            case ITEM_SINGLE_TYPE.STRING:
                                                 return {
                                                     value: data.value ? String(data.value) : undefined,
                                                     typeData: 1
                                                 };
-                                            } else {
+                                            case ITEM_SINGLE_TYPE.TIME:
+                                            case ITEM_SINGLE_TYPE.NUMERIC:
+                                            case ITEM_SINGLE_TYPE.TIMEPOINT:
                                                 return {
-                                                    value: data.value ? String(data.value) : undefined,
+                                                    value: data.value ? String(data.value).replace(/:/g, '') : undefined,
                                                     typeData: 2
                                                 };
-                                            }
-                                    }
-                                };
+                                            case ITEM_SINGLE_TYPE.DATE:
+                                                return {
+                                                    value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
+                                                    typeData: 3
+                                                };
+                                            case ITEM_SINGLE_TYPE.SELECTION:
+                                                switch (data.item.referenceType) {
+                                                    case ITEM_SELECT_TYPE.ENUM:
+                                                        return {
+                                                            value: data.value ? String(data.value) : undefined,
+                                                            typeData: 2
+                                                        };
+                                                    case ITEM_SELECT_TYPE.CODE_NAME:
+                                                        return {
+                                                            value: data.value ? String(data.value) : undefined,
+                                                            typeData: 1
+                                                        };
+                                                    case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                                                        let value: number = data.value ? Number(data.value) : undefined;
+                                                        if (value) {
+                                                            if (String(value) == String(data.value)) {
+                                                                return {
+                                                                    value: data.value ? String(data.value) : undefined,
+                                                                    typeData: 2
+                                                                };
+                                                            } else {
+                                                                return {
+                                                                    value: data.value ? String(data.value) : undefined,
+                                                                    typeData: 1
+                                                                };
+                                                            }
+                                                        } else {
+                                                            return {
+                                                                value: data.value ? String(data.value) : undefined,
+                                                                typeData: 1
+                                                            };
+                                                        }
+                                                }
+                                        }
+                                    };
 
-                            _(opts.sortable.data())
-                                .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                                .map(x => ko.toJS(x.items))
-                                .flatten()
-                                .map((x: any) => {
-                                    if (_.isArray(x)) {
-                                        return x.map((m: any) => {
-                                            let data = proc(m);
+                                _(opts.sortable.data())
+                                    .filter(x => _.has(x, "items") && _.isFunction(x.items))
+                                    .map(x => ko.toJS(x.items))
+                                    .flatten()
+                                    .filter((x: any) => _.has(x, "item") && !!x.item)
+                                    .map((x: any) => {
+                                        if (_.isArray(x)) {
+                                            return x.map((m: any) => {
+                                                let data = proc(m);
+                                                return {
+                                                    recordId: m.recordId,
+                                                    categoryCd: m.categoryCode,
+                                                    definitionId: m.itemDefId,
+                                                    itemCode: m.itemCode,
+                                                    value: data.value,
+                                                    'type': data.typeData
+                                                }
+                                            });
+                                        } else {
+                                            let data = proc(x);
                                             return {
-                                                recordId: m.recordId,
-                                                categoryCd: m.categoryCode,
-                                                definitionId: m.itemDefId,
-                                                itemCode: m.itemCode,
+                                                recordId: x.recordId,
+                                                categoryCd: x.categoryCode,
+                                                definitionId: x.itemDefId,
+                                                itemCode: x.itemCode,
                                                 value: data.value,
                                                 'type': data.typeData
-                                            }
-                                        });
-                                    } else {
-                                        let data = proc(x);
-                                        return {
-                                            recordId: x.recordId,
-                                            categoryCd: x.categoryCode,
-                                            definitionId: x.itemDefId,
-                                            itemCode: x.itemCode,
-                                            value: data.value,
-                                            'type': data.typeData
-                                        };
-                                    }
-                                })
-                                .groupBy((x: any) => x.categoryCd)
-                                .each(x => {
-                                    if (_.isArray(_.first(x))) {
-                                        _.each(x, k => {
-                                            let first: any = _.first(k);
-                                            inputs.push({
-                                                recordId: first.recordId,
-                                                categoryCd: first.categoryCd,
-                                                items: k.map(m => {
-                                                    return {
-                                                        definitionId: m.definitionId,
-                                                        itemCode: m.itemCode,
-                                                        value: m.value,
-                                                        'type': m.type
-                                                    };
-                                                })
+                                            };
+                                        }
+                                    })
+                                    .groupBy((x: any) => x.categoryCd)
+                                    .each(x => {
+                                        if (_.isArray(_.first(x))) {
+                                            _.each(x, k => {
+                                                let group = _.groupBy(k, (m: any) => !!m.recordId);
+                                                _.each(group, g => {
+                                                    let first: any = _.first(g);
+                                                    inputs.push({
+                                                        recordId: first.recordId,
+                                                        categoryCd: first.categoryCd,
+                                                        items: g.map(m => {
+                                                            return {
+                                                                definitionId: m.definitionId,
+                                                                itemCode: m.itemCode,
+                                                                value: m.value,
+                                                                'type': m.type
+                                                            };
+                                                        })
+                                                    });
+                                                });
                                             });
-                                        });
-                                    } else {
-                                        let first: any = _.first(x);
-                                        inputs.push({
-                                            recordId: first.recordId,
-                                            categoryCd: first.categoryCd,
-                                            items: x.map(m => {
-                                                return {
-                                                    definitionId: m.definitionId,
-                                                    itemCode: m.itemCode,
-                                                    value: m.value,
-                                                    'type': m.type
-                                                };
-                                            })
-                                        });
-                                    }
-                                });
-                            // change value
-                            opts.sortable.outData(inputs);
-                        });
-                        def.value.valueHasMutated();
-                    };
+                                        } else {
+                                            let group = _.groupBy(x, (m: any) => !!m.recordId);
+                                            _.each(group, g => {
+                                                let first: any = _.first(g);
+                                                inputs.push({
+                                                    recordId: first.recordId,
+                                                    categoryCd: first.categoryCd,
+                                                    items: g.map(m => {
+                                                        return {
+                                                            definitionId: m.definitionId,
+                                                            itemCode: m.itemCode,
+                                                            value: m.value,
+                                                            'type': m.type
+                                                        };
+                                                    })
+                                                });
+                                            });
+                                        }
+                                    });
+                                // change value
+                                opts.sortable.outData(inputs);
+                            });
+                            def.value.valueHasMutated();
+                        };
 
                     x.dispOrder = i + 1;
                     x.layoutID = random();
@@ -1378,13 +1520,16 @@ module nts.custombinding {
                                     let def = _.find(x.items(), (m: any) => m.itemDefId == item.id);
                                     if (!def) {
                                         def = {
-                                            categoryCode: x.personInfoCategoryID, // miss categoryCode;
+                                            index: i,
+                                            categoryCode: x.categoryCode || x.personInfoCategoryID, // miss categoryCode;
                                             itemCode: item.itemCode,
                                             itemName: item.itemName,
                                             itemDefId: item.id,
                                             value: undefined
                                         };
                                         x.items.push(def);
+                                    } else {
+                                        def.index = i;
                                     }
 
                                     modifitem(def, item);
@@ -1410,13 +1555,16 @@ module nts.custombinding {
 
                                         if (!def) {
                                             def = {
-                                                categoryCode: x.personInfoCategoryID, // miss categoryCode;
+                                                index: j,
+                                                categoryCode: x.categoryCode || x.personInfoCategoryID, // miss categoryCode;
                                                 itemCode: item.itemCode,
                                                 itemName: item.itemName,
                                                 itemDefId: item.id,
                                                 value: undefined
                                             };
                                             row.push(def);
+                                        } else {
+                                            def.index = j;
                                         }
                                         modifitem(def, item);
                                     });
@@ -1431,9 +1579,8 @@ module nts.custombinding {
                     switch (x.layoutItemType) {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
-                                $.extend(def, {
-                                    value: ko.isObservable(def.value) ? def.value : ko.observable(def.value)
-                                });
+                                def.index = i;
+                                modifitem(def);
                             });
                             break;
                         case IT_CLA_TYPE.LIST:
@@ -1449,10 +1596,175 @@ module nts.custombinding {
 
                                 x.items()[i] = row;
 
-                                _.each((x.items()), (def, j) => {
-                                    $.extend(def, {
-                                        value: ko.isObservable(def.value) ? def.value : ko.observable(def.value)
-                                    });
+                                _.each(row, (def, j) => {
+                                    def.index = j;
+                                    modifitem(def);
+                                });
+                            });
+                            break;
+                        case IT_CLA_TYPE.SPER:
+                            x.items = undefined;
+                            break;
+                    }
+
+                    // validation set item range
+                    switch (x.layoutItemType) {
+                        case IT_CLA_TYPE.ITEM:
+                            _.each((x.items()), (def, i) => {
+                                if (_.has(def, "item") && !_.isNull(def.item)) {
+                                    // write contraint
+                                    writeConstraint(def.itemCode, def);
+
+                                    // validate date range
+                                    switch (def.item.dataTypeValue) {
+                                        case ITEM_SINGLE_TYPE.DATE:
+                                            if (def.index == 0) {
+                                                def.endDate = ko.observable();
+                                                def.startDate = ko.observable();
+                                            }
+
+                                            if (def.index == 1) {
+                                                let next = x.items()[2] || { value: () => ko.observable() };
+                                                if (next.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
+                                                    && _.has(next, "value")
+                                                    && ko.isObservable(next.value)) {
+
+                                                    def.endDate = ko.computed(() => {
+                                                        return moment.utc(ko.toJS(next.value) || '9999/12/31').add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
+                                                    });
+                                                    def.startDate = ko.observable();
+
+                                                    next.endDate = ko.observable();
+                                                    next.startDate = ko.computed(() => {
+                                                        return moment.utc(ko.toJS(def.value) || '1900/01/01').add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
+                                                    });
+                                                }
+                                            }
+
+                                            if (def.index == 2) {
+                                                /*let prev = x.items()[1] || { value: () => ko.observable() };
+                                                if (prev.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
+                                                    && _.has(prev, "value")
+                                                    && ko.isObservable(prev.value)) {
+
+                                                    prev.endDate = ko.computed(() => {
+                                                        return moment.utc(ko.toJS(def.value)).add(-1, "days").toDate();
+                                                    });
+                                                    prev.startDate = ko.observable();
+
+                                                    def.endDate = ko.observable();
+                                                    def.startDate = ko.computed(() => {
+                                                        return moment.utc(ko.toJS(prev.value)).add(1, "days").toDate();
+                                                    });
+                                                }*/
+
+                                                if (def.ctgType == IT_CAT_TYPE.CONTINU) {
+                                                    if (def.value() == '9999/12/31') {
+                                                        def.value('');
+                                                    }
+                                                }
+                                            }
+
+                                            if (!_.has(def, "endDate")) {
+                                                def.endDate = ko.observable();
+                                            }
+
+                                            if (!_.has(def, "startDate")) {
+                                                def.startDate = ko.observable();
+                                            }
+                                            break;
+                                        case ITEM_SINGLE_TYPE.TIME:
+                                            if (def.index == 1) {
+                                                def.value.subscribe(v => {
+                                                    let next = x.items()[2] || { value: () => ko.observable(undefined) };
+                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
+                                                        && _.has(next, "value")
+                                                        && ko.isObservable(next.value)) {
+                                                        let clone = _.cloneDeep(next);
+                                                        clone.item.min = def.value() + 1;
+
+                                                        let primi = primitiveConst(v ? clone : next);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    }
+                                                });
+                                                def.value.valueHasMutated();
+                                            }
+
+                                            if (def.index == 2) {
+                                                def.value.subscribe(v => {
+                                                    let prev = x.items()[1] || { value: () => ko.observable(undefined) };
+                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
+                                                        && _.has(prev, "value")
+                                                        && ko.isObservable(prev.value)) {
+                                                        let clone = _.cloneDeep(prev);
+                                                        clone.item.max = def.value() - 1;
+
+                                                        let primi = primitiveConst(v ? clone : prev);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    }
+                                                });
+                                                def.value.valueHasMutated();
+                                            }
+                                            break;
+                                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                            if (def.index == 1) {
+                                                def.value.subscribe(v => {
+                                                    let next = x.items()[2] || { value: () => ko.observable(undefined) };
+                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT
+                                                        && _.has(next, "value")
+                                                        && ko.isObservable(next.value)) {
+                                                        let clone = _.cloneDeep(next);
+                                                        clone.item.timePointItemMin = def.value() + 1;
+
+                                                        let primi = primitiveConst(v ? clone : next);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    }
+                                                });
+                                                def.value.valueHasMutated();
+                                            }
+                                            if (def.index == 2) {
+                                                def.value.subscribe(v => {
+                                                    let prev = x.items()[1] || { value: () => ko.observable(undefined) };
+                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT
+                                                        && _.has(prev, "value")
+                                                        && ko.isObservable(prev.value)) {
+                                                        let clone = _.cloneDeep(prev);
+                                                        clone.item.timePointItemMax = def.value() - 1;
+
+                                                        let primi = primitiveConst(v ? clone : prev);
+
+                                                        exceptConsts.push(primi.itemCode);
+                                                        writeConstraint(primi.itemCode, primi);
+                                                    }
+                                                });
+                                                def.value.valueHasMutated();
+                                            }
+                                            break;
+                                    }
+                                }
+                            });
+                            break;
+                        case IT_CLA_TYPE.LIST:
+                            // define row number
+                            let rn = _.map(ko.toJS(x.items), x => x).length;
+
+                            _.each(_.range(rn), i => {
+                                let row = x.items()[i];
+
+                                if (!row || !_.isArray(row)) {
+                                    row = [];
+                                }
+
+                                x.items()[i] = row;
+
+                                _.each(row, (def, j) => {
+                                    // call some validate function at here
                                 });
                             });
                             break;
@@ -1461,20 +1773,13 @@ module nts.custombinding {
                             break;
                     }
                 });
+                // clear all error on switch new layout
+                clearError();
+
                 // write primitive constraints to viewContext
-                primitiveConst();
+                primitiveConsts();
             });
             opts.sortable.data.valueHasMutated();
-
-            // extend data of sortable with valueAccessor beforeMove prop
-            if (access.beforeMove) {
-                $.extend(opts.sortable, { beforeMove: access.beforeMove });
-            }
-
-            // extend data of sortable with valueAccessor afterMove prop
-            if (access.afterMove) {
-                $.extend(opts.sortable, { afterMove: access.afterMove });
-            }
 
             // get all id of controls
             $.extend(ctrls, {
@@ -1557,6 +1862,7 @@ module nts.custombinding {
                         switch (item.categoryType) {
                             case IT_CAT_TYPE.SINGLE:
                             case IT_CAT_TYPE.CONTINU:
+                            case IT_CAT_TYPE.CONTINUWED:
                             case IT_CAT_TYPE.NODUPLICATE:
                                 $(ctrls.button).text(text('CPS007_11'));
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
@@ -1818,6 +2124,7 @@ module nts.custombinding {
     interface IItemClassification {
         layoutID?: string;
         dispOrder?: number;
+        categoryCode?: string;
         className?: string; // only for display if classification is set or duplication item
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
@@ -1925,7 +2232,8 @@ module nts.custombinding {
         MULTI = 2, // Multi info
         CONTINU = 3, // Continuos history
         NODUPLICATE = 4, //No duplicate history
-        DUPLICATE = 5 // Duplicate history
+        DUPLICATE = 5, // Duplicate history
+        CONTINUWED = 6 // Continuos history with end date
     }
 
     // defined CATEGORY or GROUP mode

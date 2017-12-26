@@ -2,60 +2,75 @@ package nts.uk.ctx.at.shared.dom.worktimeset_old;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.PredetermineTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 // 所定時間設定
 @Getter
 public class WorkTimeSet extends AggregateRoot {
-	
+
 	/** The company ID. */
 	// 会社ID
 	private String companyID;
-	
+
 	/** The range time day. */
 	// １日の範囲時間
-	private int rangeTimeDay;
-	
+	private AttendanceTime rangeTimeDay;
+
 	/** The sift CD. */
 	// コード
 	private String siftCD;
-	
+
 	/** The addition set ID. */
 	// 所定時間
-	private String additionSetID;
-	
+	private PredetermineTime additionSetID;
+
 	/** The night shift atr. */
 	// 夜勤区分
 	private boolean nightShift;
-	
+
 	/** The prescribed timezone setting. */
-	//所定時間帯
+	// 所定時間帯
 	private PrescribedTimezoneSetting prescribedTimezoneSetting;
-	
+
 	/** The start date clock. */
 	// 日付開始時刻
-	private int startDateClock;
-	
+	private TimeWithDayAttr startDateClock;
+
 	/** The predetermine atr. */
 	// 残業を含めた所定時間帯を設定する
 	private boolean predetermine;
 
-	private static final Integer SHIFT1 = 1;
-	private static final Integer SHIFT2 = 2;
+	/** The shift one. */
+	public static Integer SHIFT1 = 1;
+
+	/** The shift two. */
+	public static Integer SHIFT2 = 2;
+
 	/**
 	 * Instantiates a new work time set.
 	 *
-	 * @param companyID the company ID
-	 * @param rangeTimeDay the range time day
-	 * @param siftCD the sift CD
-	 * @param additionSetID the addition set ID
-	 * @param nightShift the night shift
-	 * @param prescribedTimezoneSetting the prescribed timezone setting
-	 * @param startDateClock the start date clock
-	 * @param predetermine the predetermine
+	 * @param companyID
+	 *            the company ID
+	 * @param rangeTimeDay
+	 *            the range time day
+	 * @param siftCD
+	 *            the sift CD
+	 * @param additionSetID
+	 *            the addition set ID
+	 * @param nightShift
+	 *            the night shift
+	 * @param prescribedTimezoneSetting
+	 *            the prescribed timezone setting
+	 * @param startDateClock
+	 *            the start date clock
+	 * @param predetermine
+	 *            the predetermine
 	 */
-	public WorkTimeSet(String companyID, int rangeTimeDay, String siftCD, String additionSetID,
-			boolean nightShift, PrescribedTimezoneSetting prescribedTimezoneSetting, int startDateClock,
+	public WorkTimeSet(String companyID, AttendanceTime rangeTimeDay, String siftCD, PredetermineTime additionSetID,
+			boolean nightShift, PrescribedTimezoneSetting prescribedTimezoneSetting, TimeWithDayAttr startDateClock,
 			boolean predetermine) {
 		super();
 		this.companyID = companyID;
@@ -67,73 +82,78 @@ public class WorkTimeSet extends AggregateRoot {
 		this.startDateClock = startDateClock;
 		this.predetermine = predetermine;
 	}
-	
+
 	/**
 	 * Update start time shift 1.
 	 *
-	 * @param start the start
+	 * @param start
+	 *            the start
 	 */
 	public void updateStartTimeShift1(TimeWithDayAttr start) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
+		Timezone tz = getTimezoneShiftOne();
 		tz.updateStartTime(start);
 	}
-	
+
 	/**
 	 * Update end time shift 1.
 	 *
-	 * @param end the end
+	 * @param end
+	 *            the end
 	 */
 	public void updateEndTimeShift1(TimeWithDayAttr end) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
+		Timezone tz = getTimezoneShiftOne();
 		tz.updateEndTime(end);
 	}
-	
+
 	/**
 	 * Removes the shift 1.
 	 */
-	public void removeShift1()
-	{
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
+	public void removeShift1() {
+		Timezone tz = getTimezoneShiftOne();
 		tz.updateStartTime(null);
 		tz.updateEndTime(null);
 	}
-	
+
 	/**
 	 * Removes the shift 2.
 	 */
-	public void removeShift2()
-	{
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
+	public void removeShift2() {
+		Timezone tz = getTimezoneShiftTwo();
 		tz.updateStartTime(null);
 		tz.updateEndTime(null);
 	}
-	
+
 	/**
 	 * Update start time shift 2.
 	 *
-	 * @param start the start
+	 * @param start
+	 *            the start
 	 */
 	public void updateStartTimeShift2(TimeWithDayAttr start) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
+		Timezone tz = getTimezoneShiftTwo();
 		tz.updateStartTime(start);
 	}
-	
+
 	/**
+	 * 1日の範囲を時間帯として返す
+	 * 
+	 * @return 1日の範囲(時間帯)
+	 */
+	public TimeSpanForCalc getOneDaySpan() {
+		return new TimeSpanForCalc(startDateClock,
+				new TimeWithDayAttr(startDateClock.valueAsMinutes() + rangeTimeDay.valueAsMinutes()));
+	}
+
+	/*
 	 * Update end time shift 2.
 	 *
 	 * @param end the end
 	 */
 	public void updateEndTimeShift2(TimeWithDayAttr end) {
-		Timezone tz = this.prescribedTimezoneSetting.getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
+		Timezone tz = getTimezoneShiftTwo();
 		tz.updateEndTime(end);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -164,5 +184,16 @@ public class WorkTimeSet extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
+
+	public Timezone getTimeSheetOf(int workNo) {
+		return this.getPrescribedTimezoneSetting().getMatchWorkNoTimeSheet(workNo);
+	}
+
+	private Timezone getTimezoneShiftOne() {
+		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(SHIFT1);
+	}
+
+	private Timezone getTimezoneShiftTwo() {
+		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(SHIFT2);
+	}
 }

@@ -121,22 +121,15 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	public void retirementCheckBeforeJoinCompany(String companyID, String employeeID, GeneralDate date){
 		// Imported(就業)「社員」を取得する (Lấy employee)
 		PesionInforImport pesionInforImport = employeeAdaptor.getEmployeeInfor(employeeID);
-		
-		// lấy lịch sử làm việc mới nhất
-		if(pesionInforImport.getListJobEntryHist().isEmpty()){
-			throw new RuntimeException("Not found PersionInforImport in table BSYMT_JOB_ENTRY_HISTORY, employeeID =" + employeeID);
-		}
-		JobEntryHistoryImport jobEntryHistoryImport = pesionInforImport.getListJobEntryHist().get(0);
-		
 		// 入社前をチェックする(Check trước khi vào cty)
 		// データが１件以上取得できた 且つ 申請対象日 < Imported(就業)「社員」．入社年月日
-		if(date.before(jobEntryHistoryImport.getJoinDate())) {
+		if(pesionInforImport.getEntryDate() != null && date.before(pesionInforImport.getEntryDate())) {
 			throw new BusinessException("Msg_235");
 		}
 		
 		// 退職後をチェックする(Check sau khi làm việc)
 		// データが１件以上取得できた 且つ 申請対象日 > Imported(就業)「社員」．退職年月日
-		if(date.after(jobEntryHistoryImport.getRetirementDate())) {
+		if(pesionInforImport.getRetiredDate() != null && date.after(pesionInforImport.getRetiredDate())) {
 			throw new BusinessException("Msg_391");
 		}
 	}

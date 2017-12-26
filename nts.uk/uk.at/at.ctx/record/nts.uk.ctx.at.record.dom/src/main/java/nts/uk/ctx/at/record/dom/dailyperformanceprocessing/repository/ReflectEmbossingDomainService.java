@@ -11,5 +11,5 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 //打刻を反映する
 public interface ReflectEmbossingDomainService {
 	
-	public ReflectStampOutput reflectStamp(WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeDailyPer,List<StampItem> lstStampItem, StampReflectRangeOutput s,  GeneralDate date, String employeeId);
+	public ReflectStampOutput reflectStamp(WorkInfoOfDailyPerformance WorkInfo, TimeLeavingOfDailyPerformance timeDailyPer,List<StampItem> lstStampItem, StampReflectRangeOutput s,  GeneralDate date, String employeeId,String companyId);
 }

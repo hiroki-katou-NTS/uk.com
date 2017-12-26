@@ -6,7 +6,11 @@ module cps001.f.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
-    let __viewContext: any = window['__viewContext'] || {};
+    import permision = service.getCurrentEmpPermision;
+    let __viewContext: any = window['__viewContext'] || {},
+        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
 
@@ -18,6 +22,7 @@ module cps001.f.vm {
         accept: KnockoutObservableArray<string>;
         asLink: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
+        fileSize: KnockoutObservable<string>;
         onchange: (filename) => void;
         onfilenameclick: (fileId) => void;
 
@@ -37,13 +42,13 @@ module cps001.f.vm {
             self.textId = ko.observable("CPS001_71");
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
+            self.fileSize = ko.observable("");
             self.onchange = (filename) => {
 
             };
             self.onfilenameclick = (fileId) => {
                 alert(fileId);
             };
-
         }
 
         start(): JQueryPromise<any> {
@@ -53,12 +58,23 @@ module cps001.f.vm {
             let dataShare: IDataShare = getShared('CPS001F_PARAMS') || null;
             var dfdGetData = service.getData(dataShare.pid);
 
+
             $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
                 _.forEach(datafile, function(item) {
                     self.items.push(new GridItem(item));
                 });
                 dfd.resolve();
             });
+
+            permision().done((data: IPersonAuth) => {
+                if (data) {
+                    if (data.allowDocUpload != 1) {
+                        $(".browser-button").attr('disabled', 'disabled');
+                        $(".delete-button").attr('disabled', 'disabled');
+                    }
+                }
+            });
+
             return dfd.promise();
         }
 
@@ -70,15 +86,17 @@ module cps001.f.vm {
 
                 self.start();
 
-                // upload file 
+                // upload file
+                block();
                 $("#file-upload").ntsFileUpload({ stereoType: "document" }).done(function(res) {
                     self.fileId(res[0].id);
-                    var maxSize = 10485760; // 10MB = 10485760B
-                    
+                    var fileSize = ((res[0].originalSize) / 1024).toFixed(2);
+                    self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
+
                     // get Info
                     nts.uk.request.ajax("/shr/infra/file/storage/infor/" + self.fileId()).done(function(info: any) {
                         self.fileInfo(info);
-                        
+
                         // save file to domain EmployeeFileManagement
                         if (self.items.length == 0) {
                             service.savedata({
@@ -106,12 +124,18 @@ module cps001.f.vm {
 
                     });
 
+                    unblock();
 
                 }).fail(function(err) {
+                    unblock();
                     showDialog.alertError(err);
                 });
                 setShared('CPS001F_VALUES', {});
             }
+        }
+
+        onchangefileupload(filename: string) {
+            this.pushData();
         }
 
         checkSize() {
@@ -124,8 +148,12 @@ module cps001.f.vm {
         deleteItem(rowItem: IEmpFileMana) {
             let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block();
                 service.deletedata(rowItem.fileId).done(() => {
+                    unblock();
                     self.restart();
+                }).fail((mes) => {
+                    unblock();
                 });
             }).ifCancel(() => {
 
@@ -142,11 +170,11 @@ module cps001.f.vm {
         }
 
         restart() {
-            __viewContext['viewModel'] = new vm.ViewModel();
+            //__viewContext['viewModel'] = new vm.ViewModel();
 
             __viewContext['viewModel'].start().done(() => {
                 init();
-                __viewContext.bind(__viewContext['viewModel']);
+                //__viewContext.bind(__viewContext['viewModel']);
             });
         }
 
@@ -160,6 +188,16 @@ module cps001.f.vm {
     // Object truyen tu man A sang
     interface IDataShare {
         pid: string;
+    }
+
+    interface IPersonAuth {
+        roleId: string;
+        allowMapUpload: number;
+        allowMapBrowse: number;
+        allowDocRef: number;
+        allowDocUpload: number;
+        allowAvatarUpload: number;
+        allowAvatarRef: number;
     }
 
 

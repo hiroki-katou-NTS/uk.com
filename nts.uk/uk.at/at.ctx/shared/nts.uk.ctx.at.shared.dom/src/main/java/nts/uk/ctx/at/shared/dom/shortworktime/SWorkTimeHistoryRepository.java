@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.shortworktime;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * The Interface SWorkTimeHistoryRepository.
@@ -30,4 +31,15 @@ public interface SWorkTimeHistoryRepository {
 	 * @return the optional
 	 */
 	Optional<ShortWorkTimeHistory> findByBaseDate(String empId, GeneralDate baseDate);
+	
+	
+	Optional <ShortWorkTimeHistory> getBySid(String cid, String sid);
+	
+	Optional <ShortWorkTimeHistory> getBySidDesc(String cid, String sid);
+	
+	void add(String cid, String sid, DateHistoryItem histItem);
+	
+	void update(String sid, DateHistoryItem histItem);
+	
+	void delete(String sid, String histId);
 }

@@ -26,7 +26,7 @@ function init() {
         columns: [
             { headerText: 'ID', key: 'id', dataType: 'string', width: '50px', hidden: true },
             { headerText: nts.uk.resource.getText('CPS001_81'), key: 'fileName', dataType: 'string', width: '750px', ntsControl: 'Link1' },
-            { headerText: nts.uk.resource.getText('CPS001_83'), key: 'open', dataType: 'string', width: '50px', unbound: true, template: "<button  style='width: 77px' onclick='ButtonClick.call(this)' data-id='${id}'>" + nts.uk.resource.getText("CPS001_83") + "</button>" }
+            { headerText: nts.uk.resource.getText('CPS001_83'), key: 'open', dataType: 'string', width: '50px', unbound: true, template: "<button class='delete-button' style='width: 77px' onclick='ButtonClick.call(this)' data-id='${id}'>" + nts.uk.resource.getText("CPS001_83") + "</button>" }
 
         ],
         features: [{ name: 'Sorting', type: 'local' }],
@@ -41,12 +41,38 @@ function init() {
 function LinkButtonClick() {
     var rowId: string = String($(this).closest("tr").data("id"));
     var rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == rowId; });
-    nts.uk.request.specials.donwloadFile(rowItem.fileId);
+    var fileSize;
+    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowItem.fileId).done(function(res) {
+        // set Text SizeFile
+        fileSize = ((res.originalSize) / 1024).toFixed(2);
+        __viewContext['viewModel'].fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
+        // dowload file
+        service.getCurrentEmpPermision().done((data: IPersonAuth) => {
+            if (data) {
+                if (data.allowDocUpload == 1) {
+                    nts.uk.request.specials.donwloadFile(rowItem.fileId);
+                }
+            }
+        });
+
+    });
 }
 
 function ButtonClick() {
     var id = $(this).data("id");
     var rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == id; });
     __viewContext['viewModel'].deleteItem(rowItem);
+    __viewContext['viewModel'].fileSize('');
+
+}
+
+interface IPersonAuth {
+    roleId: string;
+    allowMapUpload: number;
+    allowMapBrowse: number;
+    allowDocRef: number;
+    allowDocUpload: number;
+    allowAvatarUpload: number;
+    allowAvatarRef: number;
 }
 

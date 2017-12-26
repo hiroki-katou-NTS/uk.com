@@ -149,6 +149,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         start(id: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            block.invisible();
             service.getAll().done((data: Array<IPerInfoInitValueSettingDto>) => {
                 self.ctgIdUpdate(false);
                 if (data.length > 0) {
@@ -164,11 +165,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     } else {
                         self.initSettingId(id);
                     }
+                    block.clear();
 
                 } else {
                     self.isUpdate = false;
                     self.openDDialog();
                     self.refresh(undefined);
+                    block.clear();
 
                 }
             });
@@ -177,7 +180,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         refresh(id: string) {
             let self = this;
-
+            block.invisible();
             service.getAll().done((data: Array<any>) => {
                 self.initValSettingLst.removeAll();
                 self.initValSettingLst(data);
@@ -191,6 +194,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.initSettingId("");
 
                 }
+                block.clear();
 
             });;
         }
@@ -428,7 +432,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
                 itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
                     function(item: PerInfoInitValueSettingItemDto) {
-                        return item.selectedRuleCode() == 2 && item.dataType() == 6 && item.selectionItemRefType == 1;
+                        return item.selectedRuleCode() == 2 && item.dataType() == 6 && item.selectionItemRefType == 2;
                     }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
                     return obj.selectionItemId;
@@ -904,6 +908,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                 });
             }
+
+            self.selectedRuleCode.subscribe(value => {
+                nts.uk.ui.errors.clearAll();
+            });
 
 
 

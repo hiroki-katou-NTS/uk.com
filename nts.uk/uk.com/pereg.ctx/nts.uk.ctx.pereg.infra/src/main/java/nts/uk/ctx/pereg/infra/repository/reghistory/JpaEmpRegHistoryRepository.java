@@ -15,7 +15,7 @@ import nts.uk.ctx.pereg.infra.entity.reghistory.PpedtEmployeeRegistrationHistory
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {
 
 	private static final String SELECT_ALL = "SELECT rh,em.employeeCode FROM PpedtEmployeeRegistrationHistory rh"
-			+ " INNER JOIN BsymtEmployeeDataMngInfo em ON rh.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID = em.bsymtEmployeeDataMngInfoPk.sId";
+			+ " INNER JOIN BsymtEmployeeDataMngInfo em ON rh.lastRegEmployeeID = em.bsymtEmployeeDataMngInfoPk.sId";
 
 	private static final String GET_LAST_REG_BY_COMPANY_QUERY_STRING = SELECT_ALL
 			+ " WHERE rh.companyId= :companyId  ORDER BY rh.registeredDate DESC ";
@@ -73,7 +73,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 
 			if (!comHist.getLastRegEmployeeID().equals(result.getLastRegEmployeeID())) {
 
-				result.setLastRegEmployeeOfCompanyID(comHist.getRegisteredEmployeeID());
+				result.setLastRegEmployeeOfCompanyID(comHist.getLastRegEmployeeID());
 				result.setLastRegEmployeeOfCompanyCd(comHist.getLastRegEmployeeCd());
 			}
 		}
@@ -91,6 +91,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 	@Override
 	public void add(EmpRegHistory domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 
 	}
 
@@ -104,6 +105,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 		if (optRegHist.isPresent()) {
 			this.commandProxy().update(optRegHist.get().updateFromDomain(newEmpRegHistory));
 		}
+		this.getEntityManager().flush();
 
 	}
 

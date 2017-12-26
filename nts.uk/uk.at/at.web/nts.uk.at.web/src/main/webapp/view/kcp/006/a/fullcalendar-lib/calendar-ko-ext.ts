@@ -374,7 +374,7 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " .event-note").empty();
                 $("#" + currentCalendar + " .event-note").append($("#" + currentCalendar + " .event-data[data-date='" + $(this).attr("data-date") + "']").children().clone());
                 $("#" + currentCalendar + " .event-note").css("top", $(this).offset().top - 10);
-                $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 30);
+                $("#" + currentCalendar + " .event-note").css("left", $(this).offset().left + 27);
                 $("#" + currentCalendar + " .event-note").show();
             }, function() {
                 $("#" + currentCalendar + " .event-note").hide();

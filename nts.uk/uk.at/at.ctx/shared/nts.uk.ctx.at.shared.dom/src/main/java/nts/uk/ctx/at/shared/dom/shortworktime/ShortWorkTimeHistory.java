@@ -44,6 +44,12 @@ public class ShortWorkTimeHistory extends AggregateRoot
 		this.historyItems = memento.getHistoryItems();
 	}
 	
+	public ShortWorkTimeHistory(String cid, String sid,  List<DateHistoryItem> historyItems) {
+		this.companyId = cid;
+		this.employeeId = sid;
+		this.historyItems = historyItems;
+	}
+	
 	/**
 	 * Save to memento.
 	 *

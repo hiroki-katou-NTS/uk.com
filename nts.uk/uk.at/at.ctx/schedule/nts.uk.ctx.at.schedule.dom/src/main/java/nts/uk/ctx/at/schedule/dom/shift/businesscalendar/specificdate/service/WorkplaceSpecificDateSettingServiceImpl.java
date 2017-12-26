@@ -43,7 +43,7 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 		List<SpecificDateItemNo> specificDateItemList = new ArrayList<SpecificDateItemNo>();
 		List<CompanySpecificDateItem> companySpecificDateItemList = companySpecificDateRepository.getComSpecByDateWithName(companyID, date, date);
 		if(!CollectionUtil.isEmpty(companySpecificDateItemList)){
-			List<String> numberList = companySpecificDateItemList.stream().map(x -> x.getSpecificDateItemNo().v().toString()).collect(Collectors.toList());
+			List<Integer> numberList = companySpecificDateItemList.stream().map(x -> x.getSpecificDateItemNo().v()).collect(Collectors.toList());
 			numberList.stream().distinct();
 			List<SpecificDateItem> currentList = specificDateItemRepository.getSpecifiDateByListCode(companyID, numberList);
 			specificDateItemList.addAll(currentList.stream().map(x -> x.getSpecificDateItemNo()).collect(Collectors.toList()));

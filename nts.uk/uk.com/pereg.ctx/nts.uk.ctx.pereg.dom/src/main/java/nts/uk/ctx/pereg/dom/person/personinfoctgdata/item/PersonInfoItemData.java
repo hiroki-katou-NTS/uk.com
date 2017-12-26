@@ -71,7 +71,7 @@ public class PersonInfoItemData extends AggregateRoot {
 
 		switch (dataStateType) {
 		case String:
-			resultState = DataState.createFromStringValue(stringValue.trim());
+			resultState = DataState.createFromStringValue(stringValue);
 			break;
 
 		case Numeric:

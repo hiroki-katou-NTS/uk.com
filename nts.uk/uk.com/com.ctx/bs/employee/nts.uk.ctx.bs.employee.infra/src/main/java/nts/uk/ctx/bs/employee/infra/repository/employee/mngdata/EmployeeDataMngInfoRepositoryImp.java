@@ -19,6 +19,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
+import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 
 @Stateless
 public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements EmployeeDataMngInfoRepository {
@@ -36,14 +37,18 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.companyId = :cId AND e.employeeCode= :sCd AND e.delStatus=0");
-	
+
 	private static final String GET_LIST_BY_CID_SCD = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
 
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
+	private final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployeeDataMngInfo c "
+			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
+			+ " ORDER BY  c.employeeCode DESC";
+
 	// Lanlt end
-	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday "
+	private static final String SELECT_BY_SID_1 = "SELECT e.employeeCode, p.personName, p.businessName , p.birthday, p.gender, p.bpsmtPersonPk.pId "
 			+ " FROM BsymtEmployeeDataMngInfo e " + " INNER JOIN BpsmtPerson p"
 			+ " ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId"
 			+ " WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sid";
@@ -55,34 +60,38 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ " WHERE  d.bsymtDepartmentInfoPK.depId =:depId" + " AND h.strD <= :date" + " AND h.endD >= :date";
 
 	// Lanlt end
-	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ";
-
-	private static final String SELECT_BY_SID = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId = :sId";
+	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ORDER BY  e.employeeCode ASC";
 
 	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.delStatus = 0 AND e.employeeCode = :empcode AND e.companyId = :cid");
-	
+
 	// duongtv start code
 	/** The select by list emp code. */
 	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
 			+ " AND e.employeeCode IN :listEmployeeCode ";
-	
+
 	/** The select by list emp id. */
 	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_PARAM + " WHERE e.companyId = :companyId"
 			+ " AND e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds ";
 
 	// duongtv end code
-	
+
 	/** The select by list empId. */
 	public final String SELECT_BY_LIST_EMPID = SELECT_NO_PARAM + " WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid ";
-	
+
 	/** The select by cid and pid. */
-	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM + " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
-	
-	
+
+	public final String SELECT_BY_CID_PID = SELECT_NO_PARAM
+			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.pId = :pid ";
+
+	/** The select by cid and sid. */
+	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM
+			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
+
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -92,14 +101,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getSingleOrNull();
 
 		if (entity != null) {
-
-			// entity.delDateTmp = domain.getDeleteDateTemporary();
-			// entity.delStatus = domain.getDeletedStatus().value;
-			// entity.removeReason = domain.getRemoveReason().v();
-			if (domain.getEmployeeCode() != null){
+			if (domain.getEmployeeCode() != null) {
 				entity.employeeCode = domain.getEmployeeCode().v();
 			}
-			if (domain.getExternalCode() != null){
+			if (domain.getExternalCode() != null) {
 				entity.extCode = domain.getExternalCode().v();
 			}
 			commandProxy().update(entity);
@@ -127,6 +132,16 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	public List<EmployeeDataMngInfo> findByEmployeeId(String sId) {
 		return queryProxy().query(SELECT_BY_EMP_ID, BsymtEmployeeDataMngInfo.class).setParameter("sId", sId).getList()
 				.stream().map(m -> toDomain(m)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<EmployeeDataMngInfo> findByEmpId(String sId) {
+		List<EmployeeDataMngInfo> lst = findByEmployeeId(sId);
+		if (!lst.isEmpty()) {
+			return Optional.of(lst.get(0));
+		}
+
+		return Optional.empty();
 	}
 
 	@Override
@@ -166,7 +181,23 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			if (entity[3] != null) {
 				emp.setBirthday(GeneralDate.fromString(entity[3].toString(), "yyyy/MM/dd"));
 			}
-			
+
+			if (entity[4] != null) {
+				if (Integer.valueOf(entity[4].toString()) == 1) {
+					emp.setGender("男");
+
+				} else if (Integer.valueOf(entity[4].toString()) == 2) {
+					emp.setGender("女");
+				}
+
+			}
+
+			if (entity[5] != null) {
+
+				emp.setPId(entity[5].toString());
+
+			}
+
 		} else if (component == 1) {
 			if (entity[0] != null && entity[1] != null)
 				emp.setDepartmentName(entity[0].toString() + " " + entity[1].toString());
@@ -288,25 +319,23 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	// duong tv end code
-	
+
 	@Override
 	public List<EmployeeDataMngInfo> findByListEmployeeId(List<String> listSid) {
-		
+
 		if (CollectionUtil.isEmpty(listSid)) {
 			return new ArrayList<>();
 		}
-		
+
 		return this.queryProxy().query(SELECT_BY_LIST_EMPID, BsymtEmployeeDataMngInfo.class)
-				.setParameter("listSid", listSid).getList().stream()
-				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+				.setParameter("listSid", listSid).getList().stream().map(entity -> this.toDomain(entity))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Optional<EmployeeDataMngInfo> findByCidPid(String cid, String pid) {
 		BsymtEmployeeDataMngInfo entity = this.queryProxy().query(SELECT_BY_CID_PID, BsymtEmployeeDataMngInfo.class)
-				.setParameter("cid", cid)
-				.setParameter("pid", pid)
-				.getSingleOrNull();
+				.setParameter("cid", cid).setParameter("pid", pid).getSingleOrNull();
 
 		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
 		if (entity != null) {
@@ -321,9 +350,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@Override
 	public Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd) {
 		// query to Req 125
-		BsymtEmployeeDataMngInfo entity =  queryProxy().query(GET_LIST_BY_CID_SCD, BsymtEmployeeDataMngInfo.class)
+		BsymtEmployeeDataMngInfo entity = queryProxy().query(GET_LIST_BY_CID_SCD, BsymtEmployeeDataMngInfo.class)
 				.setParameter("cId", cId).setParameter("sCd", sCd).getSingleOrNull();
-		
+
 		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
 		if (entity != null) {
 			empDataMng = toDomain(entity);
@@ -333,5 +362,23 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			return Optional.empty();
 		}
 	}
+
+	// sonnlb code start
+	@Override
+	public String findLastEml(String companyId, String startLetters) {
+		if (startLetters == null)
+			startLetters = " ";
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
+				.setParameter("emlCode", Character.toString(startLetters.charAt(0))).getList();
+		String returnStr = "";
+		if (lst.size() > 0) {
+			Object obj = lst.get(0);
+			returnStr = obj.toString();
+		}
+
+		return returnStr;
+	}
+
+	// sonnlb code end
 
 }

@@ -350,7 +350,7 @@
 					<div class="cell valign-center">
 						<label data-bind="text : $parents[1].convertIntToTime(startTime1())"> </label>
 						<!--~-->
-						<label class="valign-center">#{i18n.getText('KAF007_14')}</label>
+						<label data-bind="visible: startTime1() >= 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
 						<label data-bind="text : $parents[1].convertIntToTime(endTime1())"></label>
 					</div>
 				</div>
@@ -365,7 +365,7 @@
 					<div class="cell valign-center">
 						<label data-bind="text : $parents[1].convertIntToTime(startTime2())"> </label>
 						<!--~-->
-						<label class="valign-center">#{i18n.getText('KAF007_14')}</label>
+						<label data-bind="visible: startTime2() >= 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
 						<label data-bind="text : $parents[1].convertIntToTime(endTime2())"></label>
 					</div>
 				</div>
@@ -380,7 +380,7 @@
 					<div class="cell valign-center">
 						<label data-bind="text : $parents[1].convertIntToTime(breakTimeStart())"> </label>
 						<!--~-->
-						<label class="valign-center">#{i18n.getText('KAF007_14')}</label>
+						<label data-bind="visible: breakTimeStart() >= 0" class="valign-center">#{i18n.getText('KAF007_14')}</label>
 						<label data-bind="text : $parents[1].convertIntToTime(breakTimeEnd())"></label>
 					</div>
 				</div>

@@ -17,6 +17,7 @@
 			<com:ValidatorScript>
 				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue
  			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw007.b.style.css" />
@@ -91,10 +92,11 @@
 						 	<com:ko-if bind="currentAtdItemCondition.conditionType() == 0">
 							 	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_99')}</div>
 							 	<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 0 || currentAtdItemCondition.conditionAtr() == 3">
-								 	<input class="value-input needcheck" data-bind="ntsNumberEditor: {value: currentAtdItemCondition.compareStartValue, required: true}" />
+								 	<input class="value-input needcheck" data-bind="ntsNumberEditor: {value: currentAtdItemCondition.compareStartValue, required: true, constraint: 'CheckedTimesValue'}" />
 								 	<input class="value-input needcheck" data-bind="ntsNumberEditor: {value: currentAtdItemCondition.compareEndValue, 
 																					 	enable: currentAtdItemCondition.compareOperator() > 5, 
-																					 	required: currentAtdItemCondition.conditionType() == 0}" />
+																					 	required: currentAtdItemCondition.conditionType() == 0,
+																					 	constraint: 'CheckedTimesValue'}" />
 						 		</com:ko-if>
 						 		<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 1">
 								 	<input class="value-input needcheck" data-bind="ntsTimeEditor: {value: currentAtdItemCondition.compareStartValue, 

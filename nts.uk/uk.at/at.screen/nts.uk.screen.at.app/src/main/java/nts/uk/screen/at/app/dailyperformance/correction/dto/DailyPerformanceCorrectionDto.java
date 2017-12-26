@@ -45,6 +45,9 @@ public class DailyPerformanceCorrectionDto {
 	private List<DailyPerformanceAuthorityDto> authorityDto;
 	
 	private String employmentCode;
+	
+	//A13_1  コメント
+	private String comment;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -85,7 +88,11 @@ public class DailyPerformanceCorrectionDto {
 			state.add("ntsgrid-disable");
 				int attendanceAtr = mapDP.get(Integer.parseInt(header.getKey().trim().substring(1, header.getKey().trim().length()))).getAttendanceAtr() ;
 				if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
-				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Code"+header.getKey().substring(1, header.getKey().length()), state));
+					if(attendanceAtr == DailyAttendanceAtr.Classification.value){
+						this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "NO"+header.getKey().substring(1, header.getKey().length()), state));
+					}else{
+						this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Code"+header.getKey().substring(1, header.getKey().length()), state));
+					}
 				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Name"+header.getKey().substring(1, header.getKey().length()), state));
 			} else {
 				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), header.getKey(), state));
@@ -177,6 +184,20 @@ public class DailyPerformanceCorrectionDto {
 				DPCellStateDto dto = new DPCellStateDto("_"+dataId, columnKey, state);
 				this.lstCellState.add(dto);
 			}
+		}
+
+	}
+	
+	/** Set AlarmCell state for Fixed cell */
+	public void setLock(int rowId, String columnKey) {
+			Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
+			if (existedCellState.isPresent()) {
+				existedCellState.get().addState("ntsgrid-disable");
+			}else{
+				List<String> state = new ArrayList<>();
+				state.add("ntsgrid-disable");
+				DPCellStateDto dto = new DPCellStateDto("_"+rowId, columnKey, state);
+				this.lstCellState.add(dto);
 		}
 
 	}

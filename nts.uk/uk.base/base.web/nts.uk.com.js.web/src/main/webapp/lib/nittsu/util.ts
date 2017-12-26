@@ -382,14 +382,14 @@
                     this.value = orDefault(value, null);
                 }
 
-                ifPresent(consumer: (value: V) => {}) {
+                ifPresent(consumer: (value: V) => void) {
                     if (this.isPresent()) {
                         consumer(this.value);
                     }
                     return this;
                 }
 
-                ifEmpty(action: () => {}) {
+                ifEmpty(action: () => void) {
                     if (!this.isPresent()) {
                         action();
                     }
@@ -692,8 +692,8 @@
         export function getText(code: string, params?: string[]): string {
             let text = names[code];
             if (text) {
-                text = formatCompCustomizeResource(text);
                 text = formatParams(text, params);
+                text = formatCompCustomizeResource(text);
                 return text.replace(/\\r\\n/g, '\r\n');
             }
             return code;

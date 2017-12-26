@@ -279,7 +279,7 @@ module nts.uk.com.view.cps005.b {
                 self.perInfoItemSelectCode.subscribe(newItemId => {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     nts.uk.ui.errors.clearAll();
-                    new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
+                    new service.Service().getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType ).done(function(data: IPersonInfoItem) {
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
@@ -330,6 +330,13 @@ module nts.uk.com.view.cps005.b {
         constructor(data: IPersonInfoItem) {
             let self = this;
             self.dataType.subscribe(function(value) {
+                self.stringItem(new StringItemModel(null));
+                self.numericItem(new NumericItemModel(null));
+                self.dateItem(new DateItemModel(null));
+                self.timeItem(new TimeItemModel(null));
+                self.timePointItem(new TimePointItemModel(null));
+                self.selectionItem(new SelectionItemModel(null));
+                nts.uk.ui.errors.clearAll();
                 if (value === 6) {
                     self.selectionItem().selectionItemRefType(2);
                     let baseDate = moment(new Date()).format('YYYY-MM-DD');
@@ -504,17 +511,40 @@ module nts.uk.com.view.cps005.b {
             } else if (data.referenceType === "ENUM") {
                 self.selectionItemRefType(3);
             }
-            self.selectionItemId(data.selectionItemId || undefined);
+            self.selectionItemId(data.selectionItemId || data.typeCode || undefined);
             self.selectionItemName(data.selectionItemName || undefined);
+
+
             if (!nts.uk.util.isNullOrUndefined(self.selectionItemId())) {
                 self.selectionItemId(self.selectionItemId());
             }
             self.selectionItemLst(data.selectionItemLst || []);
             self.selectionLst([]);
             let baseDate = moment(new Date()).format('YYYY-MM-DD');
-            if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
 
-                new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate,
+            if (self.selectionItemId() === undefined || self.selectionItemId() === "") {
+                if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
+
+                    new service.Service().getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId), baseDate,
+                        __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
+                            if (data.length > 0) {
+                                self.selectionLst.removeAll();
+                                self.selectionLst(data);
+                                self.selectionLst.valueHasMutated();
+
+                            } else {
+                                self.selectionLst.removeAll();
+                                self.selectionLst([]);
+                                self.selectionLst.valueHasMutated();
+
+                            }
+
+
+                        });
+                }
+            } else {
+
+                new service.Service().getAllSelByHistory(ko.toJS(self.selectionItemId), baseDate,
                     __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
                         if (data.length > 0) {
                             self.selectionLst.removeAll();

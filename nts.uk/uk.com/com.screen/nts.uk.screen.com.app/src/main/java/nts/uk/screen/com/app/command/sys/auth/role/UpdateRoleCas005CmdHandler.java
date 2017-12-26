@@ -7,10 +7,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.auth.app.command.employmentrole.UpdateEmploymentRoleCmd;
 import nts.uk.ctx.at.auth.app.command.employmentrole.UpdateEmploymentRoleCmdHandler;
-import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.UpdateWorkPlaceAuthorityCmd;
-import nts.uk.ctx.at.auth.app.command.wplmanagementauthority.UpdateWorkPlaceAuthorityCmdHandler;
 import nts.uk.ctx.sys.auth.app.command.role.UpdateRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.role.UpdateRoleCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.wplmanagementauthority.UpdateWorkPlaceAuthorityCmd;
+import nts.uk.ctx.sys.auth.app.command.wplmanagementauthority.UpdateWorkPlaceAuthorityCmdHandler;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.RoleByRoleTiesCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.UpdateRoleByRoleTiesCommandHandler;
@@ -53,19 +53,21 @@ public class UpdateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
 					
 					);
 			updateRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
+		}else {
+			//update EmploymentRole
+			
+			UpdateEmploymentRoleCmd updateEmploymentRoleCmd = new UpdateEmploymentRoleCmd(
+					AppContexts.user().companyId(),
+					data.getRoleId(),
+					data.getScheduleEmployeeRef(),
+					data.getBookEmployeeRef(),
+					data.getEmployeeRefSpecAgent(),
+					data.getPresentInqEmployeeRef(),
+					data.getFutureDateRefPermit()
+					);
+			updateEmploymentRoleCmdHandler.handle(updateEmploymentRoleCmd);
 		}
-		//update EmploymentRole
 		
-		UpdateEmploymentRoleCmd updateEmploymentRoleCmd = new UpdateEmploymentRoleCmd(
-				AppContexts.user().companyId(),
-				data.getRoleId(),
-				data.getScheduleEmployeeRef(),
-				data.getBookEmployeeRef(),
-				data.getEmployeeRefSpecAgent(),
-				data.getPresentInqEmployeeRef(),
-				data.getFutureDateRefPermit()
-				);
-		updateEmploymentRoleCmdHandler.handle(updateEmploymentRoleCmd);
 		
 		//update WorkPlaceAuthority
 		for(WorkPlaceAuthorityCommand workPlaceAuthorityCommand :data.getListWorkPlaceAuthority()) {

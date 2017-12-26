@@ -11,6 +11,12 @@ import javax.enterprise.util.TypeLiteral;
 
 import command.person.info.AddPersonCommand;
 import command.person.info.UpdatePersonCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.DeleteBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
+import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand;
+import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.DeleteAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.UpdateAffClassificationCommand;
@@ -18,6 +24,7 @@ import nts.uk.ctx.bs.employee.app.command.department.AddAffiliationDepartmentCom
 import nts.uk.ctx.bs.employee.app.command.department.DeleteAffiliationDepartmentCommand;
 import nts.uk.ctx.bs.employee.app.command.department.UpdateAffiliationDepartmentCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.AddAffCompanyHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.history.DeleteAffCompanyHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.history.UpdateAffCompanyHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.mngdata.AddEmployeeDataMngInfoCommand;
 import nts.uk.ctx.bs.employee.app.command.employee.mngdata.UpdateEmployeeDataMngInfoCommand;
@@ -25,8 +32,9 @@ import nts.uk.ctx.bs.employee.app.command.employment.history.AddEmploymentHistor
 import nts.uk.ctx.bs.employee.app.command.employment.history.DeleteEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.history.UpdateEmploymentHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.AddAffJobTitleMainCommand;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.DeleteAffJobTitleMainCommand;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.UpdateAffJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.main.DeleteJobTitleMainCommand;
-import nts.uk.ctx.bs.employee.app.command.jobtitle.main.UpdateJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.AddTemporaryAbsenceCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.DeleteTemporaryAbsenceCommand;
 import nts.uk.ctx.bs.employee.app.command.temporaryabsence.UpdateTemporaryAbsenceCommand;
@@ -37,6 +45,7 @@ import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workingcondition.*;
 
 
 @Stateless
@@ -53,30 +62,40 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			new TypeLiteral<PeregAddCommandHandler<AddAffCompanyHistoryCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddPersonCommand>>(){},
 			new TypeLiteral<PeregAddCommandHandler<AddEmployeeDataMngInfoCommand>>(){},
-			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){}
+			new TypeLiteral<PeregAddCommandHandler<AddAffClassificationCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddBusinessWokrTypeOfHistoryCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregAddCommandHandler<AddWorkingConditionCommand>>(){}
 			);
 	
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffiliationDepartmentCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffJobTitleMainCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdatePersonCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmployeeDataMngInfoCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmploymentHistoryCommand>>(){},
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffCompanyHistoryCommand>>(){},
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>(){}
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateAffClassificationCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateBusinessWorkTypeOfHistoryCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingConditionCommand>>(){}
 			);
 	
 	/** Delete handlers */
 	private static final List<TypeLiteral<?>> DELETE_HANDLER_CLASSES = Arrays.asList(
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffiliationDepartmentCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteJobTitleMainCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffJobTitleMainCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteTemporaryAbsenceCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffWorkplaceHistoryCommand>>(){},
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmploymentHistoryCommand>>(){},
-			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){}
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffClassificationCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteBusinessWorkTypeOfHistoryCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteShortWorkTimeCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteWorkingConditionCommand>>(){},
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteAffCompanyHistoryCommand>>(){}
 			);
 	
 	@Override

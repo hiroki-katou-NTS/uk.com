@@ -39,6 +39,9 @@ module nts.uk.at.view.kaf007.b {
             enableSendMail: KnockoutObservable<boolean> = ko.observable( false );
             dateFormat: string = 'YYYY/MM/DD';
             dateTimeFormat: string = 'YYYY/MM/DD hh:mm:ss';
+            //勤務就業ダイアログ用データ取得
+            workTypeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
+            workTimeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
         
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
@@ -95,11 +98,16 @@ module nts.uk.at.view.kaf007.b {
                             ko.mapping.fromJS( detailData.workChangeDto, {}, self.appWorkChange().workChange );
                             self.workChangeAtr( self.appWorkChange().workChange().workChangeAtr() == 1 ? true : false );
                             self.excludeHolidayAtr( self.appWorkChange().workChange().excludeHolidayAtr() == 1 ? true : false );
+                            let goWorkAtr2 = self.appWorkChange().workChange().goWorkAtr2;
+                            let backHomeAtr2 = self.appWorkChange().workChange().backHomeAtr2;
+                            goWorkAtr2(nts.uk.util.isNullOrUndefined(goWorkAtr2()) ? 1: goWorkAtr2());
+                            backHomeAtr2(nts.uk.util.isNullOrUndefined(backHomeAtr2()) ? 1: backHomeAtr2());
                             //application data
                             ko.mapping.fromJS( detailData.applicationDto, {}, self.appWorkChange().application );
                             //setting reason content
                             self.multilContent( self.appWorkChange().application().applicationReason() );
-
+                            self.workTypeCodes = detailData.workTypeCodes;
+                            self.workTimeCodes = detailData.workTimeCodes;
                             dfd.resolve();
                             nts.uk.ui.block.clear();
                         } ).fail(( res ) => {
@@ -159,6 +167,9 @@ module nts.uk.at.view.kaf007.b {
                 self.appWorkChange().workChange().workChangeAtr(self.workChangeAtr() == true ? 1 : 0);
                 // 休日に関して
                 self.appWorkChange().workChange().excludeHolidayAtr(self.excludeHolidayAtr() == true ? 1 : 0);
+                //Change null to unregister value:
+                self.changeUnregisterValue();
+                
                 let workChange = ko.toJS(self.appWorkChange());
                 service.updateWorkChange(workChange).done(() => {
                     
@@ -166,8 +177,7 @@ module nts.uk.at.view.kaf007.b {
                         location.reload();
                     });
                 }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                    nts.uk.ui.block.clear();
+                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
                 });
 
             }
@@ -196,7 +206,7 @@ module nts.uk.at.view.kaf007.b {
                 //共通設定.複数回勤務　＝　利用する
                 if(self.isMultipleTime()){
                     //has input time 2
-                    if ( !nts.uk.util.isNullOrUndefined(workchange.workTimeStart2()) && workchange.workTimeStart2() != "") {
+                    if ( !nts.uk.util.isNullOrEmpty(workchange.workTimeStart2())) {
                         //開始時刻　＞　終了時刻
                         if(workchange.workTimeStart2() > workchange.workTimeEnd2()){
                             dialog.alertError({messageId:"Msg_580"}).then(function(){nts.uk.ui.block.clear();});
@@ -212,7 +222,7 @@ module nts.uk.at.view.kaf007.b {
                     }
                 }
                 //３．休憩時間１（開始時刻：終了時刻）大小チェック
-                if ( !nts.uk.util.isNullOrUndefined(workchange.breakTimeStart1()) && workchange.breakTimeStart1() != "") {
+                if ( !nts.uk.util.isNullOrEmpty(workchange.breakTimeStart1())) {
                     //開始時刻　＞　終了時刻
                     if(workchange.breakTimeStart1() > workchange.breakTimeEnd1()){
                         dialog.alertError({messageId:"Msg_582"}).then(function(){nts.uk.ui.block.clear();});
@@ -221,6 +231,18 @@ module nts.uk.at.view.kaf007.b {
                     }
                 }
                 return true;
+            }
+            private changeUnregisterValue() {
+                let self = this,
+                    workchange = self.appWorkChange().workChange();
+                //
+                if (!self.isMultipleTime()
+                    || nts.uk.util.isNullOrEmpty(workchange.workTimeStart2())) {
+                    workchange.goWorkAtr2(null);
+                    workchange.backHomeAtr2(null);
+                    workchange.workTimeStart2(null);
+                    workchange.workTimeEnd2(null);
+                }
             }
             /**
              * Convert client date string to server GeneralDate
@@ -295,23 +317,14 @@ module nts.uk.at.view.kaf007.b {
              * 「勤務就業選択」ボタンをクリックする
              * KDL003_勤務就業ダイアログを起動する
              */
-            openKDL003Click() {
+            openKDL003Click()  {
                 let self = this,
-                //workTypeCodes = [],
-                //TODO: QA
-                workTypeCodes = ['001','002','003','004','005','006','007','008','009','010'],
-                workChange = self.workChange(),
-                //workTimeCodes = [];
-                workTimeCodes = ['001','003','005'];
+                workChange = self.workChange();                
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: workTypeCodes,
-                    //TODO: QA
-                    // selectedWorkTypeCode: workChange.workTypeCd(),
-                    selectedWorkTypeCode: '002',
-                    workTimeCodes: workTimeCodes,
-                  //TODO: QA
-                    //selectedWorkTimeCode: workChange.workTimeCd(),
-                    selectedWorkTimeCode: '003',
+                    workTypeCodes: self.workTypeCodes,                    
+                    selectedWorkTypeCode: workChange.workTypeCd(),
+                    workTimeCodes: self.workTimeCodes,
+                    selectedWorkTimeCode: workChange.workTimeCd(),
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {

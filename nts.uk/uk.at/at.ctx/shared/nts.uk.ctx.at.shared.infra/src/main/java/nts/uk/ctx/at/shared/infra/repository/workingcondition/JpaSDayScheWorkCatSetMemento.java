@@ -28,9 +28,11 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSDayScheWorkCatSetMemento(KshmtPerWorkCat entity) {
+	public JpaSDayScheWorkCatSetMemento(String historyId, KshmtPerWorkCat entity) {
 		if (entity.getKshmtPerWorkCatPK() == null) {
-			entity.setKshmtPerWorkCatPK(new KshmtPerWorkCatPK());
+			KshmtPerWorkCatPK kshmtPerWorkCatPK = new KshmtPerWorkCatPK();
+			kshmtPerWorkCatPK.setHistoryId(historyId);
+			entity.setKshmtPerWorkCatPK(kshmtPerWorkCatPK);
 		}
 		this.entity = entity;
 	}
@@ -44,7 +46,9 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
-		this.entity.setWorkTypeCode(workTypeCode.v());
+		if (workTypeCode !=null){
+			this.entity.setWorkTypeCode(workTypeCode.v());
+		}
 	}
 
 	/*
@@ -69,7 +73,9 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkTimeCode(Optional<WorkTimeCode> workTimeCode) {
-		this.entity.setWorkTimeCode(workTimeCode.get().v());
+		if (workTimeCode.isPresent() && workTimeCode != null){
+			this.entity.setWorkTimeCode(workTimeCode.get().v());
+		}
 	}
 
 }

@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 
 /**
  * @author hungnm
- *
+ * 勤務実績のエラーアラーム
  */
 @Getter
 public class ErrorAlarmWorkRecord extends AggregateRoot {
@@ -120,5 +120,9 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	public void setCondition(ErrorAlarmCondition condition) {
 		this.errorAlarmCondition = condition;
+	}
+	
+	public void setCheckId(String errorAlarmCheckID){
+		this.errorAlarmCheckID = errorAlarmCheckID;
 	}
 }

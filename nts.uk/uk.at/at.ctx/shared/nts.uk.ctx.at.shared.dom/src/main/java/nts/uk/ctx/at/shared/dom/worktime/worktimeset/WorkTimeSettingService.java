@@ -9,11 +9,21 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 
 /**
- * The Interface WorkTimeSettingRepository.
+ * The Interface WorkTimeSettingService.
  */
 public interface WorkTimeSettingService {
 
+	/**
+	 * Gets the holiday work schedule.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @param workTypeCode the work type code
+	 * @return the holiday work schedule
+	 */
 	// 打刻反映時間帯を取得する
-	List<StampReflectTimezone> getStampReflectTimezone(String companyId, String workTypeCode);
+	List<StampReflectTimezone> getStampReflectTimezone(String companyId,
+			String workTimeCode);
 
 }

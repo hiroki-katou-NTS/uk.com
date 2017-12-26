@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -28,7 +29,13 @@ public interface AffWorkplaceHistoryRepository_v1 {
 	 */
 	Optional<AffWorkplaceHistory_ver1> getByHistId(String histId);
 	
-	Optional<AffWorkplaceHistory_ver1> getAffWorkplaceHistByEmployeeId(String companyId, String employeeId);
+	Optional<AffWorkplaceHistory_ver1> getByEmployeeId(String companyId, String employeeId);
+	
+	Optional<AffWorkplaceHistory_ver1> getByEmployeeIdDesc(String companyId, String employeeId);
+	
+	List<AffWorkplaceHistory_ver1> findByEmployees(List<String> employeeIds, GeneralDate date);
+	
+	Optional<AffWorkplaceHistory_ver1> getByHistIdAndBaseDate(String histId, GeneralDate date);
 	/**
 	 * ドメインモデル「所属職場」を新規登録する
 	 * @param item
@@ -47,4 +54,14 @@ public interface AffWorkplaceHistoryRepository_v1 {
 	 * @param item
 	 */
 	void update(DateHistoryItem item);
+	
+	List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByEmployeeIdAndDate(GeneralDate baseDate, String employeeId);
+	
+	List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWkpIdsAndDate(GeneralDate baseDate, List<String> workplaceIds);
+	
+	List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByEmpIdsAndDate(GeneralDate baseDate, List<String> employeeIds);
+	
+	List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWorkplaceIdAndDate(GeneralDate baseDate, String workplaceId);
+	
+	List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWkpIdsAndEmpIdsAndDate(GeneralDate baseDate, List<String> employeeIds, List<String> workplaceIds);
 }

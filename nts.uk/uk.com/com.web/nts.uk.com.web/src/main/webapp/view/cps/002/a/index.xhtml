@@ -51,7 +51,7 @@
 								        	], theme: 'yellow'}"
 					class="cf">
 					<div class="header">
-						<div class="image" data-icon=""></div>
+						<div class="image" data-icon="images/146.png"></div>
 						<div class="content">#{i18n.getText('CPS002_12')}</div>
 					</div>
 					<div class="steps">
@@ -271,7 +271,7 @@
 											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
 										</div>
 										<div class="div_line">
-											<div style="width: 190px"
+											<div style="width: 190px" id="initSearchBox"
 												data-bind="ntsSearchBox: {
 															targetKey: 'itemCode',
 															mode:'igGrid', 
@@ -356,13 +356,13 @@
 											<table class="table_item"
 												data-bind="if:itemSettingList().length>0">
 												<tr>
-													<th width="180px" class="bg-green">#{i18n.getText('CPS002_36')}</th>
-													<th width="250px" class="bg-green">#{i18n.getText('CPS002_37')}</th>
+													<th width="180px" class="bg-calendar-ym-set">#{i18n.getText('CPS002_36')}</th>
+													<th width="250px" class="bg-calendar-ym-set">#{i18n.getText('CPS002_37')}</th>
 												</tr>
 												<tbody data-bind="foreach:itemSettingList">
 													<tr>
 														<td
-															data-bind="text: itemName , css:{requiredCell: isRequired  }"></td>
+															data-bind="text: itemName , css:{requiredCell: isRequired , notRequiredCell:  !isRequired}"></td>
 														<td class="disabledCell" data-bind="text: saveData.value "></td>
 													</tr>
 												</tbody>
@@ -427,7 +427,7 @@
 											}"></div>
 							</div>
 							<!-- layout end -->
-							<div class='div_line' style="padding-bottom: 20px;">
+							<div class='div_line'>
 								<com:ko-if bind="createTypeId()===3">
 									<button class="prev_btn" id="step2_prev_btn"
 										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>

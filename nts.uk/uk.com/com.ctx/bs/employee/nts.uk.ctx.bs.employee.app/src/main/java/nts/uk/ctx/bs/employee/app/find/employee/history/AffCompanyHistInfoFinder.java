@@ -13,6 +13,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -81,12 +82,17 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		AffCompanyHist affCompanyHist = achFinder.getAffCompanyHistoryOfEmployee(query.getEmployeeId());
-		if (affCompanyHist != null)
+
+		AffCompanyHist affCompanyHist = achFinder.getAffCompanyHistoryOfEmployeeDesc(AppContexts.user().companyId(),
+				query.getEmployeeId());
+
+		if (affCompanyHist != null) {
+
 			return affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
-					.sorted((a, b) -> b.start().compareTo(a.start()))
+					.filter(x -> aciFinder.getAffCompanyInfoByHistId(x.identifier()) != null)
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
 					.collect(Collectors.toList());
+		}
 		return new ArrayList<>();
 	}
 

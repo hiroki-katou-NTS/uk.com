@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistoryService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
@@ -52,11 +53,15 @@ public class AddTemporaryAbsenceCommandHandler
 		String companyId = AppContexts.user().companyId();
 
 		String newHistID = IdentifierUtil.randomUniqueId();
-		DateHistoryItem dateItem = new DateHistoryItem(newHistID,new DatePeriod(command.getStartDate(), command.getEndDate()));
+		DateHistoryItem dateItem = new DateHistoryItem(newHistID,
+				new DatePeriod(command.getStartDate() != null ? command.getStartDate() : ConstantUtils.minDate(),
+						command.getEndDate() != null ? command.getEndDate() : ConstantUtils.maxDate()));
 
-		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(command.getEmployeeId());
-		
-		TempAbsenceHistory itemtoBeAdded = new TempAbsenceHistory(companyId, command.getEmployeeId(), new ArrayList<>());
+		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(companyId,
+				command.getEmployeeId());
+
+		TempAbsenceHistory itemtoBeAdded = new TempAbsenceHistory(companyId, command.getEmployeeId(),
+				new ArrayList<>());
 		// In case of exist history of this employee
 		if (existHist.isPresent()) {
 			itemtoBeAdded = existHist.get();
@@ -64,25 +69,28 @@ public class AddTemporaryAbsenceCommandHandler
 		itemtoBeAdded.add(dateItem);
 
 		tempAbsHistoryService.add(itemtoBeAdded);
-		
+
 		BigDecimal falseValue = new BigDecimal(0);
-		boolean multiple = false;
-		if (command.getMultiple() != null){
+		Boolean multiple = null;
+		if (command.getMultiple() != null) {
 			multiple = falseValue.compareTo(command.getMultiple()) == 0 ? false : true;
 		}
-		boolean sameFamily = false;
-		if (command.getSameFamily() != null){
+		Boolean sameFamily = null;
+		if (command.getSameFamily() != null) {
 			sameFamily = falseValue.compareTo(command.getSameFamily()) == 0 ? false : true;
 		}
-		boolean spouseIsLeave = false;
-		if (command.getSpouseIsLeave() != null){
+		Boolean spouseIsLeave = null;
+		if (command.getSpouseIsLeave() != null) {
 			spouseIsLeave = falseValue.compareTo(command.getSpouseIsLeave()) == 0 ? false : true;
 		}
-		
-		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(command.getTempAbsenceFrNo()!= null ? command.getTempAbsenceFrNo().intValue():0,
-				newHistID, command.getEmployeeId(), command.getRemarks(), command.getSoInsPayCategory()!= null? command.getSoInsPayCategory().intValue(): null,
-				multiple, command.getFamilyMemberId(), sameFamily, command.getChildType() != null? command.getChildType().intValue(): null,
-				command.getCreateDate(), spouseIsLeave, command.getSameFamilyDays()!= null? command.getSameFamilyDays().intValue(): null);
+		// TODO SoInsPayCategory set to null
+		TempAbsenceHisItem temporaryAbsence = TempAbsenceHisItem.createTempAbsenceHisItem(
+				command.getTempAbsenceFrNo() != null ? command.getTempAbsenceFrNo().intValue() : 0, newHistID,
+				command.getEmployeeId(), command.getRemarks(),
+				command.getSoInsPayCategory() != null ? command.getSoInsPayCategory().intValue() : null, multiple,
+				command.getFamilyMemberId(), sameFamily,
+				command.getChildType() != null ? command.getChildType().intValue() : null, command.getCreateDate(),
+				spouseIsLeave, command.getSameFamilyDays() != null ? command.getSameFamilyDays().intValue() : null);
 		temporaryAbsenceRepository.add(temporaryAbsence);
 
 		return new PeregAddCommandResult(newHistID);

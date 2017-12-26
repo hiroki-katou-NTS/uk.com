@@ -61,15 +61,14 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class AppOvertimeFinder {
@@ -103,7 +102,7 @@ public class AppOvertimeFinder {
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	@Inject
-	private OvertimeFrameRepository overtimeFrameRepository;
+	private OvertimeWorkFrameRepository overtimeFrameRepository;
 	
 	@Inject
 	private IOvertimePreProcess iOvertimePreProcess;
@@ -319,13 +318,13 @@ public class AppOvertimeFinder {
 		List<OvertimeInputDto> overTimeInputs = new ArrayList<>();
 		// 01-03_残業枠を取得: chua xong
 		overTimeDto.setAppOvertimeNightFlg(appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value);
-		List<OvertimeFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(appOverTime.getOverTimeAtr().value,companyID);
+		List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(appOverTime.getOverTimeAtr().value,companyID);
 		
-		for(OvertimeFrame overtimeFrame :overtimeFrames){
+		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
 			overtimeInputDto.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
-			overtimeInputDto.setFrameNo(overtimeFrame.getOtFrameNo());
-			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeFrameName().toString());
+			overtimeInputDto.setFrameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValue());
+			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
 		}
 		OvertimeInputDto overtimeInputShiftNight = new OvertimeInputDto();
@@ -339,12 +338,12 @@ public class AppOvertimeFinder {
 		overTimeInputs.add(overtimeInputFlexExessTime);
 		
 		// lay breakTime
-		List<BreaktimeFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
-		for(BreaktimeFrame breaktimeFrame :breaktimeFrames){
+		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
+		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
 			overtimeInputDto.setAttendanceID(AttendanceID.BREAKTIME.value);
-			overtimeInputDto.setFrameNo(breaktimeFrame.getBreakTimeFrameNo());
-			overtimeInputDto.setFrameName(breaktimeFrame.getBreakTimeFrameName().toString());
+			overtimeInputDto.setFrameNo(breaktimeFrame.getWorkdayoffFrNo().v().intValueExact());
+			overtimeInputDto.setFrameName(breaktimeFrame.getWorkdayoffFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
 		}
 		
@@ -610,23 +609,23 @@ public class AppOvertimeFinder {
 		
 		// 01-03_残業枠を取得: chua xong
 		result.setAppOvertimeNightFlg(appCommonSettingOutput.applicationSetting.getAppOvertimeNightFlg().value);
-		List<OvertimeFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(overtimeAtr,companyID);
+		List<OvertimeWorkFrame> overtimeFrames = iOvertimePreProcess.getOvertimeHours(overtimeAtr,companyID);
 		
-		for(OvertimeFrame overtimeFrame :overtimeFrames){
+		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
 			overtimeInputDto.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
-			overtimeInputDto.setFrameNo(overtimeFrame.getOtFrameNo());
-			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeFrameName().toString());
+			overtimeInputDto.setFrameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValueExact());
+			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
 		}
 		
 		// lay breakTime
-		List<BreaktimeFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
-		for(BreaktimeFrame breaktimeFrame :breaktimeFrames){
+		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
+		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
 			overtimeInputDto.setAttendanceID(AttendanceID.BREAKTIME.value);
-			overtimeInputDto.setFrameNo(breaktimeFrame.getBreakTimeFrameNo());
-			overtimeInputDto.setFrameName(breaktimeFrame.getBreakTimeFrameName().toString());
+			overtimeInputDto.setFrameNo(breaktimeFrame.getWorkdayoffFrNo().v().intValueExact());
+			overtimeInputDto.setFrameName(breaktimeFrame.getWorkdayoffFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
 		}
 		
@@ -774,11 +773,11 @@ public class AppOvertimeFinder {
 				overtimeInputDtos.add(overtimeInputDto);
 				frameNo.add(overTimeInput.getFrameNo());
 			}
-			List<OvertimeFrame> overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameNo);
+			List<OvertimeWorkFrame> overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameNos(companyID,frameNo);
 			for (OvertimeInputDto overtimeInputDto : overtimeInputDtos) {
-				for (OvertimeFrame overtimeFrame : overtimeFrames) {
-					if (overtimeInputDto.getFrameNo() == overtimeFrame.getOtFrameNo()) {
-						overtimeInputDto.setFrameName(overtimeFrame.getOvertimeFrameName().toString());
+				for (OvertimeWorkFrame overtimeFrame : overtimeFrames) {
+					if (overtimeInputDto.getFrameNo() == overtimeFrame.getOvertimeWorkFrNo().v().intValueExact()) {
+						overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
 						continue;
 					}
 				}
@@ -821,9 +820,9 @@ public class AppOvertimeFinder {
 			}
 			
 		}
-		List<OvertimeFrame> overtimeFrames = new ArrayList<>();
+		List<OvertimeWorkFrame> overtimeFrames = new ArrayList<>();
 		if(frameOverTimeNo != null && frameOverTimeNo.size() > 0){
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByFrameNo(frameOverTimeNo);
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameNos(companyID,frameOverTimeNo);
 		}
 		List<BonusPayTimeItem> bonusPayTimeItems = new ArrayList<>();
 		if(frameBonusTimeNo != null && frameBonusTimeNo.size() > 0){
@@ -836,9 +835,9 @@ public class AppOvertimeFinder {
 		for(OvertimeInputDto dto : overTimeInputDtos){
 			// get frameName of Overtime
 			if(dto.getAttendanceID() == AttendanceID.NORMALOVERTIME.value){
-				for(OvertimeFrame overtimFrame :overtimeFrames){
-					if(dto.getFrameNo() == overtimFrame.getOtFrameNo()){
-						dto.setFrameName(overtimFrame.getOvertimeFrameName().toString());
+				for(OvertimeWorkFrame overtimFrame :overtimeFrames){
+					if(dto.getFrameNo() == overtimFrame.getOvertimeWorkFrNo().v().intValueExact()){
+						dto.setFrameName(overtimFrame.getOvertimeWorkFrName().toString());
 						break;
 					}
 				}

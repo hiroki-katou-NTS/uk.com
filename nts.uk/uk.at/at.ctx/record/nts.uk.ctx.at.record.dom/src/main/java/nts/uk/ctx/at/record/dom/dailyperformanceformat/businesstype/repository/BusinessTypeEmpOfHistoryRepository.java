@@ -49,7 +49,15 @@ public interface BusinessTypeEmpOfHistoryRepository {
 	 * @param sId employeeId
 	 * @return BusinessTypeOfEmployeeHistory
 	 */
-	Optional<BusinessTypeOfEmployeeHistory> findByEmployee(String sId);
+	Optional<BusinessTypeOfEmployeeHistory> findByEmployee(String cid, String sId);
+	
+	/**
+	 * find by employeeId
+	 * @param sId employeeId
+	 * @return BusinessTypeOfEmployeeHistory
+	 */
+	Optional<BusinessTypeOfEmployeeHistory> findByEmployeeDesc(String cid, String sId);
+	
 	/**
 	 * find by historyId
 	 * @param historyId

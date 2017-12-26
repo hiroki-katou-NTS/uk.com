@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class UsageUnitSetting.
  */
 // 労働時間と日数の設定の利用単位の設定
+@Getter
 public class UsageUnitSetting extends AggregateRoot {
 	
 	/** The company id. */

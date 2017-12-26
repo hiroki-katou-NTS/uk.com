@@ -140,8 +140,7 @@ public class WorkTimeWebService extends WebService {
 	@POST
 	@Path("findByTime")
 	public List<WorkTimeDto> findByTime(WorkTimeCommandFinder command) {
-		return this.workTimeFinder.findByTime(command.codelist, command.startAtr, command.startTime, command.endAtr,
-				command.endTime);
+		return this.workTimeFinder.findByTime(command.codelist, command.startTime, command.endTime);
 	}
 
 	/**
@@ -228,8 +227,6 @@ public class WorkTimeWebService extends WebService {
 @NoArgsConstructor
 class WorkTimeCommandFinder {
 	List<String> codelist;
-	int startAtr;
-	int startTime;
-	int endAtr;
-	int endTime;
+	Integer startTime;
+	Integer endTime;
 }

@@ -1,11 +1,14 @@
 package nts.uk.ctx.pereg.app.command.copysetting.item;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -48,26 +51,54 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 	}
 
 	@Transactional
-	private void addObject() {
-		// add objects
-		if (!CollectionUtil.isEmpty(command.getPerInfoItemDefIds())) {
-			EmpCopySetting newCtg =  EmpCopySetting.createFromJavaType(ctgId, AppContexts.user().companyId());
-			this.empCopyRepo.addCtgCopySetting(newCtg);
-			empCopyItemRepo.updatePerInfoItemInCopySetting(ctgId, command.getPerInfoItemDefIds());
-		}
-
-	}
-
-	@Transactional
 	private void removeObject() {
 
-		this.empCopyRepo.removeCtgCopySetting(command.getPerInfoCtgId());
+		this.empCopyRepo.removeCtgCopySetting(ctgId);
 		itemList.forEach(x -> {
 
 			empCopyItemRepo.removePerInfoItemInCopySetting(x.getId());
 
 		});
 		// delete object
+
+	}
+
+	@Transactional
+	private void addObject() {
+		// add objects
+
+		List<PerInfoDefDto> itemList = command.getPerInfoItemDefLst();
+
+		List<String> itemDefCd = new ArrayList<String>();
+
+		itemList.forEach(x -> {
+
+			if (x.getChecked()) {
+				if (StringUtils.isEmpty(x.getItemParentCd())) {
+					itemDefCd.add(x.getItemCd());
+				}
+			}
+		});
+
+		itemList.stream().filter(x -> {
+			return !StringUtils.isEmpty(x.getItemParentCd());
+		}).collect(Collectors.toList()).forEach(item -> {
+			if (itemDefCd.contains(item.getItemParentCd())) {
+				itemDefCd.add(item.getItemCd());
+			}
+		});
+		List<String> itemDefIds = new ArrayList<String>();
+
+		itemList.forEach(x -> {
+			if (itemDefCd.indexOf(x.getItemCd()) != -1) {
+				itemDefIds.add(x.getId());
+			}
+		});
+		if (!CollectionUtil.isEmpty(itemDefIds)) {
+			EmpCopySetting newCtg = EmpCopySetting.createFromJavaType(ctgId, AppContexts.user().companyId());
+			this.empCopyRepo.addCtgCopySetting(newCtg);
+			empCopyItemRepo.updatePerInfoItemInCopySetting(ctgId, itemDefIds);
+		}
 
 	}
 

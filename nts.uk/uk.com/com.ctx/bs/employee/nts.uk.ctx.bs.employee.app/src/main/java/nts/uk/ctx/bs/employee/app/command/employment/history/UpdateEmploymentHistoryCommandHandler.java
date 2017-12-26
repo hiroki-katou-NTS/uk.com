@@ -9,10 +9,12 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryService;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryService;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
@@ -42,7 +44,9 @@ public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<Update
 	@Override
 	protected void handle(CommandHandlerContext<UpdateEmploymentHistoryCommand> context) {
 		val command = context.getCommand();
-		Optional<EmploymentHistory> existHist = employmentHistoryRepository.getByEmployeeId(command.getEmployeeId());
+		String companyId = AppContexts.user().companyId();
+		
+		Optional<EmploymentHistory> existHist = employmentHistoryRepository.getByEmployeeId(companyId,command.getEmployeeId());
 		if (!existHist.isPresent()) {
 			throw new RuntimeException("invalid employmentHistory");
 		}
@@ -53,7 +57,7 @@ public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<Update
 		if (!itemToBeUpdate.isPresent()) {
 			throw new RuntimeException("invalid employmentHistory");
 		}
-		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
+		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
 		employmentHistoryService.update(existHist.get(), itemToBeUpdate.get());
 
 		// Update detail table

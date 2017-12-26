@@ -32,7 +32,7 @@ public class CompanyWtSetting extends AggregateRoot {
 
 	/** 通常勤務労働時間設定. */
 	private NormalSetting normalSetting;
-
+	
 	/**
 	 * Instantiates a new company setting.
 	 */

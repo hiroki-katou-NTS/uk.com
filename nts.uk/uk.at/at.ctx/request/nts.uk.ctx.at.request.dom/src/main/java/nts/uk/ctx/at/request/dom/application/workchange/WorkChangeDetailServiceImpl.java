@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -13,6 +16,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMod
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
@@ -50,11 +55,17 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
+	@Inject
+	private CollectAchievement collectAchievement;
 	@Override
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
 		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
-		Application application = appRepository.getAppById(cid, appId).get();
-		
+		//15.詳細画面申請データを取得する
+		Optional<Application> applicationOpt = appRepository.getAppById(cid, appId);		
+		if (!applicationOpt.isPresent()) {
+			throw new BusinessException("Msg_198");
+		}
+		Application application = applicationOpt.get();
 		// アルゴリズム「14-1.詳細画面起動前モードの判断」を実行する
 		workChangeDetail.setPrelaunchAppSetting(beforeAppCommonSetting.getPrelaunchAppSetting(appId));
 
@@ -85,21 +96,20 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		//基準日　＝　申請日付（開始日）
 		GeneralDate basicDate = application.getStartDate();
 		GeneralDate endDate = application.getEndDate();
+		List<String> workTypes = new ArrayList<String>();
+		List<String> workTimes = new ArrayList<String>();		
 		while(basicDate.beforeOrEquals(endDate)){
-			//「休日に関して」チェック有無は判定
-			if(appWorkChange.getExcludeHolidayAtr() == 0 || checkHoliday(basicDate)){
-				//TODO: アルゴリズム「実績の取得」を実行する
-				//13.実績を取得する
-			}
+			//13.実績を取得する
+			AchievementOutput achievement  = collectAchievement.getAchievement(cid, application.getApplicantSID(), basicDate);
+			workTypes.add(achievement.getWorkType().getWorkTypeCode());
+			workTimes.add(achievement.getWorkTime().getWorkTimeCD());
 			//基準日　＝　基準日＋１
 			basicDate = basicDate.addDays(1);
 		}
+		workChangeDetail.setWorkTimeCodes(workTimes);
+		workChangeDetail.setWorkTypeCodes(workTypes);
 		
 		return workChangeDetail;
-	}
-	
-	private boolean checkHoliday(GeneralDate basicDate){
-		return true;
 	}
 
 }

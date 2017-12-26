@@ -14,8 +14,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.Kcp010WorkplaceSearchData;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,7 +34,11 @@ public class Kcp010Finder {
 	
 	/** The workplace history repository. */
 	@Inject
-	private AffWorkplaceHistoryRepository workplaceHistoryRepo;
+	private AffWorkplaceHistoryRepository_v1 workplaceHistoryRepo;
+	
+	/**AffWorkplaceHistoryItemRepository_v1*/
+	@Inject
+	private AffWorkplaceHistoryItemRepository_v1 workplaceHistoryItemRepository;
 
 	/**
 	 * Find wkp info by workplaceCode
@@ -53,27 +59,25 @@ public class Kcp010Finder {
 		
 		return Optional.of(Kcp010WorkplaceSearchData.builder()
 				.workplaceId(wkpInfo.getWorkplaceId())
-				.workplaceCode(wkpInfo.getWorkplaceCode().v())
-				.workplaceName(wkpInfo.getWkpDisplayName().v())
+				.code(wkpInfo.getWorkplaceCode().v())
+				.name(wkpInfo.getWkpDisplayName().v())
 				.build());
 	}
 	
 	public Optional<Kcp010WorkplaceSearchData> findBySid(String employeeId, GeneralDate baseDate) {
-		// Query
-		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepo
-				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
-
-		// Check exist
-		if (CollectionUtil.isEmpty(affWorkplaceHistories)) {
+		//get AffWorkplaceHistory_ver1
+		Optional<AffWorkplaceHistory_ver1> affWrkPlc = workplaceHistoryRepo.getByEmpIdAndStandDate(employeeId, baseDate);
+		if(!affWrkPlc.isPresent()) 
 			return Optional.empty();
-		}
-
-		AffWorkplaceHistory affWorkplaceHistory = affWorkplaceHistories.get(0);
-
-		String wkpId = affWorkplaceHistory.getWorkplaceId().v();
-
+		
+		//get AffWorkplaceHistoryItem
+		String historyId = affWrkPlc.get().getHistoryItems().get(0).identifier();
+		Optional<AffWorkplaceHistoryItem> affWrkPlcItem = workplaceHistoryItemRepository.getByHistId(historyId);
+		if(!affWrkPlcItem.isPresent())
+			return Optional.empty();
+		
 		// Get workplace info.
-		Optional<WorkplaceInfo> optWorkplaceInfo = wkpInfoRepo.findByWkpId(wkpId, baseDate);
+		Optional<WorkplaceInfo> optWorkplaceInfo = wkpInfoRepo.findByWkpId(affWrkPlcItem.get().getWorkplaceId(), baseDate);
 
 		// Check exist
 		if (!optWorkplaceInfo.isPresent()) {
@@ -83,8 +87,8 @@ public class Kcp010Finder {
 		// Return workplace id
 		WorkplaceInfo wkpInfo = optWorkplaceInfo.get();
 		return Optional.of(Kcp010WorkplaceSearchData.builder()
-				.workplaceId(wkpInfo.getWorkplaceId()).workplaceCode(wkpInfo.getWorkplaceCode().v())
-				.workplaceName(wkpInfo.getWorkplaceName().v())
-				.workplaceName(wkpInfo.getWkpDisplayName().v()).build());
+				.workplaceId(wkpInfo.getWorkplaceId())
+				.code(wkpInfo.getWorkplaceCode().v())
+				.name(wkpInfo.getWkpDisplayName().v()).build());
 	}
 }

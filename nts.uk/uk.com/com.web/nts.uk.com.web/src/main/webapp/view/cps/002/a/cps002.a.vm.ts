@@ -3,12 +3,12 @@ module cps002.a.vm {
     import text = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
     import subModal = nts.uk.ui.windows.sub.modal;
     import jump = nts.uk.request.jump;
     import liveView = nts.uk.request.liveView;
     import character = nts.uk.characteristics;
+    import block = nts.uk.ui.block;
 
     export class ViewModel {
 
@@ -63,8 +63,11 @@ module cps002.a.vm {
             isMutipleCheck: false,
             isSelectAllEmployee: false,
             onApplyEmployee: (dataEmployee: Array<any>) => {
-                let self = this;
+                let self: ViewModel = __viewContext['viewModel'];
                 self.copyEmployee(new EmployeeCopy(dataEmployee[0]));
+            }, onSearchOnlyClicked: function(data: any) {
+                let self: ViewModel = __viewContext['viewModel'];
+                self.copyEmployee(new EmployeeCopy(data));
             }
         };
 
@@ -79,13 +82,28 @@ module cps002.a.vm {
                 self.categorySelectedCode('');
                 self.initSettingSelectedCode('');
                 self.currentInitSetting(new InitSetting(null));
-                //  self.layout(new Layout({ id: '', code: '', name: '' }));
-
             });
 
             self.employeeBasicInfo.subscribe((data) => {
                 if (data) {
-                    self.currentEmployee().hireDate
+                    self.currentEmployee().hireDate(data.jobEntryDate);
+
+                    self.createTypeId(data.employeeCreationMethod);
+
+                    let copyEmployeeId = data.copyEmployeeId;
+                    if (copyEmployeeId != "" && copyEmployeeId != self.copyEmployee().employeeId) {
+                        let command = {
+                            baseDate: moment().toDate(),
+                            employeeIds: [data.copyEmployeeId]
+
+                        }
+
+
+                        service.getEmployeeInfo(command).done((result) => {
+                            self.copyEmployee(new EmployeeCopy(result[0]));
+
+                        });
+                    }
                 }
             });
 
@@ -97,21 +115,22 @@ module cps002.a.vm {
                 let InitSetting = _.find(self.initValueList(), item => {
                     return item.itemCode == initCode;
                 });
-
-                service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
-                    if (result.length) {
+                if (InitSetting) {
+                    service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
                         self.categorySelectedCode("");
-                        self.categoryList(_.map(result, item => {
-                            return new CategoryItem(item);
-                        }));
+                        if (result.length) {
+                            self.categoryList(_.map(result, item => {
+                                return new CategoryItem(item);
+                            }));
 
-                        self.categorySelectedCode(result[0].categoryCd);
-                    } else {
-                        self.categoryList.removeAll();
-                    }
-                });
+                            self.categorySelectedCode(result[0].categoryCd);
+                        } else {
+                            self.categoryList.removeAll();
+                        }
+                    });
 
-                self.currentInitSetting(InitSetting);
+                    self.currentInitSetting(InitSetting);
+                }
 
             });
 
@@ -176,7 +195,8 @@ module cps002.a.vm {
                 categorySelectedCode = self.categorySelectedCode(),
                 baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
 
-            if (currentCopyEmployeeId != "" && categorySelectedCode != "") {
+            if (currentCopyEmployeeId != "" && categorySelectedCode) {
+
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
                     if (result.length) {
                         self.itemSettingList(_.map(result, item => {
@@ -190,11 +210,18 @@ module cps002.a.vm {
                 });
             }
         }
+        clearEmployeeData() {
+            let self = this;
+            self.currentEmployee().employeeName("");
+            self.currentEmployee().employeeCode("");
+            self.currentEmployee().loginId("");
+            self.currentEmployee().password("");
+        }
 
         start() {
 
             let self = this;
-
+            self.clearEmployeeData();
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
@@ -203,9 +230,8 @@ module cps002.a.vm {
                 if (layout) {
                     service.getUserSetting().done((result: IUserSetting) => {
                         if (result) {
-
-                            self.getEmployeeCode(result).done(() => {
-
+                            self.getEmployeeCode(result).done((empCode) => {
+                                self.currentEmployee().employeeCode(empCode);
                                 self.getCardNumber(result);
 
                             });
@@ -219,7 +245,7 @@ module cps002.a.vm {
                 } else {
                     dialog({ messageId: "Msg_344" }).then(() => {
                         //move to toppage
-                        jump('/view/cps/008/a/index.xhtml');
+                        jump('/view/cps/007/a/index.xhtml');
                     });
                 }
             });
@@ -250,8 +276,8 @@ module cps002.a.vm {
 
             if (genType === 3 || genType === 1) {
                 service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
-                    self.currentEmployee().employeeCode(result);
-                    dfd.resolve();
+
+                    dfd.resolve(result);
                 });
             }
 
@@ -340,6 +366,8 @@ module cps002.a.vm {
             let self = this;
 
             self.currentStep(0);
+
+            self.start();
         }
 
         gotoStep3() {
@@ -427,8 +455,9 @@ module cps002.a.vm {
                 $('#initSettingPanel').hide();
 
                 self.loadCopySettingCtgData();
-
-                $('#hor-scroll-button-show').trigger('click');
+                if (self.copyEmployee().employeeId == '') {
+                    $('#hor-scroll-button-show').trigger('click');
+                }
                 $('#inp_baseDate').focus();
 
             }
@@ -474,9 +503,13 @@ module cps002.a.vm {
                     }));
 
                     if (self.initSettingSelectedCode() == '') {
-                        self.initSettingSelectedCode(result[0].settingCode);
+                        if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
+                            self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
+                        } else {
+                            self.initSettingSelectedCode(result[0].settingCode);
+                        }
                     }
-
+                    $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
                 dialog({ messageId: error.message }).then(() => {
@@ -502,6 +535,33 @@ module cps002.a.vm {
 
         }
 
+        saveBasicInfo(command, employeeId) {
+            let self = this,
+                isInit = self.isUseInitValue(),
+                currentEmpInfo = self.employeeBasicInfo(),
+                newEmpInfo = {
+                    copyEmployeeId: command.employeeCopyId,
+                    jobEntryDate: command.hireDate,
+                    initialValueCode: self.initSettingSelectedCode(),
+                    employeeID: employeeId,
+                    employeeCreationMethod: self.createTypeId()
+                };
+
+            if (currentEmpInfo) {
+                if (isInit) {
+                    newEmpInfo.copyEmployeeId = newEmpInfo.copyEmployeeId == '' ? currentEmpInfo.copyEmployeeId : newEmpInfo.copyEmployeeId;
+                } else {
+                    newEmpInfo.initialValueCode = newEmpInfo.initialValueCode == '' ? currentEmpInfo.initialValueCode : newEmpInfo.initialValueCode;
+
+                }
+
+            }
+
+
+
+
+            character.save('NewEmployeeBasicInfo', newEmpInfo);
+        }
 
 
         finish() {
@@ -515,24 +575,17 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             if (!self.isError()) {
+
                 service.addNewEmployee(command).done((employeeId) => {
+                    self.saveBasicInfo(command, employeeId);
 
-                    character.save('NewEmployeeBasicInfo', {
-                        copyEmployeeId: command.employeeCopyId,
-                        jobEntryDate: command.hireDate,
-                        initialValueCode: self.initSettingSelectedCode(),
-                        employeeID: employeeId,
-                        employeeCreationMethod: self.createTypeId()
-
-                    });
-
-                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { title: '' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "no-close", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
                             self.backtoStep1();
 
                         } else {
-                            jump('/view/cps/001/a/index.xhtml');
+                            jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
 
@@ -540,7 +593,7 @@ module cps002.a.vm {
 
                     dialog({ messageId: error.message });
 
-                });
+                })
             }
         }
 
@@ -552,7 +605,18 @@ module cps002.a.vm {
                 employee = self.currentEmployee();
 
             setShared("cardNoMode", isCardNoMode);
-            setShared("value", isCardNoMode ? employee.cardNo() : employee.employeeCode());
+            if (useSetting) {
+
+                if (!isCardNoMode) {
+                    self.getEmployeeCode(useSetting).done((employeeCode) => {
+
+                        setShared("textValue", employeeCode);
+                    });
+                } else {
+
+
+                }
+            }
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
                 let result = getShared("CPS002_PARAM"),
@@ -758,11 +822,33 @@ module cps002.a.vm {
         itemName: string;
         isRequired: number;
         saveData: any;
+        dataType: string;
+        dateType: string;
         constructor(param?: any) {
             this.itemCode = param ? param.itemCode : '';
             this.itemName = param ? param.itemName : '';
             this.isRequired = param ? param.isRequired : 0;
             this.saveData = param ? param.saveData : null;
+            this.dataType = param ? param.dataType : '';
+            this.dateType = param ? param.dateType : '';
+            if (this.dataType === "DATE" && this.saveData.value) {
+                this.saveData.value = this.genDateString(this.saveData.value, this.dateType);
+            }
+        }
+        genDateString(value, dateType) {
+            let formatString = "yyyy/MM/dd";
+            switch (dateType) {
+                case "YEARMONTHDAY":
+                    formatString = "yyyy/MM/dd";
+                    break;
+                case "YEARMONTH":
+                    formatString = "yyyy/MM";
+                    break;
+                case "YEAR":
+                    formatString = "yyyy";
+                    break;
+            }
+            return nts.uk.time.formatDate(new Date(value), formatString);
         }
     }
 

@@ -6,8 +6,8 @@ __viewContext.ready(function() {
     viewModel.viewModelA.start().done(() => {
     __viewContext.bind(viewModel);
         //set tab index 
-        $(".ntsCheckBox").attr("tabindex",5);
+        $(".ntsCheckBox").attr("tabindex",7);
         //set focus
-        $(".chkBox ").find("label").eq(0).focus();
+        $("#btnRegistry").focus();
     });
 });

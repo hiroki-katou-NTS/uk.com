@@ -11,5 +11,15 @@ public @interface AttendanceItemLayout {
 
 	String layout();
 	
+	String jpPropertyName();
+	
+	String needCheckIDWithField() default "";
+	
+	String needCheckIDWithMethod() default "";
+	
+	boolean needCheckIDWithIndex() default false;
+	
 	boolean isList() default false;
+	
+	boolean isOptional() default false;
 }

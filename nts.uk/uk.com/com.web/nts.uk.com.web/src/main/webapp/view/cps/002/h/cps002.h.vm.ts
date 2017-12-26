@@ -9,6 +9,7 @@ module cps002.h.vm {
     export class ViewModel {
 
         constructor() {
+            
         }
 
         continueReg() {

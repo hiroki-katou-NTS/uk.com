@@ -19,6 +19,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 	@Override
 	public void add(AffCompanyInfo domain) {
 		commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override

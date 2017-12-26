@@ -183,8 +183,8 @@ module nts.uk.at.view.ksm004.a {
                                 self.currentCalendarWorkPlace().name(item.name);
                             } else {
                                 self.currentCalendarWorkPlace().name('');
-                            }    
-                            self.getCalenderWorkPlaceByCode(value)
+                            }
+                            $.when(self.getCalendarWorkplaceSet(value),self.getCalenderWorkPlaceByCode(value))
                             .done(()=>{ nts.uk.ui.block.clear(); })
                             .fail((res) => {
                                 nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
@@ -200,8 +200,8 @@ module nts.uk.at.view.ksm004.a {
                                 self.currentCalendarClass().name(item.name);
                             } else {
                                 self.currentCalendarClass().name('');
-                            }   
-                            self.getCalendarClassById(value)
+                            }
+                            $.when(self.getCalendarClassSet(value),self.getCalendarClassById(value))
                             .done(()=>{nts.uk.ui.block.clear();})
                             .fail((res) => {
                                 nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
@@ -325,7 +325,7 @@ module nts.uk.at.view.ksm004.a {
                     $(".yearMonthPicker").trigger("validate");
                     if (!nts.uk.ui.errors.hasError()) {
                         let dayOfMonth: number = moment(self.yearMonthPicked(), "YYYYMM").daysInMonth(); 
-                        let daySetnumber = self.calendarPanel1.optionDates().length;
+                        let daySetnumber = self.calendarPanel.optionDates().length;
                         if(daySetnumber<dayOfMonth){
                             // when at least 1 day is not select
                             // confirm auto fill data 
@@ -480,9 +480,11 @@ module nts.uk.at.view.ksm004.a {
                         a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM1(a);
-                        $("#yearMonthPicker2").datepicker("hide");
-                        $("#yearMonthPicker2").datepicker("show");
+                    }else{
+                        self.cssRangerYM1([]);
                     }
+                    $("#yearMonthPicker2").datepicker("hide");
+                    $("#yearMonthPicker2").datepicker("show");
                     dfd.resolve(); 
                 }).fail(res => {
                     dfd.reject(res);        
@@ -499,9 +501,11 @@ module nts.uk.at.view.ksm004.a {
                         a = {};
                         a[Math.floor(self.yearMonthPicked()/100)] = data;
                         self.cssRangerYM2(a);
-                        $("#yearMonthPicker3").datepicker("hide");
-                        $("#yearMonthPicker3").datepicker("show");
+                    }else{
+                        self.cssRangerYM2([]);
                     }
+                    $("#yearMonthPicker3").datepicker("hide");
+                    $("#yearMonthPicker3").datepicker("show");
                     dfd.resolve(); 
                 }).fail(res => {
                     dfd.reject(res);              
@@ -521,7 +525,7 @@ module nts.uk.at.view.ksm004.a {
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataCompany)){
                             _.forEach(dataCompany,(companyItem)=>{
-                                a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
+                                a.push(new CalendarItem(companyItem.date,companyItem.workingDayAtr));
                             });   
                             self.calendarPanel.optionDates(a);
                             self.isUpdate(true);
@@ -550,7 +554,7 @@ module nts.uk.at.view.ksm004.a {
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataWorkPlace)){
                             _.forEach(dataWorkPlace,(workPlaceItem)=>{
-                                a.push(new CalendarItem(workPlaceItem.dateId,workPlaceItem.workingDayAtr));
+                                a.push(new CalendarItem(workPlaceItem.date,workPlaceItem.workingDayAtr));
                             });   
                             self.calendarPanel1.optionDates(a);
                             self.isUpdate(true); 
@@ -579,7 +583,7 @@ module nts.uk.at.view.ksm004.a {
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataClass)){
                             _.forEach(dataClass,(companyItem)=>{
-                                a.push(new CalendarItem(companyItem.dateId,companyItem.workingDayAtr));
+                                a.push(new CalendarItem(companyItem.date,companyItem.workingDayAtr));
                             });  
                             self.calendarPanel2.optionDates(a);
                             self.isUpdate(true); 
@@ -797,7 +801,7 @@ module nts.uk.at.view.ksm004.a {
                 if(!autoFill) {
                     _.forEach(inputArray, item => {
                         a.push({
-                            dateId: Number(moment(item.start).format('YYYYMMDD')),
+                            date: (moment(item.start).format('YYYY/MM/DD')),
                             workingDayAtr: self.convertEnumNametoNumber(item.listText[0]),
                             classId: self.currentCalendarClass().key(),
                             workPlaceId: self.currentCalendarWorkPlace().key()
@@ -809,14 +813,14 @@ module nts.uk.at.view.ksm004.a {
                         let result = _.find(inputArray, o => o.start == moment(indexDate).format('YYYY-MM-DD'));
                         if(result == null) {
                             a.push({
-                                dateId: Number(indexDate),
+                                date: moment(indexDate).format('YYYY/MM/DD'),
                                 workingDayAtr: 0,
                                 classId: self.currentCalendarClass().key(),
                                 workPlaceId: self.currentCalendarWorkPlace().key()
                             });        
                         } else {
                             a.push({
-                                dateId: Number(moment(result.start).format('YYYYMMDD')),
+                                date: (moment(result.start).format('YYYY/MM/DD')),
                                 workingDayAtr: self.convertEnumNametoNumber(result.listText[0]),
                                 classId: self.currentCalendarClass().key(),
                                 workPlaceId: self.currentCalendarWorkPlace().key()

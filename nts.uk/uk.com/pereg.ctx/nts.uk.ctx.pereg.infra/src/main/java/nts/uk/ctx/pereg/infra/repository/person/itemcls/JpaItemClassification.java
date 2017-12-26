@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassification;
+import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassificationWithCtgCd;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemCls;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemClsPk;
 
@@ -17,7 +18,12 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 
 	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId";
 	private static final String GET_ALL_ITEM_CLASSIFICATION = "SELECT c FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
-
+	private static final String GET_ALL_ITEM_CLASSIFICATION_WITH_CTG_CD_BY_LAYOUT_ID = "SELECT c,ca.categoryCd,cm.categoryType"
+			+ " FROM PpemtLayoutItemCls c" + " INNER JOIN PpemtPerInfoCtg ca"
+			+ " ON c.categoryId= ca.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoCtgCm cm ON cm.ppemtPerInfoCtgCmPK.categoryCd = ca.categoryCd"
+			+ " WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId AND cm.ppemtPerInfoCtgCmPK.contractCd=:contractCd"
+			+ " ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
 	private static final String CHECK_EXIT_ITEMCLS;
 
 	static {
@@ -71,5 +77,22 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 	private PpemtLayoutItemCls toEntity(LayoutPersonInfoClassification domain) {
 		PpemtLayoutItemClsPk primaryKey = new PpemtLayoutItemClsPk(domain.getLayoutID(), domain.getDispOrder().v());
 		return new PpemtLayoutItemCls(primaryKey, domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value);
+	}
+
+	@Override
+	public List<LayoutPersonInfoClassificationWithCtgCd> getAllWithCtdCdByLayoutId(String layoutId, String contractCd) {
+		return this.queryProxy().query(GET_ALL_ITEM_CLASSIFICATION_WITH_CTG_CD_BY_LAYOUT_ID, Object[].class)
+				.setParameter("layoutId", layoutId).setParameter("contractCd", contractCd)
+				.getList(x -> toDomainWithCD(x));
+
+	}
+
+	private LayoutPersonInfoClassificationWithCtgCd toDomainWithCD(Object[] entity) {
+		PpemtLayoutItemCls layoutItemCls = (PpemtLayoutItemCls) entity[0];
+		String categoryCd = entity[1] != null ? entity[1].toString() : "";
+		int ctgType = Integer.valueOf(entity[2] != null ? entity[2].toString() : "0");
+		return LayoutPersonInfoClassificationWithCtgCd.createFromJavaType(layoutItemCls.ppemtLayoutItemClsPk.layoutId,
+				layoutItemCls.ppemtLayoutItemClsPk.dispOrder, layoutItemCls.categoryId, layoutItemCls.itemType,
+				categoryCd, ctgType);
 	}
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -31,5 +33,13 @@ public class WorkChangeDetail {
 
 	PrelaunchAppSetting prelaunchAppSetting;
 
-	DetailScreenInitModeOutput detailScreenInitModeOutput;
+	DetailScreenInitModeOutput detailScreenInitModeOutput;	
+	/**
+	 * 選択可能な勤務種類コード
+	 */
+	List<String> workTypeCodes;
+	/**
+	 * 選択可能な就業時間帯コード
+	 */
+	List<String> workTimeCodes;
 }

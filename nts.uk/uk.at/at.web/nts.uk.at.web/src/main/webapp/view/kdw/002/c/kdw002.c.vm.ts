@@ -14,15 +14,15 @@ module nts.uk.at.view.kdw002.c {
                 self.bussinessCodeItems = ko.observableArray([]);
 
                 this.bussinessColumn = ko.observableArray([
-                    { headerText: getText('KDW002_12'), key: 'roleId', width: 100 },
+                    { headerText: 'ID', key: 'roleId', width: 100, hidden: true  },
+                    { headerText: getText('KDW002_12'), key: 'roleCode', width: 100 },
                     { headerText: getText('KDW002_4'), key: 'roleName', width: 150, formatter: _.escape },
                 ]);
 
                 self.currentRoleId = ko.observable('');
                 self.currentRoleId.subscribe(roleId => {
-
                     self.currentRoleId(roleId);
-
+                    _.defer(() => nts.uk.ui.block.invisible());
                     $.when(service.getListDailyServiceTypeControl(roleId), service.getAttendanceItems()).done(
                         (DailyServiceTypeControls, attendanceItems) => {
                             $('#useCheckAll').prop('checked', false);
@@ -49,6 +49,7 @@ module nts.uk.at.view.kdw002.c {
                                     }
                                 }
                             }
+                            nts.uk.ui.block.clear();
                         }
                     );
                 });
@@ -177,10 +178,12 @@ module nts.uk.at.view.kdw002.c {
 
         class BusinessType {
             roleId: string;
+            roleCode: string;
             roleName: string;
             constructor(param: IBusinessType) {
                 let self = this;
                 self.roleId = param.roleId;
+                self.roleCode = param.roleCode;
                 self.roleName = param.roleName;
             }
         }
