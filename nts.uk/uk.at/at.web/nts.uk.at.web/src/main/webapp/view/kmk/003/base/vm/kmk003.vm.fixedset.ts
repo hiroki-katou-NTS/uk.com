@@ -246,7 +246,6 @@ module nts.uk.at.view.kmk003.a {
                     this.getHDWtzOneday().resetData();
                     this.getHDWtzMorning().resetData();
                     this.getHDWtzAfternoon().resetData();
-                    this.lstHalfDayWorkTimezone = [];
                     this.lstStampReflectTimezone = [];
                 }
             }

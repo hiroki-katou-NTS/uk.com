@@ -114,7 +114,9 @@ module nts.uk.at.view.kmk003.a {
                 self.isClickSave = ko.observable(false);
                 
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
-                   self.loadWorktimeSetting(worktimeCode); 
+                    if (worktimeCode) {
+                       self.loadWorktimeSetting(worktimeCode); 
+                    }
                 });
                 
                 self.screenMode = ko.observable(ScreenMode.NEW);
@@ -253,8 +255,8 @@ module nts.uk.at.view.kmk003.a {
             public onClickNew() {
                 let self = this;
                 self.screenMode(ScreenMode.NEW);
-                //TODO: reset mainSettingModel
-                //self.mainSettingModel.new();
+                self.mainSettingModel.resetData();
+                self.selectedWorkTimeCode('');
             };
 
             /**
