@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +28,6 @@ public class KshmtLateEarlySetPK implements Serializable {
 	private String cid;
 
 	/** The worktime cd. */
-	@Size(min = 1, max = 3)
 	@Column(name = "WORKTIME_CD")
 	private String worktimeCd;
 

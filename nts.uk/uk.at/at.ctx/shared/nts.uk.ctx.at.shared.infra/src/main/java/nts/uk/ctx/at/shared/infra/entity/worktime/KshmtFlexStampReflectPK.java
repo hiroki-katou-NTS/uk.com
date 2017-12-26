@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -34,7 +33,7 @@ public class KshmtFlexStampReflectPK implements Serializable {
 
 	/** The work no. */
 	@Column(name = "WORK_NO")
-	private BigDecimal workNo;
+	private Integer workNo;
 
 	/**
 	 * Instantiates a new kshmt flex stamp reflect PK.

@@ -15,12 +15,10 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeCommonSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -101,13 +99,6 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	private List<KshmtFixedStampReflect> lstKshmtFixedStampReflect;
 	
-	/** The kshmt worktime common set. */
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true)
-	})
-	private KshmtWorktimeCommonSet kshmtWorktimeCommonSet;
 
 	/**
 	 * Instantiates a new kshmt fixed work set.
