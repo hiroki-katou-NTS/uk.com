@@ -1958,9 +1958,11 @@ module nts.custombinding {
                         // scroll to bottom
                         $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
                         // select lastest item
-                        $(ctrls.sortable)
-                            .find('.form-group.item-classification:last-child')
-                            .addClass('selected');
+                        setTimeout(() => {
+                            $(ctrls.sortable)
+                                .find('.form-group.item-classification:last-child')
+                                .addClass('selected');
+                        }, 0);
                     };
 
                 if (!ids || !ids.length) {
