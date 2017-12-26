@@ -12,9 +12,9 @@ module nts.uk.at.view.kmk012.e {
             return nts.uk.request.ajax(paths.insertDelArray, clousureEmpAddDto);
         }
         
-        export function getClosureEmploy(startDate: any): JQueryPromise<any> {
+        export function getClosureEmploy(): JQueryPromise<any> {
 
-            return nts.uk.request.ajax(paths.getClosureEmploy + "/" + startDate);
+            return nts.uk.request.ajax(paths.getClosureEmploy);
 
         }
     }
