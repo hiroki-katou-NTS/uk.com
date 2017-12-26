@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ClosingDate;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.NumberOfDays;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Month;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Days;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 
 /**
@@ -19,10 +19,10 @@ public class StartDate {
 	
 	/**Closing Date*/
 	// 締め日指定
-	private ClosingDate closingDate;
+	private Month strMonth;
 	
 	/**Specify number of days*/
 	// 日数指定
-	private NumberOfDays numberOfDays;
+	private Days strDays;
 
 }

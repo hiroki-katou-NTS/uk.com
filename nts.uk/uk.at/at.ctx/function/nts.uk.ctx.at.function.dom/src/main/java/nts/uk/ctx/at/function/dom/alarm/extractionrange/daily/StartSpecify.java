@@ -14,7 +14,7 @@ public enum StartSpecify {
 	/**
 	 * 締め日を指定する
 	 */
-	CLOSINGDATE(1, "締め日を指定する");
+	MONTH(1, "締め日を指定する");
 	
 	/** The value. */
 	public final int value;

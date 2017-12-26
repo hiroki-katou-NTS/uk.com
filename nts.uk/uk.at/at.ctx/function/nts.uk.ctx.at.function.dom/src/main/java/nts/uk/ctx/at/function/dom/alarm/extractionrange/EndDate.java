@@ -2,7 +2,9 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Days;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Month;
 
 /**
  * @author thanhpv
@@ -13,21 +15,21 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 @Setter
 public class EndDate {
 
-	/**前・先区分*/
-	private StartSpecify specifyStartDate;
+	/**終了日の指定方法*/
+	private EndSpecify endSpecify;
 	
-	/** Months*/
-	// 月数: 締め日指定月数
-	private int months;
+	/**Closing Date*/
+	// 締め日指定
+	private Month endMonth;
 	
-	/** Make it the day*/
-	// 当日とする
-	private boolean makeToDay;
+	/**Specify number of days*/
+	// 日数指定
+	private Days endDays;
 
-	public EndDate(StartSpecify specifyStartDate, int months, boolean makeToDay) {
+	public EndDate(EndSpecify endSpecify, Month endMonth, Days endDays) {
 		super();
-		this.specifyStartDate = specifyStartDate;
-		this.months = months;
-		this.makeToDay = makeToDay;
-	}	
+		this.endSpecify = endSpecify;
+		this.endMonth = endMonth;
+		this.endDays = endDays;
+	}
 }

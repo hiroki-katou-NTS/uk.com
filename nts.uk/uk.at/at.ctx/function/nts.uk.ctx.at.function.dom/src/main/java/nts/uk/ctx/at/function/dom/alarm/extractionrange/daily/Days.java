@@ -6,15 +6,15 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 
 /**
  * @author thanhpv
- * 締め日指定
+ * 日数指定
  */
 @Getter
 @Setter
-public class ClosingDate {
+public class Days {
 
-	/**Specify number of days*/	
-	/**日数指定*/
-	private PreviousClassification previousClassification;
+	//Previous / previous classification
+	/**前・先区分*/
+	private PreviousClassification strPreviousClassification;
 		
 	/** Day*/
 	// 日
@@ -24,13 +24,10 @@ public class ClosingDate {
 	// 当日とする
 	private boolean makeToDay;
 
-	public ClosingDate(PreviousClassification previousClassification, int day, boolean makeToDay) {
+	public Days(PreviousClassification strPreviousClassification, int day, boolean makeToDay) {
 		super();
-		this.previousClassification = previousClassification;
+		this.strPreviousClassification = strPreviousClassification;
 		this.day = day;
 		this.makeToDay = makeToDay;
 	}
-	
-	
-	
 }

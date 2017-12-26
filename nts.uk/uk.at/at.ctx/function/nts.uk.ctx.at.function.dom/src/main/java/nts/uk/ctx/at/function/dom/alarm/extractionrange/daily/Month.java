@@ -6,29 +6,29 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 
 /**
  * @author thanhpv
- * 日数指定
+ * 締め日指定
  */
 @Getter
 @Setter
-public class NumberOfDays {
+public class Month {
 
-	//Specify number of days
+	/**Specify number of days*/	
 	/**日数指定*/
 	private PreviousClassification previousClassification;
 		
-	/** Day*/
-	// 日
-	private int day;
+	/** Month*/
+	// 月数: 締め日指定月数
+	private int month;
 	
-	/** Make it the day*/
+	/** CURRENT_MONTH*/
 	// 当日とする
-	private boolean makeToDay;
-
-	public NumberOfDays(PreviousClassification previousClassification, int day, boolean makeToDay) {
+	private boolean curentMonth;
+	
+	public Month(PreviousClassification previousClassification, int month, boolean curentMonth) {
 		super();
 		this.previousClassification = previousClassification;
-		this.day = day;
-		this.makeToDay = makeToDay;
+		this.month = month;
+		this.curentMonth = curentMonth;
 	}
 	
 }
