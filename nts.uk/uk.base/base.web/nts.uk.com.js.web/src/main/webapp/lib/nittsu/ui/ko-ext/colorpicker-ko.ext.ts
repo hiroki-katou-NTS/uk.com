@@ -80,9 +80,15 @@ module nts.uk.ui.koExtentions {
                     $picker.ntsError('clear');
                     if(!nts.uk.util.isNullOrUndefined(color) && !nts.uk.util.isNullOrUndefined(data.value)){
                         data.value(color.toHexString()); // #ff0000    
-                    } else if (required === true) {
+                    } else if (nts.uk.util.isNullOrUndefined(color)) {
+                        if(required === true){
+                            $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]), 'FND_E_REQ_INPUT');
+                        } else {
+                            data.value(null);
+                        }
+                            
 //                        _.defer(() => { 
-                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ]), 'FND_E_REQ_INPUT'); 
+                         
 //                        });      
                     }
                 }
@@ -117,7 +123,9 @@ module nts.uk.ui.koExtentions {
                  $picker.spectrum("set", null);
                  if (required === true){
                     validateRequired($picker);       
-                 }                 
+                 }   else if(!nts.uk.util.isNullOrUndefined(data.value)){
+                    data.value(null);
+                 }                
             });
             
             if(!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)){
