@@ -45,6 +45,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         btnSetting05Enable: KnockoutObservable<boolean>;
         
         isNewMode: KnockoutObservable<boolean>;
+        grantHTData: any;
 
         constructor() {
             var self = this;
@@ -74,10 +75,23 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 
                 self.isNewMode(true);
+     
+                $('.a9_1').show();
+                $('.a9_2').show();
+                $('.a9_3').show();
+                $('.a9_4').show();
+                $('.a9_5').show();
                 
                 if(value.length > 0){
                     service.findByCode(value).done(function(data) {
                         self.editMode(false);
+                        
+                        if(data.grantConditions.length > 0) {
+                            for(var i = 0; i < data.grantConditions.length; i++) {
+                                self.getGHTdata(data.grantConditions[i].conditionNo, data.grantConditions[i].yearHolidayCode);                                
+                            }
+                        }
+                        
                         self.code(data.yearHolidayCode);
                         self.name(data.yearHolidayName);
                         self.A6_2SelectedRuleCode(data.standardCalculation);  
@@ -155,6 +169,49 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             });
             
             return dfd.promise();
+        }
+        
+        getGHTdata(conditionNo: number, yearHolidayCode: string) {
+            var self = this;
+            
+            service.findGrantHolidayTblByCodes(conditionNo, yearHolidayCode).done(function(data) {
+                if(data.length > 0) {
+                    self.grantHTData = data;
+                    
+                    _.forEach(self.grantHTData, function(item) {
+                        if(item.conditionNo === 1){
+                            $('.a9_1').hide();
+                        } else {
+                            $('.a9_1').show();
+                        }
+                        
+                        if(item.conditionNo === 2){
+                            $('.a9_2').hide();
+                        } else {
+                            $('.a9_2').show();
+                        }
+                        
+                        if(item.conditionNo === 3){
+                            $('.a9_3').hide();
+                        } else {
+                            $('.a9_3').show();
+                        }
+                        
+                        if(item.conditionNo === 4){
+                            $('.a9_4').hide();
+                        } else {
+                            $('.a9_4').show();
+                        }
+                        
+                        if(item.conditionNo === 5){
+                            $('.a9_5').hide();
+                        } else {
+                            $('.a9_5').show();
+                        }
+                    });
+                }
+            }).fail(function(res) {
+            });
         }
         
         /**
@@ -451,7 +508,35 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             nts.uk.ui.windows.setShared("KMF003_CONDITION_NO", data);
             nts.uk.ui.windows.sub.modal("/view/kmf/003/b/index.xhtml").onClosed(() => {
+                var dataIsNotNull = nts.uk.ui.windows.getShared("KMF003_HAVE_DATA");
                 
+                if(dataIsNotNull) {
+                    if(conditionNo === 1){
+                        $('.a9_1').hide();
+                    } else if(conditionNo === 2){
+                        $('.a9_2').hide();
+                    } else if(conditionNo === 3){
+                        $('.a9_3').hide();
+                    } else if(conditionNo === 4){
+                        $('.a9_4').hide();
+                    } else if(conditionNo === 5){
+                        $('.a9_5').hide();
+                    }
+                } else {
+                    if(conditionNo === 1){
+                        $('.a9_1').show();
+                    } else if(conditionNo === 2){
+                        $('.a9_2').show();
+                    } else if(conditionNo === 3){
+                        $('.a9_3').show();
+                    } else if(conditionNo === 4){
+                        $('.a9_4').show();
+                    } else if(conditionNo === 5){
+                        $('.a9_5').show();
+                    }
+                }
+                
+                nts.uk.ui.windows.setShared("KMF003_CANCEL_DATA", true);
             });    
         }
         

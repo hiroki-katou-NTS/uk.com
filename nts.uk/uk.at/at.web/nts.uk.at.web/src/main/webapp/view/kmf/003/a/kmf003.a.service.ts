@@ -7,7 +7,16 @@ module nts.uk.at.view.kmf003.a.service {
         findByCode: "at/share/yearholidaygrant/findByCode/{0}",
         addYearHolidayGrant: "at/share/yearholidaygrant/add",
         updateYearHolidayGrant: "at/share/yearholidaygrant/update",
-        deleteYearHolidayGrant: "at/share/yearholidaygrant/delete"
+        deleteYearHolidayGrant: "at/share/yearholidaygrant/delete",
+        findGrantHolidayTblByCodes: "at/share/grantholidaytbl/findByCode/{0}/{1}"
+    }  
+    
+    /**
+     *  Find Grant Holiday Tbl By Codes
+     */
+    export function findGrantHolidayTblByCodes(conditionNo: number, yearHolidayCode: string): JQueryPromise<GrantHolidayTblDto> {
+        var path = nts.uk.text.format(servicePath.findGrantHolidayTblByCodes, conditionNo, yearHolidayCode);
+        return nts.uk.request.ajax(path);
     }  
     
     /**
@@ -63,5 +72,19 @@ module nts.uk.at.view.kmf003.a.service {
         conditionNo: number,
         conditionValue: number,
         useConditionAtr: number 
+    }
+    
+    export interface GrantHolidayTblDto {
+        grantYearHolidayNo: number,
+        conditionNo: number,
+        yearHolidayCode: string,
+        grantDays: string,
+        limitedTimeHdDays: number,
+        limitedHalfHdCnt: number,
+        lengthOfServiceMonths: number,
+        lengthOfServiceYears: number,
+        grantReferenceDate: number,
+        grantSimultaneity: number,
+        grantDate: string
     }
 }
