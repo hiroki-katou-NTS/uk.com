@@ -940,15 +940,20 @@ module nts.uk.com.view.cmm018.a {
                     }else{
                         //find all appType of history is selected
                         let lstApp = self.findAppTypeHistory(self.tabSelected());
+                        let check = false;
                         _.each(lstApp, function(app){
                             let appNew = self.findHistBestNewA(app.value, app.employRootAtr, self.tabSelected());
                             if(history.startDate.localeCompare(appNew.startDate) < 0){
                                 //エラーメッセージ(Msg_154) (Msg_154: Chỉ ls mới nhất mới được chỉnh sửa)
                                 dialog.alertError({ messageId: "Msg_154" });
                                 block.clear();
-                                return;
+                                check = true;
+                                return ;
                             }
                         });
+                        if(check){
+                            return;
+                        }
                     }
                 }else{
                     //編集する期間が最新なのかチェックする(Check xem có phải ls mới nhất k?)
