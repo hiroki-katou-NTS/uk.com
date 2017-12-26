@@ -20,8 +20,8 @@ public class Kcp010WorkplaceSearchData{
 	private String workplaceId;
 	
 	/** The workplace code. */
-	private String workplaceCode;
+	private String code;
 	
 	/** The workplace name. */
-	private String workplaceName;
+	private String name;
 }
