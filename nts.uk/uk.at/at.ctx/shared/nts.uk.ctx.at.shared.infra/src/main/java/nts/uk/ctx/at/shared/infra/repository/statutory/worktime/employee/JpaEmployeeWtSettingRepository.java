@@ -41,4 +41,10 @@ public class JpaEmployeeWtSettingRepository extends JpaRepository
 		return null;
 	}
 
+	@Override
+	public EmployeeWtSetting findByEmployeeId(String companyId, String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
