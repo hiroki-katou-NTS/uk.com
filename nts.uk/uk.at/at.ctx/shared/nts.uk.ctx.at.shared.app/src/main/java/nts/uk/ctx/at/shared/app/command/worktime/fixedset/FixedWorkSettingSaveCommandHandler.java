@@ -40,25 +40,26 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<FixedWorkSettingSaveCommand> context) {
-		
+
 		String companyId = AppContexts.user().companyId();
-		
+
 		// get command
 		FixedWorkSettingSaveCommand command = context.getCommand();
-		
-		//get domain fixed work setting by client send
+
+		// get domain fixed work setting by client send
 		FixedWorkSetting fixedWorkSetting = command.toDomainFixedWorkSetting();
-		
+
 		// Validate
-		this.fixedPolicy.canRegister(fixedWorkSetting, command.toDomainPredetemineTimeSetting());		
-		
+		this.fixedPolicy.canRegister(fixedWorkSetting, command.toDomainPredetemineTimeSetting());
+
 		// common handler
 		this.commonHandler.handle(command);
-		
+
 		// call repository save flex work setting
-		Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.find(companyId, command.getWorktimeSetting().worktimeCode);
+		Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.findByKey(companyId,
+				command.getWorktimeSetting().worktimeCode);
 		if (opFixedWorkSetting.isPresent()) {
-			fixedWorkSetting.restoreData(command.getScreenMode(), opFixedWorkSetting.get());
+			fixedWorkSetting.restoreData(command.getScreenMode(), null, opFixedWorkSetting.get());
 			this.fixedWorkSettingRepository.update(fixedWorkSetting);
 			return;
 		}

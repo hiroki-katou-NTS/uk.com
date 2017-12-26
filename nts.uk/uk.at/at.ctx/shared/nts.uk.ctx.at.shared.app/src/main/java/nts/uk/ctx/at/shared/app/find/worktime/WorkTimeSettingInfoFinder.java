@@ -98,7 +98,7 @@ public class WorkTimeSettingInfoFinder {
 
 				switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
 				case FIXED_WORK:
-					FixedWorkSetting fixedWorkSetting = this.fixedWorkSettingRepository.find(companyId, workTimeCode)
+					FixedWorkSetting fixedWorkSetting = this.fixedWorkSettingRepository.findByKey(companyId, workTimeCode)
 							.get();
 					fixedWorkSetting.saveToMemento(fixedWorkSettingDto);
 					break;
