@@ -18,25 +18,30 @@ public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMe
 
 	/** The lst entity. */
 	private List<KshmtFixedHolRestSet> lstEntity;
-	
+
 	/**
 	 * Instantiates a new jpa fixed off day rest time get memento.
 	 *
-	 * @param lstEntity the lst entity
+	 * @param lstEntity
+	 *            the lst entity
 	 */
 	public JpaFixedOffDayRestTimeGetMemento(List<KshmtFixedHolRestSet> lstEntity) {
 		this.lstEntity = lstEntity;
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento#getLstTimezone()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento#
+	 * getLstTimezone()
 	 */
 	@Override
 	public List<DeductionTime> getLstTimezone() {
 		return this.lstEntity.stream()
 				.map(KshmtFixedHolRestSet.class::cast)
 				.map(entity -> new DeductionTime(
-						new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
+						new JpaFixedRestTZDeductionTimeGetMemento<KshmtFixedHolRestSet>(entity)))
 				.collect(Collectors.toList());
 	}
 

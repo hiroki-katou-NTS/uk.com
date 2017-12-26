@@ -12,28 +12,23 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class JpaFixRestTimezoneSetGetMemento.
  *
  * @param <T> the generic type
  */
-public class JpaFixRestTimezoneSetGetMemento<T extends UkJpaEntity> implements FixRestTimezoneSetGetMemento {
+public class JpaFixRestHalfdayTzGetMemento implements FixRestTimezoneSetGetMemento {
 
 	/** The entity sets. */
-	private List<T> entitySets;
-	
-	/** First item index of list */
-	private static final int FIRST_ITEM = 0;
+	private List<KshmtFixedHalfRestSet> entitySets;
 
 	/**
 	 * Instantiates a new jpa fix rest timezone set get memento.
 	 *
 	 * @param entitySets the entity sets
 	 */
-	public JpaFixRestTimezoneSetGetMemento(List<T> entitySets) {
+	public JpaFixRestHalfdayTzGetMemento(List<KshmtFixedHalfRestSet> entitySets) {
 		super();
 		this.entitySets = entitySets;
 	}
@@ -51,22 +46,12 @@ public class JpaFixRestTimezoneSetGetMemento<T extends UkJpaEntity> implements F
 		    return new ArrayList<>();
 		}
 		
-		if (this.entitySets.get(FIRST_ITEM) instanceof KshmtFixedHalfRestSet) {
-			// KSHMT_FIXED_HALF_REST_SET
-			return this.entitySets.stream()
-					.map(KshmtFixedHalfRestSet.class::cast)
-					.map(entity -> new DeductionTime(
-							new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
-					.collect(Collectors.toList());
-		}
-		if (this.entitySets.get(FIRST_ITEM) instanceof KshmtFixedHolRestSet) {
-			return this.entitySets.stream()
-					.map(KshmtFixedHolRestSet.class::cast)
-					.map(entity -> new DeductionTime(
-							new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
-					.collect(Collectors.toList());
-		}
-		throw new IllegalStateException("entity type is not valid");
+		// KSHMT_FIXED_HALF_REST_SET
+		return this.entitySets.stream()
+				.map(KshmtFixedHalfRestSet.class::cast)
+				.map(entity -> new DeductionTime(
+						new JpaFixedRestTZDeductionTimeGetMemento<KshmtFixedHalfRestSet>(entity)))
+				.collect(Collectors.toList());	
 	}
 
 }

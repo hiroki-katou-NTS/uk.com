@@ -5,29 +5,30 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class JpaFixedRestTZDeductionTimeGetMemento.
+ *
+ * @param <T>
+ *            the generic type
  */
-public class JpaFixedRestTZDeductionTimeGetMemento implements DeductionTimeGetMemento {
+public class JpaFixedRestTZDeductionTimeGetMemento<T extends UkJpaEntity> implements DeductionTimeGetMemento {
 
-	/** The start time. */
-	private Integer startTime;
-
-	/** The end time. */
-	private Integer endTime;
+	/** The entity. */
+	private T entity;
 
 	/**
 	 * Instantiates a new jpa fixed rest TZ deduction time get memento.
 	 *
-	 * @param startTime the start time
-	 * @param endTime the end time
+	 * @param entity
+	 *            the entity
 	 */
-	JpaFixedRestTZDeductionTimeGetMemento(Integer startTime, Integer endTime) {
-		super();
-		this.startTime = startTime;
-		this.endTime = endTime;
+	JpaFixedRestTZDeductionTimeGetMemento(T entity) {
+		this.entity = entity;
 	}
 
 	/*
@@ -39,7 +40,13 @@ public class JpaFixedRestTZDeductionTimeGetMemento implements DeductionTimeGetMe
 	 */
 	@Override
 	public TimeWithDayAttr getStart() {
-		return new TimeWithDayAttr(startTime);
+		if (this.entity instanceof KshmtFixedHalfRestSet) {
+			return new TimeWithDayAttr(((KshmtFixedHalfRestSet) this.entity).getStartTime());
+		}
+		if (this.entity instanceof KshmtFixedHolRestSet) {
+			return new TimeWithDayAttr(((KshmtFixedHolRestSet) this.entity).getStartTime());
+		}
+		throw new IllegalStateException("entity type is not valid");
 	}
 
 	/*
@@ -50,7 +57,13 @@ public class JpaFixedRestTZDeductionTimeGetMemento implements DeductionTimeGetMe
 	 */
 	@Override
 	public TimeWithDayAttr getEnd() {
-		return new TimeWithDayAttr(endTime);
+		if (this.entity instanceof KshmtFixedHalfRestSet) {
+			return new TimeWithDayAttr(((KshmtFixedHalfRestSet) this.entity).getEndTime());
+		}
+		if (this.entity instanceof KshmtFixedHolRestSet) {
+			return new TimeWithDayAttr(((KshmtFixedHolRestSet) this.entity).getEndTime());
+		}
+		throw new IllegalStateException("entity type is not valid");
 	}
 
 }
