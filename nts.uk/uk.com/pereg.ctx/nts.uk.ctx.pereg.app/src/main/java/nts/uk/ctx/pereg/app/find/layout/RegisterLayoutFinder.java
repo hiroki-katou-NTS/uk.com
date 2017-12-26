@@ -31,7 +31,6 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.shr.pereg.app.ComboBoxObject;
-import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**

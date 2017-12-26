@@ -19,6 +19,7 @@ import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.ItemValueType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
 
@@ -38,7 +39,7 @@ public class AddEmployeeCommandFacade {
 
 		List<ItemsByCategory> inputs = createData(command, personId, employeeId, comHistId);
 
-		updateRequiredInputs(inputs, personId, employeeId);
+		updateRequiredInputs(command, inputs, personId, employeeId);
 
 		addNoRequiredInputs(inputs, personId, employeeId);
 
@@ -74,14 +75,15 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	public void updateRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
+	public void updateRequiredInputs(AddEmployeeCommand command, List<ItemsByCategory> inputs, String personId,
+			String employeeId) {
 
 		List<ItemsByCategory> requiredInputs = inputs.stream()
 				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1).collect(Collectors.toList());
 
 		if (!CollectionUtil.isEmpty(requiredInputs)) {
 
-			updateRequiredSystemInputs(requiredInputs, personId, employeeId);
+			updateRequiredSystemInputs(requiredInputs, personId, employeeId, command);
 
 			addRequiredOptinalInputs(requiredInputs, personId, employeeId);
 
@@ -89,16 +91,23 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private void updateRequiredSystemInputs(List<ItemsByCategory> fixedInputs, String personId, String employeeId) {
+	private void updateRequiredSystemInputs(List<ItemsByCategory> fixedInputs, String personId, String employeeId,
+			AddEmployeeCommand command) {
 		List<ItemsByCategory> updateInputs = new ArrayList<ItemsByCategory>();
 
 		fixedInputs.forEach(ctg -> {
 			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'S')
 					.collect(Collectors.toList());
+
 			if (!CollectionUtil.isEmpty(lstItem)) {
+
+				addNewFixedItem(ctg, lstItem, "CS00002", "IS00003", ItemValueType.STRING, command.getEmployeeName());
+
+				addNewFixedItem(ctg, lstItem, "CS00003", "IS00020", ItemValueType.STRING,
+						command.getHireDate().toString());
+
 				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
 				updateInputs.add(newItemCtg);
-
 			}
 
 		});
@@ -106,6 +115,21 @@ public class AddEmployeeCommandFacade {
 		PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
 
 		this.commandFacade.update(updateContainer);
+
+	}
+
+	private void addNewFixedItem(ItemsByCategory ctg, List<ItemValue> lstItem, String ctgCode, String itemCode,
+			ItemValueType itemType, String value) {
+		if (ctg.getCategoryCd().equals(ctgCode)) {
+
+			Optional<ItemValue> itemValOpt = lstItem.stream().filter(item -> item.itemCode().equals(itemCode))
+					.findFirst();
+
+			if (!itemValOpt.isPresent()) {
+				lstItem.add(new ItemValue("", itemCode, value, itemType.value));
+			}
+
+		}
 
 	}
 
