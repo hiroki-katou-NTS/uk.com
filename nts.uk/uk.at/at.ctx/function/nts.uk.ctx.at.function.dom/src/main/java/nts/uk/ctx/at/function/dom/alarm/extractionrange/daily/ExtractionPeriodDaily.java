@@ -16,20 +16,16 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 @Setter
 public class ExtractionPeriodDaily extends ExtractionRangeBase{
 	
-	/**日数指定*/
-	private EndDate endDate;
-	
-	/**開始日の指定方法*/
+	/**終了日*/
 	private StartDate startDate;
 	
-	/**終了日の指定方法*/
-	private SpecifyEndDate specifyEndDate;
-
+	/**開始日*/
+	private EndDate endDate;
+	
 	public ExtractionPeriodDaily(String extractionId, ExtractionRange extractionRange, EndDate endDate,
-			StartDate startDate, SpecifyEndDate specifyEndDate) {
+			StartDate startDate) {
 		super(extractionId, extractionRange);
-		this.endDate = endDate;
 		this.startDate = startDate;
-		this.specifyEndDate = specifyEndDate;
+		this.endDate = endDate;
 	}
 }

@@ -3,7 +3,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ClosingDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.NumberOfDays;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifyStartDate;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 
 /**
  * @author thanhpv
@@ -14,8 +14,8 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifyStartDate;
 @Setter
 public class StartDate {
 
-	/**前・先区分*/
-	private SpecifyStartDate specifyStartDate;
+	/**開始日の指定方法*/
+	private StartSpecify startSpecify;
 	
 	/**Closing Date*/
 	// 締め日指定
@@ -25,10 +25,4 @@ public class StartDate {
 	// 日数指定
 	private NumberOfDays numberOfDays;
 
-	public StartDate(SpecifyStartDate specifyStartDate, ClosingDate closingDate, NumberOfDays numberOfDays) {
-		super();
-		this.specifyStartDate = specifyStartDate;
-		this.closingDate = closingDate;
-		this.numberOfDays = numberOfDays;
-	}	
 }

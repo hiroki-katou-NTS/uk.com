@@ -31,6 +31,17 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.listAlarmCheckCondition = ko.observableArray([]);
             self.selectedAlarmCheckCondition = ko.observable(new model.AlarmCheckConditionByCategory('001', 'name1', 'category1', [], new model.AlarmCheckTargetCondition(true, true, false, false, [], [], [], [])));
         }
+        
+        
+        
+        
+        
+        test(): void{
+            console.log("success!");
+            nts.uk.ui.windows.sub.modal("../../004/b/index.xhtml").onClosed(() => {
+                console.log("success!");
+            });
+        }
     }
     
     class ItemModel {
