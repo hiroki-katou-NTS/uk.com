@@ -83,6 +83,8 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	
 	private Integer selectionItemRefType;
 	
+	private String selectionItemRefCd;
+	
 	
 	private Map<Integer, Map<Integer, String>> selectionLst;
 

@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDtoMapping;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItemRepository;
@@ -35,7 +36,11 @@ public class CopySettingItemFinder {
 	@Inject
 	private LayoutingProcessor layoutProc;
 
-	public List<SettingItemDto> getAllCopyItemByCtgCode(String categoryCd, String employeeId, GeneralDate baseDate) {
+	@Inject
+	private SettingItemDtoMapping settingItemMap;
+
+	public List<SettingItemDto> getAllCopyItemByCtgCode(boolean isSetText, String categoryCd, String employeeId,
+			GeneralDate baseDate) {
 
 		String companyId = AppContexts.user().companyId();
 
@@ -60,7 +65,8 @@ public class CopySettingItemFinder {
 		itemList.forEach(x -> {
 			result.add(SettingItemDto.createFromJavaType(x.getCategoryCode(), x.getItemDefId(), x.getItemCode(),
 					x.getItemName(), x.getIsRequired().value, 1, GeneralDate.min(), BigDecimal.valueOf(0), "",
-					x.getDataType(), x.getSelectionItemRefType(), x.getItemParentCd(), x.getDateType().value));
+					x.getDataType(), x.getSelectionItemRefType(), x.getItemParentCd(), x.getDateType().value,
+					x.getSelectionItemRefCd()));
 		});
 
 		PeregQuery query = new PeregQuery(categoryCd, employeeId, null, baseDate);
@@ -84,13 +90,17 @@ public class CopySettingItemFinder {
 			});
 		}
 
-		setDataForSetItem(result);
+		if (isSetText) {
 
+			setTextForSetItem(result);
+
+			this.settingItemMap.setTextForSelectionItem(result);
+		}
 		return result;
 
 	}
 
-	public void setDataForSetItem(List<SettingItemDto> result) {
+	public void setTextForSetItem(List<SettingItemDto> result) {
 		List<SettingItemDto> childList = result.stream().filter(x -> !StringUtils.isEmpty(x.getItemParentCd()))
 				.collect(Collectors.toList());
 
@@ -117,7 +127,6 @@ public class CopySettingItemFinder {
 
 			});
 		}
-
 	}
 
 	private String genItemvalue(List<SettingItemDto> result, String itemCd) {

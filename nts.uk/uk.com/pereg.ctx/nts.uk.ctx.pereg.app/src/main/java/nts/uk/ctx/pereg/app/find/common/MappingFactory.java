@@ -65,25 +65,29 @@ public class MappingFactory {
 
 		// map data 
 		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
-		
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (Object item : classItem.getItems()) {
-				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				valueItem.setValue(itemCodeValueMap.get(valueItem.getItemCode()));
-			}
-		}
-
-		// map record ID
 		String recordId = peregDto.getDomainDto().getRecordId();
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+				valueItem.setValue(itemCodeValueMap.get(valueItem.getItemCode()));
 				boolean optionItemNoValue = itemCodeValueMap.containsKey(valueItem.getItemCode());
 				if (optionItemNoValue ) {
 					valueItem.setRecordId(recordId);
 				}
 			}
 		}
+
+		// map record ID
+//		String recordId = peregDto.getDomainDto().getRecordId();
+//		for (LayoutPersonInfoClsDto classItem : classItemList) {
+//			for (Object item : classItem.getItems()) {
+//				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
+//				boolean optionItemNoValue = itemCodeValueMap.containsKey(valueItem.getItemCode());
+//				if (optionItemNoValue ) {
+//					valueItem.setRecordId(recordId);
+//				}
+//			}
+//		}
 
 	}
 

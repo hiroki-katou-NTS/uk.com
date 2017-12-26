@@ -25,6 +25,9 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 
 	/** The company id. */
 	private String companyId;
+	
+	/** The employee id. */
+	private String employeeId;
 
 	/**
 	 * Instantiates a new jpa working condition set memento.
@@ -66,6 +69,7 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
 		this.entities.stream().forEach(item -> {
 			KshmtWorkingCondPK kshmtWorkingCondPK = item.getKshmtWorkingCondPK();
 			kshmtWorkingCondPK.setSid(employeeId);
@@ -107,7 +111,7 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 		dateHistoryItems.stream().forEach(item -> {
 //			if (!entityHistIds.contains(item.identifier())) {
 				KshmtWorkingCond entity = new KshmtWorkingCond();
-				KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(companyId,
+				KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(employeeId,
 						item.identifier());
 				entity.setKshmtWorkingCondPK(kshmtWorkingCondPK);
 				entity.setCid(companyId);
