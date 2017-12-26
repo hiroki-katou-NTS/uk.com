@@ -1,10 +1,14 @@
-package nts.uk.ctx.workflow.dom.approverstatemanagement;
+package nts.uk.ctx.workflow.pub.service.export;
+
+import lombok.AllArgsConstructor;
+
 /**
- * 承認区分
+ * 
  * @author Doan Duy Hung
  *
  */
-public enum ApprovalBehaviorAtr {
+@AllArgsConstructor
+public enum ApprovalBehaviorAtrExport {
 	
 	/** 0:未承認 */
 	UNAPPROVED(0,"未承認"),
@@ -20,10 +24,5 @@ public enum ApprovalBehaviorAtr {
 
 	public final int value;
 	
-	public final String name;
-	
-	ApprovalBehaviorAtr(int type, String name) {
-		this.value = type;
-		this.name = name;
-	}
+	public final String nameId;
 }
