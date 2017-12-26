@@ -10,25 +10,29 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class JpaFixRestTimezoneSetGetMemento.
+ *
+ * @param <T>
+ *            the generic type
  */
-public class JpaFixRestTimezoneSetGetMemento implements FixRestTimezoneSetGetMemento {
+public class JpaFixRestTimezoneSetGetMemento<T extends UkJpaEntity> implements FixRestTimezoneSetGetMemento {
 
-	/** The kshmt fixed half rest sets. */
-	// KSHMT_FIXED_HALF_REST_SET
-	private List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets;
+	/** The entity. */
+	private List<T> entitySets;
 
 	/**
 	 * Instantiates a new jpa fix rest timezone set get memento.
 	 *
-	 * @param kshmtFixedHalfRestSets
-	 *            the kshmt fixed half rest sets
+	 * @param entity
+	 *            the entity
 	 */
-	public JpaFixRestTimezoneSetGetMemento(List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets) {
+	public JpaFixRestTimezoneSetGetMemento(List<T> entitySets) {
 		super();
-		this.kshmtFixedHalfRestSets = kshmtFixedHalfRestSets;
+		this.entitySets = entitySets;
 	}
 
 	/*
@@ -40,9 +44,20 @@ public class JpaFixRestTimezoneSetGetMemento implements FixRestTimezoneSetGetMem
 	 */
 	@Override
 	public List<DeductionTime> getLstTimezone() {
-		return this.kshmtFixedHalfRestSets.stream()
-				.map(entity -> new DeductionTime(new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
-				.collect(Collectors.toList());
+		if (this.entitySets instanceof KshmtFixedHalfRestSet) {
+			// KSHMT_FIXED_HALF_REST_SET
+			return this.entitySets.stream().map(entity -> (KshmtFixedHalfRestSet) entity)
+					.map(entity -> new DeductionTime(
+							new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
+					.collect(Collectors.toList());
+		}
+		if (this.entitySets instanceof KshmtFixedHolRestSet) {
+			return this.entitySets.stream().map(entity -> (KshmtFixedHolRestSet) entity)
+					.map(entity -> new DeductionTime(
+							new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
+					.collect(Collectors.toList());
+		}
+		throw new IllegalStateException("entity type is not valid");
 	}
 
 }

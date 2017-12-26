@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
@@ -21,9 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
  */
 public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento {
 
-	/** The entity. */
 	private KshmtFixedWorkSet entity;
-
 
 	public JpaFixedWorkSettingSetMemento(KshmtFixedWorkSet entity) {
 		super();
@@ -32,14 +31,12 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	
 	@Override
 	public void setCompanyId(String companyId) {
-		// TODO Auto-generated method stub
-		
+		this.entity.getKshmtFixedWorkSetPK().setCid(companyId);
 	}
 
 	@Override
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		// TODO Auto-generated method stub
-		
+		this.entity.getKshmtFixedWorkSetPK().setWorktimeCd(workTimeCode.v());
 	}
 
 	@Override
@@ -56,8 +53,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 
 	@Override
 	public void setUseHalfDayShift(Boolean useHalfDayShift) {
-		// TODO Auto-generated method stub
-		
+		this.entity.setUseHalfDay(BooleanGetAtr.getAtrByBoolean(useHalfDayShift));
 	}
 
 	@Override
@@ -80,8 +76,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 
 	@Override
 	public void setLegalOTSetting(LegalOTSetting legalOTSetting) {
-		// TODO Auto-generated method stub
-		
+		this.entity.setLegalOtSet(legalOTSetting.value);
 	}
 
 
