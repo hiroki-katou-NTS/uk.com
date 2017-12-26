@@ -17,6 +17,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -120,11 +121,10 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 
 	/** The kshmt late early set. */
 	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
-			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
-			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD"),
+			@PrimaryKeyJoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
 	private KshmtLateEarlySet kshmtLateEarlySet;
 
 	/** The kshmt other late early. */
@@ -154,21 +154,19 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
 	private List<KshmtRoundingSet> kshmtRoundingSets;
 
-	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
-			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
-			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
+	@OneToOne(optional = true, cascade = CascadeType.ALL)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD"),
+			@PrimaryKeyJoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
 	private KshmtTempWorktimeSet kshmtTempWorktimeSet;
 
 	/** The Kshmt worktime go out set. */
-	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
-			@JoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR", insertable = true, updatable = true),
-			@JoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD", insertable = true, updatable = true) })
+	@OneToOne(optional = false, cascade = CascadeType.ALL)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD"),
+			@PrimaryKeyJoinColumn(name = "WORK_FORM_ATR", referencedColumnName = "WORK_FORM_ATR"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
 	private KshmtWorktimeGoOutSet KshmtWorktimeGoOutSet;
 
 	/*
