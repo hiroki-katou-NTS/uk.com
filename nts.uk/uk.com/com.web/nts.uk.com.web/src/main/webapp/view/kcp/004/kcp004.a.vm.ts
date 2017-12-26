@@ -78,9 +78,8 @@ module kcp004.a.viewmodel {
                 {code : 4, name: '人事', enable: self.enable},
                 {code : 5, name: '管理者', enable: self.enable}
             ]);
-            self.selectedSystemType = ko.observable(2);
-                       
-                    
+            self.selectedSystemType = ko.observable(5);
+                                      
             self.alreadySettingList = ko.observableArray([]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),

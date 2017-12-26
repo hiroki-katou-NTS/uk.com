@@ -92,7 +92,7 @@ module kcp.share.tree {
         /**
          * system type
          */
-        systemType: number;
+        systemType: SystemType;
     }
 
     /**
@@ -200,8 +200,7 @@ module kcp.share.tree {
             if (data.systemType) {
                 self.systemType =  data.systemType;
             } else {
-                // TODO: need to check value default.
-                self.systemType = SystemType.EMPLOYMENT;
+                self.systemType = SystemType.ADMINISTRATOR;
             }
             
             if (data.alreadySettingList) {
@@ -239,7 +238,7 @@ module kcp.share.tree {
                 if (res && res.length > 0) {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
-
+                    
                     if (data.isShowAlreadySet) {
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
@@ -707,7 +706,7 @@ module kcp.share.tree {
         /**
          * Find workplace list.
          */
-        export function findWorkplaceTree(baseDate: Date, systemType: number): JQueryPromise<Array<UnitModel>> {
+        export function findWorkplaceTree(baseDate: Date, systemType: SystemType): JQueryPromise<Array<UnitModel>> {
             return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, { baseDate: baseDate, systemType: systemType });
         }
     }
