@@ -828,7 +828,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	public static WorkingConditionDto createWorkingConditionDto(DateHistoryItem dateHistoryItem,
 			WorkingConditionItem workingConditionItem) {
 		WorkingConditionDto dto = new WorkingConditionDto(dateHistoryItem.identifier());
-		
+		dto.setRecordId(dateHistoryItem.identifier());
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
 
