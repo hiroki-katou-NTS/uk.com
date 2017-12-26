@@ -54,6 +54,18 @@ public class KshmtWorkTimeSheetSet extends UkJpaEntity implements Serializable {
 		super();
 	}
 
+
+	/**
+	 * Instantiates a new kshmt work time sheet set.
+	 *
+	 * @param kshmtWorkTimeSheetSetPK the kshmt work time sheet set PK
+	 */
+	public KshmtWorkTimeSheetSet(KshmtWorkTimeSheetSetPK kshmtWorkTimeSheetSetPK) {
+		super();
+		this.kshmtWorkTimeSheetSetPK = kshmtWorkTimeSheetSetPK;
+	}
+	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -94,4 +106,6 @@ public class KshmtWorkTimeSheetSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtWorkTimeSheetSetPK;
 	}
+
+
 }

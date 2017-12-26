@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
-import java.math.BigDecimal;
-
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -34,7 +32,7 @@ public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimez
 	 */
 	@Override
 	public WorkNo getWorkNo() {
-		return new WorkNo(new BigDecimal(this.entity.getKshmtFixedStampReflectPK().getWorkNo()));
+		return new WorkNo(this.entity.getKshmtFixedStampReflectPK().getWorkNo());
 	}
 
 	/* (non-Javadoc)
