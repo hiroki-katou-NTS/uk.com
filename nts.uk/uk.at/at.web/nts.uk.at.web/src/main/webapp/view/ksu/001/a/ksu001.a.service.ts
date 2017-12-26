@@ -9,7 +9,8 @@ module nts.uk.at.view.ksu001.a.service {
         getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
         getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
-        getDataWorkPairPattern: "at/schedule/shift/workpairpattern/findAllDataWorkPairPattern",
+        getDataComPattern: "screen/at/schedule/basicschedule/getDataComPattern",
+        getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
     }
 
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
@@ -46,7 +47,11 @@ module nts.uk.at.view.ksu001.a.service {
         return nts.uk.request.ajax("at", paths.getDataSpecDateAndHoliday, obj);
     }
 
-    export function getDataWorkPairPattern(obj: string): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataWorkPairPattern, obj);
+    export function getDataComPattern(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataComPattern);
+    }
+    
+    export function getDataWkpPattern(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWkpPattern, obj);
     }
 }
