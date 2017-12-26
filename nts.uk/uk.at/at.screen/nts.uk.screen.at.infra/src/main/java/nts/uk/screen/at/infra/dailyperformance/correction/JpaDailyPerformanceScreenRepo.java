@@ -611,9 +611,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList()
 				.stream().map(e -> {
-					return new DPErrorDto(e.krcdtSyainDpErListPK.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
-							e.krcdtSyainDpErListPK.processingDate, e.attendanceItemId.intValue(),
-							e.errorCancelable.intValue() == 1 ? true : false);
+					return new DPErrorDto(e.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
+							e.krcdtSyainDpErListPK.processingDate, e.krcdtSyainDpErListPK.attendanceItemId);
 				}).collect(Collectors.toList());
 	}
 
@@ -622,9 +621,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee)
 				.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
-					return new DPErrorDto(e.krcdtSyainDpErListPK.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
-							e.krcdtSyainDpErListPK.processingDate, e.attendanceItemId.intValue(),
-							e.errorCancelable.intValue() == 1 ? true : false);
+					return new DPErrorDto(e.errorCode, "", e.krcdtSyainDpErListPK.employeeId,
+							e.krcdtSyainDpErListPK.processingDate, e.krcdtSyainDpErListPK.attendanceItemId);
 				}).collect(Collectors.toList());
 	}
 

@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,12 +32,9 @@ public class KrcdtSyainDpErList extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtSyainDpErListPK krcdtSyainDpErListPK;
 
-	@Column(name = "ATTENDANCE_ITEM_ID")
-	public BigDecimal attendanceItemId;
-
-	@Column(name = "ERROR_CANCELABLE")
-	public BigDecimal errorCancelable;
-
+	@Column(name = "ERROR_CODE")
+	public String errorCode;
+	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
@@ -47,11 +43,10 @@ public class KrcdtSyainDpErList extends UkJpaEntity implements Serializable {
 
 	public static List<KrcdtSyainDpErList> toEntity(EmployeeDailyPerError employeeDailyPerError){
 		 return employeeDailyPerError.getAttendanceItemList().stream().map(item -> {return new KrcdtSyainDpErList(
-				new KrcdtSyainDpErListPK(employeeDailyPerError.getErrorAlarmWorkRecordCode().v(), 
+				new KrcdtSyainDpErListPK(item, 
 						employeeDailyPerError.getEmployeeID(), 
 						employeeDailyPerError.getDate(),
 						employeeDailyPerError.getCompanyID()),
-				         new BigDecimal(item),
-						new BigDecimal(employeeDailyPerError.getErrorCancelAble()));}).collect(Collectors.toList());
+						employeeDailyPerError.getErrorAlarmWorkRecordCode().v());}).collect(Collectors.toList());
 	}
 }

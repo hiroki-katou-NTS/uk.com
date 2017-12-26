@@ -190,6 +190,7 @@
 												value: selectedRuleCode,
 												optionsText: 'name',
 												editable: false,
+												visibleItemsCount: 5,
 												enable: true,
 												columns: [
 													{ prop: 'name', length: 10 },
@@ -400,13 +401,13 @@
 												<div id = "combox1" class="input-units-3 "
 													data-bind="ntsComboBox: {
 													options: selection,
-													optionsValue: 'selectionId',
+													optionsValue: 'optionValue',
 													value: selectedCode,
-													optionsText: 'selectionName',
+													optionsText: 'optionText',
 													editable: false,
 													enable: true,
 													columns: [
-														{ prop: 'selectionName', length: 5 },
+														{ prop: 'optionText', length: 10 },
 													]}" ></div>
 											</com:ko-if>
 											
