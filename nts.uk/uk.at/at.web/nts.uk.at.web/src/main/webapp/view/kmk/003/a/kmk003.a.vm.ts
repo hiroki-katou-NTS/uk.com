@@ -22,33 +22,9 @@ module nts.uk.at.view.kmk003.a {
     export module viewmodel {
 
         export class ScreenModel {
-
-            isRegularMode: KnockoutObservable<boolean>;
-
             workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
             columnWorktimeSettings: KnockoutObservable<any>;
             selectedWorkTimeCode: KnockoutObservable<string>;
-
-            siftCode: KnockoutObservable<string>;
-            
-            
-
-            siftName: KnockoutObservable<string>;
-            
-
-            siftShortName: KnockoutObservable<string>;
-            
-
-            siftSymbolName: KnockoutObservable<string>;
-           
-
-            //color
-            pickColor: KnockoutObservable<string>;
-
-            siftRemark: KnockoutObservable<string>;
-
-            memo: KnockoutObservable<string>;
-            
 
             //tab mode
             tabModeOptions: KnockoutObservableArray<any>;
@@ -85,21 +61,6 @@ module nts.uk.at.view.kmk003.a {
                     { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'description', width: 50 }
                 ]);
                 self.selectedWorkTimeCode = ko.observable('');
-
-
-                self.siftCode = ko.observable('');
-                self.siftName = ko.observable('');
-                self.siftShortName = ko.observable('');
-
-                self.siftSymbolName = ko.observable('');
-
-                //color
-                self.pickColor = ko.observable('');
-
-                self.siftRemark = ko.observable('');
-               
-
-                self.memo = ko.observable('');
 
                 //tab mode
                 self.tabModeOptions = ko.observableArray([
@@ -162,10 +123,6 @@ module nts.uk.at.view.kmk003.a {
                    self.updateWorktimeCode(worktimeCode); 
                 });
                 self.dataModelOneDay = [];
-                
-                self.isRegularMode = ko.computed(function() {
-                    return self.workTimeSettingModel.workTimeDivision.workTimeDailyAtr() == EnumWorkForm.REGULAR;
-                });
             }
            
             /**
