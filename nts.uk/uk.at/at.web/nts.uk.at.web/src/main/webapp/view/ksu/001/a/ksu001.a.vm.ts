@@ -99,6 +99,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dataScheduleDisplayControl: KnockoutObservable<any> = ko.observableArray([]);
         isInsuranceStatus: boolean = false;
         listColorOfHeader: KnockoutObservableArray<ksu001.common.viewmodel.CellColor> = ko.observableArray([]);
+        flag: boolean = true;
 
         constructor() {
             let self = this;
@@ -132,6 +133,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 if (newValue == 1) {
                     $('#contain-view').show();
+                    $('#contain-view').removeClass('h-90');
                     $('#group-bt').show();
                     $('#oViewModel').show();
                     $('#qViewModel').hide();
@@ -143,11 +145,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("viewMode", "time", { y: 115 });
                 } else {
                     $('#contain-view').show();
+                    $('#contain-view').addClass('h-90');
                     $('#oViewModel').hide();
                     $('#qViewModel').show();
                     $('#group-bt').show();
                     $("#extable").exTable("updateMode", "none");
                     $("#extable").exTable("viewMode", "symbol", { y: 235 });
+                    if (self.flag) {
+                        //select first link button
+                        __viewContext.viewModel.viewQ.init();
+                        self.flag = false;
+                    }
                 }
 
                 if (self.listSid() && self.listSid().length > 0) {
@@ -183,8 +191,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.initCCG001();
             self.initExTable();
             self.initShiftCondition();
-            //get data for screen Q
-            self.getDataWorkPairPattern();
+            //get data ComPattern for screen Q
+            self.getDataComPattern();
         }
 
         /**
@@ -206,6 +214,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             //get workPlaceName to display A3-1
             self.workPlaceNameDisplay(self.empItems()[0].workplaceName);
+            //get data WorkPattern
+            $.when(self.getDataWkpPattern()).done(() => {
+                if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
+                    __viewContext.viewModel.viewQ.init();
+                }
+            });
 
             self.listSid([]);
             let arrSid: string[] = [];
@@ -953,52 +967,57 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * Get data to display symbol
          */
         getDataToDisplaySymbol(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            $.when(self.getDataScheduleDisplayControl()).done(() => {
+            let self = this, dfd = $.Deferred(), lstWorkTypeCode = [];
+            _.map(__viewContext.viewModel.viewO.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
+                lstWorkTypeCode.push(workType.workTypeCode);
+            });
+            $.when(self.getDataScheduleDisplayControl(), self.checkStateWorkTypeCode(lstWorkTypeCode)).done(() => {
                 if (+self.dataScheduleDisplayControl().symbolAtr == 1) {
                     $.when(self.getDataWorkEmpCombine()).done(() => {
-                        if (self.dataWorkEmpCombine().length > 0) {
-                            _.each(self.dataWorkEmpCombine(), (x) => {
-                                _.map(_.filter(self.dataSource(), { 'workTypeCode': x.workTypeCode, 'workTimeCode': x.workTimeCode }), (y) => {
-                                    y.symbolName = x.symbolName;
-                                });
-                            });
-                        }
+                        _.each(self.dataSource(), (x) => {
+                            let workEmpCombine = _.find(self.dataWorkEmpCombine(), { 'workTypeCode': x.workTypeCode, 'workTimeCode': x.workTimeCode });
+                            if (workEmpCombine) {
+                                x.symbolName = workEmpCombine.symbolName;
+                            } else {
+                                self.handleSetSymbolForCell(x);
+                            }
+                        });
                         dfd.resolve();
                     });
                 } else {
-                    $.when(self.checkStateWorkTypeCode()).done(() => {
-                        _.each(self.dataSource(), (item) => {
-                            let symbolName: string = null;
-                            if (item.workTimeCode === '000' || item.workTimeCode == null) {
-                                let workTypeItem: any = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': item.workTypeCode });
-                                symbolName = workTypeItem ? workTypeItem.symbolicName : null;
-                            } else {
-                                let workTimeItem: any = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'siftCd': item.workTimeCode });
-                                symbolName = workTimeItem ? workTimeItem.symbolName : null;
-                            }
-                            //state = 0 || 3 : rest || work all day
-                            //state = 1 || 2 : work in morning || work in afternoon
-                            let tmp = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
-                            if (tmp.state == 1 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
-                                item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
-                            }
-
-                            if (tmp.state == 2 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
-                                item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
-                            }
-
-                            if (tmp.state == 0 || tmp.state == 3) {
-                                item.symbolName = symbolName;
-                            }
-                        });
-
-                        dfd.resolve();
+                    _.each(self.dataSource(), (item) => {
+                        self.handleSetSymbolForCell(item);
                     });
+                    dfd.resolve();
                 }
-
             });
             return dfd.promise();
+        }
+
+        handleSetSymbolForCell(item: any): void {
+            let self = this;
+            let symbolName: string = null;
+            if (item.workTimeCode === '000' || item.workTimeCode == null || item.workTimeCode == '') {
+                let workTypeItem: any = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': item.workTypeCode });
+                symbolName = workTypeItem ? workTypeItem.symbolicName : null;
+            } else {
+                let workTimeItem: any = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'siftCd': item.workTimeCode });
+                symbolName = workTimeItem ? workTimeItem.symbolName : null;
+            }
+            //state = 0 || 3 : rest || work all day
+            //state = 1 || 2 : work in morning || work in afternoon
+            let tmp = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
+            if (tmp.state == 1 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
+            }
+
+            if (tmp.state == 2 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
+            }
+
+            if (tmp.state == 0 || tmp.state == 3) {
+                item.symbolName = symbolName;
+            }
         }
 
         /**
@@ -1006,8 +1025,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         setDatasource(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            $.when(self.getDataBasicSchedule(), self.getDataToDisplaySymbol()).done(function() {
-                dfd.resolve();
+            $.when(self.getDataBasicSchedule()).done(function() {
+                $.when(self.getDataToDisplaySymbol()).done(function() {
+                    dfd.resolve();
+                });
             });
             return dfd.promise();
         }
@@ -1015,28 +1036,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * Check State of list WorkTypeCode
          */
-        checkStateWorkTypeCode(): JQueryPromise<any> {
+        checkStateWorkTypeCode(lstWorkTypeCode): JQueryPromise<any> {
             let self = this,
-                dfd = $.Deferred(),
-                lstWorkTypeCode = [],
-                lstIntendedData = _.filter(self.dataSource(), { 'isIntendedData': true });
-            if (lstIntendedData.length > 0) {
-                _.map(lstIntendedData, (x) => {
-                    if (!_.includes(lstWorkTypeCode, x.workTypeCode)) {
-                        lstWorkTypeCode.push(x.workTypeCode);
-                    }
-                });
-            }
-            if (lstWorkTypeCode.length > 0) {
-                service.checkStateWorkTypeCode(lstWorkTypeCode).done((data) => {
-                    self.listStateWorkTypeCode(data);
-                    dfd.resolve();
-                }).fail(function() {
-                    dfd.reject();
-                });
-            } else {
+                dfd = $.Deferred();
+            //                lstWorkTypeCode = [],
+            //                lstIntendedData = _.filter(self.dataSource(), { 'isIntendedData': true });
+            //            if (lstIntendedData.length > 0) {
+            //                _.map(lstIntendedData, (x) => {
+            //                    if (!_.includes(lstWorkTypeCode, x.workTypeCode)) {
+            //                        lstWorkTypeCode.push(x.workTypeCode);
+            //                    }
+            //                });
+            //            }
+            service.checkStateWorkTypeCode(lstWorkTypeCode).done((data) => {
+                self.listStateWorkTypeCode(data);
                 dfd.resolve();
-            }
+            }).fail(function() {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
@@ -1214,7 +1231,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (error.length != 0) {
                     self.addListError(error);
                 } else {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }
                 //get data and update extable
                 self.setDatasource().done(function() {
@@ -1241,7 +1258,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 3) {
-                self.checkStateWorkTypeCode().done(function() {
+                let lstWorkTypeCode = [],
+                    lstIntendedData = _.filter(self.dataSource(), { 'isIntendedData': true });
+                if (lstIntendedData.length > 0) {
+                    _.map(lstIntendedData, (x) => {
+                        if (!_.includes(lstWorkTypeCode, x.workTypeCode)) {
+                            lstWorkTypeCode.push(x.workTypeCode);
+                        }
+                    });
+                }
+                self.checkStateWorkTypeCode(lstWorkTypeCode).done(function() {
                     //lstData: list object in dataSource. It has workTypeCode, which exist in master data WORKTYPE
                     let lstData: BasicSchedule[] = [];
                     _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
@@ -1463,6 +1489,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("stickMode", "single");
             } else if (self.selectedModeDisplay() == 3) {
                 $("#extable").exTable("stickMode", "multi");
+                // TO-DO: fix tam data
                 $("#extable").exTable("stickData", [new ksu001.common.viewmodel.ExCell({
                     workTypeCode: 'workTypeCode',
                     workTypeName: 'workTypeName',
@@ -1498,22 +1525,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         * get data form COM_PATTERN and WKP_PATTERN (for screen Q)
+         * get data form COM_PATTERN (for screen Q)
          */
-        getDataWorkPairPattern(): JQueryPromise<any> {
+        getDataComPattern(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            let obj: string = self.empItems()[0] ? self.empItems()[0].workplaceId : null;
-            if (obj) {
-                service.getDataWorkPairPattern(obj).done((data) => {
-                    __viewContext.viewModel.viewQ.listComPattern(data.listComPatternDto);
-                    __viewContext.viewModel.viewQ.listWkpPattern(data.listWkpPatternDto);
-                    dfd.resolve();
-                }).fail(function() {
-                    dfd.reject();
-                });
-            } else {
+            service.getDataComPattern().done((data) => {
+                __viewContext.viewModel.viewQ.listComPattern(data);
                 dfd.resolve();
-            }
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        /**
+         * get data form WKP_PATTERN (for screen Q)
+         */
+        getDataWkpPattern(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let obj: string = self.empItems()[0] ? self.empItems()[0].workplaceId : '';
+            service.getDataWkpPattern(obj).done((data) => {
+                __viewContext.viewModel.viewQ.listWkpPattern(data);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
 
             return dfd.promise();
         }

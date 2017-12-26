@@ -8,13 +8,13 @@ hr {
 	position: absolute;
 }
 
-#group-link-button {
-	margin-top: 15px;
+#group-link-button-ja {
 	height: 30px;
-	width: 720px;
+	width: 775px;
 }
 
-#group-link-button a {
+#group-link-button-ja a {
+	font-size: 13px;
 	margin-top: 5px;
 	margin-left: 10px;
 	display: inline-block;
@@ -54,7 +54,7 @@ hr {
 }
 
 #note {
-	width: 680px;
+	width: 650px !important;
 }
 
 #classification {
@@ -67,4 +67,22 @@ hr {
 
 .color-gray {
 	color: gray
+}
+
+#h-50 {
+	height: 50px
+}
+
+#popup-area {
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	visibility: hidden;
+	z-index: 1000
+}
+
+#popup-area>div {
+	margin-top: 10px;
 }
