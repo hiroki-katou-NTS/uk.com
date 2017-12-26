@@ -32,7 +32,9 @@ public class KshmtWorkTimeSheetSetPK implements Serializable {
 	private String worktimeCd;
 
 	/** The work no. */
-	@Column(name = "WORK_NO")
+	//@Column(name = "WORK_NO")
+	//TODO: sua tam de chay (code tren moi dung).
+	@Column(name = "TIME_NUMBER_CNT")
 	private int workNo;
 
 	/**
