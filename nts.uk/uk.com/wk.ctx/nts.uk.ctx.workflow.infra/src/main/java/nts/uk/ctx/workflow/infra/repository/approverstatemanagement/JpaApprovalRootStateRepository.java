@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApprovalRootState;
 /**
  * 
  * @author Doan Duy Hung
@@ -23,8 +24,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	
 	@Override
 	public void insert(ApprovalRootState approvalRootState) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().insert(WwfdtApprovalRootState.fromDomain(approvalRootState));
 	}
 
 	@Override

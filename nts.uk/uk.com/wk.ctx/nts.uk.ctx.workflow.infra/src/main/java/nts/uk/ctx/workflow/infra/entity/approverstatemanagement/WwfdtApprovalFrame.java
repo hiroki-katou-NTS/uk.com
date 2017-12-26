@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,8 +16,10 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -28,6 +31,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name="WWFDT_APPROVAL_FRAME")
+@Builder
 public class WwfdtApprovalFrame extends UkJpaEntity {
 	
 	@EmbeddedId
@@ -65,6 +69,25 @@ public class WwfdtApprovalFrame extends UkJpaEntity {
 	@Override
 	protected Object getKey() {
 		return wwfdpApprovalFramePK;
+	}
+	
+	public static WwfdtApprovalFrame fromDomain(ApprovalFrame approvalFrame){
+		return WwfdtApprovalFrame.builder()
+				.wwfdpApprovalFramePK(
+						new WwfdpApprovalFramePK(
+								approvalFrame.getRootStateID(), 
+								approvalFrame.getPhaseOrder(), 
+								approvalFrame.getFrameOrder()))
+				.approvalAtr(approvalFrame.getApprovalAtr().value)
+				.confirmAtr(approvalFrame.getConfirmAtr().value)
+				.approverID(approvalFrame.getApproverID())
+				.representerID(approvalFrame.getRepresenterID())
+				.approvalDate(approvalFrame.getApprovalDate())
+				.approvalReason(approvalFrame.getApprovalReason())
+				.listWwfdtApproverState(
+						approvalFrame.getListApproverState().stream()
+						.map(x -> WwfdtApproverState.fromDomain(x)).collect(Collectors.toList()))
+				.build();
 	}
 	
 }

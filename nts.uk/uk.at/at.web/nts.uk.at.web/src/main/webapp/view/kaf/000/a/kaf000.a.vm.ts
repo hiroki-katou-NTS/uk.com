@@ -35,6 +35,9 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         errorFlag: number = 0;
         errorMsg: string = '';
+        
+        approvalRootState: any = ko.observableArray([]);
+        
         constructor(){
             let self = this;
             let baseDate = new Date();
@@ -177,6 +180,34 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             }).fail(function (res: any){
                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             }); 
+            return dfd.promise();
+        }
+        
+        getAppDataDate(appType: number, appDate: string, isStartup: boolean): JQueryPromise<any> {
+            var self = this;
+            let dfd = $.Deferred<any>();
+            nts.uk.at.view.kaf000.a.service.getAppDataDate({
+                appTypeValue: appType,
+                appDate: appDate,
+                isStartup: isStartup
+            }).done((data)=>{
+                self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                let deadlineMsg = data.outputMessageDeadline;
+                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
+                    self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);    
+                }
+                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
+                    self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
+                }
+                if(nts.uk.text.isNullOrEmpty(deadlineMsg.message) && nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
+                    self.messageArea(false);
+                }else{
+                    self.messageArea(true);
+                }
+                dfd.resolve();
+            }).fail(()=>{
+                dfd.reject();    
+            });            
             return dfd.promise();
         }
     }

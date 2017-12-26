@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Value;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
@@ -17,6 +18,8 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCan
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
+import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
+import nts.uk.ctx.at.request.app.find.application.common.AppDateData;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
@@ -78,6 +81,9 @@ public class ApplicationWebservice extends WebService {
 
 	@Inject
 	private UpdateApplicationDelete deleteApp;
+	
+	@Inject
+	private AppDataDateFinder appDataDateFinder;
 	
 	
 	
@@ -263,4 +269,18 @@ public class ApplicationWebservice extends WebService {
 	public List<ApplicationMetaDto> getAppInfo(ApplicationPeriodDto periodDate){
 		return this.finderApp.getAppbyDate(periodDate);
 	}
+	
+	@POST
+	@Path("getAppDataByDate")
+	public AppDateData getAppDataByDate(AppDateParam param){
+		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup());
+	}
+	
+}
+
+@Value
+class AppDateParam {
+	private Integer appTypeValue; 
+	private String appDate;
+	private Boolean isStartup;
 }
