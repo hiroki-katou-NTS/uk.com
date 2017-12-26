@@ -49,11 +49,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 	@Column(name = "SPECIFY_ENDDATE")
 	public int specifyEndDate;
 	
-	@OneToOne
-	@JoinColumns({
-		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID", insertable = false, updatable = false),
-		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE", insertable = false, updatable = false)
-	})
+	@OneToOne(mappedBy = "extractionPeriodDaily")
 	public KfnmtCheckCondition checkCondition;
 	
 	public ExtractionPeriodDaily toDomain() {

@@ -51,8 +51,11 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	@JoinTable(name = "KFNMT_CHECK_CON_ITEM")
 	public List<KfnmtCheckConItem> checkConItems;
 	
-	@OneToOne(mappedBy="checkCondition", cascade = CascadeType.ALL, optional=true)
-	@JoinTable(name = "KFNMT_EXTRACT_PER_DAILY")
+	@OneToOne(cascade = CascadeType.ALL, optional = true)
+	@JoinColumns({
+		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID"),
+		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE")
+	})
 	public KfnmtExtractionPeriodDaily extractionPeriodDaily;
 
 	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
