@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.outpu
  */
 public interface CollectApprovalRootPatternService {
 	
-	public ApprovalRootPattern getApprovalRootPatternService(String companyID, String employeeID, EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate);
+	public ApprovalRootPattern getApprovalRootPatternService(String companyID, String employeeID, 
+			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate, String appID);
 	
 }

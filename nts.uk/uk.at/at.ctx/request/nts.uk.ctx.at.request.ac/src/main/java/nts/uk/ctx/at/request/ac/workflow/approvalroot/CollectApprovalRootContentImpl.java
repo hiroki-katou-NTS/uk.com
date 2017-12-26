@@ -33,8 +33,8 @@ public class CollectApprovalRootContentImpl implements CollectApprovalRootConten
 	private ApprovalRootStatePub approvalRootStatePub;
 	
 	@Override
-	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate) {
-		ApprovalRootContentExport approvalRootContentExport = approvalRootStatePub.getApprovalRoot(companyID, employeeID, appTypeValue, appDate);
+	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID) {
+		ApprovalRootContentExport approvalRootContentExport = approvalRootStatePub.getApprovalRoot(companyID, employeeID, appTypeValue, appDate, appID);
 		return new ApprovalRootContentImport_New(
 					new ApprovalRootStateImport_New(
 						approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState().stream()

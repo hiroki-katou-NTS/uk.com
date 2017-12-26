@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -25,10 +27,12 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
  */
 @Getter
 @AllArgsConstructor
+@Builder
 public class AppStamp extends AggregateRoot {
 	
 	private StampRequestMode stampRequestMode;
 	
+	@Setter
 	private Application_New application_New;
 	
 	private List<AppStampGoOutPermit> appStampGoOutPermits;
