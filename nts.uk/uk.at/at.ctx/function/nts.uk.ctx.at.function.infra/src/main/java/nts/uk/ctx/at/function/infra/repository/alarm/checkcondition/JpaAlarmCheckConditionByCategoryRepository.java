@@ -9,8 +9,8 @@ import javax.transaction.Transactional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
-import nts.uk.ctx.at.function.infra.enity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
-import nts.uk.ctx.at.function.infra.enity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryPk;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryPk;
 
 /**
  * 
