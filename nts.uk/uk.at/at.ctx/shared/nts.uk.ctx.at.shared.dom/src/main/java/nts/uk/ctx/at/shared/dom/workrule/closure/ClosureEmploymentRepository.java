@@ -48,5 +48,12 @@ public interface ClosureEmploymentRepository {
 	 */
 	List<ClosureEmployment> findByClosureId(String companyId, int closureId);
 	
-	
+	/**
+	 * Find by closure id.
+	 *
+	 * @param companyId the company id
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
+	List<ClosureEmployment> findByClosureIds(String companyId, List<Integer> closureIds);
 }
