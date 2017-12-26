@@ -99,7 +99,8 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory) {
 		List<KshmtPerWorkCat> kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
-		workCategory.saveToMemento(new JpaPerWorkCatSetMemento(kshmtPerWorkCats));
+		workCategory.saveToMemento(
+				new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats));
 		this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 	}
 
