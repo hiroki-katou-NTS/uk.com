@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWorkplaceManager;
@@ -19,7 +18,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	private static final String SELECT_All_BY_SID_WKP_ID = SELECT_ALL
 			+ " WHERE wm.employeeId = :employeeId AND wm.workplaceId = :workplaceId";
 	private static final String SELECT_All_BY_WKP_ID = SELECT_ALL
-			+ " WHERE wm.workplaceId = :workplaceId AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
+			+ " WHERE wm.workplaceId = :workplaceId";
 
 	/**
 	 * Get workplace manager list by workplace id
@@ -34,8 +33,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	@Override
 	public List<WorkplaceManager> getWkpManagerListByWkpId(String workplaceId) {
 		return this.queryProxy().query(SELECT_All_BY_WKP_ID, SacmtWorkplaceManager.class)
-				.setParameter("workplaceId", workplaceId)
-				.setParameter("baseDate", GeneralDate.today()).getList(c -> c.toDomain());
+				.setParameter("workplaceId", workplaceId).getList(c -> c.toDomain());
 	}
 
 
