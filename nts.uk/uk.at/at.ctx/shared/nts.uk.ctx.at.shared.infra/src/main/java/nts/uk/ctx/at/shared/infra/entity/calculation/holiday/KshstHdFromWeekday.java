@@ -14,15 +14,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromWeekday;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_HD_FROM_WEEKDAY ")
 public class KshstHdFromWeekday extends UkJpaEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
@@ -39,5 +39,27 @@ public class KshstHdFromWeekday extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return kshstOverdayHdAttSetPK;
+	}
+	
+	public KshstHdFromWeekday(KshstHdFromWeekdayPK kshstOverdayHdAttSetPK, BigDecimal overtimeFrameNo) {
+		super();
+		this.kshstOverdayHdAttSetPK = kshstOverdayHdAttSetPK;
+		this.overtimeFrameNo = overtimeFrameNo;
+	}
+	
+	/**
+	 * Convert to Domain Holiday
+	 * 
+	 * @param kshstOverdayHdAttSet
+	 * @return
+	 */
+	public HdFromWeekday toDomain() {
+		return HdFromWeekday.createFromJavaType(this.kshstOverdayHdAttSetPK.companyId, this.kshstOverdayHdAttSetPK.hdFrameNo, this.overtimeFrameNo);
+	}
+	
+	public static KshstHdFromWeekday toEntity(HdFromWeekday domain) {
+		return new KshstHdFromWeekday(
+				new KshstHdFromWeekdayPK(domain.getCompanyId(), domain.getHdFrameNo().v()),
+					domain.getOvertimeFrameNo().v());
 	}
 }

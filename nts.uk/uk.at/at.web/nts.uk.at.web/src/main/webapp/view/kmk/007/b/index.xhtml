@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.worktype.WorkTypeName
+			</com:ValidatorScript>
 			<script>
 				var dialogSize = {
 					width : 620,
@@ -46,7 +49,7 @@
 					<table>
 						<tr>
 							<td width="80">#{i18n.getText('KMK007_51')}</td>
-							<td><input data-bind="ntsTextEditor: {value: frameName, required: true, name: '#[KMK007_51]'}, hasfocus: true" /></td>
+							<td><input data-bind="ntsTextEditor: {value: frameName, constraint: 'WorkTypeName', required: true, name: '#[KMK007_51]'}, hasfocus: true" /></td>
 						</tr>
 						<tr></tr>
 						<tr>
