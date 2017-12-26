@@ -24,7 +24,7 @@ import nts.uk.shr.com.program.WebAppId;
  * RequestPreProcessor
  * 
  */
-public class RequestPreProcessor implements Filter {
+public class ProgramIdDetector implements Filter {
 	
 	/**
 	 * Program path header.

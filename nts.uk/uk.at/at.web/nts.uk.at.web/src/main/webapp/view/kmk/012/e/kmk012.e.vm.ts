@@ -12,10 +12,6 @@ module nts.uk.at.view.kmk012.e {
 
             //list items on grid.
             items: Array<any>;
-
-            //Param from KMK012E screen.
-            startDate: number;
-
             //Data respone from Ws.
             closureEmployDto: ClosureEmployDto;
 
@@ -28,15 +24,12 @@ module nts.uk.at.view.kmk012.e {
                 //Init list data on grid.
                 self.items = new Array<any>();
 
-                //Get startDate from KMK012E screen.
-                self.startDate = getShared("startDate");
-
                 //Init data combobox
                 self.closureEmployDto = new ClosureEmployDto(null, null);
             }
 
             //Insert del in server.
-            insertDelArray(source) {
+            insertDelArray(source: any) {
                 let self = this;
                 var dfd = $.Deferred();
 
@@ -63,12 +56,12 @@ module nts.uk.at.view.kmk012.e {
                 return dfd.promise();
             }
 
-            getClosureEmploy(startDate) {
+            getClosureEmploy() {
                 let self = this;
                 var dfd = $.Deferred();
 
                 //Get ClosureEmploy with param: startDate and return: data 
-                service.getClosureEmploy(startDate).done(function(data) {
+                service.getClosureEmploy().done(function(data) {
                     self.closureEmployDto = new ClosureEmployDto(data.empCdNameList, data.closureCdNameList);
 
                     //Init data for list item on grid.
@@ -83,9 +76,6 @@ module nts.uk.at.view.kmk012.e {
                         }
                     });
 
-                    //View data in ClousureEmploy
-                    //self.loadGrid(self.closureEmployDto);
-
                     dfd.resolve();
                 });
 
@@ -95,16 +85,6 @@ module nts.uk.at.view.kmk012.e {
             closeWindowns(): void {
                 nts.uk.ui.windows.close();
             }
-
-//            start(): JQueryPromise<any> {
-//                let self = this;
-//                var dfd = $.Deferred();
-//
-//                //Get ClosureEmploy
-//                self.getClosureEmploy(self.startDate);
-//
-//                return dfd.promise();
-//            }
 
         }
 

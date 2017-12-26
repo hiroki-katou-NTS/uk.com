@@ -2811,7 +2811,7 @@ var nts;
                 specials.getAsyncTaskInfo = getAsyncTaskInfo;
                 function donwloadFile(fileId) {
                     var dfd = $.Deferred();
-                    $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+                    $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
                         successCallback: function (url) {
                             dfd.resolve();
                         },
@@ -2824,6 +2824,10 @@ var nts;
                     return dfd.promise();
                 }
                 specials.donwloadFile = donwloadFile;
+                function deleteFile(fileId) {
+                    return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
+                }
+                specials.deleteFile = deleteFile;
                 function isFileExist(fileId) {
                     return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
                 }
@@ -7952,6 +7956,9 @@ var nts;
                             swapper.Model.move(false, data.value, true);
                         });
                         $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
+                        this.swapper.Model.$container.bind("swaplistgridsizeexceed", function (evt, data) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_887" });
+                        });
                     };
                     NtsSwapListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
@@ -8269,6 +8276,7 @@ var nts;
                             ;
                         });
                         this.$searchBox.keydown(function (evt, ui) {
+                            var $input = this;
                             if (evt.which === 13) {
                                 proceedSearch.apply(self);
                                 _.defer(function () {
@@ -10465,8 +10473,13 @@ var nts;
                                 if (!nts.uk.util.isNullOrUndefined(color) && !nts.uk.util.isNullOrUndefined(data.value)) {
                                     data.value(color.toHexString());
                                 }
-                                else if (required === true) {
-                                    $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
+                                else if (nts.uk.util.isNullOrUndefined(color)) {
+                                    if (required === true) {
+                                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
+                                    }
+                                    else {
+                                        data.value(null);
+                                    }
                                 }
                             }
                         });
@@ -10495,6 +10508,9 @@ var nts;
                             $picker.spectrum("set", null);
                             if (required === true) {
                                 validateRequired($picker);
+                            }
+                            else if (!nts.uk.util.isNullOrUndefined(data.value)) {
+                                data.value(null);
                             }
                         });
                         if (!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)) {
@@ -11010,7 +11026,10 @@ var nts;
                         var fileName = data.filename;
                         var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
                         var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
-                        var container = $(element);
+                        var uploadFinished = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
+                        var container = $(element)
+                            .data("stereotype", ko.unwrap(data.stereoType))
+                            .data("immediate-upload", ko.unwrap(data.immediateUpload) === true);
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
                         var $fileBrowserButton = $("<button class='browser-button'></button>");
                         var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
@@ -11039,6 +11058,19 @@ var nts;
                             container.data("file-name", getSelectedFileName);
                             fileName(getSelectedFileName);
                             onchange(getSelectedFileName);
+                            if (container.data("immediate-upload")) {
+                                nts.uk.ui.block.grayout();
+                                $fileInput.ntsFileUpload({ stereoType: container.data("stereotype") })
+                                    .done(function (data) {
+                                    uploadFinished.call(bindingContext.$data, data[0]);
+                                })
+                                    .fail(function (data) {
+                                    nts.uk.ui.dialog.alertError(data);
+                                })
+                                    .always(function () {
+                                    nts.uk.ui.block.clear();
+                                });
+                            }
                         });
                         $fileNameLabel.click(function () {
                             onfilenameclick($(this).text());
@@ -11051,7 +11083,9 @@ var nts;
                         var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
                         var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var container = $(element);
+                        var container = $(element)
+                            .data("stereotype", ko.unwrap(data.stereoType))
+                            .data("immediate-upload", ko.unwrap(data.immediateUpload) === true);
                         container.find("input[type='file']").attr("accept", accept.toString());
                         var $fileNameWrap = container.find(".nts-editor-wrapped");
                         var $fileNameInput = container.find(".nts-input");
@@ -11399,6 +11433,47 @@ var nts;
                     return NtsHelpButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsHelpButton'] = new NtsHelpButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var NtsIconBindingHandler = (function () {
+                    function NtsIconBindingHandler() {
+                    }
+                    NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var iconNo = ko.unwrap(data.no);
+                        var width = ko.unwrap(data.width) || "100%";
+                        var height = ko.unwrap(data.height) || "100%";
+                        var iconFileName = iconNo + ".png";
+                        var iconPath = nts.uk.request.location.siteRoot
+                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                            .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                            .mergeRelativePath(iconFileName)
+                            .serialize();
+                        var $icon = $(element);
+                        $icon.addClass("img-icon");
+                        $icon.css({
+                            "background-image": "url(" + iconPath + ")",
+                            "background-size": "contain",
+                            width: width,
+                            height: height
+                        });
+                    };
+                    NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                    };
+                    return NtsIconBindingHandler;
+                }());
+                ko.bindingHandlers['ntsIcon'] = new NtsIconBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -23304,15 +23379,20 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                                    dfd.reject({ message: "Please check your network", messageId: "0" });
+                                    if (jqXHR.status === 413) {
+                                        dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
+                                    }
+                                    else {
+                                        dfd.reject({ message: "アップロード処理に失敗しました。", messageId: "0" });
+                                    }
                                 });
                             }
                             else {
-                                dfd.reject({ message: "Please select file", messageId: "0" });
+                                dfd.reject({ message: "ファイルを選択してください。", messageId: "0" });
                             }
                         }
                         else {
-                            dfd.reject({ messageId: "0", message: "Can not find control" });
+                            dfd.reject({ messageId: "0", message: "ファイルを読み込めません。" });
                         }
                         return dfd.promise();
                     };
@@ -23403,47 +23483,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_28.koExtentions || (ui_28.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var NtsIconBindingHandler = (function () {
-                    function NtsIconBindingHandler() {
-                    }
-                    NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var iconNo = ko.unwrap(data.no);
-                        var width = ko.unwrap(data.width) || "100%";
-                        var height = ko.unwrap(data.height) || "100%";
-                        var iconFileName = iconNo + ".png";
-                        var iconPath = nts.uk.request.location.siteRoot
-                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                            .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                            .mergeRelativePath(iconFileName)
-                            .serialize();
-                        var $icon = $(element);
-                        $icon.addClass("img-icon");
-                        $icon.css({
-                            "background-image": "url(" + iconPath + ")",
-                            "background-size": "contain",
-                            width: width,
-                            height: height
-                        });
-                    };
-                    NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                    };
-                    return NtsIconBindingHandler;
-                }());
-                ko.bindingHandlers['ntsIcon'] = new NtsIconBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
