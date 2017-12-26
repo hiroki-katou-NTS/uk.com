@@ -170,7 +170,7 @@
 									constraint: 'WorkTimeCode',
 									option: siftCodeOption,
 									required: true,
-									enable: isUpdateMode}">
+									enable: $parent.isNewMode}">
 								</input> 
 								<input data-bind="ntsTextEditor: {
 									value: workTimeDisplayName.workTimeName,

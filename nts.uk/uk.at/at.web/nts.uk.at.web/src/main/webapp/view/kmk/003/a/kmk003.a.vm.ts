@@ -47,6 +47,7 @@ module nts.uk.at.view.kmk003.a {
             settingEnum: WorkTimeSettingEnumDto;
             
             screenMode: KnockoutObservable<number>;
+            isNewMode: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.mainSettingModel = new MainSettingModel();
@@ -74,8 +75,6 @@ module nts.uk.at.view.kmk003.a {
                         self.changeTabMode(false);
                     }   
                 });
-                
-                //use half day
 
                 self.useHalfDayOptions = ko.observableArray([
                     { code: HalfDayEnum.USE, name: nts.uk.resource.getText("KMK003_49") },
@@ -119,6 +118,9 @@ module nts.uk.at.view.kmk003.a {
                 });
                 
                 self.screenMode = ko.observable(ScreenMode.NEW);
+                self.isNewMode = ko.computed(() => {
+                    return self.screenMode() == ScreenMode.NEW;
+                });
             }
            
             /**
