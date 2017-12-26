@@ -25,9 +25,9 @@ public class Month {
 	// 当日とする
 	private boolean curentMonth;
 	
-	public Month(int monthPrevious, int month, boolean curentMonth) {
+	public Month(PreviousClassification monthPrevious, int month, boolean curentMonth) {
 		super();
-		this.monthPrevious = EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class);
+		this.monthPrevious = monthPrevious;
 		this.month = month;
 		this.curentMonth = curentMonth;
 	}

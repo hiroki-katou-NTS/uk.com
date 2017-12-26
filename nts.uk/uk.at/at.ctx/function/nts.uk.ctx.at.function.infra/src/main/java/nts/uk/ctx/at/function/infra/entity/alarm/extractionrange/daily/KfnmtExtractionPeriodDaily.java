@@ -8,11 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -78,12 +80,21 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 	public KfnmtCheckCondition checkCondition;
 
 	public ExtractionPeriodDaily toDomain() {
-		StartDate startDate = new StartDate(this.strSpecify, this.strPreviousMonth, this.strMonth,
-				this.strCurrentMonth == 1 ? true : false, this.strPreviousDay, this.strDay,
-				this.strMakeToDay == 1 ? true : false);
+		// StartDate
+		StartDate startDate = new StartDate(this.strSpecify);
+		StartSpecify prevClass = EnumAdaptor.valueOf(strSpecify, StartSpecify.class);
+		if (prevClass == StartSpecify.DAYS) {
+			startDate.setStartDay(EnumAdaptor.valueOf(strPreviousDay, PreviousClassification.class), strDay, strMakeToDay == 0 ? false : true);
+		} else if (prevClass == StartSpecify.MONTH) {
+			startDate.setStartMonth(EnumAdaptor.valueOf(strPreviousMonth, PreviousClassification.class), strMonth, strCurrentMonth == 0 ? false : true);
+		}
+		
+		// EndDate
 		EndDate endDate = new EndDate(this.endSpecify, this.endPreviousMonth, this.endMonth,
 				this.endCurrentMonth == 1 ? true : false, this.endPreviousDay, this.endDay,
 				this.endMakeToDay == 1 ? true : false);
+		
+		
 		ExtractionPeriodDaily periodDaily = new ExtractionPeriodDaily(this.kfnmtExtractionPeriodDailyPK.extractionId,
 				this.kfnmtExtractionPeriodDailyPK.extractionRange, startDate, endDate);
 		return periodDaily;

@@ -25,9 +25,8 @@ public class Days {
 	// 当日とする
 	private boolean makeToDay;
 
-	public Days(int dayPrevious, int day, boolean makeToDay) {
-		super();
-		this.dayPrevious = EnumAdaptor.valueOf(dayPrevious, PreviousClassification.class);
+	public Days(PreviousClassification dayPrevious, int day, boolean makeToDay) {
+		this.dayPrevious = dayPrevious;
 		this.day = day;
 		this.makeToDay = makeToDay;
 	}

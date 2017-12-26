@@ -1,4 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange;
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Month;
@@ -10,7 +12,6 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
  * @author thanhpv
  * 開始日
  */
-
 @Getter
 @Setter
 public class StartDate {
@@ -20,17 +21,22 @@ public class StartDate {
 	
 	/**Closing Date*/
 	// 締め日指定
-	private Month strMonth;
+	private Optional<Month> strMonth = Optional.empty();
 	
 	/**Specify number of days*/
 	// 日数指定
-	private Days strDays;
+	private Optional<Days> strDays = Optional.empty();
 
-	public StartDate(int startSpecify,  int monthPrevious, int month, boolean curentMonth, int dayPrevious, int day, boolean makeToDay) {
-		super();
+	public StartDate(int startSpecify) {
 		this.startSpecify = EnumAdaptor.valueOf(startSpecify, StartSpecify.class);
-		this.strMonth = new Month(monthPrevious, month, curentMonth);
-		this.strDays = new Days(dayPrevious, day, makeToDay);
 	}
-
+	
+	public void setStartDay(PreviousClassification monthPrevious, int day, boolean makeToDay) {
+		this.strDays = Optional.of(new Days(monthPrevious, day, makeToDay));
+	}
+	
+	public void setStartMonth(PreviousClassification monthPrevious, int month, boolean currentMonth) {
+		this.strMonth = Optional.of(new Month(monthPrevious, month, currentMonth));
+	}
+	
 }
