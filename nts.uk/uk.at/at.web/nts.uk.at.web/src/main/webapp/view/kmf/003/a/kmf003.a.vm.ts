@@ -43,6 +43,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         btnSetting03Enable: KnockoutObservable<boolean>;
         btnSetting04Enable: KnockoutObservable<boolean>;
         btnSetting05Enable: KnockoutObservable<boolean>;
+        
+        isNewMode: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -57,6 +59,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             self.singleSelectedCode = ko.observable("");
             self.currentCode = ko.observable();
+            
+            self.isNewMode = ko.observable(false);
             
             //Controls display
             self.controlsDisplay();
@@ -159,6 +163,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
 
             // clear all error
             nts.uk.ui.errors.clearAll();
+            
+            self.isNewMode(true);
             
             //Top input form
             self.code("");
@@ -542,7 +548,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     self.limitedValue01("100");
                     self.setConditionValueChanges();
                     
-                    if(Number(self.conditionValue01()) > 100) {
+                    if(Number(self.conditionValue01()) > 100 && !self.isNewMode()) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
                     }
                 } else if(value == 1) {
@@ -550,16 +556,22 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     self.limitedValue01("366");
                     self.setConditionValueChanges();
                     
-                    if(Number(self.conditionValue01()) > 366) {
+                    if(Number(self.conditionValue01()) > 366 && !self.isNewMode()) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
                     }
                 }
+                
+                self.isNewMode(false);
             });
             
             self.conditionValue01.subscribe(function(value) {
                 var result = 0;
                 
                 if(count >= 1) {
+                    return false;
+                }
+                
+                if(value === "") {
                     return false;
                 }
                 
