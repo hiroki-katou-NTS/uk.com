@@ -50,7 +50,7 @@ public class JpaSubHolTransferSetGetMemento implements SubHolTransferSetGetMemen
 	 */
 	@Override
 	public boolean getUseDivision() {
-		return this.entity.getUseAtr() == 1 ? true : false;
+		return this.entity.getUseAtr() == 1 ;
 	}
 
 	/*

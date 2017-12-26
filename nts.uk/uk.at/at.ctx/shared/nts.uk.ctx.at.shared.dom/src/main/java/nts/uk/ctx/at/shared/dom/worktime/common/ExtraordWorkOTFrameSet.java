@@ -47,4 +47,12 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 		memento.setInLegalWorkFrameNo(this.inLegalWorkFrameNo);
 		memento.setSettlementOrder(this.settlementOrder);
 	}
+
+	public ExtraordWorkOTFrameSet(OTFrameNo oTFrameNo, OTFrameNo inLegalWorkFrameNo,
+			SettlementOrder settlementOrder) {
+		super();
+		this.oTFrameNo = oTFrameNo;
+		this.inLegalWorkFrameNo = inLegalWorkFrameNo;
+		this.settlementOrder = settlementOrder;
+	}
 }

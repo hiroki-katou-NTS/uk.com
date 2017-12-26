@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
@@ -19,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeCommonSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeCommonSetPK;
 
 /**
  * The Class JpaWorkTimezoneCommonSetGetMemento.
@@ -37,9 +37,6 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	public JpaWorkTimezoneCommonSetGetMemento(KshmtWorktimeCommonSet entity) {
 		super();
-		if (entity.getKshmtWorktimeCommonSetPK() == null) {
-			entity.setKshmtWorktimeCommonSetPK(new KshmtWorktimeCommonSetPK());
-		}
 		this.entity = entity;
 	}
 
@@ -52,7 +49,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public boolean getZeroHStraddCalculateSet() {
-		return false;
+		return this.entity.getOverDayCalcSet() == 1;
 	}
 
 	/*
@@ -117,7 +114,8 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneGoOutSet getGoOutSet() {
-		return null;
+		return new WorkTimezoneGoOutSet(new JpaWorkTimezoneGoOutSetGetMemento(
+				this.entity.getKshmtWorktimeGoOutSet(), this.entity.getKshmtSpecialRoundOuts()));
 	}
 
 	/*
@@ -129,8 +127,8 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneStampSet getStampSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimezoneStampSet(new JpaWorkTimezoneStampSetGetMemento(
+				this.entity.getKshmtRoundingSets(), this.entity.getKshmtPioritySets()));
 	}
 
 	/*
@@ -142,8 +140,8 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneLateNightTimeSet getLateNightTimeSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimezoneLateNightTimeSet(new TimeRoundingSetting(
+				this.entity.getLateNightUnit(), this.entity.getLateNightRounding()));
 	}
 
 	/*
@@ -155,8 +153,8 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneShortTimeWorkSet getShortTimeWorkSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimezoneShortTimeWorkSet(this.entity.getNurTimezoneWorkUse() == 1,
+				this.entity.getEmpTimeDeduct() == 1, this.entity.getChildCareWorkUse() == 1);
 	}
 
 	/*
@@ -168,8 +166,8 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneExtraordTimeSet getExtraordTimeSet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimezoneExtraordTimeSet(new JpaWorkTimezoneExtraordTimeSetGetMemento(
+				this.entity.getKshmtTempWorktimeSet()));
 	}
 
 	/*
@@ -181,8 +179,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneLateEarlySet getLateEarlySet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimezoneLateEarlySet(new JpaWorkTimezoneLateEarlySetGetMemento(this.entity));
 	}
 
 }
