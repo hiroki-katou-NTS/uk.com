@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetGetMemento;
 
 /**
  * The Class JpaFixedWorkSettingGetMemento.
@@ -106,8 +109,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public FixedWorkRestSet getFixedWorkRestSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtFixedWorkSet>(this.entity));
 	}
 
 	/*
@@ -119,8 +121,14 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public List<FixHalfDayWorkTimezone> getLstHalfDayWorkTimezone() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// Build a list with item for each enum AmPmAtr case
+		List<FixHalfDayWorkTimezone> result = new ArrayList<>();		
+		for (AmPmAtr type : AmPmAtr.values()) {			
+			result.add(new FixHalfDayWorkTimezone(new JpaFixHalfDayWorkTimezoneGetMemento(entity, type)));
+		}				
+		
+		return result;
 	}
 
 	/*

@@ -9,37 +9,39 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
-import nts.uk.ctx.at.shared.infra.repository.worktime.predset.JpaTimezoneGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
 
 /**
- * The Class JpaCoreTimeSettingGetMemento.
+ * The Class JpaFixRestTimezoneSetGetMemento.
  */
 public class JpaFixRestTimezoneSetGetMemento implements FixRestTimezoneSetGetMemento {
 
-	/** The entity. */
-	private KshmtFixedWorkSet entity;
+	/** The kshmt fixed half rest sets. */
+	// KSHMT_FIXED_HALF_REST_SET
+	private List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets;
 
 	/**
-	 * Instantiates a new jpa core time setting get memento.
+	 * Instantiates a new jpa fix rest timezone set get memento.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param kshmtFixedHalfRestSets
+	 *            the kshmt fixed half rest sets
 	 */
-	public JpaFixRestTimezoneSetGetMemento(KshmtFixedWorkSet entity) {
+	public JpaFixRestTimezoneSetGetMemento(List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets) {
 		super();
-		if (entity.getKshmtFixedWorkSetPK() == null) {
-			entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
-		}
-		this.entity = entity;
+		this.kshmtFixedHalfRestSets = kshmtFixedHalfRestSets;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento#
+	 * getLstTimezone()
+	 */
 	@Override
 	public List<DeductionTime> getLstTimezone() {
-		return this.entity.get.stream()
-				.map(entity -> new TimezoneUse(new JpaTimezoneGetMemento(entity)))
+		return this.kshmtFixedHalfRestSets.stream()
+				.map(entity -> new DeductionTime(new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
 				.collect(Collectors.toList());
 	}
 

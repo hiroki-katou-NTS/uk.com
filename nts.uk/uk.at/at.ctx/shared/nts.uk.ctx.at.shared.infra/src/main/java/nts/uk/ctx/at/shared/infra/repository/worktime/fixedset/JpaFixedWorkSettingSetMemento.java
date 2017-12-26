@@ -14,29 +14,22 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 
 /**
  * The Class JpaCoreTimeSettingGetMemento.
  */
 public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento {
-	// /** The entity. */
-	// private KshmtFlexWorkSet entity;
-	//
-	// /**
-	// * Instantiates a new jpa core time setting get memento.
-	// *
-	// * @param entity the entity
-	// */
-	// public JpaCoreTimeSettingGetMemento(KshmtFlexWorkSet entity) {
-	// super();
-	// if(entity.getKshmtFlexWorkSetPK() == null){
-	// entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
-	// }
-	// this.entity = entity;
-	// }
 
+	/** The entity. */
+	private KshmtFixedWorkSet entity;
+
+
+	public JpaFixedWorkSettingSetMemento(KshmtFixedWorkSet entity) {
+		super();
+		this.entity = entity;
+	}
+	
 	@Override
 	public void setCompanyId(String companyId) {
 		// TODO Auto-generated method stub

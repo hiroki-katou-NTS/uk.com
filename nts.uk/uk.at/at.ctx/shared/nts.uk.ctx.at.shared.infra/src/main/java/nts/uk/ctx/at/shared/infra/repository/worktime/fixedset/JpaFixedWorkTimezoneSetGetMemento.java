@@ -58,8 +58,11 @@ public class JpaFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneSetGe
 				.map(item -> new EmTimeZoneSet(
 						new EmTimeFrameNo(item.getKshmtFixedWorkTimeSetPK().getTimeFrameNo()),
 						new TimeZoneRounding(new TimeWithDayAttr(item.getTimeStr()),
-								new TimeWithDayAttr(item.getTimeEnd()), new TimeRoundingSetting(
-										item.getUnit(), item.getRounding()))))
+						new TimeWithDayAttr(item.getTimeEnd()), new TimeRoundingSetting(
+								item.getUnit(), 
+								item.getRounding()))
+						)
+				)
 				.collect(Collectors.toList());
 	}
 
@@ -72,8 +75,8 @@ public class JpaFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneSetGe
 	 */
 	@Override
 	public List<OverTimeOfTimeZoneSet> getLstOTTimezone() {
-		return this.kshmtFixedOtTimeSets.stream().map(
-				item -> new OverTimeOfTimeZoneSet(new JpaFixOverTimeOfTimeZoneSetGetMemento(item)))
+		return this.kshmtFixedOtTimeSets.stream()
+				.map(item -> new OverTimeOfTimeZoneSet(new JpaFixOverTimeOfTimeZoneSetGetMemento(item)))
 				.collect(Collectors.toList());
 	}
 
