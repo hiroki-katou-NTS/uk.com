@@ -80,13 +80,6 @@ public class KshmtFlexHaRtSet extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexHaFixRest> kshmtFlexHaFixRests;
-	
-	/** The kshmt flex od rest sets. */
-	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true)})
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtFlexOdRestSet> kshmtFlexOdRestSets;
 
 	/**
 	 * Instantiates a new kshmt flex ha rt set.
