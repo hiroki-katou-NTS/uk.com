@@ -13,11 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromHd;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_HD_FROM_HD ")
@@ -28,7 +28,7 @@ public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 	public KshstHdFromHdPK kshstOverDayHdSetPK;
 
 	/** 変更後の法定内休出NO */
-	@Column(name = "WEEKDAY_NO")
+	@Column(name = "LEGAL_HD_NO")
 	public int legalHdNo;
 
 	/** 変更後の法定外休出NO */
@@ -47,4 +47,26 @@ public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return kshstOverDayHdSetPK;
 	}
+
+	public KshstHdFromHd(KshstHdFromHdPK kshstOverDayHdSetPK, int legalHdNo, int nonLegalHdNo,
+			int nonLegalPublicHdNo) {
+		super();
+		this.kshstOverDayHdSetPK = kshstOverDayHdSetPK;
+		this.legalHdNo = legalHdNo;
+		this.nonLegalHdNo = nonLegalHdNo;
+		this.nonLegalPublicHdNo = nonLegalPublicHdNo;
+	}
+	
+	public HdFromHd toDomain() {
+		return HdFromHd.createFromJavaType(this.kshstOverDayHdSetPK.companyId, this.kshstOverDayHdSetPK.breakFrameNo, this.legalHdNo, this.nonLegalHdNo, this.nonLegalPublicHdNo);
+	}
+	
+	public static KshstHdFromHd toEntity(HdFromHd domain){
+		return new KshstHdFromHd(
+				new KshstHdFromHdPK(domain.getCompanyId(),domain.getBreakFrameNo().v()),
+				domain.getLegalHdNo().v(),
+				domain.getNonLegalHdNo().v(), 
+				domain.getNonLegalPublicHdNo().v());
+	}
+
 }

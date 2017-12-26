@@ -22,8 +22,10 @@ public class AddZeroTimeCommandHandler extends CommandHandler<AddZeroTimeCommand
 		// convert to domain
 				ZeroTime calcHoliday = command.toDomain(companyId);
 				Optional<ZeroTime> optionalHoliday = this.repository.findByCId(companyId);
+				
 				if (optionalHoliday.isPresent()) {
 					// update Holiday Addtime
+					
 					this.repository.update(calcHoliday);
 				}else {
 					// add Holiday Addtime

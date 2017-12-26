@@ -31,7 +31,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstHolidayAdditionSet e");
-		builderString.append(" WHERE e.kshstHolidayAdditionSetPK.companyId = :companyId");
+		builderString.append(" WHERE e.kshstHolidayAddtimeSetPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 	}
 
@@ -68,8 +68,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @return
 	 */
 	private KshstWorkRegularSet convertToDbTypeRegularWork(RegularWork regularWork) {
-			KshstWorkRegularSet kshstRegularWorkSet = new KshstWorkRegularSet();
 			KshstWorkRegularSetPK kshstRegularWorkSetPK = new KshstWorkRegularSetPK(regularWork.getCompanyId());
+			KshstWorkRegularSet kshstRegularWorkSet = this.queryProxy().find(kshstRegularWorkSetPK,KshstWorkRegularSet.class).get();
 				kshstRegularWorkSet.calcActualOperation1 = regularWork.getCalcActualOperation1().value;
 				kshstRegularWorkSet.exemptTaxTime1 = regularWork.getExemptTaxTime1();
 				kshstRegularWorkSet.incChildNursingCare1 = regularWork.getIncChildNursingCare1();
@@ -157,8 +157,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @return
 	 */
 	private KshstHolidayAdditionSet convertToDbType(HolidayAddtion holidayAddtime){
-			KshstHolidayAdditionSet kshstHolidayAddtimeSet = new KshstHolidayAdditionSet();
 			KshstHolidayAdditionSetPK kshstHolidayAddtimeSetPK = new KshstHolidayAdditionSetPK(holidayAddtime.getCompanyId());
+			KshstHolidayAdditionSet kshstHolidayAddtimeSet =  this.queryProxy().find(kshstHolidayAddtimeSetPK,KshstHolidayAdditionSet.class).get();
 				kshstHolidayAddtimeSet.referComHolidayTime = holidayAddtime.getReferComHolidayTime();
 				kshstHolidayAddtimeSet.oneDay = holidayAddtime.getOneDay();
 				kshstHolidayAddtimeSet.morning = holidayAddtime.getMorning();
@@ -181,17 +181,17 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @return
 	 */
 	private KshstWorkDepLaborSet convertToDbTypeIrregularWork(WorkDepLabor irregularWork) {
-			KshstWorkDepLaborSet kshstWorkDepLaborSet = new KshstWorkDepLaborSet();
 			KshstWorkDepLaborSetPK kshstWorkDepLaborSetPK = new KshstWorkDepLaborSetPK(irregularWork.getCompanyId());
-				kshstWorkDepLaborSet.calcActualOperation1 = irregularWork.getCalcActualOperation1();
+			KshstWorkDepLaborSet kshstWorkDepLaborSet = this.queryProxy().find(kshstWorkDepLaborSetPK,KshstWorkDepLaborSet.class).get();
+				kshstWorkDepLaborSet.calcActualOperation1 = irregularWork.getCalcActualOperation1().value;
 				kshstWorkDepLaborSet.exemptTaxTime1 = irregularWork.getExemptTaxTime1();
 				kshstWorkDepLaborSet.incChildNursingCare1 = irregularWork.getIncChildNursingCare1();
 				kshstWorkDepLaborSet.additionTime1 = irregularWork.getAdditionTime1();
 				kshstWorkDepLaborSet.notDeductLateleave1 = irregularWork.getNotDeductLateleave1();
-				kshstWorkDepLaborSet.deformatExcValue = irregularWork.getDeformatExcValue();
+				kshstWorkDepLaborSet.deformatExcValue = irregularWork.getDeformatExcValue().value;
 				kshstWorkDepLaborSet.exemptTaxTime2 = irregularWork.getExemptTaxTime2();
 				kshstWorkDepLaborSet.minusAbsenceTime2 = irregularWork.getMinusAbsenceTime2();
-				kshstWorkDepLaborSet.calcActualOperation2 = irregularWork.getCalcActualOperation2();
+				kshstWorkDepLaborSet.calcActualOperation2 = irregularWork.getCalcActualOperation2().value;
 				kshstWorkDepLaborSet.incChildNursingCare2 = irregularWork.getIncChildNursingCare2();
 				kshstWorkDepLaborSet.notDeductLateleave2 = irregularWork.getNotDeductLateleave2();
 				kshstWorkDepLaborSet.additionTime2 = irregularWork.getAdditionTime2();
@@ -205,9 +205,9 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @return
 	 */
 	private KshstWorkFlexSet convertToDbTypeFlexWork(FlexWork flexWork) {
-			KshstWorkFlexSet kshstFlexWorkSet = new KshstWorkFlexSet();
+			
 			KshstWorkFlexSetPK kshstFlexWorkSetPK = new KshstWorkFlexSetPK(flexWork.getCompanyId());
-				
+			KshstWorkFlexSet kshstFlexWorkSet =  this.queryProxy().find(kshstFlexWorkSetPK,KshstWorkFlexSet.class).get();
 				kshstFlexWorkSet.calcActualOperation1 = flexWork.getCalcActualOperation1().value;
 				kshstFlexWorkSet.exemptTaxTime1 = flexWork.getExemptTaxTime1();
 				kshstFlexWorkSet.incChildNursingCare1 = flexWork.getIncChildNursingCare1();

@@ -97,6 +97,9 @@ public class AddZeroTimeCommand {
 	 * @return
 	 */
 	private List<WeekdayHoliday> toDomainWeekdayHoliday(String companyId) {
+		if(weekdayHoliday==null){
+			return null;
+		};
 		return this.weekdayHoliday.stream().map(x -> WeekdayHoliday.createFromJavaType(
 				companyId,
 				x.getOverworkFrameNo(), 
@@ -111,6 +114,9 @@ public class AddZeroTimeCommand {
 	 * @return
 	 */
 	private List<HdFromWeekday> toDomainOverdayHolidayAtten(String companyId) {
+		if(overdayHolidayAtten==null){
+			return null;
+		};
 		return this.overdayHolidayAtten.stream().map(x -> HdFromWeekday.createFromJavaType(
 				companyId, 
 				x.getHolidayWorkFrameNo(), 
@@ -118,6 +124,9 @@ public class AddZeroTimeCommand {
 	}
 	
 	private List<HdFromHd> toDomainOverdayCalcHoliday(String companyId) {
+		if(overdayCalcHoliday==null){
+			return null;
+		};
 		return this.overdayCalcHoliday.stream().map(x -> HdFromHd.createFromJavaType(
 				companyId, 
 				x.getHolidayWorkFrameNo(), 

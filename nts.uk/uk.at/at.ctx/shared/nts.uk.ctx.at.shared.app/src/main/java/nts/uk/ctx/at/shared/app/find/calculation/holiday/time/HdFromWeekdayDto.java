@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.calculation.holiday.time;
 
+import java.math.BigDecimal;
+
 /**
  * @author phongtq
  * 休日から平日への0時跨ぎ設定
@@ -13,6 +15,6 @@ public class HdFromWeekdayDto {
 	private int hdFrameNo;
 
 	/** 変更後の残業枠NO */
-	private int overtimeFrameNo;
+	private BigDecimal overtimeFrameNo;
 
 }

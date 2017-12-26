@@ -123,15 +123,15 @@ public class HolidayAddtionFinder {
 		}
 
 		WorkDepLaborDto laborDto = new WorkDepLaborDto();
-			laborDto.setCalcActualOperationPre(labor.getCalcActualOperation1());
+			laborDto.setCalcActualOperationPre(labor.getCalcActualOperation1().value);
 			laborDto.setExemptTaxTimePre(labor.getExemptTaxTime1());
 			laborDto.setIncChildNursingCarePre(labor.getIncChildNursingCare1());
 			laborDto.setAdditionTimePre(labor.getAdditionTime1());
 			laborDto.setNotDeductLateleavePre(labor.getNotDeductLateleave1());
-			laborDto.setDeformatExcValue(labor.getDeformatExcValue());
+			laborDto.setDeformatExcValue(labor.getDeformatExcValue().value);
 			laborDto.setExemptTaxTimeWork(labor.getExemptTaxTime2());
 			laborDto.setMinusAbsenceTimeWork(labor.getMinusAbsenceTime2());
-			laborDto.setCalcActualOperationWork(labor.getCalcActualOperation2());
+			laborDto.setCalcActualOperationWork(labor.getCalcActualOperation2().value);
 			laborDto.setIncChildNursingCareWork(labor.getIncChildNursingCare2());
 			laborDto.setNotDeductLateleaveWork(labor.getNotDeductLateleave2());
 			laborDto.setAdditionTimeWork(labor.getAdditionTime2());

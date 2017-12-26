@@ -1,4 +1,6 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
+import java.math.BigDecimal;
+
 /**
  * @author phongtq
  * 休日から平日への0時跨ぎ設定
@@ -6,6 +8,8 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
 
 @AllArgsConstructor
 @Getter
@@ -14,10 +18,10 @@ public class HdFromWeekday extends DomainObject{
 	private String companyId;
 
 	/** 変更前の休出枠NO */
-	private int hdFrameNo;
+	private BreakoutFrameNo hdFrameNo;
 
 	/** 変更後の残業枠NO */
-	private int overtimeFrameNo;
+	private OvertimeWorkFrameNo overtimeFrameNo;
 
 	/**
 	 * Create from Java Type of Hd From Weekday
@@ -26,7 +30,7 @@ public class HdFromWeekday extends DomainObject{
 	 * @param overtimeFrameNo
 	 * @return
 	 */
-	public static HdFromWeekday createFromJavaType(String companyId, int hdFrameNo, int overtimeFrameNo) {
-		return new HdFromWeekday(companyId, hdFrameNo, overtimeFrameNo);
+	public static HdFromWeekday createFromJavaType(String companyId, int hdFrameNo, BigDecimal overtimeFrameNo) {
+		return new HdFromWeekday(companyId, new BreakoutFrameNo(hdFrameNo), new OvertimeWorkFrameNo(overtimeFrameNo));
 	}
 }
