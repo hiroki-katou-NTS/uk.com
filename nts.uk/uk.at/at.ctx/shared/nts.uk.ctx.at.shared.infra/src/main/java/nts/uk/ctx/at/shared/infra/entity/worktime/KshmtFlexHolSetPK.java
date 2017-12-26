@@ -41,6 +41,18 @@ public class KshmtFlexHolSetPK implements Serializable {
 	public KshmtFlexHolSetPK() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new kshmt flex hol set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 */
+	public KshmtFlexHolSetPK(String cid, String worktimeCd) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -80,5 +92,6 @@ public class KshmtFlexHolSetPK implements Serializable {
 		}
 		return true;
 	}
+	
 
 }

@@ -55,6 +55,16 @@ public class KshmtFlexWorkTimeSet implements Serializable {
 	 */
 	public KshmtFlexWorkTimeSet() {
 	}
+	
+	/**
+	 * Instantiates a new kshmt flex work time set.
+	 *
+	 * @param kshmtFlexWorkTimeSetPK the kshmt flex work time set PK
+	 */
+	public KshmtFlexWorkTimeSet(KshmtFlexWorkTimeSetPK kshmtFlexWorkTimeSetPK) {
+		super();
+		this.kshmtFlexWorkTimeSetPK = kshmtFlexWorkTimeSetPK;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -86,5 +96,6 @@ public class KshmtFlexWorkTimeSet implements Serializable {
 		}
 		return true;
 	}
+
 
 }

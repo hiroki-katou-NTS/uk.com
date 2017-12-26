@@ -50,6 +50,22 @@ public class KshmtFlexHaFixRestPK implements Serializable {
 	 *
 	 * @param cid the cid
 	 * @param worktimeCd the worktime cd
+	 * @param amPmAtr the am pm atr
+	 * @param periodNo the period no
+	 */
+	public KshmtFlexHaFixRestPK(String cid, String worktimeCd, int amPmAtr, int periodNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.amPmAtr = amPmAtr;
+		this.periodNo = periodNo;
+	}
+
+	/**
+	 * Instantiates a new kshmt flex ha fix rest PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
 	 */
 	public KshmtFlexHaFixRestPK(String cid, String worktimeCd) {
 		super();

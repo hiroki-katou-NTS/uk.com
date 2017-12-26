@@ -53,6 +53,15 @@ public class KshmtFlexStampReflect extends UkJpaEntity implements Serializable {
 	public KshmtFlexStampReflect() {
 	}
 
+	/**
+	 * Instantiates a new kshmt flex stamp reflect.
+	 *
+	 * @param kshmtFlexStampReflectPK the kshmt flex stamp reflect PK
+	 */
+	public KshmtFlexStampReflect(KshmtFlexStampReflectPK kshmtFlexStampReflectPK) {
+		super();
+		this.kshmtFlexStampReflectPK = kshmtFlexStampReflectPK;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

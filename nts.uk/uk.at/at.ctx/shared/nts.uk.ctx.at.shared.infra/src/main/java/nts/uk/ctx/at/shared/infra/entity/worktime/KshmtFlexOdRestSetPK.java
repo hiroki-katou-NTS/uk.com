@@ -40,6 +40,21 @@ public class KshmtFlexOdRestSetPK implements Serializable {
 	 */
 	public KshmtFlexOdRestSetPK() {
 	}
+	
+
+	/**
+	 * Instantiates a new kshmt flex od rest set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param periodNo the period no
+	 */
+	public KshmtFlexOdRestSetPK(String cid, String worktimeCd, int periodNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.periodNo = periodNo;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -75,5 +90,6 @@ public class KshmtFlexOdRestSetPK implements Serializable {
 		}
 		return true;
 	}
+
 
 }

@@ -41,7 +41,18 @@ public class KshmtFlexStampReflectPK implements Serializable {
 	 */
 	public KshmtFlexStampReflectPK() {
 	}
-
+	
+	/**
+	 * Instantiates a new kshmt flex stamp reflect PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 */
+	public KshmtFlexStampReflectPK(String cid, String worktimeCd) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -84,7 +95,6 @@ public class KshmtFlexStampReflectPK implements Serializable {
 			return false;
 		return true;
 	}
-
 
 
 }

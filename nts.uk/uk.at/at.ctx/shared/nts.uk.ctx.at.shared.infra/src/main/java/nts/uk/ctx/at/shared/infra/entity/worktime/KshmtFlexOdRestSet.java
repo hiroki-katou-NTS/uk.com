@@ -48,7 +48,17 @@ public class KshmtFlexOdRestSet extends UkJpaEntity implements Serializable {
 	 */
 	public KshmtFlexOdRestSet() {
 	}
+	
 
+	/**
+	 * Instantiates a new kshmt flex od rest set.
+	 *
+	 * @param kshmtFlexOdRestSetPK the kshmt flex od rest set PK
+	 */
+	public KshmtFlexOdRestSet(KshmtFlexOdRestSetPK kshmtFlexOdRestSetPK) {
+		super();
+		this.kshmtFlexOdRestSetPK = kshmtFlexOdRestSetPK;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -89,5 +99,6 @@ public class KshmtFlexOdRestSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexOdRestSetPK;
 	}
+
 
 }

@@ -20,6 +20,9 @@ import lombok.Setter;
 @Embeddable
 public class KshmtFlexHaRestSetPK implements Serializable {
 
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
@@ -30,7 +33,11 @@ public class KshmtFlexHaRestSetPK implements Serializable {
 
 	/** The am pm atr. */
 	@Column(name = "AM_PM_ATR")
-	private short amPmAtr;
+	private int amPmAtr;
+	
+	/** The period no. */
+	@Column(name = "PERIOD_NO")
+	private int periodNo;
 
 	/**
 	 * Instantiates a new kshmt flex ha rest set PK.
@@ -42,19 +49,18 @@ public class KshmtFlexHaRestSetPK implements Serializable {
 	/**
 	 * Instantiates a new kshmt flex ha rest set PK.
 	 *
-	 * @param cid
-	 *            the cid
-	 * @param worktimeCd
-	 *            the worktime cd
-	 * @param amPmAtr
-	 *            the am pm atr
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param amPmAtr the am pm atr
+	 * @param periodNo the period no
 	 */
-	public KshmtFlexHaRestSetPK(String cid, String worktimeCd, short amPmAtr) {
+	public KshmtFlexHaRestSetPK(String cid, String worktimeCd, int amPmAtr, int periodNo) {
+		super();
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
 		this.amPmAtr = amPmAtr;
+		this.periodNo = periodNo;
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -93,4 +99,5 @@ public class KshmtFlexHaRestSetPK implements Serializable {
 		}
 		return true;
 	}
+
 }

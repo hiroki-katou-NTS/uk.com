@@ -40,6 +40,19 @@ public class KshmtFlexHaRtSetPK implements Serializable {
 	 */
 	public KshmtFlexHaRtSetPK() {
 	}
+	
+
+	/**
+	 * Instantiates a new kshmt flex ha rt set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 */
+	public KshmtFlexHaRtSetPK(String cid, String worktimeCd) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -79,4 +92,5 @@ public class KshmtFlexHaRtSetPK implements Serializable {
 		}
 		return true;
 	}
+
 }

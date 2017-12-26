@@ -80,12 +80,30 @@ public class KshmtFlexHaRtSet extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexHaFixRest> kshmtFlexHaFixRests;
+	
+	/** The kshmt flex ha rest sets. */
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true),
+		@JoinColumn(name = "AM_PM_ATR", referencedColumnName = "AM_PM_ATR", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexHaRestSet> kshmtFlexHaRestSets;
 
 	/**
 	 * Instantiates a new kshmt flex ha rt set.
 	 */
 	public KshmtFlexHaRtSet() {
 		super();
+	}
+
+	/**
+	 * Instantiates a new kshmt flex ha rt set.
+	 *
+	 * @param kshmtFlexHaRtSetPK the kshmt flex ha rt set PK
+	 */
+	public KshmtFlexHaRtSet(KshmtFlexHaRtSetPK kshmtFlexHaRtSetPK) {
+		super();
+		this.kshmtFlexHaRtSetPK = kshmtFlexHaRtSetPK;
 	}
 
 	/*
@@ -128,5 +146,6 @@ public class KshmtFlexHaRtSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexHaRtSetPK;
 	}
+
 
 }

@@ -82,6 +82,17 @@ public class KshmtFlexHolSet extends UkJpaEntity implements Serializable {
 	public KshmtFlexHolSet() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new kshmt flex hol set.
+	 *
+	 * @param kshmtFlexHolSetPK the kshmt flex hol set PK
+	 */
+	public KshmtFlexHolSet(KshmtFlexHolSetPK kshmtFlexHolSetPK) {
+		super();
+		this.kshmtFlexHolSetPK = kshmtFlexHolSetPK;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -121,5 +132,6 @@ public class KshmtFlexHolSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexHolSetPK;
 	}
+	
 
 }

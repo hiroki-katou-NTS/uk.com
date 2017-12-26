@@ -15,9 +15,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -62,12 +59,13 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 
 	
 
-	/** The kshmt flex od fix rest. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
-	private KshmtFlexOdFixRest kshmtFlexOdFixRest;
 	
+	/** The kshmt flex od fix rests. */
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexOdFixRest> kshmtFlexOdFixRests;
 	
 	/** The kshmt flex hol sets. */
 	@JoinColumns({
@@ -83,13 +81,23 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexOdRestSet> kshmtFlexOdRestSets;
 	
-	
+
 	
 	
 	/**
 	 * Instantiates a new kshmt flex od rt set.
 	 */
 	public KshmtFlexOdRtSet() {
+	}
+
+	/**
+	 * Instantiates a new kshmt flex od rt set.
+	 *
+	 * @param kshmtFlexOdRtSetPK the kshmt flex od rt set PK
+	 */
+	public KshmtFlexOdRtSet(KshmtFlexOdRtSetPK kshmtFlexOdRtSetPK) {
+		super();
+		this.kshmtFlexOdRtSetPK = kshmtFlexOdRtSetPK;
 	}
 
 	/*
@@ -132,6 +140,7 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexOdRtSetPK;
 	}
+
 	
 
 }

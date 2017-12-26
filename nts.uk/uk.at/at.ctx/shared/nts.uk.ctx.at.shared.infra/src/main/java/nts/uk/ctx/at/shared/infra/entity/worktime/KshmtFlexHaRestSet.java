@@ -35,9 +35,6 @@ public class KshmtFlexHaRestSet extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The period no. */
-	@Column(name = "PERIOD_NO")
-	private int periodNo;
 
 	/** The flow rest time. */
 	@Column(name = "FLOW_REST_TIME")
@@ -53,6 +50,17 @@ public class KshmtFlexHaRestSet extends UkJpaEntity implements Serializable {
 	public KshmtFlexHaRestSet() {
 		super();
 	}
+
+	/**
+	 * Instantiates a new kshmt flex ha rest set.
+	 *
+	 * @param kshmtFlexHaRestSetPK the kshmt flex ha rest set PK
+	 */
+	public KshmtFlexHaRestSet(KshmtFlexHaRestSetPK kshmtFlexHaRestSetPK) {
+		super();
+		this.kshmtFlexHaRestSetPK = kshmtFlexHaRestSetPK;
+	}
+
 
 	/*
 	 * (non-Javadoc)

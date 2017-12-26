@@ -49,6 +49,18 @@ public class KshmtFlexHaFixRest extends UkJpaEntity implements Serializable {
 	 */
 	public KshmtFlexHaFixRest() {
 	}
+	
+	/**
+	 * Instantiates a new kshmt flex ha fix rest.
+	 *
+	 * @param kshmtFlexHaFixRestPK the kshmt flex ha fix rest PK
+	 */
+	public KshmtFlexHaFixRest(KshmtFlexHaFixRestPK kshmtFlexHaFixRestPK) {
+		super();
+		this.kshmtFlexHaFixRestPK = kshmtFlexHaFixRestPK;
+	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -90,5 +102,7 @@ public class KshmtFlexHaFixRest extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexHaFixRestPK;
 	}
+
+
 
 }

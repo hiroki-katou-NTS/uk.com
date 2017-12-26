@@ -30,12 +30,32 @@ public class KshmtFlexOdFixRestPK implements Serializable {
 	/** The worktime cd. */
 	@Column(name = "WORKTIME_CD")
 	private String worktimeCd;
+	
+	/** The period no. */
+	@Column(name = "PERIOD_NO")
+	private int periodNo;
 
 	/**
 	 * Instantiates a new kshmt flex od fix rest PK.
 	 */
 	public KshmtFlexOdFixRestPK() {
 	}
+	
+
+	/**
+	 * Instantiates a new kshmt flex od fix rest PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param periodNo the period no
+	 */
+	public KshmtFlexOdFixRestPK(String cid, String worktimeCd, int periodNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.periodNo = periodNo;
+	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -71,5 +91,6 @@ public class KshmtFlexOdFixRestPK implements Serializable {
 		}
 		return true;
 	}
+
 
 }

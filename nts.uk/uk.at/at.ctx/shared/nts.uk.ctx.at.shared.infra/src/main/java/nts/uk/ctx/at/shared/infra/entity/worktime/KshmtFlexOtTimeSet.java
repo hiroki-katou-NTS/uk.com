@@ -76,6 +76,17 @@ public class KshmtFlexOtTimeSet extends UkJpaEntity implements Serializable {
 	 */
 	public KshmtFlexOtTimeSet() {
 	}
+	
+
+	/**
+	 * Instantiates a new kshmt flex ot time set.
+	 *
+	 * @param kshmtFlexOtTimeSetPK the kshmt flex ot time set PK
+	 */
+	public KshmtFlexOtTimeSet(KshmtFlexOtTimeSetPK kshmtFlexOtTimeSetPK) {
+		super();
+		this.kshmtFlexOtTimeSetPK = kshmtFlexOtTimeSetPK;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -117,5 +128,6 @@ public class KshmtFlexOtTimeSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexOtTimeSetPK;
 	}
+
 
 }

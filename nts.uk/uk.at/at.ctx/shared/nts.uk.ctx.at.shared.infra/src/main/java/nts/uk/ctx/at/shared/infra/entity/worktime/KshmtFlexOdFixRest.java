@@ -35,9 +35,6 @@ public class KshmtFlexOdFixRest extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The period no. */
-	@Column(name = "PERIOD_NO")
-	private int periodNo;
 
 	/** The str time. */
 	@Column(name = "STR_TIME")
@@ -52,6 +49,18 @@ public class KshmtFlexOdFixRest extends UkJpaEntity implements Serializable {
 	 */
 	public KshmtFlexOdFixRest() {
 	}
+
+
+	/**
+	 * Instantiates a new kshmt flex od fix rest.
+	 *
+	 * @param kshmtFlexOdFixRestPK the kshmt flex od fix rest PK
+	 */
+	public KshmtFlexOdFixRest(KshmtFlexOdFixRestPK kshmtFlexOdFixRestPK) {
+		super();
+		this.kshmtFlexOdFixRestPK = kshmtFlexOdFixRestPK;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -93,5 +102,6 @@ public class KshmtFlexOdFixRest extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexOdFixRestPK;
 	}
+
 
 }

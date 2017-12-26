@@ -45,6 +45,21 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
 	public KshmtFlexOtTimeSetPK() {
 	}
 
+	/**
+	 * Instantiates a new kshmt flex ot time set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param amPmAtr the am pm atr
+	 * @param worktimeNo the worktime no
+	 */
+	public KshmtFlexOtTimeSetPK(String cid, String worktimeCd, int amPmAtr, int worktimeNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.amPmAtr = amPmAtr;
+		this.worktimeNo = worktimeNo;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -87,5 +102,6 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
 		}
 		return true;
 	}
+
 
 }

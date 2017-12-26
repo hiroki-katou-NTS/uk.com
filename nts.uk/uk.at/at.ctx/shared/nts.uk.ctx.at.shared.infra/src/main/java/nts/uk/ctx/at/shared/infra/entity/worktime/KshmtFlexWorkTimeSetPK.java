@@ -44,6 +44,23 @@ public class KshmtFlexWorkTimeSetPK implements Serializable {
 	 */
 	public KshmtFlexWorkTimeSetPK() {
 	}
+	
+
+	/**
+	 * Instantiates a new kshmt flex work time set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param amPmAtr the am pm atr
+	 * @param timeFrameNo the time frame no
+	 */
+	public KshmtFlexWorkTimeSetPK(String cid, String worktimeCd, int amPmAtr, int timeFrameNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.amPmAtr = amPmAtr;
+		this.timeFrameNo = timeFrameNo;
+	}
 
 	/*
 	 * (non-Javadoc)
