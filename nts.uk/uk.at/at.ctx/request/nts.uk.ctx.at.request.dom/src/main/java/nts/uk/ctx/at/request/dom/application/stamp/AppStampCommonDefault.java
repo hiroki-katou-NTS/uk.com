@@ -43,7 +43,7 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	
 	@Override
 	public void appReasonCheck(String applicationReason, AppStamp appStamp) {
-		appStamp.setApplicationReason(new AppReason(applicationReason));
+		appStamp.getApplication_New().setAppReason(new AppReason(applicationReason));
 	}
 
 	@Override
@@ -57,10 +57,10 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	public void validateReason(AppStamp appStamp) {
 		/*申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
 		 ※詳細はアルゴリズム参照*/
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(appStamp.getCompanyID());
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(appStamp.getApplication_New().getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
-				Strings.isEmpty(appStamp.getApplicationReason().v())){
+				Strings.isEmpty(appStamp.getApplication_New().getAppReason().v())){
 					throw new BusinessException("Msg_115");
 		}
 		appStamp.customValidate();

@@ -31,9 +31,9 @@ public class AppStampGoOutPermitDto {
 				appStampGoOutPermit.getStampAtr().value, 
 				appStampGoOutPermit.getStampFrameNo(), 
 				appStampGoOutPermit.getStampGoOutAtr().value, 
-				appStampGoOutPermit.getStartTime().v(), 
-				appStampGoOutPermit.getStartLocation(), 
-				appStampGoOutPermit.getEndTime().v(), 
-				appStampGoOutPermit.getEndLocation());
+				appStampGoOutPermit.getStartTime().get().v(), 
+				appStampGoOutPermit.getStartLocation().get(), 
+				appStampGoOutPermit.getEndTime().get().v(), 
+				appStampGoOutPermit.getEndLocation().get());
 	}
 }

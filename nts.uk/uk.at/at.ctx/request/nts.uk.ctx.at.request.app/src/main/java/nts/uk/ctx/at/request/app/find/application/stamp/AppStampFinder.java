@@ -98,7 +98,7 @@ public class AppStampFinder {
 	public AppStampDto getAppStampByID(String appID){
 		String companyID = AppContexts.user().companyId();
 		AppStamp appStamp = appStampRepository.findByAppID(companyID, appID);
-		String employee = appStampCommonDomainService.getEmployeeName(appStamp.getApplicantSID());
+		String employee = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
 		return AppStampDto.convertToDto(appStamp, employee);
 	}
 }
