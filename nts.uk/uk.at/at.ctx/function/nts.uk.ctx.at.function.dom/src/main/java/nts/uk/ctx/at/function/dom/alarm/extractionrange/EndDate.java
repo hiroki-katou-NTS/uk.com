@@ -29,10 +29,10 @@ public class EndDate {
 	// 日数指定
 	private Days endDays;
 
-	public EndDate(int endSpecify, Days endDays, Month endMonth) {
+	public EndDate(int endSpecify, int monthPrevious, int month, boolean curentMonth, int dayPrevious, int day, boolean makeToDay) {
 		super();
 		this.endSpecify = EnumAdaptor.valueOf(endSpecify, EndSpecify.class);
-		this.endMonth = endMonth;
-		this.endDays = endDays;
+		this.endMonth = new Month(monthPrevious, month, curentMonth);
+		this.endDays = new Days(dayPrevious, day, makeToDay);
 	}
 }

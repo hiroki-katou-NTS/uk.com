@@ -15,7 +15,7 @@ public class Month {
 
 	/**Specify number of days*/	
 	/**日数指定*/
-	private PreviousClassification previousClassification;
+	private PreviousClassification monthPrevious;
 		
 	/** Month*/
 	// 月数: 締め日指定月数
@@ -25,9 +25,9 @@ public class Month {
 	// 当日とする
 	private boolean curentMonth;
 	
-	public Month(int previousClassification, int month, boolean curentMonth) {
+	public Month(int monthPrevious, int month, boolean curentMonth) {
 		super();
-		this.previousClassification = EnumAdaptor.valueOf(previousClassification, PreviousClassification.class);
+		this.monthPrevious = EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class);
 		this.month = month;
 		this.curentMonth = curentMonth;
 	}

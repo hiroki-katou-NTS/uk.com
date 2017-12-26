@@ -26,11 +26,11 @@ public class StartDate {
 	// 日数指定
 	private Days strDays;
 
-	public StartDate(int startSpecify,  Days strDays, Month strMonth) {
+	public StartDate(int startSpecify,  int monthPrevious, int month, boolean curentMonth, int dayPrevious, int day, boolean makeToDay) {
 		super();
 		this.startSpecify = EnumAdaptor.valueOf(startSpecify, StartSpecify.class);
-		this.strMonth = strMonth;
-		this.strDays = strDays;
+		this.strMonth = new Month(monthPrevious, month, curentMonth);
+		this.strDays = new Days(dayPrevious, day, makeToDay);
 	}
 
 }
