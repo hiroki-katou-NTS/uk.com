@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandl
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClousureEmpAddCommand;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.BsEmploymentFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdsDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CurrentClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeInDto;
@@ -79,18 +81,6 @@ public class ClosureWs {
 		return this.finder.getClosureEmploy();
 	}
 	
-	/**
-	 * Gets the closure id name.
-	 *
-	 * @param referDate the refer date
-	 * @return the closure id name
-	 */
-	@POST
-	@Path("getClosureIdName/{referDate}")
-	public List<ClosureIdNameDto> getClosureIdName(@PathParam("referDate") int referDate) {
-		return this.finder.getClosureIdName(referDate);
-	}
-
 	/**
 	 * Find all.
 	 *
@@ -243,5 +233,41 @@ public class ClosureWs {
 	public List<CurrentClosureDto> findStartEndDate() {
 		return this.currentClosureFinder.findCurrentClosure();
 	}
+	
+	/**
+	 * Gets the closure id name.
+	 *
+	 * @param referDate the refer date
+	 * @return the closure id name
+	 */
+	@POST
+	@Path("getClosureIdName")
+	public List<ClosureIdNameDto> getClosureIdName() {
+		return this.finder.getClosureIdName();
+	}
 
+	/**
+	 * Find emp by closure id.
+	 *
+	 * @param closureId the closure id
+	 * @return the list
+	 */
+	@POST
+	@Path("findEmpByClosureId/{closureId}")
+	public List<BsEmploymentFindDto> findEmpByClosureId(@PathParam("closureId") int closureId) {
+		return this.finder.findEmpByClosureId(closureId);
+	}
+	
+	/**
+	 * Find emp by closure ids.
+	 *
+	 * @param closureIdsDto the closure ids dto
+	 * @return the list
+	 */
+	@POST
+	@Path("findEmpByClosureIds")
+	public List<BsEmploymentFindDto> findEmpByClosureIds(ClosureIdsDto closureIdsDto) {
+		return this.finder.findEmpByClosureIds(closureIdsDto.getClosureIds());
+	}
+	
 }
