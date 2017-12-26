@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -18,8 +19,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -90,4 +96,19 @@ public class WwfdtApprovalFrame extends UkJpaEntity {
 				.build();
 	}
 	
+	public ApprovalFrame toDomain(){
+		return ApprovalFrame.builder()
+				.rootStateID(this.wwfdpApprovalFramePK.rootStateID)
+				.phaseOrder(this.wwfdpApprovalFramePK.phaseOrder)
+				.frameOrder(this.wwfdpApprovalFramePK.frameOrder)
+				.approvalAtr(EnumAdaptor.valueOf(this.approvalAtr, ApprovalBehaviorAtr.class))
+				.confirmAtr(EnumAdaptor.valueOf(this.confirmAtr, ConfirmPerson.class))
+				.approverID(this.approverID)
+				.representerID(this.representerID)
+				.approvalDate(this.approvalDate)
+				.approvalReason(this.approvalReason)
+				.listApproverState(this.listWwfdtApproverState.stream()
+									.map(x -> x.toDomain()).collect(Collectors.toList()))
+				.build();
+	}
 }

@@ -51,4 +51,13 @@ public class WwfdtApproverState extends UkJpaEntity {
 				.build();
 	}
 	
+	public ApproverState toDomain(){
+		return ApproverState.builder()
+				.rootStateID(this.wwfdpApproverStatePK.rootStateID)
+				.phaseOrder(this.wwfdpApproverStatePK.phaseOrder)
+				.frameOrder(this.wwfdpApproverStatePK.frameOrder)
+				.approverID(this.wwfdpApproverStatePK.approverID)
+				.build();
+	}
+	
 }

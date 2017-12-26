@@ -10,7 +10,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
  */
 public interface ApprovalRootStatePub {
 	
-	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date);
+	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID);
 	
 	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String historyID, String appID);
 	
