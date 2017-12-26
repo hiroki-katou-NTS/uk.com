@@ -44,6 +44,22 @@ public class KshmtFixedOtTimeSetPK implements Serializable {
 	 */
 	public KshmtFixedOtTimeSetPK() {
 	}
+	
+	/**
+	 * Instantiates a new kshmt fixed ot time set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param amPmAtr the am pm atr
+	 * @param worktimeNo the worktime no
+	 */
+	public KshmtFixedOtTimeSetPK(String cid, String worktimeCd, int amPmAtr, int worktimeNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.amPmAtr = amPmAtr;
+		this.worktimeNo = worktimeNo;
+	}
 
 	/*
 	 * (non-Javadoc)

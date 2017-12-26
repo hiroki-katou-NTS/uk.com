@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
@@ -53,7 +54,7 @@ public class JpaFixOverTimeOfTimeZoneSetGetMemento implements OverTimeOfTimeZone
 	 */
 	@Override
 	public boolean getRestraintTimeUse() {
-		return this.entity.getTreatTimeWork() == 1 ? true : false;
+		return BooleanGetAtr.getAtrByInteger(this.entity.getTreatTimeWork());
 	}
 
 	/*
@@ -65,7 +66,7 @@ public class JpaFixOverTimeOfTimeZoneSetGetMemento implements OverTimeOfTimeZone
 	 */
 	@Override
 	public boolean getEarlyOTUse() {
-		return this.entity.getTreatEarlyOtWork() == 1 ? true : false;
+		return BooleanGetAtr.getAtrByInteger(this.entity.getTreatEarlyOtWork());
 	}
 
 	/*
