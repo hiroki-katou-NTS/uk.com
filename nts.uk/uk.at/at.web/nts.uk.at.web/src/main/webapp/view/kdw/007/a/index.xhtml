@@ -45,7 +45,7 @@
 					}"></table>
 					<div id="right-content">
 						<com:ko-if bind="!isNewMode()">
-							<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCode', required: true }">#{i18n.getText('KDW007_6')}</div>
+							<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCode'}">#{i18n.getText('KDW007_6')}</div>
 							<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
 								value: selectedErrorAlarm().code,
 								constraint: 'ErrorAlarmWorkRecordCode',
@@ -54,7 +54,7 @@
 								}" />
 						</com:ko-if>
 						<com:ko-if bind="isNewMode">
-							<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCodeNewMode', required: true }">#{i18n.getText('KDW007_6')}</div>
+							<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCodeNewMode'}">#{i18n.getText('KDW007_6')}</div>
 							<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
 								value: selectedErrorAlarm().code,
 								constraint: 'ErrorAlarmWorkRecordCodeNewMode',
@@ -62,14 +62,14 @@
 								enable: isNewMode
 								}" />
 						</com:ko-if>
-						<div id="labelName" data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordName', required: true }">#{i18n.getText('KDW007_7')}</div>
+						<div id="labelName" data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordName'}">#{i18n.getText('KDW007_7')}</div>
 						<input id="errorAlarmWorkRecordName" class="need-check" data-bind="ntsTextEditor: {
 							value: selectedErrorAlarm().name,
 							constraint: 'ErrorAlarmWorkRecordName',
 							required: true,
 							enable: true
 							}" /><br/>
-						<div id="labelUseAtr" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW007_8')}</div>
+						<div id="labelUseAtr" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_8')}</div>
 						<div id="useAtr" class="cf" data-bind="ntsSwitchButton: {
 							options: listUseAtr,
 							optionsValue: 'code',
@@ -79,19 +79,20 @@
 						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<!-- Tab 1 -->
 							<div class="settingTab">
-								<div id="type-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDW007_10')}</div>
+								<div id="type-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_10')}</div>
 								<div id="typeAtr" class="cf" data-bind="ntsSwitchButton: {
 									options: listTypeAtr,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedErrorAlarm().typeAtr,
 									enable: selectedErrorAlarm().fixedAtr() != 1 }"></div><br/>
-								<div id="color-display-target-item-label" data-bind="ntsFormLabel: { }">#{i18n.getText('KDW007_11')}</div>
+								<span id="noticed-label">#{i18n.getText('KDW007_91')}</span><br/>
+								<div id="color-display-target-item-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_11')}</div>
 								<button id="color-display-target-item-button" data-bind="click:openSelectAtdItemColorDialog, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_12')}</button>
 								<span id="color-display-target-item-span" data-bind="text: selectedErrorAlarm().errorDisplayItemName"></span><br/>
-								<div id="color-label" data-bind="ntsFormLabel: { }">#{i18n.getText('KDW007_13')}</div>
+								<div id="color-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_13')}</div>
 								<div id="colorpicker" data-bind="ntsColorPicker: {value: selectedErrorAlarm().messageColor, enable: selectedErrorAlarm().typeAtr() != 2, width: 100}"/><br/>
-								<div id="message-label" data-bind="ntsFormLabel: { required: true, constraint: 'DisplayMessage' }">#{i18n.getText('KDW007_14')}</div>
+								<div id="message-label" data-bind="ntsFormLabel: {constraint: 'DisplayMessage' }">#{i18n.getText('KDW007_14')}</div>
 								<textarea id="messageDisplay" class="need-check" data-bind="ntsMultilineEditor: { 
 									value: selectedErrorAlarm().displayMessage, 
 									constraint: 'DisplayMessage', 
@@ -186,7 +187,7 @@
 		                            </tr>
 		                            <tr>
 		                            	<td>
-		                            		<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_60')}</div>
+		                            		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_60')}</div>
 		                            	</td>
 		                            	<td>
 		                            		<div id="combo-box" data-bind="ntsComboBox: {
@@ -202,7 +203,7 @@
 		                            </tr>
 		                            <tr>
 		                            	<td>
-		                            		<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_61')}</div>
+		                            		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_61')}</div>
 		                            	</td>
 		                            	<td>
 		                            		<div id="combo-box" data-bind="ntsComboBox: {
@@ -268,7 +269,7 @@
 		                            		<span>#{i18n.getText('KDW007_66')}</span>
 		                            	</td>
 		                            	<td>
-		                            		<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_67')}</div>
+		                            		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_67')}</div>
 		                            		<div data-bind="ntsRadioBoxGroup: {
 												options: enumLogicalOperator,
 												optionsValue: 'code',
