@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDateTime;
 
@@ -22,6 +23,7 @@ public class ReflectionInformation_New extends DomainObject {
 	private ReflectedState_New stateReflection;
 	
 	// 実績反映状態
+	@Setter
 	private ReflectedState_New stateReflectionReal;
 	
 	// 予定強制反映
