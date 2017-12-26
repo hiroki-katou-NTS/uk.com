@@ -12,27 +12,18 @@ import java.util.Optional;
 public interface FixedWorkSettingRepository {
 
 	/**
-	 * Find.
-	 *
-	 * @param companyId the company id
-	 * @param workTimeCode the work time code
-	 * @return the optional
-	 */
-	Optional<FixedWorkSetting> find(String companyId, String workTimeCode);
-
-	/**
 	 * Adds the.
 	 *
 	 * @param domain the domain
 	 */
-	public void add(FixedWorkSetting domain);
+	void add(FixedWorkSetting domain);
 	
 	/**
 	 * Update.
 	 *
 	 * @param domain the domain
 	 */
-	public void update(FixedWorkSetting domain);
+	void update(FixedWorkSetting domain);
 	
 	/**
 	 * Removes the.
@@ -40,5 +31,14 @@ public interface FixedWorkSettingRepository {
 	 * @param companyId the company id
 	 * @param workTimeCode the work time code
 	 */
-	public void remove(String companyId, String workTimeCode);
+	void remove(String companyId, String workTimeCode);
+	
+	/**
+	 * Find by key.
+	 *
+	 * @param companyId the company id
+	 * @param workTimeCode the work time code
+	 * @return the optional
+	 */
+	Optional<FixedWorkSetting> findByKey(String companyId, String workTimeCode);
 }

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -140,8 +141,9 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public List<StampReflectTimezone> getLstStampReflectTimezone() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entity.getLstKshmtFixedStampReflect().stream()
+				.map(entity -> new StampReflectTimezone(new JpaFixedStampReflectTimezoneGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/*
