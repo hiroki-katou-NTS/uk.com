@@ -38,6 +38,13 @@ public class TimeZone extends DomainObject {
 		this.end = end;
 	}
 
+	/**
+	 * Instantiates a new time zone.
+	 */
+	public TimeZone() {
+		super();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
