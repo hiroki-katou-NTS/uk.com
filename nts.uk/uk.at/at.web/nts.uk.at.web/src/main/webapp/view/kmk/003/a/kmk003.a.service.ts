@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk003.a {
         let servicePath: any = {
             findWithCondition: "at/shared/worktime/findwithcondition",
             findAllWorktime: "at/shared/worktimeset/findAll",
-            findWorktimeSetingInfoByCode: "at/shared/worktimeset/findByCode",
+            findWorktimeSetingInfoByCode: "at/shared/worktime/findInfo",
             getEnumWorktimeSeting: "at/shared/worktimeset/getenum",
             getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",

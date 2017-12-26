@@ -115,7 +115,7 @@ module nts.uk.at.view.kmk003.a {
                 self.isClickSave = ko.observable(false);
                 
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
-                   self.updateWorktimeCode(worktimeCode); 
+                   self.loadWorktimeSetting(worktimeCode); 
                 });
                 
                 self.screenMode = ko.observable(ScreenMode.NEW);
@@ -129,14 +129,11 @@ module nts.uk.at.view.kmk003.a {
                 let dfd = $.Deferred<void>();
                 self.bindFunction();
 
-                //get all enums
-                service.getEnumWorktimeSeting().done(function(setting) {
-                    self.settingEnum = setting;
-                    self.workTimeSettingLoader.setEnums(setting);
-                    dfd.resolve();
+                self.getAllEnums().done(() => {
+                    self.workTimeSettingLoader.isAbolish.valueHasMutated();
+                    _.defer(() => dfd.resolve());
                 });
                 
-                // set ntsFixedTable style
                 return dfd.promise();
             }
 
@@ -149,21 +146,47 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 service.findWithCondition(self.workTimeSettingLoader.getCondition()).done(data => {
                     self.workTimeSettings(data);
+                    if (data && data.length > 0) {
+                        self.screenMode(ScreenMode.UPDATE);
+                        self.selectedWorkTimeCode(data[0].worktimeCode);
+                    }
+                    else {
+                        self.screenMode(ScreenMode.NEW);
+                    }
                 });
             }
-
-            private updateWorktimeCode(worktimeCode: string): JQueryPromise<void> {
+            
+            //get infor of worktime by code
+            private getWorkTimeInfo(workTimeCode: string): JQueryPromise<void> {
+                var self = this;
+                let dfd = $.Deferred<void>();
+                //TODO when complete get data from infra
+                service.findWorktimeSetingInfoByCode(workTimeCode).done(function(worktimeInfo: any) {
+                    //TODO set worktimeInfo to mainSettingModel
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            //get all enums
+            private getAllEnums(): JQueryPromise<void> {
+                var self = this;
+                let dfd = $.Deferred<void>();
+                service.getEnumWorktimeSeting().done(function(setting: any) {
+                    self.settingEnum = setting;
+                    self.workTimeSettingLoader.setEnums(setting);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            private loadWorktimeSetting(worktimeCode: string): JQueryPromise<void> {
                 var self = this;
                 let dfd = $.Deferred<void>();
                 service.findWorktimeSetingInfoByCode(worktimeCode).done(function(worktimeSettingInfo) {
                     self.mainSettingModel.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                     self.mainSettingModel.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
-                    /*service.findByCodeFlexWorkSetting(worktimeCode).done(function(flexdata) {
-                        if (flexdata) {
-                            self.updateDataFlexMode(flexdata);
-                        }
-                    });*/
-                   dfd.resolve();
+                    dfd.resolve();
                 });
                 return dfd.promise();
             }
@@ -186,20 +209,15 @@ module nts.uk.at.view.kmk003.a {
                     });
                 }
             }
-            
+
+            //save worktime data
             private save() {
                 let self = this;
-                /*let data = self.data();
-                self.tabMode('2');
-                self.isClickSave(true);
-                service.savePred(data).done(function() {
-                    self.isClickSave(false);
-                });*/
                 //TODO need check mode save new or update here 
-                switch(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr()){
-                    case EnumWorkForm.REGULAR: 
+                switch (self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr()) {
+                    case EnumWorkForm.REGULAR:
                         switch (self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet()) {
-                            case SettingMethod.FIXED: 
+                            case SettingMethod.FIXED:
                                 service.saveFixedWorkSetting(self.collectDataFixed()).done(function() {
 
                                 }).fail(function(error) {
@@ -221,9 +239,22 @@ module nts.uk.at.view.kmk003.a {
                         break;
                     default: break;
                 }
-                
             }
             
+            //when click copy
+            private copy() {
+                let self = this;
+                self.screenMode(ScreenMode.NEW);
+                self.mainSettingModel.workTimeSetting.worktimeCode('');
+            }
+
+            public onClickNew() {
+                let self = this;
+                self.screenMode(ScreenMode.NEW);
+                //TODO: reset mainSettingModel
+                //self.mainSettingModel.new();
+            };
+
             /**
              * function collection data fixed mode 
              */
