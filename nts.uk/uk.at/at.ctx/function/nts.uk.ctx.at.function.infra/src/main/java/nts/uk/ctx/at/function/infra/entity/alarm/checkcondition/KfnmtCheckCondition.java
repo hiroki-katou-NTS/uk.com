@@ -53,8 +53,8 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	
 	@OneToOne(cascade = CascadeType.ALL, optional = true)
 	@JoinColumns({
-		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID"),
-		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE")
+		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID", insertable=false, updatable=false),
+		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE", insertable=false, updatable=false)
 	})
 	public KfnmtExtractionPeriodDaily extractionPeriodDaily;
 
