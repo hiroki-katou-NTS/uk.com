@@ -27,6 +27,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -104,11 +105,6 @@ public class RegisterLayoutFinder {
 			}
 
 			setData(dataServer, listItemCls, command.getCreateType());
-			if (command.getCreateType() == 1) {
-
-				return listItemCls;
-
-			}
 
 			if (command.getCreateType() == 2) {
 
@@ -117,25 +113,6 @@ public class RegisterLayoutFinder {
 			}
 
 		}
-
-		listItemCls.forEach(itemCls -> {
-			if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
-				itemCls.getListItemDf().forEach(itemDef -> {
-					LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
-							ActionRole.EDIT.value, itemCls);
-
-					if (CollectionUtil.isEmpty(itemCls.getItems())) {
-						List<Object> itemList = new ArrayList<Object>();
-						itemList.add(newLayoutDto);
-						itemCls.setItems(itemList);
-					} else {
-
-						itemCls.getItems().add(newLayoutDto);
-					}
-				});
-			}
-
-		});
 
 		return listItemCls;
 	}
@@ -162,10 +139,9 @@ public class RegisterLayoutFinder {
 					SettingItemDto setItem = setItemOpt.get();
 					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls);
 				} else {
-					if (itemDef.getItemTypeState().getItemType() == 1 || createType == 1) {
+					if (itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM.value || createType == 1) {
 						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
 					}
-
 				}
 
 				if (infoValue != null) {
@@ -173,6 +149,18 @@ public class RegisterLayoutFinder {
 				}
 
 			});
+			itemCls.getListItemDf().clear();
+
+			boolean isSetItem = itemDataList.stream().filter(x -> {
+				LayoutPersonInfoValueDto infoValue = (LayoutPersonInfoValueDto) x;
+				return infoValue.getType() == ItemType.SET_ITEM.value;
+			}).findFirst().isPresent();
+
+			if (isSetItem) {
+				if (itemDataList.size() < 2) {
+					itemDataList.clear();
+				}
+			}
 
 			itemCls.setItems(itemDataList);
 		}
@@ -230,6 +218,7 @@ public class RegisterLayoutFinder {
 		if (command.getCreateType() == 1) {
 
 			return getAllCopyItem(command);
+
 		} else {
 			// Init Value Type
 
@@ -242,6 +231,7 @@ public class RegisterLayoutFinder {
 	public List<SettingItemDto> getAllInitItemBySetId(AddEmployeeCommand command) {
 		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+
 		this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
 
 			listQuery.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
@@ -251,7 +241,7 @@ public class RegisterLayoutFinder {
 
 			findInitItemDto findInitCommand = new findInitItemDto(command.getInitSettingId(), command.getHireDate(),
 					x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(), command.getHireDate());
-			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(findInitCommand));
+			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand));
 		});
 		return result;
 	}
@@ -264,8 +254,8 @@ public class RegisterLayoutFinder {
 		});
 
 		listQuery.forEach(x -> {
-			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(x.getCategoryCode(), command.getEmployeeCopyId(),
-					command.getHireDate()));
+			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(false, x.getCategoryCode(),
+					command.getEmployeeCopyId(), command.getHireDate()));
 		});
 		return result;
 	}

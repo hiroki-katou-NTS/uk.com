@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.raisesalarytime;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.RaisingSalaryTimeItemNo;
 
 /**
@@ -18,14 +19,14 @@ public class RaisingSalaryTime {
 
 	// 計算付き時間 - primitive value
 	// 加給時間
-	private BigDecimal raisingSalaryTime;
+	private TimeWithCalculation raisingSalaryTime;
 
 	// 計算付き時間 - primitive value
 	// 法定外加給時間
-	private BigDecimal outOfLegalRaisingSalaryTime;
+	private TimeWithCalculation outOfLegalRaisingSalaryTime;
 
 	// 計算付き時間 - primitive value
 	// 法定内加給時間
-	private BigDecimal inLegalRaisingSalaryTime;
+	private TimeWithCalculation inLegalRaisingSalaryTime;
 
 }

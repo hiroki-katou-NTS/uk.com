@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
@@ -94,6 +96,9 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 
 	@Override
 	public List<AffWorkplaceHistoryItem> findByHistIds(List<String> hisIds) {
+		if (CollectionUtil.isEmpty(hisIds)) {
+			return new ArrayList<>();
+		}
 		return this.queryProxy().query(SELECT_BY_HISTIDS, BsymtAffiWorkplaceHistItem.class)
 				.setParameter("historyId", hisIds).getList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
@@ -101,6 +106,9 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 
 	@Override
 	public List<AffWorkplaceHistoryItem> findeByWplIDs(List<String> wplIDs) {
+		if (CollectionUtil.isEmpty(wplIDs)) {
+			return new ArrayList<>();
+		}
 		return this.queryProxy().query(SELECT_BY_WPLIDS, BsymtAffiWorkplaceHistItem.class)
 				.setParameter("wplIds", wplIDs).getList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());

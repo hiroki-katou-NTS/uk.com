@@ -12,7 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CBPSettingCommandHandler extends CommandHandler<CBPSettingCommand> {
 	@Inject
-	private CPBonusPaySettingRepository repo;
+	private CPBonusPaySettingRepository  repo;
 
 	@Override
 	protected void handle(CommandHandlerContext<CBPSettingCommand> context) {

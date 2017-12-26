@@ -83,5 +83,37 @@ public enum Unit {
 		// Not found.
 		return null;
 	}
+	
+	public int asTime() {
+	switch (this) {
+	case ROUNDING_TIME_1MIN: return 1;
+	case ROUNDING_TIME_5MIN: return 5;
+	case ROUNDING_TIME_6MIN: return 6;
+	case ROUNDING_TIME_10MIN: return 10;
+	case ROUNDING_TIME_15MIN: return 15;
+	case ROUNDING_TIME_30MIN: return 30;
+	case ROUNDING_TIME_60MIN: return 60;
+	default: throw new RuntimeException("invalid value: " + this);
+	}
+}
 
+	public static enum Direction {
+		TO_FORWARD,
+		TO_BACK;
+	
+		public int value() {
+			return this == TO_FORWARD ? 1 : -1;
+		}
+	}
+
+	public int round(int timeAsMinutes, Direction roundingDirection) {
+		int minutesInHour = timeAsMinutes % 60;
+		int hourPart = timeAsMinutes / 60;
+	
+		for (int minute = minutesInHour; ; minute += roundingDirection.value()) {
+			if (minute % this.asTime() == 0) {
+				return hourPart * 60 + minute;
+			}
+		}
+	}
 }

@@ -367,9 +367,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@Override
 	public String findLastEml(String companyId, String startLetters) {
 		if (startLetters == null)
-			startLetters = "";
+			startLetters = " ";
 		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
-				.setParameter("emlCode", startLetters).getList();
+				.setParameter("emlCode", Character.toString(startLetters.charAt(0))).getList();
 		String returnStr = "";
 		if (lst.size() > 0) {
 			Object obj = lst.get(0);

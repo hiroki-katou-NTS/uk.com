@@ -585,9 +585,7 @@ module cps002.a.vm {
                             self.backtoStep1();
 
                         } else {
-
-                            setShared('CPS002A_PARAMS', { employeeId: employeeId });
-                            jump('/view/cps/001/a/index.xhtml');
+                            jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
 
@@ -835,7 +833,6 @@ module cps002.a.vm {
             this.dateType = param ? param.dateType : '';
             if (this.dataType === "DATE" && this.saveData.value) {
                 this.saveData.value = this.genDateString(this.saveData.value, this.dateType);
-
             }
         }
         genDateString(value, dateType) {

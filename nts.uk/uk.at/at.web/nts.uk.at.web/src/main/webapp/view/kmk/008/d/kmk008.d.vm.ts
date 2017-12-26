@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk008.d {
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             currentEmpName: KnockoutObservable<string>;
+            textOvertimeName: KnockoutObservable<string>;
     
             maxRows : number;
             listComponentOption: any;
@@ -22,6 +23,7 @@ module nts.uk.at.view.kmk008.d {
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfEmploymentModel(null));
                 self.currentEmpName = ko.observable("");
+                self.textOvertimeName = ko.observable(nts.uk.resource.getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
@@ -59,6 +61,11 @@ module nts.uk.at.view.kmk008.d {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                if (self.laborSystemAtr == 0) {
+                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Employment}']));
+                } else {
+                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
+                }
                 self.getalreadySettingList();
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
                     self.employmentList($('#empt-list-setting').getDataList());

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.worktime;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -21,7 +20,7 @@ public class KrcdtTimeLeavingWorkPK implements Serializable {
 	public String employeeId;
 	
 	@Column(name = "WORK_NO")
-	public BigDecimal workNo;
+	public int workNo;
 
 	@Column(name = "YMD")
 	public GeneralDate ymd;
