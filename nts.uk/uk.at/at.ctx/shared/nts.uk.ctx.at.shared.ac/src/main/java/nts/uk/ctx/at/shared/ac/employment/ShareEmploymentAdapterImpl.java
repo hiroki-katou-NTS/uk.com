@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
@@ -14,11 +15,17 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 	@Inject
 	public SyEmploymentPub employment;
+	
 	@Override
 	public List<EmpCdNameImport> findAll(String companyId) {
 		List<EmpCdNameExport> data = employment.findAll(companyId);
 		return data.stream().map(x -> {
 			return new EmpCdNameImport(x.getCode(), x.getName());
 		}).collect(Collectors.toList());
+	}
+	@Override
+	public List<BsEmploymentImport> findByEmpCodes(String companyId, List<String> empCodes) {
+//		List<ShEmploymentExport> empExport = this.employment.findByEmpCodes
+		return null;
 	}
 }

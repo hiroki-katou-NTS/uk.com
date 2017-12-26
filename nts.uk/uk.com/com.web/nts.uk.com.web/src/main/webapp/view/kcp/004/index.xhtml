@@ -68,6 +68,19 @@
 								<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
 								<div data-bind="ntsCheckBox:{checked: isShowSelectButton, enable: enableShowSelectButton}">Show SelectAll/SelectSubParent button</div>
 							</div>
+							
+							<div>
+								<h4>System type:</h4>
+								<div data-bind="ntsRadioBoxGroup: {
+									options: listSystemType,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedSystemType,
+									enable: enable}"></div>
+							</div>
+							
+							
+							
 							<hr></hr>
 						</div>
 						<div>

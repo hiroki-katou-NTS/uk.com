@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Getter
 @Setter
@@ -73,7 +74,7 @@ public class PerInfoInitValueSettingItemDto {
 	
 	private Integer selectionItemRefType;
 	
-	private List<SelectionInitDto> selection = new ArrayList<>();
+	private List<ComboBoxObject> selection = new ArrayList<>();
 	
 	private Integer dateType;
 	

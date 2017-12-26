@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.workrule.closure;
@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CurrentClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeInDto;
@@ -73,9 +74,21 @@ public class ClosureWs {
 	}
 	
 	@POST
-	@Path("getClosureEmploy/{referDate}")
-	public ClosureEmployDto getClosureEmploy(@PathParam("referDate") int referDate) {
-		return this.finder.getClosureEmploy(referDate);
+	@Path("getClosureEmploy")
+	public ClosureEmployDto getClosureEmploy() {
+		return this.finder.getClosureEmploy();
+	}
+	
+	/**
+	 * Gets the closure id name.
+	 *
+	 * @param referDate the refer date
+	 * @return the closure id name
+	 */
+	@POST
+	@Path("getClosureIdName/{referDate}")
+	public List<ClosureIdNameDto> getClosureIdName(@PathParam("referDate") int referDate) {
+		return this.finder.getClosureIdName(referDate);
 	}
 
 	/**

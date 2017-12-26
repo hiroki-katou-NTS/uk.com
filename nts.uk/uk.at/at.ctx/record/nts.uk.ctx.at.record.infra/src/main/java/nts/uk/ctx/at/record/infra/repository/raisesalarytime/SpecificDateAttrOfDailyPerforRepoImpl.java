@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.raisesalarytime;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,19 +17,19 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	@Override
 	public Optional<SpecificDateAttrOfDailyPerfor> find(String employeeId, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
 	public List<SpecificDateAttrOfDailyPerfor> find(String employeeId, List<GeneralDate> baseDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<SpecificDateAttrOfDailyPerfor> find(String employeeId) {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override

@@ -4,10 +4,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -25,8 +28,34 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
 public class AttendanceItemUtil {
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems) {
-		String rootName = getRootName(attendanceItems);
-		return getItemFromField(attendanceItems, "", 0, rootName, "", false);
+		return toItemValues(attendanceItems, "");
+	}
+
+	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
+			String rootLayout) {
+		String rootName = "";
+		AttendanceItemRoot rootAnno = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
+		if (rootAnno != null) {
+			rootName = rootAnno.rootName();
+		}
+		if (rootAnno.isContainer()) {
+			return fromContainer(attendanceItems);
+		}
+		return getItemFromField(attendanceItems, rootLayout, 0, rootName, "", false);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T extends ConvertibleAttendanceItem> List<ItemValue> fromContainer(T attendanceItems) {
+		return getItemLayouFields(attendanceItems.getClass()).map(f -> {
+			T fieldValue;
+			try {
+				fieldValue = (T) f.get(attendanceItems);
+				AttendanceItemLayout layout = f.getAnnotation(AttendanceItemLayout.class);
+				return toItemValues(fieldValue, layout == null ? "" : layout.layout());
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				return new ArrayList<ItemValue>();
+			}
+		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	public static <T extends ConvertibleAttendanceItem> T toConvertibleAttendanceItem(Class<T> classType,
@@ -35,10 +64,67 @@ public class AttendanceItemUtil {
 		return toConvertibleAttendanceItem(newObject, attendanceItems);
 	}
 
-	public static <T extends ConvertibleAttendanceItem> T toConvertibleAttendanceItem(T object,
-			List<ItemValue> attendanceItems) {
-		String rootName = getRootName(object);
+	public static <T extends ConvertibleAttendanceItem, R extends ConvertibleAttendanceItem> T toConvertibleAttendanceItem(
+			T object, List<ItemValue> attendanceItems) {
+		String rootName = "";
+		AttendanceItemRoot rootAnno = object.getClass().getAnnotation(AttendanceItemRoot.class);
+		if (rootAnno != null) {
+			rootName = rootAnno.rootName();
+		}
+		if (rootAnno.isContainer()) {
+			return processContainer(object, attendanceItems);
+		}
+
 		return mergeToObject(object, attendanceItems, 0, 0, rootName, "", false);
+	}
+
+	private static <T extends ConvertibleAttendanceItem, R extends ConvertibleAttendanceItem> T processContainer(
+			T object, List<ItemValue> attendanceItems) {
+		Map<String, Field> fieldMap = toFieldMapByLayout(object);
+
+		groupMapLayout(attendanceItems, 0, false).entrySet().stream().forEach(group -> {
+			Field field = fieldMap.get(group.getKey());
+			if (field != null) {
+				AttendanceItemLayout layout = getLayoutAnnotation(field);
+				if (layout.isList()) {
+					processListProperty(object, group, field);
+				} else {
+					R fieldInstance = ReflectionUtil.newInstance(field.getType());
+					fieldInstance = toConvertibleAttendanceItem(fieldInstance, group.getValue());
+					ReflectionUtil.setFieldValue(field, object,
+							layout.isOptional() ? Optional.of(fieldInstance) : fieldInstance);
+				}
+			}
+		});
+		return object;
+	}
+
+	private static <R extends ConvertibleAttendanceItem, T extends ConvertibleAttendanceItem> void processListProperty(
+			T object, Entry<String, List<ItemValue>> group, Field field) {
+		Class<R> classType = getGenericType(field);
+		Map<String, List<ItemValue>> listGroup = groupMapLayout(group.getValue(), 0, true);
+		if (!listGroup.isEmpty()) {
+			int max = getMax(listGroup);
+			ReflectionUtil.setFieldValue(field, object, getList(classType, listGroup, max));
+		} else {
+			ReflectionUtil.setFieldValue(field, object, new ArrayList<>());
+		}
+	}
+
+	private static <R extends ConvertibleAttendanceItem> List<R> getList(Class<R> classType,
+			Map<String, List<ItemValue>> listGroup, int max) {
+		return IntStream.range(0, max + 1).mapToObj(idx -> {
+			List<ItemValue> values = listGroup.get(String.valueOf(idx));
+			if (values != null) {
+				return toConvertibleAttendanceItem(classType, values);
+			}
+			return null;
+		}).collect(Collectors.toList());
+	}
+
+	private static int getMax(Map<String, List<ItemValue>> listGroup) {
+		return listGroup.entrySet().stream().filter(e -> !e.getKey().isEmpty())
+				.mapToInt(e -> Integer.parseInt(e.getKey())).max().orElse(-1);
 	}
 
 	private static <T> T mergeToObject(T object, List<ItemValue> attendanceItems, int layoutIdx, int idx,
@@ -119,8 +205,7 @@ public class AttendanceItemUtil {
 			String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
 			String newExCondition = getExCondition("", object, layout);
 			boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
-			int max = listGroup.entrySet().stream().filter(e -> !e.getKey().isEmpty())
-					.mapToInt(e -> Integer.parseInt(e.getKey())).max().orElse(-1);
+			int max = getMax(listGroup);
 			return IntStream.range(0, max + 1).mapToObj(idx -> {
 				List<ItemValue> values = listGroup.get(String.valueOf(idx));
 				if (values != null) {
@@ -237,14 +322,6 @@ public class AttendanceItemUtil {
 
 	private static AttendanceItemValue getItemValueAnnotation(Field field) {
 		return field.getAnnotation(AttendanceItemValue.class);
-	}
-
-	private static <T> String getRootName(T object) {
-		AttendanceItemRoot rootAnno = object.getClass().getAnnotation(AttendanceItemRoot.class);
-		if (rootAnno != null) {
-			return rootAnno.rootName();
-		}
-		return "";
 	}
 
 	private static boolean isItemValue(Field field) {
