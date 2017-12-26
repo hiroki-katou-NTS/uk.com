@@ -4,21 +4,22 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.servlet.Filter;
 
 import nts.arc.layer.ws.preprocess.RequestFilterCollector;
+import nts.arc.layer.ws.preprocess.RequestFilterMapping;
 import nts.arc.layer.ws.preprocess.filters.RequestPerformanceLogFilter;
 
 @Stateless
 public class UkRequestFilterCollector implements RequestFilterCollector {
 
-	private static final List<Filter> FILTERS = Arrays.asList(
-			new RequestPerformanceLogFilter(),
-			new ProgramIdDetector()
+	private static final List<RequestFilterMapping> FILTERS = Arrays.asList(
+			RequestFilterMapping.map(".*", new RequestPerformanceLogFilter()),
+			RequestFilterMapping.map(".*/webapi/.*", new ProgramIdDetector())/*,
+			RequestFilterMapping.map(".*\\.xhtml.*", new ScreenLoginSessionValidator())*/
 			);
-	
+
 	@Override
-	public List<Filter> collect() {
+	public List<RequestFilterMapping> collect() {
 		return FILTERS;
 	}
 
