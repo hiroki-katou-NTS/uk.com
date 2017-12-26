@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflec
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 
 /**
  * The Class JpaFixedWorkSettingSetMemento.
@@ -115,8 +116,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
-		// TODO Auto-generated method stub
-
+		fixedWorkRestSetting.saveToMemento(new JpaFixedWorkRestSetSetMemento<KshmtFixedWorkSet>(this.entity));
 	}
 
 	/*

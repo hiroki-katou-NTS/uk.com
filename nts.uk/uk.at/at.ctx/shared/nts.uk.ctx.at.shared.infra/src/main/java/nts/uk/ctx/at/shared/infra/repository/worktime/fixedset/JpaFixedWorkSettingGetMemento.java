@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetGetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
 
 /**
  * The Class JpaFixedWorkSettingGetMemento.
@@ -85,8 +86,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new WorkTimezoneCommonSet(new JpaWorkTimezoneCommonSetGetMemento(this.entity.getKshmtWorktimeCommonSet()));
 	}
 
 	/*
