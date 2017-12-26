@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -62,15 +61,15 @@ public class KshmtFlexOtTimeSet extends UkJpaEntity implements Serializable {
 
 	/** The ot frame no. */
 	@Column(name = "OT_FRAME_NO")
-	private BigDecimal otFrameNo;
+	private int otFrameNo;
 
 	/** The legal ot frame no. */
 	@Column(name = "LEGAL_OT_FRAME_NO")
-	private BigDecimal legalOtFrameNo;
+	private int legalOtFrameNo;
 
 	/** The payoff order. */
 	@Column(name = "PAYOFF_ORDER")
-	private Integer payoffOrder;
+	private int payoffOrder;
 
 	/**
 	 * Instantiates a new kshmt flex ot time set.

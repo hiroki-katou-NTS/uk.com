@@ -34,6 +34,10 @@ public class KshmtFlexHaFixRestPK implements Serializable {
 	/** The am pm atr. */
 	@Column(name = "AM_PM_ATR")
 	private int amPmAtr;
+	
+	/** The period no. */
+	@Column(name = "PERIOD_NO")
+	private int periodNo;
 
 	/**
 	 * Instantiates a new kshmt flex ha fix rest PK.

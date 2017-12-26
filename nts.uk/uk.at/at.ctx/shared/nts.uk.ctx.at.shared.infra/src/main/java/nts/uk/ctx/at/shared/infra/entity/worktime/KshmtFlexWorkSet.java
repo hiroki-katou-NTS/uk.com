@@ -79,6 +79,18 @@ public class KshmtFlexWorkSet extends UkJpaEntity implements Serializable {
 			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
 	private KshmtFlexRestSet kshmtFlexRestSet;
 	
+	/** The kshmt flex od rt set. */
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+		@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
+	private KshmtFlexOdRtSet kshmtFlexOdRtSet;
+	
+	/** The kshmt worktime common set. */
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+		@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
+	private KshmtWorktimeCommonSet kshmtWorktimeCommonSet;
+	
 	/** The kshmt flex ha rt sets. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),

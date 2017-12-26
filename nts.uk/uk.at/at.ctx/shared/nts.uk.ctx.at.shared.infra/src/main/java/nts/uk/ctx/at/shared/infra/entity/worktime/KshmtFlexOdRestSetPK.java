@@ -31,6 +31,10 @@ public class KshmtFlexOdRestSetPK implements Serializable {
 	@Column(name = "WORKTIME_CD")
 	private String worktimeCd;
 
+	/** The period no. */
+	@Column(name = "PERIOD_NO")
+	private int periodNo;
+
 	/**
 	 * Instantiates a new kshmt flex od rest set PK.
 	 */

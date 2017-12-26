@@ -5,12 +5,16 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
@@ -56,6 +60,32 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 	@Column(name = "AFTER_PASSAGE_TIME")
 	private int afterPassageTime;
 
+	
+
+	/** The kshmt flex od fix rest. */
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
+	private KshmtFlexOdFixRest kshmtFlexOdFixRest;
+	
+	
+	/** The kshmt flex hol sets. */
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexHolSet> kshmtFlexHolSets;
+	
+	/** The kshmt flex od rest sets. */
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshmtFlexOdRestSet> kshmtFlexOdRestSets;
+	
+	
+	
+	
 	/**
 	 * Instantiates a new kshmt flex od rt set.
 	 */
@@ -103,10 +133,5 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 		return this.kshmtFlexOdRtSetPK;
 	}
 	
-	/** The kshmt flex od fix rest. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
-	private KshmtFlexOdFixRest kshmtFlexOdFixRest;
 
 }

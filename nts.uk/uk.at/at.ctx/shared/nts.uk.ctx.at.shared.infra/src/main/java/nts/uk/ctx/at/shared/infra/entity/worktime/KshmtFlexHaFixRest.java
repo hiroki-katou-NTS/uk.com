@@ -35,9 +35,6 @@ public class KshmtFlexHaFixRest extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The period no. */
-	@Column(name = "PERIOD_NO")
-	private int periodNo;
 
 	/** The str time. */
 	@Column(name = "STR_TIME")
