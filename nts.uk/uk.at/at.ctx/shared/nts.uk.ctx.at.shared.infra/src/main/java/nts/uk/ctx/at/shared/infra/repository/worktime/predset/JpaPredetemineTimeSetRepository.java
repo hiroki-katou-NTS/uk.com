@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,6 +14,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -27,15 +28,16 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet_;
 
 /**
  * The Class JpaPredetemineTimeSetRepository.
  */
 @Stateless
-public class JpaPredetemineTimeSetRepository extends JpaRepository
-		implements PredetemineTimeSettingRepository {
+public class JpaPredetemineTimeSetRepository extends JpaRepository implements PredetemineTimeSettingRepository {
+
+	/** The Constant MAX_PARAM_QUERY_IN. */
+	private static final int MAX_PARAM_QUERY_IN = 1000;
 
 	/*
 	 * (non-Javadoc)
@@ -45,8 +47,7 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository
 	 * java.lang.String)
 	 */
 	@Override
-	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId,
-			String workTimeCode) {
+	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
 
 		// Query
 		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.queryProxy()
@@ -57,8 +58,8 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository
 			return Optional.empty();
 		}
 
-		return Optional.ofNullable(new PredetemineTimeSetting(
-				new JpaPredetemineTimeSettingGetMemento(optionalEntityTimeSet.get())));
+		return Optional.ofNullable(
+				new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(optionalEntityTimeSet.get())));
 	}
 
 	/*
@@ -72,8 +73,7 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository
 	public void save(PredetemineTimeSetting domain) {
 		// Query
 		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.queryProxy().find(
-				new KshmtPredTimeSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()),
-				KshmtPredTimeSet.class);
+				new KshmtPredTimeSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()), KshmtPredTimeSet.class);
 
 		KshmtPredTimeSet entity = optionalEntityTimeSet.orElse(new KshmtPredTimeSet());
 
@@ -100,8 +100,7 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtPredTimeSet.class,
-				new KshmtPredTimeSetPK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtPredTimeSet.class, new KshmtPredTimeSetPK(companyId, workTimeCode));
 	}
 
 	/*
@@ -113,8 +112,41 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository
 	 */
 	@Override
 	public List<PredetemineTimeSetting> findByStart(String companyID, List<String> workTimeCodes, int startClock) {
-		//TODO: lam sau
-		return null;
+		// get CriteriaBuilder
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder predCb = em.getCriteriaBuilder();
+
+		// create CriteriaQuery
+		CriteriaQuery<KshmtPredTimeSet> predCquery = predCb.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> predRoot = predCquery.from(KshmtPredTimeSet.class);
+		ListJoin<KshmtPredTimeSet, KshmtWorkTimeSheetSet> joinRoot = predRoot
+				.join(KshmtPredTimeSet_.kshmtWorkTimeSheetSets, JoinType.LEFT);
+		// select root
+		predCquery.select(predRoot);
+
+		List<PredetemineTimeSetting> resultList = new ArrayList<PredetemineTimeSetting>();
+
+		// split list worktimecode
+		CollectionUtil.split(workTimeCodes, MAX_PARAM_QUERY_IN, subList -> {
+			// add predicates
+			List<Predicate> predTimePredicates = new ArrayList<>();
+			predTimePredicates.add(predCb
+					.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
+			predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK)
+					.get(KshmtPredTimeSetPK_.worktimeCd).in(workTimeCodes));
+			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.startTime), startClock));
+
+			// set condition
+			predCquery.where(predTimePredicates.toArray(new Predicate[] {}));
+
+			// add all to resultList
+			resultList.addAll(em.createQuery(predCquery).getResultList().stream()
+					.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
+					.collect(Collectors.toList()));
+		});
+
+		// get results
+		return resultList;
 	}
 
 	/*
@@ -126,8 +158,41 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository
 	 */
 	@Override
 	public List<PredetemineTimeSetting> findByEnd(String companyID, List<String> workTimeCodes, int endClock) {
-		//TODO: lam sau
-		return null;
+		// get CriteriaBuilder
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder predCb = em.getCriteriaBuilder();
+
+		// create CriteriaQuery
+		CriteriaQuery<KshmtPredTimeSet> predCquery = predCb.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> predRoot = predCquery.from(KshmtPredTimeSet.class);
+		ListJoin<KshmtPredTimeSet, KshmtWorkTimeSheetSet> joinRoot = predRoot
+				.join(KshmtPredTimeSet_.kshmtWorkTimeSheetSets, JoinType.LEFT);
+		// select root
+		predCquery.select(predRoot);
+
+		List<PredetemineTimeSetting> resultList = new ArrayList<PredetemineTimeSetting>();
+
+		// split list worktimecode
+		CollectionUtil.split(workTimeCodes, MAX_PARAM_QUERY_IN, subList -> {
+			// add predicates
+			List<Predicate> predTimePredicates = new ArrayList<>();
+			predTimePredicates.add(predCb
+					.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
+			predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK)
+					.get(KshmtPredTimeSetPK_.worktimeCd).in(workTimeCodes));
+			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.endTime), endClock));
+
+			// set condition
+			predCquery.where(predTimePredicates.toArray(new Predicate[] {}));
+
+			// add all to resultList
+			resultList.addAll(em.createQuery(predCquery).getResultList().stream()
+					.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
+					.collect(Collectors.toList()));
+		});
+
+		// get results
+		return resultList;
 	}
 
 	/*
@@ -140,85 +205,42 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository
 	@Override
 	public List<PredetemineTimeSetting> findByStartAndEnd(String companyID, List<String> workTimeCodes, int startClock,
 			int endClock) {
-		//TODO: lam sau
-		return null;
-	}
-
-	/**
-	 * Find worktime sheet by end.
-	 *
-	 * @param companyID the company ID
-	 * @param workTimeCodes the work time codes
-	 * @param endClock the end clock
-	 * @return the map
-	 */
-	private Map<String, List<KshmtWorkTimeSheetSet>> findWorktimeSheetByEnd(String companyID,
-			List<String> workTimeCodes, int endClock) {
 		// get CriteriaBuilder
 		EntityManager em = this.getEntityManager();
-		CriteriaBuilder sheetCb = em.getCriteriaBuilder();
+		CriteriaBuilder predCb = em.getCriteriaBuilder();
 
 		// create CriteriaQuery
-		CriteriaQuery<KshmtWorkTimeSheetSet> sheetCquery = sheetCb.createQuery(KshmtWorkTimeSheetSet.class);
-		Root<KshmtWorkTimeSheetSet> sheetRoot = sheetCquery.from(KshmtWorkTimeSheetSet.class);
-
+		CriteriaQuery<KshmtPredTimeSet> predCquery = predCb.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> predRoot = predCquery.from(KshmtPredTimeSet.class);
+		ListJoin<KshmtPredTimeSet, KshmtWorkTimeSheetSet> joinRoot = predRoot
+				.join(KshmtPredTimeSet_.kshmtWorkTimeSheetSets, JoinType.LEFT);
 		// select root
-		sheetCquery.select(sheetRoot);
+		predCquery.select(predRoot);
 
-		// add predicates
-		List<Predicate> worktimeSheetPredicates = new ArrayList<>();
+		List<PredetemineTimeSetting> resultList = new ArrayList<PredetemineTimeSetting>();
 
-		// worktime sheet predicates
-		worktimeSheetPredicates.add(sheetCb.equal(
-				sheetRoot.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.cid),
-				companyID));
-		worktimeSheetPredicates.add(sheetRoot.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK)
-				.get(KshmtWorkTimeSheetSetPK_.worktimeCd).in(workTimeCodes));
-		worktimeSheetPredicates.add(sheetCb.equal(sheetRoot.get(KshmtWorkTimeSheetSet_.endTime), endClock));
+		// split list worktimecode
+		CollectionUtil.split(workTimeCodes, MAX_PARAM_QUERY_IN, subList -> {
+			// add predicates
+			List<Predicate> predTimePredicates = new ArrayList<>();
+			predTimePredicates.add(predCb
+					.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
+			predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK)
+					.get(KshmtPredTimeSetPK_.worktimeCd).in(workTimeCodes));
+			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.startTime), startClock));
+			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.endTime), endClock));
 
-		// set condition
-		sheetCquery.where(worktimeSheetPredicates.toArray(new Predicate[] {}));
+			// set condition
+			predCquery.where(predTimePredicates.toArray(new Predicate[] {}));
+
+			// add all to resultList
+			resultList.addAll(em.createQuery(predCquery).getResultList().stream()
+					.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
+					.collect(Collectors.toList()));
+		});
 
 		// get results
-		List<KshmtWorkTimeSheetSet> lstKshmtWorkTimeSheetSet = em.createQuery(sheetCquery).getResultList();
-
-		// group by worktime code
-		return lstKshmtWorkTimeSheetSet.stream()
-				.collect(Collectors.groupingBy(sheet -> sheet.getKshmtWorkTimeSheetSetPK().getWorktimeCd()));
-	}
-
-	private Map<String, List<KshmtWorkTimeSheetSet>> findWorktimeSheetByCodes(String companyID,
-			List<String> workTimeCodes) {
-		// get CriteriaBuilder
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder sheetCb = em.getCriteriaBuilder();
-
-		// create CriteriaQuery
-		CriteriaQuery<KshmtWorkTimeSheetSet> sheetCquery = sheetCb.createQuery(KshmtWorkTimeSheetSet.class);
-		Root<KshmtWorkTimeSheetSet> sheetRoot = sheetCquery.from(KshmtWorkTimeSheetSet.class);
-
-		// select root
-		sheetCquery.select(sheetRoot);
-
-		// add predicates
-		List<Predicate> worktimeSheetPredicates = new ArrayList<>();
-
-		// worktime sheet predicates
-		worktimeSheetPredicates.add(sheetCb.equal(
-				sheetRoot.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK).get(KshmtWorkTimeSheetSetPK_.cid),
-				companyID));
-		worktimeSheetPredicates.add(sheetRoot.get(KshmtWorkTimeSheetSet_.kshmtWorkTimeSheetSetPK)
-				.get(KshmtWorkTimeSheetSetPK_.worktimeCd).in(workTimeCodes));
-
-		// set condition
-		sheetCquery.where(worktimeSheetPredicates.toArray(new Predicate[] {}));
-
-		// get results
-		List<KshmtWorkTimeSheetSet> lstKshmtWorkTimeSheetSet = em.createQuery(sheetCquery).getResultList();
-
-		// group by worktime code
-		return lstKshmtWorkTimeSheetSet.stream()
-				.collect(Collectors.groupingBy(sheet -> sheet.getKshmtWorkTimeSheetSetPK().getWorktimeCd()));
+		return resultList;
 	}
 
 	/*
