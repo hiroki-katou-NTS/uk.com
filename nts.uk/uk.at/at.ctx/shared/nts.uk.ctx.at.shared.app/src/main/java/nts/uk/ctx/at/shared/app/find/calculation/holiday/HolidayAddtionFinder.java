@@ -69,17 +69,17 @@ public class HolidayAddtionFinder {
 		}
 
 		RegularWorkDto regularWorkDto = new RegularWorkDto();
-			regularWorkDto.setCalcActualOperation1(regularWork.getCalcActualOperation1());
-			regularWorkDto.setExemptTaxTime1(regularWork.getExemptTaxTime1());
-			regularWorkDto.setIncChildNursingCare1(regularWork.getIncChildNursingCare1());
-			regularWorkDto.setAdditionTime1(regularWork.getAdditionTime1());
-			regularWorkDto.setNotDeductLateleave1(regularWork.getNotDeductLateleave1());
-			regularWorkDto.setDeformatExcValue1(regularWork.getDeformatExcValue1());
-			regularWorkDto.setExemptTaxTime2(regularWork.getExemptTaxTime2());
-			regularWorkDto.setCalcActualOperation2(regularWork.getCalcActualOperation2());
-			regularWorkDto.setIncChildNursingCare2(regularWork.getIncChildNursingCare2());
-			regularWorkDto.setNotDeductLateleave2(regularWork.getNotDeductLateleave2());
-			regularWorkDto.setAdditionTime2(regularWork.getAdditionTime2());
+			regularWorkDto.setCalcActualOperationPre(regularWork.getCalcActualOperation1().value);
+			regularWorkDto.setExemptTaxTimePre(regularWork.getExemptTaxTime1());
+			regularWorkDto.setIncChildNursingCarePre(regularWork.getIncChildNursingCare1());
+			regularWorkDto.setAdditionTimePre(regularWork.getAdditionTime1());
+			regularWorkDto.setNotDeductLateleavePre(regularWork.getNotDeductLateleave1());
+			regularWorkDto.setDeformatExcValuePre(regularWork.getDeformatExcValue1().value);
+			regularWorkDto.setExemptTaxTimeWork(regularWork.getExemptTaxTime2());
+			regularWorkDto.setCalcActualOperationWork(regularWork.getCalcActualOperation2().value);
+			regularWorkDto.setIncChildNursingCareWork(regularWork.getIncChildNursingCare2());
+			regularWorkDto.setNotDeductLateleaveWork(regularWork.getNotDeductLateleave2());
+			regularWorkDto.setAdditionTimeWork(regularWork.getAdditionTime2());
 		return regularWorkDto;
 	}
 
@@ -95,19 +95,19 @@ public class HolidayAddtionFinder {
 		}
 
 		FlexWorkDto flexWorkDto = new FlexWorkDto();
-			flexWorkDto.setCalcActualOperation1(flexWork.getCalcActualOperation1());
-			flexWorkDto.setExemptTaxTime1(flexWork.getExemptTaxTime1());
-			flexWorkDto.setIncChildNursingCare1(flexWork.getIncChildNursingCare1());
-			flexWorkDto.setPredeterminedOvertime1(flexWork.getPredeterminedOvertime1());
-			flexWorkDto.setAdditionTime1(flexWork.getAdditionTime1());
-			flexWorkDto.setNotDeductLateleave1(flexWork.getNotDeductLateleave1());
-			flexWorkDto.setExemptTaxTime2(flexWork.getExemptTaxTime2());
-			flexWorkDto.setMinusAbsenceTime2(flexWork.getMinusAbsenceTime2());
-			flexWorkDto.setCalcActualOperation2(flexWork.getCalcActualOperation2());
-			flexWorkDto.setIncChildNursingCare2(flexWork.getIncChildNursingCare2());
-			flexWorkDto.setNotDeductLateleave2(flexWork.getNotDeductLateleave2());
-			flexWorkDto.setPredeterminDeficiency2(flexWork.getAdditionTime2());
-			flexWorkDto.setAdditionTime2(flexWork.getAdditionTime2());
+			flexWorkDto.setCalcActualOperationPre(flexWork.getCalcActualOperation1().value);
+			flexWorkDto.setExemptTaxTimePre(flexWork.getExemptTaxTime1());
+			flexWorkDto.setIncChildNursingCarePre(flexWork.getIncChildNursingCare1());
+			flexWorkDto.setPredeterminedOvertimePre(flexWork.getPredeterminedOvertime1().value);
+			flexWorkDto.setAdditionTimePre(flexWork.getAdditionTime1());
+			flexWorkDto.setNotDeductLateleavePre(flexWork.getNotDeductLateleave1());
+			flexWorkDto.setExemptTaxTimeWork(flexWork.getExemptTaxTime2());
+			flexWorkDto.setMinusAbsenceTimeWork(flexWork.getMinusAbsenceTime2());
+			flexWorkDto.setCalcActualOperationWork(flexWork.getCalcActualOperation2().value);
+			flexWorkDto.setIncChildNursingCareWork(flexWork.getIncChildNursingCare2());
+			flexWorkDto.setNotDeductLateleaveWork(flexWork.getNotDeductLateleave2());
+			flexWorkDto.setPredeterminDeficiencyWork(flexWork.getPredeterminDeficiency2().value);
+			flexWorkDto.setAdditionTimeWork(flexWork.getAdditionTime2());
 		return flexWorkDto;
 	}
 
@@ -123,19 +123,18 @@ public class HolidayAddtionFinder {
 		}
 
 		WorkDepLaborDto laborDto = new WorkDepLaborDto();
-			laborDto.setCalcActualOperation1(labor.getCalcActualOperation1());
-			laborDto.setExemptTaxTime1(labor.getExemptTaxTime1());
-			laborDto.setIncChildNursingCare1(labor.getIncChildNursingCare1());
-			laborDto.setPredeterminedOvertime1(labor.getPredeterminedOvertime1());
-			laborDto.setAdditionTime1(labor.getAdditionTime1());
-			laborDto.setNotDeductLateleave1(labor.getNotDeductLateleave1());
-			laborDto.setExemptTaxTime2(labor.getExemptTaxTime2());
-			laborDto.setMinusAbsenceTime2(labor.getMinusAbsenceTime2());
-			laborDto.setCalcActualOperation2(labor.getCalcActualOperation2());
-			laborDto.setIncChildNursingCare2(labor.getIncChildNursingCare2());
-			laborDto.setNotDeductLateleave2(labor.getNotDeductLateleave2());
-			laborDto.setPredeterminDeficiency2(labor.getPredeterminDeficiency2());
-			laborDto.setAdditionTime2(labor.getAdditionTime2());
+			laborDto.setCalcActualOperationPre(labor.getCalcActualOperation1().value);
+			laborDto.setExemptTaxTimePre(labor.getExemptTaxTime1());
+			laborDto.setIncChildNursingCarePre(labor.getIncChildNursingCare1());
+			laborDto.setAdditionTimePre(labor.getAdditionTime1());
+			laborDto.setNotDeductLateleavePre(labor.getNotDeductLateleave1());
+			laborDto.setDeformatExcValue(labor.getDeformatExcValue().value);
+			laborDto.setExemptTaxTimeWork(labor.getExemptTaxTime2());
+			laborDto.setMinusAbsenceTimeWork(labor.getMinusAbsenceTime2());
+			laborDto.setCalcActualOperationWork(labor.getCalcActualOperation2().value);
+			laborDto.setIncChildNursingCareWork(labor.getIncChildNursingCare2());
+			laborDto.setNotDeductLateleaveWork(labor.getNotDeductLateleave2());
+			laborDto.setAdditionTimeWork(labor.getAdditionTime2());
 		return laborDto;
 	}
 }

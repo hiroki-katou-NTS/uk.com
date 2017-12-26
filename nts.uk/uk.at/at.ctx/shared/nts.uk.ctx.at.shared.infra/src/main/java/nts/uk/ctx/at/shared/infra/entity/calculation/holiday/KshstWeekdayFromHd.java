@@ -13,11 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.time.WeekdayHoliday;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_WEEKDAY_FROM_HD ")
@@ -46,5 +45,27 @@ public class KshstWeekdayFromHd extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return kshstWeekdayHdPK;
+	}
+
+	public KshstWeekdayFromHd(KshstWeekdayFromHdPK kshstWeekdayHdPK, int legalHdNo, int nonLegalHdNo,
+			int nonLegalPublicHdNo) {
+		super();
+		this.kshstWeekdayHdPK = kshstWeekdayHdPK;
+		this.legalHdNo = legalHdNo;
+		this.nonLegalHdNo = nonLegalHdNo;
+		this.nonLegalPublicHdNo = nonLegalPublicHdNo;
+	}
+	
+	public WeekdayHoliday toDomain() {
+		return WeekdayHoliday.createFromJavaType(this.kshstWeekdayHdPK.companyId, this.kshstWeekdayHdPK.overTimeFrameNo, this.legalHdNo, this.nonLegalHdNo, this.nonLegalPublicHdNo);
+	}
+	
+
+	public static KshstWeekdayFromHd toEntity(WeekdayHoliday domain){
+		return new KshstWeekdayFromHd(
+				new KshstWeekdayFromHdPK(domain.getCompanyId(),domain.getOverTimeFrameNo().v()),
+				domain.getLegalHdNo().v(),
+				domain.getNonLegalHdNo().v(), 
+				domain.getNonLegalPublicHdNo().v());
 	}
 }

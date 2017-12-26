@@ -31,51 +31,51 @@ public class KshstZeroTimeSet extends UkJpaEntity implements Serializable{
 	public int calcFromZeroTime;
 	
 	/** 法定内休日 */
-	@Column(name = "LEGAL_HD")
+	@Column(name = "WKD_LEGAL_HD")
 	public int legalHd;
 	
 	/** 法定外休日 */
-	@Column(name = "NON_LEGAL_HD")
+	@Column(name = "WKD_NON_LEGAL_HD")
 	public int nonLegalHd;
 	
 	/** 法定外祝日*/
-	@Column(name = "NON_LEGAL_PUBLIC_HD")
+	@Column(name = "WKD_NON_LEGAL_PUBLIC_HD")
 	public int nonLegalPublicHd;
 	
 	/** 平日 */
-	@Column(name = "WEEKDAY_1")
+	@Column(name = "LHD_WEEKDAY")
 	public int weekday1;
 	
 	/** 法定外休日*/
-	@Column(name = "NON_LEGAL_HD_1")
+	@Column(name = "LHD_NON_LEGAL_HD")
 	public int nonLegalHd1;
 	
 	/** 法定外祝日 */
-	@Column(name = "NON_LEGAL_PUBLIC_HD_1")
+	@Column(name = "LHD_NON_LEGAL_PUBLIC_HD")
 	public int nonLegalPublicHd1;
 	
 	/** 平日*/
-	@Column(name = "WEEKDAY_2")
+	@Column(name = "SHD_WEEKDAY")
 	public int weekday2;
-	
-	/** 法定外休日 */
-	@Column(name = "LEGAL_HD_2")
+
+	/** 法定内休日 */
+	@Column(name = "SHD_LEGAL_HD")
 	public int legalHd2;
 	
 	/** 法定外祝日 */
-	@Column(name = "NON_LEGAL_HD_2")
+	@Column(name = "SHD_NON_LEGAL_HD")
 	public int nonLegalHd2;
 	
 	/** 平日 */
-	@Column(name = "WEEKDAY_3")
+	@Column(name = "SFT_WEEKDAY")
 	public int weekday3;
 	
-	/** 法定外休日 */
-	@Column(name = "LEGAL_HD_3")
+	/** 法定内休日 */
+	@Column(name = "SFT_LEGAL_HD")
 	public int legalHd3;
 	
 	/** 法定外休日 */
-	@Column(name = "NON_LEGAL_PUBLIC_HD_3")
+	@Column(name = "SFT_NON_LEGAL_PUBLIC_HD")
 	public int nonLegalPublicHd3;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="overDayCalcSet", orphanRemoval = true)

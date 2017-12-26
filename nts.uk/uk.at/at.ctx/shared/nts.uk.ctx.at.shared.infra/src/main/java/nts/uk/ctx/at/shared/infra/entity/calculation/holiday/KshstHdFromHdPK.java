@@ -20,7 +20,7 @@ public class KshstHdFromHdPK implements Serializable{
 	public String companyId;
 	
 	/**変更前の休出枠NO*/
-	@Column(name = "OVERTIME_FRAME_NO")
-	public int overtimeFrameNo;
+	@Column(name = "BREAK_FRAME_NO")
+	public int breakFrameNo;
 }
 

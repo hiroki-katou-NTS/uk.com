@@ -11,41 +11,41 @@ public class FlexWorkDto {
 	private String companyId;
 
 	/** 実働のみで計算する */
-	private int calcActualOperation1;
+	private int calcActualOperationPre;
 
 	/** インターバル免除時間を含めて計算する */
-	private int exemptTaxTime1;
+	private int exemptTaxTimePre;
 
 	/** 育児・介護時間を含めて計算する */
-	private int incChildNursingCare1;
+	private int incChildNursingCarePre;
 
 	/** フレックスの所定超過時 */
-	private int predeterminedOvertime1;
+	private int predeterminedOvertimePre;
 
 	/** 加算する */
-	private int additionTime1;
+	private int additionTimePre;
 
 	/** 遅刻・早退を控除しない */
-	private int notDeductLateleave1;
+	private int notDeductLateleavePre;
 
 	/** インターバル免除時間を含めて計算する */
-	private int exemptTaxTime2;
+	private int exemptTaxTimeWork;
 
 	/** 欠勤時間をマイナスする */
-	private int minusAbsenceTime2;
+	private int minusAbsenceTimeWork;
 
 	/** 実働のみで計算する */
-	private int calcActualOperation2;
+	private int calcActualOperationWork;
 
 	/** 育児・介護時間を含めて計算する */
-	private int incChildNursingCare2;
+	private int incChildNursingCareWork;
 
 	/** 遅刻・早退を控除しない */
-	private int notDeductLateleave2;
+	private int notDeductLateleaveWork;
 
 	/**フレックスの所定不足時*/
-	private int predeterminDeficiency2;	
+	private int predeterminDeficiencyWork;	
 	
 	/** 加算する */
-	private int additionTime2;
+	private int additionTimeWork;
 }

@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday;
  */
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
 @Getter
@@ -13,16 +14,13 @@ public class WorkDepLabor {
 	private String companyId;
 
 	/** 実働のみで計算する */
-	private int calcActualOperation1;
+	private CalcActualOperationAtr calcActualOperation1;
 
 	/** インターバル免除時間を含めて計算する */
 	private int exemptTaxTime1;
 
 	/** 育児・介護時間を含めて計算する */
 	private int incChildNursingCare1;
-
-	/** フレックスの所定超過時 */
-	private int predeterminedOvertime1;
 	
 	/** 加算する */
 	private int additionTime1;
@@ -30,6 +28,9 @@ public class WorkDepLabor {
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleave1;
 
+	/**通常、変形の所定超過時*/
+	private DeformatExcValueAtr deformatExcValue;
+	
 	/** インターバル免除時間を含めて計算する */
 	private int exemptTaxTime2;
 
@@ -37,26 +38,23 @@ public class WorkDepLabor {
 	private int minusAbsenceTime2;
 
 	/** 実働のみで計算する */
-	private int calcActualOperation2;
+	private CalcActualOperationAtr calcActualOperation2;
 
 	/** 育児・介護時間を含めて計算する */
 	private int incChildNursingCare2;
 
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleave2;
-	
-	/**フレックスの所定不足時*/
-	private int predeterminDeficiency2;	
 
 	/** 加算する */
 	private int additionTime2;
 
 	public static WorkDepLabor createFromJavaType(String companyId, int calcActualOperation1,
-			int exemptTaxTime1, int incChildNursingCare1, int predeterminedOvertime1, int additionTime1,
-			int notDeductLateleave1, int exemptTaxTime2, int minusAbsenceTime2, int calcActualOperation2,
-			int incChildNursingCare2, int notDeductLateleave2, int predeterminDeficiency2, int additionTime2) {
-		return new WorkDepLabor(companyId, calcActualOperation1, exemptTaxTime1, incChildNursingCare1,
-				predeterminedOvertime1, additionTime1, notDeductLateleave1, exemptTaxTime2, minusAbsenceTime2,
-				calcActualOperation2, incChildNursingCare2, notDeductLateleave2, predeterminDeficiency2, additionTime2);
+			int exemptTaxTime1, int incChildNursingCare1, int additionTime1,
+			int notDeductLateleave1, int deformatExcValue, int exemptTaxTime2, int minusAbsenceTime2, int calcActualOperation2,
+			int incChildNursingCare2, int notDeductLateleave2, int additionTime2) {
+		return new WorkDepLabor(companyId, EnumAdaptor.valueOf(calcActualOperation1, CalcActualOperationAtr.class) , exemptTaxTime1, incChildNursingCare1,
+				 additionTime1, notDeductLateleave1, EnumAdaptor.valueOf(deformatExcValue, DeformatExcValueAtr.class), exemptTaxTime2, minusAbsenceTime2,
+				 EnumAdaptor.valueOf(calcActualOperation2, CalcActualOperationAtr.class), incChildNursingCare2, notDeductLateleave2, additionTime2);
 	}
 }

@@ -16,7 +16,7 @@ public class AddHolidayAddtimeCommand {
 	/** 会社単位の休暇時間を参照する */
 	private int referComHolidayTime;
 
-	/** 1日 */
+	/** Pre日 */
 	private BigDecimal oneDay;
 
 	/** 午前 */
@@ -60,25 +60,25 @@ public class AddHolidayAddtimeCommand {
 		if (this.regularWork == null) {
 			return null;
 		}
-		return RegularWork.createFromJavaType(companyId, this.regularWork.getCalcActualOperation1(),
-				this.regularWork.getExemptTaxTime1(), this.regularWork.getIncChildNursingCare1(),
-				this.regularWork.getAdditionTime1(), this.regularWork.getNotDeductLateleave1(),
-				this.regularWork.getDeformatExcValue1(), this.regularWork.getExemptTaxTime2(),
-				this.regularWork.getCalcActualOperation2(), this.regularWork.getIncChildNursingCare2(),
-				this.regularWork.getNotDeductLateleave2(), this.regularWork.getAdditionTime2());
+		return RegularWork.createFromJavaType(companyId, this.regularWork.getCalcActualOperationPre(),
+				this.regularWork.getExemptTaxTimePre(), this.regularWork.getIncChildNursingCarePre(),
+				this.regularWork.getAdditionTimePre(), this.regularWork.getNotDeductLateleavePre(),
+				this.regularWork.getDeformatExcValuePre(), this.regularWork.getExemptTaxTimeWork(),
+				this.regularWork.getCalcActualOperationWork(), this.regularWork.getIncChildNursingCareWork(),
+				this.regularWork.getNotDeductLateleaveWork(), this.regularWork.getAdditionTimeWork());
 	}
 
 	private FlexWork toDomainFlexWork(String companyId) {
 		if (this.flexWork == null) {
 			return null;
 		}
-		return FlexWork.createFromJavaType(companyId, this.flexWork.getCalcActualOperation1(),
-				this.flexWork.getExemptTaxTime1(), this.flexWork.getIncChildNursingCare1(),
-				this.flexWork.getPredeterminedOvertime1(), this.flexWork.getAdditionTime1(),
-				this.flexWork.getNotDeductLateleave1(), this.flexWork.getExemptTaxTime2(),
-				this.flexWork.getMinusAbsenceTime2(), this.flexWork.getCalcActualOperation2(),
-				this.flexWork.getIncChildNursingCare2(), this.flexWork.getNotDeductLateleave2(),
-				this.flexWork.getPredeterminDeficiency2(), this.flexWork.getAdditionTime2());
+		return FlexWork.createFromJavaType(companyId, this.flexWork.getCalcActualOperationPre(),
+				this.flexWork.getExemptTaxTimePre(), this.flexWork.getIncChildNursingCarePre(),
+				this.flexWork.getPredeterminedOvertimePre(), this.flexWork.getAdditionTimePre(),
+				this.flexWork.getNotDeductLateleavePre(), this.flexWork.getExemptTaxTimeWork(),
+				this.flexWork.getMinusAbsenceTimeWork(), this.flexWork.getCalcActualOperationWork(),
+				this.flexWork.getIncChildNursingCareWork(), this.flexWork.getNotDeductLateleaveWork(),
+				this.flexWork.getPredeterminDeficiencyWork(), this.flexWork.getAdditionTimeWork());
 	}
 
 	private WorkDepLabor toDomainIrregularWork(String companyId) {
@@ -86,11 +86,9 @@ public class AddHolidayAddtimeCommand {
 			return null;
 		}
 		return WorkDepLabor.createFromJavaType(companyId, this.irregularWork.getCalcActualOperation1(),
-				this.irregularWork.getExemptTaxTime1(), this.irregularWork.getIncChildNursingCare1(),
-				this.irregularWork.getPredeterminedOvertime1(), this.irregularWork.getAdditionTime1(),
-				this.irregularWork.getNotDeductLateleave1(), this.irregularWork.getExemptTaxTime2(),
+				this.irregularWork.getExemptTaxTime1(), this.irregularWork.getIncChildNursingCare1(), this.irregularWork.getAdditionTime1(),
+				this.irregularWork.getNotDeductLateleave1(),this.irregularWork.getDeformatExcValue(), this.irregularWork.getExemptTaxTime2(),
 				this.irregularWork.getMinusAbsenceTime2(), this.irregularWork.getCalcActualOperation2(),
-				this.irregularWork.getIncChildNursingCare2(), this.irregularWork.getNotDeductLateleave2(),
-				this.irregularWork.getPredeterminDeficiency2(),this.irregularWork.getAdditionTime2());
+				this.irregularWork.getIncChildNursingCare2(), this.irregularWork.getNotDeductLateleave2(),this.irregularWork.getAdditionTime2());
 	}
 }

@@ -27,55 +27,55 @@ public class KshstWorkFlexSet  extends UkJpaEntity implements Serializable{
 	public KshstWorkFlexSetPK kshstFlexWorkSetPK;
 	
 	/** 実働のみで計算する */
-	@Column(name = "CALC_ACTUAL_OPERATION_1")
+	@Column(name = "PRE_CALC_ACTUAL_OPERATION")
 	public int calcActualOperation1;
 	
 	/** インターバル免除時間を含めて計算する */
-	@Column(name = "EXEMPT_TAX_TIME_1")
+	@Column(name = "PRE_EXEMPT_TAX_TIME")
 	public int exemptTaxTime1;
 	
 	/** 育児・介護時間を含めて計算する */
-	@Column(name = "INC_CHILD_NURSING_CARE_1")
+	@Column(name = "PRE_INC_CHILD_NURSE_CARE")
 	public int incChildNursingCare1;
 	
 	/** フレックスの所定超過時 */
-	@Column(name = "PREDETERMINED_OVERTIME_1")
+	@Column(name = "PRE_PREDETERMIN_OT")
 	public int predeterminedOvertime1;
 	
 	/** 加算する */
-	@Column(name = "ADDITION_TIME_1")
+	@Column(name = "PRE_ADDITION_TIME")
 	public int additionTime1;
 	
 	/** 遅刻・早退を控除しない */
-	@Column(name = "NOT_DEDUCT_LATELEAVE_1")
+	@Column(name = "PRE_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave1;
 	
 	/** インターバル免除時間を含めて計算する */
-	@Column(name = "EXEMPT_TAX_TIME_2")
+	@Column(name = "WKT_EXEMPT_TAX_TIME")
 	public int exemptTaxTime2;
 	
 	/** 欠勤時間をマイナスする*/
-	@Column(name = "MINUS_ABSENCE_TIME_2")
+	@Column(name = "WKT_MINUS_ABSENCE_TIME")
 	public int minusAbsenceTime2;
 	
 	/** 実働のみで計算する */
-	@Column(name = "CALC_ACTUAL_OPERATION_2")
+	@Column(name = "WKT_CALC_ACTUAL_OPERATION")
 	public int calcActualOperation2;
 	
 	/** 育児・介護時間を含めて計算する */
-	@Column(name = "INC_CHILD_NURSING_CARE_2")
+	@Column(name = "WKT_INC_CHILD_NURSE_CARE")
 	public int incChildNursingCare2;
 	
 	/** 遅刻・早退を控除しない */
-	@Column(name = "NOT_DEDUCT_LATELEAVE_2")
+	@Column(name = "WKT_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave2;
 	
 	/** フレックスの所定不足時 */
-	@Column(name = "PREDETERMIN_DEFICIENCY_2")
+	@Column(name = "WKT_PREDETERMIN_DEF")
 	public int predeterminDeficiency2;
 	
 	/** 加算する */
-	@Column(name = "ADDITION_TIME_2")
+	@Column(name = "WKT_ADDITION_TIME")
 	public int additionTime2;
 	
 	@OneToOne(optional = false)

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.calculation.holiday.time;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromWeekday;
@@ -15,7 +17,7 @@ public class HdFromWeekdayCommand {
 	private int holidayWorkFrameNo;
 
 	/** 変更後の残業枠NO */
-	private int overWorkNo;
+	private BigDecimal overWorkNo;
 	
 	public HdFromWeekday toDomain(String companyId) {
 		return HdFromWeekday.createFromJavaType(companyId, this.holidayWorkFrameNo, this.overWorkNo);

@@ -76,8 +76,8 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		HdFromWeekdayDto overdayHolidayAttenDto = new HdFromWeekdayDto();
-			overdayHolidayAttenDto.setHdFrameNo(holidayAtten.getHdFrameNo());
-			overdayHolidayAttenDto.setOvertimeFrameNo(holidayAtten.getOvertimeFrameNo());
+			overdayHolidayAttenDto.setHdFrameNo(holidayAtten.getHdFrameNo().v());
+			overdayHolidayAttenDto.setOvertimeFrameNo(holidayAtten.getOvertimeFrameNo().v());
 		return overdayHolidayAttenDto;
 	}
 
@@ -92,10 +92,10 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		HdFromHdDto overdayHolidayDto = new HdFromHdDto();
-			overdayHolidayDto.setOvertimeFrameNo(overdayCalcHoliday.getOvertimeFrameNo());
-			overdayHolidayDto.setLegalHdNo(overdayCalcHoliday.getLegalHdNo());
-			overdayHolidayDto.setNonLegalHdNo(overdayCalcHoliday.getNonLegalHdNo());
-			overdayHolidayDto.setNonLegalPublicHdNo(overdayCalcHoliday.getNonLegalPublicHdNo());
+			overdayHolidayDto.setOvertimeFrameNo(overdayCalcHoliday.getBreakFrameNo().v());
+			overdayHolidayDto.setLegalHdNo(overdayCalcHoliday.getLegalHdNo().v());
+			overdayHolidayDto.setNonLegalHdNo(overdayCalcHoliday.getNonLegalHdNo().v());
+			overdayHolidayDto.setNonLegalPublicHdNo(overdayCalcHoliday.getNonLegalPublicHdNo().v());
 		return overdayHolidayDto;
 	}
 
@@ -110,10 +110,10 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		WeekdayHolidayDto weekdayHolidayDto = new WeekdayHolidayDto();
-			weekdayHolidayDto.setOverTimeFrameNo(weekdayHoliday.getOverTimeFrameNo());
-			weekdayHolidayDto.setLegalHdNo(weekdayHoliday.getLegalHdNo());
-			weekdayHolidayDto.setNonLegalHdNo(weekdayHoliday.getNonLegalHdNo());
-			weekdayHolidayDto.setNonLegalPublicHdNo(weekdayHoliday.getNonLegalPublicHdNo());
+			weekdayHolidayDto.setOverTimeFrameNo(weekdayHoliday.getOverTimeFrameNo().v());
+			weekdayHolidayDto.setLegalHdNo(weekdayHoliday.getLegalHdNo().v());
+			weekdayHolidayDto.setNonLegalHdNo(weekdayHoliday.getNonLegalHdNo().v());
+			weekdayHolidayDto.setNonLegalPublicHdNo(weekdayHoliday.getNonLegalPublicHdNo().v());
 		return weekdayHolidayDto;
 	}
 }

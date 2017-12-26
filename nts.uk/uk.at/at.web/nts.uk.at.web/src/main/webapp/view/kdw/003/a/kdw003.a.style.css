@@ -175,5 +175,8 @@
     position: relative;
     right: -7px;
 }
+.link-button{
+	color : #f5f5dc !important;
+}
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */

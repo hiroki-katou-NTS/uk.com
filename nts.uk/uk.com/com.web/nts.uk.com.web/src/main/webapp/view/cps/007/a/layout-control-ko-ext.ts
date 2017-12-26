@@ -1629,8 +1629,6 @@ module nts.custombinding {
                                                     && _.has(next, "value")
                                                     && ko.isObservable(next.value)) {
 
-                                                    console.log(ko.toJS(next));
-
                                                     def.endDate = ko.computed(() => {
                                                         return moment.utc(ko.toJS(next.value)).add(-1, "days").toDate();
                                                     });

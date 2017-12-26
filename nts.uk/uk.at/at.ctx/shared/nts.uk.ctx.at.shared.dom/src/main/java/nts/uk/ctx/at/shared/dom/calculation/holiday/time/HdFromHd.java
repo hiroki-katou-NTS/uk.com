@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
 @AllArgsConstructor
 @Getter
 public class HdFromHd extends DomainObject{
@@ -14,16 +15,16 @@ public class HdFromHd extends DomainObject{
 	private String companyId;
 
 	/**変更前の休出枠NO*/
-	private int overtimeFrameNo;
+	private BreakoutFrameNo breakFrameNo;
 	
 	/** 変更後の法定内休出NO*/
-	private int legalHdNo;
+	private BreakoutFrameNo legalHdNo;
 	
 	/** 変更後の法定外休出NO */
-	private int nonLegalHdNo;
+	private BreakoutFrameNo nonLegalHdNo;
 	
 	/** 変更後の祝日休出NO */
-	private int nonLegalPublicHdNo;
+	private BreakoutFrameNo nonLegalPublicHdNo;
 	
 	/**
 	 * Create from Java Type of Hd From Hd
@@ -34,7 +35,7 @@ public class HdFromHd extends DomainObject{
 	 * @param excessHd
 	 * @return
 	 */
-	public static HdFromHd createFromJavaType( String companyId, int holidayWorkFrameNo, int calcOverDayEnd, int statutoryHd, int excessHd){
-		return new HdFromHd(companyId, holidayWorkFrameNo, calcOverDayEnd, statutoryHd, excessHd);
+	public static HdFromHd createFromJavaType( String companyId, int breakFrameNo, int legalHdNo, int nonLegalHdNo, int nonLegalPublicHdNo){
+		return new HdFromHd(companyId, new BreakoutFrameNo(breakFrameNo), new BreakoutFrameNo(legalHdNo), new BreakoutFrameNo(nonLegalHdNo), new BreakoutFrameNo(nonLegalPublicHdNo));
 	}
 }
