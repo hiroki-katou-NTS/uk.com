@@ -32,7 +32,7 @@ public class CreateEmployeeDailyPerError {
 			return outPutProcess;
 		} else {
 			EmployeeDailyPerError employeeDailyPerformanceError = new EmployeeDailyPerError(companyID, employeeID,
-					processingDate, errorCode, attendanceItemIDList, 0);
+					processingDate, errorCode, attendanceItemIDList);
 			this.employeeDailyPerErrorRepository.insert(employeeDailyPerformanceError);
 			return outPutProcess = OutPutProcess.NO_ERROR;
 		}

@@ -111,9 +111,9 @@ subprojects {
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
         compile group: 'nts.gul', name: 'nts.gul', version: '0.38.1'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.49'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.52.6'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.13.4'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.14'
 	}
 }
 
@@ -533,7 +533,7 @@ project (':at.web:nts.uk.at.web') {
 	}
 	
 	dependencies {
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.13.4'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.14'
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'

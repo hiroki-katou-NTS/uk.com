@@ -389,7 +389,7 @@ public class LayoutFinder {
 				DataTypeStateDto itemDataTypeSate = valueItem.getItem();
 				if ( itemDataTypeSate != null && itemDataTypeSate.getDataTypeValue() == DataTypeValue.SELECTION.value) {
 					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, standardDate));
+					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, standardDate, true));
 				}
 			}
 		});
