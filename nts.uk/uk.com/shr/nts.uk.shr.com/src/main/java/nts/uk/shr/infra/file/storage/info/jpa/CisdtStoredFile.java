@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.file.storage.info.entity;
+package nts.uk.shr.infra.file.storage.info.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.val;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -38,5 +40,26 @@ public class CisdtStoredFile extends UkJpaEntity {
 	protected Object getKey() {
 		return this.fileId;
 	}
+
 	
+	public StoredFileInfo toDomain() {
+		return new StoredFileInfo(
+				this.fileId,
+				this.originalName,
+				this.fileType,
+				this.mimeType,
+				this.originalSizeBytes,
+				this.storedAt);
+	}
+	
+	public static CisdtStoredFile of(StoredFileInfo domain) {
+		val entity = new CisdtStoredFile();
+		entity.originalName = domain.getOriginalName();
+		entity.fileId = domain.getId();
+		entity.fileType = domain.getFileType();
+		entity.mimeType = domain.getMimeType();
+		entity.originalSizeBytes = domain.getOriginalSize();
+		entity.storedAt = domain.getStoredAt();
+		return entity;
+	}
 }

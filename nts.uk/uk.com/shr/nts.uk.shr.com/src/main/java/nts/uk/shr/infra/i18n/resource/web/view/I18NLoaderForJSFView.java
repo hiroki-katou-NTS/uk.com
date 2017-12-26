@@ -2,10 +2,8 @@ package nts.uk.shr.infra.i18n.resource.web.view;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
