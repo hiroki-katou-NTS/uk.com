@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
+import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSetPK;
 
 @Stateless
 public class JpaAlarmPatternSettingRepository extends JpaRepository implements AlarmPatternSettingRepository {
@@ -21,7 +22,11 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 			+ " JOIN KfnmtExtractionPeriodDaily d ON c.extractionId = d.kfnmtExtractionPeriodDailyPK.extractionId AND c.extractionRange = d.kfnmtExtractionPeriodDailyPK.extractionRange";
 	
 	
-	private final String SELECT_BY_COMPANY = "SELECT a FROM KfnmtAlarmPatternSet a WHERE a.pk.companyID = = :companyId";
+	private final String SELECT_BY_COMPANY = "SELECT a FROM KfnmtAlarmPatternSet a WHERE a.pk.companyID = :companyId";
+	
+	private final String SELECT_BY_ALARM_PATTERN_CD = "SELECT a FROM KfnmtAlarmPatternSet a WHERE  a.pk.companyID = : companyId  AND a.pk.alarmPatternCD = :alarmPatternCode";
+	
+	
 	@Override
 	public List<AlarmPatternSetting> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_BY_COMPANY, KfnmtAlarmPatternSet.class).setParameter("companyId", companyId).getList(c -> c.toDomain());
@@ -29,26 +34,31 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 
 	@Override
 	public Optional<AlarmPatternSetting> findByAlarmPatternCode(String companyId, String alarmPatternCode) {
-
-		return null;
+		return this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtAlarmPatternSet.class)
+				.setParameter("companyId", companyId).setParameter("alarmPatternCode", alarmPatternCode).getSingle(c ->c.toDomain());
 	}
 
 	@Override
 	public void create(AlarmPatternSetting domain) {
-
-		
+		this.commandProxy().insert(domain);		
 	}
 
 	@Override
 	public void update(AlarmPatternSetting domain) {
-
-		
+		KfnmtAlarmPatternSet newEntity = KfnmtAlarmPatternSet.toEntity(domain);
+		KfnmtAlarmPatternSet updateEntity = this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtAlarmPatternSet.class)
+				.setParameter("companyId", domain.getCompanyID())
+				.setParameter("alarmPatternCode", domain.getAlarmPatternCD().v()).getSingle().get();
+		updateEntity.checkConList = newEntity.checkConList;
+		updateEntity.alarmPerSet = newEntity.alarmPerSet;
+		updateEntity.alarmPatternName = newEntity.alarmPatternName;
+		this.commandProxy().update(updateEntity);		
 	}
 
 	@Override
-	public void delete(AlarmPatternSetting domain) {
-
-		
+	public void delete(String companyId, String alarmPatternCode) {
+		KfnmtAlarmPatternSetPK pk = new KfnmtAlarmPatternSetPK(companyId, alarmPatternCode);
+		this.commandProxy().remove(KfnmtAlarmPatternSet.class, pk);		
 	}
 
 }

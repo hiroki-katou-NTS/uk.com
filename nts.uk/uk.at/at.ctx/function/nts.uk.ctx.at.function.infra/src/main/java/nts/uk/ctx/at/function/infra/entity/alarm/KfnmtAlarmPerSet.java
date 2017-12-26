@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_ALARM_PER_SET")
@@ -32,7 +31,7 @@ public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
 	public KfnmtAlarmPerSetPK pk;
 	
 	@Column(name = "AUTH_SET")
-	public boolean authSetting;
+	public int authSetting;
 	
 	@OneToOne
 	@JoinColumns({
@@ -49,10 +48,28 @@ public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
 	protected Object getKey() {
 		return this.pk;
 	}
+
+	public KfnmtAlarmPerSet(KfnmtAlarmPerSetPK pk, int authSetting, List<KfnmtAlarmPerSetItem> alarmPerSetItems) {
+		super();
+		this.pk = pk;
+		this.authSetting = authSetting;
+		this.alarmPerSetItems = alarmPerSetItems;
+	}
 	
 	public AlarmPermissionSetting toDomain() {
-		return new AlarmPermissionSetting(this.pk.alarmPatternCD, this.pk.companyID, authSetting,
+		return new AlarmPermissionSetting(this.pk.alarmPatternCD, this.pk.companyID, authSetting==1,
 				this.alarmPerSetItems.stream().map(c -> c.pk.roleID).collect(Collectors.toList()));
 	}
+	
+	public static KfnmtAlarmPerSet toEntity(AlarmPermissionSetting domain) {
+		List<KfnmtAlarmPerSetItem> alarmPerSetItems = domain.getRoleIds().stream()
+				.map(r -> new KfnmtAlarmPerSetItem(
+						new KfnmtAlarmPerSetItemPK(domain.getCompanyID(), domain.getAlarmPatternCD().v(), r)))
+				.collect(Collectors.toList());
+		
+		return new KfnmtAlarmPerSet(new KfnmtAlarmPerSetPK(domain.getCompanyID(), domain.getAlarmPatternCD().v()),
+				domain.isAuthSetting() ? 1 : 0, alarmPerSetItems);
+	}
+
 	
 }

@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_ALARM_PER_SET_ITEM")
@@ -34,4 +33,10 @@ public class KfnmtAlarmPerSetItem extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return pk;
 	}
+
+	public KfnmtAlarmPerSetItem(KfnmtAlarmPerSetItemPK pk) {
+		super();
+		this.pk = pk;
+	}
+	
 }

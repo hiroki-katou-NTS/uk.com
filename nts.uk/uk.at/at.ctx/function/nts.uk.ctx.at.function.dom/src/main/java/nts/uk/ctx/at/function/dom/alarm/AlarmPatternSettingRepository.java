@@ -23,6 +23,6 @@ public interface AlarmPatternSettingRepository {
 	
 	public void update(AlarmPatternSetting domain);
 	
-	public void delete(AlarmPatternSetting domain);
+	public void delete(String companyId, String alarmPatternCode);
 		
 }
