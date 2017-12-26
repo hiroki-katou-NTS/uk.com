@@ -117,6 +117,8 @@ module nts.uk.ui.koExtentions {
                  $picker.spectrum("set", null);
                  if (required === true){
                     validateRequired($picker);       
+                 } else if(!nts.uk.util.isNullOrUndefined(data.value)){
+                    data.value(null);
                  }                 
             });
             

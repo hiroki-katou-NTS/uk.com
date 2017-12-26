@@ -243,6 +243,11 @@ module nts.uk.ui.koExtentions {
             });
             
             $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
+            
+            this.swapper.Model.$container.bind("swaplistgridsizeexceed", function(evt, data){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_887" });
+            });
+            
         }
 
         /**
@@ -628,6 +633,7 @@ module nts.uk.ui.koExtentions {
             });
             
             this.$searchBox.keydown(function(evt, ui) {
+                let $input = this;
                 if (evt.which === 13) {
                     proceedSearch.apply(self);
                     _.defer(() => {
