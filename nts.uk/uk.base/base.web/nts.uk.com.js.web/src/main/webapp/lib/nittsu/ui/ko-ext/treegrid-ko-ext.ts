@@ -113,6 +113,7 @@ module nts.uk.ui.koExtentions {
             $treegrid.igTreeGrid({
                 width: width,
                 height: height,
+                indentation: "12px",
                 dataSource: _.cloneDeep(options),
                 primaryKey: optionsValue,
                 columns: displayColumns,
