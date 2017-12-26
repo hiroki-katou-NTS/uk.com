@@ -173,7 +173,7 @@ public class UpdateErrorAlarmWrCommand {
 				alCheckTargetCondition.getLstClassification());
 		// Set WorkTypeCondition
 		condition.createWorkTypeCondition(workTypeCondition.isUseAtr(), workTypeCondition.getComparePlanAndActual());
-		if (workTypeCondition.getComparePlanAndActual() == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (workTypeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
 			condition.setWorkTypePlan(workTypeCondition.isPlanFilterAtr(), workTypeCondition.getPlanLstWorkType());
 			condition.setWorkTypeActual(workTypeCondition.isActualFilterAtr(),
 					workTypeCondition.getActualLstWorkType());
@@ -183,7 +183,7 @@ public class UpdateErrorAlarmWrCommand {
 		}
 		// Set WorkTimeCondtion
 		condition.createWorkTimeCondition(workTimeCondition.isUseAtr(), workTimeCondition.getComparePlanAndActual());
-		if (workTimeCondition.getComparePlanAndActual() == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (workTimeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
 			condition.setWorkTimePlan(workTimeCondition.isPlanFilterAtr(), workTimeCondition.getPlanLstWorkTime());
 			condition.setWorkTimeActual(workTimeCondition.isActualFilterAtr(),
 					workTimeCondition.getActualLstWorkTime());
@@ -198,7 +198,7 @@ public class UpdateErrorAlarmWrCommand {
 				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
 		condition.createAttendanceItemCondition(operatorBetweenGroups)
 				.setAttendanceItemConditionGroup1(operatorGroup1, conditionsGroup1)
-				.setAttendanceItemConditionGroup2(operatorGroup1, conditionsGroup2);
+				.setAttendanceItemConditionGroup2(operatorGroup2, conditionsGroup2);
 		domain.setCondition(condition);
 		return domain;
 	}
