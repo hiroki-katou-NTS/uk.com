@@ -46,13 +46,15 @@ public class JpaFixRestTimezoneSetGetMemento<T extends UkJpaEntity> implements F
 	public List<DeductionTime> getLstTimezone() {
 		if (this.entitySets instanceof KshmtFixedHalfRestSet) {
 			// KSHMT_FIXED_HALF_REST_SET
-			return this.entitySets.stream().map(entity -> (KshmtFixedHalfRestSet) entity)
+			return this.entitySets.stream()
+					.map(KshmtFixedHalfRestSet.class::cast)
 					.map(entity -> new DeductionTime(
 							new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
 					.collect(Collectors.toList());
 		}
 		if (this.entitySets instanceof KshmtFixedHolRestSet) {
-			return this.entitySets.stream().map(entity -> (KshmtFixedHolRestSet) entity)
+			return this.entitySets.stream()
+					.map(KshmtFixedHolRestSet.class::cast)
 					.map(entity -> new DeductionTime(
 							new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
 					.collect(Collectors.toList());
