@@ -42,19 +42,16 @@ module nts.uk.at.view.kmk003.a {
             isClickSave: KnockoutObservable<boolean>;
             
             mainSettingModel: MainSettingModel;
-            workTimeCondition: WorkTimeSettingConditionModel;
-            
-            workTimeSettingModel: WorkTimeSettingModel;
-            predetemineTimeSettingModel: PredetemineTimeSettingModel;
+            workTimeSettingLoader: WorkTimeSettingLoader;
             
             settingEnum: WorkTimeSettingEnumDto;
-            dataModelOneDay: EmTimeZoneSetModel[];
             
             screenMode: KnockoutObservable<number>;
             constructor() {
                 let self = this;
+                self.mainSettingModel = new MainSettingModel();
 
-                self.workTimeCondition = new WorkTimeSettingConditionModel();
+                self.workTimeSettingLoader = new WorkTimeSettingLoader();
                 
                 self.workTimeSettings = ko.observableArray([]);
                 self.columnWorktimeSettings = ko.observableArray([
@@ -117,14 +114,9 @@ module nts.uk.at.view.kmk003.a {
                 //data get from service
                 self.isClickSave = ko.observable(false);
                 
-                self.mainSettingModel = new MainSettingModel();
-                //TODO: xoa model khong dung den
-                self.workTimeSettingModel = self.mainSettingModel.workTimeSetting;
-                self.predetemineTimeSettingModel = self.mainSettingModel.predetemineTimeSetting;
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
                    self.updateWorktimeCode(worktimeCode); 
                 });
-                self.dataModelOneDay = [];
                 
                 self.screenMode = ko.observable(ScreenMode.NEW);
             }
@@ -135,31 +127,37 @@ module nts.uk.at.view.kmk003.a {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                
+                self.bindFunction();
+
                 //get all enums
                 service.getEnumWorktimeSeting().done(function(setting) {
                     self.settingEnum = setting;
-                    self.workTimeCondition.setEnums(setting);
-//                    service.findAllWorkTimeSet().done(function(worktime) {
-//                        self.workTimeSettings(worktime);
-//                        if (worktime && worktime.length > 0) {
-//                            self.selectedWorkTimeCode(worktime[0].worktimeCode);
-                            dfd.resolve();
-//                        }
-//                    });
+                    self.workTimeSettingLoader.setEnums(setting);
+                    dfd.resolve();
                 });
-                
                 
                 // set ntsFixedTable style
                 return dfd.promise();
+            }
+
+            private bindFunction(): void {
+                let self = this;
+                self.workTimeSettingLoader.loadListWorktime = self.loadListWorktime.bind(self);
+            }
+
+            private loadListWorktime(): void {
+                let self = this;
+                service.findWithCondition(self.workTimeSettingLoader.getCondition()).done(data => {
+                    self.workTimeSettings(data);
+                });
             }
 
             private updateWorktimeCode(worktimeCode: string): JQueryPromise<void> {
                 var self = this;
                 let dfd = $.Deferred<void>();
                 service.findWorktimeSetingInfoByCode(worktimeCode).done(function(worktimeSettingInfo) {
-                    self.workTimeSettingModel.updateData(worktimeSettingInfo.worktimeSetting);
-                    self.predetemineTimeSettingModel.updateData(worktimeSettingInfo.predseting);
+                    self.mainSettingModel.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
+                    self.mainSettingModel.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
                     /*service.findByCodeFlexWorkSetting(worktimeCode).done(function(flexdata) {
                         if (flexdata) {
                             self.updateDataFlexMode(flexdata);
@@ -198,9 +196,9 @@ module nts.uk.at.view.kmk003.a {
                     self.isClickSave(false);
                 });*/
                 //TODO need check mode save new or update here 
-                switch(self.workTimeSettingModel.workTimeDivision.workTimeDailyAtr()){
+                switch(self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr()){
                     case EnumWorkForm.REGULAR: 
-                        switch (self.workTimeSettingModel.workTimeDivision.workTimeMethodSet()) {
+                        switch (self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet()) {
                             case SettingMethod.FIXED: 
                                 service.saveFixedWorkSetting(self.collectDataFixed()).done(function() {
 
@@ -232,8 +230,8 @@ module nts.uk.at.view.kmk003.a {
             private collectDataFixed():any{
                 let _self = this;
                 let command: FixedWorkSettingSaveCommand = {
-                    predseting: _self.predetemineTimeSettingModel.toDto(),
-                    worktimeSetting: _self.workTimeSettingModel.toDto(),
+                    predseting: _self.mainSettingModel.predetemineTimeSetting.toDto(),
+                    worktimeSetting: _self.mainSettingModel.workTimeSetting.toDto(),
                     fixedWorkSetting: _self.mainSettingModel.fixedWorkSetting.toDto(),
                     screenMode: _self.tabMode()
                 };
@@ -248,8 +246,8 @@ module nts.uk.at.view.kmk003.a {
                 var command: FlexWorkSettingSaveCommand;
                 command = {
                     flexWorkSetting: self.mainSettingModel.flexWorkSetting.toDto(),
-                    predseting: self.predetemineTimeSettingModel.toDto(),
-                    worktimeSetting: self.workTimeSettingModel.toDto()
+                    predseting: self.mainSettingModel.predetemineTimeSetting.toDto(),
+                    worktimeSetting: self.mainSettingModel.workTimeSetting.toDto()
                 };
                 return command;     
             }
@@ -330,28 +328,23 @@ module nts.uk.at.view.kmk003.a {
             }
         }
 
-        export class WorkTimeSettingConditionModel extends WorkTimeSettingModel {
+        export class WorkTimeSettingLoader extends WorkTimeSettingModel {
             workTimeAtrEnums: EnumConstantDto[];
             workTimeMethodEnums: EnumConstantDto[];
+            loadListWorktime: () => void;
             constructor() {
                 super();
                 this.workTimeDivision.workTimeDailyAtr(3);
                 this.workTimeDivision.workTimeMethodSet(3);
                 this.workTimeDivision.workTimeDailyAtr.subscribe(() => {
-                    this.loadWorkSetting();
+                    this.loadListWorktime();
                 });
                 this.workTimeDivision.workTimeMethodSet.subscribe(() => {
-                    this.loadWorkSetting();
+                    this.loadListWorktime();
                 });
                 this.isAbolish.subscribe(() => {
-                    this.loadWorkSetting();
+                    this.loadListWorktime();
                 });
-            }
-
-            // TODO: testing
-            loadWorkSetting() {
-                let self = this;
-                service.findWithCondition(self.getCondition());
             }
 
             public getCondition(): WorkTimeSettingCondition {

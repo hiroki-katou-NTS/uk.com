@@ -89,6 +89,8 @@
 				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote
 				nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
 				nts.uk.shr.com.primitive.Memo
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
 			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
@@ -105,37 +107,37 @@
 						<td class="screen-content-left">
 							<div class="caret-left-width caret-right caret-background bg-green">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
-								<com:ko tag="with" bind="workTimeCondition">
-								<div id="combo-box"
-									data-bind="ntsComboBox: {
-									options: workTimeAtrEnums,
-									optionsValue: 'value',
-									visibleItemsCount: 5,
-									value: workTimeDivision.workTimeDailyAtr,
-									optionsText: 'localizedName',
-									editable: false,
-									enable: true,
-									columns: [
-									{ prop: 'localizedName', length: 10 }]}">
-								</div>
-								<br />
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
-								<div id="combo-box" 
-									data-bind="ntsComboBox: {
-									options: workTimeMethodEnums,
-									optionsValue: 'value',
-									visibleItemsCount: 5,
-									value: workTimeDivision.workTimeMethodSet,
-									optionsText: 'localizedName',
-									editable: false,
-									enable: isRegularWork,
-									columns: [
-									{ prop: 'localizedName', length: 6 }]}">
-								</div>
-								<br />
-								<div class="checkbox_display"
-									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
-								</div>
+								<com:ko tag="with" bind="workTimeSettingLoader">
+									<div id="combo-box"
+										data-bind="ntsComboBox: {
+										options: workTimeAtrEnums,
+										optionsValue: 'value',
+										visibleItemsCount: 5,
+										value: workTimeDivision.workTimeDailyAtr,
+										optionsText: 'localizedName',
+										editable: false,
+										enable: true,
+										columns: [
+										{ prop: 'localizedName', length: 10 }]}">
+									</div>
+									<br />
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
+									<div id="combo-box" 
+										data-bind="ntsComboBox: {
+										options: workTimeMethodEnums,
+										optionsValue: 'value',
+										visibleItemsCount: 5,
+										value: workTimeDivision.workTimeMethodSet,
+										optionsText: 'localizedName',
+										editable: false,
+										enable: isRegularWork,
+										columns: [
+										{ prop: 'localizedName', length: 6 }]}">
+									</div>
+									<br />
+									<div class="checkbox_display"
+										data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
+									</div>
 								</com:ko>
 								<div style="width: 300px"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
@@ -155,7 +157,8 @@
 							</div>
 						</td>
 						<td class="screen-content-right">
-							<div class="setting_header" data-bind="with: workTimeSettingModel">
+						<com:ko tag="with" bind="mainSettingModel.workTimeSetting">
+							<div class="setting_header">
 								<div style="width: 160px;"
 									data-bind="ntsFormLabel: {required:true, 
 									constraint: 'WorkTimeCode'}">
@@ -205,10 +208,10 @@
 								<div style="width: 165px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-									options: settingEnum.workTimeDailyAtr,
+									options: $parent.settingEnum.workTimeDailyAtr,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
-									value: workTimeSettingModel.workTimeDivision.workTimeDailyAtr,
+									value: workTimeDivision.workTimeDailyAtr,
 									optionsText: 'localizedName',
 									editable: false,
 									enable: true,
@@ -219,17 +222,17 @@
 								</div>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
-									options: settingEnum.workTimeMethodSet,
+									options: $parent.settingEnum.workTimeMethodSet,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
-									value: workTimeSettingModel.workTimeDivision.workTimeMethodSet,
+									value: workTimeDivision.workTimeMethodSet,
 									optionsText: 'localizedName',
 									editable: false,
-									enable: workTimeSettingModel.isRegularWork,
+									enable: isRegularWork,
 									columns: [{ prop: 'localizedName', length: 6 }]}">
 								</div>
 							</div>
-							<div class="setting_header_br" data-bind="with: workTimeSettingModel">
+							<div class="setting_header_br">
 								<div class="label_memo"
 									data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_162')}
 								</div>
@@ -252,6 +255,7 @@
 									enable: true
 									}" />
 							</div>
+							</com:ko>
 							<table style="width: 100%;">
 								
 								<tr>
@@ -408,8 +412,6 @@
 						</td>
 					</tr>
 				</table>
-
-
 			</div>
 		</ui:define>
 	</ui:composition>
