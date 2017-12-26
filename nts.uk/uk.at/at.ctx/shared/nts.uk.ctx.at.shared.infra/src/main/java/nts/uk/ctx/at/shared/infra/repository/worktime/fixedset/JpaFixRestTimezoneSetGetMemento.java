@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
@@ -16,19 +18,20 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class JpaFixRestTimezoneSetGetMemento.
  *
- * @param <T>
- *            the generic type
+ * @param <T> the generic type
  */
 public class JpaFixRestTimezoneSetGetMemento<T extends UkJpaEntity> implements FixRestTimezoneSetGetMemento {
 
-	/** The entity. */
+	/** The entity sets. */
 	private List<T> entitySets;
+	
+	/** First item index of list */
+	private static final int FIRST_ITEM = 0;
 
 	/**
 	 * Instantiates a new jpa fix rest timezone set get memento.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entitySets the entity sets
 	 */
 	public JpaFixRestTimezoneSetGetMemento(List<T> entitySets) {
 		super();
@@ -44,7 +47,11 @@ public class JpaFixRestTimezoneSetGetMemento<T extends UkJpaEntity> implements F
 	 */
 	@Override
 	public List<DeductionTime> getLstTimezone() {
-		if (this.entitySets instanceof KshmtFixedHalfRestSet) {
+		if (CollectionUtil.isEmpty(this.entitySets)){
+		    return new ArrayList<>();
+		}
+		
+		if (this.entitySets.get(FIRST_ITEM) instanceof KshmtFixedHalfRestSet) {
 			// KSHMT_FIXED_HALF_REST_SET
 			return this.entitySets.stream()
 					.map(KshmtFixedHalfRestSet.class::cast)
@@ -52,7 +59,7 @@ public class JpaFixRestTimezoneSetGetMemento<T extends UkJpaEntity> implements F
 							new JpaFixedRestTZDeductionTimeGetMemento(entity.getStartTime(), entity.getEndTime())))
 					.collect(Collectors.toList());
 		}
-		if (this.entitySets instanceof KshmtFixedHolRestSet) {
+		if (this.entitySets.get(FIRST_ITEM) instanceof KshmtFixedHolRestSet) {
 			return this.entitySets.stream()
 					.map(KshmtFixedHolRestSet.class::cast)
 					.map(entity -> new DeductionTime(

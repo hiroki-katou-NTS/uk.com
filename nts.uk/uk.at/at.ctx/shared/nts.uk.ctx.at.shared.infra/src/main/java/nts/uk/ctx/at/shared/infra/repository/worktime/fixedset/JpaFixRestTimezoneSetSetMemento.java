@@ -8,28 +8,19 @@ import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class JpaCoreTimeSettingGetMemento.
  */
-public class JpaFixRestTimezoneSetSetMemento implements FixRestTimezoneSetSetMemento {
-//	/** The entity. */
-//	private KshmtFlexWorkSet entity;
-//	
-//	/**
-//	 * Instantiates a new jpa core time setting get memento.
-//	 *
-//	 * @param entity the entity
-//	 */
-//	public JpaCoreTimeSettingGetMemento(KshmtFlexWorkSet entity) {
-//		super();
-//		if(entity.getKshmtFlexWorkSetPK() == null){
-//			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
-//		}
-//		this.entity = entity;
-//	}
+public class JpaFixRestTimezoneSetSetMemento<T extends UkJpaEntity> implements FixRestTimezoneSetSetMemento {
+	
+	private List<T> entitySets;
+	
+	public JpaFixRestTimezoneSetSetMemento(List<T> entitySets) {
+		super();
+		this.entitySets = entitySets;
+	}
 
 	@Override
 	public void setLstTimezone(List<DeductionTime> lstTimezone) {
