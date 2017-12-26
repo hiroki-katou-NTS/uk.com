@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class DiffTimeWorkSettingDto.
@@ -29,9 +30,6 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
 @Getter
 @Setter
 public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingGetMemento {
-	
-	/** The company id. */
-	private String companyId;
 	
 	/** The work time code. */
 	private String workTimeCode;
@@ -65,7 +63,7 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.companyId;
+		return AppContexts.user().companyId();
 	}
 
 	/* (non-Javadoc)

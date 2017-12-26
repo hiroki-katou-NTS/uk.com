@@ -58,7 +58,6 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 export interface DiffTimeWorkSettingDto {
-                    companyId: string;
                     workTimeCode: string;
                     restSet: FixedWorkRestSetDto;
                     dayoffWorkTimezone: DiffTimeDayOffWorkTimezoneDto;
