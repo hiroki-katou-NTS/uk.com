@@ -18,10 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BsEmploymentFindDto {
 
-	/** The company id. */
-	// 会社ID.
-	private String companyId;
-
 	/** The employment code. */
 	// 雇用コード.
 	private String employmentCode;

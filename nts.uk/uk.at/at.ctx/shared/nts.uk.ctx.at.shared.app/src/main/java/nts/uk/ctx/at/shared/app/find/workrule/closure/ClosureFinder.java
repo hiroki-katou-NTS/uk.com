@@ -358,11 +358,17 @@ public class ClosureFinder {
 		List<BsEmploymentImport> empImportList = this.shareEmploymentAdapter.findByEmpCodes(companyId, empCodes);
 		
 		return empImportList.stream().map(e -> {
-			return new BsEmploymentFindDto(e.getCompanyId(), e.getEmploymentCode(), e.getEmploymentName(),
+			return new BsEmploymentFindDto(e.getEmploymentCode(), e.getEmploymentName(),
 					e.getEmpExternalCode(), e.getMemo());
 		}).collect(Collectors.toList());
 	}
 	
+	/**
+	 * Find emp by closure ids.
+	 *
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
 	public List<BsEmploymentFindDto> findEmpByClosureIds(List<Integer> closureIds) {
 		// Get companyID.
 		String companyId = AppContexts.user().companyId();
@@ -378,7 +384,7 @@ public class ClosureFinder {
 		List<BsEmploymentImport> empImportList = this.shareEmploymentAdapter.findByEmpCodes(companyId, empCodes);
 		
 		return empImportList.stream().map(e -> {
-			return new BsEmploymentFindDto(e.getCompanyId(), e.getEmploymentCode(), e.getEmploymentName(),
+			return new BsEmploymentFindDto(e.getEmploymentCode(), e.getEmploymentName(),
 					e.getEmpExternalCode(), e.getMemo());
 		}).collect(Collectors.toList());
 	}
