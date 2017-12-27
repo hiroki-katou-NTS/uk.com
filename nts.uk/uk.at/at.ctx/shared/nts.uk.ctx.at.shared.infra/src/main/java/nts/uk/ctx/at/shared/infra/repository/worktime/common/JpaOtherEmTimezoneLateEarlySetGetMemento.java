@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtOtherLateEarly;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarly;
 
 /**
  * The Class JpaOtherEmTimezoneLateEarlySetGetMemento.

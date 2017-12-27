@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtPioritySet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
 
 /**
  * The Class JpaPrioritySettingGetMemento.

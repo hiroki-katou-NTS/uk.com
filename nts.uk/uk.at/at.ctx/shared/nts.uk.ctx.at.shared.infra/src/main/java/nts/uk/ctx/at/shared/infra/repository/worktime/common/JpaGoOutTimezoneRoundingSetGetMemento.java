@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtSpecialRoundOut;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSpecialRoundOut;
 
 /**
  * The Class JpaGoOutTimezoneRoundingSetGetMemento.

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
  * The Class JpaWorkTimezoneCommonSetGetMemento.

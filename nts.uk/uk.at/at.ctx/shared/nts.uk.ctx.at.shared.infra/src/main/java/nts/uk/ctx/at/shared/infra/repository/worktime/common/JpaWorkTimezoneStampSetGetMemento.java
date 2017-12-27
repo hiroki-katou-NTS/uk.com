@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtPioritySet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtRoundingSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSet;
 
 /**
  * The Class JpaWorkTimezoneStampSetGetMemento.

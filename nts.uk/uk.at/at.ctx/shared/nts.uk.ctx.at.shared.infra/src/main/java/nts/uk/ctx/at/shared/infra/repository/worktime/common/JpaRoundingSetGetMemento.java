@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtRoundingSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSet;
 
 /**
  * The Class JpaRoundingSetGetMemento.

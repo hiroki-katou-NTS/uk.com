@@ -9,8 +9,8 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtSpecialRoundOut;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeGoOutSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSpecialRoundOut;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSet;
 
 /**
  * The Class JpaWorkTimezoneGoOutSetGetMemento.

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
  * The Class JpaIntervalTimeSettingGetMemento.

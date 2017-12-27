@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtSubstitutionSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
 
 /**
  * The Class JpaSubHolTransferSetGetMemento.

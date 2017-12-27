@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtMedicalTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
 
 /**
  * The Class JpaWorkTimezoneMedicalSetGetMemento.

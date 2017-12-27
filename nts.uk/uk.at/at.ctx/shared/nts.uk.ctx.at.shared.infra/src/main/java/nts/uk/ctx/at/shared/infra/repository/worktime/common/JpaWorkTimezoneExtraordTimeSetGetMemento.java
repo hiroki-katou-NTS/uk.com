@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HolidayFramset;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtTempWorktimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSet;
 
 /**
  * The Class JpaWorkTimezoneExtraordTimeSetGetMemento.
