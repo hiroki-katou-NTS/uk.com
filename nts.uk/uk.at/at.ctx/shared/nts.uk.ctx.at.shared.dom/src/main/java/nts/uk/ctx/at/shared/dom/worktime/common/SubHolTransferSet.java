@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -92,5 +93,18 @@ public class SubHolTransferSet extends DomainObject{
 			default:
 				throw new RuntimeException("SubHolTransferType not found.");
 		}
+	}
+	
+	@Override
+	public void validate() {
+		// check use 
+		if (this.useDivision) {
+			
+			// one day >= half day
+			if (this.getDesignatedTime().getOneDayTime().lessThan(this.getDesignatedTime().getHalfDayTime())) {
+				throw new BusinessException("Msg_782");
+			}
+		}
+
 	}
 }

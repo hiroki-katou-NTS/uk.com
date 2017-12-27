@@ -1097,9 +1097,9 @@ module nts.uk.at.view.kmk003.a {
                 outLegalPubHolFrameNo: KnockoutObservable<number>;
 
                 constructor() {
-                    this.inLegalBreakoutFrameNo = ko.observable(0);
-                    this.outLegalBreakoutFrameNo = ko.observable(0);
-                    this.outLegalPubHolFrameNo = ko.observable(0);
+                    this.inLegalBreakoutFrameNo = ko.observable(1);
+                    this.outLegalBreakoutFrameNo = ko.observable(1);
+                    this.outLegalPubHolFrameNo = ko.observable(1);
                 }
 
                 updataData(data: HolidayFramsetDto) {
