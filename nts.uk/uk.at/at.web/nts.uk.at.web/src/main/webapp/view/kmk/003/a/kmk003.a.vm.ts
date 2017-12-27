@@ -449,14 +449,16 @@ module nts.uk.at.view.kmk003.a {
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
                 self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
-                //TODO update flex, fixed, diff, flow viewmodel
+                self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
+                //TODO update flex, diff, flow viewmodel
             }
             
             resetData(){
-                this.workTimeSetting.resetData();    
+                this.workTimeSetting.resetData();
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();
                 this.flexWorkSetting.resetData();
+                //TODO update flex, diff, flow viewmodel
             }
         }
 

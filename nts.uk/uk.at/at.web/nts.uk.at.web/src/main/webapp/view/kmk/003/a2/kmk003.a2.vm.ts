@@ -34,6 +34,9 @@ module a2 {
         dataSourceAfternoon: KnockoutObservableArray<TimeZoneModel>;
         fixTableOptionAfternoon: any;
         
+        dataSourceOneDaySimpleMode: KnockoutObservableArray<TimeZoneModel>;
+        fixTableOptionOneDaySimpleMode: any;
+        
         // Defined variable flow mode
         roundingProcsses: KnockoutObservableArray<any>;
         settingAttrs: KnockoutObservableArray<any>;
@@ -108,6 +111,18 @@ module a2 {
                 tabindex: -1
             };
             
+            self.dataSourceOneDaySimpleMode = ko.observableArray([]);
+            self.fixTableOptionOneDaySimpleMode = {
+                maxRow: 7,
+                minRow: 2,
+                maxRowDisplay: 5,
+                isShowButton: false,
+                dataSource: self.dataSourceOneDaySimpleMode,
+                isMultipleSelect: false,
+                columns: self.columnSetting(),
+                tabindex: -1
+            };
+            
             // ====================================== Defined Variable Flow Mode ======================================
             
             self.roundingProcsses = ko.observableArray([
@@ -148,6 +163,9 @@ module a2 {
             self.dataSourceAfternoon.subscribe((newValue) => {
                 self.convertData();
             });
+            self.dataSourceOneDaySimpleMode.subscribe((newValue) => {
+                self.convertData();
+            });
         }
 
         //=============================================================== ==========================================
@@ -179,38 +197,34 @@ module a2 {
             // Simple mode
             if (self.isSimpleMode()) {
 
-                let dataSourceAllDay: EmTimeZoneSetModel[] = [];
-                self.dataSourceOneDay([]);
+                let emTimezone: EmTimeZoneSetModel;
+                self.dataSourceOneDaySimpleMode([]);
                 
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
-                    dataSourceAllDay = self.parentModel.fixedWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone;
+                    emTimezone = self.parentModel.fixedWorkSetting.getHDWtzOneday()
+                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(1);
                 }
                 else if (self.parentModel.workTimeSetting.isFlex()) {
                     // all day
-                    dataSourceAllDay = self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone;
+                    emTimezone = self.parentModel.flexWorkSetting.getHDWtzOneday()
+                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(1);
                 }
                 //============= DiffTime Mode =============
                 else if (self.parentModel.workTimeSetting.isDiffTime()) {
                     // all day
-                    dataSourceAllDay = self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones;
+                    emTimezone = self.parentModel.diffWorkSetting.getHDWtzOneday()
+                        .workTimezone.employmentTimezones[0];
                 }
 
                 //============= Convert =============
-                let lstTimezoneModel: TimezoneModel[] = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone;
-                _.forEach(lstTimezoneModel, (item: TimezoneModel) => {
-                    let timeRange: TimePeriod = {
-                        startTime: item.start(),
-                        endTime: item.end()
-                    }
-                    let emTime: EmTimeZoneSetModel = _.find(dataSourceAllDay, (emTime: EmTimeZoneSetModel) => emTime.employmentTimeFrameNo === item.workNo);
-
-                    //self.dataSourceOneDay().push(new TimeZoneModel(timeRange, emTime.timezone.rounding.roundingTime,
-                    //    emTime.timezone.rounding.rounding));
-                });
+                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
+                let timeRange: TimePeriod = {
+                    startTime: item.start(),
+                    endTime: item.end()
+                }
+                self.dataSourceOneDaySimpleMode().push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
+                    emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
             }
             // Detail mode
             else {
@@ -432,8 +446,8 @@ module a2 {
                 let emTime: EmTimeZoneSetModel = new EmTimeZoneSetModel();
                 
                 emTime.employmentTimeFrameNo(index++);
-                emTime.timezone.start(item.timeRange.startTime);
-                emTime.timezone.end(item.timeRange.endTime);
+                emTime.timezone.start(item.timeRange().startTime);
+                emTime.timezone.end(item.timeRange().endTime);
                 emTime.timezone.rounding.roundingTime = item.roundingTime;
                 emTime.timezone.rounding.rounding = item.rounding;
                 
@@ -466,7 +480,7 @@ module a2 {
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
                                     editable: false,
-                                    enable: true,
+                                    enable: ` + !self.isSimpleMode() + `,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
                                 </div>`
                 }, {
@@ -493,17 +507,17 @@ module a2 {
      * TimeZoneRoundingModel
      */
     class TimeZoneModel {
-        timeRange: TimePeriod;
+        timeRange: KnockoutObservable<TimePeriod>;
         roundingTime: KnockoutObservable<number>;
         rounding: KnockoutObservable<number>;
         
         lstEmTimezone: EmTimeZoneSetModel[];
         
-        constructor(timeRange: TimePeriod, roundingTime: KnockoutObservable<number>, rounding: KnockoutObservable<number>) {
+        constructor(timeRange: TimePeriod, roundingTime: number, rounding: number) {
             let self = this;
-            self.timeRange = timeRange;
-            self.roundingTime = roundingTime;
-            self.rounding = rounding;
+            self.timeRange = ko.observable(timeRange);
+            self.roundingTime = ko.observable(roundingTime);
+            self.rounding = ko.observable(rounding);
         }
     }
     
@@ -548,8 +562,6 @@ module a2 {
                 
                 // Binding tab
                 screenModel.bindDataToScreen();
-                
-                console.log("abc");
             });
             
         }
