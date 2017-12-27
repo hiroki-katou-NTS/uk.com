@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.editstate;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -30,7 +29,7 @@ public class KrcdtDailyRecEditSet extends UkJpaEntity implements Serializable {
 	public KrcdtDailyRecEditSetPK krcdtDailyRecEditSetPK;
 	
 	@Column(name = "EDIT_STATE")
-	public BigDecimal editState;
+	public int editState;
 	
 	@Override
 	protected Object getKey() {

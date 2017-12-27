@@ -24,10 +24,7 @@ public class DailyModifyWebService {
 	
 	@POST
 	@Path("register")
-	public void register(Map<String, List<ItemValue>> itemValues, DailyModifyQuery query) {
-		List<ItemValue> items = new ArrayList<>();
-		items.add(new ItemValue("12", ValueType.INTEGER, "B_A", 2));
-		itemValues.put("AttendanceTimeOfDailyPerformance", items);
-		facade.handle(itemValues, query);
+	public void register(DailyModifyQuery query) {
+		facade.handle(query);
 	}
 }
