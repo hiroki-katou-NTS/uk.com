@@ -167,14 +167,14 @@
 									#{i18n.getText('KMK003_13')}
 								</div>
 
-								<input data-bind="ntsTextEditor: {
+								<input id="inp-worktimecode" data-bind="ntsTextEditor: {
 									value: worktimeCode,
 									constraint: 'WorkTimeCode',
 									option: siftCodeOption,
 									required: true,
 									enable: $parent.isNewMode}">
 								</input> 
-								<input data-bind="ntsTextEditor: {
+								<input id="inp-worktimename" data-bind="ntsTextEditor: {
 									value: workTimeDisplayName.workTimeName,
 									constraint: 'WorkTimeName',
 									option: siftNameOption,

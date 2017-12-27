@@ -250,11 +250,33 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
+            /**
+             * Validate all input
+             */
+            private validateInput(): void {
+                $('#inp-worktimecode').ntsEditor('validate');
+                $('#inp-worktimename').ntsEditor('validate');
+                //TODO: validate chua het
+            }
+
             //save worktime data
             public save() {
                 let self = this;
+                // re validate
+                self.validateInput();
+
+                // stop function if has error.
+                if ($('.nts-editor').ntsError('hasError')) {
+                    return;
+                }
                 self.mainSettingModel.save(self.isNewMode())
-                    .done(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
+                    .done(() => {
+                        if (self.mainSettingModel.workTimeSetting.isAbolish()) {
+                            self.workTimeSettingLoader.isAbolish(true);
+                        }
+                        // reload list work time
+                        _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
+                    });
             }
 
             /**
@@ -380,14 +402,6 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                // re validate
-                self.validateInput();
-
-                // stop function if has error.
-                if ($('.nts-editor').ntsError('hasError')) {
-                    return;
-                }
-
                 // block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
 
@@ -405,13 +419,6 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 return dfd.promise();
-            }
-
-            /**
-             * Validate all input
-             */
-            private validateInput(): void {
-                $('.nts-editor').ntsEditor('validate');
             }
 
             /**
