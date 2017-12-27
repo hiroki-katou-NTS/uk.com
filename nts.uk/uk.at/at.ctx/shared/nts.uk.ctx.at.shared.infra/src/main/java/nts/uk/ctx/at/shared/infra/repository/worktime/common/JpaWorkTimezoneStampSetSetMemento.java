@@ -88,7 +88,7 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 		for (PrioritySetting pioritySet : prSet) {
 			
 			// new pk
-			KshmtPioritySetPK newPK = this.setPrimaryKey(parentEntity, new KshmtPioritySetPK());
+			KshmtPioritySetPK newPK = this.setPrimaryKey(this.parentEntity, new KshmtPioritySetPK());
 			
 			// get entity existed
 			KshmtPioritySet entity = lstEntity.stream().filter(item -> {

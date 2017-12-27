@@ -92,27 +92,23 @@ public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExt
 	 *            the parent entity
 	 */
 	private void initialEntity(KshmtWorktimeCommonSet parentEntity) {
-		KshmtTempWorktimeSet entity = parentEntity.getKshmtTempWorktimeSet();
-		
-		if (entity == null) {
-			entity = new KshmtTempWorktimeSet();
+		if (parentEntity.getKshmtTempWorktimeSet() == null) {
+			parentEntity.setKshmtTempWorktimeSet(new KshmtTempWorktimeSet());
 		}
+		
 		// check existed key
-		if (entity.getKshmtTempWorktimeSetPK() == null) {
-
+		if (parentEntity.getKshmtTempWorktimeSet().getKshmtTempWorktimeSetPK() == null) {
 			// set primary key
 			KshmtTempWorktimeSetPK pk = new KshmtTempWorktimeSetPK();
-
 			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
 			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
 			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
 			pk.setWorktimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-
-			entity.setKshmtTempWorktimeSetPK(pk);
+			parentEntity.getKshmtTempWorktimeSet().setKshmtTempWorktimeSetPK(pk);
 		}
 
 		// set entity
-		this.entity = entity;
+		this.entity = parentEntity.getKshmtTempWorktimeSet();
 	}
 
 }

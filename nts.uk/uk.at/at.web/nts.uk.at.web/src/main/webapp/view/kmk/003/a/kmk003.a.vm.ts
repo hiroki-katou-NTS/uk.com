@@ -297,7 +297,7 @@ module nts.uk.at.view.kmk003.a {
                 if ($('.nts-editor').ntsError('hasError')) {
                     return;
                 }
-                self.mainSettingModel.save(self.isNewMode())
+                self.mainSettingModel.save(self.isNewMode(), self.tabMode())
                     .done(() => {
                         if (self.mainSettingModel.workTimeSetting.isAbolish()) {
                             self.workTimeSettingLoader.isAbolish(true);
@@ -426,7 +426,7 @@ module nts.uk.at.view.kmk003.a {
                 dfd.resolve();
             }
 
-            save(addMode: boolean): JQueryPromise<void> {
+            save(addMode: boolean, tabMode: number): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
@@ -434,13 +434,13 @@ module nts.uk.at.view.kmk003.a {
                 _.defer(() => nts.uk.ui.block.invisible());
 
                 if (self.workTimeSetting.isFlex()) {
-                    service.saveFlexWorkSetting(self.toFlexCommannd(addMode))
+                    service.saveFlexWorkSetting(self.toFlexCommannd(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => nts.uk.ui.dialog.alertError(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
                 if (self.workTimeSetting.isFixed()) {
-                    service.saveFixedWorkSetting(self.toFixedCommand(addMode))
+                    service.saveFixedWorkSetting(self.toFixedCommand(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => nts.uk.ui.dialog.alertError(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
@@ -452,14 +452,14 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Collect fixed data and convert to command dto
              */
-            toFixedCommand(addMode: boolean): FixedWorkSettingSaveCommand {
+            toFixedCommand(addMode: boolean, tabMode: number): FixedWorkSettingSaveCommand {
                 let _self = this;
                 let command: FixedWorkSettingSaveCommand = {
                     addMode: addMode,
                     predseting: _self.predetemineTimeSetting.toDto(),
                     worktimeSetting: _self.workTimeSetting.toDto(),
                     fixedWorkSetting: _self.fixedWorkSetting.toDto(),
-                    screenMode: 0 //TODO: lam gi voi cai nay?
+                    screenMode: tabMode
                 };
                 return command;  
             }
@@ -467,7 +467,7 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Collect flex data and convert to command dto
              */
-            toFlexCommannd(addMode: boolean): FlexWorkSettingSaveCommand {
+            toFlexCommannd(addMode: boolean, tabMode: number): FlexWorkSettingSaveCommand {
                 let self = this;
                 let command: FlexWorkSettingSaveCommand;
                 command = {

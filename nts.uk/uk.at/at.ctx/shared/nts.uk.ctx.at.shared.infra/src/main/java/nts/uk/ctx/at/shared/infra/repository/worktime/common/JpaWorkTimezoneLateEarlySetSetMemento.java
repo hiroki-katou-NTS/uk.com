@@ -25,9 +25,6 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 
 	/** The parent entity. */
 	private KshmtWorktimeCommonSet parentEntity;
-	
-	/** The entity. */
-	private KshmtLateEarlySet entity;
 
 	/**
 	 * Instantiates a new jpa work timezone late early set set memento.
@@ -38,7 +35,6 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	public JpaWorkTimezoneLateEarlySetSetMemento(KshmtWorktimeCommonSet parentEntity) {
 		super();
 		this.parentEntity = parentEntity;
-		
 		// initial entity
 		this.initialEntity(parentEntity);
 	}
@@ -51,8 +47,8 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 * worktime.common.EmTimezoneLateEarlyCommonSet)
 	 */
 	@Override
-	public void setCommonSet(EmTimezoneLateEarlyCommonSet set) {
-		this.entity.setIsDeducteFromTime(BooleanGetAtr.getAtrByBoolean(set.isDelFromEmTime()));
+	public void setCommonSet(EmTimezoneLateEarlyCommonSet set) {		
+		this.parentEntity.getKshmtLateEarlySet().setIsDeducteFromTime(BooleanGetAtr.getAtrByBoolean(set.isDelFromEmTime()));
 	}
 
 	/*
@@ -117,7 +113,7 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 		}
 
 		// set entity
-		this.entity = entity;
+		parentEntity.setKshmtLateEarlySet(entity);
 	}
 
 	/**
