@@ -48,7 +48,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface ExtraordWorkOTFrameSetDto {
-                    oTFrameNo: number;
+                    otFrameNo: number;
                     inLegalWorkFrameNo: number;
                     settlementOrder: number;
                 }

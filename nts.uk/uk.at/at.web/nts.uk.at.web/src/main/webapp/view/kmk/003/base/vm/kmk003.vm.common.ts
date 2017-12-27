@@ -1119,25 +1119,25 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class ExtraordWorkOTFrameSetModel {
-                oTFrameNo: KnockoutObservable<number>;
+                otFrameNo: KnockoutObservable<number>;
                 inLegalWorkFrameNo: KnockoutObservable<number>;
                 settlementOrder: KnockoutObservable<number>;
 
                 constructor() {
-                    this.oTFrameNo = ko.observable(0);
-                    this.inLegalWorkFrameNo = ko.observable(0);
-                    this.settlementOrder = ko.observable(0);
+                    this.otFrameNo = ko.observable(1);
+                    this.inLegalWorkFrameNo = ko.observable(1);
+                    this.settlementOrder = ko.observable(1);
                 }
 
                 updateData(data: ExtraordWorkOTFrameSetDto) {
-                    this.oTFrameNo(data.oTFrameNo);
+                    this.otFrameNo(data.otFrameNo);
                     this.inLegalWorkFrameNo(data.inLegalWorkFrameNo);
                     this.settlementOrder(data.settlementOrder);
                 }
 
                 toDto(): ExtraordWorkOTFrameSetDto {
                     var dataDTO: ExtraordWorkOTFrameSetDto = {
-                        oTFrameNo: this.oTFrameNo(),
+                        otFrameNo: this.otFrameNo(),
                         inLegalWorkFrameNo: this.inLegalWorkFrameNo(),
                         settlementOrder: this.settlementOrder()
                     };
