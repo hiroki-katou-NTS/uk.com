@@ -8,7 +8,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 
-public class ExtractionRangeDto {
+public class ExtractionRangeCommand {
 	
 	private String extractionId;
 	
