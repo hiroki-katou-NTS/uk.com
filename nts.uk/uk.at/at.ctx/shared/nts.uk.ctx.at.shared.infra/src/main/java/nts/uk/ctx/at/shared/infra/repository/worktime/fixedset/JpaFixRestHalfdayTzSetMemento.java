@@ -40,6 +40,7 @@ public class JpaFixRestHalfdayTzSetMemento implements FixRestTimezoneSetSetMemen
 	 *            the entity sets
 	 */
 	public JpaFixRestHalfdayTzSetMemento(List<KshmtFixedHalfRestSet> entitySets, String cid, String worktimeCd, int type) {
+		super();
 		this.entitySets = entitySets;
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;

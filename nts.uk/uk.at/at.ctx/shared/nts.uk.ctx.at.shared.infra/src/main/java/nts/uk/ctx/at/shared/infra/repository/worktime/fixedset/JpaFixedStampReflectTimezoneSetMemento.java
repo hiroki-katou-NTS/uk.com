@@ -16,12 +16,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimezoneSetMemento {
 
-	/** The company id. */
-	private String companyId;
-
-	/** The work time cd. */
-	private String workTimeCd;
-
 	/** The entity. */
 	private KshmtFixedStampReflect entity;
 
@@ -36,14 +30,12 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	 *            the entity
 	 */
 	public JpaFixedStampReflectTimezoneSetMemento(String companyId, String workTimeCd, KshmtFixedStampReflect entity) {
-		this.companyId = companyId;
-		this.workTimeCd = workTimeCd;
 		if (entity.getKshmtFixedStampReflectPK() == null) {
 			entity.setKshmtFixedStampReflectPK(new KshmtFixedStampReflectPK());
 		}
 		this.entity = entity;
-		this.entity.getKshmtFixedStampReflectPK().setCid(this.companyId);
-		this.entity.getKshmtFixedStampReflectPK().setWorktimeCd(this.workTimeCd);
+		this.entity.getKshmtFixedStampReflectPK().setCid(companyId);
+		this.entity.getKshmtFixedStampReflectPK().setWorktimeCd(workTimeCd);
 	}
 
 	/*

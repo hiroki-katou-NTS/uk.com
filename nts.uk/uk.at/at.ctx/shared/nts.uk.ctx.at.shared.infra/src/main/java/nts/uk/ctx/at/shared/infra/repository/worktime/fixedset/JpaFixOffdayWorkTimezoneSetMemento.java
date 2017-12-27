@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 
 /**
  * The Class JpaFixOffdayWorkTimezoneSetMemento.
@@ -38,6 +39,10 @@ public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezone
 	 * @param entity the entity
 	 */
 	public JpaFixOffdayWorkTimezoneSetMemento(KshmtFixedWorkSet entity) {
+		super();
+		if (entity.getKshmtFixedWorkSetPK() == null) {
+			entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
+		}
 		this.entity = entity;
 		
 		// initial data

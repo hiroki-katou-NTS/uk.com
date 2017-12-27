@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetP
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflect;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
@@ -43,9 +42,6 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	public JpaFixedWorkSettingSetMemento(KshmtFixedWorkSet entity) {
 		super();
-		if (entity.getKshmtFixedWorkSetPK() == null) {
-			entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
-		}
 		this.entity = entity;
 	}
 

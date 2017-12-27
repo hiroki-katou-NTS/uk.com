@@ -57,6 +57,7 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 	 */
 	public JpaFixedWorkTimezoneSetSetMemento(List<KshmtFixedWorkTimeSet> kshmtFixedWorkTimeSets,
 			List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets, String cid, String worktimeCd, int type) {
+		super();
 		this.kshmtFixedWorkTimeSets = kshmtFixedWorkTimeSets;
 		this.kshmtFixedOtTimeSets = kshmtFixedOtTimeSets;
 		this.cid = cid;

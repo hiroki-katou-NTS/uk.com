@@ -24,6 +24,7 @@ public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimez
 	 * @param entity the entity
 	 */
 	public JpaFixedStampReflectTimezoneGetMemento(KshmtFixedStampReflect entity) {
+		super();
 		this.entity = entity;
 	}
 	
