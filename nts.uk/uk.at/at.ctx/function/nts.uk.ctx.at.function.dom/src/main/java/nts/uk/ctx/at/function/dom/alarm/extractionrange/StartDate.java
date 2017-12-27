@@ -31,8 +31,8 @@ public class StartDate {
 		this.startSpecify = EnumAdaptor.valueOf(startSpecify, StartSpecify.class);
 	}
 	
-	public void setStartDay(PreviousClassification monthPrevious, int day, boolean makeToDay) {
-		this.strDays = Optional.of(new Days(monthPrevious, day, makeToDay));
+	public void setStartDay(PreviousClassification dayPrevious, int day, boolean makeToDay) {
+		this.strDays = Optional.of(new Days(dayPrevious, day, makeToDay));
 	}
 	
 	public void setStartMonth(PreviousClassification monthPrevious, int month, boolean currentMonth) {
