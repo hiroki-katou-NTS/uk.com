@@ -32,9 +32,12 @@ public class KrcdtSyainDpErList extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtSyainDpErListPK krcdtSyainDpErListPK;
 
-	@Column(name = "ERROR_CODE")
-	public String errorCode;
-	
+	@Column(name = "ATTENDANCE_ITEM_ID")
+	public Integer attendanceItemId;
+
+	@Column(name = "ERROR_CANCELABLE")
+	public Integer errorCancelable;
+
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
@@ -43,10 +46,11 @@ public class KrcdtSyainDpErList extends UkJpaEntity implements Serializable {
 
 	public static List<KrcdtSyainDpErList> toEntity(EmployeeDailyPerError employeeDailyPerError){
 		 return employeeDailyPerError.getAttendanceItemList().stream().map(item -> {return new KrcdtSyainDpErList(
-				new KrcdtSyainDpErListPK(item, 
+				new KrcdtSyainDpErListPK(employeeDailyPerError.getErrorAlarmWorkRecordCode().v(), 
 						employeeDailyPerError.getEmployeeID(), 
 						employeeDailyPerError.getDate(),
 						employeeDailyPerError.getCompanyID()),
-						employeeDailyPerError.getErrorAlarmWorkRecordCode().v());}).collect(Collectors.toList());
+				         item,
+						employeeDailyPerError.getErrorCancelAble());}).collect(Collectors.toList());
 	}
 }
