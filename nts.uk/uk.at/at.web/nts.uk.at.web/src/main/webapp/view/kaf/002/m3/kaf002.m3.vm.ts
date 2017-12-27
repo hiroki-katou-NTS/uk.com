@@ -31,7 +31,7 @@ module nts.uk.at.view.kaf002.m3 {
                 nts.uk.ui.block.clear();
             }
             
-            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+            register(application : vmbase.Application){
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
@@ -46,8 +46,7 @@ module nts.uk.at.view.kaf002.m3 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: null, 
                     appStampCancelCmds: ko.mapping.toJS(self.appStampList()),
-                    appStampOnlineRecordCmd: null,
-                    appApprovalPhaseCmds: approvalList   
+                    appStampOnlineRecordCmd: null
                 }
                 service.insert(command)
                 .done(() => {
@@ -62,7 +61,7 @@ module nts.uk.at.view.kaf002.m3 {
                 });
             }
             
-            update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+            update(application : vmbase.Application){
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
@@ -78,8 +77,7 @@ module nts.uk.at.view.kaf002.m3 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: null, 
                     appStampCancelCmds: ko.mapping.toJS(self.appStampList()),
-                    appStampOnlineRecordCmd: null,
-                    appApprovalPhaseCmds: approvalList   
+                    appStampOnlineRecordCmd: null
                 }
                 service.update(command)
                 .done(() => {

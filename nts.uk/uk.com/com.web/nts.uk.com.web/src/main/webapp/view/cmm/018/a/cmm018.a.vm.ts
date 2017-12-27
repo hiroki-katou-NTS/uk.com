@@ -940,15 +940,20 @@ module nts.uk.com.view.cmm018.a {
                     }else{
                         //find all appType of history is selected
                         let lstApp = self.findAppTypeHistory(self.tabSelected());
+                        let check = false;
                         _.each(lstApp, function(app){
                             let appNew = self.findHistBestNewA(app.value, app.employRootAtr, self.tabSelected());
                             if(history.startDate.localeCompare(appNew.startDate) < 0){
                                 //エラーメッセージ(Msg_154) (Msg_154: Chỉ ls mới nhất mới được chỉnh sửa)
                                 dialog.alertError({ messageId: "Msg_154" });
                                 block.clear();
-                                return;
+                                check = true;
+                                return ;
                             }
                         });
+                        if(check){
+                            return;
+                        }
                     }
                 }else{
                     //編集する期間が最新なのかチェックする(Check xem có phải ls mới nhất k?)
@@ -2409,7 +2414,6 @@ module nts.uk.com.view.cmm018.a {
                         endDate = history.company.endDate;
                         appType = history.company.applicationType;
                         employRootAtr = history.company.employmentRootAtr;
-                        name = history.company.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }else if(self.tabSelectedB() == 1){
                     history = self.findRootWpD(self.singleSelectedCode());
@@ -2420,7 +2424,6 @@ module nts.uk.com.view.cmm018.a {
                         endDate = history.workplace.endDate;
                         appType = history.workplace.applicationType;
                         employRootAtr = history.workplace.employmentRootAtr;
-                        name = history.workplace.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }else{
                     history = self.findRootPsF(self.singleSelectedCode());
@@ -2431,7 +2434,6 @@ module nts.uk.com.view.cmm018.a {
                         endDate = history.person.endDate;
                         appType = history.person.applicationType;
                         employRootAtr = history.person.employmentRootAtr;
-                        name = history.person.applicationType == null ? '共通ルート' : getText("CMM018_7");
                     }
                 }
                 
@@ -2454,6 +2456,7 @@ module nts.uk.com.view.cmm018.a {
                 }
                 let lst: Array<vmbase.UpdateHistoryDto> = [];
                 lst.push(new vmbase.UpdateHistoryDto(approvalId, historyId, appType, employRootAtr));
+                name = self.findNameApp(appType, employRootAtr);
                 let paramJ: vmbase.JData_Param = {
                     name: name,
                     startDate: startDate,
