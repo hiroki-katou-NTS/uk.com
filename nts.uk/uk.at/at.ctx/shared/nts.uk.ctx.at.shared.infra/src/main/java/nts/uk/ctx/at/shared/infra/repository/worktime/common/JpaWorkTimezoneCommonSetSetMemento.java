@@ -22,6 +22,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
@@ -131,8 +133,34 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setMedicalSet(List<WorkTimezoneMedicalSet> list) {
-		// TODO Auto-generated method stub
-
+		List<KshmtMedicalTimeSet> newListEntity = new ArrayList<>();
+		
+		Map<KshmtMedicalTimeSetPK, KshmtMedicalTimeSet> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
+				.collect(Collectors.toMap(KshmtMedicalTimeSet::getKshmtMedicalTimeSetPK, Function.identity()));
+		
+		list.forEach(domain -> {							
+			KshmtMedicalTimeSet entity = existShtSet.get(new KshmtMedicalTimeSetPK(
+					this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
+					domain.getWorkSystemAtr().value));
+			
+			if (entity == null) {
+				KshmtMedicalTimeSetPK pk = new KshmtMedicalTimeSetPK(
+						this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
+						this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
+						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
+						domain.getWorkSystemAtr().value);
+				entity = new KshmtMedicalTimeSet();
+				entity.setKshmtMedicalTimeSetPK(pk);
+			}
+			
+			domain.saveToMemento(new JpaWorkTimezoneMedicalSetSetMemento(entity));
+			newListEntity.add(entity);
+		});
+		this.entity.setKshmtMedicalTimeSets(newListEntity);
 	}
 
 	/*
@@ -145,8 +173,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setGoOutSet(WorkTimezoneGoOutSet set) {
-		// TODO Auto-generated method stub
-
+		set.saveToMemento(new JpaWorkTimezoneGoOutSetSetMemento(this.entity));
 	}
 
 	/*
