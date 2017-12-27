@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.selectitem;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
@@ -58,6 +61,9 @@ public class DailyPerformanceSelectItemProcessor {
 	
 	@Inject
 	private ClosureService closureService;
+	
+	@Inject
+	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
 
 	/**
 	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
@@ -115,8 +121,19 @@ public class DailyPerformanceSelectItemProcessor {
 							.collect(Collectors.toList());
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
-					lstAttendanceItem = this.repo.getListAttendanceItem(lstAtdItemUnique);
-					mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+					if (!lstAtdItemUnique.isEmpty()) {
+						Map<Integer, DailyAttendanceItemNameAdapterDto> itemName = dailyAttendanceItemNameAdapter
+								.getDailyAttendanceItemName(lstAtdItemUnique).stream().collect(Collectors
+										.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId, x -> x));
+						lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
+								: this.repo.getListAttendanceItem(lstAtdItemUnique).stream()
+										.map(x -> new DPAttendanceItem(x.getId(),
+												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
+												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
+												x.getTypeGroup()))
+										.collect(Collectors.toList());
+						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+					}
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						// chia cot con code name cua AttendanceItemId chinh va
@@ -147,9 +164,20 @@ public class DailyPerformanceSelectItemProcessor {
 					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
-					lstAttendanceItem = this.repo.getListAttendanceItem(lstAtdItemUnique);
 					result.createSheets(lstSheet);
-					mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+					if (!lstAtdItemUnique.isEmpty()) {
+						Map<Integer, DailyAttendanceItemNameAdapterDto> itemName = dailyAttendanceItemNameAdapter
+								.getDailyAttendanceItemName(lstAtdItemUnique).stream().collect(Collectors
+										.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId, x -> x));
+						lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
+								: this.repo.getListAttendanceItem(lstAtdItemUnique).stream()
+										.map(x -> new DPAttendanceItem(x.getId(),
+												itemName.get(x.getId()).getAttendanceItemName(), x.getDisplayNumber(),
+												x.isUserCanSet(), x.getLineBreakPosition(), x.getAttendanceAtr(),
+												x.getTypeGroup()))
+										.collect(Collectors.toList());
+						mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+					}
 					result.addColumnsToSheet(lstFormat, mapDP);
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
