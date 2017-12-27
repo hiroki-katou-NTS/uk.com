@@ -4,11 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeekSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
