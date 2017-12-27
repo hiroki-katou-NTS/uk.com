@@ -2,12 +2,16 @@ package nts.uk.ctx.at.function.app.find.alarm;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionRangeDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -32,7 +36,7 @@ public class AlarmPatternSettingFinder {
 	public AlarmPatternSettingDto convertToAlarmPatternDto(AlarmPatternSetting domain) {
 		
 		List<CheckConditionDto> checkConditionDtos = domain.getCheckConList().stream()
-				.map(c -> new CheckConditionDto(c.getAlarmCategory().value, c.getCheckConditionList()))
+				.map(c -> new CheckConditionDto(c.getAlarmCategory().value, c.getCheckConditionList(), ExtractionRangeDto.fromDomain((ExtractionPeriodDaily)c.getExtractPeriod())))
 				.collect(Collectors.toList());
 		AlarmPermissionSettingDto alarmPerSet = new AlarmPermissionSettingDto(domain.getAlarmPerSet().isAuthSetting(), domain.getAlarmPerSet().getRoleIds());
 		
@@ -42,4 +46,6 @@ public class AlarmPatternSettingFinder {
 	public AlarmCheckConditonCodeDto  convertToCheckConditionCode(AlarmCheckConditionByCategory domain) {		
 		return new AlarmCheckConditonCodeDto(domain.getCategory().value, domain.getCode().v(), domain.getName().v(), domain.getListRoleId());
 	}
+	
+	
 }
