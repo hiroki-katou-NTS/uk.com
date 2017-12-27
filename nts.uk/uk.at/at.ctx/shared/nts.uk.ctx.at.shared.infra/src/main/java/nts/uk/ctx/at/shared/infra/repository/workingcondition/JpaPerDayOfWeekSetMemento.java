@@ -36,6 +36,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 //		} else {
 //			this.entities = entities;
 //		}
+		this.entities = entities;
 		
 		// Clear item
 		this.entities.clear();
