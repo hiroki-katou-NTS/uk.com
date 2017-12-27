@@ -25,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
@@ -218,15 +220,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 			entityKshmtPiority.setKshmtPioritySetPK(kshmtPioritySetPK);
 			lstKshmtPioritySet.add(entityKshmtPiority);
 		});
-		this.entity.setKshmtPioritySets(lstKshmtPioritySet);
-		
-		List<KshmtRoundingSet> lstKshmtRoundingSet = new ArrayList<>();
-		set.getRoundingSets().forEach(item->{
-			KshmtRoundingSet entityKshmtRoundingSet = new KshmtRoundingSet();
-
-			
-		});
-		
+		this.entity.setKshmtPioritySets(lstKshmtPioritySet);		
 	}
 
 	/*
