@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
@@ -49,7 +50,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public boolean getZeroHStraddCalculateSet() {
-		return this.entity.getOverDayCalcSet() == 1;
+		return BooleanGetAtr.getAtrByInteger(this.entity.getOverDayCalcSet());
 	}
 
 	/*
@@ -153,8 +154,9 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneShortTimeWorkSet getShortTimeWorkSet() {
-		return new WorkTimezoneShortTimeWorkSet(this.entity.getNurTimezoneWorkUse() == 1,
-				this.entity.getEmpTimeDeduct() == 1, this.entity.getChildCareWorkUse() == 1);
+		return new WorkTimezoneShortTimeWorkSet(BooleanGetAtr.getAtrByInteger(this.entity.getNurTimezoneWorkUse()),
+				BooleanGetAtr.getAtrByInteger(this.entity.getEmpTimeDeduct()),
+				BooleanGetAtr.getAtrByInteger(this.entity.getChildCareWorkUse()));
 	}
 
 	/*
