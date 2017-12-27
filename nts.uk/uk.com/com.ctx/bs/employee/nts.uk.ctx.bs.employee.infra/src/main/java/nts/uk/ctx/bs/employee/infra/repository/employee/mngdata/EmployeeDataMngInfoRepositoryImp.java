@@ -293,10 +293,14 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			return new ArrayList<>();
 		}
 
-		return this.queryProxy().query(SELECT_BY_LIST_EMP_ID, BsymtEmployeeDataMngInfo.class)
-				.setParameter("companyId", companyId).setParameter("employeeIds", employeeIds).getList().stream()
-				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		// Split query.
+		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMP_ID, BsymtEmployeeDataMngInfo.class)
+					.setParameter("companyId", companyId).setParameter("employeeIds", subList).getList());
+		});
 
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 
 	/*
@@ -313,9 +317,13 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			return new ArrayList<>();
 		}
 
-		return this.queryProxy().query(SELECT_BY_LIST_EMP_CODE, BsymtEmployeeDataMngInfo.class)
-				.setParameter("companyId", companyId).setParameter("listEmployeeCode", employeeCodes).getList().stream()
-				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		// Split query.
+		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeCodes, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMP_CODE, BsymtEmployeeDataMngInfo.class)
+					.setParameter("companyId", companyId).setParameter("listEmployeeCode", subList).getList());
+		});
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 
 	// duong tv end code
@@ -326,9 +334,15 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		if (CollectionUtil.isEmpty(listSid)) {
 			return new ArrayList<>();
 		}
+		
+		// Split query.
+		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
+		CollectionUtil.split(listSid, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID, BsymtEmployeeDataMngInfo.class)
+					.setParameter("listSid", subList).getList());
+		});
 
-		return this.queryProxy().query(SELECT_BY_LIST_EMPID, BsymtEmployeeDataMngInfo.class)
-				.setParameter("listSid", listSid).getList().stream().map(entity -> this.toDomain(entity))
+		return resultList.stream().map(entity -> this.toDomain(entity))
 				.collect(Collectors.toList());
 	}
 

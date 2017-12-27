@@ -14,12 +14,12 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class AutoCalRaisingSalarySettingDto {
 
 	/** 加給: 加給計算区分 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "加給")
+	@AttendanceItemValue(type = ValueType.INTEGER, itemId = 636)
 	private int salaryCalSetting;
 
 	/** 特定加給計算区分: 特定加給計算区分 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "特定加給")
+	@AttendanceItemValue(type = ValueType.INTEGER, itemId = 637)
 	private int specificSalaryCalSetting;
 }

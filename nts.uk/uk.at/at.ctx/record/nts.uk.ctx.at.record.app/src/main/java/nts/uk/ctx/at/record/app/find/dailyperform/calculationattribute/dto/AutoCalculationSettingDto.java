@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class AutoCalculationSettingDto {
 
 	/** 計算区分: 時間外の自動計算区分 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "計算区分")
+	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
 	private int calculationAttr;
 
 	/** 上限の設定: 時間外の上限設定 */
