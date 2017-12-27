@@ -56,19 +56,18 @@ public class CreateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
 						data.getWebMenuCd()
 						);
 				addRoleByRoleTiesCommandHandler.handle(roleByRoleTiesCommand);
-			}else {
-				//insert EmploymentRole
-				CreateEmploymentRoleCmd createEmploymentRoleCmd  = new CreateEmploymentRoleCmd(
-						AppContexts.user().companyId(),
-						data.getRoleId(),
-						data.getScheduleEmployeeRef(),
-						data.getBookEmployeeRef(),
-						data.getEmployeeRefSpecAgent(),
-						data.getPresentInqEmployeeRef(),
-						data.getFutureDateRefPermit()
-						);
-				createEmploymentRoleCmdHandler.handle(createEmploymentRoleCmd);
 			}
+			//insert EmploymentRole
+			CreateEmploymentRoleCmd createEmploymentRoleCmd  = new CreateEmploymentRoleCmd(
+					AppContexts.user().companyId(),
+					data.getRoleId(),
+					data.getScheduleEmployeeRef(),
+					data.getBookEmployeeRef(),
+					data.getEmployeeRefSpecAgent(),
+					data.getPresentInqEmployeeRef(),
+					data.getFutureDateRefPermit()
+					);
+			createEmploymentRoleCmdHandler.handle(createEmploymentRoleCmd);
 			
 			
 			//insert WorkPlaceAuthority

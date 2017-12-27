@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
-import nts.uk.ctx.at.function.infra.enity.attendancetype.KmnmtAttendanceType;
+import nts.uk.ctx.at.function.infra.entity.attendancetype.KmnmtAttendanceType;
 /**
  * 
  * @author Doan Duy Hung

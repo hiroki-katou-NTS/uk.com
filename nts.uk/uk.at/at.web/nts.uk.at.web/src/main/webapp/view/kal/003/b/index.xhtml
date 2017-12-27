@@ -7,13 +7,14 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
+        <!-- 
             <script>
                 var dialogSize = {
                     width : 800,
                     height : 600
                 };
             </script>
-
+ -->
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="kal003.b.style.css" />
             <com:scriptfile path="kal003.b.service.js" />
@@ -23,7 +24,8 @@
 
         <ui:define name="content">
             <div id="contents-area1">
-                <div class="form-group" style="height: 150px; padding-top: 30px; text-align: center;">
+                <div class="form-group" style="height: 150px; padding-top: 30px; text-align: center;"
+                    data-bind="with: currentErrAlaAttendanceItemCondition">
                     <!--  B1 -->
                     <div id="div_common_header">
                         <table >
@@ -41,10 +43,10 @@
                                 <div id="comBoxItemCheck" tabindex = "1"
                                             data-bind="ntsComboBox: {
                                                 name:'#[KAL003_27]',
-                                                options: listTypeCheckWorkRecords,
+                                                options: $parent.listTypeCheckWorkRecords,
                                                 optionsValue: 'id',
                                                 visibleItemsCount: 5,
-                                                value: currentErrAlaAttendanceItemCondition().typeCheckWorkRecord,
+                                                value: typeCheckWorkRecord,
                                                 optionsText: 'name',
                                                 editable: false,
                                                 enable: true,
@@ -72,26 +74,26 @@
 	                            <td>
 	                                <!-- BA1-2 -->
 	                                <div id="ba1_2" data-bind="ntsRadioBoxGroup: {
-									    options: itemListTargetServiceType_BA1_2,
+									    options: $parent.itemListTargetServiceType_BA1_2,
 									    optionsValue: 'id',
 									    optionsText: 'name',
-									    value: selectedId,
+									    value: $parent.targetServiceTypeSelected_BA1_2,
 									    enable: true}">
 									 </div>
 									 <div id="ba1_5" data-bind="ntsRadioBoxGroup: {
-                                        options: itemListTargetSelectionRange_BA1_5,
+                                        options: $parent.itemListTargetSelectionRange_BA1_5,
                                         optionsValue: 'id',
                                         optionsText: 'name',
-                                        value: selectedId,
+                                        value: $parent.targetSelectionRangeSelected_BA1_5,
                                         enable: true}">
                                      </div>
 	                            </td>
 	                            <td>
 	                               <div>
 		                                <!-- BA1-3 -->
-		                                <button class="large" id="btnSettingBA1_3"  data-bind="click : btnSettingBA1_3, enable: true">#{i18n.getText('KAL003_57')}</button>
+		                                <button class="large" id="btnSettingBA1_3"  data-bind="click : $parent.btnSettingBA1_3_click, enable: true">#{i18n.getText('KAL003_57')}</button>
 		                                <!-- BA1-4 -->
-		                                <input data-bind="ntsTextEditor: {value: currentErrAlaAttendanceItemCondition().targetServiceTypeWorkTypeSelection}" />
+		                                <input data-bind="ntsTextEditor: {value: targetServiceTypeWorkTypeSelection}" />
 	                                </div>
 	                            </td>
 	                        </tr>
@@ -116,9 +118,9 @@
 	                                
 	                                <div id="ba2_2_3">
                                         <!-- BA2-2 -->
-                                        <button class="large" id="btnSettingBA2_2" data-bind="click : btnSettingBA2_2, enable: true">#{i18n.getText('KAL003_57')}</button>
+                                        <button class="large" id="btnSettingBA2_2" data-bind="click : $parent.btnSettingBA2_2_click, enable: true">#{i18n.getText('KAL003_57')}</button>
                                         <!-- BA2-3 -->
-                                        <input data-bind="ntsTextEditor: {value: currentErrAlaAttendanceItemCondition().targetServiceTypeWorkTypeSelection}" />
+                                        <input data-bind="ntsTextEditor: {value: targetServiceTypeWorkTypeSelection}" />
                                     </div>
 	                            </td>
 	                            <td>
@@ -126,10 +128,10 @@
 	                                <div id="comBoxOperator" 
                                             data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
-                                                options: listCompareTypes,
+                                                options: $parent.listCompareTypes,
                                                 optionsValue: 'id',
                                                 visibleItemsCount: 5,
-                                                value: currentErrAlaAttendanceItemCondition().comparisonOperatorId,
+                                                value: comparisonOperatorId,
                                                 optionsText: 'name',
                                                 editable: false,
                                                 enable: true,
@@ -143,9 +145,8 @@
 	                               <input class="nts-input" id="inpComparisonMinValue" 
                                         data-bind="ntsTextEditor:{
                                             name: '#[KAL003_64]',
-                                            value: currentErrAlaAttendanceItemCondition().comparisonMinValue,
+                                            value: comparisonMinValue,
                                             required: true,
-                                            //constraint: 'comparisonMinValue',
                                             enable: true}" />
 	                            </td>
 	                            <td>
@@ -153,10 +154,9 @@
                                    <input class="nts-input" id="inpComparisonMaxValue" 
                                         data-bind="ntsTextEditor:{
                                             name: '#[KAL003_65]',
-                                            value: currentErrAlaAttendanceItemCondition().comparisonMaxValue,
+                                            value: comparisonMaxValue,
                                             required: true,
-                                            //constraint: 'comparisonMaxValue',
-                                            enable: currentErrAlaAttendanceItemCondition().comparisonOperatorId > 6}" />
+                                            enable: comparisonOperatorId > 6}" />
                                 </td>
 	                        </tr>
 	                     </table>
@@ -176,19 +176,19 @@
                             <!-- BA1-5-->
                             <td class = "pad_left_5px">
                                 <div id="ba1_5_target_working_hours" data-bind="ntsRadioBoxGroup: {
-                                        options: itemListTargetSelectionRange_BA1_5_target_working_hours,
+                                        options: $parent.itemListTargetSelectionRange_BA1_5_target_working_hours,
                                         optionsValue: 'id',
                                         optionsText: 'name',
-                                        value: selectedId,
-                                        enable: enable}">
+                                        value: $parent.targetSelectionRangeSelected_BA1_5_target_working_hours,
+                                        enable: true}">
                                      </div>
                             </td>
                             <td>
                                 <div id="ba5_2_3">
                                     <!-- BA5-2 -->
-                                    <button class="large" id="btnSettingBA5_3" data-bind="click : btnSettingBA5_2 enable: true">#{i18n.getText('KAL003_57')}</button>
+                                    <button class="large" id="btnSettingBA5_3" data-bind="click : $parent.btnSettingBA5_2_click, enable: true">#{i18n.getText('KAL003_57')}</button>
                                     <!-- BA1-3 -->
-                                    <input data-bind="ntsTextEditor: {value: currentErrAlaAttendanceItemCondition().targetWorkingHoursTimeZoneSelection}" />
+                                    <input data-bind="ntsTextEditor: {value: targetWorkingHoursTimeZoneSelection}" />
                                 </div>
                             </td>
                         </tr>
@@ -211,9 +211,8 @@
                                 <input class="nts-input" id="inpContinuousPeriod" 
                                         data-bind="ntsTextEditor:{
                                             name: '#[KAL003_61]',
-                                            value: currentErrAlaAttendanceItemCondition().continuousPeriod,
+                                            value: continuousPeriod,
                                             required: true,
-                                            //constraint: 'continuousPeriod',
                                             enable: true}" />
                                             <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_61日')}</div>
                             </td>
@@ -222,7 +221,7 @@
                     </div>
                     <!-- Compound Condition -->
                     <!-- disable -->
-                    <div id='div_compound_condition'>
+                    <div id='div_compound_condition' data-bind="with: compoundCondition()">
                         <!--  group 1 -->
                         <div>
                             <table >
@@ -242,10 +241,11 @@
                                     <!-- B5-3:  -->
                                     <td class = "pad_left_5px" style = "width:160px">
                                         <div class="cf" data-bind="ntsSwitchButton: {
-										    options: swANDOR,
+                                            name: '#[KAL003_32]',
+										    options: $parent.swANDOR_B5_3,
 										    optionsValue: 'code',
 										    optionsText: 'name',
-										    value: currentErrAlaAttendanceItemCondition().compoundCondition().group1Condition().groupOperator,
+										    value: group1Condition().groupOperator,
 										    enable: true }"></div>
                                     </td>
 		                            </tr>
@@ -290,7 +290,7 @@
                                 <tr class="row">
                                     <!-- B6-1:  -->
                                     <td class = "pad_left_5px" style = "width:160px">
-                                        <div data-bind="ntsCheckBox: { checked: hasGroup2, enable: true, text: {i18n.getText('KAL003_34')} }"></div>
+                                        <div data-bind="ntsCheckBox: { checked: hasGroup2, enable: true}">#{i18n.getText('KAL003_34')}</div>
                                     </td>
                                     <!-- B6-2:  -->
                                     <td class = "pad_left_5px" style = "width:160px">
@@ -299,10 +299,11 @@
                                     <!-- B6-3:  -->
                                     <td class = "pad_left_5px" style = "width:160px">
                                         <div id = "div_b6_3" class="cf" data-bind="ntsSwitchButton: {
-                                            options: swANDOR,
+                                            name: '#[KAL003_35]',
+                                            options: $parent.swANDOR_B6_3,
                                             optionsValue: 'code',
                                             optionsText: 'name',
-                                            value: currentErrAlaAttendanceItemCondition().compoundCondition().group2Condition().groupOperator,
+                                            value: group2Condition().groupOperator,
                                             enable: true }"></div>
                                     </td>
                                     </tr>
@@ -351,10 +352,11 @@
                                     <!-- B7-2:  -->
                                     <td class = "pad_left_5px" style = "width:160px">
                                         <div class="cf" data-bind="ntsSwitchButton: {
-                                            options: swANDOR,
+                                            name: '#[KAL003_36]',
+                                            options: $parent.swANDOR_B7_2,
                                             optionsValue: 'code',
                                             optionsText: 'name',
-                                            value: currentErrAlaAttendanceItemCondition().compoundCondition().operatorBetweenG1AndG2,
+                                            value: operatorBetweenG1AndG2,
                                             enable: true }"></div>
                                     </td>
                                     
@@ -376,7 +378,7 @@
                             </td>
                             <td class = "pad_left_5px">
                                 <!-- B2-2-->
-                                <div id="colorpicker" data-bind="ntsColorPicker: {value: currentErrAlaAttendanceItemCondition().color, enable: true, width: 20}"/>
+                                <div id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, enable: true, width: 20}"/>
                             </td>
                         </tr>
                         <tr class="row">
@@ -389,9 +391,8 @@
                                 <input class="nts-input" id="inpComparisonMaxValue" 
                                         data-bind="ntsTextEditor:{
                                             name: '#[KAL003_25]',
-                                            value: currentErrAlaAttendanceItemCondition().messageContent,
+                                            value: messageContent,
                                             required: true,
-                                            //constraint: 'messageContent',
                                             enable: true}" />
                             </td>
                         </tr>
@@ -402,7 +403,7 @@
                             </td>
                             <td class = "pad_left_5px">
                                 <!-- B3-3: ■メッセージを太字にする - Make the message bold-->
-                                <div data-bind="ntsCheckBox: { checked: currentErrAlaAttendanceItemCondition().isBoldMessage, enable: true, text: {i18n.getText('KAL003_29')} }"></div>
+                                <div data-bind="ntsCheckBox: { checked: isBoldMessage, enable: true}">#{i18n.getText('KAL003_29')}</div>
                                 
                             </td>
                         </tr>
