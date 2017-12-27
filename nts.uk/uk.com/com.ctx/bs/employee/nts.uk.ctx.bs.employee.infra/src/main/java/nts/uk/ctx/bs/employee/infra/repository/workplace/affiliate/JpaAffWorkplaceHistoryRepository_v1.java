@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,18 +40,18 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	
 	private static final String SELECT_BY_LIST_WKPIDS_BASEDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
-			+ " WHERE awit.workPlaceId IN (:wkpIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE awit.workPlaceId IN :wkpIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_WKPID_BASEDATE = "SELECT * FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId = :workplaceId AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_LIST_EMPID_STANDDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
-			+ " WHERE aw.sid IN (:employeeIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_LIST_EMPID_BY_LIST_WKPIDS_BASEDATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
-			+ " WHERE aw.sid IN (:employeeIds) AND awit.workPlaceId IN (:wkpIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE aw.sid IN :employeeIds AND awit.workPlaceId IN :wkpIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_HISTID_AND_DATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
@@ -58,7 +59,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	
 	private static final String SELECT_BY_EMPIDS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
-			+ " WHERE aw.sid IN (:employeeIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 
 	/**
 	 * Convert from domain to entity
@@ -176,14 +177,19 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-		// Query.
-		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_EMPIDS, BsymtAffiWorkplaceHist.class)
-				.setParameter("employeeIds", employeeIds)
-				.setParameter("standDate", date)
-				.getList();
+		
+		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			// Query.
+			resultList.addAll(this.queryProxy().query(SELECT_BY_EMPIDS, BsymtAffiWorkplaceHist.class)
+					.setParameter("employeeIds", subList)
+					.setParameter("standDate", date)
+					.getList());
+		});
+		
 		
 		// Group by his id.
-		Map<String, List<BsymtAffiWorkplaceHist>> resultMap = listHist.stream()
+		Map<String, List<BsymtAffiWorkplaceHist>> resultMap = resultList.stream()
 				.collect(Collectors.groupingBy(BsymtAffiWorkplaceHist::getHisId));
 		
 		// Convert to domain.
@@ -220,12 +226,15 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	@Override
 	public List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWkpIdsAndDate(GeneralDate baseDate,
 			List<String> workplaceIds) {
-		List<BsymtAffiWorkplaceHist> listWkpHist = this.queryProxy().query(SELECT_BY_LIST_WKPIDS_BASEDATE, BsymtAffiWorkplaceHist.class)
-				.setParameter("wkpIds", workplaceIds).setParameter("standDate", baseDate).getList();
-		if(listWkpHist.isEmpty()){
+		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
+		CollectionUtil.split(workplaceIds, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPIDS_BASEDATE, BsymtAffiWorkplaceHist.class)
+				.setParameter("wkpIds", subList).setParameter("standDate", baseDate).getList());
+		});
+		if(resultList.isEmpty()){
 			return null;
 		}
-		return listWkpHist.stream().map(e -> {
+		return resultList.stream().map(e -> {
 			AffWorkplaceHistory_ver1 domain = this.toDomain(e);
 			return domain;
 		}).collect(Collectors.toList());
@@ -234,9 +243,10 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	@Override
 	public List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWorkplaceIdAndDate(GeneralDate baseDate,
 			String workplaceId) {
-		List<BsymtAffiWorkplaceHist> listWkpHist = this.queryProxy().query(SELECT_BY_WKPID_BASEDATE, BsymtAffiWorkplaceHist.class)
-				.setParameter("workplaceId", workplaceId).setParameter("standDate", baseDate).getList();
-		if(listWkpHist.isEmpty()){
+		List<BsymtAffiWorkplaceHist> listWkpHist = this.queryProxy()
+				.query(SELECT_BY_WKPID_BASEDATE, BsymtAffiWorkplaceHist.class).setParameter("workplaceId", workplaceId)
+				.setParameter("standDate", baseDate).getList();
+		if (listWkpHist.isEmpty()) {
 			return null;
 		}
 		return listWkpHist.stream().map(e -> {
@@ -248,12 +258,15 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	@Override
 	public List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByEmpIdsAndDate(GeneralDate baseDate, 
 			List<String> employeeIds){
-		List<BsymtAffiWorkplaceHist> listWkpHist = this.queryProxy().query(SELECT_BY_LIST_EMPID_STANDDATE, BsymtAffiWorkplaceHist.class)
-				.setParameter("employeeIds", employeeIds).setParameter("standDate", baseDate).getList();
-		if(listWkpHist.isEmpty()){
+		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID_STANDDATE, BsymtAffiWorkplaceHist.class)
+					.setParameter("employeeIds", subList).setParameter("standDate", baseDate).getList());
+		});
+		if(resultList.isEmpty()){
 			return null;
 		}
-		return listWkpHist.stream().map(e -> {
+		return resultList.stream().map(e -> {
 			AffWorkplaceHistory_ver1 domain = this.toDomain(e);
 			return domain;
 		}).collect(Collectors.toList());
@@ -262,12 +275,19 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	@Override
 	public List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWkpIdsAndEmpIdsAndDate(GeneralDate baseDate,
 			List<String> employeeIds, List<String> workplaceIds) {
-		List<BsymtAffiWorkplaceHist> listWkpHist = this.queryProxy().query(SELECT_BY_LIST_EMPID_BY_LIST_WKPIDS_BASEDATE, BsymtAffiWorkplaceHist.class)
-				.setParameter("employeeIds", employeeIds).setParameter("wkpIds", workplaceIds).setParameter("standDate", baseDate).getList();
-		if(listWkpHist.isEmpty()){
+		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, empSubList -> {
+			CollectionUtil.split(workplaceIds, 1000, wplSubList -> {
+				resultList.addAll(this.queryProxy()
+						.query(SELECT_BY_LIST_EMPID_BY_LIST_WKPIDS_BASEDATE, BsymtAffiWorkplaceHist.class)
+						.setParameter("employeeIds", employeeIds).setParameter("wkpIds", workplaceIds)
+						.setParameter("standDate", baseDate).getList());
+			});
+		});
+		if (resultList.isEmpty()) {
 			return null;
 		}
-		return listWkpHist.stream().map(e -> {
+		return resultList.stream().map(e -> {
 			AffWorkplaceHistory_ver1 domain = this.toDomain(e);
 			return domain;
 		}).collect(Collectors.toList());

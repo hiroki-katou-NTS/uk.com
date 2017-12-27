@@ -199,9 +199,14 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
-				.setParameter("lstSid", employeeIds).setParameter("standardDate", baseDate).getList().stream()
-				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		
+		// Split employee id list.
+		List<BsymtAffJobTitleHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
+					.setParameter("lstSid", subList).setParameter("standardDate", baseDate).getList());
+		});
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 
 	}
 
@@ -217,9 +222,14 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
-				.setParameter("lstSid", employeeIds).setParameter("standardDate", baseDate).getList().stream()
-				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		
+		// Split employee id list.
+		List<BsymtAffJobTitleHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
+					.setParameter("lstSid", subList).setParameter("standardDate", baseDate).getList());
+		});
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 
 }

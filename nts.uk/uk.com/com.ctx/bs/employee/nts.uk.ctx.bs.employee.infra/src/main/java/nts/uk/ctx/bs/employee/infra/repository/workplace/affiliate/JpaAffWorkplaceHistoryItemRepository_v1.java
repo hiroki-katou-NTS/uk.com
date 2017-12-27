@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
@@ -34,6 +35,13 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	private static final String SELECT_BY_LIST_WKPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId IN (:workplaceIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+	
+	/** The Constant SELECT_BY_HISTIDS. */
+	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
+			+ " WHERE aw.hisId IN :historyId";
+	
+	private static final String SELECT_BY_WPLIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
+			+ " WHERE aw.workPlaceId IN :wplIds";
 	
 	/**
 	 * Convert from entity to domain
@@ -103,9 +111,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	@Override
 	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListEmpIdAndDate(GeneralDate basedate,
 			List<String> employeeId) {
-		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_LIST_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("employeeIds", employeeId).setParameter("standDate", basedate)
-				.getList();
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(employeeId, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+				.setParameter("employeeIds", subList).setParameter("standDate", basedate)
+				.getList());
+		});
 		if(listHistItem.isEmpty()){
 			return null;
 		}
@@ -132,9 +143,12 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	@Override
 	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListWkpIdAndDate(GeneralDate basedate,
 			List<String> workplaceId) {
-		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_LIST_WKPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
-				.setParameter("workplaceIds", workplaceId).setParameter("standDate", basedate)
-				.getList();
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(workplaceId, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+					.setParameter("workplaceIds", subList).setParameter("standDate", basedate)
+					.getList());
+		});
 		if(listHistItem.isEmpty()){
 			return null;
 		}
@@ -142,6 +156,42 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 			AffWorkplaceHistoryItem domain = this.toDomain(e);
 			return domain;
 		}).collect(Collectors.toList());
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1
+	 * #findByHistIds(java.util.List)
+	 */
+	@Override
+	public List<AffWorkplaceHistoryItem> findByHistIds(List<String> hisIds) {
+		if (CollectionUtil.isEmpty(hisIds)) {
+			return new ArrayList<>();
+		}
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(hisIds, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_HISTIDS, BsymtAffiWorkplaceHistItem.class)
+					.setParameter("historyId", subList).getList());
+		});
+		return listHistItem.stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1
+	 * #findeByWplIDs(java.util.List)
+	 */
+	@Override
+	public List<AffWorkplaceHistoryItem> findeByWplIDs(List<String> wplIDs) {
+		if (CollectionUtil.isEmpty(wplIDs)) {
+			return new ArrayList<>();
+		}
+		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
+		CollectionUtil.split(wplIDs, 1000, subList -> {
+			listHistItem.addAll(this.queryProxy().query(SELECT_BY_WPLIDS, BsymtAffiWorkplaceHistItem.class)
+					.setParameter("wplIds", subList).getList());
+		});
+		return listHistItem.stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
 	}
 
 }

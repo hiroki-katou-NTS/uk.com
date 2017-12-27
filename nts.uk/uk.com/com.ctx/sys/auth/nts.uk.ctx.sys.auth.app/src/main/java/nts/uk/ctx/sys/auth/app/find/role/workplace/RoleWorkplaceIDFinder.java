@@ -57,6 +57,7 @@ public class RoleWorkplaceIDFinder {
 		List<String> listWkpId = new ArrayList<>();
 		WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
 
+		// if role is present
 		if (opRole.isPresent()) {
 			if (opRole.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
 				listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
@@ -67,6 +68,10 @@ public class RoleWorkplaceIDFinder {
 				workplaceIdDto.setListWorkplaceIds(listWkpId);
 				workplaceIdDto.setIsAllEmp(false);
 			}
+		// if role is not present	
+		} else {
+			workplaceIdDto.setListWorkplaceIds(listWkpId);
+			workplaceIdDto.setIsAllEmp(true);
 		}
 		return workplaceIdDto;
 
@@ -135,7 +140,7 @@ public class RoleWorkplaceIDFinder {
 		case SALARY:
 			// return loginUserRoles.forPayroll();
 			// EmployeeReferenceRange = 1
-			return "55b0c0fc-e2e3-4afd-8853-fbc491725ec5";
+			return "c4cf39ca-6f04-47bb-95a5-24f4943d66547";
 
 		case HUMAN_RESOURCES:
 			// return loginUserRoles.forPersonnel();
