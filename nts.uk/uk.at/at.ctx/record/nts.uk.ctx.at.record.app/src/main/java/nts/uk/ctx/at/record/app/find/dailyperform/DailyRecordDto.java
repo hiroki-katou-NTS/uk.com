@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceIt
 
 @Data
 /** 日別実績（WORK） */
-@AttendanceItemRoot(rootName = "")
+@AttendanceItemRoot(rootName = "", isContainer = true)
 public class DailyRecordDto implements ConvertibleAttendanceItem {
 
 	/** 勤務情報： 日別実績の勤務情報 */

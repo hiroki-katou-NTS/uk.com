@@ -53,28 +53,31 @@ public class AttendanceItemUtil {
 			List<Integer> itemIds) {
 		return getItemLayouFields(attendanceItems.getClass()).map(f -> {
 			T fieldValue;
-			try {
-				AttendanceItemLayout layout = f.getAnnotation(AttendanceItemLayout.class);
+			AttendanceItemLayout layout = f.getAnnotation(AttendanceItemLayout.class);
 
-				if (layout.isList()) {
-					List<T> listValue = (List<T>) f.get(attendanceItems);
-					if (listValue != null && !listValue.isEmpty()) {
-						listValue.stream().map(v -> toItemValues(v, itemIds)).flatMap(List::stream)
-								.collect(Collectors.toList());
-					}
-					return toItemValues(ReflectionUtil.newInstance(getGenericType(f)), itemIds);
+			if (layout.isList()) {
+				List<T> listValue = (List<T>) ReflectionUtil.getFieldValue(f, attendanceItems);
+				if (listValue != null && !listValue.isEmpty()) {
+					listValue.stream().map(v -> toItemValues(v, itemIds)).flatMap(List::stream)
+							.collect(Collectors.toList());
 				}
-				if (layout.isOptional()) {
-					fieldValue = ((Optional<T>) f.get(attendanceItems))
-							.orElse(ReflectionUtil.newInstance(getGenericType(f)));
-				} else {
-					fieldValue = (T) f.get(attendanceItems);
-				}
-				return toItemValues(fieldValue, layout == null ? "" : layout.layout(), itemIds);
-
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				return new ArrayList<ItemValue>();
+				return toItemValues(ReflectionUtil.newInstance(getGenericType(f)), itemIds);
 			}
+			if (layout.isOptional()) {
+				Optional<T> fieldValueOpt = ((Optional<T>) ReflectionUtil.getFieldValue(f, attendanceItems));
+				if(fieldValueOpt != null){
+					fieldValue = fieldValueOpt.orElse(ReflectionUtil.newInstance(getGenericType(f)));
+				} else {
+					fieldValue = ReflectionUtil.newInstance(getGenericType(f));
+				}
+						
+			} else {
+				fieldValue = (T) ReflectionUtil.getFieldValue(f, attendanceItems);
+			}
+			if(fieldValue == null){
+				fieldValue = ReflectionUtil.newInstance(f.getType());
+			}
+			return toItemValues(fieldValue, layout == null ? "" : layout.layout(), itemIds);
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
@@ -202,7 +205,7 @@ public class AttendanceItemUtil {
 	private static List<Integer> getItemIds(AttendanceItemValue itemValueAnno, String pathName, String extraCondition,
 			boolean needCheckWithIdx, int idx) {
 		if (itemValueAnno.getIdFromUtil()) {
-			String key = StringUtils.join(pathName, StringUtils.join("-", extraCondition),
+			String key = StringUtils.join(pathName, extraCondition.isEmpty() ? "" : StringUtils.join("-", extraCondition),
 					(needCheckWithIdx ? String.valueOf(idx) : ""));
 			Integer itemId = AttendanceItemIdContainer.getId(key);
 			if (itemId != null && itemId >= 0) {
@@ -268,9 +271,11 @@ public class AttendanceItemUtil {
 		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
 		String newExCondition = getExCondition("", attendanceItems, layout);
 		needCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
-		if (isList) {
+		if (isList || layout.isList()) {
 			if (value == null) {
-				value = ReflectionUtil.newInstance(getGenericType(field));
+				if(!getGenericType(field).equals(Integer.class)){
+					value = ReflectionUtil.newInstance(getGenericType(field));
+				}
 				return processOne(currentLayout, field, layoutCode, value, idx, newPathName, extraCondition,
 						needCheckWithIdx, itemIds);
 			}
@@ -278,7 +283,9 @@ public class AttendanceItemUtil {
 					needCheckWithIdx, itemIds);
 		}
 		if (value == null) {
-			value = ReflectionUtil.newInstance(field.getType());
+			if(!field.getType().equals(Integer.class)){
+				value = ReflectionUtil.newInstance(field.getType());
+			}
 		}
 		return processOne(currentLayout, field, layoutCode, value, idx, newPathName, newExCondition, needCheckWithIdx,
 				itemIds);
@@ -308,7 +315,9 @@ public class AttendanceItemUtil {
 		AttendanceItemValue valueType = getItemValueAnnotation(field);
 		List<Integer> itemIds = getItemIds(valueType, pathName, extraCondition, needCheckWithIdx, idx);
 		if (itemIds.isEmpty()) {
-			throw new NotFoundException("Item id not found exception!!!");
+			//TODO: after uncomment when item id is full list
+			return Collections.emptyList();
+//			throw new NotFoundException("Item id not found exception!!!");
 		}
 		if (onNeedItemIds.contains(itemIds.get(idx))) {
 			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode),
@@ -399,18 +408,18 @@ public class AttendanceItemUtil {
 	}
 
 	private static <T> String getExConditionField(T object, AttendanceItemLayout layout) {
-		try {
-			if (!layout.needCheckIDWithMethod().isEmpty()) {
-				Method method = object.getClass().getMethod(layout.needCheckIDWithMethod());
-				return method.invoke(object).toString();
+		if (!layout.needCheckIDWithMethod().isEmpty()) {
+			return ReflectionUtil.invoke(object.getClass(), object, layout.needCheckIDWithMethod()).toString();
+		}
+		if (!layout.needCheckIDWithField().isEmpty()) {
+			Field refeField;
+			try {
+				refeField = object.getClass().getField(layout.needCheckIDWithField());
+				return ReflectionUtil.getFieldValue(refeField, object).toString();
+			} catch (NoSuchFieldException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			if (!layout.needCheckIDWithField().isEmpty()) {
-				Field refeField = object.getClass().getField(layout.needCheckIDWithField());
-				return refeField.get(object).toString();
-			}
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchFieldException e) {
-			e.printStackTrace();
 		}
 
 		return "";

@@ -4,12 +4,14 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 
 /** 日別実績の休憩時間 */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BreakTimeSheetDailyPerformDto {
 
 	/** 計上用合計時間: 控除合計時間 */

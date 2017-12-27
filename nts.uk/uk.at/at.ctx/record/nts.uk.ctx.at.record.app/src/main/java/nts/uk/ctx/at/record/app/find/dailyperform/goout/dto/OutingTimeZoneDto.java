@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.goout.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class OutingTimeZoneDto {
 
 	private Integer workNo;
