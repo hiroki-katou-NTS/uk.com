@@ -50,6 +50,7 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 		KshmtWorktimeCommonSet entityCommon = new KshmtWorktimeCommonSet();
 		domain.saveToMemento(new JpaFlexWorkSettingSetMemento(entity, entityCommon));
 		this.commandProxy().insert(entity);
+		this.commandProxy().insert(entityCommon);
 	}
 	
 	/*
@@ -65,6 +66,7 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 				.findCommonSetting(domain.getCompanyId(), domain.getWorkTimeCode().v()).get();
 		domain.saveToMemento(new JpaFlexWorkSettingSetMemento(entity, entityCommon));
 		this.commandProxy().update(entity);
+		this.commandProxy().update(entityCommon);
 	}
 	
 	/*
@@ -76,6 +78,8 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	@Override
 	public void remove(String companyId, String workTimeCode) {
 		this.commandProxy().remove(KshmtFlexWorkSet.class, new KshmtFlexWorkSetPK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtWorktimeCommonSet.class, new KshmtWorktimeCommonSetPK(companyId, workTimeCode,
+				WorkTimeDailyAtr.FLEX_WORK.value, WorkTimeMethodSet.FIXED_WORK.value));
 	}
 	
 	/**
