@@ -36,7 +36,7 @@ public class KshmtRoundingSetPK implements Serializable {
 	private int workFormAtr;
 
 	/** The work time set method. */
-	@Column(name = "WORK_TIME_SET_METHOD")
+	@Column(name = "WORKTIME_SET_METHOD")
 	private int workTimeSetMethod;
 
 	/** The atr. */
