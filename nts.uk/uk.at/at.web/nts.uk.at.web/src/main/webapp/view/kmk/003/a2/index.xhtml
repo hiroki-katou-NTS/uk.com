@@ -8,16 +8,21 @@
 	</com:ValidatorScript>
 
 
-	<!-- =================== Begin Other Mode =================== -->
 	<!-- BEGIN A14_1 ~ A16_12 -->
 	<div data-bind="rended: true">
-		<com:ko tag="if" bind="!isFlowMode()">
+		<com:ko tag="if" bind="!isSimpleMode() &amp;&amp; !isFlowMode()">
 			<div tabindex="-1" class="accordion setting_detail_tab2"
 				data-bind="ntsAccordion: {enable: true} ">
 				<h3>
 					<label>#{i18n.getText('KMK003_51')}</label>
 				</h3>
 				<div data-bind="ntsFixTableCustom: {option: fixTableOptionOneDay}"></div>
+			</div>
+		</com:ko>
+		
+		<com:ko tag="if" bind="isSimpleMode() &amp;&amp; !isFlowMode()">
+			<div tabindex="-1" class="accordion setting_detail_tab2">
+				<div data-bind="ntsFixTableCustom: {option: fixTableOptionOneDaySimpleMode}"></div>
 			</div>
 		</com:ko>
 		
@@ -41,7 +46,6 @@
 		</com:ko>
 		<!-- =================== End Use Half Day Shift And Detail mode =================== -->
 	</div>
-	<!-- =================== End Other Mode =================== -->
 
 
 
