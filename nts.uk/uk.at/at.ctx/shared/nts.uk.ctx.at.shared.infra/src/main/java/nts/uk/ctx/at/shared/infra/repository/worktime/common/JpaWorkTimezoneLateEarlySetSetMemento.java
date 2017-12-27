@@ -74,7 +74,6 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 			
 			// new pk
 			KshmtOtherLateEarlyPK newPK = this.setPrimaryKey(parentEntity, new KshmtOtherLateEarlyPK());
-			newPK.setLateEarlyAtr(emTimezone.getLateEarlyAtr().value);
 			
 			// get entity existed
 			KshmtOtherLateEarly entity = lstEntity.stream().filter(item -> {
@@ -83,7 +82,7 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 					return pk.getCid().equals(newPK.getCid()) && pk.getWorktimeCd().equals(newPK.getWorktimeCd())
 							&& pk.getWorkFormAtr() == newPK.getWorkFormAtr()
 							&& pk.getWorktimeSetMethod() == newPK.getWorktimeSetMethod()
-							&& pk.getLateEarlyAtr() == newPK.getLateEarlyAtr();
+							&& pk.getLateEarlyAtr() == emTimezone.getLateEarlyAtr().value;
 					}).findFirst()
 					.orElse(new KshmtOtherLateEarly(newPK));
 			
