@@ -24,4 +24,12 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 	@AttendanceItemLayout(layout = "C", isList = true, jpPropertyName = "勤務予定時間帯")
 	private List<ScheduleTimeZoneDto> scheduleTimeZone;
 
+	private int calculationState;
+
+	// 直行区分
+	private int goStraightAtr;
+
+	// 直帰区分
+	private int backStraightAtr;
+
 }
