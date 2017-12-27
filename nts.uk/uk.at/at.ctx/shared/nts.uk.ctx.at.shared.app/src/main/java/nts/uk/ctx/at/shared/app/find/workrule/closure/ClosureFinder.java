@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workrule.closure;
@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.BsEmploymentFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureCdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
@@ -22,7 +23,9 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.EmpCdNameDto;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -122,6 +125,36 @@ public class ClosureFinder {
 		});
 		
 		return new ClosureEmployDto(empCdNameDtoList, lstClosureCdName);
+	}
+	
+	/**
+	 * Gets the closure id name.
+	 *
+	 * @return the closure id name
+	 */
+	public List<ClosureIdNameDto> getClosureIdName() {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Find All Closure in use
+		List<Closure> closureList = this.repository.findAllUse(companyId);
+		
+		// Get List ClosureHistory Domain by companyID, closureID, startDay.
+		List<ClosureHistory> lstClosureHistory = new ArrayList<>();
+		closureList.stream().forEach(x -> {
+			Optional<ClosureHistory> closureHist = repository.findBySelectedYearMonth(companyId, x.getClosureId().value,
+					GeneralDate.today().yearMonth().v());
+			if (closureHist.isPresent()) {
+				lstClosureHistory.add(closureHist.get());
+			}
+			
+		});
+		
+		// Get List ClosureIdNameDto from ClosureHistory Domain.
+		List<ClosureIdNameDto> closureIdNameDtoList = lstClosureHistory.stream().map(x -> {
+			return ClosureIdNameDto.fromDomain(x);
+		}).collect(Collectors.toList());
+		return closureIdNameDtoList;
 	}
 
 	/**
@@ -301,5 +334,58 @@ public class ClosureFinder {
 		}
 
 		return startDate;
+	}
+	
+	
+	/**
+	 * Find emp by closure id.
+	 *
+	 * @param closureId the closure id
+	 * @return the list
+	 */
+	public List<BsEmploymentFindDto> findEmpByClosureId(int closureId) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Get ClosureEmployment
+		List<ClosureEmployment> closureEmpList = this.closureEmpRepo.findByClosureId(companyId, closureId);
+		
+		// Get Employment Codes from ClosureEmployment acquired above
+		List<String> empCodes = closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
+				.collect(Collectors.toList());
+		
+		// Get Employment from employment code list above
+		List<BsEmploymentImport> empImportList = this.shareEmploymentAdapter.findByEmpCodes(companyId, empCodes);
+		
+		return empImportList.stream().map(e -> {
+			return new BsEmploymentFindDto(e.getEmploymentCode(), e.getEmploymentName(),
+					e.getEmpExternalCode(), e.getMemo());
+		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find emp by closure ids.
+	 *
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
+	public List<BsEmploymentFindDto> findEmpByClosureIds(List<Integer> closureIds) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Get ClosureEmployment
+		List<ClosureEmployment> closureEmpList = this.closureEmpRepo.findByClosureIds(companyId, closureIds);
+		
+		// Get Employment Codes from ClosureEmployment acquired above
+		List<String> empCodes = closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
+				.collect(Collectors.toList());
+		
+		// Get Employment from employment code list above
+		List<BsEmploymentImport> empImportList = this.shareEmploymentAdapter.findByEmpCodes(companyId, empCodes);
+		
+		return empImportList.stream().map(e -> {
+			return new BsEmploymentFindDto(e.getEmploymentCode(), e.getEmploymentName(),
+					e.getEmpExternalCode(), e.getMemo());
+		}).collect(Collectors.toList());
 	}
 }

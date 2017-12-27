@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 /** 短時間勤務時間帯 */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ShortWorkTimeSheetDto {
 
 	/** 短時間勤務枠NO: 短時間勤務枠NO */

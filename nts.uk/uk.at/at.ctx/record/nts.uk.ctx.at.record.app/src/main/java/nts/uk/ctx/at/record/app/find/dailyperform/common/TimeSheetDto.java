@@ -2,11 +2,13 @@ package nts.uk.ctx.at.record.app.find.dailyperform.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 
 @Data
 /**　時間帯　*/
 @AllArgsConstructor
+@NoArgsConstructor
 public class TimeSheetDto {
 	
 	private Integer timeSheetNo;
