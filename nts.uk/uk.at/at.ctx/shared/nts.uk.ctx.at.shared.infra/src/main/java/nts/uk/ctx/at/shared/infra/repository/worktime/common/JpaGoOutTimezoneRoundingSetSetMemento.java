@@ -63,7 +63,11 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 	 * shared.dom.worktime.common.GoOutTypeRoundingSet)
 	 */
 	@Override
-	public void setPubHolWorkTimezone(GoOutTypeRoundingSet pubHolWorkTimezone) {			
+	public void setPubHolWorkTimezone(GoOutTypeRoundingSet pubHolWorkTimezone) {	
+		if (pubHolWorkTimezone == null) {
+			return;
+		}
+		
 		Map<KshmtSpecialRoundOutPK, KshmtSpecialRoundOut> currentSets = this.entitySets.stream()
 				.map(KshmtSpecialRoundOut.class::cast)
 				.collect(Collectors.toMap(entity -> entity.getKshmtSpecialRoundOutPK(), Function.identity()));
@@ -95,6 +99,10 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 	 */
 	@Override
 	public void setWorkTimezone(GoOutTypeRoundingSet workTimezone) {
+		if (workTimezone == null) {
+			return;
+		}
+		
 		Map<KshmtSpecialRoundOutPK, KshmtSpecialRoundOut> currentSets = this.entitySets.stream()
 				.map(KshmtSpecialRoundOut.class::cast)
 				.collect(Collectors.toMap(entity -> entity.getKshmtSpecialRoundOutPK(), Function.identity()));
@@ -126,6 +134,10 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 	 */
 	@Override
 	public void setOttimezone(GoOutTypeRoundingSet ottimezone) {
+		if (ottimezone == null) {
+			return;
+		}
+		
 		Map<KshmtSpecialRoundOutPK, KshmtSpecialRoundOut> currentSets = this.entitySets.stream()
 				.map(KshmtSpecialRoundOut.class::cast)
 				.collect(Collectors.toMap(entity -> entity.getKshmtSpecialRoundOutPK(), Function.identity()));

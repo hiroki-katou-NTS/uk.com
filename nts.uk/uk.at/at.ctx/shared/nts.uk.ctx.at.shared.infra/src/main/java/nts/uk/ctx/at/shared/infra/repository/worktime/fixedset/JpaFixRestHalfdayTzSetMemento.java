@@ -59,6 +59,9 @@ public class JpaFixRestHalfdayTzSetMemento implements FixRestTimezoneSetSetMemen
 	@Override
 	public void setLstTimezone(List<DeductionTime> lstTimezone) {
 		// KSHMT_FIXED_HALF_REST_SET
+		if (CollectionUtil.isEmpty(lstTimezone)) {
+			return;
+		}
 		Map<KshmtFixedHalfRestSetPK, KshmtFixedHalfRestSet> currentSets = this.entitySets.stream()
 				.map(KshmtFixedHalfRestSet.class::cast)
 				.collect(Collectors.toMap(entity -> entity.getKshmtFixedHalfRestSetPK(), Function.identity()));

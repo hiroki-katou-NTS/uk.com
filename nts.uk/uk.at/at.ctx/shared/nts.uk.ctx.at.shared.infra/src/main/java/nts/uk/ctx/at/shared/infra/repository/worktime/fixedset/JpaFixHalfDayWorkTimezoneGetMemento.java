@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneGetMemento;
@@ -54,6 +56,9 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 	@Override
 	public FixRestTimezoneSet getRestTimezone() {
 		// KSHMT_FIXED_HALF_REST_SET
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFixedHalfRestSets())) {
+			this.entity.setKshmtFixedHalfRestSets(new ArrayList<>());
+		}
 		List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets = this.entity.getKshmtFixedHalfRestSets().stream()
 				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
@@ -69,10 +74,16 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 	@Override
 	public FixedWorkTimezoneSet getWorkTimezone() {
 		// KSHMT_FIXED_WORK_TIME_SET 就業時間の時間帯設定(固定)
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFixedWorkTimeSets())) {
+			this.entity.setKshmtFixedWorkTimeSets(new ArrayList<>());
+		}
 		List<KshmtFixedWorkTimeSet> kshmtFixedWorkTimeSets = this.entity.getKshmtFixedWorkTimeSets().stream()
 				.filter(entity -> entity.getKshmtFixedWorkTimeSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
 		// KSHMT_FIXED_OT_TIME_SET 残業時間の時間帯設定
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFixedOtTimeSets())) {
+			this.entity.setKshmtFixedOtTimeSets(new ArrayList<>());
+		}
 		List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets = this.entity.getKshmtFixedOtTimeSets().stream()
 				.filter(entity -> entity.getKshmtFixedOtTimeSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());

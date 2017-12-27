@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 import java.util.ArrayList;
 import java.util.List;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -146,6 +147,9 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setLstHalfDayWorkTimezone(List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone) {
+		if (CollectionUtil.isEmpty(lstHalfDayWorkTimezone)) {
+			lstHalfDayWorkTimezone = new ArrayList<>();
+		}
 		lstHalfDayWorkTimezone.forEach(domain -> domain
 				.saveToMemento(new JpaFixHalfDayWorkTimezoneSetMemento(this.entity, domain.getDayAtr())));
 	}
@@ -159,7 +163,10 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setLstStampReflectTimezone(List<StampReflectTimezone> lstStampReflectTimezone) {
-
+		if (CollectionUtil.isEmpty(lstStampReflectTimezone)) {
+			lstStampReflectTimezone = new ArrayList<>();
+		}
+		
 		String companyId = this.entity.getKshmtFixedWorkSetPK().getCid();
 		String workTimeCd = this.entity.getKshmtFixedWorkSetPK().getWorktimeCd();
 		

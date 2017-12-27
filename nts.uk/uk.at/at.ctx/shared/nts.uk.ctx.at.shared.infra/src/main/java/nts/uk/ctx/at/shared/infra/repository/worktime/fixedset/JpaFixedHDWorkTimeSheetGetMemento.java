@@ -34,6 +34,9 @@ public class JpaFixedHDWorkTimeSheetGetMemento implements HDWorkTimeSheetSetting
 	 */
 	public JpaFixedHDWorkTimeSheetGetMemento(KshmtFixedHolTimeSet entity) {
 		this.entity = entity;
+		if (entity == null) {
+			this.entity = new KshmtFixedHolTimeSet();
+		}
 	}
 
 	/*

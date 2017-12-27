@@ -39,6 +39,9 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	public JpaFixedWorkSettingGetMemento(KshmtFixedWorkSet entity) {
 		super();
 		this.entity = entity;
+		if (entity == null) {
+			this.entity = new KshmtFixedWorkSet();
+		}
 	}
 
 	/*

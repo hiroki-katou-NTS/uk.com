@@ -82,8 +82,11 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet) {
-		List<KshmtSubstitutionSet> newListEntity = new ArrayList<>();
+		if (CollectionUtil.isEmpty(shtSet)) {
+			return;
+		}
 		
+		List<KshmtSubstitutionSet> newListEntity = new ArrayList<>();		
 		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
 			this.entity.setKshmtSubstitutionSets(new ArrayList<>());
 		}
@@ -137,8 +140,11 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setMedicalSet(List<WorkTimezoneMedicalSet> list) {
-		List<KshmtMedicalTimeSet> newListEntity = new ArrayList<>();
+		if (CollectionUtil.isEmpty(list)) {
+			return;
+		}
 		
+		List<KshmtMedicalTimeSet> newListEntity = new ArrayList<>();		
 		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
 			this.entity.setKshmtMedicalTimeSets(new ArrayList<>());
 		}
@@ -193,7 +199,34 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setStampSet(WorkTimezoneStampSet set) {
-		set.saveToMemento(new JpaWorkTimezoneStampSetSetMemento(this.entity));
+		if (CollectionUtil.isEmpty(set.getPrioritySets())) {
+			return;
+		}
+		
+		List<KshmtPioritySet> lstKshmtPioritySet = new ArrayList<>();
+		set.getPrioritySets().forEach(item->{
+			KshmtPioritySet entityKshmtPiority =  new KshmtPioritySet();
+			
+			KshmtPioritySetPK kshmtPioritySetPK =  new KshmtPioritySetPK();
+			kshmtPioritySetPK.setCid(this.entity.getKshmtWorktimeCommonSetPK().getCid());
+			kshmtPioritySetPK.setStampAtr(item.getStampAtr().value);
+			kshmtPioritySetPK.setWorkFormAtr(this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			kshmtPioritySetPK.setWorkTimeSetMethod(this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
+			kshmtPioritySetPK.setWorktimeCd(this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			
+			entityKshmtPiority.setPiorityAtr(item.getPriorityAtr().value);
+			entityKshmtPiority.setKshmtPioritySetPK(kshmtPioritySetPK);
+			lstKshmtPioritySet.add(entityKshmtPiority);
+		});
+		this.entity.setKshmtPioritySets(lstKshmtPioritySet);
+		
+		List<KshmtRoundingSet> lstKshmtRoundingSet = new ArrayList<>();
+		set.getRoundingSets().forEach(item->{
+			KshmtRoundingSet entityKshmtRoundingSet = new KshmtRoundingSet();
+
+			
+		});
+		
 	}
 
 	/*
