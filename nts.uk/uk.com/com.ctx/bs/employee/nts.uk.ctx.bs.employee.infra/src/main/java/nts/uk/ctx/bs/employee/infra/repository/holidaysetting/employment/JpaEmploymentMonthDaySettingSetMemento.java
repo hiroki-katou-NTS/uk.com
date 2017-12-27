@@ -71,6 +71,7 @@ public class JpaEmploymentMonthDaySettingSetMemento implements EmploymentMonthDa
 	public void setPublicHolidayMonthSettings(List<PublicHolidayMonthSetting> publicHolidayMonthSettings) {
 		publicHolidayMonthSettings.stream().forEach(item -> {
 			KshmtEmpMonthDaySet entity = new KshmtEmpMonthDaySet();
+			entity.setKshmtEmpMonthDaySetPK(new KshmtEmpMonthDaySetPK());
 			entity.getKshmtEmpMonthDaySetPK().setCid(this.companyId);
 			entity.getKshmtEmpMonthDaySetPK().setEmpCd(this.empCd);
 			entity.getKshmtEmpMonthDaySetPK().setManageYear(this.year);
