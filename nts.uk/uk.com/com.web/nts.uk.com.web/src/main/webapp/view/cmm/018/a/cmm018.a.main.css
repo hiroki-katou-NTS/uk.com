@@ -1,6 +1,9 @@
 .contents-area {
 	width: 1260px;
 }
+.contents-area-tabpanel-3{
+	width: 1360px;
+}
 .dateControlBtn { width: 80px; margin-top: 10px;}
 .dateControlBtn:FIRST-CHILD{ margin-left: 10px; }
 .dateControlBtn:LAST-CHILD{ margin-left: 40px; }

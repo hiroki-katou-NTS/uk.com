@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 /** 乖離時間 */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DivergenceTimeDto {
 
 	/** 乖離時間: 勤怠時間 */
@@ -36,4 +41,14 @@ public class DivergenceTimeDto {
 
 	/** 乖離時間NO: 乖離時間NO */
 	private Integer divergenceTimeNo;
+	
+	public static DivergenceTimeDto fromDivergenceTime(DivergenceTime domain){
+		return new DivergenceTimeDto(
+				domain.getDivTime().valueAsMinutes(), 
+				domain.getDeductionTime().valueAsMinutes(),
+				domain.getDivResonCode().v(), 
+				domain.getDivReason().v(), 
+				domain.getDivTimeAfterDeduction().v(), 
+				domain.getDivTimeId());
+	}
 }

@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange.daily;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 
 /**
  * @author thanhpv
@@ -12,24 +14,18 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ExtractionPeriodDaily extends ExtractionRangeBase{
 	
+	/**終了日*/
+	private StartDate startDate;
 	
-	private NumberOfDays NumberOfDays;
+	/**開始日*/
+	private EndDate endDate;
 	
-	private SpecifyStartDate startDate;
-	
-	private SpecifyEndDate endDate;
-
-	public ExtractionPeriodDaily(String extractionId, ExtractionRange extractionRange, NumberOfDays numberOfDays,
-			SpecifyStartDate startDate, SpecifyEndDate endDate) {
+	public ExtractionPeriodDaily(String extractionId, int extractionRange, StartDate startDate, EndDate endDate) {
 		super(extractionId, extractionRange);
-		NumberOfDays = numberOfDays;
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
-
-	
-	
-	
 }

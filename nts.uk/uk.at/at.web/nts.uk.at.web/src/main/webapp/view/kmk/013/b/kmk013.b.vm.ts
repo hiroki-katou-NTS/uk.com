@@ -21,6 +21,8 @@ module nts.uk.at.view.kmk013.b {
             checkedB33: KnockoutObservable<boolean>;
             checkedB34: KnockoutObservable<boolean>;
             checkedB35: KnockoutObservable<boolean>;
+            enableB29: KnockoutObservable<boolean>;
+            enableB215: KnockoutObservable<boolean>;
             //B5 inner
             selectedValueB54: KnockoutObservable<any>;
             selectedValueB59: KnockoutObservable<any>;
@@ -93,8 +95,9 @@ module nts.uk.at.view.kmk013.b {
                 self.selectedB23 = ko.observable(0);
                 self.selectedB29 = ko.observable(0);
                 self.selectedB215 = ko.observable(0);
-
-                self.enableB217 = ko.observable(true);
+                self.enableB29 = ko.observable(false);
+                self.enableB215 = ko.observable(false);
+                self.enableB217 = ko.observable(false);
                 self.readonly = ko.observable(false);
 
                 self.timeOfDay = ko.observable(0);
@@ -179,6 +182,29 @@ module nts.uk.at.view.kmk013.b {
                 self.enableB74 = ko.observable(false);
                 self.enableB79 = ko.observable(false);
                 self.enableB715 = ko.observable(false);
+                self.selectedB23.subscribe((newValue) => {
+                    if (newValue == 1) {
+                        self.enableB29(false);
+                        self.enableB215(false);
+                        self.enableB217(false);
+                    } else {
+                        self.enableB29(true);
+                        if (self.selectedB29() == 0) {
+                            self.enableB215(true);
+                            if (self.selectedB215() == 0) {
+                                self.enableB217(true);
+                            }
+                        }
+                    }
+                });
+                self.selectedB29.subscribe((newValue) => {
+                    if (newValue == 1) {
+                        self.enableB215(false);
+                        self.enableB217(false);
+                    } else {
+                        self.enableB215(true);
+                    }
+                });
                 self.selectedB215.subscribe((newValue) => {
                     if (newValue == 1) {
                         self.enableB217(false);
@@ -193,6 +219,11 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB54(true);
                     } else {
                         self.enableB54(false);
+                    }
+                });
+                self.enableB54.subscribe((newValue) => {
+                    if (newValue == false) {
+                        self.enableB59(false);
                     }
                 });
                 self.selectedValueB515.subscribe((newValue) => {
@@ -261,6 +292,11 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB64(true);
                     } else {
                         self.enableB64(false);
+                    }
+                });
+                self.enableB64.subscribe((newValue) => {
+                    if (newValue == false) {
+                        self.enableB68(false);
                     }
                 });
                 self.selectedValueB612.subscribe((newValue) => {
@@ -342,6 +378,11 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB74(true);
                     } else {
                         self.enableB74(false);
+                    }
+                });
+                self.enableB74.subscribe((newValue) => {
+                    if (newValue == false) {
+                        self.enableB79(false);
                     }
                 });
                 self.selectedValueB715.subscribe((newValue) => {
@@ -498,7 +539,7 @@ module nts.uk.at.view.kmk013.b {
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB77(convertToBoolean(obj.irregularWork.additionTimePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.通常、変形の所定超過時
-                    self.selectedIdB79(obj.irregularWork.deformatExcValuePre);
+                    self.selectedIdB79(obj.irregularWork.deformatExcValue);
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.育児・介護時間を含めて計算する
                     self.checkedB712(convertToBoolean(obj.irregularWork.calcIncludCarePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない
@@ -522,17 +563,25 @@ module nts.uk.at.view.kmk013.b {
             save(): void {
                 let self = this;
                 let obj = {};
-                obj.referComHolidayTime = self.selectedB215();
-                if (self.enableB217()) {
-                    obj.oneDay = self.timeB219();
-                    obj.morning = self.timeB221();
-                    obj.afternoon = self.timeB223()
+
+                obj.referActualWorkHours = self.selectedB23();
+                if (self.selectedB23() == 0) {
+                    obj.notReferringAch = self.selectedB29();
+                    if (self.selectedB29() == 0) {
+                        obj.referComHolidayTime = self.selectedB215();
+                        if (self.selectedB215() == 0) {
+                            obj.oneDay = self.timeB219();
+                            obj.morning = self.timeB221();
+                            obj.afternoon = self.timeB223()
+                        }
+                    }
                 } else {
+                    obj.notReferringAch = 1;
+                    obj.referComHolidayTime = 1;
                     obj.oneDay = 0;
                     obj.morning = 0;
                     obj.afternoon = 0;
                 }
-                obj.referActualWorkHours = self.selectedB23();
                 obj.annualHoliday = convertToInt(self.checkedB33());
                 obj.specialHoliday = convertToInt(self.checkedB35());
                 obj.yearlyReserved = convertToInt(self.checkedB34());
@@ -625,7 +674,7 @@ module nts.uk.at.view.kmk013.b {
                     obj.irregularWork.calcIntervalTimePre = 0;
                 }
                 if (self.enableB79() == true) {
-                    obj.irregularWork.deformatExcValuePre = convertToInt(self.enableB79());
+                    obj.irregularWork.deformatExcValue = convertToInt(self.enableB79());
                 } else {
                     obj.irregularWork.deformatExcValuePre = 0;
                 }

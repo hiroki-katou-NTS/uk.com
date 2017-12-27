@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -28,7 +30,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
 /**
  * The Class JpaWorkingConditionRepository.
  */
-@Stateless
+@RequestScoped
 public class JpaWorkingConditionRepository extends JpaRepository
 		implements WorkingConditionRepository {
 
@@ -146,10 +148,12 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition)
 	 */
 	@Override
+	@Transactional
 	public void add(WorkingCondition workingCondition) {
 		List<KshmtWorkingCond> entities = new ArrayList<>();
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
 		this.commandProxy().insertAll(entities);
+		this.getEntityManager().flush();
 	}
 
 	/*
@@ -189,16 +193,19 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 * (nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition)
 	 */
 	@Override
+	@Transactional
 	public void save(WorkingCondition workingCondition) {
+		deleteAll(workingCondition);
+		add(workingCondition);
+	}
+
+	@Transactional
+	private void deleteAll(WorkingCondition workingCondition) {
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(),
 				workingCondition.getEmployeeId(), null);
 		this.commandProxy().removeAll(entities);
-
-		entities = new ArrayList<>();
-		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
-		this.commandProxy().insertAll(entities);
+		this.getEntityManager().flush();
 	}
-
 	/**
 	 * Find by.
 	 *

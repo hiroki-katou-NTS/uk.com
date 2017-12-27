@@ -132,6 +132,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         self.selectedRoleIndividual('');
                         self.userName('');
                         self.dateValue({});
+                        self.New();
                     }
                 });
             } else {

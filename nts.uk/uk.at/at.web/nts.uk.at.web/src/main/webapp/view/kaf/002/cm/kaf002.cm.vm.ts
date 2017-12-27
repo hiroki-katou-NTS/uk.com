@@ -20,7 +20,6 @@ module nts.uk.at.view.kaf002.cm {
             detailReasonDisp: KnockoutObservable<number> = ko.observable(0);
             topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0)); 
             botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0));
-            approvalList: Array<vmbase.AppApprovalPhase> = [];
             employeeName: KnockoutObservable<string> = ko.observable("");
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
@@ -35,7 +34,7 @@ module nts.uk.at.view.kaf002.cm {
                     default: break;
                 }    
             }
-            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, approvalList: Array<vmbase.AppApprovalPhase>){
+            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any){
                 var self = this;
                 self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
@@ -83,14 +82,6 @@ module nts.uk.at.view.kaf002.cm {
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
                 }
-                _.forEach(approvalList, appPhase => {
-                    _.forEach(appPhase.approverDtos, appFrame => {
-                        _.forEach(appFrame.approveAcceptedCmds, appAccepted => {
-                            appAccepted.approvalDate = self.application().appDate();
-                        });    
-                    }); 
-                });
-                self.approvalList = approvalList;
             }
             
             register(errorFlag: any, errorMsg: any){
@@ -105,11 +96,11 @@ module nts.uk.at.view.kaf002.cm {
                         self.application().titleReason("");
                     }
                     switch(self.stampRequestMode()){
-                        case 0: self.m1.register(self.application(), self.approvalList);break;    
-                        case 1: self.m2.register(self.application(), self.approvalList);break;  
-                        case 2: self.m3.register(self.application(), self.approvalList);break; 
-                        case 3: self.m4.register(self.application(), self.approvalList);break; 
-                        case 4: self.m5.register(self.application(), self.approvalList);break; 
+                        case 0: self.m1.register(self.application());break;    
+                        case 1: self.m2.register(self.application());break;  
+                        case 2: self.m3.register(self.application());break; 
+                        case 3: self.m4.register(self.application());break; 
+                        case 4: self.m5.register(self.application());break; 
                         default: break;
                     }    
                 }
@@ -125,11 +116,11 @@ module nts.uk.at.view.kaf002.cm {
                 }
                            
                 switch(self.stampRequestMode()){
-                    case 0: self.m1.update(self.application(), approvalList);break;    
-                    case 1: self.m2.update(self.application(), approvalList);break;  
-                    case 2: self.m3.update(self.application(), approvalList);break; 
-                    case 3: self.m4.update(self.application(), approvalList);break; 
-                    case 4: self.m5.update(self.application(), approvalList);break;  
+                    case 0: self.m1.update(self.application());break;    
+                    case 1: self.m2.update(self.application());break;  
+                    case 2: self.m3.update(self.application());break; 
+                    case 3: self.m4.update(self.application());break; 
+                    case 4: self.m5.update(self.application());break;  
                     default: break;
                 }    
             }

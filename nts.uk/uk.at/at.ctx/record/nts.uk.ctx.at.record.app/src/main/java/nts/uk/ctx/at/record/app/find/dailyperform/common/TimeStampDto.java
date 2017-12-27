@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TimeStampDto {
 
 	/** 時刻 */
@@ -22,4 +26,7 @@ public class TimeStampDto {
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "場所コード", needCheckIDWithIndex = true)
 	@AttendanceItemValue(getIdFromUtil = true)
 	private String placeCode;
+	
+	
+	private int stampSourceInfo;
 }

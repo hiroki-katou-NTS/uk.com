@@ -4,11 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategorySetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
@@ -21,22 +19,27 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	/** The entities. */
 	private List<KshmtPerWorkCat> entities;
 
+	/** The history id. */
+	private String historyId;
+
 	/**
 	 * Instantiates a new jpa personal work category set memento.
 	 *
 	 * @param entities
 	 *            the entitys
 	 */
-	public JpaPerWorkCatSetMemento(List<KshmtPerWorkCat> entities) {
+	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities) {
 		// Check empty
-		if (CollectionUtil.isEmpty(entities)) {
-			entities = new ArrayList<>();
-		}
+//		if (CollectionUtil.isEmpty(entities)) {
+//			this.entities = new ArrayList<>();
+//		} else {
+//			this.entities = entities;
+//		}
+		this.entities = entities;
 
 		// Clean all
-		entities.clear();
-
-		this.entities = entities;
+		this.entities.clear();
+		this.historyId = historyId;
 	}
 
 	/*
@@ -149,8 +152,8 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	private KshmtPerWorkCat toEntity(SingleDaySchedule domain, int workCategoryAtr) {
 		KshmtPerWorkCat entity = new KshmtPerWorkCat();
-		domain.saveToMemento(new JpaSDayScheWorkCatSetMemento(entity));
-		entity.getKshmtPerWorkCatPK().setPerWorkCatAtr(workCategoryAtr);
+		domain.saveToMemento(
+				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
 		return entity;
 	}
 

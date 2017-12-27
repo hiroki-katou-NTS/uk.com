@@ -12,11 +12,10 @@ public interface RoleRepository {
 	/**
 	 * Find by id.
 	 *
-	 * @param roleId
-	 *            the role id
+	 * @param lstRoleId the lst role id
 	 * @return Role
 	 */
-	List<Role> findById(String roleId);
+	List<Role> findByListId(List<String> lstRoleId);
 
 	/**
 	 * Find by id
@@ -33,7 +32,8 @@ public interface RoleRepository {
 	 * @param RoleType
 	 * @return
 	 */
-	Optional<Role> findRoleByRoleCode(String roleCode, int roleType);
+	Optional<Role> findRoleByRoleCode(String companyId,String roleCode, int roleType);
+	
 
 	/**
 	 * Find by list role id.
@@ -92,4 +92,6 @@ public interface RoleRepository {
 	 * @return Role
 	 */
 	List<Role> findByType(int roleType);
+	
+	
 }

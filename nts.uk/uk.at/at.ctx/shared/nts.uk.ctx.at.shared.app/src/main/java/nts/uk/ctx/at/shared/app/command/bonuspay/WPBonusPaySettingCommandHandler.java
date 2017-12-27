@@ -7,9 +7,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 @Stateless
 public class WPBonusPaySettingCommandHandler extends CommandHandler<WPBonusPaySettingCommand> {

@@ -1,163 +1,188 @@
-module nts.uk.com.view.cas011.c.viewmodel {
-    import block = nts.uk.ui.block;
-    import errors = nts.uk.ui.errors;
-    import dialog = nts.uk.ui.dialog;
-    import windows = nts.uk.ui.windows;
-    import resource = nts.uk.resource;
+module nts.uk.at.view.kal003.b{
+    export module viewmodel {
+        import block = nts.uk.ui.block;
+        import errors = nts.uk.ui.errors;
+        import dialog = nts.uk.ui.dialog;
+        import windows = nts.uk.ui.windows;
+        import resource = nts.uk.resource;
 
-    export class ScreenModel {
-        currentErrAlaAttendanceItemCondition: KnockoutObservable<ErrAlaAttendanceItemCondition> = ko.observable(new ErrAlaAttendanceItemCondition({
-                errAlaAttendanceItemConditionId:    ''
-                , category:                         0
-                , typeCheckWorkRecord:              0
-                , messageColor:                     ''
-                , messageContent:                   ''
-                , isBoldMessage:                    false
-                , targetServiceType:                1 // default selection
-                , targetServiceTypeWorkTypeSelection: ''
-                , dailyAttendanceItemId:            ''
-                , dailyAttendanceItemName:          ''
-                , comparisonOperatorId:             0
-                , comparisonMinValue:               ''
-                , comparisonMaxValue:               ''
-                , continuousPeriod:                 0
-                , targetWorkingHoursCd:             ''
-                , targetWorkingHoursTimeZoneSelection: ''
+        export class ScreenModel {
+            
+            intGroupCondition = new model.GroupCondition({
+                groupOperator: 0
+                , groupListCondition: ([])
+            });
+            initCompoundCondition = new  model.CompoundCondition ({
+                group1Condition: this.intGroupCondition
+                , hasGroup2: false
+                , group2Condition: this.intGroupCondition
+                , operatorBetweenG1AndG2: 0
+            });
+            currentErrAlaAttendanceItemCondition: KnockoutObservable<model.ErrAlaAttendanceItemCondition> = ko.observable(new model.ErrAlaAttendanceItemCondition({
+                    errAlaAttendanceItemConditionId:    ''
+                    , category:                         0
+                    , typeCheckWorkRecord:              0
+                    , messageColor:                     ''
+                    , messageContent:                   ''
+                    , isBoldMessage:                    false
+                    , targetServiceType:                1 // default selection
+                    , targetServiceTypeWorkTypeSelection: ''
+                    , dailyAttendanceItemId:            ''
+                    , dailyAttendanceItemName:          ''
+                    , comparisonOperatorId:             0
+                    , comparisonMinValue:               ''
+                    , comparisonMaxValue:               ''
+                    , continuousPeriod:                 0
+                    , targetWorkingHoursCd:             ''
+                    , targetWorkingHoursTimeZoneSelection: ''
+                    , compoundCondition: null
+                    
+            }));
+            // list item check
+            listTypeCheckWorkRecords    : KnockoutObservableArray<any> = ko.observableArray([]);
+            listSingleValueCompareTypes : KnockoutObservableArray<any> = ko.observableArray([]);
+            listRangeCompareTypes       : KnockoutObservableArray<any> = ko.observableArray([]);
+            listCompareTypes            : KnockoutObservableArray<any> = ko.observableArray([]);
+            itemListTargetServiceType_BA1_2         : KnockoutObservableArray<any> = ko.observableArray([]);
+            itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<any> = ko.observableArray([]);
+            itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<any> = ko.observableArray([]);
+            hasGroup2 :  KnockoutObservable<boolean> =  ko.observable(false);
+            private defaultSetting: model.ISetting = {
+                category: 1,
+                typeCheckWorkRecord: 0,
+                errAlaAttendanceItemConditionId: ''
+            };
+            targetServiceTypeSelected_BA1_2 : KnockoutObservable<string> = ko.observable('0');
+            targetSelectionRangeSelected_BA1_5 : KnockoutObservable<string> = ko.observable('0');
+            targetSelectionRangeSelected_BA1_5_target_working_hours : KnockoutObservable<string> = ko.observable('0');
+            private setting: model.ISetting;
+            swANDOR_B5_3: KnockoutObservableArray<any> = ko.observableArray([]);
+            swANDOR_B6_3: KnockoutObservableArray<any> = ko.observableArray([]);
+            swANDOR_B7_2: KnockoutObservableArray<any> = ko.observableArray([]);
+
+            constructor() {
+                let self = this,
+                currentErrAlaAttendanceItemCondition = self.currentErrAlaAttendanceItemCondition();
+                var option = windows.getShared('dataKal003b');
+                self.setting = $.extend({}, self.defaultSetting, option);
+    
+                currentErrAlaAttendanceItemCondition.typeCheckWorkRecord(self.setting.typeCheckWorkRecord || self.defaultSetting.typeCheckWorkRecord);
+                // change select item check
+                currentErrAlaAttendanceItemCondition.typeCheckWorkRecord.subscribe((itemCheck) => {
+                    self.initialScreen();
+                    self.showAndHide();
+                });
+                self.hasGroup2.subscribe((item) => {
+                    // show group 2
+                    if (item === true) {
+                        $('#div_b6_2').show();
+                        $('#div_b6_3').show();
+                        $('#div_b16').show();
+                        $('#div_b7').show();
+                    } else { // hide group 2
+                        
+                    }
+                });
                 
-        }));
-        // list item check
-        listTypeCheckWorkRecords    : KnockoutObservable<model.IEnumModel> = ko.observableArray([]);
-        listSingleValueCompareTypes : KnockoutObservable<model.IEnumModel> = ko.observableArray([]);
-        listRangeCompareTypes       : KnockoutObservable<model.IEnumModel> = ko.observableArray([]);
-        listCompareTypes            : KnockoutObservable<model.IEnumModel> = ko.observableArray([]);
-
-        private defaultSetting: model.ISetting = {
-            category: 1,
-            typeCheckWorkRecord: 1,
-            errAlaAttendaceItemCoditionId: ''
-        };
-        private setting: model.ISetting;
-        constructor() {
-            let self = this;
-            var option = windows.getShared('dataKal003b');
-            self.setting = $.extend({}, self.defaultSetting, option);
-            self.buildListTypeCheckWorkRecords();
-            self.buildlistCompareTypes();
-
-            self.currentErrAlaAttendanceItemCondition.typeCheckWorkRecord(self.setting.typeCheckWorkRecord || self.defaultSetting.typeCheckWorkRecord);
-            self.currentErrAlaAttendanceItemCondition.errAlaAttendanceItemConditionId.subscribe((x) => {
-                //TODO
-            });
-            
-            // change select item check
-            self.currentErrAlaAttendanceItemCondition.typeCheckWorkRecord.subscribe((itemCheck) => {
-                self.initialScreen();
-            });
-        }
-
-        //initial screen
-        start(): JQueryPromise<any> {
-            
-            let self = this,
-                dfd = $.Deferred();
-
-            errors.clearAll();
-
-            //initial screen
-            self.initialScreen().done(() => {
-                dfd.resolve();
-            });
-            
-
-            return dfd.promise();
-        }
-        // initial screen
-        private initialScreen() : JQueryPromise<any> {
-            let self = this;
-            switch (self.setting.category) {
-            case enCategory.Daily: // アルゴリズム「日次の初期起動」を実行する
-                
-                self.initialDaily().done((x) => {
-                                dfd.resolve();
-                            }).always(() => {
-                                dfd.resolve();
-                            });
-                break;
-                default:
-                    break;
             }
-        }
-        // ===========common begin ===================
-        // ============build enum for combobox item check B1-2: Begin ==============
-        private buildListTypeCheckWorkRecords() {
-            let self = this;
-            /* 時間 */
-            self.listTypeCheckWorkRecords.push(new model.EnumModel ({id : 0, code: 'TIME', name: resource.getText('Enum_TypeCheckWorkRecord_Time')}));
-            /* 回数 */
-            self.listTypeCheckWorkRecords.push(new model.EnumModel ({id : 1, code: 'TIMES', name: resource.getText('Enum_TypeCheckWorkRecord_Times')}));
-            /* 金額 */
-            self.listTypeCheckWorkRecords.push(new model.EnumModel ({id : 2, code: 'AMOUNT_OF_MONEY', name: resource.getText('Enum_TypeCheckWorkRecord_AmountOfMoney')}));
-            /* 時刻 */
-            self.listTypeCheckWorkRecords.push(new model.EnumModel ({id : 3, code: 'TIME_OF_DATE', name: resource.getText('Enum_TypeCheckWorkRecord_TimeOfDate')}));
-            /* 連続時間 */
-            self.listTypeCheckWorkRecords.push(new model.EnumModel ({id : 4, code: 'CONTINUOUS_TIME', name: resource.getText('Enum_TypeCheckWorkRecord_ContinuousTime')}));
-            /* 連続勤務 */
-            self.listTypeCheckWorkRecords.push(new model.EnumModel ({id : 5, code: 'CONTINUOUS_WORK', name: resource.getText('Enum_TypeCheckWorkRecord_ContinuousWork')}));
-            /* 連続時間帯 */
-            self.listTypeCheckWorkRecords.push(new model.EnumModel ({id : 6, code: 'CONTINUOUS_TIME_ZONE', name: resource.getText('Enum_TypeCheckWorkRecord_ContinuousTimeZone')}));
-            /* 複合条件 */
-            self.listTypeCheckWorkRecords.push(new model.EnumModel ({id : 7, code: 'COMPOUND_CONDITION', name: resource.getText('Enum_TypeCheckWorkRecord_CompoundCondition')}));
-        }
-        
-        // ============build enum for combo box compare type "BA2-5": Begin ==============
-        private buildListSingleValueCompareTypes() {
-            let self = this;
-            /* 等しい（＝） */
-            self.listSingleValueCompareTypes.push(new model.EnumModel ({id : 0, code: 'EQUAL', name: resource.getText('Enum_SingleValueCompareType_Equal')}));
-            /* 等しくない（≠） */
-            self.listSingleValueCompareTypes.push(new model.EnumModel ({id : 1, code: 'NOT_EQUAL', name: resource.getText('Enum_SingleValueCompareType_NotEqual')}));
-            /* より大きい（＞） */
-            self.listSingleValueCompareTypes.push(new model.EnumModel ({id : 2, code: 'GREATER_THAN', name: resource.getText('Enum_SingleValueCompareType_GreaterThan')}));
-            /* 以上（≧） */
-            self.listSingleValueCompareTypes.push(new model.EnumModel ({id : 3, code: 'GREATER_OR_EQUAL', name: resource.getText('Enum_SingleValueCompareType_GreaterOrEqual')}));
-            /* より小さい（＜） */
-            self.listSingleValueCompareTypes.push(new model.EnumModel ({id : 4, code: 'LESS_THAN', name: resource.getText('Enum_SingleValueCompareType_LessThan')}));
-            /* 以下（≦） */
-            self.listSingleValueCompareTypes.push(new model.EnumModel ({id : 5, code: 'LESS_OR_EQUAL', name: resource.getText('Enum_SingleValueCompareType_LessOrEqual')}));
-        }
-        private buildlistRangeCompareTypes() {
-            let self = this;
-            /* 範囲の間（境界値を含まない）（＜＞） */
-            self.listRangeCompareTypes.push(new model.EnumModel ({id : 6, code: 'BETWEEN_RANGE_OPEN', name: resource.getText('Enum_RangeCompareType_BetweenRangeOpen')}));
-            /* 範囲の間（境界値を含む）（≦≧） */
-            self.listRangeCompareTypes.push(new model.EnumModel ({id : 7, code: 'BETWEEN_RANGE_CLOSED', name: resource.getText('Enum_RangeCompareType_BetweenRangeClosed')}));
-            /* 範囲の外（境界値を含まない）（＞＜） */
-            self.listRangeCompareTypes.push(new model.EnumModel ({id : 8, code: 'OUTSIDE_RANGE_OPEN', name: resource.getText('Enum_RangeCompareType_OutsideRangeOpen')}));
-            /* 範囲の外（境界値を含む）（≧≦） */
-            self.listRangeCompareTypes.push(new model.EnumModel ({id : 9, code: 'OUTSIDE_RANGE_CLOSED', name: resource.getText('Enum_RangeCompareType_OutsideRangeClosed')}));
-        }
-        private buildlistCompareTypes() {
-            let self = this;
-            self.listCompareTypes.push(self.listSingleValueCompareTypes);
-            self.listCompareTypes(self.listCompareTypes.concat(self.listRangeCompareTypes));
-        }
-     // ============build enum for combobox BA2-5: end ==============
-        // ===========common end =====================
-        //==========Daily session Begin====================
-        /**
-         * Initial Daily
-         */
-        private initialDaily() : JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            switch (self.currentErrAlaAttendanceItemCondition.typeCheckWorkRecord) {
+    
+            //initial screen
+            start(): JQueryPromise<any> {
+                
+                let self = this,
+                    dfd = $.Deferred();
+    
+                errors.clearAll();
+                self.getAllEnums().done(function() {
+                  //initial screen - in case update
+                    if (self.setting.errAlaAttendanceItemConditionId) {
+                        //self.initialScreen(); //.done(() => {
+                           // dfd.resolve();
+                        //});
+                    }
+                    self.showAndHide();
+                    dfd.resolve();
+               });
+                
+                return dfd.promise();
+            }
+            
+            private showAndHide() {
+                let self = this;
+                switch (self.currentErrAlaAttendanceItemCondition().typeCheckWorkRecord()) {
+                case enItemCheck.Time: //時間
+                case enItemCheck.Times: // 回数
+                case enItemCheck.AmountOfMoney: // 金額
+                case enItemCheck.TimeOfDate: // 時刻の場合
+                    $('#div_target_service_type_ba1').show();
+                    $('#ba1_2').show();
+                    $('#ba1_5').hide();
+                    $('#div_check_conditions_ba2').show();
+                    $('#div_target_working_hours_ba5').hide();
+                    $('#div_continuous_period_ba3').hide();
+                    $('#div_compound_condition').hide();
+                    break;
+                case enItemCheck.CountinuousTime: // 連続時間の場合
+                    $('#div_target_service_type_ba1').show();
+                    $('#ba1_2').show();
+                    $('#ba1_5').hide();
+                    $('#div_check_conditions_ba2').show();
+                    $('#div_target_working_hours_ba5').hide();
+                    $('#div_continuous_period_ba3').show();
+                    $('#div_compound_condition').hide();
+                    break;
+                case enItemCheck.CountinuousTimeZone: // 連続勤務
+                    $('#div_target_service_type_ba1').show();
+                    $('#ba1_2').show();
+                    $('#ba1_5').hide();
+                    $('#div_check_conditions_ba2').hide();
+                    $('#div_target_working_hours_ba5').show();
+                    $('#div_continuous_period_ba3').show();
+                    $('#div_compound_condition').hide();
+                    break;
+                case enItemCheck.CountinuousWork: // 連続時間帯 
+                    $('#div_target_service_type_ba1').show();
+                    $('#ba1_2').hide();
+                    $('#ba1_5').show();
+                    $('#div_check_conditions_ba2').hide();
+                    $('#div_target_working_hours_ba5').hide();
+                    $('#div_continuous_period_ba3').show();
+                    $('#div_compound_condition').hide();
+                    break;
+                case enItemCheck.CompoundCondition: // 複合条件
+                    $('#div_target_service_type_ba1').hide();
+                    $('#ba1_2').hide();
+                    $('#ba1_5').hide();
+                    $('#div_check_conditions_ba2').hide();
+                    $('#div_target_working_hours_ba5').hide();
+                    $('#div_continuous_period_ba3').hide();
+                    $('#div_compound_condition').show();
+                    break;
+                default:
+                    $('#div_target_service_type_ba1').hide();
+                    $('#ba1_2').hide();
+                    $('#ba1_5').hide();
+                    $('#div_check_conditions_ba2').hide();
+                    $('#div_target_working_hours_ba5').hide();
+                    $('#div_continuous_period_ba3').hide();
+                    $('#div_compound_condition').hide();
+                    break;
+                }
+            }
+            
+            
+            // initial screen
+            private initialScreen() : JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
+                switch (self.currentErrAlaAttendanceItemCondition().typeCheckWorkRecord()) {
                 case enItemCheck.Time: //時間
                     
-                    self.initialDailyItemChkTime().done((x) => {
-                                    dfd.resolve();
+                    self.initialDailyItemChkTime(); //.done((x) => {
+                                   /* dfd.resolve();
                                 }).always(() => {
                                     dfd.resolve();
-                                });
+                                });*/
                     break;
                 case enItemCheck.Times: // 回数
                     
@@ -218,146 +243,283 @@ module nts.uk.com.view.cas011.c.viewmodel {
                 default:
                     dfd.resolve();
                     break;
+                }
+                return dfd.promise();
             }
-            dfd.promise();
-        }
-        
-        private initialDailyItemChkTime() JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
-            var jsItemCheckCmd : any = ko.toJS(self.itemCheck);
-            service.getDailyAttendanceItemByChkItem(jsItemCheckCmd).done((itemAttendance: IDailyAttendanceItem) => {
-                if (itemAttendance) {
-                    self.currentErrAlaAttendanceItemCondition.dailyAttendanceItemId = itemAttendance.id;
-                    self.currentErrAlaAttendanceItemCondition.dailyAttendanceItemName = itemAttendance.name;
-                    //ドメインモデル「任意項目」を取得する  - Acquire domain model "OptionalItem"
-                    var command : any = ko.toJS(itemAttendance.companyId, itemAttendance.attribute);
-                    service.getOptionalItemBy(command).done((itemOptional: IOptionalItem) => {
-                        if (itemOptional) {
-                            //ドメインモデル「勤怠項目と枠の紐付け」を取得する (Acquire domain model  "AttendanceAndFrameLinking")
-                            var frameCategory = ''; //TODO???
-                            var itemType = "daily"; //TODO??
-                            var frameNo = itemOptional.optionalItemNo
-                            var command : any = ko.toJS(frameCategory, itemType, frameNo);
-                            service.getAttendanceAndFrameLinking(command).done((itemAttendanceAndFrameLinking: IAttendanceAndFrameLinking) => {
-                                if (itemAttendanceAndFrameLinking) {
-                                    //in case exist default role set
-                                  //取得しているドメインモデル「勤怠項目と枠の紐づけ」を元にドメインモデル「日次の勤怠項目」を取得する - Acquire the domain model "DailyAttendanceItem" based on the acquired domain model "AttendanceAndFrameLinking"
-                                    if (itemAttendanceAndFrameLinking.attendanceId === itemAttendance.id) {
-                                        //ドメインモデル「カテゴリ別アラームチェック条件」．抽出条件を元に勤務実績のエラーアラームチェックIDを取得する - Domain model "Alarm check condition by category". Acquire the error alarm check ID of the work record based on the extraction condition
-                                        // 勤務実績のエラーアラームチェック - ErrorAlarmCondition
-                                        var commandGetAlarmChkConditionByCategory = ko.toJs(); //TODO condition?
-                                        var commandGetErrorAlarmCondition = ko.toJs(); //TODO condition?
-                                        _.when(service.getAlarmChkConditionByCategory(commandGetAlarmChkConditionByCategory)
-                                                service.getErrorAlarmCondition(commandGetErrorAlarmCondition), )
-                                                .done((alarmChkConditionByCategory, errorAlarmCondition) => {
-                                            // アルゴリズム「勤怠項目に対応する名称を生成する」を実行する - Execute algorithm "Generate name corresponding to attendance item"
-                                            self.GenerateNameCorrespondingToAttendanceItem(itemAttendance.id, ); //CATEGORY.DAILY
-                                            dfd.resolve();
-                                        }).fail(error => {
+            
+            // ===========common begin ===================
+            getAllEnums() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+
+                $.when(service.getEnumSingleValueCompareTypse(),
+                        service.getEnumRangeCompareType(),
+                        service.getEnumTypeCheckWorkRecord(),
+                        service.getEnumTargetSelectionRange(),
+                        service.getEnumTargetServiceType(),
+                        service.getEnumLogicalOperator()).done((
+                                listSingleValueCompareTypse,
+                                lstRangeCompareType,
+                                listTypeCheckWorkRecord,
+                                listTargetSelectionRange,
+                                listTargetServiceType,
+                                listLogicalOperator) => {
+                       self.listSingleValueCompareTypes.push(listSingleValueCompareTypse);
+                       self.listRangeCompareTypes.push(lstRangeCompareType);
+                        self.listTypeCheckWorkRecords.push(listTypeCheckWorkRecord);
+                        self.itemListTargetSelectionRange_BA1_5.push(listTargetSelectionRange);
+                        self.itemListTargetSelectionRange_BA1_5_target_working_hours.push(listTargetSelectionRange);
+                        self.itemListTargetServiceType_BA1_2.push(listTargetServiceType);
+                        self.buildlistCompareTypes();
+                      //ENUM 論理演算子
+                        self.swANDOR_B5_3 = ko.observableArray(listLogicalOperator);
+                        //ENUM 論理演算子
+                        self.swANDOR_B6_3 = ko.observableArray(listLogicalOperator);
+                      //ENUM 論理演算子
+                        self.swANDOR_B7_2 = ko.observableArray(listLogicalOperator);
+                        dfd.resolve();
+                   
+                }).always(() => {
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            private buildlistCompareTypes() {
+                let self = this;
+                self.listCompareTypes = ([]); //.push(self.listSingleValueCompareTypes);
+                self.listCompareTypes.concat(self.listSingleValueCompareTypes, self.listRangeCompareTypes);
+            }
+         // ============build enum for combobox BA2-5: end ==============
+            // ===========common end =====================
+            //==========Daily session Begin====================
+            /**
+             * Initial Daily
+             */
+            private initialDaily() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+                switch (self.currentErrAlaAttendanceItemCondition().typeCheckWorkRecord()) {
+                    case enItemCheck.Time: //時間
+                        
+                        self.initialDailyItemChkTime().done((x) => {
+                                        dfd.resolve();
+                                    }).always(() => {
+                                        dfd.resolve();
+                                    });
+                        break;
+                    case enItemCheck.Times: // 回数
+                        
+                        self.initialDailyItemChkTimes().done((x) => {
+                                        dfd.resolve();
+                                    }).always(() => {
+                                        dfd.resolve();
+                                    });
+                        break;
+                    case enItemCheck.AmountOfMoney: // 金額
+                        
+                        self.initialDailyItemChkAmountOfMoney().done((x) => {
+                                        dfd.resolve();
+                                    }).always(() => {
+                                        dfd.resolve();
+                                    });
+                        break;
+                    case enItemCheck.TimeOfDate: // 時刻の場合
+                        
+                        self.initialDailyItemChkTimeOfDate().done((x) => {
+                                        dfd.resolve();
+                                    }).always(() => {
+                                        dfd.resolve();
+                                    });
+                        break;
+                    case enItemCheck.CountinuousTime: // 連続時間
+                        
+                        self.initialDailyItemChkCountinuousTime().done((x) => {
+                                        dfd.resolve();
+                                    }).always(() => {
+                                        dfd.resolve();
+                                    });
+                        break;
+                    case enItemCheck.CountinuousWork: // 連続時間帯
+                        
+                        self.initialDailyItemChkCountinuousWork().done((x) => {
+                                        dfd.resolve();
+                                    }).always(() => {
+                                        dfd.resolve();
+                                    });
+                        break;
+                    case enItemCheck.CountinuousTimeZone: // 連続勤務
+                        
+                        self.initialDailyItemChkCountinuousTimeZone().done((x) => {
+                                        dfd.resolve();
+                                    }).always(() => {
+                                        dfd.resolve();
+                                    });
+                        break;
+                    case enItemCheck.CompoundCondition: // 複合条件
+                        
+                        self.initialDailyItemChkCompoundCondition().done((x) => {
+                                        dfd.resolve();
+                                    }).always(() => {
+                                        dfd.resolve();
+                                    });
+                        break;
+                    default:
+                        dfd.resolve();
+                        break;
+                }
+                return dfd.promise();
+            }
+            
+            private initialDailyItemChkTime() : JQueryPromise<any> {
+                let self = this,
+                currentErrAlaAttendanceItemCondition = self.currentErrAlaAttendanceItemCondition(),
+                dfd = $.Deferred();
+                //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
+                var jsItemCheckCmd : any = ko.toJS(self.itemCheck);
+                service.getDailyAttendanceItemByChkItem(jsItemCheckCmd).done((itemAttendance) => {
+                    if (itemAttendance) {
+                        currentErrAlaAttendanceItemCondition.dailyAttendanceItemId(itemAttendance.id);
+                        currentErrAlaAttendanceItemCondition.dailyAttendanceItemName(itemAttendance.name);
+                        //ドメインモデル「任意項目」を取得する  - Acquire domain model "OptionalItem"
+                        var command : any = ko.toJS(itemAttendance.companyId, itemAttendance.attribute);
+                        service.getOptionalItemBy(command).done((itemOptional) => {
+                            if (itemOptional) {
+                                //ドメインモデル「勤怠項目と枠の紐付け」を取得する (Acquire domain model  "AttendanceAndFrameLinking")
+                                var frameCategory = ''; //TODO???
+                                var itemType = "daily"; //TODO??
+                                var frameNo = itemOptional.optionalItemNo
+                                var command : any = ko.toJS(frameCategory, itemType, frameNo);
+                                service.getAttendanceAndFrameLinking(command).done((itemAttendanceAndFrameLinking) => {
+                                    if (itemAttendanceAndFrameLinking) {
+                                        //in case exist default role set
+                                      //取得しているドメインモデル「勤怠項目と枠の紐づけ」を元にドメインモデル「日次の勤怠項目」を取得する - Acquire the domain model "DailyAttendanceItem" based on the acquired domain model "AttendanceAndFrameLinking"
+                                        if (itemAttendanceAndFrameLinking.attendanceId === itemAttendance.id) {
+                                            //ドメインモデル「カテゴリ別アラームチェック条件」．抽出条件を元に勤務実績のエラーアラームチェックIDを取得する - Domain model "Alarm check condition by category". Acquire the error alarm check ID of the work record based on the extraction condition
+                                            // 勤務実績のエラーアラームチェック - ErrorAlarmCondition
+                                            var commandGetAlarmChkConditionByCategory = ko.toJs(); //TODO condition?
+                                            var commandGetErrorAlarmCondition = ko.toJs(); //TODO condition?
+                                            _.when(service.getAlarmChkConditionByCategory(commandGetAlarmChkConditionByCategory)
+                                                    , service.getErrorAlarmCondition(commandGetErrorAlarmCondition) )
+                                                    .done((alarmChkConditionByCategory, errorAlarmCondition) => {
+                                                // アルゴリズム「勤怠項目に対応する名称を生成する」を実行する - Execute algorithm "Generate name corresponding to attendance item"
+                                                self.GenerateNameCorrespondingToAttendanceItem(itemAttendance.id, ); //CATEGORY.DAILY
+                                                dfd.resolve();
+                                            }).fail(error => {
+                                                dfd.reject();
+                                            });
+                                            
+                                            currentErrAlaAttendanceItemCondition.ErrAlaAttendanceItemConditionId(itemAttendance.id || '');
+                                        } else {
                                             dfd.reject();
-                                        });
-                                        
-                                        self.currentErrAlaAttendanceItemCondition.ErrAlaAttendanceItemConditionId(itemAttendance.id || '');
+                                        }
                                     } else {
                                         dfd.reject();
                                     }
-                                } else {
+                                }).fail(error => {
                                     dfd.reject();
-                                }
-                            }).fail(error => {
+                                });
+                            } else {
                                 dfd.reject();
-                            });
-                        } else {
+                            }
+                        }).fail(error => {
                             dfd.reject();
-                        }
-                    }).fail(error => {
-                        dfd.reject();
-                    });
-                }
-                dfd.reject();
-            }).fail(error => {
-                self.currentErrAlaAttendanceItemCondition.ErrAlaAttendanceItemConditionId('');
-                dfd.reject();
-            });
-            dfd.promise();
-        }
-        
-        //TODO
-        private initialDailyItemChkTimes() JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            dfd.resovle();
-            dfd.promise();
-        }
-        
-        //TODO
-        private initialDailyItemChkAmountOfMoney() JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            dfd.resovle();
-            dfd.promise();
-        }
-        
-        //TODO
-        private initialDailyItemChkTimeOfDate() JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            dfd.resovle();
-            dfd.promise();
-        }
-        //TODO
-        private initialDailyItemChkCountinuousTime() JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            dfd.resovle();
-            dfd.promise();
-        }
-        //TODO
-        private initialDailyItemChkCountinuousWork() JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            dfd.resovle();
-            dfd.promise();
-        }
-        //TODO
-        private initialDailyItemChkCountinuousTimeZone() JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            dfd.resovle();
-            dfd.promise();
-        }
-        //TODO
-        private initialDailyItemChkCompoundCondition() JQueryPromise<any> {
-            let self = this,
-            dfd = $.Deferred();
-            dfd.resovle();
-            dfd.promise();
-        }
-        /**
-         * アルゴリズム「勤怠項目に対応する名称を生成する」を実行する - Execute algorithm "Generate name corresponding to attendance item"
-         * @param itemAttendanceId
-         */
-        GenerateNameCorrespondingToAttendanceItem(string itemAttendanceId) {
-            let self = this;
-            var command = {
-                attendanceId : itemAttendanceId
+                        });
+                    }
+                    dfd.reject();
+                }).fail(error => {
+                    currentErrAlaAttendanceItemCondition.ErrAlaAttendanceItemConditionId('');
+                    dfd.reject();
+                });
+                return dfd.promise();
             }
-            service.getAttendanceAndFrameLinkingByAttendanceId(command).done((item) => {
-                if (item) {
-                    //対応するドメインモデルを取得する - Acquire corresponding domain model
-                    
-                } else { // ドメインモデル「勤怠項目．名称」を使用する (Use the domain model "AttendanceItem. Name")
-                    
+            
+            //TODO
+            private initialDailyItemChkTimes() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
+            }
+            
+            //TODO
+            private initialDailyItemChkAmountOfMoney() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
+            }
+            
+            //TODO
+            private initialDailyItemChkTimeOfDate() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
+            }
+            //TODO
+            private initialDailyItemChkCountinuousTime() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+                dfd.resovle();
+                return dfd.promise();
+            }
+            //TODO
+            private initialDailyItemChkCountinuousWork() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
+            }
+            //TODO
+            private initialDailyItemChkCountinuousTimeZone() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
+            }
+            //TODO
+            private initialDailyItemChkCompoundCondition() : JQueryPromise<any> {
+                let self = this,
+                dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
+            }
+            /**
+             * アルゴリズム「勤怠項目に対応する名称を生成する」を実行する - Execute algorithm "Generate name corresponding to attendance item"
+             * @param itemAttendanceId
+             */
+            GenerateNameCorrespondingToAttendanceItem(itemAttendanceId : string) {
+                let self = this;
+                var command = {
+                    attendanceId : itemAttendanceId
                 }
-            });
-            //.setting.categoty
-        }
-        
-          //==========Daily session End====================
-        closeDialog() {
-            nts.uk.ui.windows.close()
+                /*
+                service.getAttendanceAndFrameLinkingByAttendanceId(command).done((item) => {
+                    if (item) {
+                        //対応するドメインモデルを取得する - Acquire corresponding domain model
+                        
+                    } else { // ドメインモデル「勤怠項目．名称」を使用する (Use the domain model "AttendanceItem. Name")
+                        
+                    }
+                });
+                */
+                //.setting.categoty
+            }
+            
+              //==========Daily session End====================
+            btnSettingBA5_2_click() {
+                alert("open dialog btnSettingBA5_2");
+            }
+            btnSettingBA1_3_click () {
+                alert("open dialog btnSettingBA1_3_click");
+            }
+            btnSettingBA2_2_click() {
+                alert("open dialog btnSettingBA2_2_click");
+            }
+            closeDialog() {
+                nts.uk.ui.windows.close()
+            }
         }
     }
 
@@ -381,97 +543,141 @@ module nts.uk.com.view.cas011.c.viewmodel {
         CompoundCondition   = 7// 複合条件
     }
     //module model
-    export module model {
-        //enum model
-        export interface IEnumModel {
-            id  : number;
-            code : string;
-            name : string;
-        }
-        
-        export class EnumModel {
-            id  : KnockoutObservable<number> = ko.observable(null);
-            code : KnockoutObservable<string> = ko.observable('');
-            name : KnockoutObservable<string> = ko.observable('');
-            constructor(param: IEnumModel) {
-                let self = this;
-                self.id(param.id || 0);
-                self.code(param.code || '');
-                self.name(param.name || '');
-            }
-        }
         //Class Input parameter
         export interface ISetting {
             category: number;
             typeCheckWorkRecord: number; //item check
-            errAlaAttendaceItemCoditionId: string;
+            errAlaAttendanceItemConditionId: string;
         }
 
+        //Condition of group (C screen)
+        export interface ICondition{
+            itemCheck:  number;
+            target:     number;
+            operatorCd: string;
+            comparisonOperatorId: number;
+            itemConditionId: string;
+        
+        }
+        export class Condition{
+            itemCheck:  number;
+            target:     number;
+            operatorCd: string;
+            comparisonOperatorId: number;
+            itemConditionId: string;
+            constructor(param: ICondition) {
+                let self = this;
+                self.itemCheck  = param.itemCheck;
+                self.target     = param.target;
+                self.operatorCd = param.operatorCd;
+                self.comparisonOperatorId = param.comparisonOperatorId;
+                self.itemConditionId = param.itemConditionId;
+            }
+        
+        }
+        // group condition
+        export interface IGroupCondition {
+            groupOperator:      number; //0: OR|1: AND
+            groupListCondition: Array<Condition>;// max 3
+        }
+        
+        export class GroupCondition {
+            groupOperator:      KnockoutObservable<number>; //OR|AND B15-3, B17-3
+            groupListCondition: KnockoutObservableArray<Condition>;// max 3 item, B16-1 -> B16-4
+            constructor(param: IGroupCondition) {
+                let self = this;
+                self.groupOperator = ko.observable(param.groupOperator || 0);
+                self.groupListCondition = ko.observableArray(param.groupListCondition || []);
+            }
+        }
+        
+        export interface ICompoundCondition {
+            group1Condition:    GroupCondition;
+            hasGroup2:          boolean; // B17-1
+            group2Condition:    GroupCondition;
+            operatorBetweenG1AndG2: number; // B18-2: 0: OR, 1: AND
+        }
+        export class CompoundCondition {
+            group1Condition:    KnockoutObservable<GroupCondition>;
+            hasGroup2:          KnockoutObservable<boolean>;
+            group2Condition:    KnockoutObservable<GroupCondition>;
+            operatorBetweenG1AndG2: KnockoutObservable<number>;
+            constructor(param: ICompoundCondition) {
+                let self = this;
+                self.group1Condition = ko.observable(param.group1Condition);
+                self.hasGroup2 = ko.observable(param.hasGroup2 || false);
+                self.group2Condition = ko.observable(param.group2Condition);
+                self.operatorBetweenG1AndG2 = ko.observable(param.operatorBetweenG1AndG2);
+            }
+        }
         // AlaAttendaceItemCodition
-        export interface IErrAlaAttendaceItemCodition {
+        export interface IErrAlaAttendanceItemCondition {
             //------common - begin------
-            errAlaAttendaceItemCoditionId: string;
-            category : number;
-            typeCheckWorkRecord: number; // チェック項目 - item check
-            messageColor: string;
-            messageContent: string
-            isBoldMessage: boolean;
+            errAlaAttendanceItemConditionId:  string;
+            category :                      number;
+            typeCheckWorkRecord:            number; // チェック項目 - item check
+            messageColor:                   string;
+            messageContent:                 string
+            isBoldMessage:                  boolean;
             //------common - end------
             // 時間、回数、金額、時刻の場合
-            targetServiceType : number;  // get by enum 勤務種類 : BA1-2
+            targetServiceType :             number;  // get by enum 勤務種類 : BA1-2
             targetServiceTypeWorkTypeSelection: string; //対象とする勤務種類 => for other: BA1-4 
             // チェック条件  - check condition
-            dailyAttendanceItemId: string; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
-            dailyAttendanceItemName: string; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
-            comparisonOperatorId:   number; // 比較演算子:  単一値との比較演算の種別　＋　範囲との比較演算の種別 => enum BA2-4
-            comparisonMinValue:     string; //BA2-6
-            comparisonMaxValue:     string; //BA2-7
+            dailyAttendanceItemId:          string; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
+            dailyAttendanceItemName:        string; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
+            comparisonOperatorId:           number; // 比較演算子:  単一値との比較演算の種別　＋　範囲との比較演算の種別 => enum BA2-4
+            comparisonMinValue:             string; //BA2-6
+            comparisonMaxValue:             string; //BA2-7
             // 連続時間の場合 , 連続時間帯の場合
-            continuousPeriod: number; //BA3-2: 連続期間入力欄 - Continuous period input field
+            continuousPeriod:               number; //BA3-2: 連続期間入力欄 - Continuous period input field
             //連続時間帯の場合 
-            targetWorkingHoursCd: string; //BA5-1 - enum, 
+            targetWorkingHoursCd:           string; //BA5-1 - enum, 
             targetWorkingHoursTimeZoneSelection: string; //BA5-3
+            compoundCondition :               CompoundCondition; 
         }
     
-        //ErrAlaAttendaceItemCodition
-        export class ErrAlaAttendaceItemCodition {
-            errAlaAttendaceItemCoditionId: string;
-            category : number;
-            typeCheckWorkRecord: KnockoutObservable<number> = ko.observable(null); // チェック項目 - item check
-            messageColor: KnockoutObservable<string> = ko.observable('');
-            messageContent: KnockoutObservable<string> = ko.observable('');
-            isBoldMessage: KnockoutObservable<boolean> = ko.observable('');
-            targetServiceType : KnockoutObservable<number> = ko.observable(null);  // get by enum : BA1-2
-            targetServiceTypeWorkTypeSelection: KnockoutObservable<string> = ko.observable(''); //対象とする勤務種類 => for other: BA1-4 
+        //ErrAlaAttendanceItemCondition
+        export class ErrAlaAttendanceItemCondition {
+            errAlaAttendanceItemConditionId:  string;
+            category :                      number;
+            typeCheckWorkRecord:            KnockoutObservable<number>; // チェック項目 - item check
+            messageColor:                   KnockoutObservable<string>;
+            messageContent:                 KnockoutObservable<string>;
+            isBoldMessage:                  KnockoutObservable<boolean>;
+            targetServiceType :             KnockoutObservable<number>;  // get by enum : BA1-2
+            targetServiceTypeWorkTypeSelection: KnockoutObservable<string>; //対象とする勤務種類 => for other: BA1-4 
             // チェック条件  - check condition
-            dailyAttendanceItemId: KnockoutObservable<string> = ko.observable(''); // BA2-3 日次の勤怠項目 - DailyAttendanceItem
-            dailyAttendanceItemName: KnockoutObservable<string> = ko.observable(''); // BA2-3 日次の勤怠項目 - DailyAttendanceItem
-            comparisonOperatorId:   KnockoutObservable<number> = ko.observable(null); // 比較演算子:  単一値との比較演算の種別　＋　範囲との比較演算の種別 => enum BA2-4
-            comparisonMinValue:     KnockoutObservable<string> = ko.observable(''); //BA2-6
-            comparisonMaxValue:     KnockoutObservable<string> = ko.observable(''); //BA2-7
+            dailyAttendanceItemId:          KnockoutObservable<string>; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
+            dailyAttendanceItemName:        KnockoutObservable<string>; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
+            comparisonOperatorId:           KnockoutObservable<number>; // 比較演算子:  単一値との比較演算の種別　＋　範囲との比較演算の種別 => enum BA2-4
+            comparisonMinValue:             KnockoutObservable<string>; //BA2-6
+            comparisonMaxValue:             KnockoutObservable<string>; //BA2-7
             // 連続時間の場合 , 連続時間帯の場合
-            continuousPeriod: KnockoutObservable<number> = ko.observable(null); //BA3-2: 連続期間入力欄 - Continuous period input field
+            continuousPeriod:               KnockoutObservable<number>; //BA3-2: 連続期間入力欄 - Continuous period input field
             //連続時間帯の場合 
-            targetWorkingHoursCd: KnockoutObservable<string> = ko.observable(''); //BA5-1 - enum
-            targetWorkingHoursTimeZoneSelection: KnockoutObservable<string> = ko.observable(''); //BA5-3
+            targetWorkingHoursCd:           KnockoutObservable<string>; //BA5-1 - enum
+            targetWorkingHoursTimeZoneSelection: KnockoutObservable<string>; //BA5-3
+            compoundCondition :             KnockoutObservable<CompoundCondition>; //B15-1 -> B18-2
         
-            constructor(param: IErrAlaAttendaceItemCodition) {
+            constructor(param: IErrAlaAttendanceItemCondition) {
                 let self = this;
-                self.errAlaAttendaceItemCoditionId = param.errAlaAttendaceItemCoditionId || '';
-                self.category = param.category || 0;
-                self.typeCheckWorkRecord(param.typeCheckWorkRecord || '');
-                self.messageColor(param.messageColor || '');
-                self.messageContent(param.messageContent || '');
-                self.isBoldMessage(param.isBoldMessage || false);
-                self.targetServiceType(param.targetServiceType || '');
-                self.targetServiceTypeWorkTypeSelection(param.targetServiceTypeWorkTypeSelection || '');
-                self.dailyAttendanceItemId(param.dailyAttendanceItemId || '');
-                self.dailyAttendanceItemName(param.dailyAttendanceItemName || '');
-                self.comparisonOperatorId(param.comparisonOperatorId || '');
-                self.comparisonMinValue(param.comparisonMinValue || '');
-                self.comparisonMaxValue(param.comparisonMaxValue || '');
-                self.continuousPeriod(param.continuousPeriod || '');
-                self.targetWorkingHoursCd(param.targetWorkingHoursTimeZoneSelection || '');
+                self.errAlaAttendanceItemConditionId = param.errAlaAttendanceItemConditionId || '';
+                self.category                       = param.category || 0;
+                self.typeCheckWorkRecord = ko.observable(param.typeCheckWorkRecord || 0);
+                self.messageColor = ko.observable(param.messageColor || '');
+                self.messageContent = ko.observable(param.messageContent || '');
+                self.isBoldMessage = ko.observable(param.isBoldMessage || false);
+                self.targetServiceType = ko.observable(param.targetServiceType || 0);
+                self.targetServiceTypeWorkTypeSelection = ko.observable(param.targetServiceTypeWorkTypeSelection || '');
+                self.dailyAttendanceItemId = ko.observable(param.dailyAttendanceItemId || '');
+                self.dailyAttendanceItemName = ko.observable(param.dailyAttendanceItemName || '');
+                self.comparisonOperatorId = ko.observable(param.comparisonOperatorId || 0);
+                self.comparisonMinValue = ko.observable(param.comparisonMinValue || '');
+                self.comparisonMaxValue = ko.observable(param.comparisonMaxValue || '');
+                self.continuousPeriod = ko.observable(param.continuousPeriod || 0);
+                self.targetWorkingHoursCd = ko.observable(param.targetWorkingHoursTimeZoneSelection || '');
+                self.compoundCondition = ko.observable(param.compoundCondition);
             }
         }
     }

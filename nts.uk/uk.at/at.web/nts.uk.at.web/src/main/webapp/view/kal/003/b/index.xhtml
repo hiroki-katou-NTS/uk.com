@@ -7,13 +7,14 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
+        <!-- 
             <script>
                 var dialogSize = {
                     width : 800,
                     height : 600
                 };
             </script>
-
+ -->
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="kal003.b.style.css" />
             <com:scriptfile path="kal003.b.service.js" />
@@ -23,7 +24,9 @@
 
         <ui:define name="content">
             <div id="contents-area1">
-                <div class="form-group" style="height: 150px; padding-top: 30px; text-align: center;">
+                <div class="form-group" style="height: 150px; padding-top: 30px; text-align: center;"
+                    data-bind="with: currentErrAlaAttendanceItemCondition">
+                    <!--  B1 -->
                     <div id="div_common_header">
                         <table >
                         <colgroup>
@@ -33,17 +36,17 @@
                         <tr class="row">
                             <!-- B1-1: チェック項目 - Item check-->
                             <td class = "pad_left_5px" style = "width:160px">
-                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_26')}</div>
                             </td>
                             <td class = "pad_left_5px">
                                 <!-- B1-2, B1-3-->
                                 <div id="comBoxItemCheck" tabindex = "1"
                                             data-bind="ntsComboBox: {
-                                                name:'#[KAL003_xx]',
-                                                options: listTypeCheckWorkRecords,
+                                                name:'#[KAL003_27]',
+                                                options: $parent.listTypeCheckWorkRecords,
                                                 optionsValue: 'id',
                                                 visibleItemsCount: 5,
-                                                value: currentErrAlaAttendanceItemCondition().typeCheckWorkRecord,
+                                                value: typeCheckWorkRecord,
                                                 optionsText: 'name',
                                                 editable: false,
                                                 enable: true,
@@ -55,8 +58,8 @@
                         </tr>
                      </table>
                     </div>
-                    <!-- 対象とする勤務種類 - Target service type -->
-                    <div id='div_target_service_type'>
+                    <!-- 対象とする勤務種類 - Target service type - BA1 -->
+                    <div id='div_target_service_type_ba1'>
                         <table >
 	                        <colgroup>
 	                            <col width="120px" />
@@ -66,21 +69,38 @@
 	                        <tr class="row">
 	                            <td>
 	                                <!-- BA1-1 -->
-	                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+	                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_56')}</div>
 	                            </td>
 	                            <td>
 	                                <!-- BA1-2 -->
-	                                <div id="ba1_2"></div>
+	                                <div id="ba1_2" data-bind="ntsRadioBoxGroup: {
+									    options: $parent.itemListTargetServiceType_BA1_2,
+									    optionsValue: 'id',
+									    optionsText: 'name',
+									    value: $parent.targetServiceTypeSelected_BA1_2,
+									    enable: true}">
+									 </div>
+									 <div id="ba1_5" data-bind="ntsRadioBoxGroup: {
+                                        options: $parent.itemListTargetSelectionRange_BA1_5,
+                                        optionsValue: 'id',
+                                        optionsText: 'name',
+                                        value: $parent.targetSelectionRangeSelected_BA1_5,
+                                        enable: true}">
+                                     </div>
 	                            </td>
 	                            <td>
-	                                <!-- BA1-3 -->
-	                                <!-- BA1-4 -->
+	                               <div>
+		                                <!-- BA1-3 -->
+		                                <button class="large" id="btnSettingBA1_3"  data-bind="click : $parent.btnSettingBA1_3_click, enable: true">#{i18n.getText('KAL003_57')}</button>
+		                                <!-- BA1-4 -->
+		                                <input data-bind="ntsTextEditor: {value: targetServiceTypeWorkTypeSelection}" />
+	                                </div>
 	                            </td>
 	                        </tr>
 	                     </table>
                     </div>
-                    <!-- チェック条件 - check conditions -->
-                    <div id="div_check_conditions">
+                    <!-- チェック条件 - check conditions : BA2 -->
+                    <div id="div_check_conditions_ba2">
 	                    <table >
 	                        <colgroup>
 	                            <col width="100px" />
@@ -92,24 +112,26 @@
 	                        <tr class="row">
 	                            <td>
 	                                <!-- BA2-1 -->
-	                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+	                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_58')}</div>
 	                            </td>
 	                            <td>
 	                                
-	                                <div id="ba2_2">
-		                                <!-- BA2-2 -->
-		                                <!-- BA2-3 -->
-	                                </div>
+	                                <div id="ba2_2_3">
+                                        <!-- BA2-2 -->
+                                        <button class="large" id="btnSettingBA2_2" data-bind="click : $parent.btnSettingBA2_2_click, enable: true">#{i18n.getText('KAL003_57')}</button>
+                                        <!-- BA2-3 -->
+                                        <input data-bind="ntsTextEditor: {value: targetServiceTypeWorkTypeSelection}" />
+                                    </div>
 	                            </td>
 	                            <td>
 	                                <!-- BA2-4, BA2-5 -->
 	                                <div id="comBoxOperator" 
                                             data-bind="ntsComboBox: {
-                                                name:'#[KAL003_xx]',
-                                                options: listCompareTypes,
+                                                name:'#[KAL003_60]',
+                                                options: $parent.listCompareTypes,
                                                 optionsValue: 'id',
                                                 visibleItemsCount: 5,
-                                                value: currentErrAlaAttendanceItemCondition().comparisonOperatorId,
+                                                value: comparisonOperatorId,
                                                 optionsText: 'name',
                                                 editable: false,
                                                 enable: true,
@@ -122,27 +144,25 @@
 	                               <!-- BA2-6 -->
 	                               <input class="nts-input" id="inpComparisonMinValue" 
                                         data-bind="ntsTextEditor:{
-                                            name: '#[KAL003_xx]',
-                                            value: currentErrAlaAttendanceItemCondition().comparisonMinValue,
+                                            name: '#[KAL003_64]',
+                                            value: comparisonMinValue,
                                             required: true,
-                                            //constraint: 'comparisonMinValue',
                                             enable: true}" />
 	                            </td>
 	                            <td>
-                                   <!-- BA2-6 -->
+                                   <!-- BA2-7 -->
                                    <input class="nts-input" id="inpComparisonMaxValue" 
                                         data-bind="ntsTextEditor:{
-                                            name: '#[KAL003_xx]',
-                                            value: currentErrAlaAttendanceItemCondition().comparisonMaxValue,
+                                            name: '#[KAL003_65]',
+                                            value: comparisonMaxValue,
                                             required: true,
-                                            //constraint: 'comparisonMaxValue',
-                                            enable: true}" />
+                                            enable: comparisonOperatorId > 6}" />
                                 </td>
 	                        </tr>
 	                     </table>
                     </div>
-                    <!-- 対象就業時間帯 - Target working hours -->
-                    <div id="div_target_working_hours">
+                    <!-- 対象就業時間帯 - Target working hours : -->
+                    <div id="div_target_working_hours_ba5">
                         <table >
                         <colgroup>
                             <col width="120px" />
@@ -151,43 +171,198 @@
                         <tr class="row">
                             <!-- BA5-1: チェック項目 - Item check-->
                             <td class = "pad_left_5px" style = "width:160px">
-                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_63')}</div>
                             </td>
                             <!-- BA1-5-->
                             <td class = "pad_left_5px">
+                                <div id="ba1_5_target_working_hours" data-bind="ntsRadioBoxGroup: {
+                                        options: $parent.itemListTargetSelectionRange_BA1_5_target_working_hours,
+                                        optionsValue: 'id',
+                                        optionsText: 'name',
+                                        value: $parent.targetSelectionRangeSelected_BA1_5_target_working_hours,
+                                        enable: true}">
+                                     </div>
                             </td>
                             <td>
-                                <!-- BA5-3 -->
-                                <!-- BA1-4 -->
+                                <div id="ba5_2_3">
+                                    <!-- BA5-2 -->
+                                    <button class="large" id="btnSettingBA5_3" data-bind="click : $parent.btnSettingBA5_2_click, enable: true">#{i18n.getText('KAL003_57')}</button>
+                                    <!-- BA1-3 -->
+                                    <input data-bind="ntsTextEditor: {value: targetWorkingHoursTimeZoneSelection}" />
+                                </div>
                             </td>
                         </tr>
                      </table>
                     </div>
-                    <!-- 連続期間 - Continuous period -->
-                    <div id="div_continuous_period">
+                    <!-- 連続期間 - Continuous period BA3-->
+                    <div id="div_continuous_period_ba3">
                         <table >
                         <colgroup>
                             <col width="120px" />
                             <col width="*" />
                         </colgroup>
                         <tr class="row">
-                            <!-- BA3-1: チェック項目 - Item check-->
+                            <!-- BA3-1: 連続期間 - Continuous period-->
                             <td class = "pad_left_5px" style = "width:160px">
-                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_61')}</div>
                             </td>
                             <td class = "pad_left_5px">
                                 <!-- BA3-2-->
-                                <input class="nts-input" id="inpComparisonMaxValue" 
+                                <input class="nts-input" id="inpContinuousPeriod" 
                                         data-bind="ntsTextEditor:{
-                                            name: '#[KAL003_xx]',
-                                            value: currentErrAlaAttendanceItemCondition().continuousPeriod,
+                                            name: '#[KAL003_61]',
+                                            value: continuousPeriod,
                                             required: true,
-                                            //constraint: 'continuousPeriod',
                                             enable: true}" />
-                                            <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx日')}</div>
+                                            <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_61日')}</div>
                             </td>
                         </tr>
                      </table>
+                    </div>
+                    <!-- Compound Condition -->
+                    <!-- disable -->
+                    <div id='div_compound_condition' data-bind="with: compoundCondition()">
+                        <!--  group 1 -->
+                        <div>
+                            <table >
+		                        <colgroup>
+		                            <col width="120px" />
+		                            <col width="*" />
+		                        </colgroup>
+		                        <tr class="row">
+		                            <!-- B5-1:  -->
+		                            <td class = "pad_left_5px" style = "width:160px">
+		                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_31')}</div>
+		                            </td>
+		                            <!-- B5-2:  -->
+		                            <td class = "pad_left_5px" style = "width:160px">
+                                        <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_32')}</div>
+                                    </td>
+                                    <!-- B5-3:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                        <div class="cf" data-bind="ntsSwitchButton: {
+                                            name: '#[KAL003_32]',
+										    options: $parent.swANDOR_B5_3,
+										    optionsValue: 'code',
+										    optionsText: 'name',
+										    value: group1Condition().groupOperator,
+										    enable: true }"></div>
+                                    </td>
+		                            </tr>
+		                    </table>
+                        </div>
+                        <div>
+                            <table >
+                                <colgroup>
+                                    <col width="120px" />
+                                    <col width="*" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">
+                                        <!-- B5-5 -->
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <!-- bind group 1 -->
+                                <tr class="row">
+                                    <!-- B5-6:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                    
+                                        <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+                                    </td>
+                                    <!-- B5-7:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                        
+                                    </td>
+                                    
+                                </tr>
+                            </table>
+                        </div>
+                        <!--  group 2 -->
+                        <div>
+                        
+                            <table >
+                                <colgroup>
+                                    <col width="120px" />
+                                    <col width="*" />
+                                </colgroup>
+                                <tr class="row">
+                                    <!-- B6-1:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                        <div data-bind="ntsCheckBox: { checked: hasGroup2, enable: true}">#{i18n.getText('KAL003_34')}</div>
+                                    </td>
+                                    <!-- B6-2:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                        <div id ="div_b6_2"  data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_35')}</div>
+                                    </td>
+                                    <!-- B6-3:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                        <div id = "div_b6_3" class="cf" data-bind="ntsSwitchButton: {
+                                            name: '#[KAL003_35]',
+                                            options: $parent.swANDOR_B6_3,
+                                            optionsValue: 'code',
+                                            optionsText: 'name',
+                                            value: group2Condition().groupOperator,
+                                            enable: true }"></div>
+                                    </td>
+                                    </tr>
+                            </table>
+                        </div>
+                        <div id ="div_b16">
+                            <table >
+                                <colgroup>
+                                    <col width="120px" />
+                                    <col width="*" />
+                                </colgroup>
+                                <thead>
+	                                <tr>
+		                                <th colspan="2">
+		                                <!-- B16-2 -->
+		                                </th>
+	                                </tr>
+                                </thead>
+                                <!-- bind group 2 condition -->
+                                <tr class="row">
+                                    <!-- B16-2:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                    
+                                        <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+                                    </td>
+                                    <!-- B16-3:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                        
+                                    </td>
+                                    
+                                    </tr>
+                            </table>
+                        </div>
+                        <div id = "div_b7">
+                            <table >
+                                <colgroup>
+                                    <col width="120px" />
+                                    <col width="*" />
+                                </colgroup>
+                                <tr class="row">
+                                    <!-- B7-1:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                    
+                                        <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_36')}</div>
+                                    </td>
+                                    <!-- B7-2:  -->
+                                    <td class = "pad_left_5px" style = "width:160px">
+                                        <div class="cf" data-bind="ntsSwitchButton: {
+                                            name: '#[KAL003_36]',
+                                            options: $parent.swANDOR_B7_2,
+                                            optionsValue: 'code',
+                                            optionsText: 'name',
+                                            value: operatorBetweenG1AndG2,
+                                            enable: true }"></div>
+                                    </td>
+                                    
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                     
                     <div id="div_common_footer">
@@ -197,43 +372,27 @@
                             <col width="*" />
                         </colgroup>
                         <tr class="row">
-                            <!-- B4-1: メッセージ色 - Message color -->
+                            <!-- B2-1: メッセージ色 - Message color -->
                             <td class = "pad_left_5px" style = "width:160px">
-                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_28')}</div>
                             </td>
                             <td class = "pad_left_5px">
-                                <!-- B4-2-->
-                                <!-- TODO listColors?
-                                <div id="comBoxMessageColor"
-                                            data-bind="ntsComboBox: {
-                                                name:'#[KAL003_xx]',
-                                                options: listColors,
-                                                optionsValue: 'id',
-                                                visibleItemsCount: 5,
-                                                value: currentErrAlaAttendanceItemCondition().messageColor,
-                                                optionsText: 'name',
-                                                editable: false,
-                                                enable: true,
-                                                columns: [
-                                                    { prop: 'name', length: 80 }
-                                                ]}">
-                                </div>
-                                 -->
+                                <!-- B2-2-->
+                                <div id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, enable: true, width: 20}"/>
                             </td>
                         </tr>
                         <tr class="row">
-                            <!-- B5-1: 表示するメッセージ - Message content -->
+                            <!-- B3-1: 表示するメッセージ - Message content -->
                             <td class = "pad_left_5px" style = "width:160px">
-                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_xx')}</div>
+                                <div data-bind="ntsFormLabel: { }">#{i18n.getText('KAL003_25')}</div>
                             </td>
                             <td class = "pad_left_5px">
-                                <!-- B5-2-->
+                                <!-- B3-2-->
                                 <input class="nts-input" id="inpComparisonMaxValue" 
                                         data-bind="ntsTextEditor:{
-                                            name: '#[KAL003_xx]',
-                                            value: currentErrAlaAttendanceItemCondition().messageContent,
+                                            name: '#[KAL003_25]',
+                                            value: messageContent,
                                             required: true,
-                                            //constraint: 'messageContent',
                                             enable: true}" />
                             </td>
                         </tr>
@@ -243,7 +402,8 @@
                                 
                             </td>
                             <td class = "pad_left_5px">
-                                <!-- B5-3: ■メッセージを太字にする - Make the message bold TODO-->
+                                <!-- B3-3: ■メッセージを太字にする - Make the message bold-->
+                                <div data-bind="ntsCheckBox: { checked: isBoldMessage, enable: true}">#{i18n.getText('KAL003_29')}</div>
                                 
                             </td>
                         </tr>
@@ -252,14 +412,14 @@
                         
                    </div>
                 </div>
-
+                </div>
                 <div id="functions-area-bottom"    style="height: 70px; padding-top: 18px; text-align: center;">
-                    <!-- C1-003 : Decision-->
+                    <!-- B4-2 : Decision-->
                     <button id="btnDecision" class="proceed x-large" tabindex = "2" style="padding-right: 18px; width:115px"
-                        data-bind="click : addDefaultRoleSet, enable: currentDefaultRoleSet().roleSetCd">#{i18n.getText('CAS011_32')}</button>
-                    <!-- C1-004 : Cancel-->
+                        data-bind="click : btnDecision, enable: true">#{i18n.getText('KAL003_14')}</button>
+                    <!-- B4-3 : Cancel-->
                     <button id="btnCancel" class="large" tabindex = "3" style="padding-left: 18px;"
-                        data-bind="click: closeDialog">#{i18n.getText('CAS011_33')}</button>
+                        data-bind="click: closeDialog">#{i18n.getText('KAL003_30')}</button>
                 </div>
             </div>
         </ui:define>

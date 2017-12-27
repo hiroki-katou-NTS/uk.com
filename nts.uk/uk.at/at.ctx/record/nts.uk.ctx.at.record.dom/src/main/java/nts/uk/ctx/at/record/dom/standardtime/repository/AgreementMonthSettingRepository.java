@@ -15,4 +15,6 @@ public interface AgreementMonthSettingRepository {
 	
 	void delete(String employeeId, BigDecimal yearMonthValue);
 	
+	boolean checkExistData(String employeeId, BigDecimal yearMonthValue);
+	
 }

@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.function.dom.alarm;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author dxthuong
@@ -15,7 +16,7 @@ public class AlarmPatternSetting  extends AggregateRoot {
 	/**
 	 * list check condition
 	 */
-	private List<CheckCondition> checkConList;
+	private List<CheckCondition> checkConList = new ArrayList<CheckCondition>();
 	/**
 	 * alarm pattern code
 	 */
@@ -23,7 +24,7 @@ public class AlarmPatternSetting  extends AggregateRoot {
 	/**
 	 * companyId
 	 */
-	private CompanyId companyID;
+	private String companyID;
 	/**
 	 * alarm permission setting
 	 */
@@ -38,15 +39,33 @@ public class AlarmPatternSetting  extends AggregateRoot {
 		super();
 		this.checkConList = checkConList;
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
-		this.companyID = new CompanyId(companyID);
+		this.companyID = companyID;
 		this.alarmPerSet = alarmPerSet;
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
 	}
-	public AlarmPatternSetting(String alarmPatternCD, String companyID,
-			String alarmPatternName) {
-		super();
-		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
-		this.companyID = new CompanyId(companyID);
+	
+
+	public boolean selectedCheckCodition() {
+		if(this.checkConList.isEmpty())
+			throw new BusinessException("Msg_811");
+		return true;
+	}
+
+
+	public void setCheckConList(List<CheckCondition> checkConList) {
+		this.checkConList = checkConList;
+	}
+
+
+	public void setAlarmPerSet(AlarmPermissionSetting alarmPerSet) {
+		this.alarmPerSet = alarmPerSet;
+	}
+
+
+	public void setAlarmPatternName(String alarmPatternName) {
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
 	}
+	
+	
+
 }

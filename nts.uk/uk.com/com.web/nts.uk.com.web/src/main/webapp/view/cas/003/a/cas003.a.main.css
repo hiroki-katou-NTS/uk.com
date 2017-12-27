@@ -25,6 +25,9 @@ html{
 .contentPassComplex1 {
 	margin-left: 143px;
 }
+.panel {
+     padding: 0px !important; 
+}
 
 .contentsymbol {
 	margin-left: 201px;
@@ -32,7 +35,7 @@ html{
 }
 
 #panelPassPolicy {
-	height: 370px;
+	height: 360px;
 }
 
 .component-area {

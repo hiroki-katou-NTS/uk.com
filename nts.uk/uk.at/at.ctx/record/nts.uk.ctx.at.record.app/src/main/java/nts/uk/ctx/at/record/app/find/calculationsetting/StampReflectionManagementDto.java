@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.calculationsetting;
 import java.math.BigDecimal;
 
 import lombok.Value;
+
 @Value
 public class StampReflectionManagementDto {
 	/** 会社ID */
