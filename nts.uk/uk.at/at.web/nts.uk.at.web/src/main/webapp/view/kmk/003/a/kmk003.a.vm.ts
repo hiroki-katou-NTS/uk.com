@@ -223,34 +223,9 @@ module nts.uk.at.view.kmk003.a {
             }
 
             //save worktime data
-            private save() {
+            public save(): void {
                 let self = this;
-                //TODO need check mode save new or update here 
-                switch (self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr()) {
-                    case EnumWorkForm.REGULAR:
-                        switch (self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet()) {
-                            case SettingMethod.FIXED:
-                                service.saveFixedWorkSetting(self.collectDataFixed()).done(function() {
-
-                                }).fail(function(error) {
-                                    nts.uk.ui.dialog.alertError(error);
-                                });
-                                break;
-                            //for flow and difftime
-                            case SettingMethod.DIFFTIME: break;
-                            case SettingMethod.FLOW: break;
-                            default: break;
-                        }
-                        break;
-                    case EnumWorkForm.FLEX:
-                        service.saveFlexWorkSetting(self.collectDataFlex()).done(function() {
-
-                        }).fail(function(error) {
-                            nts.uk.ui.dialog.alertError(error);
-                        });
-                        break;
-                    default: break;
-                }
+                self.mainSettingModel.save();
             }
             
             //when click copy
@@ -267,34 +242,6 @@ module nts.uk.at.view.kmk003.a {
                 self.selectedWorkTimeCode('');
             };
 
-            /**
-             * function collection data fixed mode 
-             */
-            private collectDataFixed():any{
-                let _self = this;
-                let command: FixedWorkSettingSaveCommand = {
-                    predseting: _self.mainSettingModel.predetemineTimeSetting.toDto(),
-                    worktimeSetting: _self.mainSettingModel.workTimeSetting.toDto(),
-                    fixedWorkSetting: _self.mainSettingModel.fixedWorkSetting.toDto(),
-                    screenMode: _self.tabMode()
-                };
-                return command;  
-            }
-            
-            /**
-             * function collection data flex mode 
-             */
-            private collectDataFlex(): FlexWorkSettingSaveCommand{
-                var self = this;
-                var command: FlexWorkSettingSaveCommand;
-                command = {
-                    flexWorkSetting: self.mainSettingModel.flexWorkSetting.toDto(),
-                    predseting: self.mainSettingModel.predetemineTimeSetting.toDto(),
-                    worktimeSetting: self.mainSettingModel.workTimeSetting.toDto()
-                };
-                return command;     
-            }
-            
              /**
              * remove worktime by code
              */
@@ -362,6 +309,44 @@ module nts.uk.at.view.kmk003.a {
                     this.diffWorkSetting.workTimeCode(worktimeCode);
                     this.flexWorkSetting.workTimeCode(worktimeCode);
                 });
+            }
+
+            save(): void {
+                let self = this;
+                if (self.workTimeSetting.isFlex()) {
+                    service.saveFlexWorkSetting(self.toFlexCommannd()).fail(err => nts.uk.ui.dialog.alertError(err));
+                }
+                if (self.workTimeSetting.isFixed()) {
+                    service.saveFixedWorkSetting(self.toFixedCommand()).fail(err => nts.uk.ui.dialog.alertError(err));
+                }
+            }
+
+            /**
+             * Collect fixed data and convert to command dto
+             */
+            toFixedCommand(): FixedWorkSettingSaveCommand {
+                let _self = this;
+                let command: FixedWorkSettingSaveCommand = {
+                    predseting: _self.predetemineTimeSetting.toDto(),
+                    worktimeSetting: _self.workTimeSetting.toDto(),
+                    fixedWorkSetting: _self.fixedWorkSetting.toDto(),
+                    screenMode: 0 //TODO: lam gi voi cai nay?
+                };
+                return command;  
+            }
+
+            /**
+             * Collect flex data and convert to command dto
+             */
+            toFlexCommannd(): FlexWorkSettingSaveCommand {
+                let self = this;
+                let command: FlexWorkSettingSaveCommand;
+                command = {
+                    flexWorkSetting: self.flexWorkSetting.toDto(),
+                    predseting: self.predetemineTimeSetting.toDto(),
+                    worktimeSetting: self.workTimeSetting.toDto()
+                };
+                return command;
             }
 
             updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): void {
