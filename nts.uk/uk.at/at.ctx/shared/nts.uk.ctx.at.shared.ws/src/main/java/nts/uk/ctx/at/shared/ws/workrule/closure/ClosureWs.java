@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.ws.workrule.closure;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -12,6 +13,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureEmpAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
@@ -35,6 +38,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthOutDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -59,6 +63,10 @@ public class ClosureWs {
 	/** The current closure finder. */
 	@Inject
 	private CurrentClosureFinder currentClosureFinder;
+	
+	/** The closure repository. */
+	@Inject
+	private ClosureRepository closureRepository;
 
 	/** The Constant CLOSURE_ID_BEGIN. */
 	public static final int CLOSURE_ID_BEGIN = 1;
@@ -268,6 +276,24 @@ public class ClosureWs {
 	@Path("findEmpByClosureIds")
 	public List<BsEmploymentFindDto> findEmpByClosureIds(ClosureIdsDto closureIdsDto) {
 		return this.finder.findEmpByClosureIds(closureIdsDto.getClosureIds());
+	}
+	
+	/**
+	 * Find closure list by current month.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findClosureListByCurrentMonth")
+	public List<ClosureDto> findClosureListByCurrentMonth() {
+		GeneralDate now = GeneralDate.today();
+		YearMonth currentMonth = YearMonth.of(now.year(), now.month());
+		return this.closureRepository.findByCurrentMonth(currentMonth).stream().map(item -> {
+			return ClosureDto.builder()
+					.id(item.getClosureId().value)
+					.name(item.getClosureName().v())
+					.build();
+		}).collect(Collectors.toList());
 	}
 	
 }
