@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 import java.util.ArrayList;
 import java.util.List;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
@@ -37,13 +38,19 @@ public class JpaFixedOffDayRestTimeSetMemento implements FixRestTimezoneSetSetMe
 	 * @see nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetSetMemento#setLstTimezone(java.util.List)
 	 */
 	@Override
-	public void setLstTimezone(List<DeductionTime> lstTimezone) {
+	public void setLstTimezone(List<DeductionTime> lstTimezone) {	
+		if (CollectionUtil.isEmpty(lstTimezone)) {
+			return;
+		}
 		
 		String companyId = this.entity.getKshmtFixedWorkSetPK().getCid();
 		String workTimeCd = this.entity.getKshmtFixedWorkSetPK().getWorktimeCd();
 		
 		// get list entity
 		List<KshmtFixedHolRestSet> lstEntity = this.entity.getLstKshmtFixedHolRestSet();
+		if (CollectionUtil.isEmpty(lstEntity)) {
+			lstEntity = new ArrayList<>();
+		}
 		
 		List<KshmtFixedHolRestSet> newListEntity = new ArrayList<>();
 		

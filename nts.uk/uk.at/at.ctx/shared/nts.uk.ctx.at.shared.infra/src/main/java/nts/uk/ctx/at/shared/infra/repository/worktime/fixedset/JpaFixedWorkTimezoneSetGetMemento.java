@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -40,9 +42,15 @@ public class JpaFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneSetGe
 	 */
 	public JpaFixedWorkTimezoneSetGetMemento(List<KshmtFixedWorkTimeSet> kshmtFixedWorkTimeSets,
 			List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets) {
-		super();
+		super();		
 		this.kshmtFixedWorkTimeSets = kshmtFixedWorkTimeSets;
 		this.kshmtFixedOtTimeSets = kshmtFixedOtTimeSets;
+		if (CollectionUtil.isEmpty(this.kshmtFixedWorkTimeSets)) {
+			this.kshmtFixedWorkTimeSets = new ArrayList<>();
+		}
+		if (CollectionUtil.isEmpty(this.kshmtFixedOtTimeSets)) {
+			this.kshmtFixedOtTimeSets = new ArrayList<>();
+		}
 	}
 
 	/*

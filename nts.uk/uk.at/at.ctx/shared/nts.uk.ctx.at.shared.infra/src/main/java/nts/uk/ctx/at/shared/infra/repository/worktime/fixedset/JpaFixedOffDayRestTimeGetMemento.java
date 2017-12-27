@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
@@ -27,6 +29,9 @@ public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMe
 	 */
 	public JpaFixedOffDayRestTimeGetMemento(List<KshmtFixedHolRestSet> lstEntity) {
 		this.lstEntity = lstEntity;
+		if (CollectionUtil.isEmpty(this.lstEntity)) {
+			this.lstEntity = new ArrayList<>();
+		}
 	}
 
 	/*

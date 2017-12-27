@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
@@ -43,6 +45,9 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 	 */
 	@Override
 	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedHolTimeSet())) {
+			return new ArrayList<>();
+		}
 		return this.entity.getLstKshmtFixedHolTimeSet().stream()
 				.map(entity -> new HDWorkTimeSheetSetting(new JpaFixedHDWorkTimeSheetGetMemento(entity)))
 				.collect(Collectors.toList());

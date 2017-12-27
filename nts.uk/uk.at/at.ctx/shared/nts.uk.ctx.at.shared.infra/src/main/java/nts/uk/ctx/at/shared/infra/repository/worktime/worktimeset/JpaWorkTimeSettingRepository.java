@@ -171,7 +171,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		}
 		if (condition.getIsAbolish() != null) {
 			lstpredicateWhere.add(
-					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), condition.getIsAbolish() ? 1 : 0));
+					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), condition.getIsAbolish() ? 0 : 1));
 		}
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

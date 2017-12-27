@@ -31,6 +31,9 @@ public class JpaFixRestHalfdayTzGetMemento implements FixRestTimezoneSetGetMemen
 	public JpaFixRestHalfdayTzGetMemento(List<KshmtFixedHalfRestSet> entitySets) {
 		super();
 		this.entitySets = entitySets;
+		if (CollectionUtil.isEmpty(this.entitySets)) {
+			this.entitySets = new ArrayList<>();
+		}
 	}
 
 	/*
