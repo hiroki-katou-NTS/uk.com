@@ -56,17 +56,25 @@ public class UserFinder {
 		
 		if (!userKeyDto.isMulti() && !userKeyDto.isSpecial()) {
 			List<EmployeeInfoImport> listEmployeeInfo = employeeInfoAdapter.getEmployeesAtWorkByBaseDate(companyId, GeneralDate.today());
-			if (listEmployeeInfo.isEmpty())
+			
+			List<EmployeeInfoImport> listEmployeePerId = new ArrayList<EmployeeInfoImport>();
+			for(EmployeeInfoImport en :listEmployeeInfo){
+				if(en.getPersonId()!=null){
+					listEmployeePerId.add(en);
+				}
+			}
+			
+			if (listEmployeePerId.isEmpty())
 				return result;
 			
 			List<User> notEmptyAssociatedUser = listUser.stream().filter(c -> c.hasAssociatedPersonID()).collect(Collectors.toList());
 			
 			for (User user : notEmptyAssociatedUser) {
-				Optional<EmployeeInfoImport> associatedEmployee = listEmployeeInfo.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).findFirst();
-				if (associatedEmployee.isPresent()) {
+				List<EmployeeInfoImport> associatedEmployee = listEmployeePerId.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).collect(Collectors.toList());
+				if(!associatedEmployee.isEmpty()) {
 					if (user.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase()) ||
-						associatedEmployee.get().getEmployeeName().toLowerCase().contains(userKeyDto.getKey().toLowerCase())) {
-						user.setUserName(new UserName(associatedEmployee.get().getEmployeeName()));
+						associatedEmployee.get(0).getEmployeeName().toLowerCase().contains(userKeyDto.getKey().toLowerCase())) {
+						user.setUserName(new UserName(associatedEmployee.get(0).getEmployeeName()));
 						result.add(UserDto.fromDomain(user));
 					}
 				}
