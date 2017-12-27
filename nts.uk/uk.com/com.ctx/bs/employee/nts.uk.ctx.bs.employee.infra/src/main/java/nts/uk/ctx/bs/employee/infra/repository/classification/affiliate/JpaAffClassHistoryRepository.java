@@ -134,38 +134,44 @@ public class JpaAffClassHistoryRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
+		
+		List<KmnmtAffiliClassificationHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			CollectionUtil.split(classificationCodes, 1000, classSubList -> {
+				// add where
+				List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
+				// employee id in data employee id
+				lstpredicateWhere.add(criteriaBuilder
+						.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
+								.get(KmnmtAffiliClassificationHistPK_.empId).in(employeeIds)));
 
-		// employee id in data employee id
-		lstpredicateWhere.add(criteriaBuilder
-				.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
-						.get(KmnmtAffiliClassificationHistPK_.empId).in(employeeIds)));
+				// classification in data classification
+				lstpredicateWhere.add(criteriaBuilder
+						.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
+								.get(KmnmtAffiliClassificationHistPK_.clscd).in(classificationCodes)));
 
-		// classification in data classification
-		lstpredicateWhere.add(criteriaBuilder
-				.and(root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
-						.get(KmnmtAffiliClassificationHistPK_.clscd).in(classificationCodes)));
+				// start date <= base date
+				lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+						root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
+								.get(KmnmtAffiliClassificationHistPK_.strD),
+						baseDate));
 
-		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(KmnmtAffiliClassificationHist_.kmnmtClassificationHistPK)
-						.get(KmnmtAffiliClassificationHistPK_.strD),
-				baseDate));
+				// endDate >= base date
+				lstpredicateWhere.add(criteriaBuilder
+						.greaterThanOrEqualTo(root.get(KmnmtAffiliClassificationHist_.endD), baseDate));
 
-		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KmnmtAffiliClassificationHist_.endD), baseDate));
+				// set where to SQL
+				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		TypedQuery<KmnmtAffiliClassificationHist> query = em.createQuery(cq);
-
-		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
+				// create query
+				TypedQuery<KmnmtAffiliClassificationHist> query = em.createQuery(cq);
+				resultList.addAll(query.getResultList());
+			});
+		});
+		
+		// convert.
+		return resultList.stream().map(category -> toDomain(category))
 				.collect(Collectors.toList());
 	}
 

@@ -38,7 +38,7 @@ public class AttendanceItemUtil {
 		return toItemValues(attendanceItems, "", itemIds);
 	}
 
-	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
+	private static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
 			String rootLayout, List<Integer> itemIds) {
 		AttendanceItemRoot rootAnno = getRootAnnotation(attendanceItems);
 		String rootName = getRootName(rootAnno);
@@ -310,7 +310,7 @@ public class AttendanceItemUtil {
 		if (itemIds.isEmpty()) {
 			throw new NotFoundException("Item id not found exception!!!");
 		}
-		if (onNeedItemIds.contains(itemIds.get(idx))) {
+		if (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemIds.get(idx))) {
 			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode),
 					itemIds.get(idx));
 			itemValue.value(value);

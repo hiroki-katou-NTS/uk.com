@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWorkplaceManager;
@@ -18,17 +19,20 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	private static final String SELECT_All_BY_SID_WKP_ID = SELECT_ALL
 			+ " WHERE wm.employeeId = :employeeId AND wm.workplaceId = :workplaceId";
 	private static final String SELECT_All_BY_WKP_ID = SELECT_ALL
-			+ " WHERE wm.workplaceId = :workplaceId";
+			+ " WHERE wm.workplaceId = :workplaceId";	
+	private static final String SELECT_ALL_BY_SID_BASE_DATE = "SELECT wm FROM SacmtWorkplaceManager wm"
+			+ " WHERE wm.employeeId = :employeeId AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
+	
 
 	/**
 	 * Get workplace manager list by workplace id
 	 * 
-	 * 【input】
+	 * 【input�
 	 * ・会社ID
 	 * ・職場ID
 	 * ・基準日
-	 * 【output】
-	 * ・cls <職場表示名>
+	 * 【output�
+	 * ・cls <職場表示�
 	 */
 	@Override
 	public List<WorkplaceManager> getWkpManagerListByWkpId(String workplaceId) {
@@ -70,4 +74,12 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		SacmtWorkplaceManagerPK kacmtWorkplaceManagerPK = new SacmtWorkplaceManagerPK(wkpManagerId);
 		this.commandProxy().remove(SacmtWorkplaceManager.class,kacmtWorkplaceManagerPK);
 	}
+
+	@Override
+	public List<WorkplaceManager> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate) {			
+		return this.queryProxy().query(SELECT_ALL_BY_SID_BASE_DATE, SacmtWorkplaceManager.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("baseDate", baseDate).getList(c -> c.toDomain());
+	}
+	
 }
