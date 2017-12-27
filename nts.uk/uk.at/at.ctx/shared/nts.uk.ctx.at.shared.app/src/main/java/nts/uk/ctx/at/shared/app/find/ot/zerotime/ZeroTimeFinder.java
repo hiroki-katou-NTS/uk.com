@@ -1,20 +1,22 @@
-package nts.uk.ctx.at.shared.app.find.calculation.holiday.time;
+package nts.uk.ctx.at.shared.app.find.ot.zerotime;
 
-/**
- * @author phongtq
- */
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.ZeroTime;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromHd;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.ZeroTimeRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromWeekday;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.WeekdayHoliday;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromHd;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromWeekday;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.WeekdayHoliday;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * @author phongtq
+ */
 
 @Stateless
 public class ZeroTimeFinder {

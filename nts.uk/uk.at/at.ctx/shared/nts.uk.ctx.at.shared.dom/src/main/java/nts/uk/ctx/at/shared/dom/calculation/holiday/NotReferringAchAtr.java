@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
-/**
- * @author phongtq
- */
-import lombok.AllArgsConstructor;
 
+import lombok.AllArgsConstructor;
+/**
+ * 
+ * @author phongtq
+ *実績を参照しない場合の参照先
+ */
 @AllArgsConstructor
 public enum NotReferringAchAtr {
 

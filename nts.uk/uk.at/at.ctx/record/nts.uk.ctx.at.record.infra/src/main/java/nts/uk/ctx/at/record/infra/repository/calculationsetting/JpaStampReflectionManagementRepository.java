@@ -8,6 +8,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcdtStampImprint;
+import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcdtStampImprintPK;
+
 
 @Stateless
 public class JpaStampReflectionManagementRepository extends JpaRepository
@@ -31,13 +33,50 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 
 	private static StampReflectionManagement toDomain(KrcdtStampImprint krcdtStampReflect) {
 		StampReflectionManagement stampReflectionManagement = StampReflectionManagement.createJavaType(
-				krcdtStampReflect.krcdtStampReflectPK.companyId, krcdtStampReflect.breakSwitchClass.intValue(),
-				krcdtStampReflect.autoStampReflectionClass.intValue(),
-				krcdtStampReflect.actualStampOfPriorityClass.intValue(),
-				krcdtStampReflect.reflectWorkingTimeClass.intValue(),
-				krcdtStampReflect.goBackOutCorrectionClass.intValue(),
-				krcdtStampReflect.managementOfEntrance.intValue(),
-				krcdtStampReflect.autoStampForFutureDayClass.intValue());
+				krcdtStampReflect.krcdtStampReflectPK.companyId, krcdtStampReflect.breakSwitchClass,
+				krcdtStampReflect.autoStampReflectionClass,
+				krcdtStampReflect.actualStampOfPriorityClass,
+				krcdtStampReflect.reflectWorkingTimeClass,
+				krcdtStampReflect.goBackOutCorrectionClass,
+				krcdtStampReflect.managementOfEntrance,
+				krcdtStampReflect.autoStampForFutureDayClass,
+				krcdtStampReflect.outingAtr,
+				krcdtStampReflect.maxUseCount);
 		return stampReflectionManagement;
 	}
+
+	@Override
+	public void update(StampReflectionManagement reflectionManagement) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void add(StampReflectionManagement reflectionManagement) {
+		this.commandProxy().insert(convertToDbType(reflectionManagement));
+		
+	}
+		private KrcdtStampImprint convertToDbType(StampReflectionManagement atten) {
+		KrcdtStampImprint newEntity = KrcdtStampImprint.toEntity(atten);
+		KrcdtStampImprintPK attSetPK = new KrcdtStampImprintPK(atten.getCompanyId());
+		Optional<KrcdtStampImprint> optUpdateEntity = this.queryProxy().find(attSetPK, KrcdtStampImprint.class);
+		if (optUpdateEntity.isPresent()) {
+			KrcdtStampImprint updateEntity = optUpdateEntity.get();
+			updateEntity.breakSwitchClass = atten.getBreakSwitchClass().value;
+			updateEntity.autoStampReflectionClass = atten.getAutoStampReflectionClass().value;
+			updateEntity.actualStampOfPriorityClass = atten.getActualStampOfPriorityClass().value;
+			updateEntity.reflectWorkingTimeClass = atten.getReflectWorkingTimeClass().value;
+			updateEntity.goBackOutCorrectionClass = atten.getGoBackOutCorrectionClass().value;
+			updateEntity.managementOfEntrance = atten.getManagementOfEntrance().value;
+			updateEntity.autoStampForFutureDayClass = atten.getAutoStampForFutureDayClass().value;
+			updateEntity.outingAtr = atten.getOutingAtr().value;
+			updateEntity.maxUseCount = atten.getMaxUseCount();
+			
+			updateEntity.krcdtStampReflectPK = attSetPK;
+			return updateEntity;
+		}
+		return  newEntity;
+	}
+	
+	
 }

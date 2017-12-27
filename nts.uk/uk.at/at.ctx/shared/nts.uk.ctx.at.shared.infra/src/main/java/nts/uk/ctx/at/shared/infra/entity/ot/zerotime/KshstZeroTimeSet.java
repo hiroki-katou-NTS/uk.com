@@ -1,8 +1,5 @@
-package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-/**
- * @author phongtq
- * 0時跨ぎ計算設定
- */
+package nts.uk.ctx.at.shared.infra.entity.ot.zerotime;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,6 +13,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+/**
+ * @author phongtq
+ * 0時跨ぎ計算設定
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

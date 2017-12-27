@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
-/**
- * @author phongtq
- */
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +10,11 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.RoundingMonth;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.RoundingMonthRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstRoundingMonthItem;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstRoundingMonthItemPK;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class JpaRoudingMonthRepository extends JpaRepository implements RoundingMonthRepository{
 	private static final String SELECT_BY_CID;

@@ -1,9 +1,11 @@
-package nts.uk.ctx.at.shared.app.find.calculation.holiday.time;
+package nts.uk.ctx.at.shared.app.find.ot.zerotime;
+
+import lombok.Data;
+
 /**
  * @author phongtq
  *  休日から休日への0時跨ぎ設定
  */
-import lombok.Data;
 
 @Data
 public class HdFromHdDto {
@@ -18,6 +20,4 @@ public class HdFromHdDto {
 	
 	/** 変更後の祝日休出NO */
 	private int nonLegalPublicHdNo;
-	
-
 }

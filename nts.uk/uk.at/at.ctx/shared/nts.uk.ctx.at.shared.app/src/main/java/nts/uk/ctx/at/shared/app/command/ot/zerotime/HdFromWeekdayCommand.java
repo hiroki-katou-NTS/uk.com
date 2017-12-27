@@ -1,15 +1,20 @@
-package nts.uk.ctx.at.shared.app.command.calculation.holiday.time;
+package nts.uk.ctx.at.shared.app.command.ot.zerotime;
 
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromWeekday;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromWeekday;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class HdFromWeekdayCommand {
-	
+
 	/** 会社ID */
 	private String companyId;
 
@@ -18,7 +23,7 @@ public class HdFromWeekdayCommand {
 
 	/** 変更後の残業枠NO */
 	private BigDecimal overWorkNo;
-	
+
 	public HdFromWeekday toDomain(String companyId) {
 		return HdFromWeekday.createFromJavaType(companyId, this.holidayWorkFrameNo, this.overWorkNo);
 	}

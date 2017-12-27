@@ -1,11 +1,13 @@
-package nts.uk.ctx.at.shared.app.find.calculation.holiday.time;
+package nts.uk.ctx.at.shared.app.find.ot.zerotime;
+
+import java.util.List;
+
+import lombok.Data;
+
 /**
  * @author phongtq
  * 0時跨ぎ計算設定
  */
-import java.util.List;
-
-import lombok.Data;
 
 @Data
 public class ZeroTimeDto {

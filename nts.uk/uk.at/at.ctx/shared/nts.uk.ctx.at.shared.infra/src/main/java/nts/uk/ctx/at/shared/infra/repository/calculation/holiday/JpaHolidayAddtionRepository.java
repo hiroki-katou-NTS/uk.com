@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
-/**
- * @author phongtq
- */
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +20,11 @@ import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSetPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSetPK;
 
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class JpaHolidayAddtionRepository extends JpaRepository implements HolidayAddtionRepository {
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.ws.calculation.holiday;
+package nts.uk.ctx.at.shared.ws.ot.zerotime;
 /**
  * @author phongtq
  */
@@ -10,10 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.calculation.holiday.time.AddZeroTimeCommand;
-import nts.uk.ctx.at.shared.app.command.calculation.holiday.time.AddZeroTimeCommandHandler;
-import nts.uk.ctx.at.shared.app.find.calculation.holiday.time.ZeroTimeDto;
-import nts.uk.ctx.at.shared.app.find.calculation.holiday.time.ZeroTimeFinder;
+import nts.uk.ctx.at.shared.app.command.ot.zerotime.AddZeroTimeCommand;
+import nts.uk.ctx.at.shared.app.command.ot.zerotime.AddZeroTimeCommandHandler;
+import nts.uk.ctx.at.shared.app.find.ot.zerotime.ZeroTimeDto;
+import nts.uk.ctx.at.shared.app.find.ot.zerotime.ZeroTimeFinder;
 @Path("shared/caculation/holiday/time")
 @Produces("application/json")
 public class ZeroTimeWebService extends WebService{

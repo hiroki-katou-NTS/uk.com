@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-/**
- * @author phongtq
- * フレックス勤務の設定
- */
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -13,7 +10,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * @author phongtq
+ * フレックス勤務の設定
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

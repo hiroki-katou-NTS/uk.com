@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.shared.app.find.calculation.holiday.flex;
+
+import lombok.Data;
+
 /**
- * @author phongtq
- * フレックス勤務の設定
+ * @author phongtq 
+ * フレックス勤務の設定 
  * The class Flex Set Dto
  */
-import lombok.Data;
 
 @Data
 public class FlexSetDto {

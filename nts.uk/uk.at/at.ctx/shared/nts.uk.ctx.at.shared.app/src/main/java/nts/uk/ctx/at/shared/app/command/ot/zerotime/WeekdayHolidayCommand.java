@@ -1,11 +1,16 @@
-package nts.uk.ctx.at.shared.app.command.calculation.holiday.time;
+package nts.uk.ctx.at.shared.app.command.ot.zerotime;
 
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.WeekdayHoliday;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.WeekdayHoliday;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class WeekdayHolidayCommand {

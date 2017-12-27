@@ -8,7 +8,11 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.FlexWork;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDepLabor;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.RegularWork;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class AddHolidayAddtimeCommand {

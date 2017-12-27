@@ -2,6 +2,11 @@ package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 public class FlexWorkCommand {
 	/** 会社ID */
@@ -40,9 +45,9 @@ public class FlexWorkCommand {
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleaveWork;
 
-	/**フレックスの所定不足時*/
-	private int predeterminDeficiencyWork;	
-	
+	/** フレックスの所定不足時 */
+	private int predeterminDeficiencyWork;
+
 	/** 加算する */
 	private int additionTimeWork;
 }

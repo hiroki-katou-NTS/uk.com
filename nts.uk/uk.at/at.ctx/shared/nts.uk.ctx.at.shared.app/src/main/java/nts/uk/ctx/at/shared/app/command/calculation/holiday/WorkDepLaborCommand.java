@@ -2,6 +2,11 @@ package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 public class WorkDepLaborCommand {
 	/** 会社ID */
@@ -18,14 +23,14 @@ public class WorkDepLaborCommand {
 
 	/** フレックスの所定超過時 */
 	private int predeterminedOvertime1;
-	
+
 	/** 加算する */
 	private int additionTime1;
 
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleave1;
-	
-	/**通常、変形の所定超過時*/
+
+	/** 通常、変形の所定超過時 */
 	private int deformatExcValue;
 
 	/** インターバル免除時間を含めて計算する */
@@ -42,9 +47,9 @@ public class WorkDepLaborCommand {
 
 	/** 遅刻・早退を控除しない */
 	private int notDeductLateleave2;
-	
-	/**フレックスの所定不足時*/
-	private int predeterminDeficiency2;	
+
+	/** フレックスの所定不足時 */
+	private int predeterminDeficiency2;
 
 	/** 加算する */
 	private int additionTime2;

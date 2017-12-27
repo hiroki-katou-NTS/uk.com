@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
-/**
- * @author phongtq
- * フレックス勤務の加算設定
- */
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-
+/**
+ * @author phongtq
+ * フレックス勤務の加算設定
+ */
 @AllArgsConstructor
 @Getter
 public class FlexWork extends DomainObject{

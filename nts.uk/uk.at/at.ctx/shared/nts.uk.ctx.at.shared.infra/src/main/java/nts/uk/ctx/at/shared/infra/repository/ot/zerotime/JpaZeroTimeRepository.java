@@ -1,9 +1,6 @@
-package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
+package nts.uk.ctx.at.shared.infra.repository.ot.zerotime;
 
-/**
- * @author phongtq
- * JPA Overday Calc Holiday
- */
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,20 +8,24 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.ZeroTime;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromHd;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.ZeroTimeRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromWeekday;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.WeekdayHoliday;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHdFromHd;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHdFromHdPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHdFromWeekday;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHdFromWeekdayPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWeekdayFromHd;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWeekdayFromHdPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstZeroTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstZeroTimeSetPK;
-
+import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromHd;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromWeekday;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.WeekdayHoliday;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstHdFromHd;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstHdFromHdPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstHdFromWeekday;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstHdFromWeekdayPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstWeekdayFromHd;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstWeekdayFromHdPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstZeroTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstZeroTimeSetPK;
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepository {
 	private static final String SELECT_BY_CID;

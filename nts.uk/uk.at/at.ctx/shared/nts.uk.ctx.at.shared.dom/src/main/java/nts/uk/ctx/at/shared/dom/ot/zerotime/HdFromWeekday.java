@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
+package nts.uk.ctx.at.shared.dom.ot.zerotime;
 import java.math.BigDecimal;
 
 /**
@@ -10,7 +10,11 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class HdFromWeekday extends DomainObject{

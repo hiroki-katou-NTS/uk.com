@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-/**
- * @author phongtq
- * 休暇加算時間設定
- */
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -16,7 +13,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * @author phongtq
+ * 休暇加算時間設定
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

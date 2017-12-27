@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-/**
- * @author phongtq
- */
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -9,7 +7,11 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable

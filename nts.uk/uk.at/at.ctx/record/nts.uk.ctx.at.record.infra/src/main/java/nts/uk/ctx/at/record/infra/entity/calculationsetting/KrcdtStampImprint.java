@@ -8,8 +8,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -17,7 +17,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author nampt 打刻反映管理
  *
  */
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_STAMP_IMPRINT")
@@ -28,37 +27,72 @@ public class KrcdtStampImprint extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcdtStampImprintPK krcdtStampReflectPK;
 
-	// 休出切替区分
+	/** 休出切替区分*/
 	@Column(name = "BREAK_SWITCH_ATR")
-	public BigDecimal breakSwitchClass;
+	public int breakSwitchClass;
 
-	// 自動打刻反映区分
+	/** 自動打刻反映区分*/
 	@Column(name = "AUTO_STAMP_REFLECT_ATR")
-	public BigDecimal autoStampReflectionClass;
+	public int autoStampReflectionClass;
 
-	// 実打刻と申請の優先区分
+	/**実打刻と申請の優先区分*/
 	@Column(name = "ACTUAL_STAMP_PRIORITY_ATR")
-	public BigDecimal actualStampOfPriorityClass;
+	public int actualStampOfPriorityClass;
 
-	// 就業時間帯打刻反映区分
+	/** 就業時間帯打刻反映区分*/
 	@Column(name = "REFLECT_WORKING_TIME_ATR")
-	public BigDecimal reflectWorkingTimeClass;
+	public int reflectWorkingTimeClass;
 
-	// 直行直帰外出補正区分
+	/** 直行直帰外出補正区分*/
 	@Column(name = "GO_BACK_OUT_CORRECTION_ATR")
-	public BigDecimal goBackOutCorrectionClass;
+	public int goBackOutCorrectionClass;
 
-	// 入退門の管理をする
+	/** 入退門の管理をする*/
 	@Column(name = "MANAGEMENT_OF_ENTRANCE")
-	public BigDecimal managementOfEntrance;
+	public int managementOfEntrance;
 	
-	// 未来日の自動打刻セット区分
+	/** 未来日の自動打刻セット区分*/
 	@Column(name = "AUTO_STAMP_FUTURE_DAY_ATR")
-	public BigDecimal autoStampForFutureDayClass;
+	public int autoStampForFutureDayClass;
+	
+	/** 休憩として扱う外出区分*/
+	@Column(name = "OUTING_ATR")
+	public int outingAtr;
+	
+	/** 最大使用回数*/
+	@Column(name = "MAX_USE_COUNT")
+	public BigDecimal maxUseCount;
 
 	@Override
 	protected Object getKey() {
 		return this.krcdtStampReflectPK;
 	}
 
+	public KrcdtStampImprint(KrcdtStampImprintPK krcdtStampReflectPK, int breakSwitchClass,
+			int autoStampReflectionClass, int actualStampOfPriorityClass,
+			int reflectWorkingTimeClass, int goBackOutCorrectionClass, int managementOfEntrance,
+			int autoStampForFutureDayClass, int outingAtr, BigDecimal maxUseCount) {
+		super();
+		this.krcdtStampReflectPK = krcdtStampReflectPK;
+		this.breakSwitchClass = breakSwitchClass;
+		this.autoStampReflectionClass = autoStampReflectionClass;
+		this.actualStampOfPriorityClass = actualStampOfPriorityClass;
+		this.reflectWorkingTimeClass = reflectWorkingTimeClass;
+		this.goBackOutCorrectionClass = goBackOutCorrectionClass;
+		this.managementOfEntrance = managementOfEntrance;
+		this.autoStampForFutureDayClass = autoStampForFutureDayClass;
+		this.outingAtr = outingAtr;
+		this.maxUseCount = maxUseCount;
+	}
+	public StampReflectionManagement toDomain() {
+		return StampReflectionManagement.createJavaType(this.krcdtStampReflectPK.companyId, this.breakSwitchClass, this.autoStampReflectionClass, this.actualStampOfPriorityClass, this.reflectWorkingTimeClass, 
+				this.goBackOutCorrectionClass, this.managementOfEntrance, this.autoStampForFutureDayClass, this.outingAtr, this.maxUseCount);
+	}
+	
+	public static KrcdtStampImprint toEntity(StampReflectionManagement domain){
+		return new KrcdtStampImprint(
+				new KrcdtStampImprintPK(domain.getCompanyId()),
+				domain.getBreakSwitchClass().value,domain.getAutoStampReflectionClass().value,domain.getActualStampOfPriorityClass().value, domain.getReflectWorkingTimeClass().value, domain.getGoBackOutCorrectionClass().value,
+				domain.getManagementOfEntrance().value, domain.getAutoStampForFutureDayClass().value, domain.getOutingAtr().value, domain.getMaxUseCount());
+	}
 }

@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
-/**
- * @author phongtq
- * 変形労働勤務の加算設定
- */
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -15,7 +12,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * @author phongtq
+ * 変形労働勤務の加算設定
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

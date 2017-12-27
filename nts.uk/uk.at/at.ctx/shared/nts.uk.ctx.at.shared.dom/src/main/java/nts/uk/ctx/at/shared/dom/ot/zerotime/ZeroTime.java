@@ -1,15 +1,15 @@
-package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
-/**
- * @author phongtq
- * 0時跨ぎ計算設定
- */
+package nts.uk.ctx.at.shared.dom.ot.zerotime;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-
+/**
+ * @author phongtq
+ * 0時跨ぎ計算設定
+ */
 @AllArgsConstructor
 @Getter
 @Builder

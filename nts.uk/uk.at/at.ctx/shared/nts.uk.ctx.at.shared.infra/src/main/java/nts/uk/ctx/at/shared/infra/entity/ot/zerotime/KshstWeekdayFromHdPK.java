@@ -1,9 +1,6 @@
-package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
+package nts.uk.ctx.at.shared.infra.entity.ot.zerotime;
 
-/**
- * @author phongtq
- * 平日から休日の0時跨ぎ設定
- */
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -12,7 +9,10 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
+/**
+ * @author phongtq
+ * 平日から休日の0時跨ぎ設定
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable

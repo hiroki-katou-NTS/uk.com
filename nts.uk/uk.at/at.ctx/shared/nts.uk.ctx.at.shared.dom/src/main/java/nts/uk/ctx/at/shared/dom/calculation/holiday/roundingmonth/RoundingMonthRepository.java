@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth;
-/**
- * @author phongtq
- */
+
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 public interface RoundingMonthRepository {
 
 	/**
 	 * Find by CID
+	 * 
 	 * @param companyId
 	 * @param itemTimeId
 	 * @return
@@ -17,18 +21,21 @@ public interface RoundingMonthRepository {
 
 	/**
 	 * Add Rounding Month
+	 * 
 	 * @param month
 	 */
 	void add(RoundingMonth month);
 
 	/**
 	 * Update Rounding Month
+	 * 
 	 * @param month
 	 */
 	void update(RoundingMonth month);
 
 	/**
-	 * Check by CID 
+	 * Check by CID
+	 * 
 	 * @param companyId
 	 * @param timeItemId
 	 * @return

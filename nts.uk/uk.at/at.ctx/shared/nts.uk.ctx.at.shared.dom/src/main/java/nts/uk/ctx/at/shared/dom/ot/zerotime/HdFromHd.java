@@ -1,12 +1,13 @@
-package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
-/**
- * @author phongtq
- * 休日から休日への0時跨ぎ設定
- */
+package nts.uk.ctx.at.shared.dom.ot.zerotime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
+/**
+ * @author phongtq
+ * 休日から休日への0時跨ぎ設定
+ */
 @AllArgsConstructor
 @Getter
 public class HdFromHd extends DomainObject{

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.find.calculation.holiday.time;
+package nts.uk.ctx.at.shared.app.find.ot.zerotime;
 import java.math.BigDecimal;
 
 /**
@@ -6,6 +6,12 @@ import java.math.BigDecimal;
  * 平日から休日の0時跨ぎ設定
  */
 import lombok.Data;
+
+/**
+ * 
+ * @author phongtq
+ *
+ */
 
 @Data
 public class WeekdayHolidayDto {

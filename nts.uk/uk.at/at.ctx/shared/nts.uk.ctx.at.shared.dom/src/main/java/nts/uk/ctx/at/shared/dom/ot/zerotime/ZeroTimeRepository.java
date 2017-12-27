@@ -1,10 +1,13 @@
-package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
-/**
- * @author phongtq
- */
+package nts.uk.ctx.at.shared.dom.ot.zerotime;
+
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 public interface ZeroTimeRepository {
 
 	/**
@@ -14,18 +17,21 @@ public interface ZeroTimeRepository {
 
 	/**
 	 * Add Overday Calc
+	 * 
 	 * @param overdayCalc
 	 */
 	void add(ZeroTime overdayCalc);
 
 	/**
 	 * Update Overday Calc
+	 * 
 	 * @param overdayCalc
 	 */
 	void update(ZeroTime overdayCalc);
 
 	/**
 	 * Check by CID
+	 * 
 	 * @param companyId
 	 * @return
 	 */

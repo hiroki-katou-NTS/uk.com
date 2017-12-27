@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
-/**
- * @author phongtq
- *  休暇加算時間設定
- */
+
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-
+/**
+ * @author phongtq
+ *  休暇加算時間設定
+ */
 @AllArgsConstructor
 @Getter
 public class HolidayAddtion extends AggregateRoot {

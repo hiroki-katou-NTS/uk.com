@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.app.find.calculation.holiday;
+
+import lombok.Data;
+
 /**
  * @author phongtq
  * フレックス勤務の加算設定
  */
-import lombok.Data;
 
 @Data
 public class FlexWorkDto {

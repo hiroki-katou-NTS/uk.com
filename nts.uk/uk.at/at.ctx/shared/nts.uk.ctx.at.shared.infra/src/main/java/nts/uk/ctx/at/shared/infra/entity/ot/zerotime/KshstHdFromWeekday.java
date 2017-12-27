@@ -1,9 +1,6 @@
-package nts.uk.ctx.at.shared.infra.entity.calculation.holiday;
+package nts.uk.ctx.at.shared.infra.entity.ot.zerotime;
 
-/**
- * @author phongtq
- * 休日から平日への0時跨ぎ設定
- */
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -15,9 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.time.HdFromWeekday;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromWeekday;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * @author phongtq
+ * 休日から平日への0時跨ぎ設定
+ */
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_HD_FROM_WEEKDAY ")
