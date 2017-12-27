@@ -45,6 +45,16 @@ public class KshmtPioritySet extends UkJpaEntity implements Serializable {
 	public KshmtPioritySet() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new kshmt piority set.
+	 *
+	 * @param kshmtPioritySetPK the kshmt piority set PK
+	 */
+	public KshmtPioritySet(KshmtPioritySetPK kshmtPioritySetPK) {
+		super();
+		this.kshmtPioritySetPK = kshmtPioritySetPK;
+	}
 
 	/*
 	 * (non-Javadoc)

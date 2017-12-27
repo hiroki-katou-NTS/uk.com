@@ -50,6 +50,15 @@ public class KshmtRoundingSet extends UkJpaEntity implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kshmt rounding set.
+	 *
+	 * @param kshmtRoundingSetPK the kshmt rounding set PK
+	 */
+	public KshmtRoundingSet(KshmtRoundingSetPK kshmtRoundingSetPK) {
+		super();
+		this.kshmtRoundingSetPK = kshmtRoundingSetPK;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

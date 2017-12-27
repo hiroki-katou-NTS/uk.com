@@ -169,6 +169,22 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 			@PrimaryKeyJoinColumn(name = "WORKTIME_SET_METHOD", referencedColumnName = "WORKTIME_SET_METHOD") })
 	private KshmtWorktimeGoOutSet KshmtWorktimeGoOutSet;
 
+	
+	/**
+	 * Instantiates a new kshmt worktime common set.
+	 */
+	public KshmtWorktimeCommonSet() {
+	}
+	
+	/**
+	 * Instantiates a new kshmt worktime common set.
+	 *
+	 * @param kshmtWorktimeCommonSetPK the kshmt worktime common set PK
+	 */
+	public KshmtWorktimeCommonSet(KshmtWorktimeCommonSetPK kshmtWorktimeCommonSetPK) {
+		this.kshmtWorktimeCommonSetPK = kshmtWorktimeCommonSetPK;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

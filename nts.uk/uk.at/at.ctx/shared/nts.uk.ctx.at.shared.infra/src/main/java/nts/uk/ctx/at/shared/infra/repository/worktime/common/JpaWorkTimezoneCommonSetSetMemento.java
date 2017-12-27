@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.eclipse.persistence.internal.xr.CollectionResult;
-
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -27,9 +25,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
@@ -198,30 +193,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setStampSet(WorkTimezoneStampSet set) {
-		List<KshmtPioritySet> lstKshmtPioritySet = new ArrayList<>();
-		set.getPrioritySets().forEach(item->{
-			KshmtPioritySet entityKshmtPiority =  new KshmtPioritySet();
-			
-			KshmtPioritySetPK kshmtPioritySetPK =  new KshmtPioritySetPK();
-			kshmtPioritySetPK.setCid(this.entity.getKshmtWorktimeCommonSetPK().getCid());
-			kshmtPioritySetPK.setStampAtr(item.getStampAtr().value);
-			kshmtPioritySetPK.setWorkFormAtr(this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
-			kshmtPioritySetPK.setWorkTimeSetMethod(this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-			kshmtPioritySetPK.setWorktimeCd(this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			
-			entityKshmtPiority.setPiorityAtr(item.getPriorityAtr().value);
-			entityKshmtPiority.setKshmtPioritySetPK(kshmtPioritySetPK);
-			lstKshmtPioritySet.add(entityKshmtPiority);
-		});
-		this.entity.setKshmtPioritySets(lstKshmtPioritySet);
-		
-		List<KshmtRoundingSet> lstKshmtRoundingSet = new ArrayList<>();
-		set.getRoundingSets().forEach(item->{
-			KshmtRoundingSet entityKshmtRoundingSet = new KshmtRoundingSet();
-
-			
-		});
-		
+		set.saveToMemento(new JpaWorkTimezoneStampSetSetMemento(this.entity));
 	}
 
 	/*

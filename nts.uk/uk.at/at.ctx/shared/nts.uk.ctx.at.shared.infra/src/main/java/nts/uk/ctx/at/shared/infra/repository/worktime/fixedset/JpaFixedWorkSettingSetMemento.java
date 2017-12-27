@@ -16,11 +16,16 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflect;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
 /**
  * The Class JpaFixedWorkSettingSetMemento.
@@ -90,8 +95,21 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	@Override
 	public void setCommonSetting(WorkTimezoneCommonSet commonSetting) {
-		// TODO Auto-generated method stub
-
+		KshmtWorktimeCommonSet commonEntity = this.entity.getKshmtWorktimeCommonSet();
+		if (commonEntity == null) {
+			commonEntity = new KshmtWorktimeCommonSet();
+			
+			// new pk
+			KshmtWorktimeCommonSetPK pk = new KshmtWorktimeCommonSetPK();
+			pk.setCid(this.entity.getKshmtFixedWorkSetPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtFixedWorkSetPK().getWorktimeCd());
+			pk.setWorkFormAtr(WorkTimeDailyAtr.REGULAR_WORK.value);
+			pk.setWorktimeSetMethod(WorkTimeMethodSet.FIXED_WORK.value);
+			
+			// set pk
+			commonEntity.setKshmtWorktimeCommonSetPK(pk);
+		}
+		commonSetting.saveToMemento(new JpaWorkTimezoneCommonSetSetMemento(commonEntity));
 	}
 
 	/*

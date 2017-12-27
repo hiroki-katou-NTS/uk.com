@@ -19,6 +19,11 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -99,6 +104,14 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	private List<KshmtFixedStampReflect> lstKshmtFixedStampReflect;
 	
+	/** The lst kshmt worktime common set. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false)
+	})
+	private List<KshmtWorktimeCommonSet> lstKshmtWorktimeCommonSet;
+	
 
 	/**
 	 * Instantiates a new kshmt fixed work set.
@@ -116,6 +129,26 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 		super();
 		this.kshmtFixedWorkSetPK = kshmtFixedWorkSetPK;
 	}
+	
+	/**
+	 * Gets the kshmt worktime common set.
+	 *
+	 * @return the kshmt worktime common set
+	 */
+	public KshmtWorktimeCommonSet getKshmtWorktimeCommonSet() {
+		if (CollectionUtil.isEmpty(this.lstKshmtWorktimeCommonSet)) {
+			return null;
+		}
+		return this.lstKshmtWorktimeCommonSet.stream()
+				.filter(entityCommon -> {
+					KshmtWorktimeCommonSetPK pk = entityCommon.getKshmtWorktimeCommonSetPK();
+					return pk.getWorkFormAtr() == WorkTimeDailyAtr.REGULAR_WORK.value
+							&& pk.getWorktimeSetMethod() == WorkTimeMethodSet.FIXED_WORK.value;
+				})
+				.findFirst()
+				.orElse(null);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
