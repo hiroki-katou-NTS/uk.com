@@ -156,7 +156,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		return this.queryProxy().query(query, SacmtRole.class)
 				.setParameter("code", roleCode)
 				.setParameter("roleType", roleType)
-				.setParameter("cid", companyId)
+				.setParameter("companyId", companyId)
 				.getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
 	}
 
