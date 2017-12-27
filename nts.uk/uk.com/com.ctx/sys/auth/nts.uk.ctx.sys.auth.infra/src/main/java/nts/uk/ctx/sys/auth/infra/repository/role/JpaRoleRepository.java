@@ -33,7 +33,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	 * @see nts.uk.ctx.sys.auth.dom.role.RoleRepository#findById(java.lang.String)
 	 */
 	@Override
-	public List<Role> findById(String roleId) {
+	public List<Role> findByListId(List<String> lstRoleId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -46,7 +46,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		// add where
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(criteriaBuilder.equal(root.get(SacmtRole_.roleId), roleId));
+		predicateList.add(root.get(SacmtRole_.roleId).in(lstRoleId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		List<SacmtRole> sacmtRoles = em.createQuery(cq).getResultList();

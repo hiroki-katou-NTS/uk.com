@@ -12,11 +12,10 @@ public interface RoleRepository {
 	/**
 	 * Find by id.
 	 *
-	 * @param roleId
-	 *            the role id
+	 * @param lstRoleId the lst role id
 	 * @return Role
 	 */
-	List<Role> findById(String roleId);
+	List<Role> findByListId(List<String> lstRoleId);
 
 	/**
 	 * Find by id

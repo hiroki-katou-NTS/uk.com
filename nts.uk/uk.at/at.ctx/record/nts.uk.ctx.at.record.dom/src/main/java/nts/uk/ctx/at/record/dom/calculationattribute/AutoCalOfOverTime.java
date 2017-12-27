@@ -17,16 +17,16 @@ public class AutoCalOfOverTime {
 	//早出深夜残業時間
 	private AutoCalculationSetting earlyMidnightOverTime;
 
-	//早出残業時間
+	//普通残業時間
 	private AutoCalculationSetting normalOverTime;
 
-	//早出残業時間
+	//普通深夜残業時間
 	private AutoCalculationSetting normalMidnightOverTime;
 
-	//早出残業時間
+	//法定内残業時間
 	private AutoCalculationSetting legalOverTime;
 
-	//早出残業時間
+	//法定内深夜残業時間
 	private AutoCalculationSetting legalMidnightOverTime;
 
 }

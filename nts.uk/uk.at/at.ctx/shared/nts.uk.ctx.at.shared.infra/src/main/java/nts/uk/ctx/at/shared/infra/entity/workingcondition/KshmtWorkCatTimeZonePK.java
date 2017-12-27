@@ -32,8 +32,8 @@ public class KshmtWorkCatTimeZonePK implements Serializable {
 	private int perWorkCatAtr;
 
 	/** The start time. */
-	@Column(name = "START_TIME")
-	private int startTime;
+	@Column(name = "CNT")
+	private int cnt;
 
 	/**
 	 * Instantiates a new kshmt work cat time zone PK.
@@ -49,14 +49,14 @@ public class KshmtWorkCatTimeZonePK implements Serializable {
 	 *            the history id
 	 * @param perWorkCatAtr
 	 *            the per work cat atr
-	 * @param startTime
-	 *            the start time
+	 * @param cnt
+	 *            the cnt
 	 */
-	public KshmtWorkCatTimeZonePK(String historyId, int perWorkCatAtr, int startTime) {
+	public KshmtWorkCatTimeZonePK(String historyId, int perWorkCatAtr, int cnt) {
 		super();
 		this.historyId = historyId;
 		this.perWorkCatAtr = perWorkCatAtr;
-		this.startTime = startTime;
+		this.cnt = cnt;
 	}
 
 	/*
@@ -69,7 +69,7 @@ public class KshmtWorkCatTimeZonePK implements Serializable {
 		int hash = 0;
 		hash += (historyId != null ? historyId.hashCode() : 0);
 		hash += (int) perWorkCatAtr;
-		hash += (int) startTime;
+		hash += (int) cnt;
 		return hash;
 	}
 
@@ -91,7 +91,7 @@ public class KshmtWorkCatTimeZonePK implements Serializable {
 		if (this.perWorkCatAtr != other.perWorkCatAtr) {
 			return false;
 		}
-		if (this.startTime != other.startTime) {
+		if (this.cnt != other.cnt) {
 			return false;
 		}
 		return true;

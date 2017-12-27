@@ -423,7 +423,17 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．外出.実打刻.時刻10", 151);
 		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.場所コード10", 153);
 		ITEM_ID_CONTAINER.put("日別実績の外出時間帯．時間帯．戻り.実打刻.時刻10", 154);
-
+		
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．休出時間．休出時間.計算区分", 633);
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．休出時間．休出深夜時間.計算区分", 634);
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．残業時間．早出残業時間.計算区分", 627);
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．残業時間．早出深夜残業時間.計算区分", 628);
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．残業時間．普通残業時間.計算区分", 629);
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．残業時間．普通深夜残業時間.計算区分", 630);
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．残業時間．法定内残業時間.計算区分", 631);
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．残業時間．法定内深夜残業時間.計算区分", 632);
+		ITEM_ID_CONTAINER.put("日別実績の計算区分．フレックス超過時間.計算区分", 635);
+		
 	}
 
 	public static Integer getId(String key) {
