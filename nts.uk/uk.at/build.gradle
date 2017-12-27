@@ -622,7 +622,7 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: '0.1.6')
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: '0.1.6')
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: '0.1.6')		
-		
+		 
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: '0.10.7')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.7')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.10.7')
