@@ -22,6 +22,14 @@ public class FlowWorkRestSettingDto implements FlowWorkRestSettingSetMemento {
 
 	/** The flow rest setting. */
 	private FlowWorkRestSettingDetailDto flowRestSetting;
+	
+	/**
+	 * Instantiates a new flow work rest setting dto.
+	 */
+	public FlowWorkRestSettingDto() {
+		this.commonRestSetting = new CommonRestSettingDto();
+		this.flowRestSetting = new FlowWorkRestSettingDetailDto();
+	}
 
 	/*
 	 * (non-Javadoc)

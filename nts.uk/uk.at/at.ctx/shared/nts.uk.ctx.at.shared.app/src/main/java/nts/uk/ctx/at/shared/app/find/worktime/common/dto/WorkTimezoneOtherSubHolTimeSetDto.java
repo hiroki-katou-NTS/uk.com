@@ -27,6 +27,10 @@ public class WorkTimezoneOtherSubHolTimeSetDto implements WorkTimezoneOtherSubHo
 	/** The origin atr. */
 	private Integer originAtr;
 
+	public WorkTimezoneOtherSubHolTimeSetDto() {
+		this.subHolTimeSet = new SubHolTransferSetDto();
+	}
+	
 	@Override
 	public void setSubHolTimeSet(SubHolTransferSet set) {
 		set.saveToMemento(this.subHolTimeSet);

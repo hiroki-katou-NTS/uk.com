@@ -24,6 +24,14 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	/** The use plural work rest time. */
 	private boolean usePluralWorkRestTime;
 
+	/**
+	 * Instantiates a new flow work rest setting detail dto.
+	 */
+	public FlowWorkRestSettingDetailDto() {
+		this.flowRestSetting = new FlowRestSetDto();
+		this.flowFixedRestSetting = new FlowFixedRestSetDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -26,6 +26,11 @@ public class FlowFixedRestSetDto implements FlowFixedRestSetSetMemento {
 	/** The calculate method. */
 	private Integer calculateMethod;
 
+	/**
+	 * Instantiates a new flow fixed rest set dto.
+	 */
+	public FlowFixedRestSetDto() {}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

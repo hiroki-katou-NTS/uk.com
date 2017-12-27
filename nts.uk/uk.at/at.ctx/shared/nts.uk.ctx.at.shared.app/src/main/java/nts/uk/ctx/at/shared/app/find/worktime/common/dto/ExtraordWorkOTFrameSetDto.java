@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 @Setter
 public class ExtraordWorkOTFrameSetDto implements ExtraordWorkOTFrameSetSetMemento {
 
-	/** The OT frame no. */
+	/** The o T frame no. */
 	private Integer oTFrameNo;
 
 	/** The in legal work frame no. */
@@ -26,6 +26,11 @@ public class ExtraordWorkOTFrameSetDto implements ExtraordWorkOTFrameSetSetMemen
 	/** The settlement order. */
 	private Integer settlementOrder;
 
+	/**
+	 * Instantiates a new extraord work OT frame set dto.
+	 */
+	public ExtraordWorkOTFrameSetDto() {}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

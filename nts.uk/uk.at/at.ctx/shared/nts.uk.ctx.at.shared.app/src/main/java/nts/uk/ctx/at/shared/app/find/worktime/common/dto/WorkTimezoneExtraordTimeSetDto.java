@@ -31,6 +31,12 @@ public class WorkTimezoneExtraordTimeSetDto implements WorkTimezoneExtraordTimeS
 	/** The calculate method. */
 	private Integer calculateMethod;
 
+	public WorkTimezoneExtraordTimeSetDto() {
+		this.holidayFrameSet = new HolidayFramsetDto();
+		this.timeRoundingSet = new TimeRoundingSettingDto();
+		this.oTFrameSet = new ExtraordWorkOTFrameSetDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

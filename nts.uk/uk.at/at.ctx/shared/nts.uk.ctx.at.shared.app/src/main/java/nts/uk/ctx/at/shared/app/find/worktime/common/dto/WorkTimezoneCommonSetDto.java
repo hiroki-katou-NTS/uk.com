@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento;
@@ -28,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 @Setter
 public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento{
 	
-	/** The Zero H stradd calculate set. */
+	/** The zero H stradd calculate set. */
 	private boolean zeroHStraddCalculateSet;
 
 	/** The interval set. */
@@ -61,6 +63,21 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 	/** The late early set. */
 	private WorkTimezoneLateEarlySetDto lateEarlySet;
 
+	/**
+	 * Instantiates a new work timezone common set dto.
+	 */
+	public WorkTimezoneCommonSetDto() {
+		this.intervalSet = new IntervalTimeSettingDto();
+		this.subHolTimeSet = new ArrayList<>();
+		this.medicalSet = new ArrayList<>();
+		this.goOutSet = new WorkTimezoneGoOutSetDto();
+		this.stampSet = new WorkTimezoneStampSetDto();
+		this.lateNightTimeSet = new WorkTimezoneLateNightTimeSetDto();
+		this.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSetDto();
+		this.extraordTimeSet = new WorkTimezoneExtraordTimeSetDto();
+		this.lateEarlySet = new WorkTimezoneLateEarlySetDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -85,6 +102,9 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 	 */
 	@Override
 	public void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> list) {
+		if (CollectionUtil.isEmpty(list)) {
+			return;
+		}
 		this.subHolTimeSet = list.stream().map(domain->{
 			WorkTimezoneOtherSubHolTimeSetDto dto = new WorkTimezoneOtherSubHolTimeSetDto();
 			domain.saveToMemento(dto);

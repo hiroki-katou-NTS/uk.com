@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,11 +15,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
 /**
  * The Class FlowRestTimezoneDto.
  */
-
 @Getter
 public class FlowRestTimezoneDto implements FlowRestTimezoneSetMemento {
 
-	/** The flow rest set. */
+	/** The flow rest sets. */
 	private List<FlowRestSettingDto> flowRestSets;
 
 	/** The use here after rest set. */
@@ -26,6 +26,14 @@ public class FlowRestTimezoneDto implements FlowRestTimezoneSetMemento {
 
 	/** The here after rest set. */
 	private FlowRestSettingDto hereAfterRestSet;
+	
+	/**
+	 * Instantiates a new flow rest timezone dto.
+	 */
+	public FlowRestTimezoneDto() {
+		this.flowRestSets = new ArrayList<>();
+		this.hereAfterRestSet = new FlowRestSettingDto();
+	}
 
 	/*
 	 * (non-Javadoc)
