@@ -88,20 +88,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 width: "500",
                 textalign: "left",
             }));
-            //startPage 009a AFTER start 000_A
-            //self.startPage().done(function(){
-            //    self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
-            //        self.approvalSource = self.kaf000_a.approvalList;
-            //        nts.uk.ui.block.clear();
-            //    })    
-            //});(appType: number, appDate: string, isStartup: boolean)
-            self.kaf000_a.getAppDataDate(4, moment(new Date()).format(self.dateType), true).done(function(){
-                 nts.uk.ui.block.clear();
+            self.startPage().done(function() {
+                nts.uk.ui.block.clear();
+                self.appDate.subscribe(value => {
+                    self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
+                });
             });
-            self.appDate.subscribe(value => {
-                self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
-            });
-            
         }
         /**
          * 

@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -10,12 +7,10 @@ import javax.transaction.Transactional;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,61 +23,19 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 	@Override
 	protected void handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		InsertApplicationGoBackDirectlyCommand command = context.getCommand();
-		//approval phase
-		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
-				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
-						companyId, 
-						"", 
-						"", 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
-						appApprovalPhaseCmd.dispOrder, 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) ,
-						//Frame
-						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
-								companyId, 
-								"", 
-								approvalFrame.dispOrder, 
-								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
-										companyId, 
-										"", 
-										approveAccepted.approverSID,
-										ApprovalAtr.UNAPPROVED.value,
-										approveAccepted.confirmATR,
-										null,
-										approveAccepted.reason,
-										approveAccepted.representerSID
-										)).collect(Collectors.toList())
-								)).collect(Collectors.toList())
-						))
-				.collect(Collectors.toList());
+		InsertApplicationGoBackDirectlyCommand command = context.getCommand();		
 		//get new Application Item
-		Application newApp = Application.createFromJavaType(
+		Application_New newApp = Application_New.firstCreate(
 				companyId, 
-				command.appCommand.getPrePostAtr(),
-				command.appCommand.getInputDate(), 
-				command.appCommand.getEnteredPersonSID(),
-				command.appCommand.getReversionReason(), 
+				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),  
 				command.appCommand.getApplicationDate(),
-				command.appCommand.getApplicationReason(),
-				command.appCommand.getApplicationType(), 
-				command.appCommand.getApplicantSID(),
-				command.appCommand.getReflectPlanScheReason(), 
-				command.appCommand.getReflectPlanTime(),
-				command.appCommand.getReflectPerState(), 
-				command.appCommand.getReflectPlanEnforce(),
-				command.appCommand.getReflectPerScheReason(), 
-				command.appCommand.getReflectPerTime(),
-				command.appCommand.getReflectPerState(), 
-				command.appCommand.getReflectPlanEnforce(),
-				command.appCommand.getStartDate(), 
-				command.appCommand.getEndDate(), 
-				appApprovalPhases);
-		
+				EnumAdaptor.valueOf(command.appCommand.getApplicationType(), ApplicationType.class), 
+				command.appCommand.getEnteredPersonSID(),
+				new AppReason(command.appCommand.getApplicationReason()));
 		// get new GoBack Direct Item
 		GoBackDirectly newGoBack = new GoBackDirectly(
 				companyId, 
-				newApp.getApplicationID(),
+				newApp.getAppID(),
 				command.goBackCommand.workTypeCD, 
 				command.goBackCommand.siftCD, 
 				command.goBackCommand.workChangeAtr,
@@ -97,10 +50,8 @@ public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplic
 				command.goBackCommand.workTimeEnd2, 
 				command.goBackCommand.workLocationCD2);
 		//勤務を変更する
-		
-		//直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
-		goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp,appApprovalPhases);
-		
+		//直行直帰登録前チェック 
+		goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp);
 	}
 
 }

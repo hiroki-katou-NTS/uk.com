@@ -68,6 +68,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
 //                self.getAllFrameByListPhaseId1(self.listPhaseID);
                  dfd.resolve(); 
             });
+            
+            //Call approval list
+            self.getAppDataDate(appType, standardDate, true).done(function() {
+                dfd.resolve(); 
+            });
             return dfd.promise();
         }
         
