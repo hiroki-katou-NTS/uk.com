@@ -27,12 +27,11 @@ public class JpaScheduleMethodSetMemento implements ScheduleMethodSetMemento {
 	 *            the entity
 	 */
 	public JpaScheduleMethodSetMemento(String historyId, KshmtScheduleMethod entity) {
-		// Check exist
-		if (entity.getHistoryId() == null) {
-			entity.setHistoryId(historyId);
-		}
-
 		this.entity = entity;
+		// Check exist
+		if (this.entity.getHistoryId() == null) {
+			this.entity.setHistoryId(historyId);
+		}
 	}
 
 	/*

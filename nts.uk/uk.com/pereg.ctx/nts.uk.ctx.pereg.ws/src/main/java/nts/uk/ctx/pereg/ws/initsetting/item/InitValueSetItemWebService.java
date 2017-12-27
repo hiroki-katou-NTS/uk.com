@@ -26,7 +26,7 @@ public class InitValueSetItemWebService {
 	@POST
 	@Path("findInit")
 	public List<SettingItemDto> getAllInitItem(findInitItemDto command) {
-		return this.finder.getAllInitItemByCtgCode(command);
+		return this.finder.getAllInitItemByCtgCode(true, command);
 	}
 
 }

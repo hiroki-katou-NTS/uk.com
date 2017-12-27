@@ -13,7 +13,8 @@ module cps001.a.vm {
     import permision = service.getCurrentEmpPermision;
     import format = nts.uk.text.format;
 
-    let DEF_AVATAR = 'images/avatar.png',
+    const REPL_KEY = '__REPLACE',
+        DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
@@ -449,6 +450,11 @@ module cps001.a.vm {
                 });
             },
             replace: (callback?: void) => {
+                let self = this;
+                setShared(REPL_KEY, REPL_KEYS.REPLICATION);
+
+                self.infoId.valueHasMutated();
+
                 if (callback) {
                     callback;
                 }
@@ -521,19 +527,45 @@ module cps001.a.vm {
                             }
                         });
                     } else if (self.category().categoryType() != IT_CAT_TYPE.SINGLE) {
-                        let id = self.id(),
-                            catid = self.categoryId(),
-                            query = {
-                                infoId: self.infoId(),
-                                categoryId: catid || id,
-                                personId: self.personId(),
-                                employeeId: self.employeeId(),
-                                standardDate: undefined,
-                                categoryCode: category.categoryCode()
-                            };
-                        service.getCatData(query).done(data => {
-                            layout().listItemCls(data.classificationItems);
-                        });
+                        let rep: number = getShared(REPL_KEY) || REPL_KEYS.NORMAL;
+
+                        if ([REPL_KEYS.NORMAL, REPL_KEYS.REPLICATION].indexOf(rep) > -1) {
+                            let id = self.id(),
+                                catid = self.categoryId(),
+                                query = {
+                                    infoId: self.infoId(),
+                                    categoryId: catid || id,
+                                    personId: self.personId(),
+                                    employeeId: self.employeeId(),
+                                    standardDate: undefined,
+                                    categoryCode: category.categoryCode()
+                                };
+                            service.getCatData(query).done(data => {
+                                if (rep == REPL_KEYS.REPLICATION) {
+                                    setShared(REPL_KEY, REPL_KEYS.OTHER);
+                                    self.infoId(undefined);
+                                    _.each(data.classificationItems, (c: any, i: number) => {
+                                        if (_.has(c, "items") && _.isArray(c.items)) {
+                                            _.each(c.items, m => {
+                                                if (!_.isArray(m)) {
+                                                    if (i == 0) {
+                                                        m.value = undefined;
+                                                    }
+                                                    m.recordId = undefined;
+                                                } else {
+                                                    _.each(m, k => {
+                                                        k.recordId = undefined;
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                                layout().listItemCls(data.classificationItems);
+                            });
+                        } else {
+                            setShared(REPL_KEY, REPL_KEYS.NORMAL);
+                        }
                     }
                 }
             });
@@ -827,6 +859,12 @@ module cps001.a.vm {
         TIME = 4,
         TIMEPOINT = 5,
         SELECTION = 6
+    }
+
+    enum REPL_KEYS {
+        NORMAL = 0,
+        REPLICATION = 1,
+        OTHER = 2
     }
 
     interface IPeregQuery {

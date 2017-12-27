@@ -20,4 +20,6 @@ public @interface AttendanceItemLayout {
 	boolean needCheckIDWithIndex() default false;
 	
 	boolean isList() default false;
+	
+	boolean isOptional() default false;
 }

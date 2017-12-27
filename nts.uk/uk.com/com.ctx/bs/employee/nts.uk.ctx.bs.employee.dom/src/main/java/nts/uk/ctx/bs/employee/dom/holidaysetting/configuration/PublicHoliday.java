@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 // 公休起算日
-public class PublicHoliday extends DomainObject implements PublicHolidayManagementStartDate{
+public class PublicHoliday extends DomainObject{
 	
 	/** The date. */
 	// 年月日
@@ -26,25 +26,7 @@ public class PublicHoliday extends DomainObject implements PublicHolidayManageme
 	// 起算日指定方法
 	private DayOfPublicHoliday determineStartDate;
 	
-	/**
-	 * Instantiates a new public holiday.
-	 *
-	 * @param memento the memento
-	 */
-	public PublicHoliday(PublicHolidayGetMemento memento) {
-		this.date = memento.getDate();
-		this.dayMonth = memento.getDayMonth();
-		this.determineStartDate = memento.getDetermineStartDate();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(PublicHolidaySetMemento memento) {
-		memento.setDate(this.date);
-		memento.setDayMonth(this.dayMonth);
-		memento.setDetermineStartDate(this.determineStartDate);
+	public PublicHoliday() {
+		super();
 	}
 }

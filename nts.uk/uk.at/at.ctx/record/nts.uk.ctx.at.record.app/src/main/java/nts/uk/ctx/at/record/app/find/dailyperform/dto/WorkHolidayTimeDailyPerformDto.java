@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 /** 日別実績の休出時間 */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class WorkHolidayTimeDailyPerformDto {
 
 	/** 休出枠時間帯: 休出枠時間帯 */

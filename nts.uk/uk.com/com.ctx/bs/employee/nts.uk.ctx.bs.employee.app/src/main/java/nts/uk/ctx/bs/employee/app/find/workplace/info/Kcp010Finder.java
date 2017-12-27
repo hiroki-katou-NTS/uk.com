@@ -59,8 +59,8 @@ public class Kcp010Finder {
 		
 		return Optional.of(Kcp010WorkplaceSearchData.builder()
 				.workplaceId(wkpInfo.getWorkplaceId())
-				.workplaceCode(wkpInfo.getWorkplaceCode().v())
-				.workplaceName(wkpInfo.getWkpDisplayName().v())
+				.code(wkpInfo.getWorkplaceCode().v())
+				.name(wkpInfo.getWkpDisplayName().v())
 				.build());
 	}
 	
@@ -87,8 +87,8 @@ public class Kcp010Finder {
 		// Return workplace id
 		WorkplaceInfo wkpInfo = optWorkplaceInfo.get();
 		return Optional.of(Kcp010WorkplaceSearchData.builder()
-				.workplaceId(wkpInfo.getWorkplaceId()).workplaceCode(wkpInfo.getWorkplaceCode().v())
-				.workplaceName(wkpInfo.getWorkplaceName().v())
-				.workplaceName(wkpInfo.getWkpDisplayName().v()).build());
+				.workplaceId(wkpInfo.getWorkplaceId())
+				.code(wkpInfo.getWorkplaceCode().v())
+				.name(wkpInfo.getWkpDisplayName().v()).build());
 	}
 }
