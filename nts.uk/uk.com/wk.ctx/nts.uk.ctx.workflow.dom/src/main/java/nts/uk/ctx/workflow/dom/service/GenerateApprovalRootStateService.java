@@ -8,7 +8,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
  * @author Doan Duy Hung
  *
  */
-public interface CollectApprovalRootAppService {
+public interface GenerateApprovalRootStateService {
 	
 	/**
 	 * 承認ルートインスタンスを生成する
@@ -19,6 +19,6 @@ public interface CollectApprovalRootAppService {
 	 * @param date 基準日
 	 * @return
 	 */
-	public ApprovalRootContentOutput getApprovalRootByAppType(String companyID, String employeeID, ApplicationType appType, GeneralDate date);
+	public ApprovalRootContentOutput getApprovalRootState(String companyID, String employeeID, ApplicationType appType, GeneralDate date);
 	
 }

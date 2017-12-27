@@ -226,12 +226,12 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate) {
+	public Optional<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyID)
 				.setParameter("employeeId", employeeID)
 				.setParameter("baseDate", baseDate)
-				.getList(c->toDomainPsApR(c));
+				.getSingle(c->toDomainPsApR(c));
 	}
 	
 	
