@@ -1,19 +1,26 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Column;
+
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
@@ -45,9 +52,12 @@ public class AppDataDateFinder {
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
 	
+	@Inject
+	private ApplicationRepository_New applicationRepository_New;
+	
 	private final String DATE_FORMAT = "yyyy/MM/dd";
 	
-	public AppDateData getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp){
+	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID){
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate appGeneralDate = GeneralDate.fromString(appDate, DATE_FORMAT);
@@ -57,12 +67,38 @@ public class AppDataDateFinder {
 				employeeID, 
 				EmploymentRootAtr.APPLICATION, 
 				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appGeneralDate);
+				appGeneralDate,
+				appID);
+		ApplicationDto_New applicationDto = null;
+		if(Strings.isNotBlank(appID)){
+			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
+			applicationDto = ApplicationDto_New.builder()
+					.version(application.getVersion())
+					.companyID(application.getCompanyID())
+					.applicationID(application.getAppID())
+					.prePostAtr(application.getPrePostAtr().value)
+					.inputDate(application.getInputDate().toString(DATE_FORMAT))
+					.enteredPersonSID(application.getEnteredPersonID())
+					.reversionReason(application.getReversionReason().v())
+					.applicationDate(application.getAppDate().toString(DATE_FORMAT))
+					.applicationReason(application.getAppReason().v())
+					.applicationType(application.getAppType().value)
+					.applicantSID(application.getEmployeeID())
+					.reflectPlanState(application.getReflectionInformation().getStateReflection().value)
+					.reflectPerState(application.getReflectionInformation().getStateReflectionReal().value)
+					.reflectPlanEnforce(application.getReflectionInformation().getForcedReflection().value)
+					.reflectPerEnforce(application.getReflectionInformation().getForcedReflectionReal().value)
+					.reflectPlanScheReason(application.getReflectionInformation().getNotReason().map(x -> x.value).orElse(null))
+					.reflectPerScheReason(application.getReflectionInformation().getNotReasonReal().map(x -> x.value).orElse(null))
+					.reflectPlanTime(application.getReflectionInformation().getDateTimeReflection().map(x -> x.toString(DATE_FORMAT)).orElse(null))
+					.reflectPerTime(application.getReflectionInformation().getDateTimeReflectionReal().map(x -> x.toString(DATE_FORMAT)).orElse(null))
+					.build();
+		}
 		if(isStartUp.equals(Boolean.TRUE)){
 			startupErrorCheckService.startupErrorCheck(appGeneralDate, approvalRootPattern.getApprovalRootContentImport());
 		}
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appGeneralDate);
-		return new AppDateData(
+		return new AppDateDataDto(
 				outputMessageDeadline, 
 				approvalRootPattern.getApprovalRootContentImport().getApprovalRootState().getListApprovalPhaseState()
 					.stream().map(x -> ApprovalPhaseStateDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList()), 
@@ -73,6 +109,7 @@ public class AppDataDateFinder {
 						recordWorkInfoImport.getLeaveStampTimeFirst(), 
 						recordWorkInfoImport.getAttendanceStampTimeSecond(), 
 						recordWorkInfoImport.getLeaveStampTimeSecond()),
+				applicationDto,
 				approvalRootPattern.getApprovalRootContentImport().getErrorFlag().value);
 	}
 	

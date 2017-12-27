@@ -16,10 +16,28 @@ import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.WwfdtApprovalRoo
 @Stateless
 public class JpaApprovalRootStateRepository extends JpaRepository implements ApprovalRootStateRepository {
 
+	private static final String SELECT_BY_ID;
+	
+	private static final String SELECT_TYPE_APP;
+	
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootState e");
+		builderString.append(" WHERE e.wwfdpApprovalRootStatePK.rootStateID = :rootStateID");	
+		SELECT_BY_ID = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(SELECT_BY_ID);
+		builderString.append(" AND e.rootType = 0");
+		SELECT_TYPE_APP = builderString.toString();
+	}
+	
 	@Override
 	public Optional<ApprovalRootState> findEmploymentApp(String rootStateID) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_TYPE_APP, WwfdtApprovalRootState.class)
+					.setParameter("rootStateID", rootStateID)
+					.getSingle(x -> x.toDomain());
 	}
 	
 	@Override

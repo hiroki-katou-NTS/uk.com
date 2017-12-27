@@ -10,6 +10,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
@@ -41,6 +42,12 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 	
+	@Inject
+	private AppStampRepository appStampRepository;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	
 	@Override
 	public void appReasonCheck(String applicationReason, AppStamp appStamp) {
 		appStamp.getApplication_New().setAppReason(new AppReason(applicationReason));
@@ -69,6 +76,13 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	@Override
 	public String getEmployeeName(String employeeID) {
 		return employeeAdapter.getEmployeeName(employeeID);
+	}
+
+	@Override
+	public AppStamp findByID(String companyID, String appID) {
+		AppStamp appStamp = appStampRepository.findByAppID(companyID, appID);
+		appStamp.setApplication_New(applicationRepository.findByID(companyID, appID).get());
+		return appStamp;
 	}
 
 }

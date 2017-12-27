@@ -23,7 +23,7 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 	
 	@Override
 	public ApprovalRootPattern getApprovalRootPatternService(String companyID, String employeeID, EmploymentRootAtr rootAtr,
-			ApplicationType appType, GeneralDate appDate) {
+			ApplicationType appType, GeneralDate appDate, String appID) {
 		GeneralDate baseDate = null;
 		ApprovalRootContentImport_New approvalRootContentImport = null;
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする
@@ -31,7 +31,7 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 		BaseDateFlg baseDateFlg = BaseDateFlg.SYSTEM_DATE;
 		
 		if(baseDateFlg.equals(BaseDateFlg.SYSTEM_DATE)){
-			approvalRootContentImport = collectApprovalRootContentAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate);
+			approvalRootContentImport = collectApprovalRootContentAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, appID);
 			baseDate = GeneralDate.today();
 			return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 		}
@@ -39,7 +39,7 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 			baseDate = GeneralDate.today();
 			return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 		}
-		collectApprovalRootContentAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate);
+		collectApprovalRootContentAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, appID);
 		baseDate = appDate;
 		return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 	}

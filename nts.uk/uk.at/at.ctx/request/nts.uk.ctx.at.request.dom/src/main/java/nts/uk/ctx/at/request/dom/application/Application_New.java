@@ -20,6 +20,8 @@ import nts.gul.text.IdentifierUtil;
 @Builder
 public class Application_New extends DomainObject {
 	
+	private Long version;
+	
 	private String companyID; 
 	
 	// 申請ID

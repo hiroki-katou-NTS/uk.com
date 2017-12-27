@@ -49,7 +49,7 @@ public class AppStampDto {
 				appStamp.getAppStampGoOutPermits().stream().map(x -> AppStampGoOutPermitDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampWorks().stream().map(x -> AppStampWorkDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampCancels().stream().map(x -> AppStampCancelDto.convertToDto(x)).collect(Collectors.toList()), 
-				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecord().get()),
+				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecord().orElse(null)),
 				employeeName);
 	}
 }

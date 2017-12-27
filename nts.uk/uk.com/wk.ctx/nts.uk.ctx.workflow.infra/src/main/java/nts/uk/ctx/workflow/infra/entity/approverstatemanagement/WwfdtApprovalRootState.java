@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -15,8 +16,11 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -64,6 +68,18 @@ public class WwfdtApprovalRootState extends UkJpaEntity {
 				.listWwfdtApprovalPhaseState(
 						approvalRootState.getListApprovalPhaseState().stream()
 						.map(x -> WwfdtApprovalPhaseState.fromDomain(x)).collect(Collectors.toList()))
+				.build();
+	}
+	
+	public ApprovalRootState toDomain(){
+		return ApprovalRootState.builder()
+				.rootStateID(this.wwfdpApprovalRootStatePK.rootStateID)
+				.rootType(EnumAdaptor.valueOf(this.rootType, RootType.class))
+				.historyID(this.historyID)
+				.approvalRecordDate(this.recordDate)
+				.employeeID(this.employeeID)
+				.listApprovalPhaseState(this.listWwfdtApprovalPhaseState.stream()
+											.map(x -> x.toDomain()).collect(Collectors.toList()))
 				.build();
 	}
 }

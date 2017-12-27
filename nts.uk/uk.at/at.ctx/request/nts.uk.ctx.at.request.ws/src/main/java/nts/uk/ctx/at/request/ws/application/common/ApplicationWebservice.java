@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDel
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
-import nts.uk.ctx.at.request.app.find.application.common.AppDateData;
+import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
@@ -272,8 +272,8 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("getAppDataByDate")
-	public AppDateData getAppDataByDate(AppDateParam param){
-		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup());
+	public AppDateDataDto getAppDataByDate(AppDateParam param){
+		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID());
 	}
 	
 }
@@ -283,4 +283,5 @@ class AppDateParam {
 	private Integer appTypeValue; 
 	private String appDate;
 	private Boolean isStartup;
+	private String appID;
 }

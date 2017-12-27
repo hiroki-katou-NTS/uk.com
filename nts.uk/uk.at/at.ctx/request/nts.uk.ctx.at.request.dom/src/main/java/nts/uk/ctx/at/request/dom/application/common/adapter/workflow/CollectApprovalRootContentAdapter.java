@@ -10,6 +10,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
  */
 public interface CollectApprovalRootContentAdapter {
 	
-	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate);
+	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID);
 	
 }
