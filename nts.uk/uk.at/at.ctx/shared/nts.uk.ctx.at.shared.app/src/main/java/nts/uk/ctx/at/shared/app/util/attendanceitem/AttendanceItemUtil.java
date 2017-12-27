@@ -54,9 +54,24 @@ public class AttendanceItemUtil {
 		return getItemLayouFields(attendanceItems.getClass()).map(f -> {
 			T fieldValue;
 			try {
-				fieldValue = (T) f.get(attendanceItems);
 				AttendanceItemLayout layout = f.getAnnotation(AttendanceItemLayout.class);
+
+				if (layout.isList()) {
+					List<T> listValue = (List<T>) f.get(attendanceItems);
+					if (listValue != null && !listValue.isEmpty()) {
+						listValue.stream().map(v -> toItemValues(v, itemIds)).flatMap(List::stream)
+								.collect(Collectors.toList());
+					}
+					return toItemValues(ReflectionUtil.newInstance(getGenericType(f)), itemIds);
+				}
+				if (layout.isOptional()) {
+					fieldValue = ((Optional<T>) f.get(attendanceItems))
+							.orElse(ReflectionUtil.newInstance(getGenericType(f)));
+				} else {
+					fieldValue = (T) f.get(attendanceItems);
+				}
 				return toItemValues(fieldValue, layout == null ? "" : layout.layout(), itemIds);
+
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				return new ArrayList<ItemValue>();
 			}
@@ -68,7 +83,7 @@ public class AttendanceItemUtil {
 		T newObject = ReflectionUtil.newInstance(classType);
 		return toConvertibleAttendanceItem(newObject, attendanceItems);
 	}
-	
+
 	public static <T extends ConvertibleAttendanceItem, R extends ConvertibleAttendanceItem> T toConvertibleAttendanceItem(
 			T object, List<ItemValue> attendanceItems) {
 		AttendanceItemRoot rootAnno = getRootAnnotation(object);
@@ -378,7 +393,7 @@ public class AttendanceItemUtil {
 		}
 		return fieldExCondition;
 	}
-	
+
 	private static String getRootName(AttendanceItemRoot rootAnno) {
 		return rootAnno == null ? "" : rootAnno.rootName();
 	}

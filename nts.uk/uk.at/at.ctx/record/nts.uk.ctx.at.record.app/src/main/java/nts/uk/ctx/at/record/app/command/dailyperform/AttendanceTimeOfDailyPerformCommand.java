@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.command.actualworkinghours;
+package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import lombok.Data;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.AttendanceTimeDailyPerformDto;
