@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.PredetemineTimeSetFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -43,7 +44,8 @@ public class WorkTimeSettingFinder {
 		String companyId = AppContexts.user().companyId();
 		List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findByCompanyId(companyId);
 		return lstWorktimeSetting.stream().map(item -> {
-			return SimpleWorkTimeSettingDto.builder().companyId(item.getCompanyId())
+			return SimpleWorkTimeSettingDto.builder()
+					.isAbolish(item.getAbolishAtr() == AbolishAtr.ABOLISH)
 					.worktimeCode(item.getWorktimeCode().v())
 					.workTimeName(item.getWorkTimeDisplayName().getWorkTimeName().v()).build();
 		}).collect(Collectors.toList());
@@ -59,7 +61,8 @@ public class WorkTimeSettingFinder {
 		String companyId = AppContexts.user().companyId();
 		List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findWithCondition(companyId, condition);
 		return lstWorktimeSetting.stream().map(item -> {
-			return SimpleWorkTimeSettingDto.builder().companyId(item.getCompanyId())
+			return SimpleWorkTimeSettingDto.builder()
+					.isAbolish(item.getAbolishAtr() == AbolishAtr.ABOLISH)
 					.worktimeCode(item.getWorktimeCode().v())
 					.workTimeName(item.getWorkTimeDisplayName().getWorkTimeName().v()).build();
 		}).collect(Collectors.toList());

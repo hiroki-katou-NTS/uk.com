@@ -59,7 +59,9 @@ module nts.uk.at.view.kmk003.a {
                 self.columnWorktimeSettings = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 100 },
                     { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 130 },
-                    { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'description', width: 50 }
+                    { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'isAbolish', width: 40 ,
+                        formatter: isAbolish => isAbolish ?
+                        '<div style="text-align: center;max-height: 18px;"><i class="icon icon-x"></i></div>' : '' }
                 ]);
                 self.selectedWorkTimeCode = ko.observable('');
 
