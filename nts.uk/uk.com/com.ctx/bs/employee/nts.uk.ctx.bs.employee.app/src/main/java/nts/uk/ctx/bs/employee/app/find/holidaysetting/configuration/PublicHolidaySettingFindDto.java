@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration;
 
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnit;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingSetMemento;
 
 /**
@@ -48,6 +49,18 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	public void setPublicHdManagementClassification(
 			PublicHolidayManagementClassification publicHdManagementClassification) {
 		this.publicHdManagementClassification = publicHdManagementClassification.value;
+	}
+
+	@Override
+	public void setPublicHdManagementUsageUnit(PublicHolidayManagementUsageUnit publicHdManagementUsageUnit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setIsWeeklyHdCheck(boolean isWeeklyHdCheck) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
