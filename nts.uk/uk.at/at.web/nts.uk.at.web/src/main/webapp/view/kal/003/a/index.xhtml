@@ -24,10 +24,10 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button tabindex="1" data-bind="click: test">#{i18n.getText('KAL003_5')}</button>
-					<button tabindex="2" class="proceed">#{i18n.getText('KAL003_6')}</button>
-					<button tabindex="2">#{i18n.getText('KAL003_7')}</button>
-					<button tabindex="3" class="danger">#{i18n.getText('KAL003_8')}</button>
+					<button tabindex="1" data-bind="click: createNewAlarmCheckCondition">#{i18n.getText('KAL003_5')}</button>
+					<button tabindex="2" data-bind="click: registerAlarmCheckCondition, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KAL003_6')}</button>
+					<button tabindex="2" data-bind="enable: screenMode() == 1">#{i18n.getText('KAL003_7')}</button>
+					<button tabindex="3" data-bind="enable: screenMode() == 1" class="danger">#{i18n.getText('KAL003_8')}</button>
 				</div>
 			</div>
 			<div class="contents-area">
@@ -38,15 +38,15 @@
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_48')}</label>
 								<div id="combo-box" data-bind="ntsComboBox: {
-									options: itemList,
+									options: cbbItemList,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
-									value: selectedCode,
+									value: selectedCategory,
 									optionsText: 'name',
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'code', length: 3 },
+										{ prop: 'code', length: 3, hidden: true },
 										{ prop: 'name', length: 8 },
 									]}"></div>
 							</div>
@@ -54,13 +54,13 @@
 								data-bind="ntsGridList: {								
  									height: 350, 
  									dataSource: listAlarmCheckCondition, 
- 									primaryKey: 'code', 
+ 									primaryKey: 'displayCode', 
  									columns: [
-						                { headerText: '#{i18n.getText('KAL003_11')}', key: 'code', width: 100, formatter: _.escape },
-						                { headerText: '#{i18n.getText('KAL003_12')}', key: 'name', width: 170, formatter: _.escape }
+						                { headerText: '#{i18n.getText('KAL003_11')}', key: 'displayCode', width: 100, formatter: _.escape },
+						                { headerText: '#{i18n.getText('KAL003_12')}', key: 'displayName', width: 170, formatter: _.escape }
 						            ], 
  									multiple: false, 
- 									value: selectedAlarmCheckCondition 
+ 									value: selectedAlarmCheckConditionCode 
  								}"></table> 
 						</div>
 					</div>
@@ -68,24 +68,33 @@
 						<div>
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_11')}</label> 
-								<input data-bind="ntsTextEditor: {value: code}" /> 
+								<input data-bind="ntsTextEditor: {value: code, required: true, enable: $parent.screenMode() == 0}" /> 
 								<label>#{i18n.getText('KAL003_12')}</label>
-								<input data-bind="ntsTextEditor: {value: name}" />
+								<input data-bind="ntsTextEditor: {value: name, required: true}" />
 							</div>
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_9')}</label> 
-								<label data-bind="text: category"></label>
+								<label data-bind="text: displayCategory"></label>
 							</div>
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_13')}</label> 
-								<input data-bind="ntsTextEditor: {value: displayAvailableRoles}" />
+								<input data-bind="ntsTextEditor: {value: displayAvailableRoles, readonly: true}" />
 								<button tabindex="9">#{i18n.getText('KAL003_14')}</button>
+							</div>
+							<div class="valign-center control-group" id="AA1">
+								<label>#{i18n.getText('KAL003_50')}</label>
+								<div data-bind="ntsRadioBoxGroup: {
+									options: $parent.radioItemList,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: $parent.selectedDataCondition,
+									enable: true}"></div>
 							</div>
 						</div>
 						<div id="tab-panel"
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
 							<div class="tab-content-1" data-bind="with: targetCondition">
-								<ui:include src="tab1/tab1.xhtml" />
+								<ui:include src="common/scopecheck.xhtml" />
 							</div>
 							<div class="tab-content-2">
 								<span>Tab Content 2</span><br />

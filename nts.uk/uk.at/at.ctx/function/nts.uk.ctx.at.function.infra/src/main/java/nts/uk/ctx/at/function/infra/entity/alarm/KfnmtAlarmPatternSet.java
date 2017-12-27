@@ -53,9 +53,9 @@ public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable{
 	
 	public static KfnmtAlarmPatternSet toEntity(AlarmPatternSetting domain) {
 		
-		KfnmtAlarmPerSet alarmPerSet = KfnmtAlarmPerSet.toEntity(domain.getAlarmPerSet());
+		KfnmtAlarmPerSet alarmPerSet = KfnmtAlarmPerSet.toEntity(domain.getAlarmPerSet(),  domain.getCompanyID(),  domain.getAlarmPatternCD().v());
 		List<KfnmtCheckCondition> checkConList = domain.getCheckConList().stream()
-				.map(c -> KfnmtCheckCondition.toEntity(c)).collect(Collectors.toList());
+				.map(c -> KfnmtCheckCondition.toEntity(c, domain.getCompanyID(), domain.getAlarmPatternCD().v())).collect(Collectors.toList());
 		return new KfnmtAlarmPatternSet(
 				new KfnmtAlarmPatternSetPK(domain.getCompanyID(), domain.getAlarmPatternCD().v()),
 				domain.getAlarmPatternName().v(), checkConList, alarmPerSet);

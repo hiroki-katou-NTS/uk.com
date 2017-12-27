@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange.daily;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 
 /**
@@ -15,7 +14,7 @@ public class Days {
 
 	//Previous / previous classification
 	/**前・先区分*/
-	private PreviousClassification strPreviousClassification;
+	private PreviousClassification dayPrevious;
 		
 	/** Day*/
 	// 日
@@ -25,9 +24,8 @@ public class Days {
 	// 当日とする
 	private boolean makeToDay;
 
-	public Days(int strPreviousClassification, int day, boolean makeToDay) {
-		super();
-		this.strPreviousClassification = EnumAdaptor.valueOf(strPreviousClassification, PreviousClassification.class);
+	public Days(PreviousClassification dayPrevious, int day, boolean makeToDay) {
+		this.dayPrevious = dayPrevious;
 		this.day = day;
 		this.makeToDay = makeToDay;
 	}

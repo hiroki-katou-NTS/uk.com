@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,16 +25,21 @@ public class EndDate {
 	
 	/**Closing Date*/
 	// 締め日指定
-	private Month endMonth;
+	private Optional<Month> endMonth = Optional.empty();
 	
 	/**Specify number of days*/
 	// 日数指定
-	private Days endDays;
+	private Optional<Days> endDays = Optional.empty();
 
-	public EndDate(int endSpecify, Days endDays, Month endMonth) {
-		super();
+	public EndDate(int endSpecify) {
 		this.endSpecify = EnumAdaptor.valueOf(endSpecify, EndSpecify.class);
-		this.endMonth = endMonth;
-		this.endDays = endDays;
+	}
+	
+	public void setEndDay(PreviousClassification monthPrevious, int day, boolean makeToDay) {
+		this.endDays = Optional.of(new Days(monthPrevious, day, makeToDay));
+	}
+	
+	public void setEndMonth(PreviousClassification monthPrevious, int month, boolean currentMonth) {
+		this.endMonth = Optional.of(new Month(monthPrevious, month, currentMonth));
 	}
 }

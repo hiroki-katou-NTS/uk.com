@@ -18,10 +18,10 @@ public class AddAlarmPatternSettingCommand {
 	/**
 	 * アラームリスト権限設定
 	 */
-	private AlarmPermissionSettingDto alarmPerSet; 
+	private AlarmPermissionSettingCommand alarmPerSet; 
 	/**
 	 * チェック条件
 	 */
-	private List<CheckConditionDto> checkConditonList;
+	private List<CheckConditionCommand> checkConditonList;
 	
 }
