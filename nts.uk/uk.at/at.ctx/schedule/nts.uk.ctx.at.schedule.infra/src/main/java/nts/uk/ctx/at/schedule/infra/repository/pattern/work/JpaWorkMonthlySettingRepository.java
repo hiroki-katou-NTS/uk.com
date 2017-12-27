@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.pattern.work;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
@@ -67,7 +67,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		List<KscmtWorkMonthSet> entitys = this.toEntityUpdateAll(workMonthlySettings);
 		
 		// convert to map entity
-		Map<BigDecimal, KscmtWorkMonthSet> mapEntity = entitys.stream()
+		Map<GeneralDate, KscmtWorkMonthSet> mapEntity = entitys.stream()
 				.collect(Collectors.toMap((entity) -> {
 					return entity.getKscmtWorkMonthSetPK().getYmdK();
 				}, Function.identity()));
@@ -91,10 +91,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<WorkMonthlySetting> findById(String companyId, String monthlyPatternCode,
-			int baseDate) {
+			GeneralDate baseDate) {
 		return this.queryProxy()
 				.find(new KscmtWorkMonthSetPK(companyId, monthlyPatternCode,
-						BigDecimal.valueOf(baseDate)), KscmtWorkMonthSet.class)
+						baseDate), KscmtWorkMonthSet.class)
 				.map(c -> this.toDomain(c));
 	}
 	/*
@@ -106,7 +106,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 */
 	@Override
 	public List<WorkMonthlySetting> findByStartEndDate(String companyId, String monthlyPatternCode,
-			int startDate, int endDate) {
+			GeneralDate startDate, GeneralDate endDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -135,12 +135,12 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		// greater than or equal start date
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
 				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK),
-				BigDecimal.valueOf(startDate)));
+				startDate));
 		
 		// less than or equal end date
 		lstpredicateWhere.add(criteriaBuilder.lessThan(
 				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK),
-				BigDecimal.valueOf(endDate)));
+				endDate));
 				
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -251,7 +251,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 */
 	@Override
 	public List<WorkMonthlySetting> findByYMD(String companyId, String monthlyPatternCode,
-			List<BigDecimal> baseDates) {
+			List<GeneralDate> baseDates) {
 
 		// check exist data by input
 		if(CollectionUtil.isEmpty(baseDates)){

@@ -66,7 +66,7 @@ module nts.uk.at.view.ksm005.b {
             export interface WorkMonthlySettingDto {
                 workTypeCode: string;
                 workingCode: string;
-                ymdk: number;
+                ymdk: string;
                 monthlyPatternCode: string;
                 workTypeName: string;
                 typeColor: number;
