@@ -44,10 +44,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiBreakTime a ");
-		builderString.append("WHERE WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.krcdtDaiBreakTimePK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiBreakTimePK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 
+		builderString= new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiBreakTime a ");
 		builderString.append("WHERE a.krcdtDaiBreakTimePK.employeeId = :employeeId ");
