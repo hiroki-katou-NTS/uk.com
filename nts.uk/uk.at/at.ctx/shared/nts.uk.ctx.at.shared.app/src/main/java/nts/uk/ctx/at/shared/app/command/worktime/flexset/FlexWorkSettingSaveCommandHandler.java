@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flexset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -47,16 +45,12 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		// common handler
 		this.commonHandler.handle(command);
 		
-		// call repository find by code flex work setting
-		Optional<FlexWorkSetting> optionalFlexWorkSetting = this.flexWorkSettingRepository
-				.find(flexWorkSetting.getCompanyId(), flexWorkSetting.getWorkTimeCode().v());
-		
-		// check exist data 
-		if(optionalFlexWorkSetting.isPresent()){
-			this.flexWorkSettingRepository.update(flexWorkSetting);
-		}
-		else {
+		// check is add mode
+		if(command.isAddMode()){
 			this.flexWorkSettingRepository.add(flexWorkSetting);
+		}
+		else{
+			this.flexWorkSettingRepository.update(flexWorkSetting);
 		}
 	}
 

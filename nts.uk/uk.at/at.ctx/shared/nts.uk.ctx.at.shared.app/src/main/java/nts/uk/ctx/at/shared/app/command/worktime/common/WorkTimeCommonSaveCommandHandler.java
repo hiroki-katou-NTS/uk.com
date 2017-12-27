@@ -43,14 +43,25 @@ public class WorkTimeCommonSaveCommandHandler{
 
 		// get pred setting by client send
 		PredetemineTimeSetting predseting = command.toDomainPredetemineTimeSetting();
+		
+		// check is add mode
+		if(command.isAddMode()){
+			
+			// check register 
+			this.workTimeSetPolicy.canRegister(workTimeSetting);
+			
+			// call repository add work time setting
+			this.workTimeSettingRepository.add(workTimeSetting);
+			
+			// call repository add predetemine time setting
+			this.predetemineTimeSettingRepository.add(predseting);
+		}
+		else {
+			// call repository update work time setting
+			this.workTimeSettingRepository.update(workTimeSetting);
 
-		// check policy
-		//this.workTimeSetPolicy.canRegister(workTimeSetting);
-
-		// call repository save work time setting
-		this.workTimeSettingRepository.insert(workTimeSetting);
-
-		// call repository save pred setting
-		this.predetemineTimeSettingRepository.save(predseting);
+			// call repository update predetemine time setting
+			this.predetemineTimeSettingRepository.update(predseting);
+		}
 	}
 }

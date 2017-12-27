@@ -5,13 +5,13 @@
 package nts.uk.ctx.at.shared.app.command.worktime.common;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
- * Gets the work time code.
- *
- * @return the work time code
+ * The Class WorkTimeCommonDeleteCommand.
  */
 @Getter
+@Setter
 public class WorkTimeCommonDeleteCommand {
 	
 	/** The work time code. */

@@ -52,7 +52,7 @@ public interface WorkTimeSettingRepository {
 	 *
 	 * @param domain the domain
 	 */
-	public void insert(WorkTimeSetting domain);
+	public void add(WorkTimeSetting domain);
 
 	/**
 	 * Update.

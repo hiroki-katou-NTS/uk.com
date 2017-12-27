@@ -22,11 +22,18 @@ public interface PredetemineTimeSettingRepository {
 	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
 
 	/**
-	 * Save.
+	 * Adds the.
 	 *
 	 * @param domain the domain
 	 */
-	public void save(PredetemineTimeSetting domain);
+	public void add(PredetemineTimeSetting domain);
+	
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(PredetemineTimeSetting domain);
 
 	/**
 	 * Removes the.

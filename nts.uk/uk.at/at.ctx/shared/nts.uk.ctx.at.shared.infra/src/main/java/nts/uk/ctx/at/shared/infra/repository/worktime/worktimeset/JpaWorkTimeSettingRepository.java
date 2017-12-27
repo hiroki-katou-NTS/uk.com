@@ -101,7 +101,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 * save(nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting)
 	 */
 	@Override
-	public void insert(WorkTimeSetting domain) {
+	public void add(WorkTimeSetting domain) {
 		KshmtWorkTimeSet entity = new KshmtWorkTimeSet();
 		domain.saveToMemento(new JpaWorkTimeSettingSetMemento(entity));
 		this.commandProxy().insert(entity);

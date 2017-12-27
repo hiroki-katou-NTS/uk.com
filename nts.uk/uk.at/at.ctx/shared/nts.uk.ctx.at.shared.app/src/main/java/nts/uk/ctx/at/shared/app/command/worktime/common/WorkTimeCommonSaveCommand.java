@@ -18,6 +18,9 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 @Setter
 public class WorkTimeCommonSaveCommand {
 	
+	/** The add mode. */
+	private boolean addMode;
+	
 	/** The predseting. */
 	private PredetemineTimeSettingDto predseting;
 	

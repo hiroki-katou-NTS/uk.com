@@ -70,24 +70,27 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	 * predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void save(PredetemineTimeSetting domain) {
+	public void add(PredetemineTimeSetting domain) {
+		KshmtPredTimeSet entity = new KshmtPredTimeSet();
+		domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity));
+		this.commandProxy().insert(entity);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.
+	 * PredetemineTimeSettingRepository#update(nts.uk.ctx.at.shared.dom.worktime
+	 * .predset.PredetemineTimeSetting)
+	 */
+	@Override
+	public void update(PredetemineTimeSetting domain) {
 		// Query
 		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.queryProxy().find(
 				new KshmtPredTimeSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()), KshmtPredTimeSet.class);
-
-		KshmtPredTimeSet entity = optionalEntityTimeSet.orElse(new KshmtPredTimeSet());
-
-		// Check exist
-		if (optionalEntityTimeSet.isPresent()) {
-			// Update into DB
-			domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity));
-			this.commandProxy().update(entity);
-			return;
-		}
-
-		// Insert into DB
+		KshmtPredTimeSet entity = optionalEntityTimeSet.get();
 		domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity));
-		this.commandProxy().insert(entity);
+		this.commandProxy().update(entity);
 
 	}
 
