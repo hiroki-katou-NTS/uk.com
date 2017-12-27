@@ -10,6 +10,6 @@ public class KshmtDayofweekTimeZonePK_ {
 
     public static volatile SingularAttribute<KshmtDayofweekTimeZonePK, Integer> perWorkDayOffAtr;
     public static volatile SingularAttribute<KshmtDayofweekTimeZonePK, String> historyId;
-    public static volatile SingularAttribute<KshmtDayofweekTimeZonePK, Integer> startTime;
+    public static volatile SingularAttribute<KshmtDayofweekTimeZonePK, Integer> cnt;
 
 }

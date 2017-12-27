@@ -1,16 +1,29 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK_;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment_;
 
 /**
  * 
@@ -21,10 +34,6 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment
 public class JpaClosureEmploymentRepository extends JpaRepository implements ClosureEmploymentRepository {
 
 	private final String DELETE_ALL = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId";
-	
-	private final String FIND_BY_CLOSURE_ID = "SELECT c FROM KclmtClosureEmployment c "
-			+ "WHERE  c.kclmpClosureEmploymentPK.companyId = :companyId  "
-			+ "AND c.closureId = :closureId";
 	
 	private static final String FIND;
 
@@ -76,13 +85,67 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 				kclmtClosureEmployment.closureId);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository#findByClosureId(java.lang.String, int)
+	 */
 	@Override
 	public List<ClosureEmployment> findByClosureId(String companyId, int closureId) {
-		return this.queryProxy().query(FIND_BY_CLOSURE_ID, KclmtClosureEmployment.class)
-				.setParameter("companyId", companyId)
-				.setParameter("closureId", closureId)
-				.getList(f -> convertToDomain(f));
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<KclmtClosureEmployment> cq = cb.createQuery(KclmtClosureEmployment.class);
+		
+		// Root
+		Root<KclmtClosureEmployment> root = cq.from(KclmtClosureEmployment.class);
+		cq.select(root);
+		
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		// Equal companyId
+		predicateList.add(cb.equal(
+				root.get(KclmtClosureEmployment_.kclmpClosureEmploymentPK).get(KclmpClosureEmploymentPK_.companyId),
+				companyId));
+		// Equal ClosureId
+		predicateList.add(cb.equal(
+				root.get(KclmtClosureEmployment_.closureId),
+				closureId));
+
+		// Create Query
+		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
+
+		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository#
+	 * findByClosureId(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<ClosureEmployment> findByClosureIds(String companyId, List<Integer> closureIds) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<KclmtClosureEmployment> cq = cb.createQuery(KclmtClosureEmployment.class);
+
+		// Root
+		Root<KclmtClosureEmployment> root = cq.from(KclmtClosureEmployment.class);
+		cq.select(root);
+
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		// Equal companyId
+		predicateList.add(cb.equal(
+				root.get(KclmtClosureEmployment_.kclmpClosureEmploymentPK).get(KclmpClosureEmploymentPK_.companyId),
+				companyId));
+		// in ClosureIds
+		predicateList.add(root.get(KclmtClosureEmployment_.closureId).in(closureIds));
+
+		// Create Query
+		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
+
+		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
+	}
 }

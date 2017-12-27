@@ -90,10 +90,11 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
 
-		Date date = new Date();
-		GeneralDate systemDate = GeneralDate.legacyDate(date);
-		
 		List<EmployeeInfoDtoExport> result = new ArrayList<>();
+		
+		if (CollectionUtil.isEmpty(listEmpDomain)) {
+			return null;
+		}
 		
 		for (EmployeeDataMngInfo employee: listEmpDomain) {
 			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(companyId,employee.getEmployeeId());
@@ -104,16 +105,13 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			EmployeeInfoDtoExport employeeInfo = new EmployeeInfoDtoExport();
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
-			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
-
 			if (affComHistByEmp.items() != null) {
 
 				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-					return m.end().beforeOrEquals(systemDate) && m.start().afterOrEquals(systemDate);
+					return m.end().afterOrEquals(standardDate) && m.start().beforeOrEquals(standardDate);
 				}).collect(Collectors.toList());
 
 				if (!filter.isEmpty()) {
-					affComHistItem = filter.get(0);
 
 					Optional<Person> personOpt = this.personRepo.getByPersonId(affComHist.getPId());
 					if (personOpt.isPresent()) {

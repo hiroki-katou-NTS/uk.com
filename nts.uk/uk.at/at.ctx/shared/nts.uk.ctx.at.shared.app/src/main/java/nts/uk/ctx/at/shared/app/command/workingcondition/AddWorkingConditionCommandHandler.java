@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -54,7 +55,8 @@ public class AddWorkingConditionCommandHandler extends CommandHandlerWithResult<
 		if (listHistBySid.isPresent()){
 			workingCond = listHistBySid.get();
 		}
-		DateHistoryItem itemToBeAdded = new DateHistoryItem(histId, new DatePeriod(command.getStartDate(), command.getEndDate()));
+		GeneralDate endDate = command.getEndDate() !=null? command.getEndDate() : GeneralDate.max();
+		DateHistoryItem itemToBeAdded = new DateHistoryItem(histId, new DatePeriod(command.getStartDate(), endDate));
 		workingCond.add(itemToBeAdded);
 		
 		workingConditionRepository.save(workingCond);

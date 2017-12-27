@@ -73,4 +73,20 @@ public enum WorkTimeMethodSet {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 固定勤務か判定
+	 * @return　固定勤務である
+	 */
+	public boolean isFixedWork() {
+		return FIXED_WORK.equals(this);
+	}
+	
+	/**
+	 * 流動勤務か判定する
+	 * @return 流動勤務である
+	 */
+	public boolean isFluidWork() {
+		return FLOW_WORK.equals(this);
+	}
 }

@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.find.initsetting.item;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,9 @@ public class InitValueSetItemFinder {
 	@Inject
 	private EmpInfoItemDataFinder infoItemDataFinder;
 
+	@Inject
+	private SettingItemDtoMapping settingItemMap;
+
 	List<PerInfoInitValueSetItem> itemList;
 
 	String employeeId;
@@ -46,7 +48,7 @@ public class InitValueSetItemFinder {
 	GeneralDate baseDate;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItemByCtgCode(findInitItemDto command) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isSetText, findInitItemDto command) {
 
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
@@ -71,6 +73,12 @@ public class InitValueSetItemFinder {
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASNAME, command.getEmployeeName());
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
+
+		if (isSetText) {
+
+			this.settingItemMap.setTextForSelectionItem(result);
+
+		}
 
 		return result;
 	}
@@ -134,7 +142,7 @@ public class InitValueSetItemFinder {
 						Optional<SettingItemDto> itemDataOpt = optList.stream()
 								.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
 						if (itemDataOpt.isPresent()) {
-							itemDtoOpt.get().setData(itemDataOpt.get().getValueAsString());
+							itemDtoOpt.get().setData(itemDataOpt.get().getSaveData().getValue());
 						}
 
 					}
@@ -169,17 +177,12 @@ public class InitValueSetItemFinder {
 
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItem domain) {
 
-		int dataType = domain.getDataType();
-
 		SettingItemDto itemDto = SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
 				domain.getItemCode(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getSaveDataType().value, domain.getDateValue(), domain.getIntValue().v(),
-				domain.getStringValue().v(), dataType, BigDecimal.valueOf(domain.getSelectionItemRefType()),
-				domain.getItemParentCd());
+				domain.getStringValue().v(), domain.getDataType(), domain.getSelectionItemRefType(),
+				domain.getItemParentCd(), domain.getDateType(), domain.getSelectionItemRefCd());
 
-		if (dataType == DataTypeValue.SELECTION.value) {
-
-		}
 		return itemDto;
 	}
 

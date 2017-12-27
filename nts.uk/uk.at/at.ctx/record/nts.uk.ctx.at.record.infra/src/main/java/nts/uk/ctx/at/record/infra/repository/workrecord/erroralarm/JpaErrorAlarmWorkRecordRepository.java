@@ -50,6 +50,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		KwrmtErAlWorkRecord targetEntity = this.queryProxy()
 				.find(new KwrmtErAlWorkRecordPK(domain.getCompanyId(), domain.getCode().v()), KwrmtErAlWorkRecord.class)
 				.get();
+		domain.setCheckId(targetEntity.eralCheckId);
 		KwrmtErAlWorkRecord domainAfterConvert = KwrmtErAlWorkRecord.fromDomain(domain);
 		targetEntity.eralCheckId = domainAfterConvert.eralCheckId;
 		targetEntity.boldAtr = domainAfterConvert.boldAtr;
@@ -69,11 +70,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	@Override
 	public void removeErrorAlarmWorkRecord(String code) {
-		KwrmtErAlWorkRecord targetEntity = this.queryProxy()
-				.find(new KwrmtErAlWorkRecordPK(AppContexts.user().companyId(), code), KwrmtErAlWorkRecord.class).get();
 		this.commandProxy().remove(KwrmtErAlWorkRecord.class,
 				new KwrmtErAlWorkRecordPK(AppContexts.user().companyId(), code));
-		this.commandProxy().remove(KrcmtErAlCondition.class, targetEntity.eralCheckId);
 	}
 
 }

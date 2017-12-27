@@ -43,4 +43,12 @@ public class GraceTimeSetting extends DomainObject {
 		memento.setIncludeWorkingHour(this.includeWorkingHour);
 		memento.setGraceTime(this.graceTime);
 	}
+	
+	/**
+	 * 猶予時間が0：00かどうか判断する
+	 * @return　0：00の場合：true　0：00でない場合：false
+	 */
+	public boolean isZero() {
+		return this.graceTime.v() == 0;
+	}
 }

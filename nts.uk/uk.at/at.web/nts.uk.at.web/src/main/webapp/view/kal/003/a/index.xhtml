@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<title>#{i18n.getText('KAL003_1')}</title>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:stylefile path="kal003.a.style.css" />
+			<!-- 			<com:scriptfile path="cas014.a.service.js" /> -->
+			<com:scriptfile path="kal003.a.vm.js" />
+
+			<!-- 			<com:scriptfile path="../b/cas014.b.vm.js" /> -->
+			<!-- 			<com:scriptfile path="../b/cas014.b.service.js" /> -->
+
+			<com:scriptfile path="kal003.a.start.js" />
+			
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<button tabindex="1">#{i18n.getText('KAL003_5')}</button>
+					<button tabindex="2" class="proceed">#{i18n.getText('KAL003_6')}</button>
+					<button tabindex="2">#{i18n.getText('KAL003_7')}</button>
+					<button tabindex="3" class="danger">#{i18n.getText('KAL003_8')}</button>
+				</div>
+			</div>
+			<div class="contents-area">
+				<div class="container">
+					<div class="left-content">
+						<div
+							data-bind="ntsPanel:{width: '300px', height: '500px', direction: 'right', showIcon: false, visible: true}">
+							<div class="valign-center control-group">
+								<label>#{i18n.getText('KAL003_48')}</label>
+								<div id="combo-box" data-bind="ntsComboBox: {
+									options: itemList,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: selectedCode,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'code', length: 3 },
+										{ prop: 'name', length: 8 },
+									]}"></div>
+							</div>
+							<table id="single-list"
+								data-bind="ntsGridList: {								
+ 									height: 350, 
+ 									dataSource: listAlarmCheckCondition, 
+ 									primaryKey: 'code', 
+ 									columns: [
+						                { headerText: '#{i18n.getText('KAL003_11')}', key: 'code', width: 100, formatter: _.escape },
+						                { headerText: '#{i18n.getText('KAL003_12')}', key: 'name', width: 170, formatter: _.escape }
+						            ], 
+ 									multiple: false, 
+ 									value: selectedAlarmCheckCondition 
+ 								}"></table> 
+						</div>
+					</div>
+					<div class="right-content" data-bind="with: selectedAlarmCheckCondition">
+						<div>
+							<div class="valign-center control-group">
+								<label>#{i18n.getText('KAL003_11')}</label> 
+								<input data-bind="ntsTextEditor: {value: code}" /> 
+								<label>#{i18n.getText('KAL003_12')}</label>
+								<input data-bind="ntsTextEditor: {value: name}" />
+							</div>
+							<div class="valign-center control-group">
+								<label>#{i18n.getText('KAL003_9')}</label> 
+								<label data-bind="text: category"></label>
+							</div>
+							<div class="valign-center control-group">
+								<label>#{i18n.getText('KAL003_13')}</label> 
+								<input data-bind="ntsTextEditor: {value: displayAvailableRoles}" />
+								<button tabindex="9">#{i18n.getText('KAL003_14')}</button>
+							</div>
+						</div>
+						<div id="tab-panel"
+							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
+							<div class="tab-content-1" data-bind="with: targetCondition">
+								<ui:include src="tab1/tab1.xhtml" />
+							</div>
+							<div class="tab-content-2">
+								<span>Tab Content 2</span><br />
+<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							</div>
+							<div class="tab-content-3">
+								<span>Tab Content 3</span><br />
+<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							</div>
+							<div class="tab-content-4">
+								<span>Tab Content 4</span><br />
+<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
