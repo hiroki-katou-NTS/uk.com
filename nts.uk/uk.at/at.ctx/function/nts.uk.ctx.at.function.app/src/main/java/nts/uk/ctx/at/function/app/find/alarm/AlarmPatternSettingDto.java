@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.function.app.command.alarm;
+package nts.uk.ctx.at.function.app.find.alarm;
 
 import java.util.List;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class AddAlarmPatternSettingCommand {
-	
+@AllArgsConstructor
+public class AlarmPatternSettingDto {
 	/**
 	 * アラームリストパターンコード
 	 */
@@ -15,13 +15,14 @@ public class AddAlarmPatternSettingCommand {
 	 * アラームリストパターン名称
 	 */
 	private String alarmPatterName;
+	
 	/**
 	 * アラームリスト権限設定
 	 */
-	private AlarmPermissionSettingCommand alarmPerSet; 
+	private AlarmPermissionSettingDto alarmPerSet;
+	
 	/**
 	 * チェック条件
 	 */
-	private List<CheckConditionCommand> checkConditonList;
-	
+	private List<CheckConditionDto> checkConList;
 }
