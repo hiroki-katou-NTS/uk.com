@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.eclipse.persistence.internal.xr.CollectionResult;
+
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
@@ -86,6 +89,9 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	public void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet) {
 		List<KshmtSubstitutionSet> newListEntity = new ArrayList<>();
 		
+		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
+			this.entity.setKshmtSubstitutionSets(new ArrayList<>());
+		}
 		Map<KshmtSubstitutionSetPK, KshmtSubstitutionSet> existShtSet = this.entity.getKshmtSubstitutionSets().stream()
 				.collect(Collectors.toMap(KshmtSubstitutionSet::getKshmtSubstitutionSetPK, Function.identity()));
 		
@@ -138,6 +144,9 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	public void setMedicalSet(List<WorkTimezoneMedicalSet> list) {
 		List<KshmtMedicalTimeSet> newListEntity = new ArrayList<>();
 		
+		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
+			this.entity.setKshmtMedicalTimeSets(new ArrayList<>());
+		}
 		Map<KshmtMedicalTimeSetPK, KshmtMedicalTimeSet> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
 				.collect(Collectors.toMap(KshmtMedicalTimeSet::getKshmtMedicalTimeSetPK, Function.identity()));
 		

@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSet;
@@ -44,6 +46,9 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 	 */
 	public JpaGoOutTimezoneRoundingSetSetMemento(KshmtWorktimeCommonSet entity) {
 		this.entitySets = entity.getKshmtSpecialRoundOuts();
+		if (CollectionUtil.isEmpty(this.entitySets)) {
+			this.entitySets = new ArrayList<>();
+		}
 		this.cid = entity.getKshmtWorktimeCommonSetPK().getCid();
 		this.worktimeCd = entity.getKshmtWorktimeCommonSetPK().getWorktimeCd();
 		this.workFormAtr = entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr();
@@ -58,7 +63,7 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 	 * shared.dom.worktime.common.GoOutTypeRoundingSet)
 	 */
 	@Override
-	public void setPubHolWorkTimezone(GoOutTypeRoundingSet pubHolWorkTimezone) {
+	public void setPubHolWorkTimezone(GoOutTypeRoundingSet pubHolWorkTimezone) {			
 		Map<KshmtSpecialRoundOutPK, KshmtSpecialRoundOut> currentSets = this.entitySets.stream()
 				.map(KshmtSpecialRoundOut.class::cast)
 				.collect(Collectors.toMap(entity -> entity.getKshmtSpecialRoundOutPK(), Function.identity()));

@@ -12,7 +12,7 @@ module nts.uk.at.view.kmk003.a {
             getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",
             saveFlexWorkSetting: "at/shared/worktime/flexset/save",
-            saveFixedWorkSetting: "at/shared/worktime/fixed/save",
+            saveFixedWorkSetting: "at/shared/worktime/fixedset/save",
             removeWorkTimeByCode: "at/shared/worktime/remove"
         };
 
