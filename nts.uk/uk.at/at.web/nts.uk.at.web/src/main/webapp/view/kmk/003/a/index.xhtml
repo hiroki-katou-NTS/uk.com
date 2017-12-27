@@ -273,6 +273,7 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
 									</td>
 									<td class="td-cell">
+									<com:ko tag="ifnot" bind="mainSettingModel.workTimeSetting.isFlow">
 										<div class="cf"
 											data-bind="ntsSwitchButton: {
 											options: useHalfDayOptions,
@@ -281,6 +282,7 @@
 											value: useHalfDay,
 											enable: true }">
 										</div>
+									</com:ko>
 									</td>
 								</tr>
 								<!-- panels -->
