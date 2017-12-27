@@ -159,12 +159,12 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date) {
+	public Optional<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyID)
 				.setParameter("workplaceId", workplaceID)
 				.setParameter("baseDate", date)
-				.getList(c->toDomainWpApR(c));
+				.getSingle(c->toDomainWpApR(c));
 	}
 	
 	/**

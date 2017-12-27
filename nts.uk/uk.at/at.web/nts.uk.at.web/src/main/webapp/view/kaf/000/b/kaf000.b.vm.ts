@@ -43,6 +43,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         appReasonEvent: KnockoutObservable<string>= ko.observable('');
         approvalList: Array<vmbase.AppApprovalPhase> = [];
         displayButtonControl: KnockoutObservable<model.DisplayButtonControl> = ko.observable(new model.DisplayButtonControl());
+        
+        approvalRootState: any = ko.observableArray([]);
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
@@ -72,25 +74,53 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         start(baseDate: any): JQueryPromise<any> {
             nts.uk.ui.block.invisible();
             let self = this;
-            
             self.inputDetail().baseDate = baseDate;
-            let dfd = $.Deferred();
+            let dfd = $.Deferred<any>();
             // let dfdMessageDeadline = self.getMessageDeadline(self.appID(), self.appType());
-            let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
-            let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
-
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
-                // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
-                let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
+//            let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
+//            let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
+//
+//            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
+//                // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
+//                let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
+//                self.getDetailCheck(self.inputDetail());
+//                self.getMessageDeadline({
+//                    appID: data.appID,
+//                    appType: data.appType,
+//                    appDate: moment(data.appDate)   
+//                });
+//                nts.uk.ui.block.clear();
+//                dfd.resolve();
+//            });
+            
+            nts.uk.at.view.kaf000.b.service.getAppDataDate({
+                appTypeValue: self.appType(),
+                appDate: baseDate,
+                isStartup: true,
+                appID: self.appID()})
+            .done((data)=>{
+                self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                let deadlineMsg = data.outputMessageDeadline;
+                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
+                    self.messageDeadlineTop(self.reasonAppMess + deadlineMsg.message);    
+                }
+                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
+                    self.messageDeadlineBottom(self.reasonAppMessDealine + deadlineMsg.deadline);
+                }
+                if(nts.uk.text.isNullOrEmpty(deadlineMsg.message) && nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
+                    self.displayButtonControl().displayMessageArea(true);
+                }else{
+                    self.displayButtonControl().displayMessageArea(false);
+                }
                 self.getDetailCheck(self.inputDetail());
-                self.getMessageDeadline({
-                    appID: data.appID,
-                    appType: data.appType,
-                    appDate: moment(data.appDate)   
-                });
-                nts.uk.ui.block.clear();
-                dfd.resolve();
+                nts.uk.ui.block.clear();    
+                dfd.resolve();       
+            })
+            .fail(()=>{
+                nts.uk.ui.block.clear(); 
+                dfd.reject(); 
             });
+            
             return dfd.promise();
         }   //end start
         // check display start 表示するか非表示するか  ※5 

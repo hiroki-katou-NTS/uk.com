@@ -21,22 +21,24 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 			+ " ON ci.categoryId = cs.ppestEmployeeCopySettingPk.categoryId" + " INNER JOIN PpemtPerInfoCtg pc"
 			+ " ON ci.categoryId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " INNER JOIN PpemtPerInfoItem pi"
 			+ " ON ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId=pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoItemOrder po ON pi.ppemtPerInfoItemPK.perInfoItemDefId= po.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPersonItemAuth pa"
 			+ " ON ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId=pa.ppemtPersonItemAuthPk.personItemDefId"
 			+ " INNER JOIN PpemtPerInfoItemCm pm"
 			+ " ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " WHERE pc.categoryCd =:categoryCd AND pc.cid=:companyId";
-	private static final String CHECK_OTHER_AUTH = " AND pa.otherPersonAuthType!=1";
+	private static final String CHECK_OTHER_AUTH = " AND pa.otherPersonAuthType!=1 ORDER BY po.displayOrder ASC";
 
-	private static final String CHECK_SELF_AUTH = " AND pa.selfAuthType!=1";
+	private static final String CHECK_SELF_AUTH = " AND pa.selfAuthType!=1 ORDER BY po.displayOrder ASC";
 
 	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,i.itemCd,"
 			+ " CASE WHEN (ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId) IS NOT NULL THEN 'True' ELSE 'False' END AS alreadyCopy ,ic.itemParentCd,ic.dateItemType"
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemOrder io ON i.ppemtPerInfoItemPK.perInfoItemDefId= io.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic"
 			+ " ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " LEFT JOIN PpestEmployeeCopySettingItem ci ON i.ppemtPerInfoItemPK.perInfoItemDefId = ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId"
-			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.displayOrder ASC";
 
 	@Override
 	public List<EmpCopySettingItem> getAllItemFromCategoryCd(String categoryCd, String companyId, boolean isSelf) {
