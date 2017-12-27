@@ -73,9 +73,9 @@ public class ClosureWs {
 	}
 	
 	@POST
-	@Path("getClosureEmploy/{referDate}")
-	public ClosureEmployDto getClosureEmploy(@PathParam("referDate") int referDate) {
-		return this.finder.getClosureEmploy(referDate);
+	@Path("getClosureEmploy")
+	public ClosureEmployDto getClosureEmploy() {
+		return this.finder.getClosureEmploy();
 	}
 
 	/**

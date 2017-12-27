@@ -6,7 +6,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
-import nts.uk.ctx.at.shared.dom.worktimeset.Timezone;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

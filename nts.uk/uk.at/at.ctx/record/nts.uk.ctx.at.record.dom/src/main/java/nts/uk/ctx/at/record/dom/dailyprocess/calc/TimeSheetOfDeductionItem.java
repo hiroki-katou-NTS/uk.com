@@ -13,11 +13,11 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 控除項目の時間帯
@@ -358,10 +358,10 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
 		//退勤時間を含んでいるかチェック
-		if(oneDayRange.contains(time.getLeaveStamp().getStamp().getTimeWithDay())) {
+		if(oneDayRange.contains(time.getLeaveStamp().getStamp().get().getTimeWithDay())) {
 			//出勤時間を含んでいるチェック
-			if(oneDayRange.contains(time.getAttendanceStamp().getStamp().getTimeWithDay())){
-				newStart = time.getAttendanceStamp().getStamp().getTimeWithDay();
+			if(oneDayRange.contains(time.getAttendanceStamp().getStamp().get().getTimeWithDay())){
+				newStart = time.getAttendanceStamp().getStamp().get().getTimeWithDay();
 			}
 		
 			switch(calcMethod) {
@@ -373,7 +373,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 					return Optional.of(new TimeSpanForCalc(newStart,newEnd));
 				//退勤時間まで計上
 				case RecordUntilLeaveWork:
-					return Optional.of(new TimeSpanForCalc(newStart,time.getLeaveStamp().getStamp().getTimeWithDay()));
+					return Optional.of(new TimeSpanForCalc(newStart,time.getLeaveStamp().getStamp().get().getTimeWithDay()));
 				default:
 					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
 			}
@@ -381,7 +381,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		else
 		{
 			//1日の計算範囲と出退勤の重複範囲取得
-			return Optional.of(oneDayRange.getDuplicatedWith(new TimeSpanForCalc(time.getAttendanceStamp().getStamp().getTimeWithDay(),time.getLeaveStamp().getStamp().getTimeWithDay())).get());
+			return Optional.of(oneDayRange.getDuplicatedWith(new TimeSpanForCalc(time.getAttendanceStamp().getStamp().get().getTimeWithDay(),time.getLeaveStamp().getStamp().get().getTimeWithDay())).get());
 		}
 	}
 }

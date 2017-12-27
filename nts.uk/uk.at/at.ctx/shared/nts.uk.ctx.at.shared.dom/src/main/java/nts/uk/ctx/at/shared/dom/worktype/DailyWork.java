@@ -131,22 +131,23 @@ public class DailyWork extends DomainObject { // 1日の勤務
 	}
 	
 	/**
-	 * 受け取った勤務種類の分類に一致しているか判定する
-	 * @param workTypeClassification　勤務種類の分類　
-	 * @return　何時一致しているか
-	 */
-	public AttendanceHolidayAttr decisionMatchWorkType(WorkTypeClassification workTypeClassification) {
-		if(oneDay.equals(workTypeClassification)) {
-			return AttendanceHolidayAttr.FULL_TIME;
-		}
-		else if(morning.equals(workTypeClassification)) {
-			return AttendanceHolidayAttr.MORNING;
-		}
-		else if(afternoon.equals(workTypeClassification)) {
-			return AttendanceHolidayAttr.AFTERNOON;
-		}
-		else {
-			return AttendanceHolidayAttr.HOLIDAY;
-		}
-	}
+	  * 受け取った勤務種類の分類に一致しているか判定する
+	  * @param workTypeClassification　勤務種類の分類　
+	  * @return　何時一致しているか
+	  */
+	 public AttendanceHolidayAttr decisionMatchWorkType(WorkTypeClassification workTypeClassification) {
+	  if(oneDay.equals(workTypeClassification)) {
+	   return AttendanceHolidayAttr.FULL_TIME;
+	  }
+	  else if(morning.equals(workTypeClassification)) {
+	   return AttendanceHolidayAttr.MORNING;
+	  }
+	  else if(afternoon.equals(workTypeClassification)) {
+	   return AttendanceHolidayAttr.AFTERNOON;
+	  }
+	  else {
+	   return AttendanceHolidayAttr.HOLIDAY;
+	  }
+	 }
+	
 }

@@ -33,7 +33,10 @@ module nts.uk.com.view.cmm018.i {
                 $("#startDateInput").trigger("validate");
                 if(!self.addNew){
                     if(!vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.beginStartDate())){
-                        $("#startDateInput").ntsError('set', {messageId:"Msg_153"});
+                        //$("#startDateInput").ntsError('set', {messageId:"Msg_153"});
+                        nts.uk.ui.dialog.alertError({messageId: "Msg_153"}).then(function(){
+                            $("#startDateInput").focus();
+                        });
                         return;
                     }
                 }

@@ -44,7 +44,7 @@ public class HolidayWorkTimeOfDaily {
 	public List<HolidayWorkFrameTime> collectHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
 		List<HolidayWorkFrameTime> calcHolidayWorkTimeList = new ArrayList<>();
 		for(HolidayWorkFrameTimeSheet holidyWorkFrameTimeSheet : holidayWorkFrameTimeSheet) {
-			calcHolidayWorkTimeList.add(holidyWorkFrameTimeSheet.calcOverTimeWorkTime(autoCalcSet));
+			//calcHolidayWorkTimeList.add(holidyWorkFrameTimeSheet.calcOverTimeWorkTime(autoCalcSet));
 		}
 		return calcHolidayWorkTimeList;
 	}
@@ -64,7 +64,7 @@ public class HolidayWorkTimeOfDaily {
 	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
-			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
+			//bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
 		}
 		return bonusPayList;
 	}
@@ -76,7 +76,7 @@ public class HolidayWorkTimeOfDaily {
 	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
-			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
+			//bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
 		}
 		return bonusPayList;
 	}
@@ -87,7 +87,7 @@ public class HolidayWorkTimeOfDaily {
 	public HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheet  frameTime : holidayWorkFrameTimeSheet) {
-			eachTime.addTime(frameTime.getStatutoryAtr(), frameTime.calcMidNight(autoCalcSet.getLateNightTime().getCalculationClassification()));
+			//eachTime.addTime(frameTime.getStatutoryAtr(), frameTime.calcMidNight(autoCalcSet.getLateNightTime().getCalculationClassification()));
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(eachTime.getStatutory())),StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
@@ -142,13 +142,13 @@ public class HolidayWorkTimeOfDaily {
 //				continue;
 //			}
 			//残業時間 >= 振替可能時間
-			if(holidayWorkFrameTimeSheet.getFrameTime().getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(hurikaeAbleTime.valueAsMinutes())) {
-				ableTransTime = hurikaeAbleTime;
-			}
-			//残業時間 < 振替可能時間
-			else {
-				ableTransTime = holidayWorkFrameTimeSheet.getFrameTime().getHolidayWorkTime().get().getCalcTime(); 
-			}
+//			if(holidayWorkFrameTimeSheet.getFrameTime().getHolidayWorkTime().get().getCalcTime().greaterThanOrEqualTo(hurikaeAbleTime.valueAsMinutes())) {
+//				ableTransTime = hurikaeAbleTime;
+//			}
+//			//残業時間 < 振替可能時間
+//			else {
+//				ableTransTime = holidayWorkFrameTimeSheet.getFrameTime().getHolidayWorkTime().get().getCalcTime(); 
+//			}
 			holidayWorkFrameTime.stream().sorted((first,second) -> first.getHolidayFrameNo().compareTo(second.getHolidayFrameNo()));
 			//残業枠時間帯に対する加算
 			//holidayWorkFrameTimeSheet.getOverWorkFrameTime().getOverTimeWork().addMinutes(ableTransTime, ableTransTime);

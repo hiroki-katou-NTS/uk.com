@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 
@@ -16,7 +17,7 @@ public class TimeActualStamp {
 	
 	private WorkStamp actualStamp;
 	
-	private WorkStamp stamp;
+	private Optional<WorkStamp> stamp;
 	
 	private int numberOfReflectionStamp;
 	
@@ -31,10 +32,10 @@ public class TimeActualStamp {
 												  this.actualStamp.getLocationCode(),
 												  this.actualStamp.getStampSourceInfo());
 		
-		WorkStamp stamp = new WorkStamp(this.stamp.getAfterRoundingTime().forwardByMinutes(moveTime),
-										this.stamp.getTimeWithDay().forwardByMinutes(moveTime),
-										this.stamp.getLocationCode(),
-										this.stamp.getStampSourceInfo());
+		WorkStamp stamp = new WorkStamp(this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime),
+										this.stamp.get().getTimeWithDay().forwardByMinutes(moveTime),
+										this.stamp.get().getLocationCode(),
+										this.stamp.get().getStampSourceInfo());
 		
 		return new TimeActualStamp( actualWorkStamp,
 									stamp,
@@ -51,10 +52,10 @@ public class TimeActualStamp {
 				  this.actualStamp.getLocationCode(),
 				  this.actualStamp.getStampSourceInfo());
 
-		WorkStamp stamp = new WorkStamp(this.stamp.getAfterRoundingTime().forwardByMinutes(moveTime),
-				  this.stamp.getTimeWithDay().backByMinutes(moveTime),
-				  this.stamp.getLocationCode(),
-				  this.stamp.getStampSourceInfo());
+		WorkStamp stamp = new WorkStamp(this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime),
+				  this.stamp.get().getTimeWithDay().backByMinutes(moveTime),
+				  this.stamp.get().getLocationCode(),
+				  this.stamp.get().getStampSourceInfo());
 		
 		return new TimeActualStamp(actualWorkStamp,
 								   stamp,
@@ -63,12 +64,12 @@ public class TimeActualStamp {
 	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp) {
 		super();
 		this.actualStamp = actualStamp;
-		this.stamp = stamp;
+		this.stamp = Optional.of(stamp);
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
 	public void setPropertyTimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp){
 		this.actualStamp = actualStamp;
-		this.stamp = stamp;
+		this.stamp = Optional.of(stamp);
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
 }

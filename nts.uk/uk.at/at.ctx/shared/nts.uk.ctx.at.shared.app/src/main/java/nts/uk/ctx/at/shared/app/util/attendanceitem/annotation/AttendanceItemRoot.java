@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 public @interface AttendanceItemRoot {
 	
 	String rootName();
+	
+	boolean isContainer() default false;
 }

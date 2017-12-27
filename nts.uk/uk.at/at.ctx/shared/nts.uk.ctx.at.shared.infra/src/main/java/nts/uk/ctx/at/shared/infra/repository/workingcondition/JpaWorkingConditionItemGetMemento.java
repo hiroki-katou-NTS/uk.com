@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.workingcondition.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 
 /**
@@ -164,9 +167,11 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 * getScheduleMethod()
 	 */
 	@Override
-	public ScheduleMethod getScheduleMethod() {
-		return new ScheduleMethod(
-				new JpaScheduleMethodGetMemento(this.entity.getKshmtScheduleMethod()));
+	public Optional<ScheduleMethod> getScheduleMethod() {
+		KshmtScheduleMethod method = this.entity.getKshmtScheduleMethod();
+		return method != null
+				? Optional.of(new ScheduleMethod(new JpaScheduleMethodGetMemento(method)))
+				: Optional.empty();
 	}
 
 	/*
@@ -177,10 +182,14 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 * getHolidayAddTimeSet()
 	 */
 	@Override
-	public BreakdownTimeDay getHolidayAddTimeSet() {
-		return new BreakdownTimeDay(new AttendanceTime(this.entity.getHdAddTimeOneDay()),
-				new AttendanceTime(this.entity.getHdAddTimeMorning()),
-				new AttendanceTime(this.entity.getHdAddTimeAfternoon()));
+	public Optional<BreakdownTimeDay> getHolidayAddTimeSet() {
+		Integer hdAddTimeOneDay = this.entity.getHdAddTimeOneDay();
+		return hdAddTimeOneDay != null
+				? Optional.of(
+						new BreakdownTimeDay(new AttendanceTime(this.entity.getHdAddTimeOneDay()),
+								new AttendanceTime(this.entity.getHdAddTimeMorning()),
+								new AttendanceTime(this.entity.getHdAddTimeAfternoon())))
+				: Optional.empty();
 	}
 
 }

@@ -3,6 +3,9 @@ package nts.uk.ctx.at.record.dom.actualworkinghours;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -16,24 +19,36 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Getter
 public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 
+	//社員ID
 	private String employeeId;
 	
+	//年月日
 	private GeneralDate ymd;
 	
-	//勤務予定時間
+	//勤務予定時間 - 日別実績の勤務予定時間
 	private WorkScheduleTimeOfDaily workScheduleTimeOfDaily;
 	
-	//実働時間 
+	//実働時間/実績時間  - 日別実績の勤務実績時間
 	private ActualWorkingTimeOfDaily actualWorkingTimeOfDaily;
 	
-	//滞在時間
-	private AttendanceTime stayingTime;
+	//滞在時間 - 日別実績の滞在時間 change tyle
+	private StayingTimeOfDaily stayingTime;
 	
-	//不就労時間
+	//不就労時間 - 勤怠時間
 	private AttendanceTime unEmployedTime;
 	
+	//予実差異時間 - 勤怠時間
+	private AttendanceTime budgetTimeVariance;
+	
+	//医療時間 - 日別実績の医療時間
+	private MedicalCareTimeOfDaily medicalCareTime;
+	
 	//日別実績の勤怠時間
-	private AttendanceTimeOfDailyPerformance attendanceTimeOfDaily;
+	//private AttendanceTimeOfDailyPerformance attendanceTimeOfDaily;
+	
+//	public AttendanceTimeOfDailyPerformance createFromJavaType() {
+//		
+//	}
 	
 	/**
 	 * Constructor
@@ -43,6 +58,21 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		this.actualWorkingTimeOfDaily = actualWorkingTimeOfDaily;
 	}
 	
+	public AttendanceTimeOfDailyPerformance (String employeeId,
+											 GeneralDate ymd,
+											 WorkScheduleTimeOfDaily schedule,
+											 ActualWorkingTimeOfDaily actual,
+											 StayingTimeOfDaily stay,
+											 AttendanceTime budget,
+											 AttendanceTime unEmploy) {
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.workScheduleTimeOfDaily = schedule;
+		this.actualWorkingTimeOfDaily = actual;
+		this.stayingTime = stay;
+		this.budgetTimeVariance = budget;
+		this.unEmployedTime = unEmploy;
+	}
 	
 	/**
 	 * 日別実績の勤怠時間の計算

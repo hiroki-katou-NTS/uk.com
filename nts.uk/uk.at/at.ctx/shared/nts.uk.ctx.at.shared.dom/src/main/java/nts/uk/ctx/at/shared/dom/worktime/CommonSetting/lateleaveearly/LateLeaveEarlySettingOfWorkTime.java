@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearly;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearlysetting.LateLeaveEarlyCommonSettingOfWorkTime;
 
 /**
  * 就業時間帯の遅刻・早退設定

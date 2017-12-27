@@ -58,7 +58,7 @@ public class KshmtWorkingCond extends UkJpaEntity implements Serializable {
 	private GeneralDate endD;
 
 	/** The kshmt working cond items. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = false, updatable = false) })
 	private KshmtWorkingCondItem kshmtWorkingCondItem;

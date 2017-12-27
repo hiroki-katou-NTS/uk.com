@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
@@ -98,7 +99,8 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory) {
 		List<KshmtPerWorkCat> kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
-		workCategory.saveToMemento(new JpaPerWorkCatSetMemento(kshmtPerWorkCats));
+		workCategory.saveToMemento(
+				new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats));
 		this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 	}
 
@@ -178,14 +180,20 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 * ScheduleMethod)
 	 */
 	@Override
-	public void setScheduleMethod(ScheduleMethod scheduleMethod) {
+	public void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod) {
+		// Check exist
+		if (!scheduleMethod.isPresent()) {
+			this.entity.setKshmtScheduleMethod(null);
+			return;
+		}
+
 		KshmtScheduleMethod kshmtScheduleMethod = this.entity.getKshmtScheduleMethod();
 
 		if (kshmtScheduleMethod == null) {
 			kshmtScheduleMethod = new KshmtScheduleMethod();
 		}
 
-		scheduleMethod.saveToMemento(
+		scheduleMethod.get().saveToMemento(
 				new JpaScheduleMethodSetMemento(this.entity.getHistoryId(), kshmtScheduleMethod));
 
 		this.entity.setKshmtScheduleMethod(kshmtScheduleMethod);
@@ -200,10 +208,18 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 * BreakdownTimeDay)
 	 */
 	@Override
-	public void setHolidayAddTimeSet(BreakdownTimeDay holidayAddTimeSet) {
-		this.entity.setHdAddTimeMorning(holidayAddTimeSet.getMorning().v());
-		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.getAfternoon().v());
-		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.getOneDay().v());
+	public void setHolidayAddTimeSet(Optional<BreakdownTimeDay> holidayAddTimeSet) {
+		// Check exist
+		if (!holidayAddTimeSet.isPresent()) {
+			this.entity.setHdAddTimeMorning(null);
+			this.entity.setHdAddTimeAfternoon(null);
+			this.entity.setHdAddTimeOneDay(null);
+			return;
+		}
+
+		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
+		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
+		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
 	}
 
 }

@@ -58,7 +58,7 @@ public class OverTimeWorkOfDaily {
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
 		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
 		for(OverTimeFrameTimeSheet OverTimeFrameTime : OverTimeFrameTimeSheet) {
-			calcOverTimeWorkTimeList.add(OverTimeFrameTime.calcOverTimeWorkTime(autoCalcSet));
+			//calcOverTimeWorkTimeList.add(OverTimeFrameTime.calcOverTimeWorkTime(autoCalcSet));
 			//calcOverTimeWorkTimeList.add();
 		}
 		return calcOverTimeWorkTimeList;
@@ -79,7 +79,7 @@ public class OverTimeWorkOfDaily {
 	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(OverTimeFrameTimeSheet frameTimeSheet : OverTimeFrameTimeSheet) {
-			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
+			//bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
 		}
 		return bonusPayList;
 	}
@@ -91,7 +91,7 @@ public class OverTimeWorkOfDaily {
 	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(OverTimeFrameTimeSheet frameTimeSheet : OverTimeFrameTimeSheet) {
-			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
+			//bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.OverTimeWork,bonusPayAutoCalcSet, calcAtrOfDaily));
 		}
 		return bonusPayList;
 	}
@@ -103,19 +103,19 @@ public class OverTimeWorkOfDaily {
 		int totalTime = 0;
 		for(OverTimeFrameTimeSheet frameTime : OverTimeFrameTimeSheet) {
 			/*↓分岐の条件が明確になったら記述*/
-			AutoCalcSet setting;
-			if(frameTime.getWithinStatutoryAtr().isStatutory()) {
-				setting = autoCalcSet.getLegalOvertimeHours();
-			}
-			else if(frameTime.isGoEarly()) {
-				setting = autoCalcSet.getEarlyOvertimeHours();
-			}
-			else {
-				setting = autoCalcSet.getNormalOvertimeHours();
-			}
-			totalTime += frameTime.calcMidNight(setting.getCalculationClassification());
+//			AutoCalcSet setting;
+//			if(frameTime.getWithinStatutoryAtr().isStatutory()) {
+//				setting = autoCalcSet.getLegalOvertimeHours();
+//			}
+//			else if(frameTime.isGoEarly()) {
+//				setting = autoCalcSet.getEarlyOvertimeHours();
+//			}
+//			else {
+//				setting = autoCalcSet.getNormalOvertimeHours();
+//			}
+//			totalTime += frameTime.calcMidNight(setting.getCalculationClassification());
 		}
-		return new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime)));
+		return new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime)),new AttendanceTime(0));
 	}
 	
 	/**

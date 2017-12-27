@@ -20,6 +20,9 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 
 	/** The entities. */
 	private List<KshmtPerWorkCat> entities;
+	
+	/** The history id. */
+	private String historyId;
 
 	/**
 	 * Instantiates a new jpa personal work category set memento.
@@ -27,16 +30,17 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 * @param entities
 	 *            the entitys
 	 */
-	public JpaPerWorkCatSetMemento(List<KshmtPerWorkCat> entities) {
+	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities) {
 		// Check empty
 		if (CollectionUtil.isEmpty(entities)) {
-			entities = new ArrayList<>();
+			this.entities = new ArrayList<>();
+		} else {
+			this.entities = entities;
 		}
 
 		// Clean all
-		entities.clear();
-
-		this.entities = entities;
+		this.entities.clear();
+		this.historyId = historyId;
 	}
 
 	/*
@@ -149,7 +153,8 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	private KshmtPerWorkCat toEntity(SingleDaySchedule domain, int workCategoryAtr) {
 		KshmtPerWorkCat entity = new KshmtPerWorkCat();
-		domain.saveToMemento(new JpaSDayScheWorkCatSetMemento(entity));
+		domain.saveToMemento(new JpaSDayScheWorkCatSetMemento(this.historyId, entity));
+		entity.getKshmtPerWorkCatPK().setHistoryId(this.historyId);
 		entity.getKshmtPerWorkCatPK().setPerWorkCatAtr(workCategoryAtr);
 		return entity;
 	}

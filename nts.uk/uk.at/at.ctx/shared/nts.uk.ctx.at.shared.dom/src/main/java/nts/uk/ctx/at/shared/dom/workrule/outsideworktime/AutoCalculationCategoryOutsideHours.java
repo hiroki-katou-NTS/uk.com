@@ -1,15 +1,19 @@
 package nts.uk.ctx.at.shared.dom.workrule.outsideworktime;
 
+import lombok.AllArgsConstructor;
+
 /**
  * 時間外の自動計算設定
  * @author keisuke_hoshina
  *
  */
+@AllArgsConstructor
 public enum AutoCalculationCategoryOutsideHours {
-	CalculateEmbossing,
-	ApplyOrManuallyEnter,
-	SelectTimeRecorder;
+	CalculateEmbossing(1),
+	ApplyOrManuallyEnter(2),
+	SelectTimeRecorder(3);
 	
+	public final int value;
 	/**
 	 * 打刻から計算するであるか判定する
 	 * @return　打刻から計算する

@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -53,7 +51,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public TimeActualStamp getLeavingWork() {
-		TimeLeavingWork targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(BigDecimal.valueOf((long)this.workTimes.v())));
+		TimeLeavingWork targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.workTimes.v()));
 		return targetAttendanceLeavingWorkTime.getLeaveStamp();
 	}
 	

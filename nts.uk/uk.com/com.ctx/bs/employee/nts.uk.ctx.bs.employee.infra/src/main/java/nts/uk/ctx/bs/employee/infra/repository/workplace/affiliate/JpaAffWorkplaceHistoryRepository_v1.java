@@ -6,12 +6,15 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHist;
@@ -33,6 +36,14 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 
 	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.hisId = :histId";
+	
+	/** The Constant SELECT_BY_COMPANY. */
+	private static final String SELECT_BY_EMPIDS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :baseDate AND :baseDate <= aw.endDate";
+	
+	/** The Constant SELECT_BY_HISTID_AND_DATE. */
+	private static final String SELECT_BY_HISTID_AND_DATE = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " WHERE aw.hisId = :histId AND aw.strDate <= :baseDate AND :baseDate <= aw.endDate";
 
 	/**
 	 * Convert from domain to entity
@@ -139,6 +150,38 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	public Optional<AffWorkplaceHistory_ver1> getByHistId(String histId) {
 		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_HISTID, BsymtAffiWorkplaceHist.class)
 				.setParameter("histId", histId).getList();
+		if (!listHist.isEmpty()) {
+			return Optional.of(toDomainTemp(listHist));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public List<AffWorkplaceHistory_ver1> findByEmployees(List<String> employeeIds, GeneralDate date) {
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+		// Query.
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_EMPIDS, BsymtAffiWorkplaceHist.class)
+				.setParameter("employeeIds", employeeIds)
+				.setParameter("baseDate", date)
+				.getList();
+		
+		// Group by his id.
+		Map<String, List<BsymtAffiWorkplaceHist>> resultMap = listHist.stream()
+				.collect(Collectors.groupingBy(BsymtAffiWorkplaceHist::getHisId));
+		
+		// Convert to domain.
+		return resultMap.keySet().stream().map(key -> {
+			return this.toDomainTemp(resultMap.get(key));
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<AffWorkplaceHistory_ver1> getByHistIdAndBaseDate(String histId, GeneralDate date) {
+		List<BsymtAffiWorkplaceHist> listHist = this.queryProxy().query(SELECT_BY_HISTID_AND_DATE, BsymtAffiWorkplaceHist.class)
+				.setParameter("histId", histId)
+				.setParameter("baseDate", date).getList();
 		if (!listHist.isEmpty()) {
 			return Optional.of(toDomainTemp(listHist));
 		}

@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 
 @AllArgsConstructor
 @Getter
-public class OverdayCalc {
+@Builder
+public class OverdayCalc extends AggregateRoot {
 
 	/** 会社ID */
 	private String companyId;
@@ -49,16 +54,16 @@ public class OverdayCalc {
 	/** 法定外休日 */
 	private int excessPublicSphd;
 	
-	private WeekdayHoliday weekdayHoliday;
+	private List<WeekdayHoliday> weekdayHoliday;
 	
-	private OverdayHolidayAtten overdayHolidayAtten;
+	private List<OverdayHolidayAtten> overdayHolidayAtten;
 	
-	private OverdayCalcHoliday overdayCalcHoliday;
+	private List<OverdayCalcHoliday> overdayCalcHoliday;
 
 	public static OverdayCalc createFromJavaType(String companyId, int calcOverDayEnd, int statutoryHd, int excessHd,
 			int excessSpecialHoliday, int weekDayStatutoryHd, int excessStatutoryHd, int excessStatutorSphd,
 			int weekDayLegalHd, int excessLegalHd, int excessLegalSphd, int weekDayPublicHd, int excessPublicHd,
-			int excessPublicSphd, WeekdayHoliday weekdayHoliday, OverdayHolidayAtten overdayHolidayAtten, OverdayCalcHoliday overdayCalcHoliday) {
+			int excessPublicSphd,List<WeekdayHoliday>  weekdayHoliday, List<OverdayHolidayAtten> overdayHolidayAtten, List<OverdayCalcHoliday> overdayCalcHoliday) {
 		return new OverdayCalc(companyId, calcOverDayEnd, statutoryHd, excessHd, excessSpecialHoliday,
 				weekDayStatutoryHd, excessStatutoryHd, excessStatutorSphd, weekDayLegalHd, excessLegalHd,
 				excessLegalSphd, weekDayPublicHd, excessPublicHd, excessPublicSphd, weekdayHoliday, overdayHolidayAtten, overdayCalcHoliday);

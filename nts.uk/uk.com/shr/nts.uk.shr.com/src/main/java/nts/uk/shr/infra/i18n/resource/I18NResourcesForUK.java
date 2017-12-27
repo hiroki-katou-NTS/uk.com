@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import nts.arc.i18n.I18NResources;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
@@ -17,6 +18,7 @@ import nts.uk.shr.infra.i18n.loading.LanguageMasterRepository;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourcesRepository;
 
 @ApplicationScoped
+@Slf4j
 public class I18NResourcesForUK implements I18NResources {
 
 	@Inject
@@ -34,6 +36,7 @@ public class I18NResourcesForUK implements I18NResources {
 	
 	@PostConstruct
 	private void initialize() {
+		log.info("[INIT START] nts.uk.shr.infra.i18n.resource.I18NResourcesForUK");
 		
 		this.languageRepository.getSystemLanguages().stream()
 				.map(l -> l.getLanguageId())
@@ -43,6 +46,8 @@ public class I18NResourcesForUK implements I18NResources {
 					this.customizedResources.put(
 							languageId, this.resourcesRepository.loadResourcesEachCompanies(languageId));
 				});
+		
+		log.info("[INIT END] nts.uk.shr.infra.i18n.resource.I18NResourcesForUK");
 	}
 
 	@Override

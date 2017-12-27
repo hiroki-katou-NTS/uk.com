@@ -11,6 +11,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
  */
 @Value
 public class HolidayWorkMidNightTime {
-	private TimeWithCalculation tiem;
+	private TimeWithCalculation time;
 	private StaturoryAtrOfHolidayWork statutoryAtr;
 }

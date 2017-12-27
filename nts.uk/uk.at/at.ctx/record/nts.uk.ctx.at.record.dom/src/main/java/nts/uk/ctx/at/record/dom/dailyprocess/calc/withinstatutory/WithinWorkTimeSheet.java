@@ -8,16 +8,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
-import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
@@ -25,12 +21,10 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeSheet;
-import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
@@ -40,11 +34,8 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSetList;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.flexworkset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
-import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -304,7 +295,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 //	public WithinWorkTimeSheet createAsFluidWork(
 //			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 //			WorkType workType,
-//			WorkInformationOfDaily workInformationOfDaily,
+//			WorkInfoOfDailyPerformance workInformationOfDaily,
 //			FluidWorkSetting fluidWorkSetting,
 //			DeductionTimeSheet deductionTimeSheet) {
 //		//開始時刻を取得
@@ -355,7 +346,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 //	public void cllectPredetermineTimeAndOverWorkTimeStart(
 //			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 //			WorkType workType,
-//			WorkInformationOfDaily workInformationOfDaily) {
+//			WorkInfoOfDailyPerformance workInformationOfDaily) {
 //		//所定時間帯を取得
 //		predetermineTimeSetForCalc.correctPredetermineTimeSheet(workType.getDailyWork());
 //		//予定所定時間が変更された場合に所定時間を変更するかチェック

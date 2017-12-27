@@ -1,27 +1,19 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AcquisitionConditionsAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
  * 
@@ -50,7 +42,7 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 												 		  ,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet){
 		val goOutTimeSheetList = removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
 		switch(workTimeMethodSet) {
-		case Enum_Fluid_Work:
+		case FLOW_WORK:
 			if(fluRestTime.isPresent()) {
 				if(fluRestTime.get().getUseFixedRestTime()) {
 					return convertFromgoOutTimeToBreakTime(fluidprefixBreakTimeSet, goOutTimeSheetList);
@@ -59,9 +51,9 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 			else {
 				throw new RuntimeException("faild get FluidSet");
 			}
-		case Enum_Fixed_Work:
-		case Enum_Jogging_Time:
-		case Enum_Overtime_Work:
+		case FIXED_WORK:
+		case DIFFTIME_WORK:
+//		case Enum_Overtime_Work:
 			return goOutTimeSheetList;
 		default:
 			throw new RuntimeException("unknown workTimeMethodSet:"+workTimeMethodSet);
@@ -100,16 +92,16 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 		
 		for(TimeSheetOfDeductionItem deductionItem : deductionList) {
 			//休憩へ変換する
-			if((fluidprefixBreakTimeSet.isPrivateGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isPrivate())
-				||(fluidprefixBreakTimeSet.isUnionGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isUnion())) {
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),deductionItem.getCalcrange(),deductionItem.getDeductionTimeSheet()
-						       ,deductionItem.getBonusPayTimeSheet(),deductionItem.getSpecBonusPayTimesheet(),deductionItem.getMidNightTimeSheet(),deductionItem.getGoOutReason()
-						       ,Finally.of(BreakClassification.BREAK_STAMP),DeductionClassification.BREAK));
-			}
-			//外出のまま
-			else {
-				returnList.add(deductionItem);
-			}
+//			if((fluidprefixBreakTimeSet.isPrivateGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isPrivate())
+//				||(fluidprefixBreakTimeSet.isUnionGoOutTreatBreakTime() && deductionItem.getGoOutReason().get().isUnion())) {
+//				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),deductionItem.getCalcrange(),deductionItem.getDeductionTimeSheet()
+//						       ,deductionItem.getBonusPayTimeSheet(),deductionItem.getSpecBonusPayTimesheet(),deductionItem.getMidNightTimeSheet(),deductionItem.getGoOutReason()
+//						       ,Optional.of(BreakClassification.BREAK_STAMP),DeductionClassification.BREAK));
+//			}
+//			//外出のまま
+//			else {
+//				returnList.add(deductionItem);
+//			}
 		}
 		
 		return returnList;

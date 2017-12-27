@@ -59,10 +59,10 @@ public class BonusPaySetting extends AggregateRoot{
 	public List<BonusPayTimesheet> getDuplicateBonusPayTimeList(TimeSpanForCalc calcRange){
 		List<BonusPayTimesheet> returnList = new ArrayList<BonusPayTimesheet>();
 		for(BonusPayTimesheet timesheet : lstBonusPayTimesheet){
-			//Optional<TimeSpanForCalc> newRange = calcRange.getDuplicatedWith(timesheet.getCalcrange());
-			Optional<TimeSpanForCalc> newRange = Optional.empty();
+			Optional<TimeSpanForCalc> newRange = Optional.empty();//calcRange.getDuplicatedWith();
+			
 			if(newRange.isPresent()) {
-				returnList.add(timesheet.reCreateCalcRange(newRange.get()));
+				//returnList.add(timesheet.reCreateCalcRange(newRange.get()));
 			}
 		}
 		return returnList;
@@ -79,10 +79,9 @@ public class BonusPaySetting extends AggregateRoot{
 		List<BonusPayTimesheet> bonusPayList = new ArrayList<>();
 		Optional<TimeSpanForCalc> duplicateRange;
 		for(BonusPayTimesheet bonusPay : bonusPayList) {
-			//duplicateRange = calcSpan.getDuplicatedWith(bonusPay.getCalcrange());
-			duplicateRange = Optional.empty();
+			duplicateRange = Optional.empty();//calcSpan.getDuplicatedWith(bonusPay.getCalcrange());
 			if(duplicateRange.isPresent()){
-				bonusPayList.add(bonusPay.reCreateCalcRange(duplicateRange.get()));
+				//bonusPayList.add(bonusPay.reCreateCalcRange(duplicateRange.get()));
 			}
 		}
 		return bonusPayList;
@@ -97,8 +96,7 @@ public class BonusPaySetting extends AggregateRoot{
 		List<SpecBonusPayTimesheet> bonusPayList = new ArrayList<>();
 		Optional<TimeSpanForCalc> duplicateRange;
 		for(SpecBonusPayTimesheet bonusPay : bonusPayList) {
-			//duplicateRange = calcSpan.getDuplicatedWith(bonusPay.getCalcrange());
-			duplicateRange = Optional.empty();
+			duplicateRange = Optional.empty();//calcSpan.getDuplicatedWith(bonusPay.getCalcrange());
 			if(duplicateRange.isPresent()){
 				bonusPayList.add(bonusPay.reCreateCalcRange(duplicateRange.get()));
 			}

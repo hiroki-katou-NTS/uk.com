@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearly;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.commonsetting.lateleaveearlysetting.LateLeaveEarlyClassification;
+
 /**
  * 就業時間帯の遅刻・早退別設定
  * @author keisuke_hoshina

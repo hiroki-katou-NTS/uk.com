@@ -17,7 +17,13 @@ public enum TypeLink {
 	
     POSSITION(7, "職位"),
     
-    EMPLOYMENT(8, "雇用区分");
+    EMPLOYMENT(8, "雇用区分"),
+	
+    DOWORK(9, "するしない区分"),
+	
+    CALC(10, "時間外の自動計算区分"),
+    
+    REASON_GO_OUT(11, "外出理由");
 						
 	/** The value. */
 	public int value;

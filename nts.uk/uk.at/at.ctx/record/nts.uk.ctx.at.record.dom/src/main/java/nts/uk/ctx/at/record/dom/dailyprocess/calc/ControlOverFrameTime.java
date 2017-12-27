@@ -34,7 +34,9 @@ public class ControlOverFrameTime {
 			OverTimeFrameTime b  = new OverTimeFrameTime(a.getOverWorkFrameNo()
 																,ove_a
 					   											,tran_a
-					   											,a.getBeforeApplicationTime());
+					   											,a.getBeforeApplicationTime()
+					   											//TODO: 指示時間 渡す
+					   											,new AttendanceTime(0));
 			returnList.set(overTimeWorkFrameTime.get(overTimeWorkNo).getOverWorkFrameNo().v().intValue(),b);
 		}
 	}
