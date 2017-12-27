@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ac.employment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
-import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 /**
@@ -43,10 +43,11 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 	 */
 	@Override
 	public List<BsEmploymentImport> findByEmpCodes(String companyId, List<String> empCodes) {
-		List<ShEmploymentExport> empExport = this.employment.findByEmpCodes(companyId, empCodes);
-		return empExport.stream().map(item -> {
-			return new BsEmploymentImport(item.getCompanyId(), item.getEmploymentCode(), item.getEmploymentName(),
-					item.getEmpExternalCode(), item.getMemo());
-		}).collect(Collectors.toList());
+		return new ArrayList<>();
+//		List<ShEmploymentExport> empExport = this.employment.findByEmpCodes(companyId, empCodes);
+//		return empExport.stream().map(item -> {
+//			return new BsEmploymentImport(item.getCompanyId(), item.getEmploymentCode(), item.getEmploymentName(),
+//					item.getEmpExternalCode(), item.getMemo());
+//		}).collect(Collectors.toList());
 	}
 }

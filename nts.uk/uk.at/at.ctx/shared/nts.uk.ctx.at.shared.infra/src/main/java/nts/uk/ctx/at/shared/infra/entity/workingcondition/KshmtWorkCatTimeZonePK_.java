@@ -10,6 +10,6 @@ public class KshmtWorkCatTimeZonePK_ {
 
     public static volatile SingularAttribute<KshmtWorkCatTimeZonePK, Integer> perWorkCatAtr;
     public static volatile SingularAttribute<KshmtWorkCatTimeZonePK, String> historyId;
-    public static volatile SingularAttribute<KshmtWorkCatTimeZonePK, Integer> startTime;
+    public static volatile SingularAttribute<KshmtWorkCatTimeZonePK, Integer> cnt;
 
 }

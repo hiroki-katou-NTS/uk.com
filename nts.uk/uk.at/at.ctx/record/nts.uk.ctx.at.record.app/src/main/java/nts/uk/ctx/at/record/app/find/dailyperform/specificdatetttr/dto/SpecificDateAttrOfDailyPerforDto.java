@@ -16,6 +16,6 @@ public class SpecificDateAttrOfDailyPerforDto implements ConvertibleAttendanceIt
 
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定日区分")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定日区分", isList = true)
 	private List<SpecificDateAttrDto> sepecificDateAttrs;
 }
