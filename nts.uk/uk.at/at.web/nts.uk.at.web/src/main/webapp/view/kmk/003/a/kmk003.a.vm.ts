@@ -59,9 +59,14 @@ module nts.uk.at.view.kmk003.a {
                 self.columnWorktimeSettings = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 100 },
                     { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 130 },
-                    { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'isAbolish', width: 40 ,
-                        formatter: isAbolish => isAbolish ?
-                        '<div style="text-align: center;max-height: 18px;"><i class="icon icon-x"></i></div>' : '' }
+                    { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'isAbolish', width: 40,
+                        formatter: isAbolish => {
+                            if (isAbolish) {
+                                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-x"></i></div>';
+                            }
+                            return '';
+                        }
+                    }
                 ]);
                 self.selectedWorkTimeCode = ko.observable('');
 
@@ -142,8 +147,7 @@ module nts.uk.at.view.kmk003.a {
                 self.bindFunction();
 
                 self.getAllEnums().done(() => {
-                    self.workTimeSettingLoader.isAbolish.valueHasMutated();
-                    _.defer(() => dfd.resolve());
+                    self.loadListWorktime().done(() => dfd.resolve());
                 });
                 
                 return dfd.promise();
@@ -154,18 +158,30 @@ module nts.uk.at.view.kmk003.a {
                 self.workTimeSettingLoader.loadListWorktime = self.loadListWorktime.bind(self);
             }
 
-            private loadListWorktime(): void {
+            private loadListWorktime(selectedCode?: string): JQueryPromise<void> {
                 let self = this;
+                let dfd = $.Deferred<void>();
+
+                // block ui.
+                _.defer(() => nts.uk.ui.block.invisible());
+
+                // call service get data
                 service.findWithCondition(self.workTimeSettingLoader.getCondition()).done(data => {
                     self.workTimeSettings(data);
                     if (data && data.length > 0) {
                         self.screenMode(ScreenMode.UPDATE);
-                        self.selectedWorkTimeCode(data[0].worktimeCode);
+                        if (selectedCode) {
+                            self.selectedWorkTimeCode(selectedCode);
+                        } else {
+                            self.selectedWorkTimeCode(data[0].worktimeCode);
+                        }
                     }
                     else {
                         self.screenMode(ScreenMode.NEW);
                     }
-                });
+                    dfd.resolve();
+                }).always(() => _.defer(() => nts.uk.ui.block.clear()));
+                return dfd.promise();
             }
             
             //get infor of worktime by code
@@ -198,10 +214,14 @@ module nts.uk.at.view.kmk003.a {
             private loadWorktimeSetting(worktimeCode: string): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+
+                // block ui.
+                _.defer(() => nts.uk.ui.block.invisible());
+
                 service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
                     self.mainSettingModel.updateData(worktimeSettingInfo);
                     dfd.resolve();
-                });
+                }).always(() => _.defer(() => nts.uk.ui.block.clear()));
                 return dfd.promise();
             }
             
@@ -225,9 +245,10 @@ module nts.uk.at.view.kmk003.a {
             }
 
             //save worktime data
-            public save(): void {
+            public save() {
                 let self = this;
-                self.mainSettingModel.save(self.isNewMode());
+                self.mainSettingModel.save(self.isNewMode())
+                    .done(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
             }
             
             //when click copy
@@ -249,15 +270,18 @@ module nts.uk.at.view.kmk003.a {
              */
             private removeWorkTime(): JQueryPromise<void>
             {
+                // block ui.
+                _.defer(() => nts.uk.ui.block.invisible());
+
                 let self = this;
                 let dfd = $.Deferred<void>();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.removeWorkTime(self.selectedWorkTimeCode()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_16' });
                         dfd.resolve();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
-                    });
-                }).ifNo(function() {
+                    }).always(() => _.defer(() => nts.uk.ui.block.clear()));
                 });
                 return dfd.promise();
             }
@@ -313,14 +337,32 @@ module nts.uk.at.view.kmk003.a {
                 });
             }
 
-            save(addMode: boolean): void {
+            onSaveSuccess(dfd: JQueryDeferred<any>): void {
+                nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                dfd.resolve();
+            }
+
+            save(addMode: boolean): JQueryPromise<void> {
                 let self = this;
+                let dfd = $.Deferred<void>();
+
+                // block ui.
+                _.defer(() => nts.uk.ui.block.invisible());
+
                 if (self.workTimeSetting.isFlex()) {
-                    service.saveFlexWorkSetting(self.toFlexCommannd(addMode)).fail(err => nts.uk.ui.dialog.alertError(err));
+                    service.saveFlexWorkSetting(self.toFlexCommannd(addMode))
+                        .done(() => self.onSaveSuccess(dfd))
+                        .fail(err => nts.uk.ui.dialog.alertError(err))
+                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
                 if (self.workTimeSetting.isFixed()) {
-                    service.saveFixedWorkSetting(self.toFixedCommand(addMode)).fail(err => nts.uk.ui.dialog.alertError(err));
+                    service.saveFixedWorkSetting(self.toFixedCommand(addMode))
+                        .done(() => self.onSaveSuccess(dfd))
+                        .fail(err => nts.uk.ui.dialog.alertError(err))
+                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
+
+                return dfd.promise();
             }
 
             /**
@@ -372,7 +414,7 @@ module nts.uk.at.view.kmk003.a {
         export class WorkTimeSettingLoader extends WorkTimeSettingModel {
             workTimeAtrEnums: EnumConstantDto[];
             workTimeMethodEnums: EnumConstantDto[];
-            loadListWorktime: () => void;
+            loadListWorktime: (selectedCode?: string) => JQueryPromise<void>;
             constructor() {
                 super();
                 this.workTimeDivision.workTimeDailyAtr(3);
