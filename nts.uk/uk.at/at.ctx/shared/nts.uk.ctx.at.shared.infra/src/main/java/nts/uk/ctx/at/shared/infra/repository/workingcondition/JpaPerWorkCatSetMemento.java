@@ -33,14 +33,14 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities) {
 		// Check empty
 		if (CollectionUtil.isEmpty(entities)) {
-			entities = new ArrayList<>();
+			this.entities = new ArrayList<>();
+		} else {
+			this.entities = entities;
 		}
 
 		// Clean all
-		entities.clear();
-		
+		this.entities.clear();
 		this.historyId = historyId;
-		this.entities = entities;
 	}
 
 	/*
