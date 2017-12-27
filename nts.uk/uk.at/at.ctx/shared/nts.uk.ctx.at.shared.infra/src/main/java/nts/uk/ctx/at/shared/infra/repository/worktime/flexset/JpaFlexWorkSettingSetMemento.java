@@ -29,8 +29,11 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexStampReflect;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowWorkRestSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexStampReflectTZSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
 /**
  * The Class JpaFlexWorkSettingSetMemento.
@@ -40,18 +43,26 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	/** The entity. */
 	private KshmtFlexWorkSet entity;
 
+	/** The entity common. */
+	private KshmtWorktimeCommonSet entityCommon;
 	
+
 	/**
 	 * Instantiates a new jpa flex work setting set memento.
 	 *
 	 * @param entity the entity
+	 * @param entityCommon the entity common
 	 */
-	public JpaFlexWorkSettingSetMemento(KshmtFlexWorkSet entity) {
+	public JpaFlexWorkSettingSetMemento(KshmtFlexWorkSet entity, KshmtWorktimeCommonSet entityCommon) {
 		super();
 		if(entity.getKshmtFlexWorkSetPK() == null){
 			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
 		}
+		if(entityCommon.getKshmtWorktimeCommonSetPK() == null){
+			entityCommon.setKshmtWorktimeCommonSetPK(new KshmtWorktimeCommonSetPK());
+		}
 		this.entity = entity;
+		this.entityCommon = entityCommon;
 	}
 
 	/*
@@ -133,7 +144,9 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	 */
 	@Override
 	public void setCommonSetting(WorkTimezoneCommonSet commonSetting) {
-		// TODO Auto-generated method stub
+		if(commonSetting!=null){
+			commonSetting.saveToMemento(new JpaWorkTimezoneCommonSetSetMemento(this.entityCommon));
+		}
 	}
 
 	/*

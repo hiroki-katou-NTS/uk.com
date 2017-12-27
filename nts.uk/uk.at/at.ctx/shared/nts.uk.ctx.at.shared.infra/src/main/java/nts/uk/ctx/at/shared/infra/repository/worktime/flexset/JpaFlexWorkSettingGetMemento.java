@@ -20,8 +20,10 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowWorkRestSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexStampReflectTZGetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
 
 /**
  * The Class JpaFlexWorkSettingGetMemento.
@@ -31,15 +33,20 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	/** The entity. */
 	private KshmtFlexWorkSet entity;
 	
+	/** The entity common. */
+	private KshmtWorktimeCommonSet entityCommon;
+	
 
 	/**
 	 * Instantiates a new jpa flex work setting get memento.
 	 *
 	 * @param entity the entity
+	 * @param entityCommon the entity common
 	 */
-	public JpaFlexWorkSettingGetMemento(KshmtFlexWorkSet entity) {
+	public JpaFlexWorkSettingGetMemento(KshmtFlexWorkSet entity, KshmtWorktimeCommonSet entityCommon) {
 		super();
 		this.entity = entity;
+		this.entityCommon = entityCommon;
 	}
 
 	/*
@@ -105,7 +112,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSetting() {
-		return null;
+		return new WorkTimezoneCommonSet(new JpaWorkTimezoneCommonSetGetMemento(this.entityCommon));
 	}
 
 	/*

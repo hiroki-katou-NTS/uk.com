@@ -38,7 +38,29 @@ public class KshmtWorktimeCommonSetPK implements Serializable {
 	/** The worktime set method. */
 	@Column(name = "WORKTIME_SET_METHOD")
 	private int worktimeSetMethod;
-
+	
+	/**
+	 * Instantiates a new kshmt worktime common set PK.
+	 */
+	public KshmtWorktimeCommonSetPK() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new kshmt worktime common set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param workFormAtr the work form atr
+	 * @param worktimeSetMethod the worktime set method
+	 */
+	public KshmtWorktimeCommonSetPK(String cid, String worktimeCd, int workFormAtr, int worktimeSetMethod) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.workFormAtr = workFormAtr;
+		this.worktimeSetMethod = worktimeSetMethod;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -81,4 +103,5 @@ public class KshmtWorktimeCommonSetPK implements Serializable {
 		}
 		return true;
 	}
+
 }
