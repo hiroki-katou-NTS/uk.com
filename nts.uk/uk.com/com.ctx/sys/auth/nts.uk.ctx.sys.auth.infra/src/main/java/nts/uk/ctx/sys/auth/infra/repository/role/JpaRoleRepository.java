@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.auth.infra.repository.role;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
@@ -29,11 +31,17 @@ import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
 @Stateless
 public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
+	private static final Integer MAX_ELEMENTS = 1000;
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.dom.role.RoleRepository#findById(java.lang.String)
 	 */
 	@Override
 	public List<Role> findByListId(List<String> lstRoleId) {
+		//if is empty lstRoleId
+		if (lstRoleId.isEmpty()) {
+			return new ArrayList<Role>();
+		}
+		List<SacmtRole> sacmtRoles = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -43,13 +51,16 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		// select root
 		cq.select(root);
 
-		// add where
-		List<Predicate> predicateList = new ArrayList<>();
+		CollectionUtil.split(lstRoleId, MAX_ELEMENTS, (subList) -> {
+			// add where
+			List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(root.get(SacmtRole_.roleId).in(lstRoleId));
-		cq.where(predicateList.toArray(new Predicate[] {}));
+			predicateList.add(root.get(SacmtRole_.roleId).in(subList));
+			cq.where(predicateList.toArray(new Predicate[] {}));
 
-		List<SacmtRole> sacmtRoles = em.createQuery(cq).getResultList();
+			sacmtRoles.addAll(em.createQuery(cq).getResultList());
+		});
+		
 		return sacmtRoles.stream().map(sacmtRole -> {
 			return new Role(new JpaRoleGetMemento(sacmtRole));
 		}).collect(Collectors.toList());
