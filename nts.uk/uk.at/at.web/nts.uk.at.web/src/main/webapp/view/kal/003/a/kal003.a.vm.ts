@@ -2,17 +2,26 @@ module nts.uk.at.view.kal003.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import model = kal003.share.model;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        cbbItemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<number>;
+        cbbItemList: KnockoutObservableArray<model.ItemModel>;
+        selectedCategory: KnockoutObservable<number>;
 
-        radioItemList: KnockoutObservableArray<ItemModel>;
-        selectedId: KnockoutObservable<number>;
+        radioItemList: KnockoutObservableArray<model.ItemModel>;
+        selectedDataCondition: KnockoutObservable<number>;
+        
+        screenMode: KnockoutObservable<number>;
 
         listAlarmCheckCondition: KnockoutObservableArray<model.AlarmCheckConditionByCategory>;
+        selectedAlarmCheckConditionCode: KnockoutObservable<string>;
         selectedAlarmCheckCondition: KnockoutObservable<model.AlarmCheckConditionByCategory>;
 
         constructor() {
@@ -25,58 +34,100 @@ module nts.uk.at.view.kal003.a.viewmodel {
             ]);
             self.selectedTab = ko.observable('tab-1');
             self.cbbItemList = ko.observableArray([
-                new ItemModel(0, 'スケジュール日次'),
-                new ItemModel(1, 'スケジュール週次'),
-                new ItemModel(2, 'スケジュール4週'),
-                new ItemModel(3, 'スケジュール月次'),
-                new ItemModel(4, 'スケジュール年間'),
-                new ItemModel(5, '日次'),
-                new ItemModel(6, '週次'),
-                new ItemModel(7, '月次'),
-                new ItemModel(8, '申請承認'),
-                new ItemModel(9, '複数月'),
-                new ItemModel(10, '任意期間'),
-                new ItemModel(11, '年休付与用出勤率'),
-                new ItemModel(12, '３６協定'),
-                new ItemModel(13, '工数チェック')
+                new model.ItemModel(0, 'スケジュール日次'),
+                new model.ItemModel(1, 'スケジュール週次'),
+                new model.ItemModel(2, 'スケジュール4週'),
+                new model.ItemModel(3, 'スケジュール月次'),
+                new model.ItemModel(4, 'スケジュール年間'),
+                new model.ItemModel(5, '日次'),
+                new model.ItemModel(6, '週次'),
+                new model.ItemModel(7, '月次'),
+                new model.ItemModel(8, '申請承認'),
+                new model.ItemModel(9, '複数月'),
+                new model.ItemModel(10, '任意期間'),
+                new model.ItemModel(11, '年休付与用出勤率'),
+                new model.ItemModel(12, '３６協定'),
+                new model.ItemModel(13, '工数チェック')
             ]);
-            self.selectedCode = ko.observable(1);
+            self.selectedCategory = ko.observable(model.CATEGORY.DAILY);
 
             self.radioItemList = ko.observableArray([
-                new ItemModel(1, '全て'),
-                new ItemModel(2, '確認済のデータ'),
-                new ItemModel(3, '未確認のデータ')
+                new model.ItemModel(0, '全て'),
+                new model.ItemModel(1, '確認済のデータ'),
+                new model.ItemModel(2, '未確認のデータ')
             ]);
-            self.selectedId = ko.observable(1);
+            self.selectedDataCondition = ko.observable(model.DATA_CONDITION_TO_EXTRACT.ALL);
 
-            self.listAlarmCheckCondition = ko.observableArray([
-                new model.AlarmCheckConditionByCategory('001', 'name1', 'category1', [], new model.AlarmCheckTargetCondition(true, true, false, false, [], [], [], [])),
-                new model.AlarmCheckConditionByCategory('002', 'name2', 'category1', [], new model.AlarmCheckTargetCondition(true, true, false, false, [], [], [], [])),
-                new model.AlarmCheckConditionByCategory('003', 'name3', 'category1', [], new model.AlarmCheckTargetCondition(true, true, false, false, [], [], [], [])),
-                new model.AlarmCheckConditionByCategory('004', 'name4', 'category1', [], new model.AlarmCheckTargetCondition(true, true, false, false, [], [], [], []))
-            ]);
-            self.selectedAlarmCheckCondition = ko.observable(new model.AlarmCheckConditionByCategory('001', 'name1', 'category1', [], new model.AlarmCheckTargetCondition(true, true, false, false, [], [], [], [])));
+            self.listAlarmCheckCondition = ko.observableArray([]);
+            self.selectedAlarmCheckConditionCode = ko.observable('');
+            self.selectedAlarmCheckCondition = ko.observable(new model.AlarmCheckConditionByCategory('', '', 'category1', [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
+
+            self.selectedAlarmCheckConditionCode.subscribe(function(data: any) {
+                if (data) {
+                    let item = _.find(self.listAlarmCheckCondition(), (x: model.AlarmCheckConditionByCategory) => x.code() == data);
+                    if (item) {
+                        self.selectedAlarmCheckCondition(item);
+                        self.screenMode(model.SCREEN_MODE.UPDATE);
+                    }
+                }
+            });
+            
+            self.selectedCategory.subscribe((data) => {
+                if (data == model.CATEGORY.DAILY){
+                    $("#AA1").show();
+                } else {
+                    $("#AA1").hide();
+                    info({ message: "Not cover this time" }).then(() => {
+                        self.selectedCategory(model.CATEGORY.DAILY);
+                    });
+                }
+            });
+            
+            self.selectedDataCondition.subscribe((data) => {
+                self.selectedAlarmCheckCondition().conditionToExtractDaily(data);
+            });
+            
+            self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
         }
 
+        startPage(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            self.listAlarmCheckCondition([
+                new model.AlarmCheckConditionByCategory('001', 'name1', 'category1', [], new model.AlarmCheckTargetCondition(false, true, false, false, [], ['cls01', 'cls02'], [], [])),
+                new model.AlarmCheckConditionByCategory('002', 'name2', 'category1', [], new model.AlarmCheckTargetCondition(true, false, false, false, ['emp01', 'emp02'], [], [], [])),
+                new model.AlarmCheckConditionByCategory('003', 'name3', 'category1', [], new model.AlarmCheckTargetCondition(false, false, false, true, [], [], [], ['bustype01', 'bustype02'])),
+                new model.AlarmCheckConditionByCategory('004', 'name4', 'category1', [], new model.AlarmCheckTargetCondition(false, false, true, false, [], [], ['job01', 'job02'], []))
+            ]);
+            self.selectedAlarmCheckConditionCode(self.listAlarmCheckCondition()[1].code());
+            dfd.resolve();
+            block.clear();
+            return dfd.promise();
+        }
 
+        createNewAlarmCheckCondition() {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            self.selectedAlarmCheckConditionCode('');
+            self.selectedAlarmCheckCondition(new model.AlarmCheckConditionByCategory('', '', 'category1', [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
+            self.selectedDataCondition(model.DATA_CONDITION_TO_EXTRACT.ALL);
+            self.screenMode(model.SCREEN_MODE.NEW);
+        }
 
+        registerAlarmCheckCondition() {
+            let self = this;
+            self.listAlarmCheckCondition.push(self.selectedAlarmCheckCondition());
+        }
 
+        deleteAlarmCheckCondition() {
+            let self = this;
 
+        }
         test(): void {
             console.log("success!");
-            nts.uk.ui.windows.sub.modal("../../004/b/index.xhtml").onClosed(() => {
+            modal("../../004/b/index.xhtml").onClosed(() => {
                 console.log("success!");
             });
-        }
-    }
-
-    class ItemModel {
-        code: number;
-        name: string;
-
-        constructor(code: number, name: string) {
-            this.code = code;
-            this.name = name;
         }
     }
 
