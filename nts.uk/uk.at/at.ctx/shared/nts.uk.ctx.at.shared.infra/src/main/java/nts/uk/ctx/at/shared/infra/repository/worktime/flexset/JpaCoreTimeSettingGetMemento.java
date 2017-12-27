@@ -49,9 +49,7 @@ public class JpaCoreTimeSettingGetMemento implements CoreTimeSettingGetMemento {
 	 */
 	@Override
 	public ApplyAtr getTimesheet() {
-//		return ApplyAtr.valueOf(this.entity.getUseAtr());
-		// TODO: check again
-		return null;
+		return ApplyAtr.valueOf(this.entity.getCoretimeUseAtr());
 	}
 
 	/**
