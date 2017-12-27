@@ -44,8 +44,6 @@
 							<div data-bind="ntsCheckBox:{checked: isAlreadySetting}">Show Already Setting</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Show As Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show NoSelection Item</div>
-							<div data-bind="ntsCheckBox:{checked: isDisplayEmpClosure}">Show EmpClosure</div>
-							<div data-bind="ntsCheckBox:{checked: isDisplayFullClosure}">Show Full Closure</div>
 						</div><br></br>
 
 						<div style="margin-left: 10px; padding-top: 10px">
@@ -58,20 +56,6 @@
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedType,
-											enable: true}"></div>
-											
-						</div>
-						
-						<div style="margin-left: 10px; padding-top: 10px">
-							<p>
-								<b>Extraction Closure Type:</b>
-							</p>
-							<br></br>
-							<div id="selection-type" data-bind="ntsRadioBoxGroup: {
-											options: extractionTypeList,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: extractClosureId,
 											enable: true}"></div>
 											
 						</div>
