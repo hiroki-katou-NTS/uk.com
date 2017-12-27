@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
@@ -28,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento;
  * The Class FlexWorkSettingDto.
  */
 @Getter
-@Setter
 public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 
 	/** The work time code. */
@@ -193,5 +191,16 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento{
 			calculateSetting.saveToMemento(this.calculateSetting);
 		}
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento#
+	 * setUseHalfDayShift(boolean)
+	 */
+	@Override
+	public void setUseHalfDayShift(boolean useHalfDayShift) {
+		this.useHalfDayShift = useHalfDayShift;
+	}
+
 }
