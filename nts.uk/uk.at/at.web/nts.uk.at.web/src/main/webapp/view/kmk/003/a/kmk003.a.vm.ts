@@ -270,12 +270,11 @@ module nts.uk.at.view.kmk003.a {
              */
             private removeWorkTime(): JQueryPromise<void>
             {
-                // block ui.
-                _.defer(() => nts.uk.ui.block.invisible());
-
                 let self = this;
                 let dfd = $.Deferred<void>();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    // block ui.
+                    _.defer(() => nts.uk.ui.block.invisible());
                     service.removeWorkTime(self.selectedWorkTimeCode()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_16' });
                         dfd.resolve();
