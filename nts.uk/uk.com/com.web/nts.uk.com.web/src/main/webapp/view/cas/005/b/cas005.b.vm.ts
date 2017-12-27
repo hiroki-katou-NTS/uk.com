@@ -18,7 +18,7 @@ module nts.uk.com.view.csa005.b {
                 self.newRoleCode = ko.observable("");
                 self.newRoleName = ko.observable("");
                 //checker
-                self.checked = ko.observable(true);
+                self.checked = ko.observable(false);
                 self.enable = ko.observable(true)
                 self.roleCode = ko.observable("");
                 self.roleName = ko.observable("");
@@ -40,7 +40,6 @@ module nts.uk.com.view.csa005.b {
              */
             startPage(): JQueryPromise<any> {
                 let self = this;
-                $("#newRoleCode").focus();
                 let dfd = $.Deferred();
                 dfd.resolve();
                 return dfd.promise();

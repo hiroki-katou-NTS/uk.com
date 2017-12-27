@@ -53,29 +53,4 @@ public class FourWeekFourHolidayNumberSetting extends AggregateRoot{
 		memento.setFourWeek(this.fourWeek);
 		memento.setCID(this.CID);
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((CID == null) ? 0 : CID.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		FourWeekFourHolidayNumberSetting other = (FourWeekFourHolidayNumberSetting) obj;
-		if (CID == null) {
-			if (other.CID != null)
-				return false;
-		} else if (!CID.equals(other.CID))
-			return false;
-		return true;
-	}
 }

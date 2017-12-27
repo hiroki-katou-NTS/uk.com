@@ -378,7 +378,8 @@
 		                            <col width="300"/>
 		                            <tr>
 		                            	<td>
-		                            		<span>#{i18n.getText('KDW007_77')}</span>
+		                            		<div data-bind="ntsCheckBox: { 
+									    						checked: selectedErrorAlarm().group2UseAtr }">#{i18n.getText('KDW007_77')}</div>
 		                            	</td>
 		                            	<td>
 		                            		<span>#{i18n.getText('KDW007_78')}</span>
