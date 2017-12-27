@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetGetMemento;
@@ -36,12 +37,18 @@ public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEa
 
 	@Override
 	public EmTimezoneLateEarlyCommonSet getCommonSet() {
+		if (this.entity.getKshmtLateEarlySet() == null) {
+			return null;
+		}
 		return new EmTimezoneLateEarlyCommonSet(
 				this.entity.getKshmtLateEarlySet().getIsDeducteFromTime() == TRUE_VALUE);
 	}
 
 	@Override
 	public List<OtherEmTimezoneLateEarlySet> getOtherClassSet() {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtOtherLateEarlies())) {
+			return null;
+		}
 		return this.entity.getKshmtOtherLateEarlies().stream()
 				.map(item -> new OtherEmTimezoneLateEarlySet(
 						new JpaOtherEmTimezoneLateEarlySetGetMemento(item)))

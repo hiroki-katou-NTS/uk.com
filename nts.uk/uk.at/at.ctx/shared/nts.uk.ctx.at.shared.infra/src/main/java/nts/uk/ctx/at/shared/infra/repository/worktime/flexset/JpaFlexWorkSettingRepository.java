@@ -33,8 +33,8 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<FlexWorkSetting> find(String companyId, String worktimeCode) {
-		return Optional.ofNullable(this.findWorkSetting(companyId, worktimeCode)
-				.map(entity -> this.toDomain(entity, this.findCommonSetting(companyId, worktimeCode).get())));
+		return this.findWorkSetting(companyId, worktimeCode)
+				.map(entity -> this.toDomain(entity, this.findCommonSetting(companyId, worktimeCode).get()));
 	}
 
 	/*

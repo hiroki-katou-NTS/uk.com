@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.List;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
@@ -47,6 +48,9 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	 */
 	@Override
 	public TotalRoundingSet getTotalRoundingSet() {
+		if (this.kshmtWorktimeGoOutSet == null) {
+			return null;
+		}
 		return new TotalRoundingSet(this.kshmtWorktimeGoOutSet.getRoundingSameFrame(),
 				this.kshmtWorktimeGoOutSet.getRoundingCrossFrame());
 	}
@@ -60,6 +64,9 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	 */
 	@Override
 	public GoOutTimezoneRoundingSet getDiffTimezoneSetting() {
+		if (CollectionUtil.isEmpty(this.kshmtSpecialRoundOuts)) {
+			return null;
+		}
 		return new GoOutTimezoneRoundingSet(
 				new JpaGoOutTimezoneRoundingSetGetMemento(kshmtSpecialRoundOuts));
 	}

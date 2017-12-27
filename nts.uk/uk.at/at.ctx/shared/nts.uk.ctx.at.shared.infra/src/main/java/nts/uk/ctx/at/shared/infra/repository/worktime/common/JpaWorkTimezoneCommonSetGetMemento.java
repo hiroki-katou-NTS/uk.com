@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
@@ -74,6 +76,9 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
+			return null;
+		}
 		return this.entity.getKshmtSubstitutionSets().stream()
 				.map(item -> new WorkTimezoneOtherSubHolTimeSet(
 						new JpaWorkTimezoneOtherSubHolTimeSetGetMemento(item)))
@@ -89,6 +94,9 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public BonusPaySettingCode getRaisingSalarySet() {
+		if (this.entity.getRaisingSalarySet() == null) {
+			return null;
+		}
 		return new BonusPaySettingCode(this.entity.getRaisingSalarySet());
 	}
 
@@ -101,6 +109,9 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public List<WorkTimezoneMedicalSet> getMedicalSet() {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
+			return null;
+		}
 		return this.entity.getKshmtMedicalTimeSets().stream().map(
 				item -> new WorkTimezoneMedicalSet(new JpaWorkTimezoneMedicalSetGetMemento(item)))
 				.collect(Collectors.toList());
@@ -168,8 +179,11 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneExtraordTimeSet getExtraordTimeSet() {
-		return new WorkTimezoneExtraordTimeSet(new JpaWorkTimezoneExtraordTimeSetGetMemento(
-				this.entity.getKshmtTempWorktimeSet()));
+		KshmtTempWorktimeSet entityTemp = this.entity.getKshmtTempWorktimeSet();
+		if (entityTemp == null) {
+			return null;
+		}
+		return new WorkTimezoneExtraordTimeSet(new JpaWorkTimezoneExtraordTimeSetGetMemento(entityTemp));
 	}
 
 	/*
