@@ -8,6 +8,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSetPK;
 
 /**
  * The Class JpaWorkTimezoneGoOutSetSetMemento.
@@ -20,8 +22,7 @@ public class JpaWorkTimezoneGoOutSetSetMemento implements WorkTimezoneGoOutSetSe
 	/**
 	 * Instantiates a new jpa work timezone go out set set memento.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 */
 	public JpaWorkTimezoneGoOutSetSetMemento(KshmtWorktimeCommonSet entity) {
 		super();
@@ -38,8 +39,16 @@ public class JpaWorkTimezoneGoOutSetSetMemento implements WorkTimezoneGoOutSetSe
 	 */
 	@Override
 	public void setTotalRoundingSet(TotalRoundingSet set) {
-		this.entity.getKshmtWorktimeGoOutSet().setRoundingSameFrame(set.getSetSameFrameRounding().value);
-		this.entity.getKshmtWorktimeGoOutSet().setRoundingCrossFrame(set.getFrameStraddRoundingSet().value);
+		if (set != null) {
+			KshmtWorktimeGoOutSet entityGoOut = new KshmtWorktimeGoOutSet(
+					new KshmtWorktimeGoOutSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+							this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
+							this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
+							this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod()));
+			entityGoOut.setRoundingSameFrame(set.getSetSameFrameRounding().value);
+			entityGoOut.setRoundingCrossFrame(set.getFrameStraddRoundingSet().value);
+			this.entity.setKshmtWorktimeGoOutSet(entityGoOut);
+		}
 	}
 
 	/*

@@ -47,7 +47,9 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	@Override
 	public void add(FlexWorkSetting domain) {
 		KshmtFlexWorkSet entity = new KshmtFlexWorkSet();
-		KshmtWorktimeCommonSet entityCommon = new KshmtWorktimeCommonSet();
+		KshmtWorktimeCommonSet entityCommon = new KshmtWorktimeCommonSet(
+				new KshmtWorktimeCommonSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v(),
+						WorkTimeDailyAtr.FLEX_WORK.value, WorkTimeMethodSet.FIXED_WORK.value));
 		domain.saveToMemento(new JpaFlexWorkSettingSetMemento(entity, entityCommon));
 		this.commandProxy().insert(entity);
 		this.commandProxy().insert(entityCommon);

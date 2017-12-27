@@ -105,6 +105,9 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	private void initialEntity(KshmtWorktimeCommonSet parentEntity) {
 		KshmtLateEarlySet entity = parentEntity.getKshmtLateEarlySet();
 
+		if(entity == null){
+			entity = new KshmtLateEarlySet();
+		}
 		// check existed key
 		if (entity.getKshmtLateEarlySetPK() == null) {
 

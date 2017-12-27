@@ -50,6 +50,17 @@ public class KshmtWorktimeGoOutSet extends UkJpaEntity implements Serializable {
 		super();
 	}
 
+
+	/**
+	 * Instantiates a new kshmt worktime go out set.
+	 *
+	 * @param kshmtWorktimeGoOutSetPK the kshmt worktime go out set PK
+	 */
+	public KshmtWorktimeGoOutSet(KshmtWorktimeGoOutSetPK kshmtWorktimeGoOutSetPK) {
+		super();
+		this.kshmtWorktimeGoOutSetPK = kshmtWorktimeGoOutSetPK;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -90,4 +101,5 @@ public class KshmtWorktimeGoOutSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtWorktimeGoOutSetPK;
 	}
+
 }
