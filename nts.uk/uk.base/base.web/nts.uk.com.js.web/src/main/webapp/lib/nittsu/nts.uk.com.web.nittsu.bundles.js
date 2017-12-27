@@ -3729,6 +3729,21 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui_1) {
+            var toBeResource;
+            (function (toBeResource) {
+                toBeResource.yes = "はい";
+                toBeResource.no = "いいえ";
+                toBeResource.cancel = "キャンセル";
+                toBeResource.close = "閉じる";
+                toBeResource.info = "情報";
+                toBeResource.warn = "警告";
+                toBeResource.error = "エラー";
+                toBeResource.unset = "未設定";
+                toBeResource.errorContent = "エラー内容";
+                toBeResource.errorCode = "エラーコード";
+                toBeResource.errorList = "エラー一覧";
+                toBeResource.plzWait = "お待ちください";
+            })(toBeResource = ui_1.toBeResource || (ui_1.toBeResource = {}));
             var windows;
             (function (windows) {
                 var MAIN_WINDOW_ID = 'MAIN_WINDOW';
@@ -3802,7 +3817,7 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "未設定" : dialogName;
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? toBeResource.unset : dialogName;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -4087,13 +4102,13 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: "はい",
+                                text: toBeResource.yes,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
                                     then();
                                 }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: nts.uk.resource.getText("infor") });
+                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: toBeResource.info });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -4113,13 +4128,13 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(message, [{
-                                text: "はい",
+                                text: toBeResource.yes,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
                                     then();
                                 }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: nts.uk.resource.getText("error") });
+                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: toBeResource.error });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -4138,13 +4153,13 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: "はい",
+                                text: toBeResource.yes,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
                                     then();
                                 }
-                            }]);
+                            }], { text: nts.uk.resource.getText(toBeResource.warn) });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -4185,7 +4200,7 @@ var nts;
                     setTimeout(function () {
                         var buttons = [];
                         buttons.push({
-                            text: "はい",
+                            text: toBeResource.yes,
                             "class": "yes large danger",
                             click: function () {
                                 $this.dialog('close');
@@ -4195,7 +4210,7 @@ var nts;
                         });
                         if (hasNoButton) {
                             buttons.push({
-                                text: "いいえ",
+                                text: toBeResource.no,
                                 "class": "no large",
                                 click: function () {
                                     $this.dialog('close');
@@ -4206,7 +4221,7 @@ var nts;
                         }
                         if (hasCancelButton) {
                             buttons.push({
-                                text: "キャンセル",
+                                text: toBeResource.cancel,
                                 "class": "cancel large",
                                 click: function () {
                                     $this.dialog('close');
@@ -4272,7 +4287,9 @@ var nts;
                 function bundledErrors(errors) {
                     var then = $.noop;
                     var id = uk.util.randomId();
-                    var container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), functionArea = $("<div id='functions-area-bottom'/>"), errorBoard = $("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>\u30A8\u30E9\u30FC\u5185\u5BB9</th>\n                    <th style='display: none;'/>    <th style='width: 150px;'>\u30A8\u30E9\u30FC\u30B3\u30FC\u30C9</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
+                    var container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), functionArea = $("<div id='functions-area-bottom'/>"), errorBoard = $("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>"
+                        + toBeResource.errorContent + "</th><th style='display: none;'/>    <th style='width: 150px;'>"
+                        + toBeResource.errorCode + "</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
                     var errorBody = errorBoard.find("tbody");
                     if ($.isArray(errors["errors"])) {
                         _.forEach(errors["errors"], function (error, idx) {
@@ -4288,7 +4305,7 @@ var nts;
                     container.appendTo(getRoot());
                     setTimeout(function () {
                         container.dialog({
-                            title: "エラー一覧",
+                            title: toBeResource.errorList,
                             dialogClass: "no-close-btn",
                             modal: false,
                             resizable: false,
@@ -4298,7 +4315,7 @@ var nts;
                             open: function () {
                                 errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
                                 functionArea.css({ "left": "0px" });
-                                closeButton.text("閉じる").click(function (evt) {
+                                closeButton.text(toBeResource.close).click(function (evt) {
                                     container.dialog("destroy");
                                     container.remove();
                                     then();
@@ -4386,7 +4403,7 @@ var nts;
                 function grayout() {
                     var rect = calcRect();
                     $.blockUI({
-                        message: '<div class="block-ui-message">お待ちください</div>',
+                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
                         fadeIn: 200,
                         css: {
                             width: rect.width,
