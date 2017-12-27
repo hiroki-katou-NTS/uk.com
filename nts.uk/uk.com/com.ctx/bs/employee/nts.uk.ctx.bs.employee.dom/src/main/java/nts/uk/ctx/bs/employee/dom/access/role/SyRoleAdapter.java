@@ -2,17 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.holidaysetting.configuration;
+package nts.uk.ctx.bs.employee.dom.access.role;
 
 /**
- * The Interface PublicHolidayGrantDateSetMemento.
+ * The Interface SyRoleWorkplaceAdapter.
  */
-public interface PublicHolidayGrantDateSetMemento {
+public interface SyRoleAdapter {
 	
 	/**
-	 * Sets the period.
+	 * Find list wkp id by role id.
 	 *
-	 * @param period the new period
+	 * @param systemType the system type
+	 * @return the list
 	 */
-	void setPeriod(PublicHolidayPeriod period);
+	WorkplaceIDImport findListWkpIdByRoleId(Integer systemType);
 }

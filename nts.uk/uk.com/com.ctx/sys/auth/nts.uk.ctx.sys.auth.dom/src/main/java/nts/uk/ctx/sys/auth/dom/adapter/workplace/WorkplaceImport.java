@@ -2,17 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.holidaysetting.configuration;
+package nts.uk.ctx.sys.auth.dom.adapter.workplace;
+
+import lombok.Getter;
 
 /**
- * The Interface PublicHolidayGrantDateGetMemento.
+ * The Class WorkplaceImport.
  */
-public interface PublicHolidayGrantDateGetMemento {
+@Getter
+public class WorkplaceImport {
 	
-	/**
-	 * Gets the period.
-	 *
-	 * @return the period
-	 */
-	PublicHolidayPeriod getPeriod();
+	/** The workplace id. */
+	private String workplaceId;
 }
