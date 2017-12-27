@@ -4,7 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -18,6 +22,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
@@ -61,8 +67,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setIntervalSet(IntervalTimeSetting itvset) {
-		// TODO Auto-generated method stub
-
+		itvset.saveToMemento(new JpaIntervalTimeSettingSetMemento(this.entity));
 	}
 
 	/*
@@ -74,8 +79,34 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet) {
-		// TODO Auto-generated method stub
-
+		List<KshmtSubstitutionSet> newListEntity = new ArrayList<>();
+		
+		Map<KshmtSubstitutionSetPK, KshmtSubstitutionSet> existShtSet = this.entity.getKshmtSubstitutionSets().stream()
+				.collect(Collectors.toMap(KshmtSubstitutionSet::getKshmtSubstitutionSetPK, Function.identity()));
+		
+		shtSet.forEach(domain -> {							
+			KshmtSubstitutionSet entity = existShtSet.get(new KshmtSubstitutionSetPK(
+					this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
+					domain.getOriginAtr().value));
+			
+			if (entity == null) {
+				KshmtSubstitutionSetPK pk = new KshmtSubstitutionSetPK(
+						this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
+						this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
+						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
+						domain.getOriginAtr().value);
+				entity = new KshmtSubstitutionSet();
+				entity.setKshmtSubstitutionSetPK(pk);
+			}
+			
+			domain.saveToMemento(new JpaWorkTimezoneOtherSubHolTimeSetSetMemento(entity));
+			newListEntity.add(entity);
+		});
+		this.entity.setKshmtSubstitutionSets(newListEntity);
 	}
 
 	/*

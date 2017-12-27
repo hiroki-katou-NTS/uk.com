@@ -42,6 +42,8 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 			entity.setKshmtFixedStampReflectPK(new KshmtFixedStampReflectPK());
 		}
 		this.entity = entity;
+		this.entity.getKshmtFixedStampReflectPK().setCid(this.companyId);
+		this.entity.getKshmtFixedStampReflectPK().setWorktimeCd(this.workTimeCd);
 	}
 
 	/*
@@ -53,8 +55,6 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	 */
 	@Override
 	public void setWorkNo(WorkNo workNo) {
-		this.entity.getKshmtFixedStampReflectPK().setCid(companyId);
-		this.entity.getKshmtFixedStampReflectPK().setWorktimeCd(this.workTimeCd);
 		this.entity.getKshmtFixedStampReflectPK().setWorkNo(workNo.v().intValue());
 	}
 

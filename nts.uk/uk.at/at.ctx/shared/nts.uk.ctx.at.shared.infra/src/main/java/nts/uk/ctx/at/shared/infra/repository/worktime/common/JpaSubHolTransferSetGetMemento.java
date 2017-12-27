@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
@@ -50,7 +51,7 @@ public class JpaSubHolTransferSetGetMemento implements SubHolTransferSetGetMemen
 	 */
 	@Override
 	public boolean getUseDivision() {
-		return this.entity.getUseAtr() == 1 ;
+		return BooleanGetAtr.getAtrByInteger(this.entity.getUseAtr());
 	}
 
 	/*
