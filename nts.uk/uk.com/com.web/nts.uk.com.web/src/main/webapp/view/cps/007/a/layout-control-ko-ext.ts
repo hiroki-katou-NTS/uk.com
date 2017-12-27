@@ -1874,12 +1874,14 @@ module nts.custombinding {
                                         data = _(data)
                                             .filter(m => !m.isAbolition)
                                             .filter(f => {
-                                                if (item.id === "COM1_00000000000000000000000_CS00002") {
-                                                    return f.id !== "COM1_000000000000000_CS00002_IS00003";
-                                                }
+                                                if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                                    if (item.id === "COM1_00000000000000000000000_CS00002") {
+                                                        return f.id !== "COM1_000000000000000_CS00002_IS00003";
+                                                    }
 
-                                                if (item.id === "COM1_00000000000000000000000_CS00003") {
-                                                    return f.id !== "COM1_000000000000000_CS00003_IS00020";
+                                                    if (item.id === "COM1_00000000000000000000000_CS00003") {
+                                                        return f.id !== "COM1_000000000000000_CS00003_IS00020";
+                                                    }
                                                 }
 
                                                 return true;
