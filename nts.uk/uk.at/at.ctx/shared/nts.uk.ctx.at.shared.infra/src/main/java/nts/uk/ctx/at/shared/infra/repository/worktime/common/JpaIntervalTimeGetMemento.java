@@ -46,10 +46,9 @@ public class JpaIntervalTimeGetMemento implements IntervalTimeGetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeGetMemento#
 	 * getRounding()
 	 */
-	// TODO: DienTX pls check - liệu có bị nhầm lẫn với rounding tổng ở ngoài 1 cấp!?
 	@Override
 	public TimeRoundingSetting getRounding() {
-		return null;
+		return new TimeRoundingSetting(this.entity.getIntervalExempUnit(), this.entity.getIntervalExempRounding());
 	}
 
 }

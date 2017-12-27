@@ -19,6 +19,9 @@ public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEa
 
 	/** The entity. */
 	private KshmtWorktimeCommonSet entity;
+	
+	/** The Constant TRUE_VALUE. */
+	private static final Integer TRUE_VALUE = 1;
 
 	/**
 	 * Instantiates a new jpa work timezone common set get memento.
@@ -33,9 +36,8 @@ public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEa
 
 	@Override
 	public EmTimezoneLateEarlyCommonSet getCommonSet() {
-		return null;
-		// TODO: DienTX pls check again.
-		// return new EmTimezoneLateEarlyCommonSet(this.entity.get);
+		return new EmTimezoneLateEarlyCommonSet(
+				this.entity.getKshmtLateEarlySet().getIsDeducteFromTime() == TRUE_VALUE);
 	}
 
 	@Override
