@@ -53,7 +53,11 @@ public class JpaTimezoneGetMemento<T extends KshmtTimeZone> implements TimezoneG
 	 */
 	@Override
 	public int getCnt() {
-		return this.entity.getCnt();
+		if (entity instanceof KshmtWorkCatTimeZone) {
+			return ((KshmtWorkCatTimeZone) this.entity).getKshmtWorkCatTimeZonePK().getCnt();
+		}
+
+		return ((KshmtDayofweekTimeZone) this.entity).getKshmtDayofweekTimeZonePK().getCnt();
 	}
 
 	/*
@@ -64,13 +68,7 @@ public class JpaTimezoneGetMemento<T extends KshmtTimeZone> implements TimezoneG
 	 */
 	@Override
 	public TimeWithDayAttr getStart() {
-		if (entity instanceof KshmtWorkCatTimeZone) {
-			return new TimeWithDayAttr(((KshmtWorkCatTimeZone) this.entity)
-					.getKshmtWorkCatTimeZonePK().getStartTime());
-		}
-
-		return new TimeWithDayAttr(((KshmtDayofweekTimeZone) this.entity)
-				.getKshmtDayofweekTimeZonePK().getStartTime());
+		return new TimeWithDayAttr(this.entity.getStartTime());
 	}
 
 	/*

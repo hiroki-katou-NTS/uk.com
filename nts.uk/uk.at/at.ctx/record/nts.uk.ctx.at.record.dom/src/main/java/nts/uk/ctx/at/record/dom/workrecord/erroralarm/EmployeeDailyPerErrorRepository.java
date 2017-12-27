@@ -8,4 +8,6 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	boolean checkExistErrorCode(String employeeID, GeneralDate processingDate, String errorCode);
 	
+	EmployeeDailyPerError find(String employeeID, GeneralDate processingDate);
+	
 }

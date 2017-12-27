@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 /** 日別実績の滞在時間 */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StayingTimeDto {
 
 	/** 滞在時間 */
@@ -33,4 +38,13 @@ public class StayingTimeDto {
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "PCログオフ後時間")
 	@AttendanceItemValue(itemId = 744, type = ValueType.INTEGER)
 	private Integer afterPCLogOffTime;
+	
+	public static StayingTimeDto fromStayingTime(StayingTimeOfDaily domain) {
+		return domain == null ? null : new StayingTimeDto(
+				domain.getStayingTime().valueAsMinutes(),
+				domain.getBeforeWoringTime().valueAsMinutes(),
+				domain.getAfterLeaveTime().valueAsMinutes(),
+				domain.getBeforePCLogOnTime().valueAsMinutes(),
+				domain.getAfterPCLogOffTime().valueAsMinutes());
+	}
 }

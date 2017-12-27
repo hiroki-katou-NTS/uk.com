@@ -52,6 +52,9 @@ public class SaveWorkplaceManagerCommandHandler extends CommandHandlerWithResult
 				.getWkpManagerBySIdWkpId(command.getEmployeeId(), command.getWkpId());
 		if (!CollectionUtil.isEmpty(wkpManagerList)) {
 			for (WorkplaceManager manager : wkpManagerList) {
+				if (!command.isNewMode() && command.getWkpManagerId().equals(manager.getWorkplaceManagerId())) {
+					continue;
+				}
 				if (!(wkpManager.getHistoryPeriod().end().before(manager.getHistoryPeriod().start())
 						|| manager.getHistoryPeriod().end().before(wkpManager.getHistoryPeriod().start()))) {
 					throw new BusinessException("Msg_619");

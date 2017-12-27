@@ -15,7 +15,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -23,7 +22,6 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.infra.entity.log.KrcstCaseSpecExeContent;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlConGroup;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktime.KrcstErAlWhActual;
@@ -55,28 +53,28 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "FiLTER_BY_BUSINESS_TYPE")
 	public BigDecimal filterByBusinessType;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlBusinessType> lstBusinessType;
 
 	@Column(name = "FiLTER_BY_JOB_TITLE")
 	public BigDecimal filterByJobTitle;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlJobTitle> lstJobTitle;
 
 	@Column(name = "FiLTER_BY_EMPLOYMENT")
 	public BigDecimal filterByEmployment;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlEmployment> lstEmployment;
 
 	@Column(name = "FiLTER_BY_CLASSIFICATION")
 	public BigDecimal filterByClassification;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlClass> lstClassification;
 
@@ -95,11 +93,11 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "WT_COMPARE_ATR")
 	public BigDecimal wtCompareAtr;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWtActual> lstWtActual;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWtPlan> lstWtPlan;
 
@@ -118,11 +116,11 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "WH_COMPARE_ATR")
 	public BigDecimal whCompareAtr;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWhActual> lstWhActual;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWhPlan> lstWhPlan;
 
@@ -132,13 +130,15 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "ATD_ITEM_CONDITION_GROUP1")
 	public String atdItemConditionGroup1;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlCondition", orphanRemoval=true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP1", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
 	public KrcstErAlConGroup krcstErAlConGroup1;
 
 	@Column(name = "ATD_ITEM_CONDITION_GROUP2")
 	public String atdItemConditionGroup2;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlCondition", orphanRemoval=true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval=true)
+	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP2", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
 	public KrcstErAlConGroup krcstErAlConGroup2;
 
 	@OneToOne(mappedBy="krcmtErAlCondition")

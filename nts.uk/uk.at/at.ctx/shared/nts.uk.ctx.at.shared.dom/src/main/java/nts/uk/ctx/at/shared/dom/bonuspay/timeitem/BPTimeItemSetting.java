@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.HTCalSettingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.OTCalSettingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.WTCalSettingAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
 
 /**
  * @author hungnm

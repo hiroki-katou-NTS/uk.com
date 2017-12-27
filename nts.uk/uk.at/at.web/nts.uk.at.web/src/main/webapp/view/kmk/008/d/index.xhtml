@@ -4,8 +4,7 @@
 
 <body>
 	<div class="sidebar-content-header">
-		<span tabindex="2" class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
-			'#Com_Employment'])}</span> <a
+		<span tabindex="2" class="title" data-bind="text: textOvertimeName"></span> <a
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
 		<button class="proceed" tabindex="3" data-bind="click: addUpdateData, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 		<button tabindex="4">#{i18n.getText('KMK008_15')}</button>

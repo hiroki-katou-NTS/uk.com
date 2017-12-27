@@ -1,7 +1,5 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,7 @@ public class DailyRecEditSetDto {
 
 	private GeneralDate processingYmd;
 
-	private BigDecimal attendanceItemId;
+	private int attendanceItemId;
 
-	private BigDecimal editState;
+	private int editState;
 }
