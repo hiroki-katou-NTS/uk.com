@@ -11,6 +11,7 @@ module nts.uk.at.view.kmk003.a {
             export module command {
 
                 export interface WorkTimeCommonSaveCommand {
+                    addMode: boolean;
                     predseting: predset.PredetemineTimeSettingDto;
                     worktimeSetting: worktimeset.WorkTimeSettingDto;
                 }

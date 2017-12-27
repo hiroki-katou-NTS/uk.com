@@ -225,7 +225,7 @@ module nts.uk.at.view.kmk003.a {
             //save worktime data
             public save(): void {
                 let self = this;
-                self.mainSettingModel.save();
+                self.mainSettingModel.save(self.isNewMode());
             }
             
             //when click copy
@@ -311,22 +311,23 @@ module nts.uk.at.view.kmk003.a {
                 });
             }
 
-            save(): void {
+            save(addMode: boolean): void {
                 let self = this;
                 if (self.workTimeSetting.isFlex()) {
-                    service.saveFlexWorkSetting(self.toFlexCommannd()).fail(err => nts.uk.ui.dialog.alertError(err));
+                    service.saveFlexWorkSetting(self.toFlexCommannd(addMode)).fail(err => nts.uk.ui.dialog.alertError(err));
                 }
                 if (self.workTimeSetting.isFixed()) {
-                    service.saveFixedWorkSetting(self.toFixedCommand()).fail(err => nts.uk.ui.dialog.alertError(err));
+                    service.saveFixedWorkSetting(self.toFixedCommand(addMode)).fail(err => nts.uk.ui.dialog.alertError(err));
                 }
             }
 
             /**
              * Collect fixed data and convert to command dto
              */
-            toFixedCommand(): FixedWorkSettingSaveCommand {
+            toFixedCommand(addMode: boolean): FixedWorkSettingSaveCommand {
                 let _self = this;
                 let command: FixedWorkSettingSaveCommand = {
+                    addMode: addMode,
                     predseting: _self.predetemineTimeSetting.toDto(),
                     worktimeSetting: _self.workTimeSetting.toDto(),
                     fixedWorkSetting: _self.fixedWorkSetting.toDto(),
@@ -338,10 +339,11 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Collect flex data and convert to command dto
              */
-            toFlexCommannd(): FlexWorkSettingSaveCommand {
+            toFlexCommannd(addMode: boolean): FlexWorkSettingSaveCommand {
                 let self = this;
                 let command: FlexWorkSettingSaveCommand;
                 command = {
+                    addMode: addMode,
                     flexWorkSetting: self.flexWorkSetting.toDto(),
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto()
