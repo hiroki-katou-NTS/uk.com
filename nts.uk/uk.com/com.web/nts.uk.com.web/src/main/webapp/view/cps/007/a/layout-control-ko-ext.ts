@@ -1044,7 +1044,10 @@ module nts.custombinding {
                                 if (dups && dups.length) {
                                     // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
                                     // Show Msg_204 if itemdefinition is exist
-                                    info(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_204'))
+                                    info({
+                                        messageId: 'Msg_204',
+                                        messageParams: dups.map((x: IItemDefinition) => x.itemName)
+                                    })
                                         .then(() => {
                                             removeItems(dups.map((x: IItemDefinition) => {
                                                 return {
@@ -1067,7 +1070,10 @@ module nts.custombinding {
                                 if (dupids && dupids.length) {
                                     // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
                                     // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                                    alert(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_202'));
+                                    alert({
+                                        messageId: 'Msg_202',
+                                        messageParams: dups.map((x: IItemDefinition) => x.itemName)
+                                    });
                                 }
 
                                 pushItems(nodups);
@@ -1188,7 +1194,6 @@ module nts.custombinding {
                                 break;
                         }
                     }
-
                     return constraint;
                 },
                 primitiveConsts = () => {
@@ -1612,9 +1617,6 @@ module nts.custombinding {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
-                                    // write contraint
-                                    writeConstraint(def.itemCode, def);
-
                                     // validate date range
                                     switch (def.item.dataTypeValue) {
                                         case ITEM_SINGLE_TYPE.DATE:
@@ -1966,7 +1968,7 @@ module nts.custombinding {
                     };
 
                 if (!ids || !ids.length) {
-                    alert(text('Msg_203'));
+                    alert({ messageId: 'Msg_203' });
                     return;
                 }
 
@@ -1983,7 +1985,7 @@ module nts.custombinding {
                             // if category is exist in sortable box.
                             let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
                             if (_catcls) {
-                                alert(text('Msg_202'));
+                                alert({ messageId: 'Msg_202' });
                                 return;
                             }
 
