@@ -183,5 +183,5 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	public WorkTimezoneLateEarlySet getLateEarlySet() {
 		return new WorkTimezoneLateEarlySet(new JpaWorkTimezoneLateEarlySetGetMemento(this.entity));
 	}
-
+	
 }

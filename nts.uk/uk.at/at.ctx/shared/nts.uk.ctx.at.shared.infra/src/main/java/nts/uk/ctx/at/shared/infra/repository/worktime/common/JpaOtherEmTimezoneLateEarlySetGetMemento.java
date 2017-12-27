@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime;
@@ -51,7 +52,7 @@ public class JpaOtherEmTimezoneLateEarlySetGetMemento
 	 */
 	@Override
 	public boolean getStampExactlyTimeIsLateEarly() {
-		return this.entity.getExtractLateEarlyTime() == 1;
+		return BooleanGetAtr.getAtrByInteger(this.entity.getExtractLateEarlyTime());
 	}
 
 	/*
@@ -62,7 +63,7 @@ public class JpaOtherEmTimezoneLateEarlySetGetMemento
 	 */
 	@Override
 	public GraceTimeSetting getGraceTimeSet() {
-		return new GraceTimeSetting(this.entity.getIncludeWorktime() == 1,
+		return new GraceTimeSetting(BooleanGetAtr.getAtrByInteger(this.entity.getIncludeWorktime()),
 				new LateEarlyGraceTime(this.entity.getGraceTime()));
 	}
 

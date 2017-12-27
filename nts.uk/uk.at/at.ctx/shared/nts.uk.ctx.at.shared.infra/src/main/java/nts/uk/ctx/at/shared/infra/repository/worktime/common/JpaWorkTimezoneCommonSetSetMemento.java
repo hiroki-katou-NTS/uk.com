@@ -202,8 +202,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setExtraordTimeSet(WorkTimezoneExtraordTimeSet set) {
-		// TODO Auto-generated method stub
-
+		set.saveToMemento(new JpaWorkTimezoneExtraordTimeSetSetMemento(this.entity));
 	}
 
 	/*
@@ -216,8 +215,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setLateEarlySet(WorkTimezoneLateEarlySet set) {
-		// TODO Auto-generated method stub
-
+		set.saveToMemento(new JpaWorkTimezoneLateEarlySetSetMemento(this.entity));
 	}
 
 }

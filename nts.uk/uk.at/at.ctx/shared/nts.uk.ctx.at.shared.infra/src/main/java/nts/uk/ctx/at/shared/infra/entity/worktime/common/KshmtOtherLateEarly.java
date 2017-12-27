@@ -69,6 +69,16 @@ public class KshmtOtherLateEarly extends UkJpaEntity implements Serializable {
 	public KshmtOtherLateEarly() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new kshmt other late early.
+	 *
+	 * @param pk the pk
+	 */
+	public KshmtOtherLateEarly(KshmtOtherLateEarlyPK pk) {
+		super();
+		this.kshmtOtherLateEarlyPK = pk;
+	}
 
 	/*
 	 * (non-Javadoc)
