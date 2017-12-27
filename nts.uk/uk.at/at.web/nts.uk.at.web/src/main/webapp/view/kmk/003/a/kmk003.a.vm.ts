@@ -168,8 +168,9 @@ module nts.uk.at.view.kmk003.a {
                 // call service get data
                 service.findWithCondition(self.workTimeSettingLoader.getCondition()).done(data => {
                     self.workTimeSettings(data);
+                    // enter update mode if has data
                     if (data && data.length > 0) {
-                        self.screenMode(ScreenMode.UPDATE);
+                        self.enterUpdateMode();
                         if (selectedCode) {
                             self.selectedWorkTimeCode(selectedCode);
                         } else {
@@ -177,7 +178,7 @@ module nts.uk.at.view.kmk003.a {
                         }
                     }
                     else {
-                        self.screenMode(ScreenMode.NEW);
+                        self.enterNewMode();
                     }
                     dfd.resolve();
                 }).always(() => _.defer(() => nts.uk.ui.block.clear()));
@@ -250,25 +251,50 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel.save(self.isNewMode())
                     .done(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
             }
-            
-            //when click copy
-            private copy() {
+
+            /**
+             * Enter new mode
+             */
+            public enterNewMode(): void {
                 let self = this;
+                // set screen mode
                 self.screenMode(ScreenMode.NEW);
-                self.mainSettingModel.workTimeSetting.worktimeCode('');
+
+                // reset data
+                self.mainSettingModel.resetData();
+
+                // deselect current worktimecode
+                self.selectedWorkTimeCode('');
             }
 
-            public onClickNew() {
+            /**
+             * Enter copy mode
+             */
+            public enterCopyMode(): void {
                 let self = this;
+                // set screen mode
                 self.screenMode(ScreenMode.NEW);
-                self.mainSettingModel.resetData();
+
+                // clear current worktimecode
+                self.mainSettingModel.workTimeSetting.worktimeCode('');
+
+                // deselect current worktimecode
                 self.selectedWorkTimeCode('');
-            };
+            }
+
+            /**
+             * Enter update mode
+             */
+            public enterUpdateMode(): void {
+                let self = this;
+                // set screen mode
+                self.screenMode(ScreenMode.UPDATE);
+            }
 
              /**
-             * remove worktime by code
+             * remove selected worktime
              */
-            private removeWorkTime(): JQueryPromise<void>
+            public removeWorkTime(): JQueryPromise<void>
             {
                 let self = this;
                 let dfd = $.Deferred<void>();
