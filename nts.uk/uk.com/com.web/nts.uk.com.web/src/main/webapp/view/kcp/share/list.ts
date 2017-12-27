@@ -12,11 +12,6 @@ module kcp.share.list {
         isAlreadySetting: boolean;
     }
     
-//    export interface ClosureDto {
-//        closureId: number;
-//        closureName: string;
-//    }
-    
     /**
      * Component option.
      */
@@ -109,11 +104,6 @@ module kcp.share.list {
          * If not set, tabindex will same as spec of KCPs.
          */
         tabindex?: number;
-        // Upgrade KCP
-        isDisplayEmpClosure?: boolean;
-        isDisplayFullClosure?: boolean;
-        extractClosure?: ExtractClosureType;
-        extractClosureId?: number;
     }
     
     export class SelectType {
@@ -121,12 +111,6 @@ module kcp.share.list {
         static SELECT_ALL = 2;
         static SELECT_FIRST_ITEM = 3;
         static NO_SELECT = 4;
-    }
-    
-    export class ExtractClosureType {
-        static BY_CLOSURE_ID = 1;
-        static FULL_CLOSURE = 2;
-        static NONE = 3;
     }
     
     /**
@@ -173,12 +157,6 @@ module kcp.share.list {
         listComponentColumn: Array<any>;
         isMultiple: boolean;
         isDialog: boolean;
-        isDisplayEmpClosure: boolean;
-        isDisplayFullClosure: boolean;
-        extractClosure: ExtractClosureType;
-        extractClosureId: number;
-        closureList: KnockoutObservableArray<ClosureIdNameDto>;
-        selectedClosure: KnockoutObservable<number>;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
         isHasButtonSelectAll: boolean;
@@ -197,12 +175,6 @@ module kcp.share.list {
             this.isMultiple = false;
             this.componentGridId = (Date.now()).toString();
             this.alreadySettingList = ko.observableArray([]);
-            this.isDisplayEmpClosure = false;
-            this.isDisplayFullClosure = true;
-            this.extractClosure = ExtractClosureType.NONE;
-            this.extractClosureId = null;
-            this.closureList = ko.observableArray([]);
-            this.selectedClosure = ko.observable(null);
         }
         /**
          * Init component.
@@ -219,22 +191,6 @@ module kcp.share.list {
             self.maxRows = data.maxRows ? data.maxRows : 12;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            // ===============Upgrade============
-            // Display Employment Closure
-            self.isDisplayEmpClosure = data.isDisplayEmpClosure ? data.isDisplayEmpClosure : false;
-//            if (self.isDisplayEmpClosure) {
-//                service.getClosureIdName().done(function(closureList: Array<ClosureIdNameDto>) {
-//                    if (closureList) {
-//                        self.closureList(closureList);
-//                    }
-//                });
-//            }
-            self.isDisplayFullClosure = data.isDisplayFullClosure ? data.isDisplayFullClosure : true;
-            self.extractClosure = data.extractClosure ? data.extractClosure : ExtractClosureType.NONE;
-            self.extractClosureId = (data.extractClosureId && data.extractClosure == ExtractClosureType.BY_CLOSURE_ID) 
-            ? data.extractClosureId : null;
-            // end of upgrade==================
-            
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
@@ -539,7 +495,7 @@ module kcp.share.list {
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
-            var totalHeight: number = this.hasBaseDate || this.isDisplayEmpClosure ? 101 : 55;
+            var totalHeight: number = this.hasBaseDate ? 101 : 55;
             codeColumnSize = data.maxWidth ? '25%': codeColumnSize;
             var nameColumnSize = data.maxWidth ? '35%' : 170;
             var workplaceColumnSize = data.maxWidth ? '25%' : 150;
@@ -562,7 +518,7 @@ module kcp.share.list {
         private findDataList(listType: ListType):JQueryPromise<Array<UnitModel>> {
             switch(listType) {
                 case ListType.EMPLOYMENT:
-                    return this.findEmployments();
+                    return service.findEmployments();
                 case ListType.JOB_TITLE:
                     return service.findJobTitles(this.baseDate());
                 case ListType.Classification:
@@ -570,27 +526,6 @@ module kcp.share.list {
                 default:
                     return;
             }
-        }
-        
-        /**
-         * Find Employments
-         */
-        private findEmployments(): JQueryPromise<Array<UnitModel>> {
-            let self = this;
-            // Check EmploymentClosure is displayed or not
-            if (self.isDisplayEmpClosure) {
-                service.getClosureIdName().done(function(closureList: Array<ClosureIdNameDto>) {
-                    if (closureList) {
-                        self.closureList(closureList);
-                    }
-                });
-                // Check FullClosure is displayed or not
-                if (self.isDisplayFullClosure) {
-                    
-                }
-            }
-            
-            return null;
         }
         
         /**
@@ -647,22 +582,6 @@ module kcp.share.list {
         }
     }
     
-    export class ClosureIdNameDto {
-        closureId: number;
-        closureName: string;
-    }
-    
-    export class BsEmploymentFindDto {
-        employmentCode: string;
-        employmentName: string;
-        empExternalCode: string;
-        memo: string;
-    }
-    
-    export class ClosureIdsDto {
-        closureIds: Array<number>;
-    }
-    
     /**
      * Service,
      */
@@ -673,17 +592,14 @@ module kcp.share.list {
             findEmployments: "bs/employee/employment/findAll/",
             findJobTitles: 'bs/employee/jobtitle/findAll',
             findClassifications: 'bs/employee/classification/findAll',
-            getClosureIdName: 'ctx/at/shared/workrule/closure/getClosureIdName',
-            findEmpByClosureId: 'ctx/at/shared/workrule/closure/findEmpByClosureId',
-            findEmpByClosureIds: 'ctx/at/shared/workrule/closure/findEmpByClosureIds'
         }
         
         /**
          * Find Employment list.
          */
-//        export function findEmployments(): JQueryPromise<Array<UnitModel>> {
-//            return nts.uk.request.ajax('com', servicePath.findEmployments);
-//        }
+        export function findEmployments(): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax('com', servicePath.findEmployments);
+        }
         
         /**
          * Find Job title.
@@ -698,26 +614,7 @@ module kcp.share.list {
         export function findClassifications(): JQueryPromise<Array<UnitModel>> {
             return nts.uk.request.ajax('com', servicePath.findClassifications);
         }
-        /**
-         * Get Closure with ID and Name
-         */
-        export function getClosureIdName(): JQueryPromise<Array<ClosureIdNameDto>> {
-            return nts.uk.request.ajax('at', servicePath.getClosureIdName);
-        }
         
-        /**
-         * Find Employments By closureId
-         */
-        export function findEmpByClosureId(closureId: number): JQueryPromise<Array<BsEmploymentFindDto>> {
-            return nts.uk.request.ajax('at', servicePath.findEmpByClosureId + "/" + closureId);
-        }
-        
-        /**
-         * Find Employments By closureIds
-         */
-        export function findEmpByClosureIds(closureIdsDto: ClosureIdsDto): JQueryPromise<Array<BsEmploymentFindDto>> {
-            return nts.uk.request.ajax('at', servicePath.findEmpByClosureIds, closureIdsDto);
-        }
     }
 }
 

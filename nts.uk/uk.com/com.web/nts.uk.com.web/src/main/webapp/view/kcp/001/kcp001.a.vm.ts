@@ -4,7 +4,6 @@ module kcp001.a.viewmodel {
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import UnitAlreadySettingModel = kcp.share.list.UnitAlreadySettingModel;
-    import ExtractClosureType = kcp.share.list.ExtractClosureType;
     export class ScreenModel {
         selectedCode: KnockoutObservable<string>;
         bySelectedCode: KnockoutObservable<string>;
@@ -12,15 +11,7 @@ module kcp001.a.viewmodel {
         isDialog: KnockoutObservable<boolean>;
         isShowNoSelectionItem: KnockoutObservable<boolean>;
         isMultiSelect: KnockoutObservable<boolean>;
-        // Upgrade KCP001
-        isDisplayEmpClosure: KnockoutObservable<boolean>;
-        isDisplayFullClosure: KnockoutObservable<boolean>;
-        extractClosure: KnockoutObservable<number>;
-        extractClosureId: KnockoutObservable<number>;
-        extractionTypeList: KnockoutObservableArray<any>;
-        selectedExtraction: KnockoutObservable<number>;
-        
-        
+
         multiSelectedCode: KnockoutObservableArray<string>;
         multiBySelectedCode: KnockoutObservableArray<string>;
 
@@ -55,31 +46,6 @@ module kcp001.a.viewmodel {
             self.isShowNoSelectionItem.subscribe(function(data: boolean) {
                 self.reloadComponent();
             });
-            // Display Employment Closure
-            self.isDisplayEmpClosure = ko.observable(false);
-            self.isDisplayEmpClosure.subscribe(function(value: boolean) {
-                self.reloadComponent();
-            });
-            // Extraction Closure
-            self.extractClosure = ko.observable(ExtractClosureType.NONE);
-            
-            // ExtractClosure Id
-            self.extractClosureId = ko.observable(null);
-            
-            // Display Full Closure item in combobox
-            self.isDisplayFullClosure = ko.observable(false);
-            self.isDisplayFullClosure.subscribe(function(value: boolean) {
-                self.reloadComponent();
-            });
-            
-            self.extractionTypeList = ko.observableArray([
-                { code: 1, name: 'By ClosureId' },
-                { code: 2, name: 'Full Closure'},
-                { code: 3, name: 'None' }
-            ]);
-            // Select None
-            self.selectedExtraction = ko.observable(3);
-            
 
             self.multiBySelectedCode = ko.observableArray([]);
             self.multiSelectedCode = ko.observableArray([]);
@@ -128,10 +94,6 @@ module kcp001.a.viewmodel {
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList,
                 maxRows: 12, 
-                isDisplayEmpClosure: self.isDisplayEmpClosure(),
-                isDisplayFullClosure: self.isDisplayFullClosure(),
-                extractClosure: self.extractClosure(),
-                extractClosureId: self.extractClosureId()
             };
 
             self.selectionTypeList = ko.observableArray([
@@ -282,8 +244,6 @@ module kcp001.a.viewmodel {
             self.listComponentOption.alreadySettingList = self.alreadySettingList;
             self.listComponentOption.isMultiSelect = self.isMultiSelect();
             self.listComponentOption.selectType = self.selectedType();
-            self.listComponentOption.isDisplayEmpClosure = self.isDisplayEmpClosure();
-            self.listComponentOption.isDisplayFullClosure = self.isDisplayFullClosure();
             $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function () {
                 $('#empt-list-setting').focusComponent();
             });

@@ -224,7 +224,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<EmployeeBasicInfoExport> findBySIds(List<String> sIds) {
 
-		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
 		String cid = AppContexts.user().companyId();
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
@@ -243,6 +242,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
 
 		return emps.stream().map(employee -> {
+			
+			EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
 
 			// Get Person
 			Person person = mapPersons.get(employee.getPersonId());
