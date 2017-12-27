@@ -147,11 +147,11 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date) {
+	public Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtComApprovalRoot.class)
 				.setParameter("companyId", companyID)
 				.setParameter("baseDate", date)
-				.getList(c->toDomainComApR(c));
+				.getSingle(c->toDomainComApR(c));
 	}
 	
 	/**

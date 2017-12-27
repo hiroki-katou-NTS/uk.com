@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee.employeeindesignated;
@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
 import nts.uk.ctx.bs.employee.pub.employee.employeeindesignated.EmpInDesignatedPub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeindesignated.EmployeeInDesignatedExport;
 import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentExport;
@@ -23,10 +23,10 @@ import nts.uk.ctx.bs.employee.pub.employment.statusemployee.StatusOfEmploymentPu
  * The Class EmpInDesignatedPubImp.
  */
 public class EmpInDesignatedPubImp implements EmpInDesignatedPub {
-
-	/** The aff workplace history repo. */
+	
+	/** The aff workplace history repo v 1. */
 	@Inject
-	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepo;
+	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepo_v1;
 
 	/** The employment status pub. */
 	@Inject
@@ -42,15 +42,23 @@ public class EmpInDesignatedPubImp implements EmpInDesignatedPub {
 	@Override
 	public List<EmployeeInDesignatedExport> getEmpInDesignated(String workplaceId, GeneralDate referenceDate,
 			List<Integer> empStatus) {
-		List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo.getByWorkplaceID(workplaceId,
-				referenceDate);
+		// old
+		//List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo.getByWorkplaceID(workplaceId,
+		//		referenceDate);
+		
+		List<AffWorkplaceHistory_ver1> affWorkplaceHistList = 
+				this.affWorkplaceHistoryRepo_v1.getWorkplaceHistoryByWorkplaceIdAndDate(referenceDate, workplaceId);
 		// check exist data
 		if (CollectionUtil.isEmpty(affWorkplaceHistList)) {
 			return null;
 		}
-		// Get List of Employee Id from AffWorkplaceHistory List
-		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory::getEmployeeId)
+		// Get List of Employee Id from AffWorkplaceHistory List - old
+		//List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory::getEmployeeId)
+		//		.collect(Collectors.toList());
+		
+		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory_ver1::getEmployeeId)
 				.collect(Collectors.toList());
+		
 		// Output List
 		List<EmployeeInDesignatedExport> empsInDesignated = new ArrayList<>();
 		//

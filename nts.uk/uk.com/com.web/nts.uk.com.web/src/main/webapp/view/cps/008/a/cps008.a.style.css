@@ -79,7 +79,7 @@ button.search-btn {
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 330px;
+	width: 300px;
 }
 
 i.icon.icon-searchbox {
@@ -88,4 +88,14 @@ i.icon.icon-searchbox {
 
 .layout-control .drag-panel{
 	height: 500px !important;
+}
+
+.nosetarea {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 810px;
+    height: 500px;
+    padding: 10px;
+    padding-top: 10px;
+    box-sizing: border-box;
 }

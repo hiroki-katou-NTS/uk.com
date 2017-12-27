@@ -32,6 +32,8 @@ public class AttendanceTimeOfDailyPerformFinder extends FinderFacade {
 
 	private AttendanceTimeDailyPerformDto toDto(AttendanceTimeOfDailyPerformance domain) {
 		AttendanceTimeDailyPerformDto items = new AttendanceTimeDailyPerformDto();
+		items.setEmployeeID(domain.getEmployeeId());
+		items.setDate(domain.getYmd());
 		items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
 		items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
 		items.setDate(domain.getYmd());

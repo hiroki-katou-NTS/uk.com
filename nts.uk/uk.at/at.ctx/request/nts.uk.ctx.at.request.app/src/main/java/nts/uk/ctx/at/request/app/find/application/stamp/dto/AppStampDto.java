@@ -19,10 +19,6 @@ public class AppStampDto {
     
 	private String appID;
     
-    private String inputDate;
-    
-    private String enteredPerson;
-    
     private String applicationDate;
     
     private String detailReason;
@@ -45,17 +41,15 @@ public class AppStampDto {
 		if(appStamp == null) return null;
 		return new AppStampDto(
 				appStamp.getVersion(),
-				appStamp.getApplicationID(), 
-				appStamp.getInputDate().toString("yyyy/MM/dd"), 
-				appStamp.getEnteredPersonSID(), 
-				appStamp.getApplicationDate().toString("yyyy/MM/dd"), 
-				appStamp.getApplicationReason().v(), 
-				appStamp.getApplicantSID(), 
+				appStamp.getApplication_New().getAppID(), 
+				appStamp.getApplication_New().getAppDate().toString("yyyy/MM/dd"), 
+				appStamp.getApplication_New().getAppReason().v(), 
+				appStamp.getApplication_New().getEmployeeID(), 
 				appStamp.getStampRequestMode().value, 
 				appStamp.getAppStampGoOutPermits().stream().map(x -> AppStampGoOutPermitDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampWorks().stream().map(x -> AppStampWorkDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampCancels().stream().map(x -> AppStampCancelDto.convertToDto(x)).collect(Collectors.toList()), 
-				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecords()),
+				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecord().orElse(null)),
 				employeeName);
 	}
 }
