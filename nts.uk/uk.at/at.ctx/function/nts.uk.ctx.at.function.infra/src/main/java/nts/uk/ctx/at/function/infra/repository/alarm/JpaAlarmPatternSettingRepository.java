@@ -39,8 +39,8 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 	}
 
 	@Override
-	public void create(AlarmPatternSetting domain) {
-		this.commandProxy().insert(domain);		
+	public void create(AlarmPatternSetting domain) {		
+		this.commandProxy().insert(KfnmtAlarmPatternSet.toEntity(domain));		
 	}
 
 	@Override
