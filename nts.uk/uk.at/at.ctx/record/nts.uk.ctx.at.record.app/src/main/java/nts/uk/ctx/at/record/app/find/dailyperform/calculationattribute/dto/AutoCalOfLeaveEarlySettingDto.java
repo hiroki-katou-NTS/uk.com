@@ -13,13 +13,13 @@ public class AutoCalOfLeaveEarlySettingDto {
 
 	/** 早退: 早退 */
 	/** @see nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveEarlyAttr */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "早退")
+	@AttendanceItemValue(type = ValueType.INTEGER, itemId = 639)
 	private int leaveEarly;
 
 	/** 遅刻: 早退 */
 	/** @see nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveEarlyAttr */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "遅刻")
+	@AttendanceItemValue(type = ValueType.INTEGER, itemId = 638)
 	private int leaveLate;
 }
