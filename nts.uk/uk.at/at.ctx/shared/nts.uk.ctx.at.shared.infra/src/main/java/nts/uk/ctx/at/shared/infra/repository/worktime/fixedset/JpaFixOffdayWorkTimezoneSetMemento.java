@@ -75,7 +75,8 @@ public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezone
 			KshmtFixedHolTimeSet entity = lstEntity.stream().filter(item -> {
 				KshmtFixedHolTimeSetPK pk = item.getKshmtFixedHolTimeSetPK();
 						return pk.getCid().compareTo(companyId) == EQUAL
-								&& pk.getWorktimeCd().compareTo(workTimeCd) == EQUAL;
+								&& pk.getWorktimeCd().compareTo(workTimeCd) == EQUAL
+								&& pk.getWorktimeNo() == holDayTime.getWorkTimeNo();
 					})
 					.findFirst()
 					.orElse(new KshmtFixedHolTimeSet());

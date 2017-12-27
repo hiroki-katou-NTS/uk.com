@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
@@ -37,7 +38,7 @@ public class JpaIntervalTimeSettingGetMemento implements IntervalTimeSettingGetM
 	 */
 	@Override
 	public boolean getuseIntervalExemptionTime() {
-		return this.entity.getUseIntervalExempTime() == 1 ;
+		return BooleanGetAtr.getAtrByInteger(this.entity.getUseIntervalExempTime());
 	}
 
 	/*
@@ -74,7 +75,7 @@ public class JpaIntervalTimeSettingGetMemento implements IntervalTimeSettingGetM
 	 */
 	@Override
 	public boolean getuseIntervalTime() {
-		return this.entity.getUseIntervalTime() == 1 ;
+		return BooleanGetAtr.getAtrByInteger(this.entity.getUseIntervalTime());
 	}
 
 }

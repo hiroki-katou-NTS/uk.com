@@ -50,6 +50,24 @@ public class KshmtSubstitutionSetPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kshmt substitution set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param workFormAtr the work form atr
+	 * @param worktimeSetMethod the worktime set method
+	 * @param originAtr the origin atr
+	 */
+	public KshmtSubstitutionSetPK(String cid, String worktimeCd, int workFormAtr, int worktimeSetMethod, int originAtr) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.workFormAtr = workFormAtr;
+		this.worktimeSetMethod = worktimeSetMethod;
+		this.originAtr = originAtr;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

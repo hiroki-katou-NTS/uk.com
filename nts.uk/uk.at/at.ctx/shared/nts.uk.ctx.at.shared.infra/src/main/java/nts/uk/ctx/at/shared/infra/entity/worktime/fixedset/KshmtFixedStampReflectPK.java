@@ -40,6 +40,19 @@ public class KshmtFixedStampReflectPK implements Serializable {
 	 */
 	public KshmtFixedStampReflectPK() {
 	}
+	
+	/**
+	 * Instantiates a new kshmt fixed stamp reflect PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param workNo the work no
+	 */
+	public KshmtFixedStampReflectPK(String cid, String worktimeCd, int workNo) {
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.workNo = workNo;
+	}
 
 	/*
 	 * (non-Javadoc)
