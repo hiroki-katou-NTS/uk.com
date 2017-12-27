@@ -159,44 +159,10 @@
 				
 				<!-- Footer -->
 				<div style="clear:both"></div>
-				<div id="label-1" style="margin-left: 0px !important;margin-right: 39px;">
-					<!-- B6 -->
-					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
-					
+				<div>
+					<ui:include src="../../000/a/index2_new.xhtml" />	
 				</div>
-				<div id="table-1" data-bind="with: dataApplication">
-					<table id="table-phase">
-						<thead>
-							<tr  class="bg-green">
-								<th class="phase-app" style="width:111px;"></th>
-								<th class="name-app" style="width:111px;"></th>
-								<th class="content-app" style="width:230px;">#{i18n.getText('KAF000_3')}</th>
-								<th class="phase-app" style="width:111px;">#{i18n.getText('KAF000_29')}</th>
-								<th class="name-app" style="width:111px;">#{i18n.getText('KAF000_30')}</th>
-							</tr>
-						</thead>
-						<!-- foreach -->
-						<tbody data-bind="foreach : listPhase" >
-							<com:ko bind="$data.listFrame" tag ="foreach">
-								<tr>
-									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.listFrame.length}">
-											フェーズ<label data-bind="text: $parent.dispOrder"></label>
-										</td>
-									</com:ko>
-									<td class="bg-green" >
-										承認者<label data-bind="text: $data.dispOrder"></label>
-									</td>
-									<td class="approverContent">
-										<label data-bind="text: $data.nameAll"></label>
-									</td>
-									<td class="approverContent"><label data-bind="text: $data.approveAll"></label></td>
-									<td class="approverContent"><label data-bind="text: $data.reasonAll"> </label></td>
-								</tr>
-							</com:ko>
-						</tbody>  
-					</table>
-				</div>
+				
 				<!-- end footer -->
 			</div>
 			

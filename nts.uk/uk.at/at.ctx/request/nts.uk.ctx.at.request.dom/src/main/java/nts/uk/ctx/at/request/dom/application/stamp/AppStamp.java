@@ -1,24 +1,20 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
-import org.apache.logging.log4j.util.Strings;
-
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 /**
  * 
  * @author Doan Duy Hung
@@ -29,11 +25,15 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
  * 打刻申請
  *
  */
-@Value
-@EqualsAndHashCode(callSuper = false)
-public class AppStamp extends Application {
+@Getter
+@AllArgsConstructor
+@Builder
+public class AppStamp extends AggregateRoot {
 	
 	private StampRequestMode stampRequestMode;
+	
+	@Setter
+	private Application_New application_New;
 	
 	private List<AppStampGoOutPermit> appStampGoOutPermits;
 	
@@ -41,61 +41,46 @@ public class AppStamp extends Application {
 	
 	private List<AppStampCancel> appStampCancels;
 	
-	private AppStampOnlineRecord appStampOnlineRecords;
-
-	public AppStamp(String CompanyID, String applicationID, PrePostAtr prePostAtr, GeneralDateTime inputDate,
-			String enteredPersonSID, AppReason reversionReason, GeneralDate applicationDate, 
-			AppReason applicationReason, ApplicationType applicationType, String applicantSID,
-			ReflectPlanScheReason reflectPlanScheReason, GeneralDate reflectPlanTime,
-			ReflectPlanPerState reflectPlanState, ReflectPlanPerEnforce reflectPlanEnforce,
-			ReflectPerScheReason reflectPerScheReason, GeneralDate reflectPerTime, ReflectPlanPerState reflectPerState,
-			ReflectPlanPerEnforce reflectPerEnforce, GeneralDate startDate, GeneralDate endDate,
-			List<AppApprovalPhase> listPhase, StampRequestMode stampRequestMode,
-			List<AppStampGoOutPermit> appStampGoOutPermits, List<AppStampWork> appStampWorks,
-			List<AppStampCancel> appStampCancels, AppStampOnlineRecord appStampOnlineRecords) {
-		super(CompanyID, applicationID, prePostAtr, inputDate, enteredPersonSID, reversionReason, applicationDate,
-				applicationReason, applicationType, applicantSID, reflectPlanScheReason, reflectPlanTime,
-				reflectPlanState, reflectPlanEnforce, reflectPerScheReason, reflectPerTime, reflectPerState,
-				reflectPerEnforce, startDate, endDate, listPhase);
-		this.stampRequestMode = stampRequestMode;
-		this.appStampGoOutPermits = appStampGoOutPermits;
-		this.appStampWorks = appStampWorks;
-		this.appStampCancels = appStampCancels;
-		this.appStampOnlineRecords = appStampOnlineRecords;
+	private Optional<AppStampOnlineRecord> appStampOnlineRecord;
+	
+	public static AppStamp createGoOutPermitStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, List<AppStampGoOutPermit> appStampGoOutPermits){
+		return new AppStamp(
+				StampRequestMode.STAMP_GO_OUT_PERMIT, 
+				Application_New.firstCreate(companyID, PrePostAtr.PREDICT, appDate, ApplicationType.STAMP_APPLICATION, employeeID, appReason), 
+				appStampGoOutPermits, 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
+				Optional.empty());
 	}
 	
-	public static AppStamp createFromJavaType(String companyID, PrePostAtr prePostAtr, 
-			GeneralDateTime inputDate, String enteredPersonSID, GeneralDate appDate, String applicantSID, 
-			StampRequestMode stampRequestMode, List<AppStampGoOutPermit> appStampGoOutPermits,
-			List<AppStampWork> appStampWorks, List<AppStampCancel> appStampCancels,
-			AppStampOnlineRecord appStampOnlineRecords){
+	public static AppStamp createWorkStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, List<AppStampWork> appStampWorks){
 		return new AppStamp(
-				companyID, 
-				UUID.randomUUID().toString(), 
-				prePostAtr, 
-				inputDate, 
-				enteredPersonSID, 
-				new AppReason(""), 
-				appDate, 
-				new AppReason(""),  
-				ApplicationType.STAMP_APPLICATION, 
-				applicantSID, 
-				ReflectPlanScheReason.NOTPROBLEM, 
-				null, 
-				ReflectPlanPerState.NOTREFLECTED, 
-				ReflectPlanPerEnforce.NOTTODO, 
-				ReflectPerScheReason.NOTPROBLEM, 
-				null, 
-				ReflectPlanPerState.NOTREFLECTED, 
-				ReflectPlanPerEnforce.NOTTODO, 
-				appDate,
-				appDate,
-				null,
-				stampRequestMode, 
-				appStampGoOutPermits, 
+				StampRequestMode.STAMP_WORK, 
+				Application_New.firstCreate(companyID, PrePostAtr.POSTERIOR, appDate, ApplicationType.STAMP_APPLICATION, employeeID, appReason), 
+				Collections.emptyList(), 
 				appStampWorks, 
+				Collections.emptyList(), 
+				Optional.empty());
+	}
+	
+	public static AppStamp createCancelStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, List<AppStampCancel> appStampCancels){
+		return new AppStamp(
+				StampRequestMode.STAMP_CANCEL, 
+				Application_New.firstCreate(companyID, PrePostAtr.POSTERIOR, appDate, ApplicationType.STAMP_APPLICATION, employeeID, appReason), 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
 				appStampCancels, 
-				appStampOnlineRecords);
+				Optional.empty());
+	}
+	
+	public static AppStamp createOnlineRecordStamp(String companyID, GeneralDate appDate, String employeeID, AppReason appReason, Optional<AppStampOnlineRecord> appStampOnlineRecord){
+		return new AppStamp(
+				StampRequestMode.STAMP_ONLINE_RECORD, 
+				Application_New.firstCreate(companyID, PrePostAtr.POSTERIOR, appDate, ApplicationType.STAMP_APPLICATION, employeeID, appReason), 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
+				appStampOnlineRecord);
 	}
 	
 	public void customValidate(){
@@ -107,9 +92,9 @@ public class AppStamp extends Application {
 					- 開始場所
 					- 終了時刻*/
 					if(appStampGoOutPermit.getStampAtr().equals(AppStampAtr.GO_OUT)&&
-							(appStampGoOutPermit.getStartTime() == null ||
-							Strings.isEmpty(appStampGoOutPermit.getStartLocation()) || 
-							appStampGoOutPermit.getEndTime() == null )){
+							(!appStampGoOutPermit.getStartTime().isPresent() ||
+							!appStampGoOutPermit.getStartLocation().isPresent() || 
+							!appStampGoOutPermit.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 	
@@ -117,39 +102,39 @@ public class AppStamp extends Application {
 					- 開始時刻
 					- 終了時刻*/
 					if((appStampGoOutPermit.getStampAtr().equals(AppStampAtr.CHILDCARE))&&
-							(appStampGoOutPermit.getStartTime() == null ||
-							appStampGoOutPermit.getEndTime() == null )){
+							(!appStampGoOutPermit.getStartTime().isPresent()||
+							!appStampGoOutPermit.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 					if((appStampGoOutPermit.getStampAtr().equals(AppStampAtr.CARE))&&
-							(appStampGoOutPermit.getStartTime() == null ||
-							appStampGoOutPermit.getEndTime() == null )){
+							(!appStampGoOutPermit.getStartTime().isPresent() ||
+							!appStampGoOutPermit.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 					
 					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampGoOutPermit.getStartTime().greaterThanOrEqualTo(appStampGoOutPermit.getEndTime())){
+					if(appStampGoOutPermit.getStartTime().get().greaterThanOrEqualTo(appStampGoOutPermit.getEndTime().get())){
 						throw new BusinessException("Msg_307");
 					}
 				}
 				break;
 			}
 			
-			case STAMP_ADDITIONAL: {
+			case STAMP_WORK: {
 				for(AppStampWork appStampWork : this.appStampWorks) {
 					/*打刻申請詳細.打刻分類＝出勤／退勤 または 臨時のとき、すべての出退勤申請が以下のいずれも設定されていない (#Msg_308#)
 					- 開始時刻
 					- 開始場所
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
-							(appStampWork.getStartTime() == null ||
-							Strings.isEmpty(appStampWork.getStartLocation()) || 
-							appStampWork.getEndTime() == null )){
+							(!appStampWork.getStartTime().isPresent() ||
+							!appStampWork.getStartLocation().isPresent() || 
+							!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 					
 					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampWork.getStartTime().greaterThanOrEqualTo(appStampWork.getEndTime())){
+					if(appStampWork.getStartTime().get().greaterThanOrEqualTo(appStampWork.getEndTime().get())){
 						throw new BusinessException("Msg_307");
 					}
 				}
@@ -177,9 +162,9 @@ public class AppStamp extends Application {
 					- 開始場所
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
-							(appStampWork.getStartTime() == null ||
-							Strings.isEmpty(appStampWork.getStartLocation()) || 
-							appStampWork.getEndTime() == null )){
+							(!appStampWork.getStartTime().isPresent() ||
+							!appStampWork.getStartLocation().isPresent() || 
+							!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 					
@@ -188,9 +173,9 @@ public class AppStamp extends Application {
 					- 開始場所
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.GO_OUT)&&
-							(appStampWork.getStartTime() == null ||
-							Strings.isEmpty(appStampWork.getStartLocation()) || 
-							appStampWork.getEndTime() == null )){
+							(!appStampWork.getStartTime().isPresent() ||
+							!appStampWork.getStartLocation().isPresent() || 
+							!appStampWork.getEndTime().isPresent())){
 								throw new BusinessException("Msg_308");
 					}
 	
@@ -198,13 +183,13 @@ public class AppStamp extends Application {
 					- 開始時刻
 					- 終了時刻*/
 					if((appStampWork.getStampAtr().equals(AppStampAtr.CHILDCARE))&&
-							(appStampWork.getStartTime() == null ||
-									appStampWork.getEndTime() == null )){
+							(!appStampWork.getStartTime().isPresent() ||
+									!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 					if((appStampWork.getStampAtr().equals(AppStampAtr.CARE))&&
-							(appStampWork.getStartTime() == null ||
-									appStampWork.getEndTime() == null )){
+							(!appStampWork.getStartTime().isPresent() ||
+									!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 					
@@ -213,14 +198,14 @@ public class AppStamp extends Application {
 					- 終了時刻
 					- 応援カード*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.SUPPORT)&&
-							(appStampWork.getStartTime() == null ||
-							Strings.isBlank(appStampWork.getSupportCard()) || 
-							appStampWork.getEndTime() == null )){
+							(!appStampWork.getStartTime().isPresent() ||
+							!appStampWork.getSupportCard().isPresent() || 
+							!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 					
 					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampWork.getStartTime().greaterThanOrEqualTo(appStampWork.getEndTime())){
+					if(appStampWork.getStartTime().get().greaterThanOrEqualTo(appStampWork.getEndTime().get())){
 						throw new BusinessException("Msg_307");
 					}
 				}

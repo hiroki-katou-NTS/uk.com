@@ -18,12 +18,12 @@ public enum ApprovalBehaviorAtr {
 	/** 3:差し戻し */
 	REMAND(3,"差し戻し");
 
-	public int value;
+	public final int value;
 	
-	public String nameId;
+	public final String name;
 	
-	ApprovalBehaviorAtr(int type, String nameId) {
+	ApprovalBehaviorAtr(int type, String name) {
 		this.value = type;
-		this.nameId = nameId;
+		this.name = name;
 	}
 }

@@ -13,13 +13,13 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
  *
  */
 @Stateless
-public class CollectApprovalRootAppImpl implements CollectApprovalRootAppService {
+public class GenerateApprovalRootStateImpl implements GenerateApprovalRootStateService {
 
 	@Inject
 	private CollectApprovalRootService collectApprovalRootService;
 	
 	@Override
-	public ApprovalRootContentOutput getApprovalRootByAppType(String companyID, String employeeID, ApplicationType appType, GeneralDate date) {
+	public ApprovalRootContentOutput getApprovalRootState(String companyID, String employeeID, ApplicationType appType, GeneralDate date) {
 		return collectApprovalRootService.getApprovalRootOfSubjectRequest(
 				companyID, 
 				employeeID, 
