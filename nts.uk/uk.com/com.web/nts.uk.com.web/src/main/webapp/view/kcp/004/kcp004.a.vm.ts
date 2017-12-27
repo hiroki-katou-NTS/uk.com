@@ -4,6 +4,8 @@ module kcp004.a.viewmodel {
     import TreeType = kcp.share.tree.TreeType;
     import SelectType = kcp.share.tree.SelectionType;
     import UnitAlreadySettingModel = kcp.share.tree.UnitAlreadySettingModel; 
+    import SystemType = kcp.share.tree.SystemType;
+    
     
     export class ScreenModel {
         
@@ -19,6 +21,10 @@ module kcp004.a.viewmodel {
         isDialog: KnockoutObservable<boolean>;
         isShowSelectButton: KnockoutObservable<boolean>;
         enableShowSelectButton: KnockoutObservable<boolean>;
+        
+        
+        listSystemType: KnockoutObservableArray<any>;
+        selectedSystemType: KnockoutObservable<number>;
         
         // Control component
         selectedWorkplaceId: KnockoutObservable<string>;
@@ -64,6 +70,16 @@ module kcp004.a.viewmodel {
             ]);
             self.selectedSelectionType = ko.observable(3);
             
+            
+            self.listSystemType = ko.observableArray([
+                {code : 1, name: '個人情報', enable: self.enable},
+                {code : 2, name: '就業', enable: self.enable},
+                {code : 3, name: '給与', enable: self.enable},
+                {code : 4, name: '人事', enable: self.enable},
+                {code : 5, name: '管理者', enable: self.enable}
+            ]);
+            self.selectedSystemType = ko.observable(5);
+                                      
             self.alreadySettingList = ko.observableArray([]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -74,7 +90,9 @@ module kcp004.a.viewmodel {
                 selectType: self.selectedSelectionType(), 
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
-                alreadySettingList: self.alreadySettingList
+                alreadySettingList: self.alreadySettingList,
+                systemType : self.selectedSystemType()
+                
             };
             
             self.jsonData = ko.observable('');
@@ -92,6 +110,8 @@ module kcp004.a.viewmodel {
                     self.getSelectedData();
                 });
             });
+                          
+                 
             self.isDialog.subscribe(function(value) {
                 self.reloadTreeGrid();
             });
@@ -113,6 +133,19 @@ module kcp004.a.viewmodel {
                     self.getSelectedData();
                 });
             });
+            
+            self.selectedSystemType.subscribe((code) => {
+                if (code == 1) {
+                    self.resetSelectedWorkplace();
+                }
+                self.reloadTreeGrid().done(function() {
+                    self.getSelectedData();
+                });
+            });
+            
+            
+            
+                    
             self.selectedWorkplaceId.subscribe(() => {
                 self.getSelectedData();
             });
@@ -185,7 +218,8 @@ module kcp004.a.viewmodel {
                 selectType: self.selectedSelectionType(),
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
-                alreadySettingList: self.alreadySettingList
+                alreadySettingList: self.alreadySettingList,
+                systemType: self.selectedSystemType()
             };
         }
         
