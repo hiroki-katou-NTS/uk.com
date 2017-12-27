@@ -128,7 +128,10 @@ module kcp004.a.viewmodel {
                 if (code == 1) {
                     self.resetSelectedWorkplace();
                 }
-
+                if (code == 4) {
+                    self.resetSelectedWorkplace();
+                }
+                
                 self.reloadTreeGrid().done(function() {
                     self.getSelectedData();
                 });
