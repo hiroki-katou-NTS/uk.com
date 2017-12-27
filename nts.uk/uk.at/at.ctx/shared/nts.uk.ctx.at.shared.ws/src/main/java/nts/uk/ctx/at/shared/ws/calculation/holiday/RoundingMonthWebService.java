@@ -31,13 +31,13 @@ public class RoundingMonthWebService extends WebService{
 	
 	@Path("add")
 	@POST
-	public void add(AddRoundingMonthCommand command) {
+	public void add(List<AddRoundingMonthCommand> command) {
 		this.handler.handle(command);
 	}
 	
 	@Path("update")
 	@POST
-	public void update(AddRoundingMonthCommand command) {
+	public void update(List<AddRoundingMonthCommand> command) {
 		this.handler.handle(command);
 	}
 }
