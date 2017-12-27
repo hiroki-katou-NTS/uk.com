@@ -15,7 +15,7 @@ public class Days {
 
 	//Previous / previous classification
 	/**前・先区分*/
-	private PreviousClassification strPreviousClassification;
+	private PreviousClassification dayPrevious;
 		
 	/** Day*/
 	// 日
@@ -25,9 +25,8 @@ public class Days {
 	// 当日とする
 	private boolean makeToDay;
 
-	public Days(int strPreviousClassification, int day, boolean makeToDay) {
-		super();
-		this.strPreviousClassification = EnumAdaptor.valueOf(strPreviousClassification, PreviousClassification.class);
+	public Days(PreviousClassification dayPrevious, int day, boolean makeToDay) {
+		this.dayPrevious = dayPrevious;
 		this.day = day;
 		this.makeToDay = makeToDay;
 	}

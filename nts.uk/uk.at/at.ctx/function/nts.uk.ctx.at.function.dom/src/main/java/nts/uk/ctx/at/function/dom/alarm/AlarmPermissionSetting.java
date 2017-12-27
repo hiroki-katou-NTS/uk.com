@@ -11,15 +11,6 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  */
 @Getter
 public class AlarmPermissionSetting  extends DomainObject {
-	
-	/**
-	 * alarm pattern code
-	 */
-	private AlarmPatternCode alarmPatternCD;
-	/**
-	 *  companyID
-	 */
-	private String companyID;
 	/**
 	 * authentication setting
 	 */
@@ -32,9 +23,15 @@ public class AlarmPermissionSetting  extends DomainObject {
 	public AlarmPermissionSetting(String alarmPatternCD, String companyID, boolean authSetting,
 			List<String> roleIds) {
 		super();
-		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
-		this.companyID = companyID;
 		this.authSetting = authSetting;
+		this.roleIds = roleIds;
+	}
+
+	public void setAuthSetting(boolean authSetting) {
+		this.authSetting = authSetting;
+	}
+
+	public void setRoleIds(List<String> roleIds) {
 		this.roleIds = roleIds;
 	}
 	

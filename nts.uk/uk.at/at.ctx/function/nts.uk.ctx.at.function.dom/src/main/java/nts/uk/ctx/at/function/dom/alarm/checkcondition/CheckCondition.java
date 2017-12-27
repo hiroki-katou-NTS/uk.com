@@ -18,14 +18,6 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 public class CheckCondition  extends DomainObject {
 	/**
-	 * alarm pattern code
-	 */
-	private AlarmPatternCode alarmPatternCD;
-	/**
-	 *  companyID
-	 */
-	private String companyID;
-	/**
 	 * Alarm category
 	 */
 	private AlarmCategory alarmCategory;
@@ -43,8 +35,6 @@ public class CheckCondition  extends DomainObject {
 	public CheckCondition(String alarmPatternCD, String companyID, AlarmCategory alarmCategory,
 			List<String> checkConditionList, ExtractionRangeBase  extractPeriod) {
 		super();
-		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
-		this.companyID = companyID;
 		this.alarmCategory = alarmCategory;
 		this.checkConditionList = checkConditionList;
 		this.extractPeriod = extractPeriod;
@@ -53,5 +43,7 @@ public class CheckCondition  extends DomainObject {
 	public boolean isDaily() {
 		return this.alarmCategory == AlarmCategory.DAILY;
 	}
+	
+	
 
 }

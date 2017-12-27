@@ -4,7 +4,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDa
 
 public class ExtractionRangeDto {
 	
-	public static ExtractionPeriodDaily toDomain(){
+	public ExtractionPeriodDaily toDomain(){
 		return null;
 	}
 }

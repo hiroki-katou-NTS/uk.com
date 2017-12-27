@@ -2,12 +2,10 @@ package nts.uk.ctx.at.function.dom.alarm;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author dxthuong
@@ -52,5 +50,22 @@ public class AlarmPatternSetting  extends AggregateRoot {
 			throw new BusinessException("Msg_811");
 		return true;
 	}
+
+
+	public void setCheckConList(List<CheckCondition> checkConList) {
+		this.checkConList = checkConList;
+	}
+
+
+	public void setAlarmPerSet(AlarmPermissionSetting alarmPerSet) {
+		this.alarmPerSet = alarmPerSet;
+	}
+
+
+	public void setAlarmPatternName(String alarmPatternName) {
+		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
+	}
+	
+	
 
 }
