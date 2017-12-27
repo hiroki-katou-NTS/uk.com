@@ -25,6 +25,12 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
 				.setParameter("date", date).getSingle(c -> c.toDomain());
 	}
+	
+	@Override
+	public List<RoleIndividualGrant> findListByUserAndDate(String userId, GeneralDate date) {
+		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
+				.setParameter("date", date).getList(c -> c.toDomain());
+	}
 
 	private final String SELECT_BY_ROLE_USER = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.companyID = :cid"
 			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType AND c.sacmtRoleIndiviGrantPK.userID = :userID";

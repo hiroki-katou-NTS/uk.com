@@ -43,10 +43,10 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 	
 	@Override
 	public void appStampPreProcess(AppStamp appStamp) {
-		beforePreBootMode.judgmentDetailScreenMode(appStamp, appStamp.getApplicationDate());
-		// this.preLaunchScreenSetting
-		appStampCommonDomainService.appStampSet(appStamp.getCompanyID());
-		// 13.実績を取得する
+//		beforePreBootMode.judgmentDetailScreenMode(appStamp, appStamp.getApplicationDate());
+//		// this.preLaunchScreenSetting
+//		appStampCommonDomainService.appStampSet(appStamp.getCompanyID());
+//		// 13.実績を取得する
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 	}
 	
 	private void appStampUpdateProcess(AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		appStamp.setListPhase(appApprovalPhases);
+		/*appStamp.setListPhase(appApprovalPhases);
 		detailBeforeProcessRegister.processBeforeDetailScreenRegistration(
 				appStamp.getCompanyID(), 
 				appStamp.getApplicantSID(), 
@@ -66,6 +66,6 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 				appStamp.getApplicationID(), 
 				PrePostAtr.PREDICT);
 		appStampRepository.updateStamp(appStamp);
-		afterProcessDetail.processAfterDetailScreenRegistration(appStamp);
+		afterProcessDetail.processAfterDetailScreenRegistration(appStamp);*/
 	}
 }

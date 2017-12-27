@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto;
 import java.util.List;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
@@ -11,6 +12,10 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceIt
 @AttendanceItemRoot(rootName = "日別実績の特定日区分")
 public class SpecificDateAttrOfDailyPerforDto implements ConvertibleAttendanceItem {
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定日区分")
+	private String employeeId;
+
+	private GeneralDate ymd;
+	
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定日区分", isList = true)
 	private List<SpecificDateAttrDto> sepecificDateAttrs;
 }

@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
 
 /**
  * @author loivt

@@ -18,4 +18,6 @@ public interface AppStampCommonDomainService {
 	public void validateReason(AppStamp appStamp);
 	
 	public String getEmployeeName(String employeeID);
+	
+	public AppStamp findByID(String companyID, String appID);
 }
