@@ -50,6 +50,24 @@ public class KshmtMedicalTimeSetPK implements Serializable {
 		super();
 	}
 
+	/**
+	 * Instantiates a new kshmt medical time set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param workFormAtr the work form atr
+	 * @param worktimeSetMethod the worktime set method
+	 * @param workSysAtr the work sys atr
+	 */
+	public KshmtMedicalTimeSetPK(String cid, String worktimeCd, int workFormAtr, int worktimeSetMethod, int workSysAtr) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.workFormAtr = workFormAtr;
+		this.worktimeSetMethod = worktimeSetMethod;
+		this.workSysAtr = workSysAtr;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

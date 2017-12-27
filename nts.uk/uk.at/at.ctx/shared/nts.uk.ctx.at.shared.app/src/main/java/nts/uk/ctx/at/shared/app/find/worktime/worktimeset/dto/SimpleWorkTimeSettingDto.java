@@ -12,12 +12,12 @@ import lombok.Builder;
 @Builder
 public class SimpleWorkTimeSettingDto {
 	
-	/** The company id. */
-	public String companyId;
-
 	/** The worktime code. */
 	public String worktimeCode;
 	
 	/** The work time name. */
 	public String workTimeName;
+
+	/** The is abolish. */
+	public boolean isAbolish;
 }

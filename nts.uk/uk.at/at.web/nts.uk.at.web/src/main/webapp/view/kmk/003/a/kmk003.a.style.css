@@ -42,3 +42,9 @@
 	margin-top: 15px;
 	display: inline-flex;
 }
+.icon-x {
+	background: url("img/x.png");
+	width: 10px;
+	height: 10px;
+	background-size: 10px 10px;
+}

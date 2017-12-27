@@ -22,6 +22,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
@@ -131,8 +136,34 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setMedicalSet(List<WorkTimezoneMedicalSet> list) {
-		// TODO Auto-generated method stub
-
+		List<KshmtMedicalTimeSet> newListEntity = new ArrayList<>();
+		
+		Map<KshmtMedicalTimeSetPK, KshmtMedicalTimeSet> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
+				.collect(Collectors.toMap(KshmtMedicalTimeSet::getKshmtMedicalTimeSetPK, Function.identity()));
+		
+		list.forEach(domain -> {							
+			KshmtMedicalTimeSet entity = existShtSet.get(new KshmtMedicalTimeSetPK(
+					this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
+					domain.getWorkSystemAtr().value));
+			
+			if (entity == null) {
+				KshmtMedicalTimeSetPK pk = new KshmtMedicalTimeSetPK(
+						this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
+						this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
+						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
+						domain.getWorkSystemAtr().value);
+				entity = new KshmtMedicalTimeSet();
+				entity.setKshmtMedicalTimeSetPK(pk);
+			}
+			
+			domain.saveToMemento(new JpaWorkTimezoneMedicalSetSetMemento(entity));
+			newListEntity.add(entity);
+		});
+		this.entity.setKshmtMedicalTimeSets(newListEntity);
 	}
 
 	/*
@@ -145,8 +176,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setGoOutSet(WorkTimezoneGoOutSet set) {
-		// TODO Auto-generated method stub
-
+		set.saveToMemento(new JpaWorkTimezoneGoOutSetSetMemento(this.entity));
 	}
 
 	/*
@@ -159,8 +189,30 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setStampSet(WorkTimezoneStampSet set) {
-		// TODO Auto-generated method stub
+		List<KshmtPioritySet> lstKshmtPioritySet = new ArrayList<>();
+		set.getPrioritySets().forEach(item->{
+			KshmtPioritySet entityKshmtPiority =  new KshmtPioritySet();
+			
+			KshmtPioritySetPK kshmtPioritySetPK =  new KshmtPioritySetPK();
+			kshmtPioritySetPK.setCid(this.entity.getKshmtWorktimeCommonSetPK().getCid());
+			kshmtPioritySetPK.setStampAtr(item.getStampAtr().value);
+			kshmtPioritySetPK.setWorkFormAtr(this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			kshmtPioritySetPK.setWorkTimeSetMethod(this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
+			kshmtPioritySetPK.setWorktimeCd(this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			
+			entityKshmtPiority.setPiorityAtr(item.getPriorityAtr().value);
+			entityKshmtPiority.setKshmtPioritySetPK(kshmtPioritySetPK);
+			lstKshmtPioritySet.add(entityKshmtPiority);
+		});
+		this.entity.setKshmtPioritySets(lstKshmtPioritySet);
+		
+		List<KshmtRoundingSet> lstKshmtRoundingSet = new ArrayList<>();
+		set.getRoundingSets().forEach(item->{
+			KshmtRoundingSet entityKshmtRoundingSet = new KshmtRoundingSet();
 
+			
+		});
+		
 	}
 
 	/*

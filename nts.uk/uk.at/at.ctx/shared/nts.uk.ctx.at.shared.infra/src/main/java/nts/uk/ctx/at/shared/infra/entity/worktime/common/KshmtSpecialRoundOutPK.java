@@ -49,6 +49,24 @@ public class KshmtSpecialRoundOutPK implements Serializable {
 	public KshmtSpecialRoundOutPK() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new kshmt special round out PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param workFormAtr the work form atr
+	 * @param worktimeSetMethod the worktime set method
+	 * @param roundingTimeType the rounding time type
+	 */
+	public KshmtSpecialRoundOutPK(String cid, String worktimeCd, int workFormAtr, int worktimeSetMethod, int roundingTimeType) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.workFormAtr = workFormAtr;
+		this.worktimeSetMethod = worktimeSetMethod;
+		this.roundingTimeType = roundingTimeType;
+	}
 
 	/*
 	 * (non-Javadoc)

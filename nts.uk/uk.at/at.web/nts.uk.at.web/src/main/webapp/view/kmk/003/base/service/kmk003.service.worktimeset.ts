@@ -34,6 +34,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface SimpleWorkTimeSettingDto {
                     worktimeCode: string;
                     workTimeName: string;
+                    isAbolish: boolean;
                 }
 
                 export interface EnumConstantDto {
