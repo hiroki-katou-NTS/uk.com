@@ -49,6 +49,8 @@ module nts.uk.at.view.kmk003.a {
             
             screenMode: KnockoutObservable<number>;
             isNewMode: KnockoutObservable<boolean>;
+            isUpdateMode: KnockoutObservable<boolean>;
+
             constructor() {
                 let self = this;
                 self.mainSettingModel = new MainSettingModel();
@@ -135,6 +137,9 @@ module nts.uk.at.view.kmk003.a {
                 self.screenMode = ko.observable(ScreenMode.NEW);
                 self.isNewMode = ko.computed(() => {
                     return self.screenMode() == ScreenMode.NEW;
+                });
+                self.isUpdateMode = ko.computed(() => {
+                    return self.screenMode() == ScreenMode.UPDATE;
                 });
             }
            
@@ -294,10 +299,14 @@ module nts.uk.at.view.kmk003.a {
              /**
              * remove selected worktime
              */
-            public removeWorkTime(): JQueryPromise<void>
-            {
+            public removeWorkTime(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+
+                // check selected code
+                if (!self.selectedWorkTimeCode()) {
+                    return;
+                }
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     // block ui.
                     _.defer(() => nts.uk.ui.block.invisible());
@@ -371,6 +380,14 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
+                // re validate
+                self.validateInput();
+
+                // stop function if has error.
+                if ($('.nts-editor').ntsError('hasError')) {
+                    return;
+                }
+
                 // block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
 
@@ -388,6 +405,13 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 return dfd.promise();
+            }
+
+            /**
+             * Validate all input
+             */
+            private validateInput(): void {
+                $('.nts-editor').ntsEditor('validate');
             }
 
             /**
