@@ -74,9 +74,8 @@ public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezon
 			this.entity.setKshmtWorkTimeSheetSets(lstTimezone.stream().map(domain -> {
 				KshmtWorkTimeSheetSet entity = new KshmtWorkTimeSheetSet(
 						new KshmtWorkTimeSheetSetPK(this.entity.getKshmtPredTimeSetPK().getCid(),
-								this.entity.getKshmtPredTimeSetPK().getWorktimeCd(), domain.getWorkNo()));
-				domain.saveToMemento(new JpaTimezoneSetMemento(this.entity.getKshmtPredTimeSetPK().getCid(),
-						this.entity.getKshmtPredTimeSetPK().getWorktimeCd(), entity));
+								this.entity.getKshmtPredTimeSetPK().getWorktimeCd()));
+				domain.saveToMemento(new JpaTimezoneSetMemento(entity));
 				return entity;
 			}).collect(Collectors.toList()));
 		}

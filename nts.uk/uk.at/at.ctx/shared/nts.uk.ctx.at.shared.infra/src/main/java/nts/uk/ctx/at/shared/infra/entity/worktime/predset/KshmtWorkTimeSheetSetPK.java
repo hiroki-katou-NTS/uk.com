@@ -50,13 +50,11 @@ public class KshmtWorkTimeSheetSetPK implements Serializable {
 	 *
 	 * @param cid the cid
 	 * @param worktimeCd the worktime cd
-	 * @param workNo the work no
 	 */
-	public KshmtWorkTimeSheetSetPK(String cid, String worktimeCd, int workNo) {
+	public KshmtWorkTimeSheetSetPK(String cid, String worktimeCd) {
 		super();
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
-		this.workNo = workNo;
 	}
 
 	/*

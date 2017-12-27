@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -21,21 +20,10 @@ public class JpaTimezoneSetMemento implements TimezoneSetMemento {
 	/**
 	 * Instantiates a new jpa timezone set memento.
 	 *
-	 * @param cid
-	 *            the cid
-	 * @param worktimeCd
-	 *            the worktime cd
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 */
-	public JpaTimezoneSetMemento(String cid, String worktimeCd, KshmtWorkTimeSheetSet entity) {
+	public JpaTimezoneSetMemento(KshmtWorkTimeSheetSet entity) {
 		super();
-		if (entity.getKshmtWorkTimeSheetSetPK() == null) {
-			KshmtWorkTimeSheetSetPK kshmtWorkTimeSheetSetPK = new KshmtWorkTimeSheetSetPK();
-			kshmtWorkTimeSheetSetPK.setCid(cid);
-			kshmtWorkTimeSheetSetPK.setWorktimeCd(worktimeCd);
-			entity.setKshmtWorkTimeSheetSetPK(kshmtWorkTimeSheetSetPK);
-		}
 		this.entity = entity;
 	}
 

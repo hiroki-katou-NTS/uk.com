@@ -175,9 +175,9 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 */
 	private void validTimeDay() {
 		// 使用しない
-		if (!this.isMorningAndAfternoonInShift1()) {
-			throw new BusinessException("Msg_773");
-		}
+//		if (!this.isMorningAndAfternoonInShift1()) {
+//			throw new BusinessException("Msg_773");
+//		}
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 */
 	private boolean isMorningAndAfternoonInShift1() {
 		val tzWorkNo1 = this.getTimezoneShiftOne();
-		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) && tzWorkNo1.consistOf(this.getAfternoonStartTime());
+		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) && tzWorkNo1.consistOf(this.getMorningEndTime());
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 */
 	private boolean isMorningAndAfternoonInShift2() {
 		val tzWorkNo2 = this.getTimezoneShiftTwo();
-		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) && tzWorkNo2.consistOf(this.getAfternoonStartTime());
+		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) && tzWorkNo2.consistOf(this.getMorningEndTime());
 	}
 	
 	/**

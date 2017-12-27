@@ -149,10 +149,10 @@ module nts.uk.at.view.kmk003.a {
                
                 getTimezoneByWorkNo(workNo: number): TimezoneModel {
                     var self = this;
-                    var data: TimezoneModel = _.find(self.lstTimezone, timezone => timezone.workNo() == 2);
+                    var data: TimezoneModel = _.find(self.lstTimezone, timezone => timezone.workNo() == workNo);
                     if (!data) {
                         data = new TimezoneModel();
-                        data.workNo(2);
+                        data.workNo(workNo);
                         this.lstTimezone.push(data);
                         return data;
                     }
@@ -162,9 +162,16 @@ module nts.uk.at.view.kmk003.a {
                 // get time zone two
                 getTimezoneTwo(): TimezoneModel {
                     var self = this;
-                    return _.find(self.lstTimezone, timezone => timezone.workNo() == 1);
+                    var data: TimezoneModel = _.find(self.lstTimezone, timezone => timezone.workNo() == 2);
+                    if (!data) {
+                        data = new TimezoneModel();
+                        data.workNo(2);
+                        this.lstTimezone.push(data);
+                        return data;
+                    }
+                    return data;
                 }
-
+                
                 toDto(): PrescribedTimezoneSettingDto {
                     var lstTimezone: TimezoneDto[] = [];
                     for (var dataModel of this.lstTimezone) {
