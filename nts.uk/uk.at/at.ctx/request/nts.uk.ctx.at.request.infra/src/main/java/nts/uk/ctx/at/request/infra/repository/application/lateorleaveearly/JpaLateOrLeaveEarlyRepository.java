@@ -9,16 +9,15 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
-import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
+import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
 @Stateless
 public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements LateOrLeaveEarlyRepository {
 	
-	private final String SELECT= "SELECT c FROM KrqdtAppLateOrLeave c";
-	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID";
+	//private final String SELECT= "SELECT c FROM KrqdtAppLateOrLeave c";
+	//private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID";
 	private final String SELECT_SINGLE = "SELECT c"
 			+ " FROM KrqdtAppLateOrLeave c"
 			+ " WHERE c.krqdtAppLateOrLeavePK.appID = :appID AND c.krqdtAppLateOrLeavePK.companyID = :companyID";
@@ -49,7 +48,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	public void update(LateOrLeaveEarly lateOrLeaveEarly) {
 		KrqdtAppLateOrLeave newEntity = toEntity(lateOrLeaveEarly);
 		KrqdtAppLateOrLeave updateEntity = this.queryProxy().find(newEntity.krqdtAppLateOrLeavePK, KrqdtAppLateOrLeave.class).get();
-		updateEntity.kafdtApplication.applicationReason = newEntity.kafdtApplication.applicationReason;
+		updateEntity.kafdtApplication.appReason = newEntity.kafdtApplication.appReason;
 		updateEntity.actualCancelAtr = newEntity.actualCancelAtr;
 		updateEntity.early1 = newEntity.early1;
 		updateEntity.earlyTime1 = newEntity.earlyTime1;
@@ -75,31 +74,29 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	
 	private LateOrLeaveEarly toDomain(KrqdtAppLateOrLeave entity) {
 		KrqdtAppLateOrLeave appLateOrLeaveEntity = entity;
-		KafdtApplication applicationEntity = entity.kafdtApplication;
+		KrqdtApplication_New applicationEntity = entity.kafdtApplication;
 		
 		LateOrLeaveEarly lateOrLeaveEarly = new LateOrLeaveEarly (
 				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.companyID, 
 				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.appID,
 				 applicationEntity.prePostAtr,
 				 applicationEntity.inputDate,
-				 applicationEntity.enteredPersonSID,
+				 applicationEntity.enteredPersonID,
 				 applicationEntity.reversionReason,
-				 applicationEntity.applicationDate,
-				 applicationEntity.applicationReason,
-				 applicationEntity.applicationType,
-				 applicationEntity.applicantSID,
-				 applicationEntity.reflectPlanScheReason,
-				 applicationEntity.reflectPlanTime,
-				 applicationEntity.reflectPlanState,
-				 applicationEntity.reflectPlanEnforce,
-				 applicationEntity.reflectPerScheReason,
-				 applicationEntity.reflectPerTime,
-				 applicationEntity.reflectPerState,
-				 applicationEntity.reflectPerEnforce,
+				 applicationEntity.appDate,
+				 applicationEntity.appReason,
+				 applicationEntity.appType,
+				 applicationEntity.krqdpApplicationPK.appID,
+				 applicationEntity.notReason,
+				 applicationEntity.dateTimeReflection,
+				 applicationEntity.stateReflection,
+				 applicationEntity.forcedReflection,
+				 applicationEntity.notReasonReal,
+				 applicationEntity.dateTimeReflectionReal,
+				 applicationEntity.stateReflectionReal,
+				 applicationEntity.forcedReflectionReal,
 				 applicationEntity.startDate,
 				 applicationEntity.endDate,
-				 null,
-			//	 appLateOrLeaveEntity.actualCancelAtr,
 				 appLateOrLeaveEntity.early1,
 				 appLateOrLeaveEntity.earlyTime1,
 				 appLateOrLeaveEntity.late1,
@@ -125,7 +122,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 					domain.getEarlyTime2().v(),
 					domain.getLate2().value,
 					domain.getLateTime2().v(),
-					KafdtApplication.toEntity(domain));
+					KrqdtApplication_New.fromDomain(domain));
 	}
 	@Override
 	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
-import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,14 +8,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 
 /**
  * 
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
  *遅刻早退取消申請
  */
 @Getter
-public class LateOrLeaveEarly extends Application {
+public class LateOrLeaveEarly extends Application_New {
 	/** 会社ID */
 	private final String companyID;
 	/** 申請ID */
@@ -60,18 +60,35 @@ public class LateOrLeaveEarly extends Application {
 	public LateOrLeaveEarly(String companyID, String appID, int prePostAtr, GeneralDateTime inputDate,
 			String enteredPersonSID, String reversionReason, GeneralDate applicationDate, String applicationReason,
 			int applicationType, String applicantSID, int reflectPlanScheReason,
-			GeneralDate reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,
-			int reflectPerScheReason, GeneralDate reflectPerTime, int reflectPerState,
-			int reflectPerEnforce,GeneralDate startDate,GeneralDate endDate,List<AppApprovalPhase> listPhase,
+			GeneralDateTime reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,
+			int reflectPerScheReason, GeneralDateTime reflectPerTime, int reflectPerState,
+			int reflectPerEnforce,GeneralDate startDate,GeneralDate endDate,
 			int early1, int earlyTime1, int late1, int lateTime1,
 			int early2, int earlyTime2, int late2, int lateTime2) {
-		super(companyID, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), inputDate, enteredPersonSID,
-				new AppReason(reversionReason), applicationDate, new AppReason(applicationReason),
-				EnumAdaptor.valueOf(applicationType, ApplicationType.class), applicantSID, EnumAdaptor.valueOf(reflectPlanScheReason, ReflectPlanScheReason.class),
-				reflectPlanTime, EnumAdaptor.valueOf(reflectPlanState, ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(reflectPlanEnforce, ReflectPlanPerEnforce.class), EnumAdaptor.valueOf(reflectPerScheReason, ReflectPerScheReason.class),
-				reflectPerTime, EnumAdaptor.valueOf(reflectPerState, ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(reflectPerEnforce, ReflectPlanPerEnforce.class),startDate,endDate,listPhase);
+		super(0L, 
+				companyID, 
+				appID, 
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+				inputDate, 
+				enteredPersonSID,
+				new AppReason(reversionReason), 
+				applicationDate, 
+				new AppReason(applicationReason),
+				EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
+				applicantSID, 
+				Optional.ofNullable(startDate), 
+				Optional.ofNullable(endDate),
+				ReflectionInformation_New.builder()
+				.stateReflection(EnumAdaptor.valueOf(reflectPlanState, ReflectedState_New.class)) 
+				.stateReflectionReal(EnumAdaptor.valueOf(reflectPerState, ReflectedState_New.class))
+				.forcedReflection(EnumAdaptor.valueOf(reflectPlanEnforce, DisabledSegment_New.class))
+				.forcedReflectionReal(EnumAdaptor.valueOf(reflectPerEnforce, DisabledSegment_New.class))
+				.notReason(Optional.ofNullable(reflectPlanScheReason).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect_New.class)))
+				.notReasonReal(Optional.ofNullable(reflectPerScheReason).map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))		
+				.dateTimeReflection(Optional.ofNullable(reflectPlanTime))
+				.dateTimeReflectionReal(Optional.ofNullable(reflectPerTime)).build()
+				);
+		
 		this.companyID = companyID;
 		this.appID = appID;
 		this.early1 = EnumAdaptor.valueOf(early1, Select.class);

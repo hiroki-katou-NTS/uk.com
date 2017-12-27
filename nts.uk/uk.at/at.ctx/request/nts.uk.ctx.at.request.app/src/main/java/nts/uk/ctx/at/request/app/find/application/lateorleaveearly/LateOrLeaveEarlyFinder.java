@@ -85,7 +85,7 @@ public class LateOrLeaveEarlyFinder {
 			Optional<LateOrLeaveEarly> lateOrLeaveEarlyOp = lateOrLeaveEarlyRepository.findByCode(companyID, appID);
 			if(lateOrLeaveEarlyOp.isPresent()){
 				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarlyOp.get()); 
-				employeeID = lateOrLeaveEarlyOp.get().getApplicantSID();
+				employeeID = lateOrLeaveEarlyOp.get().getEmployeeID();
 				applicantName = employeeAdapter.getEmployeeName(employeeID);
 			}
 		} else {

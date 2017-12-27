@@ -14,7 +14,7 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
+import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -62,12 +62,12 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 	@Column(name = "LATE_TIME2")
 	public int lateTime2;
 
-	@OneToOne(targetEntity=KafdtApplication.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(targetEntity=KrqdtApplication_New.class, cascade = CascadeType.ALL, orphanRemoval = true)
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
 		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
 	})
-	public KafdtApplication kafdtApplication;
+	public KrqdtApplication_New kafdtApplication;
 	
 	@Override
 	protected Object getKey() {

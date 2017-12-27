@@ -9,22 +9,14 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.Deadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
@@ -72,7 +64,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		int early1 = lateOrLeaveEarly.getEarly1().value;
 		int early2 = lateOrLeaveEarly.getEarly2().value;
 
-		String applicationReason = lateOrLeaveEarly.getApplicationReason().v();
+		String applicationReason = lateOrLeaveEarly.getAppReason().v();
 		
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 				&& Strings.isBlank(applicationReason)) {
@@ -124,7 +116,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 		//申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isEmpty(lateOrLeaveEarly.getApplicationReason().v())) {
+				&& Strings.isEmpty(lateOrLeaveEarly.getAppReason().v())) {
 			throw new BusinessException("Msg_115");
 		}
 		

@@ -60,7 +60,5 @@ public class CreateLateOrLeaveEarlyCommand {
 	
 	/** 申請理由 appReason */
 	private String appReason;
-	
-	private List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
 
 }

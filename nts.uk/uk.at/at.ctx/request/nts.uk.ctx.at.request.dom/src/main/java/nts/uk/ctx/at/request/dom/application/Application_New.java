@@ -19,7 +19,7 @@ import nts.gul.text.IdentifierUtil;
 @AllArgsConstructor
 @Builder
 public class Application_New extends DomainObject {
-	
+	@Setter
 	private Long version;
 	
 	private String companyID; 
