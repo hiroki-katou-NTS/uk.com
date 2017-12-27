@@ -40,12 +40,12 @@ module kcp010.viewmodel {
             var self = this;
             service.findWorkplaceTree(moment(new Date()).toDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
                 if (dataList && dataList.length > 0) {
-                    self.wkpList(dataList);
+                    self.wkpList(self.convertTreeToArray(dataList));
                     self.tabIndex = data.tabIndex;
                     if (self.wkpList().length > 1) {
                         self.wkpList().sort(function(left, right) {
-                            return left.workplaceCode == right.workplaceCode ?
-                                0 : (left.workplaceCode < right.workplaceCode ? -1 : 1)
+                            return left.code == right.code ?
+                                0 : (left.code < right.code ? -1 : 1)
                         });
                     }
                     
@@ -158,9 +158,9 @@ module kcp010.viewmodel {
                 })[0];
                 if (currentItem) {
                     self.workplaceId(currentItem.workplaceId);
-                    self.workplaceCode(currentItem.workplaceCode);
-                    self.workplaceName(currentItem.workplaceName);
-                    self.keySearch(currentItem.workplaceCode);
+                    self.workplaceCode(currentItem.code);
+                    self.workplaceName(currentItem.name);
+                    self.keySearch(currentItem.code);
                 }
             } else {
                 self.workplaceId("");
@@ -176,24 +176,24 @@ module kcp010.viewmodel {
             service.searchWorkplace(self.keySearch()).done(function(workplace: service.model.WorkplaceSearchData) {
                 // find Exist workplace in List
                 let existItem = self.wkpList().filter((item) => {
-                    return item.workplaceCode == workplace.workplaceCode;
+                    return item.code == workplace.code;
                 })[0];
 
                 if (existItem) {
                     // Set Selected Item
                     self.selectedItem(existItem.workplaceId);
                     self.workplaceId(existItem.workplaceId);
-                    self.workplaceCode(existItem.workplaceCode);
-                    self.workplaceName(existItem.workplaceName);
+                    self.workplaceCode(existItem.code);
+                    self.workplaceName(existItem.name);
                 } else {
                     let newWkpList: Array<WorkplaceModel> = [];
-                    newWkpList.push({ workplaceId: workplace.workplaceId, workplaceCode: workplace.workplaceCode, workplaceName: workplace.workplaceName });
+                    newWkpList.push({ workplaceId: workplace.workplaceId, code: workplace.code, name: workplace.name });
                     self.wkpList(newWkpList);
                     // Set Selected Item
                     self.selectedItem(workplace.workplaceId);
                     self.workplaceId(workplace.workplaceId);
-                    self.workplaceCode(workplace.workplaceCode);
-                    self.workplaceName(workplace.workplaceName);
+                    self.workplaceCode(workplace.code);
+                    self.workplaceName(workplace.name);
                 }
 
             }).fail(function(res) {
@@ -229,9 +229,19 @@ module kcp010.viewmodel {
             }
         }
         
-        getSelectedWkpId() {
-            var self = this;
-            return self.selectedItem();
+        /**
+         * Convert tree data to array.
+         */
+        private convertTreeToArray(dataList: Array<WorkplaceModel>): Array<any> {
+            let self = this;
+            let res = [];
+            _.forEach(dataList, function(item) {
+                if (item.childs && item.childs.length > 0) {
+                    res = res.concat(self.convertTreeToArray(item.childs));
+                }
+                res.push(item);
+            })
+            return res;
         }
     }
 
@@ -248,8 +258,9 @@ module kcp010.viewmodel {
      */
     export interface WorkplaceModel {
         workplaceId: string;
-        workplaceCode: string;
-        workplaceName: string;
+        code: string;
+        name: string;
+        childs: Array<WorkplaceModel>;
     }
 
     /**
@@ -257,7 +268,7 @@ module kcp010.viewmodel {
      */
     export module service {
         var paths: any = {
-            findWorkplaceTree: "bs/employee/workplace/info/findWorkplaceInfo",
+            findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
             searchWorkplace: 'screen/com/kcp010/search/',
             getWorkplaceBySid: 'screen/com/kcp010/getLoginWkp',
         }
@@ -280,8 +291,8 @@ module kcp010.viewmodel {
         export module model {
             export class WorkplaceSearchData {
                 workplaceId: string;
-                workplaceCode: string;
-                workplaceName: string;
+                code: string;
+                name: string;
             }
         }
     }

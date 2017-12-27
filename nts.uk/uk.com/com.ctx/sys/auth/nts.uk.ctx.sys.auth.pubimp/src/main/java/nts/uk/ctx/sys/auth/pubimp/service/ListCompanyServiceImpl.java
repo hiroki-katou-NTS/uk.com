@@ -42,10 +42,17 @@ public class ListCompanyServiceImpl implements ListCompanyService {
 	@Override
 	public List<String> getListCompanyId(String userId,String associatedPersonId) {
 		List<String> lstCompanyId = new ArrayList<String>();
+		List<String> lstRoleId = new ArrayList<String>();
+		
 		// get roleIndividualGrant
-		RoleIndividualGrant individualGrant = roleIndividualGrantRepository.findByUserAndDate(userId, GeneralDate.today()).get();
+		List<RoleIndividualGrant> lstIndividualGrant = roleIndividualGrantRepository.findListByUserAndDate(userId, GeneralDate.today());
+		
+		//add list roleId
+		lstIndividualGrant.stream().forEach(item-> {
+			lstRoleId.add(item.getRoleId());
+		});
 		// get roles by roleId
-		List<Role> lstRole = roleRepository.findById(individualGrant.getRoleId());
+		List<Role> lstRole = roleRepository.findByListId(lstRoleId);
 		
 		// get list employee imported by User associated Id #No.124
 		List<EmployeeImport> lstEm = employeeAdapter.findByEmployeeId(associatedPersonId);

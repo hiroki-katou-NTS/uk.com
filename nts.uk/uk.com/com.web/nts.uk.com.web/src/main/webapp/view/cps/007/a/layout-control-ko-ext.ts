@@ -492,7 +492,7 @@ module nts.custombinding {
                                <div data-bind="if: layoutItemType == LAYOUT_TYPE.ITEM">
                                     <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
                                             .filter(function(x) { return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((x.item||{}).dataTypeValue) == -1})
-                                            .map(function(x) { return x.itemDefId.replace(/-/g, '') })
+                                            .map(function(x) { return x.itemDefId.replace(/[-_]/g, '') })
                                             .value() }">
                                         <div data-bind="ntsFormLabel: { 
                                             text: className || '',
@@ -540,7 +540,7 @@ module nts.custombinding {
                                                             <!-- /ko -->
                                                             <th data-bind="template: { afterRender: function(childs, data) { let div = $(childs[1]); setInterval(function() { div.css('width', (div.parent().width() - 3) + 'px') }, 0); } }">
                                                                 <div data-bind="ntsFormLabel: { 
-                                                                    constraint: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/-/g, '') : undefined,
+                                                                    constraint: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/[-_]/g, '') : undefined,
                                                                     required: header.required, 
                                                                     text: header.itemName || '',
                                                                     inline: true }"></div>
@@ -606,7 +606,7 @@ module nts.custombinding {
                 <script type="text/html" id="ctr_template">
                     <!--<div data-bind="text: $data.ctgType"></div>-->
                     <div data-bind="let: {
-                            nameid : itemDefId.replace(/-/g, '')
+                            nameid : itemDefId.replace(/[-_]/g, '')
                         }">
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.STRING" class="string">
                             <div data-bind="if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
@@ -1118,7 +1118,7 @@ module nts.custombinding {
                     let dts = x.item,
                         constraint: any = {
                             itemName: x.itemName,
-                            itemCode: x.itemDefId.replace(/-/g, ""),
+                            itemCode: x.itemDefId.replace(/[-_]/g, ""),
                             required: x.required// !!x.isRequired
                         };
 
@@ -1174,12 +1174,12 @@ module nts.custombinding {
                                 constraint.min = parseTime(dts.min, true).format() || undefined;
                                 break;
                             case ITEM_SINGLE_TYPE.TIME:
-                                constraint.valueType = "Clock";
+                                constraint.valueType = "Time";
                                 constraint.max = parseTime(dts.max, true).format();
                                 constraint.min = parseTime(dts.min, true).format();
                                 break;
                             case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                constraint.valueType = "Time";
+                                constraint.valueType = "Clock";
                                 constraint.max = parseTime(dts.timePointItemMax, true).format();
                                 constraint.min = parseTime(dts.timePointItemMin, true).format();
                                 break;
@@ -1521,7 +1521,7 @@ module nts.custombinding {
                                     if (!def) {
                                         def = {
                                             index: i,
-                                            categoryCode: x.personInfoCategoryID, // miss categoryCode;
+                                            categoryCode: x.categoryCode || x.personInfoCategoryID, // miss categoryCode;
                                             itemCode: item.itemCode,
                                             itemName: item.itemName,
                                             itemDefId: item.id,
@@ -1556,7 +1556,7 @@ module nts.custombinding {
                                         if (!def) {
                                             def = {
                                                 index: j,
-                                                categoryCode: x.personInfoCategoryID, // miss categoryCode;
+                                                categoryCode: x.categoryCode || x.personInfoCategoryID, // miss categoryCode;
                                                 itemCode: item.itemCode,
                                                 itemName: item.itemName,
                                                 itemDefId: item.id,
@@ -1630,13 +1630,13 @@ module nts.custombinding {
                                                     && ko.isObservable(next.value)) {
 
                                                     def.endDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(next.value)).add(-1, "days").toDate();
+                                                        return moment.utc(ko.toJS(next.value) || '9999/12/31').add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
                                                     });
                                                     def.startDate = ko.observable();
 
                                                     next.endDate = ko.observable();
                                                     next.startDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(def.value)).add(1, "days").toDate();
+                                                        return moment.utc(ko.toJS(def.value) || '1900/01/01').add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
                                                     });
                                                 }
                                             }
@@ -1659,8 +1659,8 @@ module nts.custombinding {
                                                 }*/
 
                                                 if (def.ctgType == IT_CAT_TYPE.CONTINU) {
-                                                    if (!def.value()) {
-                                                        def.value('9999/12/31');
+                                                    if (def.value() == '9999/12/31') {
+                                                        def.value('');
                                                     }
                                                 }
                                             }
@@ -2124,6 +2124,7 @@ module nts.custombinding {
     interface IItemClassification {
         layoutID?: string;
         dispOrder?: number;
+        categoryCode?: string;
         className?: string; // only for display if classification is set or duplication item
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;

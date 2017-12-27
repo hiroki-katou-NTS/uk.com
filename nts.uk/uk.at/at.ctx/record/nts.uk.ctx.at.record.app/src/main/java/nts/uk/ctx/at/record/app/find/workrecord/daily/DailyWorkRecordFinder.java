@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.workrecord.daily;
 
 import javax.ejb.Stateless;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.workrecord.daily.dto.DailyWorkRecordDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 
@@ -15,7 +16,7 @@ public class DailyWorkRecordFinder extends FinderFacade {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public DailyWorkRecordDto find() {
+	public DailyWorkRecordDto find(String employeeId, GeneralDate baseDate) {
 		return new DailyWorkRecordDto();
 	}
 }

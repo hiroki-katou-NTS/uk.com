@@ -1,11 +1,8 @@
 package nts.uk.ctx.at.record.dom.shorttimework.primitivevalue;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMaxValue;
-import nts.arc.primitive.constraint.DecimalMinValue;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
  * 
@@ -13,13 +10,13 @@ import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
  * 短時間勤務枠NO
  *
  */
-@DecimalMinValue("1")
-@DecimalMaxValue("2")
-public class ShortWorkTimFrameNo extends DecimalPrimitiveValue<ShortWorkTimFrameNo> {
+@IntegerMinValue(1)
+@IntegerMaxValue(2)
+public class ShortWorkTimFrameNo extends IntegerPrimitiveValue<ShortWorkTimFrameNo> {
 
 	private static final long serialVersionUID = 1L;
 	
-	public ShortWorkTimFrameNo(BigDecimal rawValue) {
+	public ShortWorkTimFrameNo(Integer rawValue) {
 		super(rawValue);
 	}
 }

@@ -5,22 +5,23 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange;
  * 抽出する範囲
  */
 public enum ExtractionRange {
-	/**
-	 * 単年
-	 */
-	YEAR(0, "単年"),
-	/**
-	 * 単月
-	 */
-	MONTH(1, "単月"),
-	/**
-	 * 周期
-	 */
-	WEEK(2, "周期"),
+	
 	/**
 	 * 期間
 	 */
-	PERIOD(3, "期間");
+	PERIOD(0, "期間"),
+	/**
+	 * 単年
+	 */
+	YEAR(1, "単年"),
+	/**
+	 * 単月
+	 */
+	MONTH(2, "単月"),
+	/**
+	 * 周期
+	 */
+	WEEK(3, "周期");
 	
 	/** The value. */
 	public final int value;

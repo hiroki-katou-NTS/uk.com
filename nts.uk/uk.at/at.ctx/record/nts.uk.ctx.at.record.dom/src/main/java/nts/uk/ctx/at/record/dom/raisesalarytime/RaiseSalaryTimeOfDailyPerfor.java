@@ -2,8 +2,9 @@ package nts.uk.ctx.at.record.dom.raisesalarytime;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 
 /**
  * 
@@ -12,12 +13,19 @@ import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalRaisingSalarySetting
  *
  */
 @Getter
+@AllArgsConstructor
 public class RaiseSalaryTimeOfDailyPerfor {
 	
 	//加給時間
-	private List<RaisingSalaryTime> raisingSalaryTimes;
+	private List<BonusPayTime> raisingSalaryTimes;
 	
 	//特定日加給時間
-	private List<AutoCalRaisingSalarySetting> autoCalRaisingSalarySettings; 
+	private List<BonusPayTime> autoCalRaisingSalarySettings; 
 	
+	/**
+	 * 就内・残業内・休出時間内の加給時間の合計を求める
+	 */
+	public void calcTotalBonusPayTime() {
+		
+	}
 }

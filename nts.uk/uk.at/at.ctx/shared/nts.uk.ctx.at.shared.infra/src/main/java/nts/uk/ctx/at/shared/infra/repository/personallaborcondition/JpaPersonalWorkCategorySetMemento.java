@@ -32,8 +32,9 @@ public class JpaPersonalWorkCategorySetMemento implements PersonalWorkCategorySe
 	public JpaPersonalWorkCategorySetMemento(List<KshmtPerWorkCategory> entitys) {
 		if (CollectionUtil.isEmpty(entitys)) {
 			this.entitys = new ArrayList<>();
-		} else
+		} else {
 			this.entitys = entitys;
+		}
 	}
 
 	/*

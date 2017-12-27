@@ -1,4 +1,4 @@
-module nts.uk.com.view.kal003.b {
+module nts.uk.at.view.kal003.b {
     __viewContext.ready(function() {
         __viewContext["viewModel"] = new viewmodel.ScreenModel();
         __viewContext["viewModel"].start().done(function(){
