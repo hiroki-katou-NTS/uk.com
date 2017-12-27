@@ -28,6 +28,7 @@ public class JpaFixedRestTZDeductionTimeGetMemento<T extends UkJpaEntity> implem
 	 *            the entity
 	 */
 	JpaFixedRestTZDeductionTimeGetMemento(T entity) {
+		super();
 		this.entity = entity;
 	}
 

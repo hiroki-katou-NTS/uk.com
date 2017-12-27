@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -15,20 +16,8 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSetP
  */
 public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSettingSetMemento {
 
-	/** The company id. */
-	private String companyId;
-
-	/** The work time cd. */
-	private String workTimeCd;
-
 	/** The entity. */
 	private KshmtFixedHolTimeSet entity;
-
-	/** The Constant VALUE_TRUE. */
-	private static final Integer VALUE_TRUE = 1;
-
-	/** The Constant VALUE_FALSE. */
-	private static final Integer VALUE_FALSE = 0;
 
 	/**
 	 * Instantiates a new jpa fixed HD work time sheet set memento.
@@ -41,12 +30,12 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	 *            the entity
 	 */
 	public JpaFixedHDWorkTimeSheetSetMemento(String companyId, String workTimeCd, KshmtFixedHolTimeSet entity) {
-		this.companyId = companyId;
-		this.workTimeCd = workTimeCd;
 		if (entity.getKshmtFixedHolTimeSetPK() == null) {
 			entity.setKshmtFixedHolTimeSetPK(new KshmtFixedHolTimeSetPK());
 		}
 		this.entity = entity;
+		this.entity.getKshmtFixedHolTimeSetPK().setCid(companyId);
+		this.entity.getKshmtFixedHolTimeSetPK().setWorktimeCd(workTimeCd);
 	}
 
 	/*
@@ -57,9 +46,7 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	 * #setWorkTimeNo(java.lang.Integer)
 	 */
 	@Override
-	public void setWorkTimeNo(Integer workTimeNo) {
-		this.entity.getKshmtFixedHolTimeSetPK().setCid(companyId);
-		this.entity.getKshmtFixedHolTimeSetPK().setWorktimeCd(this.workTimeCd);
+	public void setWorkTimeNo(Integer workTimeNo) {		
 		this.entity.getKshmtFixedHolTimeSetPK().setWorktimeNo(workTimeNo);
 	}
 
@@ -87,7 +74,7 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	 */
 	@Override
 	public void setIsLegalHolidayConstraintTime(boolean isLegalHolidayConstraintTime) {
-		this.entity.setHolTime(isLegalHolidayConstraintTime == Boolean.TRUE ? VALUE_TRUE : VALUE_FALSE);
+		this.entity.setHolTime(BooleanGetAtr.getAtrByBoolean(isLegalHolidayConstraintTime));
 	}
 
 	/*
@@ -112,7 +99,7 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	 */
 	@Override
 	public void setIsNonStatutoryDayoffConstraintTime(boolean isNonStatutoryDayoffConstraintTime) {
-		this.entity.setOutHolTime(isNonStatutoryDayoffConstraintTime == Boolean.TRUE ? VALUE_TRUE : VALUE_FALSE);
+		this.entity.setOutHolTime(BooleanGetAtr.getAtrByBoolean(isNonStatutoryDayoffConstraintTime));
 	}
 
 	/*
@@ -137,7 +124,7 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	 */
 	@Override
 	public void setIsNonStatutoryHolidayConstraintTime(boolean isNonStatutoryHolidayConstraintTime) {
-		this.entity.setPubHolTime(isNonStatutoryHolidayConstraintTime == Boolean.TRUE ? VALUE_TRUE : VALUE_FALSE);
+		this.entity.setPubHolTime(BooleanGetAtr.getAtrByBoolean(isNonStatutoryHolidayConstraintTime));
 	}
 
 	/*

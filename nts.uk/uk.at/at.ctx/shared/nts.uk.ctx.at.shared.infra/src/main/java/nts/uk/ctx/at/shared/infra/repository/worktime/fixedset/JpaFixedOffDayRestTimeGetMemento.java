@@ -28,6 +28,7 @@ public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMe
 	 *            the lst entity
 	 */
 	public JpaFixedOffDayRestTimeGetMemento(List<KshmtFixedHolRestSet> lstEntity) {
+		super();
 		this.lstEntity = lstEntity;
 		if (CollectionUtil.isEmpty(this.lstEntity)) {
 			this.lstEntity = new ArrayList<>();
