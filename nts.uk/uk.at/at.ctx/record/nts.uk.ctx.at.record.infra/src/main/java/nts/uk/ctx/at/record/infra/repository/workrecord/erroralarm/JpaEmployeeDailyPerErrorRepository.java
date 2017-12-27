@@ -51,8 +51,9 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		if (!result.isEmpty()) {
 			return new EmployeeDailyPerError(result.get(0).krcdtSyainDpErListPK.companyID,
 					result.get(0).krcdtSyainDpErListPK.employeeId, result.get(0).krcdtSyainDpErListPK.processingDate,
-					new ErrorAlarmWorkRecordCode(result.get(0).errorCode),
-					result.stream().map(c -> c.krcdtSyainDpErListPK.attendanceItemId).collect(Collectors.toList()));
+					new ErrorAlarmWorkRecordCode(result.get(0).krcdtSyainDpErListPK.errorCode),
+					result.stream().map(c -> c.attendanceItemId).collect(Collectors.toList()),
+					result.get(0).errorCancelable);
 		}
 
 		return null;

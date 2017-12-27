@@ -14,6 +14,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.ws.rs.NotFoundException;
+
 import org.apache.commons.lang3.StringUtils;
 
 import nts.gul.reflection.FieldsWorkerStream;
@@ -28,30 +30,48 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
 public class AttendanceItemUtil {
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems) {
-		return toItemValues(attendanceItems, "");
+		return toItemValues(attendanceItems, "", Collections.emptyList());
 	}
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
-			String rootLayout) {
-		String rootName = "";
-		AttendanceItemRoot rootAnno = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
-		if (rootAnno != null) {
-			rootName = rootAnno.rootName();
-		}
+			List<Integer> itemIds) {
+		return toItemValues(attendanceItems, "", itemIds);
+	}
+
+	private static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems,
+			String rootLayout, List<Integer> itemIds) {
+		AttendanceItemRoot rootAnno = getRootAnnotation(attendanceItems);
+		String rootName = getRootName(rootAnno);
 		if (rootAnno.isContainer()) {
-			return fromContainer(attendanceItems);
+			return fromContainer(attendanceItems, itemIds);
 		}
-		return getItemFromField(attendanceItems, rootLayout, 0, rootName, "", false);
+		return getItemFromField(attendanceItems, rootLayout, 0, rootName, "", false, itemIds);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends ConvertibleAttendanceItem> List<ItemValue> fromContainer(T attendanceItems) {
+	private static <T extends ConvertibleAttendanceItem> List<ItemValue> fromContainer(T attendanceItems,
+			List<Integer> itemIds) {
 		return getItemLayouFields(attendanceItems.getClass()).map(f -> {
 			T fieldValue;
 			try {
-				fieldValue = (T) f.get(attendanceItems);
 				AttendanceItemLayout layout = f.getAnnotation(AttendanceItemLayout.class);
-				return toItemValues(fieldValue, layout == null ? "" : layout.layout());
+
+				if (layout.isList()) {
+					List<T> listValue = (List<T>) f.get(attendanceItems);
+					if (listValue != null && !listValue.isEmpty()) {
+						listValue.stream().map(v -> toItemValues(v, itemIds)).flatMap(List::stream)
+								.collect(Collectors.toList());
+					}
+					return toItemValues(ReflectionUtil.newInstance(getGenericType(f)), itemIds);
+				}
+				if (layout.isOptional()) {
+					fieldValue = ((Optional<T>) f.get(attendanceItems))
+							.orElse(ReflectionUtil.newInstance(getGenericType(f)));
+				} else {
+					fieldValue = (T) f.get(attendanceItems);
+				}
+				return toItemValues(fieldValue, layout == null ? "" : layout.layout(), itemIds);
+
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				return new ArrayList<ItemValue>();
 			}
@@ -66,11 +86,8 @@ public class AttendanceItemUtil {
 
 	public static <T extends ConvertibleAttendanceItem, R extends ConvertibleAttendanceItem> T toConvertibleAttendanceItem(
 			T object, List<ItemValue> attendanceItems) {
-		String rootName = "";
-		AttendanceItemRoot rootAnno = object.getClass().getAnnotation(AttendanceItemRoot.class);
-		if (rootAnno != null) {
-			rootName = rootAnno.rootName();
-		}
+		AttendanceItemRoot rootAnno = getRootAnnotation(object);
+		String rootName = getRootName(rootAnno);
 		if (rootAnno.isContainer()) {
 			return processContainer(object, attendanceItems);
 		}
@@ -227,71 +244,79 @@ public class AttendanceItemUtil {
 	}
 
 	private static List<ItemValue> getItemFromField(Object attendanceItems, String currentLayout, int idx,
-			String rootName, String extraCondition, boolean needCheckWithIdx) {
+			String rootName, String extraCondition, boolean needCheckWithIdx, List<Integer> itemIds) {
 
 		return getItemLayouFields(attendanceItems.getClass()).map(field -> {
 			return propertiesToItemValues(attendanceItems, currentLayout, field, idx, rootName, extraCondition,
-					needCheckWithIdx);
+					needCheckWithIdx, itemIds);
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	private static List<ItemValue> propertiesToItemValues(Object attendanceItems, String currentLayout, Field field,
-			int idx, String pathName, String extraCondition, boolean needCheckWithIdx) {
+			int idx, String pathName, String extraCondition, boolean needCheckWithIdx, List<Integer> itemIds) {
 		AttendanceItemLayout layoutAnno = getLayoutAnnotation(field);
 		return processProperty(field, attendanceItems, currentLayout, layoutAnno.layout(), layoutAnno.isList(), idx,
-				pathName, extraCondition, needCheckWithIdx);
+				pathName, extraCondition, needCheckWithIdx, itemIds);
 	}
 
 	@SuppressWarnings("unchecked")
 	private static <T> List<ItemValue> processProperty(Field field, Object attendanceItems, String currentLayout,
 			String layoutCode, boolean isList, int idx, String pathName, String extraCondition,
-			boolean needCheckWithIdx) {
-		T values = ReflectionUtil.getFieldValue(field, attendanceItems);
-		if (values != null) {
-			AttendanceItemLayout layout = getLayoutAnnotation(field);
-			String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
-			String newExCondition = getExCondition("", attendanceItems, layout);
-			needCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
-			if (isList) {
-				return processList(currentLayout, layoutCode, (List<T>) values, newPathName, newExCondition,
-						needCheckWithIdx);
+			boolean needCheckWithIdx, List<Integer> itemIds) {
+		T value = ReflectionUtil.getFieldValue(field, attendanceItems);
+		AttendanceItemLayout layout = getLayoutAnnotation(field);
+		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
+		String newExCondition = getExCondition("", attendanceItems, layout);
+		needCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
+		if (isList) {
+			if (value == null) {
+				value = ReflectionUtil.newInstance(getGenericType(field));
+				return processOne(currentLayout, field, layoutCode, value, idx, newPathName, extraCondition,
+						needCheckWithIdx, itemIds);
 			}
-			return processOne(currentLayout, field, layoutCode, values, idx, newPathName, newExCondition,
-					needCheckWithIdx);
+			return processList(currentLayout, layoutCode, (List<T>) value, newPathName, newExCondition,
+					needCheckWithIdx, itemIds);
 		}
-		return Collections.emptyList();
+		if (value == null) {
+			value = ReflectionUtil.newInstance(field.getType());
+		}
+		return processOne(currentLayout, field, layoutCode, value, idx, newPathName, newExCondition, needCheckWithIdx,
+				itemIds);
 	}
 
 	private static <T> List<ItemValue> processOne(String currentLayout, Field field, String layoutCode, T value,
-			int idx, String pathName, String extraCondition, boolean needCheckWithIdx) {
+			int idx, String pathName, String extraCondition, boolean needCheckWithIdx, List<Integer> itemIds) {
 		if (isItemValue(field)) {
-
 			return newItemValue(value, currentLayout, field, layoutCode, idx, pathName, extraCondition,
-					needCheckWithIdx);
+					needCheckWithIdx, itemIds);
 		} else {
 			return getItemFromField(value, mergeLayout(currentLayout, layoutCode), idx, pathName, extraCondition,
-					needCheckWithIdx);
+					needCheckWithIdx, itemIds);
 		}
 	}
 
 	private static <T> List<ItemValue> processList(String currentLayout, String layoutCode, List<T> values,
-			String pathName, String extraCondition, boolean needCheckWithIdx) {
+			String pathName, String extraCondition, boolean needCheckWithIdx, List<Integer> itemIds) {
 		return IntStream.range(0, values.size()).mapToObj(idx -> {
 			return getItemFromField(values.get(idx), mergeLayout(currentLayout, layoutCode + idx), idx, pathName,
-					extraCondition, needCheckWithIdx);
+					extraCondition, needCheckWithIdx, itemIds);
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	private static <T> List<ItemValue> newItemValue(T value, String currentLayout, Field field, String layoutCode,
-			int idx, String pathName, String extraCondition, boolean needCheckWithIdx) {
+			int idx, String pathName, String extraCondition, boolean needCheckWithIdx, List<Integer> onNeedItemIds) {
 		AttendanceItemValue valueType = getItemValueAnnotation(field);
 		List<Integer> itemIds = getItemIds(valueType, pathName, extraCondition, needCheckWithIdx, idx);
 		if (itemIds.isEmpty()) {
-			return Collections.emptyList();
+			throw new NotFoundException("Item id not found exception!!!");
 		}
-		ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), itemIds.get(idx));
-		itemValue.value(value);
-		return Arrays.asList(itemValue);
+		if (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemIds.get(idx))) {
+			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode),
+					itemIds.get(idx));
+			itemValue.value(value);
+			return Arrays.asList(itemValue);
+		}
+		return Collections.emptyList();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -314,6 +339,10 @@ public class AttendanceItemUtil {
 
 	private static <T> FieldsWorkerStream getItemLayouFields(Class<T> classType) {
 		return ReflectionUtil.getStreamOfFieldsAnnotated(classType, Condition.ALL, AttendanceItemLayout.class);
+	}
+
+	private static AttendanceItemRoot getRootAnnotation(Object object) {
+		return object.getClass().getAnnotation(AttendanceItemRoot.class);
 	}
 
 	private static AttendanceItemLayout getLayoutAnnotation(Field field) {
@@ -363,6 +392,10 @@ public class AttendanceItemUtil {
 			return StringUtils.join(exCondition, "-", fieldExCondition);
 		}
 		return fieldExCondition;
+	}
+
+	private static String getRootName(AttendanceItemRoot rootAnno) {
+		return rootAnno == null ? "" : rootAnno.rootName();
 	}
 
 	private static <T> String getExConditionField(T object, AttendanceItemLayout layout) {
