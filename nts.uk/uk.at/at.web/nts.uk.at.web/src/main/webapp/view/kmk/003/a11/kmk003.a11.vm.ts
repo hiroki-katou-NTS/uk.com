@@ -188,7 +188,15 @@ module a11 {
         private changeBindingDetail(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
             let _self = this;    
             let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);       
+            if (nts.uk.util.isNullOrUndefined(workdayOffTimeSubstitutionSet)) {
+                workdayOffTimeSubstitutionSet = new WorkTimezoneOtherSubHolTimeSetModel();
+                workdayOffTimeSubstitutionSet.originAtr(OriginAtr.WORK_DAY_OFF_TIME);
+            }
             let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.FROM_OVER_TIME);
+            if (nts.uk.util.isNullOrUndefined(fromOverTimeSubstitutionSet)) {
+                fromOverTimeSubstitutionSet = new WorkTimezoneOtherSubHolTimeSetModel();
+                fromOverTimeSubstitutionSet.originAtr(OriginAtr.FROM_OVER_TIME);
+            }
 
             // Get model value into view model
             _self.workdayOffTimeUseDivision(workdayOffTimeSubstitutionSet.subHolTimeSet.useDivision());

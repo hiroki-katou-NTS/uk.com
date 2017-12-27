@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nts.gul.collection.CollectionUtil;
@@ -65,10 +66,10 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	@Override
 	public GoOutTimezoneRoundingSet getDiffTimezoneSetting() {
 		if (CollectionUtil.isEmpty(this.kshmtSpecialRoundOuts)) {
-			return null;
+			this.kshmtSpecialRoundOuts = new ArrayList<>();
 		}
 		return new GoOutTimezoneRoundingSet(
-				new JpaGoOutTimezoneRoundingSetGetMemento(kshmtSpecialRoundOuts));
+				new JpaGoOutTimezoneRoundingSetGetMemento(this.kshmtSpecialRoundOuts));
 	}
 
 }

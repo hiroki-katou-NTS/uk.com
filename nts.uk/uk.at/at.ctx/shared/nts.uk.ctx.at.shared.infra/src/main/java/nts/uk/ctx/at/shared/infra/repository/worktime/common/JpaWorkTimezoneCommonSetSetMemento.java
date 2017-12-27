@@ -97,26 +97,20 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 		Map<KshmtSubstitutionSetPK, KshmtSubstitutionSet> existShtSet = this.entity.getKshmtSubstitutionSets().stream()
 				.collect(Collectors.toMap(KshmtSubstitutionSet::getKshmtSubstitutionSetPK, Function.identity()));
 		
-		shtSet.forEach(domain -> {							
-			KshmtSubstitutionSet entity = existShtSet.get(new KshmtSubstitutionSetPK(
+		shtSet.forEach(domain -> {		
+			KshmtSubstitutionSetPK pk = new KshmtSubstitutionSetPK(
 					this.entity.getKshmtWorktimeCommonSetPK().getCid(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
-					domain.getOriginAtr().value));
-			
-			if (entity == null) {
-				KshmtSubstitutionSetPK pk = new KshmtSubstitutionSetPK(
-						this.entity.getKshmtWorktimeCommonSetPK().getCid(),
-						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
-						this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
-						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
-						domain.getOriginAtr().value);
-				entity = new KshmtSubstitutionSet();
-				entity.setKshmtSubstitutionSetPK(pk);
+					domain.getOriginAtr().value);
+			KshmtSubstitutionSet entity = existShtSet.get(pk);			
+			if (entity == null) {				
+				entity = new KshmtSubstitutionSet();				
 			}
 			
 			domain.saveToMemento(new JpaWorkTimezoneOtherSubHolTimeSetSetMemento(entity));
+			entity.setKshmtSubstitutionSetPK(pk);
 			newListEntity.add(entity);
 		});
 		this.entity.setKshmtSubstitutionSets(newListEntity);
@@ -148,36 +142,27 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 			return;
 		}
 		
-		List<KshmtMedicalTimeSet> newListEntity = new ArrayList<>();		
-		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
-			this.entity.setKshmtMedicalTimeSets(new ArrayList<>());
-		}
 		Map<KshmtMedicalTimeSetPK, KshmtMedicalTimeSet> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
 				.collect(Collectors.toMap(KshmtMedicalTimeSet::getKshmtMedicalTimeSetPK, Function.identity()));
 		
-		list.forEach(domain -> {							
-			KshmtMedicalTimeSet entity = existShtSet.get(new KshmtMedicalTimeSetPK(
+		list.forEach(domain -> {				
+			KshmtMedicalTimeSetPK pk = new KshmtMedicalTimeSetPK(
 					this.entity.getKshmtWorktimeCommonSetPK().getCid(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
-					domain.getWorkSystemAtr().value));
+					domain.getWorkSystemAtr().value);
+			KshmtMedicalTimeSet entity = existShtSet.get(pk);
 			
-			if (entity == null) {
-				KshmtMedicalTimeSetPK pk = new KshmtMedicalTimeSetPK(
-						this.entity.getKshmtWorktimeCommonSetPK().getCid(),
-						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
-						this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
-						this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
-						domain.getWorkSystemAtr().value);
-				entity = new KshmtMedicalTimeSet();
-				entity.setKshmtMedicalTimeSetPK(pk);
+			if (entity == null) {				
+				entity = new KshmtMedicalTimeSet();				
 			}
 			
 			domain.saveToMemento(new JpaWorkTimezoneMedicalSetSetMemento(entity));
-			newListEntity.add(entity);
+			entity.setKshmtMedicalTimeSetPK(pk);
+			existShtSet.put(entity.getKshmtMedicalTimeSetPK(), entity);
 		});
-		this.entity.setKshmtMedicalTimeSets(newListEntity);
+		this.entity.setKshmtMedicalTimeSets(existShtSet.values().stream().collect(Collectors.toList()));
 	}
 
 	/*

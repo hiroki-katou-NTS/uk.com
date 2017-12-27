@@ -184,7 +184,15 @@ module a9 {
         private changeBindingDetail(otherClassSets: OtherEmTimezoneLateEarlySetModel[]): void {
             let _self = this;
             let otherClassSetLate: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.LATE);
+            if (nts.uk.util.isNullOrUndefined(otherClassSetLate)) {
+                otherClassSetLate = new OtherEmTimezoneLateEarlySetModel();
+                otherClassSetLate.lateEarlyAtr(LateEarlyAtr.LATE);
+            }
             let otherClassSetLeaveEarly: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
+            if (nts.uk.util.isNullOrUndefined(otherClassSetLeaveEarly)) {
+                otherClassSetLeaveEarly = new OtherEmTimezoneLateEarlySetModel();
+                otherClassSetLeaveEarly.lateEarlyAtr(LateEarlyAtr.EARLY);
+            }
             
             // Get model value into view model
             _self.lateSettingRoundingTime(otherClassSetLate.delTimeRoundingSet.roundingTime());

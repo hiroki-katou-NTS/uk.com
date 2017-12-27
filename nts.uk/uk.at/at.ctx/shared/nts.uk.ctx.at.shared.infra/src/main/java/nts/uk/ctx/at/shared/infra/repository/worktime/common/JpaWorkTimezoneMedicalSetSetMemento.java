@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSetPK;
 
 /**
  * The Class JpaWorkTimezoneMedicalSetSetMemento.
@@ -27,6 +28,9 @@ public class JpaWorkTimezoneMedicalSetSetMemento implements WorkTimezoneMedicalS
 	public JpaWorkTimezoneMedicalSetSetMemento(KshmtMedicalTimeSet entity) {
 		super();
 		this.entity = entity;
+		if (this.entity.getKshmtMedicalTimeSetPK() == null) {
+			this.entity.setKshmtMedicalTimeSetPK(new KshmtMedicalTimeSetPK());
+		}
 	}
 
 	/*

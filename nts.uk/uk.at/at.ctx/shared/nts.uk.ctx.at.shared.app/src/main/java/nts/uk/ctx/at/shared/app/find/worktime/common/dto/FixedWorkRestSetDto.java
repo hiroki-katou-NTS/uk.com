@@ -23,6 +23,13 @@ public class FixedWorkRestSetDto implements FixedWorkRestSetSetMemento {
 	/** The fixed rest calculate method. */
 	private Integer fixedRestCalculateMethod;
 
+	/**
+	 * Instantiates a new fixed work rest set dto.
+	 */
+	public FixedWorkRestSetDto() {
+		this.commonRestSet = new CommonRestSettingDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

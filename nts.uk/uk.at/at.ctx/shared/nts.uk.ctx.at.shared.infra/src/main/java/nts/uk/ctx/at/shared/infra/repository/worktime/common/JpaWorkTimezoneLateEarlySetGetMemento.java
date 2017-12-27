@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetGetMemen
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
- * The Class JpaWorkTimezoneCommonSetGetMemento.
+ * The Class JpaWorkTimezoneLateEarlySetGetMemento.
  */
 public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEarlySetGetMemento {
 
@@ -25,29 +26,30 @@ public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEa
 	private static final Integer TRUE_VALUE = 1;
 
 	/**
-	 * Instantiates a new jpa work timezone common set get memento.
+	 * Instantiates a new jpa work timezone late early set get memento.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 */
 	public JpaWorkTimezoneLateEarlySetGetMemento(KshmtWorktimeCommonSet entity) {
 		super();
 		this.entity = entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetGetMemento#getCommonSet()
+	 */
 	@Override
 	public EmTimezoneLateEarlyCommonSet getCommonSet() {
-		if (this.entity.getKshmtLateEarlySet() == null) {
-			return null;
-		}
-		return new EmTimezoneLateEarlyCommonSet(
-				this.entity.getKshmtLateEarlySet().getIsDeducteFromTime() == TRUE_VALUE);
+		return new EmTimezoneLateEarlyCommonSet(this.entity.getKshmtLateEarlySet().getIsDeducteFromTime() == TRUE_VALUE);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetGetMemento#getOtherClassSet()
+	 */
 	@Override
 	public List<OtherEmTimezoneLateEarlySet> getOtherClassSet() {
 		if (CollectionUtil.isEmpty(this.entity.getKshmtOtherLateEarlies())) {
-			return null;
+			return new ArrayList<>();
 		}
 		return this.entity.getKshmtOtherLateEarlies().stream()
 				.map(item -> new OtherEmTimezoneLateEarlySet(

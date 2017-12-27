@@ -187,7 +187,17 @@ module a15 {
         private changeBindingDetail(medicalSet: WorkTimezoneMedicalSetModel[]): void {
             let _self = this;        
             let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
-            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);             
+            if (nts.uk.util.isNullOrUndefined(dayShiftMedicalSet)) {
+                dayShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                dayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
+                medicalSet.push(dayShiftMedicalSet);
+            }
+            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);  
+            if (nts.uk.util.isNullOrUndefined(nightShiftMedicalSet)) {
+                nightShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                nightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
+                medicalSet.push(nightShiftMedicalSet);
+            }           
             
             // Get model value into view model
             _self.dayShiftApplicationTime(dayShiftMedicalSet.applicationTime());  

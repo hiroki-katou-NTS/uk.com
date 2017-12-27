@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class JpaWorkTimezoneStampSetGetMemento implements WorkTimezoneStampSetGe
 	@Override
 	public List<RoundingSet> getRoundingSet() {
 		if (CollectionUtil.isEmpty(this.kshmtRoundingSets)) {
-			return null;
+			return new ArrayList<>();
 		}
 		return this.kshmtRoundingSets.stream()
 				.map(entity -> new RoundingSet(new JpaRoundingSetGetMemento(entity)))
@@ -67,7 +68,7 @@ public class JpaWorkTimezoneStampSetGetMemento implements WorkTimezoneStampSetGe
 	@Override
 	public List<PrioritySetting> getPrioritySet() {
 		if (CollectionUtil.isEmpty(this.kshmtPioritySets)) {
-			return null;
+			return new ArrayList<>();
 		}
 		return this.kshmtPioritySets.stream()
 				.map(entity -> new PrioritySetting(new JpaPrioritySettingGetMemento(entity)))

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 
 /**
  * The Class JpaWorkTimezoneOtherSubHolTimeSetSetMemento.
@@ -27,6 +28,9 @@ public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezone
 	public JpaWorkTimezoneOtherSubHolTimeSetSetMemento(KshmtSubstitutionSet entity) {
 		super();
 		this.entity = entity;
+		if (this.entity.getKshmtSubstitutionSetPK() == null) {
+			this.entity.setKshmtSubstitutionSetPK(new KshmtSubstitutionSetPK());
+		}
 	}
 
 	/*
