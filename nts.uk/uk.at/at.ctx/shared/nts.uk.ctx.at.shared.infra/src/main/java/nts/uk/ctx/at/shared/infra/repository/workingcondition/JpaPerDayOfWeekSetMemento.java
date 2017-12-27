@@ -33,11 +33,11 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	public JpaPerDayOfWeekSetMemento(String historyId, List<KshmtPersonalDayOfWeek> entities) {
 		this.historyId = historyId;
 		// Check empty
-		if (CollectionUtil.isEmpty(entities)) {
-			this.entities = new ArrayList<>();
-		} else {
-			this.entities = entities;
-		}
+//		if (CollectionUtil.isEmpty(entities)) {
+//			this.entities = new ArrayList<>();
+//		} else {
+//			this.entities = entities;
+//		}
 		
 		// Clear item
 		this.entities.clear();
