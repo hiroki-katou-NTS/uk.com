@@ -146,8 +146,7 @@ public class EmployeeSearchQueryProcessor {
 			if (workplaceHistoryMap.containsKey(employee.getEmployeeId())
 					&& personMap.containsKey(employee.getPersonId())) {
 				
-				// Find 
-				System.out.println(workplaceHistoryMap.get(employee.getEmployeeId()).getHistoryItems().get(0).identifier());
+				// Find
 				String wplId = this.itemRepository
 						.getByHistId(
 								workplaceHistoryMap.get(employee.getEmployeeId()).getHistoryItems().get(0).identifier())

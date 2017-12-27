@@ -10,10 +10,10 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLay
 public class AutoCalHolidaySettingDto {
 
 	/** 休出時間: 自動計算設定 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "休出時間")
 	private AutoCalculationSettingDto holidayWorkTime;
 
 	/** 休出深夜時間: 自動計算設定 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "")
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "休出深夜時間")
 	private AutoCalculationSettingDto lateNightTime;
 }
