@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk008.f {
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             currentClassificationName: KnockoutObservable<string>;
+            textOvertimeName: KnockoutObservable<string>;
 
             maxRows : number;
             listComponentOption: any;
@@ -15,16 +16,19 @@ module nts.uk.at.view.kmk008.f {
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
             classificationList: KnockoutObservableArray<UnitModel>;
+            isRemove: KnockoutObservable<boolean>;
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfClassification = ko.observable(new TimeOfClassificationModel(null));
                 self.currentClassificationName = ko.observable("");
+                self.textOvertimeName = ko.observable(nts.uk.resource.getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
                 self.alreadySettingList = ko.observableArray([]);
+                self.isRemove = ko.observable(false);
 
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
@@ -47,7 +51,10 @@ module nts.uk.at.view.kmk008.f {
                     let empSelect = _.find(self.classificationList(), emp => {
                         return emp.code == newValue;
                     });
-                    if (empSelect) { self.currentClassificationName(empSelect.name); }
+                    if (empSelect) { 
+                        self.currentClassificationName(empSelect.name);
+                        self.isRemove(empSelect.isAlreadySetting); 
+                    }                    
 
                 });
             }
@@ -55,6 +62,11 @@ module nts.uk.at.view.kmk008.f {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                if (self.laborSystemAtr == 0) {
+                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Class}']));
+                } else {
+                    self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
+                }
                 self.getalreadySettingList();
                 $('#empt-list-setting-screen-f').ntsListComponent(self.listComponentOption).done(function() {
                     self.classificationList($('#empt-list-setting-screen-f').getDataList());
@@ -74,6 +86,7 @@ module nts.uk.at.view.kmk008.f {
                         self.alreadySettingList(_.map(data.classificationCodes, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
                     }
                 })
+                self.isRemove(self.isShowAlreadySet());
             }
 
             addUpdateDataClassification() {

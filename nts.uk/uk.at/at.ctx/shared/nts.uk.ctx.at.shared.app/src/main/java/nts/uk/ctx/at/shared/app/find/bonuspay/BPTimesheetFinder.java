@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 

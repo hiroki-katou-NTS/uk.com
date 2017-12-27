@@ -70,7 +70,6 @@ module nts.uk.at.view.kmk012.a {
 
             openDialogE(){
                 let self = this;
-                nts.uk.ui.windows.setShared('startDate', self.closureHistoryModel.startDate());
                 nts.uk.ui.windows.sub.modal("/view/kmk/012/e/index.xhtml");
             }
             

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class CheckCondition  extends AggregateRoot {
 	/**
 	 * list alarm check codition code
 	 */
-	private List<AlarmCheckConditionCode> checkConditionList;
+	private List<AlarmCheckConditionCode> checkConditionList= new ArrayList<AlarmCheckConditionCode>();
 
 	/**
 	 * Extraction Range abstract class
@@ -49,15 +50,8 @@ public class CheckCondition  extends AggregateRoot {
 		this.extractPeriod = extractPeriod;
 	}
 
-	public CheckCondition(String alarmPatternCD, String companyID, int alarmCategory) {
-		super();
-		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
-		this.companyID = new CompanyId(companyID);
-		this.alarmCategory = EnumAdaptor.valueOf(alarmCategory, AlarmCategory.class);
-	}
-	
 	public boolean selectedCheckCodition() {
-		if(this.checkConditionList==null || this.checkConditionList.isEmpty())
+		if(this.checkConditionList.isEmpty())
 			throw new BusinessException("Msg_811");
 		return true;
 	}
