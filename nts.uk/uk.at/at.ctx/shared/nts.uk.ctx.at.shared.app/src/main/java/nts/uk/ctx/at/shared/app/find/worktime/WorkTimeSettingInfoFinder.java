@@ -87,13 +87,13 @@ public class WorkTimeSettingInfoFinder {
 			PredetemineTimeSetting predetemineTimeSetting = this.predetemineTimeSettingRepository
 					.findByWorkTimeCode(companyId, workTimeCode).get();
 
+			workTimeSetting.saveToMemento(workTimeSettingDto);
+			//
+			predetemineTimeSetting.saveToMemento(predetemineTimeSettingDto);
+			
 			// check mode of worktime
 			if (workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)) {
 				// workTimeSettingDto
-
-				workTimeSetting.saveToMemento(workTimeSettingDto);
-				//
-				predetemineTimeSetting.saveToMemento(predetemineTimeSettingDto);
 				// check WorkTimeMethodSet
 
 				switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {

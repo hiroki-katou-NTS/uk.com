@@ -353,6 +353,7 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
+                self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
                 //TODO update flex, fixed, diff, flow viewmodel
             }
             
