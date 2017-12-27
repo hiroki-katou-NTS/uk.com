@@ -1,3 +1,14 @@
 .panel.panel-gray-bg {
 	width: 609px;
 }
+
+#unit-combo-box {
+	min-width: 0 !important;
+	width: 90px !important;
+	margin-left: 60px;
+	margin-right: 10px;
+}
+#rounding-combo-box {
+	min-width: 0 !important;
+	width: 170px !important;
+}
