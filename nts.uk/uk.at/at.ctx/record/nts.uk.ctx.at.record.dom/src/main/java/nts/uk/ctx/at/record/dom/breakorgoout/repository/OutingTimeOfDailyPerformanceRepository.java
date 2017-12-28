@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 
 public interface OutingTimeOfDailyPerformanceRepository {
 
@@ -13,8 +14,11 @@ public interface OutingTimeOfDailyPerformanceRepository {
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
 	Optional<OutingTimeOfDailyPerformance> findByEmployeeIdAndDate(String employeeId, GeneralDate ymd);
+
+	void add(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance);
 	
-	void add(OutingTimeOfDailyPerformance outing);
+	void update(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance);
 	
-	void update(OutingTimeOfDailyPerformance outing);
+	boolean checkExistData(String employeeId, GeneralDate ymd, OutingFrameNo outingFrameNo);
+
 }
