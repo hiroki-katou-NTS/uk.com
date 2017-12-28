@@ -197,7 +197,19 @@ module cps001.a.vm {
 
             employee.employeeId.subscribe(id => {
                 if (id) {
-                    self.tab.valueHasMutated();
+                    _.each(list(), l => {
+                        l.employeeId(id);
+                        l.personId(person.personId())
+                    });
+
+                    let first = _.first(list());
+                    if (first) {
+                        let memento = first.categoryId();
+                        first.id.valueHasMutated();
+                        if (memento) {
+                            first.categoryId(memento);
+                        }
+                    }
                 }
             });
 
@@ -219,6 +231,7 @@ module cps001.a.vm {
                             let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
                             self.employees(employees);
                             employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                            self.tab.valueHasMutated();
                         }
                     }, 0);
                 } else {
@@ -227,6 +240,7 @@ module cps001.a.vm {
                         if (!employee.employeeId()) {
                             let employees = self.employees();
                             employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                            self.tab.valueHasMutated();
                         }
                     }, 0);
                 }
