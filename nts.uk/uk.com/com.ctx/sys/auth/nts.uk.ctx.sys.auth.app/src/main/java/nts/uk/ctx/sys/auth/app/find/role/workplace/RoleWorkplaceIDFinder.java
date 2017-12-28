@@ -136,27 +136,27 @@ public class RoleWorkplaceIDFinder {
 		case PERSONAL_INFORMATION:
 			// return loginUserRoles.forPersonalInfo();
 			// EmployeeReferenceRange = 0
-			return "085d32db-7809-4769-8cd2-c61d69fd1b51";
+			return "085d32db-7809-4769-8cd2-c61d69fd1b555";
 
 		case EMPLOYMENT:
 			// return loginUserRoles.forAttendance();
 			// EmployeeReferenceRange = 2
-			return "32c67880-ff0a-4969-9056-9b49135d37d5";
+			return "32c67880-ff0a-4969-9056-9b49135d37d555";
 
 		case SALARY:
 			// return loginUserRoles.forPayroll();
 			// EmployeeReferenceRange = 1
-			return "989f3067-5621-4a4b-972a-ae5fdb1e32dd";
+			return "989f3067-5621-4a4b-972a-ae5fdb1e32dd55";
 
 		case HUMAN_RESOURCES:
 			// return loginUserRoles.forPersonnel();
 			// EmployeeReferenceRange = 1
-			return "004";
+			return "00455";
 
 		case ADMINISTRATOR:
 			// return loginUserRoles.forCompanyAdmin();
 			// EmployeeReferenceRange = 0
-			return "f73d4feb-4f2f-41e8-96a2-44681cdd24eb";
+			return "f73d4feb-4f2f-41e8-96a2-44681cdd24eb8555";
 
 		default:
 			break;
