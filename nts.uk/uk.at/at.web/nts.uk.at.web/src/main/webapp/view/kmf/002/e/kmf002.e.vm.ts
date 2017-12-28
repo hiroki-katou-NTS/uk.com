@@ -1,38 +1,31 @@
 module nts.uk.at.view.kmf002.e {
     
     import service = nts.uk.at.view.kmf002.e.service;
-    import commonTableMonthDaySet1 = ;
     
     export module viewmodel {
-        export class ScreenModel { 
-
-            commonTableMonthDaySet1: KnockoutObservable<any>;
-            
-            
+        export class ScreenModel {
             constructor(){
                 let _self = this;
                 _self.commonTableMonthDaySet = new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet();
-                
-                
                 _self.commonTableMonthDaySet.fiscalYear.subscribe(function(newValue) {
                     // change year
                     $.when(_self.start_page()).done(function() {
                         console.log("find done");
                     });  
                 });
-                
             }
             
             public save(): void {
                let _self = this;
 //               var dfd = $.Deferred<void>();
-                service.save(_self.commonTableMonthDaySet.arrMonth()).done((data) => {
+                service.save(_self.commonTableMonthDaySet.fiscalYear(), _self.commonTableMonthDaySet.arrMonth()).done((data) => {
                     // TODO: show message 15 when success
                 });
             }
             
             public deleteObj(): void {
-                service.delete(_self.commonTableMonthDaySet.arrMonth()).done((data) => {
+                let _self = this;
+                service.remove(_self.commonTableMonthDaySet.fiscalYear()).done((data) => {
                      $.when(_self.start_page()).done(function() {
                         console.log("find done");
                     });  

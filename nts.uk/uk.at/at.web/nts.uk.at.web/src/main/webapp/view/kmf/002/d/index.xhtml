@@ -10,14 +10,14 @@
 	
 		<div class="sidebar-content-header">
 			<!-- D1_1 -->
-   			<span tabindex="1" class="title" >#{i18n.getText('KMF002_2')}</span>
+   			<span tabindex="1" data-bind="click: save" class="title" >#{i18n.getText('KMF002_2')}</span>
    			<!-- D1_2 -->
-   			<span style="padding-left:20px" tabindex="2" class="title">#{i18n.getText('KMF002_11')}</span>
+   			<span style="padding-left:20px" tabindex="2" data-bind="click: remove" class="title">#{i18n.getText('KMF002_11')}</span>
 		</div>
 		
 		<div id="scrD" class="contents-area">
 			<div id="empt-list-setting"></div>
-			<div data-bind="with: commonTableMonthDaySet">
+			<div id="includeTableMonthlyDay" data-bind="with: commonTableMonthDaySet">
 				<ui:include src="../base.xhtml"/>
 			</div>
 		</div>

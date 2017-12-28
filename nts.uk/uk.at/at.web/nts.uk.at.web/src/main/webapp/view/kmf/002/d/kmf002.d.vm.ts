@@ -1,6 +1,6 @@
 module nts.uk.at.view.kmf002.d {
     
-//    import commonTableMonthDaySet1 = nts.uk.at.view.kmf002.viewmodel;
+    import service = nts.uk.at.view.kmf002.d.service;
     
     export module viewmodel {
         
@@ -33,29 +33,42 @@ module nts.uk.at.view.kmf002.d {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_FIRST_ITEM ,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
                     alreadySettingList: _self.alreadySettingList,
-                    maxRows: 12
+                    maxRows: 25
                 };
-                
                 _self.employmentList = ko.observableArray<UnitModel>([]);
-                
                 _self.commonTableMonthDaySet = new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet();
-                
-                
                 _self.commonTableMonthDaySet.fiscalYear.subscribe(function(newValue) {
                     // change year
                     _self.getDataFromService();
                 });
-                
                 _self.commonTableMonthDaySet.visibleInfoSelect(true);
-                _self.commonTableMonthDaySet.infoSelect1( nts.uk.resource.getText("Com_Employment"));
-                _self.commonTableMonthDaySet.infoSelect1( '123');
-                _self.commonTableMonthDaySet.infoSelect1( '456');
+                _self.commonTableMonthDaySet.infoSelect1(nts.uk.resource.getText("Com_Employment"));
+            }
+            
+            private findEmploymentSelect(codeEmployee: number): string{
+                let nameEmpSelected: string;
                 
+                _.each($('#empt-list-setting').getDataList(), function (value) {
+                    if (value.code == codeEmployee) {
+                        nameEmpSelected = value.name;
+                        return true;
+                    }
+                })
+                
+                return nameEmpSelected;
+            }
+            
+            private catchChangeSelectEmp(): void{
+                let _self = this;
+                _self.selectedCode.subscribe(function(codeEmployee) {
+                    _self.commonTableMonthDaySet.infoSelect2(codeEmployee);
+                    _self.commonTableMonthDaySet.infoSelect3(_self.findEmploymentSelect(codeEmployee));
+                });
             }
             
             /**
@@ -64,14 +77,44 @@ module nts.uk.at.view.kmf002.d {
             public start_page(): JQueryPromise<void> {
                 let _self = this;
                 $('#empt-list-setting').ntsListComponent(_self.listComponentOption);
+                _self.catchChangeSelectEmp();
                 var dfd = $.Deferred<void>();
                 
                 dfd.resolve();
                 return dfd.promise();
             }
             
+            private save(): void {
+                let _self = this;
+//               var dfd = $.Deferred<void>();
+                service.save(_self.commonTableMonthDaySet.fiscalYear(), _self.commonTableMonthDaySet.arrMonth(), _self.selectedCode()).done((data) => {
+                    console.log("register scrren D: " + data);
+                    // TODO: show message 15 when success
+                });
+            }
+            
+            private remove(): void {
+                let _self = this;
+                service.remove(_self.commonTableMonthDaySet.fiscalYear(), _self.selectedCode()).done((data) => {
+                    _self.getDataFromService();
+                    console.log("remove scrren D: " + data);
+                });
+            }
+            
             public getDataFromService(): void {
-                
+                let _self = this;
+                service.find(_self.commonTableMonthDaySet.fiscalYear(), _self.selectedCode()).done((data) => {
+                    if (typeof data === "undefined") {
+                        /** 
+                         *   create value null for prepare create new 
+                        **/
+                        _.forEach(_self.commonTableMonthDaySet.arrMonth(), function(value) {
+                            value.day('');
+                        });
+                    } else {
+                        console.log("find service screen D: " + data);
+                    }
+                });
             }
         }
         export class ListType {

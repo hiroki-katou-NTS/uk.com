@@ -8,7 +8,6 @@ module nts.uk.at.view.kmf002.e {
                 save: "bs/employee/holidaysetting/company/save",
                 findFirstMonth: "basic/company/beginningmonth/find"
                 remove: "bs/employee/holidaysetting/company/remove",
-                
             };
         
         /**
@@ -20,11 +19,11 @@ module nts.uk.at.view.kmf002.e {
 
         
         
-        export function save(data: any): JQueryPromise<any> {
-            model.SystemResourceDto sysResourceDto = new model.SystemResourceDto(2017, new Array<model.PublicHolidayMonthSettingDto>);
+        export function save(year: number, data: any): JQueryPromise<any> {
+            model.SystemResourceDto sysResourceDto = new model.SystemResourceDto(year, new Array<model.PublicHolidayMonthSettingDto>);
             sysResourceDto.toDto(data);
             let command = {};
-            command.year = sysResourceDto.year;
+            command.year = year;
             command.publicHolidayMonthSettings = sysResourceDto.publicHolidayMonthSettings
             return nts.uk.request.ajax("com", path.save, command);
         }
@@ -36,7 +35,7 @@ module nts.uk.at.view.kmf002.e {
         export function remove(year: number): JQueryPromise<any> {
             let command = {};
             command.year = year;
-            return nts.uk.request.ajax("com", path.save, command);
+            return nts.uk.request.ajax("com", path.remove, command);
         }
     }
     
@@ -46,7 +45,7 @@ module nts.uk.at.view.kmf002.e {
     export module model {
         export class SystemResourceDto {
             year: number;
-            exportpublicHolidayMonthSettings: Array<PublicHolidayMonthSettingDto>;
+            publicHolidayMonthSettings: Array<PublicHolidayMonthSettingDto>;
             
             constructor(year: number, publicHolidayMonthSettings: Array<PublicHolidayMonthSettingDto>){
                 let _self = this;
@@ -59,6 +58,14 @@ module nts.uk.at.view.kmf002.e {
                 _.forEach(data, function(newValue) {
                     _self.publicHolidayMonthSettings.push(new PublicHolidayMonthSettingDto(_self.year,newValue.month(),newValue.day(),newValue.day()));
                 });
+            }
+        }
+        
+        export class CompanyMonthDaySettingRemoveCommand{
+            year: number;
+            
+            constructor(year: number) {
+                this.year = year;                    
             }
         }
         
