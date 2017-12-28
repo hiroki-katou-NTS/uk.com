@@ -201,9 +201,10 @@ module nts.uk.at.view.kmk003.a {
                 prescribedTimezoneSetting: PrescribedTimezoneSettingModel;
                 startDateClock: KnockoutObservable<number>;
                 predetermine: KnockoutObservable<boolean>;
+                static ONE_DAY = 24; // initial value of rangeTimeDay = 24
 
                 constructor() {
-                    this.rangeTimeDay = ko.observable(0);
+                    this.rangeTimeDay = ko.observable(PredetemineTimeSettingModel.ONE_DAY); 
                     this.workTimeCode = ko.observable('');
                     this.predTime = new PredetermineTimeModel();
                     this.nightShift = ko.observable(0);
@@ -236,7 +237,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.rangeTimeDay(0);
+                    this.rangeTimeDay(PredetemineTimeSettingModel.ONE_DAY);
                     this.workTimeCode('');
                     this.predTime.resetData();
                     this.nightShift(0);  
