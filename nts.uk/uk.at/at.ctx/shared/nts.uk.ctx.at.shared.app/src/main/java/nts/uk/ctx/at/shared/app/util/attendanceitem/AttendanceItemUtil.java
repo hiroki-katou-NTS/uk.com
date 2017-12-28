@@ -319,9 +319,9 @@ public class AttendanceItemUtil {
 			return Collections.emptyList();
 //			throw new NotFoundException("Item id not found exception!!!");
 		}
-		if (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemIds.get(idx))) {
-			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode),
-					itemIds.get(idx));
+		int itemId = valueType.getIdFromUtil() ? 0 : itemIds.get(idx);
+		if (value != null && (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemId))) {
+			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), itemId);
 			itemValue.value(value);
 			return Arrays.asList(itemValue);
 		}

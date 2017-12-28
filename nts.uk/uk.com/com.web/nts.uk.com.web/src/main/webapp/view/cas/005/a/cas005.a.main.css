@@ -26,3 +26,7 @@ button.nts-switch-button{
 #master-wrapper{
 	overflow: hidden !important;
 }
+#combo-box.ui-igcombo-wrapper{
+	width: 220px !important;
+	
+}

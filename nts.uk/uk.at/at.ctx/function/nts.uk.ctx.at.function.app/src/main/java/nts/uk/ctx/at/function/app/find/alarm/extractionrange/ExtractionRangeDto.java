@@ -1,40 +1,59 @@
 package nts.uk.ctx.at.function.app.find.alarm.extractionrange;
 
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import lombok.Data;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 
-@NoArgsConstructor
+@Data
 public class ExtractionRangeDto {
 
-	public String extractionId;
+	private String extractionId;
 	
-	public int extractionRange;
+	private int extractionRange;
 	
-	public int previousClassification;
+	private int strSpecify;
+
+	private Integer strPreviousDay;
 	
-	public int day;
+	private Integer strMakeToDay;
+
+	private Integer strDay;
+
+	private Integer strPreviousMonth;
 	
-	public boolean makeToDay;
+	private Integer strCurrentMonth;
+
+	private Integer strMonth;
+
+	private int endSpecify;
+
+	private Integer endPreviousDay;
 	
-	public int specifyStartDate;
+	private Integer endMakeToDay;
+
+	private Integer endDay;
+
+	private Integer endPreviousMonth;
 	
-	public int specifyEndDate;
+	private Integer endCurrentMonth;
+
+	private Integer endMonth;
 	
-	public static ExtractionRangeDto FromDomain(ExtractionRangeBase extractionRangeBase){
-		ExtractionRangeDto rangeDto = new ExtractionRangeDto();
-		if(extractionRangeBase.getExtractionRange().equals(ExtractionRange.PERIOD)){
-			ExtractionPeriodDaily daily = (ExtractionPeriodDaily)extractionRangeBase;
-			/*rangeDto.extractionId = daily.getExtractionId();
-			rangeDto.extractionRange = daily.getExtractionRange().value;
-			rangeDto.previousClassification = daily.getNumberOfDays().getPreviousClassification().value;
-			rangeDto.day = daily.getNumberOfDays().getDay();
-			rangeDto.makeToDay = daily.getNumberOfDays().isMakeToDay();
-			rangeDto.specifyStartDate = daily.getSpecifyStartDate().value;
-			rangeDto.specifyEndDate =  daily.getSpecifyEndDate().value;*/
-			
+	
+	public static ExtractionRangeDto fromDomain(ExtractionPeriodDaily domain){
+		ExtractionRangeDto dto = new  ExtractionRangeDto();
+		
+		
+		dto.setExtractionId(domain.getExtractionId());
+		dto.setExtractionRange(domain.getExtractionRange().value);
+		dto.setStrSpecify(domain.getStartDate().getStartSpecify().value);
+		if(domain.getStartDate().getStartSpecify().value == StartSpecify.DAYS.value){
+			dto.setStrPreviousDay(domain.getStartDate().getStartSpecify().value);
+			dto.setStrMakeToDay(domain.getStartDate().getStrDays().get().isMakeToDay()==true?1:0);
+			dto.setStrDay(domain.getStartDate().getStrDays().get().getDay());
 		}
-		return rangeDto;
+		
+		
+		return null;
 	}
 }
