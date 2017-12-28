@@ -141,30 +141,6 @@ module nts.uk.ui.koExtentions {
                         $treegrid.igTreeGrid("expandRow", node); 
                     });
                     
-                    let selecteds = $treegrid.ntsTreeView("getSelected");
-                    if (!nts.uk.util.isNullOrUndefined(selecteds)) {
-                        let firstId = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id
-                        if (firstId !== undefined) {
-                            let parentIds = Helper.getAllParentId($treegrid, firstId, optionsValue, optionsChild);
-                            _.forEach(parentIds, function(node: string){
-                                if(holder.nodes.indexOf(node) < 0 && node !== firstId) {
-                                    $treegrid.igTreeGrid("expandRow", node);        
-                                    holder.addNode(node);
-                                }        
-                            });
-                            
-                            $treegrid.data("expand", holder);
-                            
-                            setTimeout(function(){
-                                let row2 = $treegrid.igTreeGrid("rowById", firstId);      
-                                var container = $treegrid.igTreeGrid("scrollContainer");
-                                let totalH = _.sumBy(row2.prevAll(), function(e){ return $(e).height();});
-                                if(totalH > height - HEADER_HEIGHT) {
-                                    container.scrollTop(totalH);
-                                }
-                            }, 200);
-                        }
-                    } 
 //                    }
                     
                     $treegrid.data("autoExpanding", false);   

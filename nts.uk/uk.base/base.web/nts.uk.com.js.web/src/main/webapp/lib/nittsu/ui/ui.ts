@@ -922,16 +922,12 @@ module nts.uk.ui {
                     }, 1);
                 }
                 
-                export function getScrollElement($treeGrid: JQuery): JQuery {
-                    return $("#" + $treeGrid.attr("id") + "_scroll");
-                }
-                
                 export function scrollTo(targetKey: any, $treeGrid: JQuery) {
-                    let $scroll = getScrollElement($treeGrid);
+                    let $scroll: any = $treeGrid.igTreeGrid("scrollContainer");
                     let $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
                     if ($targetNode.length === 0) return;
-                    let currentScrolled = $scroll.scrollTop();
-                    $scroll.scrollTop($targetNode.position().top + currentScrolled);
+                    
+                    $scroll.exposeVertically($targetNode);
                 }
             }
             

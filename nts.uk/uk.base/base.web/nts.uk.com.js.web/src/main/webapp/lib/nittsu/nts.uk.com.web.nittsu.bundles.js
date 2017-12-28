@@ -4521,17 +4521,12 @@ var nts;
                             }, 1);
                         }
                         grid.expandTo = expandTo;
-                        function getScrollElement($treeGrid) {
-                            return $("#" + $treeGrid.attr("id") + "_scroll");
-                        }
-                        grid.getScrollElement = getScrollElement;
                         function scrollTo(targetKey, $treeGrid) {
-                            var $scroll = getScrollElement($treeGrid);
+                            var $scroll = $treeGrid.igTreeGrid("scrollContainer");
                             var $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
                             if ($targetNode.length === 0)
                                 return;
-                            var currentScrolled = $scroll.scrollTop();
-                            $scroll.scrollTop($targetNode.position().top + currentScrolled);
+                            $scroll.exposeVertically($targetNode);
                         }
                         grid.scrollTo = scrollTo;
                     })(grid = tree.grid || (tree.grid = {}));
@@ -4698,6 +4693,38 @@ var nts;
                 }(EditorOptionBase));
                 option_1.TimeWithDayAttrEditorOption = TimeWithDayAttrEditorOption;
             })(option = ui.option || (ui.option = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                $.fn.exposeVertically = function ($target) {
+                    var $scroll = $(this);
+                    var currentViewTopPosition = $scroll.scrollTop();
+                    var currentViewBottomPosition = currentViewTopPosition + $scroll.height();
+                    var targetTopPosition = $target.position().top + currentViewTopPosition;
+                    var targetBottomPosition = targetTopPosition + $target.outerHeight();
+                    if (currentViewTopPosition <= targetTopPosition && targetBottomPosition <= currentViewBottomPosition) {
+                        return;
+                    }
+                    if (targetTopPosition <= currentViewTopPosition) {
+                        var gap = currentViewTopPosition - targetTopPosition;
+                        $scroll.scrollTop(currentViewTopPosition - gap);
+                        return;
+                    }
+                    if (currentViewBottomPosition <= targetBottomPosition) {
+                        var gap = targetBottomPosition - currentViewBottomPosition;
+                        $scroll.scrollTop(currentViewTopPosition + gap);
+                        return;
+                    }
+                };
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9066,28 +9093,6 @@ var nts;
                                 _.forEach(holder.nodes, function (node) {
                                     $treegrid.igTreeGrid("expandRow", node);
                                 });
-                                var selecteds = $treegrid.ntsTreeView("getSelected");
-                                if (!nts.uk.util.isNullOrUndefined(selecteds)) {
-                                    var firstId_1 = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id;
-                                    if (firstId_1 !== undefined) {
-                                        var parentIds = Helper.getAllParentId($treegrid, firstId_1, optionsValue, optionsChild);
-                                        _.forEach(parentIds, function (node) {
-                                            if (holder.nodes.indexOf(node) < 0 && node !== firstId_1) {
-                                                $treegrid.igTreeGrid("expandRow", node);
-                                                holder.addNode(node);
-                                            }
-                                        });
-                                        $treegrid.data("expand", holder);
-                                        setTimeout(function () {
-                                            var row2 = $treegrid.igTreeGrid("rowById", firstId_1);
-                                            var container = $treegrid.igTreeGrid("scrollContainer");
-                                            var totalH = _.sumBy(row2.prevAll(), function (e) { return $(e).height(); });
-                                            if (totalH > height - HEADER_HEIGHT) {
-                                                container.scrollTop(totalH);
-                                            }
-                                        }, 200);
-                                    }
-                                }
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
@@ -11637,9 +11642,7 @@ var nts;
                                 row = $treegrid.igTreeGridSelection("selectedRow");
                             }
                             if (row) {
-                                var index = row.index;
-                                var height = row.element[0].scrollHeight;
-                                $("#" + id + "_scroll").scrollTop(index * height);
+                                ui.ig.tree.grid.expandTo(row.id, $treegrid);
                             }
                         });
                         return $treegrid;
