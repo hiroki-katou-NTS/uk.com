@@ -66,7 +66,6 @@ public class JpaCompanyMonthDaySettingSetMemento implements CompanyMonthDaySetti
 			entity.getKshmtComMonthDaySetPK().setManageYear(this.year);
 			entity.getKshmtComMonthDaySetPK().setMonth(item.getMonth());
 			entity.setInLegalHd(new BigDecimal(item.getInLegalHoliday().v()));
-			entity.setOutLegalHd(new BigDecimal(item.getOutLegalHoliday().v()));
 			
 			this.listKshmtComMonthDaySet.add(entity);
 		});

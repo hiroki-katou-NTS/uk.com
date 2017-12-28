@@ -56,8 +56,7 @@ public class CompanyMonthDaySettingSaveCommand implements CompanyMonthDaySetting
 		return this.publicHolidayMonthSettings.stream().map(e -> {
 			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(this.year),
 																			new Integer(e.getMonth()),
-																			new MonthlyNumberOfDays(e.getInLegalHoliday()),
-																			new MonthlyNumberOfDays(e.getOutLegalHoliday()));
+																			new MonthlyNumberOfDays(e.getInLegalHoliday()));
 			return domain;
 		}).collect(Collectors.toList());
 	}

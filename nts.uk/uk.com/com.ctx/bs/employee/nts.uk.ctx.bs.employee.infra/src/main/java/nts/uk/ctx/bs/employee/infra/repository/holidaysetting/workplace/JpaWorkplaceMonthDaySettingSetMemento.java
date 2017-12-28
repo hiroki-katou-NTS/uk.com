@@ -77,7 +77,6 @@ public class JpaWorkplaceMonthDaySettingSetMemento implements WorkplaceMonthDayS
 			entity.getKshmtWkpMonthDaySetPK().setManageYear(this.year);
 			entity.getKshmtWkpMonthDaySetPK().setMonth(item.getMonth());
 			entity.setInLegalHd(new BigDecimal(item.getInLegalHoliday().v()));
-			entity.setOutLegalHd(new BigDecimal(item.getOutLegalHoliday().v()));
 			
 			this.listKshmtWkpMonthDaySet.add(entity);
 		});
