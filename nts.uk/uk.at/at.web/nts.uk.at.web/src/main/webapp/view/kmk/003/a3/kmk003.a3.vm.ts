@@ -19,6 +19,7 @@ module a3 {
         fixTableOptionOvertimeFlow: any;
         isFlowMode: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
+        isFixedMode: KnockoutObservable<boolean>;
         dataSourceOnedayFixed: KnockoutObservableArray<any>;
         dataSourceMorningFixed: KnockoutObservableArray<any>;
         dataSourceAfternoonFixed: KnockoutObservableArray<any>;
@@ -41,52 +42,65 @@ module a3 {
             self.mainSettingModel = mainSettingModel;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
+            self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
             self.autoCalUseAttrs = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText("KMK003_142") },
                 { code: 1, name: nts.uk.resource.getText("KMK003_143") }
             ]);
             self.dataSourceOvertimeFlow = ko.observableArray([]);
-            var dataFlow: any[] = [];
-            for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.halfDayWorkTimezone.workTimeZone.lstOTTimezone) {
-                dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
-            }
-            self.dataSourceOvertimeFlow(dataFlow);
             self.dataSourceOnedayFixed = ko.observableArray([]);
-            var dataFixedOneday: any[] = [];
-            for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone) {
-                dataFixedOneday.push(self.toModelFixedColumnSetting(dataModelFixed.toDto()));
-            }
-            self.dataSourceOnedayFixed(dataFixedOneday);
             self.dataSourceMorningFixed = ko.observableArray([]);
-            var dataFixedMorning: any[] = [];
-            for (var dataModelMorningFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
-                dataFixedMorning.push(self.toModelFixedColumnSetting(dataModelMorningFixed.toDto()));
-            }
-            self.dataSourceMorningFixed(dataFixedMorning);
             self.dataSourceAfternoonFixed = ko.observableArray([]);
-            var dataFixedAfternoon: any[] = [];
-            for (var dataModelAfternoonFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone) {
-                dataFixedAfternoon.push(self.toModelFixedColumnSetting(dataModelAfternoonFixed.toDto()));
-            }
-            self.dataSourceAfternoonFixed(dataFixedAfternoon);
             self.dataSourceOnedayFlex = ko.observableArray([]);
-            var dataFlexOneday: any[] = [];
-            for (var dataModelOnedayFlex of self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone) {
-                dataFlexOneday.push(self.toModelFlexColumnSetting(dataModelOnedayFlex.toDto()));
-            }
-            self.dataSourceOnedayFlex(dataFlexOneday);
             self.dataSourceMorningFlex = ko.observableArray([]);
-            var dataFlexMorning: any[] = [];
-            for (var dataModelMorningFlex of self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
-                dataFlexMorning.push(self.toModelFlexColumnSetting(dataModelMorningFlex.toDto()));
-            }
-            self.dataSourceMorningFlex(dataFlexMorning);
             self.dataSourceAfternoonFlex = ko.observableArray([]);
-            var dataFlexAfternoon: any[] = [];
-            for (var dataModelAfternoonFlex of self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone) {
-                dataFlexAfternoon.push(self.toModelFlexColumnSetting(dataModelAfternoonFlex.toDto()));
+            
+            if (self.isFlowMode()) {
+                var dataFlow: any[] = [];
+                for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.halfDayWorkTimezone.workTimeZone.lstOTTimezone) {
+                    dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
+                }
+                self.dataSourceOvertimeFlow(dataFlow);
             }
-            self.dataSourceAfternoonFlex(dataFlexAfternoon);            
+            
+            if (self.isFixedMode()) {
+                var dataFixedOneday: any[] = [];
+                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone) {
+                    dataFixedOneday.push(self.toModelFixedColumnSetting(dataModelFixed.toDto()));
+                }
+                self.dataSourceOnedayFixed(dataFixedOneday);
+                var dataFixedMorning: any[] = [];
+                for (var dataModelMorningFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
+                    dataFixedMorning.push(self.toModelFixedColumnSetting(dataModelMorningFixed.toDto()));
+                }
+                self.dataSourceMorningFixed(dataFixedMorning);
+                var dataFixedAfternoon: any[] = [];
+                for (var dataModelAfternoonFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone) {
+                    dataFixedAfternoon.push(self.toModelFixedColumnSetting(dataModelAfternoonFixed.toDto()));
+                }
+                self.dataSourceAfternoonFixed(dataFixedAfternoon);
+            }
+            
+            if (self.isFlexMode()) {
+                var dataFlexOneday: any[] = [];
+                for (var dataModelOnedayFlex of self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone) {
+                    dataFlexOneday.push(self.toModelFlexColumnSetting(dataModelOnedayFlex.toDto()));
+                }
+                self.dataSourceOnedayFlex(dataFlexOneday);
+                var dataFlexMorning: any[] = [];
+                if (self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
+                    for (var dataModelMorningFlex of self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
+                        dataFlexMorning.push(self.toModelFlexColumnSetting(dataModelMorningFlex.toDto()));
+                    }
+                }
+                self.dataSourceMorningFlex(dataFlexMorning);
+                var dataFlexAfternoon: any[] = [];
+                for (var dataModelAfternoonFlex of self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone) {
+                    dataFlexAfternoon.push(self.toModelFlexColumnSetting(dataModelAfternoonFlex.toDto()));
+                }
+                self.dataSourceAfternoonFlex(dataFlexAfternoon);
+            }       
+                 
             self.lstSelectOrderModel = [];
             for (var i: number = 1; i <= 10; i++) {
                 self.lstSelectOrderModel.push({ code: '' + i, name: '' + i });
@@ -164,16 +178,16 @@ module a3 {
             };
             
             // update time zone flow
-            self.dataSourceOvertimeFlow.subscribe(function(dataFlow: any[]){
-                var lstTimezone : FlOTTimezoneDto[] = [];
+            self.dataSourceOvertimeFlow.subscribe(function(dataFlow: any[]) {
+                var lstTimezone: FlOTTimezoneDto[] = [];
                 var worktimeNo: number = 0;
                 for (var dataModel of dataFlow) {
                     worktimeNo++;
                     lstTimezone.push(self.toModelFlowDto(dataModel, worktimeNo));
-                } 
+                }
                 self.mainSettingModel.flowWorkSetting.halfDayWorkTimezone.workTimeZone.updateTimezone(lstTimezone);
             });
-            
+
             // update time zone fixed 
             self.dataSourceOnedayFixed.subscribe(function(dataFixed: any[]) {
                 var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
