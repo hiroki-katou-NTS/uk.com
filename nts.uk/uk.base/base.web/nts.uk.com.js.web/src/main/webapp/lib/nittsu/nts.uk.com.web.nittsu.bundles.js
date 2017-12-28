@@ -1417,13 +1417,16 @@ var nts;
         var time;
         (function (time_1) {
             var MINUTES_IN_DAY = 24 * 60;
-            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
-            var listEmpire = {
-                "明治": "1868/01/01",
-                "大正": "1912/07/30",
-                "昭和": "1926/12/25",
-                "平成": "1989/01/08"
-            };
+            var defaultInputFormat = [
+                "YYYY/M/D",
+                "YYYY-M-D",
+                "YYYYMMDD",
+                "YYYY/M",
+                "YYYY-M",
+                "YYYYMM",
+                "H:mm",
+                "Hmm",
+                "YYYY"];
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function getYearMonthJapan(year, month) {
                 if (month)
@@ -5169,6 +5172,7 @@ var nts;
                             startDate: startDate,
                             endDate: endDate,
                             autoHide: autoHide,
+                            weekStart: 0,
                         }).data("dateNormalizer", DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
                             .fiscalMonthsMode(data.fiscalMonthsMode)
                             .setDefaultCss(data.defaultClass || ""));
