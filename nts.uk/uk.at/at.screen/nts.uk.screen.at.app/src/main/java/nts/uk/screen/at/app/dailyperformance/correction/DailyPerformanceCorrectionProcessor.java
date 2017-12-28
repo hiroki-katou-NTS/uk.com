@@ -544,7 +544,7 @@ public class DailyPerformanceCorrectionProcessor {
 								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
 							}
 							System.out.print("gia tri:"+ value);
-							if(item.getId() == 623) 
+							if(item.getId() == 615) 
 							{
 								System.out.print("gia tri:"+ value);
 							}
