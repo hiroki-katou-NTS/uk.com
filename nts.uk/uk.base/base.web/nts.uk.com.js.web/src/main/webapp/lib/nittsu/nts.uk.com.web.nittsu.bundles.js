@@ -5732,8 +5732,6 @@ var nts;
                         return self;
                     };
                     DatePickerNormalizer.prototype.onKeyup = function () {
-                        this.$input.off(this.EVENT_KEYUP, this._beforeShow);
-                        this.$input.on(this.EVENT_KEYUP, $.proxy(this._beforeShow, this));
                         return this;
                     };
                     DatePickerNormalizer.prototype.onPick = function () {
