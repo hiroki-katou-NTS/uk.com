@@ -1340,7 +1340,7 @@ module nts.uk.at.view.kmk003.a {
                     this.restraintTimeUse(data.restraintTimeUse);
                     this.earlyOTUse(data.earlyOTUse);
                     this.timezone.updateData(data.timezone);
-                    this.oTFrameNo(data.oTFrameNo);
+                    this.oTFrameNo(data.otFrameNo);
                     this.legalOTframeNo(data.legalOTframeNo);
                     this.settlementOrder(data.settlementOrder);
                 }
@@ -1351,7 +1351,7 @@ module nts.uk.at.view.kmk003.a {
                         restraintTimeUse: this.restraintTimeUse(),
                         earlyOTUse: this.earlyOTUse(),
                         timezone: this.timezone.toDto(),
-                        oTFrameNo: this.oTFrameNo(),
+                        otFrameNo: this.oTFrameNo(),
                         legalOTframeNo: this.legalOTframeNo(),
                         settlementOrder: this.settlementOrder()
                     };

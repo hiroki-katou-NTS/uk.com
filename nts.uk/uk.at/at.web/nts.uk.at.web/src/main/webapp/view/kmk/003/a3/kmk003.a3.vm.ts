@@ -239,7 +239,7 @@ module a3 {
                 timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
                 rounding: ko.observable(dataDTO.timezone.rounding.rounding),
                 roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
-                oTFrameNo: ko.observable(dataDTO.oTFrameNo),
+                otFrameNo: ko.observable(dataDTO.otFrameNo),
                 earlyOTUse: ko.observable(dataDTO.earlyOTUse),
                 legalOTframeNo: ko.observable(dataDTO.legalOTframeNo),
                 settlementOrder: ko.observable(dataDTO.settlementOrder)
@@ -263,7 +263,7 @@ module a3 {
                 workTimezoneNo: workTimezoneNo,
                 restraintTimeUse: false,
                 timezone: timezone,
-                oTFrameNo: dataModel.oTFrameNo(),
+                otFrameNo: dataModel.oTFrameNo(),
                 earlyOTUse: dataModel.earlyOTUse(),
                 legalOTframeNo: dataModel.legalOTframeNo(),
                 settlementOrder: dataModel.settlementOrder()
@@ -278,7 +278,7 @@ module a3 {
                 timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
                 rounding: ko.observable(dataDTO.timezone.rounding.rounding),
                 roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
-                oTFrameNo: ko.observable(dataDTO.oTFrameNo),
+                oTFrameNo: ko.observable(dataDTO.otFrameNo),
             }
         }
         
@@ -299,7 +299,7 @@ module a3 {
                 workTimezoneNo: workTimezoneNo,
                 restraintTimeUse: false,
                 timezone: timezone,
-                oTFrameNo: dataModel.oTFrameNo(),
+                otFrameNo: dataModel.otFrameNo(),
                 earlyOTUse: false,
                 legalOTframeNo: 1,
                 settlementOrder: 1
@@ -393,7 +393,7 @@ module a3 {
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_58"),
-                     key: "oTFrameNo",
+                     key: "otFrameNo",
                      dataSource: self.lstSelectOrderModel,
                      defaultValue: ko.observable(1),
                      width: 120,
@@ -525,7 +525,7 @@ module a3 {
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_58"), 
-                    key: "oTFrameNo",
+                    key: "otFrameNo",
                     dataSource: self.lstSelectOrderModel,
                     defaultValue: ko.observable(1),
                     width: 80,

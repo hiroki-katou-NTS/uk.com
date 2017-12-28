@@ -167,7 +167,7 @@ module nts.uk.at.view.kmk003.a {
                     restraintTimeUse: boolean;
                     earlyOTUse: boolean;
                     timezone: TimeZoneRoundingDto;
-                    oTFrameNo: number;
+                    otFrameNo: number;
                     legalOTframeNo: number;
                     settlementOrder: number;
                 }
