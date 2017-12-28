@@ -1,14 +1,18 @@
 package nts.uk.screen.at.app.schedule.basicschedule;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
+import nts.uk.screen.at.app.shift.workpairpattern.ComPatternScreenDto;
+import nts.uk.screen.at.app.shift.workpairpattern.WkpPatternScreenDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,6 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class BasicScheduleScreenProcessor {
+
 	@Inject
 	private BasicScheduleScreenRepository bScheduleScreenRepo;
 
@@ -96,5 +101,27 @@ public class BasicScheduleScreenProcessor {
 	 */
 	public List<BasicScheduleScreenDto> getDataWorkScheTimezone(BasicScheduleScreenParams params) {
 		return this.bScheduleScreenRepo.getDataWorkScheTimezone(params.employeeId, params.startDate, params.endDate);
+	}
+
+	/**
+	 * Get data ComPattern, ComPatternItem, ComWorkPairSet
+	 * 
+	 * @return
+	 */
+	public List<ComPatternScreenDto> getDataComPattern() {
+		String companyId = AppContexts.user().companyId();
+		return this.bScheduleScreenRepo.getDataComPattern(companyId);
+	}
+
+	/**
+	 * Get data WkpPattern, WkpPatternItem, WkpWorkPairSet
+	 * 
+	 * @return
+	 */
+	public List<WkpPatternScreenDto> getDataWkpPattern(String workplaceId) {
+		if (StringUtil.isNullOrEmpty(workplaceId, true)) {
+			return Collections.emptyList();
+		}
+		return this.bScheduleScreenRepo.getDataWkpPattern(workplaceId);
 	}
 }
