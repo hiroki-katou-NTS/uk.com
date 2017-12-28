@@ -68,7 +68,7 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 		this.workTimeSettingRepository.remove(companyId,workTimeCode);
 		
 		//remove fixed
-		//this.fixedWorkSettingRepository.remove(companyId, workTimeCode);
+		this.fixedWorkSettingRepository.remove(companyId, workTimeCode);
 		
 		//remove flow
 		this.flowWorkSettingRepository.remove(companyId, workTimeCode);

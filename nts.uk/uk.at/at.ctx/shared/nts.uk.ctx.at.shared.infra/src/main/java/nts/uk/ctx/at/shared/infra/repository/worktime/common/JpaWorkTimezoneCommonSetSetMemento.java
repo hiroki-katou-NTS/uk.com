@@ -141,6 +141,9 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 		if (CollectionUtil.isEmpty(list)) {
 			return;
 		}
+		if(this.entity.getKshmtMedicalTimeSets() == null){
+			this.entity.setKshmtMedicalTimeSets(new ArrayList<>());
+		}
 		
 		Map<KshmtMedicalTimeSetPK, KshmtMedicalTimeSet> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
 				.collect(Collectors.toMap(KshmtMedicalTimeSet::getKshmtMedicalTimeSetPK, Function.identity()));
