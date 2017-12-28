@@ -163,7 +163,7 @@ module nts.uk.at.view.kmk003.a {
                 self.workTimeSettingLoader.loadListWorktime = self.loadListWorktime.bind(self);
             }
 
-            private loadListWorktime(selectedCode?: string): JQueryPromise<void> {
+            private loadListWorktime(selectedCode?: string, selectedIndex?: number): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
@@ -173,21 +173,48 @@ module nts.uk.at.view.kmk003.a {
                 // call service get data
                 service.findWithCondition(self.workTimeSettingLoader.getCondition()).done(data => {
                     self.workTimeSettings(data);
+
                     // enter update mode if has data
                     if (data && data.length > 0) {
                         self.enterUpdateMode();
+                        // select first item
+                        if (!selectedCode && !selectedIndex) {
+                            self.selectedWorkTimeCode(data[0].worktimeCode);
+                        }
+
+                        // select item by selected code
                         if (selectedCode) {
                             self.selectedWorkTimeCode(selectedCode);
-                        } else {
-                            self.selectedWorkTimeCode(data[0].worktimeCode);
+                        }
+
+                        // Select worktime by index
+                        if (selectedIndex) {
+                            self.selectWorktimeByIndex(selectedIndex);
                         }
                     }
                     else {
+                        // enter new mode
                         self.enterNewMode();
                     }
                     dfd.resolve();
                 }).always(() => _.defer(() => nts.uk.ui.block.clear()));
                 return dfd.promise();
+            }
+
+            /**
+             * Select worktime by index
+             */
+            private selectWorktimeByIndex(selectedIndex: number): void {
+                let self = this;
+                let lastIndexOfCurrentList = self.workTimeSettings().length - 1;
+
+                // select last item
+                if (selectedIndex > lastIndexOfCurrentList) {
+                    self.selectedWorkTimeCode(self.workTimeSettings()[lastIndexOfCurrentList].worktimeCode);
+                } else {
+                    // select item by index
+                    self.selectedWorkTimeCode(self.workTimeSettings()[selectedIndex].worktimeCode);
+                }
             }
             
             //get infor of worktime by code
@@ -382,8 +409,15 @@ module nts.uk.at.view.kmk003.a {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     // block ui.
                     _.defer(() => nts.uk.ui.block.invisible());
-                    service.removeWorkTime(self.selectedWorkTimeCode()).done(function() {
+
+                    // get selected code
+                    let selectedCode = self.selectedWorkTimeCode();
+                    service.removeWorkTime(selectedCode).done(function() {
+                        let currentIndex = _.findIndex(self.workTimeSettings(), item => item.worktimeCode === selectedCode);
                         nts.uk.ui.dialog.info({ messageId: 'Msg_16' });
+                        // reload list work time
+                        _.defer(() => self.loadListWorktime());
+
                         dfd.resolve();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -522,7 +556,7 @@ module nts.uk.at.view.kmk003.a {
         export class WorkTimeSettingLoader extends WorkTimeSettingModel {
             workTimeAtrEnums: EnumConstantDto[];
             workTimeMethodEnums: EnumConstantDto[];
-            loadListWorktime: (selectedCode?: string) => JQueryPromise<void>;
+            loadListWorktime: (selectedCode?: string, selectedIndex?: number) => JQueryPromise<void>;
             constructor() {
                 super();
                 this.workTimeDivision.workTimeDailyAtr(3);
