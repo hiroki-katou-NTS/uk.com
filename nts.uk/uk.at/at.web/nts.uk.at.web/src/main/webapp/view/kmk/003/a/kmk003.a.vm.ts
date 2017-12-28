@@ -326,9 +326,9 @@ module nts.uk.at.view.kmk003.a {
                 }
                 self.mainSettingModel.save(self.isNewMode(), self.tabMode())
                     .done(() => {
-                        if (self.mainSettingModel.workTimeSetting.isAbolish()) {
-                            self.workTimeSettingLoader.isAbolish(true);
-                        }
+                        // recheck abolish condition of list worktime
+                        self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
+
                         // reload list work time
                         _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
                     });
