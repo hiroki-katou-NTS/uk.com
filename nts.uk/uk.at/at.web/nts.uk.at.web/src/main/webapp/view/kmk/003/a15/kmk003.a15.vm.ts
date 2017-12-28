@@ -112,7 +112,7 @@ module a15 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false); console.log(_self.model);
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
         }
         
         /**

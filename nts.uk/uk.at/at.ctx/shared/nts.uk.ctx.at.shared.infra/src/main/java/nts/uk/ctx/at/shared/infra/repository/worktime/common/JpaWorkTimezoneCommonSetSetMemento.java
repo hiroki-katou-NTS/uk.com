@@ -138,10 +138,10 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setMedicalSet(List<WorkTimezoneMedicalSet> list) {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
+		if (CollectionUtil.isEmpty(list)) {
 			return;
 		}
-		if(this.entity.getKshmtMedicalTimeSets() == null){
+		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
 			this.entity.setKshmtMedicalTimeSets(new ArrayList<>());
 		}
 		

@@ -135,6 +135,9 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 	 */
 	@Override
 	public void setMedicalSet(List<WorkTimezoneMedicalSet> list) {
+		if (CollectionUtil.isEmpty(list)) {
+			return;
+		}
 		this.medicalSet = list.stream().map(domain->{
 			WorkTimezoneMedicalSetDto dto = new WorkTimezoneMedicalSetDto();
 			domain.saveToMemento(dto);
