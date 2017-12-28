@@ -216,8 +216,8 @@ module a5 {
             self.flowTimezoneOption.dataSource = self.flowTimezones;
 
             // flow restSet option
-            self.flowRestSetOption = self.getDefaultRestSetOption();
-            self.flowRestSetOption.dataSource = self.flowRestSet.flowRestSets;
+            //self.flowRestSetOption = self.getDefaultRestSetOption();
+            //self.flowRestSetOption.dataSource = self.flowRestSet.flowRestSets;
         }
 
         private getDefaultTimezoneOption(): FixTableOption {
