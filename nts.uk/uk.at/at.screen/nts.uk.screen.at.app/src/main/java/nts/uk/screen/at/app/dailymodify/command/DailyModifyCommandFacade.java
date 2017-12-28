@@ -28,6 +28,12 @@ public class DailyModifyCommandFacade {
 		DailyRecordDto dto = toDto(query);
 		this.handler.handleAdd(createCommand(dto, query.getEmployeeId(), query.getBaseDate()));
 	}
+	
+	public void handleUpdate(DailyModifyQuery query) {
+		DailyRecordDto dto = toDto(query);
+		this.handler.handleUpdate(createCommand(dto, query.getEmployeeId(), query.getBaseDate()));
+	}
+
 
 	private DailyRecordDto toDto(DailyModifyQuery query) {
 		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());

@@ -52,15 +52,15 @@ public class TotalWorkingTimeDto {
 	private ExcessOfStatutoryTimeDailyPerformDto excessOfStatutoryTime;
 
 	/** 臨時時間: 日別実績の臨時時間 */
-	@AttendanceItemLayout(layout = "F", isList = true, jpPropertyName = "臨時時間")
+	@AttendanceItemLayout(layout = "F", isList = true, jpPropertyName = "臨時時間", listMaxLength = 3)
 	private List<TemporaryTimeFrameDto> temporaryTime;
 
 	/** 遅刻時間: 日別実績の遅刻時間 */
-	@AttendanceItemLayout(layout = "G", isList = true, jpPropertyName = "遅刻時間")
+	@AttendanceItemLayout(layout = "G", isList = true, jpPropertyName = "遅刻時間", listMaxLength = 2)
 	private List<LateTimeDto> lateTime;
 
 	/** 早退時間: 日別実績の早退時間 */
-	@AttendanceItemLayout(layout = "H", isList = true, jpPropertyName = "早退時間")
+	@AttendanceItemLayout(layout = "H", isList = true, jpPropertyName = "早退時間", listMaxLength = 2)
 	private List<LeaveEarlyTimeDailyPerformDto> leaveEarlyTime;
 
 	/** 休憩時間: 日別実績の休憩時間 */
@@ -68,6 +68,7 @@ public class TotalWorkingTimeDto {
 	private BreakTimeSheetDailyPerformDto breakTimeSheet;
 
 	/** 外出時間: 日別実績の外出時間 */
+	//TODO:
 	// @AttendanceItemLayout(layout = "J", isList = true)
 	private List<GoOutTimeSheetDailyPerformDto> goOutTimeSheet;
 

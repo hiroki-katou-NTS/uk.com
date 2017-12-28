@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
 
@@ -20,7 +19,8 @@ public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 	private GeneralDate ymd;
 
 	/** 時間帯: 短時間勤務時間帯 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "", isList = true)
+	//TODO: set list max length
+//	@AttendanceItemLayout(layout = "B", jpPropertyName = "", isList = true)
 	private List<ShortWorkTimeSheetDto> shortWorkingTimeSheets;
 
 }
