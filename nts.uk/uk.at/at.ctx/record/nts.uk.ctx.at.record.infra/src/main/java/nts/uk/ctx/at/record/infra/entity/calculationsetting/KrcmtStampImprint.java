@@ -29,7 +29,7 @@ public class KrcmtStampImprint extends UkJpaEntity implements Serializable {
 
 	/** 休出切替区分*/
 	@Column(name = "BREAK_OF_SWITCH_ATR")
-	public int breakOfSwitchClass;
+	public int breakSwitchClass;
 
 	/** 自動打刻反映区分*/
 	@Column(name = "AUTO_STAMP_REFLECT_ATR")
