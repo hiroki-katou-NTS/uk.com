@@ -384,16 +384,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             self.loadPersonRoleList().done(function() {
 
-                let selectedId = self.currentRoleId() !== '' ? self.currentRoleId() : self.personRoleList()[0].roleId;
-
-                self.currentRoleId('');
-
                 if (self.personRoleList().length > 0) {
+                    let selectedId = self.currentRoleId() !== '' ? self.currentRoleId() : self.personRoleList()[0].roleId;
 
-                    self.currentRoleId(selectedId);
+                    self.currentRoleId('');
 
-                }
-                else {
+
+
+                } else {
 
                     dialog({ messageId: "Msg_217" });
 
