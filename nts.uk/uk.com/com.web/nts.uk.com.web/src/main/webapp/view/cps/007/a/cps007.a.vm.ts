@@ -68,14 +68,13 @@ module cps007.a.vm {
                         };
                     }).value()
                 };
-            
+
             let itemids = _(command.itemsClassification)
-                .map(x => x.listItemClsDf)
+                .map(x => _.map(x.listItemClsDf, m => m))
                 .flatten()
                 .filter(x => !!x)
-                .map((x: any) => x.personInfoItemDefinitionID)
-                .groupBy()
-                .pickBy((x: Array<string>) => x.length > 1)
+                .groupBy((x: any) => x.personInfoItemDefinitionID)
+                .pickBy((x: Array<any>) => x.length > 1)
                 .keys()
                 .value();
 

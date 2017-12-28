@@ -172,6 +172,7 @@ public class ErrorAlarmWorkRecordDto {
 		this.operatorBetweenGroups = operatorBetweenGroups;
 		this.operatorGroup1 = operatorGroup1;
 		this.operatorGroup2 = operatorGroup2;
+		this.group2UseAtr = group2UseAtr;
 	}
 
 	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
