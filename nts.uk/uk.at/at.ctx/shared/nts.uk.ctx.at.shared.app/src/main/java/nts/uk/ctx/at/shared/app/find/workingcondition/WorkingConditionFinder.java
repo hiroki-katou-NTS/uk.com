@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -70,7 +71,8 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 		}).collect(Collectors.toList());
 		return containItemHists.stream()
 				.sorted((a, b) -> b.start().compareTo(a.start()))
-				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
+						x.end().equals(GeneralDate.max()) && query.getCtgType() == 3 ? "" : x.end().toString()))
 				.collect(Collectors.toList());
 	}
 
