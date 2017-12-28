@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div class="contents-area cf" data-bind="if: approvalRootState().length != 0">
+			<div class="contents-area cf" style ="padding-top: 20px;">
+				<div id="label-1">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
+				</div>
+				<div id="table-1">
+					<table data-bind="foreach: approvalRootState">
+						<thead>
+							<tr class="bg-green" style="height: 20px;">
+								<th class="phase-app" style="width: 75px;border: 1px solid black;"></th>
+								<th class="content-app" style="width: 230px; padding-left: 95px;padding-bottom: 5px; border: 1px solid black;">
+									<div style="height: 28px; width: 6px; display: inline-block; border-left: 1px solid black; margin-bottom: -8px;"></div>
+									#{i18n.getText('KAF000_3')}
+									<div style="height: 28px; width: 6px; display: inline-block; border-left: 1px solid black; margin-bottom: -8px; margin-left: -8px;"></div>
+									#{i18n.getText('KAF000_29')}
+									<div style="height: 28px; width: 6px; display: inline-block; border-left: 1px solid black; margin-bottom: -8px; margin-left: 52px;"></div>
+									#{i18n.getText('KAF000_30')}
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr data-bind="let: { phase: $data }">
+								<td data-bind="text: 'フェーズ'+phase.phaseOrder()" style="border: 1px solid black; padding-left: 10px;"></td>
+								<td style="border: 1px solid black;" data-bind="if: phase.listApprovalFrame().length != 0">
+									<table data-bind="foreach: phase.listApprovalFrame">
+										<tr style="height: 27px;" data-bind="let: { frame: $data }, style: { 'border-top': $index()==0 ? 'none' : '1px solid black' }">
+											<td style="width: 90px; padding-left: 10px;" data-bind="text: '承認者'+frame.frameOrder()"></td>
+											<td style="width: 222px; border-left: 1px solid black;padding-left: 10px;">
+												<div style="display: inline-block;" data-bind="if: frame.approvalAtr() =='未承認'">
+													<div style="display: inline-block;" data-bind="foreach: frame.listApprover">
+														<div style="display: inline-block;" data-bind="text: $data.approver()">
+															<div style="display: inline-block;" data-bind="if: $data.representer()!=null">
+																<label data-bind="'(' + $data.representer() + ')'"></label>
+															</div>
+														</div>	
+													</div>
+												</div>
+												<div style="display: inline-block;" data-bind="if: frame.approvalAtr() !='未承認'">
+													<div style="display: inline-block;" data-bind="if: $data.approverID">
+														<label data-bind="text: $data.approverID"></label>
+													</div>	
+													<div style="display: inline-block;" data-bind="if: !$data.approverID()">
+														<label data-bind="text: $data.representerID"></label>
+													</div>
+												</div>	
+											</td>
+											<td style="width: 90px; border-left: 1px solid black;padding-left: 10px;" data-bind="text: frame.approvalAtr">
+											</td>
+											<td style="width: 250px; border-left: 1px solid black;padding-left: 10px;" data-bind="text: frame.approvalReason">
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>
+
+
