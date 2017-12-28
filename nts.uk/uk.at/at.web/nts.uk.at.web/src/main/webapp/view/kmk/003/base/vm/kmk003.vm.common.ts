@@ -122,10 +122,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.roundingTime(0);
-                    this.rounding(0);    
+                    this.rounding(0);
                 }
             }
 
@@ -237,11 +237,11 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): WorkTimezoneCommonSetDto {
-                    let subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[] = [];    
+                    let subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[] = [];
                     for (let dataModel of this.subHolTimeSet) {
                         subHolTimeSet.push(dataModel.toDto());
                     }
-                    let medicalSet: WorkTimezoneMedicalSetDto[] = [];                    
+                    let medicalSet: WorkTimezoneMedicalSetDto[] = [];
                     for (let dataModel of this.medicalSet) {
                         medicalSet.push(dataModel.toDto());
                     }
@@ -260,7 +260,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.zeroHStraddCalculateSet(false);
                     this.intervalSet.resetData();
@@ -293,10 +293,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.setSameFrameRounding(0);
-                    this.frameStraddRoundingSet(0);    
+                    this.frameStraddRoundingSet(0);
                 }
             }
 
@@ -318,11 +318,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
-                    this.calculateMethod(0);    
+
+                resetData() {
+                    this.calculateMethod(0);
                 }
-                
+
             }
 
             export class FlowRestSetModel {
@@ -355,12 +355,12 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;
 
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.useStamp(false);
                     this.useStampCalcMethod(0);
                     this.timeManagerSetAtr(0);
-                    this.calculateMethod(0);    
+                    this.calculateMethod(0);
                 }
             }
 
@@ -393,12 +393,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.isReferRestTime(false);
                     this.usePrivateGoOutRest(false);
                     this.useAssoGoOutRest(false);
-                    this.calculateMethod(0);    
+                    this.calculateMethod(0);
                 }
             }
 
@@ -427,7 +427,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.flowRestSetting.resetData();
                     this.flowFixedRestSetting.resetData();
@@ -456,10 +456,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.commonRestSetting.resetData();
-                    this.flowRestSetting.resetData();    
+                    this.flowRestSetting.resetData();
                 }
             }
 
@@ -616,9 +616,9 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
-                    this.timezones([]);    
+
+                resetData() {
+                    this.timezones([]);
                 }
             }
 
@@ -643,10 +643,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.flowRestTime(0);
-                    this.flowPassageTime(0);    
+                    this.flowPassageTime(0);
                 }
             }
 
@@ -682,11 +682,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.flowRestSets([]);
                     this.useHereAfterRestSet(false);
-                    this.hereAfterRestSet.resetData();    
+                    this.hereAfterRestSet.resetData();
                 }
             }
 
@@ -716,7 +716,7 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.fixRestTime(false);
                     this.fixedRestTimezone.resetData();
@@ -778,10 +778,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.useIntervalExemptionTime(false);
-                        
+
                 }
             }
 
@@ -806,10 +806,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.roundingMethod(0);
-                    this.roundingSetting.resetData();  
+                    this.roundingSetting.resetData();
                 }
             }
 
@@ -834,10 +834,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.deductTimeRoundingSetting.resetData();
-                    this.approTimeRoundingSetting.resetData();    
+                    this.approTimeRoundingSetting.resetData();
                 }
             }
 
@@ -852,7 +852,9 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: GoOutTypeRoundingSetDto) {
-                    this.officalUseCompenGoOut.updateData(data.officalUseCompenGoOut);
+                    if (data && data.officalUseCompenGoOut) {
+                        this.officalUseCompenGoOut.updateData(data.officalUseCompenGoOut);
+                    }
                     this.privateUnionGoOut.updateData(data.privateUnionGoOut);
                 }
 
@@ -863,10 +865,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.officalUseCompenGoOut.resetData();
-                    this.privateUnionGoOut.resetData();    
+                    this.privateUnionGoOut.resetData();
                 }
             }
 
@@ -895,10 +897,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.pubHolWorkTimezone.resetData();
-                    this.workTimezone.resetData();    
+                    this.workTimezone.resetData();
                     this.ottimezone.resetData();
                 }
             }
@@ -925,9 +927,9 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
-                    this.totalRoundingSet    
+
+                resetData() {
+                    this.totalRoundingSet
                 }
             }
 
@@ -1385,21 +1387,21 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;
                 }
             }
-            
+
             export class FixedWorkRestSetModel {
                 commonRestSet: CommonRestSettingModel;
                 fixedRestCalculateMethod: KnockoutObservable<number>;
-                
+
                 constructor() {
                     this.commonRestSet = new CommonRestSettingModel();
                     this.fixedRestCalculateMethod = ko.observable(0);
                 }
-                
+
                 updateData(data: FixedWorkRestSetDto) {
                     this.commonRestSet.updateData(data.commonRestSet);
                     this.fixedRestCalculateMethod(data.fixedRestCalculateMethod);
                 }
-                
+
                 toDto(): FixedWorkRestSetDto {
                     let dataDTO: FixedWorkRestSetDto = {
                         commonRestSet: this.commonRestSet.toDto(),
@@ -1407,27 +1409,27 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.commonRestSet.resetData();
-                    this.fixedRestCalculateMethod(0);    
+                    this.fixedRestCalculateMethod(0);
                 }
             }
-            
-             export class FixedWorkTimezoneSetModel {
+
+            export class FixedWorkTimezoneSetModel {
                 lstWorkingTimezone: common.EmTimeZoneSetModel[];
                 lstOTTimezone: common.OverTimeOfTimeZoneSetModel[];
-                
+
                 constructor() {
                     this.lstWorkingTimezone = [];
                     this.lstOTTimezone = [];
                 }
-                
+
                 updateData(data: FixedWorkTimezoneSetDto) {
-                    this.updateWorkingTimezone(data.lstWorkingTimezone);                
+                    this.updateWorkingTimezone(data.lstWorkingTimezone);
                     this.updateOvertimeZone(data.lstOTTimezone);
                 }
-                
+
                 updateOvertimeZone(lstOTTimezone: OverTimeOfTimeZoneSetDto[]) {
                     for (var dataDTO of lstOTTimezone) {
                         var dataModel: OverTimeOfTimeZoneSetModel = this.getOvertimeZoneByWorkTimezoneNo(dataDTO.workTimezoneNo);
@@ -1441,44 +1443,44 @@ module nts.uk.at.view.kmk003.a {
                         }
                     }
                 }
-                
+
                 getOvertimeZoneByWorkTimezoneNo(workTimezoneNo: number) {
                     return _.find(this.lstOTTimezone, timezone => timezone.workTimezoneNo() == workTimezoneNo);
                 }
-                
-                updateWorkingTimezone(lstWorkingTimezone: EmTimeZoneSetDto[]){
-                    for(var dataDTO of lstWorkingTimezone){
+
+                updateWorkingTimezone(lstWorkingTimezone: EmTimeZoneSetDto[]) {
+                    for (var dataDTO of lstWorkingTimezone) {
                         var dataModel: EmTimeZoneSetModel = this.getWorkingTimezoneByEmploymentTimeFrameNo(dataDTO.employmentTimeFrameNo);
-                        if(dataModel){
-                            dataModel.updateData(dataDTO);    
+                        if (dataModel) {
+                            dataModel.updateData(dataDTO);
                         }
                         else {
                             dataModel = new EmTimeZoneSetModel();
                             dataModel.updateData(dataDTO);
-                            this.lstWorkingTimezone.push(dataModel);    
+                            this.lstWorkingTimezone.push(dataModel);
                         }
                     }
                 }
-                
+
                 getWorkingTimezoneByEmploymentTimeFrameNo(employmentTimeFrameNo: number) {
                     return _.find(this.lstWorkingTimezone, workingtimezone => workingtimezone.employmentTimeFrameNo() == employmentTimeFrameNo);
                 }
                 toDto(): FixedWorkTimezoneSetDto {
                     let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone, (dataModel) => dataModel.toDto());
                     let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone, (dataModel) => dataModel.toDto());
-                    
+
                     let dataDTO: FixedWorkTimezoneSetDto = {
                         lstWorkingTimezone: lstWorkingTimezone,
                         lstOTTimezone: lstOTTimezone
                     };
                     return dataDTO;
                 }
-                 
+
                 resetData() {
                     this.lstWorkingTimezone = [];
                     this.lstOTTimezone = [];
                 }
-             }
+            }
 
         }
     }
