@@ -315,11 +315,30 @@ module nts.uk.at.view.kmk003.a {
                 // set screen mode
                 self.screenMode(ScreenMode.NEW);
 
+                // set simple mode
+                self.enterSimpleMode();
+
                 // reset data
                 self.mainSettingModel.resetData();
 
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
+            }
+
+            /**
+             * Enter simple mode
+             */
+            public enterSimpleMode(): void {
+                let self = this;
+                self.tabMode(TabMode.SIMPLE);
+            }
+
+            /**
+             * Enter detail mode
+             */
+            public enterDetailMode(): void {
+                let self = this;
+                self.tabMode(TabMode.DETAIL);
             }
 
             /**
@@ -344,6 +363,9 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 // set screen mode
                 self.screenMode(ScreenMode.UPDATE);
+
+                // set detail mode
+                self.enterDetailMode();
             }
 
              /**
