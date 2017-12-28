@@ -1020,9 +1020,9 @@ module nts.uk.at.view.kmk003.a {
                 roundingSet: InstantRoundingModel;
                 section: KnockoutObservable<number>;
 
-                constructor() {
+                constructor(section?: number) {
                     this.roundingSet = new InstantRoundingModel();
-                    this.section = ko.observable(0);
+                    this.section = ko.observable(section);
                 }
 
                 updateData(data: RoundingSetDto) {
@@ -1042,10 +1042,11 @@ module nts.uk.at.view.kmk003.a {
             export class PrioritySettingModel {
                 priorityAtr: KnockoutObservable<number>;
                 stampAtr: KnockoutObservable<number>;
-
-                constructor() {
+                
+                
+                constructor(stampAtr?: number) {
                     this.priorityAtr = ko.observable(0);
-                    this.stampAtr = ko.observable(0);
+                    this.stampAtr = ko.observable(stampAtr);
                 }
 
                 updateData(data: PrioritySettingDto) {
@@ -1069,6 +1070,16 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.roundingSets = [];
                     this.prioritySets = [];
+
+                    var dataPriorityModel1: PrioritySettingModel = new PrioritySettingModel(0);
+                    var dataPriorityModel2: PrioritySettingModel = new PrioritySettingModel(1);
+                    this.prioritySets.push(dataPriorityModel1);
+                    this.prioritySets.push(dataPriorityModel2);
+
+                    var dataRoundingModel1: RoundingSetModel = new RoundingSetModel(0);
+                    var dataRoundingModel2: RoundingSetModel = new RoundingSetModel(1);
+                    this.roundingSets.push(dataRoundingModel1);
+                    this.roundingSets.push(dataRoundingModel2);
                 }
 
                 updateData(data: WorkTimezoneStampSetDto) {

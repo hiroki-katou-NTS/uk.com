@@ -30,7 +30,7 @@ module a4 {
         morning: KnockoutObservable<number>;
         afternoon: KnockoutObservable<number>;
         
-        mainSettingModel: KnockoutObservable<MainSettingModel>;
+        mainSettingModel: MainSettingModel;
         /**
         * Constructor.
         */
@@ -45,7 +45,7 @@ module a4 {
             tabMode() == TabMode.DETAIL ? self.isDetailMode(true) : self.isDetailMode(false);
             
             //main model
-            self.mainSettingModel = ko.observable(mainSettingModel);
+            self.mainSettingModel = mainSettingModel;
             
             self.priorityOptions = ko.observableArray([
                 new Item(0, nts.uk.resource.getText("KMK003_69")),
@@ -80,14 +80,17 @@ module a4 {
             self.oneDay = ko.observable(0);
             self.morning = ko.observable(0);
             self.afternoon = ko.observable(0);
+            self.bindToScreen();
         }
         
-        private bindToScreen(mainSettingModel: MainSettingModel) {
+        public bindToScreen() {
             let self = this;
-            let workForm = mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr();
+            let workForm = self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr();
             if (workForm == EnumWorkForm.FLEX) {
                 //TODO bind for flex
-                let stamp = mainSettingModel.flexWorkSetting.commonSetting.stampSet;
+                let stamp = self.mainSettingModel.flexWorkSetting.commonSetting.stampSet;
+                let a = stamp.prioritySets[0].priorityAtr;a(3);
+                let b = stamp.prioritySets[1].priorityAtr;b(2);
                 self.priorityGoWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
                 self.priorityLeaveWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
 
@@ -99,10 +102,10 @@ module a4 {
                 
             }
             else {
-                let workMethodSet = mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet();
+                let workMethodSet = self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet();
                 switch (workMethodSet) {
                     case SettingMethod.FIXED:
-                        let stamp = mainSettingModel.fixedWorkSetting.commonSetting.stampSet;
+                        let stamp = self.mainSettingModel.fixedWorkSetting.commonSetting.stampSet;
                         self.priorityGoWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
                         self.priorityLeaveWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
 
