@@ -2,6 +2,11 @@ package nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth;
 
 import lombok.Data;
 
+/**
+ * @author phongtq
+ *  月別実績の項目丸め設定
+ */
+
 @Data
 public class RoundingMonthDto {
 

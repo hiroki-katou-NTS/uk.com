@@ -1002,7 +1002,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 		if(timeZone1.isPresent()){
 			TimeZone tz = timeZone1.get();
 			dto.setInLawBreakTimeStartTime1(tz.getStart().v());
-			dto.setInLawBreakTimeEndTime1(tz.getStart().v());
+			dto.setInLawBreakTimeEndTime1(tz.getEnd().v());
 		}
 		if(timeZone2.isPresent()){
 			TimeZone tz = timeZone2.get();

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,7 +116,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		Company domain = Company.createFromJavaType(entity.companyCode,
 				entity.companyName, entity.startMonth, entity.isAbolition,
 				entity.repname, entity.repost, entity.comNameKana, entity.shortComName,
-				entity.contractCd, entity.taxNo, add);
+				entity.contractCd, entity.taxNo != null ? entity.taxNo.toString() : null, add);
 		return domain;
 	}
 
@@ -149,7 +150,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.shortComName = domain.getShortComName().v();
 		entity.isAbolition = domain.getIsAbolition().value;
 		entity.startMonth = domain.getStartMonth().value;
-		entity.taxNo = domain.getTaxNo() != null ? domain.getTaxNo().v() : null;
+		entity.taxNo = domain.getTaxNo() != null ? new BigDecimal(domain.getTaxNo().v()) : null;
 		if (domain.getAddInfor() != null) {
 			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor());
 		}

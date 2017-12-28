@@ -38,12 +38,6 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 	}
 
 	@Override
-	public RoleIndividualGrantExport getByUser(String userId, GeneralDate date) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Optional<RoleIndividualGrantExport> getByUser(String userId) {
 		return roleIndividualGrantRepository.findByUserAndDate(userId, GeneralDate.today())
 				.map(r -> new RoleIndividualGrantExport(r.getRoleId()));

@@ -7,8 +7,7 @@ import nts.arc.primitive.constraint.StringRegEx;
  * @author yennth
  *
  */
-@StringRegEx("^\\d{7}|(\\d{3}-\\d{4}$)?")
-@StringMaxLength(8)
+@StringRegEx("^\\s*$|^\\d{7}$|^(\\d{3}-\\d{4})$")
 public class PostCd extends StringPrimitiveValue<PostCd>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

@@ -17,6 +17,7 @@ import nts.uk.ctx.workflow.app.command.agent.DeleteAgentCommandHandler;
 import nts.uk.ctx.workflow.app.command.agent.UpdateAgentCommandHandler;
 import nts.uk.ctx.workflow.app.find.agent.AgentDto;
 import nts.uk.ctx.workflow.app.find.agent.AgentFinder;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 
 @Path("workflow/agent")
 @Produces("application/json")
@@ -33,6 +34,9 @@ public class AgentWebService extends WebService {
 
 	@Inject
 	private DeleteAgentCommandHandler deleteAgentCommandHandler;
+	
+	@Inject
+	private EmployeeAdapter employeeAdapter;
 
 	@Path("find/{employeeId}")
 	@POST
@@ -77,5 +81,11 @@ public class AgentWebService extends WebService {
 	public List<AgentDto> findAllDate(DateParam dateParam) {
 		return agentFinder.findAll(dateParam.getStartDate(),dateParam.getEndDate());
 
+	}
+	
+	@Path("findEmpName")
+	@POST
+	public JavaTypeResult<String> findEmpName(String sId) {
+		return new JavaTypeResult<String>(employeeAdapter.getEmployeeName(sId));
 	}
 }

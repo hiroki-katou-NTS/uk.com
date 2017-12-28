@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,15 +8,11 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
-import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の勤務実績時間 */
 @Data
@@ -56,23 +53,22 @@ public class ActualWorkTimeDailyPerformDto {
 		// divergenceTime
 		return domain == null ? null
 				: new ActualWorkTimeDailyPerformDto(
-						Arrays.asList(new PremiumTimeDto(
-								domain.getPremiumTimeOfDailyPerformance().getPremitumTime().valueAsMinutes(),
-								domain.getPremiumTimeOfDailyPerformance().getPremiumTimeNo())),
-						domain.getConstraintDifferenceTime().valueAsMinutes(),
-						new ConstraintTimeDto(domain.getConstraintTime().getTotalConstraintTime().valueAsMinutes(),
-								domain.getConstraintTime().getLateNightConstraintTime().valueAsMinutes()),
-						domain.getTimeDifferenceWorkingHours().valueAsMinutes(),
+						Arrays.asList(
+								new PremiumTimeDto(
+										domain.getPremiumTimeOfDailyPerformance().getPremitumTime() == null ? null
+												: domain.getPremiumTimeOfDailyPerformance().getPremitumTime()
+														.valueAsMinutes(),
+										domain.getPremiumTimeOfDailyPerformance().getPremiumTimeNo())),
+						domain.getConstraintDifferenceTime() == null ? null
+								: domain.getConstraintDifferenceTime().valueAsMinutes(),
+						new ConstraintTimeDto(
+								domain.getConstraintTime().getTotalConstraintTime() == null ? null
+										: domain.getConstraintTime().getTotalConstraintTime().valueAsMinutes(),
+								domain.getConstraintTime().getLateNightConstraintTime() == null ? null
+										: domain.getConstraintTime().getLateNightConstraintTime().valueAsMinutes()),
+						domain.getTimeDifferenceWorkingHours() == null ? null
+								: domain.getTimeDifferenceWorkingHours().valueAsMinutes(),
 						TotalWorkingTimeDto.fromTotalWorkingTime(domain.getTotalWorkingTime()),
-						domain.getDivTime().getDivergenceTime().stream()
-								.map(d -> DivergenceTimeDto.fromDivergenceTime(d)).collect(Collectors.toList()));
+						domain.getDivTime().getDivergenceTime() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getDivTime().getDivergenceTime(), d -> DivergenceTimeDto.fromDivergenceTime(d)));
 	}
-
-	public ActualWorkingTimeOfDaily toDomain() {
-		return ActualWorkingTimeOfDaily.of(
-				totalWorkingTime.toDomain(),
-				constraintTime.getLateNightConstraintTime(), constraintTime.getTotalConstraintTime(),
-				constraintDifferenceTime, timeDifferenceWorkingHours);
-	}
-
 }

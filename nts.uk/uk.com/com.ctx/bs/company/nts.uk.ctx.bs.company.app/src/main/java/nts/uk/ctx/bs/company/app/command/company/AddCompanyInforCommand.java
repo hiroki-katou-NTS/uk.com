@@ -42,7 +42,7 @@ public class AddCompanyInforCommand {
 	private String shortComName;
 		
 	/** 法人マイナンバー */
-	private BigDecimal taxNo;
+	private String taxNo;
 	
 	private AddInforCommand addinfor;
 	
