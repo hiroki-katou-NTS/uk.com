@@ -16,16 +16,16 @@ public class HdFromHd extends DomainObject{
 	private String companyId;
 
 	/**変更前の休出枠NO*/
-	private BreakoutFrameNo breakFrameNo;
+	private BreakoutFrameNo holidayWorkFrameNo;
 	
 	/** 変更後の法定内休出NO*/
-	private BreakoutFrameNo legalHdNo;
+	private BreakoutFrameNo calcOverDayEnd;
 	
 	/** 変更後の法定外休出NO */
-	private BreakoutFrameNo nonLegalHdNo;
+	private BreakoutFrameNo statutoryHd;
 	
 	/** 変更後の祝日休出NO */
-	private BreakoutFrameNo nonLegalPublicHdNo;
+	private BreakoutFrameNo excessHd;
 	
 	/**
 	 * Create from Java Type of Hd From Hd
@@ -36,7 +36,7 @@ public class HdFromHd extends DomainObject{
 	 * @param excessHd
 	 * @return
 	 */
-	public static HdFromHd createFromJavaType( String companyId, int breakFrameNo, int legalHdNo, int nonLegalHdNo, int nonLegalPublicHdNo){
-		return new HdFromHd(companyId, new BreakoutFrameNo(breakFrameNo), new BreakoutFrameNo(legalHdNo), new BreakoutFrameNo(nonLegalHdNo), new BreakoutFrameNo(nonLegalPublicHdNo));
+	public static HdFromHd createFromJavaType( String companyId, int holidayWorkFrameNo, int calcOverDayEnd, int statutoryHd, int excessHd){
+		return new HdFromHd(companyId, new BreakoutFrameNo(holidayWorkFrameNo), new BreakoutFrameNo(calcOverDayEnd), new BreakoutFrameNo(statutoryHd), new BreakoutFrameNo(excessHd));
 	}
 }
