@@ -51,6 +51,7 @@ public class ListCompanyServiceImpl implements ListCompanyService {
 		lstIndividualGrant.stream().forEach(item-> {
 			lstRoleId.add(item.getRoleId());
 		});
+		
 		// get roles by roleId
 		List<Role> lstRole = roleRepository.findByListId(lstRoleId);
 		
@@ -64,12 +65,18 @@ public class ListCompanyServiceImpl implements ListCompanyService {
 			}
 		}
 
-		for (EmployeeImport em : lstEm) {
-			boolean haveComId = lstCompanyId.stream().anyMatch(item -> {
-				return em.getCompanyId().equals(item);
-			});
-			if (!haveComId) {
+		if (lstCompanyId.isEmpty()) {
+			for (EmployeeImport em : lstEm) {
 				lstCompanyId.add(em.getCompanyId());
+			}
+		} else {
+			for (EmployeeImport em : lstEm) {
+				boolean haveComId = lstCompanyId.stream().anyMatch(item -> {
+					return em.getCompanyId().equals(item);
+				});
+				if (!haveComId) {
+					lstCompanyId.add(em.getCompanyId());
+				}
 			}
 		}
 		return lstCompanyId;

@@ -111,12 +111,11 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	@Column(name = "ERROR_DISPLAY_ITEM")
 	public BigDecimal errorDisplayItem;
 
-	@Basic(optional = false)
-	@NotNull
+	@Basic(optional = true)
 	@Column(name = "ERAL_CHECK_ID")
 	public String eralCheckId;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false)
 	public KrcmtErAlCondition krcmtErAlCondition;
 
@@ -398,6 +397,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		// Set attendance item condition
 		BigDecimal operatorBetweenGroups = new BigDecimal(
 				domain.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups().value);
+		BigDecimal group2UseAtr = new BigDecimal(
+				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2UseAtr() ? 1 : 0);
 		String atdItemConditionGroup1 = domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1()
 				.getAtdItemConGroupId();
 		String atdItemConditionGroup2 = domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2()
@@ -423,7 +424,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				filterByClassification, lstClassification, workTypeUseAtr, wtPlanActualOperator, wtPlanFilterAtr,
 				wtActualFilterAtr, wtCompareAtr, lstWtActual, lstWtPlan, workingHoursUseAtr, whPlanActualOperator,
 				whPlanFilterAtr, whActualFilterAtr, whCompareAtr, lstWhActual, lstWhPlan, operatorBetweenGroups,
-				atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2, krcstErAlConGroup2);
+				group2UseAtr, atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2, krcstErAlConGroup2);
 		KwrmtErAlWorkRecord entity = new KwrmtErAlWorkRecord(kwrmtErAlWorkRecordPK, errorAlarmName, fixedAtr, useAtr,
 				typeAtr, boldAtr, messageColor, cancelableAtr, errorDisplayItem, eralCheckId, krcmtErAlCondition,
 				krcstErAlApplication, cancelRoleId);
@@ -498,7 +499,9 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).lstAtdItemCon.stream()
 						.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon))
 						.collect(Collectors.toList());
-		condition.createAttendanceItemCondition(entity.krcmtErAlCondition.operatorBetweenGroups.intValue())
+		condition
+				.createAttendanceItemCondition(entity.krcmtErAlCondition.operatorBetweenGroups.intValue(),
+						entity.krcmtErAlCondition.group2UseAtr.intValue() == 1)
 				.setAttendanceItemConditionGroup1(Optional.ofNullable(entity.krcmtErAlCondition.krcstErAlConGroup1)
 						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
 								.intValue(),

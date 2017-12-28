@@ -66,11 +66,12 @@ public class AddEmployeeCommandFacade {
 				}
 			});
 
-			return categoryCodeList.stream()
-					.map(ctgCode -> createNewItemsByCategoryCode(dataServer, ctgCode, employeeId, personId, comHistId))
+			return categoryCodeList
+					.stream().map(ctgCode -> createNewItemsByCategoryCode(dataServer, ctgCode, employeeId, personId,
+							comHistId, command))
 					.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
 		}
-		return inputs.stream().map(c -> createNewItemsByCategoryCode(c, employeeId, personId, comHistId))
+		return inputs.stream().map(c -> createNewItemsByCategoryCode(c, employeeId, personId, comHistId, command))
 				.filter(c -> c != null).collect(Collectors.toList());
 
 	}
@@ -167,25 +168,6 @@ public class AddEmployeeCommandFacade {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(), itemVal.value().toString()));
 			} else {
 
-				// set fixed itemvalue
-				if (itemCD.equals("IS00001")) {
-
-					x.setSaveData(new SaveDataDto(SaveDataType.STRING, command.getEmployeeCode()));
-
-				}
-
-				if (itemCD.equals("IS00003")) {
-
-					x.setSaveData(new SaveDataDto(SaveDataType.STRING, command.getEmployeeName()));
-
-				}
-
-				if (itemCD.equals("IS00020")) {
-
-					x.setSaveData(new SaveDataDto(SaveDataType.DATE, command.getHireDate().toString()));
-
-				}
-
 			}
 		});
 
@@ -210,7 +192,7 @@ public class AddEmployeeCommandFacade {
 	}
 
 	private ItemsByCategory createNewItemsByCategoryCode(List<SettingItemDto> dataList, String categoryCd,
-			String employeeId, String personId, String comHistId) {
+			String employeeId, String personId, String comHistId, AddEmployeeCommand command) {
 
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
@@ -222,17 +204,22 @@ public class AddEmployeeCommandFacade {
 		}
 		String recordId = null;
 
-		if (categoryCd == "CS00001") {
+		if (categoryCd.equals("CS00001")) {
 
 			recordId = employeeId;
+			// set fixed data
+			setItemValue("IS00001", items, SaveDataType.STRING, command.getEmployeeCode());
+			;
 		}
 
-		if (categoryCd == "CS00002") {
+		if (categoryCd.equals("CS00002")) {
 			recordId = personId;
+			setItemValue("IS00003", items, SaveDataType.STRING, command.getEmployeeName());
 		}
 
-		if (categoryCd == "CS00003") {
+		if (categoryCd.equals("CS00003")) {
 			recordId = comHistId;
+			setItemValue("IS00020", items, SaveDataType.DATE, command.getHireDate().toString());
 
 		}
 
@@ -240,7 +227,7 @@ public class AddEmployeeCommandFacade {
 	}
 
 	private ItemsByCategory createNewItemsByCategoryCode(ItemsByCategory itemByCtg, String employeeId, String personId,
-			String comHistId) {
+			String comHistId, AddEmployeeCommand command) {
 
 		List<ItemValue> items = itemByCtg.getItems();
 
@@ -253,18 +240,35 @@ public class AddEmployeeCommandFacade {
 		if (categoryCd.equals("CS00001")) {
 
 			recordId = employeeId;
+			// set fixed data
+			setItemValue("IS00001", items, SaveDataType.STRING, command.getEmployeeCode());
+
 		}
 
 		if (categoryCd.equals("CS00002")) {
+
 			recordId = personId;
+
+			setItemValue("IS00003", items, SaveDataType.STRING, command.getEmployeeName());
 		}
 
 		if (categoryCd.equals("CS00003")) {
 			recordId = comHistId;
 
+			setItemValue("IS00020", items, SaveDataType.DATE, command.getHireDate().toString());
+
 		}
 
 		return new ItemsByCategory(categoryCd, recordId, items);
+	}
+
+	private void setItemValue(String itemCode, List<ItemValue> items, SaveDataType dataType, String itemData) {
+		Optional<ItemValue> itemValOpt = items.stream().filter(item -> item.itemCode().equals(itemCode)).findFirst();
+
+		if (!itemValOpt.isPresent()) {
+			items.add(new ItemValue(null, itemCode, itemData, dataType.value));
+		}
+
 	}
 
 	private List<SettingItemDto> getAllItemInCategoryByCode(List<SettingItemDto> sourceList, String categoryCode) {

@@ -33,7 +33,7 @@
     
     <filter-mapping>
     	<filter-name>RequestPreProcessor</filter-name>
-    	<url-pattern>/webapi/*</url-pattern>
+    	<url-pattern>*</url-pattern>
     </filter-mapping>
     <servlet>
     	<servlet-name>nts.uk.shr.infra.web.WebApiSetting</servlet-name>

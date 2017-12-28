@@ -10,6 +10,10 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.roles.RoleName
 			</com:ValidatorScript>
+
+			<com:stylefile path="/view/ccg/025/component/component.css" />
+			<com:scriptfile path="/view/ccg/025/component/component.service.js" />
+			<com:scriptfile path="/view/ccg/025/component/component.vm.js" />
 			<com:stylefile path="cas001.a.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile
@@ -21,6 +25,7 @@
 			<com:scriptfile path="cas001.a.start.js" />
 			<com:scriptfile path="cas001.a.service.js" />
 			<com:scriptfile path="cas001.a.vm.js" />
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -39,11 +44,9 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
-					<div id="content-left"
-						class="bg-green caret-right caret-background">
-						<i class="icon icon-searchbox"></i>
-						<div style="margin-left: 15px;">
-							<table id="A2_001"
+					<div id="content-left" class="bg-green caret-right caret-background">
+
+						<!-- 	<table id="A2_001"
 								data-bind="ntsGridList: {
 						dataSource: personRoleList ,
 						primaryKey: 'roleId' ,
@@ -54,8 +57,14 @@
 						multiple: false,
 						value: currentRoleId,
 						rows:5 }">
-							</table>
+							</table> -->
+						<div data-bind='with:component'>
+							<div id="pannel-top"
+								data-bind="ntsPanel:{width: '220px', height: '360px', direction: '', showIcon: true, visible: true}">
+								<ui:include src="/view/ccg/025/component/index.xhtml" />
+							</div>
 						</div>
+
 						<span id="A2_001Caret" class="caret-bottom outline"></span>
 						<div>
 							<div style="width: 270px" id="A2_007"
@@ -89,7 +98,7 @@
 							<div class="div_line" style="margin-top: 0px;">
 								<div class="line_col_1 ">
 									<div class="float_left display_block"
-										data-bind="ntsFormLabel: { required:true,constraint:'RoleName' }">#{i18n.getText('CAS001_12')}</div>
+										data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_12')}</div>
 									<div>
 										<p class="ellipsis" id="A3_002"
 											data-bind="text:roleCode +' ' +roleName"></p>
@@ -102,7 +111,7 @@
 							<div class="div_line">
 								<div id="role_auth_cover">
 									<div data-bind="ntsAccordion: {active:0 }">
-										<h3>#{i18n.getText('CAS001_14')}</h3>
+										<h3>#{i18n.getText('CAS001_20')}</h3>
 										<div>
 											<table id="roleAuTable" class="auth_table">
 												<tr>

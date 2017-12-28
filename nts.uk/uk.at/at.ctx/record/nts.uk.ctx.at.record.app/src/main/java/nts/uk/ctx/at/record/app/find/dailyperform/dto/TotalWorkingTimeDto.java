@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -86,17 +87,18 @@ public class TotalWorkingTimeDto {
 				domain.getActualTime().valueAsMinutes(), 
 				WithinStatutoryTimeDailyPerformDto.fromWithinStatutoryTimeDailyPerform(domain.getWithinStatutoryTimeOfDaily()),
 				ExcessOfStatutoryTimeDailyPerformDto.fromExcessOfStatutoryTimeDailyPerform(domain.getExcessOfStatutoryTimeOfDaily()), 
-				ConvertHelper.mapTo(domain.getTemporaryTime().getTemporaryTime(), (c) -> 
+				domain.getTemporaryTime().getTemporaryTime() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getTemporaryTime().getTemporaryTime(), (c) -> 
 					new TemporaryTimeFrameDto(c.getWorkNo().v(), c.getTemporaryLateNightTime().valueAsMinutes(), c.getTemporaryTime().valueAsMinutes())), 
 				ConvertHelper.mapTo(domain.getLateTimeOfDaily(), (c) -> 
 					new LateTimeDto(
 						new CalcAttachTimeDto(c.getLateTime().getCalcTime().valueAsMinutes(), c.getLateTime().getTime().valueAsMinutes()), 
 						new CalcAttachTimeDto(c.getLateDeductionTime().getCalcTime().valueAsMinutes(), c.getLateDeductionTime().getTime().valueAsMinutes()), 
-						new HolidayUseDto(c.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes(),
-								c.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes(),
-								c.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes(),
-								c.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()),
-						c.getExemptionTime().getExemptionTime().valueAsMinutes(), 
+						new HolidayUseDto(
+								c.getTimePaidUseTime().getTimeAnnualLeaveUseTime() == null ? null : c.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime() == null ? null : c.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime() == null ? null : c.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getTimeSpecialHolidayUseTime() == null ? null : c.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()),
+						c.getExemptionTime().getExemptionTime() == null ? null : c.getExemptionTime().getExemptionTime().valueAsMinutes(), 
 						c.getWorkNo().v())), 
 				ConvertHelper.mapTo(domain.getLeaveEarlyTimeOfDaily(), (c) -> 
 					new LeaveEarlyTimeDailyPerformDto(

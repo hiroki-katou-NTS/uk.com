@@ -11,7 +11,7 @@ public class KshmtDayofweekTimeZone_ {
 
     public static volatile SingularAttribute<KshmtDayofweekTimeZone, Integer> useAtr;
     public static volatile SingularAttribute<KshmtDayofweekTimeZone, KshmtDayofweekTimeZonePK> kshmtDayofweekTimeZonePK;
-    public static volatile SingularAttribute<KshmtDayofweekTimeZone, Integer> cnt;
+    public static volatile SingularAttribute<KshmtDayofweekTimeZone, Integer> startTime;
     public static volatile SingularAttribute<KshmtDayofweekTimeZone, Integer> endTime;
     public static volatile SingularAttribute<KshmtDayofweekTimeZone, Integer> exclusVer;
 

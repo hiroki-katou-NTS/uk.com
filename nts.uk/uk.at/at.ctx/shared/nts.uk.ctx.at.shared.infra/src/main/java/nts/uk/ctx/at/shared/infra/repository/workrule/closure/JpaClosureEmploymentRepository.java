@@ -148,5 +148,4 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 
 		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
 	}
-
 }
