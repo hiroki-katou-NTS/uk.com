@@ -68,16 +68,24 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 		this.workTimeSettingRepository.remove(companyId,workTimeCode);
 		
 		//remove fixed
-		this.fixedWorkSettingRepository.remove(companyId, workTimeCode);
+		if(this.fixedWorkSettingRepository.findByKey(companyId, workTimeCode).isPresent()){
+			this.fixedWorkSettingRepository.remove(companyId, workTimeCode);
+		}
 		
 		//remove flow
-		this.flowWorkSettingRepository.remove(companyId, workTimeCode);
+		if(this.flowWorkSettingRepository.find(companyId, workTimeCode).isPresent()){
+			this.flowWorkSettingRepository.remove(companyId, workTimeCode);
+		}
 		
 		//remove difftime
-		this.diffTimeWorkSettingRepository.remove(companyId, workTimeCode);
+		if(this.diffTimeWorkSettingRepository.find(companyId, workTimeCode).isPresent()){
+			this.diffTimeWorkSettingRepository.remove(companyId, workTimeCode);
+		}
 		
 		//remove flex
-		this.flexWorkSettingRepository.remove(companyId, workTimeCode);
+		if(this.flexWorkSettingRepository.find(companyId, workTimeCode).isPresent()){
+			this.flexWorkSettingRepository.remove(companyId, workTimeCode);
+		}
 	}
 
 }
