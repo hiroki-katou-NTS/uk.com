@@ -156,8 +156,8 @@ public class ComboBoxRetrieveFactory {
 			case "M00004":
 				// 分類マスタ１
 				if (isCps001) {
-					return classificationRepo
-							.getAllManagementCategory(companyId).stream().map(
+					return classificationRepo.getAllManagementCategory(companyId)
+							.stream().map(
 									classification -> new ComboBoxObject(classification.getClassificationCode().v(),
 											classification.getClassificationCode().v() + JP_SPACE
 													+ classification.getClassificationName().v()))
@@ -200,30 +200,31 @@ public class ComboBoxRetrieveFactory {
 			case "M00007":
 				// 勤務種別マスタ
 				if (isCps001) {
-				return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
-						businessType.getBusinessTypeCode().v(),
-						businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
-						.collect(Collectors.toList());
+					return businessTypeRepo.findAll(companyId)
+							.stream().map(
+									businessType -> new ComboBoxObject(businessType.getBusinessTypeCode().v(),
+											businessType.getBusinessTypeCode().v() + JP_SPACE
+													+ businessType.getBusinessTypeName().v()))
+							.collect(Collectors.toList());
 				} else {
-					return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
-							businessType.getBusinessTypeCode().v(),
-							businessType.getBusinessTypeName().v()))
-							.collect(Collectors.toList());					
-					
+					return businessTypeRepo.findAll(companyId).stream()
+							.map(businessType -> new ComboBoxObject(businessType.getBusinessTypeCode().v(),
+									businessType.getBusinessTypeName().v()))
+							.collect(Collectors.toList());
+
 				}
 			case "M00008":
 				// 勤務種類マスタ
 				if (isCps001) {
-				return workTypeRepo.findByCompanyId(companyId).stream()
-						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
-								workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
-						.collect(Collectors.toList());
-				}else {
 					return workTypeRepo.findByCompanyId(companyId).stream()
 							.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
-									 workType.getName().v()))
-							.collect(Collectors.toList());					
-					
+									workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
+							.collect(Collectors.toList());
+				} else {
+					return workTypeRepo.findByCompanyId(companyId).stream()
+							.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(), workType.getName().v()))
+							.collect(Collectors.toList());
+
 				}
 			case "M00009":
 				// 就業時間帯マスタ
@@ -310,9 +311,9 @@ public class ComboBoxRetrieveFactory {
 			default:
 				break;
 			}
-			return null;
+			return new ArrayList<>();
 		}
-		return null;
+		return new ArrayList<>();
 	}
 
 	private List<ComboBoxObject> getEmploymentList(String companyId) {
