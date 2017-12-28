@@ -28,7 +28,7 @@ public class ErrorAlarmWorkRecordFinder {
 	}
 
 	public ErrorAlarmWorkRecordDto findByCode(String code) {
-		return ErrorAlarmWorkRecordDto.fromDomain(repository.findByCode(code));
+		return ErrorAlarmWorkRecordDto.fromDomain(repository.findByCode(code).get());
 	}
 
 }

@@ -190,7 +190,7 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 	@Column(name = "ILLEG_HOLI_WORK_MIDN")
 	public int illegHoliWorkMidn;
 	/*祝日日出勤深夜*/
-	@Column(name = "PB_HOLI_WORK__MIDN")
+	@Column(name = "PB_HOLI_WORK_MIDN")
 	public int pbHoliWorkMidn;
 	/*計算法定内休日出勤深夜*/
 	@Column(name = "CALC_LEG_HOLI_WORK_MIDN")
@@ -199,7 +199,7 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 	@Column(name = "CALC_ILLEG_HOLI_WORK_MIDN")
 	public int calcIllegHoliWorkMidn;
 	/*計算祝日日出勤深夜*/
-	@Column(name = "CALC_PB_HOLI_WORK__MIDN")
+	@Column(name = "CALC_PB_HOLI_WORK_MIDN")
 	public int calcPbHoliWorkMidn;
 	/*休日出勤拘束時間*/
 	@Column(name = "HOLI_WORK_BIND_TIME")

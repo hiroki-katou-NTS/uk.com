@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.role;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,5 +94,13 @@ public interface RoleRepository {
 	 */
 	List<Role> findByType(int roleType);
 	
-	
+	/**
+	 * Find by id.
+	 *
+	 * @param roleId the role id
+	 * @return the list
+	 */
+	default List<Role> findById(String roleId) {
+		return this.findByListId(Arrays.asList(roleId));
+	}
 }
