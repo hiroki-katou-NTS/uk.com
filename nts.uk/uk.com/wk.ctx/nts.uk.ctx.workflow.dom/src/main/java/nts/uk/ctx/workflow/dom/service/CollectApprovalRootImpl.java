@@ -156,7 +156,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter);
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
-		return new ApprovalRootContentOutput(ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), null);
+		return new ApprovalRootContentOutput(ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), ErrorFlag.NO_APPROVER);
 	}
 	
 	@Override

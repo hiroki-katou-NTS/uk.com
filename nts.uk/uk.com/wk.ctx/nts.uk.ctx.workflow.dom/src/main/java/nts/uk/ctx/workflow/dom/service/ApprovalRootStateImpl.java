@@ -33,11 +33,6 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 	}
 
 	@Override
-	public void update(ApprovalRootState approvalRootState) {
-		approvalRootStateRepository.update(approvalRootState);
-	}
-
-	@Override
 	public void delete(String rootStateID) {
 		approvalRootStateRepository.delete(rootStateID);
 	}

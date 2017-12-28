@@ -2,12 +2,10 @@ package nts.uk.ctx.workflow.pubimp.service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EnumType;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -22,13 +20,11 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateService;
+import nts.uk.ctx.workflow.dom.service.ApproveService;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
-import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
-import nts.uk.ctx.workflow.pub.service.export.ApplicationTypeExport;
-import nts.uk.ctx.workflow.pub.service.export.ApprovalBehaviorAtrExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
@@ -57,11 +53,14 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	
 	@Inject
 	private ApprovalRootStateRepository approvalRootStateRepository;
+	
+	@Inject
+	private ApproveService approveService;
 
 	@Override
-	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID) {
+	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate) {
 		ApprovalRootContentOutput approvalRootContentOutput = null;
-		if(Strings.isBlank(appID)){
+		if(isCreate.equals(Boolean.TRUE)){
 			approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
 					companyID, 
 					employeeID, 
@@ -95,8 +94,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 												}
 												return new ApproverStateExport(approverName, representerName);
 											}).collect(Collectors.toList()), 
-											y.getApproverID(), 
-											y.getRepresenterID(), 
+											Strings.isBlank(y.getApproverID()) ? "" : personAdapter.getPersonInfo(y.getApproverID()).getEmployeeName(), 
+											Strings.isBlank(y.getRepresenterID()) ? "" : personAdapter.getPersonInfo(y.getRepresenterID()).getEmployeeName(),
 											y.getApprovalReason());
 								}).collect(Collectors.toList()));
 					}).collect(Collectors.toList())
@@ -110,5 +109,30 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date,
 			String historyID, String appID) {
 		approvalRootStateService.insertAppRootType(companyID, employeeID, EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), date, historyID, appID);
+	}
+
+	@Override
+	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
+			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
+			GeneralDate appDate) {
+		return approveService.getNextApprovalPhaseStateMailList(
+				companyID, 
+				rootStateID, 
+				approvalPhaseStateNumber, 
+				isCreate, 
+				employeeID, 
+				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+				appDate);
+	}
+
+	@Override
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate) {
+		return approveService.doApprove(companyID, rootStateID, employeeID, isCreate, EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appDate);
+	}
+
+	@Override
+	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
+			Integer appTypeValue, GeneralDate appDate) {
+		return approveService.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appDate);
 	}
 }
