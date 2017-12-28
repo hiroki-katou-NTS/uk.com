@@ -4499,6 +4499,65 @@ var nts;
                         header.getLabel = getLabel;
                     })(header = grid.header || (grid.header = {}));
                 })(grid = ig.grid || (ig.grid = {}));
+                var tree;
+                (function (tree) {
+                    var grid;
+                    (function (grid) {
+                        function expandTo(targetKey, $treeGrid) {
+                            var option = $treeGrid.igTreeGrid("option");
+                            var ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
+                            if (ancestorKeys === null) {
+                                return;
+                            }
+                            var expand = function (currentIndex) {
+                                if (currentIndex >= ancestorKeys.length)
+                                    return;
+                                $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
+                                setTimeout(function () { expand(currentIndex + 1); }, 0);
+                            };
+                            expand(0);
+                            setTimeout(function () {
+                                scrollTo(targetKey, $treeGrid);
+                            }, 1);
+                        }
+                        grid.expandTo = expandTo;
+                        function getScrollElement($treeGrid) {
+                            return $("#" + $treeGrid.attr("id") + "_scroll");
+                        }
+                        grid.getScrollElement = getScrollElement;
+                        function scrollTo(targetKey, $treeGrid) {
+                            var $scroll = getScrollElement($treeGrid);
+                            var $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
+                            if ($targetNode.length === 0)
+                                return;
+                            var currentScrolled = $scroll.scrollTop();
+                            $scroll.scrollTop($targetNode.position().top + currentScrolled);
+                        }
+                        grid.scrollTo = scrollTo;
+                    })(grid = tree.grid || (tree.grid = {}));
+                    var dataSource;
+                    (function (dataSource_1) {
+                        function collectAncestorKeys(targetKey, dataSource, primaryKey, childDataKey) {
+                            if (typeof dataSource === "undefined") {
+                                return null;
+                            }
+                            for (var i = 0, len = dataSource.length; i < len; i++) {
+                                var currentData = dataSource[i];
+                                if (currentData[primaryKey] === targetKey) {
+                                    return [targetKey];
+                                }
+                                var children = currentData[childDataKey];
+                                var results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
+                                if (results !== null) {
+                                    results.unshift(currentData[primaryKey]);
+                                    return results;
+                                }
+                            }
+                            return null;
+                        }
+                        dataSource_1.collectAncestorKeys = collectAncestorKeys;
+                    })(dataSource = tree.dataSource || (tree.dataSource = {}));
+                })(tree = ig.tree || (ig.tree = {}));
             })(ig = ui_1.ig || (ui_1.ig = {}));
             var smallExtensions;
             (function (smallExtensions) {
@@ -9097,6 +9156,7 @@ var nts;
                                 }
                                 $treegrid.igTreeGridSelection("clearSelection");
                                 $treegrid.igTreeGridSelection("selectRowById", singleValue);
+                                ui.ig.tree.grid.expandTo(singleValue, $treegrid);
                             }
                         }
                     };

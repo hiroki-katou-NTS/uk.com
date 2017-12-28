@@ -899,6 +899,66 @@ module nts.uk.ui {
                 }
             }
         }
+        
+        export module tree {
+            export module grid {
+                export function expandTo(targetKey: any, $treeGrid: JQuery) {
+                    let option = $treeGrid.igTreeGrid("option");
+                    let ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
+                    if (ancestorKeys === null) {
+                        return;
+                    }
+                    
+                    let expand = (currentIndex) => {
+                        if (currentIndex >= ancestorKeys.length) return;
+                        $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
+                        setTimeout(() => { expand(currentIndex + 1); }, 0);
+                    };
+                    
+                    expand(0);
+                    
+                    setTimeout(() => {
+                        scrollTo(targetKey, $treeGrid);
+                    }, 1);
+                }
+                
+                export function getScrollElement($treeGrid: JQuery): JQuery {
+                    return $("#" + $treeGrid.attr("id") + "_scroll");
+                }
+                
+                export function scrollTo(targetKey: any, $treeGrid: JQuery) {
+                    let $scroll = getScrollElement($treeGrid);
+                    let $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
+                    if ($targetNode.length === 0) return;
+                    let currentScrolled = $scroll.scrollTop();
+                    $scroll.scrollTop($targetNode.position().top + currentScrolled);
+                }
+            }
+            
+            export module dataSource {
+                export function collectAncestorKeys(targetKey: any, dataSource: any[], primaryKey: string, childDataKey: string): any[] {
+                    if (typeof dataSource === "undefined") {
+                        return null;
+                    }
+                    
+                    for (var i = 0, len = dataSource.length; i < len; i++) {
+                        let currentData: any = dataSource[i];
+                        if (currentData[primaryKey] === targetKey) {
+                            return [targetKey];
+                        }
+                        
+                        let children: any[] = currentData[childDataKey];
+                        let results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
+                        if (results !== null) {
+                            results.unshift(currentData[primaryKey]);
+                            return results;
+                        }
+                    }
+                    
+                    return null;
+                }
+            }
+        }
     }
 
     module smallExtensions {

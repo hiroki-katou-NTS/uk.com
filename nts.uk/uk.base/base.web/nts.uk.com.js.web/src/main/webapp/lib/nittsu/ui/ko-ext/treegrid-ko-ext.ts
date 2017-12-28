@@ -160,9 +160,9 @@ module nts.uk.ui.koExtentions {
                                 var container = $treegrid.igTreeGrid("scrollContainer");
                                 let totalH = _.sumBy(row2.prevAll(), function(e){ return $(e).height();});
                                 if(totalH > height - HEADER_HEIGHT) {
-                                    container.scrollTop(totalH);        
+                                    container.scrollTop(totalH);
                                 }
-                            }, 200);         
+                            }, 200);
                         }
                     } 
 //                    }
@@ -248,6 +248,8 @@ module nts.uk.ui.koExtentions {
                     }
                     $treegrid.igTreeGridSelection("clearSelection");
                     $treegrid.igTreeGridSelection("selectRowById", singleValue);
+                    
+                    ui.ig.tree.grid.expandTo(singleValue, $treegrid);
                 }
             }
         }
