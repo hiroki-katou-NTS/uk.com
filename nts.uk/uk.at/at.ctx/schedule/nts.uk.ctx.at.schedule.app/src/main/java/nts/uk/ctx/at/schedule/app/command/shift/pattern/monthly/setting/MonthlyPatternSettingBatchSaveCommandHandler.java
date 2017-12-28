@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -137,13 +136,13 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 
 			// find by id
 			Optional<WorkMonthlySetting> workMonthlySetting = this.workMonthlySettingRepository
-					.findById(companyId, command.getMonthlyPatternCode(), ymdk);
+					.findById(companyId, command.getMonthlyPatternCode(), date);
 			
 			// check day is public holiday
 			if (publicHoliday.isPresent()) {
 
 				// data public holiday setting
-				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, ymdk);
+				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, date);
 				
 				// check exist data
 				if (!workMonthlySetting.isPresent()) {
@@ -159,7 +158,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
-					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, ymdk);
+					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, date);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {
@@ -175,7 +174,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					
 					// data none statutory holiday setting
 					WorkMonthlySetting dataNoneStatutory = command
-							.toDomainNoneStatutoryHolidays(companyId, ymdk);
+							.toDomainNoneStatutoryHolidays(companyId, date);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {
@@ -191,7 +190,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					
 					// data none statutory holiday setting
 					WorkMonthlySetting dataStatutory = command.toDomainStatutoryHolidays(companyId,
-							ymdk);
+							date);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {

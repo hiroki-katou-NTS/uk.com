@@ -10,7 +10,6 @@ import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.employment.KshmtEmpMon
 @StaticMetamodel(KshmtEmpMonthDaySet.class)
 public class KshmtEmpMonthDaySet_ { 
 
-    public static volatile SingularAttribute<KshmtEmpMonthDaySet, BigDecimal> outLegalHd;
     public static volatile SingularAttribute<KshmtEmpMonthDaySet, KshmtEmpMonthDaySetPK> kshmtEmpMonthDaySetPK;
     public static volatile SingularAttribute<KshmtEmpMonthDaySet, Integer> exclusVer;
     public static volatile SingularAttribute<KshmtEmpMonthDaySet, BigDecimal> inLegalHd;

@@ -50,7 +50,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
         decision() {
             var self = this;
             if (nts.uk.text.isNullOrEmpty(self.selectUserID())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: ['ユーザー ']});
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("CAS013_19")]});
                 return;
             }
 

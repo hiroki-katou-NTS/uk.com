@@ -3178,7 +3178,10 @@ button.nts-switch-button[disabled]:hover {
 /* line 29, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
   display: inline-block;
-  line-height: 32px;
+}
+/* line 32, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper div {
+  vertical-align: middle !important;
 }
 
 /*!

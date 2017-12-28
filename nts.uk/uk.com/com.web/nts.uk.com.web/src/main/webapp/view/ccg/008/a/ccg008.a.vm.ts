@@ -92,7 +92,7 @@
             
             if(data.flowMenu != null){
                 _.map(data.flowMenu, (items) => {
-                    var html = '<img style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
+                    var html = '<iframe style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
                     listPlacement.push( new model.Placement(items.fileID, items.topPageName,
                     items.row, items.column,
                     items.widthSize, items.heightSize, null,

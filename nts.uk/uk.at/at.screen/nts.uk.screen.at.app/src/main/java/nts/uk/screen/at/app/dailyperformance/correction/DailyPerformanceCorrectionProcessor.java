@@ -189,7 +189,7 @@ public class DailyPerformanceCorrectionProcessor {
 					authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodes);
 					List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 							.collect(Collectors.toList());
-					authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
+					authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList() :  repo.findAuthorityFormatSheet(companyId, formatCodes, sheetNos);
 				}
 				if (!authorityFomatDailys.isEmpty()) {
 					lstFormat = new ArrayList<FormatDPCorrectionDto>();
@@ -436,6 +436,7 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 
 		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+		//dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
 		screenDto.setComment(dailyPerformanceDto != null && dailyPerformanceDto.getComment() != null
 				? dailyPerformanceDto.getComment() : null);
 		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
@@ -534,8 +535,9 @@ public class DailyPerformanceCorrectionProcessor {
 							if(value.equals("")){
 								value = "なし";
 							}else{
-								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getAttendanceAtr()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value));
-							    value = (codeName == null) ? "なし" : codeName.getName();
+								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getTypeGroup()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value));
+								//CodeName codeName = null;
+								value = (codeName == null) ? "なし" : codeName.getName();
 							}
 							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
 									value , String.valueOf(item.getAttendanceAtr()), "Link2"));
