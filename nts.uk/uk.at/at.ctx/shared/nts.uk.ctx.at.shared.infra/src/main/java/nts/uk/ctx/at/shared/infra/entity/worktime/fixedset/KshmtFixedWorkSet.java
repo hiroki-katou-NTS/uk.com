@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime.fixedset;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -137,7 +138,7 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 	 */
 	public KshmtWorktimeCommonSet getKshmtWorktimeCommonSet() {
 		if (CollectionUtil.isEmpty(this.lstKshmtWorktimeCommonSet)) {
-			return null;
+			this.lstKshmtWorktimeCommonSet = new ArrayList<KshmtWorktimeCommonSet>();
 		}
 		return this.lstKshmtWorktimeCommonSet.stream()
 				.filter(entityCommon -> {

@@ -112,6 +112,9 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 			
 			// set pk
 			commonEntity.setKshmtWorktimeCommonSetPK(pk);
+			
+			// add entity when empty list common.
+			this.entity.getLstKshmtWorktimeCommonSet().add(commonEntity);
 		}
 		commonSetting.saveToMemento(new JpaWorkTimezoneCommonSetSetMemento(commonEntity));
 	}
