@@ -298,9 +298,15 @@ module cps001.a.vm {
                         if (!params.showAll) {
                             self.employees(employees);
                         }
-
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
-                        self.tab.valueHasMutated();
+                        if (employees[0]) {
+                            if (employees[0].employeeId == employee.employeeId()) {
+                                employee.employeeId();
+                            } else {
+                                employee.employeeId(employees[0].employeeId);
+                            }
+                        } else {
+                            employee.employeeId(undefined);
+                        }
                     }
                 }, 0);
             });
