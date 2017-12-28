@@ -104,6 +104,35 @@ module kcp.share.list {
          * If not set, tabindex will same as spec of KCPs.
          */
         tabindex?: number;
+        
+        /**
+         * Set to display Closure Selection of not. Available for employment list only.
+         */
+        isDisplayClosureSelection?: boolean;
+        
+        /**
+         * Set to display FullClosure Option in Closure Selection of not. Available for employment list only.
+         */
+        isDisplayFullClosureOption?: boolean;
+        
+        /**
+         * Closure select type. Available for employment list only.
+         * 1. Select FullClosure option.
+         * 2. Select by selected closure code.
+         * 3. No select.
+         */
+        closureSelectionType?: ClosureSelectionType; 
+        
+        /**
+         * Selected closure code. Available for employment list only.
+         */
+        selectedClosureId?: KnockoutObservable<any>;
+    }
+    
+    export class ClosureSelectionType {
+        static SELECT_FULL_OPTION = 1;
+        static SELECT_BY_SELECTED_CODE = 2;
+        static NO_SELECT = 3;
     }
     
     export class SelectType {
@@ -148,6 +177,11 @@ module kcp.share.list {
         selectAllButton?: number;
     }
     
+    export interface ClosureItem {
+        id: number;
+        name: string;
+    }
+    
     /**
      * Screen Model.
      */
@@ -168,6 +202,12 @@ module kcp.share.list {
         targetKey: string;
         maxRows: number;
         tabIndex: TabIndex;
+        isDisplayClosureSelection: boolean;
+        closureSelectionType: ClosureSelectionType;
+        selectedClosureId: KnockoutObservable<any>;
+        isDisplayFullClosureOption: boolean;
+        closureList: KnockoutObservableArray<ClosureItem>;
+        isShowNoSelectRow: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -175,6 +215,12 @@ module kcp.share.list {
             this.isMultiple = false;
             this.componentGridId = (Date.now()).toString();
             this.alreadySettingList = ko.observableArray([]);
+            this.isDisplayClosureSelection = false;
+            this.isDisplayFullClosureOption = true;
+            this.closureSelectionType = ClosureSelectionType.NO_SELECT;
+            this.closureList = ko.observableArray([]);
+            var self = this;
+            
         }
         /**
          * Init component.
@@ -194,6 +240,19 @@ module kcp.share.list {
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
+            self.isShowNoSelectRow = data.isShowNoSelectRow;
+            
+            // Init data for employment list component.
+            if (data.listType == ListType.EMPLOYMENT && data.isDisplayClosureSelection) {
+                self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
+                self.selectedClosureId.subscribe(id => {
+                    self.reloadEmployment(id);
+                })
+                self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
+                self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
+                self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
+                self.initSelectClosureOption(data);
+            }
             self.initGridStyle(data);
             if (data.maxWidth && data.maxWidth <= 350) {
                 data.maxWidth = 350;
@@ -260,6 +319,27 @@ module kcp.share.list {
         }
         
         /**
+         * Inint Closure Selection Type.
+         */
+        private initSelectClosureOption(data: ComponentOption) {
+            var self = this;
+            switch(data.closureSelectionType) {
+                case ClosureSelectionType.SELECT_FULL_OPTION:
+                    if (data.isDisplayFullClosureOption) {
+                        self.selectedClosureId(0);
+                    }
+                    break;
+                case ClosureSelectionType.SELECT_BY_SELECTED_CODE:
+                    break;
+                case ClosureSelectionType.NO_SELECT:
+                    self.selectedClosureId(data.isDisplayFullClosureOption ? 0 : 1);
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        /**
          * Init component.
          */
         private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) :JQueryPromise<void>{
@@ -278,14 +358,8 @@ module kcp.share.list {
                 })
             }
             self.itemList(dataList);
-            
-            // Remove No select row.
-            self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
-            
-            // Check is show no select row.
-            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
-                self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
-            }
+            self.initNoSelectRow(data.isShowNoSelectRow);
+             
             
             // Init component.
             var fields: Array<string> = ['name', 'code'];
@@ -345,6 +419,20 @@ module kcp.share.list {
                 return false;
             }
             return dfd.promise();
+        }
+        
+        /**
+         * Add No select row to list
+         */
+        private initNoSelectRow(isShowNoSelectRow: boolean) {
+            var self = this;
+            // Remove No select row.
+            self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
+            
+            // Check is show no select row.
+            if (isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
+                self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+            }
         }
         
         /**
@@ -495,7 +583,7 @@ module kcp.share.list {
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
-            var totalHeight: number = this.hasBaseDate ? 101 : 55;
+            var totalHeight: number = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
             codeColumnSize = data.maxWidth ? '25%': codeColumnSize;
             var nameColumnSize = data.maxWidth ? '35%' : 170;
             var workplaceColumnSize = data.maxWidth ? '25%' : 150;
@@ -516,9 +604,32 @@ module kcp.share.list {
          * Find data list.
          */
         private findDataList(listType: ListType):JQueryPromise<Array<UnitModel>> {
+            var self = this;
+            var dfd = $.Deferred<any>();
             switch(listType) {
                 case ListType.EMPLOYMENT:
-                    return service.findEmployments();
+                    if (self.isDisplayClosureSelection) {
+                        // Find all closure in current month.
+                        service.findAllClosure().done((items: ClosureItem[]) => {
+                            items = _.sortBy(items, item => item.id);
+                            self.closureList(items);
+                            // if show FullClosureOption -> add option.
+                            if (self.isDisplayFullClosureOption) {
+                                self.closureList.unshift({id: 0, name: nts.uk.resource.getText('CCG001_64')})
+                            }
+                            var selectedClosure = 0;
+                            if (!self.selectedClosureId()) {
+                                selectedClosure = self.closureList().length > 1 ? self.closureList()[0].id : 0;
+                            } else {
+                                selectedClosure = self.selectedClosureId();
+                            }
+                            service.findEmployments(selectedClosure).done(data => {
+                                dfd.resolve(data);
+                            });
+                        })
+                        return dfd.promise();
+                    } 
+                    return service.findEmployments(0);
                 case ListType.JOB_TITLE:
                     return service.findJobTitles(this.baseDate());
                 case ListType.Classification:
@@ -553,7 +664,24 @@ module kcp.share.list {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
                 self.itemList(data);
+                self.initNoSelectRow(self.isShowNoSelectRow);
+                self.selectedCodes(null);
             });
+        }
+        
+        /**
+         * Reload employment.
+         */
+        private reloadEmployment(closureId: number) {
+            var self = this;
+            service.findEmployments(closureId).done(function(data: UnitModel[]) {
+                if (self.alreadySettingList) {
+                    self.addAreadySettingAttr(data, self.alreadySettingList());
+                }
+                self.itemList(data);
+                self.initNoSelectRow(self.isShowNoSelectRow);
+                self.selectedCodes(null);
+            })
         }
         
         /**
@@ -592,13 +720,36 @@ module kcp.share.list {
             findEmployments: "bs/employee/employment/findAll/",
             findJobTitles: 'bs/employee/jobtitle/findAll',
             findClassifications: 'bs/employee/classification/findAll',
+            findAllClosureItems: 'ctx/at/shared/workrule/closure/findClosureListByCurrentMonth',
+            findEmploymentByClosureId: 'ctx/at/shared/workrule/closure/findEmpByClosureId/',
+            findEmploymentByCodes: 'bs/employee/employment/findByCodes'
         }
         
         /**
          * Find Employment list.
          */
-        export function findEmployments(): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax('com', servicePath.findEmployments);
+        export function findEmployments(closureId: number): JQueryPromise<Array<UnitModel>> {
+            
+            // Find Employment Closure.
+            var dfd = $.Deferred<Array<UnitModel>>();
+            nts.uk.request.ajax('at', servicePath.findEmploymentByClosureId + closureId).done(function(empList: Array<any>) {
+                if (empList && empList.length > 0) {
+                    // Find by employment codes.
+                    nts.uk.request.ajax('com', servicePath.findEmploymentByCodes, empList).done(data => {
+                        dfd.resolve(data);
+                    })
+                    return dfd.promise();
+                }
+                dfd.resolve([])
+            })
+            return dfd.promise();
+        }
+        
+        /**
+         * Find Closure list.
+         */
+        export function findAllClosure(): JQueryPromise<Array<ClosureItem>> {
+            return nts.uk.request.ajax('at', servicePath.findAllClosureItems);
         }
         
         /**

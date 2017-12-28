@@ -76,8 +76,9 @@ module nts.uk.ui {
             _.defer(() => _start.call(__viewContext));
             
             // Menu
-            if ($(document).find("#header").length > 0)
-                nts.uk.ui.menu.request();
+            if ($(document).find("#header").length > 0) {
+                menu.request();
+            }
         });
     }
 }

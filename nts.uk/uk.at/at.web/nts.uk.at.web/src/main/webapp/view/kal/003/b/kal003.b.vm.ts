@@ -35,44 +35,50 @@ module nts.uk.at.view.kal003.b{
                     , continuousPeriod:                 0
                     , targetWorkingHoursCd:             ''
                     , targetWorkingHoursTimeZoneSelection: ''
-                    , compoundCondition: null
+                    , compoundCondition: this.initCompoundCondition
                     
             }));
             // list item check
-            listTypeCheckWorkRecords    : KnockoutObservableArray<any> = ko.observableArray([]);
-            listSingleValueCompareTypes : KnockoutObservableArray<any> = ko.observableArray([]);
-            listRangeCompareTypes       : KnockoutObservableArray<any> = ko.observableArray([]);
-            listCompareTypes            : KnockoutObservableArray<any> = ko.observableArray([]);
-            itemListTargetServiceType_BA1_2         : KnockoutObservableArray<any> = ko.observableArray([]);
-            itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<any> = ko.observableArray([]);
-            itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<any> = ko.observableArray([]);
-            hasGroup2 :  KnockoutObservable<boolean> =  ko.observable(false);
+            listTypeCheckWorkRecords    : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            listSingleValueCompareTypes : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            listRangeCompareTypes       : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            listCompareTypes            : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            itemListTargetServiceType_BA1_2         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+
             private defaultSetting: model.ISetting = {
                 category: 1,
                 typeCheckWorkRecord: 0,
                 errAlaAttendanceItemConditionId: ''
             };
-            targetServiceTypeSelected_BA1_2 : KnockoutObservable<string> = ko.observable('0');
-            targetSelectionRangeSelected_BA1_5 : KnockoutObservable<string> = ko.observable('0');
+            targetServiceTypeSelected_BA1_2 : KnockoutObservable<string> = ko.observable('1');
+            targetSelectionRangeSelected_BA1_5 : KnockoutObservable<string> = ko.observable('1');
             targetSelectionRangeSelected_BA1_5_target_working_hours : KnockoutObservable<string> = ko.observable('0');
             private setting: model.ISetting;
-            swANDOR_B5_3: KnockoutObservableArray<any> = ko.observableArray([]);
-            swANDOR_B6_3: KnockoutObservableArray<any> = ko.observableArray([]);
-            swANDOR_B7_2: KnockoutObservableArray<any> = ko.observableArray([]);
-
+            swANDOR_B5_3: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            swANDOR_B6_3: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            swANDOR_B7_2: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+            enableComparisonMaxValue : KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 let self = this,
                 currentErrAlaAttendanceItemCondition = self.currentErrAlaAttendanceItemCondition();
                 var option = windows.getShared('dataKal003b');
                 self.setting = $.extend({}, self.defaultSetting, option);
-    
+
                 currentErrAlaAttendanceItemCondition.typeCheckWorkRecord(self.setting.typeCheckWorkRecord || self.defaultSetting.typeCheckWorkRecord);
                 // change select item check
                 currentErrAlaAttendanceItemCondition.typeCheckWorkRecord.subscribe((itemCheck) => {
-                    self.initialScreen();
-                    self.showAndHide();
+                    if (itemCheck && itemCheck != undefined) {
+                        self.initialScreen();
+                        self.showAndHide();
+                    }
                 });
-                self.hasGroup2.subscribe((item) => {
+                currentErrAlaAttendanceItemCondition.comparisonOperatorId.subscribe((comparisonOperatorId) => {
+                    self.settingEnableComparisonMaxValueField();
+                });
+
+                currentErrAlaAttendanceItemCondition.compoundCondition().hasGroup2.subscribe((item) => {
                     // show group 2
                     if (item === true) {
                         $('#div_b6_2').show();
@@ -101,6 +107,7 @@ module nts.uk.at.view.kal003.b{
                         //});
                     }
                     self.showAndHide();
+                    self.settingEnableComparisonMaxValueField();
                     dfd.resolve();
                });
                 
@@ -159,18 +166,14 @@ module nts.uk.at.view.kal003.b{
                     $('#div_compound_condition').show();
                     break;
                 default:
-                    $('#div_target_service_type_ba1').hide();
-                    $('#ba1_2').hide();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').hide();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').hide();
-                    $('#div_compound_condition').hide();
                     break;
                 }
             }
             
-            
+            private settingEnableComparisonMaxValueField() {
+                let self = this;
+                self.enableComparisonMaxValue(self.currentErrAlaAttendanceItemCondition().comparisonOperatorId() > 5);
+            }
             // initial screen
             private initialScreen() : JQueryPromise<any> {
                 let self = this,
@@ -258,25 +261,27 @@ module nts.uk.at.view.kal003.b{
                         service.getEnumTargetSelectionRange(),
                         service.getEnumTargetServiceType(),
                         service.getEnumLogicalOperator()).done((
-                                listSingleValueCompareTypse,
-                                lstRangeCompareType,
-                                listTypeCheckWorkRecord,
-                                listTargetSelectionRange,
-                                listTargetServiceType,
-                                listLogicalOperator) => {
-                       self.listSingleValueCompareTypes.push(listSingleValueCompareTypse);
-                       self.listRangeCompareTypes.push(lstRangeCompareType);
-                        self.listTypeCheckWorkRecords.push(listTypeCheckWorkRecord);
-                        self.itemListTargetSelectionRange_BA1_5.push(listTargetSelectionRange);
-                        self.itemListTargetSelectionRange_BA1_5_target_working_hours.push(listTargetSelectionRange);
-                        self.itemListTargetServiceType_BA1_2.push(listTargetServiceType);
-                        self.buildlistCompareTypes();
+                                listSingleValueCompareTypse : Array<model.EnumModel>,
+                                lstRangeCompareType : Array<model.EnumModel>,
+                                listTypeCheckWorkRecord : Array<model.EnumModel>,
+                                listTargetSelectionRange : Array<model.EnumModel>,
+                                listTargetServiceType : Array<model.EnumModel>,
+                                listLogicalOperator : Array<model.EnumModel>) => {
+                        self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
+                        self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
+                        self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
+                        var listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
+                        self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
+                        self.itemListTargetSelectionRange_BA1_5_target_working_hours(listTargetRangeWithName);
+                        self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
+                        self.buildListCompareTypes();
+                        var listANDOR = self.getLocalizedNameForEnum(listLogicalOperator)
                       //ENUM 論理演算子
-                        self.swANDOR_B5_3 = ko.observableArray(listLogicalOperator);
+                        self.swANDOR_B5_3 = ko.observableArray(listANDOR);
                         //ENUM 論理演算子
-                        self.swANDOR_B6_3 = ko.observableArray(listLogicalOperator);
+                        self.swANDOR_B6_3 = ko.observableArray(listANDOR);
                       //ENUM 論理演算子
-                        self.swANDOR_B7_2 = ko.observableArray(listLogicalOperator);
+                        self.swANDOR_B7_2 = ko.observableArray(listANDOR);
                         dfd.resolve();
                    
                 }).always(() => {
@@ -285,10 +290,23 @@ module nts.uk.at.view.kal003.b{
                 return dfd.promise();
             }
             
-            private buildlistCompareTypes() {
+            private buildListCompareTypes() {
                 let self = this;
-                self.listCompareTypes = ([]); //.push(self.listSingleValueCompareTypes);
-                self.listCompareTypes.concat(self.listSingleValueCompareTypes, self.listRangeCompareTypes);
+                var listCompareTypes = self.listSingleValueCompareTypes().concat(self.listRangeCompareTypes());
+                self.listCompareTypes(listCompareTypes);
+                
+            }
+            
+            private getLocalizedNameForEnum(listEnum : Array<model.EnumModel>) : Array<model.EnumModel> {
+                if (listEnum) {
+                    for (var i = 0, len = listEnum.length; i < len; i++) {
+                        if (listEnum[i].localizedName) {
+                            listEnum[i].localizedName = resource.getText(listEnum[i].localizedName);
+                        }
+                    }
+                    return listEnum;
+                }
+                return [];
             }
          // ============build enum for combobox BA2-5: end ==============
             // ===========common end =====================
@@ -335,10 +353,10 @@ module nts.uk.at.view.kal003.b{
                     case enItemCheck.CountinuousTime: // 連続時間
                         
                         self.initialDailyItemChkCountinuousTime().done((x) => {
-                                        dfd.resolve();
-                                    }).always(() => {
-                                        dfd.resolve();
-                                    });
+                                            dfd.resolve();
+                                        }).always(() => {
+                                            dfd.resolve();
+                                        });
                         break;
                     case enItemCheck.CountinuousWork: // 連続時間帯
                         
@@ -461,7 +479,7 @@ module nts.uk.at.view.kal003.b{
             private initialDailyItemChkCountinuousTime() : JQueryPromise<any> {
                 let self = this,
                 dfd = $.Deferred();
-                dfd.resovle();
+                dfd.resolve();
                 return dfd.promise();
             }
             //TODO
@@ -542,14 +560,32 @@ module nts.uk.at.view.kal003.b{
         CountinuousTimeZone = 6, // 連続時間帯
         CompoundCondition   = 7// 複合条件
     }
-    //module model
+    module model {
         //Class Input parameter
         export interface ISetting {
             category: number;
             typeCheckWorkRecord: number; //item check
             errAlaAttendanceItemConditionId: string;
         }
-
+        
+        export interface IEnumModel {
+            value : number;
+            fieldName: string;
+            localizedName: string;
+        }
+        
+        export class EnumModel {
+            value : KnockoutObservable<number>;
+            fieldName: string;
+            localizedName: string;
+            constructor(param: IEnumModel) {
+                let self = this;
+                self.value =  ko.observable(param.value || -1);
+                self.fieldName = param.fieldName || '';
+                self.localizedName = param.localizedName || '';
+            }
+        }
+        
         //Condition of group (C screen)
         export interface ICondition{
             itemCheck:  number;
@@ -676,7 +712,8 @@ module nts.uk.at.view.kal003.b{
                 self.comparisonMinValue = ko.observable(param.comparisonMinValue || '');
                 self.comparisonMaxValue = ko.observable(param.comparisonMaxValue || '');
                 self.continuousPeriod = ko.observable(param.continuousPeriod || 0);
-                self.targetWorkingHoursCd = ko.observable(param.targetWorkingHoursTimeZoneSelection || '');
+                self.targetWorkingHoursCd = ko.observable(param.targetWorkingHoursCd || '');
+                self.targetWorkingHoursTimeZoneSelection = ko.observable(param.targetWorkingHoursTimeZoneSelection || '');
                 self.compoundCondition = ko.observable(param.compoundCondition);
             }
         }

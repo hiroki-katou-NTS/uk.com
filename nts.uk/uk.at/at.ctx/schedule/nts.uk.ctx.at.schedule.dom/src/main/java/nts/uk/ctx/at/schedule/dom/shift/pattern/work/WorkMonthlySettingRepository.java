@@ -4,9 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * The Interface WorkMonthlySettingRepository.
@@ -37,7 +38,7 @@ public interface WorkMonthlySettingRepository  {
 	 * @return the optional
 	 */
 	public Optional<WorkMonthlySetting> findById(String companyId, String monthlyPatternCode, 
-			int baseDate);
+			GeneralDate baseDate);
 	
 	
 	/**
@@ -50,7 +51,7 @@ public interface WorkMonthlySettingRepository  {
 	 * @return the list
 	 */
 	public List<WorkMonthlySetting> findByStartEndDate(String companyId, String monthlyPatternCode,
-			int startDate, int endDate);
+			GeneralDate startDate, GeneralDate endDate);
 	
 	
 	/**
@@ -61,7 +62,7 @@ public interface WorkMonthlySettingRepository  {
 	 * @param baseDates the base dates
 	 * @return the list
 	 */
-	public List<WorkMonthlySetting> findByYMD(String companyId, String monthlyPatternCode, List<BigDecimal> baseDates);
+	public List<WorkMonthlySetting> findByYMD(String companyId, String monthlyPatternCode, List<GeneralDate> baseDates);
 	
 	
 	/**

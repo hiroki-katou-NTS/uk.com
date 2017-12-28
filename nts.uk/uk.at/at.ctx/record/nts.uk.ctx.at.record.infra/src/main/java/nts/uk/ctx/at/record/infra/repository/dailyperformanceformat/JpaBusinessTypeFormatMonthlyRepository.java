@@ -20,6 +20,8 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	private static final String UPDATE_BY_KEY;
 
 	private static final String REMOVE_EXIST_DATA;
+	
+	private static final String IS_EXIST_DATA;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -42,6 +44,14 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
 		builderString.append("WHERE a.krcmtBusinessTypeMonthlyPK.attendanceItemId IN :attendanceItemIds ");
 		REMOVE_EXIST_DATA = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KrcmtBusinessTypeMonthly a ");
+		builderString
+				.append("WHERE a.krcmtBusinessTypeMonthlyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeMonthlyPK.businessTypeCode = :businessTypeCode ");
+		IS_EXIST_DATA = builderString.toString();
 	}
 
 	@Override
@@ -72,6 +82,12 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 	@Override
 	public void add(List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds) {
 		businessTypeFormatMonthlyAdds.forEach(f -> this.commandProxy().insert(toEntity(f)));
+	}
+
+	@Override
+	public boolean checkExistData(String companyId, String businessTypeCode) {
+		return this.queryProxy().query(IS_EXIST_DATA, long.class).setParameter("companyId", companyId)
+				.setParameter("businessTypeCode", businessTypeCode).getSingle().get() > 0;
 	}
 
 	private static BusinessTypeFormatMonthly toDomain(KrcmtBusinessTypeMonthly krcmtBusinessTypeMonthly) {

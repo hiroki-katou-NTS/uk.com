@@ -59,6 +59,21 @@
 											enable: true}"></div>
 											
 						</div>
+						
+						<div style="margin-left: 10px; padding-top: 10px">
+							<div data-bind="ntsCheckBox:{checked: isDisplayClosureSelection}">Display Closure Selection</div>
+							<br></br>
+							<com:ko tag="if" bind="isDisplayClosureSelection()">
+								<div data-bind="ntsCheckBox:{checked: isDisplayFullClosureOption}">Display Full Closure Option</div>
+								<br></br>
+								<div id="selection-type" data-bind="ntsRadioBoxGroup: {
+											options: selectClosureTypeList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: closureSelectionType,
+											enable: true}"></div>
+							</com:ko>
+						</div>
 
 						<div style="margin-left: 10px; padding-top: 10px">
 							<p>

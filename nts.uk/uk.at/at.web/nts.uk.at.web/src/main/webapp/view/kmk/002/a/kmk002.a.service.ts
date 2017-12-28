@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk002.a {
         let servicePath: any = {
             findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
             findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
-            saveOptionalItem: 'ctx/at/record/optionalitem/save',
+            saveOptionalItem: 'ctx/at/shared/workrule/closure/findClosureListByCurrentMonth',
             getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
         };
 
