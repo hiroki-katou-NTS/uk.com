@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pub.grant;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * The Interface RoleIndividualGrantExportRepo.
@@ -20,7 +20,7 @@ public interface RoleIndividualGrantExportRepo {
 	 */
 	RoleIndividualGrantExport getByUserAndRoleType(String userId,Integer roleType);
 		
-	Optional<RoleIndividualGrantExport> getByUser(String userId);
+	List<RoleIndividualGrantExport> getByUser(String userId);
 	
 	
 }
