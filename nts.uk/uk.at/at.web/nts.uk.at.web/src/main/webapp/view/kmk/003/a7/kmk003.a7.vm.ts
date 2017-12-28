@@ -7,23 +7,23 @@ module a7 {
     class ScreenModel {
 
         tabMode: KnockoutObservable<TabMode>;
-        
+
         mainSettingModel: KnockoutObservable<MainSettingModel>;
         fixTableOptionForFixedOrDiffTime: any;
         fixTableOptionForFlowOrFlexUse: any;
         fixTableOptionForFlowOrFlexNotUse1: any;
         fixTableOptionForFlowOrFlexNotUse2: any;
- 
+
         dataSourceForFixedOrDiffTime: KnockoutObservableArray<any>;
         dataSourceForFlowOrFlexUse: KnockoutObservableArray<any>;
         dataSourceForFlowOrFlexNotUse1: KnockoutObservableArray<any>;
         dataSourceForFlowOrFlexNotUse2: KnockoutObservableArray<any>;
-        
+
         isFlowOrFlex: KnockoutObservable<boolean>;
-        
+
         useFixedRestTimeOptions: KnockoutObservableArray<any>;
         useFixedRestTime: KnockoutObservable<number>;
-        
+
         isFixedRestTime: KnockoutObservable<boolean>;
         isFlexOrFlowNotUse: KnockoutObservable<boolean>;
         /**
@@ -31,12 +31,12 @@ module a7 {
         */
         constructor(tabMode: any, enumSetting: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
             let self = this;
-            
+
             self.tabMode = tabMode;
-            
+
             //main model
             self.mainSettingModel = ko.observable(mainSettingModel);
-            
+
             /////////////
             self.dataSourceForFixedOrDiffTime = ko.observableArray([]);
             self.dataSourceForFixedOrDiffTime.subscribe((newList) => {
@@ -52,7 +52,7 @@ module a7 {
                 columns: self.columnSetting(),
                 tabindex: 92
             };
-            
+
             /////////////
             self.dataSourceForFlowOrFlexUse = ko.observableArray([]);
             self.dataSourceForFlowOrFlexUse.subscribe((newList) => {
@@ -68,7 +68,7 @@ module a7 {
                 columns: self.columnSetting(),
                 tabindex: 94
             };
-            
+
             /////////////
             self.dataSourceForFlowOrFlexNotUse1 = ko.observableArray([]);
             self.dataSourceForFlowOrFlexNotUse1.subscribe((newList) => {
@@ -84,7 +84,7 @@ module a7 {
                 columns: self.columnSetting2(),
                 tabindex: 95
             };
-            
+
             /////////////
             self.dataSourceForFlowOrFlexNotUse2 = ko.observableArray([]);
             self.dataSourceForFlowOrFlexNotUse2.subscribe((newList) => {
@@ -100,41 +100,53 @@ module a7 {
                 columns: self.columnSetting2(),
                 tabindex: 97
             };
-            
+
             //subscrible worktime ssettingmethod
             self.isFlowOrFlex = ko.computed(function() {
-                
+
                 return (mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() == EnumWorkForm.FLEX) || (mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet() == SettingMethod.FLOW);
             });
-           
+
             self.useFixedRestTimeOptions = ko.observableArray([
-                { code: UseDivision.USE, name: 　nts.uk.resource.getText("KMK003_142") },
-                { code: UseDivision.NOTUSE, name: 　nts.uk.resource.getText("KMK003_143") },
+                { code: UseDivision.USE, name: nts.uk.resource.getText("KMK003_142") },
+                { code: UseDivision.NOTUSE, name: nts.uk.resource.getText("KMK003_143") },
             ]);
             self.useFixedRestTime = ko.observable(1);
-            
-            self.isFixedRestTime = ko.computed(function(){
+
+            self.isFixedRestTime = ko.computed(function() {
                 return self.useFixedRestTime() == UseDivision.USE && self.isFlowOrFlex();
             });
             self.isFlexOrFlowNotUse = ko.computed(function() {
                 return self.useFixedRestTime() == UseDivision.NOTUSE && self.isFlowOrFlex();
             });
-            
-            
+
+
         }
 
         private loadDataToScreen(mainSettingModel: MainSettingModel) {
-            let self =this;
-            
-            //TODO recheck 
+            let self = this;
+
+            //to screen 
             self.dataSourceForFixedOrDiffTime = mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone;
-            //TODO check 休憩時間を固定にする=true
-            self.dataSourceForFlowOrFlexUse = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones;
-            //TODO check 休憩時間を固定にする=false
-            self.dataSourceForFlowOrFlexNotUse1 = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets;
-            //TODO check 休憩時間を固定にする=false
-//            self.dataSourceForFlowOrFlexNotUse1 = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone;
-            
+            //when UI change
+            self.dataSourceForFixedOrDiffTime.subscribe((v) => mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(v));
+
+            //休憩時間を固定にする=true
+            if (mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime) {
+                self.dataSourceForFlowOrFlexUse = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones;
+                self.dataSourceForFlowOrFlexUse.subscribe((v) => mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(v));
+            }
+            else {//休憩時間を固定にする=false
+
+                self.dataSourceForFlowOrFlexNotUse1 = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets;
+                self.dataSourceForFlowOrFlexNotUse1.subscribe((v) => mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(v));
+
+                self.dataSourceForFlowOrFlexNotUse2 = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
+                self.dataSourceForFlowOrFlexNotUse2.subscribe((v) => mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet(v));
+            }
+
+            //TODO not care difftime or flow
+
         }
         private columnSetting(): Array<any> {
             let self = this;
@@ -144,7 +156,7 @@ module a7 {
                         required: true, enable: true, inputFormat: 'time'}"/>`}
             ];
         }
-        
+
         private columnSetting2(): Array<any> {
             let self = this;
             return [
