@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceIt
 @Data
 public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 
+	//TODO: item id not map
 	/** 社員ID: 社員ID */
 	private String employeeId;
 

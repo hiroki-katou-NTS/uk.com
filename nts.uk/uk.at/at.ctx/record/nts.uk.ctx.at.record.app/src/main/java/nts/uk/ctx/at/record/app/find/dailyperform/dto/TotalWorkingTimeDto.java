@@ -7,11 +7,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryFrameTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /** 日別実績の総労働時間 */
 @Data
@@ -118,5 +127,42 @@ public class TotalWorkingTimeDto {
 				null, 
 				null, 
 				domain.getWorkTimes().v());
+	}
+	
+	public TotalWorkingTime toDomain() {
+		return new TotalWorkingTime(new AttendanceTime(totalWorkingTime), new AttendanceTime(totalCalcTime),
+				new AttendanceTime(actualTime), withinStatutoryTime.toDomain(), excessOfStatutoryTime.toDomain(),
+				ConvertHelper.mapTo(lateTime, (c) -> new LateTimeOfDaily(
+						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(c.getLateTime().getTime()),
+								new AttendanceTime(c.getLateTime().getCalcTime())),
+						TimeWithCalculation.createTimeWithCalculation(
+								new AttendanceTime(c.getLateDeductionTime().getTime()),
+								new AttendanceTime(c.getLateDeductionTime().getCalcTime())),
+						new WorkNo(c.getWorkNo()),
+						new TimevacationUseTimeOfDaily(new AttendanceTime(c.getBreakUse().getTimeAnnualLeaveUseTime()),
+								new AttendanceTime(c.getBreakUse().getTimeCompensatoryLeaveUseTime()),
+								new AttendanceTime(c.getBreakUse().getExcessHolidayUseTime()),
+								new AttendanceTime(c.getBreakUse().getTimeSpecialHolidayUseTime())),
+						new IntervalExemptionTime(null, null, new AttendanceTime(c.getIntervalExemptionTime())))),
+				ConvertHelper.mapTo(leaveEarlyTime,
+						(c) -> new LeaveEarlyTimeOfDaily(
+								TimeWithCalculation.createTimeWithCalculation(
+										new AttendanceTime(c.getLeaveEarlyTime().getTime()),
+										new AttendanceTime(c.getLeaveEarlyTime().getCalcTime())),
+								TimeWithCalculation.createTimeWithCalculation(
+										new AttendanceTime(c.getLeaveEarlyDeductionTime().getTime()),
+										new AttendanceTime(c.getLeaveEarlyDeductionTime().getCalcTime())),
+								new WorkNo(c.getWorkTimes()),
+								new TimevacationUseTimeOfDaily(new AttendanceTime(c.getValicationUseTime().getTimeAnnualLeaveUseTime()),
+										new AttendanceTime(c.getValicationUseTime().getTimeCompensatoryLeaveUseTime()),
+										new AttendanceTime(c.getValicationUseTime().getExcessHolidayUseTime()),
+										new AttendanceTime(c.getValicationUseTime().getTimeSpecialHolidayUseTime())),
+								new IntervalExemptionTime(null, null, new AttendanceTime(c.getIntervalExemptionTime()))
+								)),
+				null, null, null, new WorkTimes(workTimes),
+				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime,
+						(c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getWorkNo()),
+								new AttendanceTime(c.getTemporaryTime()),
+								new AttendanceTime(c.getTemporaryNightTime())))));
 	}
 }

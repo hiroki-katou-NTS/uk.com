@@ -81,9 +81,12 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 			}
 			entity.listAvailableRole = newListRole;
 
-			entity.targetCondition.filterByBusinessType = domain.getExtractTargetCondition().isFilterByBusinessType() ? 1 : 0;
-			entity.targetCondition.filterByClassification = domain.getExtractTargetCondition().isFilterByClassification() ? 1 : 0;
-			entity.targetCondition.filterByEmployment = domain.getExtractTargetCondition().isFilterByEmployment() ? 1 : 0;
+			entity.targetCondition.filterByBusinessType = domain.getExtractTargetCondition().isFilterByBusinessType()
+					? 1 : 0;
+			entity.targetCondition.filterByClassification = domain.getExtractTargetCondition()
+					.isFilterByClassification() ? 1 : 0;
+			entity.targetCondition.filterByEmployment = domain.getExtractTargetCondition().isFilterByEmployment() ? 1
+					: 0;
 			entity.targetCondition.filterByJobTitle = domain.getExtractTargetCondition().isFilterByJobTitle() ? 1 : 0;
 
 			this.commandProxy().update(entity);
@@ -92,13 +95,13 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 	}
 
 	// When alarm check condition by category is deleted
-	// Delete the "time item check of work record (勤務実績の勤怠項目チェック)" and "error
-	// item condition of time item (勤怠項目のエラーアラーム条件)"
+	// Delete the "time item check of work record (勤務実績の勤怠項目チェック)"
+	// and "error item condition of time item (勤怠項目のエラーアラーム条件)" (da co trong workrecord/erroralarm/condition/attendanceitem)
 	// linked to error work alarm check ID of work record
 	@Override
 	public void delete(AlarmCheckConditionByCategory domain) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().remove(KfnmtAlarmCheckConditionCategory.class, new KfnmtAlarmCheckConditionCategoryPk(
+				domain.getCompanyId(), domain.getCategory().value, domain.getCode().v()));
 	}
 
 	@Override

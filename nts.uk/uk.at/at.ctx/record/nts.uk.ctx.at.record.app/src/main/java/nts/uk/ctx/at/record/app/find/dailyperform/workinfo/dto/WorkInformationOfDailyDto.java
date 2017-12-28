@@ -29,4 +29,12 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 	
 	private GeneralDate date;
 
+	private int calculationState;
+
+	// 直行区分
+	private int goStraightAtr;
+
+	// 直帰区分
+	private int backStraightAtr;
+
 }

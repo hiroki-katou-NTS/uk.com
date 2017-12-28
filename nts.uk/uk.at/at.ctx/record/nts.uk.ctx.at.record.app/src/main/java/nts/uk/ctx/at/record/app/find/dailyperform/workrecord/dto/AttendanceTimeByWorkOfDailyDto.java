@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceIt
 @AttendanceItemRoot(rootName = "日別実績の作業別勤怠時間")
 public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem {
 
+	//TODO: not map item id
 	/** 社員ID: 社員ID */
 	private String employeeId;
 

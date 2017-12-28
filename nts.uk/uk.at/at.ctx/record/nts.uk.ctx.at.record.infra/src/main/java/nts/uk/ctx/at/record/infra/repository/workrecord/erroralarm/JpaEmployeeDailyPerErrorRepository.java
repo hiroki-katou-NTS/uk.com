@@ -59,4 +59,9 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		return null;
 	}
 
+	@Override
+	public void update(EmployeeDailyPerError employeeDailyPerformanceError) {
+		this.commandProxy().updateAll(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
+	}
+
 }

@@ -485,27 +485,27 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(dataIsNotNull) {
                     if(conditionNo === 1){
-                        $('.a9_1').hide();
+                        self.showLblSet01(true);
                     } else if(conditionNo === 2){
-                        $('.a9_2').hide();
+                        self.showLblSet02(true);
                     } else if(conditionNo === 3){
-                        $('.a9_3').hide();
+                        self.showLblSet03(true);
                     } else if(conditionNo === 4){
-                        $('.a9_4').hide();
+                        self.showLblSet04(true);
                     } else if(conditionNo === 5){
-                        $('.a9_5').hide();
+                        self.showLblSet05(true);
                     }
                 } else {
                     if(conditionNo === 1){
-                        $('.a9_1').show();
+                        self.showLblSet01(false);
                     } else if(conditionNo === 2){
-                        $('.a9_2').show();
+                        self.showLblSet02(false);
                     } else if(conditionNo === 3){
-                        $('.a9_3').show();
+                        self.showLblSet03(false);
                     } else if(conditionNo === 4){
-                        $('.a9_4').show();
+                        self.showLblSet04(false);
                     } else if(conditionNo === 5){
-                        $('.a9_5').show();
+                        self.showLblSet05(false);
                     }
                 }
                 
@@ -524,19 +524,19 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 return false;
             }
             
-            if(conditionNo === 1 && self.conditionValue01() === ""){
+            if(conditionNo === 1 && nts.uk.text.isNullOrEmpty(self.conditionValue01())){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 2 && self.useCls02() && self.conditionValue02() === ""){
+            } else if(conditionNo === 2 && self.useCls02() && nts.uk.text.isNullOrEmpty(self.conditionValue02())){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 3 && self.useCls03() && self.conditionValue03() === ""){
+            } else if(conditionNo === 3 && self.useCls03() && nts.uk.text.isNullOrEmpty(self.conditionValue03())){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 4 && self.useCls04() && self.conditionValue04() === ""){
+            } else if(conditionNo === 4 && self.useCls04() && nts.uk.text.isNullOrEmpty(self.conditionValue04())){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 5 && self.useCls05() && self.conditionValue05() === ""){
+            } else if(conditionNo === 5 && self.useCls05() && nts.uk.text.isNullOrEmpty(self.conditionValue05())){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
             }

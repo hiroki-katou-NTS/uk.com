@@ -97,6 +97,7 @@ module nts.uk.ui.koExtentions {
                 startDate: startDate,
                 endDate: endDate,
                 autoHide: autoHide,
+                weekStart: 0,
             }).data("dateNormalizer", DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
                                 .fiscalMonthsMode(data.fiscalMonthsMode)
                                 .setDefaultCss(data.defaultClass || ""));
