@@ -47,7 +47,7 @@ public class UpdateCompanyInforCommand {
 		private String contractCd;
 		
 		/** 法人マイナンバー */
-		private BigDecimal taxNo;
+		private String taxNo;
 		
 		private AddInforCommand addinfor;
 		

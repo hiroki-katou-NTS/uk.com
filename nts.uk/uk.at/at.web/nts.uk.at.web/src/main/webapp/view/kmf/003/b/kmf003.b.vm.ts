@@ -188,6 +188,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             
             // if no data then return
             if (grantHolidayTblList == null || grantHolidayTblList.length == 0) {
+                nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", false);
                 nts.uk.ui.windows.close();    
                 return;
             }
@@ -200,6 +201,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             }
         
             service.addYearHolidayGrant(dataTranfer).done(function(){
+                nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                 nts.uk.ui.windows.close();
             }).fail(function(error){
                 nts.uk.ui.dialog.alertError(error.message);    
@@ -210,6 +212,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          * Close dialog.
          */
         cancel() {
+            var calcelData = nts.uk.ui.windows.getShared("KMF003_CANCEL_DATA");
+            nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", calcelData);
             nts.uk.ui.windows.close();
         }
         

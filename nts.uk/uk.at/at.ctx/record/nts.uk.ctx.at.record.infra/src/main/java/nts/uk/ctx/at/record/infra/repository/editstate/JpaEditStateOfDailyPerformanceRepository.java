@@ -66,7 +66,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("FROM KrcdtDailyRecEditSet a ");
 		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
-		return this.queryProxy().namedQuery(builderString.toString(), KrcdtDailyRecEditSet.class)
+		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
 				.setParameter("employeeId", employeeId).setParameter("ymd", ymd)
 				.getList(c -> new EditStateOfDailyPerformance(c.krcdtDailyRecEditSetPK.employeeId,
 						c.krcdtDailyRecEditSetPK.attendanceItemId, c.krcdtDailyRecEditSetPK.processingYmd,

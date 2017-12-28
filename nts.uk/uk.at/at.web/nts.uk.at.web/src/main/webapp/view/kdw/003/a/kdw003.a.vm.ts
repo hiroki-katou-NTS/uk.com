@@ -348,6 +348,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred();
             service.addAndUpdate(dataChangeProcess).done((data) => {
                 alert("done");
+                self.btnExtraction_Click();
                 dfd.resolve();
             }).fail((data) => {
                 alert("fail");

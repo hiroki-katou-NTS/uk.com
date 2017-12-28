@@ -24,6 +24,24 @@ module nts.uk.at.view.kmk013.h {
                 dfd.resolve();
                 return dfd.promise();
             }
+            initData(): void {
+                let self = this;
+                service.findByCompanyId().done((data) => {
+                    self.selectedRuleCode1(data.managementOfEntrance);
+                    self.selectedRuleCode2(data.reflectWorkingTimeClass);
+                });
+            }
+            save(): void {
+                let self = this;
+                var data = {};
+                data.managementOfEntrance = self.selectedRuleCode1();
+                data.reflectWorkingTimeClass = self.selectedRuleCode2();
+                service.save(data).done(
+                    () => {
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                    }
+                );
+            }
 
         }
     }
