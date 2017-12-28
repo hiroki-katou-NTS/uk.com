@@ -460,7 +460,6 @@ module nts.uk.com.view.cas005.a {
                 self.listWpkAuthoritySelect();
                 self.enableRoleCode(true);
                 self.isCopy(false);
-                errors.clearAll();
                 self.isRegister(true);
                 self.isDelete(false);
                 self.bookingScreen(0);
@@ -481,6 +480,7 @@ module nts.uk.com.view.cas005.a {
                     self.listWpkAuthoritySelect.push(temp);
                 }
                 $("#roleTypeCd").focus();
+                errors.clearAll();
             }
 
             /**

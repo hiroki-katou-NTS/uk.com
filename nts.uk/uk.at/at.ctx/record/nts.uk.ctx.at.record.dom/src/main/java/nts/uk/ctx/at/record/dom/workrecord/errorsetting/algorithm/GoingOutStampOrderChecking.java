@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,12 +65,12 @@ public class GoingOutStampOrderChecking {
 				AttendanceTime outingTime = item.getOutingTime();
 				GoingOutReason reasonForGoOut = item.getReasonForGoOut();
 				TimeActualStamp comeBack = item.getComeBack();
-				item = new OutingTimeSheet(new OutingFrameNo(new BigDecimal(outingFrameNo)), goOut, outingTimeCalculation, outingTime, reasonForGoOut, comeBack);
+				item = new OutingTimeSheet(new OutingFrameNo(outingFrameNo), goOut, outingTimeCalculation, outingTime, reasonForGoOut, comeBack);
 				outingFrameNo ++;
 			}
 			
 			List<OutingTimeSheet> outingTimeSheetsTemp = new ArrayList<>(); 
-			List<BigDecimal> frameNo = outingTimeSheets.stream().map(item -> item.getOutingFrameNo().v()).collect(Collectors.toList());
+			List<Integer> frameNo = outingTimeSheets.stream().map(item -> item.getOutingFrameNo().v()).collect(Collectors.toList());
 
 			for (OutingTimeSheet outingTimeSheet : outingTimeSheets) {
 				if (outingTimeSheet.getGoOut().getStamp().get().getTimeWithDay()

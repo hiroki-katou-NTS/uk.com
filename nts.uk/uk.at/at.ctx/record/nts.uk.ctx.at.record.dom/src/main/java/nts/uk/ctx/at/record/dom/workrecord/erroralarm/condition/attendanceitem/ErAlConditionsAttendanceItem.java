@@ -56,5 +56,9 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	public void addAtdItemConditions(List<ErAlAttendanceItemCondition<?>> conditions) {
 		this.lstErAlAtdItemCon.addAll(conditions);
 	}
+	
+	public void setGroupId(String atdItemConGroupId){
+		this.atdItemConGroupId = atdItemConGroupId;
+	}
 
 }

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.ConditionValue;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
@@ -111,7 +112,8 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 					new YearHolidayCode(t.kshstGrantConditionPK.yearHolidayCode), 
 					t.kshstGrantConditionPK.conditionNo, 
 					new ConditionValue(t.conditionValue), 
-					EnumAdaptor.valueOf(t.useConditionAtr, UseConditionAtr.class));
+					EnumAdaptor.valueOf(t.useConditionAtr, UseConditionAtr.class),
+					!CollectionUtil.isEmpty(t.yearHolidayGrants));
 		}).collect(Collectors.toList());
 		
 		return GrantHdTblSet.createFromJavaType(x.kshstGrantHdTblSetPK.companyId, 

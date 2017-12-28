@@ -99,6 +99,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         startPage(code): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             service.getAll().done((lstData) => {
                 if (lstData && lstData.length > 0) {
                     let sortedData = _.orderBy(lstData, ['code'], ['asc']);
@@ -113,6 +114,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.isNewMode(true);
                     self.selectedTab('tab-1');
                 }
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -216,13 +218,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 } else {
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.startPage(self.isNewMode() ? "U" + data.code : data.code);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
                                 $("#errorAlarmWorkRecordCode").focus();
                             }
                         });
-                        self.startPage(self.isNewMode() ? "U" + data.code : data.code);
                     });
                 }
             }
@@ -235,13 +237,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                 service.remove(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.startPage(null);
                         if (self.lstErrorAlarm().length > 0) {
                             $("#errorAlarmWorkRecordName").focus();
                         } else {
                             $("#errorAlarmWorkRecordCode").focus();
                         }
                     });
-                    self.startPage(null);
                 });
             })
         }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -62,12 +63,12 @@ public class BreakTimeSheetDailyPerformDto {
 								new CalcAttachTimeDto(
 										domain.getDeductionTotalTime().getTotalTime().getCalcTime().valueAsMinutes(),
 										domain.getDeductionTotalTime().getTotalTime().getTime().valueAsMinutes())),
-						domain.getWorkTime().valueAsMinutes(),
-						ConvertHelper.mapTo(domain.getBreakTimeSheet(),
-								(c) -> new BreakTimeSheetDto(c.getStartTime().getAfterRoundingTime().valueAsMinutes(),
-										c.getEndTime().getAfterRoundingTime().valueAsMinutes(), c.getBreakTime()
-												.valueAsMinutes(),
+						domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes(),
+						domain.getBreakTimeSheet() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getBreakTimeSheet(),
+								(c) -> new BreakTimeSheetDto(c.getStartTime().getAfterRoundingTime() == null ? null : c.getStartTime().getAfterRoundingTime().valueAsMinutes(),
+										c.getEndTime().getAfterRoundingTime() == null ? null : c.getEndTime().getAfterRoundingTime().valueAsMinutes(), 
+												c.getBreakTime() == null ? null :c.getBreakTime().valueAsMinutes(),
 										c.getBreakFrameNo().v().intValue())),
-						domain.getGooutTimes().v());
+						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
 	}
 }
