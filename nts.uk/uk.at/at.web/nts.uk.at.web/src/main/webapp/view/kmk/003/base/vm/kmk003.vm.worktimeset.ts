@@ -99,7 +99,7 @@ module nts.uk.at.view.kmk003.a {
                     self.memo = ko.observable('');
                     self.note = ko.observable('');
                     self.siftCodeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                        width: "60"
+                        width: "30"
                     }));
                     self.siftNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
                         width: "150"
@@ -108,7 +108,7 @@ module nts.uk.at.view.kmk003.a {
                         width: "60"
                     }));
                     self.siftSymbolNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                        width: "50"
+                        width: "30"
                     }));
                     self.siftRemarkOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
                         width: "300"
