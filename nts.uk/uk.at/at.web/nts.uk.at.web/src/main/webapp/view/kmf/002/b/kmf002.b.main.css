@@ -1,0 +1,35 @@
+.pl {
+	padding-left: 50px;
+}
+.system_define{
+	width: 960px;
+	margin-top: 40px;
+}
+
+.system_define > p {
+	margin-left: 35px;
+	margin-bottom: 40px;
+}
+
+.system_define > #tab-panel {
+	margin-left: 40px;
+}
+
+.system_define > #tab-panel {
+	margin-left: 40px;
+}
+
+.system_define > #tab-panel .set_height {
+	height: 490px;
+}
+
+.system_define> #tab-panel .table_content {
+	float: left;
+	margin-left: 20px;
+    margin-top: 25px;
+    margin-right: 30px;
+}
+
+.system_define> #tab-panel .table_content td{
+	padding-bottom: 20px;
+}
