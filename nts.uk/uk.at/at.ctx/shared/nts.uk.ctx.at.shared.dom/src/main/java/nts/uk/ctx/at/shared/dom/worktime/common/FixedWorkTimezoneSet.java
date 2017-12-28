@@ -82,7 +82,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	 * Check setting.
 	 */
 	private void checkSetting() {
-		if (CollectionUtil.isEmpty(this.lstWorkingTimezone)) {
+		if (CollectionUtil.isEmpty(this.lstOTTimezone) || CollectionUtil.isEmpty(this.lstWorkingTimezone)) {
 			return;
 		}
 

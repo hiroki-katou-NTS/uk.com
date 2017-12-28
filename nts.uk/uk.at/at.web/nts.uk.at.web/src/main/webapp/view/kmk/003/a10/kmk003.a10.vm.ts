@@ -26,6 +26,7 @@ module a10 {
         
         // Detail mode - Data
         bonusPaySettingCode: KnockoutObservable<string>;
+        bonusPaySettingName: KnockoutObservable<string>;
         
         // Simple mode - Data  
         
@@ -46,7 +47,8 @@ module a10 {
             _self.settingEnum = settingEnum;
             
             // Init all data           
-            _self.bonusPaySettingCode = ko.observable("");                                 
+            _self.bonusPaySettingCode = ko.observable(""); 
+            _self.bonusPaySettingName = ko.observable("");                                 
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -185,6 +187,7 @@ module a10 {
                 let listResult = nts.uk.ui.windows.getShared('KDL007_VALUES');
                 if (listResult.selecteds[0]) {                    
                     _self.bonusPaySettingCode(listResult.selecteds[0]);
+                    _self.bonusPaySettingName(listResult.selecteds[0]);
                 }
             });
         }

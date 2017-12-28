@@ -17,19 +17,26 @@ module a16 {
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
-        workTimeDailyAtr: KnockoutObservable<number>;
-        workTimeMethodSet: KnockoutObservable<number>;
         
         // Screen data model
         model: MainSettingModel;
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        zeroHStraddCalculateSetting: KnockoutObservable<boolean>;
+        fixedZeroHStraddCalculateSetting: KnockoutObservable<boolean>;
+        diffZeroHStraddCalculateSetting: KnockoutObservable<boolean>;
+        flowZeroHStraddCalculateSetting: KnockoutObservable<boolean>;
+        flexZeroHStraddCalculateSetting: KnockoutObservable<boolean>;
         
         listZeroHStraddCalculateSetting: KnockoutObservableArray<any>;
         
         // Simple mode - Data  
+        
+        // UI
+        isFixedMode: KnockoutObservable<boolean>;  
+        isDiffMode: KnockoutObservable<boolean>;      
+        isFlowMode: KnockoutObservable<boolean>;  
+        isFlexMode: KnockoutObservable<boolean>;
         
         /**
          * Constructor
@@ -46,9 +53,14 @@ module a16 {
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
+            _self.isFixedMode = _self.model.workTimeSetting.isFixed;      
+            _self.isDiffMode = _self.model.workTimeSetting.isDiffTime;
+            _self.isFlowMode = _self.model.workTimeSetting.isFlow;      
+            _self.isFlexMode = _self.model.workTimeSetting.isFlex;           
             
-            // Init all data                                      
-            _self.zeroHStraddCalculateSetting = ko.observable(true);
+            // Init all data                                                                            
+            _self.bindingData();
+
             _self.listZeroHStraddCalculateSetting = ko.observableArray([
                 { value: true, localizedName: nts.uk.resource.getText("KMK003_142") },
                 { value: false, localizedName: nts.uk.resource.getText("KMK003_143") }
@@ -57,20 +69,8 @@ module a16 {
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                _self.changeWorkSettingMode();
-            });                                   
-            // Subscribe Work Setting Regular/Flex mode
-            _self.workTimeDailyAtr = ko.observable(0);
-            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                _self.workTimeDailyAtr(newValue);
-                _self.changeWorkSettingMode();
-            });  
-            // Subscribe Work Setting Fixed/Diff/Flow mode
-            _self.workTimeMethodSet = ko.observable(0); 
-            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                _self.workTimeMethodSet(newValue);
-                _self.changeWorkSettingMode();
-            });                          
+                // Nothing to do
+            });                                                           
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
@@ -83,94 +83,17 @@ module a16 {
         public startTab(screenMode: any): void {
             let _self = this;
             screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
-        }
+        }         
         
         /**
-         * UI - All: change WorkSetting mode
+         * Binding data
          */
-        private changeWorkSettingMode(): void {
-            let _self = this;        
-                       
-            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
-                // Regular work
-                switch (_self.workTimeMethodSet()) {
-                    case WorkTimeMethodSet.FIXED_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet)) {
-                            _self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet);                                    
-                    } break;
-                    case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.zeroHStraddCalculateSet)) {
-                            _self.model.diffWorkSetting.commonSet.zeroHStraddCalculateSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.zeroHStraddCalculateSet);
-                    } break;
-                    case WorkTimeMethodSet.FLOW_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet)) {
-                            _self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet);
-                    } break;               
-                    default: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet)) {
-                            _self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet);
-                    }
-                } 
-            } else {
-                // Flex work
-                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet)) {
-                    _self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet = _self.createBinding();                           
-                }
-                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet); 
-            }               
-        }       
-        
-        /**
-         * UI - All: create new Binding data
-         */
-        private createBinding(): KnockoutObservable<boolean> {
+        private bindingData() {
             let _self = this;
-            
-            let result: KnockoutObservable<boolean> = ko.observable(true);           
-            return result;
-        }
-        
-        /**
-         * UI - All: change Binding mode
-         */
-        private changeBinding(zeroHStraddCalculateSet: KnockoutObservable<boolean>): void {
-            let _self = this;
-            if (_self.isDetailMode()) {
-                _self.changeBindingDetail(zeroHStraddCalculateSet); 
-            } else {
-                _self.changeBindingSimple(zeroHStraddCalculateSet); 
-            }  
-        }
-        
-        /**
-         * UI - Detail: change Binding Detail mode
-         */
-        private changeBindingDetail(zeroHStraddCalculateSet: KnockoutObservable<boolean>): void {
-            let _self = this;        
-            
-            // Get model value into view model
-            _self.zeroHStraddCalculateSetting(zeroHStraddCalculateSet());
-            
-            // Update into model in case of data change
-            _self.zeroHStraddCalculateSetting.subscribe(newValue => zeroHStraddCalculateSet(newValue));
-        }
-        
-        /**
-         * UI - Simple: change Binding Simple mode 
-         */
-        private changeBindingSimple(zeroHStraddCalculateSet: KnockoutObservable<boolean>): void {
-            let _self = this;
-            _self.changeBindingDetail(zeroHStraddCalculateSet);  
+            _self.fixedZeroHStraddCalculateSetting = _self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet;                            
+            _self.diffZeroHStraddCalculateSetting = _self.model.diffWorkSetting.commonSet.zeroHStraddCalculateSet;                         
+            _self.flowZeroHStraddCalculateSetting = _self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet;                          
+            _self.flexZeroHStraddCalculateSetting = _self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet;
         }
     }
     

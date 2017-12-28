@@ -555,7 +555,7 @@ module nts.uk.at.view.kmk003.a {
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
                 }
-                if (self.workTimeSetting.isFlow()) {
+                if (self.workTimeSetting.isFixed()) {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
                 }
                 //TODO update diff viewmodel

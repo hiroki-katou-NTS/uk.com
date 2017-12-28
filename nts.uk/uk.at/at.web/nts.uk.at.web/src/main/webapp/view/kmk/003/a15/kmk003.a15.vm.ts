@@ -28,17 +28,44 @@ module a15 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        dayShiftApplicationTime: KnockoutObservable<number>;
-        nightShiftApplicationTime: KnockoutObservable<number>;
-        dayShiftSettingRoundingTime: KnockoutObservable<number>;
-        dayShiftSettingRounding: KnockoutObservable<number>;
-        nightShiftSettingRoundingTime: KnockoutObservable<number>;
-        nightShiftSettingRounding: KnockoutObservable<number>;   
+        fixedDayShiftApplicationTime: KnockoutObservable<number>;
+        fixedNightShiftApplicationTime: KnockoutObservable<number>;
+        fixedDayShiftSettingRoundingTime: KnockoutObservable<number>;
+        fixedDayShiftSettingRounding: KnockoutObservable<number>;
+        fixedNightShiftSettingRoundingTime: KnockoutObservable<number>;
+        fixedNightShiftSettingRounding: KnockoutObservable<number>;   
+        
+        diffDayShiftApplicationTime: KnockoutObservable<number>;
+        diffNightShiftApplicationTime: KnockoutObservable<number>;
+        diffDayShiftSettingRoundingTime: KnockoutObservable<number>;
+        diffDayShiftSettingRounding: KnockoutObservable<number>;
+        diffNightShiftSettingRoundingTime: KnockoutObservable<number>;
+        diffNightShiftSettingRounding: KnockoutObservable<number>; 
+        
+        flowDayShiftApplicationTime: KnockoutObservable<number>;
+        flowNightShiftApplicationTime: KnockoutObservable<number>;
+        flowDayShiftSettingRoundingTime: KnockoutObservable<number>;
+        flowDayShiftSettingRounding: KnockoutObservable<number>;
+        flowNightShiftSettingRoundingTime: KnockoutObservable<number>;
+        flowNightShiftSettingRounding: KnockoutObservable<number>; 
+        
+        flexDayShiftApplicationTime: KnockoutObservable<number>;
+        flexNightShiftApplicationTime: KnockoutObservable<number>;
+        flexDayShiftSettingRoundingTime: KnockoutObservable<number>;
+        flexDayShiftSettingRounding: KnockoutObservable<number>;
+        flexNightShiftSettingRoundingTime: KnockoutObservable<number>;
+        flexNightShiftSettingRounding: KnockoutObservable<number>; 
         
         listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
         listRoundingValue: KnockoutObservableArray<EnumConstantDto>;       
         
         // Simple mode - Data  
+        
+        // UI
+        isFixedMode: KnockoutObservable<boolean>;  
+        isDiffMode: KnockoutObservable<boolean>;      
+        isFlowMode: KnockoutObservable<boolean>;  
+        isFlexMode: KnockoutObservable<boolean>;
         
         /**
          * Constructor
@@ -55,14 +82,13 @@ module a15 {
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
+            _self.isFixedMode = _self.model.workTimeSetting.isFixed;      
+            _self.isDiffMode = _self.model.workTimeSetting.isDiffTime;
+            _self.isFlowMode = _self.model.workTimeSetting.isFlow;      
+            _self.isFlexMode = _self.model.workTimeSetting.isFlex;     
             
-            // Init all data                                      
-            _self.dayShiftApplicationTime = ko.observable(null);
-            _self.nightShiftApplicationTime = ko.observable(null);
-            _self.dayShiftSettingRoundingTime = ko.observable(0);
-            _self.dayShiftSettingRounding = ko.observable(0);
-            _self.nightShiftSettingRoundingTime = ko.observable(0);
-            _self.nightShiftSettingRounding = ko.observable(0);
+            // Init all data           
+            _self.bindingData();           
 
             _self.listRoundingTimeValue = ko.observableArray([]);
             _self.listRoundingValue = ko.observableArray([]);           
@@ -73,20 +99,8 @@ module a15 {
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                _self.changeWorkSettingMode();
-            });                                   
-            // Subscribe Work Setting Regular/Flex mode
-            _self.workTimeDailyAtr = ko.observable(0);
-            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                _self.workTimeDailyAtr(newValue);
-                _self.changeWorkSettingMode();
-            });  
-            // Subscribe Work Setting Fixed/Diff/Flow mode
-            _self.workTimeMethodSet = ko.observable(0); 
-            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                _self.workTimeMethodSet(newValue);
-                _self.changeWorkSettingMode();
-            });                          
+                // Nothing to do
+            });                                                        
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
@@ -98,130 +112,102 @@ module a15 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false); console.log(_self.model);
         }
         
         /**
-         * UI - All: change WorkSetting mode
+         * Binding data
          */
-        private changeWorkSettingMode(): void {
-            let _self = this;        
-            
-            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
-                // Regular work
-                switch (_self.workTimeMethodSet()) {
-                    case WorkTimeMethodSet.FIXED_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.medicalSet) || 
-                                _self.model.fixedWorkSetting.commonSetting.medicalSet.length === 0) {
-                            _self.model.fixedWorkSetting.commonSetting.medicalSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.medicalSet);                                    
-                    } break;
-                    case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.medicalSet) || 
-                                _self.model.diffWorkSetting.commonSet.medicalSet.length === 0) {
-                            _self.model.diffWorkSetting.commonSet.medicalSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.medicalSet);
-                    } break;
-                    case WorkTimeMethodSet.FLOW_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.medicalSet) || 
-                                _self.model.flowWorkSetting.commonSetting.medicalSet.length === 0) {
-                            _self.model.flowWorkSetting.commonSetting.medicalSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.medicalSet);
-                    } break;               
-                    default: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.medicalSet) || 
-                                _self.model.fixedWorkSetting.commonSetting.medicalSet.length === 0) {
-                            _self.model.fixedWorkSetting.commonSetting.medicalSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.medicalSet);
-                    }
-                } 
-            } else {
-                // Flex work
-                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.medicalSet) || 
-                        _self.model.flexWorkSetting.commonSetting.medicalSet.length === 0) {
-                    _self.model.flexWorkSetting.commonSetting.medicalSet = _self.createBinding();                           
-                }
-                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.medicalSet); 
-            }               
-        }       
-        
-        /**
-         * UI - All: create new Binding data
-         */
-        private createBinding(): WorkTimezoneMedicalSetModel[] {
-            let _self = this;           
-            let result: WorkTimezoneMedicalSetModel[] = [];      
-            
-            let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
-            dayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
-            result.push(dayShiftMedicalSet);
-            
-            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
-            nightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
-            result.push(nightShiftMedicalSet);
-            
-            return result;
-        }
-        
-        /**
-         * UI - All: change Binding mode
-         */
-        private changeBinding(medicalSet: WorkTimezoneMedicalSetModel[]): void {
+        private bindingData() {
             let _self = this;
-            if (_self.isDetailMode()) {
-                _self.changeBindingDetail(medicalSet); 
-            } else {
-                _self.changeBindingSimple(medicalSet); 
-            }  
-        }
-        
-        /**
-         * UI - Detail: change Binding Detail mode
-         */
-        private changeBindingDetail(medicalSet: WorkTimezoneMedicalSetModel[]): void {
-            let _self = this;        
-            let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
-            if (nts.uk.util.isNullOrUndefined(dayShiftMedicalSet)) {
-                dayShiftMedicalSet = new WorkTimezoneMedicalSetModel();
-                dayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
-                medicalSet.push(dayShiftMedicalSet);
+            
+            // Fixed
+            let fixedDayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(_self.model.fixedWorkSetting.commonSetting.medicalSet(), 
+                    (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
+            if (nts.uk.util.isNullOrUndefined(fixedDayShiftMedicalSet)) {
+                fixedDayShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                fixedDayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
+                _self.model.fixedWorkSetting.commonSetting.medicalSet.push(fixedDayShiftMedicalSet);
             }
-            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(medicalSet, (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);  
-            if (nts.uk.util.isNullOrUndefined(nightShiftMedicalSet)) {
-                nightShiftMedicalSet = new WorkTimezoneMedicalSetModel();
-                nightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
-                medicalSet.push(nightShiftMedicalSet);
+            let fixedNightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(_self.model.fixedWorkSetting.commonSetting.medicalSet(), 
+                    (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);  
+            if (nts.uk.util.isNullOrUndefined(fixedNightShiftMedicalSet)) {
+                fixedNightShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                fixedNightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
+                _self.model.fixedWorkSetting.commonSetting.medicalSet.push(fixedNightShiftMedicalSet);
             }           
+            _self.fixedDayShiftApplicationTime = fixedDayShiftMedicalSet.applicationTime;
+            _self.fixedNightShiftApplicationTime = fixedNightShiftMedicalSet.applicationTime;
+            _self.fixedDayShiftSettingRoundingTime = fixedDayShiftMedicalSet.roundingSet.roundingTime;
+            _self.fixedDayShiftSettingRounding = fixedDayShiftMedicalSet.roundingSet.rounding;
+            _self.fixedNightShiftSettingRoundingTime = fixedNightShiftMedicalSet.roundingSet.roundingTime;
+            _self.fixedNightShiftSettingRounding = fixedNightShiftMedicalSet.roundingSet.rounding;
             
-            // Get model value into view model
-            _self.dayShiftApplicationTime(dayShiftMedicalSet.applicationTime());  
-            _self.nightShiftApplicationTime(nightShiftMedicalSet.applicationTime());   
-            _self.dayShiftSettingRoundingTime(dayShiftMedicalSet.roundingSet.roundingTime());
-            _self.dayShiftSettingRounding(dayShiftMedicalSet.roundingSet.rounding());
-            _self.nightShiftSettingRoundingTime(nightShiftMedicalSet.roundingSet.roundingTime());
-            _self.nightShiftSettingRounding(nightShiftMedicalSet.roundingSet.rounding());
+            // Diff
+            let diffDayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(_self.model.diffWorkSetting.commonSet.medicalSet(), 
+                    (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
+            if (nts.uk.util.isNullOrUndefined(diffDayShiftMedicalSet)) {
+                diffDayShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                diffDayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
+                _self.model.diffWorkSetting.commonSet.medicalSet.push(diffDayShiftMedicalSet);
+            }
+            let diffNightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(_self.model.diffWorkSetting.commonSet.medicalSet(), 
+                    (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);  
+            if (nts.uk.util.isNullOrUndefined(diffNightShiftMedicalSet)) {
+                diffNightShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                diffNightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
+                _self.model.diffWorkSetting.commonSet.medicalSet.push(diffNightShiftMedicalSet);
+            }           
+            _self.diffDayShiftApplicationTime = diffDayShiftMedicalSet.applicationTime;
+            _self.diffNightShiftApplicationTime = diffNightShiftMedicalSet.applicationTime;
+            _self.diffDayShiftSettingRoundingTime = diffDayShiftMedicalSet.roundingSet.roundingTime;
+            _self.diffDayShiftSettingRounding = diffDayShiftMedicalSet.roundingSet.rounding;
+            _self.diffNightShiftSettingRoundingTime = diffNightShiftMedicalSet.roundingSet.roundingTime;
+            _self.diffNightShiftSettingRounding = diffNightShiftMedicalSet.roundingSet.rounding;
             
-            // Update into model in case of data change
-            _self.dayShiftApplicationTime.subscribe(newValue => dayShiftMedicalSet.applicationTime(newValue));  
-            _self.nightShiftApplicationTime.subscribe(newValue => nightShiftMedicalSet.applicationTime(newValue));   
-            _self.dayShiftSettingRoundingTime.subscribe(newValue => dayShiftMedicalSet.roundingSet.roundingTime(newValue));
-            _self.dayShiftSettingRounding.subscribe(newValue => dayShiftMedicalSet.roundingSet.rounding(newValue));
-            _self.nightShiftSettingRoundingTime.subscribe(newValue => nightShiftMedicalSet.roundingSet.roundingTime(newValue));
-            _self.nightShiftSettingRounding.subscribe(newValue => nightShiftMedicalSet.roundingSet.rounding(newValue));
-        }
-        
-        /**
-         * UI - Simple: change Binding Simple mode 
-         */
-        private changeBindingSimple(medicalSet: WorkTimezoneMedicalSetModel[]): void {
-            let _self = this;
-            _self.changeBindingDetail(medicalSet);  
+            // Flow
+            let flowDayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(_self.model.flowWorkSetting.commonSetting.medicalSet(), 
+                    (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
+            if (nts.uk.util.isNullOrUndefined(flowDayShiftMedicalSet)) {
+                flowDayShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                flowDayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
+                _self.model.flowWorkSetting.commonSetting.medicalSet.push(flowDayShiftMedicalSet);
+            }
+            let flowNightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(_self.model.flowWorkSetting.commonSetting.medicalSet(), 
+                    (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);  
+            if (nts.uk.util.isNullOrUndefined(flowNightShiftMedicalSet)) {
+                flowNightShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                flowNightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
+                _self.model.flowWorkSetting.commonSetting.medicalSet.push(flowNightShiftMedicalSet);
+            }           
+            _self.flowDayShiftApplicationTime = flowDayShiftMedicalSet.applicationTime;
+            _self.flowNightShiftApplicationTime = flowNightShiftMedicalSet.applicationTime;
+            _self.flowDayShiftSettingRoundingTime = flowDayShiftMedicalSet.roundingSet.roundingTime;
+            _self.flowDayShiftSettingRounding = flowDayShiftMedicalSet.roundingSet.rounding;
+            _self.flowNightShiftSettingRoundingTime = flowNightShiftMedicalSet.roundingSet.roundingTime;
+            _self.flowNightShiftSettingRounding = flowNightShiftMedicalSet.roundingSet.rounding;
+            
+            // Flex
+            let flexDayShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(_self.model.flexWorkSetting.commonSetting.medicalSet(), 
+                    (o) => o.workSystemAtr() === WorkSystemAtr.DAY_SHIFT);
+            if (nts.uk.util.isNullOrUndefined(flexDayShiftMedicalSet)) {
+                flexDayShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                flexDayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
+                _self.model.flexWorkSetting.commonSetting.medicalSet.push(flexDayShiftMedicalSet);
+            }
+            let flexNightShiftMedicalSet: WorkTimezoneMedicalSetModel = _.find(_self.model.flexWorkSetting.commonSetting.medicalSet(), 
+                    (o) => o.workSystemAtr() === WorkSystemAtr.NIGHT_SHIFT);  
+            if (nts.uk.util.isNullOrUndefined(flexNightShiftMedicalSet)) {
+                flexNightShiftMedicalSet = new WorkTimezoneMedicalSetModel();
+                flexNightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
+                _self.model.flexWorkSetting.commonSetting.medicalSet.push(flexNightShiftMedicalSet);
+            }           
+            _self.flexDayShiftApplicationTime = flexDayShiftMedicalSet.applicationTime;
+            _self.flexNightShiftApplicationTime = flexNightShiftMedicalSet.applicationTime;
+            _self.flexDayShiftSettingRoundingTime = flexDayShiftMedicalSet.roundingSet.roundingTime;
+            _self.flexDayShiftSettingRounding = flexDayShiftMedicalSet.roundingSet.rounding;
+            _self.flexNightShiftSettingRoundingTime = flexNightShiftMedicalSet.roundingSet.roundingTime;
+            _self.flexNightShiftSettingRounding = flexNightShiftMedicalSet.roundingSet.rounding;
         }
     }
     
