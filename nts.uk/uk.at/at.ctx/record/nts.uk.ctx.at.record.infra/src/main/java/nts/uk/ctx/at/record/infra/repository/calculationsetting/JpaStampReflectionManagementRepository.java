@@ -20,7 +20,7 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcmtStampReflect a ");
+		builderString.append("FROM KrcmtStampImprint a ");
 		builderString.append("WHERE a.krcdtStampReflectPK.companyId = :companyId ");
 		FIND = builderString.toString();
 	}
@@ -47,8 +47,18 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 
 	@Override
 	public void update(StampReflectionManagement reflectionManagement) {
-		// TODO Auto-generated method stub
-		
+		KrcmtStampImprintPK stampImprintPK = new KrcmtStampImprintPK(reflectionManagement.getCompanyId());
+		KrcmtStampImprint imprint = this.queryProxy().find(stampImprintPK, KrcmtStampImprint.class).get();
+		imprint.breakSwitchClass = reflectionManagement.getBreakSwitchClass().value;
+		imprint.autoStampReflectionClass = reflectionManagement.getAutoStampReflectionClass().value;
+		imprint.actualStampOfPriorityClass= reflectionManagement.getActualStampOfPriorityClass().value;
+		imprint.reflectWorkingTimeClass= reflectionManagement.getReflectWorkingTimeClass().value;
+		imprint.goBackOutCorrectionClass= reflectionManagement.getGoBackOutCorrectionClass().value;
+		imprint.managementOfEntrance= reflectionManagement.getManagementOfEntrance().value;
+		imprint.autoStampForFutureDayClass= reflectionManagement.getAutoStampForFutureDayClass().value;
+		imprint.outingAtr= reflectionManagement.getOutingAtr().value;
+		imprint.maxUseCount= reflectionManagement.getMaxUseCount();
+		this.commandProxy().update(imprint);
 	}
 
 	@Override
