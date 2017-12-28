@@ -111,6 +111,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 				closureId));
 
 		// Create Query
+		cq.where(predicateList.toArray(new Predicate[] {}));
 		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
@@ -143,7 +144,8 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		// in ClosureIds
 		predicateList.add(root.get(KclmtClosureEmployment_.closureId).in(closureIds));
 
-		// Create Query
+		// Create Query.
+		cq.where(predicateList.toArray(new Predicate[] {}));
 		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
