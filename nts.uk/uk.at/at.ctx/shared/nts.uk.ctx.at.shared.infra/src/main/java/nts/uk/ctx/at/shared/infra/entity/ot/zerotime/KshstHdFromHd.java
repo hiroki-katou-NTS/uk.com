@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.entity.ot.zerotime;
 
-
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -13,9 +12,9 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromHd;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 /**
- * @author phongtq
- * 休日から休日への0時跨ぎ設定
+ * @author phongtq 休日から休日への0時跨ぎ設定
  */
 @NoArgsConstructor
 @Entity
@@ -28,16 +27,16 @@ public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 
 	/** 変更後の法定内休出NO */
 	@Column(name = "LEGAL_HD_NO")
-	public int legalHdNo;
+	public int calcOverDayEnd;
 
 	/** 変更後の法定外休出NO */
 	@Column(name = "NON_LEGAL_HD_NO")
-	public int nonLegalHdNo;
+	public int statutoryHd;
 
 	/** 変更後の祝日休出NO */
 	@Column(name = "NON_LEGAL_PUBLIC_HD_NO")
-	public int nonLegalPublicHdNo;
-	
+	public int excessHd;
+
 	@ManyToOne
 	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
 	public KshstZeroTimeSet overDayCalcSet;
@@ -47,25 +46,22 @@ public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 		return kshstOverDayHdSetPK;
 	}
 
-	public KshstHdFromHd(KshstHdFromHdPK kshstOverDayHdSetPK, int legalHdNo, int nonLegalHdNo,
-			int nonLegalPublicHdNo) {
+	public HdFromHd toDomain() {
+		return HdFromHd.createFromJavaType(this.kshstOverDayHdSetPK.companyId,
+				this.kshstOverDayHdSetPK.holidayWorkFrameNo, this.calcOverDayEnd, this.statutoryHd, this.excessHd);
+	}
+
+	public static KshstHdFromHd toEntity(HdFromHd domain) {
+		return new KshstHdFromHd(new KshstHdFromHdPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo().v()),
+				domain.getCalcOverDayEnd().v(), domain.getStatutoryHd().v(), domain.getExcessHd().v());
+	}
+
+	public KshstHdFromHd(KshstHdFromHdPK kshstOverDayHdSetPK, int calcOverDayEnd, int statutoryHd, int excessHd) {
 		super();
 		this.kshstOverDayHdSetPK = kshstOverDayHdSetPK;
-		this.legalHdNo = legalHdNo;
-		this.nonLegalHdNo = nonLegalHdNo;
-		this.nonLegalPublicHdNo = nonLegalPublicHdNo;
-	}
-	
-	public HdFromHd toDomain() {
-		return HdFromHd.createFromJavaType(this.kshstOverDayHdSetPK.companyId, this.kshstOverDayHdSetPK.breakFrameNo, this.legalHdNo, this.nonLegalHdNo, this.nonLegalPublicHdNo);
-	}
-	
-	public static KshstHdFromHd toEntity(HdFromHd domain){
-		return new KshstHdFromHd(
-				new KshstHdFromHdPK(domain.getCompanyId(),domain.getBreakFrameNo().v()),
-				domain.getLegalHdNo().v(),
-				domain.getNonLegalHdNo().v(), 
-				domain.getNonLegalPublicHdNo().v());
+		this.calcOverDayEnd = calcOverDayEnd;
+		this.statutoryHd = statutoryHd;
+		this.excessHd = excessHd;
 	}
 
 }

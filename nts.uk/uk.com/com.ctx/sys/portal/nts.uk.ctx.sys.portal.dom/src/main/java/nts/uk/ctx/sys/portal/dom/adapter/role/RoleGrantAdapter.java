@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 
 public interface RoleGrantAdapter {
 
-	Optional<String> getRoleId(String userId);
+	List<String> getRoleId(String userId);
 	
 	List<RoleDto> findRole(String roleId);
 	

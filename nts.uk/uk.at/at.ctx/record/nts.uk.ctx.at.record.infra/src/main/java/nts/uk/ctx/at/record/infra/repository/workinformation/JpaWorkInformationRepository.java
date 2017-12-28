@@ -105,8 +105,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		
 		List<ScheduleTimeSheet> scheduleTimeSheets = workInfoOfDailyPerformance.getScheduleTimeSheets();
 		data.scheduleTimes.forEach(item -> {
-			Optional<ScheduleTimeSheet> scheduleTimeSheet = scheduleTimeSheets.stream().filter(items -> item.krcdtWorkScheduleTimePK.employeeId == workInfoOfDailyPerformance.getEmployeeId()
-					&& item.krcdtWorkScheduleTimePK.ymd == workInfoOfDailyPerformance.getYmd()).findFirst();
+			Optional<ScheduleTimeSheet> scheduleTimeSheet = scheduleTimeSheets.stream().filter(items -> item.krcdtWorkScheduleTimePK.employeeId.equals(workInfoOfDailyPerformance.getEmployeeId())
+					&& item.krcdtWorkScheduleTimePK.ymd.equals(workInfoOfDailyPerformance.getYmd())).findFirst();
 			item.krcdtWorkScheduleTimePK.employeeId = workInfoOfDailyPerformance.getEmployeeId();
 			item.krcdtWorkScheduleTimePK.ymd = workInfoOfDailyPerformance.getYmd();
 			item.krcdtWorkScheduleTimePK.workNo = scheduleTimeSheet.get().getWorkNo().v();

@@ -102,7 +102,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		List<Integer> halfAtrs = halfAtrs();
 		//ドメインモデル「勤務種類」を取得
 		result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
-				.map(x -> x.getName().v()).collect(Collectors.toList());
+				.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
 		return result;
 	}
 	/**

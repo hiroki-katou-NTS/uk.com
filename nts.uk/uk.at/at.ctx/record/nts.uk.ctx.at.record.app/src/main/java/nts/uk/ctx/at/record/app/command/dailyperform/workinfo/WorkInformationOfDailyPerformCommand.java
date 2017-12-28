@@ -25,9 +25,9 @@ public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand
 	@Override
 	public WorkInfoOfDailyPerformance toDomain() {
 		return new WorkInfoOfDailyPerformance(getEmployeeId(),
-				new WorkInformation(data.getActualWorkInfo().getWorkTimeCode(),
+				data.getActualWorkInfo() == null ? null : new WorkInformation(data.getActualWorkInfo().getWorkTimeCode(),
 						data.getActualWorkInfo().getWorkTypeCode()),
-				new WorkInformation(data.getPlanWorkInfo().getWorkTimeCode(), data.getPlanWorkInfo().getWorkTypeCode()),
+				data.getPlanWorkInfo() == null ? null : new WorkInformation(data.getPlanWorkInfo().getWorkTimeCode(), data.getPlanWorkInfo().getWorkTypeCode()),
 				EnumAdaptor.valueOf(data.getCalculationState(), CalculationState.class),
 				EnumAdaptor.valueOf(data.getGoStraightAtr(), NotUseAttribute.class),
 				EnumAdaptor.valueOf(data.getBackStraightAtr(), NotUseAttribute.class), getWorkDate(),
