@@ -43,8 +43,8 @@
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_61')}</div></td>
 				<td>
-					<button tabindex="6" data-bind="click: openDialog, enable: true">#{i18n.getText('KSM011_45')}</button>
-					<input tabindex="-1" class="txtCredentialList" data-bind="ntsTextEditor: { value: credentialList, enable: true }" />
+					<button tabindex="6" data-bind="click: openDialog, enable: openDialogEnable">#{i18n.getText('KSM011_45')}</button>
+					<input tabindex="-1" class="txtCredentialList" data-bind="ntsTextEditor: { value: credentialList, enable: credentialListEnable }" />
 				</td>
 			</tr>
 		</table>

@@ -4,6 +4,8 @@ module nts.uk.at.view.ksm011.b.viewmodel {
     export class ScreenModel {
         qualificationMark: KnockoutObservable<string>;
         qualificationMarkEnable: KnockoutObservable<boolean>;
+        openDialogEnable: KnockoutObservable<boolean>;
+        credentialListEnable: KnockoutObservable<boolean>;
         credentialList: KnockoutObservable<string>;
         leftItems: KnockoutObservableArray<ItemModel>;
         rightItems: KnockoutObservableArray<ItemModel>;
@@ -25,7 +27,10 @@ module nts.uk.at.view.ksm011.b.viewmodel {
         constructor() {
             var self = this;
             self.qualificationMark = ko.observable("");
-            self.qualificationMarkEnable = ko.observable(true);
+            self.qualificationMarkEnable = ko.observable(false);
+            self.openDialogEnable = ko.observable(false);
+            self.credentialListEnable = ko.observable(false);
+            
             self.credentialList = ko.observable("");
             self.leftItems = ko.observableArray([]);
             self.rightItems = ko.observableArray([]);

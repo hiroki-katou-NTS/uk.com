@@ -163,6 +163,10 @@ table.complete-method-items td hr {
 	height: 25px;
 }
 
+.txtCredentialList, .txtWorkTypeList {
+	width: 320px;
+}
+
 table.symbol-control {
 	margin-left: 40px;
     margin-top: 37px;
@@ -171,4 +175,12 @@ table.symbol-control {
 table.symbol-control td {
 	padding-right: 32px;
     padding-bottom: 10px;
+}
+
+.contents-area-c .block-1 {
+    padding: 15px 30px;
+}
+
+button.nts-switch-button {
+	width: 95px;
 }
