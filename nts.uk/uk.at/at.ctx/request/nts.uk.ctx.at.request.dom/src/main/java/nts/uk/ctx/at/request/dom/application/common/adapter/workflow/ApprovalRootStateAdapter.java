@@ -3,7 +3,9 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 
 public interface ApprovalRootStateAdapter {
 	
@@ -17,5 +19,11 @@ public interface ApprovalRootStateAdapter {
 	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate);
 	
 	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate);
+	
+	public void doReleaseAllAtOnce(String companyID, String rootStateID);
+	
+	public ApproverApprovedImport_New getApproverApproved(String rootStateID); 
+	
+	public AgentPubImport getApprovalAgencyInformation(String companyID, List<String> approver);
 	
 }

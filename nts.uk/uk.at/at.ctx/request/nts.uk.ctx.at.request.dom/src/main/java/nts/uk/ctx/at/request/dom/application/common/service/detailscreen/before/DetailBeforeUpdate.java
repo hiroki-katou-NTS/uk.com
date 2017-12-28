@@ -18,10 +18,11 @@ public interface DetailBeforeUpdate {
 	 * @param targetApp 対象申請
 	 * @param postAtr 事前事後区分
 	 */
-	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr);
+	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, 
+			PrePostAtr postAtr, Long version);
 	
 	/**
 	 * 1.排他チェック
 	 */
-	public void exclusiveCheck();
+	public void exclusiveCheck(String companyID, String appID, Long version);
 }

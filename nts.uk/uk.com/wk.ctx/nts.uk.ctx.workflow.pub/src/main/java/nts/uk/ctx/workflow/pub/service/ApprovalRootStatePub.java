@@ -3,7 +3,9 @@ package nts.uk.ctx.workflow.pub.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 /**
  * 
  * @author Doan Duy Hung
@@ -41,5 +43,28 @@ public interface ApprovalRootStatePub {
 	 * @return
 	 */
 	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, Integer appTypeValue, GeneralDate appDate);
+	
+	/**
+	 * 一括解除する 
+	 * @param companyID 会社ID
+	 * @param rootStateID インスタンスID
+	 */
+	public void doReleaseAllAtOnce(String companyID, String rootStateID);
+	
+	/**
+	 * 1.承認を行った承認者を取得する
+	 * @param rootStateID
+	 * @return
+	 */
+	public ApproverApprovedExport getApproverApproved(String rootStateID); 
+	
+	/**
+	 * 承認代行情報の取得処理
+	 * @param companyID 会社ID
+	 * @param listApprover 承認者リスト
+　							※[承認者の社員ID]の一覧
+	 * @return
+	 */
+	public AgentPubExport getApprovalAgentInfor(String companyID, List<String> listApprover);
 	
 }

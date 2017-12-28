@@ -21,15 +21,24 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateService;
 import nts.uk.ctx.workflow.dom.service.ApproveService;
+import nts.uk.ctx.workflow.dom.service.CollectApprovalAgentInforService;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
+import nts.uk.ctx.workflow.dom.service.ReleaseAllAtOnceService;
+import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
+import nts.uk.ctx.workflow.dom.service.output.ApproverApprovedOutput;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
+import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
+import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
+import nts.uk.ctx.workflow.pub.agent.RepresenterInformationExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverWithFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ErrorFlagExport;
 /**
  * 
@@ -57,6 +66,12 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	@Inject
 	private ApproveService approveService;
 
+	@Inject
+	private ReleaseAllAtOnceService releaseAllAtOnceService;
+	
+	@Inject
+	private CollectApprovalAgentInforService collectApprovalAgentInforService;
+	
 	@Override
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate) {
 		ApprovalRootContentOutput approvalRootContentOutput = null;
@@ -134,5 +149,30 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
 			Integer appTypeValue, GeneralDate appDate) {
 		return approveService.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appDate);
+	}
+
+	@Override
+	public void doReleaseAllAtOnce(String companyID, String rootStateID) {
+		releaseAllAtOnceService.doReleaseAllAtOnce(companyID, rootStateID);
+	}
+
+	@Override
+	public ApproverApprovedExport getApproverApproved(String rootStateID) {
+		ApproverApprovedOutput approverApprovedOutput = releaseAllAtOnceService.getApproverApproved(rootStateID);
+		return new ApproverApprovedExport(
+				approverApprovedOutput.getListApproverWithFlagOutput().stream()
+					.map(x -> new ApproverWithFlagExport(x.getEmployeeID(), x.getAgentFlag())).collect(Collectors.toList()), 
+				approverApprovedOutput.getListApprover());
+	}
+
+	@Override
+	public AgentPubExport getApprovalAgentInfor(String companyID, List<String> listApprover) {
+		ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
+		return new AgentPubExport(
+				approvalRepresenterOutput.getListApprovalAgentInfor().stream()
+					.map(x -> new ApproverRepresenterExport(x.getApprover(), new RepresenterInformationExport(x.getRepresenter().getValue())))
+					.collect(Collectors.toList()), 
+				approvalRepresenterOutput.getListAgent(), 
+				approvalRepresenterOutput.getAllPathSetFlag());
 	}
 }

@@ -9,14 +9,23 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverWithFlagImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
+import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
+import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 /**
  * 
  * @author Doan Duy Hung
@@ -77,6 +86,43 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 			Integer appTypeValue, GeneralDate appDate) {
 		// TODO Auto-generated method stub
 		return approvalRootStatePub.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate);
+	}
+
+	@Override
+	public void doReleaseAllAtOnce(String companyID, String rootStateID) {
+		approvalRootStatePub.doReleaseAllAtOnce(companyID, rootStateID);
+	}
+
+	@Override
+	public ApproverApprovedImport_New getApproverApproved(String rootStateID) {
+		ApproverApprovedExport approverApprovedExport = approvalRootStatePub.getApproverApproved(rootStateID);
+		return new ApproverApprovedImport_New(
+				approverApprovedExport.getListApproverWithFlagOutput().stream()
+					.map(x -> new ApproverWithFlagImport_New(x.getEmployeeID(), x.getAgentFlag())).collect(Collectors.toList()), 
+				approverApprovedExport.getListApprover());
+	}
+
+	@Override
+	public AgentPubImport getApprovalAgencyInformation(String companyID, List<String> approver) {
+		// TODO Auto-generated method stub
+		return convertAgentPubImport(approvalRootStatePub.getApprovalAgentInfor(companyID, approver));
+	}
+	
+	private AgentPubImport convertAgentPubImport(AgentPubExport agentPubExport) {
+		return new AgentPubImport(
+				agentPubExport.getListApproverAndRepresenterSID().stream()
+				.map(x -> this.covertApproverImport(x)).collect(Collectors.toList()),
+				agentPubExport.getListRepresenterSID(),
+				agentPubExport.isFlag()
+				);
+		
+	}
+	
+	private ApproverRepresenterImport covertApproverImport(ApproverRepresenterExport approverRepresenterExport) {
+		return new  ApproverRepresenterImport(
+				approverRepresenterExport.getApprover(),
+				new RepresenterInformationImport(approverRepresenterExport.getRepresenter().getValue()) 
+				);
 	}
 	
 }
