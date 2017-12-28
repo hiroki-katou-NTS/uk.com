@@ -62,4 +62,18 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 	}
 
+	@Override
+	public void add(TemporaryTimeOfDailyPerformance temporaryTime) {
+		KrcdtDaiTemporaryTime entity = KrcdtDaiTemporaryTime.toEntity(temporaryTime);
+		commandProxy().insert(entity);
+		commandProxy().insertAll(entity.timeLeavingWorks);
+	}
+
+	@Override
+	public void update(TemporaryTimeOfDailyPerformance temporaryTime) {
+		KrcdtDaiTemporaryTime entity = KrcdtDaiTemporaryTime.toEntity(temporaryTime);
+		commandProxy().update(entity);
+		commandProxy().updateAll(entity.timeLeavingWorks);
+	}
+
 }

@@ -19,7 +19,7 @@ public class TemporaryTimeOfDailyPerformanceDto implements ConvertibleAttendance
 	
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "勤務回数")
 	@AttendanceItemValue(type = ValueType.INTEGER, itemId = 616)
-	private Integer workNo;
+	private Integer workTimes;
 
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "出退勤", isList = true)
 	private List<WorkLeaveTimeDto> workLeaveTime;

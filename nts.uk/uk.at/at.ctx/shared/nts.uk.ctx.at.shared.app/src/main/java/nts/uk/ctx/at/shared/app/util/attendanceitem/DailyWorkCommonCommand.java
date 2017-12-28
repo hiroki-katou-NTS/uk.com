@@ -20,4 +20,6 @@ public abstract class DailyWorkCommonCommand implements SetterCommonCommand {
 	public void withDate(GeneralDate date) {
 		this.workDate = date;
 	}
+	
+	public abstract Object toDomain();
 }

@@ -6,11 +6,19 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** 日別実績の休出時間 */
 @Data
@@ -47,5 +55,23 @@ public class WorkHolidayTimeDailyPerformDto {
 										c.getTransferTime().get().getTime().valueAsMinutes()), 
 						c.getBeforeApplicationTime().get().valueAsMinutes(),
 						c.getHolidayFrameNo().v())));
+	}
+	
+	public HolidayWorkTimeOfDaily toDomain() {
+		return new HolidayWorkTimeOfDaily(
+				ConvertHelper.mapTo(holidyWorkFrameTimeSheet,
+						(c) -> new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(c.getHolidayWorkFrameNo()),
+								new TimeSpanForCalc(new TimeWithDayAttr(c.getTimeSheet().getStart()),
+										new TimeWithDayAttr(c.getTimeSheet().getEnd())))),
+				ConvertHelper.mapTo(holidayWorkFrameTime,
+						(c) -> new HolidayWorkFrameTime(new HolidayWorkFrameNo(c.getHolidayFrameNo()),
+								Finally.of(TimeWithCalculation.createTimeWithCalculation(
+										new AttendanceTime(c.getHolidayWorkTime().getTime()),
+										new AttendanceTime(c.getHolidayWorkTime().getCalcTime()))),
+								Finally.of(TimeWithCalculation.createTimeWithCalculation(
+										new AttendanceTime(c.getTransferTime().getTime()),
+										new AttendanceTime(c.getTransferTime().getCalcTime()))),
+								Finally.of(new AttendanceTime(c.getBeforeApplicationTime())))),
+				Finally.of(holidayMidnightWork.toDomain()));
 	}
 }
