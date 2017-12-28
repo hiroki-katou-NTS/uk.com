@@ -295,7 +295,8 @@
 											data-bind="ntsTabPanel: {width:250, dataSource: tabs, 
 											active: selectedTab,direction: 'vertical' }">
 											<div class="tab-a1">
-												<div data-bind="ntsKMK003A1: {screenMode:tabMode, 
+												<div data-bind="ntsKMK003A1: {isDetailMode: isDetailMode,
+													useHalfDay: useHalfDay,
 													enum: settingEnum,
 													mainSettingModel: mainSettingModel}">
 												</div>

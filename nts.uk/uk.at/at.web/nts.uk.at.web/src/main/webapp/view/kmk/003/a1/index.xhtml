@@ -27,6 +27,7 @@
 			immediate: false}" 
 		/>
 	</div>
+	<com:ko tag="if" bind="isDetailMode">
 	<div class="setting_rows">
 		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_33')}</div>
 		<input data-bind="ntsTextEditor: {
@@ -40,6 +41,7 @@
 		<label>#{i18n.getText('KMK003_211')}</label>
 		<div data-bind="ntsCheckBox: { checked: predseting.nightShift }">#{i18n.getText('KMK003_34')}</div>
 	</div>
+	</com:ko>
 	<com:ko tag="if" bind="isDiffTimeMode">
 		<div class="setting_rows">
 			<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_125')}</div>
@@ -95,11 +97,13 @@
 			readonly: false,
 			immediate: false}"
 		/>
-		<div data-bind="ntsCheckBox: { checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
+		<com:ko tag="if" bind="isDetailMode">
+		<div data-bind="ntsCheckBox: { enable: timeZoneModelTwo.useAtr, checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
+		</com:ko>
 	</div>
-	<com:ko tag="if" bind="isViewTimezoneTwo">
+	<com:ko tag="if" bind="isDetailMode">
 	<div class="setting_rows">
-		<div class="label_time_tab1" data-bind="ntsCheckBox: { checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
+		<div class="label_time_tab1" data-bind="ntsCheckBox: { enable: isTimezoneTwoEnabled,checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
 		<span>#{i18n.getText('KMK003_209')}</span>
 		<input data-bind="ntsTimeEditor: {
 			value: timeZoneModelTwo.start,
@@ -108,7 +112,7 @@
 			mode: 'time',
 			option: beforeUpdateWorkTimeOption,
 			required: true,
-			enable: secondTimes,
+			enable: isTimezoneTwoEnabled &amp;&amp; timeZoneModelTwo.useAtr(),
 			readonly: false,
 			immediate: false}" 
 		/>
@@ -120,7 +124,7 @@
 			mode: 'time',
 			option: afterUpdateWorkTimeOption,
 			required: true,
-			enable: secondTimes,
+			enable: isTimezoneTwoEnabled &amp;&amp; timeZoneModelTwo.useAtr(),
 			readonly: false,
 			immediate: false}" 
 		/>
@@ -143,7 +147,7 @@
 				mode: 'time',
 				option: afterUpdateWorkTimeOption,
 				required: true,
-				enable: true,
+				enable: coreTimeSettingModel.timesheet() == 1,
 				readonly: false,
 				immediate: false}" 
 			/>
@@ -155,7 +159,7 @@
 			mode: 'time',
 			option: afterUpdateWorkTimeOption,
 			required: true,
-			enable: true,
+			enable: coreTimeSettingModel.timesheet() == 1,
 			readonly: false,
 			immediate: false}" 
 		/>
@@ -169,7 +173,7 @@
 			mode: 'time',
 			option: beforeUpdateWorkTimeOption,
 			required: true,
-			enable: true,
+			enable: coreTimeSettingModel.timesheet() == 1,
 			readonly: false,
 			immediate: false}" 
 		/>
@@ -184,7 +188,7 @@
 		mode: 'time',
 		option: beforeUpdateWorkTimeOption,
 		required: true,
-		enable: true,
+		enable: useHalfDay,
 		readonly: false,
 		immediate: false}" 
 	/>
@@ -198,7 +202,7 @@
 		mode: 'time',
 		option: beforeUpdateWorkTimeOption,
 		required: true,
-		enable: true,
+		enable: useHalfDay,
 		readonly: false,
 		immediate: false}" 
 	/>

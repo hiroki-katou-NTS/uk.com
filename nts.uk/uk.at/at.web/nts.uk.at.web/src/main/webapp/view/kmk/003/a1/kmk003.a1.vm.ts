@@ -19,13 +19,13 @@ module a1 {
 
         afterUpdateWorkTimeOption: KnockoutObservable<any>;
 
-
-        secondTimes: KnockoutObservable<boolean>;
-
+        // flag
         isDiffTimeMode: KnockoutObservable<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
-        isViewTimezoneTwo: KnockoutObservable<boolean>;
+        isTimezoneTwoEnabled: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
+        useHalfDay: KnockoutObservable<boolean>;
+
         mainSettingModel: MainSettingModel;
         predseting: PredetemineTimeSettingModel;
         changeExtent: EmTimezoneChangeExtentModel;
@@ -36,14 +36,13 @@ module a1 {
         /**
         * Constructor.
         */
-        constructor(screenMode: any, settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
+        constructor(input) {
             let self = this;
-            self.mainSettingModel = mainSettingModel;
-            self.predseting = mainSettingModel.predetemineTimeSetting;
-            self.timeZoneModelOne = mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
-            self.timeZoneModelTwo = mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneTwo();
-            self.coreTimeSettingModel = mainSettingModel.flexWorkSetting.coreTimeSetting;
-            self.settingEnum = settingEnum;
+            self.loadDataFromMainScreen(input);
+            self.isTimezoneTwoEnabled = ko.computed(() => {
+                return !self.isFlexMode() && !self.isDiffTimeMode();
+            });
+
             //day start Time
             self.dayStartTime = ko.observable(0);
             self.dayStartTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
@@ -64,25 +63,29 @@ module a1 {
                 width: "50"
             }));
 
-            self.secondTimes = ko.observable(true);
-
-            self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
-            self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             self.isDiffTimeMode.subscribe(function(isDifftime: boolean){
                 if(isDifftime && !(self.changeExtent)){
                     self.changeExtent = self.mainSettingModel.diffWorkSetting.changeExtent;
                 }
             });
-            self.isViewTimezoneTwo = ko.observable(false);
-            self.isDetailMode = ko.observable(false);
-            screenMode.subscribe(function(value: any) {
-                self.isDetailMode(value == "2");
-                self.isViewTimezoneTwo(self.isDetailMode() || self.predseting.predetermine());
-            });
-            self.predseting.predetermine.subscribe(function(predetermine: boolean) {
-                self.isViewTimezoneTwo(predetermine || self.isDetailMode());
-            });
-            
+        }
+
+        /**
+         * Load data from main screen
+         */
+        private loadDataFromMainScreen(data): void {
+            let self = this;
+            let settingEnum: WorkTimeSettingEnumDto = data.enum;
+            self.isDetailMode = data.isDetailMode;
+            self.mainSettingModel = data.mainSettingModel;
+            self.predseting = self.mainSettingModel.predetemineTimeSetting;
+            self.timeZoneModelOne = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
+            self.timeZoneModelTwo = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneTwo();
+            self.coreTimeSettingModel = self.mainSettingModel.flexWorkSetting.coreTimeSetting;
+            self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
+            self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
+            self.settingEnum = settingEnum;
+            self.useHalfDay = data.useHalfDay;
         }
 
         public collectData(oldData: any) {
@@ -108,12 +111,6 @@ module a1 {
         constructor() {
         }
 
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        }
-
         private getData() {
             let self = this;
             // service.findWorkTimeSetByCode()
@@ -122,17 +119,12 @@ module a1 {
         /**
          * Update
          */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        update(element: any, valueAccessor: () => any): void {
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                 .mergeRelativePath('/view/kmk/003/a1/index.xhtml').serialize();
-            //get data
-            let input = valueAccessor();
-            let screenMode = input.screenMode;
-            let mainSettingModel: MainSettingModel = input.mainSettingModel;
-            var settingEnum: WorkTimeSettingEnumDto = input.enum;
 
-            let screenModel = new ScreenModel(screenMode, settingEnum, mainSettingModel);
+            let screenModel = new ScreenModel(valueAccessor());
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
