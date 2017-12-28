@@ -1,13 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.breakorgoout;
 
 import java.io.Serializable;
-<<<<<<< Updated upstream
-=======
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
->>>>>>> Stashed changes
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -17,13 +10,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-<<<<<<< Updated upstream
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-=======
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
->>>>>>> Stashed changes
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

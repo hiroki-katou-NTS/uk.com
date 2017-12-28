@@ -90,7 +90,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		.setParameter("ymd", timeLeavingOfDailyPerformance.getYmd()).getSingle();
 	 	if(krcdtDaiTemporaryTimeOptional.isPresent()){
 	 		KrcdtDaiTemporaryTime krcdtDaiTemporaryTime = krcdtDaiTemporaryTimeOptional.get();
-	 		krcdtDaiTemporaryTime.workTimes = new BigDecimal(timeLeavingOfDailyPerformance.getWorkTimes().v());
+	 		krcdtDaiTemporaryTime.workTimes = timeLeavingOfDailyPerformance.getWorkTimes().v();
 	 		List<KrcdtTimeLeavingWork> timeLeavingWorks = krcdtDaiTemporaryTime.timeLeavingWorks;
 	 		int size = timeLeavingWorks.size();
 	 		for (int i = 0; i < size; i++) {
@@ -98,24 +98,24 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	 			List<TimeLeavingWork> timeLeavingWorks2 = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
 	 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks2) {
 					if(krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.workNo == timeLeavingWork.getWorkNo().v().intValue()){
-						krcdtTimeLeavingWork.attendanceActualRoudingTime = (timeLeavingWork.getAttendanceStamp()!=null && timeLeavingWork.getAttendanceStamp().getActualStamp()!=null && timeLeavingWork.getAttendanceStamp().getActualStamp().getAfterRoundingTime()!=null) ?  new BigDecimal(timeLeavingWork.getAttendanceStamp().getActualStamp().getAfterRoundingTime().v().intValue()):null;
-						krcdtTimeLeavingWork.attendanceActualTime = (timeLeavingWork.getAttendanceStamp()!=null&&timeLeavingWork.getAttendanceStamp().getActualStamp()!=null&&timeLeavingWork.getAttendanceStamp().getActualStamp().getTimeWithDay()!=null) ?new BigDecimal(timeLeavingWork.getAttendanceStamp().getActualStamp().getTimeWithDay().v().intValue()):null;
+						krcdtTimeLeavingWork.attendanceActualRoudingTime = (timeLeavingWork.getAttendanceStamp()!=null && timeLeavingWork.getAttendanceStamp().getActualStamp()!=null && timeLeavingWork.getAttendanceStamp().getActualStamp().getAfterRoundingTime()!=null) ?  timeLeavingWork.getAttendanceStamp().getActualStamp().getAfterRoundingTime().v().intValue():null;
+						krcdtTimeLeavingWork.attendanceActualTime = (timeLeavingWork.getAttendanceStamp()!=null&&timeLeavingWork.getAttendanceStamp().getActualStamp()!=null&&timeLeavingWork.getAttendanceStamp().getActualStamp().getTimeWithDay()!=null) ?timeLeavingWork.getAttendanceStamp().getActualStamp().getTimeWithDay().v().intValue():null;
 						krcdtTimeLeavingWork.attendanceActualPlaceCode = (timeLeavingWork.getAttendanceStamp()!=null && timeLeavingWork.getAttendanceStamp().getActualStamp()!=null && timeLeavingWork.getAttendanceStamp().getActualStamp().getLocationCode()!=null)?timeLeavingWork.getAttendanceStamp().getActualStamp().getLocationCode().v():null;
-						krcdtTimeLeavingWork.attendanceActualSourceInfo =(timeLeavingWork.getAttendanceStamp()!=null&&timeLeavingWork.getAttendanceStamp().getActualStamp()!=null&&timeLeavingWork.getAttendanceStamp().getActualStamp().getStampSourceInfo()!=null)? new BigDecimal(timeLeavingWork.getAttendanceStamp().getActualStamp().getStampSourceInfo().value):null;
-						krcdtTimeLeavingWork.attendanceStampRoudingTime = (timeLeavingWork.getAttendanceStamp()!=null && timeLeavingWork.getAttendanceStamp().getStamp().isPresent()&& timeLeavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime()!=null)?new BigDecimal(timeLeavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime().v().intValue()):null;
-						krcdtTimeLeavingWork.attendanceStampTime= (timeLeavingWork.getAttendanceStamp()!=null && timeLeavingWork.getAttendanceStamp().getStamp().isPresent() && timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay()!=null) ? new BigDecimal(timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay().v().intValue()):null;
+						krcdtTimeLeavingWork.attendanceActualSourceInfo =(timeLeavingWork.getAttendanceStamp()!=null&&timeLeavingWork.getAttendanceStamp().getActualStamp()!=null&&timeLeavingWork.getAttendanceStamp().getActualStamp().getStampSourceInfo()!=null)? timeLeavingWork.getAttendanceStamp().getActualStamp().getStampSourceInfo().value:null;
+						krcdtTimeLeavingWork.attendanceStampRoudingTime = (timeLeavingWork.getAttendanceStamp()!=null && timeLeavingWork.getAttendanceStamp().getStamp().isPresent()&& timeLeavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime()!=null)?timeLeavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime().v().intValue():null;
+						krcdtTimeLeavingWork.attendanceStampTime= (timeLeavingWork.getAttendanceStamp()!=null && timeLeavingWork.getAttendanceStamp().getStamp().isPresent() && timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay()!=null) ? timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay().v().intValue():null;
 						krcdtTimeLeavingWork.attendanceStampPlaceCode = (timeLeavingWork.getAttendanceStamp()!=null && timeLeavingWork.getAttendanceStamp().getStamp().isPresent() && timeLeavingWork.getAttendanceStamp().getStamp().get().getLocationCode()!=null)? timeLeavingWork.getAttendanceStamp().getStamp().get().getLocationCode().v():null;
-						krcdtTimeLeavingWork.attendanceStampSourceInfo = (timeLeavingWork.getAttendanceStamp()!=null&&timeLeavingWork.getAttendanceStamp().getStamp().isPresent()&& timeLeavingWork.getAttendanceStamp().getStamp().get().getStampSourceInfo()!=null) ? new BigDecimal(timeLeavingWork.getAttendanceStamp().getStamp().get().getStampSourceInfo().value) :null;
-						krcdtTimeLeavingWork.attendanceNumberStamp = (timeLeavingWork.getAttendanceStamp()!=null)? new BigDecimal(timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp()):null;
-						krcdtTimeLeavingWork.leaveWorkActualRoundingTime = new BigDecimal(timeLeavingWork.getLeaveStamp().getActualStamp().getAfterRoundingTime().v().intValue());
-						krcdtTimeLeavingWork.leaveWorkActualTime = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getActualStamp()!=null&& timeLeavingWork.getLeaveStamp().getActualStamp().getTimeWithDay()!=null)? new BigDecimal(timeLeavingWork.getLeaveStamp().getActualStamp().getTimeWithDay().v().intValue()):null;
+						krcdtTimeLeavingWork.attendanceStampSourceInfo = (timeLeavingWork.getAttendanceStamp()!=null&&timeLeavingWork.getAttendanceStamp().getStamp().isPresent()&& timeLeavingWork.getAttendanceStamp().getStamp().get().getStampSourceInfo()!=null) ? timeLeavingWork.getAttendanceStamp().getStamp().get().getStampSourceInfo().value :null;
+						krcdtTimeLeavingWork.attendanceNumberStamp = (timeLeavingWork.getAttendanceStamp()!=null)? timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp():null;
+						krcdtTimeLeavingWork.leaveWorkActualRoundingTime = timeLeavingWork.getLeaveStamp().getActualStamp().getAfterRoundingTime().v().intValue();
+						krcdtTimeLeavingWork.leaveWorkActualTime = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getActualStamp()!=null&& timeLeavingWork.getLeaveStamp().getActualStamp().getTimeWithDay()!=null)? timeLeavingWork.getLeaveStamp().getActualStamp().getTimeWithDay().v().intValue():null;
 						krcdtTimeLeavingWork.leaveWorkActualPlaceCode =(timeLeavingWork.getLeaveStamp()!=null&& timeLeavingWork.getLeaveStamp().getActualStamp()!=null&&timeLeavingWork.getLeaveStamp().getActualStamp().getLocationCode()!=null)? timeLeavingWork.getLeaveStamp().getActualStamp().getLocationCode().v():null;
-						krcdtTimeLeavingWork.leaveActualSourceInfo = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getActualStamp()!=null&&timeLeavingWork.getLeaveStamp().getActualStamp().getStampSourceInfo()!=null)?new BigDecimal(timeLeavingWork.getLeaveStamp().getActualStamp().getStampSourceInfo().value):null;
-						krcdtTimeLeavingWork.leaveWorkStampRoundingTime = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getStamp().isPresent()&&timeLeavingWork.getLeaveStamp().getStamp().get().getAfterRoundingTime()!=null )? new BigDecimal(timeLeavingWork.getLeaveStamp().getStamp().get().getAfterRoundingTime().v().intValue()):null;
-						krcdtTimeLeavingWork.leaveWorkStampTime = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getStamp().isPresent()&&timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay()!=null)? new BigDecimal(timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay().v().intValue()):null;
+						krcdtTimeLeavingWork.leaveActualSourceInfo = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getActualStamp()!=null&&timeLeavingWork.getLeaveStamp().getActualStamp().getStampSourceInfo()!=null)?timeLeavingWork.getLeaveStamp().getActualStamp().getStampSourceInfo().value:null;
+						krcdtTimeLeavingWork.leaveWorkStampRoundingTime = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getStamp().isPresent()&&timeLeavingWork.getLeaveStamp().getStamp().get().getAfterRoundingTime()!=null )? timeLeavingWork.getLeaveStamp().getStamp().get().getAfterRoundingTime().v().intValue():null;
+						krcdtTimeLeavingWork.leaveWorkStampTime = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getStamp().isPresent()&&timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay()!=null)? timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay().v().intValue():null;
 						krcdtTimeLeavingWork.leaveWorkStampPlaceCode = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getStamp().isPresent()&&timeLeavingWork.getLeaveStamp().getStamp().get().getLocationCode()!=null)? timeLeavingWork.getLeaveStamp().getStamp().get().getLocationCode().v():null;
-						krcdtTimeLeavingWork.leaveWorkStampSourceInfo = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getStamp().isPresent()&&timeLeavingWork.getLeaveStamp().getStamp().get().getStampSourceInfo()!=null)?new BigDecimal(timeLeavingWork.getLeaveStamp().getStamp().get().getStampSourceInfo().value):null;
-						krcdtTimeLeavingWork.leaveWorkNumberStamp = (timeLeavingWork.getLeaveStamp()!=null)? new BigDecimal(timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp()):null;
+						krcdtTimeLeavingWork.leaveWorkStampSourceInfo = (timeLeavingWork.getLeaveStamp()!=null&&timeLeavingWork.getLeaveStamp().getStamp().isPresent()&&timeLeavingWork.getLeaveStamp().getStamp().get().getStampSourceInfo()!=null)?timeLeavingWork.getLeaveStamp().getStamp().get().getStampSourceInfo().value:null;
+						krcdtTimeLeavingWork.leaveWorkNumberStamp = (timeLeavingWork.getLeaveStamp()!=null)? timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp():null;
 					}
 				}
 			}
@@ -139,12 +139,12 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		commandProxy().insert(entity);
 		commandProxy().insertAll(entity.timeLeavingWorks);
 	}
-
-	@Override
-	public void update(TimeLeavingOfDailyPerformance timeLeaving) {
-		KrcdtDaiLeavingWork entity = KrcdtDaiLeavingWork.toEntity(timeLeaving);
-		commandProxy().update(entity);
-		commandProxy().updateAll(entity.timeLeavingWorks);
-	}
+//
+//	@Override
+//	public void update(TimeLeavingOfDailyPerformance timeLeaving) {
+//		KrcdtDaiLeavingWork entity = KrcdtDaiLeavingWork.toEntity(timeLeaving);
+//		commandProxy().update(entity);
+//		commandProxy().updateAll(entity.timeLeavingWorks);
+//	}
 
 }

@@ -145,24 +145,24 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 				.collect(Collectors.toList()));
 	}
 
-	@Override
-	public void update(OutingTimeOfDailyPerformance outing) {
-		commandProxy().insertAll(outing.getOutingTimeSheets().stream()
-				.map(c -> KrcdtDaiOutingTime.toEntity(outing.getEmployeeId(), outing.getYmd(), c))
-				.collect(Collectors.toList()));
-	}
+//	@Override
+//	public void update(OutingTimeOfDailyPerformance outing) {
+//		commandProxy().insertAll(outing.getOutingTimeSheets().stream()
+//				.map(c -> KrcdtDaiOutingTime.toEntity(outing.getEmployeeId(), outing.getYmd(), c))
+//				.collect(Collectors.toList()));
+//	}
 
 	@Override
-	public void add(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
-		KrcdtDaiOutingTime.toEntity(outingTimeOfDailyPerformance).stream().forEach(item -> {
-			this.commandProxy().insert(item);
-		});
-		this.getEntityManager().flush();
+	public void insert(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
+//		KrcdtDaiOutingTime.toEntity(outingTimeOfDailyPerformance).stream().forEach(item -> {
+//			this.commandProxy().insert(item);
+//		});
+//		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void update(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
-		List<BigDecimal> outingFrameNos = outingTimeOfDailyPerformance.getOutingTimeSheets().stream().map(item -> {
+		List<Integer> outingFrameNos = outingTimeOfDailyPerformance.getOutingTimeSheets().stream().map(item -> {
 			return item.getOutingFrameNo().v();
 		}).collect(Collectors.toList());
 		List<KrcdtDaiOutingTime> krcdtDaiOutingTimeLists = this.queryProxy().query(SELECT_BY_KEY, KrcdtDaiOutingTime.class)
@@ -179,26 +179,26 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 					krcdtDaiOutingTime.krcdtDaiOutingTimePK.outingFrameNo == item.getOutingFrameNo().v()).findFirst();
 			if (outingTimeSheet.isPresent()) {
 				krcdtDaiOutingTime.backActualPlaceCode = outingTimeSheet.get().getComeBack().getActualStamp().getLocationCode().v();
-				krcdtDaiOutingTime.backActualRoundingTimeDay = new BigDecimal(outingTimeSheet.get().getComeBack().getActualStamp().getAfterRoundingTime().v());
-				krcdtDaiOutingTime.backActualSourceInfo = new BigDecimal(outingTimeSheet.get().getComeBack().getActualStamp().getStampSourceInfo().value);
-				krcdtDaiOutingTime.backActualTime = new BigDecimal(outingTimeSheet.get().getComeBack().getActualStamp().getTimeWithDay().v());
-				krcdtDaiOutingTime.backNumberStamp = new BigDecimal(outingTimeSheet.get().getComeBack().getNumberOfReflectionStamp());
+				krcdtDaiOutingTime.backActualRoundingTimeDay = outingTimeSheet.get().getComeBack().getActualStamp().getAfterRoundingTime().v();
+				krcdtDaiOutingTime.backActualSourceInfo = outingTimeSheet.get().getComeBack().getActualStamp().getStampSourceInfo().value;
+				krcdtDaiOutingTime.backActualTime = outingTimeSheet.get().getComeBack().getActualStamp().getTimeWithDay().v();
+				krcdtDaiOutingTime.backNumberStamp = outingTimeSheet.get().getComeBack().getNumberOfReflectionStamp();
 				krcdtDaiOutingTime.backStampPlaceCode = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? outingTimeSheet.get().getComeBack().getStamp().get().getLocationCode().v() : null;
-				krcdtDaiOutingTime.backStampRoundingTimeDay = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getComeBack().getStamp().get().getAfterRoundingTime().v()) : null;
-				krcdtDaiOutingTime.backStampSourceInfo = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getComeBack().getStamp().get().getStampSourceInfo().value) : null;
-				krcdtDaiOutingTime.backStampTime = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getComeBack().getStamp().get().getTimeWithDay().v()) : null;
+				krcdtDaiOutingTime.backStampRoundingTimeDay = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? outingTimeSheet.get().getComeBack().getStamp().get().getAfterRoundingTime().v() : null;
+				krcdtDaiOutingTime.backStampSourceInfo = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? outingTimeSheet.get().getComeBack().getStamp().get().getStampSourceInfo().value : null;
+				krcdtDaiOutingTime.backStampTime = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? outingTimeSheet.get().getComeBack().getStamp().get().getTimeWithDay().v() : null;
 				krcdtDaiOutingTime.outActualPlaceCode = outingTimeSheet.get().getGoOut().getActualStamp().getLocationCode().v();
-				krcdtDaiOutingTime.outActualRoundingTimeDay = new BigDecimal(outingTimeSheet.get().getGoOut().getActualStamp().getAfterRoundingTime().v());
-				krcdtDaiOutingTime.outActualSourceInfo = new BigDecimal(outingTimeSheet.get().getGoOut().getActualStamp().getStampSourceInfo().value);
-				krcdtDaiOutingTime.outActualTime = new BigDecimal(outingTimeSheet.get().getGoOut().getActualStamp().getTimeWithDay().v());
-				krcdtDaiOutingTime.outingReason = new BigDecimal(outingTimeSheet.get().getReasonForGoOut().value);
-				krcdtDaiOutingTime.outingTime = new BigDecimal(outingTimeSheet.get().getOutingTime().v());
-				krcdtDaiOutingTime.outingTimeCalculation = new BigDecimal(outingTimeSheet.get().getOutingTimeCalculation().v());
-				krcdtDaiOutingTime.outNumberStamp = new BigDecimal(outingTimeSheet.get().getGoOut().getNumberOfReflectionStamp());
+				krcdtDaiOutingTime.outActualRoundingTimeDay = outingTimeSheet.get().getGoOut().getActualStamp().getAfterRoundingTime().v();
+				krcdtDaiOutingTime.outActualSourceInfo = outingTimeSheet.get().getGoOut().getActualStamp().getStampSourceInfo().value;
+				krcdtDaiOutingTime.outActualTime = outingTimeSheet.get().getGoOut().getActualStamp().getTimeWithDay().v();
+				krcdtDaiOutingTime.outingReason = outingTimeSheet.get().getReasonForGoOut().value;
+				krcdtDaiOutingTime.outingTime = outingTimeSheet.get().getOutingTime().v();
+				krcdtDaiOutingTime.outingTimeCalculation = outingTimeSheet.get().getOutingTimeCalculation().v();
+				krcdtDaiOutingTime.outNumberStamp = outingTimeSheet.get().getGoOut().getNumberOfReflectionStamp();
 				krcdtDaiOutingTime.outStampPlaceCode = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? outingTimeSheet.get().getGoOut().getStamp().get().getLocationCode().v() : null;
-				krcdtDaiOutingTime.outStampRoundingTimeDay = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getGoOut().getStamp().get().getAfterRoundingTime().v()) : null;
-				krcdtDaiOutingTime.outStampSourceInfo = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getGoOut().getStamp().get().getStampSourceInfo().value) : null;
-				krcdtDaiOutingTime.outStampTime = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getGoOut().getStamp().get().getTimeWithDay().v()) : null;	
+				krcdtDaiOutingTime.outStampRoundingTimeDay = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? outingTimeSheet.get().getGoOut().getStamp().get().getAfterRoundingTime().v() : null;
+				krcdtDaiOutingTime.outStampSourceInfo = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? outingTimeSheet.get().getGoOut().getStamp().get().getStampSourceInfo().value : null;
+				krcdtDaiOutingTime.outStampTime = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? outingTimeSheet.get().getGoOut().getStamp().get().getTimeWithDay().v() : null;	
 			}
 		};
 		krcdtDaiOutingTimeLists.forEach(item -> {

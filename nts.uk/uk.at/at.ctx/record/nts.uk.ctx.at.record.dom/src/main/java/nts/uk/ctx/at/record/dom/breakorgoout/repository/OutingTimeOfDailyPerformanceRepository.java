@@ -14,8 +14,10 @@ public interface OutingTimeOfDailyPerformanceRepository {
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
 	Optional<OutingTimeOfDailyPerformance> findByEmployeeIdAndDate(String employeeId, GeneralDate ymd);
-
-	void add(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance);
+	
+	void add(OutingTimeOfDailyPerformance outing);
+	
+	void insert(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance);
 	
 	void update(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance);
 	
