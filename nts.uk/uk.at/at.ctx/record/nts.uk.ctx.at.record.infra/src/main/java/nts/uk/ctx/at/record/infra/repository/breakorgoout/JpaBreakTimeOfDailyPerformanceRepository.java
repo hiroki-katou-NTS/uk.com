@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("AND a.krcdtDaiBreakTimePK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 
-		builderString= new StringBuilder();
+		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiBreakTime a ");
 		builderString.append("WHERE a.krcdtDaiBreakTimePK.employeeId = :employeeId ");
@@ -79,32 +78,49 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 			return breakTimeOfDailyPerformances;
 		}
 
-		Map<BigDecimal, List<KrcdtDaiBreakTime>> resultMap = krcdtDaiBreakTimes.stream()
+		Map<Integer, List<KrcdtDaiBreakTime>> resultMap = krcdtDaiBreakTimes.stream()
 				.collect(Collectors.groupingBy(item -> item.krcdtDaiBreakTimePK.breakType));
 
 		resultMap.forEach((key, value) -> {
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = new BreakTimeOfDailyPerformance(employeeId,
 					EnumAdaptor.valueOf(key.intValue(), BreakType.class), value.stream().map(item -> {
-						WorkStamp startActualStamp = new WorkStamp(
-								new TimeWithDayAttr(item.startStampRoundingTimeDay.intValue()),
-								new TimeWithDayAttr(item.startStampTime.intValue()),
-								new WorkLocationCD(item.startStampPlaceCode),
-								EnumAdaptor.valueOf(item.startStampSourceInfo.intValue(), StampSourceInfo.class));
+						WorkStamp startActualStamp = new WorkStamp(new TimeWithDayAttr(item.startStampRoundingTimeDay),
+								new TimeWithDayAttr(item.startStampTime), new WorkLocationCD(item.startStampPlaceCode),
+								EnumAdaptor.valueOf(item.startStampSourceInfo, StampSourceInfo.class));
 
-						WorkStamp endActualStamp = new WorkStamp(
-								new TimeWithDayAttr(item.endStampRoundingTimeDay.intValue()),
-								new TimeWithDayAttr(item.endStampTime.intValue()),
-								new WorkLocationCD(item.endStampPlaceCode),
-								EnumAdaptor.valueOf(item.endStampSourceInfo.intValue(), StampSourceInfo.class));
+						WorkStamp endActualStamp = new WorkStamp(new TimeWithDayAttr(item.endStampRoundingTimeDay),
+								new TimeWithDayAttr(item.endStampTime), new WorkLocationCD(item.endStampPlaceCode),
+								EnumAdaptor.valueOf(item.endStampSourceInfo, StampSourceInfo.class));
 
 						return new BreakTimeSheet(new BreakFrameNo(item.krcdtDaiBreakTimePK.breakFrameNo),
-								startActualStamp, endActualStamp,
-								   new AttendanceTime(0));
+								startActualStamp, endActualStamp, new AttendanceTime(0));
 					}).collect(Collectors.toList()), ymd);
 			breakTimeOfDailyPerformances.add(breakTimeOfDailyPerformance);
 		});
 
 		return breakTimeOfDailyPerformances;
+	}
+
+	@Override
+	public void insert(BreakTimeOfDailyPerformance breakTimes) {
+		commandProxy().insertAll(KrcdtDaiBreakTime.toEntity(breakTimes));
+	}
+
+	@Override
+	public void insert(List<BreakTimeOfDailyPerformance> breakTimes) {
+		commandProxy().insertAll(breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
+				.collect(Collectors.toList()));
+	}
+
+	@Override
+	public void update(BreakTimeOfDailyPerformance breakTimes) {
+		commandProxy().updateAll(KrcdtDaiBreakTime.toEntity(breakTimes));
+	}
+
+	@Override
+	public void update(List<BreakTimeOfDailyPerformance> breakTimes) {
+		commandProxy().updateAll(breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
+				.collect(Collectors.toList()));
 	}
 
 }

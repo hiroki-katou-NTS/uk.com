@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @AllArgsConstructor
 public class EditStateOfDailyPerformanceDto implements ConvertibleAttendanceItem {
 
+	//TODO: not map item id
 	/** 社員ID: 社員ID */
 	private String employeeId;
 	

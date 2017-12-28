@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +20,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class ActualWorkTimeDailyPerformDto {
 
 	/** 割増時間: 日別実績の割増時間 */
-	@AttendanceItemLayout(layout = "A", isList = true, jpPropertyName = "割増時間")
+	@AttendanceItemLayout(layout = "A", isList = true, jpPropertyName = "割増時間",listMaxLength = 10)
 	private List<PremiumTimeDto> premiumTimes;
 
 	/** 拘束差異時間: 勤怠時間 */
@@ -43,7 +42,7 @@ public class ActualWorkTimeDailyPerformDto {
 	private TotalWorkingTimeDto totalWorkingTime;
 
 	/** 乖離時間: 日別実績の乖離時間 */
-	@AttendanceItemLayout(layout = "F", isList = true, jpPropertyName = "乖離時間")
+	@AttendanceItemLayout(layout = "F", isList = true, jpPropertyName = "乖離時間", listMaxLength = 5)
 	private List<DivergenceTimeDto> divergenceTime;
 
 	public static ActualWorkTimeDailyPerformDto toActualWorkTime(ActualWorkingTimeOfDaily domain) {
@@ -69,6 +68,13 @@ public class ActualWorkTimeDailyPerformDto {
 						domain.getTimeDifferenceWorkingHours() == null ? null
 								: domain.getTimeDifferenceWorkingHours().valueAsMinutes(),
 						TotalWorkingTimeDto.fromTotalWorkingTime(domain.getTotalWorkingTime()),
-						domain.getDivTime().getDivergenceTime() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getDivTime().getDivergenceTime(), d -> DivergenceTimeDto.fromDivergenceTime(d)));
+						domain.getDivTime().getDivergenceTime() == null ? new ArrayList<>()
+								: ConvertHelper.mapTo(domain.getDivTime().getDivergenceTime(),
+										d -> DivergenceTimeDto.fromDivergenceTime(d)));
+	}
+
+	public ActualWorkingTimeOfDaily toDomain() {
+		return ActualWorkingTimeOfDaily.of(totalWorkingTime.toDomain(), constraintTime.getLateNightConstraintTime(),
+				constraintTime.getTotalConstraintTime(), constraintDifferenceTime, timeDifferenceWorkingHours);
 	}
 }

@@ -64,8 +64,8 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 		// Get domain 社員
 		EmployeeImport em = this.getEmployee(companyId, employeeCode);
-		// Get User by associatedPersonId
-		User user = this.getUser(em.getEmployeeId().toString());
+		// Get User by PersonalId
+		User user = this.getUser(em.getPersonalId());
 		// check password
 		this.compareHashPassword(user, password);
 		// check time limit
@@ -156,11 +156,11 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	/**
 	 * Gets the user.
 	 *
-	 * @param associatedPersonId the associated person id
+	 * @param personalId the personal id
 	 * @return the user
 	 */
-	private User getUser(String associatedPersonId) {
-		Optional<User> user = userRepository.getByAssociatedPersonId(associatedPersonId);
+	private User getUser(String personalId) {
+		Optional<User> user = userRepository.getByAssociatedPersonId(personalId);
 		if (user.isPresent()) {
 			return user.get();
 		} else {

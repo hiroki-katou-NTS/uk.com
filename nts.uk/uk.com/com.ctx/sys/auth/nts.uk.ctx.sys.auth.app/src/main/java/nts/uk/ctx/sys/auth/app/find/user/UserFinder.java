@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.auth.app.find.user;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -56,23 +57,13 @@ public class UserFinder {
 		if (!userKeyDto.isMulti() && !userKeyDto.isSpecial()) {
 			List<EmployeeInfoImport> listEmployeeInfo = employeeInfoAdapter.getEmployeesAtWorkByBaseDate(companyId, GeneralDate.today());
 
-			List<EmployeeInfoImport> listEmployeePerId = new ArrayList<EmployeeInfoImport>();
-			for (EmployeeInfoImport en : listEmployeeInfo) {
-				if (en.getPersonId() != null) {
-					listEmployeePerId.add(en);
-				}
-			}
-
-			if (listEmployeePerId.isEmpty())
-				return result;
-
 			List<User> notEmptyAssociatedUser = listUser.stream().filter(c -> c.hasAssociatedPersonID()).collect(Collectors.toList());
 
 			for (User user : notEmptyAssociatedUser) {
-				List<EmployeeInfoImport> associatedEmployee = listEmployeePerId.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).collect(Collectors.toList());
-				if (!associatedEmployee.isEmpty()) {
-					if (user.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase()) || associatedEmployee.get(0).getEmployeeName().toLowerCase().contains(userKeyDto.getKey().toLowerCase())) {
-						user.setUserName(new UserName(associatedEmployee.get(0).getEmployeeName()));
+				Optional<EmployeeInfoImport> associatedEmployee = listEmployeeInfo.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).findAny();
+				if (associatedEmployee.isPresent()) {
+					if (user.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase()) || associatedEmployee.get().getEmployeeName().toLowerCase().contains(userKeyDto.getKey().toLowerCase())) {
+						user.setUserName(new UserName(associatedEmployee.get().getEmployeeName()));
 						result.add(UserDto.fromDomain(user));
 					}
 				}

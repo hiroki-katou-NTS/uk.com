@@ -18,4 +18,6 @@ public class TimeSheetDto {
 
 	@AttendanceItemLayout(layout="B", jpPropertyName="終了時間")
 	private TimeStampDto end;
+	
+	private int breakTime;
 }

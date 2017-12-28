@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
@@ -99,13 +100,13 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		}
 		
 		// convert to map domain update
-		Map<Integer, WorkMonthlySettingDto> mapWorkMonthlySetting = command.getWorkMonthlySetting()
+		Map<GeneralDate, WorkMonthlySettingDto> mapWorkMonthlySetting = command.getWorkMonthlySetting()
 				.stream().collect(Collectors.toMap((dto) -> {
 					return dto.getYmdk();
 				}, Function.identity()));
 		
 		// get to date
-		Date toDate = this.toDate(command.getWorkMonthlySetting().get(INDEX_FIRST).getYmdk());
+		Date toDate = command.getWorkMonthlySetting().get(INDEX_FIRST).getYmdk().date();
 		
 		// get year month
 		int yearMonth = this.getYearMonth(toDate);
@@ -215,7 +216,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		
 		
 		// convert to map domain update
-		Map<BigDecimal, WorkMonthlySetting> mapDomainUpdate = domainUpdates.stream()
+		Map<GeneralDate, WorkMonthlySetting> mapDomainUpdate = domainUpdates.stream()
 				.collect(Collectors.toMap((domainsetting) -> {
 					return domainsetting.getYmdk();
 				}, Function.identity()));

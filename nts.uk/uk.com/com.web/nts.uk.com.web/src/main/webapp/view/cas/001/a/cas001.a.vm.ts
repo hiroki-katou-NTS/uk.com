@@ -44,6 +44,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
             ]);
 
             self.component.currentCode.subscribe(function(newRoleId) {
+                if (self.personRoleList().length < 1) {
+
+                    return;
+                }
                 self.currentRoleId(newRoleId);
 
             });
@@ -384,16 +388,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             self.loadPersonRoleList().done(function() {
 
-                let selectedId = self.currentRoleId() !== '' ? self.currentRoleId() : self.personRoleList()[0].roleId;
-
-                self.currentRoleId('');
-
                 if (self.personRoleList().length > 0) {
+                    let selectedId = self.currentRoleId() !== '' ? self.currentRoleId() : self.personRoleList()[0].roleId;
 
                     self.currentRoleId(selectedId);
 
-                }
-                else {
+
+                } else {
 
                     dialog({ messageId: "Msg_217" });
 

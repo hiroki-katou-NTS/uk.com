@@ -10,6 +10,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.shr.com.context.AppContexts;
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class StampReflectionManagementCommandHandler extends  CommandHandler<StampReflectionManagementCommand>{
 	/** The Repository */

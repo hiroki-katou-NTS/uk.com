@@ -73,9 +73,7 @@ module nts.uk.ui.jqueryExtentions {
                     row = $treegrid.igTreeGridSelection("selectedRow");
                 }
                 if (row) {
-                    var index = row.index;
-                    var height = row.element[0].scrollHeight;
-                    $("#" + id + "_scroll").scrollTop(index * height);
+                    ui.ig.tree.grid.expandTo(row.id, $treegrid);
                 }
             });
             return $treegrid;

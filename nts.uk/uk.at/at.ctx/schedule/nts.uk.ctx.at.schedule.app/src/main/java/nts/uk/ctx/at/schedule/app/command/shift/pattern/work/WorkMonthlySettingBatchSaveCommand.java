@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
@@ -116,8 +117,8 @@ public class WorkMonthlySettingBatchSaveCommand {
 		 * @see nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingGetMemento#getYmdK()
 		 */
 		@Override
-		public BigDecimal getYmdK() {
-			return BigDecimal.valueOf(this.dto.getYmdk());
+		public GeneralDate getYmdK() {
+			return this.dto.getYmdk();
 		}
 
 		/*

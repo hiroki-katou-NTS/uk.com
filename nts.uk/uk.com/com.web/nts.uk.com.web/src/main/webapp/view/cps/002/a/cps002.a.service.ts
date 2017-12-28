@@ -26,7 +26,7 @@ module cps002.a.service {
     export function getLayout() {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(regpath + paths.getLayout)
             .done(function(res) {
                 dfd.resolve(res);
@@ -42,7 +42,7 @@ module cps002.a.service {
 
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(regpath + paths.getUserSetting)
             .done(function(res) {
                 dfd.resolve(res);
@@ -58,7 +58,7 @@ module cps002.a.service {
 
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(regpath + paths.getLastRegHistory)
             .done(function(res) {
                 dfd.resolve(res);
@@ -74,7 +74,7 @@ module cps002.a.service {
     export function getEmployeeCode(employeeLetter) {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax("com", regpath + paths.getEmployeeCode, employeeLetter)
             .done(function(res) {
                 dfd.resolve(res);
@@ -92,7 +92,7 @@ module cps002.a.service {
 
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax("com", regpath + paths.getCardNumber, cardLetter)
             .done(function(res) {
                 dfd.resolve(res);
@@ -108,7 +108,7 @@ module cps002.a.service {
 
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax("com", regpath + paths.getCardNumber, employeeLetter)
             .done(function(res) {
                 dfd.resolve(res);
@@ -124,7 +124,7 @@ module cps002.a.service {
 
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax("com", regpath + paths.validateEmpInfo, command)
             .done(function(res) {
                 dfd.resolve(res);
@@ -141,7 +141,7 @@ module cps002.a.service {
 
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(regpath + paths.getCopySetting)
             .done(function(res) {
                 dfd.resolve(res);
@@ -156,7 +156,7 @@ module cps002.a.service {
     export function getAllCopySettingItem(employeeId, categoryCd, baseDate) {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(format(regpath + paths.getAllCopySettingItem, employeeId, categoryCd, baseDate))
             .done(function(res) {
                 dfd.resolve(res);
@@ -175,7 +175,7 @@ module cps002.a.service {
     export function getAllInitValueCtgSetting(settingId: string) {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(format(regpath + paths.getAllInitValueCtgSetting, settingId))
             .done(function(res) {
                 dfd.resolve(res);
@@ -191,7 +191,7 @@ module cps002.a.service {
     export function getAllInitValueItemSetting(command) {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(regpath + paths.getAllInitValueItemSetting, command)
             .done(function(res) {
                 dfd.resolve(res);
@@ -206,7 +206,7 @@ module cps002.a.service {
     export function getSelfRoleAuth() {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(regpath + paths.getSelfRoleAuth)
             .done(function(res) {
                 dfd.resolve(res);
@@ -221,7 +221,7 @@ module cps002.a.service {
     export function getLayoutByCreateType(command) {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(regpath + paths.getLayoutByCreateType, command)
             .done(function(res) {
                 dfd.resolve(res);
@@ -236,7 +236,7 @@ module cps002.a.service {
     export function addNewEmployee(command) {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.grayout();
+        _.defer(() => block.grayout());
         nts.uk.request.ajax(regpath + paths.addNewEmployee, command)
             .done(function(res) {
                 dfd.resolve(res);
@@ -250,7 +250,7 @@ module cps002.a.service {
     export function getEmployeeInfo(command) {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax("com", paths.getEmployeeInfo, command)
             .done(function(res) {
                 dfd.resolve(res);

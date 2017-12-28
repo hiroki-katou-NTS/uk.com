@@ -611,6 +611,7 @@ module nts.custombinding {
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.STRING" class="string">
                             <div data-bind="if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
                                 <input data-bind=" ntsTextEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
@@ -629,6 +630,7 @@ module nts.custombinding {
                             </div>
                             <div data-bind="if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80))">
                                 <textarea data-bind="ntsMultilineEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
@@ -648,6 +650,7 @@ module nts.custombinding {
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.NUMERIC" class="numeric">
                             <input data-bind="ntsNumberEditor: { 
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
@@ -669,18 +672,19 @@ module nts.custombinding {
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.DATE" class="date">
                             <div data-bind="if: index <= 1">
                                 <div data-bind="ntsDatePicker: {
-                                            value: value,
-                                            startDate: startDate,
-                                            endDate: endDate,
-                                            constraint: nameid,
-                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
-                                            enable: editable,
-                                            readonly: readonly
-                                        }, attr: { 
-                                            id: nameid, 
-                                            nameid: nameid,
-                                            title: itemName
-                                        }"></div>
+                                        name: itemName,
+                                        value: value,
+                                        startDate: startDate,
+                                        endDate: endDate,
+                                        constraint: nameid,
+                                        dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                        enable: editable,
+                                        readonly: readonly
+                                    }, attr: { 
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName
+                                    }"></div>
                             </div>
                             <div data-bind="if: index == 2">
                                 <div data-bind="if: typeof ctgType !== 'undefined'">
@@ -689,6 +693,7 @@ module nts.custombinding {
                                     </div>
                                     <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) == -1">
                                         <div data-bind="ntsDatePicker: {
+                                                name: itemName,
                                                 value: value,
                                                 startDate: startDate,
                                                 endDate: endDate,
@@ -705,6 +710,7 @@ module nts.custombinding {
                                 </div>
                                 <div data-bind="if: typeof ctgType === 'undefined'">
                                     <div data-bind="ntsDatePicker: {
+                                            name: itemName,
                                             value: value,
                                             startDate: startDate,
                                             endDate: endDate,
@@ -722,6 +728,7 @@ module nts.custombinding {
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIME" class="time">
                             <input data-bind="ntsTimeEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
@@ -737,8 +744,8 @@ module nts.custombinding {
                                     }" />
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT" class="timepoint">
-                            <input data-bind="ntsTimeWithDayEditor: 
-                                    { 
+                            <input data-bind="ntsTimeWithDayEditor: { 
+                                        name: itemName,
                                         name: nameid,
                                         constraint: nameid,
                                         value: value,
@@ -754,6 +761,7 @@ module nts.custombinding {
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.SELECTION" class="selection">
                             <div data-bind="ntsComboBox: {
+                                        name: itemName,
                                         value: value,
                                         options: ko.observableArray(lstComboBoxValue || []),
                                         optionsText: 'optionText',

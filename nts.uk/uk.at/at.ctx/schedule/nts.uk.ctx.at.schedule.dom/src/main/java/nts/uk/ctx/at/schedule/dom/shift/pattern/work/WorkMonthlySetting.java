@@ -4,10 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
@@ -34,7 +33,7 @@ public class WorkMonthlySetting extends AggregateRoot {
 	
 	/** The ymdk. */
 	// 年月日
-	private BigDecimal ymdk;
+	private GeneralDate ymdk;
 	
 	/** The monthly pattern code. */
 	// 月間パターンコード
@@ -60,7 +59,7 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 * @param ymdk the ymdk
 	 * @param monthlyPatternCode the monthly pattern code
 	 */
-	public WorkMonthlySetting(BigDecimal ymdk, String monthlyPatternCode) {
+	public WorkMonthlySetting(GeneralDate ymdk, String monthlyPatternCode) {
 		this.workTypeCode = new WorkTypeCode("");
 		this.workingCode = new WorkingCode("");
 		this.ymdk = ymdk;
@@ -94,6 +93,9 @@ public class WorkMonthlySetting extends AggregateRoot {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -120,6 +122,5 @@ public class WorkMonthlySetting extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
 	
 }
