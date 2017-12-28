@@ -60,9 +60,8 @@
 		<div style="width: 50%">
 			<hr />
 		</div>
-		<div class="labelSetting" style="display: inline-flex;">
-			<div
-				data-bind="ntsComboBox: {
+		<div class="labelSetting itemleft" style="display: inline-flex;">
+			<div style="margin-right: 10px;" data-bind="ntsComboBox: {
 						options: settingEnum.roundingTime,
 						optionsValue: 'value',
 						visibleItemsCount: 5,
@@ -93,8 +92,7 @@
 		<div style="width: 50%">
 			<hr />
 		</div>
-		<div
-			data-bind="ntsRadioBoxGroup: {
+		<div class="itemleft" style="display: inline-grid;" data-bind="ntsRadioBoxGroup: {
 					options: calculationMethods,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -110,7 +108,7 @@
 			<div style="width: 50%">
 				<hr />
 			</div>
-			<div class="labelSetting"
+			<div class="labelSetting, itemleft"
 				data-bind="ntsComboBox: {
 					options: settingEnum.lstFixedChangeAtr,
 					optionsValue: 'value',

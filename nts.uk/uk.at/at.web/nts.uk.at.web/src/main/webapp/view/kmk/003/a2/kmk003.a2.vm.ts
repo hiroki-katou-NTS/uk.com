@@ -262,65 +262,69 @@ module a2 {
         private bindingDataDto() {
             let self = this;
             
+            let dataSourceAllDay: EmTimeZoneSetModel[] = [];
+            let dataSourceMorning: EmTimeZoneSetModel[] = [];
+            let dataSourceAfternoon: EmTimeZoneSetModel[] = [];
+            
             //============= Fixed Mode =============
             if (self.parentModel.workTimeSetting.isFixed()) {
                 // all day
-                let dataSourceAllDay: EmTimeZoneSetModel[] = self.parentModel.fixedWorkSetting.getHDWtzOneday()
+                dataSourceAllDay = self.parentModel.fixedWorkSetting.getHDWtzOneday()
                     .workTimezone.lstWorkingTimezone;
-                self.bindingDataDomain(dataSourceAllDay, self.dataSourceOneDay);
                 
                 // morning
-                let dataSourceMorning: EmTimeZoneSetModel[] = self.parentModel.fixedWorkSetting.getHDWtzMorning()
+                dataSourceMorning = self.parentModel.fixedWorkSetting.getHDWtzMorning()
                     .workTimezone.lstWorkingTimezone;
-                self.bindingDataDomain(dataSourceMorning, self.dataSourceMorning);
                 
                 // afternoon
-                let dataSourceAfternoon: EmTimeZoneSetModel[] = self.parentModel.fixedWorkSetting.getHDWtzAfternoon()
+                dataSourceAfternoon = self.parentModel.fixedWorkSetting.getHDWtzAfternoon()
                     .workTimezone.lstWorkingTimezone;
-                self.bindingDataDomain(dataSourceAfternoon, self.dataSourceAfternoon);
             }
             
             //============= Flex Mode =============
             else if (self.parentModel.workTimeSetting.isFlex()) {
                 // all day
-                let dataSourceAllDay: EmTimeZoneSetModel[] = self.parentModel.flexWorkSetting.getHDWtzOneday()
+                dataSourceAllDay = self.parentModel.flexWorkSetting.getHDWtzOneday()
                     .workTimezone.lstWorkingTimezone;
-                self.bindingDataDomain(dataSourceAllDay, self.dataSourceOneDay);
                 
                 // morning
-                let dataSourceMorning: EmTimeZoneSetModel[] = self.parentModel.flexWorkSetting.getHDWtzMorning()
+                dataSourceMorning = self.parentModel.flexWorkSetting.getHDWtzMorning()
                     .workTimezone.lstWorkingTimezone;
-                self.bindingDataDomain(dataSourceMorning, self.dataSourceMorning);
                 
                 // afternoon
-                let dataSourceAfternoon: EmTimeZoneSetModel[] = self.parentModel.flexWorkSetting.getHDWtzAfternoon()
+                dataSourceAfternoon = self.parentModel.flexWorkSetting.getHDWtzAfternoon()
                     .workTimezone.lstWorkingTimezone;
-                self.bindingDataDomain(dataSourceAfternoon, self.dataSourceAfternoon);
             }
             
             //============= DiffTime Mode =============
             else if (self.parentModel.workTimeSetting.isDiffTime()) {
                 // all day
-                let dataSourceAllDay: EmTimeZoneSetModel[] = self.parentModel.diffWorkSetting.getHDWtzOneday()
+                dataSourceAllDay = self.parentModel.diffWorkSetting.getHDWtzOneday()
                     .workTimezone.employmentTimezones;
-                self.bindingDataDomain(dataSourceAllDay, self.dataSourceOneDay);
                 
                 // morning
-                let dataSourceMorning: EmTimeZoneSetModel[] = self.parentModel.diffWorkSetting.getHDWtzMorning()
+                dataSourceMorning = self.parentModel.diffWorkSetting.getHDWtzMorning()
                     .workTimezone.employmentTimezones;
-                self.bindingDataDomain(dataSourceMorning, self.dataSourceMorning);
                 
                 // afternoon
-                let dataSourceAfternoon: EmTimeZoneSetModel[] = self.parentModel.diffWorkSetting.getHDWtzAfternoon()
+                dataSourceAfternoon = self.parentModel.diffWorkSetting.getHDWtzAfternoon()
                     .workTimezone.employmentTimezones;
-                self.bindingDataDomain(dataSourceAfternoon, self.dataSourceAfternoon);
-            } 
+            }
+            // convert data
+            self.toModel(dataSourceMorning, self.dataSourceMorning);
+            self.toModel(dataSourceAllDay, self.dataSourceOneDay);
+            self.toModel(dataSourceAfternoon, self.dataSourceAfternoon);
+            
+            // callback subscribe dataSource table.
+            self.dataSourceOneDay.valueHasMutated();
+            self.dataSourceMorning.valueHasMutated();
+            self.dataSourceAfternoon.valueHasMutated();
         }
         
         /**
          * Binding data domain
          */
-        private bindingDataDomain(dataSourceModel: EmTimeZoneSetModel[],
+        private toModel(dataSourceModel: EmTimeZoneSetModel[],
             dataSource: KnockoutObservableArray<TimeZoneModel>) {
             let self = this;
             
@@ -333,7 +337,7 @@ module a2 {
                     startTime: item.timezone.start(),
                     endTime: item.timezone.end()
                 }
-                dataSource.push(new TimeZoneModel(timeRange, item.timezone.rounding.roundingTime(),
+                dataSource().push(new TimeZoneModel(timeRange, item.timezone.rounding.roundingTime(),
                     item.timezone.rounding.rounding()));
             });
         }
@@ -391,7 +395,20 @@ module a2 {
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
-                    self.parentModel.fixedWorkSetting.getHDWtzOneday()
+                    // TODO: 
+//                    _.forEach(self.parentModel.fixedWorkSetting.lstHalfDayWorkTimezone, (item: FixHalfDayWorkTimezoneModel) => {
+//                        if (item.dayAtr() == 0) {
+//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
+//                        }
+//                        if (item.dayAtr() == 1) {
+//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceMorning);
+//                        }
+//                        if (item.dayAtr() == 2) {
+//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceAfternoon);
+//                        }
+//                    });
+                    
+                    self.parentModel.fixedWorkSetting. getHDWtzOneday()
                         .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
                     
                     // morning
@@ -404,7 +421,7 @@ module a2 {
                 }
                 
                 //============= Flex Mode =============
-                else if (self.parentModel.workTimeSetting.isFixed()) {
+                else if (self.parentModel.workTimeSetting.isFlex()) {
                     // all day
                     self.parentModel.flexWorkSetting.getHDWtzOneday()
                         .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
@@ -419,7 +436,7 @@ module a2 {
                 }
                 
                 //============= DiffTime Mode =============
-                else if (self.parentModel.workTimeSetting.isFixed()) {
+                else if (self.parentModel.workTimeSetting.isDiffTime()) {
                     // all day
                     self.parentModel.diffWorkSetting.getHDWtzOneday()
                         .workTimezone.employmentTimezones = self.toDomain(self.dataSourceOneDay);
