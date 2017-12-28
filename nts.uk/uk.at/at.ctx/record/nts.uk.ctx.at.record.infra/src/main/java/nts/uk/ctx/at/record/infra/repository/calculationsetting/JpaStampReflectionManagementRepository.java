@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
-import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcdtStampImprint;
-import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcdtStampImprintPK;
+import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprint;
+import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprintPK;
 
 
 @Stateless
@@ -27,11 +27,11 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 
 	@Override
 	public Optional<StampReflectionManagement> findByCid(String companyId) {
-		return this.queryProxy().query(FIND, KrcdtStampImprint.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(FIND, KrcmtStampImprint.class).setParameter("companyId", companyId)
 				.getSingle(f -> toDomain(f));
 	}
 
-	private static StampReflectionManagement toDomain(KrcdtStampImprint krcdtStampReflect) {
+	private static StampReflectionManagement toDomain(KrcmtStampImprint krcdtStampReflect) {
 		StampReflectionManagement stampReflectionManagement = StampReflectionManagement.createJavaType(
 				krcdtStampReflect.krcdtStampReflectPK.companyId, krcdtStampReflect.breakSwitchClass,
 				krcdtStampReflect.autoStampReflectionClass,
@@ -56,12 +56,12 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 		this.commandProxy().insert(convertToDbType(reflectionManagement));
 		
 	}
-		private KrcdtStampImprint convertToDbType(StampReflectionManagement atten) {
-		KrcdtStampImprint newEntity = KrcdtStampImprint.toEntity(atten);
-		KrcdtStampImprintPK attSetPK = new KrcdtStampImprintPK(atten.getCompanyId());
-		Optional<KrcdtStampImprint> optUpdateEntity = this.queryProxy().find(attSetPK, KrcdtStampImprint.class);
+		private KrcmtStampImprint convertToDbType(StampReflectionManagement atten) {
+		KrcmtStampImprint newEntity = KrcmtStampImprint.toEntity(atten);
+		KrcmtStampImprintPK attSetPK = new KrcmtStampImprintPK(atten.getCompanyId());
+		Optional<KrcmtStampImprint> optUpdateEntity = this.queryProxy().find(attSetPK, KrcmtStampImprint.class);
 		if (optUpdateEntity.isPresent()) {
-			KrcdtStampImprint updateEntity = optUpdateEntity.get();
+			KrcmtStampImprint updateEntity = optUpdateEntity.get();
 			updateEntity.breakSwitchClass = atten.getBreakSwitchClass().value;
 			updateEntity.autoStampReflectionClass = atten.getAutoStampReflectionClass().value;
 			updateEntity.actualStampOfPriorityClass = atten.getActualStampOfPriorityClass().value;

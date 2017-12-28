@@ -20,12 +20,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_STAMP_IMPRINT")
-public class KrcdtStampImprint extends UkJpaEntity implements Serializable {
+public class KrcmtStampImprint extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcdtStampImprintPK krcdtStampReflectPK;
+	public KrcmtStampImprintPK krcdtStampReflectPK;
 
 	/** 休出切替区分*/
 	@Column(name = "BREAK_SWITCH_ATR")
@@ -68,7 +68,7 @@ public class KrcdtStampImprint extends UkJpaEntity implements Serializable {
 		return this.krcdtStampReflectPK;
 	}
 
-	public KrcdtStampImprint(KrcdtStampImprintPK krcdtStampReflectPK, int breakSwitchClass,
+	public KrcmtStampImprint(KrcmtStampImprintPK krcdtStampReflectPK, int breakSwitchClass,
 			int autoStampReflectionClass, int actualStampOfPriorityClass,
 			int reflectWorkingTimeClass, int goBackOutCorrectionClass, int managementOfEntrance,
 			int autoStampForFutureDayClass, int outingAtr, BigDecimal maxUseCount) {
@@ -89,9 +89,9 @@ public class KrcdtStampImprint extends UkJpaEntity implements Serializable {
 				this.goBackOutCorrectionClass, this.managementOfEntrance, this.autoStampForFutureDayClass, this.outingAtr, this.maxUseCount);
 	}
 	
-	public static KrcdtStampImprint toEntity(StampReflectionManagement domain){
-		return new KrcdtStampImprint(
-				new KrcdtStampImprintPK(domain.getCompanyId()),
+	public static KrcmtStampImprint toEntity(StampReflectionManagement domain){
+		return new KrcmtStampImprint(
+				new KrcmtStampImprintPK(domain.getCompanyId()),
 				domain.getBreakSwitchClass().value,domain.getAutoStampReflectionClass().value,domain.getActualStampOfPriorityClass().value, domain.getReflectWorkingTimeClass().value, domain.getGoBackOutCorrectionClass().value,
 				domain.getManagementOfEntrance().value, domain.getAutoStampForFutureDayClass().value, domain.getOutingAtr().value, domain.getMaxUseCount());
 	}
