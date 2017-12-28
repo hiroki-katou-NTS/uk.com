@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
@@ -29,6 +30,9 @@ public class BusinessTypesFinder {
 	 */
 	public List<BusinessTypeDto> findAll() {
 		String companyId = AppContexts.user().companyId();
+		if (this.businessTypeRepository.findAll(companyId).isEmpty()) {
+			throw new BusinessException("Msg_242");
+		} 
 		return this.businessTypeRepository.findAll(companyId).stream().map(item -> {
 			return new BusinessTypeDto(item.getBusinessTypeCode().v(), item.getBusinessTypeName().v());
 		}).collect(Collectors.toList());

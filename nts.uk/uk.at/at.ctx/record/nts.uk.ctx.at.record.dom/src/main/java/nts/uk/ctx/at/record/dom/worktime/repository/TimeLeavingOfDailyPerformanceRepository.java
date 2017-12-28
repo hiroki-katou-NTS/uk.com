@@ -16,8 +16,14 @@ public interface TimeLeavingOfDailyPerformanceRepository {
 	
 	Optional<TimeLeavingOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
 	
+<<<<<<< Updated upstream
 	void add(TimeLeavingOfDailyPerformance timeLeaving);
 	
 	void update(TimeLeavingOfDailyPerformance timeLeaving);
+=======
+	void update(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);
+
+	void insert(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);
+>>>>>>> Stashed changes
 
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiOutingTime;
+import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -32,6 +34,10 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	private static final String DEL_BY_LIST_KEY;
 
 	private static final String SELECT_BY_EMPLOYEE_AND_DATE;
+	
+	private static final String SELECT_BY_KEY;
+	
+	private static final String CHECK_EXIST_DATA;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -40,6 +46,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiOutingTimePK.ymd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiOutingTime a ");
@@ -50,9 +57,25 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiOutingTime a ");
-		builderString.append("WHERE WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiOutingTimePK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtDaiOutingTime a ");
+		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiOutingTimePK.ymd = :ymd ");
+		builderString.append("AND a.krcdtDaiOutingTimePK.outingFrameNo IN :outingFrameNos ");
+		SELECT_BY_KEY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtDaiOutingTime a ");
+		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiOutingTimePK.ymd = :ymd ");
+		builderString.append("AND a.krcdtDaiOutingTimePK.outingFrameNo = :outingFrameNo ");
+		CHECK_EXIST_DATA = builderString.toString();
 	}
 
 	@Override
@@ -129,4 +152,65 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 				.collect(Collectors.toList()));
 	}
 
+	@Override
+	public void add(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
+		KrcdtDaiOutingTime.toEntity(outingTimeOfDailyPerformance).stream().forEach(item -> {
+			this.commandProxy().insert(item);
+		});
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void update(OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
+		List<BigDecimal> outingFrameNos = outingTimeOfDailyPerformance.getOutingTimeSheets().stream().map(item -> {
+			return item.getOutingFrameNo().v();
+		}).collect(Collectors.toList());
+		List<KrcdtDaiOutingTime> krcdtDaiOutingTimeLists = this.queryProxy().query(SELECT_BY_KEY, KrcdtDaiOutingTime.class)
+				.setParameter("employeeId", outingTimeOfDailyPerformance.getEmployeeId())
+				.setParameter("ymd", outingTimeOfDailyPerformance.getEmployeeId())
+				.setParameter("outingFrameNos", outingFrameNos).getList();
+		
+		List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.getOutingTimeSheets();
+		
+		for(KrcdtDaiOutingTime krcdtDaiOutingTime : krcdtDaiOutingTimeLists) {
+			Optional<OutingTimeSheet> outingTimeSheet = outingTimeSheets.stream().filter(item ->
+					krcdtDaiOutingTime.krcdtDaiOutingTimePK.employeeId == outingTimeOfDailyPerformance.getEmployeeId() &&
+					krcdtDaiOutingTime.krcdtDaiOutingTimePK.ymd == outingTimeOfDailyPerformance.getYmd() &&
+					krcdtDaiOutingTime.krcdtDaiOutingTimePK.outingFrameNo == item.getOutingFrameNo().v()).findFirst();
+			if (outingTimeSheet.isPresent()) {
+				krcdtDaiOutingTime.backActualPlaceCode = outingTimeSheet.get().getComeBack().getActualStamp().getLocationCode().v();
+				krcdtDaiOutingTime.backActualRoundingTimeDay = new BigDecimal(outingTimeSheet.get().getComeBack().getActualStamp().getAfterRoundingTime().v());
+				krcdtDaiOutingTime.backActualSourceInfo = new BigDecimal(outingTimeSheet.get().getComeBack().getActualStamp().getStampSourceInfo().value);
+				krcdtDaiOutingTime.backActualTime = new BigDecimal(outingTimeSheet.get().getComeBack().getActualStamp().getTimeWithDay().v());
+				krcdtDaiOutingTime.backNumberStamp = new BigDecimal(outingTimeSheet.get().getComeBack().getNumberOfReflectionStamp());
+				krcdtDaiOutingTime.backStampPlaceCode = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? outingTimeSheet.get().getComeBack().getStamp().get().getLocationCode().v() : null;
+				krcdtDaiOutingTime.backStampRoundingTimeDay = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getComeBack().getStamp().get().getAfterRoundingTime().v()) : null;
+				krcdtDaiOutingTime.backStampSourceInfo = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getComeBack().getStamp().get().getStampSourceInfo().value) : null;
+				krcdtDaiOutingTime.backStampTime = outingTimeSheet.get().getComeBack().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getComeBack().getStamp().get().getTimeWithDay().v()) : null;
+				krcdtDaiOutingTime.outActualPlaceCode = outingTimeSheet.get().getGoOut().getActualStamp().getLocationCode().v();
+				krcdtDaiOutingTime.outActualRoundingTimeDay = new BigDecimal(outingTimeSheet.get().getGoOut().getActualStamp().getAfterRoundingTime().v());
+				krcdtDaiOutingTime.outActualSourceInfo = new BigDecimal(outingTimeSheet.get().getGoOut().getActualStamp().getStampSourceInfo().value);
+				krcdtDaiOutingTime.outActualTime = new BigDecimal(outingTimeSheet.get().getGoOut().getActualStamp().getTimeWithDay().v());
+				krcdtDaiOutingTime.outingReason = new BigDecimal(outingTimeSheet.get().getReasonForGoOut().value);
+				krcdtDaiOutingTime.outingTime = new BigDecimal(outingTimeSheet.get().getOutingTime().v());
+				krcdtDaiOutingTime.outingTimeCalculation = new BigDecimal(outingTimeSheet.get().getOutingTimeCalculation().v());
+				krcdtDaiOutingTime.outNumberStamp = new BigDecimal(outingTimeSheet.get().getGoOut().getNumberOfReflectionStamp());
+				krcdtDaiOutingTime.outStampPlaceCode = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? outingTimeSheet.get().getGoOut().getStamp().get().getLocationCode().v() : null;
+				krcdtDaiOutingTime.outStampRoundingTimeDay = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getGoOut().getStamp().get().getAfterRoundingTime().v()) : null;
+				krcdtDaiOutingTime.outStampSourceInfo = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getGoOut().getStamp().get().getStampSourceInfo().value) : null;
+				krcdtDaiOutingTime.outStampTime = outingTimeSheet.get().getGoOut().getStamp().isPresent() ? new BigDecimal(outingTimeSheet.get().getGoOut().getStamp().get().getTimeWithDay().v()) : null;	
+			}
+		};
+		krcdtDaiOutingTimeLists.forEach(item -> {
+			this.commandProxy().update(item);
+		});
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public boolean checkExistData(String employeeId, GeneralDate ymd, OutingFrameNo outingFrameNo) {
+		return this.queryProxy().query(CHECK_EXIST_DATA, long.class).setParameter("employeeId", employeeId)
+				.setParameter("ymd", ymd)
+				.setParameter("outingFrameNo", outingFrameNo.v()).getSingle().get() > 0;
+	}
 }

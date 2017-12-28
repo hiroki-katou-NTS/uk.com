@@ -14,6 +14,11 @@ public interface TemporaryTimeOfDailyPerformanceRepository {
 	
 	Optional<TemporaryTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
 	
+
 	void add(TemporaryTimeOfDailyPerformance temporaryTime);
-	void update(TemporaryTimeOfDailyPerformance temporaryTime);
+
+	void update(TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance);
+
+	void insert(TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance);
+
 }
