@@ -1,11 +1,6 @@
 module nts.uk.at.view.kaf007.share {
     
-    export module common {
-        export class CommonVM{
-            
-            constructor(){}
-        }
-        
+    export module common {       
         export class AppWorkChangeCommand{
             //勤務変更申請
             workChange: KnockoutObservable<AppWorkChange>;                
@@ -226,36 +221,6 @@ module nts.uk.at.view.kaf007.share {
             }
         }
         
-        /**
-         * 勤務変更申請設定
-         */
-        export class AppWorkChangeSetting {
-            cid : KnockoutObservable<string>;
-            excludeHoliday : KnockoutObservable<number>;
-            workChangeTimeAtr : KnockoutObservable<number>;
-            displayResultAtr : KnockoutObservable<number>;
-            initDisplayWorktime : KnockoutObservable<number>;
-            commentContent1 : KnockoutObservable<string>;
-            commentFontWeight1 : KnockoutObservable<number>;
-            commentFontColor1 : KnockoutObservable<string>;
-            commentContent2 : KnockoutObservable<string>;
-            commentFontWeight2 : KnockoutObservable<number>;
-            commentFontColor2 : KnockoutObservable<string>;
-            constructor() {
-                let self = this;
-                self.cid = ko.observable('');
-                self.excludeHoliday = ko.observable(0);
-                self.workChangeTimeAtr = ko.observable(0);
-                self.displayResultAtr = ko.observable(0);
-                self.initDisplayWorktime = ko.observable(0);
-                self.commentContent1 = ko.observable('');
-                self.commentFontWeight1 = ko.observable(0);
-                self.commentFontColor1 = ko.observable('#000000');
-                self.commentContent2 = ko.observable('');
-                self.commentFontWeight2 = ko.observable(0);
-                self.commentFontColor2 = ko.observable('#000000');
-            }
-        }
         export class RecordWorkInfo{
             appDate : KnockoutObservable<string>;
             workTypeCode : KnockoutObservable<string>;

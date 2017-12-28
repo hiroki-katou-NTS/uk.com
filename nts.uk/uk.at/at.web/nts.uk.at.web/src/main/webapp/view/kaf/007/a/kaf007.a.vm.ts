@@ -357,8 +357,6 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             let self = this,
                 dataWork = self.dataWork(),
                 workChange = self.workChange();
-            //dataWork = self.appWorkChange().dataWork(),
-            //    workChange = self.appWorkChange().workChange();
             nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: dataWork.workTypeCodes,
                 selectedWorkTypeCode: dataWork.selectedWorkTypeCd,
