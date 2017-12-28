@@ -34,7 +34,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         showScreen: string;
         employeeID: string = '';
         applicantName: KnockoutObservable<string> = ko.observable("");
-        approvalList: Array<vmbase.AppApprovalPhase> = [];
         kaf000_a2: nts.uk.at.view.kaf000.a.viewmodel.ScreenModel;
 
         //Chua lay dc thong tin  fix cứng time

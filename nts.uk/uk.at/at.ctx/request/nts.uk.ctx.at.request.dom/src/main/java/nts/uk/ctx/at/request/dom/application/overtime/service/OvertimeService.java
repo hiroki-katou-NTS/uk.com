@@ -3,9 +3,8 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 
@@ -49,5 +48,5 @@ public interface OvertimeService {
 	public WorkTypeAndSiftType getWorkTypeAndSiftTypeByPersonCon(String companyID,String employeeID,GeneralDate baseDate,List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes);
 	
 	
-	void CreateOvertime(AppOverTime domain, Application newApp);
+	void CreateOvertime(AppOverTime domain, Application_New newApp);
 }
