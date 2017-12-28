@@ -73,7 +73,7 @@ public class Application_New extends DomainObject {
 				.appID(IdentifierUtil.randomUniqueId())
 				.prePostAtr(prePostAtr)
 				.inputDate(GeneralDateTime.now())
-				.enteredPersonID(employeeID)
+				.enteredPersonID("")
 				.reversionReason(new AppReason(""))
 				.appDate(appDate)
 				.appReason(appReason)

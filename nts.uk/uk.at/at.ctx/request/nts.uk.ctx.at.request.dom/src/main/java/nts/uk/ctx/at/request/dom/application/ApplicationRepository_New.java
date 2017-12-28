@@ -8,6 +8,4 @@ public interface ApplicationRepository_New {
 	
 	public void insert(Application_New application);
 	
-	public void update(Application_New application);
-	
 }
