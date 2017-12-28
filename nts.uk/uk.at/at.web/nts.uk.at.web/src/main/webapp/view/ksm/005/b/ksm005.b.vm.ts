@@ -324,19 +324,8 @@ module nts.uk.at.view.ksm005.b {
             /**
              * convert date month day => YYYYMMDD
              */
-            public convertYMD(ymdk: number): string {
-                var y: number = (ymdk/10000).toFixed(0);
-                var m: number = ((ymdk%10000)/100).toFixed(0);
-                var mm: string = m+'';
-                var d: number = (ymdk % 100).toFixed(0);
-                var dd: string = d + '';
-                if (m < 10) {
-                    mm = '0' + m;
-                }
-                if (d < 10) {
-                    dd = '0' + d;
-                }
-                return y+'-'+mm+'-'+dd;
+            public convertYMD(ymdk: string): string {
+                return moment(ymdk, "YYYYMMDD").format("YYYY-MM-DD");
             }
             
             /**
@@ -354,7 +343,7 @@ module nts.uk.at.view.ksm005.b {
             public findByDate(date: string): WorkMonthlySettingDto{
                 var self = this;
                var workMonthlySetting : WorkMonthlySettingDto= _.find(self.lstWorkMonthlySetting(), function(item) {
-                    return item.ymdk == self.convertDate(date);
+                    return item.ymdk == moment(date, "YYYYMMDD").utc().toISOString();
                 });
                 if (!workMonthlySetting) {
                     return  null;
@@ -370,7 +359,7 @@ module nts.uk.at.view.ksm005.b {
                 var dto: WorkMonthlySettingDto = {
                     workTypeCode: '',
                     workingCode: '',
-                    ymdk: self.convertDate(date),
+                    ymdk: moment(date, "YYYYMMDD").utc().toISOString(),
                     monthlyPatternCode: '',
                     workTypeName: '',
                     typeColor: TypeColor.HOLIDAY,

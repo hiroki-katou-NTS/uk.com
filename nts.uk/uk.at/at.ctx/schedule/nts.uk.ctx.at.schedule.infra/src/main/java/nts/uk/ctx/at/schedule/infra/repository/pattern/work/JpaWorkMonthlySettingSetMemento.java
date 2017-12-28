@@ -4,8 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.pattern.work;
 
-import java.math.BigDecimal;
-
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
@@ -74,7 +73,7 @@ public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMem
 	 * WorkMonthlySettingSetMemento#setDate(nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public void setYmdK(BigDecimal ymdk) {
+	public void setYmdK(GeneralDate ymdk) {
 		this.entity.getKscmtWorkMonthSetPK().setYmdK(ymdk);
 	}
 

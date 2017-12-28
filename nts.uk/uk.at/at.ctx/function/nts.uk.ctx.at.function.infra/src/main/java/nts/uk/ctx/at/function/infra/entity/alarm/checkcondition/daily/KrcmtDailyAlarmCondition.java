@@ -8,7 +8,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -18,6 +21,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KrcmtFixedConditionWorkRecord;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -50,6 +54,14 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	@OneToMany(mappedBy="dailyalarmcondition", cascade = CascadeType.ALL)
 	@JoinTable(name = "KRCMT_FIX_CON_WORK_RECORD")
 	public List<KrcmtFixedConditionWorkRecord> fixedConditionWorkRecord;
+	
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false),
+			@JoinColumn(name = "CATEGORY_CODE", referencedColumnName = "CD", insertable = false, updatable = false)
+	})
+	public KfnmtAlarmCheckConditionCategory condition;
 
 	public KrcmtDailyAlarmCondition(String dailyAlarmConID, String companyId, String code, int category,
 			int conExtractedDaily, int addApplication, List<KrcmtFixedConditionWorkRecord> fixedConditionWorkRecord) {

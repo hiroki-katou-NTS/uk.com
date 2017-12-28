@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.shift.pattern;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +94,8 @@ public class WorkMonthlySettingFinder {
 		
 		// call repository find by month
 		List<WorkMonthlySettingDto> workMonthlySettings = this.workMonthlySettingRepository
-				.findByStartEndDate(companyId, monthlyPatternCode, this.getYearMonthDay(startMonth),
-						this.getYearMonthDay(endMonth))
+				.findByStartEndDate(companyId, monthlyPatternCode, startMonth,
+						endMonth)
 				.stream()
 				.map(domain -> {
 					WorkMonthlySettingDto dto = new WorkMonthlySettingDto();
@@ -105,7 +104,7 @@ public class WorkMonthlySettingFinder {
 				}).collect(Collectors.toList());
 		
 		// convert to map
-		Map<Integer, WorkMonthlySettingDto> mapWorkMonthlySetting = workMonthlySettings.stream()
+		Map<GeneralDate, WorkMonthlySettingDto> mapWorkMonthlySetting = workMonthlySettings.stream()
 				.collect(Collectors.toMap((settings) -> {
 					return settings.getYmdk();
 				}, Function.identity()));
@@ -134,12 +133,12 @@ public class WorkMonthlySettingFinder {
 		while (this.getYearMonth(startMonth) == yearMonth) {
 			
 			// check exist data
-			if (mapWorkMonthlySetting.containsKey(this.getYearMonthDay(startMonth))) {
+			if (mapWorkMonthlySetting.containsKey(startMonth)) {
 				
 				
 				// get data object by year month day of start month
 				WorkMonthlySettingDto dto = mapWorkMonthlySetting
-						.get(this.getYearMonthDay(startMonth));
+						.get(startMonth);
 
 				// check type color
 				if (mapWorkTime.containsKey(dto.getWorkingCode())
@@ -179,7 +178,7 @@ public class WorkMonthlySettingFinder {
 				// data default
 				WorkMonthlySettingDto dto = new WorkMonthlySettingDto();
 				WorkMonthlySetting domain = new WorkMonthlySetting(
-						BigDecimal.valueOf(this.getYearMonthDay(startMonth)), monthlyPatternCode);
+						startMonth, monthlyPatternCode);
 				domain.saveToMemento(dto);
 				
 				// set type color HOLIDAY
@@ -198,15 +197,6 @@ public class WorkMonthlySettingFinder {
 		return resDataWorkMonthlySetting;
 	}
 	
-	/**
-	 * Gets the year month day.
-	 *
-	 * @param baseDate the base date
-	 * @return the year month day
-	 */
-	public int getYearMonthDay(GeneralDate baseDate){
-		return baseDate.year() * YEAR_MUL + baseDate.month() * MONTH_MUL + baseDate.day();
-	}
 	
 	/**
 	 * Gets the year month.

@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.shared.app.util.attendanceitem;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +11,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import javax.ws.rs.NotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,24 +53,27 @@ public class AttendanceItemUtil {
 
 			if (layout.isList()) {
 				List<T> listValue = (List<T>) ReflectionUtil.getFieldValue(f, attendanceItems);
-				if (listValue != null && !listValue.isEmpty()) {
-					listValue.stream().map(v -> toItemValues(v, itemIds)).flatMap(List::stream)
-							.collect(Collectors.toList());
+				if (listValue == null || listValue.isEmpty()) {
+					listValue = new ArrayList<>();
+					for (int i = 0; i < layout.listMaxLength(); i++) {
+						listValue.add(ReflectionUtil.newInstance(getGenericType(f)));
+					}
 				}
-				return toItemValues(ReflectionUtil.newInstance(getGenericType(f)), itemIds);
+				return listValue.stream().map(v -> toItemValues(v, itemIds)).flatMap(List::stream)
+						.collect(Collectors.toList());
 			}
 			if (layout.isOptional()) {
 				Optional<T> fieldValueOpt = ((Optional<T>) ReflectionUtil.getFieldValue(f, attendanceItems));
-				if(fieldValueOpt != null){
+				if (fieldValueOpt != null) {
 					fieldValue = fieldValueOpt.orElse(ReflectionUtil.newInstance(getGenericType(f)));
 				} else {
 					fieldValue = ReflectionUtil.newInstance(getGenericType(f));
 				}
-						
+
 			} else {
 				fieldValue = (T) ReflectionUtil.getFieldValue(f, attendanceItems);
 			}
-			if(fieldValue == null){
+			if (fieldValue == null) {
 				fieldValue = ReflectionUtil.newInstance(f.getType());
 			}
 			return toItemValues(fieldValue, layout == null ? "" : layout.layout(), itemIds);
@@ -205,7 +204,8 @@ public class AttendanceItemUtil {
 	private static List<Integer> getItemIds(AttendanceItemValue itemValueAnno, String pathName, String extraCondition,
 			boolean needCheckWithIdx, int idx) {
 		if (itemValueAnno.getIdFromUtil()) {
-			String key = StringUtils.join(pathName, extraCondition.isEmpty() ? "" : StringUtils.join("-", extraCondition),
+			String key = StringUtils.join(pathName,
+					extraCondition.isEmpty() ? "" : StringUtils.join("-", extraCondition),
 					(needCheckWithIdx ? String.valueOf(idx) : ""));
 			Integer itemId = AttendanceItemIdContainer.getId(key);
 			if (itemId != null && itemId >= 0) {
@@ -250,44 +250,41 @@ public class AttendanceItemUtil {
 			String rootName, String extraCondition, boolean needCheckWithIdx, List<Integer> itemIds) {
 
 		return getItemLayouFields(attendanceItems.getClass()).map(field -> {
-			return propertiesToItemValues(attendanceItems, currentLayout, field, idx, rootName, extraCondition,
+			return processProperty(field, attendanceItems, currentLayout, idx, rootName, extraCondition,
 					needCheckWithIdx, itemIds);
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
-	private static List<ItemValue> propertiesToItemValues(Object attendanceItems, String currentLayout, Field field,
-			int idx, String pathName, String extraCondition, boolean needCheckWithIdx, List<Integer> itemIds) {
-		AttendanceItemLayout layoutAnno = getLayoutAnnotation(field);
-		return processProperty(field, attendanceItems, currentLayout, layoutAnno.layout(), layoutAnno.isList(), idx,
-				pathName, extraCondition, needCheckWithIdx, itemIds);
-	}
-
 	@SuppressWarnings("unchecked")
 	private static <T> List<ItemValue> processProperty(Field field, Object attendanceItems, String currentLayout,
-			String layoutCode, boolean isList, int idx, String pathName, String extraCondition,
-			boolean needCheckWithIdx, List<Integer> itemIds) {
+			int idx, String pathName, String extraCondition, boolean needCheckWithIdx, List<Integer> itemIds) {
 		T value = ReflectionUtil.getFieldValue(field, attendanceItems);
 		AttendanceItemLayout layout = getLayoutAnnotation(field);
 		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
 		String newExCondition = getExCondition("", attendanceItems, layout);
 		needCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
-		if (isList || layout.isList()) {
+		if (layout.isList()) {
 			if (value == null) {
-				if(!getGenericType(field).equals(Integer.class)){
-					value = ReflectionUtil.newInstance(getGenericType(field));
-				}
-				return processOne(currentLayout, field, layoutCode, value, idx, newPathName, extraCondition,
-						needCheckWithIdx, itemIds);
+				List<T> values = new ArrayList<>();
+				IntStream.range(0, layout.listMaxLength()).forEach(c -> {
+					if (!getGenericType(field).equals(Integer.class)) {
+						values.add(ReflectionUtil.newInstance(getGenericType(field)));
+					} else {
+						values.add(null);
+					}
+				});
+				return processList(currentLayout, layout.layout(), values, newPathName, newExCondition, needCheckWithIdx,
+						itemIds);
 			}
-			return processList(currentLayout, layoutCode, (List<T>) value, newPathName, newExCondition,
+			return processList(currentLayout, layout.layout(), (List<T>) value, newPathName, newExCondition,
 					needCheckWithIdx, itemIds);
 		}
 		if (value == null) {
-			if(!field.getType().equals(Integer.class)){
+			if (!field.getType().equals(Integer.class)) {
 				value = ReflectionUtil.newInstance(field.getType());
 			}
 		}
-		return processOne(currentLayout, field, layoutCode, value, idx, newPathName, newExCondition, needCheckWithIdx,
+		return processOne(currentLayout, field, layout.layout(), value, idx, newPathName, newExCondition, needCheckWithIdx,
 				itemIds);
 	}
 
@@ -315,13 +312,13 @@ public class AttendanceItemUtil {
 		AttendanceItemValue valueType = getItemValueAnnotation(field);
 		List<Integer> itemIds = getItemIds(valueType, pathName, extraCondition, needCheckWithIdx, idx);
 		if (itemIds.isEmpty()) {
-			//TODO: after uncomment when item id is full list
+			// TODO: after uncomment when item id is full list
 			return Collections.emptyList();
-//			throw new NotFoundException("Item id not found exception!!!");
+			// throw new NotFoundException("Item id not found exception!!!");
 		}
 		int itemId = valueType.getIdFromUtil() ? itemIds.get(0) : itemIds.get(idx);
-		System.out.println("id:"+ itemId);
-		if (value != null && (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemId))) {
+		System.out.println("id:" + itemId);
+		if (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemId)) {
 			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), itemId);
 			itemValue.value(value);
 			return Arrays.asList(itemValue);
