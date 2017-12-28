@@ -50,6 +50,8 @@ module nts.uk.at.view.kmk003.a {
             screenMode: KnockoutObservable<number>;
             isNewMode: KnockoutObservable<boolean>;
             isUpdateMode: KnockoutObservable<boolean>;
+            isSimpleMode: KnockoutObservable<boolean>;
+            isDetailMode: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
@@ -140,6 +142,12 @@ module nts.uk.at.view.kmk003.a {
                 });
                 self.isUpdateMode = ko.computed(() => {
                     return self.screenMode() == ScreenMode.UPDATE;
+                });
+                self.isSimpleMode = ko.computed(() => {
+                    return self.tabMode() == TabMode.SIMPLE;
+                });
+                self.isDetailMode = ko.computed(() => {
+                    return self.tabMode() == TabMode.DETAIL;
                 });
             }
            
