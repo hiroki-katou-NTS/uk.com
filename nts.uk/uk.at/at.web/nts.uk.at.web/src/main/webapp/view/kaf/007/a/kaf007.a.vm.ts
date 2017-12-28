@@ -123,7 +123,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.appWorkChange().workChange().workTimeCd(self.appWorkChange().dataWork().selectedWorkTimeCd);
                 self.appWorkChange().workChange().workTimeName(self.appWorkChange().dataWork().selectedWorkTimeName);
                 //フォーカス制御
-                self.changeFocus('#inputdatestart');                
+                self.changeFocus('#inputdatestart'); 
+                              
                 dfd.resolve();
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
@@ -377,7 +378,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     workChange.workTimeName(childData.selectedWorkTimeName);
                 }
                 //フォーカス制御
-                self.changeFocus('#inpStartTime1');
+                //self.changeFocus('#inpStartTime1');
+                $('#inpStartTime1').focus();
             })
         }
         

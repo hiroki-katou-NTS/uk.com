@@ -151,6 +151,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.operatorBetweenGroups(param && param.operatorBetweenGroups ? param.operatorBetweenGroups : 0);
             selectedErrorAlarm.operatorGroup1(param && param.operatorGroup1 ? param.operatorGroup1 : 0);
             selectedErrorAlarm.operatorGroup2(param && param.operatorGroup2 ? param.operatorGroup2 : 0);
+            selectedErrorAlarm.group2UseAtr(param && param.group2UseAtr ? param.group2UseAtr : false);
             selectedErrorAlarm.erAlAtdItemConditionGroup1.forEach((condition) => {
                 if (param && param.erAlAtdItemConditionGroup1 && param.erAlAtdItemConditionGroup1.length > 0) {
                     param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
@@ -422,6 +423,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         operatorBetweenGroups: KnockoutObservable<number>;
         operatorGroup1: KnockoutObservable<number>;
         operatorGroup2: KnockoutObservable<number>;
+        group2UseAtr: KnockoutObservable<boolean>;
         erAlAtdItemConditionGroup1: Array<ErAlAtdItemCondition>;
         erAlAtdItemConditionGroup2: Array<ErAlAtdItemCondition>;
 
@@ -446,6 +448,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.operatorBetweenGroups = param && param.operatorBetweenGroups ? ko.observable(param.operatorBetweenGroups) : ko.observable(0);
             this.operatorGroup1 = param && param.operatorGroup1 ? ko.observable(param.operatorGroup1) : ko.observable(0);
             this.operatorGroup2 = param && param.operatorGroup2 ? ko.observable(param.operatorGroup2) : ko.observable(0);
+            this.group2UseAtr = param && param.group2UseAtr ? ko.observable(param.group2UseAtr) : ko.observable(false);
             this.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemConditionGroup1 ? param.erAlAtdItemConditionGroup1.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : this.initListAtdItemCondition();
             this.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemConditionGroup2 ? param.erAlAtdItemConditionGroup2.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : this.initListAtdItemCondition();
             this.errorDisplayItem.subscribe((itemCode) => {

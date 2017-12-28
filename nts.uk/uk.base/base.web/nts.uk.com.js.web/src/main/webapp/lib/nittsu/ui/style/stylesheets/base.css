@@ -4675,7 +4675,7 @@ body * {
 	display: none;
 	position: absolute;
 	top: 30px;
-	left: -80px;
+	left: -124px;
 	z-index: 20000;
 	margin-left: 0;
 	list-style: none;
@@ -4686,7 +4686,7 @@ body * {
 }
 
 #header #menu-header #logo-area > #user-info > #user > .user-settings > ul.user-options {
-	left: 118px;
+	left: 71px;
 }
 
 #header #menu-header #nav-area {

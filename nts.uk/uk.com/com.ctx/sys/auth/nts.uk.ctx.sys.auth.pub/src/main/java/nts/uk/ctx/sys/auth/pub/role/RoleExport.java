@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pub.role;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Getter;
  * @return the role name
  */
 @Getter
+@AllArgsConstructor
 public class RoleExport {
 
 	/** The role id. */
@@ -22,6 +24,9 @@ public class RoleExport {
 
 	/** The role name. */
 	public String roleName;
+	
+	/** The company Id. */
+	public String companyId;
 
 	/**
 	 * @param roleId
