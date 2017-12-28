@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public abstract class ExtractionRangeBase extends DomainObject{
 
 	/**Id*/
@@ -14,9 +17,9 @@ public abstract class ExtractionRangeBase extends DomainObject{
 	/**抽出する範囲*/
 	private ExtractionRange extractionRange;
 
-	public ExtractionRangeBase(String extractionId, ExtractionRange extractionRange) {
+	public ExtractionRangeBase(String extractionId, int extractionRangeValue) {
 		super();
 		this.extractionId = extractionId;
-		this.extractionRange = extractionRange;
+		this.extractionRange =  EnumAdaptor.valueOf(extractionRangeValue, ExtractionRange.class);
 	}
 }

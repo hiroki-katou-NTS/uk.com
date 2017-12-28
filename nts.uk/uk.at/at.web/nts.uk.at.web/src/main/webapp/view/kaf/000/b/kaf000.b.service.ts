@@ -8,8 +8,13 @@
         denyApp : "at/request/application/denyapp",
         releaseApp : "at/request/application/releaseapp",
         cancelApp : "at/request/application/cancelapp",
-        deleteApp : "at/request/application/deleteapp"
+        deleteApp : "at/request/application/deleteapp",
+        getAppDataDate : "at/request/application/getAppDataByDate"
     }
+     
+     export function getAppDataDate(command) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.getAppDataDate,command);
+     } 
      
      /**
       * approve application

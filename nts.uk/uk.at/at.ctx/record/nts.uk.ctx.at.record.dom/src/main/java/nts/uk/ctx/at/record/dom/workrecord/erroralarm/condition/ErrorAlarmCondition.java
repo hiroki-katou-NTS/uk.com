@@ -188,8 +188,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param operatorBetweenGroups
 	 * @return itself
 	 */
-	public ErrorAlarmCondition createAttendanceItemCondition(int operatorBetweenGroups) {
-		this.atdItemCondition = AttendanceItemCondition.init(operatorBetweenGroups);
+	public ErrorAlarmCondition createAttendanceItemCondition(int operatorBetweenGroups, boolean group2UseAtr) {
+		this.atdItemCondition = AttendanceItemCondition.init(operatorBetweenGroups, group2UseAtr);
 		return this;
 	}
 

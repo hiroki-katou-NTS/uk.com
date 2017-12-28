@@ -7,7 +7,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
@@ -47,6 +49,9 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	
 	@Inject
 	private AppApprovalPhaseRepository appApprovalPhaseRepository;
+	
+	@Inject
+	private ApplicationApprovalService_New applicationApprovalService;
 
 	@Override
 	public AppStampNewPreOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate) {
@@ -64,36 +69,21 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	}
 
 	@Override
-	public String appStampRegister(String applicationReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+	public String appStampRegister(String applicationReason, AppStamp appStamp) {
 		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
-		return appStampRegistration(appStamp, appApprovalPhases);
+		return appStampRegistration(appStamp);
 	}
 	
 	// 打刻申請の新規登録
-	private String appStampRegistration(AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		appStamp.setListPhase(appApprovalPhases);
-		newBeforeRegister.processBeforeRegister(appStamp);
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);
+	private String appStampRegistration(AppStamp appStamp) {
+		// newBeforeRegister.processBeforeRegister(appStamp);
+		// registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);
+		appStamp.customValidate();
 		appStampRepository.addStamp(appStamp);
-		approvalRegistration(appApprovalPhases, appStamp.getApplicationID());
-		return newAfterRegister.processAfterRegister(appStamp);
-	}
-	
-	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){
-		appApprovalPhases.forEach(appApprovalPhase -> {
-			appApprovalPhase.setAppID(appID);
-			String phaseID = UUID.randomUUID().toString();
-			appApprovalPhase.setPhaseID(phaseID);
-			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
-				String frameID = UUID.randomUUID().toString();
-				approvalFrame.setFrameID(frameID);
-				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
-					String appAcceptedID = UUID.randomUUID().toString();
-					appAccepted.setAppAcceptedID(appAcceptedID);
-				});
-			});
-			appApprovalPhaseRepository.create(appApprovalPhase);
-		});
+		applicationApprovalService.insert(appStamp.getApplication_New());
+		// approvalRegistration(appApprovalPhases, appStamp.getApplicationID());
+		//return newAfterRegister.processAfterRegister(appStamp);
+		return null;
 	}
 }
