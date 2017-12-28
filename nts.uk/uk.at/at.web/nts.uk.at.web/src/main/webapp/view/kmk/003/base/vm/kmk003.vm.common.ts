@@ -855,7 +855,9 @@ module nts.uk.at.view.kmk003.a {
                     if (data && data.officalUseCompenGoOut) {
                         this.officalUseCompenGoOut.updateData(data.officalUseCompenGoOut);
                     }
-                    this.privateUnionGoOut.updateData(data.privateUnionGoOut);
+                    if (data && data.privateUnionGoOut) {
+                        this.privateUnionGoOut.updateData(data.privateUnionGoOut);
+                    }
                 }
 
                 toDto(): GoOutTypeRoundingSetDto {

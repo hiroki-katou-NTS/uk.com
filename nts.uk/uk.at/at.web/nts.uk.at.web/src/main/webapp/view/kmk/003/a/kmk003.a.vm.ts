@@ -541,9 +541,13 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
-                self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
-                self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
-                //TODO update flex, diff, flow viewmodel
+                if (self.workTimeSetting.isFlex()) {
+                    self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
+                }
+                if (self.workTimeSetting.isFlow()) {
+                    self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
+                }
+                //TODO update diff viewmodel
             }
             
             resetData(){
@@ -551,7 +555,7 @@ module nts.uk.at.view.kmk003.a {
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();
                 this.flexWorkSetting.resetData();
-                //TODO update flex, diff, flow viewmodel
+                //TODO update diff viewmodel
             }
         }
 
