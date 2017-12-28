@@ -29,5 +29,11 @@ public interface RoleExportRepo {
 	 */
 	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType);
 	
-	
+ 	/**
+	 * Find by id.
+	 *
+	 * @param roleId the role id
+	 * @return the list
+	 */
+	List<RoleExport> findById(String roleId);
 }

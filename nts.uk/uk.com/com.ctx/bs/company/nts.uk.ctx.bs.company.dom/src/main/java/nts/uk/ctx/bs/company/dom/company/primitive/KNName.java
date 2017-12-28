@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author yennth
  *
  */
-@StringMaxLength(30)
+@StringMaxLength(60)
 @StringCharType(CharType.KANA)
 public class KNName extends StringPrimitiveValue<KNName>{
 	/** serialVersionUID */
