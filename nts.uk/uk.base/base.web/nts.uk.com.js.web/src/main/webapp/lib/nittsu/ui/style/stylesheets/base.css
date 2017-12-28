@@ -517,22 +517,24 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* line 46, ../sass/components/_commons.scss */
 .disappear {
-  position: absolute;
-  visibility: hidden;
-  width: 0;
-  height: 0;
-  overflow: hidden;
+  position: absolute !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
 /*****************************
   ntsControl
 *****************************/
-/* line 57, ../sass/components/_commons.scss */
+/* line 59, ../sass/components/_commons.scss */
 .control-group {
   margin-bottom: 10px;
 }
 
-/* line 58, ../sass/components/_commons.scss */
+/* line 60, ../sass/components/_commons.scss */
 .ntsControl {
   display: inline-block;
 }
@@ -540,7 +542,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /*****************************
   NtsFormLabel
 *****************************/
-/* line 63, ../sass/components/_commons.scss */
+/* line 65, ../sass/components/_commons.scss */
 div.form-label {
   display: inline-block;
   box-sizing: border-box;
@@ -550,34 +552,34 @@ div.form-label {
   border-width: 0 0 0 5px;
   padding: 0 10px 0 8px;
 }
-/* line 85, ../sass/components/_commons.scss */
+/* line 87, ../sass/components/_commons.scss */
 div.form-label.broken label {
   line-height: inherit;
 }
-/* line 88, ../sass/components/_commons.scss */
+/* line 90, ../sass/components/_commons.scss */
 div.form-label.inline {
   height: 23px;
   line-height: 23px;
 }
-/* line 91, ../sass/components/_commons.scss */
+/* line 93, ../sass/components/_commons.scss */
 div.form-label.inline label {
   line-height: 23px;
 }
-/* line 94, ../sass/components/_commons.scss */
+/* line 96, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 98, ../sass/components/_commons.scss */
+/* line 100, ../sass/components/_commons.scss */
 div.form-label.disabled {
   border-color: #AAA;
 }
-/* line 102, ../sass/components/_commons.scss */
+/* line 104, ../sass/components/_commons.scss */
 div.form-label > label {
   max-height: 100%;
   font-size: 14px;
   line-height: 37px;
 }
-/* line 108, ../sass/components/_commons.scss */
+/* line 110, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -585,21 +587,21 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 115, ../sass/components/_commons.scss */
+/* line 117, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 119, ../sass/components/_commons.scss */
+/* line 121, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 124, ../sass/components/_commons.scss */
+/* line 126, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
 }
 
-/* line 130, ../sass/components/_commons.scss */
+/* line 132, ../sass/components/_commons.scss */
 .constraint-label {
   display: block;
   margin-top: 1px;
@@ -611,7 +613,7 @@ div.form-label.inline > i {
 /*****************************
   NtsPopupPanel
 *****************************/
-/* line 140, ../sass/components/_commons.scss */
+/* line 142, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -625,22 +627,22 @@ div.popup-panel {
 /*****************************
   NtsError
 *****************************/
-/* line 152, ../sass/components/_commons.scss */
+/* line 154, ../sass/components/_commons.scss */
 .ntsControl.error .nts-editor, .ntsControl.error .ntsDatepicker, .ntsControl.error .sp-replacer {
   border-color: #ff6666;
 }
 
-/* line 157, ../sass/components/_commons.scss */
+/* line 159, ../sass/components/_commons.scss */
 .ui-igcombo.error {
   border-color: #ff6666;
 }
 
-/* line 160, ../sass/components/_commons.scss */
+/* line 162, ../sass/components/_commons.scss */
 .checkbox-wrapper.error {
   border: 1px solid #ff6666;
 }
 
-/* line 163, ../sass/components/_commons.scss */
+/* line 165, ../sass/components/_commons.scss */
 .multicheckbox-wrapper.error {
   border: 1px solid #ff6666;
 }
@@ -648,7 +650,7 @@ div.popup-panel {
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 169, ../sass/components/_commons.scss */
+/* line 171, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
   display: inline-block;
@@ -666,13 +668,13 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 184, ../sass/components/_commons.scss */
+/* line 186, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 190, ../sass/components/_commons.scss */
+/* line 192, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
   visibility: visible;
 }
@@ -680,37 +682,37 @@ div.popup-panel {
 /*****************************
   Label
 *****************************/
-/* line 199, ../sass/components/_commons.scss */
+/* line 201, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 203, ../sass/components/_commons.scss */
+/* line 205, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 210, ../sass/components/_commons.scss */
+/* line 212, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 216, ../sass/components/_commons.scss */
+/* line 218, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 222, ../sass/components/_commons.scss */
+/* line 224, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
 
-/* line 225, ../sass/components/_commons.scss */
+/* line 227, ../sass/components/_commons.scss */
 .pre {
   white-space: pre-wrap;
 }
@@ -2398,25 +2400,25 @@ button.nts-switch-button[disabled]:hover {
   border: none;
 }
 /* line 4, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-nav {
+.ui-widget.ui-tabs > .ui-tabs-nav {
   background: transparent;
   border: none;
   padding: .2em .4em 0;
 }
 /* line 9, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-nav li {
+.ui-widget.ui-tabs > .ui-tabs-nav > li {
   border-color: #B1B1B1;
   border-radius: 5px 5px 0 0;
   box-sizing: border-box;
 }
 /* line 14, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-nav li a {
+.ui-widget.ui-tabs > .ui-tabs-nav > li > a {
   float: none;
   display: block;
   outline: none;
 }
 /* line 19, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+.ui-widget.ui-tabs > .ui-tabs-nav > li.ui-tabs-active {
   background-color: #00B050;
   border-color: #B1B1B1;
   margin-top: -2px;
@@ -2426,7 +2428,7 @@ button.nts-switch-button[disabled]:hover {
   border-radius: 5px;
 }
 /* line 31, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs .ui-tabs-panel {
+.ui-widget.ui-tabs > .ui-tabs-panel {
   border: 2px solid #B1B1B1;
   border-radius: 7px;
   display: block !important;
@@ -2436,13 +2438,13 @@ button.nts-switch-button[disabled]:hover {
   display: flex;
 }
 /* line 40, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav {
+.ui-widget.ui-tabs.vertical > .ui-tabs-nav {
   float: left;
   padding: .4em 0;
   border-radius: 0;
 }
 /* line 45, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav li {
+.ui-widget.ui-tabs.vertical > .ui-tabs-nav > li {
   clear: left;
   width: 100%;
   margin: -1px 0 0 0;
@@ -2450,13 +2452,13 @@ button.nts-switch-button[disabled]:hover {
   border-width: 1px 0;
 }
 /* line 52, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-nav li.ui-tabs-active {
+.ui-widget.ui-tabs.vertical > .ui-tabs-nav > li.ui-tabs-active {
   padding: 0;
   margin: 0;
   border-color: #00B050;
 }
 /* line 59, ../sass/components/_tabpanel.scss */
-.ui-widget.ui-tabs.vertical .ui-tabs-panel {
+.ui-widget.ui-tabs.vertical > .ui-tabs-panel {
   width: 100%;
   overflow: hidden;
   padding: 1em;
@@ -4434,39 +4436,39 @@ div .ex-area-line.x-stay {
 .image-preview {
   width: 100%;
   height: 100%;
-	border: none !important;
-	display: none;
+  border: none !important;
+  display: none;
 }
 
-/* line 9, ../sass/components/_imagepreview.scss */
+/* line 11, ../sass/components/_imagepreview.scss */
 .inline-container {
   float: left;
   padding: 5px 10px;
 }
 
-/* line 13, ../sass/components/_imagepreview.scss */
+/* line 15, ../sass/components/_imagepreview.scss */
 .info-label {
   display: block;
 }
 
-/* line 16, ../sass/components/_imagepreview.scss */
+/* line 18, ../sass/components/_imagepreview.scss */
 .checkbox-holder {
   padding: 10px 10px;
 }
 
-/* line 19, ../sass/components/_imagepreview.scss */
+/* line 21, ../sass/components/_imagepreview.scss */
 .crop-icon {
   border: 1px red solid;
   height: 15px;
   width: 25px;
 }
 
-/* line 24, ../sass/components/_imagepreview.scss */
+/* line 26, ../sass/components/_imagepreview.scss */
 .crop-description {
   padding: 5px 5px;
 }
 
-/* line 27, ../sass/components/_imagepreview.scss */
+/* line 29, ../sass/components/_imagepreview.scss */
 .mouse-icon {
   height: 15px;
   width: 15px;
@@ -4476,40 +4478,46 @@ div .ex-area-line.x-stay {
   padding: 5px 5px;
 }
 
-/* line 35, ../sass/components/_imagepreview.scss */
+/* line 37, ../sass/components/_imagepreview.scss */
 .mouse-description-text {
   padding: 5px 0px;
 }
 
-/* line 38, ../sass/components/_imagepreview.scss */
+/* line 40, ../sass/components/_imagepreview.scss */
 .cropper-line {
   background-color: red !important;
 }
 
-/* line 41, ../sass/components/_imagepreview.scss */
+/* line 43, ../sass/components/_imagepreview.scss */
 .cropper-point {
   background-color: red !important;
 }
 
-/* line 44, ../sass/components/_imagepreview.scss */
+/* line 46, ../sass/components/_imagepreview.scss */
 .cropper-crop-box {
   outline-color: rgba(255, 0, 0, 0.75) !important;
   outline: 1px solid red !important;
 }
-/* line 48, ../sass/components/_imagepreview.scss */
+
+/* line 50, ../sass/components/_imagepreview.scss */
 .image-upload-icon {
-  	background-image: url("images/icons/upload-icon.png");
-    background-repeat: no-repeat;
-    background-position: center;
+  background-image: url("images/icons/upload-icon.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
-.container-no-upload-background{
-	background-color: rgb(242, 242, 242);
-    border-radius: 20px;
+
+/* line 55, ../sass/components/_imagepreview.scss */
+.container-no-upload-background {
+  background-color: #f2f2f2;
+  border-radius: 20px;
 }
+
+/* line 59, ../sass/components/_imagepreview.scss */
 .image-preview-container {
-	padding: 5px;
-    border: 1px solid #CCC;
+  padding: 5px;
+  border: 1px solid #CCC;
 }
+
 /* line 2, ../sass/components/_buttontable.scss */
 .ntsTable td {
   border: 0px;
@@ -4667,7 +4675,7 @@ body * {
 	display: none;
 	position: absolute;
 	top: 30px;
-	left: -80px;
+	left: -124px;
 	z-index: 20000;
 	margin-left: 0;
 	list-style: none;
@@ -4678,7 +4686,7 @@ body * {
 }
 
 #header #menu-header #logo-area > #user-info > #user > .user-settings > ul.user-options {
-	left: 118px;
+	left: 71px;
 }
 
 #header #menu-header #nav-area {

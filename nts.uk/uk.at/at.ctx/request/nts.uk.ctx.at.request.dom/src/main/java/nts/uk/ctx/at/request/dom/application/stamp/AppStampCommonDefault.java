@@ -10,6 +10,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
@@ -41,9 +42,15 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 	
+	@Inject
+	private AppStampRepository appStampRepository;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	
 	@Override
 	public void appReasonCheck(String applicationReason, AppStamp appStamp) {
-		appStamp.setApplicationReason(new AppReason(applicationReason));
+		appStamp.getApplication_New().setAppReason(new AppReason(applicationReason));
 	}
 
 	@Override
@@ -57,10 +64,10 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	public void validateReason(AppStamp appStamp) {
 		/*申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
 		 ※詳細はアルゴリズム参照*/
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(appStamp.getCompanyID());
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(appStamp.getApplication_New().getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if(applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)&&
-				Strings.isEmpty(appStamp.getApplicationReason().v())){
+				Strings.isEmpty(appStamp.getApplication_New().getAppReason().v())){
 					throw new BusinessException("Msg_115");
 		}
 		appStamp.customValidate();
@@ -69,6 +76,13 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	@Override
 	public String getEmployeeName(String employeeID) {
 		return employeeAdapter.getEmployeeName(employeeID);
+	}
+
+	@Override
+	public AppStamp findByID(String companyID, String appID) {
+		AppStamp appStamp = appStampRepository.findByAppID(companyID, appID);
+		appStamp.setApplication_New(applicationRepository.findByID(companyID, appID).get());
+		return appStamp;
 	}
 
 }

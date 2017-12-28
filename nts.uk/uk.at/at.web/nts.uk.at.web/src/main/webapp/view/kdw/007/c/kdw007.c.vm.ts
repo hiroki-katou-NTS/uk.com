@@ -18,8 +18,10 @@ module nts.uk.at.view.kdw007.c.viewmodel {
 
         constructor(param) {
             let self = this;
+            nts.uk.ui.block.grayout();
             self.initData(param).done(()=>{
                 self.removeDupplicateItems();
+                nts.uk.ui.block.clear();
             });
         }
         

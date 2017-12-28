@@ -13,19 +13,19 @@ public class SelectionItemDto extends DataTypeStateDto {
 
 	private ReferenceTypes referenceType;
 
-	private static SelectionItemDto createMasterRefDto(String masterType) {
+	public static SelectionItemDto createMasterRefDto(String masterType) {
 		return MasterRefConditionDto.createFromJavaType(masterType);
 	}
 
-	private static SelectionItemDto createCodeNameRefDto(String typeCode) {
+	public static SelectionItemDto createCodeNameRefDto(String typeCode) {
 		return CodeNameRefTypeDto.createFromJavaType(typeCode);
 	}
 
-	private static SelectionItemDto createEnumRefDto(String enumName) {
+	public static SelectionItemDto createEnumRefDto(String enumName) {
 		return EnumRefConditionDto.createFromJavaType(enumName);
 	}
 
-	protected SelectionItemDto(ReferenceTypes referenceType) {
+	public SelectionItemDto(ReferenceTypes referenceType) {
 		super();
 		this.referenceType = referenceType;
 		this.dataTypeValue = DataTypeValue.SELECTION.value;

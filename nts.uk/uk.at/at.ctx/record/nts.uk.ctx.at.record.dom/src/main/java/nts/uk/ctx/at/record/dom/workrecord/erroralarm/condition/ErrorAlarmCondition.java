@@ -95,7 +95,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param comparePlanAndActual
 	 */
 	public void createWorkTypeCondition(boolean useAtr, int comparePlanAndActual) {
-		if (comparePlanAndActual == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (comparePlanAndActual != FilterByCompare.EXTRACT_SAME.value) {
 			this.workTypeCondition = PlanActualWorkType.init(useAtr, comparePlanAndActual);
 		} else {
 			this.workTypeCondition = SingleWorkType.init(useAtr, comparePlanAndActual);
@@ -130,8 +130,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	public void setWorkTypeSingle(boolean filterAtr, List<String> lstWorkType) {
 		((SingleWorkType) this.workTypeCondition).setTargetWorkType(filterAtr, lstWorkType);
 	}
-	
-	public void chooseWorkTypeOperator(int operator){
+
+	public void chooseWorkTypeOperator(int operator) {
 		((PlanActualWorkType) this.workTypeCondition).chooseOperator(operator);
 	}
 
@@ -142,7 +142,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param comparePlanAndActual
 	 */
 	public void createWorkTimeCondition(boolean useAtr, int comparePlanAndActual) {
-		if (comparePlanAndActual == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (comparePlanAndActual != FilterByCompare.EXTRACT_SAME.value) {
 			this.workTimeCondition = PlanActualWorkTime.init(useAtr, comparePlanAndActual);
 		} else {
 			this.workTimeCondition = SingleWorkTime.init(useAtr, comparePlanAndActual);
@@ -177,8 +177,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	public void setWorkTimeSingle(boolean filterAtr, List<String> lstWorkTime) {
 		((SingleWorkTime) this.workTimeCondition).setTargetWorkTime(filterAtr, lstWorkTime);
 	}
-	
-	public void chooseWorkTimeOperator(int operator){
+
+	public void chooseWorkTimeOperator(int operator) {
 		((PlanActualWorkTime) this.workTimeCondition).chooseOperator(operator);
 	}
 
@@ -188,35 +188,46 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param operatorBetweenGroups
 	 * @return itself
 	 */
-	public ErrorAlarmCondition createAttendanceItemCondition(int operatorBetweenGroups) {
-		this.atdItemCondition = AttendanceItemCondition.init(operatorBetweenGroups);
+	public ErrorAlarmCondition createAttendanceItemCondition(int operatorBetweenGroups, boolean group2UseAtr) {
+		this.atdItemCondition = AttendanceItemCondition.init(operatorBetweenGroups, group2UseAtr);
 		return this;
 	}
 
 	/**
 	 * Set group 1
+	 * 
 	 * @param conditionOperator
 	 * @param conditions
 	 * @return
 	 */
-	public ErrorAlarmCondition setAttendanceItemConditionGroup1(int conditionOperator, List<ErAlAttendanceItemCondition<?>> conditions) {
+	public ErrorAlarmCondition setAttendanceItemConditionGroup1(int conditionOperator,
+			List<ErAlAttendanceItemCondition<?>> conditions) {
 		ErAlConditionsAttendanceItem group = ErAlConditionsAttendanceItem.init(conditionOperator);
 		group.addAtdItemConditions(conditions);
 		this.atdItemCondition.setGroup1(group);
 		return this;
 	}
-	
+
 	/**
 	 * Set group 2
+	 * 
 	 * @param conditionOperator
 	 * @param conditions
 	 * @return
 	 */
-	public ErrorAlarmCondition setAttendanceItemConditionGroup2(int conditionOperator, List<ErAlAttendanceItemCondition<?>> conditions) {
+	public ErrorAlarmCondition setAttendanceItemConditionGroup2(int conditionOperator,
+			List<ErAlAttendanceItemCondition<?>> conditions) {
 		ErAlConditionsAttendanceItem group = ErAlConditionsAttendanceItem.init(conditionOperator);
 		group.addAtdItemConditions(conditions);
 		this.atdItemCondition.setGroup2(group);
 		return this;
 	}
-	
+
+	public void setGroupId1(String groupId) {
+		this.atdItemCondition.setGroupId1(groupId);
+	}
+
+	public void setGroupId2(String groupId) {
+		this.atdItemCondition.setGroupId2(groupId);
+	}
 }

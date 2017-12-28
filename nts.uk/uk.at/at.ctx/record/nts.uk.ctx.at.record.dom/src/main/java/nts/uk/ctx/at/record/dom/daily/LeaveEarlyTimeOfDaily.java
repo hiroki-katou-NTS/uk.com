@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.daily;
 import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**

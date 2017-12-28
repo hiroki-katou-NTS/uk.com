@@ -141,7 +141,8 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		//ドメインモデル「個人労働条件」を取得する
 		Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeId,baseDate);
 		
-		if(!personalLablorCodition.isPresent()){
+		if(!personalLablorCodition.isPresent() 
+				|| personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
 			if(!CollectionUtil.isEmpty(workTypes)){
 				//先頭の勤務種類を選択する
 				selectedData.setSelectedWorkTypeCd(workTypes.get(0));

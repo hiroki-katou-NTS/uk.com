@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employment;
@@ -42,4 +42,13 @@ public interface SyEmploymentPub {
 	 */
 	// RequestList #89
 	List<EmpCdNameExport> findAll(String companyId);
+	
+	/**
+	 * Find by emp codes.
+	 *
+	 * @param companyId the company id
+	 * @param empCodes the emp codes
+	 * @return the list
+	 */
+	List<ShEmploymentExport> findByEmpCodes(String companyId, List<String> empCodes);
 }

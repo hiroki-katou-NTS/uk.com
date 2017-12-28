@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employment;
@@ -21,6 +21,7 @@ import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
+import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 /**
@@ -117,6 +118,23 @@ public class EmploymentPubImp implements SyEmploymentPub {
 				.employmentCode(employment.getEmploymentCode().v())
 				.employmentName(employment.getEmploymentName().v())
 				.period(empHist.getPeriod()).build());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findByEmpCodes(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<ShEmploymentExport> findByEmpCodes(String companyId, List<String> empCodes) {
+		List<Employment> empList = this.employmentRepository.findByEmpCodes(companyId, empCodes);
+		return empList.stream().map(emp -> {
+			ShEmploymentExport empExport = new ShEmploymentExport();
+			empExport.setCompanyId(emp.getCompanyId().v());
+			empExport.setEmploymentCode(emp.getEmploymentCode().v());
+			empExport.setEmploymentName(emp.getEmploymentName().v());
+			empExport.setEmpExternalCode(emp.getEmpExternalCode().v());
+			empExport.setMemo(emp.getMemo().v());
+			return empExport;
+		}).collect(Collectors.toList());
 	}
 
 }

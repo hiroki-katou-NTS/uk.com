@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.stamp;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 			applicationReason = !appStampCmd.getTitleReason().isEmpty()? appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason() : appStampCmd.getDetailReason();
 		}
 		AppStamp appStamp = null;
-		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
+		/*List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyID, 
 						appApprovalPhaseCmd.appID, 
@@ -82,9 +83,10 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 										)).collect(Collectors.toList())
 								)).collect(Collectors.toList())
 						))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
+		List<AppApprovalPhase> appApprovalPhases = Collections.emptyList();
 		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
-		switch(stampRequestMode){
+		/*switch(stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: 
 				appStamp = new AppStamp(
 					companyID, 
@@ -281,6 +283,6 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 			default:
 				break;
 			
-		}
+		}*/
 	}
 }

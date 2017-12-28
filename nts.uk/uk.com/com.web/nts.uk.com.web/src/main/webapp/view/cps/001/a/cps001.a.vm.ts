@@ -13,7 +13,8 @@ module cps001.a.vm {
     import permision = service.getCurrentEmpPermision;
     import format = nts.uk.text.format;
 
-    let DEF_AVATAR = 'images/avatar.png',
+    const REPL_KEY = '__REPLACE',
+        DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
@@ -196,7 +197,19 @@ module cps001.a.vm {
 
             employee.employeeId.subscribe(id => {
                 if (id) {
-                    self.tab.valueHasMutated();
+                    _.each(list(), l => {
+                        l.employeeId(id);
+                        l.personId(person.personId())
+                    });
+
+                    let first = _.first(list());
+                    if (first) {
+                        let memento = first.categoryId();
+                        first.id.valueHasMutated();
+                        if (memento) {
+                            first.categoryId(memento);
+                        }
+                    }
                 }
             });
 
@@ -218,6 +231,7 @@ module cps001.a.vm {
                             let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
                             self.employees(employees);
                             employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                            self.tab.valueHasMutated();
                         }
                     }, 0);
                 } else {
@@ -226,6 +240,7 @@ module cps001.a.vm {
                         if (!employee.employeeId()) {
                             let employees = self.employees();
                             employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                            self.tab.valueHasMutated();
                         }
                     }, 0);
                 }
@@ -274,7 +289,26 @@ module cps001.a.vm {
                 iemp: IEmployee = ko.toJS(employee);
 
             modal('../c/index.xhtml').onClosed(() => {
-                self.start();
+                let params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined, showAll: false };
+
+                $('.btn-quick-search[tabindex=3]').click();
+                setInterval(() => {
+                    if (!employee.employeeId()) {
+                        let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
+                        if (!params.showAll) {
+                            self.employees(employees);
+                        }
+                        if (employees[0]) {
+                            if (employees[0].employeeId == employee.employeeId()) {
+                                employee.employeeId();
+                            } else {
+                                employee.employeeId(employees[0].employeeId);
+                            }
+                        } else {
+                            employee.employeeId(undefined);
+                        }
+                    }
+                }, 0);
             });
         }
 
@@ -335,13 +369,21 @@ module cps001.a.vm {
             block();
             service.saveCurrentLayout(command).done(() => {
                 info({ messageId: "Msg_15" }).then(function() {
-                    self.start();
+                    //self.start();
                     _.each(self.multipleData(), m => {
-                        if (m.mode() == TABS.LAYOUT) {
-                            m.id.valueHasMutated();
-                        } else {
-                            m.infoId(undefined);
-                            m.category().categoryType.valueHasMutated();
+                        let first = _.first(self.multipleData());
+                        if (first) {
+                            let memento = first.categoryId();
+
+                            if (memento) {
+                                first.categoryId(memento);
+                            }
+
+                            if (!first.infoId()) {
+                                first.id.valueHasMutated();
+                            } else {
+                                first.infoId.valueHasMutated();
+                            }
                         }
                     });
                     unblock();
@@ -449,6 +491,11 @@ module cps001.a.vm {
                 });
             },
             replace: (callback?: void) => {
+                let self = this;
+                setShared(REPL_KEY, REPL_KEYS.REPLICATION);
+
+                self.infoId.valueHasMutated();
+
                 if (callback) {
                     callback;
                 }
@@ -521,19 +568,45 @@ module cps001.a.vm {
                             }
                         });
                     } else if (self.category().categoryType() != IT_CAT_TYPE.SINGLE) {
-                        let id = self.id(),
-                            catid = self.categoryId(),
-                            query = {
-                                infoId: self.infoId(),
-                                categoryId: catid || id,
-                                personId: self.personId(),
-                                employeeId: self.employeeId(),
-                                standardDate: undefined,
-                                categoryCode: category.categoryCode()
-                            };
-                        service.getCatData(query).done(data => {
-                            layout().listItemCls(data.classificationItems);
-                        });
+                        let rep: number = getShared(REPL_KEY) || REPL_KEYS.NORMAL;
+
+                        if ([REPL_KEYS.NORMAL, REPL_KEYS.REPLICATION].indexOf(rep) > -1) {
+                            let id = self.id(),
+                                catid = self.categoryId(),
+                                query = {
+                                    infoId: self.infoId(),
+                                    categoryId: catid || id,
+                                    personId: self.personId(),
+                                    employeeId: self.employeeId(),
+                                    standardDate: undefined,
+                                    categoryCode: category.categoryCode()
+                                };
+                            service.getCatData(query).done(data => {
+                                if (rep == REPL_KEYS.REPLICATION) {
+                                    setShared(REPL_KEY, REPL_KEYS.OTHER);
+                                    self.infoId(undefined);
+                                    _.each(data.classificationItems, (c: any, i: number) => {
+                                        if (_.has(c, "items") && _.isArray(c.items)) {
+                                            _.each(c.items, m => {
+                                                if (!_.isArray(m)) {
+                                                    if (i == 0) {
+                                                        m.value = undefined;
+                                                    }
+                                                    m.recordId = undefined;
+                                                } else {
+                                                    _.each(m, k => {
+                                                        k.recordId = undefined;
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                                layout().listItemCls(data.classificationItems);
+                            });
+                        } else {
+                            setShared(REPL_KEY, REPL_KEYS.NORMAL);
+                        }
                     }
                 }
             });
@@ -829,6 +902,12 @@ module cps001.a.vm {
         SELECTION = 6
     }
 
+    enum REPL_KEYS {
+        NORMAL = 0,
+        REPLICATION = 1,
+        OTHER = 2
+    }
+
     interface IPeregQuery {
         ctgId: string;
         ctgCd?: string;
@@ -866,6 +945,7 @@ module cps001.a.vm {
     }
 
     interface IParam {
+        showAll?: boolean;
         employeeId: string;
     }
 }

@@ -27,6 +27,9 @@ public class WorkInformationOfDailyFinder extends FinderFacade {
 		if (workInfoOpt != null) {
 			result.setActualWorkInfo(new WorkInfoDto(workInfoOpt.getRecordWorkInformation().getWorkTypeCode().v(),
 					workInfoOpt.getRecordWorkInformation().getWorkTimeCode().v()));
+			result.setBackStraightAtr(workInfoOpt.getBackStraightAtr().value);
+			result.setCalculationState(workInfoOpt.getCalculationState().value);
+			result.setGoStraightAtr(workInfoOpt.getGoStraightAtr().value);
 			result.setPlanWorkInfo(new WorkInfoDto(workInfoOpt.getScheduleWorkInformation().getWorkTypeCode().v(),
 					workInfoOpt.getScheduleWorkInformation().getWorkTimeCode().v()));
 			result.setScheduleTimeZone(workInfoOpt.getScheduleTimeSheets().stream().map(sts -> {

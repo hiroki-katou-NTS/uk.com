@@ -153,6 +153,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		List<KshmtWorkingCond> entities = new ArrayList<>();
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
 		this.commandProxy().insertAll(entities);
+		this.getEntityManager().flush();
 	}
 
 	/*
@@ -203,6 +204,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(),
 				workingCondition.getEmployeeId(), null);
 		this.commandProxy().removeAll(entities);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * Find by.

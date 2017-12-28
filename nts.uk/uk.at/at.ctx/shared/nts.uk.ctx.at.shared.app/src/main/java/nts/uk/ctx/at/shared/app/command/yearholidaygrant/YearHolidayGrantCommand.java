@@ -51,7 +51,7 @@ public class YearHolidayGrantCommand {
 		
 		List<GrantCondition> grantConditionList = this.grantConditions.stream().map(x-> {
 			return new GrantCondition(companyId, new YearHolidayCode(yearHolidayCode), x.getConditionNo(), new ConditionValue(x.getConditionValue()), 
-					EnumAdaptor.valueOf(x.getUseConditionAtr(), UseConditionAtr.class));
+					EnumAdaptor.valueOf(x.getUseConditionAtr(), UseConditionAtr.class), false);
 		}).collect(Collectors.toList());
 		
 		return  GrantHdTblSet.createFromJavaType(companyId, yearHolidayCode, yearHolidayName, calculationMethod, standardCalculation,

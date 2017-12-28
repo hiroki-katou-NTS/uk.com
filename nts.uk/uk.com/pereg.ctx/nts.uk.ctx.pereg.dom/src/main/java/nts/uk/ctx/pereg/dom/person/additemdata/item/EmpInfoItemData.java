@@ -39,15 +39,16 @@ public class EmpInfoItemData extends AggregateRoot {
 
 	private int dataType;
 
-	private BigDecimal selectionItemRefType;
-	
+	private int selectionItemRefType;
+
 	private String itemParentCd;
-	
+
 	private DateType dateType;
 
+	private String SelectionItemRefCd;
+
 	public EmpInfoItemData(ItemCode itemCode, String perInfoDefId, String recordId, String perInfoCtgId,
-			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType
-			) {
+			String perInfoCtgCd, String itemName, IsRequired isRequired, DataState dataState, int dataType) {
 		super();
 		this.itemCode = itemCode;
 		this.perInfoDefId = perInfoDefId;
@@ -74,7 +75,7 @@ public class EmpInfoItemData extends AggregateRoot {
 		DataStateType dataTypeStateType = EnumAdaptor.valueOf(dataStateType, DataStateType.class);
 		DataState dataState = createDataState(dataTypeStateType, stringValue, intValue, dateValue);
 		IsRequired required = EnumAdaptor.valueOf(isRequired, IsRequired.class);
-		
+
 		return new EmpInfoItemData(new ItemCode(itemCode), perInfoDefId, recordId, perInfoCtgId, perInfoCtgCd, itemName,
 				required, dataState, dataType);
 

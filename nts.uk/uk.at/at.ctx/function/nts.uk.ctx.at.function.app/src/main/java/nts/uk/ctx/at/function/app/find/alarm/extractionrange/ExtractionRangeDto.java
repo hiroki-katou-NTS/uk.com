@@ -1,40 +1,74 @@
 package nts.uk.ctx.at.function.app.find.alarm.extractionrange;
 
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
-import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import lombok.Data;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 
-@NoArgsConstructor
+@Data
 public class ExtractionRangeDto {
 
-	public String extractionId;
+	private String extractionId;
 	
-	public int extractionRange;
+	private int extractionRange;
 	
-	public int previousClassification;
+	private int strSpecify;
+
+	private Integer strPreviousDay;
 	
-	public int day;
+	private Integer strMakeToDay;
+
+	private Integer strDay;
+
+	private Integer strPreviousMonth;
 	
-	public boolean makeToDay;
+	private Integer strCurrentMonth;
+
+	private Integer strMonth;
+
+	private int endSpecify;
+
+	private Integer endPreviousDay;
 	
-	public int specifyStartDate;
+	private Integer endMakeToDay;
+
+	private Integer endDay;
+
+	private Integer endPreviousMonth;
 	
-	public int specifyEndDate;
+	private Integer endCurrentMonth;
+
+	private Integer endMonth;
 	
-	public static ExtractionRangeDto FromDomain(ExtractionRangeBase extractionRangeBase){
-		ExtractionRangeDto rangeDto = new ExtractionRangeDto();
-		if(extractionRangeBase.getExtractionRange().equals(ExtractionRange.PERIOD)){
-			ExtractionPeriodDaily daily = (ExtractionPeriodDaily)extractionRangeBase;
-			/*rangeDto.extractionId = daily.getExtractionId();
-			rangeDto.extractionRange = daily.getExtractionRange().value;
-			rangeDto.previousClassification = daily.getNumberOfDays().getPreviousClassification().value;
-			rangeDto.day = daily.getNumberOfDays().getDay();
-			rangeDto.makeToDay = daily.getNumberOfDays().isMakeToDay();
-			rangeDto.specifyStartDate = daily.getSpecifyStartDate().value;
-			rangeDto.specifyEndDate =  daily.getSpecifyEndDate().value;*/
-			
+	
+	public static ExtractionRangeDto fromDomain(ExtractionPeriodDaily domain){
+		ExtractionRangeDto dto = new  ExtractionRangeDto();
+		
+		dto.setExtractionId(domain.getExtractionId());
+		dto.setExtractionRange(domain.getExtractionRange().value);
+		//set start date
+		dto.setStrSpecify(domain.getStartDate().getStartSpecify().value);
+		if(domain.getStartDate().getStartSpecify().value == StartSpecify.DAYS.value){
+			dto.setStrPreviousDay(domain.getStartDate().getStrDays().get().getDayPrevious().value);
+			dto.setStrMakeToDay(domain.getStartDate().getStrDays().get().isMakeToDay()==true?1:0);
+			dto.setStrDay(domain.getStartDate().getStrDays().get().getDay());
+		}else if(domain.getStartDate().getStartSpecify().value == StartSpecify.MONTH.value){
+			dto.setStrPreviousMonth(domain.getStartDate().getStrMonth().get().getMonthPrevious().value);
+			dto.setStrCurrentMonth(domain.getStartDate().getStrMonth().get().isCurentMonth()==true?1:0);
+			dto.setStrMonth(domain.getStartDate().getStrMonth().get().getMonth());
 		}
-		return rangeDto;
+		// set end date
+		dto.setEndSpecify(domain.getEndDate().getEndSpecify().value);
+		if(domain.getEndDate().getEndSpecify().value == EndSpecify.DAYS.value){
+			dto.setEndPreviousDay(domain.getEndDate().getEndDays().get().getDayPrevious().value);
+			dto.setEndMakeToDay(domain.getEndDate().getEndDays().get().isMakeToDay()==true?1:0);
+			dto.setEndDay(domain.getEndDate().getEndDays().get().getDay());
+		}else if(domain.getEndDate().getEndSpecify().value == EndSpecify.MONTH.value){
+			dto.setEndPreviousMonth(domain.getEndDate().getEndMonth().get().getMonthPrevious().value);
+			dto.setEndCurrentMonth(domain.getEndDate().getEndMonth().get().isCurentMonth()==true?1:0);
+			dto.setEndMonth(domain.getEndDate().getEndMonth().get().getMonth());
+		}
+		
+		return dto;
 	}
 }

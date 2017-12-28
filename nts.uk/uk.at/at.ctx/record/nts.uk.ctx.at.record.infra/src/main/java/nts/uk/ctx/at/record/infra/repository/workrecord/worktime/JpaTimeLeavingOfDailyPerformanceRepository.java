@@ -77,4 +77,18 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 	}
 
+	@Override
+	public void add(TimeLeavingOfDailyPerformance timeLeaving) {
+		KrcdtDaiLeavingWork entity = KrcdtDaiLeavingWork.toEntity(timeLeaving);
+		commandProxy().insert(entity);
+		commandProxy().insertAll(entity.timeLeavingWorks);
+	}
+
+	@Override
+	public void update(TimeLeavingOfDailyPerformance timeLeaving) {
+		KrcdtDaiLeavingWork entity = KrcdtDaiLeavingWork.toEntity(timeLeaving);
+		commandProxy().update(entity);
+		commandProxy().updateAll(entity.timeLeavingWorks);
+	}
+
 }

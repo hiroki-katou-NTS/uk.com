@@ -33,7 +33,8 @@ public class AttendanceLeavingGateOfDailyFinder extends FinderFacade {
 							new TimeStampDto(c.getAttendance().getTimeWithDay().valueAsMinutes(),
 									c.getAttendance().getAfterRoundingTime().valueAsMinutes(),
 									c.getAttendance().getLocationCode().v(),
-									c.getAttendance().getStampSourceInfo().value)
+									c.getAttendance().getStampSourceInfo().value),
+							0
 
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());

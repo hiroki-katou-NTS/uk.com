@@ -1,6 +1,7 @@
 package nts.uk.shr.com.context.loginuser;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.scoped.session.SessionContextProvider;
@@ -10,6 +11,9 @@ import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
 @Stateless
 public class DefaultLoginUserContextManager implements LoginUserContextManager {
 
+	@Inject
+	private SessionLowLayer sessionLowLayer;
+	
 	@Override
 	public void loggedInAsEmployee(
 			String userId,
@@ -28,6 +32,28 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 		context.setEmployeeId(employeeId);
 		context.setEmployeeCode(employeeCode);
 		
+		SessionContextProvider.get().put(LoginUserContext.KEY_SESSION_SCOPED, context);
+		
+		this.sessionLowLayer.loggedIn();
+	}
+	
+	@Override
+	public void changeCompany(
+			String userId,
+			String personId,
+			String contractCode,
+			String companyId,
+			String companyCode,
+			String employeeId,
+			String employeeCode) {
+		
+		val context = new DefaultLoginUserContext(userId, true);
+		context.setPersonId(personId);
+		context.setContractCode(contractCode);
+		context.setCompanyId(companyId);
+		context.setCompanyCode(companyCode);
+		context.setEmployeeId(employeeId);
+		context.setEmployeeCode(employeeCode);
 		SessionContextProvider.get().put(LoginUserContext.KEY_SESSION_SCOPED, context);
 	}
 

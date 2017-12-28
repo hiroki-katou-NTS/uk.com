@@ -24,20 +24,11 @@ public class LastWeekHolidayNumberOfFourWeek extends DomainObject{
 	/**
 	 * Instantiates a new last week holiday number of four week.
 	 *
-	 * @param memento the memento
+	 * @param inLegalHoliday the in legal holiday
+	 * @param outLegalHoliday the out legal holiday
 	 */
-	public LastWeekHolidayNumberOfFourWeek(LastWeekHolidayNumberOfFourWeekGetMemento memento) {
-		this.inLegalHoliday = memento.getInLegalHoliday();
-		this.outLegalHoliday = memento.getOutLegalHoliday();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(LastWeekHolidayNumberOfFourWeekSetMemento memento) {
-		memento.setInLegalHoliday(this.inLegalHoliday);
-		memento.setOutLegalHoliday(this.outLegalHoliday);
+	public LastWeekHolidayNumberOfFourWeek(FourWeekDay inLegalHoliday, FourWeekDay outLegalHoliday) {
+		this.inLegalHoliday = inLegalHoliday;
+		this.outLegalHoliday = outLegalHoliday;
 	}
 }

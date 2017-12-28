@@ -65,6 +65,7 @@ public class UpdateErrorAlarmWrCommand {
 	private int operatorBetweenGroups;
 	private int operatorGroup1;
 	private int operatorGroup2;
+	private boolean group2UseAtr;
 	private List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1;
 	private List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2;
 
@@ -76,7 +77,7 @@ public class UpdateErrorAlarmWrCommand {
 			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem,
 			AlarmCheckTargetConditionDto alCheckTargetCondition, WorkTypeConditionDto workTypeCondition,
 			WorkTimeConditionDto workTimeCondition, int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode,
-			int operatorBetweenGroups, int operatorGroup1, int operatorGroup2,
+			int operatorBetweenGroups, int operatorGroup1, int operatorGroup2, boolean group2UseAtr,
 			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1,
 			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2) {
 		super();
@@ -99,6 +100,7 @@ public class UpdateErrorAlarmWrCommand {
 		this.operatorBetweenGroups = operatorBetweenGroups;
 		this.operatorGroup1 = operatorGroup1;
 		this.operatorGroup2 = operatorGroup2;
+		this.group2UseAtr = group2UseAtr;
 		this.erAlAtdItemConditionGroup1 = erAlAtdItemConditionGroup1;
 		this.erAlAtdItemConditionGroup2 = erAlAtdItemConditionGroup2;
 	}
@@ -173,7 +175,7 @@ public class UpdateErrorAlarmWrCommand {
 				alCheckTargetCondition.getLstClassification());
 		// Set WorkTypeCondition
 		condition.createWorkTypeCondition(workTypeCondition.isUseAtr(), workTypeCondition.getComparePlanAndActual());
-		if (workTypeCondition.getComparePlanAndActual() == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (workTypeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
 			condition.setWorkTypePlan(workTypeCondition.isPlanFilterAtr(), workTypeCondition.getPlanLstWorkType());
 			condition.setWorkTypeActual(workTypeCondition.isActualFilterAtr(),
 					workTypeCondition.getActualLstWorkType());
@@ -183,7 +185,7 @@ public class UpdateErrorAlarmWrCommand {
 		}
 		// Set WorkTimeCondtion
 		condition.createWorkTimeCondition(workTimeCondition.isUseAtr(), workTimeCondition.getComparePlanAndActual());
-		if (workTimeCondition.getComparePlanAndActual() == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (workTimeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
 			condition.setWorkTimePlan(workTimeCondition.isPlanFilterAtr(), workTimeCondition.getPlanLstWorkTime());
 			condition.setWorkTimeActual(workTimeCondition.isActualFilterAtr(),
 					workTimeCondition.getActualLstWorkTime());
@@ -196,9 +198,9 @@ public class UpdateErrorAlarmWrCommand {
 				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
 		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = erAlAtdItemConditionGroup2.stream()
 				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
-		condition.createAttendanceItemCondition(operatorBetweenGroups)
+		condition.createAttendanceItemCondition(operatorBetweenGroups, group2UseAtr)
 				.setAttendanceItemConditionGroup1(operatorGroup1, conditionsGroup1)
-				.setAttendanceItemConditionGroup2(operatorGroup1, conditionsGroup2);
+				.setAttendanceItemConditionGroup2(operatorGroup2, conditionsGroup2);
 		domain.setCondition(condition);
 		return domain;
 	}

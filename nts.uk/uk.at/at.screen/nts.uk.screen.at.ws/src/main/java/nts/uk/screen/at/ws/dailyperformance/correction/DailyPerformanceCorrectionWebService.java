@@ -3,13 +3,23 @@
  */
 package nts.uk.screen.at.ws.dailyperformance.correction;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
+import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
@@ -42,6 +52,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DataDialogWithTypeProcessor dialogProcessor;
+	
+	@Inject
+	private DailyModifyCommandFacade dailyModifyCommandFacade;
 	
 	@POST
 	@Path("startScreen")
@@ -85,4 +98,19 @@ public class DailyPerformanceCorrectionWebService {
 		return this.dialogProcessor.getAllTypeDialog(param.getTypeDialog(), param.getParam());
 	}
 	
+	@POST
+	@Path("addAndUpdate")
+	public void addAndUpdate(List<DPItemValue> itemValues) {
+		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = itemValues.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
+		mapSidDate.entrySet().forEach(x -> {
+			List<ItemValue> itemCovert = x.getValue().stream().map(y -> new ItemValue(y.getValue(),
+					ValueType.valueOf(y.getValueType()), y.getLayoutCode(), y.getItemId()))
+					.collect(Collectors.toList());
+			Map<String, List<ItemValue>> itemMap = new HashMap<>();
+			itemMap.put("AttendanceTimeOfDailyPerformance", itemCovert);
+			dailyModifyCommandFacade.handleAdd(
+					new DailyModifyQuery(x.getValue().get(0).getEmployeeId(), x.getValue().get(0).getDate(), itemCovert));
+		});
+	}
 }

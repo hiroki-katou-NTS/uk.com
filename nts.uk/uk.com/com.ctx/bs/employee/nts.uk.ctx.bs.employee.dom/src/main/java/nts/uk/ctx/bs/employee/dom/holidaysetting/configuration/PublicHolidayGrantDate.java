@@ -11,7 +11,7 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @Setter
 // 公休付与日
-public class PublicHolidayGrantDate extends DomainObject implements PublicHolidayManagementStartDate{
+public class PublicHolidayGrantDate extends DomainObject{
 	
 	/** The period. */
 	// 管理期間
@@ -22,16 +22,7 @@ public class PublicHolidayGrantDate extends DomainObject implements PublicHolida
 	 *
 	 * @param memento the memento
 	 */
-	public PublicHolidayGrantDate(PublicHolidayGrantDateGetMemento memento) {
-		this.period = memento.getPeriod();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(PublicHolidayGrantDateSetMemento memento) {
-		memento.setPeriod(this.period);
+	public PublicHolidayGrantDate() {
+		super();
 	}
 }

@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
-
+/**
+ * @author phongtq
+ */
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.OvertimeFrameName;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.TransferFrameName;
 
 @AllArgsConstructor
 @Getter
-public class OverTimeFrame {
+public class OverTimeFrame extends DomainObject {
 	/** 会社ID */
 	private String companyId;
 
@@ -23,6 +26,15 @@ public class OverTimeFrame {
 	/** 残業枠名称 */
 	private OvertimeFrameName overtimeFrameName;
 
+	/**
+	 * Create from Java Type of OverTimeFrame
+	 * @param companyId
+	 * @param overtimeFrameNo
+	 * @param useAtr
+	 * @param transferFrameName
+	 * @param overtimeFrameName
+	 * @return
+	 */
 	public static OverTimeFrame createFromJavaType(String companyId, int overtimeFrameNo, int useAtr,
 			String transferFrameName, String overtimeFrameName) {
 		return new OverTimeFrame(companyId, overtimeFrameNo, useAtr, new TransferFrameName(transferFrameName),

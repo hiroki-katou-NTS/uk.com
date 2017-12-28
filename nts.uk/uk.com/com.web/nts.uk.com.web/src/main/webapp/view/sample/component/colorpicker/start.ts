@@ -10,6 +10,9 @@ __viewContext.ready(function () {
             self.value = ko.observable('');
             self.value2 = ko.observable('');
             self.enable = ko.observable(true);
+            self.value2.subscribe(function (value) {
+                console.log(value); 
+            });
         }
     }
     

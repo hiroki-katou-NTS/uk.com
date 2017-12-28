@@ -32,7 +32,9 @@ module nts.uk.at.view.kdw001.g {
                     self.executionContentName = param.executionContentName;
                     
                     for(let i = 0;i<self.listPeson.length;i++){
-                        self.listTargetPerson().push({employeeCode: self.listPeson[i].employeeId, 
+                        self.listTargetPerson().push({employeeCode: self.listPeson[i].employeeId,
+                        personCode: self.listPeson[i].personCode,
+                        personName: self.listPeson[i].personName,   
                          employeeName :self.listPeson[i].employeeId,
                          
                          status : _.find(self.listPeson[i].state, function(state) { 
@@ -44,8 +46,9 @@ module nts.uk.at.view.kdw001.g {
                 
                 
                 self.columns = ko.observableArray([
-                    { headerText: getText('KDW001_33'), key: 'employeeCode', width: 100 },
-                    { headerText: getText('KDW001_35'), key: 'employeeName', width: 100 },
+                    { headerText: '', key: 'employeeCode', width: 1, hidden: true},
+                    { headerText: getText('KDW001_33'), key: 'personCode', width: 100 },
+                    { headerText: getText('KDW001_35'), key: 'personName', width: 100 },
                     { headerText: getText('KDW001_51'), key: 'status', width: 100 }
                 ]);
             }
@@ -60,6 +63,8 @@ module nts.uk.at.view.kdw001.g {
             closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
+            
+            
         }//end screenModel
     }//end viewmodel    
 }//end module

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,8 +99,12 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory) {
-		List<KshmtPerWorkCat> kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
-		workCategory.saveToMemento(new JpaPerWorkCatSetMemento(kshmtPerWorkCats));
+		List<KshmtPerWorkCat> kshmtPerWorkCats = new ArrayList<>();
+		if(this.entity.getKshmtPerWorkCats() != null){
+			kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
+		}
+		workCategory.saveToMemento(
+				new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats));
 		this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 	}
 
@@ -139,8 +144,10 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek) {
-		List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = this.entity
-				.getKshmtPersonalDayOfWeeks();
+		List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
+		if(this.entity.getKshmtPersonalDayOfWeeks() != null){
+			kshmtPersonalDayOfWeeks = this.entity.getKshmtPersonalDayOfWeeks();
+		}
 		workDayOfWeek.saveToMemento(
 				new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtPersonalDayOfWeeks));
 		this.entity.setKshmtPersonalDayOfWeeks(kshmtPersonalDayOfWeeks);

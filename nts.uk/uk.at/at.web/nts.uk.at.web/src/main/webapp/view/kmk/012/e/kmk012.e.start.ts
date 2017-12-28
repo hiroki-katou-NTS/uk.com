@@ -7,17 +7,18 @@ module nts.uk.at.view.kmk012.e {
         var model = new viewmodel.ScreenModel();
 
         //When getClosureEmploy done, set data for dataSource on grid.
-        model.getClosureEmploy(model.startDate).done(function() {
+        model.getClosureEmploy().done(function() {
             //Init data for combobox.
             var comboItems = model.closureEmployDto.closureCdNameList;
             //Insert comboColumnas with value = 0;
             var closureCdNameDto = new viewmodel.ClosureCdNameDto(-1, '');
             comboItems.unshift(closureCdNameDto);
-            var comboColumns = [{ prop: 'closureIdMain', length: 4 },
-                { prop: 'closureName', length: 8 }];
+            var comboColumns = [
+                { prop: 'closureName', length: 8 }
+            ];
 
             //View list data on grid.
-            $("#grid2").ntsGrid({
+            $("#gridData").ntsGrid({
                 width: '390px',
                 height: '380px',
                 dataSource: model.items,
@@ -37,11 +38,12 @@ module nts.uk.at.view.kmk012.e {
                 ntsControls: [
                     { name: 'Combobox', options: comboItems, optionsValue: 'closureIdMain', optionsText: 'closureName', columns: comboColumns, controlType: 'ComboBox', enable: true }]
             });
+            $("#gridData > tbody > tr > td:NTH-CHILD(1) > div.ui-igcombo ui-widget ui-state-default ui-corner-all ui-unselectable ui-igcombo-mode-dropdown").each(function (i) { $(this).attr('tabindex', i * 2 + 1); });
         });
 
         //Add function button
-        $("#button8").on("click", function() {
-            var source = $("#grid2").igGrid("option", "dataSource");
+        $("#btnRegistry").on("click", function() {
+            var source = $("#gridData").igGrid("option", "dataSource");
             
             //Add source data on grid to server
             model.insertDelArray(source);

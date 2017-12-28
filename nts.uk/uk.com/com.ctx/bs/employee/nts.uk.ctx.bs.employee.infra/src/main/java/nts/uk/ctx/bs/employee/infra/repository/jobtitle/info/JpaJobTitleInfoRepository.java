@@ -384,7 +384,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 				root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), baseDate));
 
 		cq.where(listPredicate.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobInfo_.bsymtJobSeqMaster).get(BsymtJobSeqMaster_.disporder)));
+		//cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobInfo_.bsymtJobSeqMaster).get(BsymtJobSeqMaster_.disporder)));
 
 		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
 		

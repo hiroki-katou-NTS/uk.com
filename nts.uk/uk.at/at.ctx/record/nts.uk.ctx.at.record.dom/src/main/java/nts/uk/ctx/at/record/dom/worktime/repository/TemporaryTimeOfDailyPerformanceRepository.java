@@ -13,4 +13,7 @@ public interface TemporaryTimeOfDailyPerformanceRepository {
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
 	Optional<TemporaryTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
+	
+	void add(TemporaryTimeOfDailyPerformance temporaryTime);
+	void update(TemporaryTimeOfDailyPerformance temporaryTime);
 }

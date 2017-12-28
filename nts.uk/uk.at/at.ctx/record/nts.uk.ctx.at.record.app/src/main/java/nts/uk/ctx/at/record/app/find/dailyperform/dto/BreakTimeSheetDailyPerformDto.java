@@ -1,15 +1,18 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 
 /** 日別実績の休憩時間 */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BreakTimeSheetDailyPerformDto {
 
 	/** 計上用合計時間: 控除合計時間 */
@@ -60,12 +63,12 @@ public class BreakTimeSheetDailyPerformDto {
 								new CalcAttachTimeDto(
 										domain.getDeductionTotalTime().getTotalTime().getCalcTime().valueAsMinutes(),
 										domain.getDeductionTotalTime().getTotalTime().getTime().valueAsMinutes())),
-						domain.getWorkTime().valueAsMinutes(),
-						ConvertHelper.mapTo(domain.getBreakTimeSheet(),
-								(c) -> new BreakTimeSheetDto(c.getStartTime().getAfterRoundingTime().valueAsMinutes(),
-										c.getEndTime().getAfterRoundingTime().valueAsMinutes(), c.getBreakTime()
-												.valueAsMinutes(),
+						domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes(),
+						domain.getBreakTimeSheet() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getBreakTimeSheet(),
+								(c) -> new BreakTimeSheetDto(c.getStartTime().getAfterRoundingTime() == null ? null : c.getStartTime().getAfterRoundingTime().valueAsMinutes(),
+										c.getEndTime().getAfterRoundingTime() == null ? null : c.getEndTime().getAfterRoundingTime().valueAsMinutes(), 
+												c.getBreakTime() == null ? null :c.getBreakTime().valueAsMinutes(),
 										c.getBreakFrameNo().v().intValue())),
-						domain.getGooutTimes().v());
+						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
 	}
 }
