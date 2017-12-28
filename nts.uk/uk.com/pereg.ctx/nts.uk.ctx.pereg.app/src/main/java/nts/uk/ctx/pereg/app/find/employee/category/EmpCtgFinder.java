@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
@@ -179,9 +180,14 @@ public class EmpCtgFinder {
 			if(lstPerInfoCtgItemData.size() != 0) {
 				for(PersonInfoItemData itemData : lstValidItemData){
 					if(timePerInfoItemDefIds.contains(itemData.getPerInfoItemDefId()))
-						optionText.add(itemData.getPerInfoItemDefId());
-					lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(0)));
+					{
+						Object dateValue = itemData.getDataState().getDateValue();
+						optionText.add(dateValue == null ? "" : dateValue.toString());	
+					}
 				}
+				sortDate(optionText, query);
+				if(optionText.size() > 0)
+					lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
 		}
 		return lstComboBoxObject;
@@ -207,10 +213,23 @@ public class EmpCtgFinder {
 						optionText.add(dateValue == null ? "" : dateValue.toString());	
 					}
 				}
+				sortDate(optionText, query);
 				if(optionText.size() > 0)
 					lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
 		}
 		return lstComboBoxObject;
+	}
+	private void sortDate(List<String> optionText, PeregQuery query){
+		optionText.sort((a, b) -> {
+			GeneralDate start = GeneralDate.fromString(a, "yyyy/MM/dd");
+			GeneralDate end = GeneralDate.fromString(b, "yyyy/MM/dd");
+			return start.compareTo(end);
+		});
+	
+		optionText.set(1, dateToString(optionText.get(1), query));
+	}
+	private String dateToString(String dateValue, PeregQuery query){
+		return GeneralDate.max().equals(GeneralDate.fromString(dateValue, "yyyy/MM/dd")) && query.getCtgType() == 3? "" :dateValue;
 	}
 }
