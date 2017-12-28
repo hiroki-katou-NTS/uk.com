@@ -1,4 +1,9 @@
-<--#BTN_DECIDE {
+
+#contents-area {
+	height: auto !important;
+}
+
+#BTN_DECIDE {
 	margin-right: 20px;
 }
 
