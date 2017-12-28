@@ -10,4 +10,6 @@ public interface ApplicationRepository_New {
 	
 	public void update(Application_New application);
 	
+	public void updateWithVersion(Application_New application);
+	
 }

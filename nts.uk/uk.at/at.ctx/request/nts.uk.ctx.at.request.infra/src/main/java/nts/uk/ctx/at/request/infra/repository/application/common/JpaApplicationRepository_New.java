@@ -56,4 +56,10 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)
 			.executeUpdate();
 	}
+
+	@Override
+	public void updateWithVersion(Application_New application) {
+		// TODO Auto-generated method stub
+		
+	}
 }
