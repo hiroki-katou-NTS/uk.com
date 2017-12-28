@@ -20,7 +20,7 @@ public class JpaStampReflectionManagementRepository extends JpaRepository
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtStampReflect a ");
+		builderString.append("FROM KrcmtStampReflect a ");
 		builderString.append("WHERE a.krcdtStampReflectPK.companyId = :companyId ");
 		FIND = builderString.toString();
 	}
