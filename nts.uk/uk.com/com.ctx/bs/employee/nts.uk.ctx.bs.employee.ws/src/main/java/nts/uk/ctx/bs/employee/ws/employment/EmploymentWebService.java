@@ -85,4 +85,10 @@ public class EmploymentWebService extends WebService {
 	public void save(EmpSaveCommand command) {
 		this.saveHandler.handle(command);
 	}
+	
+	@POST
+	@Path("findByCodes")
+	public List<EmploymentDto> findByCodes(List<String> employmentCodes) {
+		return this.finder.findByCodes(employmentCodes);
+	}
 }
