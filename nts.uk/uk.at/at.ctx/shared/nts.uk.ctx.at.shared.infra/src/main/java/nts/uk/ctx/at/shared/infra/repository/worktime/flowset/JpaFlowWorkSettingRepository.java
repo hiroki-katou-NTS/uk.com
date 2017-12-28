@@ -30,7 +30,7 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 	@Override
 	public Optional<FlowWorkSetting> find(String companyId, String workTimeCode) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	/*
