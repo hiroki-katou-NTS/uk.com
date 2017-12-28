@@ -37,7 +37,6 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
@@ -154,11 +153,12 @@ public class WebMenuFinder {
 	private List<String> getMenuSet(String companyId, String userId) {
 		if (companyId == null || userId == null) return null;
 		// Get role ties
-		Optional<String> roleId = roleAdapter.getRoleId(userId);
-		Optional<RoleByRoleTies> roleTies = Optional.empty();
-		if (roleId.isPresent()) {
-			roleTies = roleTiesRepository.getRoleByRoleTiesById(roleId.get());
-		}
+		List<String> roleIds = roleAdapter.getRoleId(userId);
+		List<String> roleMenuCodes = new ArrayList<>();
+		roleIds.stream().forEach(r -> {
+			roleTiesRepository.getRoleByRoleTiesById(r)
+							.ifPresent(t -> roleMenuCodes.add(t.getWebMenuCd().v()));
+		});
 		
 		List<String> menuCodes = new ArrayList<>();
 		// Get role set
@@ -168,8 +168,7 @@ public class WebMenuFinder {
 			menuCodes = menus.stream().map(m -> m.getWebMenuCd().v()).collect(Collectors.toList());
 		}
 		
-		if (roleTies.isPresent()) {
-			String menuCode = roleTies.get().getWebMenuCd().v();
+		for (String menuCode : roleMenuCodes) {
 			if (menuCodes.stream().noneMatch(m -> menuCode.equals(m))) {
 				menuCodes.add(menuCode);
 			}
