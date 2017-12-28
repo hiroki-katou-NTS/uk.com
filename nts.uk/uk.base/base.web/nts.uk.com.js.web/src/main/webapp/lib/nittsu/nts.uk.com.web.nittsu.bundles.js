@@ -3047,10 +3047,9 @@ var nts;
                     return dfd.promise();
                 }
                 specials.donwloadFile = donwloadFile;
-                function createPathToFile(fileId) {
-                    return resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId);
-                }
-                specials.createPathToFile = createPathToFile;
+                //        export function createPathToFile(fileId: string) {
+                //            return resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId);
+                //        }
                 function deleteFile(fileId) {
                     return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
                 }
@@ -3087,6 +3086,27 @@ var nts;
                 window.location.href = path;
             }
             request.jump = jump;
+            function jumpToMenu(path) {
+                var end = path.charAt(0) === '/' ? path.indexOf("/", 1) : path.indexOf("/");
+                var appName = path.substring(0, end);
+                var appId;
+                switch (appName) {
+                    case request.WEB_APP_NAME.com:
+                    case "/" + request.WEB_APP_NAME.com:
+                        appId = "com";
+                        break;
+                    case request.WEB_APP_NAME.pr:
+                    case "/" + request.WEB_APP_NAME.pr:
+                        appId = "pr";
+                        break;
+                    case request.WEB_APP_NAME.at:
+                    case "/" + request.WEB_APP_NAME.at:
+                        appId = "at";
+                        break;
+                }
+                jump(appId, path.substr(end));
+            }
+            request.jumpToMenu = jumpToMenu;
             var login;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
@@ -3104,7 +3124,7 @@ var nts;
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
             })(login = request.login || (request.login = {}));
             function jumpToTopPage() {
-                request.jump('/view/ccg/008/a/index.xhtml');
+                jumpToMenu('nts.uk.com.web/view/ccg/008/a/index.xhtml');
             }
             request.jumpToTopPage = jumpToTopPage;
             function resolvePath(path) {
@@ -3209,10 +3229,345 @@ var nts;
                         .map(function (v) { return JSON.parse(v); });
                     _.defer(function () { return _start.call(__viewContext); });
                     // Menu
-                    if ($(document).find("#header").length > 0)
-                        nts.uk.ui.menu.request();
+                    if ($(document).find("#header").length > 0) {
+                        ui.menu.request();
+                    }
                 });
             })(init || (init = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var menu;
+            (function (menu) {
+                /** Showing item */
+                var showingItem;
+                /**
+                 * Menu item.
+                 */
+                var MenuItem = (function () {
+                    function MenuItem(name, path) {
+                        this.name = name;
+                        this.path = path;
+                    }
+                    return MenuItem;
+                }());
+                /**
+                 * Create menu selection.
+                 */
+                function createMenuSelect($menuNav, menuSet) {
+                    var $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
+                    var $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
+                    var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
+                    $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
+                    $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
+                    _.forEach(menuSet, function (item, i) {
+                        $menuItems.append($("<li class='menu-item'/>").data("code", item.webMenuCode)
+                            .text(item.webMenuName).on(constants.CLICK, function () {
+                            uk.localStorage.setItem(constants.MENU, $(this).data("code"));
+                            $menuNav.find(".category:eq(0)").off();
+                            $menuNav.find(".category:gt(0)").remove();
+                            generate($menuNav, item);
+                            _.defer(function () {
+                                showingItem = undefined;
+                            });
+                        }));
+                    });
+                    $menuItems.append("<br/>");
+                }
+                /**
+                 * Request.
+                 */
+                function request() {
+                    $("#logo").on(constants.CLICK, function () {
+                        uk.request.jumpToTopPage();
+                    });
+                    displayUserInfo();
+                    nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
+                        var $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
+                        if (!menuSet || menuSet.length === 0)
+                            return;
+                        createMenuSelect($menuNav, menuSet);
+                        var menuCode = uk.localStorage.getItem(constants.MENU);
+                        if (menuCode.isPresent()) {
+                            var selectedMenu = _.find(menuSet, function (m) {
+                                return m.webMenuCode === menuCode.get();
+                            });
+                            !uk.util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
+                                : generate($menuNav, menuSet[0]);
+                        }
+                        else {
+                            generate($menuNav, menuSet[0]);
+                        }
+                    });
+                    getProgram();
+                }
+                menu.request = request;
+                /**
+                 * Generate.
+                 */
+                function generate($menuNav, menuSet) {
+                    _.forEach(menuSet.menuBar, function (category) {
+                        var $cate = $("<li class='category'/>").appendTo($menuNav);
+                        if (category.selectedAttr === 1) {
+                            $cate.addClass("direct").data("path", category.link).on(constants.CLICK, function () {
+                                uk.request.jumpToMenu(category.link);
+                            });
+                        }
+                        var $cateName = $("<div class='category-name'/>")
+                            .css({ background: category.backgroundColor, color: category.textColor || "#FFF" })
+                            .text(category.menuBarName).appendTo($cate);
+                        var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
+                        if (category.items && category.items.length > 0) {
+                            _.forEach(category.items, function (item) {
+                                $menuItems.append($("<li class='menu-item' path='" + item.path + "'/>").text(item.name));
+                            });
+                        }
+                        else if (category.titleMenu && category.titleMenu.length > 0) {
+                            titleMenu.createTitles($menuItems, category.titleMenu);
+                        }
+                    });
+                    init();
+                }
+                /**
+                 * Display user info.
+                 */
+                function displayUserInfo() {
+                    var $userInfo = $("#user-info");
+                    var $company = $userInfo.find("#company");
+                    var $user = $userInfo.find("#user");
+                    var notThen = function ($container, target, op) {
+                        if (!$container.is(target) && $container.has(target).length === 0) {
+                            op();
+                        }
+                    };
+                    nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
+                        if (!companies || companies.length === 0)
+                            return;
+                        var $companyName = $("<span/>").attr("id", "company-name");
+                        nts.uk.request.ajax(constants.APP_ID, constants.Company).done(function (companyId) {
+                            var comp = _.find(companies, function (c) {
+                                return c.companyId === companyId;
+                            });
+                            if (comp)
+                                $companyName.text(comp.companyName).appendTo($company);
+                        });
+                        var $companySelect = $("<div/>").addClass("company-select cf");
+                        $companySelect.appendTo($company);
+                        $("<div/>").addClass("ui-icon ui-icon-caret-1-s").appendTo($companySelect);
+                        var $companyList = $("<ul class='menu-items company-list'/>").appendTo($companySelect);
+                        _.forEach(companies, function (comp, i) {
+                            var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
+                            $compItem.on(constants.CLICK, function () {
+                                nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
+                                    .done(function () {
+                                    $companyName.text(comp.companyName);
+                                });
+                            });
+                        });
+                        $companySelect.on(constants.CLICK, function () {
+                            if ($companyList.css("display") === "none") {
+                                $companyList.fadeIn(100);
+                                return;
+                            }
+                            $companyList.fadeOut(100);
+                        });
+                        nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function (userName) {
+                            var $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
+                            $userImage.css("margin-right", "6px").on(constants.CLICK, function () {
+                                // TODO: Jump to personal profile.
+                            });
+                            var $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
+                            var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
+                            $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
+                            var userOptions = [new MenuItem("個人情報の設定"), new MenuItem("ログアウト")];
+                            var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
+                            _.forEach(userOptions, function (option, i) {
+                                var $li = $("<li class='menu-item'/>").text(option.name);
+                                $userOptions.append($li);
+                                if (i === 0) {
+                                    $li.on(constants.CLICK, function () {
+                                        // TODO: Jump to personal information settings.
+                                    });
+                                    return;
+                                }
+                                $li.on(constants.CLICK, function () {
+                                    // TODO: Jump to login screen and request logout to server
+                                    nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                        nts.uk.request.login.jumpToUsedLoginPage();
+                                    });
+                                });
+                            });
+                            $companyList.css("right", $user.outerWidth() + 30);
+                            $userSettings.on(constants.CLICK, function () {
+                                if ($userOptions.css("display") === "none") {
+                                    $userOptions.fadeIn(100);
+                                    return;
+                                }
+                                $userOptions.fadeOut(100);
+                            });
+                            $(document).on(constants.CLICK, function (evt) {
+                                notThen($companySelect, evt.target, function () {
+                                    $companyList.fadeOut(100);
+                                });
+                                notThen($userSettings, evt.target, function () {
+                                    $userOptions.fadeOut(100);
+                                });
+                            });
+                        });
+                    });
+                }
+                menu.displayUserInfo = displayUserInfo;
+                /**
+                 * Get program.
+                 */
+                function getProgram() {
+                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                        var $pgArea = $("#pg-area");
+                        $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
+                        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
+                        var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+                        $manualBtn.on(constants.CLICK, function () {
+                            // TODO: Open manual
+                        });
+                        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
+                        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
+                        $tglBtn.on(constants.CLICK, function () {
+                            // TODO
+                        });
+                    });
+                }
+                /**
+                 * Init.
+                 */
+                function init() {
+                    var $navArea = $("#nav-area");
+                    var $menuItems = $("#menu-nav li.category:not(.direct)");
+                    /**
+                     * Close item.
+                     */
+                    function closeItem() {
+                        var $item = $("#menu-nav li.category:eq(" + showingItem + ")");
+                        $item.find(".category-name").removeClass("opening");
+                        $item.find("ul, div.title-menu").fadeOut(100);
+                    }
+                    /**
+                     * Open item.
+                     */
+                    function openItem($item) {
+                        $item.find(".category-name").addClass("opening");
+                        $item.find("ul, div.title-menu").fadeIn(100);
+                    }
+                    $(document).on(constants.CLICK, function (evt) {
+                        if (!$navArea.is(evt.target) && $navArea.has(evt.target).length === 0
+                            && !uk.util.isNullOrUndefined(showingItem)) {
+                            closeItem();
+                            showingItem = undefined;
+                        }
+                    });
+                    $menuItems.hover(function () {
+                        var $item = $(this);
+                        var ith = $item.index();
+                        if (uk.util.isNullOrUndefined(showingItem) || showingItem === ith)
+                            return;
+                        closeItem();
+                        setTimeout(function () {
+                            openItem($item);
+                        }, 14);
+                        showingItem = ith;
+                    });
+                    $menuItems.on(constants.CLICK, function (event) {
+                        var $item = $(this);
+                        showingItem = $item.index();
+                        if ($item.find(".category-name").hasClass("opening") && showingItem === 0) {
+                            closeItem();
+                            return;
+                        }
+                        openItem($item);
+                    });
+                    $(".menu-item").on(constants.CLICK, function () {
+                        var path = $(this).data('path');
+                        if (path)
+                            nts.uk.request.jump(path);
+                    });
+                }
+                var titleMenu;
+                (function (titleMenu) {
+                    titleMenu.WIDTH = 180;
+                    titleMenu.FR = 20;
+                    /**
+                     * Create titles.
+                     */
+                    function createTitles($category, titles) {
+                        var $title = $("<div/>").addClass("title-menu").appendTo($category);
+                        var width = 0, height, maxHeight = 0;
+                        _.forEach(titles, function (t, i) {
+                            height = 60;
+                            var left = titleMenu.WIDTH * i + 3;
+                            if (i > 0) {
+                                left += titleMenu.FR * i;
+                            }
+                            if (i === titles.length - 1) {
+                                width = left + titleMenu.WIDTH + 7;
+                            }
+                            var $titleDiv = $("<div/>").addClass("title-div").css({ left: left }).appendTo($title);
+                            var $titleName = $("<div/>").addClass("title-name").text(t.titleMenuName)
+                                .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
+                            var $titleImage = $("<img/>").addClass("title-image").hide();
+                            $titleDiv.append($titleImage);
+                            if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
+                                var fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
+                                // TODO: Show image
+                                $titleImage.attr("src", fqpImage).show();
+                                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
+                                height += 80;
+                            }
+                            if (t.treeMenu && t.treeMenu.length > 0) {
+                                _.forEach(t.treeMenu, function (item, i) {
+                                    if (item.menuAttr === 1) {
+                                        $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
+                                        height += 30;
+                                        return;
+                                    }
+                                    var $item = $("<li class='title-item'/>").data("path", item.url).text(item.displayName || item.defaultName);
+                                    $item.on(constants.CLICK, function () {
+                                        var path = $(this).data("path");
+                                        if (path && path.indexOf("http") !== 0) {
+                                            uk.request.jumpToMenu(path);
+                                            return;
+                                        }
+                                        window.location.href = path;
+                                    });
+                                    $titleDiv.append($item);
+                                    height += 40;
+                                });
+                            }
+                            maxHeight = Math.max(maxHeight, height);
+                        });
+                        maxHeight += 20;
+                        $title.css({ height: maxHeight + "px", width: width + "px" });
+                    }
+                    titleMenu.createTitles = createTitles;
+                })(titleMenu || (titleMenu = {}));
+                var constants;
+                (function (constants) {
+                    constants.APP_ID = "com";
+                    constants.MENU = "UK-Menu";
+                    constants.CLICK = "click";
+                    constants.MenuDataPath = "/sys/portal/webmenu/finddetails";
+                    constants.Company = "/sys/portal/webmenu/currentCompany";
+                    constants.Companies = "sys/portal/webmenu/companies";
+                    constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
+                    constants.UserName = "sys/portal/webmenu/username";
+                    constants.Logout = "sys/portal/webmenu/logout";
+                    constants.PG = "sys/portal/webmenu/program";
+                })(constants || (constants = {}));
+            })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9868,6 +10223,7 @@ var nts;
                         $treegrid.igTreeGrid({
                             width: width,
                             height: height,
+                            indentation: "12px",
                             dataSource: _.cloneDeep(options),
                             primaryKey: optionsValue,
                             columns: displayColumns,
@@ -10894,6 +11250,7 @@ var nts;
 /// <reference path="time/minutesbased/minutesbased_withdayattr.ts"/>
 /// <reference path="request.ts"/>
 /// <reference path="ui/init.ts"/>
+/// <reference path="ui/menu.ts"/>
 /// <reference path="ui/notify.ts"/>
 /// <reference path="ui/validation.ts"/>
 /// <reference path="ui/errors.ts"/>
@@ -18297,337 +18654,6 @@ var nts;
                     }());
                 })(ntsPopup = jqueryExtentions.ntsPopup || (jqueryExtentions.ntsPopup = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var menu;
-            (function (menu) {
-                /** Showing item */
-                var showingItem;
-                /**
-                 * Menu item.
-                 */
-                var MenuItem = (function () {
-                    function MenuItem(name, path) {
-                        this.name = name;
-                        this.path = path;
-                    }
-                    return MenuItem;
-                }());
-                /**
-                 * Create menu selection.
-                 */
-                function createMenuSelect($menuNav, menuSet) {
-                    var $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
-                    var $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
-                    var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-                    $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
-                    $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
-                    _.forEach(menuSet, function (item, i) {
-                        $menuItems.append($("<li class='menu-item'/>").data("code", item.webMenuCode)
-                            .text(item.webMenuName).on(constants.CLICK, function () {
-                            uk.localStorage.setItem(constants.MENU, $(this).data("code"));
-                            $menuNav.find(".category:eq(0)").off();
-                            $menuNav.find(".category:gt(0)").remove();
-                            generate($menuNav, item);
-                            _.defer(function () {
-                                showingItem = undefined;
-                            });
-                        }));
-                    });
-                    $menuItems.append("<br/>");
-                }
-                /**
-                 * Request.
-                 */
-                function request() {
-                    $("#logo").on(constants.CLICK, function () {
-                        uk.request.jumpToTopPage();
-                    });
-                    displayUserInfo();
-                    nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
-                        var $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
-                        if (!menuSet || menuSet.length === 0)
-                            return;
-                        createMenuSelect($menuNav, menuSet);
-                        var menuCode = uk.localStorage.getItem(constants.MENU);
-                        if (menuCode.isPresent()) {
-                            var selectedMenu = _.find(menuSet, function (m) {
-                                return m.webMenuCode === menuCode.get();
-                            });
-                            !uk.util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
-                                : generate($menuNav, menuSet[0]);
-                        }
-                        else {
-                            generate($menuNav, menuSet[0]);
-                        }
-                    });
-                    getProgram();
-                }
-                menu.request = request;
-                /**
-                 * Generate.
-                 */
-                function generate($menuNav, menuSet) {
-                    _.forEach(menuSet.menuBar, function (category) {
-                        var $cate = $("<li class='category'/>").appendTo($menuNav);
-                        if (category.selectedAttr === 1) {
-                            $cate.addClass("direct").data("path", category.link).on(constants.CLICK, function () {
-                                uk.request.jump(category.link);
-                            });
-                        }
-                        var $cateName = $("<div class='category-name'/>")
-                            .css({ background: category.backgroundColor, color: category.textColor || "#FFF" })
-                            .text(category.menuBarName).appendTo($cate);
-                        var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-                        if (category.items && category.items.length > 0) {
-                            _.forEach(category.items, function (item) {
-                                $menuItems.append($("<li class='menu-item' path='" + item.path + "'/>").text(item.name));
-                            });
-                        }
-                        else if (category.titleMenu && category.titleMenu.length > 0) {
-                            titleMenu.createTitles($menuItems, category.titleMenu);
-                        }
-                    });
-                    init();
-                }
-                /**
-                 * Display user info.
-                 */
-                function displayUserInfo() {
-                    var $userInfo = $("#user-info");
-                    var $company = $userInfo.find("#company");
-                    var $user = $userInfo.find("#user");
-                    var notThen = function ($container, target, op) {
-                        if (!$container.is(target) && $container.has(target).length === 0) {
-                            op();
-                        }
-                    };
-                    nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
-                        if (!companies || companies.length === 0)
-                            return;
-                        var $companyName = $("<span/>").attr("id", "company-name");
-                        nts.uk.request.ajax(constants.APP_ID, constants.Company).done(function (companyId) {
-                            var comp = _.find(companies, function (c) {
-                                return c.companyId === companyId;
-                            });
-                            if (comp)
-                                $companyName.text(comp.companyName).appendTo($company);
-                        });
-                        var $companySelect = $("<div/>").addClass("company-select cf");
-                        $companySelect.appendTo($company);
-                        $("<div/>").addClass("ui-icon ui-icon-caret-1-s").appendTo($companySelect);
-                        var $companyList = $("<ul class='menu-items company-list'/>").appendTo($companySelect);
-                        _.forEach(companies, function (comp, i) {
-                            var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
-                            $compItem.on(constants.CLICK, function () {
-                                nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function () {
-                                    $companyName.text(comp.companyName);
-                                });
-                            });
-                        });
-                        $companySelect.on(constants.CLICK, function () {
-                            if ($companyList.css("display") === "none") {
-                                $companyList.fadeIn(100);
-                                return;
-                            }
-                            $companyList.fadeOut(100);
-                        });
-                        nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function (userName) {
-                            var $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
-                            $userImage.css("margin-right", "6px").on(constants.CLICK, function () {
-                                // TODO: Jump to personal profile.
-                            });
-                            var $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
-                            var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
-                            $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                            var userOptions = [new MenuItem("個人情報の設定"), new MenuItem("ログアウト")];
-                            var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
-                            _.forEach(userOptions, function (option, i) {
-                                var $li = $("<li class='menu-item'/>").text(option.name);
-                                $userOptions.append($li);
-                                if (i === 0) {
-                                    $li.on(constants.CLICK, function () {
-                                        // TODO: Jump to personal information settings.
-                                    });
-                                    return;
-                                }
-                                $li.on(constants.CLICK, function () {
-                                    // TODO: Jump to login screen and request logout to server
-                                    nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
-                                        nts.uk.request.login.jumpToUsedLoginPage();
-                                    });
-                                });
-                            });
-                            $userSettings.on(constants.CLICK, function () {
-                                if ($userOptions.css("display") === "none") {
-                                    $userOptions.fadeIn(100);
-                                    return;
-                                }
-                                $userOptions.fadeOut(100);
-                            });
-                            $(document).on(constants.CLICK, function (evt) {
-                                notThen($companySelect, evt.target, function () {
-                                    $companyList.fadeOut(100);
-                                });
-                                notThen($userSettings, evt.target, function () {
-                                    $userOptions.fadeOut(100);
-                                });
-                            });
-                        });
-                    });
-                }
-                menu.displayUserInfo = displayUserInfo;
-                /**
-                 * Get program.
-                 */
-                function getProgram() {
-                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
-                        var $pgArea = $("#pg-area");
-                        $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
-                        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-                        var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-                        $manualBtn.on(constants.CLICK, function () {
-                            // TODO: Open manual
-                        });
-                        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-                        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-                        $tglBtn.on(constants.CLICK, function () {
-                            // TODO
-                        });
-                    });
-                }
-                /**
-                 * Init.
-                 */
-                function init() {
-                    var $navArea = $("#nav-area");
-                    var $menuItems = $("#menu-nav li.category:not(.direct)");
-                    /**
-                     * Close item.
-                     */
-                    function closeItem() {
-                        var $item = $("#menu-nav li.category:eq(" + showingItem + ")");
-                        $item.find(".category-name").removeClass("opening");
-                        $item.find("ul, div.title-menu").fadeOut(100);
-                    }
-                    /**
-                     * Open item.
-                     */
-                    function openItem($item) {
-                        $item.find(".category-name").addClass("opening");
-                        $item.find("ul, div.title-menu").fadeIn(100);
-                    }
-                    $(document).on(constants.CLICK, function (evt) {
-                        if (!$navArea.is(evt.target) && $navArea.has(evt.target).length === 0
-                            && !uk.util.isNullOrUndefined(showingItem)) {
-                            closeItem();
-                            showingItem = undefined;
-                        }
-                    });
-                    $menuItems.hover(function () {
-                        var $item = $(this);
-                        var ith = $item.index();
-                        if (uk.util.isNullOrUndefined(showingItem) || showingItem === ith)
-                            return;
-                        closeItem();
-                        openItem($item);
-                        showingItem = ith;
-                    });
-                    $menuItems.on(constants.CLICK, function (event) {
-                        var $item = $(this);
-                        showingItem = $item.index();
-                        if ($item.find(".category-name").hasClass("opening") && showingItem === 0) {
-                            closeItem();
-                            return;
-                        }
-                        openItem($item);
-                    });
-                    $(".menu-item").on(constants.CLICK, function () {
-                        var path = $(this).data('path');
-                        if (path)
-                            nts.uk.request.jump(path);
-                    });
-                }
-                var titleMenu;
-                (function (titleMenu) {
-                    titleMenu.WIDTH = 180;
-                    titleMenu.FR = 20;
-                    /**
-                     * Create titles.
-                     */
-                    function createTitles($category, titles) {
-                        var $title = $("<div/>").addClass("title-menu").appendTo($category);
-                        var width = 0, height, maxHeight = 0;
-                        _.forEach(titles, function (t, i) {
-                            height = 60;
-                            var left = titleMenu.WIDTH * i + 3;
-                            if (i > 0) {
-                                left += titleMenu.FR * i;
-                            }
-                            if (i === titles.length - 1) {
-                                width = left + titleMenu.WIDTH + 7;
-                            }
-                            var $titleDiv = $("<div/>").addClass("title-div").css({ left: left }).appendTo($title);
-                            var $titleName = $("<div/>").addClass("title-name").text(t.titleMenuName)
-                                .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
-                            var $titleImage = $("<img/>").addClass("title-image").hide();
-                            $titleDiv.append($titleImage);
-                            if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
-                                var fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
-                                // TODO: Show image
-                                $titleImage.attr("src", fqpImage).show();
-                                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
-                                height += 80;
-                            }
-                            if (t.treeMenu && t.treeMenu.length > 0) {
-                                _.forEach(t.treeMenu, function (item, i) {
-                                    if (item.menuAttr === 1) {
-                                        $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
-                                        height += 30;
-                                        return;
-                                    }
-                                    var $item = $("<li class='title-item'/>").data("path", item.url).text(item.displayName || item.defaultName);
-                                    $item.on(constants.CLICK, function () {
-                                        var path = $(this).data("path");
-                                        if (path && path.indexOf("http") !== 0) {
-                                            uk.request.jump(path);
-                                            return;
-                                        }
-                                        window.location.href = path;
-                                    });
-                                    $titleDiv.append($item);
-                                    height += 40;
-                                });
-                            }
-                            maxHeight = Math.max(maxHeight, height);
-                        });
-                        maxHeight += 20;
-                        $title.css({ height: maxHeight + "px", width: width + "px" });
-                    }
-                    titleMenu.createTitles = createTitles;
-                })(titleMenu || (titleMenu = {}));
-                var constants;
-                (function (constants) {
-                    constants.APP_ID = "com";
-                    constants.MENU = "UK-Menu";
-                    constants.CLICK = "click";
-                    constants.MenuDataPath = "/sys/portal/webmenu/finddetails";
-                    constants.Company = "/sys/portal/webmenu/currentCompany";
-                    constants.Companies = "sys/portal/webmenu/companies";
-                    constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
-                    constants.UserName = "sys/portal/webmenu/username";
-                    constants.Logout = "sys/portal/webmenu/logout";
-                    constants.PG = "sys/portal/webmenu/program";
-                })(constants || (constants = {}));
-            })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

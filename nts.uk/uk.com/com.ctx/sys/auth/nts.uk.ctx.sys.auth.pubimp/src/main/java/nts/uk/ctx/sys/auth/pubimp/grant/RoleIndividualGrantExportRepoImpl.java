@@ -5,7 +5,7 @@
 package nts.uk.ctx.sys.auth.pubimp.grant;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,8 +38,8 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 	}
 
 	@Override
-	public Optional<RoleIndividualGrantExport> getByUser(String userId) {
-		return roleIndividualGrantRepository.findByUserAndDate(userId, GeneralDate.today())
-				.map(r -> new RoleIndividualGrantExport(r.getRoleId()));
+	public List<RoleIndividualGrantExport> getByUser(String userId) {
+		return roleIndividualGrantRepository.findListByUserAndDate(userId, GeneralDate.today())
+				.stream().map(r -> new RoleIndividualGrantExport(r.getRoleId())).collect(Collectors.toList());
 	}
 }

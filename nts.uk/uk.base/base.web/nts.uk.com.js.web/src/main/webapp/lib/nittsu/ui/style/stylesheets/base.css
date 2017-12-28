@@ -4675,7 +4675,6 @@ body * {
 	display: none;
 	position: absolute;
 	top: 30px;
-	left: -124px;
 	z-index: 20000;
 	margin-left: 0;
 	list-style: none;
@@ -4686,7 +4685,7 @@ body * {
 }
 
 #header #menu-header #logo-area > #user-info > #user > .user-settings > ul.user-options {
-	left: 71px;
+	right: 12px;
 }
 
 #header #menu-header #nav-area {
@@ -4803,7 +4802,7 @@ body * {
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item {
 	cursor: pointer;
 	padding: 8px;
-	white-space: nowrap;
+	white-space: pre-wrap;
 }
 
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item:hover {
