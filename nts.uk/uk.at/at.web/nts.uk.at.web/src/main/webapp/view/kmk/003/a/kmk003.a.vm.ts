@@ -63,7 +63,7 @@ module nts.uk.at.view.kmk003.a {
                     { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 130 },
                     { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'isAbolish', width: 40,
                         formatter: isAbolish => {
-                            if (isAbolish) {
+                            if (isAbolish === true || isAbolish === 'true') {
                                 return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-x"></i></div>';
                             }
                             return '';
