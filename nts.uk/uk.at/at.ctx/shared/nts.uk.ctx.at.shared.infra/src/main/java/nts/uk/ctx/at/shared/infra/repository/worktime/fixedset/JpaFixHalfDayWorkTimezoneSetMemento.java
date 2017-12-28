@@ -62,9 +62,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	 */
 	@Override
 	public void setWorkTimezone(FixedWorkTimezoneSet workTimezone) {
-		workTimezone.saveToMemento(new JpaFixedWorkTimezoneSetSetMemento(this.entity.getKshmtFixedWorkTimeSets(),
-				this.entity.getKshmtFixedOtTimeSets(), this.entity.getKshmtFixedWorkSetPK().getCid(),
-				this.entity.getKshmtFixedWorkSetPK().getWorktimeCd(), this.type));
+		workTimezone.saveToMemento(new JpaFixedWorkTimezoneSetSetMemento(this.entity, this.type));
 	}
 
 	/*

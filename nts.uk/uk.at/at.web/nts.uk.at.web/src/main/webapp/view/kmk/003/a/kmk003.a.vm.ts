@@ -264,8 +264,9 @@ module nts.uk.at.view.kmk003.a {
                 service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
                     self.mainSettingModel.updateData(worktimeSettingInfo);
                     self.isLoading(true);
+                    self.mainSettingModel.isChangeItemTable.valueHasMutated();
                     dfd.resolve();
-                }).always(() => _.defer(() => nts.uk.ui.block.clear()));
+                });
                 return dfd.promise();
             }
             
@@ -474,7 +475,11 @@ module nts.uk.at.view.kmk003.a {
             diffWorkSetting: DiffTimeWorkSettingModel;
             flexWorkSetting: FlexWorkSettingModel;
             
+            isChangeItemTable: KnockoutObservable<boolean>;
+            
             constructor() {
+                this.isChangeItemTable = ko.observable(false);
+                
                 this.workTimeSetting = new WorkTimeSettingModel();
                 this.predetemineTimeSetting = new PredetemineTimeSettingModel();
                 this.fixedWorkSetting = new FixedWorkSettingModel();
@@ -505,8 +510,7 @@ module nts.uk.at.view.kmk003.a {
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommannd(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.alertError(err))
-                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
+                        .fail(err => nts.uk.ui.dialog.alertError(err));
                 }
                 if (self.workTimeSetting.isFixed()) {
                     service.saveFixedWorkSetting(self.toFixedCommand(addMode, tabMode))
@@ -554,6 +558,9 @@ module nts.uk.at.view.kmk003.a {
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
+                }
+                if (self.workTimeSetting.isFlow()) {
+                    self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
                 }
                 if (self.workTimeSetting.isFixed()) {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);

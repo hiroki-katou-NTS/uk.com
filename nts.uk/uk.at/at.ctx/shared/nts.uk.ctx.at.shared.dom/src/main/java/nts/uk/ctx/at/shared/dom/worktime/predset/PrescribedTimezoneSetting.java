@@ -138,7 +138,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
 		if(this.lstTimezone.size()> SIZE_ONE){
 			TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
-			if (tzWorkNo2.getStart().lessThanOrEqualTo(tzWorkNo1.getEnd())) {
+			if (tzWorkNo2.getStart().lessThan(tzWorkNo1.getEnd())) {
 				throw new BusinessException("Msg_772");
 			}
 			

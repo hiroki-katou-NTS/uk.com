@@ -140,6 +140,10 @@ module a2 {
             
             // ====================================== SUBSCRIBER ======================================
             
+            self.parentModel.isChangeItemTable.subscribe(newValue => {
+                self.bindDataToScreen();
+            });
+            
             self.parentModel.workTimeSetting. workTimeDivision.workTimeMethodSet.subscribe(newValue => {
                 self.bindDataToScreen();
             });
@@ -329,8 +333,8 @@ module a2 {
                     startTime: item.timezone.start(),
                     endTime: item.timezone.end()
                 }
-                dataSource().push(new TimeZoneModel(timeRange, item.timezone.rounding.roundingTime,
-                    item.timezone.rounding.rounding));
+                dataSource.push(new TimeZoneModel(timeRange, item.timezone.rounding.roundingTime(),
+                    item.timezone.rounding.rounding()));
             });
         }
         
@@ -363,22 +367,22 @@ module a2 {
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
-                    self.toDomain(self.dataSourceOneDay, self.parentModel.fixedWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone);
+                    self.parentModel.fixedWorkSetting.getHDWtzOneday().workTimezone
+                        .lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
                 }
                 
                 //============= Flex Mode =============
                 else if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
-                    self.toDomain(self.dataSourceOneDay, self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone);
+                    self.parentModel.flexWorkSetting.getHDWtzOneday()
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
                 }
                 
                 //============= DiffTime Mode =============
                 else if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
-                    self.toDomain(self.dataSourceOneDay, self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones);
+                    self.parentModel.diffWorkSetting.getHDWtzOneday()
+                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceOneDay);
                 }
                 
             }
@@ -387,46 +391,46 @@ module a2 {
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
-                    self.toDomain(self.dataSourceOneDay, self.parentModel.fixedWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone);
+                    self.parentModel.fixedWorkSetting.getHDWtzOneday()
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
                     
                     // morning
-                    self.toDomain(self.dataSourceMorning, self.parentModel.fixedWorkSetting.getHDWtzMorning()
-                        .workTimezone.lstWorkingTimezone);
+                    self.parentModel.fixedWorkSetting.getHDWtzMorning()
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceMorning);
                     
                     // afternoon
-                    self.toDomain(self.dataSourceAfternoon, self.parentModel.fixedWorkSetting.getHDWtzAfternoon()
-                        .workTimezone.lstWorkingTimezone);
+                    self.parentModel.fixedWorkSetting.getHDWtzAfternoon()
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceAfternoon);
                 }
                 
                 //============= Flex Mode =============
                 else if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
-                    self.toDomain(self.dataSourceOneDay, self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone);
+                    self.parentModel.flexWorkSetting.getHDWtzOneday()
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
                     
                     // morning
-                    self.toDomain(self.dataSourceMorning, self.parentModel.flexWorkSetting.getHDWtzMorning()
-                        .workTimezone.lstWorkingTimezone);
+                    self.parentModel.flexWorkSetting.getHDWtzMorning()
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceMorning);
                     
                     // afternoon
-                    self.toDomain(self.dataSourceAfternoon, self.parentModel.flexWorkSetting.getHDWtzAfternoon()
-                        .workTimezone.lstWorkingTimezone);
+                    self.parentModel.flexWorkSetting.getHDWtzAfternoon()
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceAfternoon);
                 }
                 
                 //============= DiffTime Mode =============
                 else if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
-                    self.toDomain(self.dataSourceOneDay, self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones);
+                    self.parentModel.diffWorkSetting.getHDWtzOneday()
+                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceOneDay);
                     
                     // morning
-                    self.toDomain(self.dataSourceMorning, self.parentModel.diffWorkSetting.getHDWtzMorning()
-                        .workTimezone.employmentTimezones);
+                    self.parentModel.diffWorkSetting.getHDWtzMorning()
+                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceMorning);
                     
                     // afternoon
-                    self.toDomain(self.dataSourceAfternoon, self.parentModel.diffWorkSetting.getHDWtzAfternoon()
-                        .workTimezone.employmentTimezones);
+                    self.parentModel.diffWorkSetting.getHDWtzAfternoon()
+                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceAfternoon);
                 }
             }
 
@@ -435,17 +439,16 @@ module a2 {
         /**
          * Convert model to DTO of Domain
          */
-        private toDomain(dataSource: KnockoutObservableArray<TimeZoneModel>, dataSourceModel: EmTimeZoneSetModel[]): EmTimeZoneSetModel[] {
+        private toDomain(dataSource: KnockoutObservableArray<TimeZoneModel>): EmTimeZoneSetModel[] {
             let self = this;
             
-            // empty list
-            dataSourceModel = [];
+            let dataSourceModel: EmTimeZoneSetModel[] = [];
             
             // fill data
             _.forEach(dataSource(), (item: TimeZoneModel, index: number) => {
                 let emTime: EmTimeZoneSetModel = new EmTimeZoneSetModel();
                 
-                emTime.employmentTimeFrameNo(index++);
+                emTime.employmentTimeFrameNo(index + 1);
                 emTime.timezone.start(item.timeRange().startTime);
                 emTime.timezone.end(item.timeRange().endTime);
                 emTime.timezone.rounding.roundingTime = item.roundingTime;
@@ -559,7 +562,6 @@ module a2 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                
                 // Binding tab
                 screenModel.bindDataToScreen();
             });

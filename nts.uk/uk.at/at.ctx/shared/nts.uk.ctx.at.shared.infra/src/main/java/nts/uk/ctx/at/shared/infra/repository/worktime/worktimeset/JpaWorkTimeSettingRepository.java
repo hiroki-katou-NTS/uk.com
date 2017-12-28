@@ -118,7 +118,8 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	public void update(WorkTimeSetting domain) {
 		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK(domain.getCompanyId(), domain.getWorktimeCode().v());
 
-		KshmtWorkTimeSet entity = this.queryProxy().find(pk, KshmtWorkTimeSet.class).get();
+		Optional<KshmtWorkTimeSet> op = this.queryProxy().find(pk, KshmtWorkTimeSet.class);
+		KshmtWorkTimeSet entity = op.get();
 		domain.saveToMemento(new JpaWorkTimeSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
