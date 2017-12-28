@@ -244,7 +244,7 @@ module kcp.share.list {
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT && data.isDisplayClosureSelection) {
-                self.selectedClosureId = data.selectedClosureId;
+                self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
                 self.selectedClosureId.subscribe(id => {
                     self.reloadEmployment(id);
                 })
@@ -332,7 +332,7 @@ module kcp.share.list {
                 case ClosureSelectionType.SELECT_BY_SELECTED_CODE:
                     break;
                 case ClosureSelectionType.NO_SELECT:
-                    // TODO: wait confirm with Tuan-san.
+                    self.selectedClosureId(data.isDisplayFullClosureOption ? 0 : 1);
                     break;
                 default:
                     break;
@@ -731,22 +731,18 @@ module kcp.share.list {
         export function findEmployments(closureId: number): JQueryPromise<Array<UnitModel>> {
             
             // Find Employment Closure.
-            if (closureId != 0) {
-                var dfd = $.Deferred<Array<UnitModel>>();
-                nts.uk.request.ajax('at', servicePath.findEmploymentByClosureId + closureId).done(function(empList: Array<any>) {
-                    var employmentCode = empList ? _.map(empList, item => item.employmentCode) : [];
-                    if (employmentCode.length > 0) {
-                        // Find by employment codes.
-                        nts.uk.request.ajax('com', servicePath.findEmploymentByCodes, employmentCode).done(data => {
-                            dfd.resolve(data);
-                        })
-                    }
-                    dfd.resolve([])
-                })
-                return dfd.promise();
-            }
-            
-            return nts.uk.request.ajax('com', servicePath.findEmployments);
+            var dfd = $.Deferred<Array<UnitModel>>();
+            nts.uk.request.ajax('at', servicePath.findEmploymentByClosureId + closureId).done(function(empList: Array<any>) {
+                if (empList && empList.length > 0) {
+                    // Find by employment codes.
+                    nts.uk.request.ajax('com', servicePath.findEmploymentByCodes, empList).done(data => {
+                        dfd.resolve(data);
+                    })
+                    return dfd.promise();
+                }
+                dfd.resolve([])
+            })
+            return dfd.promise();
         }
         
         /**

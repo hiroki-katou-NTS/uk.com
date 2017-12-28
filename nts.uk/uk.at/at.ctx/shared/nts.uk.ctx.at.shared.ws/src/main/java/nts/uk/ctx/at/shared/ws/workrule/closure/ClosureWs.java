@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandl
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClousureEmpAddCommand;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.BsEmploymentFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
@@ -29,7 +28,6 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdsDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CurrentClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeInDto;
@@ -76,6 +74,9 @@ public class ClosureWs {
 
 	/** The Constant TOTAL_MONTH_OF_YEAR. */
 	public static final int TOTAL_MONTH_OF_YEAR = 12;
+	
+	/** The Constant FULL_CLOSURE_ID. */
+	public static final int FULL_CLOSURE_ID = 0;
 
 	@POST
 	@Path("addClousureEmp")
@@ -262,20 +263,16 @@ public class ClosureWs {
 	 */
 	@POST
 	@Path("findEmpByClosureId/{closureId}")
-	public List<BsEmploymentFindDto> findEmpByClosureId(@PathParam("closureId") int closureId) {
-		return this.finder.findEmpByClosureId(closureId);
-	}
-	
-	/**
-	 * Find emp by closure ids.
-	 *
-	 * @param closureIdsDto the closure ids dto
-	 * @return the list
-	 */
-	@POST
-	@Path("findEmpByClosureIds")
-	public List<BsEmploymentFindDto> findEmpByClosureIds(ClosureIdsDto closureIdsDto) {
-		return this.finder.findEmpByClosureIds(closureIdsDto.getClosureIds());
+	public List<String> findEmpByClosureId(@PathParam("closureId") int closureId) {
+		// Find by closure id.
+		if (closureId != FULL_CLOSURE_ID) {
+			return this.finder.findEmploymentCodeByClosureId(closureId);
+		}
+		
+		// Find by All closure.
+		List<Integer> ids = this.findClosureListByCurrentMonth()
+				.stream().map(dto -> dto.id).collect(Collectors.toList());
+		return this.finder.findEmpByClosureIds(ids);
 	}
 	
 	/**

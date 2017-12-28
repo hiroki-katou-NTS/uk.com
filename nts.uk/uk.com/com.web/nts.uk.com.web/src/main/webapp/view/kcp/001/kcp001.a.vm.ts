@@ -44,7 +44,7 @@ module kcp001.a.viewmodel {
              self.selectClosureTypeList = ko.observableArray([
                 { code: 1, name: 'Select Full Closure option' },
                 { code: 2, name: 'Select by selected closure code'},
-                { code: 3, name: 'No select' },
+                { code: 3, name: 'Nothing (Select first option)' },
             ]);
             
             self.isDialog = ko.observable(false);
@@ -73,11 +73,6 @@ module kcp001.a.viewmodel {
             
             self.closureSelectionType = ko.observable(1);
             self.closureSelectionType.subscribe(val => {
-                if (val == 3) {
-                    alert("Wait confirm with Tuan-san!");
-                    self.closureSelectionType(2);
-                    return;
-                }
                 if (val == 1 && !self.isDisplayFullClosureOption()) {
                     alert("Can not select Full Closure option when not display it!");
                     self.closureSelectionType(2);
