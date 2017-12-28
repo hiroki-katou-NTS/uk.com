@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.dailymodify.query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -27,7 +26,8 @@ public class DailyModifyQueryProcessor {
 		//TODO: get item ids for show in screen
 		List<ItemValue> viewItems = AttendanceItemUtil.toItemValues(itemDtos, itemIds);
 		result.setItems(viewItems);
-		
+		result.setEmployeeId(query.getEmployeeId());
+		result.setDate(query.getBaseDate());
 		//TODO: get items format 
 		return result;
 	}

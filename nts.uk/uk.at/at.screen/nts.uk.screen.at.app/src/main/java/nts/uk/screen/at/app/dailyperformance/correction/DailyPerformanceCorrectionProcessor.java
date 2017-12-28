@@ -516,7 +516,7 @@ public class DailyPerformanceCorrectionProcessor {
 			List<DPCellDataDto> cellDatas = new ArrayList<>();
 			if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 				for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()){
-					int a = 1;
+					//int a = 1;
 					int attendanceAtr = mapDP.get(item.getId()).getAttendanceAtr();
 					String key = item.getId()+"|"+data.getEmployeeId()+"|"+data.getDate();
 					String value = itemValueMap.get(key) == null ? "" : itemValueMap.get(key).value().toString();
@@ -527,7 +527,7 @@ public class DailyPerformanceCorrectionProcessor {
 								screenDto.setLock(data.getId(), "Code" + String.valueOf(item.getId()));
 								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
 							}
-							cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), value != null ? value: String.valueOf(a),
+							cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), "label"));
 							if(value.equals("")){
 								value = "なし";
@@ -543,17 +543,22 @@ public class DailyPerformanceCorrectionProcessor {
 								screenDto.setLock(data.getId(), "NO" + String.valueOf(item.getId()));
 								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
 							}
-							cellDatas.add(new DPCellDataDto("NO" + String.valueOf(item.getId()), value != null ? value: String.valueOf(a),
+							System.out.print("gia tri:"+ value);
+							if(item.getId() == 623) 
+							{
+								System.out.print("gia tri:"+ value);
+							}
+							cellDatas.add(new DPCellDataDto("NO" + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), "label"));
 							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
-									String.valueOf(a), String.valueOf(item.getAttendanceAtr()), "Link2"));
+									value , String.valueOf(item.getAttendanceAtr()), "Link2"));
 						}
 						
 					} else {
 						if(lock){
 							screenDto.setLock(data.getId(), "A" + String.valueOf(item.getId()));
 						}
-						cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value != null ? value: String.valueOf(a) ,
+						cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
 								String.valueOf(item.getAttendanceAtr()), "label"));
 					}
 				};
