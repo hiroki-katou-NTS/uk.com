@@ -55,9 +55,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Override
 	public void register(GoBackDirectly goBackDirectly, Application_New application) {
 		String employeeID = application.getEmployeeID();
-		//アルゴリズム「直行直帰登録」を実行する
-		//2-2.新規画面登録時承認反映情報の整理 
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
+		//アルゴリズム「直行直帰登録」を実行する		
 		goBackDirectRepo.insert(goBackDirectly);
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(goBackDirectly.getCompanyID());
@@ -67,6 +65,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			throw new BusinessException("Msg_115");
 		}
 		appRepo.insert(application);
+		// 2-2.新規画面登録時承認反映情報の整理
+		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
 		newAfterRegister.processAfterRegister(application);
 		

@@ -1,11 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.lateorleaveearly;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
-
 
 /**
  * 
