@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -69,6 +68,13 @@ public class ActualWorkTimeDailyPerformDto {
 						domain.getTimeDifferenceWorkingHours() == null ? null
 								: domain.getTimeDifferenceWorkingHours().valueAsMinutes(),
 						TotalWorkingTimeDto.fromTotalWorkingTime(domain.getTotalWorkingTime()),
-						domain.getDivTime().getDivergenceTime() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getDivTime().getDivergenceTime(), d -> DivergenceTimeDto.fromDivergenceTime(d)));
+						domain.getDivTime().getDivergenceTime() == null ? new ArrayList<>()
+								: ConvertHelper.mapTo(domain.getDivTime().getDivergenceTime(),
+										d -> DivergenceTimeDto.fromDivergenceTime(d)));
+	}
+
+	public ActualWorkingTimeOfDaily toDomain() {
+		return ActualWorkingTimeOfDaily.of(totalWorkingTime.toDomain(), constraintTime.getLateNightConstraintTime(),
+				constraintTime.getTotalConstraintTime(), constraintDifferenceTime, timeDifferenceWorkingHours);
 	}
 }
