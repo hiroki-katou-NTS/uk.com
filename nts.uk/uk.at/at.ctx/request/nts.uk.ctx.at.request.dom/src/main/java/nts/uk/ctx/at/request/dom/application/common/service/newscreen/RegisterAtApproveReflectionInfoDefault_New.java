@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -18,6 +19,9 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
 	
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String SID, Application_New application) {
@@ -41,6 +45,7 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 		if (approvalCompletionFlag.equals(Boolean.TRUE)) {
 			// 「反映情報」．実績反映状態を「反映待ち」にする
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
+			applicationRepository.update(application);
 		}
 	}
 }
