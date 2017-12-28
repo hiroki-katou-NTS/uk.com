@@ -86,7 +86,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet) {
-		if (CollectionUtil.isEmpty(shtSet)) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
 			return;
 		}
 		
@@ -138,7 +138,7 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setMedicalSet(List<WorkTimezoneMedicalSet> list) {
-		if (CollectionUtil.isEmpty(list)) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
 			return;
 		}
 		if(this.entity.getKshmtMedicalTimeSets() == null){
