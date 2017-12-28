@@ -289,7 +289,26 @@ module cps001.a.vm {
                 iemp: IEmployee = ko.toJS(employee);
 
             modal('../c/index.xhtml').onClosed(() => {
-                self.start();
+                let params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined, showAll: false };
+
+                $('.btn-quick-search[tabindex=3]').click();
+                setInterval(() => {
+                    if (!employee.employeeId()) {
+                        let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
+                        if (!params.showAll) {
+                            self.employees(employees);
+                        }
+                        if (employees[0]) {
+                            if (employees[0].employeeId == employee.employeeId()) {
+                                employee.employeeId();
+                            } else {
+                                employee.employeeId(employees[0].employeeId);
+                            }
+                        } else {
+                            employee.employeeId(undefined);
+                        }
+                    }
+                }, 0);
             });
         }
 
@@ -918,6 +937,7 @@ module cps001.a.vm {
     }
 
     interface IParam {
+        showAll?: boolean;
         employeeId: string;
     }
 }
