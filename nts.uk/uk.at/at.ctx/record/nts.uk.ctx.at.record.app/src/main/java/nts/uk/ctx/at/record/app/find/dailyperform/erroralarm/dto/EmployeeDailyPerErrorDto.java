@@ -18,6 +18,8 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @NoArgsConstructor
 public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 
+	//TODO: item id not map
+	
 	/** 会社ID: 会社ID */
 	private String companyID;
 

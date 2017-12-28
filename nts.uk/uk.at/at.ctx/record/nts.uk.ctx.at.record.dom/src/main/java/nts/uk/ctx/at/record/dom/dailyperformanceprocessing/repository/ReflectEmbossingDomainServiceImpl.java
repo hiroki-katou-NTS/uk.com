@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1222,12 +1221,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		for (int j = 0; j < lstOutingTimeNewSize; j++) {
 			OutingTimeSheet outingTimeSheet = lstOutingTimeSheet.get(j);
 			if (j < 10) {
-				OutingFrameNo outingFrameNo = new OutingFrameNo(new BigDecimal(j + 1));
+				OutingFrameNo outingFrameNo = new OutingFrameNo(j + 1);
 				newOutingTimeSheets.add(new OutingTimeSheet(outingFrameNo, outingTimeSheet.getGoOut(),
 						outingTimeSheet.getOutingTimeCalculation(), outingTimeSheet.getOutingTime(),
 						outingTimeSheet.getReasonForGoOut(), outingTimeSheet.getComeBack()));
 			} else {
-				OutingFrameNo outingFrameNo = new OutingFrameNo(new BigDecimal(j % 10 + 1));
+				OutingFrameNo outingFrameNo = new OutingFrameNo(j % 10 + 1);
 				newOutingTimeSheets.add(new OutingTimeSheet(outingFrameNo, outingTimeSheet.getGoOut(),
 						outingTimeSheet.getOutingTimeCalculation(), outingTimeSheet.getOutingTime(),
 						outingTimeSheet.getReasonForGoOut(), outingTimeSheet.getComeBack()));

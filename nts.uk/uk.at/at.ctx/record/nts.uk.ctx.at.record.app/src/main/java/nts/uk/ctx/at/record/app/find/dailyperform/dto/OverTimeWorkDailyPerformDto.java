@@ -6,10 +6,22 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
+import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** 日別実績の残業時間 */
 @Data
@@ -60,5 +72,30 @@ public class OverTimeWorkDailyPerformDto {
 				new FlexTimeDto(new CalcAttachTimeDto(domain.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes(), 
 						domain.getFlexTime().getFlexTime().getTime().valueAsMinutes()),
 						domain.getFlexTime().getBeforeApplicationTime().valueAsMinutes()));
+	}
+	
+	public OverTimeOfDaily toDomain() {
+		return new OverTimeOfDaily(
+				ConvertHelper.mapTo(overTimeFrameTimeSheet,
+						(c) -> new OverTimeFrameTimeSheet(
+								new TimeSpanForCalc(new TimeWithDayAttr(c.getTimeSheet().getStart()),
+										new TimeWithDayAttr(c.getTimeSheet().getEnd())),
+								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
+				ConvertHelper.mapTo(overTimeFrameTime, (c) -> new OverTimeFrameTime(new OverTimeFrameNo(
+						c.getOvertimeFrameNo()),
+						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(c.getOvertime().getTime()),
+								new AttendanceTime(c.getOvertime().getCalcTime())),
+						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(c.getTransferTime().getTime()),
+								new AttendanceTime(c.getTransferTime().getCalcTime())),
+						new AttendanceTime(c.getBeforeApplicationTime()), new AttendanceTime(c.getOrderTime()))),
+				Finally.of(
+						excessOfStatutoryMidNightTime.toDomain()),
+				new AttendanceTime(irregularWithinPrescribedOverTimeWork),
+				new FlexTime(
+						TimeWithCalculationMinusExist.createTimeWithCalculation(
+								new AttendanceTimeOfExistMinus(flexTime.getFlexTime().getTime()),
+								new AttendanceTimeOfExistMinus(flexTime.getFlexTime().getCalcTime())),
+						new AttendanceTime(flexTime.getBeforeApplicationTime())),
+				new AttendanceTime(overTimeSpentAtWork));
 	}
 }

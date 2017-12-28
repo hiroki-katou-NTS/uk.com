@@ -23,5 +23,5 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "勤務回数")
 	@AttendanceItemValue(itemId = 461, type = ValueType.INTEGER)
-	private Integer workNo;
+	private Integer workTimes;
 }

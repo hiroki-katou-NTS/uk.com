@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @AttendanceItemRoot(rootName = "日別実績の勤怠時間")
 public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem {
 
+	//TODO: there are not map item id
 	/** 年月日: 年月日 */
 	private GeneralDate date;
 
