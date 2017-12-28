@@ -3,14 +3,15 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
@@ -50,7 +50,6 @@ import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayBreakTime;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayFlg;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
@@ -63,10 +62,12 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrame;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.breaktime.breaktimeframe.BreaktimeFrameRepository;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrame;
-import nts.uk.ctx.at.shared.dom.employmentrule.hourlate.overtime.overtimeframe.OvertimeFrameRepository;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
@@ -114,11 +115,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	@Inject
 	private BPSettingRepository bPSettingRepository;
 	@Inject
-	private OvertimeFrameRepository overtimeFrameRepository;
+	private OvertimeWorkFrameRepository overtimeFrameRepository;
 	@Inject
 	private BPTimeItemRepository bPTimeItemRepository;
 	@Inject
-	private BreaktimeFrameRepository breaktimeFrameRep;
+	private WorkdayoffFrameRepository breaktimeFrameRep;
 	@Inject
 	private WorkTimeSetRepository workTimeSetRepository;
 
@@ -299,27 +300,27 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public List<OvertimeFrame> getOvertimeHours(int overtimeAtr, String companyID) {
-		List<OvertimeFrame> overtimeFrames = new ArrayList<>();
+	public List<OvertimeWorkFrame> getOvertimeHours(int overtimeAtr, String companyID) {
+		List<OvertimeWorkFrame> overtimeFrames = new ArrayList<>();
 		// 早出残業の場合
 		if (overtimeAtr == OverTimeAtr.PREOVERTIME.value) {
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID, UseAtr.USE.value);
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
 		}
 		// 通常残業の場合
 		if (overtimeAtr == OverTimeAtr.REGULAROVERTIME.value) {
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID, UseAtr.USE.value);
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
 		}
 		// 早出残業・通常残業の場合
 		if (overtimeAtr == OverTimeAtr.ALL.value) {
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeFrameByCID(companyID, UseAtr.USE.value);
+			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
 		}
 		return overtimeFrames;
 	}
 
 	@Override
-	public List<BreaktimeFrame> getBreaktimeFrame(String companyID) {
+	public List<WorkdayoffFrame> getBreaktimeFrame(String companyID) {
 
-		return this.breaktimeFrameRep.getBreaktimeFrameByCID(companyID, UseAtr.USE.value);
+		return this.breaktimeFrameRep.getAllWorkdayoffFrame(companyID).stream().filter(x -> x.getUseClassification().value == NotUseAtr.USE.value).collect(Collectors.toList());
 	}
 
 	@Override

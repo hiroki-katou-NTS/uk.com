@@ -4,6 +4,7 @@
 package nts.uk.ctx.pereg.app.find.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.MasterRefConditionDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
@@ -61,16 +63,16 @@ public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private BusinessTypesRepository businessTypeRepo;
-	
+
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private TempAbsenceRepositoryFrame tempAbsFrameRepo;
-	
+
 	@Inject
 	private WorkplaceInfoRepository workPlaceRepo;
-	
+
 	@Inject
 	private JobTitleInfoRepository jobTitleRepo;
 
@@ -99,9 +101,11 @@ public class ComboBoxRetrieveFactory {
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
 
+	private final String JP_SPACE = "　";
+
 	@SuppressWarnings("unchecked")
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto,
-			GeneralDate standardDate) {
+			GeneralDate standardDate, boolean isCps001) {
 		String companyId = AppContexts.user().companyId();
 		switch (selectionItemDto.getReferenceType()) {
 		case ENUM:
@@ -126,51 +130,183 @@ public class ComboBoxRetrieveFactory {
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
 			switch (masterRefTypeDto.getMasterType()) {
-			
+
 			case "M00001":
-				//部門マスタ
+				// 部門マスタ
 				break;
 			case "M00002":
-				//職場マスタ
-				return workPlaceRepo.findAll(companyId, standardDate).stream()
-						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceCode().v(),
-								workPlace.getWorkplaceName().v()))
-						.collect(Collectors.toList());
+				// 職場マスタ
+				if (isCps001) {
+					return workPlaceRepo.findAll(companyId, standardDate).stream()
+							.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(),
+									workPlace.getWorkplaceCode().v() + JP_SPACE + workPlace.getWorkplaceName().v()))
+							.collect(Collectors.toList());
+
+				} else {
+					return workPlaceRepo.findAll(companyId, standardDate).stream()
+							.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(),
+									workPlace.getWorkplaceName().v()))
+							.collect(Collectors.toList());
+
+				}
+
 			case "M00003":
-				//雇用マスタ
+				// 雇用マスタ
 				return getEmploymentList(companyId);
 			case "M00004":
-				//分類マスタ１
-				return classificationRepo.getAllManagementCategory(companyId).stream()
-						.map(classification -> new ComboBoxObject(classification.getClassificationCode().v(),
-								classification.getClassificationName().v()))
+				// 分類マスタ１
+				if (isCps001) {
+					return classificationRepo
+							.getAllManagementCategory(companyId).stream().map(
+									classification -> new ComboBoxObject(classification.getClassificationCode().v(),
+											classification.getClassificationCode().v() + JP_SPACE
+													+ classification.getClassificationName().v()))
+							.collect(Collectors.toList());
+				} else {
+
+					return classificationRepo.getAllManagementCategory(companyId).stream()
+							.map(classification -> new ComboBoxObject(classification.getClassificationCode().v(),
+									classification.getClassificationName().v()))
+							.collect(Collectors.toList());
+				}
+			case "M00005":
+				// 職位マスタ
+				if (isCps001) {
+					return jobTitleRepo.findAll(companyId, standardDate).stream()
+							.map(jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(),
+									jobTitle.getJobTitleCode() + JP_SPACE + jobTitle.getJobTitleName().v()))
+							.collect(Collectors.toList());
+				} else {
+					return jobTitleRepo.findAll(companyId, standardDate).stream().map(
+							jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(), jobTitle.getJobTitleName().v()))
+							.collect(Collectors.toList());
+
+				}
+			case "M00006":
+				// 休職休業マスタ
+				if (isCps001) {
+					return tempAbsFrameRepo.findByCid(companyId).stream()
+							.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
+							.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
+									frame.getTempAbsenceFrName().v()))
+							.collect(Collectors.toList());
+				} else {
+					return tempAbsFrameRepo.findByCid(companyId).stream()
+							.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
+							.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
+									frame.getTempAbsenceFrName().v()))
+							.collect(Collectors.toList());
+				}
+			case "M00007":
+				// 勤務種別マスタ
+				if (isCps001) {
+				return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
+						businessType.getBusinessTypeCode().v(),
+						businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
+						.collect(Collectors.toList());
+				} else {
+					return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
+							businessType.getBusinessTypeCode().v(),
+							businessType.getBusinessTypeName().v()))
+							.collect(Collectors.toList());					
+					
+				}
+			case "M00008":
+				// 勤務種類マスタ
+				if (isCps001) {
+				return workTypeRepo.findByCompanyId(companyId).stream()
+						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
+								workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
+						.collect(Collectors.toList());
+				}else {
+					return workTypeRepo.findByCompanyId(companyId).stream()
+							.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
+									 workType.getName().v()))
+							.collect(Collectors.toList());					
+					
+				}
+			case "M00009":
+				// 就業時間帯マスタ
+				return Arrays.asList(new ComboBoxObject("001", "固定名"));
+			default:
+				break;
+			}
+			return null;
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes RefType, String RefCd,
+			GeneralDate standardDate) {
+		String companyId = AppContexts.user().companyId();
+		switch (RefType) {
+		case ENUM:
+			Class<?> enumClass = enumMap.get(RefCd);
+			if (enumClass == null) {
+				return new ArrayList<>();
+			}
+			List<EnumConstant> enumConstants = EnumAdaptor.convertToValueNameList((Class<E>) enumClass);
+			return enumConstants.stream()
+					.map(enumElement -> new ComboBoxObject(enumElement.getValue() + "", enumElement.getLocalizedName()))
+					.collect(Collectors.toList());
+		case CODE_NAME:
+			List<SelectionInitDto> selectionList = selectionFinder.getAllSelectionByCompanyId(RefCd, standardDate);
+			List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
+			for (SelectionInitDto selection : selectionList) {
+				lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), selection.getSelectionName()));
+			}
+			return lstComboBoxValue;
+		case DESIGNATED_MASTER:
+			switch (RefCd) {
+			case "M00001":
+				// 部門マスタ
+				break;
+			case "M00002":
+				// 職場マスタ
+				return workPlaceRepo.findAll(companyId, standardDate).stream()
+						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(),
+								workPlace.getWorkplaceCode().v() + JP_SPACE + workPlace.getWorkplaceName().v()))
+						.collect(Collectors.toList());
+			case "M00003":
+				// 雇用マスタ
+				return getEmploymentList(companyId);
+			case "M00004":
+				// 分類マスタ１
+				return classificationRepo.getAllManagementCategory(companyId)
+						.stream().map(
+								classification -> new ComboBoxObject(classification.getClassificationCode().v(),
+										classification.getClassificationCode().v() + JP_SPACE
+												+ classification.getClassificationName().v()))
 						.collect(Collectors.toList());
 			case "M00005":
-				//職位マスタ
-				return jobTitleRepo.findAll(companyId, standardDate).stream().map(
-						jobTitle -> new ComboBoxObject(jobTitle.getJobTitleCode().v(), jobTitle.getJobTitleName().v()))
+				// 職位マスタ
+				return jobTitleRepo.findAll(companyId, standardDate).stream()
+						.map(jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(),
+								jobTitle.getJobTitleCode() + JP_SPACE + jobTitle.getJobTitleName().v()))
 						.collect(Collectors.toList());
 			case "M00006":
-				//休職休業マスタ
+				// 休職休業マスタ
 				return tempAbsFrameRepo.findByCid(companyId).stream()
 						.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
 						.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
 								frame.getTempAbsenceFrName().v()))
 						.collect(Collectors.toList());
 			case "M00007":
-				//勤務種別マスタ
-				return businessTypeRepo.findAll(companyId).stream()
-						.map(businessType -> new ComboBoxObject(businessType.getBusinessTypeCode().v(),
-								businessType.getBusinessTypeName().v()))
+				// 勤務種別マスタ
+				return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
+						businessType.getBusinessTypeCode().v(),
+						businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
 						.collect(Collectors.toList());
 			case "M00008":
-				//勤務種類マスタ
+				// 勤務種類マスタ
 				return workTypeRepo.findByCompanyId(companyId).stream()
-						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(), workType.getName().v()))
+						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
+								workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
 						.collect(Collectors.toList());
 			case "M00009":
-				//就業時間帯マスタ
-				break;
+				// 就業時間帯マスタ
+				return Arrays.asList(new ComboBoxObject("001", "固定名"));
 			default:
 				break;
 			}
@@ -183,11 +319,10 @@ public class ComboBoxRetrieveFactory {
 		List<Employment> employments = employmentRepo.findAll(companyId);
 		List<ComboBoxObject> comboBoxList = new ArrayList<>();
 		for (Employment employment : employments) {
-			comboBoxList
-					.add(new ComboBoxObject(employment.getEmploymentCode().v(), employment.getEmploymentName().v()));
-
+			comboBoxList.add(new ComboBoxObject(employment.getEmploymentCode().v(),
+					employment.getEmploymentCode().v() + JP_SPACE + employment.getEmploymentName().v()));
 		}
 		return comboBoxList;
 	}
-	
+
 }

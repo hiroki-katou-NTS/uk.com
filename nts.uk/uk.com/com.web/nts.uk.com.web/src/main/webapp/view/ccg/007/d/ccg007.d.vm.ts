@@ -35,7 +35,12 @@ module nts.uk.pr.view.ccg007.d {
                                 self.openContractAuthDialog();
                             }
                             else {
-                                self.getEmployeeLoginSetting(data.contractCode);
+                                if (data) {
+                                    self.getEmployeeLoginSetting(data.contractCode);
+                                }
+                                else {
+                                    nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
+                                }
                             }
                             dfd.resolve();
                         }

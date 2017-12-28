@@ -27,6 +27,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSettingCtgFinder;
+import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -93,49 +94,23 @@ public class RegisterLayoutFinder {
 	private List<LayoutPersonInfoClsDto> getlistItemCls(AddEmployeeCommand command, NewLayout _layout) {
 
 		List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDtoHasCtgCd(_layout.getLayoutID());
+		List<SettingItemDto> dataServer = new ArrayList<SettingItemDto>();
 
 		if (command.getCreateType() != 3) {
-
-			List<SettingItemDto> dataServer = this.getItemInitList(command);
+			dataServer = this.getAllSettingItemList(command);
 
 			if (CollectionUtil.isEmpty(dataServer)) {
 
 				return null;
 			}
-
-			setData(dataServer, listItemCls, command.getCreateType());
-			if (command.getCreateType() == 1) {
-
-				return listItemCls;
-
-			}
-
-			if (command.getCreateType() == 2) {
-
-				return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
-						.collect(Collectors.toList());
-			}
-
 		}
+		setData(dataServer, listItemCls, command.getCreateType());
 
-		listItemCls.forEach(itemCls -> {
-			if (!CollectionUtil.isEmpty(itemCls.getListItemDf())) {
-				itemCls.getListItemDf().forEach(itemDef -> {
-					LayoutPersonInfoValueDto newLayoutDto = createPersonInfoValueDtoFromDef(null, itemDef,
-							ActionRole.EDIT.value, itemCls.getPersonInfoCategoryCD());
+		if (command.getCreateType() == 2) {
 
-					if (CollectionUtil.isEmpty(itemCls.getItems())) {
-						List<Object> itemList = new ArrayList<Object>();
-						itemList.add(newLayoutDto);
-						itemCls.setItems(itemList);
-					} else {
-
-						itemCls.getItems().add(newLayoutDto);
-					}
-				});
-			}
-
-		});
+			return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
+					.collect(Collectors.toList());
+		}
 
 		return listItemCls;
 	}
@@ -160,14 +135,11 @@ public class RegisterLayoutFinder {
 				LayoutPersonInfoValueDto infoValue = null;
 				if (setItemOpt.isPresent()) {
 					SettingItemDto setItem = setItemOpt.get();
-					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value,
-							itemCls.getPersonInfoCategoryCD());
+					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls);
 				} else {
-					if (itemDef.getItemTypeState().getItemType() == 1 || createType == 1) {
-						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value,
-								itemCls.getPersonInfoCategoryCD());
+					if (itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM.value || createType != 2) {
+						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
 					}
-
 				}
 
 				if (infoValue != null) {
@@ -175,6 +147,18 @@ public class RegisterLayoutFinder {
 				}
 
 			});
+			itemCls.getListItemDf().clear();
+
+			boolean isSetItem = itemDataList.stream().filter(x -> {
+				LayoutPersonInfoValueDto infoValue = (LayoutPersonInfoValueDto) x;
+				return infoValue.getType() == ItemType.SET_ITEM.value;
+			}).findFirst().isPresent();
+
+			if (isSetItem) {
+				if (itemDataList.size() < 2) {
+					itemDataList.clear();
+				}
+			}
 
 			itemCls.setItems(itemDataList);
 		}
@@ -182,10 +166,11 @@ public class RegisterLayoutFinder {
 	}
 
 	private LayoutPersonInfoValueDto createPersonInfoValueDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
-			int actionRole, String ctgCd) {
+			int actionRole, LayoutPersonInfoClsDto itemCls) {
 
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
+		dataObject.setCtgType(itemCls.getCtgType());
 		dataObject.setItemDefId(itemDef.getId());
 		dataObject.setItemName(itemDef.getItemName());
 		dataObject.setItemCode(itemDef.getItemCode());
@@ -199,61 +184,18 @@ public class RegisterLayoutFinder {
 			if (dataTypeValue == 6) {
 				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
 				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-						GeneralDate.today());
+						GeneralDate.today(), true);
 				dataObject.setLstComboBoxValue(lstComboBox);
 			}
 		}
 		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));
 		if (setItem != null) {
-			dataObject.setValue(setItem.getValueAsString());
+			dataObject.setValue(setItem.getSaveData().getValue());
 		}
-		dataObject.setCategoryCode(ctgCd);
+		dataObject.setCategoryCode(itemCls.getPersonInfoCategoryCD());
 		return dataObject;
 
 	}
-
-	// private PerInfoItemDefForLayoutDto
-	// createLayoutInfoDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto
-	// itemDef,
-	// int actionRole) {
-	//
-	// PerInfoItemDefForLayoutDto dataObject = new PerInfoItemDefForLayoutDto();
-	//
-	// dataObject.setPerInfoCtgId(itemDef.getPerInfoCtgId());
-	// dataObject.setId(itemDef.getId());
-	// dataObject.setItemName(itemDef.getItemName());
-	// dataObject.setItemCode(itemDef.getItemCode());
-	// dataObject.setRow(0);
-	// dataObject.setIsRequired(itemDef.getIsRequired());
-	// dataObject.setItemTypeState(itemDef.getItemTypeState());
-	// dataObject.setActionRole(EnumAdaptor.valueOf(actionRole,
-	// ActionRole.class));
-	//
-	// dataObject.setSelectionItemRefType(itemDef.getSelectionItemRefType());
-	// List<EnumConstant> selectionItemRefTypes =
-	// EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
-	// dataObject.setSelectionItemRefTypes(selectionItemRefTypes);
-	// if (setItem != null) {
-	// dataObject.setPerInfoCtgCd(setItem.getCategoryCode());
-	// }
-	// if (itemDef.getItemTypeState().getItemType() == 2) {
-	//
-	// SingleItemDto singleItem = (SingleItemDto) itemDef.getItemTypeState();
-	//
-	// int dataTypeValue = singleItem.getDataTypeState().getDataTypeValue();
-	// if (dataTypeValue == 6) {
-	// SelectionItemDto selectionItemDto = (SelectionItemDto)
-	// singleItem.getDataTypeState();
-	// List<ComboBoxObject> lstComboBox =
-	// comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-	// GeneralDate.today());
-	// dataObject.setLstComboxBoxValue(lstComboBox);
-	// }
-	// }
-	//
-	// return dataObject;
-	//
-	// }
 
 	/**
 	 * load All PeregDto in database by createType
@@ -268,12 +210,13 @@ public class RegisterLayoutFinder {
 	 *            : id of employee copy
 	 * @return SettingItemDto List
 	 */
-	public List<SettingItemDto> getItemInitList(AddEmployeeCommand command) {
+	public List<SettingItemDto> getAllSettingItemList(AddEmployeeCommand command) {
 
 		// Copy Type
 		if (command.getCreateType() == 1) {
 
 			return getAllCopyItem(command);
+
 		} else {
 			// Init Value Type
 
@@ -286,6 +229,7 @@ public class RegisterLayoutFinder {
 	public List<SettingItemDto> getAllInitItemBySetId(AddEmployeeCommand command) {
 		List<PeregQuery> listQuery = new ArrayList<PeregQuery>();
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+
 		this.initCtgSettingFinder.getAllCategoryBySetId(command.getInitSettingId()).forEach(x -> {
 
 			listQuery.add(new PeregQuery(x.getCategoryCd(), command.getEmployeeCopyId(), null, command.getHireDate()));
@@ -295,7 +239,7 @@ public class RegisterLayoutFinder {
 
 			findInitItemDto findInitCommand = new findInitItemDto(command.getInitSettingId(), command.getHireDate(),
 					x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(), command.getHireDate());
-			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(findInitCommand));
+			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand));
 		});
 		return result;
 	}
@@ -308,8 +252,8 @@ public class RegisterLayoutFinder {
 		});
 
 		listQuery.forEach(x -> {
-			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(x.getCategoryCode(), command.getEmployeeCopyId(),
-					command.getHireDate()));
+			result.addAll(this.copyItemFinder.getAllCopyItemByCtgCode(false, x.getCategoryCode(),
+					command.getEmployeeCopyId(), command.getHireDate()));
 		});
 		return result;
 	}

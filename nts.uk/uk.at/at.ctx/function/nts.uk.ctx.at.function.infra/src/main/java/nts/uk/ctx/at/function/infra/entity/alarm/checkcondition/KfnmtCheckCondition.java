@@ -51,7 +51,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	@JoinTable(name = "KFNMT_CHECK_CON_ITEM")
 	public List<KfnmtCheckConItem> checkConItems;
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = true)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumns({
 		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID", insertable=false, updatable=false),
 		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE", insertable=false, updatable=false)
@@ -80,15 +80,15 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		return domain;
 	}
 	
-	public static KfnmtCheckCondition toEntity(CheckCondition domain) {
+	public static KfnmtCheckCondition toEntity(CheckCondition domain, String companyId, String alarmPatternCode) {
 		if (domain.getExtractPeriod().getExtractionRange() == ExtractionRange.PERIOD)
 		{
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) domain.getExtractPeriod();
 			KfnmtCheckCondition entity = new KfnmtCheckCondition(
-					new KfnmtCheckConditionPK(domain.getCompanyID(), domain.getAlarmPatternCD().v(), domain.getAlarmCategory().value),
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
 					domain.getExtractPeriod().getExtractionId(), domain.getExtractPeriod().getExtractionRange().value, 
 					domain.getCheckConditionList().stream().map(
-							x-> new KfnmtCheckConItem(buildCheckConItemPK(domain, x))).collect(Collectors.toList()),
+							x-> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()),
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily));
 			return entity;
 		} else {
@@ -97,8 +97,8 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		
 	}
 	
-	private static KfnmtCheckConItemPK buildCheckConItemPK(CheckCondition domain, String checkConditionCD) {
-		return new KfnmtCheckConItemPK(domain.getCompanyID(), domain.getAlarmPatternCD().v(), domain.getAlarmCategory().value, checkConditionCD);
+	private static KfnmtCheckConItemPK buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {
+		return new KfnmtCheckConItemPK(companyId, alarmPatternCode, domain.getAlarmCategory().value, checkConditionCD);
 	}
 
 

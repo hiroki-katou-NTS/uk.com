@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 
+
 @Stateless
 public class BonusPaySettingDomainService implements BonusPaySettingService {
 	@Inject

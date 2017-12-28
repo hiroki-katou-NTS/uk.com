@@ -4,12 +4,15 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,12 +51,15 @@ public class DailyPerformanceCorrectionDto {
 	
 	//A13_1  コメント
 	private String comment;
+	
+	private Set<ItemValue> itemValues;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
 		this.lstCellState = new ArrayList<>();
 		this.lstControlDisplayItem = new DPControlDisplayItem();
+		this.itemValues = new HashSet<>();
 	}
 
 	/** Check if employeeId is login user */
@@ -88,7 +94,11 @@ public class DailyPerformanceCorrectionDto {
 			state.add("ntsgrid-disable");
 				int attendanceAtr = mapDP.get(Integer.parseInt(header.getKey().trim().substring(1, header.getKey().trim().length()))).getAttendanceAtr() ;
 				if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
-				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Code"+header.getKey().substring(1, header.getKey().length()), state));
+					if(attendanceAtr == DailyAttendanceAtr.Classification.value){
+						this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "NO"+header.getKey().substring(1, header.getKey().length()), state));
+					}else{
+						this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Code"+header.getKey().substring(1, header.getKey().length()), state));
+					}
 				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Name"+header.getKey().substring(1, header.getKey().length()), state));
 			} else {
 				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), header.getKey(), state));
@@ -180,6 +190,20 @@ public class DailyPerformanceCorrectionDto {
 				DPCellStateDto dto = new DPCellStateDto("_"+dataId, columnKey, state);
 				this.lstCellState.add(dto);
 			}
+		}
+
+	}
+	
+	/** Set AlarmCell state for Fixed cell */
+	public void setLock(int rowId, String columnKey) {
+			Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
+			if (existedCellState.isPresent()) {
+				existedCellState.get().addState("ntsgrid-disable");
+			}else{
+				List<String> state = new ArrayList<>();
+				state.add("ntsgrid-disable");
+				DPCellStateDto dto = new DPCellStateDto("_"+rowId, columnKey, state);
+				this.lstCellState.add(dto);
 		}
 
 	}

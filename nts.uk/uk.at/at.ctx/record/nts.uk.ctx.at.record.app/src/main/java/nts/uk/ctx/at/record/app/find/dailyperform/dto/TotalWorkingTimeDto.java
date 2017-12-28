@@ -2,13 +2,20 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 /** 日別実績の総労働時間 */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TotalWorkingTimeDto {
 
 	/** 総労働時間: 勤怠時間 */
@@ -56,7 +63,7 @@ public class TotalWorkingTimeDto {
 
 	/** 短時間勤務時間: 日別実績の短時間勤務時間 */
 	// @AttendanceItemLayout(layout = "K", jpPropertyName = "短時間勤務時間")
-	private ShortWorkTimeSheetDto shortWorkTimeSheet;
+	private ShortWorkTimeDto shortWorkTimeSheet;
 
 	/** 加給時間: 日別実績の加給時間 */
 	// @AttendanceItemLayout(layout = "L", jpPropertyName = "加給時間")
@@ -70,4 +77,44 @@ public class TotalWorkingTimeDto {
 	// @AttendanceItemLayout(layout = "N")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer workTimes;
+	
+
+	public static TotalWorkingTimeDto fromTotalWorkingTime(TotalWorkingTime domain){
+		return domain == null ? null : new TotalWorkingTimeDto(
+				domain.getTotalTime().valueAsMinutes(), 
+				domain.getTotalCalcTime().valueAsMinutes(), 
+				domain.getActualTime().valueAsMinutes(), 
+				WithinStatutoryTimeDailyPerformDto.fromWithinStatutoryTimeDailyPerform(domain.getWithinStatutoryTimeOfDaily()),
+				ExcessOfStatutoryTimeDailyPerformDto.fromExcessOfStatutoryTimeDailyPerform(domain.getExcessOfStatutoryTimeOfDaily()), 
+				ConvertHelper.mapTo(domain.getTemporaryTime().getTemporaryTime(), (c) -> 
+					new TemporaryTimeFrameDto(c.getWorkNo().v(), c.getTemporaryLateNightTime().valueAsMinutes(), c.getTemporaryTime().valueAsMinutes())), 
+				ConvertHelper.mapTo(domain.getLateTimeOfDaily(), (c) -> 
+					new LateTimeDto(
+						new CalcAttachTimeDto(c.getLateTime().getCalcTime().valueAsMinutes(), c.getLateTime().getTime().valueAsMinutes()), 
+						new CalcAttachTimeDto(c.getLateDeductionTime().getCalcTime().valueAsMinutes(), c.getLateDeductionTime().getTime().valueAsMinutes()), 
+						new HolidayUseDto(c.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()),
+						c.getExemptionTime().getExemptionTime().valueAsMinutes(), 
+						c.getWorkNo().v())), 
+				ConvertHelper.mapTo(domain.getLeaveEarlyTimeOfDaily(), (c) -> 
+					new LeaveEarlyTimeDailyPerformDto(
+						new CalcAttachTimeDto(c.getLeaveEarlyTime().getCalcTime().valueAsMinutes(), c.getLeaveEarlyTime().getTime().valueAsMinutes()), 
+						new CalcAttachTimeDto(c.getLeaveEarlyDeductionTime().getCalcTime().valueAsMinutes(), c.getLeaveEarlyDeductionTime().getTime().valueAsMinutes()), 
+						new ValicationUseDto(
+								c.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes(),
+								c.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes()),
+						c.getIntervalTime().getExemptionTime().valueAsMinutes(), 
+						c.getWorkNo().v())), 
+				BreakTimeSheetDailyPerformDto.fromBreakTimeOfDaily(domain.getBreakTimeOfDaily()), 
+				//TODO: get domain 今回対象外
+				null, 
+				null, 
+				null, 
+				null, 
+				domain.getWorkTimes().v());
+	}
 }

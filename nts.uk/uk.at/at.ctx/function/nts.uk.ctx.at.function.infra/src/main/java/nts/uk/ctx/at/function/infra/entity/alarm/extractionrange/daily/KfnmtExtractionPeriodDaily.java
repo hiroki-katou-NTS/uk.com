@@ -8,11 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -35,85 +38,108 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 	@Column(name = "STR_SPECIFY")
 	public int strSpecify;
 
-	@Column(name = "STR_PREVIOUS_DAY")
-	public int strPreviousDay;
+	@Column(name = "STR_PREVIOUS_DAY", nullable = true)
+	public Integer strPreviousDay;
 
-	@Column(name = "STR_MAKE_TO_DAY")
-	public int strMakeToDay;
+	@Column(name = "STR_MAKE_TO_DAY", nullable = true)
+	public Integer strMakeToDay;
 
-	@Column(name = "STR_DAY")
-	public int strDay;
+	@Column(name = "STR_DAY", nullable = true)
+	public Integer strDay;
 
-	@Column(name = "STR_PREVIOUS_MONTH")
-	public int strPreviousMonth;
+	@Column(name = "STR_PREVIOUS_MONTH", nullable = true)
+	public Integer strPreviousMonth;
 
-	@Column(name = "STR_CURRENT_MONTH")
-	public int strCurrentMonth;
+	@Column(name = "STR_CURRENT_MONTH", nullable = true)
+	public Integer strCurrentMonth;
 
-	@Column(name = "STR_MONTH")
-	public int strMonth;
+	@Column(name = "STR_MONTH", nullable = true)
+	public Integer strMonth;
 
 	@Column(name = "END_SPECIFY")
 	public int endSpecify;
 
-	@Column(name = "END_PREVIOUS_DAY")
-	public int endPreviousDay;
+	@Column(name = "END_PREVIOUS_DAY", nullable = true)
+	public Integer endPreviousDay;
 
-	@Column(name = "END_MAKE_TO_DAY")
-	public int endMakeToDay;
+	@Column(name = "END_MAKE_TO_DAY", nullable = true)
+	public Integer endMakeToDay;
 
-	@Column(name = "END_DAY")
-	public int endDay;
+	@Column(name = "END_DAY", nullable = true)
+	public Integer endDay;
 
-	@Column(name = "END_PREVIOUS_MONTH")
-	public int endPreviousMonth;
+	@Column(name = "END_PREVIOUS_MONTH", nullable = true)
+	public Integer endPreviousMonth;
 
-	@Column(name = "END_CURRENT_MONTH")
-	public int endCurrentMonth;
+	@Column(name = "END_CURRENT_MONTH", nullable = true)
+	public Integer endCurrentMonth;
 
-	@Column(name = "END_MONTH")
-	public int endMonth;
+	@Column(name = "END_MONTH", nullable = true)
+	public Integer endMonth;
 
 	@OneToOne(mappedBy = "extractionPeriodDaily")
 	public KfnmtCheckCondition checkCondition;
 
 	public ExtractionPeriodDaily toDomain() {
-		StartDate startDate = new StartDate(this.strSpecify, this.strPreviousMonth, this.strMonth,
-				this.strCurrentMonth == 1 ? true : false, this.strPreviousDay, this.strDay,
-				this.strMakeToDay == 1 ? true : false);
-		EndDate endDate = new EndDate(this.endSpecify, this.endPreviousMonth, this.endMonth,
-				this.endCurrentMonth == 1 ? true : false, this.endPreviousDay, this.endDay,
-				this.endMakeToDay == 1 ? true : false);
+		// StartDate
+		StartDate startDate = new StartDate(this.strSpecify);
+		StartSpecify strPrev = EnumAdaptor.valueOf(strSpecify, StartSpecify.class);
+		if (strPrev == StartSpecify.DAYS) {
+			startDate.setStartDay(EnumAdaptor.valueOf(strPreviousDay, PreviousClassification.class), strDay,
+					strMakeToDay == 0 ? false : true);
+		} else if (strPrev == StartSpecify.MONTH) {
+			startDate.setStartMonth(EnumAdaptor.valueOf(strPreviousMonth, PreviousClassification.class), strMonth,
+					strCurrentMonth == 0 ? false : true);
+		}
+
+		// EndDate
+		EndDate endDate = new EndDate(this.endSpecify);
+		EndSpecify endPrev = EnumAdaptor.valueOf(endSpecify, EndSpecify.class);
+		if (endPrev == EndSpecify.DAYS) {
+			endDate.setEndDay(EnumAdaptor.valueOf(endPreviousDay, PreviousClassification.class), endDay,
+					endMakeToDay == 0 ? false : true);
+		} else if (endPrev == EndSpecify.MONTH) {
+			endDate.setEndMonth(EnumAdaptor.valueOf(endPreviousMonth, PreviousClassification.class), endMonth,
+					endCurrentMonth == 0 ? false : true);
+		}
+
 		ExtractionPeriodDaily periodDaily = new ExtractionPeriodDaily(this.kfnmtExtractionPeriodDailyPK.extractionId,
 				this.kfnmtExtractionPeriodDailyPK.extractionRange, startDate, endDate);
 		return periodDaily;
 	}
 
 	public static KfnmtExtractionPeriodDaily toEntity(ExtractionPeriodDaily domain) {
-		
-
-		return null;
+		return new KfnmtExtractionPeriodDaily(domain.getExtractionId(), domain.getExtractionRange().value,
+				domain.getStartDate(), domain.getEndDate());
 	}
 
-	public KfnmtExtractionPeriodDaily(String extractionId, int extractionRange, int strSpecify, int strPreviousDay,
-			int strMakeToDay, int strDay, int strPreviousMonth, int strCurrentMonth, int strMonth, int endSpecify,
-			int endPreviousDay, int endMakeToDay, int endDay, int endPreviousMonth, int endCurrentMonth, int endMonth) {
-		super();
+	public KfnmtExtractionPeriodDaily(String extractionId, int extractionRange, StartDate startDate, EndDate endDate) {
 		this.kfnmtExtractionPeriodDailyPK = new KfnmtExtractionPeriodDailyPK(extractionId, extractionRange);
-		this.strSpecify = strSpecify;
-		this.strPreviousDay = strPreviousDay;
-		this.strMakeToDay = strMakeToDay;
-		this.strDay = strDay;
-		this.strPreviousMonth = strPreviousMonth;
-		this.strCurrentMonth = strCurrentMonth;
-		this.strMonth = strMonth;
-		this.endSpecify = endSpecify;
-		this.endPreviousDay = endPreviousDay;
-		this.endMakeToDay = endMakeToDay;
-		this.endDay = endDay;
-		this.endPreviousMonth = endPreviousMonth;
-		this.endCurrentMonth = endCurrentMonth;
-		this.endMonth = endMonth;
+		// set start date
+		StartSpecify strPrev = EnumAdaptor.valueOf(startDate.getStartSpecify().value, StartSpecify.class);
+		this.strSpecify = startDate.getStartSpecify().value;
+		if (strPrev == StartSpecify.DAYS) {
+			this.strPreviousDay = startDate.getStrDays().get().getDayPrevious().value;
+			this.strMakeToDay = startDate.getStrDays().get().isMakeToDay() == true ? 1 : 0;
+			this.strDay = startDate.getStrDays().get().getDay();
+		} else if (strPrev == StartSpecify.MONTH) {
+			this.strPreviousMonth = startDate.getStrMonth().get().getMonthPrevious().value;
+			this.strCurrentMonth = startDate.getStrMonth().get().isCurentMonth() == true ? 1 : 0;
+			this.strMonth = startDate.getStrMonth().get().getMonth();
+		}
+
+		// set end date
+		EndSpecify endPrev = EnumAdaptor.valueOf(endDate.getEndSpecify().value, EndSpecify.class);
+		this.endPreviousDay = endDate.getEndSpecify().value;
+		if (endPrev == EndSpecify.DAYS) {
+			this.endPreviousDay = endDate.getEndDays().get().getDayPrevious().value;
+			this.endMakeToDay = endDate.getEndDays().get().isMakeToDay() == true ? 1 : 0;
+			this.endDay = endDate.getEndDays().get().getDay();
+		} else if (endPrev == EndSpecify.MONTH) {
+			this.endPreviousMonth = endDate.getEndMonth().get().getMonthPrevious().value;
+			this.endCurrentMonth = endDate.getEndMonth().get().isCurentMonth() == true ? 1 : 0;
+			this.endMonth = endDate.getEndMonth().get().getMonth();
+		}
 	}
 
 }

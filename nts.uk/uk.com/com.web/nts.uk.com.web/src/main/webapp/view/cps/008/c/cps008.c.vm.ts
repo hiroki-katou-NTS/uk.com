@@ -10,15 +10,16 @@ module cps008.c.viewmodel {
 
         constructor() {
             let self = this,
-                layout: Layout = self.layout();
+                layout: Layout = self.layout(),
+                _data = getShared('CPS008_PARAM');
 
-            let _data = getShared('CPS008_PARAM');
             layout.id.subscribe(id => {
                 // call service for get code, name of layout
                 service.getDetails(id).done((data: any) => {
                     if (data) {
                         layout.code(data.layoutCode);
                         layout.name(data.layoutName);
+                        $("#C_INP_CODE").focus();
                     }
                 });
             });

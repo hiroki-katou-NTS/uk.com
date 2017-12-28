@@ -17,6 +17,7 @@ module nts.uk.at.view.kaf002.b {
                 __viewContext.transferred.ifPresent(data => {
                     self.stampRequestMode = data.stampRequestMode;
                     self.screenMode = data.screenMode;
+                    return null;
                 });
                 self.cm = new kaf002.cm.viewmodel.ScreenModel(self.stampRequestMode, self.screenMode);
                 self.kaf000_a2 = new kaf000.a.viewmodel.ScreenModel();
@@ -24,16 +25,15 @@ module nts.uk.at.view.kaf002.b {
                 .done((commonSet: vmbase.AppStampNewSetDto)=>{
                     self.autoSendMail(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true : false);
                     self.employeeID = commonSet.employeeID;
-                    self.kaf000_a2.start(
-                        self.employeeID, 
-                        employmentRootAtr, 
+                    self.kaf000_a2.getAppDataDate(
                         applicationType, 
-                        moment(new Date()).format("YYYY/MM/DD"))
+                        moment(new Date()).format("YYYY/MM/DD"),
+                        true)
                     .done(()=>{
-                        if(nts.uk.util.isNullOrEmpty(self.kaf000_a2.approvalList)){
+                        if(nts.uk.util.isNullOrEmpty(self.kaf000_a2.approvalRootState())){
                             nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
                         } else {
-                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, self.kaf000_a2.approvalList);  
+                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode });  
                         }  
                     }).fail(function(res) { 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){
@@ -41,6 +41,7 @@ module nts.uk.at.view.kaf002.b {
                             nts.uk.ui.block.clear();
                         });
                     });   
+                    self.kaf000_a2.getMessageDeadline(applicationType, moment(new Date()).format("YYYY/MM/DD"));
                 }).fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){
                         nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
@@ -48,9 +49,7 @@ module nts.uk.at.view.kaf002.b {
                     });
                 }); 
                 self.cm.application().appDate.subscribe(value => {
-                    self.kaf000_a2.objApprovalRootInput().standardDate = value;
-                    self.kaf000_a2.getAllApprovalRoot();
-                    self.kaf000_a2.getMessageDeadline(7, value);
+                    self.kaf000_a2.getAppDataDate(7, value, false);
                 });
             }
             

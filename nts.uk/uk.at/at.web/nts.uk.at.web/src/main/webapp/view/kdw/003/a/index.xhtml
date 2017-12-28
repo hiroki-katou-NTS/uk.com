@@ -33,7 +33,7 @@
 			<div id="functions-area">
 				<div id="function-content">
 					<button class="proceed"
-						data-bind="enable: $root.errors.isEmpty ,showButton().available1 ">#{i18n.getText('KDW003_4')}</button>
+						data-bind="enable: $root.errors.isEmpty ,showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
 					<button data-bind="visible: showButton().available4">#{i18n.getText('KDW003_5')}</button>
 					<button data-bind="visible: showButton().available2">#{i18n.getText('KDW003_6')}</button>
 					<button data-bind="visible: showButton().available3">#{i18n.getText('KDW003_12')}</button>
@@ -41,7 +41,7 @@
 					<button
 						data-bind="click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
 					<button
-						data-bind="click : selectDisplayItem, visible: showButton().available8">#{i18n.getText('KDW003_14')}</button>
+						data-bind="click : selectDisplayItem, visible: showButton().available8Authority">#{i18n.getText('KDW003_14')}</button>
 					<button data-bind="visible: showButton().available22">#{i18n.getText('KDW003_15')}</button>
 					<button class="danger"
 						data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
@@ -104,15 +104,13 @@
 											</thead>
 											<tbody>
 												<tr>
-													<td class="ui-widget-body"><span
+													<td class="ui-widget-body"><span class ="text-holiday"
 														data-bind="text: dataHoliday().compensation"></span></td>
-													<td class="ui-widget-body"><span
+													<td class="ui-widget-body"><span  class ="text-holiday"
 														data-bind="text: dataHoliday().substitute"></span></td>
-													<td class="ui-widget-body"><span
-														data-bind="text: dataHoliday().paidYear"></span> <br /> <span
-														data-bind="text: dataHoliday().paidHalf"></span> <br /> <span
-														data-bind="text: dataHoliday().paidHours"></span></td>
-													<td class="ui-widget-body"><span
+													<td class="ui-widget-body"><span  class ="text-holiday"
+														data-bind="text: dataHoliday().paidYear"></span></td>
+													<td class="ui-widget-body"><span  class ="text-holiday"
 														data-bind="text: dataHoliday().fundedPaid"></span></td>
 												</tr>
 											</tbody>
@@ -170,7 +168,7 @@
 						<span style="margin: 10px 0 0 18px; display: inline-block;"
 							data-bind="text: comment"></span>
 					</div>
-					<div id="tooltip">tooltip</div>
+					<div id="tooltip"><span id="textLock"></span></div>
 				</div>
 			</div>
 		</ui:define>

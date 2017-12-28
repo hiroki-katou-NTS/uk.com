@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +36,12 @@ public class KscmtComWorkPairSet extends UkJpaEntity implements Serializable {
 
 	@Column(name = "WORKTIME_CD")
 	public String workTimeCode;
+
+	@ManyToOne
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "GROUP_NO", referencedColumnName = "GROUP_NO", insertable = false, updatable = false),
+			@JoinColumn(name = "PATTERN_NO", referencedColumnName = "PATTERN_NO", insertable = false, updatable = false) })
+	private KscmtComPatternItem kscmtComPatternItem;
 
 	@Override
 	protected Object getKey() {

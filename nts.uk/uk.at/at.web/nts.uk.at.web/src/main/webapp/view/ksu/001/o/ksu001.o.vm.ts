@@ -14,12 +14,12 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         selectedRuleCode: any;
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         currentScreen: any = null;
-
+        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
         constructor() {
             let self = this;
             self.listWorkType = ko.observableArray([]);
             self.listWorkTime = ko.observableArray([]);
-
+            self.listWorkTimeComboBox = ko.observableArray([]);
             self.roundingRules = ko.observableArray([
                 { code: '1', name: nts.uk.resource.getText("KSU001_71") },
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
@@ -31,8 +31,6 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             self.selectedWorkTimeCode = ko.observable('');
             self.time1 = ko.observable('12:00');
             self.time2 = ko.observable('15:00');
-
-            self.findDataForComboBox();
 
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
@@ -58,7 +56,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     let c = _.find(self.listWorkTime(), ['siftCd', siftCode]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = c.siftCd;
+                        workTimeCode = (c.siftCd == '000' ? '' : c.siftCd);
                         startTime = c.start;
                         endTime = c.end;
                     } else {
@@ -82,6 +80,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 //Paste data into cell (set-sticker-single)
                 $("#extable").exTable("stickData", value);
             });
+
+            //init
+            self.findDataForComboBox();
         }
 
         openDialogO1(): void {
@@ -103,7 +104,33 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 }
             });
         }
+        search(): void {
+            let self = this;
+            if (!self.time1() && !self.time2()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+            }
+            if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+            }
+            self.listWorkTimeComboBox([]);
+            _.forEach(self.listWorkTime(), (obj) => {
+                if (self.time1() && self.time2()
+                    && (moment.duration(self.time1()).asMinutes() == obj.start)
+                    && (moment.duration(self.time2()).asMinutes() == obj.end)) {
+                    self.listWorkTimeComboBox.push(obj);
+                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.start)) {
+                    self.listWorkTimeComboBox.push(obj);
+                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.end)) {
+                    self.listWorkTimeComboBox.push(obj);
+                }
+            });
 
+        }
+        clear(): void {
+            let self = this;
+            self.listWorkTimeComboBox([]);
+            self.listWorkTimeComboBox(self.listWorkTime());
+        }
         /**
          * Get data workType-workTime for 2 combo-box
          */
@@ -168,7 +195,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                             symbolName: wT.symbol,
                             dailyWorkAtr: wT.dailyWorkAtr,
                             methodAtr: wT.methodAtr,
-                            displayAtr: wT.dailyWorkAtr,
+                            displayAtr: wT.displayAtr,
                             note: wT.note,
                             start: wT.start,
                             end: wT.end,
@@ -178,6 +205,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 });
 
                 dfd.resolve();
+                self.listWorkTimeComboBox(self.listWorkTime());
+
             }).fail(function() {
                 dfd.reject();
             });

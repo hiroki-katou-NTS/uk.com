@@ -251,9 +251,14 @@ module ccg013.a.viewmodel {
             service.loadWebMenu().done(function(data) {
                 if (data.length != 0) {
                     self.listWebMenu.removeAll();
+                    var items = [];
+                    
                     _.forEach(data, function(item) {
-                        self.listWebMenu.push(new WebMenuModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
+                        items.push(new WebMenuModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
                     });
+                    
+                    var sortedItems = _.sortBy(items, [function(o) { return o.webMenuCode; }]);
+                    self.listWebMenu(sortedItems);
                 } else {
                     self.listWebMenu([]);
                 }

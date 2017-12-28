@@ -3,8 +3,10 @@
  */
 package nts.uk.ctx.at.shared.app.find.shortworktime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -82,17 +85,18 @@ public class ShortWorkTimeFinder implements PeregFinder<ShortWorkTimeDto> {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.shr.pereg.app.find.PeregFinder#getListFirstItems(nts.uk.shr.pereg.
-	 * app.find.PeregQuery)
-	 */
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		String employeeId = query.getEmployeeId();
+		Optional<ShortWorkTimeHistory> history = shortTimeHistoryRepo.getBySidDesc(AppContexts.user().companyId(),
+				query.getEmployeeId());
+		if (history.isPresent()) {
+			return history.get().getHistoryItems().stream()
+					.filter(item -> shortTimeHistoryItemRepo.findByKey(employeeId, item.identifier()).isPresent())
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
 }

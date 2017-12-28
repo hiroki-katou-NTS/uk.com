@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -67,7 +67,7 @@ public class ReleaseImpl implements ReleaseService {
 
 	@Override
 	public Boolean canReleaseCheck(ApprovalPhaseState approvalPhaseState, String employeeID) {
-		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONEAPPROVED)){
+		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 			return approvalPhaseState.getListApprovalFrame().stream()
 				.filter(x -> x.getApproverID().equals(employeeID)||x.getRepresenterID().equals(employeeID)).findAny().map(y ->true).orElse(false);
 		}

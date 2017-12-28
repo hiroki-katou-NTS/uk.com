@@ -11,10 +11,11 @@ public class DefaultAlarmPatternSettingService implements AlarmPatternSettingSer
 	private AlarmPatternSettingRepository repo;
 
 	@Override
-	public void checkDuplicateCode(String alarmPatternCode) {		
+	public boolean checkDuplicateCode(String alarmPatternCode) {		
 		if(repo.findByAlarmPatternCode(AppContexts.user().companyId(), alarmPatternCode).isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
+		return true;
 	}
 
 	

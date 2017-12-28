@@ -321,7 +321,7 @@ module nts.uk.request {
 
         export function donwloadFile(fileId: string) {
             var dfd = $.Deferred();
-            $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+            $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
                 successCallback: function(url) {
                     dfd.resolve();
                 },
@@ -336,6 +336,10 @@ module nts.uk.request {
         
         export function createPathToFile(fileId: string) {
             return resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId);
+        }
+        
+        export function deleteFile(fileId: string) {
+            return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
         }
         
         export function isFileExist(fileId: string): boolean {
@@ -385,9 +389,13 @@ module nts.uk.request {
             uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
                 window.location.href = path;
             }).ifEmpty(() => {
-                request.jump('/view/ccg007/a/index.xhtml');
+                request.jump('/view/ccg/007/a/index.xhtml');
             });
         }
+    }
+    
+    export function jumpToTopPage() {
+        request.jump('/view/ccg/008/a/index.xhtml');
     }
 
     export function resolvePath(path: string) {

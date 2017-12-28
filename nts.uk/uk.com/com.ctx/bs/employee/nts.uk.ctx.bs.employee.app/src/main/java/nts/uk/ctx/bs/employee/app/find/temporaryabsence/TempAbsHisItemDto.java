@@ -5,13 +5,8 @@ package nts.uk.ctx.bs.employee.app.find.temporaryabsence;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.CareHoliday;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.ChildCareHoliday;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
-import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
@@ -27,8 +22,8 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 	/**
 	 * 休職期間
 	 */
-	// @PeregItem("IS00087")
-	// private DateHistoryItem dateHistoryItem;
+	@PeregItem("IS00086")
+	private String periodName;
 
 	/**
 	 * 休業開始日
@@ -46,7 +41,7 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 	 * 休業区分
 	 */
 	@PeregItem("IS00089")
-	private LeaveHolidayType leaveHolidayType;
+	private int leaveHolidayType;
 
 	/**
 	 * 家族の同一の要介護状態について介護休業したことがあるか （介護休業の場合）
@@ -94,13 +89,13 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 	 * 社会保険支給対象区分
 	 */
 	@PeregItem("IS00097")
-	private String remarks;
+	private Integer soInsPayCategory;
 
 	/**
 	 * 備考
 	 */
 	@PeregItem("IS00098")
-	private Integer soInsPayCategory;
+	private String remarks;
 
 	public TempAbsHisItemDto() {
 
@@ -112,18 +107,20 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 
 	public static TempAbsHisItemDto createFromDomain(DateHistoryItem history, TempAbsenceHisItem histItem) {
 		TempAbsHisItemDto dto = new TempAbsHisItemDto(histItem.getHistoryId());
+		dto.setLeaveHolidayType(histItem.getTempAbsenceFrNo().v().intValue());
 		dto.setRemarks(histItem.getRemarks().v());
 		dto.setSoInsPayCategory(histItem.getSoInsPayCategory());
 		dto.setStartDate(history.start());
 		dto.setEndDate(history.end());
-		LeaveHolidayType leaveHolidayType;
+		
+		// extend class
+		/*LeaveHolidayType leaveHolidayType;
 		if (histItem.getTempAbsenceFrNo().v().intValue() <= 6) {
 			leaveHolidayType = EnumAdaptor.valueOf(histItem.getTempAbsenceFrNo().v().intValue(),
 					LeaveHolidayType.class);
 		} else {
 			leaveHolidayType = LeaveHolidayType.ANY_LEAVE;
 		}
-		dto.setLeaveHolidayType(leaveHolidayType);
 		switch (leaveHolidayType) {
 		case MIDWEEK_CLOSURE:
 			MidweekClosure midweekClosure = (MidweekClosure) histItem;
@@ -143,7 +140,7 @@ public class TempAbsHisItemDto extends PeregDomainDto {
 			break;
 		default:
 			break;
-		}
+		}*/
 		return dto;
 	}
 }

@@ -69,14 +69,15 @@ public class ErrorAlarmWorkRecordDto {
 	private int operatorBetweenGroups;
 	private int operatorGroup1;
 	private int operatorGroup2;
+	private boolean group2UseAtr;
 	private List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1;
 	private List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2;
-	
-	private static ErAlAtdItemConditionDto convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain){
+
+	private static ErAlAtdItemConditionDto convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain) {
 		ErAlAtdItemConditionDto erAlAtdItemConditionDto = new ErAlAtdItemConditionDto();
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
-		erAlAtdItemConditionDto.setUseAtr(true);
+		erAlAtdItemConditionDto.setUseAtr(itemDomain.getUseAtr());
 		// Check Target
 		// チェック対象
 		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
@@ -95,25 +96,25 @@ public class ErrorAlarmWorkRecordDto {
 				erAlAtdItemConditionDto.setCompareStartValue(
 						new BigDecimal(((CheckedAmountValue) itemDomain.getCompareRange().getStartValue()).v()));
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedAmountValue) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((CheckedAmountValue) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
 			case TIME_DURATION:
 				erAlAtdItemConditionDto.setCompareStartValue(
 						new BigDecimal(((CheckedTimeDuration) itemDomain.getCompareRange().getStartValue()).v()));
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedTimeDuration) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((CheckedTimeDuration) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
 			case TIME_WITH_DAY:
 				erAlAtdItemConditionDto.setCompareStartValue(
 						new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareRange().getStartValue()).v()));
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
 			case TIMES:
 				erAlAtdItemConditionDto.setCompareStartValue(
 						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
 			}
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareRange().getCompareOperator().value);
@@ -121,20 +122,20 @@ public class ErrorAlarmWorkRecordDto {
 			if (itemDomain.getCompareSingleValue().getConditionType() == ConditionType.FIXED_VALUE) {
 				switch (itemDomain.getConditionAtr()) {
 				case AMOUNT_VALUE:
-					erAlAtdItemConditionDto.setCompareStartValue(new BigDecimal(
-							((CheckedAmountValue) itemDomain.getCompareSingleValue().getValue()).v()));
+					erAlAtdItemConditionDto.setCompareStartValue(
+							new BigDecimal(((CheckedAmountValue) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				case TIME_DURATION:
-					erAlAtdItemConditionDto.setCompareStartValue(new BigDecimal(
-							((CheckedTimeDuration) itemDomain.getCompareSingleValue().getValue()).v()));
+					erAlAtdItemConditionDto.setCompareStartValue(
+							new BigDecimal(((CheckedTimeDuration) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				case TIME_WITH_DAY:
 					erAlAtdItemConditionDto.setCompareStartValue(
 							new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				case TIMES:
-					erAlAtdItemConditionDto.setCompareStartValue(new BigDecimal(
-							((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
+					erAlAtdItemConditionDto.setCompareStartValue(
+							new BigDecimal(((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				}
 			} else {
@@ -153,7 +154,7 @@ public class ErrorAlarmWorkRecordDto {
 	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
 			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem,
 			int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode, int operatorBetweenGroups,
-			int operatorGroup1, int operatorGroup2) {
+			int operatorGroup1, int operatorGroup2, boolean group2UseAtr) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
@@ -172,7 +173,7 @@ public class ErrorAlarmWorkRecordDto {
 		this.operatorGroup1 = operatorGroup1;
 		this.operatorGroup2 = operatorGroup2;
 	}
-	
+
 	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
 			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem,
 			AlarmCheckTargetConditionDto alCheckTargetCondition, WorkTypeConditionDto workTypeCondition,
@@ -203,7 +204,7 @@ public class ErrorAlarmWorkRecordDto {
 		this.erAlAtdItemConditionGroup1 = erAlAtdItemConditionGroup1;
 		this.erAlAtdItemConditionGroup2 = erAlAtdItemConditionGroup2;
 	}
-	
+
 	public static ErrorAlarmWorkRecordDto fromDomain(ErrorAlarmWorkRecord domain) {
 		// Create to DTO root
 		ErrorAlarmWorkRecordDto errorAlarmWorkRecordDto = new ErrorAlarmWorkRecordDto(domain.getCompanyId(),
@@ -214,7 +215,8 @@ public class ErrorAlarmWorkRecordDto {
 				domain.getLstApplication(),
 				domain.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups().value,
 				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getConditionOperator().value,
-				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2().getConditionOperator().value);
+				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2().getConditionOperator().value,
+				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2UseAtr());
 		// Set AlarmCheckTargetConditionDto
 		errorAlarmWorkRecordDto.setAlCheckTargetCondition(new AlarmCheckTargetConditionDto(
 				domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByBusinessType(),
@@ -232,7 +234,7 @@ public class ErrorAlarmWorkRecordDto {
 		WorkTimeConditionDto wtimeConditionDto = new WorkTimeConditionDto();
 		// Set WorkTypeConditionDto
 		if (domain.getErrorAlarmCondition().getWorkTypeCondition()
-				.getComparePlanAndActual() == FilterByCompare.DO_NOT_COMPARE) {
+				.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 			PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) domain.getErrorAlarmCondition()
 					.getWorkTypeCondition();
 			wtypeConditionDto.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().getFilterAtr());
@@ -252,10 +254,12 @@ public class ErrorAlarmWorkRecordDto {
 			wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
 					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 		}
+		wtypeConditionDto.setComparePlanAndActual(
+				domain.getErrorAlarmCondition().getWorkTypeCondition().getComparePlanAndActual().value);
 		errorAlarmWorkRecordDto.setWorkTypeCondition(wtypeConditionDto);
 		// Set WorkTimeConditionDto
 		if (domain.getErrorAlarmCondition().getWorkTimeCondition()
-				.getComparePlanAndActual() == FilterByCompare.DO_NOT_COMPARE) {
+				.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 			PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) domain.getErrorAlarmCondition()
 					.getWorkTimeCondition();
 			wtimeConditionDto.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().getFilterAtr());
@@ -265,9 +269,9 @@ public class ErrorAlarmWorkRecordDto {
 			wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().getFilterAtr());
 			wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getWorkTimePlan().getLstWorkTime().stream()
 					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-			errorAlarmWorkRecordDto
-					.setOperatorBetweenPlanActual(((PlanActualWorkType) domain.getErrorAlarmCondition()
-							.getWorkTypeCondition()).getOperatorBetweenPlanActual().value);
+			errorAlarmWorkRecordDto.setOperatorBetweenPlanActual(
+					((PlanActualWorkType) domain.getErrorAlarmCondition().getWorkTypeCondition())
+							.getOperatorBetweenPlanActual().value);
 		} else {
 			SingleWorkTime wtimeConditionDomain = (SingleWorkTime) domain.getErrorAlarmCondition()
 					.getWorkTimeCondition();
@@ -276,6 +280,8 @@ public class ErrorAlarmWorkRecordDto {
 			wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getTargetWorkTime().getLstWorkTime().stream()
 					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 		}
+		wtimeConditionDto.setComparePlanAndActual(
+				domain.getErrorAlarmCondition().getWorkTimeCondition().getComparePlanAndActual().value);
 		errorAlarmWorkRecordDto.setWorkTimeCondition(wtimeConditionDto);
 		// Set ErAlAtdItemConditionDto
 		List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1 = new ArrayList<>();

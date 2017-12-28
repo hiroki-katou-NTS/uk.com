@@ -53,6 +53,11 @@ public class JpaAffEmploymentHistoryRepository extends JpaRepository
 	@Override
 	public List<AffEmploymentHistory> searchEmployee(GeneralDate baseDate,
 			List<String> employmentCodes) {
+		
+		// check not data input
+		if (CollectionUtil.isEmpty(employmentCodes)) {
+			return new ArrayList<>();
+		}
 
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -67,37 +72,39 @@ public class JpaAffEmploymentHistoryRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
+		
+		// Split query.
+		List<KmnmtAffiliEmploymentHist> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(employmentCodes, 1000, (subList) -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
+			// employment in data employment
+			lstpredicateWhere
+					.add(criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
+							.get(KmnmtAffiliEmploymentHistPK_.emptcd).in(subList)));
 
-		// check not data input
-		if (CollectionUtil.isEmpty(employmentCodes)) {
-			return new ArrayList<>();
-		}
+			// start date <= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.lessThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
+							.get(KmnmtAffiliEmploymentHistPK_.strD), baseDate));
 
-		// employment in data employment
-		lstpredicateWhere
-				.add(criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
-						.get(KmnmtAffiliEmploymentHistPK_.emptcd).in(employmentCodes)));
+			// endDate >= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.endD), baseDate));
 
-		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
-						.get(KmnmtAffiliEmploymentHistPK_.strD), baseDate));
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.endD), baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		TypedQuery<KmnmtAffiliEmploymentHist> query = em.createQuery(cq);
+			// create query
+			TypedQuery<KmnmtAffiliEmploymentHist> query = em.createQuery(cq);
+			resultList.addAll(query.getResultList());
+		});
+		
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
+		return resultList.stream().map(category -> toDomain(category))
 				.collect(Collectors.toList());
 	}
 
@@ -111,6 +118,9 @@ public class JpaAffEmploymentHistoryRepository extends JpaRepository
 	@Override
 	public List<AffEmploymentHistory> searchEmployee(List<String> employeeIds, GeneralDate baseDate,
 			List<String> employmentCodes) {
+		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(employmentCodes)) {
+			return new ArrayList<>();
+		}
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -125,45 +135,49 @@ public class JpaAffEmploymentHistoryRepository extends JpaRepository
 		// select root
 		cq.select(root);
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		List<KmnmtAffiliEmploymentHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, employeeSubList -> {
+			CollectionUtil.split(employmentCodes, 1000, employmentSubList -> {
+				// add where
+				List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(employmentCodes)) {
-			return new ArrayList<>();
-		}
+				// employment in data employment
+				lstpredicateWhere
+						.add(criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
+								.get(KmnmtAffiliEmploymentHistPK_.emptcd).in(employmentSubList)));
 
-		// employment in data employment
-		lstpredicateWhere
-				.add(criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
-						.get(KmnmtAffiliEmploymentHistPK_.emptcd).in(employmentCodes)));
+				// employee id in data employee id
+				lstpredicateWhere
+						.add(criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
+								.get(KmnmtAffiliEmploymentHistPK_.empId).in(employeeSubList)));
 
-		// employee id in data employee id
-		lstpredicateWhere
-				.add(criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
-						.get(KmnmtAffiliEmploymentHistPK_.empId).in(employeeIds)));
+				// start date <= base date
+				lstpredicateWhere.add(criteriaBuilder
+						.lessThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
+								.get(KmnmtAffiliEmploymentHistPK_.strD), baseDate));
 
-		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
-						.get(KmnmtAffiliEmploymentHistPK_.strD), baseDate));
+				// endDate >= base date
+				lstpredicateWhere.add(criteriaBuilder
+						.greaterThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.endD), baseDate));
 
-		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.endD), baseDate));
+				// set where to SQL
+				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		TypedQuery<KmnmtAffiliEmploymentHist> query = em.createQuery(cq);
+				// create query
+				TypedQuery<KmnmtAffiliEmploymentHist> query = em.createQuery(cq);
+				resultList.addAll(query.getResultList());
+			});
+		});
+		
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
+		return resultList.stream().map(category -> toDomain(category))
 				.collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository#searchEmploymentOfSids(java.util.List, nts.arc.time.GeneralDate)
+	 * @see nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository
+	 * #searchEmploymentOfSids(java.util.List, nts.arc.time.GeneralDate)
 	 */
 	@Override
 	public List<AffEmploymentHistory> searchEmploymentOfSids(List<String> employeeIds,
@@ -181,35 +195,58 @@ public class JpaAffEmploymentHistoryRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		if (!CollectionUtil.isEmpty(employeeIds)) {
-			// employee id in data employee id
-			lstpredicateWhere.add(
-					criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
-							.get(KmnmtAffiliEmploymentHistPK_.empId).in(employeeIds)));
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			// start date <= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.lessThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
+							.get(KmnmtAffiliEmploymentHistPK_.strD), baseDate));
+	
+			// endDate >= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.endD), baseDate));
+	
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+	
+			// create query
+			TypedQuery<KmnmtAffiliEmploymentHist> query = em.createQuery(cq);
+	
+			// exclude select
+			return query.getResultList().stream().map(category -> toDomain(category))
+					.collect(Collectors.toList());
 		}
+		
+		// Split employee ids.
+		List<KmnmtAffiliEmploymentHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			// start date <= base date
+			lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+					root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK).get(KmnmtAffiliEmploymentHistPK_.strD),
+					baseDate));
 
-		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
-						.get(KmnmtAffiliEmploymentHistPK_.strD), baseDate));
+			// employee id in data employee id
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(KmnmtAffiliEmploymentHist_.kmnmtEmploymentHistPK)
+					.get(KmnmtAffiliEmploymentHistPK_.empId).in(subList)));
 
-		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.endD), baseDate));
+			// endDate >= base date
+			lstpredicateWhere
+					.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliEmploymentHist_.endD), baseDate));
 
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		// create query
-		TypedQuery<KmnmtAffiliEmploymentHist> query = em.createQuery(cq);
+			// create query
+			TypedQuery<KmnmtAffiliEmploymentHist> query = em.createQuery(cq);
+			resultList.addAll(query.getResultList());
+		});
+		
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
-				.collect(Collectors.toList());
+		return resultList.stream().map(category -> toDomain(category)).collect(Collectors.toList());
 	}
 
 }

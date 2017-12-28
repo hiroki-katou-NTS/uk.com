@@ -44,7 +44,7 @@ public class BreakTimeStampIncorrectOrderChecking {
 			for (BreakTimeSheet item : breakTimeSheets) {
 				WorkStamp startTime = item.getStartTime();
 				WorkStamp endTime = item.getEndTime();
-				item = new BreakTimeSheet(new BreakFrameNo(new BigDecimal(breakFrameNo)), startTime, endTime);
+				item = new BreakTimeSheet(new BreakFrameNo(new BigDecimal(breakFrameNo)), startTime, endTime, item.getBreakTime());
 				breakFrameNo++;
 			}
 
@@ -52,34 +52,34 @@ public class BreakTimeStampIncorrectOrderChecking {
 				
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 
-				if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(1)))) {
+				if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((1)))) {
 					attendanceItemIDList.add(157);
 					attendanceItemIDList.add(159);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(2)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((2)))) {
 					attendanceItemIDList.add(163);
 					attendanceItemIDList.add(165);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(3)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((3)))) {
 					attendanceItemIDList.add(169);
 					attendanceItemIDList.add(171);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(4)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((4)))) {
 					attendanceItemIDList.add(175);
 					attendanceItemIDList.add(177);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(5)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((5)))) {
 					attendanceItemIDList.add(181);
 					attendanceItemIDList.add(183);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(6)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((6)))) {
 					attendanceItemIDList.add(187);
 					attendanceItemIDList.add(189);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(7)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((7)))) {
 					attendanceItemIDList.add(193);
 					attendanceItemIDList.add(195);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(8)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((8)))) {
 					attendanceItemIDList.add(199);
 					attendanceItemIDList.add(201);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(9)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((9)))) {
 					attendanceItemIDList.add(205);
 					attendanceItemIDList.add(207);
-				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo(new BigDecimal(10)))) {
+				} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((10)))) {
 					attendanceItemIDList.add(211);
 					attendanceItemIDList.add(213);
 				}

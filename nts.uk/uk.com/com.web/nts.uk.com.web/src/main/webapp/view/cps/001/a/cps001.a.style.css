@@ -40,7 +40,7 @@
 }
 
 #lefttabs .ntsSearchBox.ntsSearchBox_Component {
-	min-width: 178px;
+	min-width: 100px;
 }
 
 .avatar-group, .person-group, .action-group {
@@ -271,12 +271,4 @@
 	line-height: 37px;
 	text-align: center;
 	background-color: #cee6ff;
-}
-
-.nts-searchbbox-wrapper button.search-btn, .nts-searchbbox-wrapper button.clear-btn {
-	min-width: 50px !important;
-}
-
-#lefttabs .ntsSearchBox.ntsSearchBox_Component {
-    min-width: 130px !important;
 }
