@@ -6,11 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 @AttendanceItemRoot(rootName = "社員の日別実績エラー一覧")
 @Data
@@ -30,12 +27,13 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 	private GeneralDate date;
 
 	/** エラー: 勤務実績のエラーアラームコード */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
-	@AttendanceItemValue()
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
+//	@AttendanceItemValue()
 	private String errorCode;
 
 	/** 項目一覧: 勤怠項目ID */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	//TODO: set list max value
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true)
+//	@AttendanceItemValue(type = ValueType.INTEGER)
 	private List<Integer> attendanceItemList;
 }
