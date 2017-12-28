@@ -80,8 +80,6 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	@Override
 	public void remove(String companyId, String workTimeCode) {
 		this.commandProxy().remove(KshmtFlexWorkSet.class, new KshmtFlexWorkSetPK(companyId, workTimeCode));
-		this.commandProxy().remove(KshmtWorktimeCommonSet.class, new KshmtWorktimeCommonSetPK(companyId, workTimeCode,
-				WorkTimeDailyAtr.FLEX_WORK.value, WorkTimeMethodSet.FIXED_WORK.value));
 	}
 	
 	/**
