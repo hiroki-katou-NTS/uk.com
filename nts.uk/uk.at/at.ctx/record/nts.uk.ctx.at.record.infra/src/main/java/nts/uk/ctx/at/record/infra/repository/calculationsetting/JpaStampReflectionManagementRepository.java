@@ -9,7 +9,11 @@ import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprint;
 import nts.uk.ctx.at.record.infra.entity.calculationsetting.KrcmtStampImprintPK;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 
 @Stateless
 public class JpaStampReflectionManagementRepository extends JpaRepository
