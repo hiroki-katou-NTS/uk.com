@@ -52,6 +52,7 @@ module nts.uk.at.view.kmk003.a {
             isUpdateMode: KnockoutObservable<boolean>;
             isSimpleMode: KnockoutObservable<boolean>;
             isDetailMode: KnockoutObservable<boolean>;
+            isLoading: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
@@ -79,6 +80,7 @@ module nts.uk.at.view.kmk003.a {
                     { code: TabMode.SIMPLE, name: nts.uk.resource.getText("KMK003_190") },
                     { code: TabMode.DETAIL, name: nts.uk.resource.getText("KMK003_191") }
                 ]);
+                self.isLoading = ko.observable(false);
                 self.tabMode = ko.observable(TabMode.DETAIL);
                 self.tabMode.subscribe(newValue => {
                     if (newValue === TabMode.DETAIL) {
@@ -255,12 +257,13 @@ module nts.uk.at.view.kmk003.a {
             private loadWorktimeSetting(worktimeCode: string): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
+                self.isLoading(false);
                 // block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
 
                 service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
                     self.mainSettingModel.updateData(worktimeSettingInfo);
+                    self.isLoading(true);
                     dfd.resolve();
                 }).always(() => _.defer(() => nts.uk.ui.block.clear()));
                 return dfd.promise();

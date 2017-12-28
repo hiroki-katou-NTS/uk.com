@@ -109,7 +109,7 @@
 					<tr>
 						<td class="screen-content-left">
 							<div class="caret-left-width caret-right caret-background bg-green">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div><span data-bind="text: mainSettingModel.workTimeSetting.isFlex()"></span>
 								<com:ko tag="with" bind="workTimeSettingLoader">
 									<div id="combo-box"
 										data-bind="ntsComboBox: {
@@ -310,7 +310,7 @@
 											</div>
 											<div class="tab-a3">
 												<div data-bind="ntsKMK003A3: {enum: settingEnum, 
-													mainModel: mainSettingModel}">
+													mainModel: mainSettingModel, isLoading: isLoading}">
 												</div>
 											</div>
 											<div class="tab-a4">
