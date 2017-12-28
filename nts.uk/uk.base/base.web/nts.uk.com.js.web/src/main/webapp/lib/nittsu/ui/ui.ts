@@ -1,6 +1,21 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui {
+    
+    export module toBeResource {
+        export let yes = "はい";
+        export let no = "いいえ";
+        export let cancel = "キャンセル";
+        export let close = "閉じる";
+        export let info = "情報";
+        export let warn = "警告";
+        export let error = "エラー";
+        export let unset = "未設定";
+        export let errorContent = "エラー内容";
+        export let errorCode = "エラーコード";
+        export let errorList = "エラー一覧";
+        export let plzWait = "お待ちください";
+    }
 
     export module windows {
 
@@ -90,7 +105,7 @@ module nts.uk.ui {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
                     let dialogName = this.globalContext.__viewContext["program"]["programName"];
-                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? "未設定" : dialogName;
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? toBeResource.unset : dialogName;
 //                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
                 
                     this.$dialog.dialog('option', {
@@ -433,13 +448,13 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     text,
                     [{
-                        text: "はい",
+                        text: toBeResource.yes,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');
                             then();
                         }
-                    }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: nts.uk.resource.getText("infor") });
+                    }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: toBeResource.info });
             }, 0);
 
             return {
@@ -461,13 +476,13 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     message,
                     [{
-                        text: "はい",
+                        text: toBeResource.yes,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');
                             then();
                         }
-                    }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: nts.uk.resource.getText("error") });
+                    }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: toBeResource.error });
             }, 0);
 
             return {
@@ -496,13 +511,13 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     text,
                     [{
-                        text: "はい",
+                        text: toBeResource.yes,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');
                             then();
                         }
-                    }]);
+                    }], { text: nts.uk.resource.getText(toBeResource.warn) });
             }, 0);
 
             return {
@@ -554,7 +569,7 @@ module nts.uk.ui {
                 var buttons = [];
                 // yes button
                 buttons.push({
-                    text: "はい",
+                    text: toBeResource.yes,
                     "class": "yes large danger",
                     click: function() {
                         $this.dialog('close');
@@ -565,7 +580,7 @@ module nts.uk.ui {
                 // no button
                 if (hasNoButton) {
                     buttons.push({
-                        text: "いいえ",
+                        text: toBeResource.no,
                         "class": "no large",
                         click: function() {
                             $this.dialog('close');
@@ -577,7 +592,7 @@ module nts.uk.ui {
                 // cancel button
                 if (hasCancelButton) {
                     buttons.push({
-                        text: "キャンセル",
+                        text: toBeResource.cancel,
                         "class": "cancel large",
                         click: function() {
                             $this.dialog('close');
@@ -649,8 +664,9 @@ module nts.uk.ui {
             let id = util.randomId();
             let container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), 
                 functionArea = $("<div id='functions-area-bottom'/>"),
-                errorBoard = $(`<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>エラー内容</th>
-                    <th style='display: none;'/>    <th style='width: 150px;'>エラーコード</th>   </tr>   </thead>    <tbody/>    </table> </div>`),
+                errorBoard = $(`<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>`
+                     + toBeResource.errorContent + `</th><th style='display: none;'/>    <th style='width: 150px;'>`
+                     + toBeResource.errorCode + `</th>   </tr>   </thead>    <tbody/>    </table> </div>`),
                 closeButton = $("<button class='ntsButton ntsClose large'/>");
             
             let errorBody = errorBoard.find("tbody");
@@ -669,7 +685,7 @@ module nts.uk.ui {
             
             setTimeout(function() {
                 container.dialog({ 
-                    title: "エラー一覧",   
+                    title: toBeResource.errorList,   
                     dialogClass: "no-close-btn",
                     modal: false,
                     resizable: false,
@@ -679,7 +695,7 @@ module nts.uk.ui {
                     open: function() {
                         errorBoard.css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
                         functionArea.css({"left": "0px"});
-                        closeButton.text("閉じる").click(function(evt){
+                        closeButton.text(toBeResource.close).click(function(evt){
                             container.dialog("destroy");  
                             container.remove();
                             then();
@@ -778,7 +794,7 @@ module nts.uk.ui {
             let rect = calcRect();
 
             (<any>$).blockUI({
-                message: '<div class="block-ui-message">お待ちください</div>',
+                message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
                 fadeIn: 200,
                 css: {
                     width: rect.width,
@@ -880,6 +896,62 @@ module nts.uk.ui {
 
                 export function getLabel(gridId: String, columnKey: String) {
                     return getCell(gridId, columnKey).find('span');
+                }
+            }
+        }
+        
+        export module tree {
+            export module grid {
+                export function expandTo(targetKey: any, $treeGrid: JQuery) {
+                    let option = $treeGrid.igTreeGrid("option");
+                    let ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
+                    if (ancestorKeys === null) {
+                        return;
+                    }
+                    
+                    let expand = (currentIndex) => {
+                        if (currentIndex >= ancestorKeys.length) return;
+                        $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
+                        setTimeout(() => { expand(currentIndex + 1); }, 0);
+                    };
+                    
+                    expand(0);
+                    
+                    setTimeout(() => {
+                        scrollTo(targetKey, $treeGrid);
+                    }, 1);
+                }
+                
+                export function scrollTo(targetKey: any, $treeGrid: JQuery) {
+                    let $scroll: any = $treeGrid.igTreeGrid("scrollContainer");
+                    let $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
+                    if ($targetNode.length === 0) return;
+                    
+                    $scroll.exposeVertically($targetNode);
+                }
+            }
+            
+            export module dataSource {
+                export function collectAncestorKeys(targetKey: any, dataSource: any[], primaryKey: string, childDataKey: string): any[] {
+                    if (typeof dataSource === "undefined") {
+                        return null;
+                    }
+                    
+                    for (var i = 0, len = dataSource.length; i < len; i++) {
+                        let currentData: any = dataSource[i];
+                        if (currentData[primaryKey] === targetKey) {
+                            return [targetKey];
+                        }
+                        
+                        let children: any[] = currentData[childDataKey];
+                        let results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
+                        if (results !== null) {
+                            results.unshift(currentData[primaryKey]);
+                            return results;
+                        }
+                    }
+                    
+                    return null;
                 }
             }
         }
