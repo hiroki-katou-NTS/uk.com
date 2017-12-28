@@ -6,6 +6,7 @@ import nts.uk.ctx.pereg.dom.copysetting.item.EmpCopySettingItem;
 @Value
 public class CopySettingItemDto {
 	private String id;
+	private String itemCd;
 	private String perInfoCtgId;
 	private String itemName;
 	private boolean alreadyItemDefCopy;
@@ -13,7 +14,7 @@ public class CopySettingItemDto {
 
 	public static CopySettingItemDto createFromDomain(EmpCopySettingItem item) {
 
-		return new CopySettingItemDto(item.getItemDefId(), item.getPerInfoCtgId(), item.getItemName(),
-				item.isAlreadyCopy(), item.getItemParentCd());
+		return new CopySettingItemDto(item.getItemDefId(), item.getItemCode(), item.getPerInfoCtgId(),
+				item.getItemName(), item.isAlreadyCopy(), item.getItemParentCd());
 	}
 }

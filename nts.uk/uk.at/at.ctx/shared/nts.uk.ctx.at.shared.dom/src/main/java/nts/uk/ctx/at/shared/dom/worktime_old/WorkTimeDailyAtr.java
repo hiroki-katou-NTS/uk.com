@@ -20,4 +20,11 @@ public enum WorkTimeDailyAtr {
 		this.value = value;
 	}
 
+	/**
+	 * フレックス勤務か判定
+	 * @return　フレックス勤務である
+	 */
+	public boolean isFlex() {
+		return Enum_Flex_Work.equals(this);
+	}
 }

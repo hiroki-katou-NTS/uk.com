@@ -60,7 +60,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date);
+	Optional<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date);
 
 	/**
 	 * add Workplace Approval Root

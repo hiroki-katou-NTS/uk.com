@@ -196,7 +196,7 @@
 													<div>
 														<!-- B1_2 -->
 														<input id="corporateMyNumber" tabindex="17" class="save-error"
-															data-bind="ntsNumberEditor: {value: taxNum, constraint: 'TaxNo', name: '#[CMM001_19]'}" />
+															data-bind="ntsTextEditor: {value: taxNum, constraint: 'TaxNo', name: '#[CMM001_19]'}" />
 													</div>
 												</th>
 											</tr>
@@ -388,7 +388,7 @@
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
 													<!-- " -->
-													<div id = "fax" class=" border_none left20" data-bind="ntsFormLabel:{required: false}">
+													<div id = "fax" data-bind="ntsFormLabel:{required: false}">
 														<!-- C1_16 -->
 														<label style="margin-left: 3px;">#{i18n.getText('CMM001_29')}</label>
 													</div>

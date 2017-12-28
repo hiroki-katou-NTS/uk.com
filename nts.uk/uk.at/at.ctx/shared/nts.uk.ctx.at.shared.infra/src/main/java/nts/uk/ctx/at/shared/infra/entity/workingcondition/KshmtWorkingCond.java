@@ -19,7 +19,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -49,16 +49,16 @@ public class KshmtWorkingCond extends UkJpaEntity implements Serializable {
 
 	/** The str D. */
 	@Column(name = "STR_D")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate strD;
 
 	/** The end D. */
 	@Column(name = "END_D")
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endD;
 
 	/** The kshmt working cond items. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = false, updatable = false) })
 	private KshmtWorkingCondItem kshmtWorkingCondItem;

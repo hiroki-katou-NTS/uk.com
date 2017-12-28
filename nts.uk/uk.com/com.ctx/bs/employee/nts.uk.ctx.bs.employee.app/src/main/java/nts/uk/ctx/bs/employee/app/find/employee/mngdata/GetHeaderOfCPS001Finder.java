@@ -20,8 +20,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
@@ -40,7 +40,7 @@ public class GetHeaderOfCPS001Finder {
 	private AffDepartmentHistoryItemRepository historyItemRepo;
 
 	@Inject
-	private AffJobTitleHistoryItemRepository_v1 jobTitleHisRepo;
+	private AffJobTitleHistoryItemRepository_ver1 jobTitleHisRepo;
 
 	@Inject
 	private JobTitleInfoRepository jobTitleInfoRepo;
@@ -65,8 +65,8 @@ public class GetHeaderOfCPS001Finder {
 		if (empInfo.isPresent()) {
 			EmployeeInfo _emp = empInfo.get();
 
-			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(cid,sid);
-			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(cid,sid);
+			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(cid, sid);
+			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(cid, sid);
 
 			if (tempHist.isPresent()) {
 				_emp.setNumberOfTempHist(tempHist
@@ -83,10 +83,12 @@ public class GetHeaderOfCPS001Finder {
 				if (emp != null) {
 					_emp.setNumberOfWork(emp.getLstAffCompanyHistoryItem().stream()
 							.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
-							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(), m.end().localDate()))
+							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
+									m.end().localDate().compareTo(LocalDate.now()) <= 0 ? m.end().localDate()
+											: LocalDate.now()))
 							.mapToInt(m -> Math.abs(m.intValue())).sum());
 
-					Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,
+					Optional<AffJobTitleHistoryItem_ver1> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,
 							date);
 
 					if (jobTitleHisItem.isPresent()) {

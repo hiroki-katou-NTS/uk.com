@@ -71,7 +71,22 @@ public class JpaTimezoneSetMemento<T extends KshmtTimeZone> implements TimezoneS
 	 */
 	@Override
 	public void setCnt(int workNo) {
-		this.entity.setCnt(workNo);
+		// Is KshmtWorkCatTimeZone
+		if (this.entity instanceof KshmtWorkCatTimeZone) {
+			KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK = ((KshmtWorkCatTimeZone) this.entity)
+					.getKshmtWorkCatTimeZonePK();
+			kshmtWorkCatTimeZonePK.setCnt(workNo);
+			((KshmtWorkCatTimeZone) this.entity).setKshmtWorkCatTimeZonePK(kshmtWorkCatTimeZonePK);
+		}
+
+		// Is KshmtDayofweekTimeZone
+		if (entity instanceof KshmtDayofweekTimeZone) {
+			KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK = ((KshmtDayofweekTimeZone) this.entity)
+					.getKshmtDayofweekTimeZonePK();
+			kshmtDayofweekTimeZonePK.setCnt(workNo);
+			((KshmtDayofweekTimeZone) this.entity)
+					.setKshmtDayofweekTimeZonePK(kshmtDayofweekTimeZonePK);
+		}
 	}
 
 	/*
@@ -83,21 +98,7 @@ public class JpaTimezoneSetMemento<T extends KshmtTimeZone> implements TimezoneS
 	 */
 	@Override
 	public void setStart(TimeWithDayAttr start) {
-		// Is KshmtWorkCatTimeZone
-		if (this.entity instanceof KshmtWorkCatTimeZone) {
-			KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK = ((KshmtWorkCatTimeZone) this.entity)
-					.getKshmtWorkCatTimeZonePK();
-			kshmtWorkCatTimeZonePK.setStartTime(start.v());
-			((KshmtWorkCatTimeZone) this.entity).setKshmtWorkCatTimeZonePK(kshmtWorkCatTimeZonePK);
-		}
-
-		// Is KshmtDayofweekTimeZone
-		if (entity instanceof KshmtDayofweekTimeZone) {
-			KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK = ((KshmtDayofweekTimeZone) this.entity)
-					.getKshmtDayofweekTimeZonePK();
-			((KshmtDayofweekTimeZone) this.entity)
-					.setKshmtDayofweekTimeZonePK(kshmtDayofweekTimeZonePK);
-		}
+		this.entity.setStartTime(start.v());
 	}
 
 	/*

@@ -18,7 +18,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -117,7 +116,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	@Column(name = "ERAL_CHECK_ID")
 	public String eralCheckId;
 
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false)
 	public KrcmtErAlCondition krcmtErAlCondition;
 
@@ -160,19 +159,19 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			if (atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()));
+						new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()));
+						new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()));
+						new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue.intValue()));
 			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()),
-						new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()));
+						new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue.intValue()));
 			}
 		} else if (atdItemCon.erAlCompareSingle != null) {
 			if (atdItemCon.erAlCompareSingle.conditionType.intValue() == ConditionType.FIXED_VALUE.value) {
@@ -196,7 +195,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			} else {
 				atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
 						atdItemCon.erAlCompareSingle.conditionType.intValue(),
-						atdItemCon.erAlSingleFixed.fixedValue.intValue());
+						atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId.intValue());
 			}
 		}
 		return atdItemConDomain;
@@ -289,8 +288,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			}
 		}
 		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, new BigDecimal(erAlAtdItemCon.getConditionAtr().value),
-				new BigDecimal(1), lstAtdItemTarget, erAlCompareSingle, erAlCompareRange, erAlSingleFixed,
-				erAlSingleAtd);
+				new BigDecimal(erAlAtdItemCon.getUseAtr() ? 1 : 0), lstAtdItemTarget, erAlCompareSingle,
+				erAlCompareRange, erAlSingleFixed, erAlSingleAtd);
 	}
 
 	public static KwrmtErAlWorkRecord fromDomain(ErrorAlarmWorkRecord domain) {
@@ -308,7 +307,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		BigDecimal errorDisplayItem = domain.getErrorDisplayItem();
 		String eralCheckId = domain.getErrorAlarmCheckID();
 		List<KrcstErAlApplication> krcstErAlApplication = domain.getLstApplication().stream()
-				.map(appTypeCd -> new KrcstErAlApplication(new KrcstErAlApplicationPK(domain.getCompanyId(),
+				.map(appTypeCd -> new KrcstErAlApplication(new KrcstErAlApplicationPK(AppContexts.user().companyId(),
 						domain.getCode().v(), new BigDecimal(appTypeCd))))
 				.collect(Collectors.toList());
 		String cancelRoleId = domain.getCancelRoleId();
@@ -348,7 +347,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		BigDecimal wtActualFilterAtr = new BigDecimal(0);
 		List<KrcstErAlWtPlan> lstWtPlan = new ArrayList<>();
 		List<KrcstErAlWtActual> lstWtActual = new ArrayList<>();
-		if (wtCompareAtr.intValue() == 0) {
+		if (wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
 			PlanActualWorkType wtypeCondition = (PlanActualWorkType) domain.getErrorAlarmCondition()
 					.getWorkTypeCondition();
 			wtPlanActualOperator = new BigDecimal(wtypeCondition.getOperatorBetweenPlanActual().value);
@@ -377,7 +376,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		BigDecimal whActualFilterAtr = new BigDecimal(0);
 		List<KrcstErAlWhPlan> lstWhPlan = new ArrayList<>();
 		List<KrcstErAlWhActual> lstWhActual = new ArrayList<>();
-		if (whCompareAtr.intValue() == 0) {
+		if (whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
 			PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) domain.getErrorAlarmCondition()
 					.getWorkTimeCondition();
 			whPlanActualOperator = new BigDecimal(wtimeCondition.getOperatorBetweenPlanActual().value);
@@ -399,6 +398,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		// Set attendance item condition
 		BigDecimal operatorBetweenGroups = new BigDecimal(
 				domain.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups().value);
+		BigDecimal group2UseAtr = new BigDecimal(
+				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2UseAtr() ? 1 : 0);
 		String atdItemConditionGroup1 = domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1()
 				.getAtdItemConGroupId();
 		String atdItemConditionGroup2 = domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2()
@@ -424,7 +425,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				filterByClassification, lstClassification, workTypeUseAtr, wtPlanActualOperator, wtPlanFilterAtr,
 				wtActualFilterAtr, wtCompareAtr, lstWtActual, lstWtPlan, workingHoursUseAtr, whPlanActualOperator,
 				whPlanFilterAtr, whActualFilterAtr, whCompareAtr, lstWhActual, lstWhPlan, operatorBetweenGroups,
-				atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2, krcstErAlConGroup2);
+				group2UseAtr, atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2, krcstErAlConGroup2);
 		KwrmtErAlWorkRecord entity = new KwrmtErAlWorkRecord(kwrmtErAlWorkRecordPK, errorAlarmName, fixedAtr, useAtr,
 				typeAtr, boldAtr, messageColor, cancelableAtr, errorDisplayItem, eralCheckId, krcmtErAlCondition,
 				krcstErAlApplication, cancelRoleId);
@@ -459,7 +460,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		// Set WorkTypeCondition
 		condition.createWorkTypeCondition(entity.krcmtErAlCondition.workTypeUseAtr.intValue() == 1,
 				entity.krcmtErAlCondition.wtCompareAtr.intValue());
-		if (entity.krcmtErAlCondition.wtCompareAtr.intValue() == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (entity.krcmtErAlCondition.wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
 			condition.setWorkTypePlan(entity.krcmtErAlCondition.wtPlanFilterAtr.intValue() == 1,
 					Optional.ofNullable(entity.krcmtErAlCondition.lstWtPlan).orElse(Collections.emptyList()).stream()
 							.map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode).collect(Collectors.toList()));
@@ -475,7 +476,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		// Set WorkTimeCondtion
 		condition.createWorkTimeCondition(entity.krcmtErAlCondition.workingHoursUseAtr.intValue() == 1,
 				entity.krcmtErAlCondition.whCompareAtr.intValue());
-		if (entity.krcmtErAlCondition.whCompareAtr.intValue() == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (entity.krcmtErAlCondition.whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
 			condition.setWorkTimePlan(entity.krcmtErAlCondition.whPlanFilterAtr.intValue() == 1,
 					Optional.ofNullable(entity.krcmtErAlCondition.lstWhPlan).orElse(Collections.emptyList()).stream()
 							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
@@ -499,12 +500,14 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).lstAtdItemCon.stream()
 						.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon))
 						.collect(Collectors.toList());
-		condition.createAttendanceItemCondition(entity.krcmtErAlCondition.operatorBetweenGroups.intValue())
+		condition
+				.createAttendanceItemCondition(entity.krcmtErAlCondition.operatorBetweenGroups.intValue(),
+						entity.krcmtErAlCondition.group2UseAtr.intValue() == 1)
 				.setAttendanceItemConditionGroup1(Optional.ofNullable(entity.krcmtErAlCondition.krcstErAlConGroup1)
 						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
 								.intValue(),
 						conditionsGroup1)
-				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcmtErAlCondition.krcstErAlConGroup1)
+				.setAttendanceItemConditionGroup2(Optional.ofNullable(entity.krcmtErAlCondition.krcstErAlConGroup2)
 						.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
 								.intValue(),
 						conditionsGroup2);

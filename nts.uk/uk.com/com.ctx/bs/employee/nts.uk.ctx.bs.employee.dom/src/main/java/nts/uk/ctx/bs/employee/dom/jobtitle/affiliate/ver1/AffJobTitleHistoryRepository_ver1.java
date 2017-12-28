@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -24,9 +25,11 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	
 	// get listbypid
 	Optional<AffJobTitleHistory_ver1> getListBySid(String cid, String sid);
+	
+	Optional<AffJobTitleHistory_ver1> getListBySidDesc(String cid, String sid);
 
 	/**
-	 * ドメインモデル「職務職位」を新規登録する
+	 * ドメインモッ�「�務�位」を新規登録する
 	 * 
 	 * @param item
 	 * @param sid
@@ -35,16 +38,38 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	void add(String cid, String sid, DateHistoryItem item);
 
 	/**
-	 * 取得した「職務職位」を更新する
+	 * 取得した「�務�位」を更新する
 	 * 
 	 * @param item
 	 */
 	void update(DateHistoryItem item);
 
 	/**
-	 * ドメインモデル「職務職位」を削除する
+	 * ドメインモッ�「�務�位」を削除する
 	 * 
 	 * @param histId
 	 */
 	void delete(String histId);
+	
+	List<AffJobTitleHistory_ver1> getAllBySid(String sid);
+	
+	Optional<AffJobTitleHistory_ver1> getListByHidSid(String hid, String sid);
+	
+	/**
+	 * Search job title history.
+	 *
+	 * @param baseDate the base date
+	 * @param employeeId the employee id
+	 * @return the list
+	 */
+	List<AffJobTitleHistory_ver1> searchJobTitleHistory(GeneralDate baseDate, List<String> employeeId);
+	
+	 /**
+ 	 * Find all job title history.
+ 	 *
+ 	 * @param baseDate the base date
+ 	 * @param employeeIds the employee ids
+ 	 * @return the list
+ 	 */
+ 	List<AffJobTitleHistory_ver1> findAllJobTitleHistory(GeneralDate baseDate, List<String> employeeIds) ;
 }

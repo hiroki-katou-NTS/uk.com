@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecordPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -49,6 +50,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		KwrmtErAlWorkRecord targetEntity = this.queryProxy()
 				.find(new KwrmtErAlWorkRecordPK(domain.getCompanyId(), domain.getCode().v()), KwrmtErAlWorkRecord.class)
 				.get();
+		domain.setCheckId(targetEntity.eralCheckId);
 		KwrmtErAlWorkRecord domainAfterConvert = KwrmtErAlWorkRecord.fromDomain(domain);
 		targetEntity.eralCheckId = domainAfterConvert.eralCheckId;
 		targetEntity.boldAtr = domainAfterConvert.boldAtr;

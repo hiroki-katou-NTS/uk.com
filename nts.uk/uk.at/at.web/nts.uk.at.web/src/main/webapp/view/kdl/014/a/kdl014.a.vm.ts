@@ -56,7 +56,7 @@ module kdl014.a.viewmodel {
             self.employeeID = data.employeeID;
 
             //Set value for param display in screen.
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ～    ';
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '　～　';
             self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
             self.startEndDate = '' + self.startDate + '' + self.endDate;
             
@@ -74,7 +74,11 @@ module kdl014.a.viewmodel {
                 
                 if (lstStamp.length > 0) {
                     _.forEach(lstStamp, function(item) {
-                        lstSource.push(new StampModel(moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                        //When cardNumber != '';
+                        if(item.cardNumber != ''){
+                            lstSource.push(new StampModel(moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                        }
+                        
                         //Set employeeName by Dto of emloyeeName.
                         self.employeeName = item.pname;
                         self.employeeCode = item.employeeCode;

@@ -8,9 +8,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Stateless
 public class PerInfoInitValueSetItemFinder {
@@ -18,20 +20,26 @@ public class PerInfoInitValueSetItemFinder {
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 	@Inject
-	private SelectionRepository selectionRepo;
+	private ComboBoxRetrieveFactory comboBoxFactory;
 
 	public List<PerInfoInitValueSettingItemDto> getAllItem(String settingId, String perInfoCtgId) {
 
 		List<PerInfoInitValueSetItem> item = this.settingItemRepo.getAllItem(settingId, perInfoCtgId);
-//				.stream().filter(c -> (c.getDataType() != 0))
-//				.collect(Collectors.toList());
 		if (item != null) {
 			List<PerInfoInitValueSettingItemDto> itemDto = item.stream().map(c -> {
 				if (c.getDataType() == 6) {
 					PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
-					List<SelectionInitDto> selectionDto = this.selectionRepo
-							.getAllSelectionByHistoryId(c.getSelectionItemId(), GeneralDate.today()).stream()
-							.map(b -> SelectionInitDto.fromDomainSelection(b)).collect(Collectors.toList());
+					SelectionItemDto selectionItemDto = null;
+					if (dto.getSelectionItemRefType() == 1) {
+						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId());
+					} else if (dto.getSelectionItemRefType() == 2) {
+						selectionItemDto = SelectionItemDto.createCodeNameRefDto(dto.getSelectionItemId());
+					} else if (dto.getSelectionItemRefType() == 3) {
+						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId());
+					}
+					
+					List<ComboBoxObject> selectionDto =this.comboBoxFactory.getComboBox(selectionItemDto,  GeneralDate.today(), false);
+					
 					dto.setSelection(selectionDto);
 					return dto;
 				} else {
@@ -42,7 +50,7 @@ public class PerInfoInitValueSetItemFinder {
 			return itemDto;
 		}
 
-		return new ArrayList<>();
+		return new ArrayList<>();	
 	}
 
 }

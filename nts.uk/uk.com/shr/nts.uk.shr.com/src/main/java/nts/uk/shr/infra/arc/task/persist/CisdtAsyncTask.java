@@ -1,6 +1,8 @@
 package nts.uk.shr.infra.arc.task.persist;
 
 import java.io.Serializable;
+
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -15,6 +17,7 @@ import nts.arc.time.GeneralDateTime;
 
 @Entity
 @Table(name="CISDT_ASYNC_TASK")
+@Cacheable(false)
 public class CisdtAsyncTask implements Serializable {
 	
 	/** serialVersionUID */

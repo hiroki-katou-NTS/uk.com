@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,20 +39,20 @@ public class TemporaryDoubleStampChecking {
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks){
 				
 				if(timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp() >= 2){
-					if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(1)))) {
+					if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
 						attendanceItemIDList.add(51);
-					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(2)))) {
+					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
 						attendanceItemIDList.add(59);
-					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(3)))) {
+					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
 						attendanceItemIDList.add(67);
 					}
 				}				
 				if (timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp() >= 2) {
-					if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(1)))) {
+					if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
 						attendanceItemIDList.add(53);
-					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(2)))) {
+					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
 						attendanceItemIDList.add(61);
-					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo(new BigDecimal(3)))) {
+					} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
 						attendanceItemIDList.add(69);
 					}
 				}

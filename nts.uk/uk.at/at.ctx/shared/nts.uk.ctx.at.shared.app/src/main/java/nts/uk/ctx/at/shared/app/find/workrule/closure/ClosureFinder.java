@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workrule.closure;
@@ -12,7 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.BsEmploymentFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureCdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
@@ -20,7 +23,9 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.EmpCdNameDto;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -58,7 +63,7 @@ public class ClosureFinder {
 	 * 
 	 * @param referDate
 	 */
-	public ClosureEmployDto getClosureEmploy(int referDate) {
+	public ClosureEmployDto getClosureEmploy() {
 		// Get companyID.
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
@@ -72,16 +77,43 @@ public class ClosureFinder {
 		// Get List Closure Dom by company Id and UseAtr = 1. 就業の締めを取得する
 		List<Closure> listClosure = repository.findAllActive(companyId, UseClassification.UseClass_Use);
 		// Get List ClosureHistory Dom by companyID, closureID, startDay.
-		List<ClosureHistory> lstClosureHistory = new ArrayList<>();
+		List<ClosureCdNameDto> lstClosureCdName = new ArrayList<>();
 		listClosure.stream().forEach(x -> {
-			ClosureHistory closureInf = repository.findById(companyId, x.getClosureId().value, referDate).get();
-			lstClosureHistory.add(closureInf);
+			//取得したドメインモデル「締め」の基準日時点のドメインモデル「締め変更履歴」を取得する
+			//vi du
+			//期間：2018/02～2019/03
+			//締日：20
+			//2018/02/21～2019/03/20
+			//thi so sanh voi 2018/02/21<= 基準日 <= 2019/03/20
+			Optional<ClosureHistory> optClosureInf = repository.findBySelectedYearMonth(companyId, x.getClosureId().value, GeneralDate.today().yearMonth().v());
+			String formatDate = "yyyyMMdd";
+			if(optClosureInf.isPresent()) {
+				ClosureHistory closureInf = optClosureInf.get();
+				if(closureInf.getClosureDate().getLastDayOfMonth()) {
+					GeneralDate startDateTmp = GeneralDate.fromString(closureInf.getStartYearMonth().toString() + "01", formatDate);
+					GeneralDate startDate = startDateTmp.addMonths(1);
+					GeneralDate endDate = GeneralDate.today();
+					if(closureInf.getEndYearMonth().toString() == "999912") {
+						endDate = GeneralDate.fromString("99991231", formatDate);
+					}else {
+						endDate = GeneralDate.fromString(closureInf.getEndYearMonth().toString() + "01", formatDate).addMonths(1).addDays(-1);
+					}
+					if(startDate.addDays(1).before(GeneralDate.today()) && endDate.after(GeneralDate.today())) {
+						lstClosureCdName.add(ClosureCdNameDto.fromDomain(closureInf));
+					}
+					
+				}else {
+					String strClosureDay = StringUtils.leftPad(closureInf.getClosureDate().getClosureDay().toString(), 2, "0");
+					String strStartDate = closureInf.getStartYearMonth().v().toString().concat(strClosureDay);
+					GeneralDate startDate = GeneralDate.fromString(strStartDate, formatDate);
+					String strEndDate = closureInf.getEndYearMonth().v().toString().concat(strClosureDay);
+					GeneralDate endDate = GeneralDate.fromString(strEndDate, formatDate);
+					if(startDate.addDays(1).before(GeneralDate.today()) && endDate.after(GeneralDate.today())) {
+						lstClosureCdName.add(ClosureCdNameDto.fromDomain(closureInf));
+					}
+				}
+			}
 		});
-		//Get List ClosureCdName Dto from ClosureHistory Dom.
-		List<ClosureCdNameDto> closureCdNameDtoList = lstClosureHistory.stream().map(x ->{
-			return ClosureCdNameDto.fromDomain(x);
-		}).collect(Collectors.toList());
-
 		// Map list Employment Dto and list EmployClosure Dom. 取得した雇用コードをもとにドメイン「雇用に紐づく就業締め」を取得する
 		empCdNameDtoList.stream().forEach(x->{
 			Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, x.getCode());
@@ -92,7 +124,37 @@ public class ClosureFinder {
 			}
 		});
 		
-		return new ClosureEmployDto(empCdNameDtoList, closureCdNameDtoList);
+		return new ClosureEmployDto(empCdNameDtoList, lstClosureCdName);
+	}
+	
+	/**
+	 * Gets the closure id name.
+	 *
+	 * @return the closure id name
+	 */
+	public List<ClosureIdNameDto> getClosureIdName() {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Find All Closure in use
+		List<Closure> closureList = this.repository.findAllUse(companyId);
+		
+		// Get List ClosureHistory Domain by companyID, closureID, startDay.
+		List<ClosureHistory> lstClosureHistory = new ArrayList<>();
+		closureList.stream().forEach(x -> {
+			Optional<ClosureHistory> closureHist = repository.findBySelectedYearMonth(companyId, x.getClosureId().value,
+					GeneralDate.today().yearMonth().v());
+			if (closureHist.isPresent()) {
+				lstClosureHistory.add(closureHist.get());
+			}
+			
+		});
+		
+		// Get List ClosureIdNameDto from ClosureHistory Domain.
+		List<ClosureIdNameDto> closureIdNameDtoList = lstClosureHistory.stream().map(x -> {
+			return ClosureIdNameDto.fromDomain(x);
+		}).collect(Collectors.toList());
+		return closureIdNameDtoList;
 	}
 
 	/**
@@ -272,5 +334,58 @@ public class ClosureFinder {
 		}
 
 		return startDate;
+	}
+	
+	
+	/**
+	 * Find emp by closure id.
+	 *
+	 * @param closureId the closure id
+	 * @return the list
+	 */
+	public List<BsEmploymentFindDto> findEmpByClosureId(int closureId) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Get ClosureEmployment
+		List<ClosureEmployment> closureEmpList = this.closureEmpRepo.findByClosureId(companyId, closureId);
+		
+		// Get Employment Codes from ClosureEmployment acquired above
+		List<String> empCodes = closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
+				.collect(Collectors.toList());
+		
+		// Get Employment from employment code list above
+		List<BsEmploymentImport> empImportList = this.shareEmploymentAdapter.findByEmpCodes(companyId, empCodes);
+		
+		return empImportList.stream().map(e -> {
+			return new BsEmploymentFindDto(e.getEmploymentCode(), e.getEmploymentName(),
+					e.getEmpExternalCode(), e.getMemo());
+		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find emp by closure ids.
+	 *
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
+	public List<BsEmploymentFindDto> findEmpByClosureIds(List<Integer> closureIds) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Get ClosureEmployment
+		List<ClosureEmployment> closureEmpList = this.closureEmpRepo.findByClosureIds(companyId, closureIds);
+		
+		// Get Employment Codes from ClosureEmployment acquired above
+		List<String> empCodes = closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
+				.collect(Collectors.toList());
+		
+		// Get Employment from employment code list above
+		List<BsEmploymentImport> empImportList = this.shareEmploymentAdapter.findByEmpCodes(companyId, empCodes);
+		
+		return empImportList.stream().map(e -> {
+			return new BsEmploymentFindDto(e.getEmploymentCode(), e.getEmploymentName(),
+					e.getEmpExternalCode(), e.getMemo());
+		}).collect(Collectors.toList());
 	}
 }

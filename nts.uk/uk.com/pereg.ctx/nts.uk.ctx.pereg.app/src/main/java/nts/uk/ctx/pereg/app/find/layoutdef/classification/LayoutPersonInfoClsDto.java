@@ -29,6 +29,8 @@ public class LayoutPersonInfoClsDto {
 
 	private String personInfoCategoryCD;
 
+	private int ctgType;
+
 	private LayoutItemType layoutItemType;
 
 	// None require
@@ -61,13 +63,14 @@ public class LayoutPersonInfoClsDto {
 	}
 
 	public LayoutPersonInfoClsDto(String layoutID, int dispOrder, String personInfoCategoryID, int layoutItemType,
-			String personInfoCategoryCD) {
+			String personInfoCategoryCD, int ctgType) {
 		super();
 		this.layoutID = layoutID;
 		this.dispOrder = dispOrder;
 		this.personInfoCategoryID = personInfoCategoryID;
 		this.layoutItemType = EnumAdaptor.valueOf(layoutItemType, LayoutItemType.class);
 		this.personInfoCategoryCD = personInfoCategoryCD;
+		this.ctgType = ctgType;
 	}
 
 	public static LayoutPersonInfoClsDto fromDomain(LayoutPersonInfoClassification domain) {
@@ -77,7 +80,8 @@ public class LayoutPersonInfoClsDto {
 
 	public static LayoutPersonInfoClsDto fromDomainWithCtgCD(LayoutPersonInfoClassificationWithCtgCd domain) {
 		return new LayoutPersonInfoClsDto(domain.getLayoutID(), domain.getDispOrder().v(),
-				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value, domain.getPersonInfoCategoryCD());
+				domain.getPersonInfoCategoryID(), domain.getLayoutItemType().value, domain.getPersonInfoCategoryCD(),
+				domain.getCtgType());
 	}
 
 }

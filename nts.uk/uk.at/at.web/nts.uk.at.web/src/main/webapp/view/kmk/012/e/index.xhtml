@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 500, height: 600 };</script>
+				<script>var dialogSize = { width: 470, height: 570 };</script>
 				<com:stylefile path="kmk012.e.main.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kmk012.e.start.js" />
@@ -17,15 +17,15 @@
 	
 			<ui:define name="content">
 				<div id="contents-area">
-					<div id="label1" class="label">#{i18n.getText('KMK012_37')}</div>
+					<span id="lblTitle" class="label">#{i18n.getText('KMK012_37')}</span>
 					
-					<table id="grid2"></table>
+					<table id="gridData"></table>
 					
 				</div>
 				
 				<div id="functions-area-bottom">
-					<button id="button8" data-bind="click: insertDelArray">#{i18n.getText('KMK012_41')}</button>
-					<button id="button9" data-bind="click: closeWindowns">#{i18n.getText('KMK012_42')}</button>
+					<button id="btnRegistry">#{i18n.getText('KMK012_41')}</button>
+					<button id="btnClose" data-bind="click: closeWindowns">#{i18n.getText('KMK012_42')}</button>
 				</div>
 				
 			</ui:define>

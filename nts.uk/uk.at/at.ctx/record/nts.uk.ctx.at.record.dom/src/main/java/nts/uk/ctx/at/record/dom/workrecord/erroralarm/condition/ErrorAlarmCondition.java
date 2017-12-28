@@ -95,7 +95,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param comparePlanAndActual
 	 */
 	public void createWorkTypeCondition(boolean useAtr, int comparePlanAndActual) {
-		if (comparePlanAndActual == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (comparePlanAndActual != FilterByCompare.EXTRACT_SAME.value) {
 			this.workTypeCondition = PlanActualWorkType.init(useAtr, comparePlanAndActual);
 		} else {
 			this.workTypeCondition = SingleWorkType.init(useAtr, comparePlanAndActual);
@@ -142,7 +142,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param comparePlanAndActual
 	 */
 	public void createWorkTimeCondition(boolean useAtr, int comparePlanAndActual) {
-		if (comparePlanAndActual == FilterByCompare.DO_NOT_COMPARE.value) {
+		if (comparePlanAndActual != FilterByCompare.EXTRACT_SAME.value) {
 			this.workTimeCondition = PlanActualWorkTime.init(useAtr, comparePlanAndActual);
 		} else {
 			this.workTimeCondition = SingleWorkTime.init(useAtr, comparePlanAndActual);
@@ -188,8 +188,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param operatorBetweenGroups
 	 * @return itself
 	 */
-	public ErrorAlarmCondition createAttendanceItemCondition(int operatorBetweenGroups) {
-		this.atdItemCondition = AttendanceItemCondition.init(operatorBetweenGroups);
+	public ErrorAlarmCondition createAttendanceItemCondition(int operatorBetweenGroups, boolean group2UseAtr) {
+		this.atdItemCondition = AttendanceItemCondition.init(operatorBetweenGroups, group2UseAtr);
 		return this;
 	}
 

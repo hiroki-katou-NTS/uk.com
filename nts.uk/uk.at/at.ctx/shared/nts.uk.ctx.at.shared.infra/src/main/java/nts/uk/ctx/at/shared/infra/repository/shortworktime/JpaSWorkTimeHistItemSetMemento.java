@@ -78,13 +78,14 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 		for (SChildCareFrame schildCareFrame : lstTimeZone) {
 
 			BshmtSchildCareFramePK pk = new BshmtSchildCareFramePK(this.entity.getBshmtWorktimeHistItemPK().getSid(),
-					this.entity.getBshmtWorktimeHistItemPK().getHistId(), schildCareFrame.getStartTime().v());
-
-			BshmtSchildCareFrame newEntity = this.entity.getLstBshmtSchildCareFrame().stream().filter(
-					entity -> entity.getBshmtSchildCareFramePK().getStrClock() == schildCareFrame.getStartTime().v())
-					.findFirst().orElse(new BshmtSchildCareFrame(pk));
-			
-			newEntity.setTimeNo(schildCareFrame.getTimeSlot());
+					this.entity.getBshmtWorktimeHistItemPK().getHistId(), schildCareFrame.getTimeSlot());
+			BshmtSchildCareFrame newEntity = new BshmtSchildCareFrame(pk);
+			if (this.entity.getLstBshmtSchildCareFrame() != null){
+				newEntity = this.entity.getLstBshmtSchildCareFrame().stream().filter(
+						entity -> entity.getBshmtSchildCareFramePK().getTimeNo() == schildCareFrame.getTimeSlot())
+						.findFirst().orElse(new BshmtSchildCareFrame(pk));
+			}
+			newEntity.setStrClock(schildCareFrame.getStartTime().v());
 			newEntity.setEndClock(schildCareFrame.getEndTime().v());
 			
 			newListBshmtSchildCareFrame.add(newEntity);

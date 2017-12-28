@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscret
 import nts.uk.ctx.at.request.app.find.setting.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDefault;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
@@ -33,9 +34,6 @@ public class AppStampFinder {
 	
 	@Inject
 	private AppStampNewDomainService appStampNewDomainService;
-	
-	@Inject
-	private AppStampRepository appStampRepository;
 	
 	@Inject 
 	private AppStampCommonDomainService appStampCommonDomainService;
@@ -97,8 +95,8 @@ public class AppStampFinder {
 	
 	public AppStampDto getAppStampByID(String appID){
 		String companyID = AppContexts.user().companyId();
-		AppStamp appStamp = appStampRepository.findByAppID(companyID, appID);
-		String employee = appStampCommonDomainService.getEmployeeName(appStamp.getApplicantSID());
+		AppStamp appStamp = appStampCommonDomainService.findByID(companyID, appID);
+		String employee = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
 		return AppStampDto.convertToDto(appStamp, employee);
 	}
 }

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -54,7 +55,8 @@ public class UpdateWorkingConditionCommandHandler extends CommandHandler<UpdateW
 		if (!itemToBeUpdated.isPresent()){
 			throw new RuntimeException("Invalid item to be updated");
 		}
-		workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
+		GeneralDate endDate = command.getEndDate() !=null? command.getEndDate() : GeneralDate.max();
+		workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(command.getStartDate(), endDate));
 		
 		workingConditionRepository.save(workingCond);
 		

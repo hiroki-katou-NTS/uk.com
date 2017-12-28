@@ -3,6 +3,9 @@
  */
 package nts.uk.ctx.at.shared.app.find.shortworktime;
 
+import java.util.Optional;
+
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
@@ -14,6 +17,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
  * @author danpv
  *
  */
+@Setter
 public class ShortWorkTimeDto extends PeregDomainDto {
 
 	/**
@@ -91,16 +95,40 @@ public class ShortWorkTimeDto extends PeregDomainDto {
 		this.startTime2 = startTime2;
 		this.endTime2 = endTime2;
 	}
+	
+	public ShortWorkTimeDto(String historyId, String periodName, GeneralDate startDate, GeneralDate endDate,
+			int childCareAtr) {
+		super(historyId);
+		this.periodName = periodName;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.childCareAtr = childCareAtr;
+	}
 
 	public static ShortWorkTimeDto createShortWorkTimeDto(DateHistoryItem dateHitoryItem,
 			ShortWorkTimeHistoryItem shortTimeItem) {
-		SChildCareFrame firstTimeItem = shortTimeItem.getLstTimeSlot().stream().filter(slot -> slot.timeSlot == 1)
-				.findFirst().get();
-		SChildCareFrame secondTimeItem = shortTimeItem.getLstTimeSlot().stream().filter(slot -> slot.timeSlot == 2)
-				.findFirst().get();
-		return new ShortWorkTimeDto(dateHitoryItem.identifier(), null, dateHitoryItem.start(), dateHitoryItem.end(),
-				shortTimeItem.getChildCareAtr().value, null, firstTimeItem.startTime.v(), firstTimeItem.endTime.v(),
-				null, secondTimeItem.startTime.v(), secondTimeItem.endTime.v());
+		
+		Optional<SChildCareFrame> firstItemOpt = shortTimeItem.getLstTimeSlot().stream().filter(slot -> slot.timeSlot == 1)
+				.findFirst();
+		
+		Optional<SChildCareFrame> secondItemOpt = shortTimeItem.getLstTimeSlot().stream().filter(slot -> slot.timeSlot == 2)
+				.findFirst();
+		
+		ShortWorkTimeDto dto =  new ShortWorkTimeDto(dateHitoryItem.identifier(), null, dateHitoryItem.start(), dateHitoryItem.end(),
+				shortTimeItem.getChildCareAtr().value);
+		
+		if ( firstItemOpt.isPresent()) {
+			SChildCareFrame firstItem = firstItemOpt.get();
+			dto.setStartTime1(firstItem.getStartTime().v());
+			dto.setEndTime1(firstItem.getEndTime().v());
+		}
+		
+		if ( secondItemOpt.isPresent()) {
+			SChildCareFrame secondItem = secondItemOpt.get();
+			dto.setStartTime2(secondItem.getStartTime().v());
+			dto.setEndTime2(secondItem.getEndTime().v());
+		}
+		return dto;
 	}
 
 }

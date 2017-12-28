@@ -81,8 +81,7 @@ module nts.uk.at.view.kaf002.m2 {
                 } 
             }
             
-            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
-                nts.uk.ui.block.invisible();
+            register(application : vmbase.Application){
                 var self = this;
                 let command = {
                     appID: "",
@@ -96,24 +95,25 @@ module nts.uk.at.view.kaf002.m2 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: null,
-                    appApprovalPhaseCmds: approvalList   
+                    appStampOnlineRecordCmd: null 
                 }
-                service.insert(command)
-                .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
-                    });     
-                })
-                .fail(function(res) { 
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});  
-                }); 
+                if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
+                    nts.uk.ui.block.invisible();
+                    service.insert(command)
+                    .done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                            location.reload();
+                            $('.cm-memo').focus();
+                            nts.uk.ui.block.clear();
+                        });     
+                    })
+                    .fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});  
+                    }); 
+                }
             }
             
-            update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
-                nts.uk.ui.block.invisible();
+            update(application : vmbase.Application){
                 var self = this;
                 let command = {
                     version: application.version,
@@ -128,26 +128,28 @@ module nts.uk.at.view.kaf002.m2 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: null,
-                    appApprovalPhaseCmds: approvalList   
+                    appStampOnlineRecordCmd: null 
                 }
-                service.update(command)
-                .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
-                    });     
-                })
-                .fail(function(res) { 
-                    if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
+                    nts.uk.ui.block.invisible();
+                    service.update(command)
+                    .done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                             location.reload();
-                        });    
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
-                    }
-                });  
+                            $('.cm-memo').focus();
+                            nts.uk.ui.block.clear();
+                        });     
+                    })
+                    .fail(function(res) { 
+                        if(res.optimisticLock == true){
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                                location.reload();
+                            });    
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
+                        }
+                    });  
+                }
             }
             
             convertToJS(appStamp: KnockoutObservable<vmbase.AppStampWork>){
