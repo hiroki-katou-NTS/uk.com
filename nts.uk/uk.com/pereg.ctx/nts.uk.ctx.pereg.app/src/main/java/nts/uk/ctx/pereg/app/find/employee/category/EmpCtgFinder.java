@@ -121,11 +121,12 @@ public class EmpCtgFinder {
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
 				.get();
 		
-		//get combobox object
-		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
-			return getInfoListOfOptionalCtg(perInfoCtg, query);
 		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
 			return new ArrayList<>();
+		query.setCtgType(perInfoCtg.getCategoryType().value);
+		//get combobox object
+		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
+			return getInfoListOfOptionalCtg(perInfoCtg, query);		
 		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
 		return layoutingProcessor.getListFirstItems(query);
 	}
