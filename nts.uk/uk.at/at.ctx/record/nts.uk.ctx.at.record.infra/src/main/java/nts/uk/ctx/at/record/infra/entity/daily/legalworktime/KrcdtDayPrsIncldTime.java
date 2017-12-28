@@ -29,7 +29,7 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 	@Column(name = "WORK_TIME")
 	public int workTime;
 	/*実働就業時間*/
-	@Column(name = "ACT_WORK_TIME")
+	@Column(name = "PEFOM_WORK_TIME")
 	public int actWorkTime;
 	/*所定内割増時間*/
 	@Column(name = "PRS_INCLD_PRMIM_TIME")
