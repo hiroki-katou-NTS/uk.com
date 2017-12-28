@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
@@ -64,12 +65,11 @@ public class DeleteRoleCas005CommandHandler extends CommandHandler<DeleteRoleCas
 			//if roleSet 一般
 			if(assignAtr == RoleAtr.GENERAL.value) {
 				List<RoleSet> listRoleset = repoRoleSet.findByemploymentRoleId(roleId);
-				for(RoleSet roleSet : listRoleset) {
-					if(defaultRoleSetRepository.find(companyId, roleSet.getEmploymentRoleId()).isPresent()) {
-						throw new BusinessException("MSG_586");
-					}
+				DefaultRoleSet rolesetDefault = defaultRoleSetRepository.findByCompanyId(companyId).get();
+				boolean isSetAsDefault = listRoleset.stream().anyMatch(c -> c.getRoleSetCd().equals(rolesetDefault.getRoleSetCd()));
+				if(isSetAsDefault) {
+					throw new BusinessException("MSG_586");
 				}
-			//一般
 			}else {
 				List<RoleIndividualGrant> roleIndivi = roleIndividualGrantRepository.findByRoleId(roleId);
 				if(!roleIndivi.isEmpty()) {
