@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetP
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflect;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
@@ -43,6 +44,9 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	public JpaFixedWorkSettingSetMemento(KshmtFixedWorkSet entity) {
 		super();
 		this.entity = entity;
+		if (this.entity.getKshmtFixedWorkSetPK() == null) {
+			this.entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
+		}
 	}
 
 	/*
@@ -167,6 +171,9 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 		String workTimeCd = this.entity.getKshmtFixedWorkSetPK().getWorktimeCd();
 		
 		// get list entity
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedStampReflect())) {
+			this.entity.setLstKshmtFixedStampReflect(new ArrayList<>());
+		}
 		List<KshmtFixedStampReflect> lstStampReflect = this.entity.getLstKshmtFixedStampReflect();
 		
 		List<KshmtFixedStampReflect> newListStampReflect = new ArrayList<>();

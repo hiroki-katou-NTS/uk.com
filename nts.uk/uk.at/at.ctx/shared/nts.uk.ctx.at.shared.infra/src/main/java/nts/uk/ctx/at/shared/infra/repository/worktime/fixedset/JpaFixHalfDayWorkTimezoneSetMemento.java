@@ -32,10 +32,10 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	 */
 	public JpaFixHalfDayWorkTimezoneSetMemento(KshmtFixedWorkSet entity, AmPmAtr type) {
 		super();
-		if (entity.getKshmtFixedWorkSetPK() == null) {
-			entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
-		}
 		this.entity = entity;
+		if (this.entity.getKshmtFixedWorkSetPK() == null) {
+			this.entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
+		}	
 		this.type = type.value;
 	}
 

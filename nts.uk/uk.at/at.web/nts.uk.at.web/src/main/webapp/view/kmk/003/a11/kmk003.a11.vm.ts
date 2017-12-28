@@ -191,11 +191,13 @@ module a11 {
             if (nts.uk.util.isNullOrUndefined(workdayOffTimeSubstitutionSet)) {
                 workdayOffTimeSubstitutionSet = new WorkTimezoneOtherSubHolTimeSetModel();
                 workdayOffTimeSubstitutionSet.originAtr(OriginAtr.WORK_DAY_OFF_TIME);
+                subHolTimeSet.push(workdayOffTimeSubstitutionSet);
             }
             let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.FROM_OVER_TIME);
             if (nts.uk.util.isNullOrUndefined(fromOverTimeSubstitutionSet)) {
                 fromOverTimeSubstitutionSet = new WorkTimezoneOtherSubHolTimeSetModel();
                 fromOverTimeSubstitutionSet.originAtr(OriginAtr.FROM_OVER_TIME);
+                subHolTimeSet.push(fromOverTimeSubstitutionSet);
             }
 
             // Get model value into view model
