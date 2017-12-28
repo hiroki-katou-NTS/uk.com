@@ -30,10 +30,15 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         useCls04: KnockoutObservable<boolean>;
         useCls05: KnockoutObservable<boolean>;            
         conditionValue01: KnockoutObservable<string>;
+        showLblSet01: KnockoutObservable<boolean>;
         conditionValue02: KnockoutObservable<string>;
+        showLblSet02: KnockoutObservable<boolean>;
         conditionValue03: KnockoutObservable<string>;
+        showLblSet03: KnockoutObservable<boolean>;
         conditionValue04: KnockoutObservable<string>;
+        showLblSet04: KnockoutObservable<boolean>;
         conditionValue05: KnockoutObservable<string>;
+        showLblSet05: KnockoutObservable<boolean>;
         note: KnockoutObservable<string>;
         conditionValue02Enable: KnockoutObservable<boolean>;
         conditionValue03Enable: KnockoutObservable<boolean>;
@@ -63,6 +68,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             self.isNewMode = ko.observable(false);
             
+            self.showLblSet01 = ko.observable(false);
+            self.showLblSet02 = ko.observable(false);
+            self.showLblSet03 = ko.observable(false);
+            self.showLblSet04 = ko.observable(false);
+            self.showLblSet05 = ko.observable(false);
+            
             //Controls display
             self.controlsDisplay();
             
@@ -76,22 +87,10 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 self.isNewMode(true);
      
-                $('.a9_1').show();
-                $('.a9_2').show();
-                $('.a9_3').show();
-                $('.a9_4').show();
-                $('.a9_5').show();
-                
                 if(value.length > 0){
                     service.findByCode(value).done(function(data) {
                         self.editMode(false);
-                        
-                        if(data.grantConditions.length > 0) {
-                            for(var i = 0; i < data.grantConditions.length; i++) {
-                                self.getGHTdata(data.grantConditions[i].conditionNo, data.grantConditions[i].yearHolidayCode);                                
-                            }
-                        }
-                        
+                                                
                         self.code(data.yearHolidayCode);
                         self.name(data.yearHolidayName);
                         self.A6_2SelectedRuleCode(data.standardCalculation);  
@@ -107,7 +106,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.useCls04(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1 ? true : false);
                         self.conditionValue04(data.grantConditions[3] && data.grantConditions[3].conditionValue.toString());
                         self.useCls05(data.grantConditions[4] && data.grantConditions[4].useConditionAtr == 1 ? true : false);
-                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());       
+                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());      
+                        self.showLblSet01(data.grantConditions[0] ? data.grantConditions[0].hadSet : false);
+                        self.showLblSet02(data.grantConditions[1] ? data.grantConditions[1].hadSet : false);
+                        self.showLblSet03(data.grantConditions[2] ? data.grantConditions[2].hadSet : false);
+                        self.showLblSet04(data.grantConditions[3] ? data.grantConditions[3].hadSet : false);
+                        self.showLblSet05(data.grantConditions[4] ? data.grantConditions[4].hadSet : false); 
                         self.setFocus();             
                     }).fail(function(res) {
                           
@@ -141,6 +145,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                                 
                 if (self.items().length > 0) {
                     self.singleSelectedCode(self.items()[0].code);
+                } else {
+                    self.cleanForm();    
                 }
                 
                 dfd.resolve();
@@ -169,49 +175,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             });
             
             return dfd.promise();
-        }
-        
-        getGHTdata(conditionNo: number, yearHolidayCode: string) {
-            var self = this;
-            
-            service.findGrantHolidayTblByCodes(conditionNo, yearHolidayCode).done(function(data) {
-                if(data.length > 0) {
-                    self.grantHTData = data;
-                    
-                    _.forEach(self.grantHTData, function(item) {
-                        if(item.conditionNo === 1){
-                            $('.a9_1').hide();
-                        } else {
-                            $('.a9_1').show();
-                        }
-                        
-                        if(item.conditionNo === 2){
-                            $('.a9_2').hide();
-                        } else {
-                            $('.a9_2').show();
-                        }
-                        
-                        if(item.conditionNo === 3){
-                            $('.a9_3').hide();
-                        } else {
-                            $('.a9_3').show();
-                        }
-                        
-                        if(item.conditionNo === 4){
-                            $('.a9_4').hide();
-                        } else {
-                            $('.a9_4').show();
-                        }
-                        
-                        if(item.conditionNo === 5){
-                            $('.a9_5').hide();
-                        } else {
-                            $('.a9_5').show();
-                        }
-                    });
-                }
-            }).fail(function(res) {
-            });
         }
         
         /**
@@ -258,6 +221,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.btnSetting03Enable(false);
             self.btnSetting04Enable(false);
             self.btnSetting05Enable(false); 
+            self.showLblSet01(false);
+            self.showLblSet02(false);
+            self.showLblSet03(false);
+            self.showLblSet04(false);
+            self.showLblSet05(false);
             
             //Grid data
             self.singleSelectedCode([]);
@@ -270,9 +238,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         setFocus() {
             var self = this;
             if (self.editMode()) {
-                $("#input-code").focus();
+                setTimeout(function() { $('#input-code').focus() }, 500);
             } else {
-                $("#input-name").focus();    
+                setTimeout(function() { $('#input-name').focus() }, 500);    
             }   
         }
         
@@ -308,7 +276,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 1,
                     yearHolidayCode: code,
                     useConditionAtr: 1,
-                    conditionValue: Number(self.conditionValue01())
+                    conditionValue: Number(self.conditionValue01()),
+                    hadSet: false
                 }));
             } else {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -320,7 +289,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 2,
                     yearHolidayCode: code,
                     useConditionAtr: self.useCls02() == true ? 1 : 0,
-                    conditionValue: Number(self.conditionValue02())
+                    conditionValue: Number(self.conditionValue02()),
+                    hadSet: false
                 }));
             } else if(self.useCls02() && self.conditionValue02().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -332,7 +302,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 3,
                     yearHolidayCode: code,
                     useConditionAtr: self.useCls03() == true ? 1 : 0,
-                    conditionValue: Number(self.conditionValue03())
+                    conditionValue: Number(self.conditionValue03()),
+                    hadSet: false
                 }));
             } else if(self.useCls03() && self.conditionValue03().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -344,7 +315,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 4,
                     yearHolidayCode: code,
                     useConditionAtr: self.useCls04() == true ? 1 : 0,
-                    conditionValue: Number(self.conditionValue04())
+                    conditionValue: Number(self.conditionValue04()),
+                    hadSet: false
                 }));
             } else if(self.useCls04() && self.conditionValue04().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -356,7 +328,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 5,
                     yearHolidayCode: code,
                     useConditionAtr: self.useCls05() == true ? 1 : 0,
-                    conditionValue: Number(self.conditionValue05())
+                    conditionValue: Number(self.conditionValue05()),
+                    hadSet: false
                 }));
             } else if(self.useCls05() && self.conditionValue05().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -829,11 +802,13 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         conditionNo: number;
         conditionValue: number;
         useConditionAtr: number; 
+        hadSet: boolean;
         constructor(param: IGrantCondition) {
             this.yearHolidayCode = param.yearHolidayCode;
             this.conditionNo = param.conditionNo;
             this.conditionValue = param.conditionValue;
             this.useConditionAtr = param.useConditionAtr;       
+            this.hadSet = param.hadSet;
         }
     }
     
@@ -841,6 +816,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         yearHolidayCode: string;
         conditionNo: number;
         conditionValue: number;
-        useConditionAtr: number;     
+        useConditionAtr: number;    
+        hadSet: boolean; 
     }
 }

@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 #contents-area {
-	padding: 20px;
+    padding: 19px 10px 0 20px;
 }
 
 .grid-area, .input-form, .a4_2, .a5_1 {
