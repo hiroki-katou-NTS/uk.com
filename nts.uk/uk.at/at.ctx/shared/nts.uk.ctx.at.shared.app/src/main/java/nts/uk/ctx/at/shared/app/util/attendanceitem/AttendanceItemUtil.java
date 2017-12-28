@@ -319,7 +319,7 @@ public class AttendanceItemUtil {
 			return Collections.emptyList();
 //			throw new NotFoundException("Item id not found exception!!!");
 		}
-		int itemId = valueType.getIdFromUtil() ? 0 : itemIds.get(idx);
+		int itemId = valueType.getIdFromUtil() ? itemIds.get(0) : itemIds.get(idx);
 		System.out.println("id:"+ itemId);
 		if (value != null && (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemId))) {
 			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), itemId);
