@@ -123,20 +123,19 @@ module nts.uk.at.view.kmk003.a {
                 
                 constructor() {
                     super();
-                    this.lstTimezone = ko.observableArray([]);
+                    this.lstTimezone = this.originalList;
                 }
 
-                toListTimeRange(): KnockoutObservableArray<KnockoutObservable<TimeRangeModel>> {
+                toListTimeRange(): Array<TimeRangeModel> {
                     let self = this;
-                    let mapped = ko.observableArray(_.map(self.lstTimezone(), tz => self.toTimeRangeItem(tz.start(), tz.end())));
-                    return mapped;
+                    return _.map(self.lstTimezone(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
                 }
 
-                fromListTimeRange(newList: Array<KnockoutObservable<TimeRangeModel>>): Array<DeductionTimeModel> {
+                fromListTimeRange(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
                     return _.map(newList, newVl => {
                         let vl = new DeductionTimeModel();
-                        vl.start(newVl().startTime);
-                        vl.end(newVl().endTime);
+                        vl.start(newVl.column1().startTime);
+                        vl.end(newVl.column1().endTime);
                         return vl;
                     });
                 }

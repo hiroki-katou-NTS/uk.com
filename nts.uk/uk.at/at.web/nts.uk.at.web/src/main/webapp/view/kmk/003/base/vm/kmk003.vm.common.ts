@@ -544,16 +544,71 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class TimeRangeModel {
+                column1: KnockoutObservable<TimeRange>;
+            }
+
+            export class TimeRange {
                 startTime: number;
                 endTime: number;
             }
 
             export abstract class TimeRangeModelConverter<T> {
-                abstract toListTimeRange(): KnockoutObservableArray<KnockoutObservable<TimeRangeModel>>;
-                abstract fromListTimeRange(newList: Array<KnockoutObservable<TimeRangeModel>>): Array<T>;
+                listTimeRange: KnockoutObservableArray<TimeRangeModel>;
+                originalList: KnockoutObservableArray<T>;
+                originalListTemp: Array<T>;
+                listTimeRangeTemp: Array<TimeRangeModel>;
 
-                public toTimeRangeItem(start: number, end: number): KnockoutObservable<TimeRangeModel> {
-                    return ko.observable({ startTime: start, endTime: end });
+                constructor() {
+                    this.listTimeRange = ko.observableArray([]);
+                    this.originalList = ko.observableArray([]);
+                    this.originalListTemp = [];
+                    this.listTimeRangeTemp = [];
+                    
+                    this.originalList.subscribe(newList => {
+                        if (this.isNotEqual(newList, this.originalListTemp)) {
+                            this.originalListTemp = _.sortBy(newList, i => i);
+                            this.listTimeRange(this.toListTimeRange());
+                        }
+                    });
+
+                    this.listTimeRange.subscribe(newList => {
+                        if (this.isNotEqual(newList, this.listTimeRangeTemp)) {
+                            this.listTimeRangeTemp = _.sortBy(newList, i => i);
+                            this.originalList(this.fromListTimeRange(newList));
+                        }
+                    });
+                    
+                }
+
+                /**
+                 * Evaluate 2 arrays
+                 */
+                private isNotEqual(value: Array<any>, other: Array<any>): boolean {
+                    // check length
+                    if (value.length != other.length) {
+                        return true;
+                    }
+                    // check value
+                    return _.some(value, vl => {
+                        !_.isMatch(vl, other);
+                    });
+                }
+
+                /**
+                 * Convert to list time range
+                 */
+                abstract toListTimeRange(): Array<TimeRangeModel>;
+
+                /**
+                 * Revert to original list
+                 */
+                abstract fromListTimeRange(newList: Array<TimeRangeModel>): Array<T>;
+
+                /**
+                 * Convert to TimeRangeItem
+                 */
+                public toTimeRangeItem(start: number, end: number): TimeRangeModel {
+                    return { column1: ko.observable({ startTime: start, endTime: end }) };
                 }
             }
 
@@ -585,20 +640,19 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     super();
-                    this.timezones = ko.observableArray([]);
+                    this.timezones = this.originalList;
                 }
 
-                toListTimeRange(): KnockoutObservableArray<KnockoutObservable<TimeRangeModel>> {
+                toListTimeRange(): Array<TimeRangeModel> {
                     let self = this;
-                    let mapped = ko.observableArray(_.map(self.timezones(), tz => self.toTimeRangeItem(tz.start(), tz.end())));
-                    return mapped;
+                    return _.map(self.timezones(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
                 }
 
-                fromListTimeRange(newList: Array<KnockoutObservable<TimeRangeModel>>): Array<DeductionTimeModel> {
+                fromListTimeRange(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
                     return _.map(newList, newVl => {
                         let vl = new DeductionTimeModel();
-                        vl.start(newVl().startTime);
-                        vl.end(newVl().endTime);
+                        vl.start(newVl.column1().startTime);
+                        vl.end(newVl.column1().endTime);
                         return vl;
                     });
                 }

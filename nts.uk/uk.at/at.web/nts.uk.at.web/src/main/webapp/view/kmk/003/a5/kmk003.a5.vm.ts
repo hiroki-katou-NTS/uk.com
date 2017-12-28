@@ -85,44 +85,27 @@ module a5 {
 
         constructor(valueAccessor: any) {
             let self = this;
-            let mainSettingModel: MainSettingModel = valueAccessor.mainSettingModel;
-
-            // nts fix table data source
-            self.oneDayFlexTimezones = ko.observableArray([]);self.oneDayFlexTimezones.subscribe(vl => console.log(vl));
-            self.morningFlexTimezones = ko.observableArray([]);
-            self.afternoonFlexTimezones = ko.observableArray([]);
-            self.oneDayFixedTimezones = ko.observableArray([]);self.oneDayFixedTimezones.subscribe(vl => console.log(vl));
-            self.morningFixedTimezones = ko.observableArray([]);
-            self.afternoonFixedTimezones = ko.observableArray([]);
-            self.oneDayDiffTimezones = ko.observableArray([]);
-            self.morningDiffTimezones = ko.observableArray([]);
-            self.afternoonDiffTimezones = ko.observableArray([]);
-            self.flowTimezones = ko.observableArray([]);
-
-            // flex rest set initial value
-            self.oneDayFlexRestSet = new FlowRestTimezoneModel();
-            self.morningFlexRestSet = new FlowRestTimezoneModel();
-            self.afternoonFlexRestSet = new FlowRestTimezoneModel();
-
-            // flow rest set initial value
-            self.flowRestSet = new FlowRestTimezoneModel();
-
             // switch button
             self.switchDs = [
                 { code: true, name: nts.uk.resource.getText("KMK003_142") },
                 { code: false, name: nts.uk.resource.getText("KMK003_143") }
             ];
+
+            // flag
             self.flexFixedRestTime = ko.observable(true); // initial value = lead
             self.flowFixedRestTime = ko.observable(true); // initial value = lead
+
+            // load data from main setting model
+            self.loadData(valueAccessor.mainSettingModel);
 
             // fix table option
             self.setFixedTableOption();
 
-            // load data from main setting model
-            self.loadData(mainSettingModel);
-
         }
 
+        /**
+         * Load data from main screen
+         */
         public loadData(mainSettingModel: MainSettingModel): void {
             let self = this;
 
@@ -137,24 +120,18 @@ module a5 {
             let fixedAfternoon = mainSettingModel.fixedWorkSetting.getHDWtzAfternoon();
 
             // set flex timezones
-            self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.toListTimeRange();
-            self.oneDayFlexTimezones.subscribe(vl => flexOneday.restTimezone.fixedRestTimezone.fromListTimeRange(vl));
+            self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.listTimeRange;
 
-            self.morningFlexTimezones = flexMorning.restTimezone.fixedRestTimezone.toListTimeRange();
-            self.morningFlexTimezones.subscribe(vl => flexMorning.restTimezone.fixedRestTimezone.fromListTimeRange(vl));
+            self.morningFlexTimezones = flexMorning.restTimezone.fixedRestTimezone.listTimeRange;
 
-            self.afternoonFlexTimezones = flexAfternoon.restTimezone.fixedRestTimezone.toListTimeRange();
-            self.afternoonFlexTimezones.subscribe(vl => flexAfternoon.restTimezone.fixedRestTimezone.fromListTimeRange(vl));
+            self.afternoonFlexTimezones = flexAfternoon.restTimezone.fixedRestTimezone.listTimeRange;
 
             // set fixed timezones
-            self.oneDayFixedTimezones = fixedOneday.restTimezone.toListTimeRange();
-            self.oneDayFixedTimezones.subscribe(vl => fixedOneday.restTimezone.fromListTimeRange(vl));
+            self.oneDayFixedTimezones = fixedOneday.restTimezone.listTimeRange;
 
-            self.morningFixedTimezones = fixedMorning.restTimezone.toListTimeRange();
-            self.morningFixedTimezones.subscribe(vl => fixedMorning.restTimezone.fromListTimeRange(vl));
+            self.morningFixedTimezones = fixedMorning.restTimezone.listTimeRange;
 
-            self.afternoonFixedTimezones = fixedAfternoon.restTimezone.toListTimeRange();
-            self.afternoonFixedTimezones.subscribe(vl => fixedAfternoon.restTimezone.fromListTimeRange(vl));
+            self.afternoonFixedTimezones = fixedAfternoon.restTimezone.listTimeRange;
 
             // set flex rest set value
             self.oneDayFlexRestSet = flexOneday.restTimezone.flowRestTimezone;
