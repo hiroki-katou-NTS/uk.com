@@ -29,11 +29,11 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixedStampReflectTimezoneSetMemento(String companyId, String workTimeCd, KshmtFixedStampReflect entity) {
-		if (entity.getKshmtFixedStampReflectPK() == null) {
-			entity.setKshmtFixedStampReflectPK(new KshmtFixedStampReflectPK());
-		}
+	public JpaFixedStampReflectTimezoneSetMemento(String companyId, String workTimeCd, KshmtFixedStampReflect entity) {		
 		this.entity = entity;
+		if (this.entity.getKshmtFixedStampReflectPK() == null) {
+			this.entity.setKshmtFixedStampReflectPK(new KshmtFixedStampReflectPK());
+		}
 		this.entity.getKshmtFixedStampReflectPK().setCid(companyId);
 		this.entity.getKshmtFixedStampReflectPK().setWorktimeCd(workTimeCd);
 	}

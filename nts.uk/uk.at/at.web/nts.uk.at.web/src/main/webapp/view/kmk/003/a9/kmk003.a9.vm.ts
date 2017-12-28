@@ -187,11 +187,13 @@ module a9 {
             if (nts.uk.util.isNullOrUndefined(otherClassSetLate)) {
                 otherClassSetLate = new OtherEmTimezoneLateEarlySetModel();
                 otherClassSetLate.lateEarlyAtr(LateEarlyAtr.LATE);
+                otherClassSets.push(otherClassSetLate);
             }
             let otherClassSetLeaveEarly: OtherEmTimezoneLateEarlySetModel = _.find(otherClassSets, (o) => o.lateEarlyAtr() === LateEarlyAtr.EARLY);
             if (nts.uk.util.isNullOrUndefined(otherClassSetLeaveEarly)) {
                 otherClassSetLeaveEarly = new OtherEmTimezoneLateEarlySetModel();
                 otherClassSetLeaveEarly.lateEarlyAtr(LateEarlyAtr.EARLY);
+                otherClassSets.push(otherClassSetLeaveEarly);
             }
             
             // Get model value into view model

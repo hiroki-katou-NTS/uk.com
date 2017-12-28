@@ -29,10 +29,10 @@ public class JpaFixOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZone
 	 */
 	public JpaFixOverTimeOfTimeZoneSetSetMemento(KshmtFixedOtTimeSet entity) {
 		super();
-		if (entity.getKshmtFixedOtTimeSetPK() == null) {
-			entity.setKshmtFixedOtTimeSetPK(new KshmtFixedOtTimeSetPK());
-		}
 		this.entity = entity;
+		if (this.entity.getKshmtFixedOtTimeSetPK() == null) {
+			this.entity.setKshmtFixedOtTimeSetPK(new KshmtFixedOtTimeSetPK());
+		}		
 	}
 
 	/*

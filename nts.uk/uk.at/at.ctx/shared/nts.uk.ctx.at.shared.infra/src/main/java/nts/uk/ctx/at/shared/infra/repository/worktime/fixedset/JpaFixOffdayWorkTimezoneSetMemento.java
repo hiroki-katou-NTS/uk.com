@@ -40,10 +40,10 @@ public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezone
 	 */
 	public JpaFixOffdayWorkTimezoneSetMemento(KshmtFixedWorkSet entity) {
 		super();
-		if (entity.getKshmtFixedWorkSetPK() == null) {
-			entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
-		}
 		this.entity = entity;
+		if (this.entity.getKshmtFixedWorkSetPK() == null) {
+			this.entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
+		}		
 		
 		// initial data
 		this.initialData();
@@ -73,10 +73,10 @@ public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezone
 			return;
 		}
 		// get list entity
-		List<KshmtFixedHolTimeSet> lstEntity = this.entity.getLstKshmtFixedHolTimeSet();
-		if (CollectionUtil.isEmpty(lstEntity)) {
-			lstEntity = new ArrayList<>();
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedHolTimeSet())) {
+			this.entity.setLstKshmtFixedHolTimeSet(new ArrayList<>());
 		}
+		List<KshmtFixedHolTimeSet> lstEntity = this.entity.getLstKshmtFixedHolTimeSet();
 		
 		List<KshmtFixedHolTimeSet> newListEntity = new ArrayList<>();
 		
