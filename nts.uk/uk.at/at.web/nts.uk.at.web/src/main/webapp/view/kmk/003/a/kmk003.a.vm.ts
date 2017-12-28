@@ -266,7 +266,7 @@ module nts.uk.at.view.kmk003.a {
                     self.isLoading(true);
                     self.mainSettingModel.isChangeItemTable.valueHasMutated();
                     dfd.resolve();
-                });
+                }).always(() => _.defer(() => nts.uk.ui.block.clear()));
                 return dfd.promise();
             }
             
