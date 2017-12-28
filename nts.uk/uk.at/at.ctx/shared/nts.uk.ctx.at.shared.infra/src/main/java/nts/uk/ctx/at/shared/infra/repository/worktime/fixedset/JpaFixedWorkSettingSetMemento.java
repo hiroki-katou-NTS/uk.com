@@ -43,6 +43,9 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 */
 	public JpaFixedWorkSettingSetMemento(KshmtFixedWorkSet entity) {
 		super();
+		if (entity.getKshmtFixedWorkSetPK() == null) {
+			entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
+		}
 		this.entity = entity;
 		if (this.entity.getKshmtFixedWorkSetPK() == null) {
 			this.entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());

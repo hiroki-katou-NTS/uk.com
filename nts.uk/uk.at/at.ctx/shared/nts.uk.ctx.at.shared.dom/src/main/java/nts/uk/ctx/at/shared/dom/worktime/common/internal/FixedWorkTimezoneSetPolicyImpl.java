@@ -42,7 +42,10 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 
 		// validate list OTtimezone
 		val emTimezone1 = fixedWtz.getLstWorkingTimezone().stream()
-				.filter(emTz -> emTz.getEmploymentTimeFrameNo().v() == 1).findFirst().get();
-		fixedWtz.getLstOTTimezone().forEach(otz -> this.otPolicy.validate(predTime, otz, emTimezone1));
+				.filter(emTz -> emTz.getEmploymentTimeFrameNo().v() == 1).findFirst();
+		if (!emTimezone1.isPresent()) {
+			return;
+		}
+		fixedWtz.getLstOTTimezone().forEach(otz -> this.otPolicy.validate(predTime, otz, emTimezone1.get()));
 	}
 }
