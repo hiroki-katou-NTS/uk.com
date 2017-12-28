@@ -1153,20 +1153,20 @@ module nts.uk.at.view.kmk003.a {
             export class WorkTimezoneExtraordTimeSetModel {
                 holidayFrameSet: HolidayFramsetModel;
                 timeRoundingSet: TimeRoundingSettingModel;
-                oTFrameSet: ExtraordWorkOTFrameSetModel;
+                otFrameSet: ExtraordWorkOTFrameSetModel;
                 calculateMethod: KnockoutObservable<number>;
 
                 constructor() {
                     this.holidayFrameSet = new HolidayFramsetModel();
                     this.timeRoundingSet = new TimeRoundingSettingModel();
-                    this.oTFrameSet = new ExtraordWorkOTFrameSetModel();
+                    this.otFrameSet = new ExtraordWorkOTFrameSetModel();
                     this.calculateMethod = ko.observable(0);
                 }
 
                 updateData(data: WorkTimezoneExtraordTimeSetDto) {
                     this.holidayFrameSet.updataData(data.holidayFrameSet);
                     this.timeRoundingSet.updateData(data.timeRoundingSet);
-                    this.oTFrameSet.updateData(data.oTFrameSet);
+                    this.otFrameSet.updateData(data.otFrameSet);
                     this.calculateMethod(data.calculateMethod);
                 }
 
@@ -1174,7 +1174,7 @@ module nts.uk.at.view.kmk003.a {
                     var dataDTO: WorkTimezoneExtraordTimeSetDto = {
                         holidayFrameSet: this.holidayFrameSet.toDto(),
                         timeRoundingSet: this.timeRoundingSet.toDto(),
-                        oTFrameSet: this.oTFrameSet.toDto(),
+                        otFrameSet: this.otFrameSet.toDto(),
                         calculateMethod: this.calculateMethod()
                     };
                     return dataDTO;

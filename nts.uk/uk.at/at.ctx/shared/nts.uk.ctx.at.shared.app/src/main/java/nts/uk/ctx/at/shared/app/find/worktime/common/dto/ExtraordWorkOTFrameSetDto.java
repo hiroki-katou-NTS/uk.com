@@ -17,8 +17,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 @Setter
 public class ExtraordWorkOTFrameSetDto implements ExtraordWorkOTFrameSetSetMemento {
 
-	/** The o T frame no. */
-	private Integer oTFrameNo;
+	/** The ot frame no. */
+	private Integer otFrameNo;
 
 	/** The in legal work frame no. */
 	private Integer inLegalWorkFrameNo;
@@ -40,7 +40,7 @@ public class ExtraordWorkOTFrameSetDto implements ExtraordWorkOTFrameSetSetMemen
 	 */
 	@Override
 	public void setOTFrameNo(OTFrameNo no) {
-		this.oTFrameNo = no.v();
+		this.otFrameNo = no.v();
 	}
 
 	/*

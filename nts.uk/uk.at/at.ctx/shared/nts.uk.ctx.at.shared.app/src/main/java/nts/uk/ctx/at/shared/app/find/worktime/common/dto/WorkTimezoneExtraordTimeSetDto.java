@@ -25,8 +25,8 @@ public class WorkTimezoneExtraordTimeSetDto implements WorkTimezoneExtraordTimeS
 	/** The time rounding set. */
 	private TimeRoundingSettingDto timeRoundingSet;
 
-	/** The OT frame set. */
-	private ExtraordWorkOTFrameSetDto oTFrameSet;
+	/** The ot frame set. */
+	private ExtraordWorkOTFrameSetDto otFrameSet;
 
 	/** The calculate method. */
 	private Integer calculateMethod;
@@ -34,7 +34,7 @@ public class WorkTimezoneExtraordTimeSetDto implements WorkTimezoneExtraordTimeS
 	public WorkTimezoneExtraordTimeSetDto() {
 		this.holidayFrameSet = new HolidayFramsetDto();
 		this.timeRoundingSet = new TimeRoundingSettingDto();
-		this.oTFrameSet = new ExtraordWorkOTFrameSetDto();
+		this.otFrameSet = new ExtraordWorkOTFrameSetDto();
 	}
 	
 	/*
@@ -71,7 +71,7 @@ public class WorkTimezoneExtraordTimeSetDto implements WorkTimezoneExtraordTimeS
 	 */
 	@Override
 	public void setOTFrameSet(ExtraordWorkOTFrameSet set) {
-		set.saveToMemento(this.oTFrameSet);
+		set.saveToMemento(this.otFrameSet);
 	}
 
 	/*

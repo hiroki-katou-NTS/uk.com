@@ -236,7 +236,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimezoneExtraordTimeSetDto {
                     holidayFrameSet: HolidayFramsetDto;
                     timeRoundingSet: TimeRoundingSettingDto;
-                    oTFrameSet: ExtraordWorkOTFrameSetDto;
+                    otFrameSet: ExtraordWorkOTFrameSetDto;
                     calculateMethod: number;
                 }
 
