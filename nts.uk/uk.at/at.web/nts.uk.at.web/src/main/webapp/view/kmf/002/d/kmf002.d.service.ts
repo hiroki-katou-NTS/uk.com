@@ -13,7 +13,7 @@ module nts.uk.at.view.kmf002.d {
          * 
          */
         export function save(year: number, data: any, empCd: string): JQueryPromise<any> {
-            model.EmploymentMonthDaySetting employmentMonthDaySetting = new model.EmploymentMonthDaySetting(year, empCd, new Array<model.PublicHolidayMonthSettingDto>);
+            model.EmploymentMonthDaySetting employmentMonthDaySetting = new model.EmploymentMonthDaySetting(year, empCd, new Array<model.PublicHolidayMonthSettingDto>());
             employmentMonthDaySetting.toDto(data);
             let command = {};
             command.year = year;

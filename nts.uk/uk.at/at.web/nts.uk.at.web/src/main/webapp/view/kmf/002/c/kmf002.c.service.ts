@@ -6,18 +6,18 @@ module nts.uk.at.view.kmf002.c {
         var path: any = {
                 save: "bs/employee/holidaysetting/employee/save",
                 find: "bs/employee/holidaysetting/employee/findEmployeeMonthDaySetting",
-                remove: "bs/employee/holidaysetting/employee/"
+                remove: "bs/employee/holidaysetting/employee/remove"
             };
         
         /**
          * 
          */
         export function save(year: number, data: any, sId: string): JQueryPromise<any> {
-            model.EmployeeMonthDaySetting employeeMonthDaySetting = new model.EmployeeMonthDaySetting(year, sId, new Array<model.PublicHolidayMonthSettingDto>);
+            model.EmployeeMonthDaySetting employeeMonthDaySetting = new model.EmployeeMonthDaySetting(year, sId, new Array<model.PublicHolidayMonthSettingDto>());
             employeeMonthDaySetting.toDto(data);
             let command = {};
             command.year = year;
-            command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettingDto;
+            command.publicHolidayMonthSettings = employeeMonthDaySetting.publicHolidayMonthSettingDto;
             command.sId = sId;
             return nts.uk.request.ajax("com", path.save, command);
         }
@@ -27,7 +27,6 @@ module nts.uk.at.view.kmf002.c {
         }
         
         export function remove(year: number, sId: string): JQueryPromise<any> {
-            model.EmployeeMonthDaySettingRemoveCommand employeeMonthDaySettingRemoveCommand = new model.EmployeeMonthDaySettingRemoveCommand(year, sId);
             let command = {};
             command.year = year;
             command.sId = sId;

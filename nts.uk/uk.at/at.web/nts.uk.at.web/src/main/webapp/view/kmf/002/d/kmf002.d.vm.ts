@@ -19,21 +19,21 @@ module nts.uk.at.view.kmf002.d {
 
             constructor() {
                 let _self = this;
-                _self.selectedCode = ko.observable('1');
+                _self.selectedCode = ko.observable();
                 _self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
                 _self.isShowAlreadySet = ko.observable(true);
                 _self.alreadySettingList = ko.observableArray([
                     { code: '1', isAlreadySetting: true },
                     { code: '2', isAlreadySetting: true }
                 ]);
-                _self.isDialog = ko.observable(true);
+                _self.isDialog = ko.observable(false);
                 _self.isShowNoSelectRow = ko.observable(false);
                 _self.isMultiSelect = ko.observable(false);
                 _self.listComponentOption = {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_FIRST_ITEM,
+                    selectType: SelectType.NO_SELECT,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
