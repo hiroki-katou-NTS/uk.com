@@ -3501,7 +3501,7 @@ var nts;
                 }
                 var titleMenu;
                 (function (titleMenu) {
-                    titleMenu.WIDTH = 180;
+                    titleMenu.WIDTH = 192;
                     titleMenu.FR = 20;
                     /**
                      * Create titles.
@@ -3547,7 +3547,7 @@ var nts;
                                         window.location.href = path;
                                     });
                                     $titleDiv.append($item);
-                                    height += 40;
+                                    height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
                                 });
                             }
                             maxHeight = Math.max(maxHeight, height);
