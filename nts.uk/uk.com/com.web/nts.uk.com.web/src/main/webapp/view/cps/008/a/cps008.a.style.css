@@ -99,3 +99,8 @@ i.icon.icon-searchbox {
     padding-top: 10px;
     box-sizing: border-box;
 }
+
+#contents-area{
+	min-width: 1200px;
+}
+
