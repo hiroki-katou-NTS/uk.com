@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-		<title>#{i18n.getText('CPS008_41')}</title>
+			<title>#{i18n.getText('CPS008_41')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 730,
@@ -27,7 +27,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="cf" data-bind="with: layout">
+				<div data-bind="with: layout">
 					<table class="table_content">
 						<colgroup>
 							<col width="150px" />
@@ -50,7 +50,8 @@
 								<div>#{i18n.getText('CPS008_34')}</div>
 							</td>
 							<td class="row_2">
-								<div data-bind="ntsFormLabel: {constraint: ['LayoutCode','LayoutName'], required: true}">
+								<div
+									data-bind="ntsFormLabel: {constraint: ['LayoutCode','LayoutName'], required: true}">
 									#{i18n.getText('CPS008_35')}</div>
 							</td>
 							<td class="row_2">
@@ -79,12 +80,10 @@
 					<div style="margin-left: 140px"
 						data-bind="ntsCheckBox: { checked: overrideMode, enable: true, text: '#{i18n.getText('CPS008_43')}' }"></div>
 				</div>
-				<div id="area-bottom">
-				<hr style="width: 100%"/>
-					<button class="x-large proceed" id="BTN_DECIDE"
-						data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
-					<button id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button>
-				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="x-large proceed" id="BTN_DECIDE" data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
+				<button id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

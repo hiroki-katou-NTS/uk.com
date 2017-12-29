@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 @Stateless
 public class ShortTimeOfDailyCommandUpdateHandler extends CommandFacade<ShortTimeOfDailyCommand> {
 
-	// TODO: create table and write repo
 	@Inject
 	private ShortTimeOfDailyPerformanceRepository repo;
 

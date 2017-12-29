@@ -1406,7 +1406,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 var objectName = {};
                                 objectName["Name" + self.attendenceId] = lst[0].name;
                                 var objectCode = {};
-                                objectCode["Code" + self.attendenceId] = lst[0].name;
+                                objectCode["Code" + self.attendenceId] = lst[0].code;
 
                                 $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
                                     $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)

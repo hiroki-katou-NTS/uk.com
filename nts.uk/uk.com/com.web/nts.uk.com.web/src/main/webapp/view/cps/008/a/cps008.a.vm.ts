@@ -294,7 +294,7 @@ module cps008.a.viewmodel {
 
                 if (dto && dto.length) {
                     layout.classifications.removeAll();
-                    _.each(dto, x => layout.classifications.push(x));
+                    _.each(dto, x => layout.classifications.push(_.omit(x, ["items"])));
                     layout.action(LAYOUT_ACTION.UPDATE);
                 }
 

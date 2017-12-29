@@ -16,9 +16,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
-import nts.uk.ctx.sys.gateway.dom.login.User;
-import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
@@ -32,7 +32,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 
 	/** The user repository. */
 	@Inject
-	private UserRepository userRepository;
+	private UserAdapter userAdapter;
 
 	/** The employee code setting adapter. */
 	@Inject
@@ -65,7 +65,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		// Get domain 社員
 		EmployeeImport em = this.getEmployee(companyId, employeeCode);
 		// Get User by PersonalId
-		User user = this.getUser(em.getPersonalId());
+		UserImport user = this.getUser(em.getPersonalId());
 		// check password
 		this.compareHashPassword(user, password);
 		// check time limit
@@ -160,8 +160,8 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @param personalId the personal id
 	 * @return the user
 	 */
-	private User getUser(String personalId) {
-		Optional<User> user = userRepository.getByAssociatedPersonId(personalId);
+	private UserImport getUser(String personalId) {
+		Optional<UserImport> user = userAdapter.findUserByAssociateId(personalId);
 		if (user.isPresent()) {
 			return user.get();
 		} else {
@@ -175,8 +175,8 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @param user the user
 	 * @param password the password
 	 */
-	private void compareHashPassword(User user, String password) {
-		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword().v())) {
+	private void compareHashPassword(UserImport user, String password) {
+		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
 			throw new BusinessException("Msg_302");
 		}
 	}
@@ -186,7 +186,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(User user) {
+	private void checkLimitTime(UserImport user) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}
