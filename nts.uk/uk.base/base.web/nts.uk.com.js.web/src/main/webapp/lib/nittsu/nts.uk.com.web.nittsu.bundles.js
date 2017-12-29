@@ -3546,7 +3546,7 @@ var nts;
         var ui;
         (function (ui) {
             var errors;
-            (function (errors) {
+            (function (errors_1) {
                 var ErrorsViewModel = (function () {
                     function ErrorsViewModel(dialogOptions) {
                         var _this = this;
@@ -3555,11 +3555,11 @@ var nts;
                         this.errors.extend({ rateLimit: 1 });
                         this.gridErrors = ko.observableArray([]);
                         this.displayErrors = !uk.util.isNullOrUndefined(dialogOptions) && dialogOptions.forGrid ? this.gridErrors : this.errors;
-                        this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption(dialogOptions));
+                        this.option = ko.observable(ko.mapping.fromJS(new ui.option.ErrorDialogOption(dialogOptions)));
                         this.occurs = ko.computed(function () { return _this.errors().length !== 0 || _this.gridErrors().length !== 0; });
                         this.allResolved = $.Callbacks();
                         this.allCellsResolved = $.Callbacks();
-                        this.option.show.extend({ notify: "always" });
+                        this.option().show.extend({ notify: "always" });
                         this.errors.subscribe(function () {
                             if (_this.errors().length === 0) {
                                 _this.allResolved.fire();
@@ -3578,13 +3578,13 @@ var nts;
                         });
                     }
                     ErrorsViewModel.prototype.closeButtonClicked = function () {
-                        this.option.show(false);
+                        this.option().show(false);
                     };
                     ErrorsViewModel.prototype.open = function () {
-                        this.option.show(true);
+                        this.option().show(true);
                     };
                     ErrorsViewModel.prototype.hide = function () {
-                        this.option.show(false);
+                        this.option().show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
                         var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control)
@@ -3664,9 +3664,60 @@ var nts;
                             return false;
                         return true;
                     };
+                    ErrorsViewModel.prototype.stashMemento = function () {
+                        var memento = new ErrorViewModelMemento();
+                        memento.setErrors(ko.unwrap(this.errors));
+                        memento.setGridErrors(ko.unwrap(this.gridErrors));
+                        memento.option = ko.unwrap(this.option);
+                        memento.allResolved = this.allResolved;
+                        memento.allCellsResolved = this.allCellsResolved;
+                        memento.setErrorElements();
+                        this.clearError();
+                        return memento;
+                    };
+                    ErrorsViewModel.prototype.restoreFrom = function (memento) {
+                        this.errors(memento.errors);
+                        this.gridErrors(memento.gridErrors);
+                        this.option(memento.option);
+                        this.allResolved = memento.allResolved;
+                        this.allCellsResolved = memento.allCellsResolved;
+                        memento.restoreErrorElements();
+                    };
                     return ErrorsViewModel;
                 }());
-                errors.ErrorsViewModel = ErrorsViewModel;
+                errors_1.ErrorsViewModel = ErrorsViewModel;
+                var ErrorViewModelMemento = (function () {
+                    function ErrorViewModelMemento() {
+                    }
+                    ErrorViewModelMemento.prototype.setErrors = function (errors) {
+                        var _this = this;
+                        if (!_.isArray(errors)) {
+                            return;
+                        }
+                        this.errors = [];
+                        errors.forEach(function (e) {
+                            _this.errors.push(e);
+                        });
+                    };
+                    ErrorViewModelMemento.prototype.setGridErrors = function (gridErrors) {
+                        var _this = this;
+                        if (!_.isArray(gridErrors)) {
+                            return;
+                        }
+                        this.gridErrors = [];
+                        gridErrors.forEach(function (e) {
+                            _this.gridErrors.push(e);
+                        });
+                    };
+                    ErrorViewModelMemento.prototype.setErrorElements = function () {
+                        this.errorElements = $(".error").removeClass("error");
+                    };
+                    ErrorViewModelMemento.prototype.restoreErrorElements = function () {
+                        this.errorElements.addClass("error");
+                    };
+                    return ErrorViewModelMemento;
+                }());
+                errors_1.ErrorViewModelMemento = ErrorViewModelMemento;
                 var ErrorHeader = (function () {
                     function ErrorHeader(name, text, width, visible) {
                         this.name = name;
@@ -3676,52 +3727,52 @@ var nts;
                     }
                     return ErrorHeader;
                 }());
-                errors.ErrorHeader = ErrorHeader;
+                errors_1.ErrorHeader = ErrorHeader;
                 function errorsViewModel() {
                     return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
                 }
-                errors.errorsViewModel = errorsViewModel;
+                errors_1.errorsViewModel = errorsViewModel;
                 function show() {
                     errorsViewModel().open();
                 }
-                errors.show = show;
+                errors_1.show = show;
                 function hide() {
                     errorsViewModel().hide();
                 }
-                errors.hide = hide;
+                errors_1.hide = hide;
                 function add(error) {
                     errorsViewModel().addError(error);
                 }
-                errors.add = add;
+                errors_1.add = add;
                 function hasError() {
                     return errorsViewModel().hasError();
                 }
-                errors.hasError = hasError;
+                errors_1.hasError = hasError;
                 function clearAll() {
                     if (nts.uk.ui._viewModel !== undefined)
                         errorsViewModel().clearError();
                 }
-                errors.clearAll = clearAll;
+                errors_1.clearAll = clearAll;
                 function removeByElement($control) {
                     errorsViewModel().removeErrorByElement($control);
                 }
-                errors.removeByElement = removeByElement;
+                errors_1.removeByElement = removeByElement;
                 function getErrorByElement($element) {
                     return errorsViewModel().getErrorByElement($element);
                 }
-                errors.getErrorByElement = getErrorByElement;
+                errors_1.getErrorByElement = getErrorByElement;
                 function addCell(error) {
                     errorsViewModel().addCellError(error);
                 }
-                errors.addCell = addCell;
+                errors_1.addCell = addCell;
                 function removeCell($grid, rowId, columnKey) {
                     errorsViewModel().removeCellError($grid, rowId, columnKey);
                 }
-                errors.removeCell = removeCell;
+                errors_1.removeCell = removeCell;
                 function gridHasError() {
                     return errorsViewModel().gridHasError();
                 }
-                errors.gridHasError = gridHasError;
+                errors_1.gridHasError = gridHasError;
             })(errors = ui.errors || (ui.errors = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -5954,7 +6005,7 @@ var nts;
                                 $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
                             },
                             close: function (event) {
-                                bindingContext.$data.option.show(false);
+                                bindingContext.$data.option().show(false);
                             }
                         });
                     };
@@ -11343,6 +11394,8 @@ var nts;
         (function (ui_20) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
+                var errorMementos = {};
+                var currentTabIndex = undefined;
                 var ntsSideBar;
                 (function (ntsSideBar) {
                     ;
@@ -11408,6 +11461,13 @@ var nts;
                         control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
                         var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
                         if ($displayPanel.length > 0) {
+                            if (currentTabIndex !== undefined) {
+                                errorMementos[currentTabIndex] = ui.errors.errorsViewModel().stashMemento();
+                            }
+                            if (errorMementos[index] !== undefined) {
+                                ui.errors.errorsViewModel().restoreFrom(errorMementos[index]);
+                            }
+                            currentTabIndex = index;
                             $displayPanel.removeClass("disappear");
                             setErrorPosition($displayPanel);
                         }
@@ -19363,31 +19423,31 @@ var nts;
                     validation.formatTime = formatTime;
                 })(validation || (validation = {}));
                 var errors;
-                (function (errors_1) {
-                    errors_1.ERROR_CLS = "x-error";
-                    errors_1.ERRORS = "errors";
+                (function (errors_2) {
+                    errors_2.ERROR_CLS = "x-error";
+                    errors_2.ERRORS = "errors";
                     function add($grid, $cell, rowIdx, columnKey, innerIdx, value) {
                         if (any($cell, innerIdx))
                             return;
-                        var errors = $grid.data(errors_1.ERRORS);
+                        var errors = $grid.data(errors_2.ERRORS);
                         var newErr = new selection.Cell(rowIdx, columnKey, value, innerIdx);
                         if (!errors) {
                             errors = [newErr];
-                            $grid.data(errors_1.ERRORS, errors);
+                            $grid.data(errors_2.ERRORS, errors);
                         }
                         else {
                             errors.push(newErr);
                         }
                         if ($cell.is("td") && !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
-                            $cell.find("div:eq(" + innerIdx + ")").addClass(errors_1.ERROR_CLS);
+                            $cell.find("div:eq(" + innerIdx + ")").addClass(errors_2.ERROR_CLS);
                         }
                         else {
-                            $cell.addClass(errors_1.ERROR_CLS);
+                            $cell.addClass(errors_2.ERROR_CLS);
                         }
                     }
-                    errors_1.add = add;
+                    errors_2.add = add;
                     function remove($grid, $cell, rowIdx, columnKey, innerIdx) {
-                        var errors = $grid.data(errors_1.ERRORS);
+                        var errors = $grid.data(errors_2.ERRORS);
                         if (!errors)
                             return;
                         var idx;
@@ -19400,33 +19460,33 @@ var nts;
                         if (!uk.util.isNullOrUndefined(idx)) {
                             errors.splice(idx, 1);
                             if ($cell.is("td") && !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
-                                $cell.find("div:eq(" + innerIdx + ")").removeClass(errors_1.ERROR_CLS);
+                                $cell.find("div:eq(" + innerIdx + ")").removeClass(errors_2.ERROR_CLS);
                             }
                             else {
-                                $cell.removeClass(errors_1.ERROR_CLS);
+                                $cell.removeClass(errors_2.ERROR_CLS);
                             }
                         }
                     }
-                    errors_1.remove = remove;
+                    errors_2.remove = remove;
                     function clear($grid) {
-                        $grid.data(errors_1.ERRORS, null);
+                        $grid.data(errors_2.ERRORS, null);
                     }
-                    errors_1.clear = clear;
+                    errors_2.clear = clear;
                     function any($cell, innerIdx) {
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if (!uk.util.isNullOrUndefined(innerIdx) && $childCells.length > 0) {
-                            return $($childCells[innerIdx]).hasClass(errors_1.ERROR_CLS);
+                            return $($childCells[innerIdx]).hasClass(errors_2.ERROR_CLS);
                         }
-                        return $cell.hasClass(errors_1.ERROR_CLS);
+                        return $cell.hasClass(errors_2.ERROR_CLS);
                     }
-                    errors_1.any = any;
+                    errors_2.any = any;
                     function occurred($grid) {
-                        var errs = $grid.data(errors_1.ERRORS);
+                        var errs = $grid.data(errors_2.ERRORS);
                         if (!errs)
                             return false;
                         return errs.length > 0;
                     }
-                    errors_1.occurred = occurred;
+                    errors_2.occurred = occurred;
                 })(errors || (errors = {}));
                 var selection;
                 (function (selection) {
