@@ -1,16 +1,17 @@
 package nts.uk.ctx.sys.portal.dom.adapter.role;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
 public interface RoleGrantAdapter {
 
-	Optional<String> getRoleId(String userId);
+	List<String> getRoleId(String userId);
+	
+	List<RoleDto> findRole(String roleId);
 	
 	Optional<UserDto> getUserInfo(String userId);
-	
-	Optional<EmployeeDto> getEmployee(String companyId, String personId);
 	
 	Optional<RoleSetGrantedPersonDto> getRoleSetPersonGrant(String employeeId);
 	

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 /** 計算付き時間 and 計算付き時間(マイナス有り) */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CalcAttachTimeDto {
 
 	/** 時間 */

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.worktime.enums.TimeLeavingType;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
@@ -27,7 +28,16 @@ public class TimeLeavingWork extends DomainObject{
 	
 	private TimeActualStamp leaveStamp;
 	
-
+	private TimeLeavingType timeLeavingType;
+	
+	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp, TimeLeavingType timeLeavingType) {
+		super();
+		this.workNo = workNo;
+		this.attendanceStamp = attendanceStamp;
+		this.leaveStamp = leaveStamp;
+		this.timeLeavingType = timeLeavingType;
+	}
+	
 	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
 		super();
 		this.workNo = workNo;

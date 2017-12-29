@@ -3,10 +3,13 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の所定内時間 */
 @Data
@@ -41,15 +44,26 @@ public class WithinStatutoryTimeDailyPerformDto {
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "休暇加算時間")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer vacationAddTime;
-	
-	public static WithinStatutoryTimeDailyPerformDto fromWithinStatutoryTimeDailyPerform(WithinStatutoryTimeOfDaily domain){
-		return domain == null ? null : new WithinStatutoryTimeDailyPerformDto(
-				domain.getWorkTime().valueAsMinutes(),
-				domain.getWorkTimeIncludeVacationTime().valueAsMinutes(), 
-				domain.getWithinPrescribedPremiumTime().valueAsMinutes(), 
-				new CalcAttachTimeDto(
-						domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes(), 
-						domain.getWithinStatutoryMidNightTime().getTime().getTime().valueAsMinutes()), 
-				domain.getVacationAddTime().valueAsMinutes());
+
+	public static WithinStatutoryTimeDailyPerformDto fromWithinStatutoryTimeDailyPerform(
+			WithinStatutoryTimeOfDaily domain) {
+		return domain == null ? null
+				: new WithinStatutoryTimeDailyPerformDto(domain.getWorkTime().valueAsMinutes(),
+						domain.getWorkTimeIncludeVacationTime().valueAsMinutes(),
+						domain.getWithinPrescribedPremiumTime().valueAsMinutes(),
+						new CalcAttachTimeDto(
+								domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes(),
+								domain.getWithinStatutoryMidNightTime().getTime().getTime().valueAsMinutes()),
+						domain.getVacationAddTime().valueAsMinutes());
+	}
+
+	public WithinStatutoryTimeOfDaily toDomain() {
+		return WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(workTime),
+				workTimeIncludeVacationTime == null ? null : new AttendanceTime(workTimeIncludeVacationTime), 
+				withinPrescribedPremiumTime == null ? null : new AttendanceTime(withinPrescribedPremiumTime),
+				new WithinStatutoryMidNightTime(TimeWithCalculation.createTimeWithCalculation(
+						withinStatutoryMidNightTime == null ? null : new AttendanceTime(withinStatutoryMidNightTime.getTime()),
+						withinStatutoryMidNightTime == null ? null : new AttendanceTime(withinStatutoryMidNightTime.getCalcTime()))),
+				vacationAddTime == null ? null : new AttendanceTime(vacationAddTime));
 	}
 }

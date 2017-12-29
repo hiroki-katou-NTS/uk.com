@@ -46,7 +46,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :ymd ");
 		List<KrcdtSyainDpErList> result = this.queryProxy()
-				.namedQuery(builderString.toString(), KrcdtSyainDpErList.class).setParameter("employeeId", employeeID)
+				.query(builderString.toString(), KrcdtSyainDpErList.class).setParameter("employeeId", employeeID)
 				.setParameter("ymd", processingDate).getList();
 		if (!result.isEmpty()) {
 			return new EmployeeDailyPerError(result.get(0).krcdtSyainDpErListPK.companyID,
@@ -57,6 +57,11 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		}
 
 		return null;
+	}
+
+	@Override
+	public void update(EmployeeDailyPerError employeeDailyPerformanceError) {
+		this.commandProxy().updateAll(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
 	}
 
 }

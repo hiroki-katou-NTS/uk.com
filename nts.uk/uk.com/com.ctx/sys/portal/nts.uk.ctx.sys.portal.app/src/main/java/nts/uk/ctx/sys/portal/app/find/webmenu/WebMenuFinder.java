@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.I18NResources;
 import nts.arc.scoped.request.RequestContextProvider;
 import nts.arc.time.GeneralDate;
@@ -20,8 +19,9 @@ import nts.uk.ctx.sys.portal.app.find.webmenu.detail.MenuBarDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TitleBarDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TreeMenuDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
+import nts.uk.ctx.sys.portal.dom.adapter.employee.EmployeeAdapter;
+import nts.uk.ctx.sys.portal.dom.adapter.employee.EmployeeDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.AffJobHistoryDto;
-import nts.uk.ctx.sys.portal.dom.adapter.role.EmployeeDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedJobTitleDetailDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedPersonDto;
@@ -37,7 +37,6 @@ import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
@@ -71,6 +70,9 @@ public class WebMenuFinder {
 	
 	@Inject
 	private RoleGrantAdapter roleAdapter;
+	
+	@Inject
+	private EmployeeAdapter employeeAdapter;
 
 	/**
 	 * Find a web menu by code
@@ -151,18 +153,37 @@ public class WebMenuFinder {
 	private List<String> getMenuSet(String companyId, String userId) {
 		if (companyId == null || userId == null) return null;
 		// Get role ties
-		Optional<String> roleId = roleAdapter.getRoleId(userId);
-		Optional<RoleByRoleTies> roleTies = Optional.empty();
-		if (roleId.isPresent()) {
-			roleTies = roleTiesRepository.getRoleByRoleTiesById(roleId.get());
+		List<String> roleIds = roleAdapter.getRoleId(userId);
+		List<String> roleMenuCodes = new ArrayList<>();
+		roleIds.stream().forEach(r -> {
+			roleTiesRepository.getRoleByRoleTiesById(r)
+							.ifPresent(t -> roleMenuCodes.add(t.getWebMenuCd().v()));
+		});
+		
+		List<String> menuCodes = new ArrayList<>();
+		// Get role set
+		Optional<String> roleSetCdOpt = getRoleSetCode(companyId, userId);
+		if (roleSetCdOpt.isPresent()) {
+			List<RoleSetLinkWebMenu> menus = roleSetLinkMenuRepo.findByRoleSetCd(companyId, roleSetCdOpt.get());
+			menuCodes = menus.stream().map(m -> m.getWebMenuCd().v()).collect(Collectors.toList());
 		}
 		
-		// Get role set
-		UserDto user = roleAdapter.getUserInfo(userId)
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("User not found.")));
-		if (user.getAssociatedPersonID() == null) throw new BusinessException(new RawErrorMessage("Personal ID not existed."));
-		EmployeeDto employee = roleAdapter.getEmployee(companyId, user.getAssociatedPersonID())
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Employee not found.")));
+		for (String menuCode : roleMenuCodes) {
+			if (menuCodes.stream().noneMatch(m -> menuCode.equals(m))) {
+				menuCodes.add(menuCode);
+			}
+		}
+		return menuCodes;
+	}
+	
+	private Optional<String> getRoleSetCode(String companyId, String userId) {
+		Optional<UserDto> userOpt = roleAdapter.getUserInfo(userId);
+		if (!userOpt.isPresent()) return Optional.empty(); 
+		UserDto user = userOpt.get();
+		if (user.getAssociatedPersonID() == null) return Optional.empty();
+		Optional<EmployeeDto> employeeOpt = employeeAdapter.getEmployee(companyId, user.getAssociatedPersonID());
+		if (!employeeOpt.isPresent()) return Optional.empty();
+		EmployeeDto employee = employeeOpt.get();
 		Optional<RoleSetGrantedPersonDto> roleSetGrantedPerson = roleAdapter.getRoleSetPersonGrant(employee.getEmployeeId());
 		
 		String roleSetCd = null;
@@ -184,16 +205,7 @@ public class WebMenuFinder {
 				roleSetCd = getDefaultRoleSet(companyId);
 			}
 		}
-		
-		List<RoleSetLinkWebMenu> menus = roleSetLinkMenuRepo.findByRoleSetCd(companyId, roleSetCd);
-		List<String> menuCodes = menus.stream().map(m -> m.getWebMenuCd().v()).collect(Collectors.toList());
-		if (roleTies.isPresent()) {
-			String menuCode = roleTies.get().getWebMenuCd().v();
-			if (menuCodes.stream().noneMatch(m -> menuCode.equals(m))) {
-				menuCodes.add(menuCode);
-			}
-		}
-		return menuCodes;
+		return Optional.ofNullable(roleSetCd);
 	}
 	
 	/**

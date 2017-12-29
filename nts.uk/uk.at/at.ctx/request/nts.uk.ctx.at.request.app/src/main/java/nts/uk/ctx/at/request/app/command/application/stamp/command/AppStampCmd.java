@@ -18,11 +18,6 @@ public class AppStampCmd {
 	// appID
 	private String appID;
     
-    private String inputDate;
-    
-    // người xin
-    private String enteredPerson;
-    
     // ngày xin
     private String applicationDate;
     
@@ -43,8 +38,5 @@ public class AppStampCmd {
 	private List<AppStampWorkCmd> appStampWorkCmds;
 	private List<AppStampCancelCmd> appStampCancelCmds;
 	private AppStampOnlineRecordCmd appStampOnlineRecordCmd;
-	
-	// list người xác nhận
-	private List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
 }
 

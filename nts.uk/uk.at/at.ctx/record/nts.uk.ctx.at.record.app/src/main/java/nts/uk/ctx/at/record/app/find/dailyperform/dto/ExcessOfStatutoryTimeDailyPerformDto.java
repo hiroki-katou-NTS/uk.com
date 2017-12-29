@@ -1,13 +1,20 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の所定外時間 */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ExcessOfStatutoryTimeDailyPerformDto {
 
 	/** 所定外深夜時間: 所定外深夜時間 */
@@ -31,5 +38,15 @@ public class ExcessOfStatutoryTimeDailyPerformDto {
 						domain.getExcessOfStatutoryMidNightTime().getBeforeApplicationTime().valueAsMinutes()), 
 				OverTimeWorkDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getOverTimeWork().orElse(null)), 
 				WorkHolidayTimeDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getWorkHolidayTime().orElse(null)));
+	}
+	
+	public ExcessOfStatutoryTimeOfDaily toDomain() {
+		return new ExcessOfStatutoryTimeOfDaily(
+				new ExcessOfStatutoryMidNightTime(
+						TimeWithCalculation.createTimeWithCalculation(
+								new AttendanceTime(excessOfStatutoryMidNightTime.getTime().getTime()),
+								new AttendanceTime(excessOfStatutoryMidNightTime.getTime().getCalcTime())),
+						new AttendanceTime(excessOfStatutoryMidNightTime.getBeforeApplicationTime())),
+				Optional.of(overTimeWork.toDomain()), Optional.of(workHolidayTime.toDomain()));
 	}
 }

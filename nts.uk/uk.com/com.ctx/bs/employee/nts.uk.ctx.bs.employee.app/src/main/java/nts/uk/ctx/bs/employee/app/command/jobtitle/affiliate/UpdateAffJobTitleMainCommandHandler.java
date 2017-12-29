@@ -46,23 +46,24 @@ public class UpdateAffJobTitleMainCommandHandler extends CommandHandler<UpdateAf
 	protected void handle(CommandHandlerContext<UpdateAffJobTitleMainCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
-		Optional<AffJobTitleHistory_ver1> existHist = affJobTitleHistoryRepository_ver1.getListBySid(companyId, command.getSid());
-		
-		if (!existHist.isPresent()){
-			throw new RuntimeException("invalid AffWorkplaceHistory"); 
+		// In case of date period are exist in the screen
+		if (command.getStartDate() != null){
+			Optional<AffJobTitleHistory_ver1> existHist = affJobTitleHistoryRepository_ver1.getListBySid(companyId, command.getSid());
+			
+			if (!existHist.isPresent()){
+				throw new RuntimeException("invalid AffWorkplaceHistory"); 
+			}
+			Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
+	                .filter(h -> h.identifier().equals(command.getHistoryId()))
+	                .findFirst();
+			
+			if (!itemToBeUpdate.isPresent()){
+				throw new RuntimeException("invalid AffWorkplaceHistory");
+			}
+			existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
+			
+			affJobTitleHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		}
-		Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
-                .filter(h -> h.identifier().equals(command.getHistoryId()))
-                .findFirst();
-		
-		if (!itemToBeUpdate.isPresent()){
-			throw new RuntimeException("invalid AffWorkplaceHistory");
-		}
-		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
-		
-		affJobTitleHistoryService.update(existHist.get(), itemToBeUpdate.get());
-	
 		AffJobTitleHistoryItem_ver1 histItem = AffJobTitleHistoryItem_ver1.createFromJavaType(command.getHistoryId(), command.getSid(), command.getJobTitleId(), command.getNote());
 		affJobTitleHistoryItemRepository_v1.update(histItem);
 	}
