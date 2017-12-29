@@ -103,7 +103,6 @@ module a6 {
                     workTimezoneNo++;
                     lstWorkTimezone.push(self.toModelOtherFlowDto(dataModel, workTimezoneNo));
                 }
-                console.log(lstWorkTimezone);
                 self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
             });
 
@@ -185,7 +184,7 @@ module a6 {
          */
         private toModelOtherFlowColumnSetting(dataDTO: HDWorkTimeSheetSettingDto): any {
             return {
-                timezone: ko.observable({ starTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
+                timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
                 rounding: ko.observable(dataDTO.timezone.rounding.rounding),
                 roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
                 inLegalBreakFrameNo: ko.observable(dataDTO.inLegalBreakFrameNo),
