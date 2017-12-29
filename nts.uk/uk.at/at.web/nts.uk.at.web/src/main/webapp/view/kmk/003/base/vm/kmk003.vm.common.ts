@@ -999,13 +999,6 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.fontRearSection = ko.observable(0);
                     this.roundingTimeUnit = ko.observable(0);
-                    this.fontRearSection.subscribe((v)=>
-                    {
-                        alert(v);
-                    });
-                    this.roundingTimeUnit.subscribe((v) => {
-                        alert(v);
-                    });
                 }
 
                 updateData(data: InstantRoundingDto) {
