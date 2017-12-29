@@ -181,7 +181,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 formatSelection = currentItem.formatSelection(),
                 listItems: Array<SelectionItem> = self.listItems(),
                 _selectionItemName = _.find(listItems, x => x.selectionItemName == currentItem.selectionItemName()),
-                oldIndex = _.findIndex(listItems, x => x.selectionItemId == currentItem.selectionItemId()),
+                
                 command = ko.toJS(currentItem);
 
             //「個人情報の選択項目」を更新する
@@ -192,10 +192,12 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listItems.push(x));
                     }
-
+                    let oldIndex = _.findIndex(itemList, x => x.selectionItemId == currentItem.selectionItemId());
                     let newItem = itemList[oldIndex];
                     currentItem.selectionItemId(newItem.selectionItemId);
+                    $("#selectionItemName").focus();
                 });
+                
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.listItems.valueHasMutated();
 

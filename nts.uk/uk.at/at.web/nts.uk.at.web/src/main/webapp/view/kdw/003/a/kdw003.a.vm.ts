@@ -347,7 +347,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let param = { itemValues: dataChangeProcess }
             let dfd = $.Deferred();
             service.addAndUpdate(dataChangeProcess).done((data) => {
-                alert("done");
+               // alert("done");
                 self.btnExtraction_Click();
                 dfd.resolve();
             }).fail((data) => {

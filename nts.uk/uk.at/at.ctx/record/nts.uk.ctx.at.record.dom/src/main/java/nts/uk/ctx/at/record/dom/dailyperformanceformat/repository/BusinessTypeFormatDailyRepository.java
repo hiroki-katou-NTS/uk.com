@@ -18,6 +18,8 @@ public interface BusinessTypeFormatDailyRepository {
 	
 	void add(List<BusinessTypeFormatDaily> businessTypeFormatDailies);
 	
+	boolean checkExistData(String companyId, String businessTypeCode, BigDecimal sheetNo);
+	
 	// Set header width
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader);
 }

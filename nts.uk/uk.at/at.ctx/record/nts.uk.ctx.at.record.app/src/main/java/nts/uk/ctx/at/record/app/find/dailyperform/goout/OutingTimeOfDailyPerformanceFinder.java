@@ -55,7 +55,9 @@ public class OutingTimeOfDailyPerformanceFinder extends FinderFacade {
 													c.getComeBack().getActualStamp().getLocationCode().v(),
 													c.getComeBack().getActualStamp().getStampSourceInfo().value),
 											c.getComeBack().getNumberOfReflectionStamp()),
-									c.getReasonForGoOut().value)));
+									c.getReasonForGoOut().value,
+									c.getOutingTimeCalculation().valueAsMinutes(),
+									c.getOutingTime().valueAsMinutes())));
 		}
 		return dto;
 	}

@@ -1591,13 +1591,16 @@ var nts;
         var time;
         (function (time_1) {
             var MINUTES_IN_DAY = 24 * 60;
-            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
-            var listEmpire = {
-                "明治": "1868/01/01",
-                "大正": "1912/07/30",
-                "昭和": "1926/12/25",
-                "平成": "1989/01/08"
-            };
+            var defaultInputFormat = [
+                "YYYY/M/D",
+                "YYYY-M-D",
+                "YYYYMMDD",
+                "YYYY/M",
+                "YYYY-M",
+                "YYYYMM",
+                "H:mm",
+                "Hmm",
+                "YYYY"];
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function getYearMonthJapan(year, month) {
                 if (month)
@@ -4359,6 +4362,21 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui_1) {
+            var toBeResource;
+            (function (toBeResource) {
+                toBeResource.yes = "はい";
+                toBeResource.no = "いいえ";
+                toBeResource.cancel = "キャンセル";
+                toBeResource.close = "閉じる";
+                toBeResource.info = "情報";
+                toBeResource.warn = "警告";
+                toBeResource.error = "エラー";
+                toBeResource.unset = "未設定";
+                toBeResource.errorContent = "エラー内容";
+                toBeResource.errorCode = "エラーコード";
+                toBeResource.errorList = "エラー一覧";
+                toBeResource.plzWait = "お待ちください";
+            })(toBeResource = ui_1.toBeResource || (ui_1.toBeResource = {}));
             var windows;
             (function (windows) {
                 var MAIN_WINDOW_ID = 'MAIN_WINDOW';
@@ -4435,7 +4453,7 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "未設定" : dialogName;
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? toBeResource.unset : dialogName;
                             //                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
@@ -4749,13 +4767,13 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: "はい",
+                                text: toBeResource.yes,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
                                     then();
                                 }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: nts.uk.resource.getText("infor") });
+                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: toBeResource.info });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -4775,13 +4793,13 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(message, [{
-                                text: "はい",
+                                text: toBeResource.yes,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
                                     then();
                                 }
-                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: nts.uk.resource.getText("error") });
+                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: toBeResource.error });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -4807,13 +4825,13 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: "はい",
+                                text: toBeResource.yes,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
                                     then();
                                 }
-                            }]);
+                            }], { text: nts.uk.resource.getText(toBeResource.warn) });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -4862,7 +4880,7 @@ var nts;
                         var buttons = [];
                         // yes button
                         buttons.push({
-                            text: "はい",
+                            text: toBeResource.yes,
                             "class": "yes large danger",
                             click: function () {
                                 $this.dialog('close');
@@ -4873,7 +4891,7 @@ var nts;
                         // no button
                         if (hasNoButton) {
                             buttons.push({
-                                text: "いいえ",
+                                text: toBeResource.no,
                                 "class": "no large",
                                 click: function () {
                                     $this.dialog('close');
@@ -4885,7 +4903,7 @@ var nts;
                         // cancel button
                         if (hasCancelButton) {
                             buttons.push({
-                                text: "キャンセル",
+                                text: toBeResource.cancel,
                                 "class": "cancel large",
                                 click: function () {
                                     $this.dialog('close');
@@ -4951,7 +4969,9 @@ var nts;
                 function bundledErrors(errors) {
                     var then = $.noop;
                     var id = uk.util.randomId();
-                    var container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), functionArea = $("<div id='functions-area-bottom'/>"), errorBoard = $("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>\u30A8\u30E9\u30FC\u5185\u5BB9</th>\n                    <th style='display: none;'/>    <th style='width: 150px;'>\u30A8\u30E9\u30FC\u30B3\u30FC\u30C9</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
+                    var container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), functionArea = $("<div id='functions-area-bottom'/>"), errorBoard = $("<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>"
+                        + toBeResource.errorContent + "</th><th style='display: none;'/>    <th style='width: 150px;'>"
+                        + toBeResource.errorCode + "</th>   </tr>   </thead>    <tbody/>    </table> </div>"), closeButton = $("<button class='ntsButton ntsClose large'/>");
                     var errorBody = errorBoard.find("tbody");
                     if ($.isArray(errors["errors"])) {
                         _.forEach(errors["errors"], function (error, idx) {
@@ -4967,7 +4987,7 @@ var nts;
                     container.appendTo(getRoot());
                     setTimeout(function () {
                         container.dialog({
-                            title: "エラー一覧",
+                            title: toBeResource.errorList,
                             dialogClass: "no-close-btn",
                             modal: false,
                             resizable: false,
@@ -4977,7 +4997,7 @@ var nts;
                             open: function () {
                                 errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
                                 functionArea.css({ "left": "0px" });
-                                closeButton.text("閉じる").click(function (evt) {
+                                closeButton.text(toBeResource.close).click(function (evt) {
                                     container.dialog("destroy");
                                     container.remove();
                                     then();
@@ -5070,7 +5090,7 @@ var nts;
                 function grayout() {
                     var rect = calcRect();
                     $.blockUI({
-                        message: '<div class="block-ui-message">お待ちください</div>',
+                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
                         fadeIn: 200,
                         css: {
                             width: rect.width,
@@ -5169,6 +5189,60 @@ var nts;
                         header.getLabel = getLabel;
                     })(header = grid.header || (grid.header = {}));
                 })(grid = ig.grid || (ig.grid = {}));
+                var tree;
+                (function (tree) {
+                    var grid;
+                    (function (grid) {
+                        function expandTo(targetKey, $treeGrid) {
+                            var option = $treeGrid.igTreeGrid("option");
+                            var ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
+                            if (ancestorKeys === null) {
+                                return;
+                            }
+                            var expand = function (currentIndex) {
+                                if (currentIndex >= ancestorKeys.length)
+                                    return;
+                                $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
+                                setTimeout(function () { expand(currentIndex + 1); }, 0);
+                            };
+                            expand(0);
+                            setTimeout(function () {
+                                scrollTo(targetKey, $treeGrid);
+                            }, 1);
+                        }
+                        grid.expandTo = expandTo;
+                        function scrollTo(targetKey, $treeGrid) {
+                            var $scroll = $treeGrid.igTreeGrid("scrollContainer");
+                            var $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
+                            if ($targetNode.length === 0)
+                                return;
+                            $scroll.exposeVertically($targetNode);
+                        }
+                        grid.scrollTo = scrollTo;
+                    })(grid = tree.grid || (tree.grid = {}));
+                    var dataSource;
+                    (function (dataSource_1) {
+                        function collectAncestorKeys(targetKey, dataSource, primaryKey, childDataKey) {
+                            if (typeof dataSource === "undefined") {
+                                return null;
+                            }
+                            for (var i = 0, len = dataSource.length; i < len; i++) {
+                                var currentData = dataSource[i];
+                                if (currentData[primaryKey] === targetKey) {
+                                    return [targetKey];
+                                }
+                                var children = currentData[childDataKey];
+                                var results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
+                                if (results !== null) {
+                                    results.unshift(currentData[primaryKey]);
+                                    return results;
+                                }
+                            }
+                            return null;
+                        }
+                        dataSource_1.collectAncestorKeys = collectAncestorKeys;
+                    })(dataSource = tree.dataSource || (tree.dataSource = {}));
+                })(tree = ig.tree || (ig.tree = {}));
             })(ig = ui_1.ig || (ui_1.ig = {}));
             var smallExtensions;
             (function (smallExtensions) {
@@ -5492,6 +5566,39 @@ var nts;
                 }(EditorOptionBase));
                 option_2.TimeWithDayAttrEditorOption = TimeWithDayAttrEditorOption;
             })(option = ui.option || (ui.option = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                // This file left here for log purpose
+                $.fn.exposeVertically = function ($target) {
+                    var $scroll = $(this);
+                    var currentViewTopPosition = $scroll.scrollTop();
+                    var currentViewBottomPosition = currentViewTopPosition + $scroll.height();
+                    var targetTopPosition = $target.position().top + currentViewTopPosition;
+                    var targetBottomPosition = targetTopPosition + $target.outerHeight();
+                    if (currentViewTopPosition <= targetTopPosition && targetBottomPosition <= currentViewBottomPosition) {
+                        return;
+                    }
+                    if (targetTopPosition <= currentViewTopPosition) {
+                        var gap = currentViewTopPosition - targetTopPosition;
+                        $scroll.scrollTop(currentViewTopPosition - gap);
+                        return;
+                    }
+                    if (currentViewBottomPosition <= targetBottomPosition) {
+                        var gap = targetBottomPosition - currentViewBottomPosition;
+                        $scroll.scrollTop(currentViewTopPosition + gap);
+                        return;
+                    }
+                };
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6002,6 +6109,7 @@ var nts;
                             startDate: startDate,
                             endDate: endDate,
                             autoHide: autoHide,
+                            weekStart: 0,
                         }).data("dateNormalizer", DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
                             .fiscalMonthsMode(data.fiscalMonthsMode)
                             .setDefaultCss(data.defaultClass || ""));
@@ -10250,28 +10358,6 @@ var nts;
                                 _.forEach(holder.nodes, function (node) {
                                     $treegrid.igTreeGrid("expandRow", node);
                                 });
-                                var selecteds = $treegrid.ntsTreeView("getSelected");
-                                if (!nts.uk.util.isNullOrUndefined(selecteds)) {
-                                    var firstId_1 = $.isArray(selecteds) ? (isEmpty(selecteds) ? undefined : selecteds[0].id) : selecteds.id;
-                                    if (firstId_1 !== undefined) {
-                                        var parentIds = Helper.getAllParentId($treegrid, firstId_1, optionsValue, optionsChild);
-                                        _.forEach(parentIds, function (node) {
-                                            if (holder.nodes.indexOf(node) < 0 && node !== firstId_1) {
-                                                $treegrid.igTreeGrid("expandRow", node);
-                                                holder.addNode(node);
-                                            }
-                                        });
-                                        $treegrid.data("expand", holder);
-                                        setTimeout(function () {
-                                            var row2 = $treegrid.igTreeGrid("rowById", firstId_1);
-                                            var container = $treegrid.igTreeGrid("scrollContainer");
-                                            var totalH = _.sumBy(row2.prevAll(), function (e) { return $(e).height(); });
-                                            if (totalH > height - HEADER_HEIGHT) {
-                                                container.scrollTop(totalH);
-                                            }
-                                        }, 200);
-                                    }
-                                }
                                 //                    }
                                 $treegrid.data("autoExpanding", false);
                             }
@@ -10352,6 +10438,7 @@ var nts;
                                 }
                                 $treegrid.igTreeGridSelection("clearSelection");
                                 $treegrid.igTreeGridSelection("selectRowById", singleValue);
+                                ui.ig.tree.grid.expandTo(singleValue, $treegrid);
                             }
                         }
                     };
@@ -14383,9 +14470,7 @@ var nts;
                                 row = $treegrid.igTreeGridSelection("selectedRow");
                             }
                             if (row) {
-                                var index = row.index;
-                                var height = row.element[0].scrollHeight;
-                                $("#" + id + "_scroll").scrollTop(index * height);
+                                ui.ig.tree.grid.expandTo(row.id, $treegrid);
                             }
                         });
                         return $treegrid;

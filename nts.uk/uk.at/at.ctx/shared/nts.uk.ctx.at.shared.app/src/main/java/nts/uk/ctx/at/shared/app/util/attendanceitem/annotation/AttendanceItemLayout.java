@@ -21,5 +21,7 @@ public @interface AttendanceItemLayout {
 	
 	boolean isList() default false;
 	
+	int listMaxLength() default -1;
+	
 	boolean isOptional() default false;
 }

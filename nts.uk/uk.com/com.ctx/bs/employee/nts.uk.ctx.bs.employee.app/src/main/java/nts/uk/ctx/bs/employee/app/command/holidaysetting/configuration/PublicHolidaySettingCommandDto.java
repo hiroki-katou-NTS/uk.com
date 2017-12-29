@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.command.holidaysetting.configuration;
 
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnit;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -45,6 +46,18 @@ public class PublicHolidaySettingCommandDto implements PublicHolidaySettingGetMe
 	@Override
 	public PublicHolidayManagementClassification getPublicHdManagementClassification() {
 		return PublicHolidayManagementClassification.valueOf(this.publicHdManagementClassification);
+	}
+
+	@Override
+	public PublicHolidayManagementUsageUnit getPublicHdManagementUsageUnit() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean getIsWeeklyHdCheck() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

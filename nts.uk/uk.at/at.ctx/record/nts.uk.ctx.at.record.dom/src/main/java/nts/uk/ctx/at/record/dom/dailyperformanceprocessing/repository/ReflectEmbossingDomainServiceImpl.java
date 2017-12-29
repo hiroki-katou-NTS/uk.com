@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,6 +40,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -359,13 +359,17 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					return t1 < t2 ? -1 : 1;
 				}
 			});
-		} else {
+		}else{
+			return null;
+		}
+		/*
+		else {
 			timeLeavingWorks = new ArrayList<TimeLeavingWork>();
 			timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
 			temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(employeeId, null, timeLeavingWorks,
 					date);
 		}
-
+		*/
 		// *7.1 出退勤Listに最大枠数分の枠を用意する (Trong 出退勤List, chuẩn bị phần tử có số
 		// lượng phần tử lớn nhất)
 		// 臨時勤務管理 chưa có (fixed)
@@ -644,12 +648,18 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 					return t1 < t2 ? -1 : 1;
 				}
 			});
-		} else {
+		} else{
+			return null;
+		}
+		
+		/*
+		else {
 			timeLeavingWorks = new ArrayList<TimeLeavingWork>();
 			timeLeavingWorks.add(new TimeLeavingWork(null, null, null));
 			temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(employeeId, null, timeLeavingWorks,
 					date);
 		}
+		*/
 
 		// *7.1 出退勤Listに最大枠数分の枠を用意する (Trong 出退勤List, chuẩn bị phần tử có số
 		// lượng phần tử lớn nhất)
@@ -1222,12 +1232,12 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		for (int j = 0; j < lstOutingTimeNewSize; j++) {
 			OutingTimeSheet outingTimeSheet = lstOutingTimeSheet.get(j);
 			if (j < 10) {
-				OutingFrameNo outingFrameNo = new OutingFrameNo(new BigDecimal(j + 1));
+				OutingFrameNo outingFrameNo = new OutingFrameNo(j + 1);
 				newOutingTimeSheets.add(new OutingTimeSheet(outingFrameNo, outingTimeSheet.getGoOut(),
 						outingTimeSheet.getOutingTimeCalculation(), outingTimeSheet.getOutingTime(),
 						outingTimeSheet.getReasonForGoOut(), outingTimeSheet.getComeBack()));
 			} else {
-				OutingFrameNo outingFrameNo = new OutingFrameNo(new BigDecimal(j % 10 + 1));
+				OutingFrameNo outingFrameNo = new OutingFrameNo(j % 10 + 1);
 				newOutingTimeSheets.add(new OutingTimeSheet(outingFrameNo, outingTimeSheet.getGoOut(),
 						outingTimeSheet.getOutingTimeCalculation(), outingTimeSheet.getOutingTime(),
 						outingTimeSheet.getReasonForGoOut(), outingTimeSheet.getComeBack()));
@@ -1838,7 +1848,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				}
 			}
 
-			return new TimeLeavingOfDailyPerformance(employeeId, null, timeLeavingWorks, date);
+			return new TimeLeavingOfDailyPerformance(employeeId,new WorkTimes(worktNo) , timeLeavingWorks, date);
 		}
 
 	}

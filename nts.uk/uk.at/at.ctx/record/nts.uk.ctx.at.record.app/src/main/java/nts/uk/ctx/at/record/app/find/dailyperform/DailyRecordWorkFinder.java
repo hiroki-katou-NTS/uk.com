@@ -65,7 +65,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 		result.setAffiliationInfo(affiliationInfoFinder.find(employeeId, baseDate));
 		result.setAttendanceLeavingGate(Optional.of(attendanceLeavingGateFinder.find(employeeId, baseDate)));
 		result.setAttendanceTime(Optional.of(attendanceItemFinder.find(employeeId, baseDate)));
-		result.setBreakTime(Optional.of(breakItemFinder.find(employeeId, baseDate)));
+		result.setBreakTime(breakItemFinder.finds(employeeId, baseDate));
 		result.setOptionalItem(Optional.of(optionalItemFinder.find(employeeId, baseDate)));
 		result.setOutingTime(Optional.of(outingTimeFinder.find(employeeId, baseDate)));
 		result.setSpecificDateAttr(Optional.of(specificDateAttrFinder.find(employeeId, baseDate)));

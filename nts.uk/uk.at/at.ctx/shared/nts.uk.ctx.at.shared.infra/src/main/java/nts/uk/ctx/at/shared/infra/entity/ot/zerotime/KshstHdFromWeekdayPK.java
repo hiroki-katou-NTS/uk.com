@@ -23,6 +23,6 @@ public class KshstHdFromWeekdayPK implements Serializable{
 	
 	/**変更前の休出枠NO*/
 	@Column(name = "HD_FRAME_NO")
-	public int hdFrameNo;
+	public int holidayWorkFrameNo;
 }
 

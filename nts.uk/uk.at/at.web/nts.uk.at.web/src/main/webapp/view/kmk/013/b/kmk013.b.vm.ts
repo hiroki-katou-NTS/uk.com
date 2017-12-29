@@ -692,7 +692,13 @@ module nts.uk.at.view.kmk013.b {
                     obj.irregularWork.calsIntervalTimeWork = 0;
                     obj.irregularWork.minusAbsenceTimeWork = 0;
                 }
-                service.save(obj).done();
+                service.save(obj).done(() => {
+                    self.initData();
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                }
+                ).fail((error)=>{
+                   console.log(error);     
+                });
             }
 
 

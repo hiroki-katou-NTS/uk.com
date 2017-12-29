@@ -24,6 +24,9 @@ public class ItemValue {
 
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
+		if(value == null){
+			return null;
+		}
 		switch (this.valueType) {
 		case INTEGER:
 			return (T) new Integer(this.value);
@@ -39,6 +42,6 @@ public class ItemValue {
 	}
 	
 	public void value(Object value){
-		this.value = value.toString();
+		this.value = value == null ? null : value.toString();
 	}
 }

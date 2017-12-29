@@ -29,4 +29,13 @@ public interface PublicHolidaySettingGetMemento {
 	 * @return the public hd management classification
 	 */
 	PublicHolidayManagementClassification getPublicHdManagementClassification();
+	
+	/**
+	 * Gets the public hd management usage unit.
+	 *
+	 * @return the public hd management usage unit
+	 */
+	PublicHolidayManagementUsageUnit getPublicHdManagementUsageUnit();
+	
+	boolean getIsWeeklyHdCheck();
 }

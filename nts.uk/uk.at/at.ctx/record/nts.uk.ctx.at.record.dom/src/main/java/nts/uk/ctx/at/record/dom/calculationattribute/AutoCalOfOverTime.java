@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.calculationattribute;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -9,6 +11,8 @@ import lombok.Getter;
  *
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AutoCalOfOverTime {
 	
 	//早出残業時間

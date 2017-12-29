@@ -22,11 +22,19 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 	private WorkInfoDto planWorkInfo;
 
 	/** 勤務予定時間帯: 予定時間帯 */
-	@AttendanceItemLayout(layout = "C", isList = true, jpPropertyName = "勤務予定時間帯")
+	@AttendanceItemLayout(layout = "C", isList = true, jpPropertyName = "勤務予定時間帯", listMaxLength = 2)
 	private List<ScheduleTimeZoneDto> scheduleTimeZone;
 	
 	private String employeeId;
 	
 	private GeneralDate date;
+
+	private int calculationState;
+
+	// 直行区分
+	private int goStraightAtr;
+
+	// 直帰区分
+	private int backStraightAtr;
 
 }

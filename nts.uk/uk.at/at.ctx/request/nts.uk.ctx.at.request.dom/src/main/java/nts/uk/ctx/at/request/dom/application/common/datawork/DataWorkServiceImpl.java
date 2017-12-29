@@ -102,7 +102,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		List<Integer> halfAtrs = halfAtrs();
 		//ドメインモデル「勤務種類」を取得
 		result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
-				.map(x -> x.getName().v()).collect(Collectors.toList());
+				.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
 		return result;
 	}
 	/**
@@ -141,7 +141,8 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		//ドメインモデル「個人労働条件」を取得する
 		Optional<PersonalLaborCondition> personalLablorCodition = personalLaborConditionRepository.findById(employeeId,baseDate);
 		
-		if(!personalLablorCodition.isPresent()){
+		if(!personalLablorCodition.isPresent() 
+				|| personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
 			if(!CollectionUtil.isEmpty(workTypes)){
 				//先頭の勤務種類を選択する
 				selectedData.setSelectedWorkTypeCd(workTypes.get(0));

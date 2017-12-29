@@ -8,7 +8,11 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class StampReflectionManagementFinder {
 

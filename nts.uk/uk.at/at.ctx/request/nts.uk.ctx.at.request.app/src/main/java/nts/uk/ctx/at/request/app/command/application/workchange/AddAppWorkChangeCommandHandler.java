@@ -50,8 +50,7 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = IdentifierUtil.randomUniqueId();
-		// 入力者
-		String personId = AppContexts.user().personId();
+		// 入力者 = 申請者
 		// 申請者
 		String applicantSID = AppContexts.user().employeeId();
 
@@ -62,19 +61,19 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		Application app = new Application(companyId, appID,
 				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), 
 				GeneralDateTime.now(), 
-				personId,
+				applicantSID,
 				new AppReason(EMPTY_STRING), 
 				appCommand.getApplicationDate(),
 				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())), 
 				ApplicationType.WORK_CHANGE_APPLICATION, applicantSID,
-				EnumAdaptor.valueOf(0, ReflectPlanScheReason.class), 
+				ReflectPlanScheReason.NOTPROBLEM, 
 				null,
-				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
-				EnumAdaptor.valueOf(0, ReflectPerScheReason.class), 
+				ReflectPlanPerState.NOTREFLECTED, 
+				ReflectPlanPerEnforce.NOTTODO,
+				ReflectPerScheReason.NOTPROBLEM, 
 				null,
-				EnumAdaptor.valueOf(0, ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(0, ReflectPlanPerEnforce.class),
+				ReflectPlanPerState.NOTREFLECTED, 
+				ReflectPlanPerEnforce.NOTTODO,
 				appCommand.getStartDate(), 
 				appCommand.getEndDate(), 
 				pharseList);

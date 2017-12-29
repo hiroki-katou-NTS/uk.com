@@ -328,7 +328,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listSelection: Array<Selection> = self.listSelection(),
                 _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
 
-            let oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
             currentItem.histId(self.historySelection().histId());
             let command = ko.toJS(currentItem);
 
@@ -339,6 +338,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listSelection.push(x));
                     }
+                    let oldIndex = _.findIndex(itemList, x => x.selectionID == currentItem.selectionID());
                     let newItem = itemList[oldIndex];
                     currentItem.selectionID(newItem.selectionID);
                 });
