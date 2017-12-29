@@ -191,6 +191,26 @@ module a3 {
                 }
                 self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.updateOvertimeZone(lstOTTimezone);
             });
+            
+            self.dataSourceMorningFlex.subscribe(function(dataFlex: any[]) {
+                var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFlex) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelFlexDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
+            self.dataSourceAfternoonFlex.subscribe(function(dataFlex: any[]) {
+                var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFlex) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelFlexDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
         }
         
         private updateDataModel(): void {
@@ -291,6 +311,7 @@ module a3 {
                 rounding: ko.observable(dataDTO.timezone.rounding.rounding),
                 roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
                 otFrameNo: ko.observable(dataDTO.otFrameNo),
+                earlyOTUse: ko.observable(dataDTO.earlyOTUse)
             }
         }
         
@@ -312,7 +333,7 @@ module a3 {
                 restraintTimeUse: false,
                 timezone: timezone,
                 otFrameNo: dataModel.otFrameNo(),
-                earlyOTUse: false,
+                earlyOTUse: dataModel.earlyOTUse(),
                 legalOTframeNo: 1,
                 settlementOrder: 1
             };
