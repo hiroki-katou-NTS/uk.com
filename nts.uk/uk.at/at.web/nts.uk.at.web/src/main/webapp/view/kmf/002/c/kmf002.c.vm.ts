@@ -86,7 +86,7 @@ module nts.uk.at.view.kmf002.c {
                 
                 /* start declare variable KCP005 */
                 _self.baseDate = ko.observable(new Date());
-                _self.selectedCode = ko.observable('1');
+                _self.selectedCode = ko.observable();
                 _self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
                 _self.isShowAlreadySet = ko.observable(false);
                 _self.alreadySettingList = ko.observableArray([
@@ -109,7 +109,7 @@ module nts.uk.at.view.kmf002.c {
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
                     employeeInputList: _self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.NO_SELECT,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
@@ -125,8 +125,8 @@ module nts.uk.at.view.kmf002.c {
                 /* include table */
                 _self.commonTableMonthDaySet.visibleInfoSelect(true);
                 _self.commonTableMonthDaySet.infoSelect1(nts.uk.resource.getText("Com_Person"));
-                _self.commonTableMonthDaySet.infoSelect2(_self.employeeList()[0].code);
-                _self.commonTableMonthDaySet.infoSelect3(_self.employeeList()[0].name);
+//                _self.commonTableMonthDaySet.infoSelect2(_self.employeeList()[0].code);
+//                _self.commonTableMonthDaySet.infoSelect3(_self.employeeList()[0].name);
                 
                 _self.selectedCode.subscribe(function(newValue) {
                      _.forEach(_self.employeeList(), function(value) {

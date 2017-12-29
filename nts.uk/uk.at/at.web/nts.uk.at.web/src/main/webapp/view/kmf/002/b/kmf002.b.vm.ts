@@ -27,22 +27,27 @@ module nts.uk.at.view.kmf002.b {
                         treeType: TreeType.WORK_PLACE,
                         selectedWorkplaceId: _self.multiSelectedWorkplaceId,
                         baseDate: _self.baseDate,
-                        selectType: SelectionType.SELECT_FIRST_ITEM,
+                        selectType: SelectionType.NO_SELECT,
                         isShowSelectButton: true,
-                        isDialog: true,
+                        isDialog: false,
                         alreadySettingList: _self.alreadySettingList,
                         maxRows: 10,
                         tabindex: 1,
-                        systemType : SystemType.EMPLOYMENT;
+                        systemType : SystemType.EMPLOYMENT
                 };
                 
                 _self.multiSelectedWorkplaceId.subscribe(function(newValue) {
-                    _self.commonTableMonthDaySet.infoSelect2($('#tree-grid').getRowSelected()[0].workplaceCode);
+                    try {
+                        _self.commonTableMonthDaySet.infoSelect2($('#tree-grid').getRowSelected()[0].workplaceCode);
                     
-                    _self.getNameWkpSelect($('#tree-grid').getDataList(), 
-                                                            $('#tree-grid').getRowSelected()[0].workplaceCode);
-                    
-                    _self.commonTableMonthDaySet.infoSelect3(_self.workplaceNameSelected());
+                        _self.getNameWkpSelect($('#tree-grid').getDataList(), 
+                                               $('#tree-grid').getRowSelected()[0].workplaceCode);
+                        
+                        _self.commonTableMonthDaySet.infoSelect3(_self.workplaceNameSelected());
+                        _self.getDataFromService();
+                    }
+                    catch (e){
+                    }
                     
                 });
                 
@@ -104,22 +109,34 @@ module nts.uk.at.view.kmf002.b {
             
             public getDataFromService(): void {
                 let _self = this;
-                service.find(_self.commonTableMonthDaySet.fiscalYear(), $('#tree-grid').getRowSelected()[0].workplaceId).done((data) => {
-                    if (typeof data === "undefined") {
-                        /** 
-                         *   create value null for prepare create new 
-                        **/
-                        _.forEach(_self.commonTableMonthDaySet.arrMonth(), function(value) {
-                            value.day('');
-                        });
-                    } else {
-                        for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
-                            _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+                if ($('#tree-grid').getRowSelected()[0] != null) {
+                    service.find(_self.commonTableMonthDaySet.fiscalYear(), $('#tree-grid').getRowSelected()[0].workplaceId).done((data) => {
+                        if (typeof data === "undefined") {
+                            /** 
+                             *   create value null for prepare create new 
+                            **/
+                            _.forEach(_self.commonTableMonthDaySet.arrMonth(), function(value) {
+                                value.day('');
+                            });
+                        } else {
+                            for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
+                                _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+                            }
                         }
-                    }
-                });   
+                    });    
+                } else {
+                    _self.dataDefault();
+                }
             }
-          
+            
+            private dataDefault(): void {
+                let _self = this;
+                _.forEach(_self.commonTableMonthDaySet.arrMonth(), function(value) {
+                    value.day('');
+                });
+                _self.commonTableMonthDaySet.infoSelect2('');
+                _self.commonTableMonthDaySet.infoSelect3('');
+            }
        }
     
         class SystemType {

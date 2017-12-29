@@ -10,7 +10,7 @@ module nts.uk.at.view.kmf002.b {
             };
         
          export function save(year: number, data: any, workplaceId: string): JQueryPromise<any> {
-            model.WorkplaceMonthDaySetting workplaceMonthDaySetting = new model.WorkplaceMonthDaySetting(year, workplaceId, new Array<model.PublicHolidayMonthSettingDto>);
+            model.WorkplaceMonthDaySetting workplaceMonthDaySetting = new model.WorkplaceMonthDaySetting(year, workplaceId, new Array<model.PublicHolidayMonthSettingDto>());
             workplaceMonthDaySetting.toDto(data);
             let command = {};
             command.year = year;
