@@ -1589,7 +1589,7 @@ module nts.uk.com.view.cmm018.a {
                     if(codeChanged == '-1' || codeChanged == '' ){
                         return;
                     }
-                    self.enableDeleteB(true);
+//                    self.enableDeleteB(true);
                     //TH: company
                     if(self.tabSelectedB()==0){
                         self.enableCreatNewB(true);
@@ -1605,10 +1605,14 @@ module nts.uk.com.view.cmm018.a {
                             let color: boolean = com.lstAppPhase.length > 0 ? true : false;
                             let aaa = new vmbase.CompanyAppRootADto(color,com.company.employmentRootAtr,com.company.applicationType,name,com.company.approvalId,com.company.historyId,com.company.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
+                            self.enableDeleteB(true);
                         }
                         //TH: 1,2,appName
                         else{
                             self.showItem(codeChanged);
+                            if(codeChanged !== null){
+                                self.enableDeleteB(self.checkEnableEditHistButton(codeChanged));
+                            }
                         }
                     }
                     //TH: work place
@@ -1625,12 +1629,17 @@ module nts.uk.com.view.cmm018.a {
                             let color: boolean = wp.lstAppPhase.length > 0 ? true : false;
                             let aaa = new vmbase.CompanyAppRootADto(color,wp.workplace.employmentRootAtr,wp.workplace.applicationType,name,wp.workplace.approvalId,wp.workplace.historyId,wp.workplace.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
+                            self.enableDeleteB(true);
                         }
                         //TH: 1,2,appName
                         else{
                             self.showItem(codeChanged);
+                            if(codeChanged !== null){
+                                self.enableDeleteB(self.checkEnableEditHistButton(codeChanged));
+                            }
                         }
                     }
+                        
                     //TH: person
                     else{
                         self.enableCreatNewB(true);
@@ -1645,10 +1654,15 @@ module nts.uk.com.view.cmm018.a {
                             let color: boolean = ps.lstAppPhase.length > 0 ? true : false;
                             let aaa = new vmbase.CompanyAppRootADto(color,ps.person.employmentRootAtr,ps.person.applicationType,name,ps.person.approvalId,ps.person.historyId,ps.person.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
+                            self.enableDeleteB(true);
                         }
                         //TH: 1,2,appName
                         else{
                             self.showItem(codeChanged);
+                            if(codeChanged !== null){
+                                self.enableDeleteB(self.checkEnableEditHistButton(codeChanged));
+                            }
+                            
                         }
                     }
                     self.comRoot.valueHasMutated();
@@ -1854,12 +1868,7 @@ module nts.uk.com.view.cmm018.a {
                     return obj.company.approvalId == value;
                 });
             }
-            findRootComByType(value: number): vmbase.CompanyAppRootDto {
-                let self = this;
-                return _.find( self.lstCompany(), function(obj: vmbase.CompanyAppRootDto) {
-                    return obj.company.applicationType == value;
-                });
-            }
+
             /**
              * find work place root is selected
              * mode B: 申請個別登録モード
@@ -2598,6 +2607,58 @@ module nts.uk.com.view.cmm018.a {
                     let a1 = new vmbase.CompanyAppRootADto(false, value.employRootAtr, value.value, value.localizedName, '', '','', b, b, b, b, b);
                     self.comRoot(a1); 
                 }
+            }
+            /**
+             * check enable button edit history
+             * TH: select appName
+             * + history of application: exist -> return true;
+             * + history of application: not exist -> return false;
+             */
+            checkEnableEditHistButton(appName: string): boolean{
+                let self = this;
+                if(appName == getText("CMM018_7")){
+                    return true;
+                }
+                let app = self.findAppbyName(appName);
+                if(app == undefined){//common
+                    app = new vmbase.ApplicationType(null,'共通ルート',0);
+                }
+                let checkRootExist = self.findRootByType(app.value, app.employRootAtr, self.tabSelectedB());
+                return checkRootExist;
+            }
+            findRootByType(appType: number, employRootAtr: number, mode: number): boolean{
+                let self = this;
+                let check = false;
+                if(mode == vmbase.RootType.COMPANY){
+                    _.each(self.lstCompany(), function(obj: vmbase.CompanyAppRootDto){
+                        if(obj.company.employmentRootAtr == employRootAtr){
+                            if(obj.company.applicationType == appType || obj.company.confirmationRootType == appType){
+                                check = true;
+                                return;
+                            }
+                        }
+                    });
+                }else if(mode == vmbase.RootType.WORKPLACE){
+                   _.each(self.lstWorkplace(), function(obj: vmbase.WorkPlaceAppRootDto){
+                        if(obj.workplace.employmentRootAtr == employRootAtr){
+                            if(obj.workplace.applicationType == appType || obj.workplace.confirmationRootType == appType){
+                                check = true;
+                                return;
+                            }
+                        }
+                    }); 
+                }else{
+                    _.each(self.lstPerson(), function(obj: vmbase.PersonAppRootDto){
+                        if(obj.person.employmentRootAtr == employRootAtr){
+                            if(obj.person.applicationType == appType || obj.person.confirmationRootType == appType){
+                                check = true;
+                                return;
+                            }
+                        }
+                    });
+                    
+                }
+                return check;
             }
         }
     }
