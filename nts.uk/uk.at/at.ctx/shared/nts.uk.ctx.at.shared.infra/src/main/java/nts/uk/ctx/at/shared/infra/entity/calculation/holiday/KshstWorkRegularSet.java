@@ -12,7 +12,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * @author phongtq
+ * 通常勤務の加算設定
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -24,48 +27,48 @@ public class KshstWorkRegularSet  extends UkJpaEntity implements Serializable{
 	public KshstWorkRegularSetPK kshstRegularWorkSetPK;
 	
 	/** 実働のみで計算する */
-	@Column(name = "CALC_ACTUAL_OPERATION_1")
-	public int calcActualOperationPre;
+	@Column(name = "PRE_CALC_ACTUAL_OPERATION")
+	public int calcActualOperation1;
 	
 	/** インターバル免除時間を含めて計算する */
-	@Column(name = "EXEMPT_TAX_TIME_1")
-	public int calcIntervalTimePre;
+	@Column(name = "PRE_EXEMPT_TAX_TIME")
+	public int exemptTaxTime1;
 	
 	/** 育児・介護時間を含めて計算する */
-	@Column(name = "INC_CHILD_NURSING_CARE_1")
-	public int calcIncludCarePre;
+	@Column(name = "PRE_INC_CHILD_NURSE_CARE")
+	public int incChildNursingCare1;
 	
 	/** 加算する */
-	@Column(name = "ADDITION_TIME_1")
-	public int additionTimePre;
+	@Column(name = "PRE_ADDITION_TIME")
+	public int additionTime1;
 	
 	/** 遅刻・早退を控除しない */
-	@Column(name = "NOT_DEDUCT_LATELEAVE_1")
-	public int notDeductLateleavePre;
+	@Column(name = "PRE_NOT_DEDUCT_LATELEAVE")
+	public int notDeductLateleave1;
 	
 	/** 通常、変形の所定超過時 */
-	@Column(name = "DEFORMAT_EXC_VALUE_1")
-	public int deformatExcValuePre;
+	@Column(name = "PRE_DEFORMAT_EXC_VALUE")
+	public int deformatExcValue1;
 	
 	/** インターバル免除時間を含めて計算する */
-	@Column(name = "EXEMPT_TAX_TIME_2")
-	public int calsIntervalTimeWork;
+	@Column(name = "WKT_EXEMPT_TAX_TIME")
+	public int exemptTaxTime2;
 	
 	/** 実働のみで計算する */
-	@Column(name = "CALC_ACTUAL_OPERATION_2")
-	public int calcActualOperaWork;
+	@Column(name = "WKT_CALC_ACTUAL_OPERATION")
+	public int calcActualOperation2;
 	
 	/** 育児・介護時間を含めて計算する */
-	@Column(name = "INC_CHILD_NURSING_CARE_2")
-	public int calcIncludCareWork;
+	@Column(name = "WKT_INC_CHILD_NURSE_CARE")
+	public int incChildNursingCare2;
 	
 	/** 遅刻・早退を控除しない */
-	@Column(name = "NOT_DEDUCT_LATELEAVE_2")
-	public int notDeductLateleaveWork;
+	@Column(name = "WKT_NOT_DEDUCT_LATELEAVE")
+	public int notDeductLateleave2;
 	
 	/** 加算する */
-	@Column(name = "ADDITION_TIME_2")
-	public int additionTimeWork;
+	@Column(name = "WKT_ADDITION_TIME")
+	public int additionTime2;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)

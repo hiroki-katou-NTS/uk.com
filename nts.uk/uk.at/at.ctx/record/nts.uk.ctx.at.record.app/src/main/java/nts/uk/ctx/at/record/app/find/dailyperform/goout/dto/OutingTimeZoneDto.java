@@ -24,4 +24,8 @@ public class OutingTimeZoneDto {
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "外出理由")
 	@AttendanceItemValue(itemId = { 86, 149, 93, 100, 107, 114, 121, 128, 135, 142 }, type = ValueType.INTEGER)
 	private int reason;
+	
+	private int outTimeCalc;
+	
+	private int outTIme;
 }

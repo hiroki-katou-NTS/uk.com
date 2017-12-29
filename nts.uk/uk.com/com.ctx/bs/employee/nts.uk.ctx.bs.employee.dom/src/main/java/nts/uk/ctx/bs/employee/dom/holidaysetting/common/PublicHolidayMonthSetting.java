@@ -24,24 +24,17 @@ public class PublicHolidayMonthSetting extends DomainObject{
 	// 法定内休日日数
 	private MonthlyNumberOfDays inLegalHoliday;
 	
-	/** The out legal holiday. */
-	// 法定外休日日数
-	private MonthlyNumberOfDays outLegalHoliday;
-	
 	/**
 	 * Instantiates a new public holiday month setting.
 	 *
 	 * @param publicHdManagementYear the public hd management year
 	 * @param month the month
 	 * @param inLegalHoliday the in legal holiday
-	 * @param outLegalHoliday the out legal holiday
 	 */
-	public PublicHolidayMonthSetting(Year publicHdManagementYear, Integer month, 
-						MonthlyNumberOfDays inLegalHoliday, MonthlyNumberOfDays outLegalHoliday){
+	public PublicHolidayMonthSetting(Year publicHdManagementYear, Integer month, MonthlyNumberOfDays inLegalHoliday){
 		this.publicHdManagementYear = publicHdManagementYear;
 		this.month = month;
 		this.inLegalHoliday = inLegalHoliday;
-		this.outLegalHoliday = outLegalHoliday;
 	}
 	
 }

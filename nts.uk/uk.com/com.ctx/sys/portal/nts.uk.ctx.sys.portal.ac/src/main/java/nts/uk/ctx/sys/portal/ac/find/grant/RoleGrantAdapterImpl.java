@@ -1,21 +1,24 @@
 package nts.uk.ctx.sys.portal.ac.find.grant;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
-import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedPublisher;
+import nts.uk.ctx.sys.auth.pub.role.RoleExport;
+import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.roleset.RoleSetPublisher;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 import nts.uk.ctx.sys.portal.dom.adapter.role.AffJobHistoryDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.DefaultRoleSetDto;
-import nts.uk.ctx.sys.portal.dom.adapter.role.EmployeeDto;
+import nts.uk.ctx.sys.portal.dom.adapter.role.RoleDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedJobTitleDetailDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedPersonDto;
@@ -26,6 +29,9 @@ public class RoleGrantAdapterImpl implements RoleGrantAdapter {
 
 	@Inject
 	private RoleIndividualGrantExportRepo roleIndividualGrantRepo;
+	
+	@Inject
+	private RoleExportRepo roleRepo;
 	
 	@Inject
 	private UserPublisher userPublisher;
@@ -39,28 +45,24 @@ public class RoleGrantAdapterImpl implements RoleGrantAdapter {
 	@Inject
 	private SyJobTitlePub jobTitlePub;
 	
-	@Inject
-	private EmployeeInfoPub employeePub;
+	@Override
+	public List<String> getRoleId(String userId) {
+		return roleIndividualGrantRepo.getByUser(userId).stream()
+				.map(r -> r.getRoleId()).collect(Collectors.toList());
+	}
 	
 	@Override
-	public Optional<String> getRoleId(String userId) {
-		RoleIndividualGrantExport role = roleIndividualGrantRepo.getByUser(userId);
-		if (role == null) return Optional.empty();
-		return Optional.of(role.getRoleId());
+	public List<RoleDto> findRole(String roleId) {
+		List<RoleExport> roles = roleRepo.findById(roleId);
+		if (roles == null) return new ArrayList<>();
+		return roles.stream().map(r -> new RoleDto(r.getCompanyId(), r.getRoleId(),
+				r.getRoleCode(), r.getRoleName())).collect(Collectors.toList());
 	}
 	
 	@Override
 	public Optional<UserDto> getUserInfo(String userId) {
 		return userPublisher.getUserInfo(userId).map(
 				u -> new UserDto(u.getUserID(), u.getUserName(), u.getAssociatedPersonID()));
-	}
-	
-	@Override
-	public Optional<EmployeeDto> getEmployee(String companyId, String personId) {
-		return employeePub.getEmployeeInfoByCidPid(companyId, personId)
-				.map(e -> new EmployeeDto(e.getCompanyId(), e.getPersonId(), e.getEmployeeId(),
-						e.getEmployeeCode(), e.getDeletedStatus(), e.getDeleteDateTemporary(),
-						e.getRemoveReason(), e.getExternalCode()));
 	}
 
 	@Override

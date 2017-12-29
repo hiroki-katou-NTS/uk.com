@@ -50,7 +50,7 @@
 	                              items: listWorkType, selected: currentCode, selectedKey: 'workTypeCode', fields: ['workTypeCode', 'name'], mode: 'igGrid'}" />
 						<table id="single-list"
 							data-bind="ntsGridList: {	
-								width: 280,
+								width: 280,  
 								height: 450,
 								dataSource: listWorkType,
 								primaryKey: 'workTypeCode',
@@ -84,7 +84,7 @@
 							<div style="margin-top: 10px;"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeMemo'}">#{i18n.getText('KMK007_17')}</div>
 							<input id="memo-input"
-								data-bind="ntsTextEditor: {value: memo,name: '#[KMK007_17]', enable: $parent.isEnable}" />
+								data-bind="ntsTextEditor: {value: memo, name: '#[KMK007_17]', enable: $parent.isEnable, constraint: 'WorkTypeMemo'}" />
 						</div>
 
 

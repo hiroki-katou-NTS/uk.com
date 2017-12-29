@@ -58,7 +58,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public NotUseAtr getVacationAddedTimeAtr() {
-		return NotUseAtr.valueOf(this.entity.getScheManagementAtr());
+		return NotUseAtr.valueOf(this.entity.getVacationAddTimeAtr());
 	}
 
 	/*
@@ -107,7 +107,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public NotUseAtr getAutoIntervalSetAtr() {
-		return NotUseAtr.valueOf(this.entity.getScheManagementAtr());
+		return NotUseAtr.valueOf(this.entity.getAutoIntervalSetAtr());
 	}
 
 	/*
@@ -156,7 +156,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public NotUseAtr getAutoStampSetAtr() {
-		return NotUseAtr.valueOf(this.entity.getScheManagementAtr());
+		return NotUseAtr.valueOf(this.entity.getAutoStampSetAtr());
 	}
 
 	/*

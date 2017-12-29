@@ -99,6 +99,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         startPage(code): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             service.getAll().done((lstData) => {
                 if (lstData && lstData.length > 0) {
                     let sortedData = _.orderBy(lstData, ['code'], ['asc']);
@@ -113,6 +114,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.isNewMode(true);
                     self.selectedTab('tab-1');
                 }
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -151,6 +153,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             selectedErrorAlarm.operatorBetweenGroups(param && param.operatorBetweenGroups ? param.operatorBetweenGroups : 0);
             selectedErrorAlarm.operatorGroup1(param && param.operatorGroup1 ? param.operatorGroup1 : 0);
             selectedErrorAlarm.operatorGroup2(param && param.operatorGroup2 ? param.operatorGroup2 : 0);
+            selectedErrorAlarm.group2UseAtr(param && param.group2UseAtr ? param.group2UseAtr : false);
             selectedErrorAlarm.erAlAtdItemConditionGroup1.forEach((condition) => {
                 if (param && param.erAlAtdItemConditionGroup1 && param.erAlAtdItemConditionGroup1.length > 0) {
                     param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
@@ -215,13 +218,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 } else {
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.startPage(self.isNewMode() ? "U" + data.code : data.code);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
                                 $("#errorAlarmWorkRecordCode").focus();
                             }
                         });
-                        self.startPage(self.isNewMode() ? "U" + data.code : data.code);
                     });
                 }
             }
@@ -234,13 +237,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                 service.remove(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.startPage(null);
                         if (self.lstErrorAlarm().length > 0) {
                             $("#errorAlarmWorkRecordName").focus();
                         } else {
                             $("#errorAlarmWorkRecordCode").focus();
                         }
                     });
-                    self.startPage(null);
                 });
             })
         }
@@ -422,6 +425,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         operatorBetweenGroups: KnockoutObservable<number>;
         operatorGroup1: KnockoutObservable<number>;
         operatorGroup2: KnockoutObservable<number>;
+        group2UseAtr: KnockoutObservable<boolean>;
         erAlAtdItemConditionGroup1: Array<ErAlAtdItemCondition>;
         erAlAtdItemConditionGroup2: Array<ErAlAtdItemCondition>;
 
@@ -446,6 +450,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.operatorBetweenGroups = param && param.operatorBetweenGroups ? ko.observable(param.operatorBetweenGroups) : ko.observable(0);
             this.operatorGroup1 = param && param.operatorGroup1 ? ko.observable(param.operatorGroup1) : ko.observable(0);
             this.operatorGroup2 = param && param.operatorGroup2 ? ko.observable(param.operatorGroup2) : ko.observable(0);
+            this.group2UseAtr = param && param.group2UseAtr ? ko.observable(param.group2UseAtr) : ko.observable(false);
             this.erAlAtdItemConditionGroup1 = param && param.erAlAtdItemConditionGroup1 ? param.erAlAtdItemConditionGroup1.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : this.initListAtdItemCondition();
             this.erAlAtdItemConditionGroup2 = param && param.erAlAtdItemConditionGroup2 ? param.erAlAtdItemConditionGroup2.map((con) => { return new ErAlAtdItemCondition(con.NO, con); }) : this.initListAtdItemCondition();
             this.errorDisplayItem.subscribe((itemCode) => {

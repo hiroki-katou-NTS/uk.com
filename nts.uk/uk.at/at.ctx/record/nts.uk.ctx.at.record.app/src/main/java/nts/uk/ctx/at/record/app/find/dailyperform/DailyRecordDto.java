@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceIt
 
 @Data
 /** 日別実績（WORK） */
-@AttendanceItemRoot(rootName = "", isContainer = true)
+@AttendanceItemRoot(isContainer = true)
 public class DailyRecordDto implements ConvertibleAttendanceItem {
 
 	/** 勤務情報： 日別実績の勤務情報 */
@@ -50,8 +50,8 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	private Optional<OutingTimeOfDailyPerformanceDto> outingTime;
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "", isOptional = true)
-	private Optional<RestTimeZoneOfDailyDto> breakTime;
+	@AttendanceItemLayout(layout = "F", jpPropertyName = "", isList = true, listMaxLength = 10)
+	private List<RestTimeZoneOfDailyDto> breakTime;
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
 	@AttendanceItemLayout(layout = "G", jpPropertyName = "", isOptional = true)
@@ -82,7 +82,7 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	private Optional<OptionalItemOfDailyPerformDto> optionalItem;
 
 	/** 編集状態: 日別実績の編集状態 */
-	@AttendanceItemLayout(layout = "N", jpPropertyName = "", isList = true)
+	@AttendanceItemLayout(layout = "N", jpPropertyName = "", isList = true, listMaxLength = 3)
 	private List<EditStateOfDailyPerformanceDto> editStates;
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */

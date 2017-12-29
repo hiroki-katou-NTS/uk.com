@@ -14,8 +14,10 @@ module nts.uk.com.view.csa005.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getPerMissingMenu().done(function(res){                    
+                service.getPerMissingMenu().done(function(res){    
+                    $("#list_link").focus();                
                     self.listMenu(_.map(res,  x =>{return new model.Menu(x.code, x.displayName, x.screenId, x.programId, x.queryString)}));
+                    
                 });
                 dfd.resolve();
                 return dfd.promise();

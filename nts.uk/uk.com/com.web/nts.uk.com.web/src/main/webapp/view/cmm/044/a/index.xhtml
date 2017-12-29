@@ -14,9 +14,12 @@
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<!-- COMPONENT KCP009 -->
+			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
 			<!-- #CCG001 -->
 			<com:stylefile path="cmm044.a.main.css" />
-			<com:scriptfile path="ko-profile-ext.js" />
+<!-- 			<com:scriptfile path="ko-profile-ext.js" /> -->
 			<com:scriptfile path="cmm044.a.start.js" />
 			<com:scriptfile path="cmm044.a.vm.js" />
 			<com:scriptfile path="cmm044.a.service.js" />
@@ -32,24 +35,13 @@
 					data-bind="click: deleteAgent, enable: isEnableDelete">#{i18n.getText('CMM044_6')}</button>
 			</div>
 			<div id="contents-area">
-				
 				<div id="ccgcomponent_contents">
-					<div class="top-content">
-						<div class="top-content-data"
-							data-bind="ntsProfile: { 
-							options: empItems,
-							value: empSelectedItem,
-							key: 'personId',
-							code: 'code',
-							error: nts.uk.resource.getMessage('Msg_7'),
-							name: 'name' }">
-						</div>
-					</div>
+					<div id="emp-component"></div>
 					<div class="left-content">
 					<div id="ccgcomponent"></div>
 						<div class="cell-column1">
 						</div>
-						<div class="bg-green caret-right caret-background">
+						<div  id = "list" class="bg-green caret-right caret-background">
 							<table id="H_LST_001"
 								data-bind="ntsGridList: {
 								options: histItems,

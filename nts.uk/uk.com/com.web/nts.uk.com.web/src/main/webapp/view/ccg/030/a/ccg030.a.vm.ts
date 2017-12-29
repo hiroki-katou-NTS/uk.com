@@ -245,7 +245,7 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
                     selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
                     selectedFlowmenu.fileID,
-                    selectedFlowmenu.fileName.lenght === 0 ? '未設定' : selectedFlowmenu.fileName,
+                    nts.uk.text.isNullOrEmpty(selectedFlowmenu.fileName) ? '未設定' : selectedFlowmenu.fileName,
                     selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
                 if(flowmenuCD !== null){
