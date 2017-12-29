@@ -27,31 +27,53 @@ public class CalcAttrOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = (CalcAttrOfDailyPerformanceDto) item;
+		this.data = item == null ? new CalcAttrOfDailyPerformanceDto() : (CalcAttrOfDailyPerformanceDto) item;
 	}
 	
 	@Override
 	public CalAttrOfDailyPerformance toDomain() {
-		return new CalAttrOfDailyPerformance(this.getEmployeeId(), this.getWorkDate(), newAutoCalcSetting(data.getFlexExcessTime()),
-				new AutoCalRaisingSalarySetting(
-						getEnum(data.getRasingSalarySetting().getSalaryCalSetting(), SalaryCalAttr.class),
-						getEnum(data.getRasingSalarySetting().getSpecificSalaryCalSetting(),
-								SpecificSalaryCalAttr.class)),
-				new AutoCalHolidaySetting(newAutoCalcSetting(data.getHolidayTimeSetting().getHolidayWorkTime()),
-						newAutoCalcSetting(data.getHolidayTimeSetting().getLateNightTime())),
-				new AutoCalOfOverTime(newAutoCalcSetting(data.getOvertimeSetting().getEarlyOverTime()),
-						newAutoCalcSetting(data.getOvertimeSetting().getEarlyMidnightOverTime()),
-						newAutoCalcSetting(data.getOvertimeSetting().getNormalOverTime()),
-						newAutoCalcSetting(data.getOvertimeSetting().getNormalMidnightOverTime()),
-						newAutoCalcSetting(data.getOvertimeSetting().getLegalOverTime()),
-						newAutoCalcSetting(data.getOvertimeSetting().getLegalMidnightOverTime())),
-				new AutoCalOfLeaveEarlySetting(getEnum(data.getLeaveEarlySetting().getLeaveEarly(), LeaveAttr.class),
-						getEnum(data.getLeaveEarlySetting().getLeaveLate(), LeaveAttr.class)),
+		return new CalAttrOfDailyPerformance(
+				this.getEmployeeId(), 
+				this.getWorkDate(), 
+				newAutoCalcSetting(data.getFlexExcessTime()),
+				createAutoCalcRaisingSalarySetting(),
+				createAutoCalcHolidaySetting(),
+				createAutoOverTimeSetting(),
+				createAutoCalcLeaveSetting(),
 				new AutoCalcSetOfDivergenceTime(getEnum(data.getDivergenceTime(), DivergenceTimeAttr.class)));
+	}
+
+	private AutoCalRaisingSalarySetting createAutoCalcRaisingSalarySetting() {
+		return data.getRasingSalarySetting() == null ? null : new AutoCalRaisingSalarySetting(
+				getEnum(data.getRasingSalarySetting().getSalaryCalSetting(), SalaryCalAttr.class),
+				getEnum(data.getRasingSalarySetting().getSpecificSalaryCalSetting(), SpecificSalaryCalAttr.class));
+	}
+
+	private AutoCalHolidaySetting createAutoCalcHolidaySetting() {
+		return data.getHolidayTimeSetting() == null ? null : new AutoCalHolidaySetting(
+				newAutoCalcSetting(data.getHolidayTimeSetting().getHolidayWorkTime()),
+				newAutoCalcSetting(data.getHolidayTimeSetting().getLateNightTime()));
+	}
+
+	private AutoCalOfLeaveEarlySetting createAutoCalcLeaveSetting() {
+		return data.getLeaveEarlySetting() == null ? null : new AutoCalOfLeaveEarlySetting(
+				getEnum(data.getLeaveEarlySetting().getLeaveEarly(), LeaveAttr.class),
+				getEnum(data.getLeaveEarlySetting().getLeaveLate(), LeaveAttr.class));
+	}
+
+	private AutoCalOfOverTime createAutoOverTimeSetting() {
+		return data.getOvertimeSetting() == null ? null : new AutoCalOfOverTime(
+				newAutoCalcSetting(data.getOvertimeSetting().getEarlyOverTime()),
+				newAutoCalcSetting(data.getOvertimeSetting().getEarlyMidnightOverTime()),
+				newAutoCalcSetting(data.getOvertimeSetting().getNormalOverTime()),
+				newAutoCalcSetting(data.getOvertimeSetting().getNormalMidnightOverTime()),
+				newAutoCalcSetting(data.getOvertimeSetting().getLegalOverTime()),
+				newAutoCalcSetting(data.getOvertimeSetting().getLegalMidnightOverTime()));
 	}
 	
 	private AutoCalculationSetting newAutoCalcSetting(AutoCalculationSettingDto dto) {
-		return new AutoCalculationSetting(getEnum(dto.getCalculationAttr(), AutoCalculationCategoryOutsideHours.class),
+		return dto == null ? null : new AutoCalculationSetting(
+				getEnum(dto.getCalculationAttr(), AutoCalculationCategoryOutsideHours.class),
 				getEnum(dto.getUpperLimitSetting(), LimitOfOverTimeSetting.class));
 	}
 

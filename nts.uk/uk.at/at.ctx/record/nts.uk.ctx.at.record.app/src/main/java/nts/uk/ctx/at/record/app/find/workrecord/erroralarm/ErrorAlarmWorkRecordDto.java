@@ -57,7 +57,7 @@ public class ErrorAlarmWorkRecordDto {
 	/* エラーアラームを解除できる */
 	private int cancelableAtr;
 	/* エラー表示項目 */
-	private int errorDisplayItem;
+	private Integer errorDisplayItem;
 	/* チェック条件 */
 	private AlarmCheckTargetConditionDto alCheckTargetCondition;
 	/* 勤務種類の条件 */
@@ -152,7 +152,7 @@ public class ErrorAlarmWorkRecordDto {
 	}
 
 	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem,
+			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, Integer errorDisplayItem,
 			int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode, int operatorBetweenGroups,
 			int operatorGroup1, int operatorGroup2, boolean group2UseAtr) {
 		super();
@@ -176,7 +176,7 @@ public class ErrorAlarmWorkRecordDto {
 	}
 
 	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem,
+			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, Integer errorDisplayItem,
 			AlarmCheckTargetConditionDto alCheckTargetCondition, WorkTypeConditionDto workTypeCondition,
 			WorkTimeConditionDto workTimeCondition, int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode,
 			int operatorBetweenGroups, int operatorGroup1, int operatorGroup2,
@@ -213,7 +213,8 @@ public class ErrorAlarmWorkRecordDto {
 				domain.getTypeAtr().value,
 				domain.getErrorAlarmCondition() != null ? domain.getErrorAlarmCondition().getDisplayMessage().v() : "",
 				domain.getMessage().getBoldAtr() ? 1 : 0, domain.getMessage().getMessageColor().v(),
-				domain.getCancelableAtr() ? 1 : 0, domain.getErrorDisplayItem().intValue(), 0,
+				domain.getCancelableAtr() ? 1 : 0,
+				domain.getErrorDisplayItem() != null ? domain.getErrorDisplayItem().intValue() : null, 0,
 				domain.getLstApplication(),
 				domain.getErrorAlarmCondition() != null
 						? domain.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups().value : 0,
@@ -278,9 +279,6 @@ public class ErrorAlarmWorkRecordDto {
 				wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().getFilterAtr());
 				wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getWorkTimePlan().getLstWorkTime().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-				errorAlarmWorkRecordDto.setOperatorBetweenPlanActual(
-						((PlanActualWorkType) domain.getErrorAlarmCondition().getWorkTypeCondition())
-								.getOperatorBetweenPlanActual().value);
 			} else {
 				SingleWorkTime wtimeConditionDomain = (SingleWorkTime) domain.getErrorAlarmCondition()
 						.getWorkTimeCondition();

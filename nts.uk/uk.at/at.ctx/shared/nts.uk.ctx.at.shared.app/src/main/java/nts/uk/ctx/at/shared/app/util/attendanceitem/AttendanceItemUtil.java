@@ -134,7 +134,7 @@ public class AttendanceItemUtil {
 		Class<R> classType = getGenericType(field);
 		Map<String, List<ItemValue>> listGroup = groupMapLayout(group.getValue(), 1, true);
 		if (!listGroup.isEmpty()) {
-			int max = getMax(listGroup);
+			int max = getLayoutAnnotation(field).listMaxLength();//getMax(listGroup);
 			List<R> value = ReflectionUtil.getFieldValue(field, object); 
 			if(value == null){
 				value = new ArrayList<>();
@@ -158,11 +158,6 @@ public class AttendanceItemUtil {
 			}
 			return null;
 		}).collect(Collectors.toList());
-	}
-
-	private static int getMax(Map<String, List<ItemValue>> listGroup) {
-		return listGroup.entrySet().stream().filter(e -> !e.getKey().isEmpty())
-				.mapToInt(e -> Integer.parseInt(e.getKey())).max().orElse(-1);
 	}
 
 	private static <T> T mergeToObject(T object, List<ItemValue> attendanceItems, int layoutIdx, int idx,
@@ -244,9 +239,9 @@ public class AttendanceItemUtil {
 			String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
 			String newExCondition = getExCondition("", object, layout);
 			boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
-			int max = getMax(listGroup);
-			processListToMax(value, max, classType);
-			return IntStream.range(0, max + 1).mapToObj(idx -> {
+//			int max = getMax(listGroup);
+			processListToMax(value, layout.listMaxLength(), classType);
+			return IntStream.range(0, layout.listMaxLength()).mapToObj(idx -> {
 				List<ItemValue> values = listGroup.get(String.valueOf(idx));
 				T v = value.get(idx);
 				if (values != null) {

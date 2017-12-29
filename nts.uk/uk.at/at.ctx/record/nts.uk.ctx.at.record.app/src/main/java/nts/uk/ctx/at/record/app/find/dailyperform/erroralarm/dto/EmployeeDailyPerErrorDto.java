@@ -33,7 +33,7 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 
 	/** 項目一覧: 勤怠項目ID */
 	//TODO: set list max value
-//	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true)
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true, listMaxLength = ?)
 //	@AttendanceItemValue(type = ValueType.INTEGER)
 	private List<Integer> attendanceItemList;
 }

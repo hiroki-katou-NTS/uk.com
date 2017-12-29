@@ -62,21 +62,21 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@Override
 	public DailyRecordDto find(String employeeId, GeneralDate baseDate) {
 		DailyRecordDto result = new DailyRecordDto();
-		result.setAffiliationInfo(affiliationInfoFinder.find(employeeId, baseDate));
-		result.setAttendanceLeavingGate(Optional.of(attendanceLeavingGateFinder.find(employeeId, baseDate)));
-		result.setAttendanceTime(Optional.of(attendanceItemFinder.find(employeeId, baseDate)));
-		result.setBreakTime(breakItemFinder.finds(employeeId, baseDate));
-		result.setOptionalItem(Optional.of(optionalItemFinder.find(employeeId, baseDate)));
-		result.setOutingTime(Optional.of(outingTimeFinder.find(employeeId, baseDate)));
-		result.setSpecificDateAttr(Optional.of(specificDateAttrFinder.find(employeeId, baseDate)));
-		result.setTemporaryTime(Optional.of(temporaryTimeFinder.find(employeeId, baseDate)));
-		result.setTimeLeaving(Optional.of(timeLeavingFinder.find(employeeId, baseDate)));
+//		result.setAffiliationInfo(affiliationInfoFinder.find(employeeId, baseDate));
+//		result.setAttendanceLeavingGate(Optional.of(attendanceLeavingGateFinder.find(employeeId, baseDate)));
+//		result.setAttendanceTime(Optional.of(attendanceItemFinder.find(employeeId, baseDate)));
+//		result.setBreakTime(breakItemFinder.finds(employeeId, baseDate));
+//		result.setOptionalItem(Optional.of(optionalItemFinder.find(employeeId, baseDate)));
+//		result.setOutingTime(Optional.of(outingTimeFinder.find(employeeId, baseDate)));
+//		result.setSpecificDateAttr(Optional.of(specificDateAttrFinder.find(employeeId, baseDate)));
+//		result.setTemporaryTime(Optional.of(temporaryTimeFinder.find(employeeId, baseDate)));
+//		result.setTimeLeaving(Optional.of(timeLeavingFinder.find(employeeId, baseDate)));
 		result.setWorkInfo(workInfoFinder.find(employeeId, baseDate));
-		result.setCalcAttr(calcAttrFinder.find(employeeId, baseDate));
-		result.setShortWorkTime(Optional.of(shortWorkFinder.find(employeeId, baseDate)));
-		result.setEditStates(editStateFinder.finds(employeeId, baseDate));
-		result.setErrors(errorFinder.find(employeeId, baseDate));
-		result.setAttendanceTimeByWork(Optional.of(attendanceTimeByWorkFinder.find(employeeId, baseDate)));
+//		result.setCalcAttr(calcAttrFinder.find(employeeId, baseDate));
+//		result.setShortWorkTime(Optional.of(shortWorkFinder.find(employeeId, baseDate)));
+//		result.setEditStates(editStateFinder.finds(employeeId, baseDate));
+//		result.setErrors(errorFinder.find(employeeId, baseDate));
+//		result.setAttendanceTimeByWork(Optional.of(attendanceTimeByWorkFinder.find(employeeId, baseDate)));
 		return result;
 	}
 

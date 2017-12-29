@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.ac.find.grant;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -35,10 +37,8 @@ public class RoleIndividualGrantAdapterImpl implements RoleIndividualGrantAdapte
 	}
 
 	@Override
-	public Optional<RoleIndividualGrantImport> getByUser(String userId) {
-		Optional<RoleIndividualGrantExport> optExport = roleIndividualGrantExportRepo.getByUser(userId);
-		if(optExport.isPresent())
-			return Optional.of(new RoleIndividualGrantImport(optExport.get().getRoleId()));
-		return Optional.empty();
+	public List<RoleIndividualGrantImport> getByUser(String userId) {
+		List<RoleIndividualGrantExport> listExport = roleIndividualGrantExportRepo.getByUser(userId);
+		return listExport.stream().map(c -> { return new RoleIndividualGrantImport(c.getRoleId()); }).collect(Collectors.toList());
 	}
 }
