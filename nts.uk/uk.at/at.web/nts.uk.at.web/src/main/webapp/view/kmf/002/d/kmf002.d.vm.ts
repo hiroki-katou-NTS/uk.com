@@ -78,6 +78,7 @@ module nts.uk.at.view.kmf002.d {
                 let _self = this;
                 $('#empt-list-setting').ntsListComponent(_self.listComponentOption);
                 _self.catchChangeSelectEmp();
+                _self.getDataFromService();
                 nts.uk.ui.errors.clearAll();
                 var dfd = $.Deferred<void>();
 
@@ -89,14 +90,14 @@ module nts.uk.at.view.kmf002.d {
                 let _self = this;
                 //               var dfd = $.Deferred<void>();
                 service.save(_self.commonTableMonthDaySet.fiscalYear(), _self.commonTableMonthDaySet.arrMonth(), _self.selectedCode()).done((data) => {
+                    _self.getDataFromService();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
 
             private remove(): void {
                 let _self = this;
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => { 
-                    alert("Yes");
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.remove(_self.commonTableMonthDaySet.fiscalYear(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
@@ -118,7 +119,9 @@ module nts.uk.at.view.kmf002.d {
                             value.day('');
                         });
                     } else {
-                        console.log("find service screen D: " + data);
+                        for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
+                            _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+                        }
                     }
                 });
             }

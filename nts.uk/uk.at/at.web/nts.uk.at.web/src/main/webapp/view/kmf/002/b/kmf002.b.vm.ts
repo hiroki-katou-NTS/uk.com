@@ -71,7 +71,10 @@ module nts.uk.at.view.kmf002.b {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var _self = this;
-               $('#tree-grid').ntsTreeComponent(_self.treeGrid);
+               $('#tree-grid').ntsTreeComponent(_self.treeGrid).done(() => {
+                    _self.getDataFromService();   
+               });
+                
                 nts.uk.ui.errors.clearAll();
                 dfd.resolve();
                 return dfd.promise();
@@ -110,7 +113,9 @@ module nts.uk.at.view.kmf002.b {
                             value.day('');
                         });
                     } else {
-                        console.log("find service screen B: " + data);
+                        for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
+                            _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+                        }
                     }
                 });   
             }

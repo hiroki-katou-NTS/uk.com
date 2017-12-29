@@ -17,7 +17,7 @@ module nts.uk.at.view.kmf002.d {
             employmentMonthDaySetting.toDto(data);
             let command = {};
             command.year = year;
-            command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettings;
+            command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettingDto;
             command.empCd = empCd;
             return nts.uk.request.ajax("com", path.save, command);
         }

@@ -187,7 +187,9 @@ module nts.uk.at.view.kmf002.c {
                             value.day('');
                         });
                     } else {
-                        console.log("find service screen C: " + data);
+                        for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
+                            _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+                        }
                     }
                 });    
             }

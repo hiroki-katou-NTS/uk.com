@@ -12,7 +12,6 @@ module nts.uk.at.view.kmf002.e {
                 _self.commonTableMonthDaySet.fiscalYear.subscribe(function(newValue) {
                     // change year
                     $.when(_self.start_page()).done(function() {
-                        console.log("find done");
                     });  
                 });
             }
@@ -54,13 +53,14 @@ module nts.uk.at.view.kmf002.e {
                             value.day('');
                         });
                     } else {
-                        // TODO: set value responsible in data into _self.arrMonth()
+                        for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
+                            _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+                        }
                     }
                     dfd.resolve();
                 });
                 
                 service.findFirstMonth().done((data) => {
-                    console.log(data);
                     dfd.resolve();
                 });
                 
