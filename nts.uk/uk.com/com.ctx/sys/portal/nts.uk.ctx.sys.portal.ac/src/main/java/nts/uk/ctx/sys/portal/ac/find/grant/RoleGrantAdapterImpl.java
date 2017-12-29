@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
-import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedPublisher;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
@@ -47,10 +46,9 @@ public class RoleGrantAdapterImpl implements RoleGrantAdapter {
 	private SyJobTitlePub jobTitlePub;
 	
 	@Override
-	public Optional<String> getRoleId(String userId) {
-		Optional<RoleIndividualGrantExport> roleOpt = roleIndividualGrantRepo.getByUser(userId);
-		if (!roleOpt.isPresent()) return Optional.empty();
-		return Optional.of(roleOpt.get().getRoleId());
+	public List<String> getRoleId(String userId) {
+		return roleIndividualGrantRepo.getByUser(userId).stream()
+				.map(r -> r.getRoleId()).collect(Collectors.toList());
 	}
 	
 	@Override

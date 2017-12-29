@@ -22,10 +22,10 @@ public class HdFromWeekday extends DomainObject{
 	private String companyId;
 
 	/** 変更前の休出枠NO */
-	private BreakoutFrameNo hdFrameNo;
+	private BreakoutFrameNo holidayWorkFrameNo;
 
 	/** 変更後の残業枠NO */
-	private OvertimeWorkFrameNo overtimeFrameNo;
+	private OvertimeWorkFrameNo overWorkNo;
 
 	/**
 	 * Create from Java Type of Hd From Weekday
@@ -34,7 +34,7 @@ public class HdFromWeekday extends DomainObject{
 	 * @param overtimeFrameNo
 	 * @return
 	 */
-	public static HdFromWeekday createFromJavaType(String companyId, int hdFrameNo, BigDecimal overtimeFrameNo) {
-		return new HdFromWeekday(companyId, new BreakoutFrameNo(hdFrameNo), new OvertimeWorkFrameNo(overtimeFrameNo));
+	public static HdFromWeekday createFromJavaType(String companyId, int holidayWorkFrameNo, BigDecimal overWorkNo) {
+		return new HdFromWeekday(companyId, new BreakoutFrameNo(holidayWorkFrameNo), new OvertimeWorkFrameNo(overWorkNo));
 	}
 }

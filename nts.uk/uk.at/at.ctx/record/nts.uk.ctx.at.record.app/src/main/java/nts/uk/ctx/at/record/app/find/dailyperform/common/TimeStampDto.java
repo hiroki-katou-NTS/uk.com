@@ -18,7 +18,7 @@ public class TimeStampDto {
 	private Integer timesOfDay;
 
 	/** 丸め後の時刻 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "丸め後の時刻")
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "丸め後の時刻", needCheckIDWithIndex = true)
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer afterRoundingTimesOfDay;
 

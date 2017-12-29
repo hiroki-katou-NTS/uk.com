@@ -59,10 +59,11 @@ public class WithinStatutoryTimeDailyPerformDto {
 
 	public WithinStatutoryTimeOfDaily toDomain() {
 		return WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(workTime),
-				new AttendanceTime(workTimeIncludeVacationTime), new AttendanceTime(withinPrescribedPremiumTime),
+				workTimeIncludeVacationTime == null ? null : new AttendanceTime(workTimeIncludeVacationTime), 
+				withinPrescribedPremiumTime == null ? null : new AttendanceTime(withinPrescribedPremiumTime),
 				new WithinStatutoryMidNightTime(TimeWithCalculation.createTimeWithCalculation(
-						new AttendanceTime(withinStatutoryMidNightTime.getTime()),
-						new AttendanceTime(withinStatutoryMidNightTime.getCalcTime()))),
-				new AttendanceTime(vacationAddTime));
+						withinStatutoryMidNightTime == null ? null : new AttendanceTime(withinStatutoryMidNightTime.getTime()),
+						withinStatutoryMidNightTime == null ? null : new AttendanceTime(withinStatutoryMidNightTime.getCalcTime()))),
+				vacationAddTime == null ? null : new AttendanceTime(vacationAddTime));
 	}
 }

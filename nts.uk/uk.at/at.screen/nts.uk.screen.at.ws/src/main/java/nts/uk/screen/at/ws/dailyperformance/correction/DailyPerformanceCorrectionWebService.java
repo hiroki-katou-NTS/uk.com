@@ -109,7 +109,7 @@ public class DailyPerformanceCorrectionWebService {
 					.collect(Collectors.toList());
 			Map<String, List<ItemValue>> itemMap = new HashMap<>();
 			itemMap.put("AttendanceTimeOfDailyPerformance", itemCovert);
-			dailyModifyCommandFacade.handleAdd(
+			dailyModifyCommandFacade.handleUpdate(
 					new DailyModifyQuery(x.getValue().get(0).getEmployeeId(), x.getValue().get(0).getDate(), itemCovert));
 		});
 	}

@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -79,18 +80,22 @@ public class UserInfoFinder {
 		Set<String> list = new HashSet<>();
 
 		// Step 1 - add employee info
-		listEmpl.forEach(employee -> {
-			UserDto userDto = new UserDto();
-			userDto.setEmployeeCode(employee.getEmployeeCode());
-			userDto.setPersonId(employee.getPersonId());
-			userDto.setEmployeeId(employee.getEmployeeId());
-			listUserAccount.add(userDto);
-			list.add(employee.getPersonId());
-		});
-		
+		if (!listEmpl.isEmpty()) {
+			listEmpl.forEach(employee -> {
+				UserDto userDto = new UserDto();
+				userDto.setEmployeeCode(employee.getEmployeeCode());
+				userDto.setPersonId(employee.getPersonId());
+				userDto.setEmployeeId(employee.getEmployeeId());
+				listUserAccount.add(userDto);
+				list.add(employee.getPersonId());
+			});
+		}
 		// reject duplicate element
-		listPersonId.addAll(list);
-
+		if (!list.isEmpty()) {
+			listPersonId.addAll(list);
+			// remove element == null
+			listPersonId.removeAll(Collections.singleton(null));
+		}
 		// Step 2 - add person info
 		List<PersonInfoImport> listPerson = this.personInfoAdapter.getListPersonInfo(listPersonId);
 		Map<String, PersonInfoImport> mapPerson = listPerson.stream()

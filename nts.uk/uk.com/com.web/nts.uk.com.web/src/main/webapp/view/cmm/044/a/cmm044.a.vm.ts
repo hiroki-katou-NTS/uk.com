@@ -147,21 +147,26 @@ module cmm044.a.viewmodel {
                         nts.uk.ui.errors.clearAll();
                         self.isEnableDelete(true);
                         self.isEnableAdd(true);
-                        service.findEmployeeName(self.currentItem().agentSid1()).done(function(response) {
-                            self.employeeNameScreen1(response);
-                        });
-                        
-                        service.findEmployeeName(self.currentItem().agentSid2()).done(function(response) {
-                            self.employeeNameScreen2(response);
-                        });
-                        
-                        service.findEmployeeName(self.currentItem().agentSid3()).done(function(response) {
-                            self.employeeNameScreen3(response);
-                        });
-                        
-                        service.findEmployeeName(self.currentItem().agentSid4()).done(function(response) {
-                            self.employeeNameScreen4(response);
-                        });
+                        if (!nts.uk.text.isNullOrEmpty(self.currentItem().agentSid1())) {
+                            service.findEmployeeName(self.currentItem().agentSid1()).done(function(response) {
+                                self.employeeNameScreen1(response);
+                            });
+                        }
+                        if (!nts.uk.text.isNullOrEmpty(self.currentItem().agentSid2())) {
+                            service.findEmployeeName(self.currentItem().agentSid2()).done(function(response) {
+                                self.employeeNameScreen2(response);
+                            });
+                        }
+                        if (!nts.uk.text.isNullOrEmpty(self.currentItem().agentSid3())) {
+                            service.findEmployeeName(self.currentItem().agentSid3()).done(function(response) {
+                                self.employeeNameScreen3(response);
+                            });
+                        }
+                        if (!nts.uk.text.isNullOrEmpty(self.currentItem().agentSid4())) {
+                            service.findEmployeeName(self.currentItem().agentSid4()).done(function(response) {
+                                self.employeeNameScreen4(response);
+                            });
+                        }
                     });
                 }
             });

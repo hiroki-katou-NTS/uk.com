@@ -72,8 +72,7 @@ public class JpaEstComparisonRepository extends JpaRepository implements Estimat
 	@Override
 	public void remove(String companyId) {
 		this.commandProxy().remove(KscstEstComparison.class, companyId);
-//		KscstEstComparison entity = this.getEntityManager().find(KscstEstComparison.class, companyId);
-//		this.getEntityManager().remove(entity);
+		this.getEntityManager().flush();
 	}
 
 }
