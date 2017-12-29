@@ -187,7 +187,6 @@ module nts.uk.at.view.kmk003.a {
 
                     // enter update mode if has data
                     if (data && data.length > 0) {
-                        self.enterUpdateMode();
                         // select first item
                         if (!selectedCode && !selectedIndex) {
                             self.selectedWorkTimeCode(data[0].worktimeCode);
@@ -263,7 +262,12 @@ module nts.uk.at.view.kmk003.a {
                 _.defer(() => nts.uk.ui.block.invisible());
 
                 service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
+                    // enter update mode
+                    self.enterUpdateMode();
+
+                    // update mainSettingModel data
                     self.mainSettingModel.updateData(worktimeSettingInfo);
+
                     self.isLoading(true);
                     self.mainSettingModel.isChangeItemTable.valueHasMutated();
                     dfd.resolve();
