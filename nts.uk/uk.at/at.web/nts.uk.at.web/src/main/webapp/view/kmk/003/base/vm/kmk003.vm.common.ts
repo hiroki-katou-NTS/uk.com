@@ -43,7 +43,8 @@ module nts.uk.at.view.kmk003.a {
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
     import FixedWorkRestSetDto = service.model.common.FixedWorkRestSetDto;
     import FixedWorkTimezoneSetDto = service.model.common.FixedWorkTimezoneSetDto;
-    
+
+    import LateEarlyAtr = service.model.common.LateEarlyAtr;
     import WorkSystemAtr = service.model.common.WorkSystemAtr;
     import SubHolidayOriginAtr = service.model.common.SubHolidayOriginAtr;
     import SubHolTransferSetAtr = service.model.common.SubHolTransferSetAtr;
@@ -143,7 +144,7 @@ module nts.uk.at.view.kmk003.a {
                     this.workTimeCode = ko.observable('');
                     this.originAtr = ko.observable(0);
                 }
-                
+
                 static getDefaultData(): Array<WorkTimezoneOtherSubHolTimeSetModel> {
                     let dayOffTime = new WorkTimezoneOtherSubHolTimeSetModel();
                     dayOffTime.originAtr(SubHolidayOriginAtr.WORK_DAY_OFF_TIME);
@@ -192,7 +193,7 @@ module nts.uk.at.view.kmk003.a {
                     list.push(nightShift);
                     return list;
                 }
-                
+
                 updateData(data: WorkTimezoneMedicalSetDto) {
                     this.roundingSet.updateData(data.roundingSet);
                     this.workSystemAtr(data.workSystemAtr);
@@ -207,13 +208,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
-                
-                resetData(){
+
+                resetData() {
                     this.roundingSet.resetData();
-                    this.applicationTime(0);    
+                    this.applicationTime(0);
                 }
             }
-
 
             export class WorkTimezoneCommonSetModel {
                 zeroHStraddCalculateSet: KnockoutObservable<boolean>;
@@ -233,20 +233,20 @@ module nts.uk.at.view.kmk003.a {
                     this.intervalSet = new IntervalTimeSettingModel();
                     this.subHolTimeSet = WorkTimezoneOtherSubHolTimeSetModel.getDefaultData();
                     this.raisingSalarySet = ko.observable('');
-                    this.medicalSet = WorkTimezoneMedicalSetModel.getDefaultData();              
+                    this.medicalSet = WorkTimezoneMedicalSetModel.getDefaultData();
                     this.goOutSet = new WorkTimezoneGoOutSetModel();
                     this.stampSet = new WorkTimezoneStampSetModel();
                     this.lateNightTimeSet = new WorkTimezoneLateNightTimeSetModel();
                     this.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSetModel();
                     this.extraordTimeSet = new WorkTimezoneExtraordTimeSetModel();
                     this.lateEarlySet = new WorkTimezoneLateEarlySetModel();
-                }               
+                }
 
                 updateData(data: WorkTimezoneCommonSetDto) {
                     if (data) {
                         this.zeroHStraddCalculateSet(data.zeroHStraddCalculateSet);
                         this.intervalSet.updateData(data.intervalSet);
-                        
+
                         let newSubHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[] = _.map(data.subHolTimeSet, (dataDTO) => {
                             let dataModel: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
                             dataModel.updateData(dataDTO);
@@ -254,41 +254,41 @@ module nts.uk.at.view.kmk003.a {
                         });
                         let newWorkDayOffTimeSet = _.find(newSubHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.WORK_DAY_OFF_TIME);
                         let workDayOffTimeSet = _.find(this.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.WORK_DAY_OFF_TIME);
-                        if (nts.uk.util.isNullOrUndefined(newWorkDayOffTimeSet)) {                                         
-                            workDayOffTimeSet.updateData(WorkTimezoneCommonSetModel.getDefaultSubHol(SubHolidayOriginAtr.WORK_DAY_OFF_TIME).toDto());                    
+                        if (nts.uk.util.isNullOrUndefined(newWorkDayOffTimeSet)) {
+                            workDayOffTimeSet.updateData(WorkTimezoneCommonSetModel.getDefaultSubHol(SubHolidayOriginAtr.WORK_DAY_OFF_TIME).toDto());
                         } else {
-                            workDayOffTimeSet.updateData(newWorkDayOffTimeSet.toDto());  
+                            workDayOffTimeSet.updateData(newWorkDayOffTimeSet.toDto());
                         }
                         let newOverTimeSet = _.find(newSubHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.FROM_OVER_TIME);
                         let overTimeSet = _.find(this.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.FROM_OVER_TIME);
-                        if (nts.uk.util.isNullOrUndefined(newOverTimeSet)) {                                                       
-                            overTimeSet.updateData(WorkTimezoneCommonSetModel.getDefaultSubHol(SubHolidayOriginAtr.FROM_OVER_TIME).toDto());                                                    
+                        if (nts.uk.util.isNullOrUndefined(newOverTimeSet)) {
+                            overTimeSet.updateData(WorkTimezoneCommonSetModel.getDefaultSubHol(SubHolidayOriginAtr.FROM_OVER_TIME).toDto());
                         } else {
-                            overTimeSet.updateData(newOverTimeSet.toDto());      
+                            overTimeSet.updateData(newOverTimeSet.toDto());
                         }
 
                         this.raisingSalarySet(data.raisingSalarySet);
-                                                                                      
+
                         let newMedicalSet: WorkTimezoneMedicalSetModel[] = _.map(data.medicalSet, (dataDTO) => {
                             let dataModel: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
                             dataModel.updateData(dataDTO);
                             return dataModel;
-                        });                        
+                        });
                         let newDayShift = _.find(newMedicalSet, o => o.workSystemAtr() == WorkSystemAtr.DAY_SHIFT);
                         let dayShift = _.find(this.medicalSet, o => o.workSystemAtr() == WorkSystemAtr.DAY_SHIFT);
-                        if (nts.uk.util.isNullOrUndefined(newDayShift)) {                                                       
-                            dayShift.updateData(WorkTimezoneCommonSetModel.getDefaultMedical(WorkSystemAtr.DAY_SHIFT).toDto());                                                    
+                        if (nts.uk.util.isNullOrUndefined(newDayShift)) {
+                            dayShift.updateData(WorkTimezoneCommonSetModel.getDefaultMedical(WorkSystemAtr.DAY_SHIFT).toDto());
                         } else {
-                            dayShift.updateData(newDayShift.toDto());      
-                        }                        
+                            dayShift.updateData(newDayShift.toDto());
+                        }
                         let newNightShift = _.find(newMedicalSet, o => o.workSystemAtr() == WorkSystemAtr.NIGHT_SHIFT);
                         let nightShift = _.find(this.medicalSet, o => o.workSystemAtr() == WorkSystemAtr.NIGHT_SHIFT);
-                        if (nts.uk.util.isNullOrUndefined(newNightShift)) {                                                       
-                            nightShift.updateData(WorkTimezoneCommonSetModel.getDefaultMedical(WorkSystemAtr.NIGHT_SHIFT).toDto());                                                    
+                        if (nts.uk.util.isNullOrUndefined(newNightShift)) {
+                            nightShift.updateData(WorkTimezoneCommonSetModel.getDefaultMedical(WorkSystemAtr.NIGHT_SHIFT).toDto());
                         } else {
-                            nightShift.updateData(newNightShift.toDto());      
-                        }                                           
-       
+                            nightShift.updateData(newNightShift.toDto());
+                        }
+
                         this.goOutSet.updateData(data.goOutSet);
                         this.stampSet.updateData(data.stampSet);
                         this.lateNightTimeSet.updateData(data.lateNightTimeSet);
@@ -326,42 +326,42 @@ module nts.uk.at.view.kmk003.a {
                     this.medicalSet.length = 0;
                     this.medicalSet.concat(WorkTimezoneMedicalSetModel.getDefaultData());
                     this.goOutSet.resetData();
-//                    this.stampSet.resetData();
-//                    this.lateNightTimeSet.resetData();
-//                    this.shortTimeWorkSet.resetData();
-//                    this.extraordTimeSet.resetData();
-//                    this.lateEarlySet.resetData();
+                    //                    this.stampSet.resetData();
+                    //                    this.lateNightTimeSet.resetData();
+                    //                    this.shortTimeWorkSet.resetData();
+                    //                    this.extraordTimeSet.resetData();
+                    //                    this.lateEarlySet.resetData();
                 }
-                
+
                 public static getDefaultSubHol(originAtr: SubHolidayOriginAtr): WorkTimezoneOtherSubHolTimeSetModel {
                     let defaultObj = new WorkTimezoneOtherSubHolTimeSetModel();
                     defaultObj.originAtr(originAtr);
                     return defaultObj;
-                } 
-                
+                }
+
                 public static getDefaultMedical(workSystemAtr: WorkSystemAtr): WorkTimezoneMedicalSetModel {
                     let defaultObj = new WorkTimezoneMedicalSetModel();
                     defaultObj.workSystemAtr(workSystemAtr);
                     return defaultObj;
-                }  
-                
+                }
+
                 public getWorkDayOffTimeSet(): WorkTimezoneOtherSubHolTimeSetModel {
                     let self = this;
                     return _.find(self.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.WORK_DAY_OFF_TIME);
-                }                
+                }
                 public getOverTimeSet(): WorkTimezoneOtherSubHolTimeSetModel {
                     let self = this;
                     return _.find(self.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.FROM_OVER_TIME);
                 }
-                               
+
                 public getMedicalDayShift(): WorkTimezoneMedicalSetModel {
                     let self = this;
                     return _.find(self.medicalSet, o => o.workSystemAtr() == WorkSystemAtr.DAY_SHIFT);
-                }                
+                }
                 public getMedicalNightShift(): WorkTimezoneMedicalSetModel {
                     let self = this;
                     return _.find(self.medicalSet, o => o.workSystemAtr() == WorkSystemAtr.NIGHT_SHIFT);
-                }                    
+                }
             }
 
             export class TotalRoundingSetModel {
@@ -651,7 +651,7 @@ module nts.uk.at.view.kmk003.a {
                     this.originalList = ko.observableArray([]);
                     this.originalListTemp = [];
                     this.listTimeRangeTemp = [];
-                    
+
                     this.originalList.subscribe(newList => {
                         if (this.isNotEqual(newList, this.originalListTemp)) {
                             this.originalListTemp = _.sortBy(newList, i => i);
@@ -665,7 +665,7 @@ module nts.uk.at.view.kmk003.a {
                             this.originalList(this.fromListTimeRange(newList));
                         }
                     });
-                    
+
                 }
 
                 /**
@@ -1130,8 +1130,8 @@ module nts.uk.at.view.kmk003.a {
             export class PrioritySettingModel {
                 priorityAtr: KnockoutObservable<number>;
                 stampAtr: KnockoutObservable<number>;
-                
-                
+
+
                 constructor(priorityAtr: number) {
                     this.priorityAtr = ko.observable(priorityAtr);
                     this.stampAtr = ko.observable(0);
@@ -1161,7 +1161,7 @@ module nts.uk.at.view.kmk003.a {
                     this.initPrioritySets();
                     this.initRoundingSets();
                 }
-                
+
                 initPrioritySets() {
                     var dataPriorityModel1: PrioritySettingModel = new PrioritySettingModel(0);
                     var dataPriorityModel2: PrioritySettingModel = new PrioritySettingModel(1);
@@ -1179,8 +1179,8 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: WorkTimezoneStampSetDto) {
                     var self = this;
                     data.roundingSets.forEach(function(dataRoundingDTO, index) {
-//                        var dataRoundingModel: RoundingSetModel = new RoundingSetModel(index);
-//                        dataRoundingModel.updateData(dataRoundingDTO);
+                        //                        var dataRoundingModel: RoundingSetModel = new RoundingSetModel(index);
+                        //                        dataRoundingModel.updateData(dataRoundingDTO);
                         self.roundingSets[dataRoundingDTO.section].updateData(dataRoundingDTO);
                     });
 
@@ -1384,7 +1384,6 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-
             export class OtherEmTimezoneLateEarlySetModel {
                 delTimeRoundingSet: TimeRoundingSettingModel;
                 stampExactlyTimeIsLateEarly: KnockoutObservable<boolean>;
@@ -1398,6 +1397,17 @@ module nts.uk.at.view.kmk003.a {
                     this.graceTimeSet = new GraceTimeSettingModel();
                     this.recordTimeRoundingSet = new TimeRoundingSettingModel();
                     this.lateEarlyAtr = ko.observable(0);
+                }
+                
+                static getDefaultData(): Array<OtherEmTimezoneLateEarlySetModel> {
+                    let lateSet = new OtherEmTimezoneLateEarlySetModel();
+                    lateSet.lateEarlyAtr(LateEarlyAtr.LATE);
+                    let leaveEarlySet = new OtherEmTimezoneLateEarlySetModel();
+                    leaveEarlySet.lateEarlyAtr(LateEarlyAtr.EARLY);
+                    let list: OtherEmTimezoneLateEarlySetModel[] = [];
+                    list.push(lateSet);
+                    list.push(leaveEarlySet);
+                    return list;
                 }
 
                 updateData(data: OtherEmTimezoneLateEarlySetDto) {
@@ -1427,33 +1437,64 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     this.commonSet = new EmTimezoneLateEarlyCommonSetModel();
-                    this.otherClassSets = [];
+                    this.otherClassSets = OtherEmTimezoneLateEarlySetModel.getDefaultData();
                 }
 
                 updateData(data: WorkTimezoneLateEarlySetDto) {
                     if (data) {
                         this.commonSet.updateData(data.commonSet);
-                        this.otherClassSets = [];
-                        if (data.otherClassSets) {
-                            for (var dataDTO of data.otherClassSets) {
-                                var dataModel: OtherEmTimezoneLateEarlySetModel = new OtherEmTimezoneLateEarlySetModel();
-                                dataModel.updateData(dataDTO);
-                                this.otherClassSets.push(dataModel);
-                            }
-                        }                       
-                    }                   
+                   
+                        let newOtherClassSets: OtherEmTimezoneLateEarlySetModel[] = _.map(data.otherClassSets, (dataDTO) => {
+                            let dataModel: OtherEmTimezoneLateEarlySetModel = new OtherEmTimezoneLateEarlySetModel();
+                            dataModel.updateData(dataDTO);
+                            return dataModel;
+                        });
+                        
+                        let newLateSet = _.find(newOtherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.LATE);
+                        let lateSet = _.find(this.otherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.LATE);
+                        if (nts.uk.util.isNullOrUndefined(newLateSet)) {
+                            lateSet.updateData(WorkTimezoneLateEarlySetModel.getDefaultOtherSet(LateEarlyAtr.LATE).toDto());
+                        } else {
+                            lateSet.updateData(newLateSet.toDto());
+                        }
+                        let newLeaveEarlySet = _.find(newOtherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.EARLY);
+                        let leaveEarlySet = _.find(this.otherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.EARLY);
+                        if (nts.uk.util.isNullOrUndefined(newLeaveEarlySet)) {
+                            leaveEarlySet.updateData(WorkTimezoneLateEarlySetModel.getDefaultOtherSet(LateEarlyAtr.EARLY).toDto());
+                        } else {
+                            leaveEarlySet.updateData(newLeaveEarlySet.toDto());
+                        }
+                    }
                 }
 
                 toDto(): WorkTimezoneLateEarlySetDto {
-                    var otherClassSets: OtherEmTimezoneLateEarlySetDto[] = [];
-                    for (var dataModel of this.otherClassSets) {
-                        otherClassSets.push(dataModel.toDto());
-                    }
+                    let otherClassSets: OtherEmTimezoneLateEarlySetDto[] = _.map(this.otherClassSets, (dataModel) => dataModel.toDto());       
                     var dataDTO: WorkTimezoneLateEarlySetDto = {
                         commonSet: this.commonSet.toDto(),
                         otherClassSets: otherClassSets
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    //this.commonSet.resetData();
+                    this.otherClassSets.length = 0;
+                    this.otherClassSets.concat(OtherEmTimezoneLateEarlySetModel.getDefaultData());
+                }
+                
+                public static getDefaultOtherSet(lateEarlyAtr: LateEarlyAtr): OtherEmTimezoneLateEarlySetModel {
+                    let defaultObj = new OtherEmTimezoneLateEarlySetModel();
+                    defaultObj.lateEarlyAtr(lateEarlyAtr);
+                    return defaultObj;
+                }
+                
+                public getLateSet(): OtherEmTimezoneLateEarlySetModel {
+                    let self = this;
+                    return _.find(self.otherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.LATE);
+                }
+                public getLeaveEarlySet(): OtherEmTimezoneLateEarlySetModel {
+                    let self = this;
+                    return _.find(self.otherClassSets, o => o.lateEarlyAtr() == LateEarlyAtr.EARLY);
                 }
             }
 

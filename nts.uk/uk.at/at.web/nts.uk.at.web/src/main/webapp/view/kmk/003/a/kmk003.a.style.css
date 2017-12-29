@@ -48,3 +48,7 @@
 	height: 10px;
 	background-size: 10px 10px;
 }
+
+.cf .nts-switch-button {
+	min-width: 80px;
+} 

@@ -279,10 +279,10 @@ module nts.uk.at.view.kmk003.a {
                 
                 
                 // Common Enum
-                export enum WorkSystemAtr {
-                    DAY_SHIFT,
-                    NIGHT_SHIFT
-                }
+                export enum LateEarlyAtr {
+                    LATE,
+                    EARLY
+                }               
                 
                 export enum SubHolidayOriginAtr {
                     FROM_OVER_TIME,
@@ -292,6 +292,11 @@ module nts.uk.at.view.kmk003.a {
                 export enum SubHolTransferSetAtr {
                     SPECIFIED_TIME_SUB_HOL,
                     CERTAIN_TIME_EXC_SUB_HOL
+                }
+                
+                export enum WorkSystemAtr {
+                    DAY_SHIFT,
+                    NIGHT_SHIFT
                 }
             }
         }
