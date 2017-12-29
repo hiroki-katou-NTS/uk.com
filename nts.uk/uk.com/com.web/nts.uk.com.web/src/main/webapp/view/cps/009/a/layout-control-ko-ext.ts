@@ -60,8 +60,6 @@ module CPS009Constraint {
                     break;
                 case ITEM_SINGLE_TYPE.DATE:
                     constraint.valueType = "Date";
-                    constraint.max = parseTime(dts.max, true).format() || undefined;
-                    constraint.min = parseTime(dts.min, true).format() || undefined;
                     break;
                 case ITEM_SINGLE_TYPE.TIME:
                     constraint.valueType = "Time";
