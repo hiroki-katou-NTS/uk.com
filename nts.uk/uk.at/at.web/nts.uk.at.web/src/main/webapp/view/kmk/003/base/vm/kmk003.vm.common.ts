@@ -189,7 +189,7 @@ module nts.uk.at.view.kmk003.a {
                 intervalSet: IntervalTimeSettingModel;
                 subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[];
                 raisingSalarySet: KnockoutObservable<string>;
-                medicalSet: KnockoutObservableArray<WorkTimezoneMedicalSetModel>;
+                medicalSet: WorkTimezoneMedicalSetModel[];
                 goOutSet: WorkTimezoneGoOutSetModel;
                 stampSet: WorkTimezoneStampSetModel;
                 lateNightTimeSet: WorkTimezoneLateNightTimeSetModel;
@@ -202,7 +202,7 @@ module nts.uk.at.view.kmk003.a {
                     this.intervalSet = new IntervalTimeSettingModel();
                     this.subHolTimeSet = [];
                     this.raisingSalarySet = ko.observable('');
-                    this.medicalSet = ko.observableArray([]);                   
+                    this.medicalSet = [];              
                     this.goOutSet = new WorkTimezoneGoOutSetModel();
                     this.stampSet = new WorkTimezoneStampSetModel();
                     this.lateNightTimeSet = new WorkTimezoneLateNightTimeSetModel();
@@ -214,21 +214,18 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: WorkTimezoneCommonSetDto) {
                     if (data) {
                         this.zeroHStraddCalculateSet(data.zeroHStraddCalculateSet);
-                        this.intervalSet.updateData(data.intervalSet);//TODO
+                        this.intervalSet.updateData(data.intervalSet);
                         for (let dataDTO of data.subHolTimeSet) {
                             let dataModel: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
                             dataModel.updateData(dataDTO);
                             this.subHolTimeSet.push(dataModel);
                         }
                         this.raisingSalarySet(data.raisingSalarySet);
-                        if (!nts.uk.util.isNullOrEmpty(data.medicalSet)) {
-                            let mapped = _.map(data.medicalSet, dto => {
-                                let dataModel: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
-                                dataModel.updateData(dto);
-                                return dataModel;
-                            });
-                            this.medicalSet(mapped);
-                        }                       
+                        for (let dataDTO of data.medicalSet) {
+                            let dataModel: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
+                            dataModel.updateData(dataDTO);
+                            this.medicalSet.push(dataModel);
+                        }                   
                         this.goOutSet.updateData(data.goOutSet);
                         this.stampSet.updateData(data.stampSet);
                         this.lateNightTimeSet.updateData(data.lateNightTimeSet);
@@ -244,7 +241,9 @@ module nts.uk.at.view.kmk003.a {
                         subHolTimeSet.push(dataModel.toDto());
                     }
                     let medicalSet: WorkTimezoneMedicalSetDto[] = [];
-                    _.forEach(this.medicalSet(), dataModel => medicalSet.push(dataModel.toDto()));
+                    for (let dataModel of this.medicalSet) {
+                        medicalSet.push(dataModel.toDto());
+                    }
                     var dataDTO: WorkTimezoneCommonSetDto = {
                         zeroHStraddCalculateSet: this.zeroHStraddCalculateSet(),
                         intervalSet: this.intervalSet.toDto(),
@@ -266,7 +265,7 @@ module nts.uk.at.view.kmk003.a {
                     this.intervalSet.resetData();
                     this.subHolTimeSet = [];
                     this.raisingSalarySet('');
-                    this.medicalSet([]);
+                    this.medicalSet = [];
                     this.goOutSet.resetData();
 //                    this.stampSet.resetData();
 //                    this.lateNightTimeSet.resetData();
