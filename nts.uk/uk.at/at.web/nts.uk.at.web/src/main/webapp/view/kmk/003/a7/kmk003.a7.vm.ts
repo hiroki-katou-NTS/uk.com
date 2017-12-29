@@ -5,6 +5,7 @@ module a7 {
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
+    import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
     class ScreenModel {
 
         tabMode: KnockoutObservable<TabMode>;
@@ -30,7 +31,7 @@ module a7 {
         /**
         * Constructor.
         */
-        constructor(tabMode: any, enumSetting: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
+        constructor(tabMode: any, enumSetting: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isLoading :KnockoutObservable<any>) {
             let self = this;
 
             self.tabMode = tabMode;
@@ -53,9 +54,6 @@ module a7 {
 
             /////////////
             self.dataSourceForFlowOrFlexUse = ko.observableArray([]);
-            self.dataSourceForFlowOrFlexUse.subscribe((newList) => {
-                console.log(newList);
-            });
             self.fixTableOptionForFlowOrFlexUse = {
                 maxRow: 10,
                 minRow: 0,
@@ -69,9 +67,6 @@ module a7 {
 
             /////////////
             self.dataSourceForFlowOrFlexNotUse1 = ko.observableArray([]);
-            self.dataSourceForFlowOrFlexNotUse1.subscribe((newList) => {
-                console.log(newList);
-            });
             self.fixTableOptionForFlowOrFlexNotUse1 = {
                 maxRow: 5,
                 minRow: 0,
@@ -117,7 +112,13 @@ module a7 {
             self.isFlexOrFlowNotUse = ko.computed(function() {
                 return self.useFixedRestTime() == UseDivision.NOTUSE && self.isFlowOrFlex();
             });
-
+            //load data to screen 
+            self.setDataFlexOrFlowToModel();
+            isLoading.subscribe((isDone: boolean) => {
+                if (isDone) {
+                    self.updateDataModel();
+                }
+            });
         }
 
         private loadDataToScreen() {
@@ -128,23 +129,58 @@ module a7 {
             //when UI change
             //self.dataSourceForFixedOrDiffTime.subscribe((v) => self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.fromListTimeRange(v)));
 
-//            //休憩時間を固定にする=true
-//            if (self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime) {
-//                self.dataSourceForFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones;
-//                self.dataSourceForFlowOrFlexUse.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(v));
-//            }
-//            else {//休憩時間を固定にする=false
-//
-//                self.dataSourceForFlowOrFlexNotUse1 = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets;
-//                self.dataSourceForFlowOrFlexNotUse1.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(v));
-//
-////                self.dataSourceForFlowOrFlexNotUse2 = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
-////                self.dataSourceForFlowOrFlexNotUse2.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet(v));
-//            }
-
             //TODO not care difftime or flow
 
         }
+        private setDataFlexOrFlowToModel() {
+            let self = this;
+            //休憩時間を固定にする=true
+            if (self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime) {
+
+                self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
+//                    alert();
+//                    console.log(newDataSource);
+                    let listDeductionTimeModel: DeductionTimeModel[] = [];
+                    for(let item of newDataSource)
+                    {
+                        let deduct = new DeductionTimeModel();
+                        deduct.start(item.column1().startTime);
+                        deduct.end(item.column1().endTime);
+                        listDeductionTimeModel.push(deduct);
+                    }
+                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(listDeductionTimeModel);
+                });
+
+                //                    = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones;
+//                self.dataSourceForFlowOrFlexUse.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(v));
+            }
+            else {//休憩時間を固定にする=false
+
+                self.dataSourceForFlowOrFlexNotUse1 = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets;
+                self.dataSourceForFlowOrFlexNotUse1.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(v));
+
+                //                self.dataSourceForFlowOrFlexNotUse2 = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
+                //                self.dataSourceForFlowOrFlexNotUse2.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowResteAfterRestSet(v));
+
+            }
+        }
+        
+        private updateDataModel()
+        {
+            let self = this;
+            if(self.mainSettingModel.workTimeSetting.isFlex())
+            {
+                let data: any = [];
+                
+                for (let item of self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones()) {
+                    data.push({
+                        column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                    });
+                    }
+                self.dataSourceForFlowOrFlexUse(data);
+            }
+        }
+        
         private columnSetting(): Array<any> {
             let self = this;
             return [
@@ -196,8 +232,9 @@ module a7 {
             let tabMode = input.tabMode;
             let enumSetting = input.enum;
             let mainSettingModel = input.mainSettingModel;
-
-            var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel);
+            let isLoading = input.isLoading;
+            
+            var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel,isLoading);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
