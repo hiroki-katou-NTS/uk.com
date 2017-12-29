@@ -61,6 +61,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	public void update(WorkplaceMonthDaySetting domain) {
 		List<KshmtWkpMonthDaySet> entities = this.findBy(domain.getCompanyId(), domain.getWorkplaceId(),
 				domain.getManagementYear(), null);
+		this.commandProxy().removeAll(entities);
 		domain.saveToMemento(new JpaWorkplaceMonthDaySettingSetMemento(entities));
 		this.commandProxy().insertAll(entities);
 	}

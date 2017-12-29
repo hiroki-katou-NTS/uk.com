@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.workplace;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
@@ -38,6 +37,7 @@ public class JpaWorkplaceMonthDaySettingSetMemento implements WorkplaceMonthDayS
 				item.setKshmtWkpMonthDaySetPK(new KshmtWkpMonthDaySetPK());
 			}
 		});
+		this.listKshmtWkpMonthDaySet = entities;
 	}
 
 	/* (non-Javadoc)
@@ -76,7 +76,7 @@ public class JpaWorkplaceMonthDaySettingSetMemento implements WorkplaceMonthDayS
 			entity.getKshmtWkpMonthDaySetPK().setWkpId(this.workplaceId);
 			entity.getKshmtWkpMonthDaySetPK().setManageYear(this.year);
 			entity.getKshmtWkpMonthDaySetPK().setMonth(item.getMonth());
-			entity.setInLegalHd(new BigDecimal(item.getInLegalHoliday().v()));
+			entity.setInLegalHd(item.getInLegalHoliday().v());
 			
 			this.listKshmtWkpMonthDaySet.add(entity);
 		});
