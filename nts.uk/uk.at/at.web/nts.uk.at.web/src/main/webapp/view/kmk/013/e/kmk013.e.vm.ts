@@ -83,8 +83,8 @@ module nts.uk.at.view.kmk013.e {
         }
         class UnitRouding {
             timeItemId: KnockoutObservableArray<string>;
-            unit: KnockoutObservableArray<number>;
-            rounding: KnockoutObservableArray<number>;
+            unit: KnockoutObservable<number>;
+            rounding: KnockoutObservable<number>;
             constructor(timeItemId: string, unit: number, rounding: number) {
                 this.timeItemId = ko.observable(timeItemId);
                 this.unit = ko.observable(unit);
