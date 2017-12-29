@@ -4,6 +4,8 @@ module nts.uk.at.view.kmf002.e {
     
     export module viewmodel {
         export class ScreenModel {
+            commonTableMonthDaySet: KnockoutObservable<any>;
+            
             constructor(){
                 let _self = this;
                 _self.commonTableMonthDaySet = new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet();
@@ -19,17 +21,22 @@ module nts.uk.at.view.kmf002.e {
                let _self = this;
 //               var dfd = $.Deferred<void>();
                 service.save(_self.commonTableMonthDaySet.fiscalYear(), _self.commonTableMonthDaySet.arrMonth()).done((data) => {
-                    // TODO: show message 15 when success
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
             
             public deleteObj(): void {
                 let _self = this;
-                service.remove(_self.commonTableMonthDaySet.fiscalYear()).done((data) => {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.remove(_self.commonTableMonthDaySet.fiscalYear()).done((data) => {
                      $.when(_self.start_page()).done(function() {
-                        console.log("find done");
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });  
                 });
+                }).ifNo(() => {
+                }).ifCancel(() => {
+                }).then(() => {
+                });   
             }
             
             /**
@@ -56,7 +63,8 @@ module nts.uk.at.view.kmf002.e {
                     console.log(data);
                     dfd.resolve();
                 });
-            
+                
+                nts.uk.ui.errors.clearAll();
             
                 return dfd.promise();
             }

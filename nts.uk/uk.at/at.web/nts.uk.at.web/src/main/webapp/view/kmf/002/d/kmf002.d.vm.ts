@@ -1,9 +1,9 @@
 module nts.uk.at.view.kmf002.d {
-    
+
     import service = nts.uk.at.view.kmf002.d.service;
-    
+
     export module viewmodel {
-        
+
         export class ScreenModel {
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
@@ -14,17 +14,17 @@ module nts.uk.at.view.kmf002.d {
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
-            
-//            commonTableMonthDaySet: KnockoutObservable<any>;
-            
+
+            commonTableMonthDaySet: KnockoutObservable<any>;
+
             constructor() {
                 let _self = this;
                 _self.selectedCode = ko.observable('1');
                 _self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
                 _self.isShowAlreadySet = ko.observable(true);
                 _self.alreadySettingList = ko.observableArray([
-                    {code: '1', isAlreadySetting: true},
-                    {code: '2', isAlreadySetting: true}
+                    { code: '1', isAlreadySetting: true },
+                    { code: '2', isAlreadySetting: true }
                 ]);
                 _self.isDialog = ko.observable(true);
                 _self.isShowNoSelectRow = ko.observable(false);
@@ -33,7 +33,7 @@ module nts.uk.at.view.kmf002.d {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: _self.isMultiSelect(),
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_FIRST_ITEM ,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: _self.selectedCode,
                     isDialog: _self.isDialog(),
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
@@ -49,28 +49,28 @@ module nts.uk.at.view.kmf002.d {
                 _self.commonTableMonthDaySet.visibleInfoSelect(true);
                 _self.commonTableMonthDaySet.infoSelect1(nts.uk.resource.getText("Com_Employment"));
             }
-            
-            private findEmploymentSelect(codeEmployee: number): string{
+
+            private findEmploymentSelect(codeEmployee: string): string {
                 let nameEmpSelected: string;
-                
-                _.each($('#empt-list-setting').getDataList(), function (value) {
+
+                _.each($('#empt-list-setting').getDataList(), function(value) {
                     if (value.code == codeEmployee) {
                         nameEmpSelected = value.name;
                         return true;
                     }
                 })
-                
+
                 return nameEmpSelected;
             }
-            
-            private catchChangeSelectEmp(): void{
+
+            private catchChangeSelectEmp(): void {
                 let _self = this;
                 _self.selectedCode.subscribe(function(codeEmployee) {
                     _self.commonTableMonthDaySet.infoSelect2(codeEmployee);
                     _self.commonTableMonthDaySet.infoSelect3(_self.findEmploymentSelect(codeEmployee));
                 });
             }
-            
+
             /**
              * init default data when start page
              */
@@ -78,29 +78,35 @@ module nts.uk.at.view.kmf002.d {
                 let _self = this;
                 $('#empt-list-setting').ntsListComponent(_self.listComponentOption);
                 _self.catchChangeSelectEmp();
+                nts.uk.ui.errors.clearAll();
                 var dfd = $.Deferred<void>();
-                
+
                 dfd.resolve();
                 return dfd.promise();
             }
-            
+
             private save(): void {
                 let _self = this;
-//               var dfd = $.Deferred<void>();
+                //               var dfd = $.Deferred<void>();
                 service.save(_self.commonTableMonthDaySet.fiscalYear(), _self.commonTableMonthDaySet.arrMonth(), _self.selectedCode()).done((data) => {
-                    console.log("register scrren D: " + data);
-                    // TODO: show message 15 when success
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
-            
+
             private remove(): void {
                 let _self = this;
-                service.remove(_self.commonTableMonthDaySet.fiscalYear(), _self.selectedCode()).done((data) => {
-                    _self.getDataFromService();
-                    console.log("remove scrren D: " + data);
-                });
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => { 
+                    alert("Yes");
+                    service.remove(_self.commonTableMonthDaySet.fiscalYear(), _self.selectedCode()).done((data) => {
+                        _self.getDataFromService();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    });
+                }).ifNo(() => {
+                }).ifCancel(() => {
+                }).then(() => {
+                });   
             }
-            
+
             public getDataFromService(): void {
                 let _self = this;
                 service.find(_self.commonTableMonthDaySet.fiscalYear(), _self.selectedCode()).done((data) => {
@@ -130,14 +136,14 @@ module nts.uk.at.view.kmf002.d {
             workplaceName?: string;
             isAlreadySetting?: boolean;
         }
-        
+
         export class SelectType {
             static SELECT_BY_SELECTED_CODE = 1;
             static SELECT_ALL = 2;
             static SELECT_FIRST_ITEM = 3;
             static NO_SELECT = 4;
         }
-        
+
         export interface UnitAlreadySettingModel {
             code: string;
             isAlreadySetting: boolean;
