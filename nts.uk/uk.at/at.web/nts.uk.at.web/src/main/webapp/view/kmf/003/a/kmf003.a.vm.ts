@@ -81,6 +81,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 $('.a9_3').show();
                 $('.a9_4').show();
                 $('.a9_5').show();
+                $('.a9_6').hide();
                 
                 if(value.length > 0){
                     service.findByCode(value).done(function(data) {
@@ -265,6 +266,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.editMode(true);
             
             self.setFocus();
+            $('.a9_6').show();
         }
         
         setFocus() {
