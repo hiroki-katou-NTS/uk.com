@@ -116,9 +116,9 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB35 = ko.observable(false);
                 //B5 inner
                 self.enableB1 = ko.observable(false);
-                self.selectedValueB54 = ko.observable(0);
-                self.selectedValueB59 = ko.observable(0);
-                self.selectedValueB515 = ko.observable(0);
+                self.selectedValueB54 = ko.observable(1);
+                self.selectedValueB59 = ko.observable(1);
+                self.selectedValueB515 = ko.observable(1);
                 self.checkedB57 = ko.observable(false);
                 self.checkedB512 = ko.observable(false);
                 self.checkedB513 = ko.observable(false);
@@ -467,7 +467,7 @@ module nts.uk.at.view.kmk013.b {
                     self.selectedB29(obj.notReferringAch);
                     //会社単位の休暇時間を参照する
                     self.selectedB215(obj.referComHolidayTime);
-                    if (obj.referComHolidayTime != 1) {
+                    if (obj.referComHolidayTime == 1) {
                         self.enableB217(false);
                     }
                     //加算時間.1日
