@@ -39,11 +39,11 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
 	 */
 	@Override
-	public void checkErrorBeforeUpdate(String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr) {
+	public void checkErrorBeforeUpdate(String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr, Long version) {
 		// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
 		String companyId = AppContexts.user().companyId();
 		this.detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, employeeID, appDate, employeeRouteAtr,
-				appID, postAtr);
+				appID, postAtr, version);
 	}
 
 	/**

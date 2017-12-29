@@ -7,10 +7,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
+import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
+import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
@@ -70,12 +73,12 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 	@Override
 	public Optional<AppOverTime> getFullAppOvertime(String companyID, String appID) {
 		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID), KrqdtAppOvertime.class);
-		Optional<KafdtApplication> opKafdtApplication = this.queryProxy().find(new KafdtApplicationPK(companyID, appID), KafdtApplication.class);
+		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
 		if(!opKrqdtAppOvertime.isPresent()||!opKafdtApplication.isPresent()){
 			return Optional.ofNullable(null);
 		}
 		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
-		KafdtApplication kafdtApplication = opKafdtApplication.get();
+		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
 		AppOverTime appOverTime = krqdtAppOvertime.toDomain();
 		appOverTime.setApplication(kafdtApplication.toDomain());
 		return Optional.of(appOverTime);

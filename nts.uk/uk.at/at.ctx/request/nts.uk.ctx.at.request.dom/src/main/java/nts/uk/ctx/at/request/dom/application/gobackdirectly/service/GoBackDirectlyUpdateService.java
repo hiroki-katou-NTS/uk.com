@@ -11,7 +11,7 @@ public interface GoBackDirectlyUpdateService {
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
 	 * @return
 	 */
-	public void checkErrorBeforeUpdate(String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr);
+	public void checkErrorBeforeUpdate(String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr, Long version);
 	/**
 	 * アルゴリズム「直行直帰更新」を実行する
 	 * @param goBackDirectly

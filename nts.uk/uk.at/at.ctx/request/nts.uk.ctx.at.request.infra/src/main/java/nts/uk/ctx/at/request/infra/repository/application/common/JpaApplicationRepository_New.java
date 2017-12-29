@@ -1,19 +1,14 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.Setter;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 /**
@@ -29,14 +24,28 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ ", a.appReason = :appReason"
 			+ ", a.stateReflectionReal = :stateReflectionReal"
 			+ ", a.version = :version"
-			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
-	
+			+ " WHERE a.KrqdpApplicationPK_New.appID = :appID AND a.KrqdpApplicationPK_New.companyID = :companyID";
+	private final String SELECT_APP = "SELECT c FROM KrqdtApplication_New c "
+			+ "WHERE c.employeeID = :applicantSID "
+			+ "AND c.appDate = :appDate "
+			+ "AND c.prePostAtr = :prePostAtr "
+			+ "AND c.appType = :applicationType "
+			+ "ORDER BY c.inputDate DESC";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class)
 				.map(x -> x.toDomain());
 	}
-	
+	@Override
+	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr,
+			int appType) {
+		return this.queryProxy().query(SELECT_APP, KrqdtApplication_New.class)
+				.setParameter("applicantSID", applicantSID)
+				.setParameter("appDate", appDate)
+				.setParameter("prePostAtr", prePostAtr)
+				.setParameter("applicationType", appType)
+				.getList(c -> c.toDomain());
+	}
 	@Override
 	public void insert(Application_New application) {
 		this.commandProxy().insert(KrqdtApplication_New.fromDomain(application));
