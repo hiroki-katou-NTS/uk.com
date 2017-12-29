@@ -1,8 +1,7 @@
-package nts.uk.ctx.at.function.app.find.alarm.checkcondition;
+package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -12,10 +11,7 @@ import lombok.Data;
  */
 
 @Data
-@AllArgsConstructor
-public class AlarmCheckTargetConditionDto {
-	
-	private String targetConditionId;
+public class AlarmCheckTargetConditionCommand {
 	
 	private boolean filterByEmployment;
 
