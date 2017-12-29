@@ -90,7 +90,7 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 			}
 		}
 		
-		// add Format monthly		
+		// add Format monthly	
 		List<AuthorityFomatMonthly> authorityFomatMonthlies = command.getAuthorityMonthlyCommand().getDailyAttendanceAuthorityDetailDtos().stream()
 				.map(f -> {
 					return new AuthorityFomatMonthly(companyId,

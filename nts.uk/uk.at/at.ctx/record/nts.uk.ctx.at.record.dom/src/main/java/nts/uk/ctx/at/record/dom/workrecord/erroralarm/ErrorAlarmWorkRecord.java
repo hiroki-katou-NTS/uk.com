@@ -16,8 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 
 /**
- * @author hungnm
- * 勤務実績のエラーアラーム
+ * @author hungnm 勤務実績のエラーアラーム
  */
 @Getter
 public class ErrorAlarmWorkRecord extends AggregateRoot {
@@ -90,9 +89,8 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord createFromJavaType(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor,
-			boolean cancelableAtr, BigDecimal errorDisplayItem, List<Integer> lstApplication,
-			String errorAlarmCheckID) {
+			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
+			BigDecimal errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
 				new ErrorAlarmWorkRecordCode(code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
@@ -108,10 +106,11 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord init(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor,
-			boolean cancelableAtr, BigDecimal errorDisplayItem, List<Integer> lstApplication) {
+			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
+			BigDecimal errorDisplayItem, List<Integer> lstApplication) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
-				code.length() < 4 ? new ErrorAlarmWorkRecordCode("U" + code) : new ErrorAlarmWorkRecordCode(code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
+				code.length() < 4 ? new ErrorAlarmWorkRecordCode("U" + code) : new ErrorAlarmWorkRecordCode(code),
+				new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
 				ErrorAlarmMessage.createFromJavaType(boldAtr, messageColor), cancelableAtr, errorDisplayItem,
 				lstApplication, IdentifierUtil.randomUniqueId());
@@ -121,8 +120,16 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	public void setCondition(ErrorAlarmCondition condition) {
 		this.errorAlarmCondition = condition;
 	}
-	
-	public void setCheckId(String errorAlarmCheckID){
+
+	public void setCheckId(String errorAlarmCheckID) {
 		this.errorAlarmCheckID = errorAlarmCheckID;
+	}
+
+	public void setGroupId1(String groupId) {
+		this.errorAlarmCondition.setGroupId1(groupId);
+	}
+
+	public void setGroupId2(String groupId) {
+		this.errorAlarmCondition.setGroupId2(groupId);
 	}
 }

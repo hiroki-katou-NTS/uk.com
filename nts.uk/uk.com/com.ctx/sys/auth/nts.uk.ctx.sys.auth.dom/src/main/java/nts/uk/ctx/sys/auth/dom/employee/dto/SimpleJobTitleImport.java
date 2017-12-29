@@ -5,26 +5,28 @@
 package nts.uk.ctx.sys.auth.dom.employee.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * The Class JobTitleExport.
  */
 // 職位
-@Data
 @Builder
 public class SimpleJobTitleImport {
 
 	/** The job title id. */
 	// 職位ID
+	@Getter
 	private String jobTitleId;
 
 	/** The job title code. */
 	// 職位コード
+	@Getter
 	private String jobTitleCode;
 
 	/** The job title name. */
 	// 職位名称
+	@Getter
 	private String jobTitleName;
 
 	/** The disporder. */
@@ -37,6 +39,12 @@ public class SimpleJobTitleImport {
 		this.jobTitleCode = jobTitleCode;
 		this.jobTitleName = jobTitleName;
 		this.disporder = disporder;
+	}
+	
+	public Integer getDisporder() {
+		if (this.disporder != null)
+			return this.disporder;
+		return 0;
 	}
 	
 }

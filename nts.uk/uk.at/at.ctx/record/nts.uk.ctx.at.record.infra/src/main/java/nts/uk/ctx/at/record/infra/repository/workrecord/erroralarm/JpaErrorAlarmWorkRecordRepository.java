@@ -27,10 +27,10 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	private final String FIND_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId ";
 
 	@Override
-	public ErrorAlarmWorkRecord findByCode(String code) {
+	public Optional<ErrorAlarmWorkRecord> findByCode(String code) {
 		Optional<KwrmtErAlWorkRecord> entity = this.queryProxy()
 				.find(new KwrmtErAlWorkRecordPK(AppContexts.user().companyId(), code), KwrmtErAlWorkRecord.class);
-		return entity.isPresent() ? KwrmtErAlWorkRecord.toDomain(entity.get()) : null;
+		return Optional.ofNullable(entity.isPresent() ? KwrmtErAlWorkRecord.toDomain(entity.get()) : null);
 	}
 
 	@Override
@@ -51,6 +51,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 				.find(new KwrmtErAlWorkRecordPK(domain.getCompanyId(), domain.getCode().v()), KwrmtErAlWorkRecord.class)
 				.get();
 		domain.setCheckId(targetEntity.eralCheckId);
+		domain.setGroupId1(targetEntity.krcmtErAlCondition.atdItemConditionGroup1);
+		domain.setGroupId2(targetEntity.krcmtErAlCondition.atdItemConditionGroup2);
 		KwrmtErAlWorkRecord domainAfterConvert = KwrmtErAlWorkRecord.fromDomain(domain);
 		targetEntity.eralCheckId = domainAfterConvert.eralCheckId;
 		targetEntity.boldAtr = domainAfterConvert.boldAtr;

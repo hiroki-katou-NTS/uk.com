@@ -25,13 +25,17 @@ public class GrantConditionDto {
 	/* 条件利用区分 */
 	private int useConditionAtr;
 	
+	/** 未設定 **/
+	private boolean hadSet;
+	
 	public static GrantConditionDto fromDomain(GrantCondition domain){
 		return new GrantConditionDto(
 			domain.getCompanyId(),
 			domain.getYearHolidayCode().v(),
 			domain.getConditionNo(),
 			domain.getConditionValue().v(),
-			domain.getUseConditionAtr().value
+			domain.getUseConditionAtr().value,
+			domain.isHadSet()
 		);
 	}
 }

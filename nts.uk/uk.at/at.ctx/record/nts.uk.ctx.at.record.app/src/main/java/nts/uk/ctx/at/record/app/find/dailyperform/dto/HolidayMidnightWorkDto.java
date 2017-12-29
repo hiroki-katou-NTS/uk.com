@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 
 /** 休出深夜 */
@@ -40,5 +43,12 @@ public class HolidayMidnightWorkDto {
 	
 	private static CalcAttachTimeDto getWorkTime(List<HolidayWorkMidNightTime> source, StaturoryAtrOfHolidayWork type){
 		return source.stream().filter(c -> c.getStatutoryAtr() == type).findFirst().map(c -> new CalcAttachTimeDto(c.getTime().getCalcTime().valueAsMinutes(), c.getTime().getTime().valueAsMinutes())).orElse(null);
+	}
+	
+	public HolidayMidnightWork toDomain() {
+		return new HolidayMidnightWork(Arrays.asList(new HolidayWorkMidNightTime(
+				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(withinPrescribedHolidayWork.getTime()),
+						new AttendanceTime(withinPrescribedHolidayWork.getCalcTime())),
+				StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork)));
 	}
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -118,7 +119,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 				.getList());
 		});
 		if(listHistItem.isEmpty()){
-			return null;
+			return Collections.emptyList();
 		}
 		return listHistItem.stream().map(e -> {
 			AffWorkplaceHistoryItem domain = this.toDomain(e);
@@ -132,7 +133,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 				.setParameter("employeeId", employeeId).setParameter("standDate", basedate)
 				.getList();
 		if(listHistItem.isEmpty()){
-			return null;
+			return Collections.emptyList();
 		}
 		return listHistItem.stream().map(e -> {
 			AffWorkplaceHistoryItem domain = this.toDomain(e);
@@ -150,7 +151,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 					.getList());
 		});
 		if(listHistItem.isEmpty()){
-			return null;
+			return Collections.emptyList();
 		}
 		return listHistItem.stream().map(e -> {
 			AffWorkplaceHistoryItem domain = this.toDomain(e);

@@ -38,7 +38,7 @@ public class PerInfoInitValueSetItemFinder {
 						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId());
 					}
 					
-					List<ComboBoxObject> selectionDto =this.comboBoxFactory.getComboBox(selectionItemDto,  GeneralDate.today(), false);
+					List<ComboBoxObject> selectionDto =this.comboBoxFactory.getComboBox(selectionItemDto,  GeneralDate.today(), true);
 					
 					dto.setSelection(selectionDto);
 					return dto;

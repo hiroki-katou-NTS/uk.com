@@ -25,10 +25,10 @@
 
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
-				<button id="A_BTN_001" data-bind="click: cleanForm">#{i18n.getText('KMF003_3')}</button>
+				<button id="A_BTN_001" data-bind="click: cleanForm, enable: !editMode()">#{i18n.getText('KMF003_3')}</button>
 				<button id="A_BTN_002" class="proceed"
 					data-bind="click: addFunction, enable: $root.errors.isEmpty">#{i18n.getText('KMF003_4')}</button>
-				<button id="A_BTN_003" data-bind="click: deleteFunction"
+				<button id="A_BTN_003" data-bind="click: deleteFunction, enable: !editMode()"
 					class="danger">#{i18n.getText('KMF003_6')}</button>
 			</div>
 			<!-- END FUNCTION AREA-->
@@ -40,7 +40,7 @@
 					<div style="width: 250px"
 						data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
 						items: items, selected: singleSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
-					<table id="treegridItems"
+					<table id="multi-list"
 						data-bind="ntsGridList: {
 							width: 250,
 							height: 300,
@@ -119,8 +119,8 @@
 									data-bind="text: limitedValue01"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td width="100"><button id="a7_9"
-									data-bind="click: openBDialog.bind($data, 1), enable: !editMode()">#{i18n.getText('KMF003_29')}</button></td>
-							<td width="100"><label class="a9_1">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 1)">#{i18n.getText('KMF003_29')}</button></td>
+							<td width="100" data-bind="if: !showLblSet01()"><label class="a9_1">#{i18n.getText('KMF003_31')}</label></td>
 							<td width="200"></td>
 						</tr>
 						<tr></tr>
@@ -135,8 +135,8 @@
 									data-bind="text: limitedValue02"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td><button id="a7_13"
-									data-bind="click: openBDialog.bind($data, 2), enable: btnSetting02Enable() &amp; !editMode()">#{i18n.getText('KMF003_29')}</button></td>
-							<td><label class="a9_2">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 2), enable: btnSetting02Enable">#{i18n.getText('KMF003_29')}</button></td>
+							<td data-bind="if: !showLblSet02()"><label class="a9_2">#{i18n.getText('KMF003_31')}</label></td>
 							<td></td>
 						</tr>
 						<tr></tr>
@@ -151,8 +151,8 @@
 									data-bind="text: limitedValue03"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td><button id="a7_17"
-									data-bind="click: openBDialog.bind($data, 3), enable: btnSetting03Enable() &amp; !editMode()">#{i18n.getText('KMF003_29')}</button></td>
-							<td><label class="a9_3">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 3), enable: btnSetting03Enable">#{i18n.getText('KMF003_29')}</button></td>
+							<td data-bind="if: !showLblSet03()"><label class="a9_3">#{i18n.getText('KMF003_31')}</label></td>
 							<td></td>
 						</tr>
 						<tr></tr>
@@ -167,8 +167,8 @@
 									data-bind="text: limitedValue04"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td><button id="a7_21"
-									data-bind="click: openBDialog.bind($data, 4), enable: btnSetting04Enable() &amp; !editMode()">#{i18n.getText('KMF003_29')}</button></td>
-							<td><label class="a9_4">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 4), enable: btnSetting04Enable">#{i18n.getText('KMF003_29')}</button></td>
+							<td data-bind="if: !showLblSet04()"><label class="a9_4">#{i18n.getText('KMF003_31')}</label></td>
 							<td></td>
 						</tr>
 						<tr></tr>
@@ -183,8 +183,8 @@
 									data-bind="text: limitedValue05"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td><button id="a7_25"
-									data-bind="click: openBDialog.bind($data, 5), enable: btnSetting05Enable() &amp; !editMode()">#{i18n.getText('KMF003_29')}</button></td>
-							<td><label class="a9_5">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 5), enable: btnSetting05Enable">#{i18n.getText('KMF003_29')}</button></td>
+							<td data-bind="if: !showLblSet05()"><label class="a9_5">#{i18n.getText('KMF003_31')}</label></td>
 							<td></td>
 						</tr>
 						<tr></tr>

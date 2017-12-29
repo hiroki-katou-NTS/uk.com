@@ -40,6 +40,8 @@ import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionIt
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionItemOrderDto;
+import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionQuery;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Path("ctx/pereg/person/info/setting/selection")
 @Produces("application/json")
@@ -190,10 +192,11 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	// Lanlt
 	@POST
-	@Path("find/{selectionItemId}/{baseDate}")
-	public List<SelectionInitDto> getAllSelectionByHistoryId(@PathParam("selectionItemId") String selectionItemId,
-			@PathParam("baseDate") String baseDate) {
-		return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
+	@Path("findAllCombox")
+	public List<ComboBoxObject> getAllSelectionByHistoryId(SelectionQuery  query) {
+		//return this.selecFider.getAllSelectionByHistoryId(selectionItemId, baseDate);
+		
+		return this.selecFider.getAllComboxByHistoryId(query);
 	}
 	
 	// Lanlt

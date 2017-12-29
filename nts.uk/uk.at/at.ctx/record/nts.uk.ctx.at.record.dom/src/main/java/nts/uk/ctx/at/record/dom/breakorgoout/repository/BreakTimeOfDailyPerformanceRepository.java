@@ -12,4 +12,12 @@ public interface BreakTimeOfDailyPerformanceRepository {
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
 	List<BreakTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
+
+	void insert(BreakTimeOfDailyPerformance breakTimes);
+	
+	void insert(List<BreakTimeOfDailyPerformance> breakTimes);
+	
+	void update(BreakTimeOfDailyPerformance breakTimes);
+	
+	void update(List<BreakTimeOfDailyPerformance> breakTimes);
 }

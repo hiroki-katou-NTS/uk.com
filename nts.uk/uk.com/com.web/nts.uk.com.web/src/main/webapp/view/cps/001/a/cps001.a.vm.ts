@@ -369,13 +369,21 @@ module cps001.a.vm {
             block();
             service.saveCurrentLayout(command).done(() => {
                 info({ messageId: "Msg_15" }).then(function() {
-                    self.start();
+                    //self.start();
                     _.each(self.multipleData(), m => {
-                        if (m.mode() == TABS.LAYOUT) {
-                            m.id.valueHasMutated();
-                        } else {
-                            m.infoId(undefined);
-                            m.category().categoryType.valueHasMutated();
+                        let first = _.first(self.multipleData());
+                        if (first) {
+                            let memento = first.categoryId();
+
+                            if (memento) {
+                                first.categoryId(memento);
+                            }
+
+                            if (!first.infoId()) {
+                                first.id.valueHasMutated();
+                            } else {
+                                first.infoId.valueHasMutated();
+                            }
                         }
                     });
                     unblock();

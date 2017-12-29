@@ -32,7 +32,7 @@ public class AutoCalFlexOvertimeSettingDto implements AutoCalFlexOvertimeSetting
 	 */
 	@Override
 	public void setFlexOtTime(AutoCalSetting flexOtTime) {
-		this.flexOtTime = new AutoCalSettingDto(flexOtTime.getUpLimitOtSet().value,
+		this.flexOtTime = new AutoCalSettingDto(flexOtTime.getUpLimitORtSet().value,
 				flexOtTime.getCalAtr().value);
 
 	}

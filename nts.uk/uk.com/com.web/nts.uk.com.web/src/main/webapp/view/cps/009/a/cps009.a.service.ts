@@ -6,8 +6,8 @@ module nts.uk.com.view.cps009.a.service {
         getAllCtg: "ctx/pereg/person/info/setting/init/ctg/find/{0}",
         getAllItemByCtgId: "ctx/pereg/person/info/setting/init/item/find/{0}/{1}",
         deleteInitVal: "ctx/pereg/person/info/setting/init/delete",
-        update : "ctx/pereg/person/info/setting/init/ctg/update",
-        filterHisSel : "ctx/pereg/person/info/setting/selection/find/{0}/{1}"
+        update: "ctx/pereg/person/info/setting/init/ctg/update",
+        filterHisSel: "ctx/pereg/person/info/setting/selection/findAllCombox"
     }
     /**
      * Get all init value setting
@@ -36,7 +36,7 @@ module nts.uk.com.view.cps009.a.service {
     export function deleteInitVal(obj: any) {
         return ajax(paths.deleteInitVal, obj);
     }
-    
+
     /**
      *update init value setting
      */
@@ -50,13 +50,18 @@ module nts.uk.com.view.cps009.a.service {
     export function refHistSel(param) {
         return ajax(paths.refHistSel, param);
     }
-    
-    
-        /**
-   * Get all init value setting
-   */
-    export function getAllSelByHistory(selectionItemId : string, baseDate : any) {
+
+
+    /**
+    * Get all init value setting
+    */
+    export function getAllSelByHistory(selectionItemId: string, baseDate: any) {
         return ajax(format(paths.filterHisSel, selectionItemId, baseDate));
     }
+
+    export function getAllComboxByHistory(query: any) {
+        return ajax(paths.filterHisSel, query);
+    }
+
 
 }
