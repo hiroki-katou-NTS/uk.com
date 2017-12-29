@@ -204,12 +204,6 @@ module nts.uk.at.view.kmk003.a {
                     this.useHalfDayShift(data.useHalfDayShift);                    
                     this.fixedWorkRestSetting.updateData(data.fixedWorkRestSetting);                                       
                     this.updateListHalfDay(data.lstHalfDayWorkTimezone);
-                    this.lstHalfDayWorkTimezone = _.map(data.lstHalfDayWorkTimezone, (dataDTO) => {
-                        let dataModel: FixHalfDayWorkTimezoneModel = new FixHalfDayWorkTimezoneModel();
-                        dataModel.updateData(dataDTO);
-                        return dataModel;
-                    });
-                    
                     this.lstStampReflectTimezone = _.map(data.lstStampReflectTimezone, (dataDTO) => {
                         let dataModel: StampReflectTimezoneModel = new StampReflectTimezoneModel();
                         dataModel.updateData(dataDTO);
