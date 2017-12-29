@@ -20,7 +20,7 @@ public enum RoundingTimeType {
 
 	/** The ot timezone. */
 	// 2: 残業時間帯
-	OT_TIMEZONE(0, "就業時間帯");
+	OT_TIMEZONE(2, "就業時間帯");
 
 	/** The value. */
 	public final int value;

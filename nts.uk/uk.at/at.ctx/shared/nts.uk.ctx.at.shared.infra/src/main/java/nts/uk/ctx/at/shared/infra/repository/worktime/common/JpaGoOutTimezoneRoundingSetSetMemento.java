@@ -67,10 +67,7 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 			entity.setKshmtSpecialRoundOutPK(pk);
 		} 	
 		
-		GoOutTimeRoundingSetting domainSetting = pubHolWorkTimezone.getOfficalUseCompenGoOut().getApproTimeRoundingSetting();
-		entity.setPubRoundingMethod(domainSetting.getRoundingMethod().value);
-		entity.setPubRounding(domainSetting.getRoundingSetting().getRounding().value);
-		entity.setPubRoundingUnit(domainSetting.getRoundingSetting().getRoundingTime().value);
+		this.updateDataEntity(entity, pubHolWorkTimezone);
 		
 		currentSets.put(pk, entity);
 		this.entity.setKshmtSpecialRoundOuts(currentSets.values().stream()
@@ -106,10 +103,7 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 			entity.setKshmtSpecialRoundOutPK(pk);
 		} 	
 		
-		GoOutTimeRoundingSetting domainSetting = workTimezone.getPrivateUnionGoOut().getApproTimeRoundingSetting();
-		entity.setPubRoundingMethod(domainSetting.getRoundingMethod().value);
-		entity.setPubRounding(domainSetting.getRoundingSetting().getRounding().value);
-		entity.setPubRoundingUnit(domainSetting.getRoundingSetting().getRoundingTime().value);
+		this.updateDataEntity(entity, workTimezone);
 		
 		currentSets.put(pk, entity);
 		this.entity.setKshmtSpecialRoundOuts(currentSets.values().stream()
@@ -138,21 +132,41 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 				this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(), 
 				this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
 				this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(),
-				RoundingTimeType.WORK_TIMEZONE.value);
+				RoundingTimeType.OT_TIMEZONE.value);
 		KshmtSpecialRoundOut entity = currentSets.get(pk);
 		if (entity == null) {
 			entity = new KshmtSpecialRoundOut();
 			entity.setKshmtSpecialRoundOutPK(pk);
 		} 	
 		
-		GoOutTimeRoundingSetting domainSetting = ottimezone.getPrivateUnionGoOut().getDeductTimeRoundingSetting();
-		entity.setPubRoundingMethod(domainSetting.getRoundingMethod().value);
-		entity.setPubRounding(domainSetting.getRoundingSetting().getRounding().value);
-		entity.setPubRoundingUnit(domainSetting.getRoundingSetting().getRoundingTime().value);
+		this.updateDataEntity(entity, ottimezone);
 		
 		currentSets.put(pk, entity);
 		this.entity.setKshmtSpecialRoundOuts(currentSets.values().stream()
 				.collect(Collectors.toList()));
+	}
+	
+	/**
+	 * Update data entity.
+	 *
+	 * @param entity the entity
+	 * @param typeRoundingSet the type rounding set
+	 */
+	private void updateDataEntity (KshmtSpecialRoundOut entity, GoOutTypeRoundingSet typeRoundingSet) {
+		GoOutTimeRoundingSetting pubDomainSetting = typeRoundingSet.getOfficalUseCompenGoOut().getApproTimeRoundingSetting();
+		entity.setPubRoundingMethod(pubDomainSetting.getRoundingMethod().value);
+		entity.setPubRounding(pubDomainSetting.getRoundingSetting().getRounding().value);
+		entity.setPubRoundingUnit(pubDomainSetting.getRoundingSetting().getRoundingTime().value);				
+			
+		GoOutTimeRoundingSetting workDomainSetting = typeRoundingSet.getPrivateUnionGoOut().getApproTimeRoundingSetting();
+		entity.setPersonalRoundingMethod(workDomainSetting.getRoundingMethod().value);
+		entity.setPersonalRounding(workDomainSetting.getRoundingSetting().getRounding().value);
+		entity.setPersonalRoundingUnit(workDomainSetting.getRoundingSetting().getRoundingTime().value);
+		
+		GoOutTimeRoundingSetting otDomainSetting = typeRoundingSet.getPrivateUnionGoOut().getDeductTimeRoundingSetting();
+		entity.setPersonalDeductMethod(otDomainSetting.getRoundingMethod().value);
+		entity.setPersonalDeductRounding(otDomainSetting.getRoundingSetting().getRounding().value);
+		entity.setPersonalDeductUnit(otDomainSetting.getRoundingSetting().getRoundingTime().value);
 	}
 
 }

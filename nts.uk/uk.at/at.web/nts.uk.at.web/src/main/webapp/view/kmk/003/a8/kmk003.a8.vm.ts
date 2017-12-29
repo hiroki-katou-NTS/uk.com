@@ -52,6 +52,9 @@ module a8 {
         
         listRoundingBreakTimezone: KnockoutObservableArray<any>;
         
+        
+        screenMode: any;
+        
         // Simple mode - Data (nothing)      
         
         /**
@@ -67,6 +70,7 @@ module a8 {
             }
             
             // Binding data
+            _self.screenMode = screenMode;
             _self.model = model; 
             _self.settingEnum = settingEnum;
             
@@ -120,6 +124,12 @@ module a8 {
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
+            
+            // Subscribe change select item in table on hand left
+            _self.model.isChangeItemTable.subscribe(newValue => {
+                _self.startTab(_self.screenMode);
+                _self.changeWorkSettingMode();
+            });
         }
         
         /**
@@ -138,41 +148,10 @@ module a8 {
         private changeWorkSettingMode(): void {
             let _self = this;        
                           
-            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
-                // Regular work
-                switch (_self.workTimeMethodSet()) {
-                    case WorkTimeMethodSet.FIXED_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.goOutSet)) {
-                            _self.model.fixedWorkSetting.commonSetting.goOutSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.goOutSet);                                
-                    } break;
-                    case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.goOutSet)) {
-                            _self.model.diffWorkSetting.commonSet.goOutSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.goOutSet);                   
-                    } break;
-                    case WorkTimeMethodSet.FLOW_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.goOutSet)) {
-                            _self.model.flowWorkSetting.commonSetting.goOutSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.goOutSet);                                  
-                    } break;               
-                    default: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.goOutSet)) {
-                            _self.model.fixedWorkSetting.commonSetting.goOutSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.goOutSet);    
-                    }
-                } 
-            } else {
-                // Flex work
-                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.goOutSet)) {
-                    _self.model.flexWorkSetting.commonSetting.goOutSet = _self.createBinding();                           
-                }
-                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.goOutSet);           
-            }               
+            if (nts.uk.util.isNullOrUndefined(_self.model.commonSetting.goOutSet)) {
+                _self.model.commonSetting.goOutSet = _self.createBinding();                           
+            }
+            _self.changeBinding(_self.model.commonSetting.goOutSet);                                         
         }       
         
         /**
@@ -257,12 +236,18 @@ module a8 {
             //_self.listRoundingBreakTime(settingEnum.roundingBreakTime);
             _self.listRoundingTimeValue(settingEnum.roundingTime);
             _self.listRoundingValue(settingEnum.roundingSimple);   
-            
-            _self.timeRoundingMethod = ko.observable(0);
-            _self.timeRoundingTime = ko.observable(0);
-            _self.timeRounding = ko.observable(0);
             _self.isEnable = ko.observable(true);
+        }
+        
+        updateBinding(modelValue: GoOutTimeRoundingSettingModel) {
+            let _self = this;
             
+            // Get model value into view model
+            _self.timeRoundingMethod = modelValue.roundingMethod;
+            _self.timeRoundingTime = modelValue.roundingSetting.roundingTime;
+            _self.timeRounding = modelValue.roundingSetting.rounding;
+            
+            // Update into model in case of data change
             _self.timeRoundingMethod.subscribe(newValue => {
                 if (newValue === 1) {
                     _self.isEnable(false);
@@ -270,20 +255,6 @@ module a8 {
                     _self.isEnable(true);
                 }
             });
-        }
-        
-        updateBinding(modelValue: GoOutTimeRoundingSettingModel) {
-            let _self = this;
-            
-            // Get model value into view model
-            _self.timeRoundingMethod(modelValue.roundingMethod());
-            _self.timeRoundingTime(modelValue.roundingSetting.roundingTime());
-            _self.timeRounding(modelValue.roundingSetting.rounding());
-            
-            // Update into model in case of data change
-            _self.timeRoundingMethod.subscribe(newValue => modelValue.roundingMethod(newValue));
-            _self.timeRoundingTime.subscribe(newValue => modelValue.roundingSetting.roundingTime(newValue));
-            _self.timeRounding.subscribe(newValue => modelValue.roundingSetting.rounding(newValue));
         }
     }
     
