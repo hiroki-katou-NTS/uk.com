@@ -168,7 +168,7 @@ module nts.uk.at.view.ksm004.a {
                         .fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                         });     
-                        if(!nts.uk.util.isNullOrUndefined(self.currentCalendarWorkPlace().key())){
+                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())){
                             self.currentCalendarWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);   
                         }
                         if(!nts.uk.util.isNullOrUndefined(self.currentCalendarClass().key())){
