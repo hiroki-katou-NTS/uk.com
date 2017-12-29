@@ -1097,9 +1097,9 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: WorkTimezoneStampSetDto) {
                     var self = this;
                     data.roundingSets.forEach(function(dataRoundingDTO, index) {
-                        var dataRoundingModel: RoundingSetModel = new RoundingSetModel(index);
-                        dataRoundingModel.updateData(dataRoundingDTO);
-                        self.roundingSets[index] = dataRoundingModel;
+//                        var dataRoundingModel: RoundingSetModel = new RoundingSetModel(index);
+//                        dataRoundingModel.updateData(dataRoundingDTO);
+                        self.roundingSets[dataRoundingDTO.section].updateData(dataRoundingDTO);
                     });
 
                     data.prioritySets.forEach(function(dataPriorityDTO, index) {

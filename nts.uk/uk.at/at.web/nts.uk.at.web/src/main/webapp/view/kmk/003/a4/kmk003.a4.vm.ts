@@ -94,6 +94,7 @@ module a4 {
             //                
             self.stampRoundingGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
             self.stampRoundingLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
+            
             self.stampGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
             self.stampLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
             //check mode screen
