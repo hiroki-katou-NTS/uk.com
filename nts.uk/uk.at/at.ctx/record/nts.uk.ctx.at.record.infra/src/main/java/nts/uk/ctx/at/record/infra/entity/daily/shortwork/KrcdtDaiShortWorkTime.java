@@ -28,23 +28,24 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_DAI_SHORT_WORK_TIME")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findAll", query = "SELECT k FROM KrcdtDaiShortWorkTime k"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByInsDate", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.insDate = :insDate"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByInsCcd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.insCcd = :insCcd"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByInsScd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.insScd = :insScd"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByInsPg", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.insPg = :insPg"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByUpdDate", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.updDate = :updDate"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByUpdCcd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.updCcd = :updCcd"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByUpdScd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.updScd = :updScd"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByUpdPg", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.updPg = :updPg"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByExclusVer", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.exclusVer = :exclusVer"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findBySid", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.krcdtDaiShortWorkTimePK.sid = :sid"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByYmd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.krcdtDaiShortWorkTimePK.ymd = :ymd"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByShortWorkTimeFrameNo", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo = :shortWorkTimeFrameNo"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByStartTime", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.startTime = :startTime"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByEndTime", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.endTime = :endTime"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByChildCareAtr", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.childCareAtr = :childCareAtr"),
-    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByTime", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.time = :time")})
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findAll", query = "SELECT k FROM KrcdtDaiShortWorkTime k"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByInsDate", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.insDate = :insDate"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByInsCcd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.insCcd = :insCcd"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByInsScd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.insScd = :insScd"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByInsPg", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.insPg = :insPg"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByUpdDate", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.updDate = :updDate"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByUpdCcd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.updCcd = :updCcd"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByUpdScd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.updScd = :updScd"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByUpdPg", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.updPg = :updPg"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByExclusVer", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findBySid", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.krcdtDaiShortWorkTimePK.sid = :sid"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByYmd", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.krcdtDaiShortWorkTimePK.ymd = :ymd"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByShortWorkTimeFrameNo", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo = :shortWorkTimeFrameNo"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByStartTime", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.startTime = :startTime"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByEndTime", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.endTime = :endTime"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByChildCareAtr", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.childCareAtr = :childCareAtr"),
+//    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByTime", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.time = :time")
+	})
 public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
