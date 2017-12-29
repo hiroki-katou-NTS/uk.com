@@ -109,7 +109,7 @@
 					<tr>
 						<td class="screen-content-left">
 							<div class="caret-left-width caret-right caret-background bg-green">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div><span data-bind="text: mainSettingModel.workTimeSetting.isFlex()"></span>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 								<com:ko tag="with" bind="workTimeSettingLoader">
 									<div id="combo-box"
 										data-bind="ntsComboBox: {
@@ -217,7 +217,7 @@
 									value: workTimeDivision.workTimeDailyAtr,
 									optionsText: 'localizedName',
 									editable: false,
-									enable: true,
+									enable: $parent.isNewMode,
 									columns: [
 									{ prop: 'localizedName', length: 10 }]}">
 								</div>
@@ -231,7 +231,7 @@
 									value: workTimeDivision.workTimeMethodSet,
 									optionsText: 'localizedName',
 									editable: false,
-									enable: isRegularWork,
+									enable: $parent.isNewMode() &amp;&amp; isRegularWork(),
 									columns: [{ prop: 'localizedName', length: 6 }]}">
 								</div>
 							</div>
@@ -272,11 +272,12 @@
 											enable: true }">
 										</div>
 									</td>
+									<com:ko tag="if" bind ="isDetailMode">
+									<com:ko tag="ifnot" bind="mainSettingModel.workTimeSetting.isFlow">
 									<td class="td-cell" width="100px">
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
 									</td>
 									<td class="td-cell">
-									<com:ko tag="ifnot" bind="mainSettingModel.workTimeSetting.isFlow">
 										<div class="cf"
 											data-bind="ntsSwitchButton: {
 											options: useHalfDayOptions,
@@ -285,8 +286,9 @@
 											value: useHalfDay,
 											enable: true }">
 										</div>
-									</com:ko>
 									</td>
+									</com:ko>
+									</com:ko>
 								</tr>
 								<!-- panels -->
 								<tr>
