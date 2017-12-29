@@ -269,7 +269,7 @@ module nts.uk.ui.menu {
     }
     
     module titleMenu {
-        export let WIDTH: number = 180;
+        export let WIDTH: number = 192;
         export let FR: number = 20;
         
         /**
@@ -318,7 +318,7 @@ module nts.uk.ui.menu {
                             window.location.href = path;
                         });
                         $titleDiv.append($item);
-                        height += 40;
+                        height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
                     });
                 }
                 maxHeight = Math.max(maxHeight, height); 

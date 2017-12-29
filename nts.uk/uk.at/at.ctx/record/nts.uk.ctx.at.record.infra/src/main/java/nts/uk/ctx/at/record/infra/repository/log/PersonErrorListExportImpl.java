@@ -41,7 +41,7 @@ public class PersonErrorListExportImpl implements MasterListData {
 		columns.add(
 				new MasterHeaderColumn("社員コード", TextResource.localize("KDW001_33"), ColumnTextAlign.CENTER, "", true));
 		columns.add(
-				new MasterHeaderColumn("名称	", TextResource.localize("KDW001_35"), ColumnTextAlign.CENTER, "", true));
+				new MasterHeaderColumn("名称", TextResource.localize("KDW001_35"), ColumnTextAlign.CENTER, "", true));
 		columns.add(
 				new MasterHeaderColumn("処理日", TextResource.localize("KDW001_36"), ColumnTextAlign.CENTER, "", true));
 		columns.add(
