@@ -10,7 +10,7 @@ public class KshmtPioritySetPK_ {
 
     public static volatile SingularAttribute<KshmtPioritySetPK, String> worktimeCd;
     public static volatile SingularAttribute<KshmtPioritySetPK, Integer> workTimeSetMethod;
-    public static volatile SingularAttribute<KshmtPioritySetPK, Integer> stampAtr;
+    public static volatile SingularAttribute<KshmtPioritySetPK, Integer> piorityAtr;
     public static volatile SingularAttribute<KshmtPioritySetPK, String> cid;
     public static volatile SingularAttribute<KshmtPioritySetPK, Integer> workFormAtr;
 

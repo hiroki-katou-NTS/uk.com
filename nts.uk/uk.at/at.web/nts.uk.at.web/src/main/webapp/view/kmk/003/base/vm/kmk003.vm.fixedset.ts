@@ -219,14 +219,14 @@ module nts.uk.at.view.kmk003.a {
                     this.getHDWtzAfternoon().updateData(lstHalfDayWorkTimezone[2]);
                 }
                 
-                toDto(): FixedWorkSettingDto {
+                toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
                     let lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[] = _.map(this.lstHalfDayWorkTimezone, (dataModel) => dataModel.toDto());
                     let lstStampReflectTimezone: StampReflectTimezoneDto[] = _.map(this.lstStampReflectTimezone, (dataModel) => dataModel.toDto());
                     
                     let dataDTO: FixedWorkSettingDto = {
                         workTimeCode: this.workTimeCode(),                       
                         offdayWorkTimezone: this.offdayWorkTimezone.toDto(),
-                        commonSetting: this.commonSetting.toDto(),
+                        commonSetting: commonSetting.toDto(),
                         useHalfDayShift: this.useHalfDayShift(),
                         fixedWorkRestSetting: this.fixedWorkRestSetting.toDto(),
                         lstHalfDayWorkTimezone: lstHalfDayWorkTimezone,

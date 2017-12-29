@@ -4,6 +4,7 @@ module a4 {
     import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
+    import PrioritySettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.PrioritySettingModel;
     class ScreenModel {
 
         // Screen mode
@@ -86,43 +87,15 @@ module a4 {
         public bindToScreen() {
             let self = this;
             let workForm = self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr();
-            if (workForm == EnumWorkForm.FLEX) {
-                //TODO bind for flex
-                let stamp = self.mainSettingModel.flexWorkSetting.commonSetting.stampSet;
-                let a = stamp.prioritySets[0].priorityAtr;a(3);
-                let b = stamp.prioritySets[1].priorityAtr;b(2);
-                self.priorityGoWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
-                self.priorityLeaveWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
 
-                self.stampRoundingGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
-                self.stampRoundingLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
-                self.stampGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
-                self.stampLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
-
-                
-            }
-            else {
-                let workMethodSet = self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet();
-                switch (workMethodSet) {
-                    case SettingMethod.FIXED:
-                        let stamp = self.mainSettingModel.fixedWorkSetting.commonSetting.stampSet;
-                        self.priorityGoWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
-                        self.priorityLeaveWork = stamp.prioritySets[0].stampAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].priorityAtr : stamp.prioritySets[1].priorityAtr;
-
-                        self.stampRoundingGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
-                        self.stampRoundingLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
-                        self.stampGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
-                        self.stampLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
-                        break;
-                    case SettingMethod.DIFFTIME:
-                        //TODO
-                        break;
-                    case SettingMethod.FLOW:
-                        //TODO
-                        break;
-                    default: break;
-                }
-            }
+            let stamp = self.mainSettingModel.commonSetting.stampSet;
+            self.priorityGoWork = stamp.prioritySets[0].priorityAtr() == EnumStampPiorityAtr.GOING_WORK ? stamp.prioritySets[0].stampAtr : stamp.prioritySets[1].stampAtr;
+            self.priorityLeaveWork = stamp.prioritySets[0].priorityAtr() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.prioritySets[0].stampAtr : stamp.prioritySets[1].stampAtr;
+            //                
+            self.stampRoundingGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
+            self.stampRoundingLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.roundingTimeUnit : stamp.roundingSets[1].roundingSet.roundingTimeUnit;
+            self.stampGoWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.GOING_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
+            self.stampLeaveWork = stamp.roundingSets[0].section() == EnumStampPiorityAtr.LEAVE_WORK ? stamp.roundingSets[0].roundingSet.fontRearSection : stamp.roundingSets[1].roundingSet.fontRearSection;
             //check mode screen
         }
 
@@ -185,7 +158,6 @@ module a4 {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
         }
 
     }

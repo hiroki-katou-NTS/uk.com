@@ -39,9 +39,10 @@ public class KshmtPioritySetPK implements Serializable {
 	@Column(name = "WORKTIME_SET_METHOD")
 	private int workTimeSetMethod;
 
-	/** The stamp atr. */
-	@Column(name = "STAMP_ATR")
-	private int stampAtr;
+	/** The piority atr. */
+	@Column(name = "PIORITY_ATR")
+	private int piorityAtr;
+	
 
 	/**
 	 * Instantiates a new kshmt piority set PK.
@@ -62,7 +63,7 @@ public class KshmtPioritySetPK implements Serializable {
 		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
 		hash += (int) workFormAtr;
 		hash += (int) workTimeSetMethod;
-		hash += (int) stampAtr;
+		hash += (int) piorityAtr;
 		return hash;
 	}
 
@@ -91,7 +92,7 @@ public class KshmtPioritySetPK implements Serializable {
 		if (this.workTimeSetMethod != other.workTimeSetMethod) {
 			return false;
 		}
-		if (this.stampAtr != other.stampAtr) {
+		if (this.piorityAtr != other.piorityAtr) {
 			return false;
 		}
 		return true;

@@ -35,9 +35,9 @@ public class KshmtPioritySet extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The piority atr. */
-	@Column(name = "PIORITY_ATR")
-	private int piorityAtr;
+	/** The stamp atr. */
+	@Column(name = "STAMP_ATR")
+	private int stampAtr;
 
 	/**
 	 * Instantiates a new kshmt piority set.

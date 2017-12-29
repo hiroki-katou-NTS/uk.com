@@ -36,7 +36,7 @@ public class JpaPrioritySettingGetMemento implements PrioritySettingGetMemento {
 	 */
 	@Override
 	public MultiStampTimePiorityAtr getPriorityAtr() {
-		return MultiStampTimePiorityAtr.valueOf(this.entity.getPiorityAtr());
+		return MultiStampTimePiorityAtr.valueOf(this.entity.getKshmtPioritySetPK().getPiorityAtr());
 	}
 
 	/*
@@ -47,7 +47,7 @@ public class JpaPrioritySettingGetMemento implements PrioritySettingGetMemento {
 	 */
 	@Override
 	public StampPiorityAtr getStampAtr() {
-		return StampPiorityAtr.valueOf(this.entity.getKshmtPioritySetPK().getStampAtr());
+		return StampPiorityAtr.valueOf(this.entity.getStampAtr());
 	}
 
 }

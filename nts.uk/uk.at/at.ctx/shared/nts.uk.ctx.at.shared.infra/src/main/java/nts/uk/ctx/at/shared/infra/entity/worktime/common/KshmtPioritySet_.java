@@ -12,6 +12,6 @@ public class KshmtPioritySet_ {
 
     public static volatile SingularAttribute<KshmtPioritySet, KshmtPioritySetPK> kshmtPioritySetPK;
     public static volatile SingularAttribute<KshmtPioritySet, Integer> exclusVer;
-    public static volatile SingularAttribute<KshmtPioritySet, Integer> piorityAtr;
+    public static volatile SingularAttribute<KshmtPioritySet, Integer> stampAtr;
 
 }

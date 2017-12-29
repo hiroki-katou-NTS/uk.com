@@ -12,6 +12,7 @@ module nts.uk.at.view.kmk003.a {
     
     import WorkTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeSettingModel;
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
+    import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
     import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlWorkSettingModel;
     import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
@@ -470,6 +471,10 @@ module nts.uk.at.view.kmk003.a {
         export class MainSettingModel {
             workTimeSetting: WorkTimeSettingModel;
             predetemineTimeSetting: PredetemineTimeSettingModel;
+            
+            //dientx add for common
+            commonSetting: WorkTimezoneCommonSetModel;
+                        
             fixedWorkSetting: FixedWorkSettingModel;
             flowWorkSetting: FlowWorkSettingModel;
             diffWorkSetting: DiffTimeWorkSettingModel;
@@ -482,6 +487,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 this.workTimeSetting = new WorkTimeSettingModel();
                 this.predetemineTimeSetting = new PredetemineTimeSettingModel();
+                this.commonSetting = new WorkTimezoneCommonSetModel();
                 this.fixedWorkSetting = new FixedWorkSettingModel();
                 this.flowWorkSetting = new FlowWorkSettingModel();
                 this.diffWorkSetting = new DiffTimeWorkSettingModel();
@@ -532,7 +538,7 @@ module nts.uk.at.view.kmk003.a {
                     addMode: addMode,
                     predseting: _self.predetemineTimeSetting.toDto(),
                     worktimeSetting: _self.workTimeSetting.toDto(),
-                    fixedWorkSetting: _self.fixedWorkSetting.toDto(),
+                    fixedWorkSetting: _self.fixedWorkSetting.toDto(_self.commonSetting),
                     screenMode: tabMode
                 };
                 return command;  
@@ -546,7 +552,7 @@ module nts.uk.at.view.kmk003.a {
                 let command: FlexWorkSettingSaveCommand;
                 command = {
                     addMode: addMode,
-                    flexWorkSetting: self.flexWorkSetting.toDto(),
+                    flexWorkSetting: self.flexWorkSetting.toDto(self.commonSetting),
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto()
                 };
@@ -557,14 +563,22 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
+                
+                
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
+                    //dientx add
+                    self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
+                    //dientx add
+                    self.commonSetting.updateData(worktimeSettingInfo.flowWorkSetting.commonSetting);
                 }
                 if (self.workTimeSetting.isFixed()) {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
+                    //dientx add
+                    self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
                 }
                 //TODO update diff viewmodel
             }

@@ -999,6 +999,13 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.fontRearSection = ko.observable(0);
                     this.roundingTimeUnit = ko.observable(0);
+                    this.fontRearSection.subscribe((v)=>
+                    {
+                        alert(v);
+                    });
+                    this.roundingTimeUnit.subscribe((v) => {
+                        alert(v);
+                    });
                 }
 
                 updateData(data: InstantRoundingDto) {
@@ -1019,7 +1026,7 @@ module nts.uk.at.view.kmk003.a {
                 roundingSet: InstantRoundingModel;
                 section: KnockoutObservable<number>;
 
-                constructor(section?: number) {
+                constructor(section: number) {
                     this.roundingSet = new InstantRoundingModel();
                     this.section = ko.observable(section);
                 }
@@ -1043,9 +1050,9 @@ module nts.uk.at.view.kmk003.a {
                 stampAtr: KnockoutObservable<number>;
                 
                 
-                constructor(stampAtr?: number) {
-                    this.priorityAtr = ko.observable(0);
-                    this.stampAtr = ko.observable(stampAtr);
+                constructor(priorityAtr: number) {
+                    this.priorityAtr = ko.observable(priorityAtr);
+                    this.stampAtr = ko.observable(0);
                 }
 
                 updateData(data: PrioritySettingDto) {
@@ -1069,12 +1076,18 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.roundingSets = [];
                     this.prioritySets = [];
-
+                    this.initPrioritySets();
+                    this.initRoundingSets();
+                }
+                
+                initPrioritySets() {
                     var dataPriorityModel1: PrioritySettingModel = new PrioritySettingModel(0);
                     var dataPriorityModel2: PrioritySettingModel = new PrioritySettingModel(1);
                     this.prioritySets.push(dataPriorityModel1);
                     this.prioritySets.push(dataPriorityModel2);
+                }
 
+                initRoundingSets() {
                     var dataRoundingModel1: RoundingSetModel = new RoundingSetModel(0);
                     var dataRoundingModel2: RoundingSetModel = new RoundingSetModel(1);
                     this.roundingSets.push(dataRoundingModel1);
@@ -1082,19 +1095,16 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: WorkTimezoneStampSetDto) {
-                    this.roundingSets = [];
-                    for (var dataRoundingDTO of data.roundingSets) {
-                        var dataRoundingModel: RoundingSetModel = new RoundingSetModel();
+                    var self = this;
+                    data.roundingSets.forEach(function(dataRoundingDTO, index) {
+                        var dataRoundingModel: RoundingSetModel = new RoundingSetModel(index);
                         dataRoundingModel.updateData(dataRoundingDTO);
-                        this.roundingSets.push(dataRoundingModel);
-                    }
+                        self.roundingSets[index] = dataRoundingModel;
+                    });
 
-                    this.prioritySets = [];
-                    for (var dataPriorityDTO of data.prioritySets) {
-                        var dataPriorityModel: PrioritySettingModel = new PrioritySettingModel();
-                        dataPriorityModel.updateData(dataPriorityDTO);
-                        this.prioritySets.push(dataPriorityModel);
-                    }
+                    data.prioritySets.forEach(function(dataPriorityDTO, index) {
+                        self.prioritySets[dataPriorityDTO.priorityAtr].updateData(dataPriorityDTO);
+                    });
                 }
 
                 toDto(): WorkTimezoneStampSetDto {

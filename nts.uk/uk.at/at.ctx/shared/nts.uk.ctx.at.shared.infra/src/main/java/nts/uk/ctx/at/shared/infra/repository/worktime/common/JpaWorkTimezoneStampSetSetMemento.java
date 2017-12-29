@@ -97,7 +97,7 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 					return pk.getCid().equals(newPK.getCid()) && pk.getWorktimeCd().equals(newPK.getWorktimeCd())
 							&& pk.getWorkFormAtr() == newPK.getWorkFormAtr()
 							&& pk.getWorkTimeSetMethod() == newPK.getWorkTimeSetMethod()
-							&& pk.getStampAtr() == pioritySet.getStampAtr().value;
+							&& pk.getPiorityAtr() == pioritySet.getPriorityAtr().value;
 					}).findFirst()
 					.orElse(new KshmtPioritySet(newPK));
 			

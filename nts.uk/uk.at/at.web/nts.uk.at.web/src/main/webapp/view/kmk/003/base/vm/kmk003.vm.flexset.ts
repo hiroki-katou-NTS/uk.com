@@ -282,7 +282,7 @@ module nts.uk.at.view.kmk003.a {
                     this.calculateSetting.updateData(data.calculateSetting);
                 }
                 
-                toDto(): FlexWorkSettingDto{
+                toDto(commonSetting: WorkTimezoneCommonSetModel): FlexWorkSettingDto{
                     var lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[] = [];
                     for(var dataModelTimezone of this.lstHalfDayWorkTimezone){
                         lstHalfDayWorkTimezone.push(dataModelTimezone.toDto());
@@ -297,7 +297,7 @@ module nts.uk.at.view.kmk003.a {
                         coreTimeSetting: this.coreTimeSetting.toDto(),
                         restSetting: this.restSetting.toDto(),
                         offdayWorkTime: this.offdayWorkTime.toDto(),
-                        commonSetting: this.commonSetting.toDto(),
+                        commonSetting: commonSetting.toDto(),
                         lstHalfDayWorkTimezone: lstHalfDayWorkTimezone,
                         lstStampReflectTimezone: lstStampReflectTimezone,
                         calculateSetting: this.calculateSetting.toDto()
