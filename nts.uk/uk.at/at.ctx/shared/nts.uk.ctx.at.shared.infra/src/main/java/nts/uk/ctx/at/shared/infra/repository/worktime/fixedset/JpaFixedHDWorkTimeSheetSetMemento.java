@@ -60,7 +60,7 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	@Override
 	public void setTimezone(TimeZoneRounding timezone) {
 		this.entity.setTimeStr(timezone.getStart().v());
-		this.entity.setTimeStr(timezone.getEnd().v());
+		this.entity.setTimeEnd(timezone.getEnd().v());
 		this.entity.setUnit(timezone.getRounding().getRoundingTime().value);
 		this.entity.setRounding(timezone.getRounding().getRounding().value);
 	}
