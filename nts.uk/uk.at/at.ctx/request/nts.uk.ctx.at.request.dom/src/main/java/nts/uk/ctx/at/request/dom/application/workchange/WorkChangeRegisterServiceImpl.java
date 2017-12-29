@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
@@ -22,7 +22,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	private RegisterAtApproveReflectionInfoService_New registerService;
 
 	@Inject
-	ApplicationRepository_New appRepository;
+	ApplicationApprovalService_New appRepository;
 
 	@Inject
 	NewAfterRegister_New newAfterRegister;

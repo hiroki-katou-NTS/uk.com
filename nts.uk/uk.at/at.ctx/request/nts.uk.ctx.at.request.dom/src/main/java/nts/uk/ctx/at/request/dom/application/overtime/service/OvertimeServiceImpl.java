@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -45,7 +45,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private OvertimeRepository overTimeRepository;
 	@Inject
-	ApplicationRepository_New appRepository;
+	ApplicationApprovalService_New appRepository;
 	
 	@Inject
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
