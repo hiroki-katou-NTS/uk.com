@@ -86,14 +86,14 @@ public class AddEmployeeCommandHelper {
 		addAffCompanyHist(personId, employeeId, command, companyId, comHistId);
 
 		// add new User
-		addNewUser(employeeId, command, userId);
+		addNewUser(personId, command, userId);
 
 		// register avatar
 
 		addAvatar(personId, command);
 
 		// for test
-		//addAffHist(companyId, employeeId);
+		// addAffHist(companyId, employeeId);
 
 		// Update employee registration history
 		updateEmployeeRegHist(companyId, employeeId);
@@ -188,12 +188,12 @@ public class AddEmployeeCommandHelper {
 
 	}
 
-	private void addNewUser(String employeeId, AddEmployeeCommand command, String userId) {
+	private void addNewUser(String personId, AddEmployeeCommand command, String userId) {
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
 		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
 				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 0, 0, "",
-				command.getEmployeeName(), employeeId);
+				command.getEmployeeName(), personId);
 
 		this.userRepository.addNewUser(newUser);
 
