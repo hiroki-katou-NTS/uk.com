@@ -124,7 +124,7 @@ module nts.uk.at.view.kmk003.a {
                     workTimeNo: number;
                     timezone: TimeZoneRoundingDto;
                     isLegalHolidayConstraintTime: boolean;
-                    inLegalBreakFrameNo: boolean;
+                    inLegalBreakFrameNo: number;
                     isNonStatutoryDayoffConstraintTime: boolean;
                     outLegalBreakFrameNo: number;
                     isNonStatutoryHolidayConstraintTime: boolean;

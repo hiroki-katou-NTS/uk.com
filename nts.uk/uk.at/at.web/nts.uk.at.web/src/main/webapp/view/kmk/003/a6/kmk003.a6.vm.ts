@@ -15,6 +15,7 @@ module a6 {
         isFlowMode: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
         isFixedMode: KnockoutObservable<boolean>;
+        isLoading: KnockoutObservable<boolean>;
         dataSourceFlow: KnockoutObservableArray<any>;
         dataSourceFlex: KnockoutObservableArray<any>;
         dataSourceFixed: KnockoutObservableArray<any>;
@@ -25,34 +26,24 @@ module a6 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isLoading: KnockoutObservable<boolean>) {
             let self = this;
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
+            self.isLoading = isLoading;
             self.dataSourceFlow = ko.observableArray([]);
-            var dataFlow: any[] = [];
-            for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.lstWorkTimezone) {
-                dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
-            }
-            self.dataSourceFlow(dataFlow);
             self.dataSourceFlex = ko.observableArray([]);
-            var dataFlex: any[] = [];
-            for (var dataModelFlex of self.mainSettingModel.flexWorkSetting.offdayWorkTime.lstWorkTimezone) {
-                dataFlex.push(self.toModelOtherFlowColumnSetting(dataModelFlex.toDto()));
-            }
-            self.dataSourceFlex(dataFlex);
             self.dataSourceFixed = ko.observableArray([]);
-             var dataFixed: any[] = [];
-            for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.lstWorkTimezone) {
-                dataFixed.push(self.toModelOtherFlowColumnSetting(dataModelFixed.toDto()));
-            }
-            self.dataSourceFixed(dataFixed);
+            self.updateDataByUpdateModel();
+            self.isLoading.subscribe(function(isLoading: boolean){
+               self.updateDataByUpdateModel(); 
+            });
             self.lstSelectOrderModel = [];
             for (var i: number = 1; i <= 10; i++) {
-                self.lstSelectOrderModel.push({ code: '' + i, name: '' + i });
+                self.lstSelectOrderModel.push({ code: i, name: '' + i });
             }
             self.fixTableOptionFlow = {
                 maxRow: 7,
@@ -84,7 +75,7 @@ module a6 {
                 columns: self.columnSettingOtherFlow(),
                 tabindex: -1
             };
-            
+
             self.dataSourceFlow.subscribe(function(dataFlow: any[]) {
                 var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
                 var workTimezoneNo: number = 0;
@@ -94,7 +85,7 @@ module a6 {
                 }
                 self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
             });
-            
+
             self.dataSourceFlex.subscribe(function(dataFlex: any[]) {
                 var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
                 var workTimezoneNo: number = 0;
@@ -104,7 +95,7 @@ module a6 {
                 }
                 self.mainSettingModel.flexWorkSetting.offdayWorkTime.updateHDTimezone(lstWorkTimezone);
             });
-            
+
             self.dataSourceFixed.subscribe(function(dataFixed: any[]) {
                 var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
                 var workTimezoneNo: number = 0;
@@ -112,9 +103,44 @@ module a6 {
                     workTimezoneNo++;
                     lstWorkTimezone.push(self.toModelOtherFlowDto(dataModel, workTimezoneNo));
                 }
+                console.log(lstWorkTimezone);
                 self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
             });
 
+        }
+
+        /**
+         * function update data by update model
+         */
+        private updateDataByUpdateModel(): void {
+            var self = this;
+            
+            // mode flow
+            if (self.isFlowMode()) {
+                var dataFlow: any[] = [];
+                for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.lstWorkTimezone) {
+                    dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
+                }
+                self.dataSourceFlow(dataFlow);
+            }
+            
+            // mode flex
+            if (self.isFlexMode()) {
+                var dataFlex: any[] = [];
+                for (var dataModelFlex of self.mainSettingModel.flexWorkSetting.offdayWorkTime.lstWorkTimezone) {
+                    dataFlex.push(self.toModelOtherFlowColumnSetting(dataModelFlex.toDto()));
+                }
+                self.dataSourceFlex(dataFlex);
+            }
+            
+            // mode fixed
+            if (self.isFixedMode()) {
+                var dataFixed: any[] = [];
+                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.lstWorkTimezone) {
+                    dataFixed.push(self.toModelOtherFlowColumnSetting(dataModelFixed.toDto()));
+                }
+                self.dataSourceFixed(dataFixed);
+            }
         }
         /**
          * function convert dto to model
@@ -129,7 +155,7 @@ module a6 {
                 outLegalPubHolFrameNo: ko.observable(dataDTO.outLegalPubHolFrameNo)
             }
         }
-        
+
         /**
          * function convert data model of client to parent
          */
@@ -159,7 +185,7 @@ module a6 {
          */
         private toModelOtherFlowColumnSetting(dataDTO: HDWorkTimeSheetSettingDto): any {
             return {
-                timezone: ko.observable({starTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end}),
+                timezone: ko.observable({ starTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
                 rounding: ko.observable(dataDTO.timezone.rounding.rounding),
                 roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
                 inLegalBreakFrameNo: ko.observable(dataDTO.inLegalBreakFrameNo),
@@ -167,19 +193,19 @@ module a6 {
                 outLegalPubHolFrameNo: ko.observable(dataDTO.outLegalPubHDFrameNo)
             }
         }
-        
+
         /**
          * function convert data model of client to parent
          */
         private toModelOtherFlowDto(dataModel: any, worktimeNo: number): HDWorkTimeSheetSettingDto {
-            var rounding :TimeRoundingSettingDto = {
+            var rounding: TimeRoundingSettingDto = {
                 roundingTime: dataModel.roundingTime(),
                 rounding: dataModel.rounding(),
             };
             var timezone: TimeZoneRoundingDto = {
                 rounding: rounding,
                 start: dataModel.timezone().startTime,
-                end: dataModel.timezone().startTime,
+                end: dataModel.timezone().endTime,
             };
             var dataDTO: HDWorkTimeSheetSettingDto = {
                 workTimeNo: worktimeNo,
@@ -193,30 +219,30 @@ module a6 {
             };
             return dataDTO;
         }
-        
-        
-         /**
-         * init array setting column option leave time mode
-         */
-         private columnSettingOtherFlow(): Array<any> {
+
+
+        /**
+        * init array setting column option leave time mode
+        */
+        private columnSettingOtherFlow(): Array<any> {
             let self = this;
-             return [
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_54"),
-                     key: "timezone",
-                     defaultValue: ko.observable({ startTime: 1, endTime: 1 }),
-                     width: 250,
-                     template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
+            return [
+                {
+                    headerText: nts.uk.resource.getText("KMK003_54"),
+                    key: "timezone",
+                    defaultValue: ko.observable({ startTime: 1, endTime: 1 }),
+                    width: 250,
+                    template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
                         required: true, enable: true, inputFormat: 'time'}"/>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_77"),
-                     key: "inLegalBreakFrameNo",
-                     dataSource: self.lstSelectOrderModel,
-                     defaultValue: ko.observable(1),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_77"),
+                    key: "inLegalBreakFrameNo",
+                    dataSource: self.lstSelectOrderModel,
+                    defaultValue: ko.observable(1),
+                    width: 120,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'code',
                                     visibleItemsCount: 5,
                                     optionsText: 'name',
@@ -224,14 +250,14 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'name', length: 2 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_78"),
-                     key: "outLegalBreakFrameNo",
-                     dataSource: self.lstSelectOrderModel,
-                     defaultValue: ko.observable(1),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_78"),
+                    key: "outLegalBreakFrameNo",
+                    dataSource: self.lstSelectOrderModel,
+                    defaultValue: ko.observable(1),
+                    width: 120,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'code',
                                     visibleItemsCount: 5,
                                     optionsText: 'name',
@@ -239,14 +265,14 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'name', length: 2 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_79"),
-                     key: "outLegalPubHolFrameNo",
-                     defaultValue: ko.observable(1),
-                     dataSource: self.lstSelectOrderModel,
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_79"),
+                    key: "outLegalPubHolFrameNo",
+                    defaultValue: ko.observable(1),
+                    dataSource: self.lstSelectOrderModel,
+                    width: 120,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'code',
                                     visibleItemsCount: 5,
                                     optionsText: 'name',
@@ -254,14 +280,14 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'name', length: 2 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_56"),
-                     key: "roundingTime",
-                     dataSource: self.settingEnum.roundingTime,
-                     defaultValue: ko.observable(0),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_56"),
+                    key: "roundingTime",
+                    dataSource: self.settingEnum.roundingTime,
+                    defaultValue: ko.observable(0),
+                    width: 120,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
@@ -269,14 +295,14 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_57"),
-                     key: "rounding",
-                     dataSource: self.settingEnum.rounding,
-                     defaultValue: ko.observable(0),
-                     width: 150,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_57"),
+                    key: "rounding",
+                    dataSource: self.settingEnum.rounding,
+                    defaultValue: ko.observable(0),
+                    width: 150,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
@@ -284,30 +310,30 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
                                 </div>`
-                 }
-             ];
+                }
+            ];
         }
         /**
          * init array setting column option close work
          */
-         private columnSettingFlow(): Array<any> {
-             let self = this;
-             return [
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_174"),
-                     key: "elapsedTime",
-                     defaultValue: ko.observable(0),
-                     width: 143,
-                     template: `<input data-bind="ntsTimeEditor: {
+        private columnSettingFlow(): Array<any> {
+            let self = this;
+            return [
+                {
+                    headerText: nts.uk.resource.getText("KMK003_174"),
+                    key: "elapsedTime",
+                    defaultValue: ko.observable(0),
+                    width: 143,
+                    template: `<input data-bind="ntsTimeEditor: {
                         inputFormat: 'time'}" />`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_77"),
-                     key: "inLegalBreakFrameNo",
-                     dataSource: self.lstSelectOrderModel,
-                     defaultValue: ko.observable(1),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_77"),
+                    key: "inLegalBreakFrameNo",
+                    dataSource: self.lstSelectOrderModel,
+                    defaultValue: ko.observable(1),
+                    width: 120,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'code',
                                     visibleItemsCount: 5,
                                     optionsText: 'name',
@@ -315,14 +341,14 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'name', length: 2 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_78"),
-                     key: "outLegalBreakFrameNo",
-                     dataSource: self.lstSelectOrderModel,
-                     defaultValue: ko.observable(1),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_78"),
+                    key: "outLegalBreakFrameNo",
+                    dataSource: self.lstSelectOrderModel,
+                    defaultValue: ko.observable(1),
+                    width: 120,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'code',
                                     visibleItemsCount: 5,
                                     optionsText: 'name',
@@ -330,14 +356,14 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'name', length: 2 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_79"),
-                     key: "outLegalPubHolFrameNo",
-                     dataSource: self.lstSelectOrderModel,
-                     defaultValue: ko.observable(1),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_79"),
+                    key: "outLegalPubHolFrameNo",
+                    dataSource: self.lstSelectOrderModel,
+                    defaultValue: ko.observable(1),
+                    width: 120,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'code',
                                     visibleItemsCount: 5,
                                     optionsText: 'name',
@@ -345,14 +371,14 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'name', length: 2 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_56"),
-                     key: "roundingTime",
-                     dataSource: self.settingEnum.roundingTime,
-                     defaultValue: ko.observable(0),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_56"),
+                    key: "roundingTime",
+                    dataSource: self.settingEnum.roundingTime,
+                    defaultValue: ko.observable(0),
+                    width: 120,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
@@ -360,14 +386,14 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
                                 </div>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_57"),
-                     key: "rounding",
-                     dataSource: self.settingEnum.rounding,
-                     defaultValue: ko.observable(0),
-                     width: 150,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                },
+                {
+                    headerText: nts.uk.resource.getText("KMK003_57"),
+                    key: "rounding",
+                    dataSource: self.settingEnum.rounding,
+                    defaultValue: ko.observable(0),
+                    width: 150,
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
@@ -375,17 +401,18 @@ module a6 {
                                     enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
                                 </div>`
-                 }
-             ];
-         }
-        
+                }
+            ];
+        }
+
 
     }
-    
+
     export interface SettlementOrder {
-        code: string;
+        code: number;
         name: string;
     }
+    
     class KMK003A6BindingHandler implements KnockoutBindingHandler {
         /**
          * Constructor.
@@ -415,8 +442,8 @@ module a6 {
             let input = valueAccessor();
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
-
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel);
+            var isLoading: KnockoutObservable<boolean> = input.isLoading;
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

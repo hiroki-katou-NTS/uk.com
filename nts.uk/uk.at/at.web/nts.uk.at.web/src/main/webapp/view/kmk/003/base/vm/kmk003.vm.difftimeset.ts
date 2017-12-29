@@ -158,7 +158,7 @@ module nts.uk.at.view.kmk003.a {
                         restraintTimeUse: this.restraintTimeUse(),
                         earlyOTUse: this.earlyOTUse(),
                         timezone: this.timezone.toDto(),
-                        oTFrameNo: this.oTFrameNo(),
+                        otFrameNo: this.otFrameNo(),
                         legalOTframeNo: this.legalOTframeNo(),
                         settlementOrder: this.settlementOrder(),
                         isUpdateStartTime: this.isUpdateStartTime()

@@ -499,7 +499,7 @@ module nts.uk.at.view.kmk003.a {
                 workTimeNo: KnockoutObservable<number>;
                 timezone: TimeZoneRoundingModel;
                 isLegalHolidayConstraintTime: KnockoutObservable<boolean>;
-                inLegalBreakFrameNo: KnockoutObservable<boolean>;
+                inLegalBreakFrameNo: KnockoutObservable<number>;
                 isNonStatutoryDayoffConstraintTime: KnockoutObservable<boolean>;
                 outLegalBreakFrameNo: KnockoutObservable<number>;
                 isNonStatutoryHolidayConstraintTime: KnockoutObservable<boolean>;
@@ -509,11 +509,11 @@ module nts.uk.at.view.kmk003.a {
                     this.workTimeNo = ko.observable(0);
                     this.timezone = new TimeZoneRoundingModel();
                     this.isLegalHolidayConstraintTime = ko.observable(false);
-                    this.inLegalBreakFrameNo = ko.observable(false);
+                    this.inLegalBreakFrameNo = ko.observable(1);
                     this.isNonStatutoryDayoffConstraintTime = ko.observable(false);
-                    this.outLegalBreakFrameNo = ko.observable(0);
+                    this.outLegalBreakFrameNo = ko.observable(1);
                     this.isNonStatutoryHolidayConstraintTime = ko.observable(false);
-                    this.outLegalPubHDFrameNo = ko.observable(0);
+                    this.outLegalPubHDFrameNo = ko.observable(1);
                 }
 
                 updateData(data: HDWorkTimeSheetSettingDto) {
@@ -1392,7 +1392,7 @@ module nts.uk.at.view.kmk003.a {
                 restraintTimeUse: KnockoutObservable<boolean>;
                 earlyOTUse: KnockoutObservable<boolean>;
                 timezone: TimeZoneRoundingModel;
-                oTFrameNo: KnockoutObservable<number>;
+                otFrameNo: KnockoutObservable<number>;
                 legalOTframeNo: KnockoutObservable<number>;
                 settlementOrder: KnockoutObservable<number>;
 
@@ -1401,7 +1401,7 @@ module nts.uk.at.view.kmk003.a {
                     this.restraintTimeUse = ko.observable(false);
                     this.earlyOTUse = ko.observable(false);
                     this.timezone = new TimeZoneRoundingModel();
-                    this.oTFrameNo = ko.observable(0);
+                    this.otFrameNo = ko.observable(0);
                     this.legalOTframeNo = ko.observable(0);
                     this.settlementOrder = ko.observable(0);
                 }
@@ -1411,7 +1411,7 @@ module nts.uk.at.view.kmk003.a {
                     this.restraintTimeUse(data.restraintTimeUse);
                     this.earlyOTUse(data.earlyOTUse);
                     this.timezone.updateData(data.timezone);
-                    this.oTFrameNo(data.otFrameNo);
+                    this.otFrameNo(data.otFrameNo);
                     this.legalOTframeNo(data.legalOTframeNo);
                     this.settlementOrder(data.settlementOrder);
                 }
@@ -1422,7 +1422,7 @@ module nts.uk.at.view.kmk003.a {
                         restraintTimeUse: this.restraintTimeUse(),
                         earlyOTUse: this.earlyOTUse(),
                         timezone: this.timezone.toDto(),
-                        otFrameNo: this.oTFrameNo(),
+                        otFrameNo: this.otFrameNo(),
                         legalOTframeNo: this.legalOTframeNo(),
                         settlementOrder: this.settlementOrder()
                     };

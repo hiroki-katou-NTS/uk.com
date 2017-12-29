@@ -65,7 +65,7 @@ module a3 {
            
             self.lstSelectOrderModel = [];
             for (var i: number = 1; i <= 10; i++) {
-                self.lstSelectOrderModel.push({ code: '' + i, name: '' + i });
+                self.lstSelectOrderModel.push({ code: i, name: '' + i });
             }
             self.selectedCodeAutoCalUse = ko.observable('1');
             self.fixTableOptionOnedayFixed = {
@@ -583,7 +583,7 @@ module a3 {
 
     }
     export interface SettlementOrder {
-        code: string;
+        code: number;
         name: string;
     }
 
