@@ -63,7 +63,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 				domain.getManagementYear(), null);
 		this.commandProxy().removeAll(entities);
 		domain.saveToMemento(new JpaWorkplaceMonthDaySettingSetMemento(entities));
-		this.commandProxy().insertAll(entities);
+		this.commandProxy().updateAll(entities);
 	}
 
 	/* (non-Javadoc)

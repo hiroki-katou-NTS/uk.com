@@ -63,7 +63,7 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 				domain.getManagementYear(), null);
 		this.commandProxy().removeAll(entities);
 		domain.saveToMemento(new JpaCompanyMonthDaySettingSetMemento(entities));
-		this.commandProxy().insertAll(entities);
+		this.commandProxy().updateAll(entities);
 	}
 
 	/* (non-Javadoc)
