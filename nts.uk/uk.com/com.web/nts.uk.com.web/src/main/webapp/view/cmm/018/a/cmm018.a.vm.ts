@@ -964,6 +964,11 @@ module nts.uk.com.view.cmm018.a {
                         return;
                     }
                 }
+                if(history.overLap  == '※' || history.overLap  == true){
+                    dialog.alertError({ messageId: "Msg_319" });
+                    block.clear();
+                    return;
+                }
                 //list approvalId + historyId
                 let lst: Array<vmbase.UpdateHistoryDto> = self.findListUpdate();
                 let paramJ: vmbase.JData_Param = {
@@ -1278,7 +1283,7 @@ module nts.uk.com.view.cmm018.a {
                 let listType = self.findAppTypeHistory(self.tabSelected());
                 let data: vmbase.DataResigterDto = new vmbase.DataResigterDto(self.tabSelected(),
                                     checkAddHist,self.workplaceId(), self.selectedItem(),
-                                    history.startDate, history.endDate,self.dataI(), listType == undefined ? [] : listType, root);
+                                    history.startDate, history.endDate,self.dataI(), listType == undefined ? [] : listType, root,self.selectedModeCode());
                 servicebase.updateRoot(data).done(function(){
                     self.enableCreatNew(true);
                     self.enableDelete(true);
@@ -2142,7 +2147,7 @@ module nts.uk.com.view.cmm018.a {
                 }
                 let data: vmbase.DataResigterDto = new vmbase.DataResigterDto(self.tabSelectedB(),
                                     checkAddHist, self.workplaceIdB(),
-                                    self.employeeId(),startDate, endDate,self.dataIB(), listType, root);
+                                    self.employeeId(),startDate, endDate,self.dataIB(), listType, root,__viewContext.viewModel.viewmodelA.selectedModeCode());
                 servicebase.updateRoot(data).done(function(){
                     self.enableCreatNewB(true);
                     block.clear();
