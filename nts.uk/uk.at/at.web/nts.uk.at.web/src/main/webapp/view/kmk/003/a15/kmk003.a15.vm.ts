@@ -3,8 +3,7 @@ module a15 {
     import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
     import WorkTimeMethodSet = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeMethodSet
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
-    import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
-    import WorkSystemAtr = nts.uk.at.view.kmk003.a.service.model.common.WorkSystemAtr;
+    import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;   
     
     import TimeRoundingSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRoundingSettingModel;
     import WorkTimezoneMedicalSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneMedicalSetModel;
@@ -27,10 +26,11 @@ module a15 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        dayShiftApplicationTime: KnockoutObservable<number>;
-        nightShiftApplicationTime: KnockoutObservable<number>;
+        dayShiftApplicationTime: KnockoutObservable<number>;       
         dayShiftSettingRoundingTime: KnockoutObservable<number>;
         dayShiftSettingRounding: KnockoutObservable<number>;
+        
+        nightShiftApplicationTime: KnockoutObservable<number>;
         nightShiftSettingRoundingTime: KnockoutObservable<number>;
         nightShiftSettingRounding: KnockoutObservable<number>;           
         
@@ -84,23 +84,12 @@ module a15 {
          */
         private bindingData() {
             let _self = this;
-
-//            let dayShiftMedicalSet: WorkTimezoneMedicalSetModel = _self.model.commonSetting.getMedicalDayShift();
-//            if (nts.uk.util.isNullOrUndefined(dayShiftMedicalSet)) {
-//                dayShiftMedicalSet = new WorkTimezoneMedicalSetModel();
-//                dayShiftMedicalSet.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
-//                _self.model.commonSetting.medicalSet.push(dayShiftMedicalSet);
-//            }
-//            let nightShiftMedicalSet: WorkTimezoneMedicalSetModel = _self.model.commonSetting.getMedicalNightShift(); 
-//            if (nts.uk.util.isNullOrUndefined(nightShiftMedicalSet)) {
-//                nightShiftMedicalSet = new WorkTimezoneMedicalSetModel();
-//                nightShiftMedicalSet.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
-//                _self.model.commonSetting.medicalSet.push(nightShiftMedicalSet);
-//            }           
-            _self.dayShiftApplicationTime = _self.model.commonSetting.getMedicalDayShift().applicationTime;
-            _self.nightShiftApplicationTime = _self.model.commonSetting.getMedicalNightShift().applicationTime;
+        
+            _self.dayShiftApplicationTime = _self.model.commonSetting.getMedicalDayShift().applicationTime;           
             _self.dayShiftSettingRoundingTime = _self.model.commonSetting.getMedicalDayShift().roundingSet.roundingTime;
             _self.dayShiftSettingRounding = _self.model.commonSetting.getMedicalDayShift().roundingSet.rounding;
+            
+            _self.nightShiftApplicationTime = _self.model.commonSetting.getMedicalNightShift().applicationTime;
             _self.nightShiftSettingRoundingTime = _self.model.commonSetting.getMedicalNightShift().roundingSet.roundingTime;
             _self.nightShiftSettingRounding = _self.model.commonSetting.getMedicalNightShift().roundingSet.rounding;          
         }
@@ -141,8 +130,6 @@ module a15 {
                 screenModel.startTab(screenMode);
             });
         }
-
-    }
-    
+    }  
     ko.bindingHandlers['ntsKMK003A15'] = new KMK003A15BindingHandler();
 }

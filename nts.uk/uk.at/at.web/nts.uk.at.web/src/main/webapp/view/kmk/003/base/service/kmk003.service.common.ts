@@ -283,6 +283,16 @@ module nts.uk.at.view.kmk003.a {
                     DAY_SHIFT,
                     NIGHT_SHIFT
                 }
+                
+                export enum SubHolidayOriginAtr {
+                    FROM_OVER_TIME,
+                    WORK_DAY_OFF_TIME
+                }
+                
+                export enum SubHolTransferSetAtr {
+                    SPECIFIED_TIME_SUB_HOL,
+                    CERTAIN_TIME_EXC_SUB_HOL
+                }
             }
         }
     }

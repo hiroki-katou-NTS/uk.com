@@ -86,14 +86,13 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet) {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
+		if (CollectionUtil.isEmpty(shtSet)) {
 			return;
-		}
-		
-		List<KshmtSubstitutionSet> newListEntity = new ArrayList<>();		
+		}			
 		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
 			this.entity.setKshmtSubstitutionSets(new ArrayList<>());
 		}
+		
 		Map<KshmtSubstitutionSetPK, KshmtSubstitutionSet> existShtSet = this.entity.getKshmtSubstitutionSets().stream()
 				.collect(Collectors.toMap(KshmtSubstitutionSet::getKshmtSubstitutionSetPK, Function.identity()));
 		
@@ -111,9 +110,9 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 			
 			domain.saveToMemento(new JpaWorkTimezoneOtherSubHolTimeSetSetMemento(entity));
 			entity.setKshmtSubstitutionSetPK(pk);
-			newListEntity.add(entity);
+			existShtSet.put(entity.getKshmtSubstitutionSetPK(), entity);
 		});
-		this.entity.setKshmtSubstitutionSets(newListEntity);
+		this.entity.setKshmtSubstitutionSets(existShtSet.values().stream().collect(Collectors.toList()));
 	}
 
 	/*

@@ -4,6 +4,7 @@ module a11 {
     import WorkTimeMethodSet = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeMethodSet
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
+    import SubHolTransferSetAtr = nts.uk.at.view.kmk003.a.service.model.common.SubHolTransferSetAtr;
     
     import WorkTimezoneOtherSubHolTimeSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneOtherSubHolTimeSetModel;
     import SubHolTransferSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.SubHolTransferSetModel;
@@ -20,8 +21,6 @@ module a11 {
 
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
-        workTimeDailyAtr: KnockoutObservable<number>;
-        workTimeMethodSet: KnockoutObservable<number>;
         
         // Screen data model
         model: MainSettingModel;
@@ -57,41 +56,19 @@ module a11 {
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
+            _self.bindingData();   
     
             // Init all data          
-            _self.workdayOffTimeUseDivision = ko.observable(false);
-            _self.workdayOffTimeSubHolTransferSetAtr = ko.observable(0);
-            _self.workdayOffTimeOneDayTime = ko.observable(0);
-            _self.workdayOffTimeHalfDayTime = ko.observable(0);
-            _self.workdayOffTimeCertainTime = ko.observable(0);
-            
-            _self.fromOverTimeUseDivision = ko.observable(false);
-            _self.fromOverTimeSubHolTransferSetAtr = ko.observable(0);
-            _self.fromOverTimeOneDayTime = ko.observable(0);
-            _self.fromOverTimeHalfDayTime = ko.observable(0);
-            _self.fromOverTimeCertainTime = ko.observable(0);
     
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                _self.changeWorkSettingMode();
-            });                                   
-            // Subscribe Work Setting Regular/Flex mode
-            _self.workTimeDailyAtr = ko.observable(0);
-            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                _self.workTimeDailyAtr(newValue);
-                _self.changeWorkSettingMode();
-            });  
-            // Subscribe Work Setting Fixed/Diff/Flow mode
-            _self.workTimeMethodSet = ko.observable(0); 
-            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                _self.workTimeMethodSet(newValue);
-                _self.changeWorkSettingMode();
-            });                          
+                // Nothing to do
+            });                                                        
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            });                       
+            });                  
         }
 
         /**
@@ -99,184 +76,47 @@ module a11 {
          */
         public startTab(screenMode: any): void {
             let _self = this;
-            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);            
-            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());        
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);          
         }
         
         /**
-         * UI - All: change WorkSetting mode
+         * Binding data
          */
-        private changeWorkSettingMode(): void {
-            let _self = this;        
-
-            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
-                // Regular work
-                switch (_self.workTimeMethodSet()) {
-                    case WorkTimeMethodSet.FIXED_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.subHolTimeSet) || 
-                                _self.model.fixedWorkSetting.commonSetting.subHolTimeSet.length === 0) {
-                            _self.model.fixedWorkSetting.commonSetting.subHolTimeSet = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.subHolTimeSet);                                    
-                    } break;
-                    case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.subHolTimeSet) || 
-                                _self.model.diffWorkSetting.commonSet.subHolTimeSet.length === 0) {
-                            _self.model.diffWorkSetting.commonSet.subHolTimeSet = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.subHolTimeSet);                                      
-                    } break;
-                    case WorkTimeMethodSet.FLOW_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.subHolTimeSet) || 
-                                _self.model.flowWorkSetting.commonSetting.subHolTimeSet.length === 0) {
-                            _self.model.flowWorkSetting.commonSetting.subHolTimeSet = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.subHolTimeSet);                 
-                    } break;               
-                    default: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.subHolTimeSet) || 
-                                _self.model.fixedWorkSetting.commonSetting.subHolTimeSet.length === 0) {
-                            _self.model.fixedWorkSetting.commonSetting.subHolTimeSet = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.subHolTimeSet);                 
-                    }
-                } 
-            } else {
-                // Flex work
-                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.subHolTimeSet) || 
-                        _self.model.flexWorkSetting.commonSetting.subHolTimeSet.length === 0) {
-                    _self.model.flexWorkSetting.commonSetting.subHolTimeSet = _self.createBinding();                           
-                } 
-                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.subHolTimeSet);           
-            }               
-        }       
-        
-        /**
-         * UI - All: create new Binding data
-         */
-        private createBinding(): WorkTimezoneOtherSubHolTimeSetModel[] {
-            let _self = this;           
-            let result: WorkTimezoneOtherSubHolTimeSetModel[] = [];
-            
-            let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
-            fromOverTimeSubstitutionSet.originAtr(OriginAtr.FROM_OVER_TIME);
-            result.push(fromOverTimeSubstitutionSet);
-            
-            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
-            workdayOffTimeSubstitutionSet.originAtr(OriginAtr.WORK_DAY_OFF_TIME);
-            result.push(workdayOffTimeSubstitutionSet);
-            
-            return result;
-        }
-        
-        /**
-         * UI - All: change Binding mode
-         */
-        private changeBinding(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
+        private bindingData() {
             let _self = this;
-            if (_self.isDetailMode()) {
-                _self.changeBindingDetail(subHolTimeSet); 
-            } else {
-                _self.changeBindingSimple(subHolTimeSet); 
-            }  
-        }
         
-        /**
-         * UI - Detail: change Binding Detail mode
-         */
-        private changeBindingDetail(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
-            let _self = this;    
-            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);       
-            if (nts.uk.util.isNullOrUndefined(workdayOffTimeSubstitutionSet)) {
-                workdayOffTimeSubstitutionSet = new WorkTimezoneOtherSubHolTimeSetModel();
-                workdayOffTimeSubstitutionSet.originAtr(OriginAtr.WORK_DAY_OFF_TIME);
-                subHolTimeSet.push(workdayOffTimeSubstitutionSet);
-            }
-            let fromOverTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.FROM_OVER_TIME);
-            if (nts.uk.util.isNullOrUndefined(fromOverTimeSubstitutionSet)) {
-                fromOverTimeSubstitutionSet = new WorkTimezoneOtherSubHolTimeSetModel();
-                fromOverTimeSubstitutionSet.originAtr(OriginAtr.FROM_OVER_TIME);
-                subHolTimeSet.push(fromOverTimeSubstitutionSet);
-            }
-
-            // Get model value into view model
-            _self.workdayOffTimeUseDivision(workdayOffTimeSubstitutionSet.subHolTimeSet.useDivision());
-            _self.workdayOffTimeSubHolTransferSetAtr(workdayOffTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr());
-            _self.workdayOffTimeOneDayTime(workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime());
-            _self.workdayOffTimeHalfDayTime(workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime());
-            _self.workdayOffTimeCertainTime(workdayOffTimeSubstitutionSet.subHolTimeSet.certainTime());
+            _self.workdayOffTimeUseDivision = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.useDivision;
+            _self.workdayOffTimeSubHolTransferSetAtr = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.subHolTransferSetAtr;
+            _self.workdayOffTimeOneDayTime = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime;
+            _self.workdayOffTimeHalfDayTime = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime;
+            _self.workdayOffTimeCertainTime = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime;
             
-            _self.fromOverTimeUseDivision(fromOverTimeSubstitutionSet.subHolTimeSet.useDivision());
-            _self.fromOverTimeSubHolTransferSetAtr(fromOverTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr());
-            _self.fromOverTimeOneDayTime(fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime());
-            _self.fromOverTimeHalfDayTime(fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime());
-            _self.fromOverTimeCertainTime(fromOverTimeSubstitutionSet.subHolTimeSet.certainTime());
+            _self.fromOverTimeUseDivision = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.useDivision;
+            _self.fromOverTimeSubHolTransferSetAtr = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.subHolTransferSetAtr;
+            _self.fromOverTimeOneDayTime = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime;
+            _self.fromOverTimeHalfDayTime = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime;
+            _self.fromOverTimeCertainTime = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.certainTime;
             
-            // Update into model in case of data change
-            _self.workdayOffTimeUseDivision.subscribe(newValue => workdayOffTimeSubstitutionSet.subHolTimeSet.useDivision(newValue));            
+            // Disable
             _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
-                if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {
-                        _self.workdayOffTimeCertainTime(0);
-                    }                   
+                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+                    _self.workdayOffTimeCertainTime(0);
                 } else {
-                    if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
-                        _self.workdayOffTimeOneDayTime(0);
-                    }  
-                    if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
-                        _self.workdayOffTimeHalfDayTime(0);
-                    }                 
+                    _self.workdayOffTimeOneDayTime(0);
+                    _self.workdayOffTimeHalfDayTime(0);
                 }
-                workdayOffTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr(newValue);
-            });           
-            _self.workdayOffTimeOneDayTime.subscribe(newValue => workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime(newValue));
-            _self.workdayOffTimeHalfDayTime.subscribe(newValue => workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime(newValue));
-            _self.workdayOffTimeCertainTime.subscribe(newValue => workdayOffTimeSubstitutionSet.subHolTimeSet.certainTime(newValue));          
+            });
             
-            _self.fromOverTimeUseDivision.subscribe(newValue => fromOverTimeSubstitutionSet.subHolTimeSet.useDivision(newValue));
-            _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {                            
-                if (newValue == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    if (typeof _self.fromOverTimeCertainTime() !== 'number') {
-                        _self.fromOverTimeCertainTime(0);
-                    }                  
+            _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {
+                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+                    _self.fromOverTimeCertainTime(0);
                 } else {
-                    if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
-                        _self.fromOverTimeOneDayTime(0);
-                    }  
-                    if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
-                        _self.fromOverTimeHalfDayTime(0);
-                    }                 
+                    _self.fromOverTimeOneDayTime(0);
+                    _self.fromOverTimeHalfDayTime(0);
                 }
-                fromOverTimeSubstitutionSet.subHolTimeSet.subHolTransferSetAtr(newValue);
-            }); 
-            _self.fromOverTimeOneDayTime.subscribe(newValue => fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime(newValue));
-            _self.fromOverTimeHalfDayTime.subscribe(newValue => fromOverTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime(newValue));
-            _self.fromOverTimeCertainTime.subscribe(newValue => fromOverTimeSubstitutionSet.subHolTimeSet.certainTime(newValue));           
-        }
-        
-        /**
-         * UI - Simple: change Binding Simple mode 
-         */
-        private changeBindingSimple(subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[]): void {
-            let _self = this;            
-            
-            // Handle workdayOffTimeTransferSet.designatedTime only
-            let workdayOffTimeSubstitutionSet: WorkTimezoneOtherSubHolTimeSetModel = _.find(subHolTimeSet, (o) => o.originAtr() === OriginAtr.WORK_DAY_OFF_TIME);
-            _self.workdayOffTimeOneDayTime = workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.oneDayTime;
-            _self.workdayOffTimeHalfDayTime = workdayOffTimeSubstitutionSet.subHolTimeSet.designatedTime.halfDayTime;
-        }     
-    }
-    
-    enum OriginAtr {
-        FROM_OVER_TIME,
-        WORK_DAY_OFF_TIME
-    }
-
-    enum SubHolTransferSetAtr {
-        SPECIFIED_TIME_SUB_HOL,
-        CERTAIN_TIME_EXC_SUB_HOL
-    }
+            });
+        }   
+    }     
    
     /**
      * Knockout Binding Handler - Tab 11
@@ -321,7 +161,6 @@ module a11 {
                 $('.inputRadioOT').attr('name', nts.uk.util.randomId() + '_Ot');
             });
         }
-
     }
     ko.bindingHandlers['ntsKMK003A11'] = new KMK003A11BindingHandler();
 }
