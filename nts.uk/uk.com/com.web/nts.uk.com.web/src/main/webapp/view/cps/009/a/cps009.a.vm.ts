@@ -285,7 +285,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
             modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
                 $('#ctgName').focus();
                 let initSetId: string = getShared('CPS009C_COPY');
-                self.refresh(initSetId);
+                if (initSetId !== undefined) {
+                    self.refresh(initSetId);
+                }
+
                 block.clear();
             });
 
@@ -439,12 +442,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
                 itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
                     function(item: PerInfoInitValueSettingItemDto) {
-                        return item.selectedRuleCode() == 2 && item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1 );
+                        return item.selectedRuleCode() == 2 && item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1);
                     }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
-                    return  { selectionItemId : obj.selectionItemId , 
-                              selectionItemRefType : obj.selectionItemRefType,
-                              baseDate : baseDate };
+                    return {
+                        selectionItemId: obj.selectionItemId,
+                        selectionItemRefType: obj.selectionItemRefType,
+                        baseDate: baseDate
+                    };
                 });
 
             if (itemIdLst.length > 0) {
