@@ -33,7 +33,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -49,7 +49,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -65,7 +65,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
 
@@ -81,7 +81,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
 
@@ -99,7 +99,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -115,7 +115,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -131,7 +131,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
 
@@ -148,7 +148,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -163,7 +163,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -182,7 +182,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
 
@@ -198,7 +198,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -213,7 +213,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -228,7 +228,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -243,7 +243,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -257,7 +257,7 @@ module cps002.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }

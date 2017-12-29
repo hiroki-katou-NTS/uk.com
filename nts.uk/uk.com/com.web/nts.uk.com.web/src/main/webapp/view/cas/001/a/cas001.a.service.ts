@@ -11,23 +11,6 @@ module nts.uk.com.view.cas001.a.service {
         savePersonRole: "/ctx/pereg/roles/auth/save"
     }
 
-    export function getPersonRoleList(): JQueryPromise<any> {
-
-
-        let dfd = $.Deferred<any>();
-        let self = this;
-        _.defer(() => block.invisible());
-        nts.uk.request.ajax(paths.getPersonRoleList)
-            .done(function(res) {
-                dfd.resolve(res);
-            }).fail(function(res) {
-                dfd.reject(res);
-            }).always(() => {
-                block.clear();
-            });
-        return dfd.promise();
-
-    }
 
     export function getPersonRoleAuth(roleID): JQueryPromise<any> {
         let dfd = $.Deferred<any>();
@@ -39,7 +22,7 @@ module nts.uk.com.view.cas001.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -54,7 +37,7 @@ module nts.uk.com.view.cas001.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
 
@@ -70,7 +53,7 @@ module nts.uk.com.view.cas001.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -85,7 +68,7 @@ module nts.uk.com.view.cas001.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -100,7 +83,7 @@ module nts.uk.com.view.cas001.a.service {
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
