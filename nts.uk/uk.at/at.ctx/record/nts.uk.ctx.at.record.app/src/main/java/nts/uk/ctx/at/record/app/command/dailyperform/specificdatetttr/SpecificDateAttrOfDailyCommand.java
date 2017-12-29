@@ -21,13 +21,13 @@ public class SpecificDateAttrOfDailyCommand extends DailyWorkCommonCommand {
 	public void setRecords(ConvertibleAttendanceItem item) {
 		this.data = item == null ? Optional.empty() : Optional.of((SpecificDateAttrOfDailyPerforDto) item);
 	}
-	
+
 	@Override
 	public SpecificDateAttrOfDailyPerfor toDomain() {
-		return data.isPresent() ? new SpecificDateAttrOfDailyPerfor(getEmployeeId(),
-				ConvertHelper.mapTo(data.get().getSepecificDateAttrs(),
-						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
-								c.isSpecificDate() ? SpecificDateAttr.USE : SpecificDateAttr.NOT_USE)),
-				getWorkDate()) : null;
+		return !data.isPresent() ? null : new SpecificDateAttrOfDailyPerfor(getEmployeeId(),
+						ConvertHelper.mapTo(data.get().getSepecificDateAttrs(),
+								(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
+										c.isSpecificDate() ? SpecificDateAttr.USE : SpecificDateAttr.NOT_USE)),
+						getWorkDate());
 	}
 }

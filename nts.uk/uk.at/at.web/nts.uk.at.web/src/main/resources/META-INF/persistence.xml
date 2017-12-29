@@ -5,7 +5,7 @@
 
 	<persistence-unit name="UK" transaction-type="JTA">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<jta-data-source>java:jboss/datasources/UK</jta-data-source>
+		<jta-data-source>java:jboss/datasources/UK_OX</jta-data-source>
 		<jar-file>lib/nts.uk.ctx.basic.infra-0.4.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.bs.company.infra-0.8.1.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.bs.employee.infra-0.10.13.jar</jar-file>

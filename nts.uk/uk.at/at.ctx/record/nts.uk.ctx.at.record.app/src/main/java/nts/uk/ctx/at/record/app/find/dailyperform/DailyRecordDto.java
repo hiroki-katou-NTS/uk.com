@@ -83,7 +83,7 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	private Optional<OptionalItemOfDailyPerformDto> optionalItem = Optional.empty();
 
 	/** 編集状態: 日別実績の編集状態 */
-	@AttendanceItemLayout(layout = "N", jpPropertyName = "", isList = true, listMaxLength = 3)
+	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", isList = true, listMaxLength = ?)
 	private List<EditStateOfDailyPerformanceDto> editStates = new ArrayList<>();
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */

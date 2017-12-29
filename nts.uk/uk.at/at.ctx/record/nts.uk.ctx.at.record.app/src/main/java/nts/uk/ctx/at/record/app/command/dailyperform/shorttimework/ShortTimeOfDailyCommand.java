@@ -30,8 +30,16 @@ public class ShortTimeOfDailyCommand extends DailyWorkCommonCommand {
 				ConvertHelper.mapTo(data.get().getShortWorkingTimeSheets(),
 						(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getShortWorkTimeFrameNo()),
 								ConvertHelper.getEnum(c.getChildCareAttr(), ChildCareAttribute.class),
-								new TimeWithDayAttr(c.getStartTime()), new TimeWithDayAttr(c.getEndTime()),
-								new AttendanceTime(c.getDeductionTime()), new AttendanceTime(c.getShortTime()))),
+								createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
+								createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
 				getWorkDate()) : null;
+	}
+
+	private TimeWithDayAttr createTimeWithDayAttr(Integer c) {
+		return c == null ? null : new TimeWithDayAttr(c);
+	}
+	
+	private AttendanceTime createAttendanceTime(Integer c) {
+		return c == null ? null : new AttendanceTime(c);
 	}
 }
