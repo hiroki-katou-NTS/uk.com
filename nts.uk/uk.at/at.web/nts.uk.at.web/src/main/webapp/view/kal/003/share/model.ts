@@ -171,4 +171,126 @@ module nts.uk.at.view.kal003.share.model {
         NEW = 0,
         UPDATE = 1
     }
+    //---------------- KAL003 - B begin----------------//
+    //Condition of group (C screen)
+    export interface ICondition{
+        itemCheck:              number;
+        target:                 number;
+        operatorCd:             string;
+        comparisonOperatorId:   number;
+        itemConditionId:        string;
+    
+    }
+    export class Condition{
+        itemCheck:              number;
+        target:                 number;
+        operatorCd:             string;
+        comparisonOperatorId:   number;
+        itemConditionId:        string;
+        constructor(param: ICondition) {
+            let self = this;
+            self.itemCheck  = param.itemCheck;
+            self.target     = param.target;
+            self.operatorCd = param.operatorCd;
+            self.comparisonOperatorId = param.comparisonOperatorId;
+            self.itemConditionId = param.itemConditionId;
+        }
+    
+    }
+    // group condition
+    export interface IGroupCondition {
+        groupOperator:      number; //0: OR|1: AND
+        groupListCondition: Array<Condition>;// max 3
+    }
+    
+    export class GroupCondition {
+        groupOperator:      KnockoutObservable<number>; //OR|AND B15-3, B17-3
+        groupListCondition: KnockoutObservableArray<Condition>;// max 3 item, B16-1 -> B16-4
+        constructor(param: IGroupCondition) {
+            let self = this;
+            self.groupOperator = ko.observable(param.groupOperator || 0);
+            self.groupListCondition = ko.observableArray(param.groupListCondition || []);
+        }
+    }
+    
+    export interface ICompoundCondition {
+        group1Condition:    GroupCondition;
+        hasGroup2:          boolean; // B17-1
+        group2Condition:    GroupCondition;
+        operatorBetweenG1AndG2: number; // B18-2: 0: OR, 1: AND
+    }
+    export class CompoundCondition {
+        group1Condition:    KnockoutObservable<GroupCondition>;
+        hasGroup2:          KnockoutObservable<boolean>;
+        group2Condition:    KnockoutObservable<GroupCondition>;
+        operatorBetweenG1AndG2: KnockoutObservable<number>;
+        constructor(param: ICompoundCondition) {
+            let self = this;
+            self.group1Condition    = ko.observable(param.group1Condition);
+            self.hasGroup2          = ko.observable(param.hasGroup2 || false);
+            self.group2Condition    = ko.observable(param.group2Condition);
+            self.operatorBetweenG1AndG2 = ko.observable(param.operatorBetweenG1AndG2);
+        }
+    }
+    
+    
+    
+    export interface ISettingCdlKal003B {
+        category:               number;
+        errAlaCheckId:          string;
+        checkItem:              number;
+        workTypeRange:          string;
+        workTypeSelections:     Array<string>;
+        workTimeItemSelections: Array<string>;
+        comparisonOperator:     number;
+        minimumValue:           string;
+        maximumValue:           string;
+        continuousPeriodInput:  string;
+        workingTimeZoneSelections: Array<string>;
+        color:                  string;
+        message:                string;
+        isBold:                 boolean;
+        compoundCondition :     CompoundCondition;
+        dailyAttendanceItemId:  string;
+    }
+    
+    export class SettingCdlKal003B {
+        category:               number;
+        errAlaCheckId:          string;
+        checkItem:              KnockoutObservable<number>;
+        workTypeRange:          KnockoutObservable<string>;
+        workTypeSelections:     KnockoutObservableArray<string>;
+        workTimeItemSelections: KnockoutObservableArray<string>;
+        comparisonOperator:     KnockoutObservable<number>;
+        minimumValue:           KnockoutObservable<string>;
+        maximumValue:           KnockoutObservable<string>;
+        continuousPeriodInput:  KnockoutObservable<string>;
+        workingTimeZoneSelections: KnockoutObservableArray<string>;
+        color:                  KnockoutObservable<string>;
+        message:                KnockoutObservable<string>;
+        isBold:                 KnockoutObservable<boolean>;
+        compoundCondition :     KnockoutObservable<CompoundCondition>;
+        dailyAttendanceItemId:  KnockoutObservable<string>;
+        constructor(param : ISettingCdlKal003B) {
+            let self = this;
+            self.category               = param.category || 0;
+            self.errAlaCheckId          = param.errAlaCheckId || '';
+            self.checkItem              = ko.observable(param.checkItem || 0);
+            self.workTypeRange          = ko.observable(param.workTypeRange || '');
+            self.workTypeSelections     = ko.observableArray(param.workTypeSelections || []);
+            self.workTimeItemSelections = ko.observableArray(param.workTimeItemSelections || []);
+            self.comparisonOperator     = ko.observable( param.comparisonOperator || 0);
+            self.minimumValue           = ko.observable(param.minimumValue || '');
+            self.maximumValue           = ko.observable(param.maximumValue || '');
+            self.continuousPeriodInput  = ko.observable(param.continuousPeriodInput || '');
+            self.workingTimeZoneSelections = ko.observableArray(param.workingTimeZoneSelections || []);
+            self.color                  = ko.observable(param.color || '');
+            self.message                = ko.observable(param.message || '');
+            self.isBold                 = ko.observable(param.isBold || false);
+            self.compoundCondition      = ko.observable(param.compoundCondition);
+            self.dailyAttendanceItemId  = ko.observable(param.dailyAttendanceItemId);
+        }
+    }
+    //---------------- KAL003 - B end------------------//
+
 }

@@ -29,3 +29,7 @@
 #compareOperator-cbb{width: 200px;}
 .value-input {width: 70px}
 .nts-editor-wrapped {display: initial !IMPORTANT;}
+
+<style>
+    .alnright { text-align: right; }
+</style>
