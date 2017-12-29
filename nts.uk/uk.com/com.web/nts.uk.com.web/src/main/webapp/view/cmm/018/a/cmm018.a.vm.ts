@@ -898,21 +898,22 @@ module nts.uk.com.view.cmm018.a {
                     let obj: vmbase.DataDisplayComDto = self.findAppIdForCom(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstCompanyRoot, function(item){
-                            lstApp.push(new vmbase.ApplicationType(item.company.applicationType,'',item.company.employmentRootAtr));
+                            lstApp.push(new vmbase.ApplicationType(item.company.employmentRootAtr ==2 ? item.company.confirmationRootType : item.company.applicationType,
+                            '',item.company.employmentRootAtr));
                         });
                     }
                 }else if(rootType == vmbase.RootType.WORKPLACE){
                     let obj: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstWorkplaceRoot, function(item){
-                            lstApp.push(new vmbase.ApplicationType(item.workplace.applicationType,'',item.workplace.employmentRootAtr));
+                            lstApp.push(new vmbase.ApplicationType(item.workplace.employmentRootAtr == 2 ? item.workplace.confirmationRootType : item.workplace.applicationType,'',item.workplace.employmentRootAtr));
                         });
                     }
                 }else{
                     let obj: vmbase.DataDisplayPsDto = self.findAppIdForPs(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstPersonRoot, function(item){
-                            lstApp.push(new vmbase.ApplicationType(item.person.applicationType,'',item.person.employmentRootAtr));
+                            lstApp.push(new vmbase.ApplicationType(item.person.employmentRootAtr ==2 ? item.person.confirmationRootType : item.person.applicationType,'',item.person.employmentRootAtr));
                         });
                     }
                 }
