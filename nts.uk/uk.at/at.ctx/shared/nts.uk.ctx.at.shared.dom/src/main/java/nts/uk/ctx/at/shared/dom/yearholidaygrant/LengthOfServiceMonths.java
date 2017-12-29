@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
-@IntegerRange(min = 0, max = 12)
+@IntegerRange(min = 0, max = 11)
 public class LengthOfServiceMonths extends IntegerPrimitiveValue<LengthOfServiceMonths> {
 
 	/**
