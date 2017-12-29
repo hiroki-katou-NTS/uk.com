@@ -70,8 +70,7 @@ module nts.uk.at.view.kal003.b{
                 // change select item check
                 currentErrAlaAttendanceItemCondition.typeCheckWorkRecord.subscribe((itemCheck) => {
                     if (itemCheck && itemCheck != undefined) {
-                        self.initialScreen();
-                        self.showAndHide();
+                        //self.initialScreen();
                     }
                 });
                 currentErrAlaAttendanceItemCondition.comparisonOperatorId.subscribe((comparisonOperatorId) => {
@@ -106,70 +105,13 @@ module nts.uk.at.view.kal003.b{
                            // dfd.resolve();
                         //});
                     }
-                    self.showAndHide();
                     self.settingEnableComparisonMaxValueField();
                     dfd.resolve();
                });
                 
                 return dfd.promise();
             }
-            
-            private showAndHide() {
-                let self = this;
-                switch (self.currentErrAlaAttendanceItemCondition().typeCheckWorkRecord()) {
-                case enItemCheck.Time: //時間
-                case enItemCheck.Times: // 回数
-                case enItemCheck.AmountOfMoney: // 金額
-                case enItemCheck.TimeOfDate: // 時刻の場合
-                    $('#div_target_service_type_ba1').show();
-                    $('#ba1_2').show();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').show();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').hide();
-                    $('#div_compound_condition').hide();
-                    break;
-                case enItemCheck.CountinuousTime: // 連続時間の場合
-                    $('#div_target_service_type_ba1').show();
-                    $('#ba1_2').show();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').show();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').show();
-                    $('#div_compound_condition').hide();
-                    break;
-                case enItemCheck.CountinuousTimeZone: // 連続勤務
-                    $('#div_target_service_type_ba1').show();
-                    $('#ba1_2').show();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').hide();
-                    $('#div_target_working_hours_ba5').show();
-                    $('#div_continuous_period_ba3').show();
-                    $('#div_compound_condition').hide();
-                    break;
-                case enItemCheck.CountinuousWork: // 連続時間帯 
-                    $('#div_target_service_type_ba1').show();
-                    $('#ba1_2').hide();
-                    $('#ba1_5').show();
-                    $('#div_check_conditions_ba2').hide();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').show();
-                    $('#div_compound_condition').hide();
-                    break;
-                case enItemCheck.CompoundCondition: // 複合条件
-                    $('#div_target_service_type_ba1').hide();
-                    $('#ba1_2').hide();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').hide();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').hide();
-                    $('#div_compound_condition').show();
-                    break;
-                default:
-                    break;
-                }
-            }
-            
+
             private settingEnableComparisonMaxValueField() {
                 let self = this;
                 self.enableComparisonMaxValue(self.currentErrAlaAttendanceItemCondition().comparisonOperatorId() > 5);
@@ -530,7 +472,23 @@ module nts.uk.at.view.kal003.b{
                 alert("open dialog btnSettingBA5_2");
             }
             btnSettingBA1_3_click () {
-                alert("open dialog btnSettingBA1_3_click");
+                let self = this;
+                
+                block.invisible();
+                let param = {
+                        id : 1,
+                        multiple :  true,
+                    };
+                windows.setShared('paramKdl002', param);
+                windows.sub.modal('/view/kdl/002/index.xhtml', { title: '' }).onClosed(function(): any {
+                  //get data from share window
+                    var listCds = windows.getShared('dataKdl002');
+                    if (listCds != undefined) {
+                        self.currentErrAlaAttendanceItemCondition.targetServiceTypeWorkTypeSelection(listCds);
+                    }
+                    block.clear();
+                });
+                
             }
             btnSettingBA2_2_click() {
                 alert("open dialog btnSettingBA2_2_click");
