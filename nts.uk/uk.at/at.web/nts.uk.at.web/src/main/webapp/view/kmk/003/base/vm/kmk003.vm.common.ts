@@ -43,6 +43,8 @@ module nts.uk.at.view.kmk003.a {
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
     import FixedWorkRestSetDto = service.model.common.FixedWorkRestSetDto;
     import FixedWorkTimezoneSetDto = service.model.common.FixedWorkTimezoneSetDto;
+    
+    import WorkSystemAtr = service.model.common.WorkSystemAtr;
 
     export module viewmodel {
         export module common {
@@ -167,6 +169,17 @@ module nts.uk.at.view.kmk003.a {
                     this.applicationTime = ko.observable(0);
                 }
 
+                static getDefaultData(): Array<WorkTimezoneMedicalSetModel> {
+                    let dayShift = new WorkTimezoneMedicalSetModel();
+                    dayShift.workSystemAtr(WorkSystemAtr.DAY_SHIFT);
+                    let nightShift = new WorkTimezoneMedicalSetModel();
+                    nightShift.workSystemAtr(WorkSystemAtr.NIGHT_SHIFT);
+                    let list: WorkTimezoneMedicalSetModel[] = [];
+                    list.push(dayShift);
+                    list.push(nightShift);
+                    return list;
+                }
+                
                 updateData(data: WorkTimezoneMedicalSetDto) {
                     this.roundingSet.updateData(data.roundingSet);
                     this.workSystemAtr(data.workSystemAtr);
@@ -180,6 +193,11 @@ module nts.uk.at.view.kmk003.a {
                         applicationTime: this.applicationTime()
                     };
                     return dataDTO;
+                }
+                
+                resetData(){
+                    this.roundingSet.resetData();
+                    this.applicationTime(0);    
                 }
             }
 
@@ -202,14 +220,14 @@ module nts.uk.at.view.kmk003.a {
                     this.intervalSet = new IntervalTimeSettingModel();
                     this.subHolTimeSet = [];
                     this.raisingSalarySet = ko.observable('');
-                    this.medicalSet = [];              
+                    this.medicalSet = WorkTimezoneMedicalSetModel.getDefaultData();              
                     this.goOutSet = new WorkTimezoneGoOutSetModel();
                     this.stampSet = new WorkTimezoneStampSetModel();
                     this.lateNightTimeSet = new WorkTimezoneLateNightTimeSetModel();
                     this.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSetModel();
                     this.extraordTimeSet = new WorkTimezoneExtraordTimeSetModel();
                     this.lateEarlySet = new WorkTimezoneLateEarlySetModel();
-                }
+                }               
 
                 updateData(data: WorkTimezoneCommonSetDto) {
                     if (data) {
@@ -221,11 +239,27 @@ module nts.uk.at.view.kmk003.a {
                             this.subHolTimeSet.push(dataModel);
                         }
                         this.raisingSalarySet(data.raisingSalarySet);
-                        for (let dataDTO of data.medicalSet) {
+                                 
+                                         
+                        
+                        let newMedicalSet: WorkTimezoneMedicalSetModel[] = _.map(data.medicalSet, (dataDTO) => {
                             let dataModel: WorkTimezoneMedicalSetModel = new WorkTimezoneMedicalSetModel();
                             dataModel.updateData(dataDTO);
-                            this.medicalSet.push(dataModel);
-                        }                   
+                            return dataModel;
+                        });
+                        let newDayShift = _.find(newMedicalSet, o => o.workSystemAtr() == WorkSystemAtr.DAY_SHIFT);
+                        if (!nts.uk.util.isNullOrUndefined(newDayShift)) {                    
+                            let dayShift = _.find(this.medicalSet, o => o.workSystemAtr() == WorkSystemAtr.DAY_SHIFT);
+                            dayShift.updateData(newDayShift.toDto());                     
+                        }
+                        let newNightShift = _.find(newMedicalSet, o => o.workSystemAtr() == WorkSystemAtr.NIGHT_SHIFT);
+                        if (!nts.uk.util.isNullOrUndefined(newNightShift)) {                    
+                            let nightShift = _.find(this.medicalSet, o => o.workSystemAtr() == WorkSystemAtr.NIGHT_SHIFT);
+                            nightShift.updateData(newNightShift.toDto());                     
+                        }                                               
+                     
+                        
+                        
                         this.goOutSet.updateData(data.goOutSet);
                         this.stampSet.updateData(data.stampSet);
                         this.lateNightTimeSet.updateData(data.lateNightTimeSet);
@@ -236,14 +270,8 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): WorkTimezoneCommonSetDto {
-                    let subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[] = [];
-                    for (let dataModel of this.subHolTimeSet) {
-                        subHolTimeSet.push(dataModel.toDto());
-                    }
-                    let medicalSet: WorkTimezoneMedicalSetDto[] = [];
-                    for (let dataModel of this.medicalSet) {
-                        medicalSet.push(dataModel.toDto());
-                    }
+                    let subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[] = _.map(this.subHolTimeSet, (dataModel) => dataModel.toDto());
+                    let medicalSet: WorkTimezoneMedicalSetDto[] = _.map(this.medicalSet, (dataModel) => dataModel.toDto());
                     var dataDTO: WorkTimezoneCommonSetDto = {
                         zeroHStraddCalculateSet: this.zeroHStraddCalculateSet(),
                         intervalSet: this.intervalSet.toDto(),
@@ -265,13 +293,24 @@ module nts.uk.at.view.kmk003.a {
                     this.intervalSet.resetData();
                     this.subHolTimeSet = [];
                     this.raisingSalarySet('');
-                    this.medicalSet = [];
+                    this.medicalSet.length = 0;
+                    this.medicalSet.concat(WorkTimezoneMedicalSetModel.getDefaultData());
                     this.goOutSet.resetData();
 //                    this.stampSet.resetData();
 //                    this.lateNightTimeSet.resetData();
 //                    this.shortTimeWorkSet.resetData();
 //                    this.extraordTimeSet.resetData();
 //                    this.lateEarlySet.resetData();
+                }
+                
+                public getMedicalDayShift(): WorkTimezoneMedicalSetModel {
+                    let self = this;
+                    return _.find(self.medicalSet, o => o.workSystemAtr() == WorkSystemAtr.DAY_SHIFT);
+                }
+                
+                public getMedicalNightShift(): WorkTimezoneMedicalSetModel {
+                    let self = this;
+                    return _.find(self.medicalSet, o => o.workSystemAtr() == WorkSystemAtr.NIGHT_SHIFT);
                 }
             }
 
@@ -1342,13 +1381,17 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: WorkTimezoneLateEarlySetDto) {
-                    this.commonSet.updateData(data.commonSet);
-                    this.otherClassSets = [];
-                    for (var dataDTO of data.otherClassSets) {
-                        var dataModel: OtherEmTimezoneLateEarlySetModel = new OtherEmTimezoneLateEarlySetModel();
-                        dataModel.updateData(dataDTO);
-                        this.otherClassSets.push(dataModel);
-                    }
+                    if (data) {
+                        this.commonSet.updateData(data.commonSet);
+                        this.otherClassSets = [];
+                        if (data.otherClassSets) {
+                            for (var dataDTO of data.otherClassSets) {
+                                var dataModel: OtherEmTimezoneLateEarlySetModel = new OtherEmTimezoneLateEarlySetModel();
+                                dataModel.updateData(dataDTO);
+                                this.otherClassSets.push(dataModel);
+                            }
+                        }                       
+                    }                   
                 }
 
                 toDto(): WorkTimezoneLateEarlySetDto {

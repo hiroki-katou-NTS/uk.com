@@ -276,6 +276,13 @@ module nts.uk.at.view.kmk003.a {
                     lstOTTimezone: OverTimeOfTimeZoneSetDto[];
                 }
 
+                
+                
+                // Common Enum
+                export enum WorkSystemAtr {
+                    DAY_SHIFT,
+                    NIGHT_SHIFT
+                }
             }
         }
     }

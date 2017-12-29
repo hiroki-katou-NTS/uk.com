@@ -88,6 +88,11 @@ module a9 {
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });
+            // Subscribe when change workplace
+            _self.model.isChangeItemTable.subscribe(newValue => {
+                _self.startTab(screenMode);
+                _self.changeWorkSettingMode();
+            });
         }            
         
         /**

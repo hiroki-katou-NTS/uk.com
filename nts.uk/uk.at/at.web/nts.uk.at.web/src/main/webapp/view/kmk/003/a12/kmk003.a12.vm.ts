@@ -19,8 +19,6 @@ module a12 {
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
-        workTimeDailyAtr: KnockoutObservable<number>;
-        workTimeMethodSet: KnockoutObservable<number>;
         
         // Screen data model
         model: MainSettingModel;
@@ -51,34 +49,17 @@ module a12 {
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
+            _self.bindingData();
             
-            // Init all data                                            
-            _self.lateNightSettingRoundingTime = ko.observable(0);
-            _self.lateNightSettingRounding = ko.observable(0);
-            
-            _self.listRoundingTimeValue = ko.observableArray([]);
-            _self.listRoundingValue = ko.observableArray([]);
-            
-            _self.listRoundingTimeValue(_self.settingEnum.roundingTime);
-            _self.listRoundingValue(_self.settingEnum.roundingSimple);          
+            // Init all data                                                 
+            _self.listRoundingTimeValue = ko.observableArray(_self.settingEnum.roundingTime);
+            _self.listRoundingValue = ko.observableArray(_self.settingEnum.roundingSimple);      
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                _self.changeWorkSettingMode();
-            });                                   
-            // Subscribe Work Setting Regular/Flex mode
-            _self.workTimeDailyAtr = ko.observable(0);
-            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                _self.workTimeDailyAtr(newValue);
-                _self.changeWorkSettingMode();
-            });  
-            // Subscribe Work Setting Fixed/Diff/Flow mode
-            _self.workTimeMethodSet = ko.observable(0); 
-            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                _self.workTimeMethodSet(newValue);
-                _self.changeWorkSettingMode();
-            });                          
+                // Nothing to do
+            });                                                            
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
@@ -91,97 +72,16 @@ module a12 {
         public startTab(screenMode: any): void {
             let _self = this;
             screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
         
         /**
-         * UI - All: change WorkSetting mode
+         * Binding data
          */
-        private changeWorkSettingMode(): void {
-            let _self = this;        
-
-            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
-                // Regular work
-                switch (_self.workTimeMethodSet()) {
-                    case WorkTimeMethodSet.FIXED_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting)) {
-                            _self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);                                    
-                    } break;
-                    case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.lateNightTimeSet.roundingSetting)) {
-                            _self.model.diffWorkSetting.commonSet.lateNightTimeSet.roundingSetting = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.lateNightTimeSet.roundingSetting);
-                    } break;
-                    case WorkTimeMethodSet.FLOW_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.lateNightTimeSet.roundingSetting)) {
-                            _self.model.flowWorkSetting.commonSetting.lateNightTimeSet.roundingSetting = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);
-                    } break;               
-                    default: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting)) {
-                            _self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.lateNightTimeSet.roundingSetting);
-                    }
-                } 
-            } else {
-                // Flex work
-                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.lateNightTimeSet.roundingSetting)) {
-                    _self.model.flexWorkSetting.commonSetting.lateNightTimeSet.roundingSetting = _self.createBinding();                           
-                } 
-                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.lateNightTimeSet.roundingSetting); 
-            }               
-        }       
-        
-        /**
-         * UI - All: create new Binding data
-         */
-        private createBinding(): TimeRoundingSettingModel {
-            let _self = this;
-            
-            let result: TimeRoundingSettingModel = new TimeRoundingSettingModel();           
-            return result;
-        }
-        
-        /**
-         * UI - All: change Binding mode
-         */
-        private changeBinding(lateNightSetting: TimeRoundingSettingModel): void {
-            let _self = this;
-            if (_self.isDetailMode()) {
-                _self.changeBindingDetail(lateNightSetting); 
-            } else {
-                _self.changeBindingSimple(lateNightSetting); 
-            }  
-        }
-        
-        /**
-         * UI - Detail: change Binding Detail mode
-         */
-        private changeBindingDetail(lateNightSetting: TimeRoundingSettingModel): void {
-            let _self = this;                 
-            
-            // Get model value into view model          
-            _self.lateNightSettingRoundingTime(lateNightSetting.roundingTime());
-            _self.lateNightSettingRounding(lateNightSetting.rounding());
-            
-            // Update into model in case of data change
-            _self.lateNightSettingRoundingTime.subscribe(newValue => lateNightSetting.roundingTime(newValue));
-            _self.lateNightSettingRounding.subscribe(newValue => lateNightSetting.rounding(newValue));
-        }
-        
-        /**
-         * UI - Simple: change Binding Simple mode 
-         */
-        private changeBindingSimple(lateNightSetting: TimeRoundingSettingModel): void {
-            let _self = this;
-            _self.changeBindingDetail(lateNightSetting);    
-        }
+        private bindingData() {
+            let _self = this;           
+            _self.lateNightSettingRoundingTime = _self.model.commonSetting.lateNightTimeSet.roundingSetting.roundingTime;
+            _self.lateNightSettingRounding = _self.model.commonSetting.lateNightTimeSet.roundingSetting.rounding;
+        }                
     }
       
     /**
@@ -219,7 +119,6 @@ module a12 {
                 screenModel.startTab(screenMode);
             });
         }
-
     }
     
     ko.bindingHandlers['ntsKMK003A12'] = new KMK003A12BindingHandler();

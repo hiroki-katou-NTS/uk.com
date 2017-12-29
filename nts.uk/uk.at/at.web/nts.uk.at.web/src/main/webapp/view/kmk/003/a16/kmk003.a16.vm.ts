@@ -23,20 +23,11 @@ module a16 {
         settingEnum: WorkTimeSettingEnumDto;
         
         // Detail mode - Data
-        fixedZeroHStraddCalculateSetting: KnockoutObservable<boolean>;
-        diffZeroHStraddCalculateSetting: KnockoutObservable<boolean>;
-        flowZeroHStraddCalculateSetting: KnockoutObservable<boolean>;
-        flexZeroHStraddCalculateSetting: KnockoutObservable<boolean>;
+        zeroHStraddCalculateSetting: KnockoutObservable<boolean>;
         
         listZeroHStraddCalculateSetting: KnockoutObservableArray<any>;
         
         // Simple mode - Data  
-        
-        // UI
-        isFixedMode: KnockoutObservable<boolean>;  
-        isDiffMode: KnockoutObservable<boolean>;      
-        isFlowMode: KnockoutObservable<boolean>;  
-        isFlexMode: KnockoutObservable<boolean>;
         
         /**
          * Constructor
@@ -53,14 +44,9 @@ module a16 {
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
-            _self.isFixedMode = _self.model.workTimeSetting.isFixed;      
-            _self.isDiffMode = _self.model.workTimeSetting.isDiffTime;
-            _self.isFlowMode = _self.model.workTimeSetting.isFlow;      
-            _self.isFlexMode = _self.model.workTimeSetting.isFlex;           
+            _self.bindingData();       
             
             // Init all data                                                                            
-            _self.bindingData();
-
             _self.listZeroHStraddCalculateSetting = ko.observableArray([
                 { value: true, localizedName: nts.uk.resource.getText("KMK003_142") },
                 { value: false, localizedName: nts.uk.resource.getText("KMK003_143") }
@@ -90,10 +76,7 @@ module a16 {
          */
         private bindingData() {
             let _self = this;
-            _self.fixedZeroHStraddCalculateSetting = _self.model.fixedWorkSetting.commonSetting.zeroHStraddCalculateSet;                            
-            _self.diffZeroHStraddCalculateSetting = _self.model.diffWorkSetting.commonSet.zeroHStraddCalculateSet;                         
-            _self.flowZeroHStraddCalculateSetting = _self.model.flowWorkSetting.commonSetting.zeroHStraddCalculateSet;                          
-            _self.flexZeroHStraddCalculateSetting = _self.model.flexWorkSetting.commonSetting.zeroHStraddCalculateSet;
+            _self.zeroHStraddCalculateSetting = _self.model.commonSetting.zeroHStraddCalculateSet;   
         }
     }
     
@@ -132,8 +115,6 @@ module a16 {
                 screenModel.startTab(screenMode);
             });
         }
-
-    }
-    
+    }   
     ko.bindingHandlers['ntsKMK003A16'] = new KMK003A16BindingHandler();
 }

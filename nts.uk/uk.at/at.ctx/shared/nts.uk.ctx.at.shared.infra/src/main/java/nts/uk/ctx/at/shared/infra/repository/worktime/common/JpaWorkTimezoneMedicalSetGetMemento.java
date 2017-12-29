@@ -50,7 +50,7 @@ public class JpaWorkTimezoneMedicalSetGetMemento implements WorkTimezoneMedicalS
 	 */
 	@Override
 	public WorkSystemAtr getWorkSystemAtr() {
-		return WorkSystemAtr.valueOf(this.entity.getKshmtMedicalTimeSetPK().getWorkFormAtr());
+		return WorkSystemAtr.valueOf(this.entity.getKshmtMedicalTimeSetPK().getWorkSysAtr());
 	}
 
 	/*

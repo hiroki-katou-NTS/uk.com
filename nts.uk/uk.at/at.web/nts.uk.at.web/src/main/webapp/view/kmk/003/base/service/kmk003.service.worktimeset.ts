@@ -60,6 +60,7 @@ module nts.uk.at.view.kmk003.a {
 
 
                 
+                // Worktime Setting Enum
                 export enum WorkTimeDailyAtr {
                     REGULAR_WORK,
                     FLEX_WORK

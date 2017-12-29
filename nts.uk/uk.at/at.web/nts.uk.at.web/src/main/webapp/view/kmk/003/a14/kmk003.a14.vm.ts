@@ -19,8 +19,6 @@ module a14 {
 
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
-        workTimeDailyAtr: KnockoutObservable<number>;
-        workTimeMethodSet: KnockoutObservable<number>;
         
         // Screen data model
         model: MainSettingModel;
@@ -50,10 +48,9 @@ module a14 {
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
+            _self.bindingData();
             
-            // Init all data    
-            _self.childCareWorkUse = ko.observable(true);
-            _self.nursingTimeWorkUse = ko.observable(true);
+            // Init all data               
             _self.lstChildCareEnum = ko.observableArray([
                 {value: true, localizedName: nts.uk.resource.getText("KMK003_116")},
                 {value: false, localizedName: nts.uk.resource.getText("KMK003_117")}
@@ -66,20 +63,8 @@ module a14 {
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                _self.changeWorkSettingMode();
-            });                                   
-            // Subscribe Work Setting Regular/Flex mode
-            _self.workTimeDailyAtr = ko.observable(0);
-            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                _self.workTimeDailyAtr(newValue);
-                _self.changeWorkSettingMode();
-            });  
-            // Subscribe Work Setting Fixed/Diff/Flow mode
-            _self.workTimeMethodSet = ko.observable(0); 
-            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                _self.workTimeMethodSet(newValue);
-                _self.changeWorkSettingMode();
-            });                          
+                // Nothing to do
+            });                                                            
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
@@ -92,97 +77,16 @@ module a14 {
         public startTab(screenMode: any): void {
             let _self = this;
             screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
         
         /**
-         * UI - All: change WorkSetting mode
+         * Binding data
          */
-        private changeWorkSettingMode(): void {
-            let _self = this;        
-                       
-            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
-                // Regular work
-                switch (_self.workTimeMethodSet()) {
-                    case WorkTimeMethodSet.FIXED_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet)) {
-                            _self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet);                                    
-                    } break;
-                    case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.shortTimeWorkSet)) {
-                            _self.model.diffWorkSetting.commonSet.shortTimeWorkSet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.shortTimeWorkSet);
-                    } break;
-                    case WorkTimeMethodSet.FLOW_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.shortTimeWorkSet)) {
-                            _self.model.flowWorkSetting.commonSetting.shortTimeWorkSet = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.shortTimeWorkSet);
-                    } break;               
-                    default: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet)) {
-                            _self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet = _self.createBinding();                           
-                        } 
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.shortTimeWorkSet);
-                    }
-                } 
-            } else {
-                // Flex work
-                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.shortTimeWorkSet)) {
-                    _self.model.flexWorkSetting.commonSetting.shortTimeWorkSet = _self.createBinding();                           
-                } 
-                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.shortTimeWorkSet); 
-            }               
-        }       
-        
-        /**
-         * UI - All: create new Binding data
-         */
-        private createBinding(): WorkTimezoneShortTimeWorkSetModel {
-            let _self = this;
-            
-            let result: WorkTimezoneShortTimeWorkSetModel = new WorkTimezoneShortTimeWorkSetModel();           
-            return result;
-        }
-        
-        /**
-         * UI - All: change Binding mode
-         */
-        private changeBinding(shortTimeWorkSet: WorkTimezoneShortTimeWorkSetModel): void {
-            let _self = this;
-            if (_self.isDetailMode()) {
-                _self.changeBindingDetail(shortTimeWorkSet); 
-            } else {
-                _self.changeBindingSimple(shortTimeWorkSet); 
-            }  
-        }
-        
-        /**
-         * UI - Detail: change Binding Detail mode
-         */
-        private changeBindingDetail(shortTimeWorkSet: WorkTimezoneShortTimeWorkSetModel): void {
-            let _self = this;          
-            
-            // Get model value into view model
-            _self.childCareWorkUse(shortTimeWorkSet.childCareWorkUse());
-            _self.nursingTimeWorkUse(shortTimeWorkSet.nursTimezoneWorkUse());
-            
-            // Update into model in case of data change
-            _self.childCareWorkUse.subscribe(newValue => shortTimeWorkSet.childCareWorkUse(newValue));
-            _self.nursingTimeWorkUse.subscribe(newValue => shortTimeWorkSet.nursTimezoneWorkUse(newValue));
-        }
-        
-        /**
-         * UI - Simple: change Binding Simple mode 
-         */
-        private changeBindingSimple(shortTimeWorkSet: WorkTimezoneShortTimeWorkSetModel): void {
-            let _self = this;
-            _self.changeBindingDetail(shortTimeWorkSet);  
-        }
+        private bindingData() {
+            let _self = this;            
+            _self.childCareWorkUse = _self.model.commonSetting.shortTimeWorkSet.childCareWorkUse;
+            _self.nursingTimeWorkUse = _self.model.commonSetting.shortTimeWorkSet.nursTimezoneWorkUse;
+        }         
     }
     
     /**
@@ -224,7 +128,6 @@ module a14 {
                 screenModel.startTab(screenMode);
             });
         }
-
     }
     ko.bindingHandlers['ntsKMK003A14'] = new KMK003A14BindingHandler();
 }

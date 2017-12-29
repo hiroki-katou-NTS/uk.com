@@ -7,14 +7,12 @@
 	<com:ValidatorScript>
 		nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime
    	</com:ValidatorScript>
-	
-	<!-- FIXED -->
-	<com:ko tag="if" bind="isFixedMode">
+
 	<div class="tab_15_setting_rows">
 		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_118')}</div>
 		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
 			<input tabindex="159" style="width: 60px;" data-bind="ntsTimeEditor: {
-					value: fixedDayShiftApplicationTime, 
+					value: dayShiftApplicationTime, 
 					inputFormat: 'time',
 					mode: 'time',
 					constraint:'OneDayTime' }" />
@@ -25,7 +23,7 @@
 		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_119')}</div>
 		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
 			<input tabindex="160" style="width: 60px;" data-bind="ntsTimeEditor: {
-					value: fixedNightShiftApplicationTime, 
+					value: nightShiftApplicationTime, 
 					inputFormat: 'time',
 					mode: 'time',
 					constraint:'OneDayTime' }" />
@@ -40,7 +38,7 @@
 					optionsValue: 'value',
 					optionsText: 'localizedName',
 					visibleItemsCount: 8,
-					value: fixedDayShiftSettingRoundingTime,
+					value: dayShiftSettingRoundingTime,
 					editable: false,
 					enable: true }"></div>
 		</div>				
@@ -49,7 +47,7 @@
 					options: listRoundingValue,
 					optionsValue: 'value',
 					optionsText: 'localizedName',
-					value: fixedDayShiftSettingRounding }"></div>
+					value: dayShiftSettingRounding }"></div>
 		</div>
 	</div>
 	
@@ -61,7 +59,7 @@
 					optionsValue: 'value',
 					optionsText: 'localizedName',
 					visibleItemsCount: 8,
-					value: fixedNightShiftSettingRoundingTime,
+					value: nightShiftSettingRoundingTime,
 					editable: false,
 					enable: true }"></div>
 		</div>				
@@ -70,216 +68,8 @@
 					options: listRoundingValue,
 					optionsValue: 'value',
 					optionsText: 'localizedName',
-					value: fixedNightShiftSettingRounding }"></div>
-		</div>
-	</div>
-	</com:ko>
-	
-	
-	
-	<!-- DIFF -->
-	<com:ko tag="if" bind="isDiffMode">
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_118')}</div>
-		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
-			<input tabindex="159" style="width: 60px;" data-bind="ntsTimeEditor: {
-					value: diffDayShiftApplicationTime, 
-					inputFormat: 'time',
-					mode: 'time',
-					constraint:'OneDayTime' }" />
-		</div>		
-	</div>
-	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_119')}</div>
-		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
-			<input tabindex="160" style="width: 60px;" data-bind="ntsTimeEditor: {
-					value: diffNightShiftApplicationTime, 
-					inputFormat: 'time',
-					mode: 'time',
-					constraint:'OneDayTime' }" />
-		</div>		
-	</div>
-	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
-		<div class="tab_15_inline_item" style="width: 100px;">
-			<div tabindex="161" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					visibleItemsCount: 8,
-					value: diffDayShiftSettingRoundingTime,
-					editable: false,
-					enable: true }"></div>
-		</div>				
-		<div class="tab_15_inline_item">
-			<div tabindex="162" class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: diffDayShiftSettingRounding }"></div>
+					value: nightShiftSettingRounding }"></div>
 		</div>
 	</div>
 	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
-		<div class="tab_15_inline_item" style="width: 100px;">
-			<div tabindex="163" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					visibleItemsCount: 8,
-					value: diffNightShiftSettingRoundingTime,
-					editable: false,
-					enable: true }"></div>
-		</div>				
-		<div class="tab_15_inline_item">
-			<div tabindex="164" class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: diffNightShiftSettingRounding }"></div>
-		</div>
-	</div>
-	</com:ko>
-	
-	
-	
-	<!-- FLOW -->
-	<com:ko tag="if" bind="isFlowMode">
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_118')}</div>
-		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
-			<input tabindex="159" style="width: 60px;" data-bind="ntsTimeEditor: {
-					value: flowDayShiftApplicationTime, 
-					inputFormat: 'time',
-					mode: 'time',
-					constraint:'OneDayTime' }" />
-		</div>		
-	</div>
-	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_119')}</div>
-		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
-			<input tabindex="160" style="width: 60px;" data-bind="ntsTimeEditor: {
-					value: flowNightShiftApplicationTime, 
-					inputFormat: 'time',
-					mode: 'time',
-					constraint:'OneDayTime' }" />
-		</div>		
-	</div>
-	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
-		<div class="tab_15_inline_item" style="width: 100px;">
-			<div tabindex="161" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					visibleItemsCount: 8,
-					value: flowDayShiftSettingRoundingTime,
-					editable: false,
-					enable: true }"></div>
-		</div>				
-		<div class="tab_15_inline_item">
-			<div tabindex="162" class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: flowDayShiftSettingRounding }"></div>
-		</div>
-	</div>
-	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
-		<div class="tab_15_inline_item" style="width: 100px;">
-			<div tabindex="163" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					visibleItemsCount: 8,
-					value: flowNightShiftSettingRoundingTime,
-					editable: false,
-					enable: true }"></div>
-		</div>				
-		<div class="tab_15_inline_item">
-			<div tabindex="164" class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: flowNightShiftSettingRounding }"></div>
-		</div>
-	</div>
-	</com:ko>
-	
-	
-	
-	<!-- FLEX -->
-	<com:ko tag="if" bind="isFlexMode">
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_118')}</div>
-		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
-			<input tabindex="159" style="width: 60px;" data-bind="ntsTimeEditor: {
-					value: flexDayShiftApplicationTime, 
-					inputFormat: 'time',
-					mode: 'time',
-					constraint:'OneDayTime' }" />
-		</div>		
-	</div>
-	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_119')}</div>
-		<div class="tab_15_inline_item" style="width: 100px; text-align: center;">
-			<input tabindex="160" style="width: 60px;" data-bind="ntsTimeEditor: {
-					value: flexNightShiftApplicationTime, 
-					inputFormat: 'time',
-					mode: 'time',
-					constraint:'OneDayTime' }" />
-		</div>		
-	</div>
-	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
-		<div class="tab_15_inline_item" style="width: 100px;">
-			<div tabindex="161" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					visibleItemsCount: 8,
-					value: flexDayShiftSettingRoundingTime,
-					editable: false,
-					enable: true }"></div>
-		</div>				
-		<div class="tab_15_inline_item">
-			<div tabindex="162" class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: flexDayShiftSettingRounding }"></div>
-		</div>
-	</div>
-	
-	<div class="tab_15_setting_rows">
-		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
-		<div class="tab_15_inline_item" style="width: 100px;">
-			<div tabindex="163" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					visibleItemsCount: 8,
-					value: flexNightShiftSettingRoundingTime,
-					editable: false,
-					enable: true }"></div>
-		</div>				
-		<div class="tab_15_inline_item">
-			<div tabindex="164" class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'localizedName',
-					value: flexNightShiftSettingRounding }"></div>
-		</div>
-	</div>
-	</com:ko>
-		
 </ui:composition>

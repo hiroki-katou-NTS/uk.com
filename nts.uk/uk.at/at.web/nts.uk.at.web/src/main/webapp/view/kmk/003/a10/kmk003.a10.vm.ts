@@ -17,8 +17,6 @@ module a10 {
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
-        workTimeDailyAtr: KnockoutObservable<number>;
-        workTimeMethodSet: KnockoutObservable<number>;
         
         // Screen data model
         model: MainSettingModel;
@@ -45,28 +43,16 @@ module a10 {
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
+            _self.bindingData();
             
-            // Init all data           
-            _self.bonusPaySettingCode = ko.observable(""); 
-            _self.bonusPaySettingName = ko.observable("");                                 
+            // Init all data            
+            _self.bonusPaySettingName = ko.observable(_self.bonusPaySettingCode());                                 
             
-            // Detail mode and simple mode is same
+             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                _self.changeWorkSettingMode();
-            });                                   
-            // Subscribe Work Setting Regular/Flex mode
-            _self.workTimeDailyAtr = ko.observable(0);
-            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                _self.workTimeDailyAtr(newValue);
-                _self.changeWorkSettingMode();
-            });  
-            // Subscribe Work Setting Fixed/Diff/Flow mode
-            _self.workTimeMethodSet = ko.observable(0); 
-            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                _self.workTimeMethodSet(newValue);
-                _self.changeWorkSettingMode();
-            });                          
+                // Nothing to do
+            });                                                            
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
@@ -79,96 +65,14 @@ module a10 {
         public startTab(screenMode: any): void {
             let _self = this;  
             screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
         }
         
         /**
-         * UI - All: change WorkSetting mode
+         * Binding data
          */
-        private changeWorkSettingMode(): void {
-            let _self = this;        
-
-            if (_self.workTimeDailyAtr() === WorkTimeDailyAtr.REGULAR_WORK) {
-                // Regular work
-                switch (_self.workTimeMethodSet()) {
-                    case WorkTimeMethodSet.FIXED_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.raisingSalarySet)) {
-                            _self.model.fixedWorkSetting.commonSetting.raisingSalarySet = _self.createBinding();                           
-                        }                        
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.raisingSalarySet);                                    
-                    } break;
-                    case WorkTimeMethodSet.DIFFTIME_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.diffWorkSetting.commonSet.raisingSalarySet)) {
-                            _self.model.diffWorkSetting.commonSet.raisingSalarySet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.diffWorkSetting.commonSet.raisingSalarySet);
-                    } break;
-                    case WorkTimeMethodSet.FLOW_WORK: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.flowWorkSetting.commonSetting.raisingSalarySet)) {
-                            _self.model.flowWorkSetting.commonSetting.raisingSalarySet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.flowWorkSetting.commonSetting.raisingSalarySet);
-                    } break;               
-                    default: {
-                        if (nts.uk.util.isNullOrUndefined(_self.model.fixedWorkSetting.commonSetting.raisingSalarySet)) {
-                            _self.model.fixedWorkSetting.commonSetting.raisingSalarySet = _self.createBinding();                           
-                        }
-                        _self.changeBinding(_self.model.fixedWorkSetting.commonSetting.raisingSalarySet);
-                    }
-                } 
-            } else {
-                // Flex work
-                if (nts.uk.util.isNullOrUndefined(_self.model.flexWorkSetting.commonSetting.raisingSalarySet)) {
-                    _self.model.flexWorkSetting.commonSetting.raisingSalarySet = _self.createBinding();                           
-                }
-                _self.changeBinding(_self.model.flexWorkSetting.commonSetting.raisingSalarySet); 
-            }               
-        }                   
-        
-        /**
-         * UI - All: create new Binding data
-         */
-        private createBinding(): KnockoutObservable<string> {
-            let _self = this;
-            
-            let result: KnockoutObservable<string> = ko.observable("");           
-            return result;
-        }
-        
-        /**
-         * UI - All: change Binding mode
-         */
-        private changeBinding(raisingSalarySet: KnockoutObservable<string>): void {
-            let _self = this;
-            if (_self.isDetailMode()) {
-                _self.changeBindingDetail(raisingSalarySet); 
-            } else {
-                _self.changeBindingSimple(raisingSalarySet); 
-            }  
-        }
-        
-        /**
-         * UI - Detail: change Binding Detail mode
-         */
-        private changeBindingDetail(raisingSalarySet: KnockoutObservable<string>): void {
-            let _self = this;           
-            
-            // Get model value into view model
-            _self.bonusPaySettingCode(raisingSalarySet());
-            
-            // Update into model in case of data change
-            _self.bonusPaySettingCode.subscribe(newValue => {
-                raisingSalarySet(newValue);
-            });
-        }
-        
-        /**
-         * UI - Simple: change Binding Simple mode 
-         */
-        private changeBindingSimple(raisingSalarySet: KnockoutObservable<string>): void {
-            let _self = this;
-            _self.changeBindingDetail(raisingSalarySet);
+        private bindingData() {
+            let _self = this;            
+            _self.bonusPaySettingCode = _self.model.commonSetting.raisingSalarySet;
         }             
         
         /**
@@ -228,7 +132,6 @@ module a10 {
                 screenModel.startTab(screenMode);
             });
         }
-
     }
     
     ko.bindingHandlers['ntsKMK003A10'] = new KMK003A10BindingHandler();
