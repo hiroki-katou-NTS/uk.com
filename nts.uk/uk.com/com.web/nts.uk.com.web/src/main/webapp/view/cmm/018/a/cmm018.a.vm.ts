@@ -502,7 +502,8 @@ module nts.uk.com.view.cmm018.a {
                     if(lstCompany != null || lstCompany !== undefined){
                         _.each(lstCompany.lstCompanyRoot, function(item){
                             lstRoot.push(new vmbase.DataRootCheck(item.company.approvalId, item.company.historyId,
-                                            item.company.applicationType, item.company.employmentRootAtr,item.company.branchId, item.lstAppPhase));
+                                            item.company.employmentRootAtr ==2 ? item.company.confirmationRootType : item.company.applicationType, 
+                                            item.company.employmentRootAtr,item.company.branchId, item.lstAppPhase));
                         }); 
                     }
                     self.cpA(self.convertlistRoot(lstRoot,false));
@@ -569,7 +570,8 @@ module nts.uk.com.view.cmm018.a {
                     if(lstWorkplace != undefined){
                        _.each(lstWorkplace.lstWorkplaceRoot, function(item){
                             lstRoot.push(new vmbase.DataRootCheck(item.workplace.approvalId, item.workplace.historyId,
-                                            item.workplace.applicationType, item.workplace.employmentRootAtr,item.workplace.branchId, item.lstAppPhase));
+                                            item.workplace.employmentRootAtr == 2 ? item.workplace.confirmationRootType : item.workplace.applicationType, 
+                                            item.workplace.employmentRootAtr,item.workplace.branchId, item.lstAppPhase));
                         }); 
                     }
                     self.cpA(self.convertlistRoot(lstRoot,false));
@@ -629,7 +631,8 @@ module nts.uk.com.view.cmm018.a {
                     if(lstPerson != undefined){
                         _.each(lstPerson.lstPersonRoot, function(item){
                         lstRoot.push(new vmbase.DataRootCheck(item.person.approvalId, item.person.historyId,
-                                        item.person.applicationType, item.person.employmentRootAtr,item.person.branchId, item.lstAppPhase));
+                                        item.person.employmentRootAtr == 2 ? item.person.confirmationRootType : item.person.applicationType, 
+                                        item.person.employmentRootAtr,item.person.branchId, item.lstAppPhase));
                         });
                     }
                     self.cpA.valueHasMutated();
@@ -2282,7 +2285,7 @@ module nts.uk.com.view.cmm018.a {
                             let appType = data.lstAppType[0].value;
                             let employRootAtr = data.lstAppType[0].employRootAtr;
                             let app = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appType,appType == null ? 0 : 1);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appType,employRootAtr);
                             data2.push(add);
                             self.dataDisplay(self.convert(data2));
                             let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
@@ -2324,7 +2327,7 @@ module nts.uk.com.view.cmm018.a {
                             let appType = data.lstAppType[0].value;
                             let employRootAtr = data.lstAppType[0].employRootAtr;
                             let app = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appType,appType == null ? 0 : 1);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appType,employRootAtr);
                             data2.push(add);
                             self.dataDisplay(self.convert(data2));
                             let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
@@ -2365,7 +2368,7 @@ module nts.uk.com.view.cmm018.a {
                             let appType = data.lstAppType[0].value;
                             let employRootAtr = data.lstAppType[0].employRootAtr;
                             let app = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appType,appType == null ? 0 : 1);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,self.ENDDATE_LATEST,appType,employRootAtr);
                             data2.push(add);
                             self.dataDisplay(self.convert(data2));
                             let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
