@@ -6,6 +6,7 @@ module a7 {
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
+    import FlowRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestSettingModel;
     class ScreenModel {
 
         tabMode: KnockoutObservable<TabMode>;
@@ -28,10 +29,11 @@ module a7 {
 
         isFixedRestTime: KnockoutObservable<boolean>;
         isFlexOrFlowNotUse: KnockoutObservable<boolean>;
+        isCheckFollowTime: KnockoutObservable<boolean>;
         /**
         * Constructor.
         */
-        constructor(tabMode: any, enumSetting: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isLoading :KnockoutObservable<any>) {
+        constructor(tabMode: any, enumSetting: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isLoading: KnockoutObservable<any>) {
             let self = this;
 
             self.tabMode = tabMode;
@@ -80,14 +82,11 @@ module a7 {
 
             /////////////
             self.dataSourceForFlowOrFlexNotUse2 = ko.observableArray([]);
-            self.dataSourceForFlowOrFlexNotUse2.subscribe((newList) => {
-                console.log(newList);
-            });
             self.fixTableOptionForFlowOrFlexNotUse2 = {
                 maxRow: 7,
                 minRow: 0,
                 maxRowDisplay: 5,
-                isShowButton: true,
+                isShowButton: false,
                 dataSource: self.dataSourceForFlowOrFlexNotUse2,
                 isMultipleSelect: true,
                 columns: self.columnSetting2(),
@@ -119,6 +118,8 @@ module a7 {
                     self.updateDataModel();
                 }
             });
+            
+            self.isCheckFollowTime = ko.observable(true);
         }
 
         private loadDataToScreen() {
@@ -132,61 +133,77 @@ module a7 {
             //TODO not care difftime or flow
 
         }
+
         private setDataFlexOrFlowToModel() {
             let self = this;
-            //休憩時間を固定にする=true
-            if (self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime) {
+            self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
+                let listDeductionTimeModel: DeductionTimeModel[] = [];
+                for (let item of newDataSource) {
+                    let deduct = new DeductionTimeModel();
+                    deduct.start(item.column1().startTime);
+                    deduct.end(item.column1().endTime);
+                    listDeductionTimeModel.push(deduct);
+                }
+                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(listDeductionTimeModel);
+            });
 
-                self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
-//                    alert();
-//                    console.log(newDataSource);
-                    let listDeductionTimeModel: DeductionTimeModel[] = [];
-                    for(let item of newDataSource)
-                    {
-                        let deduct = new DeductionTimeModel();
-                        deduct.start(item.column1().startTime);
-                        deduct.end(item.column1().endTime);
-                        listDeductionTimeModel.push(deduct);
-                    }
-                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(listDeductionTimeModel);
-                });
+            self.dataSourceForFlowOrFlexNotUse1.subscribe((newData: any) => {
+                let listFlowRestSettingModel: FlowRestSettingModel[] = [];
+                for (let item of newData) {
+                    let rest = new FlowRestSettingModel();
+                    rest.flowRestTime(item.column2());
+                    rest.flowPassageTime(item.column1());
+                    listFlowRestSettingModel.push(rest);
+                }
+                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(listFlowRestSettingModel);
+            });
 
-                //                    = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones;
-//                self.dataSourceForFlowOrFlexUse.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(v));
-            }
-            else {//休憩時間を固定にする=false
-
-                self.dataSourceForFlowOrFlexNotUse1 = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets;
-                self.dataSourceForFlowOrFlexNotUse1.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(v));
-
-                //                self.dataSourceForFlowOrFlexNotUse2 = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
-                //                self.dataSourceForFlowOrFlexNotUse2.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowResteAfterRestSet(v));
-
-            }
+            self.dataSourceForFlowOrFlexNotUse2.subscribe((newData: any) => {
+                let rest = new FlowRestSettingModel();
+                rest.flowRestTime(newData[0].column2());
+                rest.flowPassageTime(newData[0].column1());
+                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet = rest;
+            });
         }
-        
-        private updateDataModel()
-        {
+
+        private updateDataModel() {
             let self = this;
-            if(self.mainSettingModel.workTimeSetting.isFlex())
-            {
+            if (self.mainSettingModel.workTimeSetting.isFlex()) {
                 let data: any = [];
-                
+                let data1: any = [];
+                let data2: any = [];
+
                 for (let item of self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones()) {
                     data.push({
                         column1: ko.observable({ startTime: item.start(), endTime: item.end() })
                     });
-                    }
+                }
                 self.dataSourceForFlowOrFlexUse(data);
+
+                for (let item of self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets()) {
+                    data1.push({
+                        column1: ko.observable(item.flowPassageTime()),
+                        column2: ko.observable(item.flowRestTime())
+                    });
+                }
+                self.dataSourceForFlowOrFlexNotUse1(data1);
+
+                let item = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
+                data2.push({
+                    column1: ko.observable(item.flowPassageTime()),
+                    column2: ko.observable(item.flowRestTime())
+                });
+                self.dataSourceForFlowOrFlexNotUse2(data2);
             }
         }
-        
+
         private columnSetting(): Array<any> {
             let self = this;
             return [
                 {
-                    headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`}
+                    headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
+                    width: 243, template: '<div data-bind="ntsTimeRangeEditor: {required: true, enable: true, inputFormat: \'time\'}"/>'
+                }
             ];
         }
 
@@ -194,15 +211,19 @@ module a7 {
             let self = this;
             return [
                 {
-                    headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`},
+                    headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable("12:00"), width: 107,
+                    template: '<input data-bind="ntsTimeEditor: {inputFormat: \'time\',enable: false}" />',
+                    cssClassName: 'column-time-editor'
+                },
                 {
-                    headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`}
+                    headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable("12:00"), width: 107,
+                    template: '<input data-bind="ntsTimeEditor: {inputFormat: \'time\',enable: false}" />',
+                    cssClassName: 'column-time-editor'
+                }
             ];
         }
     }
-    
+
     export enum UseDivision {
         NOTUSE,
         USE
@@ -233,8 +254,8 @@ module a7 {
             let enumSetting = input.enum;
             let mainSettingModel = input.mainSettingModel;
             let isLoading = input.isLoading;
-            
-            var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel,isLoading);
+
+            var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel, isLoading);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
@@ -242,5 +263,5 @@ module a7 {
         }
 
     }
-     ko.bindingHandlers['ntsKMK003A7'] = new KMK003A7BindingHandler();
+    ko.bindingHandlers['ntsKMK003A7'] = new KMK003A7BindingHandler();
 }
