@@ -49,8 +49,7 @@ public class RoleWorkplaceIDFinder {
 	 */
 	public WorkplaceIdDto findListWokplaceId(Integer systemType) {
 
-
-		String roleId = this.findRoleId(systemType);
+		String roleId = this.findRoleIdBySystemType(systemType);
 
 		Optional<Role> opRole = roleRepository.findByRoleId(roleId);
 		GeneralDate referenceDate = GeneralDate.today();
@@ -128,7 +127,7 @@ public class RoleWorkplaceIDFinder {
 	 * @param systemType the system type
 	 * @return the string
 	 */
-	public String findRoleId(Integer systemType) {
+	public String findRoleIdBySystemType(Integer systemType) {
 		LoginUserRoles loginUserRoles = AppContexts.user().roles();
 
 		// Mock data

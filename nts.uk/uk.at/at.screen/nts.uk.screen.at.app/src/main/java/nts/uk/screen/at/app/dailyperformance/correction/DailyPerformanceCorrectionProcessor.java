@@ -436,6 +436,7 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 
 		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+		dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
 		//dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
 		screenDto.setComment(dailyPerformanceDto != null && dailyPerformanceDto.getComment() != null
 				? dailyPerformanceDto.getComment() : null);
@@ -522,7 +523,7 @@ public class DailyPerformanceCorrectionProcessor {
 					//int a = 1;
 					int attendanceAtr = mapDP.get(item.getId()).getAttendanceAtr();
 					String key = item.getId()+"|"+data.getEmployeeId()+"|"+data.getDate();
-					String value = itemValueMap.get(key) == null ? "" : itemValueMap.get(key).value().toString();
+					String value = (itemValueMap.containsKey(key) && itemValueMap.get(key).value() != null) ? itemValueMap.get(key).value().toString() : "";
 					if (attendanceAtr == DailyAttendanceAtr.Code.value
 							|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
 						if(attendanceAtr == DailyAttendanceAtr.Code.value){
