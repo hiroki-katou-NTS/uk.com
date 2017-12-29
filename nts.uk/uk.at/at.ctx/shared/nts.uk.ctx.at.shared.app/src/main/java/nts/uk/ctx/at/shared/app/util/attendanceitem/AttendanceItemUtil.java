@@ -211,18 +211,12 @@ public class AttendanceItemUtil {
 		if (attendanceItems.size() > 1) {
 			throw new RuntimeException("Layout Code is not correct");
 		}
-		List<Integer> itemIds = getItemIds(field, pathName, extraCondition, needCheckWithIdx, idx);
+		List<Integer> itemIds = getItemIds(getItemValueAnnotation(field), pathName, extraCondition, needCheckWithIdx, idx);
 		if (!itemIds.isEmpty()) {
 			return attendanceItems.stream().filter(ivl -> itemIds.contains(ivl.getItemId())).findFirst()
 					.orElseThrow(() -> new RuntimeException("Item Id is not consistent")).value();
 		}
 		return null;
-	}
-
-	private static List<Integer> getItemIds(Field field, String pathName, String extraCondition,
-			boolean needCheckWithIdx, int idx) {
-		AttendanceItemValue itemValueAnno = getItemValueAnnotation(field);
-		return getItemIds(itemValueAnno, pathName, extraCondition, needCheckWithIdx, idx);
 	}
 
 	private static List<Integer> getItemIds(AttendanceItemValue itemValueAnno, String pathName, String extraCondition,
