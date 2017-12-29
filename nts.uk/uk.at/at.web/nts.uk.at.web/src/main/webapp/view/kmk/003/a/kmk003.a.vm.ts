@@ -510,7 +510,8 @@ module nts.uk.at.view.kmk003.a {
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommannd(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.alertError(err));
+                        .fail(err => nts.uk.ui.dialog.alertError(err))
+                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
                 if (self.workTimeSetting.isFixed()) {
                     service.saveFixedWorkSetting(self.toFixedCommand(addMode, tabMode))
