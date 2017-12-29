@@ -4,44 +4,78 @@ module nts.uk.at.view.kmf002.b {
          * define path to service
          */
         var path: any = {
-                findList: "screen/com/systemresource/findList",
-                save: "screen/com/systemresource/save",
+                save: "bs/employee/holidaysetting/workplace/save",
+                find: "bs/employee/holidaysetting/workplace/findWorkplaceMonthDaySetting",
+                remove: "bs/employee/holidaysetting/workplace/remove"
             };
         
-        /**
-         * 
-         */
-        export function findListSystemResource(): JQueryPromise<Array<model.SystemResourceDto>>{
-            return nts.uk.request.ajax(path.findList);
+         export function save(year: number, data: any, workplaceId: string): JQueryPromise<any> {
+            model.WorkplaceMonthDaySetting workplaceMonthDaySetting = new model.WorkplaceMonthDaySetting(year, workplaceId, new Array<model.PublicHolidayMonthSettingDto>);
+            workplaceMonthDaySetting.toDto(data);
+            let command = {};
+            command.year = year;
+            command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettings;
+            command.workplaceId = workplaceId;
+            return nts.uk.request.ajax("com", path.save, command);
         }
         
-        /**
-         * 
-         */
-        export function saveSysResourceSetting(data: model.SystemResourceSaveCommand): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.save, data);
+        export function find(year: number, workplaceId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", path.find + "/" + year + "/" + workplaceId);
         }
+        
+        export function remove(year: number, workplaceId: string): JQueryPromise<any> {
+            let command = {};
+            command.year = year;
+            command.workplaceId = workplaceId;
+            return nts.uk.request.ajax("com", path.remove, command);
+        }
+        
     }
     
     /**
      * Model define.
      */
     export module model {
-        export class SystemResourceDto {
-            resourceId: string;
-            resourceContent: string;
+        export class WorkplaceMonthDaySetting {
+            year: number;
+            publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>;
+            workplaceId: string;
             
-            constructor(id: string, content: string){
-                this.resourceId = id;
-                this.resourceContent = content;
+            constructor(year: number, workplaceId: string, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
+                let _self = this;
+                _self.year = year;
+                _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
+                _self.workplaceId = workplaceId;
+            }
+            
+            toDto(data: any): void {
+                let _self = this;
+                _.forEach(data, function(newValue) {
+                    _self.publicHolidayMonthSettingDto.push(new PublicHolidayMonthSettingDto(_self.year, newValue.month(), newValue.day()));
+                });
             }
         }
         
-        export class SystemResourceSaveCommand {
-            listData: Array<model.SystemResourceDto>;
-
-            constructor(data: Array<model.SystemResourceDto>){
-               this.listData = data;
+        export class WorkplaceMonthDaySettingRemoveCommand {
+            year: number;
+            workplaceId: string;
+            
+            constructor(year: number, workplaceId: string){
+                let _self = this;
+                _self.year = year;
+                _self.workplaceId = empCd;
+            }
+        }
+        
+        export class PublicHolidayMonthSettingDto{
+            publicHdManagementYear: number;
+            month: number;
+            inLegalHoliday: number;
+            
+            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
+                this.publicHdManagementYear = publicHdManagementYear;
+                this.month = month;
+                this.inLegalHoliday = inLegalHoliday;
             }
         }
     }

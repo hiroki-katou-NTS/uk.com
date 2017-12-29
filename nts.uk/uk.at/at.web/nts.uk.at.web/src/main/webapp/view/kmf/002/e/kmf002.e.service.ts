@@ -56,7 +56,7 @@ module nts.uk.at.view.kmf002.e {
             toDto(data: any): void {
                 let _self = this;
                 _.forEach(data, function(newValue) {
-                    _self.publicHolidayMonthSettings.push(new PublicHolidayMonthSettingDto(_self.year,newValue.month(),newValue.day(),newValue.day()));
+                    _self.publicHolidayMonthSettings.push(new PublicHolidayMonthSettingDto(_self.year,newValue.month(),newValue.day()));
                 });
             }
         }
@@ -73,13 +73,11 @@ module nts.uk.at.view.kmf002.e {
             publicHdManagementYear: number;
             month: number;
             inLegalHoliday: number;
-            outLegalHoliday: number;
             
-            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number, outLegalHoliday: number) {
+            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
                 this.publicHdManagementYear = publicHdManagementYear;
                 this.month = month;
                 this.inLegalHoliday = inLegalHoliday;
-                this.outLegalHoliday = outLegalHoliday;
             }
         }
     }

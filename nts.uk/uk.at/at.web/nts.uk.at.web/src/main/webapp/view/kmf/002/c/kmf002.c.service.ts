@@ -4,22 +4,34 @@ module nts.uk.at.view.kmf002.c {
          * define path to service
          */
         var path: any = {
-                findList: "screen/com/systemresource/findList",
-                save: "screen/com/systemresource/save",
+                save: "bs/employee/holidaysetting/employee/save",
+                find: "bs/employee/holidaysetting/employee/findEmployeeMonthDaySetting",
+                remove: "bs/employee/holidaysetting/employee/"
             };
         
         /**
          * 
          */
-        export function findListSystemResource(): JQueryPromise<Array<model.SystemResourceDto>>{
-            return nts.uk.request.ajax(path.findList);
+        export function save(year: number, data: any, sId: string): JQueryPromise<any> {
+            model.EmployeeMonthDaySetting employeeMonthDaySetting = new model.EmployeeMonthDaySetting(year, sId, new Array<model.PublicHolidayMonthSettingDto>);
+            employeeMonthDaySetting.toDto(data);
+            let command = {};
+            command.year = year;
+            command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettings;
+            command.sId = sId;
+            return nts.uk.request.ajax("com", path.save, command);
         }
         
-        /**
-         * 
-         */
-        export function saveSysResourceSetting(data: model.SystemResourceSaveCommand): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.save, data);
+        export function find(year: number, employeeId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", path.find + "/" + year + "/" + employeeId);
+        }
+        
+        export function remove(year: number, sId: string): JQueryPromise<any> {
+            model.EmployeeMonthDaySettingRemoveCommand employeeMonthDaySettingRemoveCommand = new model.EmployeeMonthDaySettingRemoveCommand(year, sId);
+            let command = {};
+            command.year = year;
+            command.sId = sId;
+            return nts.uk.request.ajax("com", path.remove, command);
         }
     }
     
@@ -27,21 +39,46 @@ module nts.uk.at.view.kmf002.c {
      * Model define.
      */
     export module model {
-        export class SystemResourceDto {
-            resourceId: string;
-            resourceContent: string;
+        export class EmployeeMonthDaySetting {
+            year: number;
+            publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>;
+            sId: string;
             
-            constructor(id: string, content: string){
-                this.resourceId = id;
-                this.resourceContent = content;
+            constructor(year: number, sId: string, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
+                let _self = this;
+                _self.year = year;
+                _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
+                _self.sId = sId;
+            }
+            
+            toDto(data: any): void {
+                let _self = this;
+                _.forEach(data, function(newValue) {
+                    _self.publicHolidayMonthSettingDto.push(new PublicHolidayMonthSettingDto(_self.year, newValue.month(), newValue.day()));
+                });
             }
         }
         
-        export class SystemResourceSaveCommand {
-            listData: Array<model.SystemResourceDto>;
-
-            constructor(data: Array<model.SystemResourceDto>){
-               this.listData = data;
+        export class EmployeeMonthDaySettingRemoveCommand {
+            year: number;
+            sId: number;
+            
+            constructor(year: number, sId: number){
+                let _self = this;
+                _self.year = year;
+                _self.sId = sId;
+            }
+        }
+        
+        export class PublicHolidayMonthSettingDto{
+            publicHdManagementYear: number;
+            month: number;
+            inLegalHoliday: number;
+            
+            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
+                this.publicHdManagementYear = publicHdManagementYear;
+                this.month = month;
+                this.inLegalHoliday = inLegalHoliday;
             }
         }
     }
