@@ -488,7 +488,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						Optional.ofNullable(entity.krcmtErAlCondition.lstWhActual).orElse(Collections.emptyList())
 								.stream().map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode)
 								.collect(Collectors.toList()));
-				condition.chooseWorkTypeOperator(entity.krcmtErAlCondition.whPlanActualOperator.intValue());
+				condition.chooseWorkTimeOperator(entity.krcmtErAlCondition.whPlanActualOperator.intValue());
 			} else {
 				condition.setWorkTimeSingle(entity.krcmtErAlCondition.whPlanFilterAtr.intValue() == 1,
 						Optional.ofNullable(entity.krcmtErAlCondition.lstWhPlan).orElse(Collections.emptyList())
