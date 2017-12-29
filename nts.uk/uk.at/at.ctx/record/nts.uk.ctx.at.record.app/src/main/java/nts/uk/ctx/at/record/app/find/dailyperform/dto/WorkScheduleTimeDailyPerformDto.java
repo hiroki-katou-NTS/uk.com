@@ -18,6 +18,7 @@ public class WorkScheduleTimeDailyPerformDto {
 
 	/** 勤務予定時間: 勤務予定時間 */
 	// TODO: confirm item ID and type for 勤務予定時間
+//	@AttendanceItemLayout(layout = "C", jpPropertyName = "実績所定労働時間")
 	private WorkScheduleTimeDto workSchedule;
 	// @AttendanceItemLayout(layout = "A", jpPropertyName = "勤務予定時間")
 	// @AttendanceItemValue(itemId = 529, type = ValueType.INTEGER)
@@ -34,20 +35,26 @@ public class WorkScheduleTimeDailyPerformDto {
 	private Integer schedulePrescribedLaborTime;
 
 	public static WorkScheduleTimeDailyPerformDto fromWorkScheduleTime(WorkScheduleTimeOfDaily domain) {
-		return domain == null ? null
-				: new WorkScheduleTimeDailyPerformDto(
-						new WorkScheduleTimeDto(domain.getWorkScheduleTime().getTotal().valueAsMinutes(),
-								domain.getWorkScheduleTime().getExcessOfStatutoryTime().valueAsMinutes(),
-								domain.getWorkScheduleTime().getWithinStatutoryTime().valueAsMinutes()),
-						domain.getRecordPrescribedLaborTime().valueAsMinutes(),
-						domain.getSchedulePrescribedLaborTime().valueAsMinutes());
+		return domain == null ? null : new WorkScheduleTimeDailyPerformDto(
+						getWorkSchedule(domain.getWorkScheduleTime()),
+						domain.getRecordPrescribedLaborTime() == null ? null : domain.getRecordPrescribedLaborTime().valueAsMinutes(),
+						domain.getSchedulePrescribedLaborTime() == null ? null : domain.getSchedulePrescribedLaborTime().valueAsMinutes());
+	}
+
+	private static WorkScheduleTimeDto getWorkSchedule(WorkScheduleTime domain) {
+		return domain == null ? null : new WorkScheduleTimeDto(
+							domain.getTotal() == null ? null : domain.getTotal().valueAsMinutes(),
+							domain.getExcessOfStatutoryTime() == null ? null : domain.getExcessOfStatutoryTime().valueAsMinutes(),
+							domain.getWithinStatutoryTime() == null ? null : domain.getWithinStatutoryTime().valueAsMinutes());
 	}
 
 	public WorkScheduleTimeOfDaily toDomain() {
 		return new WorkScheduleTimeOfDaily(
-				new WorkScheduleTime(new AttendanceTime(workSchedule.getTotal()),
-						new AttendanceTime(workSchedule.getExcessOfStatutoryTime()),
-						new AttendanceTime(workSchedule.getWithinStatutoryTime())),
-				new AttendanceTime(schedulePrescribedLaborTime), new AttendanceTime(recordPrescribedLaborTime));
+				workSchedule == null ? null : new WorkScheduleTime(
+						workSchedule.getTotal() == null ? null : new AttendanceTime(workSchedule.getTotal()),
+						workSchedule.getExcessOfStatutoryTime() == null ? null : new AttendanceTime(workSchedule.getExcessOfStatutoryTime()),
+						workSchedule.getWithinStatutoryTime() == null ? null : new AttendanceTime(workSchedule.getWithinStatutoryTime())),
+				schedulePrescribedLaborTime == null ? null : new AttendanceTime(schedulePrescribedLaborTime), 
+				recordPrescribedLaborTime == null ? null : new AttendanceTime(recordPrescribedLaborTime));
 	}
 }
