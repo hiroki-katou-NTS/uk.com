@@ -707,9 +707,23 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             self.useCls02.subscribe(function(value) {
                 if(value == true){
-                    self.conditionValue02Enable(true);
-                    self.btnSetting02Enable(true);
-                    self.setConditionValues(Number(self.conditionValue01()), 2);
+                    if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue01()) > 100 || Number(self.conditionValue01()) < 0 || self.conditionValue01() == "")) {
+                        self.conditionValue02Enable(false);
+                        self.btnSetting02Enable(false);
+                        self.limitedValue02("");
+                        self.conditionValue02("");
+                        self.useCls02(false);
+                    } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue01()) > 366 || Number(self.conditionValue01()) < 0 || self.conditionValue01() == "")) {
+                        self.conditionValue02Enable(false);
+                        self.btnSetting02Enable(false);
+                        self.limitedValue02("");
+                        self.conditionValue02("");
+                        self.useCls02(false);
+                    } else {
+                        self.conditionValue02Enable(true);
+                        self.btnSetting02Enable(true);
+                        self.setConditionValues(Number(self.conditionValue01()), 2);
+                    }                    
                 } else {
                     self.conditionValue02Enable(false);
                     self.btnSetting02Enable(false);
@@ -720,9 +734,25 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             self.useCls03.subscribe(function(value) {
                 if(value == true){
-                    self.conditionValue03Enable(true);
-                    self.btnSetting03Enable(true);
-                    self.setConditionValues(Number(self.conditionValue02()), 3);
+                    if(self.A7_4SelectedRuleCode() == 0 && 
+                            (Number(self.conditionValue02()) > 100 || Number(self.conditionValue02()) < 0 || self.conditionValue02() == "" || self.conditionValue02() == undefined)) {
+                        self.conditionValue03Enable(false);
+                        self.btnSetting03Enable(false);
+                        self.limitedValue03("");
+                        self.conditionValue03("");
+                        self.useCls03(false);
+                    } else if(self.A7_4SelectedRuleCode() == 1 && 
+                            (Number(self.conditionValue02()) > 366 || Number(self.conditionValue02()) < 0 || self.conditionValue02() == "" || self.conditionValue02() == undefined)) {
+                        self.conditionValue03Enable(false);
+                        self.btnSetting03Enable(false);
+                        self.limitedValue03("");
+                        self.conditionValue03("");
+                        self.useCls03(false);
+                    } else {
+                        self.conditionValue03Enable(true);
+                        self.btnSetting03Enable(true);
+                        self.setConditionValues(Number(self.conditionValue02()), 3);
+                    }                     
                 } else {
                     self.conditionValue03Enable(false);
                     self.btnSetting03Enable(false);
@@ -733,9 +763,25 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             self.useCls04.subscribe(function(value) {
                 if(value == true){
-                    self.conditionValue04Enable(true);
-                    self.btnSetting04Enable(true);
-                    self.setConditionValues(Number(self.conditionValue03()), 4);
+                    if(self.A7_4SelectedRuleCode() == 0 && 
+                            (Number(self.conditionValue03()) > 100 || Number(self.conditionValue03()) < 0 || self.conditionValue03() == "" || self.conditionValue03() == undefined)) {
+                        self.conditionValue04Enable(false);
+                        self.btnSetting04Enable(false);
+                        self.limitedValue04("");
+                        self.conditionValue04("");
+                        self.useCls04(false);
+                    } else if(self.A7_4SelectedRuleCode() == 1 && 
+                            (Number(self.conditionValue03()) > 366 || Number(self.conditionValue03()) < 0 || self.conditionValue03() == "" || self.conditionValue03() == undefined)) {
+                        self.conditionValue04Enable(false);
+                        self.btnSetting04Enable(false);
+                        self.limitedValue04("");
+                        self.conditionValue04("");
+                        self.useCls04(false);
+                    } else {
+                        self.conditionValue04Enable(true);
+                        self.btnSetting04Enable(true);
+                        self.setConditionValues(Number(self.conditionValue03()), 4);
+                    }                    
                 } else {
                     self.conditionValue04Enable(false);
                     self.btnSetting04Enable(false);
@@ -746,9 +792,25 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             self.useCls05.subscribe(function(value) {
                 if(value == true){
-                    self.conditionValue05Enable(true);
-                    self.btnSetting05Enable(true);
-                    self.setConditionValues(Number(self.conditionValue04()), 5);
+                    if(self.A7_4SelectedRuleCode() == 0 && 
+                            (Number(self.conditionValue04()) > 100 || Number(self.conditionValue04()) < 0 || self.conditionValue04() == "" || self.conditionValue04() == undefined)) {
+                        self.conditionValue05Enable(false);
+                        self.btnSetting05Enable(false);
+                        self.limitedValue05("");
+                        self.conditionValue05("");
+                        self.useCls05(false);
+                    } else if(self.A7_4SelectedRuleCode() == 1 && 
+                            (Number(self.conditionValue04()) > 366 || Number(self.conditionValue04()) < 0 || self.conditionValue04() == "" || self.conditionValue04() == undefined)) {
+                        self.conditionValue05Enable(false);
+                        self.btnSetting05Enable(false);
+                        self.limitedValue05("");
+                        self.conditionValue05("");
+                        self.useCls05(false);
+                    } else {
+                        self.conditionValue05Enable(true);
+                        self.btnSetting05Enable(true);
+                        self.setConditionValues(Number(self.conditionValue04()), 5);
+                    }                    
                 } else {
                     self.conditionValue05Enable(false);
                     self.btnSetting05Enable(false);

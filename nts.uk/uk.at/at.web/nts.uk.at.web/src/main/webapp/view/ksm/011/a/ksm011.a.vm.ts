@@ -500,8 +500,8 @@ module nts.uk.at.view.ksm011 {
              * Open E dialog to set condition list.
              */
             openEDialog() {
-                nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml").onClosed(() => {
-                    alert("OK");
+                nts.uk.ui.windows.sub.modal("/view/ksm/011/e/index.xhtml").onClosed(() => {
+                    
                 });
             }
         }
