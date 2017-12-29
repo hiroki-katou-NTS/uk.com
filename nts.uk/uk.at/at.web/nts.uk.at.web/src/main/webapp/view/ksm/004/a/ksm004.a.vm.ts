@@ -171,7 +171,7 @@ module nts.uk.at.view.ksm004.a {
                         if(!nts.uk.util.isNullOrUndefined(self.currentCalendarWorkPlace().key())){
                             self.currentCalendarWorkPlace().name(_.first($('#tree-grid')['getDataList']()).name);   
                         }
-                        if(!nts.uk.util.isNullOrUndefined(self.currentCalendarClass().key())){
+                        if(!nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())){
                             self.currentCalendarClass().name(_.first($('#classification-list-setting')['getDataList']()).name);
                         }
                         // get new Data when treegrid Work Place key change
