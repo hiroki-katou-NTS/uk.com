@@ -46,6 +46,12 @@
 	width: 210px !important;
 }
 
+#datey {
+	border: 0px solid #999999 !important;
+	width: 210px !important;
+	padding-left: 2px;
+}
+
 #timeItem {
 	width: 210px !important;
 }
@@ -209,7 +215,6 @@ table tr td, table tr th {
 	margin-left: 16px;
 	min-width: 210px !important;
 	max-width: 210px !important;
-	
 }
 
 .contents-header td {
@@ -286,7 +291,7 @@ span.caret-background.caret-right.direction-right {
 
 .table-container {
 	color: #000;
-	position: relative;
+/* 	position: relative; */
 	border: 1px solid #ccc;
 }
 
@@ -338,7 +343,8 @@ tbody tr:first-child td {
 
 label[for] {
 	line-height: 20px !important;
-	right: 48px !important;
+	right: -3px !important;
+	margin-top: 1.5px;
 }
 
 #date1 {
@@ -354,4 +360,17 @@ label[for] {
 
 #A3_15 {
 	margin-left: 5px !important;
+}
+
+.ui-dialog ui-corner-all ui-widget ui-widget-content ui-front no-close ui-dialog-buttons ui-draggable ui-resizable{
+	top: 578.5px !important;
+}
+
+/* div[role]{
+	top: 578.5px !important;
+} */
+
+
+.caret-background caret-right direction-right{
+	margin-top: 95px !important;
 }
