@@ -3,7 +3,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
     import ccg = nts.uk.com.view.ccg025.a;
     import model = nts.uk.com.view.ccg025.a.component.model;
@@ -64,7 +63,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 service.getPersonRoleAuth(newRoleId).done((result: IPersonRole) => {
 
-                    newPersonRole.loadRoleCategoriesList(newPersonRole.roleId).done(() => {
+                    newPersonRole.loadRoleCategoriesList(newRoleId).done(() => {
 
                         newPersonRole.setRoleAuth(result);
 
