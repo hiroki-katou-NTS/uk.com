@@ -972,7 +972,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         /** (社員コードと同じ):5 */
         SAMEASEMPLOYEECODE = '社員コードと同じ',
         /** (システム日付):6 */
-        SAMEASBIRTHDATE = 'システム日付',
+        SAMEASBIRTHDATE = 'システム日付と同じ',
         /** (氏名と同じ ):7 */
         SAMEASNAME = '氏名と同じ ',
         /** (氏名（カナ）と同じ):8 */
