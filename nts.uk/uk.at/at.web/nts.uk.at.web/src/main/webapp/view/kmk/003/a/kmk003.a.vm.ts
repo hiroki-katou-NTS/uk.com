@@ -592,6 +592,7 @@ module nts.uk.at.view.kmk003.a {
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();
                 this.flexWorkSetting.resetData();
+                this.commonSetting.resetData();
                 //TODO update diff viewmodel
             }
         }

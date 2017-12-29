@@ -4,17 +4,18 @@ module a7 {
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
+    import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     class ScreenModel {
 
         tabMode: KnockoutObservable<TabMode>;
 
-        mainSettingModel: KnockoutObservable<MainSettingModel>;
+        mainSettingModel: MainSettingModel;
         fixTableOptionForFixedOrDiffTime: any;
         fixTableOptionForFlowOrFlexUse: any;
         fixTableOptionForFlowOrFlexNotUse1: any;
         fixTableOptionForFlowOrFlexNotUse2: any;
 
-        dataSourceForFixedOrDiffTime: KnockoutObservableArray<any>;
+        dataSourceForFixedOrDiffTime: KnockoutObservableArray<TimeRangeModel>;
         dataSourceForFlowOrFlexUse: KnockoutObservableArray<any>;
         dataSourceForFlowOrFlexNotUse1: KnockoutObservableArray<any>;
         dataSourceForFlowOrFlexNotUse2: KnockoutObservableArray<any>;
@@ -35,13 +36,10 @@ module a7 {
             self.tabMode = tabMode;
 
             //main model
-            self.mainSettingModel = ko.observable(mainSettingModel);
+            self.mainSettingModel = mainSettingModel;
+            self.loadDataToScreen();
 
             /////////////
-            self.dataSourceForFixedOrDiffTime = ko.observableArray([]);
-            self.dataSourceForFixedOrDiffTime.subscribe((newList) => {
-                console.log(newList);
-            });
             self.fixTableOptionForFixedOrDiffTime = {
                 maxRow: 10,
                 minRow: 0,
@@ -104,7 +102,7 @@ module a7 {
             //subscrible worktime ssettingmethod
             self.isFlowOrFlex = ko.computed(function() {
 
-                return (mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() == EnumWorkForm.FLEX) || (mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet() == SettingMethod.FLOW);
+                return mainSettingModel.workTimeSetting.isFlex() || mainSettingModel.workTimeSetting.isFlow();
             });
 
             self.useFixedRestTimeOptions = ko.observableArray([
@@ -120,30 +118,29 @@ module a7 {
                 return self.useFixedRestTime() == UseDivision.NOTUSE && self.isFlowOrFlex();
             });
 
-
         }
 
-        private loadDataToScreen(mainSettingModel: MainSettingModel) {
+        private loadDataToScreen() {
             let self = this;
 
             //to screen 
-            self.dataSourceForFixedOrDiffTime = mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone;
+            self.dataSourceForFixedOrDiffTime = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.listTimeRange;
             //when UI change
-            self.dataSourceForFixedOrDiffTime.subscribe((v) => mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(v));
+            //self.dataSourceForFixedOrDiffTime.subscribe((v) => self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.fromListTimeRange(v)));
 
-            //休憩時間を固定にする=true
-            if (mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime) {
-                self.dataSourceForFlowOrFlexUse = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones;
-                self.dataSourceForFlowOrFlexUse.subscribe((v) => mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(v));
-            }
-            else {//休憩時間を固定にする=false
-
-                self.dataSourceForFlowOrFlexNotUse1 = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets;
-                self.dataSourceForFlowOrFlexNotUse1.subscribe((v) => mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(v));
-
-                self.dataSourceForFlowOrFlexNotUse2 = mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
-                self.dataSourceForFlowOrFlexNotUse2.subscribe((v) => mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet(v));
-            }
+//            //休憩時間を固定にする=true
+//            if (self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime) {
+//                self.dataSourceForFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones;
+//                self.dataSourceForFlowOrFlexUse.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(v));
+//            }
+//            else {//休憩時間を固定にする=false
+//
+//                self.dataSourceForFlowOrFlexNotUse1 = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets;
+//                self.dataSourceForFlowOrFlexNotUse1.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(v));
+//
+////                self.dataSourceForFlowOrFlexNotUse2 = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
+////                self.dataSourceForFlowOrFlexNotUse2.subscribe((v) => self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet(v));
+//            }
 
             //TODO not care difftime or flow
 
@@ -168,23 +165,17 @@ module a7 {
                         required: true, enable: true, inputFormat: 'time'}"/>`}
             ];
         }
-        
-        export enum UseDivision {
+    }
+    
+    export enum UseDivision {
         NOTUSE,
         USE
     }
-
     class KMK003A7BindingHandler implements KnockoutBindingHandler {
         /**
          * Constructor.
          */
         constructor() {
-        }
-
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         }
 
         private getData() {
@@ -195,7 +186,7 @@ module a7 {
         /**
          * Update
          */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        update(element: any, valueAccessor: () => any): void {
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                 .mergeRelativePath('/view/kmk/003/a7/index.xhtml').serialize();
@@ -214,6 +205,5 @@ module a7 {
         }
 
     }
-    ko.bindingHandlers['ntsKMK003A7'] = new KMK003A7BindingHandler();
-
+     ko.bindingHandlers['ntsKMK003A7'] = new KMK003A7BindingHandler();
 }
