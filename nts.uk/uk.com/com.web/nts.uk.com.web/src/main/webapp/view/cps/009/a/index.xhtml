@@ -192,6 +192,7 @@
 												editable: false,
 												visibleItemsCount: 5,
 												enable: true,
+												dropDownAttachedToBody:true,
 												columns: [
 													{ prop: 'name', length: 10 },
 												]}" ></div>
@@ -315,7 +316,7 @@
 												<!-- date thuộc kiểu  năm  	 -->		
 											 	<com:ko-if bind="(dateType === 3)">
 													<com:ko-if bind="(isRequired() === 1)">
-														<div id="date" class="sub-input-units save-error" 
+														<div id="datey" class="sub-input-units save-error" 
 															data-bind="ntsDatePicker: {
 															name:  itemName,
 															value: dateValue, 
@@ -327,7 +328,7 @@
 													</com:ko-if> 	
 																										
 													<com:ko-if bind="(isRequired() === 0)">
-														<div id="date" class="sub-input-units save-error" 
+														<div id="datey" class="sub-input-units save-error" 
 															data-bind="ntsDatePicker: {
 															name:  itemName,
 															value: dateValue, 
@@ -358,6 +359,7 @@
 												<com:ko-if bind="(isRequired() === 0)">
 													<input id="timeItem"  class="sub-input-units save-error "
 														data-bind="ntsTimeEditor: {
+															name: itemName,
 															value: dateWithDay,
 															constraint: itemCode,
 															inputFormat: 'time', 
@@ -419,13 +421,15 @@
 												<div data-bind="with: numbereditor">
 									
 	 												<input class="sub-input-units save-error" id="number" data-bind="ntsNumberEditor: { 
+	 														name: $parent.itemName,
 	 												 		value: value,
 															constraint: constraint,
 															option: option,
 															enable: enable,
 															readonly: readonly,
 															immediate: false,
-															required: true}" /> 
+															required: true},
+															attr: { NameID: $parent.itemName }" /> 
 												</div>
 												</com:ko-if>
 												
@@ -433,12 +437,14 @@
 												<div data-bind="with: numbereditor">
 									
 	 												<input class="sub-input-units save-error" id="number" data-bind="ntsNumberEditor: { 
+	 												 		name: $parent.itemName,
 	 												 		value: value,
 															constraint: constraint,
 															option: option,
 															enable: enable,
 															readonly: readonly,
-															immediate: false}" /> 
+															immediate: false},
+															attr: { NameID: $parent.itemName }" /> 
 												</div>
 												</com:ko-if>
 																								
@@ -449,13 +455,15 @@
 												<div data-bind="with: numbereditor">
 													
 		 												<input class="sub-input-units save-error  " id="number" data-bind="ntsNumberEditor: { 
+		 														name: $parent.itemName,
 		 														value: value,
 																constraint: constraint,
 																option: option,
 																enable: enable,
 																readonly: readonly,
 																immediate: false,
-																required: true}" /> 
+																required: true},
+																attr: { NameID: $parent.itemName }" /> 
 												</div>
 												</com:ko-if>
 												
@@ -463,12 +471,14 @@
 												<div data-bind="with: numbereditor">
 													
 		 												<input class="sub-input-units save-error " id="number" data-bind="ntsNumberEditor: { 
+		 														name: $parent.itemName,
 		 														value: value,
 																constraint: constraint,
 																option: option,
 																enable: enable,
 																readonly: readonly,
-																immediate: false}" /> 
+																immediate: false},
+																attr: { NameID: $parent.itemName }" /> 
 												</div>
 												</com:ko-if>												
 											</com:ko-if>											
