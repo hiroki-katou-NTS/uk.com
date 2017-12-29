@@ -38,16 +38,16 @@
 					<i class="icon icon-searchbox"></i>
 					<div class="cf">
 						<div style="float: left">
-							<div style="width: 365px"
+							<div style="width: 300px"
 								data-bind="ntsSearchBox: {
-									searchMode: 'filter',
-									targetKey: 'code', 
+									searchMode :'highlight',
+									targetKey: 'id', 
+									mode: 'igGrid',
 									comId: 'multi-list',
 									items: layouts, 
-									selectedKey: layout().code, 
-									fields: ['name', 'code'], 
-									mode: 'igGrid'
-									}" />
+									selected: 'id',
+									selectedKey: 'id', 
+									fields: ['name', 'code'] }" />
 							<table id="multi-list"
 								data-bind="ntsGridList: {
 									height: 535,
