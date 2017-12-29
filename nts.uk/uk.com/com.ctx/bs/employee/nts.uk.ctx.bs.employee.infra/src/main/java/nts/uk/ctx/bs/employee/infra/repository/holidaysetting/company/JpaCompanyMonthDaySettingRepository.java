@@ -61,7 +61,6 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 	public void update(CompanyMonthDaySetting domain) {
 		List<KshmtComMonthDaySet> entities = this.findBy(domain.getCompanyId(),
 				domain.getManagementYear(), null);
-		this.commandProxy().removeAll(entities);
 		domain.saveToMemento(new JpaCompanyMonthDaySettingSetMemento(entities));
 		this.commandProxy().updateAll(entities);
 	}

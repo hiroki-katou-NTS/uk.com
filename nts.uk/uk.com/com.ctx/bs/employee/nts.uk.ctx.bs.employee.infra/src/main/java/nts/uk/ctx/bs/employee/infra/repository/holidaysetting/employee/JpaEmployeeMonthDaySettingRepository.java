@@ -63,7 +63,6 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	public void update(EmployeeMonthDaySetting domain) {
 		List<KshmtEmployeeMonthDaySet> entities = this.findBy(domain.getCompanyId(), domain.getEmployeeId(),
 				domain.getManagementYear(), null);
-		this.commandProxy().removeAll(entities);
 		domain.saveToMemento(new JpaEmployeeMonthDaySettingSetMemento(entities));
 		this.commandProxy().updateAll(entities);
 	}
