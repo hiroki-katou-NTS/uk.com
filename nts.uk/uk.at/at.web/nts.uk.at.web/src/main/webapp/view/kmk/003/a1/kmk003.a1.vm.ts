@@ -33,6 +33,8 @@ module a1 {
         timeZoneModelTwo: TimezoneModel;
         coreTimeSettingModel: CoreTimeSettingModel;
         settingEnum: WorkTimeSettingEnumDto;
+        SBcoreTimezone: Array<any>;
+
         /**
         * Constructor.
         */
@@ -42,6 +44,11 @@ module a1 {
             self.isTimezoneTwoEnabled = ko.computed(() => {
                 return !self.isFlexMode() && !self.isDiffTimeMode();
             });
+
+            self.SBcoreTimezone = [
+                { value: 1, localizedName: nts.uk.resource.getText("KMK003_158") }, // used
+                { value: 0, localizedName: nts.uk.resource.getText("KMK003_159") } // not used
+            ];
 
             //day start Time
             self.dayStartTime = ko.observable(0);
