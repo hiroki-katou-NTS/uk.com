@@ -12,15 +12,21 @@
 }
 
 .requiredCell {
- background-color: #FFC000;
+	background-color: #FFC000;
 }
 
 .notrequiredCell {
- background-color: #C7F391;
+	background-color: #C7F391;
 }
 
 .ui-iggrid table tr td {
+	
 }
+
 #grid_B {
 	height: initial !important;
+}
+
+#grid_B_table_itemName {
+	z-index: -10000;
 }

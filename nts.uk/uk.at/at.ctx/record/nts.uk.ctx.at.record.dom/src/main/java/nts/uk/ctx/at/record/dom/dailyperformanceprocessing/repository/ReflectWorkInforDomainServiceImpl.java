@@ -255,7 +255,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 		
 		// result of stamp part
-		ReflectStampOutput stampOutput = null;
+		ReflectStampOutput stampOutput = new ReflectStampOutput();
 
 		WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate = new WorkInfoOfDailyPerformance();
 
@@ -498,9 +498,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				createStamp(companyId, workInfoOfDailyPerformanceUpdate, personalLaborHasData, timeLeavingOptional, employeeID, day);
 
 //				 check tay
-				stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
-				 employeeID, day,
-				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr );
+//				stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
+//				 employeeID, day,
+//				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr );
 
 			}
 

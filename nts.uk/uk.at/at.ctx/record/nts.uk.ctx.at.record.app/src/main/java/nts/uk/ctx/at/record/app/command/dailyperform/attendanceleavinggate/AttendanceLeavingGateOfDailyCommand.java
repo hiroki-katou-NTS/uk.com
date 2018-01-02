@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
@@ -28,16 +29,17 @@ public class AttendanceLeavingGateOfDailyCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public AttendanceLeavingGateOfDaily toDomain() {
-		return data.isPresent() ? new AttendanceLeavingGateOfDaily(this.getEmployeeId(), this.getWorkDate(),
+		return !data.isPresent() ? null : new AttendanceLeavingGateOfDaily(this.getEmployeeId(), this.getWorkDate(),
 				ConvertHelper.mapTo(data.get().getAttendanceLeavingGateTime(),
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),
-								new WorkStamp(new TimeWithDayAttr(c.getStart().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(c.getStart().getTimesOfDay()),
-										new WorkLocationCD(c.getStart().getPlaceCode()),
-										EnumAdaptor.valueOf(c.getStart().getStampSourceInfo(), StampSourceInfo.class)),
-								new WorkStamp(new TimeWithDayAttr(c.getEnd().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(c.getEnd().getTimesOfDay()),
-										new WorkLocationCD(c.getEnd().getPlaceCode()),
-										EnumAdaptor.valueOf(c.getEnd().getStampSourceInfo(), StampSourceInfo.class))))) : null;
+								createWorkStamp(c.getStart()),
+								createWorkStamp(c.getEnd()))));
+	}
+
+	private WorkStamp createWorkStamp(TimeStampDto c) {
+		return c == null ? null : new WorkStamp(new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
+				new TimeWithDayAttr(c.getTimesOfDay()),
+				new WorkLocationCD(c.getPlaceCode()),
+				EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

@@ -1953,8 +1953,16 @@ module nts.custombinding {
             });
 
             $(ctrls.sortable)
+                .on('click', (evt) => {
+                    setTimeout(() => {
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification')
+                            .removeClass('selected');
+                    }, 0);
+                })
                 .on('mouseover', '.form-group.item-classification', (evt) => {
-                    $(evt.target).removeClass('selected');
+                    $(evt.target)
+                        .removeClass('selected');
                 });
 
 
