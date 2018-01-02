@@ -11,7 +11,7 @@ public interface ApprovalRootStateAdapter {
 	
 	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, Boolean isCreate);
 	
-	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String historyID, String appID);
+	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID);
 	
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
 			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate);

@@ -9,7 +9,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
  */
 public interface ApprovalRootStateService {
 	
-	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, GeneralDate date, String historyID, String appID);
+	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, GeneralDate date, String appID);
 	
 	public void updateReason(String rootStateID, String employeeID, String reason);
 	

@@ -15,7 +15,7 @@ public interface ApprovalRootStatePub {
 	
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate);
 	
-	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String historyID, String appID);
+	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID);
 	
 	/**
 	 * 4.次の承認の番の承認者を取得する(メール通知用)

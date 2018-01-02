@@ -26,10 +26,16 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 	private ApprovalRootStateRepository approvalRootStateRepository;
 
 	@Override
-	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, GeneralDate date, String historyID, String appID) {
+	public void insertAppRootType(String companyID, String employeeID, ApplicationType appType, GeneralDate date, String appID) {
 		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, EmploymentRootAtr.APPLICATION, appType, date);
 		ApprovalRootState approvalRootState = approvalRootContentOutput.getApprovalRootState();
-		approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(appID, RootType.EMPLOYMENT_APPLICATION, historyID, date, employeeID, approvalRootState));
+		approvalRootStateRepository.insert(ApprovalRootState.createFromFirst(
+				appID, 
+				RootType.EMPLOYMENT_APPLICATION, 
+				approvalRootState.getHistoryID(), 
+				date, 
+				employeeID, 
+				approvalRootState));
 	}
 
 	@Override

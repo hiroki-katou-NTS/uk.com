@@ -26,8 +26,7 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 				application.getCompanyID(), 
 				application.getEmployeeID(), 
 				application.getAppType().value, 
-				application.getAppDate(), 
-				"", 
+				application.getAppDate(),
 				application.getAppID());
 	}
 
