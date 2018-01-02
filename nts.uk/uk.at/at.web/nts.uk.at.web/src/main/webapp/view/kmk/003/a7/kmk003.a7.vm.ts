@@ -251,7 +251,7 @@ module a7 {
             let self = this;
             return [
                 {
-                    headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
+                    headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: 0, endTime: 720 }),
                     width: 243, template: `<div data-bind="ntsTimeRangeEditor: {required: true, enable: true, inputFormat: 'time'}"/>`
                 }
             ];
