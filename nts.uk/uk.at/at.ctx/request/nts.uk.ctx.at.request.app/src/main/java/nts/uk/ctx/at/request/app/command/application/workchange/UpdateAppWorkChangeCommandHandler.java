@@ -73,9 +73,9 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 						.notReasonReal(Optional.ofNullable(appCommand.getReflectPerScheReason())
 								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
 						.dateTimeReflection(Optional
-								.ofNullable(GeneralDateTime.legacyDateTime(appCommand.getReflectPlanTime().date())))
+								.ofNullable(appCommand.getReflectPlanTime() == null ? null : GeneralDateTime.legacyDateTime(appCommand.getReflectPlanTime().date())))
 						.dateTimeReflectionReal(Optional
-								.ofNullable(GeneralDateTime.legacyDateTime(appCommand.getReflectPerTime().date())))
+								.ofNullable(appCommand.getReflectPerTime() == null ? null : GeneralDateTime.legacyDateTime(appCommand.getReflectPerTime().date())))
 						.build());
 		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(workChangeCommand.getCid(),
