@@ -4,7 +4,7 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 
-@IntegerMaxValue(99)
+@IntegerMaxValue(999)
 public class GrantDay extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
