@@ -49,7 +49,7 @@
 	float: left;
 	min-height: 540px;
 	min-width: 200px !important;
-/* 	width: 15%; */
+	/* 	width: 15%; */
 }
 
 button.search-btn {
@@ -99,7 +99,8 @@ i.icon.icon-searchbox {
 }
 
 #contents-area {
-	
+	width: 1380px;
+	height: 800px;
 }
 
 #contents-area-left {
@@ -137,10 +138,8 @@ i.icon.icon-searchbox {
 	width: 150px;
 }
 
-.ui-widget-content.ui-iggrid-tablebody.ui-ig-record.ui-iggrid-record th {
+.ui-widget-content.ui-iggrid-tablebody.ui-ig-record.ui-iggrid-record th
+	{
 	background-color: #CFF1A5;
 	color: #000;
 }
-
-
-
