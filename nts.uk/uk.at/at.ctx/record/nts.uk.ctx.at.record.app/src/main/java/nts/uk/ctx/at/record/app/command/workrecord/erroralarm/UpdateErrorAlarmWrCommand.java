@@ -53,7 +53,7 @@ public class UpdateErrorAlarmWrCommand {
 	/* エラーアラームを解除できる */
 	private int cancelableAtr;
 	/* エラー表示項目 */
-	private int errorDisplayItem;
+	private Integer errorDisplayItem;
 	/* チェック条件 */
 	private AlarmCheckTargetConditionDto alCheckTargetCondition;
 	/* 勤務種類の条件 */
@@ -74,7 +74,7 @@ public class UpdateErrorAlarmWrCommand {
 	}
 
 	public UpdateErrorAlarmWrCommand(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem,
+			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, Integer errorDisplayItem,
 			AlarmCheckTargetConditionDto alCheckTargetCondition, WorkTypeConditionDto workTypeCondition,
 			WorkTimeConditionDto workTimeCondition, int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode,
 			int operatorBetweenGroups, int operatorGroup1, int operatorGroup2, boolean group2UseAtr,
@@ -163,8 +163,8 @@ public class UpdateErrorAlarmWrCommand {
 
 	public ErrorAlarmWorkRecord toDomain() {
 		ErrorAlarmWorkRecord domain = ErrorAlarmWorkRecord.init(companyId, code, name, fixedAtr == 1, useAtr == 1,
-				typeAtr, boldAtr == 1, messageColor, cancelableAtr == 1, new BigDecimal(errorDisplayItem),
-				lstApplicationTypeCode);
+				typeAtr, boldAtr == 1, messageColor, cancelableAtr == 1,
+				errorDisplayItem != null ? new BigDecimal(errorDisplayItem) : null, lstApplicationTypeCode);
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setDisplayMessage(displayMessage);
 		// Set AlCheckTargetCondition

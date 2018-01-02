@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employment;
@@ -14,15 +14,18 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * The Class EmploymentPubImp.
@@ -33,13 +36,21 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	/** The Constant FIRST_ITEM_INDEX. */
 	private static final int FIRST_ITEM_INDEX = 0;
 
+	/** The employment history repository. */
+	@Inject
+	private EmploymentHistoryRepository employmentHistoryRepository;
+
+	/** The employment history item repository. */
+	@Inject
+	private EmploymentHistoryItemRepository employmentHistoryItemRepository;
+
 	/** The employment repository. */
 	@Inject
 	private EmploymentRepository employmentRepository;
 
 	/** The employment history repository. */
 	@Inject
-	private AffEmploymentHistoryRepository employmentHistoryRepository;
+	private AffEmploymentHistoryRepository affEmploymentHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -50,7 +61,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	@Override
 	public String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate) {
 		// Query
-		List<AffEmploymentHistory> affEmploymentHistories = employmentHistoryRepository
+		List<AffEmploymentHistory> affEmploymentHistories = affEmploymentHistoryRepository
 				.searchEmploymentOfSids(Arrays.asList(employeeId), baseDate);
 
 		List<String> employmentCodes = affEmploymentHistories.stream()
@@ -95,33 +106,34 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	@Override
 	public Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId,
 			GeneralDate baseDate) {
+
 		// Query
-		List<AffEmploymentHistory> affEmploymentHistories = employmentHistoryRepository
-				.searchEmploymentOfSids(Arrays.asList(employeeId), baseDate);
+		Optional<EmploymentInfo> employmentInfo = employmentHistoryItemRepository
+				.getDetailEmploymentHistoryItem(companyId, employeeId, baseDate);
+
+		Optional<DateHistoryItem> optHistoryItem = employmentHistoryRepository
+				.getByEmployeeIdAndStandardDate(employeeId, baseDate);
 
 		// Check exist
-		if (CollectionUtil.isEmpty(affEmploymentHistories)) {
+		if (!employmentInfo.isPresent() || !optHistoryItem.isPresent()) {
 			return Optional.empty();
 		}
 
-		AffEmploymentHistory empHist = affEmploymentHistories.get(FIRST_ITEM_INDEX);
-
-		// Find emp by empCd
-		List<Employment> employments = employmentRepository.findByEmpCodes(companyId,
-				Arrays.asList(empHist.getEmploymentCode().v()));
-
-		// Get employment info
-		Employment employment = employments.get(FIRST_ITEM_INDEX);
+		EmploymentInfo employment = employmentInfo.get();
 
 		// Return
 		return Optional.of(SEmpHistExport.builder().employeeId(employeeId)
-				.employmentCode(employment.getEmploymentCode().v())
-				.employmentName(employment.getEmploymentName().v())
-				.period(empHist.getPeriod()).build());
+				.employmentCode(employment.getEmploymentCode())
+				.employmentName(employment.getEmploymentName()).period(optHistoryItem.get().span())
+				.build());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findByEmpCodes(java.lang.String, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findByEmpCodes(java
+	 * .lang.String, java.util.List)
 	 */
 	@Override
 	public List<ShEmploymentExport> findByEmpCodes(String companyId, List<String> empCodes) {

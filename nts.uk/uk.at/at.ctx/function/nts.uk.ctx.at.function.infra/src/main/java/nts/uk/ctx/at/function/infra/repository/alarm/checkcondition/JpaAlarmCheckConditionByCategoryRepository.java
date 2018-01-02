@@ -148,9 +148,9 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 	// and "error item condition of time item (勤怠項目のエラーアラーム条件)" (da co trong workrecord/erroralarm/condition/attendanceitem)
 	// linked to error work alarm check ID of work record
 	@Override
-	public void delete(AlarmCheckConditionByCategory domain) {
+	public void delete(String companyId, int category, String alarmConditionCode) {
 		this.commandProxy().remove(KfnmtAlarmCheckConditionCategory.class, new KfnmtAlarmCheckConditionCategoryPk(
-				domain.getCompanyId(), domain.getCategory().value, domain.getCode().v()));
+				companyId, category, alarmConditionCode));
 	}
 
 	@Override
