@@ -4,7 +4,8 @@ module nts.uk.at.view.kdw002.b {
             getAttendanceItems: "at/record/businesstype/attendanceItem/getAttendanceItems",
             getBusinessTypes: "at/record/businesstype/findAll",
             getListDailyServiceTypeControl: "at/record/DailyServiceTypeControl/getListDailyServiceTypeControl/",
-            updateDailyService: "at/record/DailyServiceTypeControl/updateListDailyServiceTypeControlItem"
+            updateDailyService: "at/record/DailyServiceTypeControl/updateListDailyServiceTypeControlItem",
+            getDailyServiceTypeControl: "at/record/DailyServiceTypeControl/getDailyServiceTypeControl/"
             }
         export function getAttendanceItems(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getAttendanceItems);
@@ -19,6 +20,9 @@ module nts.uk.at.view.kdw002.b {
         
          export function updateDailyService(command): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.updateDailyService , command);
+        }
+        export function getDailyServiceTypeControl(businessCode,attendanceItemId): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getDailyServiceTypeControl + businessCode + "/"+attendanceItemId );
         }
         
     }

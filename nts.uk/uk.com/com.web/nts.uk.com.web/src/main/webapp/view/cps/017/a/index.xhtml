@@ -77,7 +77,7 @@
 									showNumbering: false,
 									columns: [
 						                { headerText: 'aa', key: 'selectionItemId', width: 20 , hidden: true},
-						                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName', width: 255 }
+						                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName', width: 250 }
 						            ],
 									multiple: false,
 									value: perInfoSelectionItem().selectionItemId}">
@@ -147,7 +147,7 @@
 						                { headerText: '', key: 'selectionID', width: 20 ,hidden:true},
 						                { headerText: '#{i18n.getText('CPS017_18')}', key: 'initSelection', width: 60, formatter :makeIcon },
 						                { headerText: '#{i18n.getText('CPS017_16')}', key: 'selectionCD', width: 120 },
-						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 190}
+						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 210}
 						            ],
 									multiple: false,
 									value: selection().selectionID}">
@@ -176,7 +176,6 @@
 								required: true, 
 								enable: $parent.selection().selectionID() == undefined , 
  								immediate: false}" />
- 								
 							<input id="name"
 								data-bind="ntsTextEditor: {
 								name: '#[CPS017_22]',
