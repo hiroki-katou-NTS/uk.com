@@ -273,6 +273,9 @@ module nts.uk.at.view.kmk003.a {
                     // enter update mode
                     self.enterUpdateMode();
 
+                    // clear all errors
+                    self.clearAllError();
+
                     // update mainSettingModel data
                     self.mainSettingModel.updateData(worktimeSettingInfo);
 
@@ -364,6 +367,9 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterNewMode(): void {
                 let self = this;
+                // clear all errors
+                self.clearAllError();
+
                 // set screen mode
                 self.screenMode(ScreenMode.NEW);
 
@@ -409,9 +415,25 @@ module nts.uk.at.view.kmk003.a {
 
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
+                
+                self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeName('');
+                self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeAbName('');
+                self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeSymbol('');
+                self.mainSettingModel.workTimeSetting.memo('');
+                self.mainSettingModel.workTimeSetting.note('');
+                //clear isAbolish
+                self.mainSettingModel.workTimeSetting.isAbolish(false);
 
                 // focus worktime atr
                 $('#cbb-worktime-atr').focus();
+            }
+
+            /**
+             * Clear all errors
+             */
+            public clearAllError(): void {
+                $('.nts-editor').ntsError('clear');
+                $('.ntsControl').ntsError('clear');
             }
 
             /**
@@ -616,6 +638,7 @@ module nts.uk.at.view.kmk003.a {
             loadListWorktime: (selectedCode?: string, selectedIndex?: number) => JQueryPromise<void>;
             constructor() {
                 super();
+                this.isAbolish(true); // initial value in specs = checked
                 this.workTimeDivision.workTimeDailyAtr(3);
                 this.workTimeDivision.workTimeMethodSet(3);
                 this.workTimeDivision.workTimeDailyAtr.subscribe(() => {
