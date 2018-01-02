@@ -67,9 +67,9 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): DesignatedTimeDto {
-                    var dataDTO: DesignatedTimeDto = {
-                        oneDayTime: this.oneDayTime(),
-                        halfDayTime: this.halfDayTime()
+                    var dataDTO: DesignatedTimeDto = {                       
+                        oneDayTime: nts.uk.util.isNullOrEmpty(this.oneDayTime()) ? 0 : this.oneDayTime(),
+                        halfDayTime: nts.uk.util.isNullOrEmpty(this.halfDayTime()) ? 0 : this.halfDayTime()
                     };
                     return dataDTO;
                 }
@@ -97,7 +97,7 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(): SubHolTransferSetDto {
                     let dataDTO: SubHolTransferSetDto = {
-                        certainTime: this.certainTime(),
+                        certainTime: nts.uk.util.isNullOrEmpty(this.certainTime()) ? 0 : this.certainTime(),
                         useDivision: this.useDivision(),
                         designatedTime: this.designatedTime.toDto(),
                         subHolTransferSetAtr: this.subHolTransferSetAtr(),
@@ -204,7 +204,7 @@ module nts.uk.at.view.kmk003.a {
                     var dataDTO: WorkTimezoneMedicalSetDto = {
                         roundingSet: this.roundingSet.toDto(),
                         workSystemAtr: this.workSystemAtr(),
-                        applicationTime: this.applicationTime()
+                        applicationTime: nts.uk.util.isNullOrEmpty(this.applicationTime()) ? 0 : this.applicationTime()    //QA 87128
                     };
                     return dataDTO;
                 }
