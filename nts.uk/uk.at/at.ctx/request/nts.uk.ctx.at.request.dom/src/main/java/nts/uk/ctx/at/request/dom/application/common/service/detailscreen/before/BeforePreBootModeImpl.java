@@ -5,12 +5,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -49,15 +55,19 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	@Inject
 	ApproveAcceptedRepository approveAcceptedRepository;
 	
-
+	@Inject
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	
 	@Override
-	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(Application applicationData,
-			GeneralDate baseDate) {
-		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
+	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(String companyID, String employeeID, String appID, GeneralDate baseDate) {
+		
+		Application_New applicationData = applicationRepository.findByID(companyID, appID).get();
 		// Output variables
 		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false);
-		if(applicationData.getEnteredPersonSID().contains(employeeID)) {
+		if(applicationData.getEmployeeID().contains(employeeID)) {
 			outputData.setLoginInputOrApproval(true);
 		}
 		//4.社員の当月の期間を算出する
@@ -65,61 +75,37 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				employeeID, baseDate);
 		GeneralDate startDate = listDate.getStartDate();
 		// 締め開始日 >  ドメインモデル「申請」．申請日 がtrue
-		if (startDate.after(applicationData.getApplicationDate())) {
+		if (startDate.after(applicationData.getAppDate())) {
 			//ステータス = 過去申請(status= 過去申請)
 			outputData.setReflectPlanState(ReflectPlanPerState.PASTAPP);
 		} else {
 			//ステータス = ドメインモデル「反映情報」．実績反映状態(Set status = 「反映情報」．実績反映状態)
-			outputData.setReflectPlanState(applicationData.getReflectPerState());
+			outputData.setReflectPlanState(EnumAdaptor.valueOf(applicationData.getReflectionInformation().getStateReflectionReal().value, ReflectPlanPerState.class));
 		}	
 		
 		// get User
 		// "Application".Applicant = login If employee ID is true
 		//ログイン者が承認者かチェックする(Check xem login có phải là người approve ko?)
 		
-		if (decideByApprover(applicationData)) {
-			outputData.setLoginInputOrApproval(true);
-			//ログイン者が申請本人かチェックする(Check xem login có phải là 申請本人 không)
-			// ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
-			if (applicationData.getApplicantSID().equals(employeeID)) {
-				//利用者 = 申請本人&承認者				
+		Boolean isApprover = approvalRootStateAdapter.judgmentTargetPersonIsApprover(companyID, applicationData.getAppID(), employeeID);
+		if(isApprover.equals(Boolean.TRUE)){
+			if(applicationData.getEmployeeID().equals(employeeID)){
 				outputData.setUser(User.APPLICANT_APPROVER);
 			} else {
-				//利用者 = 承認者
 				outputData.setUser(User.APPROVER);
 			}
-		} else {//承認者フラグがfalse
-			//ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
-			if (applicationData.getApplicantSID().equals(employeeID)) {
-				//利用者 = 申請本人
+		} else {
+			if(applicationData.getEmployeeID().equals(employeeID)){
 				outputData.setUser(User.APPLICANT);
-			} else {//ドメインモデル「申請」．申請者 = ログイン者社員ID がfalse
-				//利用者 = その他
+			} else {
 				outputData.setUser(User.OTHER);
 			}
 		}
-		
-		outputData.setApprovalATR(ApprovalAtr.UNAPPROVED);
-		applicationData.getListPhase().stream().forEach(x -> {
-			x.getListFrame().stream().forEach(y ->{
-				//ログイン者の承認区分
-				y.getListApproveAccepted().stream().forEach(z ->{
-					if(z.getApproverSID().equals(employeeID)) {
-						outputData.setApprovalATR(z.getApprovalATR());
-					}
-				});				
-			});
-		});
-		// 利用者をチェックする(Check người sử dụng)
-		// 利用者が「申請本人&承認者」、又は「承認者」の場合
-		if (outputData.getUser() == User.APPLICANT_APPROVER 
-				|| outputData.getUser() == User.APPROVER) {
-			// アルゴリズム「承認できるかの判断」を実行する(phán đoán xem có thể approve hay không)
-			CanBeApprovedOutput canBeApprovedOutput = canBeApproved(applicationData, outputData.getReflectPlanState());
-			outputData.setAlternateExpiration(canBeApprovedOutput.getAlternateExpiration());
-			outputData.setAuthorizableFlags(canBeApprovedOutput.getAuthorizableFlags());
-			return outputData;
-			
+		if(outputData.getUser().equals(User.APPLICANT_APPROVER)||outputData.getUser().equals(User.APPLICANT)){
+			ApproverPersonImport approverPersonImport = approvalRootStateAdapter.judgmentTargetPersonCanApprove(companyID, applicationData.getAppID(), employeeID);
+			outputData.setAuthorizableFlags(approverPersonImport.getAuthorFlag());
+			outputData.setApprovalATR(EnumAdaptor.valueOf(approverPersonImport.getApprovalAtr().value, ApprovalAtr.class));
+			outputData.setAlternateExpiration(approverPersonImport.getExpirationAgentFlag());
 		}
 		return outputData;
 	}

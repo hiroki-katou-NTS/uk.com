@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
 /**
  * 
  * @author Doan Duy Hung
@@ -95,5 +96,25 @@ public interface ApprovalRootStatePub {
 				false：否認を実行しなかった
 	 */
 	public Boolean doDeny(String companyID, String rootStateID, String employeeID);
+	
+	/**
+	 * 1.指定した社員が承認者であるかの判断
+	 * @param companyID 会社ID
+	 * @param rootStateID インスタンスID
+	 * @param employeeID 社員ID
+	 * @return 承認者フラグ(true、false)
+	 			true：承認者である
+	 			false：承認者でない
+	 */
+	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
+	
+	/**
+	 * 3.指定した社員が承認できるかの判断
+	 * @param companyID 会社ID
+	 * @param rootStateID インスタンスID
+	 * @param employeeID 社員ID
+	 * @return
+	 */
+	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
 	
 }
