@@ -3,7 +3,10 @@ package nts.uk.ctx.at.record.app.command.dailyperform.temporarytime;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.WorkLeaveTimeDto;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -26,36 +29,26 @@ public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonComma
 	public void setRecords(ConvertibleAttendanceItem item) {
 		this.data = item == null ? Optional.empty() : Optional.of((TemporaryTimeOfDailyPerformanceDto) item);
 	}
-	
+
 	@Override
 	public TemporaryTimeOfDailyPerformance toDomain() {
-		return data.isPresent() ? new TemporaryTimeOfDailyPerformance(getEmployeeId(), new WorkTimes(data.get().getWorkTimes()), ConvertHelper.mapTo(
-				data.get().getWorkLeaveTime(),
-				(c) -> new TimeLeavingWork(new WorkNo(c.getWorkNo()), new TimeActualStamp(
-						new WorkStamp(new TimeWithDayAttr(c.getWorking().getActualTime().getAfterRoundingTimesOfDay()),
-								new TimeWithDayAttr(c.getWorking().getActualTime().getTimesOfDay()),
-								new WorkLocationCD(c.getWorking().getActualTime().getPlaceCode()),
-								ConvertHelper.getEnum(c.getWorking().getActualTime().getStampSourceInfo(),
-										StampSourceInfo.class)),
-						new WorkStamp(new TimeWithDayAttr(c.getWorking().getTime().getAfterRoundingTimesOfDay()),
-								new TimeWithDayAttr(c.getWorking().getTime().getTimesOfDay()),
-								new WorkLocationCD(c.getWorking().getTime().getPlaceCode()),
-								ConvertHelper.getEnum(c.getWorking().getTime().getStampSourceInfo(),
-										StampSourceInfo.class)),
-						c.getWorking().getNumberOfReflectionStamp()),
-						new TimeActualStamp(
-								new WorkStamp(
-										new TimeWithDayAttr(c.getLeave().getActualTime().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(c.getLeave().getActualTime().getTimesOfDay()),
-										new WorkLocationCD(c.getLeave().getActualTime().getPlaceCode()),
-										ConvertHelper.getEnum(c.getLeave().getActualTime().getStampSourceInfo(),
-												StampSourceInfo.class)),
-								new WorkStamp(new TimeWithDayAttr(c.getLeave().getTime().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(c.getLeave().getTime().getTimesOfDay()),
-										new WorkLocationCD(c.getLeave().getTime().getPlaceCode()),
-										ConvertHelper.getEnum(c.getLeave().getTime().getStampSourceInfo(),
-												StampSourceInfo.class)),
-								c.getLeave().getNumberOfReflectionStamp()))),
-				getWorkDate()) : null;
+		return !data.isPresent() ? null : new TemporaryTimeOfDailyPerformance(getEmployeeId(), new WorkTimes(data.get().getWorkTimes()),
+						ConvertHelper.mapTo(data.get().getWorkLeaveTime(), (c) -> toTimeLeaveWork(c)), getWorkDate());
+	}
+
+	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
+		return c == null ? null : new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()),
+						toTimeActualStamp(c.getLeave()));
+	}
+
+	private TimeActualStamp toTimeActualStamp(WithActualTimeStampDto c) {
+		return c == null ? null : new TimeActualStamp(toWorkStamp(c.getActualTime()), toWorkStamp(c.getTime()),
+						c.getNumberOfReflectionStamp());
+	}
+
+	private WorkStamp toWorkStamp(TimeStampDto c) {
+		return c == null ? null : new WorkStamp(new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
+						new TimeWithDayAttr(c.getTimesOfDay()), new WorkLocationCD(c.getPlaceCode()),
+						ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

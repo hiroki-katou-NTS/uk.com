@@ -27,6 +27,14 @@ public interface FormulaRepository {
 	void remove(String comId, String optItemNo);
 
 	/**
+	 * Find by companyId 
+	 * 
+	 * @param companyId
+	 * @return the list
+	 */
+	List<Formula> find(String companyId);
+	
+	/**
 	 * Find by opt item no.
 	 *
 	 * @param companyId the company id
