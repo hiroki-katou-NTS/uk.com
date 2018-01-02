@@ -5,10 +5,10 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	
 	<div style="text-align: right;">
-		<button tabindex="131">#{i18n.getText('KMK003_192')}</button>
+		<button tabindex="131" style="margin-right: 20px; margin-top: 20px;">#{i18n.getText('KMK003_192')}</button>
 	</div>
 	
-	<div class="tab_9_setting_rows">
+	<div class="tab_9_setting_rows" style="margin-top: 0px;">
 		<div class="tab_9_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_94')}</div>		
 	</div>
 	
@@ -28,6 +28,7 @@
 						optionsText: 'localizedName',
 						visibleItemsCount: 8,
 						value: lateSettingRoundingTime,
+						dropDownAttachedToBody: true,
 						editable: false,
 						enable: true }"></div>
 			</div>				
@@ -51,6 +52,7 @@
 						optionsText: 'localizedName',
 						visibleItemsCount: 8,
 						value: leaveEarlySettingRoundingTime,
+						dropDownAttachedToBody: true,
 						editable: false,
 						enable: true }"></div>
 			</div>				
