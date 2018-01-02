@@ -107,7 +107,7 @@
 		<span>#{i18n.getText('KMK003_209')}</span>
 		<input data-bind="ntsTimeEditor: {
 			value: timeZoneModelTwo.start,
-			constraint: '',
+			constraint: 'TimeWithDayAttr',
 			inputFormat: 'time',
 			mode: 'time',
 			option: beforeUpdateWorkTimeOption,
@@ -119,7 +119,7 @@
 		<span>#{i18n.getText('KMK003_210')}</span>
 		<input data-bind="ntsTimeEditor: {
 			value: timeZoneModelTwo.end,
-			constraint: '',
+			constraint: 'TimeWithDayAttr',
 			inputFormat: 'time',
 			mode: 'time',
 			option: afterUpdateWorkTimeOption,
