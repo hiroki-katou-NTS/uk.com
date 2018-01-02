@@ -477,7 +477,7 @@ module a2 {
                     template: `<div data-bind="ntsTimeRangeEditor: { 
                         required: true, enable: true, inputFormat: 'time'}"/>`
                 }, {
-                    headerText: nts.uk.resource.getText("KMK003_57"), 
+                    headerText: nts.uk.resource.getText("KMK003_56"), 
                     key: "roundingTime", 
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0), 
