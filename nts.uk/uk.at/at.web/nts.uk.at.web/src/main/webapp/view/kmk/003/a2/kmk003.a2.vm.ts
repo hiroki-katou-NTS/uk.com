@@ -84,7 +84,7 @@ module a2 {
                 dataSource: self.dataSourceOneDay,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
-                tabindex: -1
+                tabindex: 46
             };
             
             self.dataSourceMorning = ko.observableArray([]);
@@ -96,7 +96,7 @@ module a2 {
                 dataSource: self.dataSourceMorning,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
-                tabindex: -1
+                tabindex: 47
             };
             
             self.dataSourceAfternoon = ko.observableArray([]);
@@ -108,7 +108,7 @@ module a2 {
                 dataSource: self.dataSourceAfternoon,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
-                tabindex: -1
+                tabindex: 48
             };
             
             self.dataSourceOneDaySimpleMode = ko.observableArray([]);
@@ -120,7 +120,7 @@ module a2 {
                 dataSource: self.dataSourceOneDaySimpleMode,
                 isMultipleSelect: false,
                 columns: self.columnSetting(),
-                tabindex: -1
+                tabindex: 1
             };
             
             // ====================================== Defined Variable Flow Mode ======================================
