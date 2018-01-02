@@ -36,7 +36,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 				appID,
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
 				GeneralDateTime.now(), 
-				Strings.EMPTY,
+				applicantSID,
 				new AppReason(Strings.EMPTY), 
 				applicationDate, 
 				new AppReason(applicationReason),

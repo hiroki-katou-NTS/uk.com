@@ -45,24 +45,22 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 				command.getPrePostAtr(), command.getApplicationReason(),
 				command.getApplicationReason().replaceFirst(":", System.lineSeparator()));
 
-		
 		int workClockFrom1 = command.getWorkClockFrom1() == null ? -1 : command.getWorkClockFrom1().intValue();
 		int workClockTo1 = command.getWorkClockTo1() == null ? -1 : command.getWorkClockTo1().intValue();
 		int workClockFrom2 = command.getWorkClockFrom2() == null ? -1 : command.getWorkClockFrom2().intValue();
 		int workClockTo2 = command.getWorkClockTo2() == null ? -1 : command.getWorkClockTo2().intValue();
-		
+
 		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
-				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1,
-				workClockTo1, workClockFrom2, workClockTo2,
-				command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
+				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, workClockFrom2,
+				workClockTo2, command.getDivergenceReasonContent().replaceFirst(":", System.lineSeparator()),
 				command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID));
 
-		// 2-2.新規画面登録時承認反映情報の整理
-		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
-		
 		// ドメインモデル「残業申請」の登録処理を実行する(INSERT)
 		overTimeService.CreateOvertime(overTimeDomain, appRoot);
+
+		// 2-2.新規画面登録時承認反映情報の整理
+		registerService.newScreenRegisterAtApproveInfoReflect(appRoot.getEmployeeID(), appRoot);
 
 		// 2-3.新規画面登録後の処理を実行
 		return newAfterRegister.processAfterRegister(appRoot);

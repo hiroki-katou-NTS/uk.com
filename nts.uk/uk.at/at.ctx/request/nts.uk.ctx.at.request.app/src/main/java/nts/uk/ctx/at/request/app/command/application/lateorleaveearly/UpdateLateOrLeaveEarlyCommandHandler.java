@@ -71,7 +71,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 		
 		//「4-2.詳細画面登録後の処理」を実行する
 		//TODO: Waiting for common change
-		//afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly);
+		afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly);
 		
 	}
 	
