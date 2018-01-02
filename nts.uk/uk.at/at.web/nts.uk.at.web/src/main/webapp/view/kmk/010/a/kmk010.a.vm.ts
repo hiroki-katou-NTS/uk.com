@@ -211,6 +211,7 @@ module nts.uk.at.view.kmk010.a {
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
+                        nts.uk.ui.block.clear();
                     });
                 }
             }

@@ -21,7 +21,8 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 			+ " WHERE k.krcmtDailyAttendanceItemPK.companyId = :companyId";
 
 	@Override
-	public List<DailyAttendanceItemAuthority> getListDailyAttendanceItemAuthority(String authorityId, String companyId) {
+	public List<DailyAttendanceItemAuthority> getListDailyAttendanceItemAuthority(String authorityId,
+			String companyId) {
 		return this.queryProxy().query(SELECT_BY_AUTHORITYID_AND_COMPANYID, Object[].class)
 				.setParameter("authorityId", authorityId).setParameter("companyId", companyId)
 				.getList(x -> this.toDomain(x, authorityId));
@@ -32,15 +33,27 @@ public class JpaDailyAttdItemAuthRepository extends JpaRepository implements Dai
 			List<DailyAttendanceItemAuthority> lstDailyAttendanceItemAuthority) {
 
 		lstDailyAttendanceItemAuthority.forEach(c -> {
-			Optional<KshstDailyAttdItemAuth> kshstDailyAttdItemAuthOptional = this.queryProxy()
-					.find(new KshstDailyAttdItemAuthPK(c.getAuthorityId(),
-							new BigDecimal(c.getAttendanceItemId())), KshstDailyAttdItemAuth.class);
+			Optional<KshstDailyAttdItemAuth> kshstDailyAttdItemAuthOptional = this.queryProxy().find(
+					new KshstDailyAttdItemAuthPK(c.getAuthorityId(), new BigDecimal(c.getAttendanceItemId())),
+					KshstDailyAttdItemAuth.class);
 			if (kshstDailyAttdItemAuthOptional.isPresent()) {
 				KshstDailyAttdItemAuth kshstDailyAttdItemAuth = kshstDailyAttdItemAuthOptional.get();
-				kshstDailyAttdItemAuth.canBeChangedByOthers = new BigDecimal(c.isCanBeChangedByOthers() ? 1 : 0);
-				kshstDailyAttdItemAuth.youCanChangeIt = new BigDecimal(c.isYouCanChangeIt() ? 1 : 0);
 				kshstDailyAttdItemAuth.use = new BigDecimal(c.isUse() ? 1 : 0);
 				this.commandProxy().update(kshstDailyAttdItemAuth);
+				if (kshstDailyAttdItemAuth.use.intValue() != (c.isUse() ? 1 : 0)
+						|| kshstDailyAttdItemAuth.canBeChangedByOthers
+								.intValue() != (c.isCanBeChangedByOthers() ? 1 : 0)
+						|| kshstDailyAttdItemAuth.youCanChangeIt.intValue() != (c.isYouCanChangeIt() ? 1 : 0)) {
+
+					kshstDailyAttdItemAuth.use = new BigDecimal(c.isUse() ? 1 : 0);
+					if (c.isUse()) {
+						kshstDailyAttdItemAuth.canBeChangedByOthers = new BigDecimal(
+								c.isCanBeChangedByOthers() ? 1 : 0);
+						kshstDailyAttdItemAuth.youCanChangeIt = new BigDecimal(c.isYouCanChangeIt() ? 1 : 0);
+					}
+					this.commandProxy().insert(kshstDailyAttdItemAuth);
+				}
+
 			} else {
 				this.commandProxy().insert(this.toEntity(c));
 			}
