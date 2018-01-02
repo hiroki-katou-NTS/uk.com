@@ -17,6 +17,6 @@ public class PCLogOnInforOfDailyPerformDto implements ConvertibleAttendanceItem 
 	private GeneralDate ymd;
 	
 	//TODO: set list max value
-//	@AttendanceItemLayout(layout = "A", jpPropertyName = "ログオン・オフ時刻", isList = true)
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "ログオン・オフ時刻", isList = true, listMaxLength = ?)
 	private List<TimeSheetDto> logonTime;
 }

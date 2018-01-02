@@ -34,7 +34,7 @@ public class OverTimeWorkDailyPerformDto {
 	private List<OverTimeFrameTimeDto> overTimeFrameTime;
 
 	/** 残業枠時間帯: 残業枠時間帯 */
-//	@AttendanceItemLayout(layout = "B", isList = true)
+//	@AttendanceItemLayout(layout = "B", isList = true, listMaxLength = ?)
 	private List<OverTimeFrameTimeSheetDto> overTimeFrameTimeSheet;
 
 	/** 所定外深夜時間: 法定外残業深夜時間 */

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 
 /**
  * 
@@ -24,5 +25,20 @@ public class AlarmCheckConditionByCategoryDto {
 	private AlarmCheckTargetConditionDto targetCondition;
 
 	private List<String> availableRoles;
+
+	public static AlarmCheckConditionByCategoryDto fromDomain(AlarmCheckConditionByCategory domain) {
+		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
+				domain.getCategory().value,
+				new AlarmCheckTargetConditionDto(domain.getExtractTargetCondition().getId(),
+						domain.getExtractTargetCondition().isFilterByEmployment(),
+						domain.getExtractTargetCondition().isFilterByClassification(),
+						domain.getExtractTargetCondition().isFilterByJobTitle(),
+						domain.getExtractTargetCondition().isFilterByBusinessType(),
+						domain.getExtractTargetCondition().getLstEmploymentCode(),
+						domain.getExtractTargetCondition().getLstClassificationCode(),
+						domain.getExtractTargetCondition().getLstJobTitleId(),
+						domain.getExtractTargetCondition().getLstBusinessTypeCode()),
+				domain.getListRoleId());
+	}
 
 }

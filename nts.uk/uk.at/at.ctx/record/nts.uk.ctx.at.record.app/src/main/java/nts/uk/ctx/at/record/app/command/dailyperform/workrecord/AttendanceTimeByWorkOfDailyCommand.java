@@ -32,13 +32,12 @@ public class AttendanceTimeByWorkOfDailyCommand extends DailyWorkCommonCommand {
 	
 	@Override
 	public AttendanceTimeByWorkOfDaily toDomain() {
-		return data.isPresent() ? new AttendanceTimeByWorkOfDaily(getEmployeeId(), getWorkDate(),
-				ConvertHelper
-						.mapTo(data.get().getWorkTimes(),
+		return !data.isPresent() ? null : new AttendanceTimeByWorkOfDaily(getEmployeeId(), getWorkDate(),
+				ConvertHelper.mapTo(data.get().getWorkTimes(),
 								c -> new WorkTimeOfDaily(new WorkFrameNo(c.getWorkFrameNo()),
 										new ActualWorkTimeSheet(getStamp(c.getTimeSheet().getStart()),
 												getStamp(c.getTimeSheet().getEnd())),
-										new ActualWorkTime(c.getWorkTime())))) : null;
+										new ActualWorkTime(c.getWorkTime()))));
 	}
 
 	private TimeActualStamp getStamp(WithActualTimeStampDto stamp) {
