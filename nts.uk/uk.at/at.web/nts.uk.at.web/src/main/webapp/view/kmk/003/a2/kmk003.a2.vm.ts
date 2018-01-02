@@ -89,7 +89,7 @@ module a2 {
             
             self.dataSourceMorning = ko.observableArray([]);
             self.fixTableOptionMorning = {
-                maxRow: 7,
+                maxRow: 5,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -101,7 +101,7 @@ module a2 {
             
             self.dataSourceAfternoon = ko.observableArray([]);
             self.fixTableOptionAfternoon = {
-                maxRow: 7,
+                maxRow: 5,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -113,9 +113,9 @@ module a2 {
             
             self.dataSourceOneDaySimpleMode = ko.observableArray([]);
             self.fixTableOptionOneDaySimpleMode = {
-                maxRow: 7,
-                minRow: 2,
-                maxRowDisplay: 5,
+                maxRow: 1,
+                minRow: 1,
+                maxRowDisplay: 1,
                 isShowButton: false,
                 dataSource: self.dataSourceOneDaySimpleMode,
                 isMultipleSelect: false,
@@ -198,6 +198,9 @@ module a2 {
         private bindDataOtherMode() {
             let self = this;
             
+            // update column setting
+            self.refreshColumnSet();
+            
             // Simple mode
             if (self.isSimpleMode()) {
 
@@ -234,6 +237,17 @@ module a2 {
             else {
                 self.bindingDataDto();
             }
+        }
+        
+        /**
+         * Update column setting
+         */
+        private refreshColumnSet() {
+            let self = this;
+            self.fixTableOptionOneDay.columns= self.columnSetting();
+            self.fixTableOptionMorning.columns= self.columnSetting();
+            self.fixTableOptionAfternoon.columns= self.columnSetting();
+            self.fixTableOptionOneDaySimpleMode.columns= self.columnSetting();
         }
         
         /**
@@ -473,7 +487,7 @@ module a2 {
                     key: "timeRange", 
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 243, 
-                    enable: self.isSimpleMode(),
+                    enable: !self.isSimpleMode(),
                     template: `<div data-bind="ntsTimeRangeEditor: { 
                         required: true, enable: true, inputFormat: 'time'}"/>`
                 }, {
