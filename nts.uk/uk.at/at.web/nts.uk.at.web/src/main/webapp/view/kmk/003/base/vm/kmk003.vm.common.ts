@@ -655,22 +655,23 @@ module nts.uk.at.view.kmk003.a {
                 listTimeRangeTemp: Array<TimeRangeModel>;
 
                 constructor() {
-                    this.listTimeRange = ko.observableArray([]);
-                    this.originalList = ko.observableArray([]);
-                    this.originalListTemp = [];
-                    this.listTimeRangeTemp = [];
-
-                    this.originalList.subscribe(newList => {
-                        if (this.isNotEqual(newList, this.originalListTemp)) {
-                            this.originalListTemp = _.sortBy(newList, i => i);
-                            this.listTimeRange(this.toListTimeRange());
+                    let self = this;
+                    self.listTimeRange = ko.observableArray([]);
+                    self.originalList = ko.observableArray([]);
+                    self.originalListTemp = [];
+                    self.listTimeRangeTemp = [];
+                    
+                    self.originalList.subscribe(newList => {
+                        if (self.isNotEqual(newList, self.originalListTemp)) {
+                            self.originalListTemp = _.cloneDeep(newList);
+                            self.listTimeRange(self.toListTimeRange());
                         }
                     });
 
-                    this.listTimeRange.subscribe(newList => {
-                        if (this.isNotEqual(newList, this.listTimeRangeTemp)) {
-                            this.listTimeRangeTemp = _.sortBy(newList, i => i);
-                            this.originalList(this.fromListTimeRange(newList));
+                    self.listTimeRange.subscribe(newList => {
+                        if (self.isNotEqual(newList, self.listTimeRangeTemp)) {
+                            self.listTimeRangeTemp = _.cloneDeep(newList);
+                            self.originalList(self.fromListTimeRange(newList));
                         }
                     });
 
