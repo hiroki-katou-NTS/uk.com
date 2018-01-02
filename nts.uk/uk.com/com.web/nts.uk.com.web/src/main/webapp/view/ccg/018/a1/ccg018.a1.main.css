@@ -5,6 +5,10 @@
 	vertical-align: middle;
 }
 
+#A1-5 {
+	margin-top: 3px;
+}
+
 #A1-6 {
 	margin-left: 2px;
 	vertical-align: middle;
@@ -64,7 +68,7 @@ td {
 }
 
 .table1 tbody {
-	height: 482px;
+	height: 480px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
