@@ -118,7 +118,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 						Person person = personOpt.get();
 						employeeInfo.setPersonId(person.getPersonId());
 						employeeInfo.setPerName(person.getPersonNameGroup().getBusinessName() == null ? null
-								: person.getPersonNameGroup().getBusinessName().v());
+								: person.getPersonNameGroup().getPersonName().getFullName().v());
 					}
 				}
 			}
