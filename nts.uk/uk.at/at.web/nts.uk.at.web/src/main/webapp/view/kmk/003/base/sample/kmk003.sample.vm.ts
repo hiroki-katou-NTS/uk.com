@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk003.sample {
             
             fixTableOption2: any;
             dataSource2: KnockoutObservableArray<any>;
+            isEnableAllControl: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -25,7 +26,7 @@ module nts.uk.at.view.kmk003.sample {
                     {code: 2, name: '役職手当2'},
                     {code: 3, name: '基本給3'}
                 ]);
-                
+                self.isEnableAllControl = ko.observable(true);
                 self.dataSource1 = ko.observableArray([]);
                 self.fixTableOption1 = {
                     maxRow: 7,
@@ -79,7 +80,7 @@ module nts.uk.at.view.kmk003.sample {
              * testDataSource
              */
             public testDataSource() {
-                console.log(this.dataSource1());
+                this.isEnableAllControl.valueHasMutated()
             }
             
             /**
@@ -89,7 +90,7 @@ module nts.uk.at.view.kmk003.sample {
                 let self = this;
                 return [
                     {headerText: "カラム1", key: "column1", defaultValue: ko.observable(1200), width: 107, template: `<input data-bind="ntsTimeEditor: {
-                        inputFormat: 'time', mode: 'time'}" />`, cssClassName: 'column-time-editor'},
+                        inputFormat: 'time', mode: 'time', enable: true}" />`, cssClassName: 'column-time-editor'},
                     {headerText: "カラム2", key: "column2", defaultValue: ko.observable(true), width: 60, template: `<div data-bind="ntsCheckBox: {
                         enable: true}"></div>`},
                     {headerText: "カラム3", key: "column3", defaultValue: ko.observable({startTime: 1000, endTime: 1200}), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {

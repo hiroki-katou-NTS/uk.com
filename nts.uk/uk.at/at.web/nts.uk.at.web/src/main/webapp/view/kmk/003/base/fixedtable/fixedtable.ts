@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk003.base.fixedtable {
+module nts.fixedtable {
 
     /************************************************ PARAMETERS INITIAL FIXTABLE **********************************
     ***************************************************************************************************************/
@@ -161,6 +161,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
         $tableSelector: any;
         mapControl: Array<IControl>;
         tabindex: number;
+        isEnableAllControl: KnockoutObservable<boolean>;
         
         tableId: string;
         
@@ -181,6 +182,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
                 self.tabindex = -1;
             }
             self.itemList = data.dataSource;
+            self.isEnableAllControl = ko.observable(true);
             
             self.sortTimeASC();
             
@@ -529,6 +531,10 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             // update width control
             template = self.updateWidthControl(template, newProperties, columnSetting.width);
             
+            // Add enable attr to control.
+            template = template.replace('enable: true', 'enable: $parent.isEnableAllControl');
+            template = template.replace('enable:true', 'enable: $parent.isEnableAllControl');
+            
             // get cssClassName
             let cssClassName: string = '';
             if (!nts.uk.text.isNullOrEmpty(columnSetting.cssClassName)) {
@@ -623,59 +629,62 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             return result;
         }
     }
-    
+}
+/**
+    * FixTableBindingHandler
+    */
+class FixTableBindingHandler implements KnockoutBindingHandler {
+
     /**
-     * FixTableBindingHandler
+     * Constructor.
      */
-    class FixTableBindingHandler implements KnockoutBindingHandler {
-        
-        /**
-         * Constructor.
-         */
-        constructor() {
-        }
+    constructor() {
+    }
 
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
-            bindingContext: KnockoutBindingContext): void {
-            
-        }
+    /**
+     * Init.
+     */
+    init = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+        bindingContext: KnockoutBindingContext) => {
+        let input: any = valueAccessor();
+    }
 
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
-            bindingContext: KnockoutBindingContext): void {
-            
-            let webserviceLocator: any = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/base/fixedtable/fixedtable.xhtml').serialize();
-            
-            //get data
-            let input: any = valueAccessor();
-            let data: FixTableOption = input.option;
+    /**
+     * Update
+     */
+    update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+        bindingContext: KnockoutBindingContext) => {
 
-            let screenModel = new FixTableScreenModel(data);
-            screenModel.$element = $(element);
-            $(element).load(webserviceLocator, function() {
-                screenModel.initialScreen().done(() => {
-                    ko.cleanNode($(element)[0]);
-                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                    
-                    // set height table
-                    screenModel.$tableSelector.height(screenModel.tableStyle.height);
-                    
-                    // remove min-width default of ntsComboBox
-                    screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
-                        $("." + column.cssClassName).css({"min-width" : ""});
-                    });
-                });
+        let webserviceLocator: any = nts.uk.request.location.siteRoot
+            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
+            .mergeRelativePath('/view/kmk/003/base/fixedtable/fixedtable.xhtml').serialize();
+
+        //get data
+        let input: any = valueAccessor();
+        let data: nts.fixedtable.FixTableOption = input.option;
+
+        let screenModel = new nts.fixedtable.FixTableScreenModel(data);
+        if (input.isEnableAllControl) {
+            input.isEnableAllControl.subscribe(function(value: boolean) {
+                screenModel.isEnableAllControl(value);
             });
         }
+        $(element).load(webserviceLocator, function() {
+            screenModel.initialScreen().done(() => {
+                ko.cleanNode($(element)[0]);
+                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
 
+                // set height table
+                screenModel.$tableSelector.height(screenModel.tableStyle.height);
+
+                // remove min-width default of ntsComboBox
+                screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
+                    $("." + column.cssClassName).css({ "min-width": "" });
+                });
+            });
+        });
     }
-    
-    ko.bindingHandlers['ntsFixTableCustom'] = new FixTableBindingHandler();
+
 }
+
+ko.bindingHandlers['ntsFixTableCustom'] = new FixTableBindingHandler();

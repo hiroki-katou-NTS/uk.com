@@ -7,12 +7,13 @@ module kmk003.base.timerange {
         startName: string;
         endName: string;
         required: boolean;
-        enable: boolean;
+        enable: KnockoutObservable<boolean>;
         inputFormat: string;
         tabindex: number;
         
         startTime: KnockoutObservable<number>;
         endTime: KnockoutObservable<number>;
+        element: JQuery;
         
         /**
         * Constructor.
@@ -26,7 +27,7 @@ module kmk003.base.timerange {
             self.startName = ko.unwrap(input.endConstraint);
             self.endName = ko.unwrap(input.endConstraint);
             self.required = ko.unwrap(input.required);
-            self.enable = ko.unwrap(input.enable);
+            self.enable = ko.observable(input.enable ? input.enable() : true);
             self.inputFormat = ko.unwrap(input.inputFormat);
             self.tabindex = ko.unwrap(input.tabindex);
             
@@ -43,6 +44,7 @@ module kmk003.base.timerange {
                 
                 // event callback
                 self.value.valueHasMutated();
+                self.fireEventChangeData();
             });
             self.endTime.subscribe((newValue) => {
                 if (!self.validTimeRange(self.startTime(), newValue)) {
@@ -53,7 +55,22 @@ module kmk003.base.timerange {
                 
                 // event callback
                 self.value.valueHasMutated();
+                self.fireEventChangeData();
             });
+        }
+        
+        public fireEventChangeData() {
+            // Create event changed.
+            var changedEvent = new CustomEvent("timerangedatachange", {
+                detail: {},
+                bubbles: true,
+                cancelable: true
+            });
+            var self = this;
+            var htmlElement = self.element.parents('.kmk003-table-component').first().parent();
+            if (htmlElement.length > 0 && htmlElement[0].id) {
+                document.getElementById(htmlElement[0].id).dispatchEvent(changedEvent);
+            }
         }
 
         /**
@@ -128,6 +145,12 @@ module kmk003.base.timerange {
             let value: any = input.value;
 
             let screenModel = new ScreenModel(input);
+            screenModel.element = $(element);
+            if (input.enable) {
+                input.enable.subscribe(function(val) {
+                    screenModel.enable(val);
+                });
+            }
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
