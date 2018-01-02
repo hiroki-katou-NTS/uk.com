@@ -93,7 +93,7 @@ module nts.uk.at.view.kmk010.c {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.block.clear();
-                           nts.uk.ui.windows.close();
+//                           nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
                        nts.uk.ui.dialog.alertError(error).then(function() {
@@ -117,7 +117,7 @@ module nts.uk.at.view.kmk010.c {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.block.clear();
-                           nts.uk.ui.windows.close();
+//                           nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
                        nts.uk.ui.dialog.alertError(error).then(function() {
