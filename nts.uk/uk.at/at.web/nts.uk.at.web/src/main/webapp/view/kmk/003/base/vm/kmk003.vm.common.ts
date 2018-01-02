@@ -852,7 +852,7 @@ module nts.uk.at.view.kmk003.a {
                 flowRestTimezone: FlowRestTimezoneModel;
 
                 constructor() {
-                    this.fixRestTime = ko.observable(false);
+                    this.fixRestTime = ko.observable(true);
                     this.fixedRestTimezone = new TimezoneOfFixedRestTimeSetModel();
                     this.flowRestTimezone = new FlowRestTimezoneModel();
                 }
@@ -873,7 +873,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.fixRestTime(false);
+                    this.fixRestTime(true);
                     this.fixedRestTimezone.resetData();
                     this.flowRestTimezone.resetData();
                 }
