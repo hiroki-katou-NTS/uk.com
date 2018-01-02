@@ -405,7 +405,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.app')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.dom')
 		compile project(':at.ctx:function:nts.uk.ctx.at.function.app')
-		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.11.1.3')
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.11.1.4')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.13')
 	}
 }
