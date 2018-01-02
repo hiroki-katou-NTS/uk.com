@@ -173,7 +173,7 @@
 									constraint: 'WorkTimeCode',
 									option: siftCodeOption,
 									required: true,
-									enable: $parent.isNewMode}">
+									enable: $parent.isNewOrCopyMode()}">
 								</input> 
 								<input id="inp-worktimename" data-bind="ntsTextEditor: {
 									value: workTimeDisplayName.workTimeName,
@@ -217,7 +217,7 @@
 									value: workTimeDivision.workTimeDailyAtr,
 									optionsText: 'localizedName',
 									editable: false,
-									enable: $parent.isNewMode,
+									enable: $parent.isNewOrCopyMode(),
 									columns: [
 									{ prop: 'localizedName', length: 10 }]}">
 								</div>
@@ -231,7 +231,7 @@
 									value: workTimeDivision.workTimeMethodSet,
 									optionsText: 'localizedName',
 									editable: false,
-									enable: $parent.isNewMode() &amp;&amp; isRegularWork(),
+									enable: $parent.isNewOrCopyMode() &amp;&amp; isRegularWork(),
 									columns: [{ prop: 'localizedName', length: 6 }]}">
 								</div>
 							</div>

@@ -50,6 +50,8 @@ module nts.uk.at.view.kmk003.a {
             
             screenMode: KnockoutObservable<number>;
             isNewMode: KnockoutObservable<boolean>;
+            isCopyMode: KnockoutObservable<boolean>;
+            isNewOrCopyMode: KnockoutObservable<boolean>;
             isUpdateMode: KnockoutObservable<boolean>;
             isSimpleMode: KnockoutObservable<boolean>;
             isDetailMode: KnockoutObservable<boolean>;
@@ -142,6 +144,12 @@ module nts.uk.at.view.kmk003.a {
                 self.screenMode = ko.observable(ScreenMode.NEW);
                 self.isNewMode = ko.computed(() => {
                     return self.screenMode() == ScreenMode.NEW;
+                });
+                self.isCopyMode = ko.computed(() => {
+                    return self.screenMode() == ScreenMode.COPY;
+                });
+                self.isNewOrCopyMode = ko.computed(() => {
+                    return self.isNewMode() || self.isCopyMode();
                 });
                 self.isUpdateMode = ko.computed(() => {
                     return self.screenMode() == ScreenMode.UPDATE;
@@ -341,7 +349,7 @@ module nts.uk.at.view.kmk003.a {
                 if ($('.nts-editor').ntsError('hasError')) {
                     return;
                 }
-                self.mainSettingModel.save(self.isNewMode(), self.tabMode())
+                self.mainSettingModel.save(self.isNewOrCopyMode(), self.tabMode())
                     .done(() => {
                         // recheck abolish condition of list worktime
                         self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
@@ -394,7 +402,7 @@ module nts.uk.at.view.kmk003.a {
             public enterCopyMode(): void {
                 let self = this;
                 // set screen mode
-                self.screenMode(ScreenMode.NEW);
+                self.screenMode(ScreenMode.COPY);
 
                 // clear current worktimecode
                 self.mainSettingModel.workTimeSetting.worktimeCode('');
@@ -681,7 +689,8 @@ module nts.uk.at.view.kmk003.a {
         
         export enum ScreenMode {
             NEW,
-            UPDATE
+            UPDATE,
+            COPY
         }
     }
 }
