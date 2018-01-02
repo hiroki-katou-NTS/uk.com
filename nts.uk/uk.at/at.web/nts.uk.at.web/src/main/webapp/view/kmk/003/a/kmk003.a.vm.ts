@@ -367,6 +367,9 @@ module nts.uk.at.view.kmk003.a {
 
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
+
+                // focus worktime atr
+                $('#cbb-worktime-atr').focus();
             }
 
             /**
@@ -398,6 +401,9 @@ module nts.uk.at.view.kmk003.a {
 
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
+
+                // focus worktime atr
+                $('#cbb-worktime-atr').focus();
             }
 
             /**
@@ -432,11 +438,10 @@ module nts.uk.at.view.kmk003.a {
 
                     service.removeWorkTime(selectedCode).done(function() {
                         let currentIndex = _.findIndex(self.workTimeSettings(), item => item.worktimeCode === selectedCode);
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_16' });
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_16' })
+                            .then(() => self.loadListWorktime(null, currentIndex)); // reload list work time
 
-                        // reload list work time
-                        _.defer(() => self.loadListWorktime(null, currentIndex));
-
+                        // resolve
                         dfd.resolve();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
