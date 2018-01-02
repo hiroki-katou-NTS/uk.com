@@ -630,8 +630,6 @@ module cps002.a.vm {
 
         openFModal() {
 
-            let self = this;
-
             subModal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(() => {
 
             });
@@ -679,7 +677,14 @@ module cps002.a.vm {
 
         openInitModal() {
 
-            jump('/view/cps/009/a/index.xhtml');
+
+            subModal('/view/cps/009/a/index.xhtml', { title: '', height: 800, width: 1400 }).onClosed(() => {
+
+            });
+            //            
+            //            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
+            //                
+            //            });
         }
 
 

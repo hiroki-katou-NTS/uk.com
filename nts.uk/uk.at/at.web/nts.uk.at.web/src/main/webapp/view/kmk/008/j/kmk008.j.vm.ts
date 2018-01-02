@@ -20,9 +20,9 @@ module nts.uk.at.view.kmk008.j {
                         self.useWorkPlace(item.workPlaceUseAtr);
                         self.useClasss(item.classificationUseAtr);
                     } else {
-                        self.useEmployment(false);
-                        self.useWorkPlace(false);
-                        self.useClasss(false);
+                        self.useEmployment(true);
+                        self.useWorkPlace(true);
+                        self.useClasss(true);
                     }
                     dfd.resolve();
                 });

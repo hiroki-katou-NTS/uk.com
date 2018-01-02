@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 @Stateless
 public class CalcAttrOfDailyPerformanceCommandAddHandler extends CommandFacade<CalcAttrOfDailyPerformanceCommand> {
 
-	// TODO: create entity and code repo
+	//TODO: write repo
 	@Inject
 	private CalAttrOfDailyPerformanceRepository repo;
 

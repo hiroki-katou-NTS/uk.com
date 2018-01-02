@@ -130,17 +130,19 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "GROUP2_USE_ATR")
 	public BigDecimal group2UseAtr;
 
+	@Basic(optional = true)
 	@Column(name = "ATD_ITEM_CONDITION_GROUP1")
 	public String atdItemConditionGroup1;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP1", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
 	public KrcstErAlConGroup krcstErAlConGroup1;
 
+	@Basic(optional = true)
 	@Column(name = "ATD_ITEM_CONDITION_GROUP2")
 	public String atdItemConditionGroup2;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP2", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
 	public KrcstErAlConGroup krcstErAlConGroup2;
 

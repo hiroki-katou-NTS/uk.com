@@ -30,8 +30,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         constructor() {
             let self = this;
             let param = nts.uk.ui.windows.getShared("KDW007BParams");
-            param.countableAddAtdItems = Object.values(param.countableAddAtdItems ? param.countableAddAtdItems : []);
-            param.countableSubAtdItems = Object.values(param.countableSubAtdItems ? param.countableSubAtdItems : []);
+            param.countableAddAtdItems = _.values(param.countableAddAtdItems ? param.countableAddAtdItems : []);
+            param.countableSubAtdItems = _.values(param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.currentAtdItemCondition = ko.mapping.fromJS(param);
             self.currentAtdItemCondition.conditionAtr.subscribe((val) => {
                 self.currentAtdItemCondition.uncountableAtdItem(null);
@@ -236,8 +236,8 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             });
             if (!nts.uk.ui.errors.hasError()) {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);
-                param.countableAddAtdItems = Object.values(param.countableAddAtdItems);
-                param.countableSubAtdItems = Object.values(param.countableSubAtdItems);
+                param.countableAddAtdItems = _.values(param.countableAddAtdItems);
+                param.countableSubAtdItems = _.values(param.countableSubAtdItems);
                 nts.uk.ui.windows.setShared('KDW007BResult', param);
                 nts.uk.ui.windows.close();
             }
