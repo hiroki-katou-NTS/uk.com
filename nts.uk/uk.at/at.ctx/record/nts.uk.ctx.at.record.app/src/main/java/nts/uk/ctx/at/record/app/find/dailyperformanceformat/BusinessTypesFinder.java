@@ -30,9 +30,6 @@ public class BusinessTypesFinder {
 	 */
 	public List<BusinessTypeDto> findAll() {
 		String companyId = AppContexts.user().companyId();
-		if (this.businessTypeRepository.findAll(companyId).isEmpty()) {
-			throw new BusinessException("Msg_242");
-		} 
 		return this.businessTypeRepository.findAll(companyId).stream().map(item -> {
 			return new BusinessTypeDto(item.getBusinessTypeCode().v(), item.getBusinessTypeName().v());
 		}).collect(Collectors.toList());

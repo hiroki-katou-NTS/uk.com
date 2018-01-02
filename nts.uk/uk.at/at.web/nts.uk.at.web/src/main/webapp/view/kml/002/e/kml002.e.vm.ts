@@ -406,7 +406,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     },
                     timeUnit: {
                         roundingTime: self.roundingCd(),
-                        actualDisplayAtr: self.selectedProcessing() ? 1 : 0,
+                        actualDisplayAtr: self.checked() ? 1 : 0,
                         unitPrice: self.uPCd(),
                         lstTimeUnitFuncs: formAmount
                     }
