@@ -273,8 +273,10 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             let self = this;
             let row: any = {};
             _.forEach(self.columns, (column: FixColumn) => {
-                row[column.key] = ko.observable(ko.unwrap(column.defaultValue));
+                let value: any = JSON.parse(JSON.stringify(ko.unwrap(column.defaultValue)));
+                row[column.key] = ko.observable(value);
                 
+                // Subscriber columns
                 row[column.key].subscribe((newValue: any) => {
                     self.itemList.valueHasMutated();
                 });
