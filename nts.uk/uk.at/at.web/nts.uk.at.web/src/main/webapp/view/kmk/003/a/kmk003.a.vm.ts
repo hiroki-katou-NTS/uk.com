@@ -273,6 +273,9 @@ module nts.uk.at.view.kmk003.a {
                     // enter update mode
                     self.enterUpdateMode();
 
+                    // clear all errors
+                    self.clearAllError();
+
                     // update mainSettingModel data
                     self.mainSettingModel.updateData(worktimeSettingInfo);
 
@@ -364,6 +367,9 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterNewMode(): void {
                 let self = this;
+                // clear all errors
+                self.clearAllError();
+
                 // set screen mode
                 self.screenMode(ScreenMode.NEW);
 
@@ -412,6 +418,14 @@ module nts.uk.at.view.kmk003.a {
 
                 // focus worktime atr
                 $('#cbb-worktime-atr').focus();
+            }
+
+            /**
+             * Clear all errors
+             */
+            public clearAllError(): void {
+                $('.nts-editor').ntsError('clear');
+                $('.ntsControl').ntsError('clear');
             }
 
             /**
