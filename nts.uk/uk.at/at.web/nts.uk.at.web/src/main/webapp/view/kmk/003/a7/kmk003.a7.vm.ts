@@ -40,12 +40,13 @@ module a7 {
 
             //main model
             self.mainSettingModel = mainSettingModel;
-            self.loadDataToScreen();
+            
 
             self.isCheckFollowTime = ko.observable(true);
             self.isCheckFollowTime.subscribe(function() {
                 self.refreshColumnSet();
             });
+            self.dataSourceForFixedOrDiffTime = ko.observableArray([]);
             /////////////
             self.fixTableOptionForFixedOrDiffTime = {
                 maxRow: 10,
@@ -57,7 +58,8 @@ module a7 {
                 columns: self.columnSetting(),
                 tabindex: 92
             };
-
+            
+            self.loadDataToScreen();
             /////////////
             self.dataSourceForFlowOrFlexUse = ko.observableArray([]);
             self.fixTableOptionForFlowOrFlexUse = {
@@ -134,8 +136,23 @@ module a7 {
         private loadDataToScreen() {
             let self = this;
 
-            //to screen 
-            self.dataSourceForFixedOrDiffTime = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.listTimeRange;
+            //old 
+//            self.dataSourceForFixedOrDiffTime = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.listTimeRange;
+            
+            //new 
+            
+            self.dataSourceForFixedOrDiffTime.subscribe((newDataSource: any) => {
+                let listDeductionTimeModel: DeductionTimeModel[] = [];
+                for (let item of newDataSource) {
+                    let deduct = new DeductionTimeModel();
+                    deduct.start(item.column1().startTime);
+                    deduct.end(item.column1().endTime);
+                    listDeductionTimeModel.push(deduct);
+                }
+                self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
+//                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(listDeductionTimeModel);
+            });
+            
             //when UI change
             //self.dataSourceForFixedOrDiffTime.subscribe((v) => self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.fromListTimeRange(v)));
 
@@ -206,6 +223,17 @@ module a7 {
                 });
                 self.dataSourceForFlowOrFlexNotUse2(data2);
             }
+            else//for fixed or difftime
+            {
+                let data: any = [];
+
+                for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone()) {
+                    data.push({
+                        column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                    });
+                }
+                self.dataSourceForFixedOrDiffTime(data);
+            }
         }
 
          /**
@@ -224,7 +252,7 @@ module a7 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                    width: 243, template: '<div data-bind="ntsTimeRangeEditor: {required: true, enable: true, inputFormat: \'time\'}"/>'
+                    width: 243, template: `<div data-bind="ntsTimeRangeEditor: {required: true, enable: true, inputFormat: 'time'}"/>`
                 }
             ];
         }
@@ -234,12 +262,12 @@ module a7 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable("12:00"), width: 107,
-                    template: '<input data-bind="ntsTimeEditor: {inputFormat: \'time\',enable: false}" />',
+                    template: `<input data-bind="ntsTimeEditor: {inputFormat: 'time',mode: 'time',enable: false}" />`,
                     cssClassName: 'column-time-editor'
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable("12:00"), width: 107,
-                    template: '<input data-bind="ntsTimeEditor: {inputFormat: \'time\',enable: false}" />',
+                    template: `<input data-bind="ntsTimeEditor: {inputFormat: 'time',mode: 'time',enable: false}" />`,
                     cssClassName: 'column-time-editor',
                     enable: self.isCheckFollowTime()
                 }
