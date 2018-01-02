@@ -61,7 +61,7 @@
 			<hr />
 		</div>
 		<div class="labelSetting itemleft" style="display: inline-flex;">
-			<div style="margin-right: 10px;" data-bind="ntsComboBox: {
+			<div tabindex="49" style="margin-right: 10px;" data-bind="ntsComboBox: {
 						options: settingEnum.roundingTime,
 						optionsValue: 'value',
 						visibleItemsCount: 5,
@@ -74,7 +74,7 @@
 							{ prop: 'localizedName', length: 10 }
 						]}">
 			</div>
-			<div
+			<div tabindex="50"
 				data-bind="ntsSwitchButton: {
 						options: roundingProcsses,
 						optionsValue: 'code',
@@ -92,7 +92,7 @@
 		<div style="width: 50%">
 			<hr />
 		</div>
-		<div class="itemleft" style="display: inline-grid;" data-bind="ntsRadioBoxGroup: {
+		<div tabindex="51" class="itemleft" style="display: inline-grid;" data-bind="ntsRadioBoxGroup: {
 					options: calculationMethods,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -108,7 +108,7 @@
 			<div style="width: 50%">
 				<hr />
 			</div>
-			<div class="labelSetting, itemleft"
+			<div tabindex="52" class="labelSetting, itemleft"
 				data-bind="ntsComboBox: {
 					options: settingEnum.lstFixedChangeAtr,
 					optionsValue: 'value',
