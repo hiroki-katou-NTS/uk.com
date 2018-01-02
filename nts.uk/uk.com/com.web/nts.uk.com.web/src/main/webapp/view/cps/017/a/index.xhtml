@@ -74,10 +74,10 @@
 									height: 270,
 									options: listItems,
 									primaryKey: 'selectionItemId',
-									showNumbering:true,
+									showNumbering: false,
 									columns: [
-						                { headerText: '', key: 'selectionItemId', width: 20 ,hidden:true},
-						                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName', width: 195 }
+						                { headerText: 'aa', key: 'selectionItemId', width: 20 , hidden: true},
+						                { headerText: '#{i18n.getText('CPS017_7')}', key: 'selectionItemName', width: 255 }
 						            ],
 									multiple: false,
 									value: perInfoSelectionItem().selectionItemId}">
@@ -142,12 +142,12 @@
 									height: 270,
 									options: listSelection,
 									primaryKey: 'selectionID',
-									showNumbering:true,
+									showNumbering: false,
 									columns: [
 						                { headerText: '', key: 'selectionID', width: 20 ,hidden:true},
-						                { headerText: '#{i18n.getText('CPS017_18')}', key: 'initSelection', width: 100, formatter :makeIcon },
+						                { headerText: '#{i18n.getText('CPS017_18')}', key: 'initSelection', width: 60, formatter :makeIcon },
 						                { headerText: '#{i18n.getText('CPS017_16')}', key: 'selectionCD', width: 120 },
-						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 140}
+						                { headerText: '#{i18n.getText('CPS017_17')}', key: 'selectionName', width: 190}
 						            ],
 									multiple: false,
 									value: selection().selectionID}">
@@ -159,38 +159,46 @@
 
 				<!-- phần bên phải của màn hình  -->
 				<div id="content-right" data-bind="with: selection">
-					<div class="formlabel">
-						<div style="float: left;"
-							data-bind="ntsFormLabel: {constraint: ['SelectionCD','SelectionName'], required: true}"
-							class='distane col1'>
+				
+					<div class="form-input">
+
+						<div class='form-lable'
+							data-bind="ntsFormLabel: {constraint: ['SelectionCD','SelectionName'], required: true}">
 							<label>#{i18n.getText('CPS017_20')}</label>
 						</div>
-					</div>
 
-					<div class="distance">
-						<input id="code" style="width: 100px"
-							data-bind="ntsTextEditor: {
+						<div class="input">
+							<input id="code"
+								data-bind="ntsTextEditor: {
 								name: '#[CPS017_21]', 
 								value: selectionCD,
 								constraint: 'SelectionCD', 
 								required: true, 
 								enable: $parent.selection().selectionID() == undefined , 
  								immediate: false}" />
-						<input id="name"
-							data-bind="ntsTextEditor: {
+ 								
+							<input id="name"
+								data-bind="ntsTextEditor: {
 								name: '#[CPS017_22]',
 								value: selectionName, 
 								constraint: 'SelectionName', 
 								required: true, 
  								enable: $parent.enableSelName, 
 								immediate: false}" />
+						</div>
+
 					</div>
 
-					<div class="formlabel">
-						<div class="coll" style="margin-right: 26px;"
-							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">#{i18n.getText('CPS017_23')}</div>
-						<input style="width: 150px; margin-left: 40px;"
-							data-bind="ntsTextEditor: {
+					<div class="form-input">
+
+						<div class="form-lable"
+							data-bind="ntsFormLabel: {constraint: 'ExternalCD', required: false }">
+							<label>#{i18n.getText('CPS017_23')}</label>
+						</div>
+
+						<div class="input">
+							<input
+								data-bind="ntsTextEditor: {
 									name: '#[CPS017_24]',
 									value: externalCD,
 									constraint: 'listSelection',
@@ -198,20 +206,29 @@
 									required: false,
 									enable: $parent.enableSelName,
 									readonly: false}" />
+						</div>
+
 					</div>
 
-					<div class="distance">
-						<div class="coll" style="margin-right: 45px;"
-							data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">
+					<div class="form-input">
+
+						<div class="form-lable" data-bind="ntsFormLabel: {constraint: 'MemoSelection', required: false }">
 							<label>#{i18n.getText('CPS016_25')}</label>
 						</div>
-						<textarea
-							style="width: 260px; height: 80px; vertical-align: top; margin-left: -14px;"
-							data-bind="ntsMultilineEditor: { name: '#[CPS017_26]',value: memoSelection , constraint: 'MemoSelection',required: false, enable: $parent.enableSelName}" />
+
+
+						<div class="input">
+							<textarea id="memoSelection"
+								data-bind="ntsMultilineEditor: { 
+										name: '#[CPS017_26]',
+										value: memoSelection , 
+										constraint: 'MemoSelection',
+										required: false, 
+										enable: $parent.enableSelName}" />
+						</div>
 					</div>
 
 				</div>
-
 
 			</div>
 		</ui:define>
