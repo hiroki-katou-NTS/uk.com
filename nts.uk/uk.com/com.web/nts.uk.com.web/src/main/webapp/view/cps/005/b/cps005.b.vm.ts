@@ -279,7 +279,7 @@ module nts.uk.com.view.cps005.b {
                 self.perInfoItemSelectCode.subscribe(newItemId => {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     nts.uk.ui.errors.clearAll();
-                    new service.Service().getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType ).done(function(data: IPersonInfoItem) {
+                    new service.Service().getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: IPersonInfoItem) {
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
@@ -685,28 +685,10 @@ module nts.uk.com.view.cps005.b {
             if (data.numericItem()) {
                 self.numericItemMinus = data.numericItem().numericItemMinus();
                 self.numericItemAmount = data.numericItem().numericItemAmount();
-                if (data.numericItem().integerPart() === null) {
-
-                    self.integerPart = 0;
-
-                } else {
-
-                    self.integerPart = data.numericItem().integerPart();
-
-                }
-                if (data.numericItem().decimalPart() === null) {
-
-                    self.decimalPart = 0;
-
-                } else {
-
-                    self.decimalPart = data.numericItem().decimalPart();
-                }
-
+                self.integerPart = data.numericItem().integerPart();
+                self.decimalPart = data.numericItem().decimalPart();
                 self.numericItemMin = data.numericItem().numericItemMin();
-
                 self.numericItemMax = data.numericItem().numericItemMax();
-
             }
             if (data.dateItem()) {
                 self.dateItemType = data.dateItem().dateItemType();
