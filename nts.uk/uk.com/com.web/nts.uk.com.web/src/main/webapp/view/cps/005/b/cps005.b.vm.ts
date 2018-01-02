@@ -190,11 +190,11 @@ module nts.uk.com.view.cps005.b {
                         block.clear();
                         return;
                     }
-                    else if (newItemDef.singleItem.decimalPart === null) {
-                        $("#decimalPart").focus();
-                        block.clear();
-                        return;
-                    }
+                    //                    else if (newItemDef.singleItem.decimalPart === null) {
+                    //                        $("#decimalPart").focus();
+                    //                        block.clear();
+                    //                        return;
+                    //                    }
                 }
 
                 if (newItemDef.singleItem.dataType === 4) {
@@ -379,6 +379,10 @@ module nts.uk.com.view.cps005.b {
 
                         });
                     });
+                } else if (value === 2) {
+                    self.numericItem().numericItemAmount.subscribe(function(data) {
+                        console.log(data);
+                    });
                 }
             });
             if (data) {
@@ -448,6 +452,11 @@ module nts.uk.com.view.cps005.b {
             self.numericItemMinus(data.numericItemMinus);
             self.decimalPart(data.decimalPart || null);
             self.integerPart(data.integerPart || null);
+
+            self.numericItemAmount.subscribe(function(data) {
+                console.log(data);
+
+            });
         }
     }
     export class TimeItemModel {
