@@ -70,11 +70,9 @@
 				</div>
 				<div class="cell valign-center">
 					<!--A6_2 勤務種類名-->
-					<label class="lblWorkTypeCd" data-bind="text: workChange().workTypeCd"></label>
-					<LABEL data-bind="text: workChange().workTypeName"></LABEL> <br/>
+					<label class="lblWorkTypeCd" data-bind="text: workChange().workTypeCd() + '　' + workChange().workTypeName()"></label><br/>
 					<!--A6_4 就業時間帯名-->
-					<label class="lblSiftCd" data-bind="text: workChange().workTimeCd"></label> <label
-						data-bind="text: workChange().workTimeName"></label>
+					<label class="lblSiftCd" data-bind="text: workChange().workTimeCd() + '　' + workChange().workTimeName()"></label>
 				</div>
 			</div>
 		</div>

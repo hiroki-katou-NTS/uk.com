@@ -6,6 +6,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 
 public class ExtractionRangeCommand {
@@ -40,7 +41,7 @@ public class ExtractionRangeCommand {
 		if(strSpecify == StartSpecify.DAYS.value){
 			startDate.setStartDay(EnumAdaptor.valueOf(strPreviousDay, PreviousClassification.class), (int)strDay, (int)strDay==0?true:false);
 		}else if(strSpecify == StartSpecify.MONTH.value){
-			startDate.setStartMonth(EnumAdaptor.valueOf(strPreviousMonth, PreviousClassification.class), (int)strMonth, (int)strMonth==0?true:false);	
+			startDate.setStartMonth(EnumAdaptor.valueOf(strPreviousMonth, PreviousClassification.class), (int)strMonth, (int)strMonth==SpecifiedMonth.CURRENTMONTH.value?true:false);	
 		}
 		
 		EndDate endDate = new EndDate(endSpecify);
@@ -48,7 +49,7 @@ public class ExtractionRangeCommand {
 		if(endSpecify == EndSpecify.DAYS.value){
 			endDate.setEndDay(EnumAdaptor.valueOf(endPreviousDay, PreviousClassification.class), (int)endDay, (int)endDay==0?true:false);
 		}else if(endSpecify == EndSpecify.MONTH.value){
-			endDate.setEndMonth(EnumAdaptor.valueOf(endPreviousMonth, PreviousClassification.class), (int)endMonth, (int)endMonth==0?true:false);
+			endDate.setEndMonth(EnumAdaptor.valueOf(endPreviousMonth, PreviousClassification.class), (int)endMonth, (int)endMonth==SpecifiedMonth.CURRENTMONTH.value?true:false);
 		}
 		return new ExtractionPeriodDaily(extractionId, extractionRange, startDate, endDate);
 	}

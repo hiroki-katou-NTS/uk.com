@@ -138,6 +138,10 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput, reCreateAttr,
 				empCalAndSumExecLogID, processingDate, employeeID, companyID);
 		ReflectStampOutput reflectStamp = null;
+		if (lstStampItem != null) {
+			reflectStamp = new ReflectStampOutput();
+		}
+		
 		if (lstStampItem != null && !lstStampItem.isEmpty()) {
 			reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
 					timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID,
@@ -145,8 +149,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		}
 
 		// エラーチェック
-		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
-				timeLeavingOfDailyPerformance);
+//		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+//				timeLeavingOfDailyPerformance);
 		
 		return reflectStamp;
 	}

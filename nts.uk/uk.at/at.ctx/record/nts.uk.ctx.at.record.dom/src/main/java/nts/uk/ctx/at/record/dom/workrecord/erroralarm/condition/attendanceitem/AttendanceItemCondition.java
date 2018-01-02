@@ -24,8 +24,8 @@ public class AttendanceItemCondition extends DomainObject {
 
 	// グループ2
 	private ErAlConditionsAttendanceItem group2;
-	
-	//グループ2を利用する
+
+	// グループ2を利用する
 	private Boolean group2UseAtr;
 
 	private AttendanceItemCondition(LogicalOperator operatorBetweenGroups, Boolean group2UseAtr) {
@@ -35,16 +35,24 @@ public class AttendanceItemCondition extends DomainObject {
 	}
 
 	/** Init from Java type. */
-	public static AttendanceItemCondition init(int operatorBetweenGroups, boolean group2UseAtr){
-		return new AttendanceItemCondition(EnumAdaptor.valueOf(operatorBetweenGroups, LogicalOperator.class), group2UseAtr);
+	public static AttendanceItemCondition init(int operatorBetweenGroups, boolean group2UseAtr) {
+		return new AttendanceItemCondition(EnumAdaptor.valueOf(operatorBetweenGroups, LogicalOperator.class),
+				group2UseAtr);
 	}
-	
-	public void setGroup1(ErAlConditionsAttendanceItem group){
+
+	public void setGroup1(ErAlConditionsAttendanceItem group) {
 		this.group1 = group;
 	}
-	
-	public void setGroup2(ErAlConditionsAttendanceItem group){
+
+	public void setGroup2(ErAlConditionsAttendanceItem group) {
 		this.group2 = group;
 	}
-	
+
+	public void setGroupId1(String groupId) {
+		this.group1.setGroupId(groupId);
+	}
+
+	public void setGroupId2(String groupId) {
+		this.group2.setGroupId(groupId);
+	}
 }

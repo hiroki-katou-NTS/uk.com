@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTime
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の滞在時間 */
 @Data
@@ -38,13 +39,17 @@ public class StayingTimeDto {
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "PCログオフ後時間")
 	@AttendanceItemValue(itemId = 744, type = ValueType.INTEGER)
 	private Integer afterPCLogOffTime;
-	
+
 	public static StayingTimeDto fromStayingTime(StayingTimeOfDaily domain) {
-		return domain == null ? null : new StayingTimeDto(
-				domain.getStayingTime().valueAsMinutes(),
-				domain.getBeforeWoringTime().valueAsMinutes(),
-				domain.getAfterLeaveTime().valueAsMinutes(),
-				domain.getBeforePCLogOnTime().valueAsMinutes(),
-				domain.getAfterPCLogOffTime().valueAsMinutes());
+		return domain == null ? null
+				: new StayingTimeDto(domain.getStayingTime().valueAsMinutes(),
+						domain.getBeforeWoringTime().valueAsMinutes(), domain.getAfterLeaveTime().valueAsMinutes(),
+						domain.getBeforePCLogOnTime().valueAsMinutes(), domain.getAfterPCLogOffTime().valueAsMinutes());
+	}
+
+	public StayingTimeOfDaily toDomain() {
+		return new StayingTimeOfDaily(new AttendanceTime(afterPCLogOffTime), new AttendanceTime(beforePCLogOnTime),
+				new AttendanceTime(beforeWoringTime), new AttendanceTime(stayingTime),
+				new AttendanceTime(afterLeaveTime));
 	}
 }

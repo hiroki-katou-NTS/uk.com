@@ -96,6 +96,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         itemValueAll: KnockoutObservableArray<any> = ko.observableArray([]);
         
+        itemValueAllTemp: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
         dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("12","13","11","11","11","11"));
@@ -344,10 +346,23 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 }
             });
+            _.each(self.itemValueAllTemp(), (data: any) => {
+                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+                    let dataTemp = _.find(self.dpData, (item: any) => {
+                        return item.id == data.rowId.substring(1, data.rowId.length);
+                    });
+                    let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                        return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                    });
+                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), data.value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                    dataChangeProcess.push(dataMap);
+                }
+            });
             let param = { itemValues: dataChangeProcess }
             let dfd = $.Deferred();
             service.addAndUpdate(dataChangeProcess).done((data) => {
-                alert("done");
+               // alert("done");
+                self.btnExtraction_Click();
                 dfd.resolve();
             }).fail((data) => {
                 alert("fail");
@@ -407,6 +422,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.grayout();
                 service.startScreen(param).done((data) => {
                     self.formatCodes(data.lstControlDisplayItem.formatCode);
+                    self.itemValueAll(data.itemValues);
                     _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                         item.columns.unshift("sign");
                     });
@@ -1012,10 +1028,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             $(document).delegate("#dpGrid", 'iggridupdatingeditcellending', function(evt, ui) {
                 //information data edit 
-                let data : InfoCellEdit = self.pushDataEdit(evt, ui);
+                let data: InfoCellEdit = self.pushDataEdit(evt, ui);
                 let dfd = $.Deferred();
-//                nts.uk.ui.block.invisible();
-//                nts.uk.ui.block.grayout();
+                //                nts.uk.ui.block.invisible();
+                //                nts.uk.ui.block.grayout();
                 if (ui.columnKey.indexOf("Code") != -1) {
                     let item = _.find(self.lstAttendanceItem(), function(data) {
                         return data.id == ui.columnKey.substring(4, ui.columnKey.length);
@@ -1064,7 +1080,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         });
                         dfd.promise();
                     }
-                }
+                } else {
+                    let itemTemp = _.find(self.itemValueAllTemp(), item => {
+                        if (item.columnKey == ui.columnKey && item.rowId == ui.rowID) {
+                            item.value = ui.value;
+                            return item.columnKey == ui.columnKey && item.rowId == ui.rowID;
+                        }
+                    })
+                    if (!itemTemp) {
+                        self.itemValueAllTemp().push({ columnKey: ui.columnKey, rowId: ui.rowID, value: ui.value })
+                    }
+                    }
             });
         }
         
@@ -1380,7 +1406,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 var objectName = {};
                                 objectName["Name" + self.attendenceId] = lst[0].name;
                                 var objectCode = {};
-                                objectCode["Code" + self.attendenceId] = lst[0].name;
+                                objectCode["Code" + self.attendenceId] = lst[0].code;
 
                                 $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
                                     $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)

@@ -15,7 +15,7 @@ public class EditStateOfDailyPerformanceFinder extends FinderFacade {
 
 	@Inject
 	private EditStateOfDailyPerformanceRepository repo;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public EditStateOfDailyPerformanceDto find(String employeeId, GeneralDate baseDate) {
@@ -26,10 +26,9 @@ public class EditStateOfDailyPerformanceFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<EditStateOfDailyPerformanceDto> finds(String employeeId, GeneralDate baseDate) {
-		return ConvertHelper.mapTo(this.repo.findByKey(employeeId, baseDate), 
-				(c) -> new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(), c.getEditStateSetting().value));
+		return ConvertHelper.mapTo(this.repo.findByKey(employeeId, baseDate),
+				(c) -> new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(),
+						c.getEditStateSetting().value));
 	}
-	
-	
 
 }

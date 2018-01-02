@@ -9,15 +9,15 @@ import lombok.Data;
 
 @Data
 public class HdFromHdDto {
-	/**変更前の休出枠NO*/
-	private int overtimeFrameNo;
-	
-	/** 変更後の法定内休出NO*/
-	private int legalHdNo;
-	
+	/** 変更前の休出枠NO */
+	private int holidayWorkFrameNo;
+
+	/** 変更後の法定内休出NO */
+	private int calcOverDayEnd;
+
 	/** 変更後の法定外休出NO */
-	private int nonLegalHdNo;
-	
+	private int statutoryHd;
+
 	/** 変更後の祝日休出NO */
-	private int nonLegalPublicHdNo;
+	private int excessHd;
 }

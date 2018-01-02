@@ -36,7 +36,7 @@ public class JpaAutoCalRestTimeSettingSetMemento implements AutoCalRestTimeSetti
 	@Override
 	public void setRestTime(AutoCalSetting restTime) {
 		this.entity.setRestTimeAtr(restTime.getCalAtr().value);
-		this.entity.setRestTimeLimit(restTime.getUpLimitOtSet().value);
+		this.entity.setRestTimeLimit(restTime.getUpLimitORtSet().value);
 	}
 
 	/*
@@ -49,7 +49,7 @@ public class JpaAutoCalRestTimeSettingSetMemento implements AutoCalRestTimeSetti
 	@Override
 	public void setLateNightTime(AutoCalSetting lateNightTime) {
 		this.entity.setLateNightTimeAtr(lateNightTime.getCalAtr().value);
-		this.entity.setLateNightTimeLimit(lateNightTime.getUpLimitOtSet().value);
+		this.entity.setLateNightTimeLimit(lateNightTime.getUpLimitORtSet().value);
 	}
 
 }

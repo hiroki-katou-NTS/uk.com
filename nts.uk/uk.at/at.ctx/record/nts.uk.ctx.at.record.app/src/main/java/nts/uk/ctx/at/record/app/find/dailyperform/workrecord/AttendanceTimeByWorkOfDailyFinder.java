@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeB
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.WorkTimeOfDailyDto;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
+import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
@@ -32,19 +33,20 @@ public class AttendanceTimeByWorkOfDailyFinder extends FinderFacade {
 			dto.setWorkTimes(ConvertHelper.mapTo(domain.getWorkTimes(), 
 					(c) -> new WorkTimeOfDailyDto(
 								c.getWorkFrameNo().v(), 
-								new ActualWorkTimeSheetDto(
-									new WithActualTimeStampDto(
-										getTimeStample(c.getTimeSheet().getStart().getStamp().orElse(null)), 
-										getTimeStample(c.getTimeSheet().getStart().getActualStamp()), 
-										c.getTimeSheet().getStart().getNumberOfReflectionStamp()), 
-									new WithActualTimeStampDto(
-											getTimeStample(c.getTimeSheet().getEnd().getStamp().orElse(null)), 
-											getTimeStample(c.getTimeSheet().getEnd().getActualStamp()), 
-													c.getTimeSheet().getEnd().getNumberOfReflectionStamp())), 
+								c.getTimeSheet() == null ? null : new ActualWorkTimeSheetDto(
+									getActualStamp(c.getTimeSheet().getStart()), 
+									getActualStamp(c.getTimeSheet().getEnd())), 
 								c.getWorkTime().valueAsMinutes())));
 		}
 		
 		return dto;
+	}
+
+	private WithActualTimeStampDto getActualStamp(TimeActualStamp c) {
+		return c == null ? null : new WithActualTimeStampDto(
+					getTimeStample(c.getStamp().orElse(null)), 
+					getTimeStample(c.getActualStamp()), 
+					c.getNumberOfReflectionStamp());
 	}
 
 	private TimeStampDto getTimeStample(WorkStamp domain) {

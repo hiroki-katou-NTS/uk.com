@@ -87,7 +87,7 @@
 							</div>
 
 							<div class="line_col_2">
-								<input data-bind="ntsTextEditor: {value: itemNameText }" />
+								<input id="itemName" data-bind="ntsTextEditor: {value: itemNameText, constraint:'ItemName'}"  />
 							</div>
 
 							<com:ko-if bind="currentItem().systemRequired === 0">

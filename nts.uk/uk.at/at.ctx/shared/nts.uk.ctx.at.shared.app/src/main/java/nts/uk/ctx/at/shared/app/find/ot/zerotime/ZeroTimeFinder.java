@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.app.find.ot.zerotime;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,25 +44,25 @@ public class ZeroTimeFinder {
 	private ZeroTimeDto convertToDbType(ZeroTime overdayCalc) {
 
 		ZeroTimeDto overdayCalcDto = new ZeroTimeDto();
-			overdayCalcDto.setCalcFromZeroTime(overdayCalc.getCalcFromZeroTime());
-			overdayCalcDto.setLegalHd(overdayCalc.getLegalHd());
-			overdayCalcDto.setNonLegalHd(overdayCalc.getNonLegalHd());
-			overdayCalcDto.setNonLegalPublicHd(overdayCalc.getNonLegalPublicHd());
-			overdayCalcDto.setWeekday1(overdayCalc.getWeekday1());
-			overdayCalcDto.setNonLegalHd1(overdayCalc.getNonLegalHd1());
-			overdayCalcDto.setNonLegalPublicHd1(overdayCalc.getNonLegalPublicHd1());
-			overdayCalcDto.setWeekday2(overdayCalc.getWeekday2());
-			overdayCalcDto.setLegalHd2(overdayCalc.getLegalHd2());
-			overdayCalcDto.setNonLegalHd2(overdayCalc.getNonLegalHd2());
-			overdayCalcDto.setWeekday3(overdayCalc.getWeekday3());
-			overdayCalcDto.setLegalHd3(overdayCalc.getLegalHd3());
-			overdayCalcDto.setNonLegalPublicHd3(overdayCalc.getNonLegalPublicHd3());
-			overdayCalcDto.setWeekdayHoliday(overdayCalc.getWeekdayHoliday().stream()
-					.map(c -> convertToDbTypeWeekdayHoliday(c)).collect(Collectors.toList()));
-			overdayCalcDto.setOverdayHolidayAtten(overdayCalc.getOverdayHolidayAtten().stream()
-					.map(c -> convertToDbTypeOverdayHolidayAtten(c)).collect(Collectors.toList()));
-			overdayCalcDto.setOverdayCalcHoliday(overdayCalc.getOverdayCalcHoliday().stream()
-					.map(c -> convertToDbTypeOverdayCalcHoliday(c)).collect(Collectors.toList()));
+		overdayCalcDto.setCalcFromZeroTime(overdayCalc.getCalcFromZeroTime());
+		overdayCalcDto.setLegalHd(overdayCalc.getLegalHd());
+		overdayCalcDto.setNonLegalHd(overdayCalc.getNonLegalHd());
+		overdayCalcDto.setNonLegalPublicHd(overdayCalc.getNonLegalPublicHd());
+		overdayCalcDto.setWeekday1(overdayCalc.getWeekday1());
+		overdayCalcDto.setNonLegalHd1(overdayCalc.getNonLegalHd1());
+		overdayCalcDto.setNonLegalPublicHd1(overdayCalc.getNonLegalPublicHd1());
+		overdayCalcDto.setWeekday2(overdayCalc.getWeekday2());
+		overdayCalcDto.setLegalHd2(overdayCalc.getLegalHd2());
+		overdayCalcDto.setNonLegalHd2(overdayCalc.getNonLegalHd2());
+		overdayCalcDto.setWeekday3(overdayCalc.getWeekday3());
+		overdayCalcDto.setLegalHd3(overdayCalc.getLegalHd3());
+		overdayCalcDto.setNonLegalPublicHd3(overdayCalc.getNonLegalPublicHd3());
+		overdayCalcDto.setWeekdayHoliday(overdayCalc.getWeekdayHoliday().stream()
+				.map(c -> convertToDbTypeWeekdayHoliday(c)).collect(Collectors.toList()));
+		overdayCalcDto.setOverdayHolidayAtten(overdayCalc.getOverdayHolidayAtten().stream()
+				.map(c -> convertToDbTypeOverdayHolidayAtten(c)).collect(Collectors.toList()));
+		overdayCalcDto.setOverdayCalcHoliday(overdayCalc.getOverdayCalcHoliday().stream()
+				.map(c -> convertToDbTypeOverdayCalcHoliday(c)).collect(Collectors.toList()));
 		return overdayCalcDto;
 	}
 
@@ -78,8 +77,8 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		HdFromWeekdayDto overdayHolidayAttenDto = new HdFromWeekdayDto();
-			overdayHolidayAttenDto.setHdFrameNo(holidayAtten.getHdFrameNo().v());
-			overdayHolidayAttenDto.setOvertimeFrameNo(holidayAtten.getOvertimeFrameNo().v());
+		overdayHolidayAttenDto.setHolidayWorkFrameNo(holidayAtten.getHolidayWorkFrameNo().v());
+		overdayHolidayAttenDto.setOverWorkNo(holidayAtten.getOverWorkNo().v());
 		return overdayHolidayAttenDto;
 	}
 
@@ -94,10 +93,10 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		HdFromHdDto overdayHolidayDto = new HdFromHdDto();
-			overdayHolidayDto.setOvertimeFrameNo(overdayCalcHoliday.getBreakFrameNo().v());
-			overdayHolidayDto.setLegalHdNo(overdayCalcHoliday.getLegalHdNo().v());
-			overdayHolidayDto.setNonLegalHdNo(overdayCalcHoliday.getNonLegalHdNo().v());
-			overdayHolidayDto.setNonLegalPublicHdNo(overdayCalcHoliday.getNonLegalPublicHdNo().v());
+		overdayHolidayDto.setCalcOverDayEnd(overdayCalcHoliday.getCalcOverDayEnd().v());
+		overdayHolidayDto.setExcessHd(overdayCalcHoliday.getExcessHd().v());
+		overdayHolidayDto.setStatutoryHd(overdayCalcHoliday.getStatutoryHd().v());
+		overdayHolidayDto.setHolidayWorkFrameNo(overdayCalcHoliday.getHolidayWorkFrameNo().v());
 		return overdayHolidayDto;
 	}
 
@@ -112,10 +111,10 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		WeekdayHolidayDto weekdayHolidayDto = new WeekdayHolidayDto();
-			weekdayHolidayDto.setOverTimeFrameNo(weekdayHoliday.getOverTimeFrameNo().v());
-			weekdayHolidayDto.setLegalHdNo(weekdayHoliday.getLegalHdNo().v());
-			weekdayHolidayDto.setNonLegalHdNo(weekdayHoliday.getNonLegalHdNo().v());
-			weekdayHolidayDto.setNonLegalPublicHdNo(weekdayHoliday.getNonLegalPublicHdNo().v());
+		weekdayHolidayDto.setExcessHolidayNo(weekdayHoliday.getExcessHolidayNo().v());
+		weekdayHolidayDto.setExcessSphdNo(weekdayHoliday.getExcessSphdNo().v());
+		weekdayHolidayDto.setOverworkFrameNo(weekdayHoliday.getOverworkFrameNo().v());
+		weekdayHolidayDto.setWeekdayNo(weekdayHoliday.getWeekdayNo().v());
 		return weekdayHolidayDto;
 	}
 }

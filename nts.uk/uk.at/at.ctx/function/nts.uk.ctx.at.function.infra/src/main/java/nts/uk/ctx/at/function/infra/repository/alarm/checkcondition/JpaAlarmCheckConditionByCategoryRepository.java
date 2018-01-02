@@ -13,6 +13,10 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryPk;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryRole;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetBusinessType;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetClassification;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetEmployment;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetJobTitle;
 
 /**
  * 
@@ -86,19 +90,67 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 			entity.targetCondition.filterByEmployment = domain.getExtractTargetCondition().isFilterByEmployment() ? 1 : 0;
 			entity.targetCondition.filterByJobTitle = domain.getExtractTargetCondition().isFilterByJobTitle() ? 1 : 0;
 
+			List<KfnmtAlarmCheckTargetEmployment> oldListTargetEmployment = entity.targetCondition.listEmployment;
+			List<KfnmtAlarmCheckTargetEmployment> newListTargetEmployment = domain.getExtractTargetCondition().getLstEmploymentCode().stream().map(item -> new KfnmtAlarmCheckTargetEmployment(domain.getExtractTargetCondition().getId(), item)).collect(Collectors.toList());
+			for (KfnmtAlarmCheckTargetEmployment newTarget : newListTargetEmployment) {
+				for (KfnmtAlarmCheckTargetEmployment oldTarget : oldListTargetEmployment) {
+					if (oldTarget.pk.equals(newTarget.pk)) {
+						newListTargetEmployment.set(newListTargetEmployment.indexOf(newTarget), oldTarget);
+						break;
+					}
+				}
+			}
+			entity.targetCondition.listEmployment = newListTargetEmployment;
+			
+			List<KfnmtAlarmCheckTargetClassification> oldListTargetClassification = entity.targetCondition.listClassification;
+			List<KfnmtAlarmCheckTargetClassification> newListTargetClassification = domain.getExtractTargetCondition().getLstClassificationCode().stream().map(item -> new KfnmtAlarmCheckTargetClassification(domain.getExtractTargetCondition().getId(), item)).collect(Collectors.toList());
+			for (KfnmtAlarmCheckTargetClassification newTarget : newListTargetClassification) {
+				for (KfnmtAlarmCheckTargetClassification oldTarget : oldListTargetClassification) {
+					if (oldTarget.pk.equals(newTarget.pk)) {
+						newListTargetClassification.set(newListTargetClassification.indexOf(newTarget), oldTarget);
+						break;
+					}
+				}
+			}
+			entity.targetCondition.listClassification = newListTargetClassification;
+			
+			List<KfnmtAlarmCheckTargetJobTitle> oldListTargetJobTitle = entity.targetCondition.listJobTitle;
+			List<KfnmtAlarmCheckTargetJobTitle> newListTargetJobTitle = domain.getExtractTargetCondition().getLstJobTitleId().stream().map(item -> new KfnmtAlarmCheckTargetJobTitle(domain.getExtractTargetCondition().getId(), item)).collect(Collectors.toList());
+			for (KfnmtAlarmCheckTargetJobTitle newTarget : newListTargetJobTitle) {
+				for (KfnmtAlarmCheckTargetJobTitle oldTarget : oldListTargetJobTitle) {
+					if (oldTarget.pk.equals(newTarget.pk)) {
+						newListTargetJobTitle.set(newListTargetJobTitle.indexOf(newTarget), oldTarget);
+						break;
+					}
+				}
+			}
+			entity.targetCondition.listJobTitle = newListTargetJobTitle;
+			
+			List<KfnmtAlarmCheckTargetBusinessType> oldListTargetBusinessType = entity.targetCondition.listBusinessType;
+			List<KfnmtAlarmCheckTargetBusinessType> newListTargetBusinessType = domain.getExtractTargetCondition().getLstBusinessTypeCode().stream().map(item -> new KfnmtAlarmCheckTargetBusinessType(domain.getExtractTargetCondition().getId(), item)).collect(Collectors.toList());
+			for (KfnmtAlarmCheckTargetBusinessType newTarget : newListTargetBusinessType) {
+				for (KfnmtAlarmCheckTargetBusinessType oldTarget : oldListTargetBusinessType) {
+					if (oldTarget.pk.equals(newTarget.pk)) {
+						newListTargetBusinessType.set(newListTargetBusinessType.indexOf(newTarget), oldTarget);
+						break;
+					}
+				}
+			}
+			entity.targetCondition.listBusinessType = newListTargetBusinessType;
+			
 			this.commandProxy().update(entity);
 		}
 
 	}
 
 	// When alarm check condition by category is deleted
-	// Delete the "time item check of work record (勤務実績の勤怠項目チェック)" and "error
-	// item condition of time item (勤怠項目のエラーアラーム条件)"
+	// Delete the "time item check of work record (勤務実績の勤怠項目チェック)"
+	// and "error item condition of time item (勤怠項目のエラーアラーム条件)" (da co trong workrecord/erroralarm/condition/attendanceitem)
 	// linked to error work alarm check ID of work record
 	@Override
-	public void delete(AlarmCheckConditionByCategory domain) {
-		// TODO Auto-generated method stub
-
+	public void delete(String companyId, int category, String alarmConditionCode) {
+		this.commandProxy().remove(KfnmtAlarmCheckConditionCategory.class, new KfnmtAlarmCheckConditionCategoryPk(
+				companyId, category, alarmConditionCode));
 	}
 
 	@Override

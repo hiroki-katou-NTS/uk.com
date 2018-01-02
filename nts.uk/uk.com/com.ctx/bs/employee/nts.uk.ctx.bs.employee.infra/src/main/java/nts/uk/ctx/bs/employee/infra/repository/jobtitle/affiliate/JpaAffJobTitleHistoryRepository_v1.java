@@ -31,7 +31,7 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	private final String GET_BY_LISTSID_DATE = "SELECT h FROM BsymtAffJobTitleHist h"
 			+ " where h.sid IN :lstSid AND h.strDate <= :standardDate and h.endDate >= :standardDate";
 	private final String GET_BY_HID_SID = "select h from BsymtAffJobTitleHist h"
-			+ " where h.sid = :sid and h.hisId = :hid";
+			+ " where h.sid = :sid and h.hisId = :hisId";
 
 	/**
 	 * Convert from domain to entity

@@ -35,7 +35,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public KrcdtDayOvertimeworkPK krcdtDayOvertimeworkPK;
 	/*残業時間1*/
-	@Column(name = "OVERTIME_1")
+	@Column(name = "OVER_TIME_1")
 	public int overTime1;
 	/*残業時間2*/
 	@Column(name = "OVER_TIME_2")
@@ -359,7 +359,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 				   new AttendanceTime(this.preOverTimeAppTime10),
 				   new AttendanceTime(0)));
 		
-		return new OverTimeOfDaily(Collections.emptyList(), 
+		return new OverTimeOfDaily(new ArrayList<>(), 
 								   list,
 								   Finally.of(new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.ileglMidntOverTime),new AttendanceTime(this.calcIleglMidNOverTime)))),
 								   new AttendanceTime(this.ileglMidntOverTime),

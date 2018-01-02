@@ -99,6 +99,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         startPage(code): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             service.getAll().done((lstData) => {
                 if (lstData && lstData.length > 0) {
                     let sortedData = _.orderBy(lstData, ['code'], ['asc']);
@@ -113,6 +114,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.isNewMode(true);
                     self.selectedTab('tab-1');
                 }
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -190,24 +192,24 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 data.workTypeCondition.actualFilterAtr = data.workTypeCondition.actualFilterAtr ? 1 : 0;
                 data.workTimeCondition.planFilterAtr = data.workTimeCondition.planFilterAtr ? 1 : 0;
                 data.workTimeCondition.actualFilterAtr = data.workTimeCondition.actualFilterAtr ? 1 : 0;
-                data.alCheckTargetCondition.lstBusinessType = Object.values(data.alCheckTargetCondition.lstBusinessType ? data.alCheckTargetCondition.lstBusinessType : []);
-                data.alCheckTargetCondition.lstJobTitle = Object.values(data.alCheckTargetCondition.lstJobTitle ? data.alCheckTargetCondition.lstJobTitle : []);
-                data.alCheckTargetCondition.lstEmployment = Object.values(data.alCheckTargetCondition.lstEmployment ? data.alCheckTargetCondition.lstEmployment : []);
-                data.alCheckTargetCondition.lstClassification = Object.values(data.alCheckTargetCondition.lstClassification ? data.alCheckTargetCondition.lstClassification : []);
-                data.workTypeCondition.planLstWorkType = Object.values(data.workTypeCondition.planLstWorkType ? data.workTypeCondition.planLstWorkType : []);
-                data.workTypeCondition.actualLstWorkType = Object.values(data.workTypeCondition.actualLstWorkType ? data.workTypeCondition.actualLstWorkType : []);
-                data.workTimeCondition.planLstWorkTime = Object.values(data.workTimeCondition.planLstWorkTime ? data.workTimeCondition.planLstWorkTime : []);
-                data.workTimeCondition.actualLstWorkTime = Object.values(data.workTimeCondition.actualLstWorkTime ? data.workTimeCondition.actualLstWorkTime : []);
-                data.lstApplicationTypeCode = Object.values(data.lstApplicationTypeCode ? data.lstApplicationTypeCode : []);
-                data.erAlAtdItemConditionGroup1 = Object.values(data.erAlAtdItemConditionGroup1 ? data.erAlAtdItemConditionGroup1 : []);
-                data.erAlAtdItemConditionGroup2 = Object.values(data.erAlAtdItemConditionGroup2 ? data.erAlAtdItemConditionGroup2 : []);
+                data.alCheckTargetCondition.lstBusinessType = _.values(data.alCheckTargetCondition.lstBusinessType ? data.alCheckTargetCondition.lstBusinessType : []);
+                data.alCheckTargetCondition.lstJobTitle = _.values(data.alCheckTargetCondition.lstJobTitle ? data.alCheckTargetCondition.lstJobTitle : []);
+                data.alCheckTargetCondition.lstEmployment = _.values(data.alCheckTargetCondition.lstEmployment ? data.alCheckTargetCondition.lstEmployment : []);
+                data.alCheckTargetCondition.lstClassification = _.values(data.alCheckTargetCondition.lstClassification ? data.alCheckTargetCondition.lstClassification : []);
+                data.workTypeCondition.planLstWorkType = _.values(data.workTypeCondition.planLstWorkType ? data.workTypeCondition.planLstWorkType : []);
+                data.workTypeCondition.actualLstWorkType = _.values(data.workTypeCondition.actualLstWorkType ? data.workTypeCondition.actualLstWorkType : []);
+                data.workTimeCondition.planLstWorkTime = _.values(data.workTimeCondition.planLstWorkTime ? data.workTimeCondition.planLstWorkTime : []);
+                data.workTimeCondition.actualLstWorkTime = _.values(data.workTimeCondition.actualLstWorkTime ? data.workTimeCondition.actualLstWorkTime : []);
+                data.lstApplicationTypeCode = _.values(data.lstApplicationTypeCode ? data.lstApplicationTypeCode : []);
+                data.erAlAtdItemConditionGroup1 = _.values(data.erAlAtdItemConditionGroup1 ? data.erAlAtdItemConditionGroup1 : []);
+                data.erAlAtdItemConditionGroup2 = _.values(data.erAlAtdItemConditionGroup2 ? data.erAlAtdItemConditionGroup2 : []);
                 _.forEach(data.erAlAtdItemConditionGroup1, (item) => {
-                    item.countableAddAtdItems = Object.values(item.countableAddAtdItems);
-                    item.countableSubAtdItems = Object.values(item.countableSubAtdItems);
+                    item.countableAddAtdItems = _.values(item.countableAddAtdItems);
+                    item.countableSubAtdItems = _.values(item.countableSubAtdItems);
                 });
                 _.forEach(data.erAlAtdItemConditionGroup2, (item) => {
-                    item.countableAddAtdItems = Object.values(item.countableAddAtdItems);
-                    item.countableSubAtdItems = Object.values(item.countableSubAtdItems);
+                    item.countableAddAtdItems = _.values(item.countableAddAtdItems);
+                    item.countableSubAtdItems = _.values(item.countableSubAtdItems);
                 });
                 if (self.isNewMode() && self.isExistedCode()) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_3" }).then(() => {
@@ -216,13 +218,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 } else {
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            self.startPage(self.isNewMode() ? "U" + data.code : data.code);
                             if (self.lstErrorAlarm().length > 0) {
                                 $("#errorAlarmWorkRecordName").focus();
                             } else {
                                 $("#errorAlarmWorkRecordCode").focus();
                             }
                         });
-                        self.startPage(self.isNewMode() ? "U" + data.code : data.code);
                     });
                 }
             }
@@ -235,13 +237,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_618" }).ifYes(() => {
                 service.remove(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.startPage(null);
                         if (self.lstErrorAlarm().length > 0) {
                             $("#errorAlarmWorkRecordName").focus();
                         } else {
                             $("#errorAlarmWorkRecordCode").focus();
                         }
                     });
-                    self.startPage(null);
                 });
             })
         }
@@ -657,6 +659,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         actualLstWorkType: KnockoutObservableArray<string>;
         displayLstWorkTypePlan: KnockoutObservable<string>;
         displayLstWorkTypeActual: KnockoutObservable<string>;
+        requireWorkTypeActual: any;
 
         constructor(param) {
             this.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
@@ -665,6 +668,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.planLstWorkType = param ? ko.observable(param.planLstWorkType) : ko.observableArray([]);
             this.actualFilterAtr = param ? ko.observable(param.actualFilterAtr) : ko.observable(false);
             this.actualLstWorkType = param ? ko.observable(param.actualLstWorkType) : ko.observableArray([]);
+            this.requireWorkTypeActual = ko.computed(() => {
+                return this.comparePlanAndActual() != 1 && this.actualFilterAtr();
+            });
             this.planFilterAtr.subscribe((val) => {
                 if (!val) {
                     $("#displayLstWorkTypePlan").ntsError("clear");
@@ -762,6 +768,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         actualLstWorkTime: KnockoutObservableArray<string>;
         displayLstWorkTimePlan: KnockoutObservable<string>;
         displayLstWorkTimeActual: KnockoutObservable<string>;
+        requireWorkTimeActual: any;
 
         constructor(param) {
             this.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
@@ -770,6 +777,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.planLstWorkTime = param ? ko.observable(param.planLstWorkTime) : ko.observableArray([]);
             this.actualFilterAtr = param ? ko.observable(param.actualFilterAtr) : ko.observable(false);
             this.actualLstWorkTime = param ? ko.observable(param.actualLstWorkTime) : ko.observableArray([]);
+            this.requireWorkTimeActual = ko.computed(()=>{
+                return this.comparePlanAndActual() != 1 && this.actualFilterAtr();
+            });
             this.planFilterAtr.subscribe((val) => {
                 if (!val) {
                     $("#displayLstWorkTimePlan").ntsError("clear");

@@ -10,6 +10,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.goout.dto.OutingTimeOfDailyPer
 import nts.uk.ctx.at.record.app.find.dailyperform.goout.dto.OutingTimeZoneDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
+import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 
@@ -28,36 +30,29 @@ public class OutingTimeOfDailyPerformanceFinder extends FinderFacade {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
-			dto.setTimeZone(
-					ConvertHelper.mapTo(domain.getOutingTimeSheets(),
-							(c) -> new OutingTimeZoneDto(c.getOutingFrameNo().v().intValue(), new WithActualTimeStampDto(
-									new TimeStampDto(
-											c.getGoOut().getStamp().get().getTimeWithDay().valueAsMinutes(),
-											c.getGoOut().getStamp().get().getAfterRoundingTime().valueAsMinutes(), c
-													.getGoOut().getStamp().get().getLocationCode().v(),
-											c.getGoOut().getStamp().get().getStampSourceInfo().value),
-									new TimeStampDto(c.getGoOut().getActualStamp().getTimeWithDay().valueAsMinutes(),
-											c.getGoOut().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
-											c.getGoOut().getActualStamp().getLocationCode().v(),
-											c.getGoOut().getActualStamp().getStampSourceInfo().value),
-									c.getGoOut().getNumberOfReflectionStamp()),
-									new WithActualTimeStampDto(
-											new TimeStampDto(
-													c.getComeBack().getStamp().get().getTimeWithDay().valueAsMinutes(),
-													c.getComeBack().getStamp().get().getAfterRoundingTime()
-															.valueAsMinutes(),
-													c.getComeBack().getStamp().get().getLocationCode().v(),
-													c.getComeBack().getStamp().get().getStampSourceInfo().value),
-											new TimeStampDto(
-													c.getComeBack().getActualStamp().getTimeWithDay().valueAsMinutes(),
-													c.getComeBack().getActualStamp().getAfterRoundingTime()
-															.valueAsMinutes(),
-													c.getComeBack().getActualStamp().getLocationCode().v(),
-													c.getComeBack().getActualStamp().getStampSourceInfo().value),
-											c.getComeBack().getNumberOfReflectionStamp()),
-									c.getReasonForGoOut().value)));
+			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTimeSheets(),
+					(c) -> new OutingTimeZoneDto(
+							c.getOutingFrameNo().v().intValue(),
+							toWithActualTimeStamp(c.getGoOut()),
+							toWithActualTimeStamp(c.getComeBack()),
+							c.getReasonForGoOut().value, 
+							c.getOutingTimeCalculation() == null ? null : c.getOutingTimeCalculation().valueAsMinutes(),
+							c.getOutingTime() == null ? null : c.getOutingTime().valueAsMinutes())));
 		}
 		return dto;
+	}
+
+	private WithActualTimeStampDto toWithActualTimeStamp(TimeActualStamp c) {
+		return new WithActualTimeStampDto(
+				getTimeStamp(c.getStamp().orElse(null)),
+				getTimeStamp(c.getActualStamp()),
+				c.getNumberOfReflectionStamp());
+	}
+
+	private TimeStampDto getTimeStamp(WorkStamp c) {
+		return c == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
+				c.getAfterRoundingTime().valueAsMinutes(),
+				c.getLocationCode().v(), c.getStampSourceInfo().value);
 	}
 
 }

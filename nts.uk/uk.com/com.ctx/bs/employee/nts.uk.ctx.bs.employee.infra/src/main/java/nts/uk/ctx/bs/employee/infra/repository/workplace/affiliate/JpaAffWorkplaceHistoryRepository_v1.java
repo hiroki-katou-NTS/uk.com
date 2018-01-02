@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,6 +61,10 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	private static final String SELECT_BY_EMPIDS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+	
+	private static final String SELECT_BY_WKPID_PERIOD = "SELECT DISTINCT  a.sid FROM BsymtAffiWorkplaceHist a"
+			+ " INNER JOIN BsymtAffiWorkplaceHistItem b ON a.hisId = b.hisId"
+			+ " WHERE b.workPlaceId = :workPlaceId AND a.strDate <= :endDate AND  a.endDate >= :startDate";
 
 	/**
 	 * Convert from domain to entity
@@ -215,7 +220,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		List<BsymtAffiWorkplaceHist> listWkpHist = this.queryProxy().query(SELECT_BY_EMPID_STANDDATE, BsymtAffiWorkplaceHist.class)
 				.setParameter("employeeId", employeeId).setParameter("standDate", baseDate).getList();
 		if(listWkpHist.isEmpty()){
-			return null;
+			return Collections.emptyList();
 		}
 		return listWkpHist.stream().map(e -> {
 			AffWorkplaceHistory_ver1 domain = this.toDomain(e);
@@ -232,7 +237,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 				.setParameter("wkpIds", subList).setParameter("standDate", baseDate).getList());
 		});
 		if(resultList.isEmpty()){
-			return null;
+			return Collections.emptyList();
 		}
 		return resultList.stream().map(e -> {
 			AffWorkplaceHistory_ver1 domain = this.toDomain(e);
@@ -247,7 +252,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 				.query(SELECT_BY_WKPID_BASEDATE, BsymtAffiWorkplaceHist.class).setParameter("workplaceId", workplaceId)
 				.setParameter("standDate", baseDate).getList();
 		if (listWkpHist.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 		return listWkpHist.stream().map(e -> {
 			AffWorkplaceHistory_ver1 domain = this.toDomain(e);
@@ -264,7 +269,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 					.setParameter("employeeIds", subList).setParameter("standDate", baseDate).getList());
 		});
 		if(resultList.isEmpty()){
-			return null;
+			return Collections.emptyList();
 		}
 		return resultList.stream().map(e -> {
 			AffWorkplaceHistory_ver1 domain = this.toDomain(e);
@@ -285,7 +290,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 			});
 		});
 		if (resultList.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 		return resultList.stream().map(e -> {
 			AffWorkplaceHistory_ver1 domain = this.toDomain(e);
@@ -302,5 +307,20 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 		domain.getHistoryItems().add(dateItem);
 		
 		return domain;
+	}
+
+	@Override
+	public List<String> getByWplIdAndPeriod(String workplaceId,GeneralDate startDate, GeneralDate endDate) {
+		
+		List<BsymtAffiWorkplaceHist> listWkpHist = this.queryProxy().query(SELECT_BY_WKPID_PERIOD, BsymtAffiWorkplaceHist.class)
+				.setParameter("workPlaceId", workplaceId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList();
+		if(listWkpHist.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listWkpHist.stream().map(e -> {
+			return e.getSid();
+		}).collect(Collectors.toList());
 	}
 }

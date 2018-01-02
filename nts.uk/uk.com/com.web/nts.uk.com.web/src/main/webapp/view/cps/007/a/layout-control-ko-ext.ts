@@ -611,12 +611,12 @@ module nts.custombinding {
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.STRING" class="string">
                             <div data-bind="if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
                                 <input data-bind=" ntsTextEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
                                         option: {
-                                            textmode: 'text',
-                                            placeholder: itemName
+                                            textmode: 'text'
                                         },
                                         enable: editable,
                                         readonly: readonly,
@@ -629,12 +629,12 @@ module nts.custombinding {
                             </div>
                             <div data-bind="if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80))">
                                 <textarea data-bind="ntsMultilineEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
                                         option: {
-                                            textmode: 'text',
-                                            placeholder: itemName
+                                            textmode: 'text'
                                         },
                                         enable: editable,
                                         readonly: readonly,
@@ -648,14 +648,13 @@ module nts.custombinding {
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.NUMERIC" class="numeric">
                             <input data-bind="ntsNumberEditor: { 
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
                                         option: {
                                             grouplength: 3,
                                             decimallength: 2,
-                                            placeholder: itemName,
-                                            width: '',
                                             textalign: 'left'
                                         },
                                         enable: editable,
@@ -669,18 +668,19 @@ module nts.custombinding {
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.DATE" class="date">
                             <div data-bind="if: index <= 1">
                                 <div data-bind="ntsDatePicker: {
-                                            value: value,
-                                            startDate: startDate,
-                                            endDate: endDate,
-                                            constraint: nameid,
-                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
-                                            enable: editable,
-                                            readonly: readonly
-                                        }, attr: { 
-                                            id: nameid, 
-                                            nameid: nameid,
-                                            title: itemName
-                                        }"></div>
+                                        name: itemName,
+                                        value: value,
+                                        startDate: startDate,
+                                        endDate: endDate,
+                                        constraint: nameid,
+                                        dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                        enable: editable,
+                                        readonly: readonly
+                                    }, attr: { 
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName
+                                    }"></div>
                             </div>
                             <div data-bind="if: index == 2">
                                 <div data-bind="if: typeof ctgType !== 'undefined'">
@@ -689,6 +689,7 @@ module nts.custombinding {
                                     </div>
                                     <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) == -1">
                                         <div data-bind="ntsDatePicker: {
+                                                name: itemName,
                                                 value: value,
                                                 startDate: startDate,
                                                 endDate: endDate,
@@ -705,6 +706,7 @@ module nts.custombinding {
                                 </div>
                                 <div data-bind="if: typeof ctgType === 'undefined'">
                                     <div data-bind="ntsDatePicker: {
+                                            name: itemName,
                                             value: value,
                                             startDate: startDate,
                                             endDate: endDate,
@@ -722,6 +724,7 @@ module nts.custombinding {
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIME" class="time">
                             <input data-bind="ntsTimeEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
@@ -732,13 +735,12 @@ module nts.custombinding {
                                     }, attr: {
                                         id: nameid, 
                                         nameid: nameid,
-                                        title: itemName,
-                                        placeholder: itemName
+                                        title: itemName
                                     }" />
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT" class="timepoint">
-                            <input data-bind="ntsTimeWithDayEditor: 
-                                    { 
+                            <input data-bind="ntsTimeWithDayEditor: { 
+                                        name: itemName,
                                         name: nameid,
                                         constraint: nameid,
                                         value: value,
@@ -748,12 +750,12 @@ module nts.custombinding {
                                     }, attr: {
                                         id: nameid, 
                                         nameid: nameid,
-                                        title: itemName,
-                                        placeholder: itemName
+                                        title: itemName
                                     }" />
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.SELECTION" class="selection">
                             <div data-bind="ntsComboBox: {
+                                        name: itemName,
                                         value: value,
                                         options: ko.observableArray(lstComboBoxValue || []),
                                         optionsText: 'optionText',
@@ -763,7 +765,7 @@ module nts.custombinding {
                                         dropDownAttachedToBody: true,
                                         columns: [{ prop: 'optionText', length: 10 }]
                                     }, attr: {
-                                        id: nameid, 
+                                        id: nameid,
                                         nameid: nameid,
                                         title: itemName
                                     }"></div>
@@ -1044,7 +1046,10 @@ module nts.custombinding {
                                 if (dups && dups.length) {
                                     // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
                                     // Show Msg_204 if itemdefinition is exist
-                                    info(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_204'))
+                                    info({
+                                        messageId: 'Msg_204',
+                                        messageParams: dups.map((x: IItemDefinition) => x.itemName)
+                                    })
                                         .then(() => {
                                             removeItems(dups.map((x: IItemDefinition) => {
                                                 return {
@@ -1067,7 +1072,10 @@ module nts.custombinding {
                                 if (dupids && dupids.length) {
                                     // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
                                     // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                                    alert(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_202'));
+                                    alert({
+                                        messageId: 'Msg_202',
+                                        messageParams: dups.map((x: IItemDefinition) => x.itemName)
+                                    });
                                 }
 
                                 pushItems(nodups);
@@ -1188,7 +1196,6 @@ module nts.custombinding {
                                 break;
                         }
                     }
-
                     return constraint;
                 },
                 primitiveConsts = () => {
@@ -1612,9 +1619,6 @@ module nts.custombinding {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
-                                    // write contraint
-                                    writeConstraint(def.itemCode, def);
-
                                     // validate date range
                                     switch (def.item.dataTypeValue) {
                                         case ITEM_SINGLE_TYPE.DATE:
@@ -1872,12 +1876,14 @@ module nts.custombinding {
                                         data = _(data)
                                             .filter(m => !m.isAbolition)
                                             .filter(f => {
-                                                if (item.id === "COM1_00000000000000000000000_CS00002") {
-                                                    return f.id !== "COM1_000000000000000_CS00002_IS00003";
-                                                }
+                                                if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                                    if (item.id === "COM1_00000000000000000000000_CS00002") {
+                                                        return f.id !== "COM1_000000000000000_CS00002_IS00003";
+                                                    }
 
-                                                if (item.id === "COM1_00000000000000000000000_CS00003") {
-                                                    return f.id !== "COM1_000000000000000_CS00003_IS00020";
+                                                    if (item.id === "COM1_00000000000000000000000_CS00003") {
+                                                        return f.id !== "COM1_000000000000000_CS00003_IS00020";
+                                                    }
                                                 }
 
                                                 return true;
@@ -1941,8 +1947,16 @@ module nts.custombinding {
             });
 
             $(ctrls.sortable)
+                .on('click', (evt) => {
+                    setTimeout(() => {
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification')
+                            .removeClass('selected');
+                    }, 0);
+                })
                 .on('mouseover', '.form-group.item-classification', (evt) => {
-                    $(evt.target).removeClass('selected');
+                    $(evt.target)
+                        .removeClass('selected');
                 });
 
 
@@ -1966,7 +1980,7 @@ module nts.custombinding {
                     };
 
                 if (!ids || !ids.length) {
-                    alert(text('Msg_203'));
+                    alert({ messageId: 'Msg_203' });
                     return;
                 }
 
@@ -1983,7 +1997,7 @@ module nts.custombinding {
                             // if category is exist in sortable box.
                             let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
                             if (_catcls) {
-                                alert(text('Msg_202'));
+                                alert({ messageId: 'Msg_202' });
                                 return;
                             }
 

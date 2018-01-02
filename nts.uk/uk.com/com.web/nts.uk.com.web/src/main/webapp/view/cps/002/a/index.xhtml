@@ -131,8 +131,8 @@
 												 	width: '160' 
 												 }
 												 }" />
-											<button
-												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+											<!-- <button
+												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button> -->
 										</div>
 									</div>
 									<div class="div_line">
@@ -181,8 +181,9 @@
 										<hr id="top_right_hr" />
 										<com:ko-if bind="lastRegEmployee">
 											<div class="div_line" data-bind="with:lastRegEmployee">
+
 												<div class="last_reg_title">
-													<b>#{i18n.getText('CPS002_20')}</b>
+													<b>#{i18n.getText('CPS002_20')} </b>
 												</div>
 												<div style="display: inline-block; float: left;">
 													<label><b>#{i18n.getText('CPS002_21')}</b></label> <label><b
@@ -400,8 +401,10 @@
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
-												<td
-													data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></td>
+												<td>
+													<div class='ellipsis_title'
+														data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></div>
+												</td>
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>
