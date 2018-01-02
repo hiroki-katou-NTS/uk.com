@@ -97,7 +97,7 @@ module cas009.a.viewmodel {
             }).always(()=>{
                       block.clear();  
             });
-           // self.userHasRole();
+            self.userHasRole();
 
         }
         
