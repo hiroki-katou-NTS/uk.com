@@ -1,11 +1,13 @@
 package nts.uk.ctx.sys.auth.ac.employee;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
@@ -27,8 +29,12 @@ public class AuthEmployeeAdapterImpl implements EmployeeAdapter{
 	}
 	
 	@Override
-	public EmployeeImport findByEmpId(String empId) {
-		return toImport(employeePub.findBySId(empId));
+	public Optional<EmployeeImport> findByEmpId(String empId) {
+		val exportEmployee = employeePub.findBySId(empId);
+		if (exportEmployee == null) {
+			return Optional.empty();
+		}
+		return Optional.of(toImport(employeePub.findBySId(empId)));
 	}
 
 	@Override

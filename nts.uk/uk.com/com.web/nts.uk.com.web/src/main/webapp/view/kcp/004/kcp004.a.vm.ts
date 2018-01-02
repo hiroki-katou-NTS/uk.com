@@ -126,16 +126,22 @@ module kcp004.a.viewmodel {
             });
             self.selectedSelectionType.subscribe((code) => {
                 if (code == 1) {
+                       self.selectedWorkplaceId();
+                       self.multiSelectedWorkplaceId();
+                }                
+                                
+                if (code == 4) {
                     self.resetSelectedWorkplace();
                 }
-
+                
                 self.reloadTreeGrid().done(function() {
                     self.getSelectedData();
                 });
             });
             
             self.selectedSystemType.subscribe((code) => {
-                if (code == 1) {
+                // check in case NoSelect button active
+                if (self.selectedSelectionType() == 4) {
                     self.resetSelectedWorkplace();
                 }
                 self.reloadTreeGrid().done(function() {
@@ -143,9 +149,7 @@ module kcp004.a.viewmodel {
                 });
             });
             
-            
-            
-                    
+                                          
             self.selectedWorkplaceId.subscribe(() => {
                 self.getSelectedData();
             });

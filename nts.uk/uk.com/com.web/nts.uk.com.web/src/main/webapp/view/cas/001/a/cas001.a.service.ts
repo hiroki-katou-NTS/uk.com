@@ -11,35 +11,18 @@ module nts.uk.com.view.cas001.a.service {
         savePersonRole: "/ctx/pereg/roles/auth/save"
     }
 
-    export function getPersonRoleList(): JQueryPromise<any> {
-
-
-        let dfd = $.Deferred<any>();
-        let self = this;
-        block.invisible();
-        nts.uk.request.ajax(paths.getPersonRoleList)
-            .done(function(res) {
-                dfd.resolve(res);
-            }).fail(function(res) {
-                dfd.reject(res);
-            }).always(() => {
-                block.clear();
-            });
-        return dfd.promise();
-
-    }
 
     export function getPersonRoleAuth(roleID): JQueryPromise<any> {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(format(paths.getPersonRoleAuth, roleID))
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -47,14 +30,14 @@ module nts.uk.com.view.cas001.a.service {
     export function getCategoryRoleList(roleID): JQueryPromise<any> {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(format(paths.getCategoryRoleList, roleID))
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
 
@@ -63,14 +46,14 @@ module nts.uk.com.view.cas001.a.service {
     export function getCategoryAuth(roleId, personInfoCategoryAuthId): JQueryPromise<any> {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(format(paths.getCategoryAuth, roleId, personInfoCategoryAuthId))
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -78,14 +61,14 @@ module nts.uk.com.view.cas001.a.service {
     export function getPersonRoleItemList(roleId, personInfoCategoryAuthId): JQueryPromise<any> {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(format(paths.getPersonRoleItemList, roleId, personInfoCategoryAuthId))
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }
@@ -93,14 +76,14 @@ module nts.uk.com.view.cas001.a.service {
     export function savePersonRole(command): JQueryPromise<any> {
         let dfd = $.Deferred<any>();
         let self = this;
-        block.invisible();
+        _.defer(() => block.invisible());
         nts.uk.request.ajax(paths.savePersonRole, command)
             .done(function(res) {
                 dfd.resolve(res);
             }).fail(function(res) {
                 dfd.reject(res);
             }).always(() => {
-                block.clear();
+                _.defer(() => block.clear());
             });
         return dfd.promise();
     }

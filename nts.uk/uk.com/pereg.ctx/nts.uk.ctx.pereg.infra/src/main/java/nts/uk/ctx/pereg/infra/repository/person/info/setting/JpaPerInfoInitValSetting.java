@@ -98,7 +98,8 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 
 	@Override
 	public void update(PerInfoInitValueSetting domain) {
-		Optional<PpemtPersonInitValueSetting> entity = this.queryProxy().find(domain.getInitValueSettingId(),
+		PpemtPersonInitValueSettingPk key =new PpemtPersonInitValueSettingPk(domain.getInitValueSettingId());
+		Optional<PpemtPersonInitValueSetting> entity = this.queryProxy().find(key,
 				PpemtPersonInitValueSetting.class);
 		try {
 			if (entity.isPresent()) {
@@ -136,6 +137,18 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 
 	@Override
 	public void updateName(String settingId, String settingName) {
+		PpemtPersonInitValueSettingPk key =new PpemtPersonInitValueSettingPk(settingId);
+		Optional<PpemtPersonInitValueSetting> entity = this.queryProxy().find(key,
+				PpemtPersonInitValueSetting.class);
+		try {
+			if (entity.isPresent()) {
+				PpemtPersonInitValueSetting setting = entity.get();
+				setting.settingName = settingName;
+				this.commandProxy().update(setting);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
 		this.getEntityManager().createQuery(UPDATE_NAME_BY_SETTING_ID)
 		.setParameter("settingId", settingId)
 		.setParameter("settingName", settingName)

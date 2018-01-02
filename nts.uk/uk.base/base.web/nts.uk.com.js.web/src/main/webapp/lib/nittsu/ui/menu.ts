@@ -75,7 +75,7 @@ module nts.uk.ui.menu {
             let $cate = $("<li class='category'/>").appendTo($menuNav);
             if (category.selectedAttr === 1) {
                 $cate.addClass("direct").data("path", category.link).on(constants.CLICK, function() {
-                    uk.request.jump(category.link);
+                    uk.request.jumpToMenu(category.link);
                 });
             }
             
@@ -166,6 +166,7 @@ module nts.uk.ui.menu {
                         });
                     });
                 });
+                $companyList.css("right", $user.outerWidth() + 30);
                 
                 $userSettings.on(constants.CLICK, function() {
                     if ($userOptions.css("display") === "none") {
@@ -245,7 +246,9 @@ module nts.uk.ui.menu {
             let ith = $item.index();
             if (util.isNullOrUndefined(showingItem) || showingItem === ith) return;
             closeItem();
-            openItem($item);
+            setTimeout(function() {
+                openItem($item);
+            }, 14);
             showingItem = ith;
         });
         
@@ -266,7 +269,7 @@ module nts.uk.ui.menu {
     }
     
     module titleMenu {
-        export let WIDTH: number = 180;
+        export let WIDTH: number = 192;
         export let FR: number = 20;
         
         /**
@@ -309,13 +312,13 @@ module nts.uk.ui.menu {
                         $item.on(constants.CLICK, function() {
                             let path = $(this).data("path");
                             if (path && path.indexOf("http") !== 0) {
-                                uk.request.jump(path);   
+                                uk.request.jumpToMenu(path);   
                                 return;
                             }
                             window.location.href = path;
                         });
                         $titleDiv.append($item);
-                        height += 40;
+                        height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
                     });
                 }
                 maxHeight = Math.max(maxHeight, height); 

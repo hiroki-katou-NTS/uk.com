@@ -19,6 +19,6 @@ public class DailyModifyWebService {
 	@POST
 	@Path("register")
 	public void register(DailyModifyQuery query) {
-		facade.handle(query);
+		facade.handleAdd(query);
 	}
 }

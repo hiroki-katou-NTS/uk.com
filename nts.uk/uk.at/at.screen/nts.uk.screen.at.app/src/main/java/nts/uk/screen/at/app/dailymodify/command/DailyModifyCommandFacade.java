@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
@@ -18,21 +19,29 @@ public class DailyModifyCommandFacade {
 
 	/** finder */
 	@Inject
-	private DailyRecordWorkFinder finder; 
+	private DailyRecordWorkFinder finder;
 
 	@Inject
 	private DailyRecordWorkCommandHandler handler;
-	
-	public void handle(DailyModifyQuery query) {
+
+	public void handleAdd(DailyModifyQuery query) {
 		DailyRecordDto dto = toDto(query);
-		DailyRecordWorkCommand command = new DailyRecordWorkCommand();
-		command.setRecords(dto);
-		this.handler.handle(command);
+		this.handler.handleAdd(createCommand(dto, query.getEmployeeId(), query.getBaseDate()));
 	}
+	
+	public void handleUpdate(DailyModifyQuery query) {
+		DailyRecordDto dto = toDto(query);
+		this.handler.handleUpdate(createCommand(dto, query.getEmployeeId(), query.getBaseDate()));
+	}
+
 
 	private DailyRecordDto toDto(DailyModifyQuery query) {
 		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());
 		return AttendanceItemUtil.toConvertibleAttendanceItem(oldValues, query.getItemValues());
 	}
-	
+
+	private DailyRecordWorkCommand createCommand(DailyRecordDto dto, String employeeId, GeneralDate workDate){
+		return DailyRecordWorkCommand.open().forEmployeeId(employeeId)
+		.withWokingDate(workDate).withData(dto);
+	}
 }

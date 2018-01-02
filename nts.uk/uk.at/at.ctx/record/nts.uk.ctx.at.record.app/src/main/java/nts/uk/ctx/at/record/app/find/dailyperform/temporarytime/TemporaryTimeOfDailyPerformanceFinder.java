@@ -27,6 +27,7 @@ public class TemporaryTimeOfDailyPerformanceFinder extends FinderFacade {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.setWorkTimes(domain.getWorkTimes().v());
 			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getTimeLeavingWorks(),
 					(c) -> new WorkLeaveTimeDto(c.getWorkNo().v(), new WithActualTimeStampDto(
 							new TimeStampDto(c.getAttendanceStamp().getStamp().get().getTimeWithDay().valueAsMinutes(),

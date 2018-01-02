@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.shared.dom.ot.zerotime;
+
 import java.math.BigDecimal;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
+
 /**
  * 
  * @author phongtq
@@ -23,19 +25,20 @@ public class WeekdayHoliday extends DomainObject {
 	private String companyId;
 
 	/** 変更前の残業枠NO */
-	private OvertimeWorkFrameNo overTimeFrameNo;
+	private OvertimeWorkFrameNo overworkFrameNo;
 
 	/** 変更後の残業枠NO */
-	private BreakoutFrameNo legalHdNo;
+	private BreakoutFrameNo weekdayNo;
 
 	/** 変更後の法定外休出NO */
-	private BreakoutFrameNo nonLegalHdNo;
+	private BreakoutFrameNo excessHolidayNo;
 
 	/** 変更後の祝日休出NO */
-	private BreakoutFrameNo nonLegalPublicHdNo;
+	private BreakoutFrameNo excessSphdNo;
 
 	/**
 	 * Create from Java Type of WeekdayHoliday
+	 * 
 	 * @param companyId
 	 * @param overTimeFrameNo
 	 * @param legalHdNo
@@ -43,8 +46,9 @@ public class WeekdayHoliday extends DomainObject {
 	 * @param nonLegalPublicHdNo
 	 * @return
 	 */
-	public static WeekdayHoliday createFromJavaType(String companyId, BigDecimal overTimeFrameNo, int legalHdNo,
-			int nonLegalHdNo, int nonLegalPublicHdNo) {
-		return new WeekdayHoliday(companyId, new OvertimeWorkFrameNo(overTimeFrameNo), new BreakoutFrameNo(legalHdNo), new BreakoutFrameNo(nonLegalHdNo), new BreakoutFrameNo(nonLegalPublicHdNo));
+	public static WeekdayHoliday createFromJavaType(String companyId, BigDecimal overworkFrameNo, int weekdayNo,
+			int excessHolidayNo, int excessSphdNo) {
+		return new WeekdayHoliday(companyId, new OvertimeWorkFrameNo(overworkFrameNo), new BreakoutFrameNo(weekdayNo),
+				new BreakoutFrameNo(excessHolidayNo), new BreakoutFrameNo(excessSphdNo));
 	}
 }

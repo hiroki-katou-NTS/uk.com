@@ -3178,7 +3178,10 @@ button.nts-switch-button[disabled]:hover {
 /* line 29, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
   display: inline-block;
-  line-height: 32px;
+}
+/* line 32, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper div {
+  vertical-align: middle !important;
 }
 
 /*!
@@ -4675,7 +4678,6 @@ body * {
 	display: none;
 	position: absolute;
 	top: 30px;
-	left: -124px;
 	z-index: 20000;
 	margin-left: 0;
 	list-style: none;
@@ -4686,7 +4688,7 @@ body * {
 }
 
 #header #menu-header #logo-area > #user-info > #user > .user-settings > ul.user-options {
-	left: 71px;
+	right: 12px;
 }
 
 #header #menu-header #nav-area {
@@ -4778,7 +4780,7 @@ body * {
 
 /* Title menu */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div {
-	width: 180px;
+	width: 192px;
 	position: absolute;
 	margin: 0px 8px 4px 2px;
 	top: 5px;
@@ -4803,7 +4805,7 @@ body * {
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item {
 	cursor: pointer;
 	padding: 8px;
-	white-space: nowrap;
+	white-space: pre-wrap;
 }
 
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item:hover {
