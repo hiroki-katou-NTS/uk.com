@@ -57,9 +57,8 @@ module a1 {
             }));
 
             //one day range Time
-            self.oneDayRangeTimeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+            self.oneDayRangeTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
                 width: "50",
-                textmode: "text",
             }));
 
 

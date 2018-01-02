@@ -201,7 +201,7 @@ module nts.uk.at.view.kmk003.a {
                 prescribedTimezoneSetting: PrescribedTimezoneSettingModel;
                 startDateClock: KnockoutObservable<number>;
                 predetermine: KnockoutObservable<boolean>;
-                static ONE_DAY = 24; // initial value of rangeTimeDay = 24
+                static ONE_DAY = 1440; // initial value of rangeTimeDay = 24h = 1440m
 
                 constructor() {
                     this.rangeTimeDay = ko.observable(PredetemineTimeSettingModel.ONE_DAY); 

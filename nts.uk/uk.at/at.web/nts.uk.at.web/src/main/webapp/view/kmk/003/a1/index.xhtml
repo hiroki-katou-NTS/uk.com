@@ -27,14 +27,17 @@
 	<com:ko tag="if" bind="isDetailMode">
 	<div class="setting_rows">
 		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_33')}</div>
-		<input data-bind="ntsTextEditor: {
+		<input data-bind="ntsTimeEditor: {
 			name: '#[KMK003_33]',
 			value: predseting.rangeTimeDay,
 			constraint: 'AttendanceTime',
+			inputFormat: 'time',
+			mode: 'time',
 			option: oneDayRangeTimeOption,
 			required: true,
-			enable: true
-			}" 
+			enable: true,
+			readonly: false,
+			immediate: false}" 
 		/>
 		<label>#{i18n.getText('KMK003_211')}</label>
 		<div data-bind="ntsCheckBox: { checked: predseting.nightShift }">#{i18n.getText('KMK003_34')}</div>

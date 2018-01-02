@@ -322,7 +322,7 @@ module nts.uk.at.view.kmk003.a {
                 wts.worktimeCode('111');
                 wts.workTimeDisplayName.workTimeName('test');
                 pred.startDateClock(1);
-                pred.rangeTimeDay(24);
+                pred.rangeTimeDay(1440);
                 let tz1 = pred.prescribedTimezoneSetting.getTimezoneOne();
                 let tz2 = pred.prescribedTimezoneSetting.getTimezoneTwo();
                 tz1.start(1);
