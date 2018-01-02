@@ -96,6 +96,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 formatSelection = perInfoSelectionItem.formatSelection();
 
             nts.uk.ui.errors.clearAll();
+            perInfoSelectionItem.selectionItemId('');
             perInfoSelectionItem.selectionItemName('');
             perInfoSelectionItem.memo('');
             perInfoSelectionItem.integrationCode('');
