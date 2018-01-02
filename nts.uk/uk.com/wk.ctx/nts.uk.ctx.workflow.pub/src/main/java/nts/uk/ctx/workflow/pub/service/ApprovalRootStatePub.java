@@ -67,4 +67,33 @@ public interface ApprovalRootStatePub {
 	 */
 	public AgentPubExport getApprovalAgentInfor(String companyID, List<String> listApprover);
 	
+	/**
+	 * 削除時のメール通知者を取得する
+	 * @param companyID 会社ID
+	 * @param rootStateID インスタンスID
+	 * @return
+	 */
+	public List<String> getMailNotifierList(String companyID, String rootStateID);
+	
+	public void deleteApprovalRootState(String rootStateID);
+	
+	/**
+	 * 解除する
+	 * @param companyID 会社ID
+	 * @param rootStateID インスタンスID
+	 * @param employeeID 社員ID
+	 */
+	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
+	
+	/**
+	 * 否認する
+	 * @param companyID 会社ID
+	 * @param rootStateID インスタンスID
+	 * @param employeeID 社員ID
+	 * @return 否認を実行したかフラグ(true, false)
+				true：否認を実行した
+				false：否認を実行しなかった
+	 */
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID);
+	
 }

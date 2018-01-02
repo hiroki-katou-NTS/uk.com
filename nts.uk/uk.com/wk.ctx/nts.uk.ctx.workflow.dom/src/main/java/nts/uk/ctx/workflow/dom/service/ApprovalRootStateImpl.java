@@ -37,4 +37,18 @@ public class ApprovalRootStateImpl implements ApprovalRootStateService {
 		approvalRootStateRepository.delete(rootStateID);
 	}
 
+	@Override
+	public void updateReason(String rootStateID, String employeeID, String reason) {
+		ApprovalRootState approvalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID).get();
+		approvalRootState.getListApprovalPhaseState().forEach(approvalPhaseState -> {
+			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
+				if(approvalFrame.getApproverID().equals(employeeID)||approvalFrame.getRepresenterID().equals(employeeID)){
+					approvalFrame.setApprovalReason(reason);
+					approvalFrame.setApprovalDate(GeneralDate.today());
+				}
+			});
+		});
+		
+	}
+
 }

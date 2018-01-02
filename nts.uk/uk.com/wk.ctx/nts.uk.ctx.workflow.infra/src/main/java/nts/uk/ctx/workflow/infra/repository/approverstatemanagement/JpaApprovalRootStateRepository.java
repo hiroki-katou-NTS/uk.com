@@ -69,8 +69,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	@Override
 	public void delete(String rootStateID) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().remove(WwfdtApprovalRootState.class, new WwfdpApprovalRootStatePK(rootStateID));
 	}
 	
 	private WwfdtApprovalPhaseState updateEntityWwfdtApprovalPhaseState(ApprovalPhaseState approvalPhaseState) {
