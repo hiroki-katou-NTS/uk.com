@@ -415,6 +415,14 @@ module nts.uk.at.view.kmk003.a {
 
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
+                
+                self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeName('');
+                self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeAbName('');
+                self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeSymbol('');
+                self.mainSettingModel.workTimeSetting.memo('');
+                self.mainSettingModel.workTimeSetting.note('');
+                //clear isAbolish
+                self.mainSettingModel.workTimeSetting.isAbolish(false);
 
                 // focus worktime atr
                 $('#cbb-worktime-atr').focus();
