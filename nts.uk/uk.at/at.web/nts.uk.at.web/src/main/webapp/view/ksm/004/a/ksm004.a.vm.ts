@@ -870,8 +870,13 @@ module nts.uk.at.view.ksm004.a {
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     self.isShowDatepicker = false;
+                    let optionOLd = [];
+                   _.forEach(self.calendarPanel.optionDates(),(data) =>{
+                       optionOLd.push(data);
+                   });
                     $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                    .done(()=>{ 
+                    .done(()=>{
+                        self.calendarPanel.optionDates(optionOLd); 
                         self.isShowDatepicker = true;
                         nts.uk.ui.block.clear(); 
                     })
