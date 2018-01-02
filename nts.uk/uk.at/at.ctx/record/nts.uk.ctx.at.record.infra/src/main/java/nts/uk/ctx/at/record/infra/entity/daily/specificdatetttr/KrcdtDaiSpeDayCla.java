@@ -28,20 +28,21 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_DAI_SPE_DAY_CLA")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findAll", query = "SELECT k FROM KrcdtDaiSpeDayCla k"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByInsDate", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.insDate = :insDate"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByInsCcd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.insCcd = :insCcd"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByInsScd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.insScd = :insScd"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByInsPg", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.insPg = :insPg"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByUpdDate", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.updDate = :updDate"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByUpdCcd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.updCcd = :updCcd"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByUpdScd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.updScd = :updScd"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByUpdPg", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.updPg = :updPg"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByExclusVer", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.exclusVer = :exclusVer"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findBySid", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.krcdtDaiSpeDayClaPK.sid = :sid"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByYmd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.krcdtDaiSpeDayClaPK.ymd = :ymd"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findBySpeDayItemNo", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.speDayItemNo = :speDayItemNo"),
-    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByTobeSpeDay", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.tobeSpeDay = :tobeSpeDay")})
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findAll", query = "SELECT k FROM KrcdtDaiSpeDayCla k"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByInsDate", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.insDate = :insDate"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByInsCcd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.insCcd = :insCcd"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByInsScd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.insScd = :insScd"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByInsPg", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.insPg = :insPg"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByUpdDate", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.updDate = :updDate"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByUpdCcd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.updCcd = :updCcd"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByUpdScd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.updScd = :updScd"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByUpdPg", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.updPg = :updPg"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByExclusVer", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findBySid", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.krcdtDaiSpeDayClaPK.sid = :sid"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByYmd", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.krcdtDaiSpeDayClaPK.ymd = :ymd"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findBySpeDayItemNo", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.speDayItemNo = :speDayItemNo"),
+//    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByTobeSpeDay", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.tobeSpeDay = :tobeSpeDay")
+	})
 public class KrcdtDaiSpeDayCla extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId

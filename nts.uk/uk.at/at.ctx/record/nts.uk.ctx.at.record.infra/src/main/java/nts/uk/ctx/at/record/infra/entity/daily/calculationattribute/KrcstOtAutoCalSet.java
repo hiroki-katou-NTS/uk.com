@@ -28,29 +28,30 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCST_OT_AUTO_CAL_SET")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "KrcstOtAutoCalSet.findAll", query = "SELECT k FROM KrcstOtAutoCalSet k"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsDate", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.insDate = :insDate"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsCcd", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.insCcd = :insCcd"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsScd", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.insScd = :insScd"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsPg", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.insPg = :insPg"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdDate", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.updDate = :updDate"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdCcd", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.updCcd = :updCcd"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdScd", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.updScd = :updScd"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdPg", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.updPg = :updPg"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByExclusVer", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.exclusVer = :exclusVer"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByOverTimeWorkId", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.overTimeWorkId = :overTimeWorkId"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyOverTimeCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.earlyOverTimeCalAtr = :earlyOverTimeCalAtr"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyOverTimeLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.earlyOverTimeLimitSet = :earlyOverTimeLimitSet"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyMidOtCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.earlyMidOtCalAtr = :earlyMidOtCalAtr"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyMidOtLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.earlyMidOtLimitSet = :earlyMidOtLimitSet"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalOverTimeCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.normalOverTimeCalAtr = :normalOverTimeCalAtr"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalOverTimeLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.normalOverTimeLimitSet = :normalOverTimeLimitSet"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalMidOtCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.normalMidOtCalAtr = :normalMidOtCalAtr"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalMidOtLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.normalMidOtLimitSet = :normalMidOtLimitSet"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalOverTimeCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalOverTimeCalAtr = :legalOverTimeCalAtr"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalOverTimeLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalOverTimeLimitSet = :legalOverTimeLimitSet"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalMidOtCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalMidOtCalAtr = :legalMidOtCalAtr"),
-    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalMidOtLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalMidOtLimitSet = :legalMidOtLimitSet")})
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findAll", query = "SELECT k FROM KrcstOtAutoCalSet k"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsDate", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.insDate = :insDate"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsCcd", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.insCcd = :insCcd"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsScd", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.insScd = :insScd"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByInsPg", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.insPg = :insPg"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdDate", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.updDate = :updDate"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdCcd", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.updCcd = :updCcd"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdScd", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.updScd = :updScd"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByUpdPg", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.updPg = :updPg"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByExclusVer", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByOverTimeWorkId", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.overTimeWorkId = :overTimeWorkId"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyOverTimeCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.earlyOverTimeCalAtr = :earlyOverTimeCalAtr"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyOverTimeLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.earlyOverTimeLimitSet = :earlyOverTimeLimitSet"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyMidOtCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.earlyMidOtCalAtr = :earlyMidOtCalAtr"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByEarlyMidOtLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.earlyMidOtLimitSet = :earlyMidOtLimitSet"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalOverTimeCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.normalOverTimeCalAtr = :normalOverTimeCalAtr"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalOverTimeLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.normalOverTimeLimitSet = :normalOverTimeLimitSet"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalMidOtCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.normalMidOtCalAtr = :normalMidOtCalAtr"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByNormalMidOtLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.normalMidOtLimitSet = :normalMidOtLimitSet"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalOverTimeCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalOverTimeCalAtr = :legalOverTimeCalAtr"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalOverTimeLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalOverTimeLimitSet = :legalOverTimeLimitSet"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalMidOtCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalMidOtCalAtr = :legalMidOtCalAtr"),
+//    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalMidOtLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalMidOtLimitSet = :legalMidOtLimitSet")
+	})
 public class KrcstOtAutoCalSet extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

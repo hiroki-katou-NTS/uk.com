@@ -395,13 +395,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         registerData(overtime) {
             service.createOvertime(overtime).done((data) => {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    if (!nts.uk.util.isNullOrUndefined(data)) {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
-                                location.reload();    
-                            });
-                        } else {
-                            location.reload();        
-                        }
+//                    if (!nts.uk.util.isNullOrUndefined(data)) {
+//                            nts.uk.ui.dialog.info({ messageId: 'Msg_392',messageParams: [data]  }).then(()=>{
+//                                location.reload();    
+//                            });
+//                        } else {
+//                            location.reload();        
+//                        }
+                        location.reload();   
                 });
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
