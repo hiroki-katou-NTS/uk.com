@@ -83,6 +83,12 @@ module nts.uk.at.view.kmk003.a {
                     this.end = ko.observable(0);
                 }
 
+                resetData(): void {
+                    let self = this;
+                    self.start(0);
+                    self.end(0);
+                }
+
                 updateData(data: TimezoneDto) {
                     this.useAtr(data.useAtr);
                     this.workNo(data.workNo);
@@ -188,7 +194,8 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.morningEndTime(0);
                     this.afternoonStartTime(0);
-                    // TODO resetData list
+                    this.getTimezoneOne().resetData();
+                    this.getTimezoneTwo().resetData();
                 }
             }
 
