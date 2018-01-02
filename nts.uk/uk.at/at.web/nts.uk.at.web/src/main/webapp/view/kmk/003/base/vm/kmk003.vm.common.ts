@@ -112,7 +112,7 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     this.roundingTime = ko.observable(0);
-                    this.rounding = ko.observable(0);
+                    this.rounding = ko.observable(1);
                 }
 
                 updateData(data: TimeRoundingSettingDto) {
@@ -130,7 +130,7 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.roundingTime(0);
-                    this.rounding(0);
+                    this.rounding(1);
                 }
             }
 
