@@ -28,8 +28,14 @@ public class AddHolidayAddtimeCommandHandler extends  CommandHandler<AddHolidayA
 		String companyId = AppContexts.user().companyId();
 		// convert to domain
 		HolidayAddtion holidayAddtime = command.toDomain(companyId);
+		int morning = holidayAddtime.getMorning().intValue();
+		int afternoon = holidayAddtime.getAfternoon().intValue();
+		
+		if(morning + afternoon <=1440){
+		}
 		holidayAddtime.validate();
 		Optional<HolidayAddtion> optionalHoliday = this.repository.findByCId(companyId);
+		
 		if (optionalHoliday.isPresent()) {
 			// update Holiday Addtime
 			this.repository.update(holidayAddtime);
