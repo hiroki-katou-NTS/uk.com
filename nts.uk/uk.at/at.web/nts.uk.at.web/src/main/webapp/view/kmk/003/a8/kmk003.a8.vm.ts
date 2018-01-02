@@ -247,9 +247,11 @@ module a8 {
             _self.timeRoundingTime = modelValue.roundingSetting.roundingTime;
             _self.timeRounding = modelValue.roundingSetting.rounding;
             
+            _self.timeRoundingMethod.valueHasMutated();
+            
             // Update into model in case of data change
             _self.timeRoundingMethod.subscribe(newValue => {
-                if (newValue === 1) {
+                if (newValue === 0) {
                     _self.isEnable(false);
                 } else {
                     _self.isEnable(true);
