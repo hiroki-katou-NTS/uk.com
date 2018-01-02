@@ -83,6 +83,9 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 			return data1;
 		}
 		List<EmployeeBasicInfoExport> data = syEmployeePub.findBySIds(listSid);
+		if(data.isEmpty()){
+			return data1;
+		}
 		data1 = data.stream().map(c->coverEmpBasicInfoImport(c)).collect(Collectors.toList());
 		List<String> listPid = data.stream().map(c->c.getPId()).collect(Collectors.toList());
 		List<PersonInfoImport> listPerson = this.getByListId(listPid);
