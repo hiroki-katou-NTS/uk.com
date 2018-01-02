@@ -22,8 +22,8 @@
 }
 
 #functions-area button.danger {
-	margin-left: 158px;
-	margin-right: 90px;
+	margin-left: 45px;
+	margin-right: 30px;
 }
 
 #A_BTN_DELETE {
@@ -32,7 +32,7 @@
 }
 
 #A_BTN_JUMP {
-	margin-left: 100px;
+	margin-left: 0px;
 	width: 120px;
 }
 
