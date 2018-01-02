@@ -47,6 +47,11 @@ module nts.uk.at.view.kmk003.base.fixedtable {
          * Show/hide multiple select checkbox
          */
         isMultipleSelect: boolean;
+        
+        /**
+        * Set width table
+        */
+        width: number;
     }
 
     /**
@@ -149,6 +154,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
         maxRow: number;
         minRow: number;
         maxRowDisplay: number;
+        width: number;
         tableStyle: TableStyle;
         
         $element: any;
@@ -245,6 +251,11 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             
             // calculate height table
             self.calStyleTable();
+            
+            // update width table
+            if (!self.width) {
+                self.width = self.tableStyle.width + 130;
+            }
             
             // render html table
             return self.renderTable();
@@ -343,7 +354,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
          */
         public calStyleTable() {
             let self = this;
-            let heigthCell = 35;
+            let heigthCell = 33;
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
@@ -413,6 +424,15 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             
             // add html column base setting
             _.forEach(self.columns, (item: FixColumn) => {
+                
+                // set width fixed control TimeRange
+                if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
+                    item.width = 243;
+                }
+                if (item.template.indexOf('ntsComboBox') != -1) {
+                    item.width = item.width < 105 ? 105 : item.width;
+                }
+                
                 rowHtml += self.generateColumnHtml(item);
             });
             
@@ -509,7 +529,13 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             // update width control
             template = self.updateWidthControl(template, newProperties, columnSetting.width);
             
-            return "<td style='text-align: center;' class='" + columnSetting.cssClassName + "'>" + template + "</td>";
+            // get cssClassName
+            let cssClassName: string = '';
+            if (!nts.uk.text.isNullOrEmpty(columnSetting.cssClassName)) {
+                cssClassName = columnSetting.cssClassName;
+            }
+            
+            return "<td style='text-align: center;' class='" + cssClassName + "'>" + template + "</td>";
         }
         
         /**
@@ -521,7 +547,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             // ======================================== ntsComboBox ===================================
             if (template.indexOf('ntsComboBox') > -1) {
                 let idx: number = template.indexOf('data-bind');
-                return template.substring(0, idx-1) + " style='width: " + (width - 5) + "px;' "
+                return template.substring(0, idx-1) + " style='width: " + (width - 5) + "px;float:left;' "
                     + template.substring(idx, template.length);
             }
 
@@ -640,6 +666,11 @@ module nts.uk.at.view.kmk003.base.fixedtable {
                     
                     // set height table
                     screenModel.$tableSelector.height(screenModel.tableStyle.height);
+                    
+                    // remove min-width default of ntsComboBox
+                    screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
+                        $("." + column.cssClassName).css({"min-width" : ""});
+                    });
                 });
             });
         }
