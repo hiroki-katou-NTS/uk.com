@@ -24,9 +24,9 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             self.yourselfConfirmError = ko.observable(null);
 
             self.itemList = ko.observableArray([
-                new BoxModel(2, 'エラーがあっても確認できる'),
+                new BoxModel(0, 'エラーがあっても確認できる'),
                 new BoxModel(1, 'エラーを訂正するまでチェックできない'),
-                new BoxModel(0, 'エラーを訂正するまで登録できない')
+                new BoxModel(2, 'エラーを訂正するまで登録できない')
             ]);
         }
 

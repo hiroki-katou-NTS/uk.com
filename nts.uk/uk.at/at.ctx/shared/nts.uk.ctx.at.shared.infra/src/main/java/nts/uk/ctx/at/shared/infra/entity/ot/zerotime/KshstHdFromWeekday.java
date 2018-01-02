@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_HD_FROM_WEEKDAY ")
+@Table(name = "KSHST_HD_FROM_WEEKDAY")
 public class KshstHdFromWeekday extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

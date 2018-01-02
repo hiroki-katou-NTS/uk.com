@@ -1,0 +1,108 @@
+<div class="contents-area-b cf">
+	<div class="block-1">
+		<label class="basic-label">#{i18n.getText('KSM011_53')}</label>
+		<hr />
+		<table class="basic-items">
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_54')}</div></td>
+				<td>
+					<div class="left-tbl">
+						<table tabindex="-1" id="multi-list" data-bind="ntsGridList: {
+							height: 300,
+							options: leftItems,
+							optionsValue: 'code',
+							columns: leftColumns,
+							multiple: true,
+							value: currentLCodeList
+						}"></table>
+					</div>
+					
+					<div class="func-btn">
+						<button tabindex="1" class="large"><i class="img-icon icon-next-all"></i></button>
+						<button tabindex="2" class="large"><i class="img-icon icon-next"></i></button>
+						<button tabindex="3" class="large"><i class="img-icon icon-prev"></i></button>
+						<button tabindex="4" class="large"><i class="img-icon icon-prev-all"></i></button>
+					</div>
+					
+					<div class="right-tbl">
+						<table tabindex="-1" id="multi-list" data-bind="ntsGridList: {
+							height: 300,
+							options: rightItems,
+							optionsValue: 'code',
+							columns: rightColumns,
+							multiple: true,
+							value: currentRCodeList
+						}"></table>
+					</div>					
+				</td>
+			</tr>
+			<tr>
+				<td><div data-bind="ntsFormLabel: { constraint: '' }">#{i18n.getText('KSM011_60')}</div></td>
+				<td><input tabindex="5" class="txtQualificationMark" data-bind="ntsTextEditor: { value: qualificationMark, enable: qualificationMarkEnable }" /></td>
+			</tr>
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_61')}</div></td>
+				<td>
+					<button tabindex="6" data-bind="click: openDialog, enable: openDialogEnable">#{i18n.getText('KSM011_45')}</button>
+					<input tabindex="-1" class="txtCredentialList" data-bind="ntsTextEditor: { value: credentialList, enable: credentialListEnable }" />
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div class="block-2">
+		<label class="basic-label">#{i18n.getText('KSM011_62')}</label>
+		<button tabindex="7" data-bind="ntsHelpButton: { image: '../images/KSM011_1.png', position: 'right+450 top', enable: true }">?</button>
+		<hr />
+		<table class="symbol-control">
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_63')}</div></td>
+				<td><div tabindex="8" class="cf" data-bind="ntsSwitchButton: {
+							options: halfDayCls,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedHalfDayCls,
+							enable: true }"></div>
+				</td>
+			</tr>
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_64')}</div></td>
+				<td><div tabindex="9" class="cf" data-bind="ntsSwitchButton: {
+							options: empSignCls,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedEmpSignCls,
+							enable: true }"></div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div class="block-3">
+		<label class="basic-label">#{i18n.getText('KSM011_65')}</label>
+		<button tabindex="10" data-bind="ntsHelpButton: { image: '../images/KSM011_2.png', position: 'right+450 top', enable: true }">?</button>
+		<hr />
+		<table class="basic-items">
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_66')}</div></td>
+				<td><div tabindex="11" class="cf" data-bind="ntsSwitchButton: {
+							options: obtainCls,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedObtain,
+							enable: true }"></div>
+				</td>
+			</tr>
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_67')}</div></td>
+				<td><div tabindex="12" class="cf" data-bind="ntsSwitchButton: {
+							options: insufficientCls,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedInsufficient,
+							enable: true }"></div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
