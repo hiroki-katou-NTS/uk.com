@@ -244,6 +244,33 @@
 										</div>
 
 									</div>
+									
+									<div class="div_line">
+
+										<div class="line_col_1">
+											<div id="B2_24" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS005_35')}</div>
+										</div>
+
+										<div class="line_col_2">
+										   <com:ko-if bind=" currentItem().itemTypeState.dataTypeState.numericItemAmount === 1">
+											<span id="B2_25" class='currency'
+												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMin"></span>
+												<span class="label">～</span>
+											<span id="B2_25" class='currency'
+												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMax"></span>	
+											</com:ko-if>
+											
+										   <com:ko-if bind=" currentItem().itemTypeState.dataTypeState.numericItemAmount === 0">
+											<span id="B2_25"
+												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMin"></span>
+												<span class="label">～</span>
+											<span id="B2_25"
+												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMax"></span>	
+											</com:ko-if>
+																						
+										</div>
+
+									</div>									
 
 								</com:ko-if>
 
