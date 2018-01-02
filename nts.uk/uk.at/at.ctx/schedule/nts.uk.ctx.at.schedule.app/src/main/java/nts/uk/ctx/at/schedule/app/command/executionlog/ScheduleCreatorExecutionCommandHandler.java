@@ -355,12 +355,18 @@ public class ScheduleCreatorExecutionCommandHandler
 			// check exist data basic schedule
 			if (optionalBasicSchedule.isPresent()) {
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
-
+				
+				// 登録前削除区分をTrue（削除する）とする
+				command.setIsDeleteBeforInsert(true); // FIX BUG #87113
+				
 				// check parameter implementAtr recreate
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
 					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem);
 				}
 			} else {
+				// 登録前削除区分をTrue（削除する）とする
+				command.setIsDeleteBeforInsert(false); // FIX BUG #87113
+				
 				// not exist data basic schedule
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 			}
