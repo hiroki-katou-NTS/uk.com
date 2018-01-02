@@ -630,6 +630,7 @@ module nts.uk.at.view.kmk003.a {
             loadListWorktime: (selectedCode?: string, selectedIndex?: number) => JQueryPromise<void>;
             constructor() {
                 super();
+                this.isAbolish(true); // initial value in specs = checked
                 this.workTimeDivision.workTimeDailyAtr(3);
                 this.workTimeDivision.workTimeMethodSet(3);
                 this.workTimeDivision.workTimeDailyAtr.subscribe(() => {
