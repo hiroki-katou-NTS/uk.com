@@ -401,8 +401,10 @@
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
-												<td
-													data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></td>
+												<td>
+													<div class='ellipsis_title'
+														data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></div>
+												</td>
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>
