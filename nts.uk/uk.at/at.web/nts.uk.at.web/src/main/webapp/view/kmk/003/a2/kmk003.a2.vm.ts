@@ -394,20 +394,6 @@ module a2 {
             else {
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
-                    // all day
-                    // TODO: 
-//                    _.forEach(self.parentModel.fixedWorkSetting.lstHalfDayWorkTimezone, (item: FixHalfDayWorkTimezoneModel) => {
-//                        if (item.dayAtr() == 0) {
-//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
-//                        }
-//                        if (item.dayAtr() == 1) {
-//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceMorning);
-//                        }
-//                        if (item.dayAtr() == 2) {
-//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceAfternoon);
-//                        }
-//                    });
-                    
                     self.parentModel.fixedWorkSetting. getHDWtzOneday()
                         .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
                     
@@ -487,8 +473,9 @@ module a2 {
                     key: "timeRange", 
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 243, 
+                    enable: self.isSimpleMode(),
                     template: `<div data-bind="ntsTimeRangeEditor: { 
-                        required: true, enable: ` + self.isSimpleMode() + `, inputFormat: 'time'}"/>`
+                        required: true, enable: true, inputFormat: 'time'}"/>`
                 }, {
                     headerText: nts.uk.resource.getText("KMK003_57"), 
                     key: "roundingTime", 
