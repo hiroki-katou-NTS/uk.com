@@ -436,8 +436,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 					krcstErAlConGroup2);
 		}
 		KwrmtErAlWorkRecord entity = new KwrmtErAlWorkRecord(kwrmtErAlWorkRecordPK, errorAlarmName, fixedAtr, useAtr,
-				typeAtr, boldAtr, messageColor, cancelableAtr, errorDisplayItem, eralCheckId, krcmtErAlCondition,
-				krcstErAlApplication, cancelRoleId);
+				typeAtr, boldAtr, messageColor.equals("") ? null : messageColor, cancelableAtr, errorDisplayItem,
+				eralCheckId, krcmtErAlCondition, krcstErAlApplication, cancelRoleId);
 		return entity;
 	}
 
