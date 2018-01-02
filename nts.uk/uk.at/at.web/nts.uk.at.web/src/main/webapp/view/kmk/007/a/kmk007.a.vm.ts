@@ -124,7 +124,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             //休業区分
             self.itemCloseAtr = ko.observableArray([
                 new ItemModel(0, nts.uk.resource.getText('Enum_CloseAtr_PRENATAL'), 0),
-                new ItemModel(1, nts.uk.resource.getText('Enum_CloseAtr_ POSTPARTUM'), 0),
+                new ItemModel(1, nts.uk.resource.getText('Enum_CloseAtr_POSTPARTUM'), 0),
                 new ItemModel(2, nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE'), 0),
                 new ItemModel(3, nts.uk.resource.getText('Enum_CloseAtr_CARE'), 0)
             ]);
