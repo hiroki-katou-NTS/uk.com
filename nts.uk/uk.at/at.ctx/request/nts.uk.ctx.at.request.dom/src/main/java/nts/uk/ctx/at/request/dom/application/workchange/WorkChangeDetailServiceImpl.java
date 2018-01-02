@@ -9,8 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -72,10 +70,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		workChangeDetail.setPrelaunchAppSetting(beforeAppCommonSetting.getPrelaunchAppSetting(appId));
 
 		// アルゴリズム「14-2.詳細画面起動前申請共通設定を取得する」を実行する
-		//TODO: Start
-		//DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(application, application.getAppDate());
-		//workChangeDetail.setDetailedScreenPreBootModeOutput(preBootOuput);
-		//TODO: End
+		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(cid, application.getEmployeeID(), appId, application.getAppDate());
+		workChangeDetail.setDetailedScreenPreBootModeOutput(preBootOuput);
 		
 		//アルゴリズム「勤務変更申請基本データ（更新）」を実行する
 		AppWorkChange appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();		
@@ -91,9 +87,7 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		workChangeDetail.setAppWorkChange(appWorkChange);
 		
 		//アルゴリズム「14-3.詳細画面の初期モード」を実行する
-		//TODO: Start
-		//workChangeDetail.setDetailScreenInitModeOutput(initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value));
-		//TODO: End
+		workChangeDetail.setDetailScreenInitModeOutput(initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value));
 		// Setting application property
 		workChangeDetail.setApplication(application);
 		workChangeDetail.setEmployeeName(employeeAdapter.getEmployeeName(application.getEmployeeID()));

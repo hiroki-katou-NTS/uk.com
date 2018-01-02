@@ -199,7 +199,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 				listApprover.addAll(listApproverJob);
 			});
-			
+			approvalPhase.getApprovers().clear();
 			if(CollectionUtil.isEmpty(listApprover)){
 				return;
 			}
@@ -219,7 +219,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			}
 			approvalPhase.addApproverList(listApprover);
 		});
-		return listApprovalPhase;
+		return listApprovalPhase.stream().filter(x -> !CollectionUtil.isEmpty(x.getApprovers())).collect(Collectors.toList());
 	}
 	
 	@Override

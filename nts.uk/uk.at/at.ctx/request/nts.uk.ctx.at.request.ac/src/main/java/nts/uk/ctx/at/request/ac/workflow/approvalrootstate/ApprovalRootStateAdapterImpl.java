@@ -5,16 +5,19 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverWithFlagImport_New;
@@ -26,6 +29,7 @@ import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
 /**
  * 
  * @author Doan Duy Hung
@@ -143,6 +147,21 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	@Override
 	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
 		return approvalRootStatePub.doDeny(companyID, rootStateID, employeeID);
+	}
+
+	@Override
+	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID) {
+		return approvalRootStatePub.judgmentTargetPersonIsApprover(companyID, rootStateID, employeeID);
+	}
+
+	@Override
+	public ApproverPersonImport judgmentTargetPersonCanApprove(String companyID, String rootStateID,
+			String employeeID) {
+		ApproverPersonExport approverPersonExport = approvalRootStatePub.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID);
+		return new ApproverPersonImport(
+				approverPersonExport.getAuthorFlag(), 
+				EnumAdaptor.valueOf(approverPersonExport.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class), 
+				approverPersonExport.getExpirationAgentFlag());
 	}
 	
 }

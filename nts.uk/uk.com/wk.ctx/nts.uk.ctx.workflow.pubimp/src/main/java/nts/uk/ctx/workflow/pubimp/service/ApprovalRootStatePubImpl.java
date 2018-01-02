@@ -25,21 +25,25 @@ import nts.uk.ctx.workflow.dom.service.CollectApprovalAgentInforService;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 import nts.uk.ctx.workflow.dom.service.CollectMailNotifierService;
 import nts.uk.ctx.workflow.dom.service.DenyService;
+import nts.uk.ctx.workflow.dom.service.JudgmentApprovalStatusService;
 import nts.uk.ctx.workflow.dom.service.ReleaseAllAtOnceService;
 import nts.uk.ctx.workflow.dom.service.ReleaseService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverApprovedOutput;
+import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
 import nts.uk.ctx.workflow.pub.agent.RepresenterInformationExport;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalBehaviorAtrExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverWithFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ErrorFlagExport;
@@ -83,6 +87,9 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	
 	@Inject
 	private DenyService denyService;
+	
+	@Inject
+	private JudgmentApprovalStatusService judgmentApprovalStatusService;
 	
 	@Override
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate) {
@@ -205,5 +212,20 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	@Override
 	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
 		return denyService.doDeny(companyID, rootStateID, employeeID);
+	}
+
+	@Override
+	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID) {
+		return judgmentApprovalStatusService.judgmentTargetPersonIsApprover(companyID, rootStateID, employeeID);
+	}
+
+	@Override
+	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID,
+			String employeeID) {
+		ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPersonCanApprove(companyID, rootStateID, employeeID);
+		return new ApproverPersonExport(
+				approverPersonOutput.getAuthorFlag(), 
+				EnumAdaptor.valueOf(approverPersonOutput.getApprovalAtr().value, ApprovalBehaviorAtrExport.class) , 
+				approverPersonOutput.getExpirationAgentFlag());
 	}
 }

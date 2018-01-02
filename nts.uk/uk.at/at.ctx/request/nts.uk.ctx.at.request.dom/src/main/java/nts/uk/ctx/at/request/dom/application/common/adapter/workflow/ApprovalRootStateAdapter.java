@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 
 public interface ApprovalRootStateAdapter {
 	
@@ -33,5 +34,9 @@ public interface ApprovalRootStateAdapter {
 	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
 	
 	public Boolean doDeny(String companyID, String rootStateID, String employeeID);
+	
+	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
+	
+	public ApproverPersonImport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
 	
 }
