@@ -23,7 +23,10 @@ import nts.uk.ctx.workflow.dom.service.ApprovalRootStateService;
 import nts.uk.ctx.workflow.dom.service.ApproveService;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalAgentInforService;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
+import nts.uk.ctx.workflow.dom.service.CollectMailNotifierService;
+import nts.uk.ctx.workflow.dom.service.DenyService;
 import nts.uk.ctx.workflow.dom.service.ReleaseAllAtOnceService;
+import nts.uk.ctx.workflow.dom.service.ReleaseService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverApprovedOutput;
@@ -71,6 +74,15 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	
 	@Inject
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
+	
+	@Inject
+	private CollectMailNotifierService collectMailNotifierService;
+	
+	@Inject
+	private ReleaseService releaseService;
+	
+	@Inject
+	private DenyService denyService;
 	
 	@Override
 	public ApprovalRootContentExport getApprovalRoot(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID, Boolean isCreate) {
@@ -121,9 +133,8 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	}
 	
 	@Override
-	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date,
-			String historyID, String appID) {
-		approvalRootStateService.insertAppRootType(companyID, employeeID, EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), date, historyID, appID);
+	public void insertAppRootType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID) {
+		approvalRootStateService.insertAppRootType(companyID, employeeID, EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), date, appID);
 	}
 
 	@Override
@@ -174,5 +185,25 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					.collect(Collectors.toList()), 
 				approvalRepresenterOutput.getListAgent(), 
 				approvalRepresenterOutput.getAllPathSetFlag());
+	}
+
+	@Override
+	public List<String> getMailNotifierList(String companyID, String rootStateID) {
+		return collectMailNotifierService.getMailNotifierList(companyID, rootStateID);
+	}
+
+	@Override
+	public void deleteApprovalRootState(String rootStateID) {
+		approvalRootStateRepository.delete(rootStateID);
+	}
+
+	@Override
+	public Boolean doRelease(String companyID, String rootStateID, String employeeID) {
+		return releaseService.doRelease(companyID, rootStateID, employeeID);
+	}
+
+	@Override
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
+		return denyService.doDeny(companyID, rootStateID, employeeID);
 	}
 }

@@ -34,38 +34,33 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 
 	@Inject
 	private NewBeforeRegister_New newBeforeRegister;
+
 	@Override
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String appID = IdentifierUtil.randomUniqueId();
 		String appReason = "";
-		
+
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
-		if(!command.getReasonTemp().isEmpty() || !command.getAppReason().isEmpty()) {
-			appReason = !command.getReasonTemp().isEmpty() ? command.getReasonTemp() +  System.lineSeparator() + command.getAppReason() : command.getAppReason();
+		if (!command.getReasonTemp().isEmpty() || !command.getAppReason().isEmpty()) {
+			appReason = !command.getReasonTemp().isEmpty()
+					? command.getReasonTemp() + System.lineSeparator() + command.getAppReason()
+					: command.getAppReason();
 		}
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(appID,
-				command.getApplicationDate(),
-				command.getPrePostAtr(), 
-				appReason,
-				command.getEarly1(), 
-				command.getEarlyTime1(),
-				command.getLate1(),
-				command.getLateTime1(),
-				command.getEarly2(), 
-				command.getEarlyTime2(),
-				command.getLate2(), 
-				command.getLateTime2());
+				command.getApplicationDate(), command.getPrePostAtr(), appReason, command.getEarly1(),
+				command.getEarlyTime1(), command.getLate1(), command.getLateTime1(), command.getEarly2(),
+				command.getEarlyTime2(), command.getLate2(), command.getLateTime2());
 		domainLateOrLeaveEarly.setStartDate(Optional.of(domainLateOrLeaveEarly.getAppDate()));
 		domainLateOrLeaveEarly.setEndDate(Optional.of(domainLateOrLeaveEarly.getAppDate()));
 		// 共通アルゴリズム「2-1.新規画面登録前の処理」を実行する
 		newBeforeRegister.processBeforeRegister(domainLateOrLeaveEarly);
+		// 事前制約をチェックする
+		// ドメインモデル「遅刻早退取消申請」の新規登録する
+		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
 		// 2-2.新規画面登録時承認反映情報の整理
 		registerService.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.getEmployeeID(),
 				domainLateOrLeaveEarly);
-		//事前制約をチェックする
-		//ドメインモデル「遅刻早退取消申請」の新規登録する
-		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
-		//共通アルゴリズム「2-3.新規画面登録後の処理」を実行する 
+		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
 		newAfterRegister.processAfterRegister(domainLateOrLeaveEarly);
 
 	}

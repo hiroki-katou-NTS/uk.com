@@ -104,7 +104,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opPerAppRoot.get().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter);
+			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter, 
+					opPerAppRoot.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
@@ -115,7 +116,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opPerAppRootsOfCommon.get().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter);
+			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter, 
+					opPerAppRootsOfCommon.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
@@ -126,7 +128,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opWkpAppRoot.get().getBranchId());
 				List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter);
+				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
+						opWkpAppRoot.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
 			Optional<WorkplaceApprovalRoot> opWkpAppRootsOfCom = wkpApprovalRootRepository.findByBaseDateOfCommon(companyID, wｋｐId, standardDate);
@@ -134,7 +137,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opWkpAppRootsOfCom.get().getBranchId());
 				List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 				ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter);
+				ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
+						opWkpAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
 		}
@@ -144,7 +148,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opComAppRoot.get().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter);
+			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
+					opComAppRoot.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		
@@ -153,7 +158,8 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			List<ApprovalPhase> listApprovalPhaseBefore = approvalPhaseRepository.getAllIncludeApprovers(companyID, opCompanyAppRootsOfCom.get().getBranchId());
 			List<ApprovalPhase> listApprovalPhaseAfter = this.adjustmentData(companyID, employeeID, standardDate, listApprovalPhaseBefore);
 			ErrorFlag errorFlag = this.checkApprovalRoot(listApprovalPhaseBefore, listApprovalPhaseAfter);
-			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter);
+			ApprovalRootState approvalRootState = this.createFromApprovalPhaseList(listApprovalPhaseAfter,
+					opCompanyAppRootsOfCom.get().getEmploymentAppHistoryItems().get(0).getHistoryId());
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
 		return new ApprovalRootContentOutput(ApprovalRootState.builder().listApprovalPhaseState(Collections.emptyList()).build(), ErrorFlag.NO_APPROVER);
@@ -351,8 +357,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		return viewList.stream().distinct().collect(Collectors.toList());
 	}
 
-	@Override
-	public ApprovalRootState createFromApprovalPhaseList(List<ApprovalPhase> listApprovalPhase) {
+	private ApprovalRootState createFromApprovalPhaseList(List<ApprovalPhase> listApprovalPhase, String histotyID) {
 		List<ApprovalPhaseState> listApprovalPhaseState = listApprovalPhase.stream().map(approvalPhase -> {
 			List<ApprovalFrame> resultApprovalFrame = new ArrayList<>();
 			List<ApprovalFrame> listApprovalFrameByPerson = approvalPhase.getApprovers().stream()
@@ -391,6 +396,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 					resultApprovalFrame);
 			return approvalPhaseState;
 		}).collect(Collectors.toList());
-		return ApprovalRootState.builder().listApprovalPhaseState(listApprovalPhaseState).build();
+		return ApprovalRootState.builder()
+				.historyID(histotyID)
+				.listApprovalPhaseState(listApprovalPhaseState)
+				.build();
 	}
 }

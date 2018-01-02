@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterRelease;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeProcessReleasing;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -33,11 +34,12 @@ public class UpdateApplicationReleaseHandler extends CommandHandler<InputCommonD
 	@Inject
 	private CheckApprover checkApprover;
 	
-	
+	@Inject
+	private DetailBeforeUpdate beforeRegisterRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<InputCommonData> context) {
-		//String loginID = AppContexts.user().userId();
+		String companyID = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		String memo = context.getCommand().getMemo();
 		ApplicationDto_New command = context.getCommand().getApplicationDto();
@@ -48,7 +50,7 @@ public class UpdateApplicationReleaseHandler extends CommandHandler<InputCommonD
 		beforeProcessReleasingRepo.detailScreenProcessBeforeReleasing(command.getCompanyID(), command.getApplicationID(), command.getVersion());
 		//10.2
 		
-		//detailAfterRelease.detailAfterRelease(application, employeeId);
+		detailAfterRelease.detailAfterRelease(companyID, command.getApplicationID(), employeeId);
 	}
 
 }

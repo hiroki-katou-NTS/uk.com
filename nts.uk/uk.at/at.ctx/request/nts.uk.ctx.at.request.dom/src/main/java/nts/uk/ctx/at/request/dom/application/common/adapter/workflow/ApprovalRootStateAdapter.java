@@ -11,7 +11,7 @@ public interface ApprovalRootStateAdapter {
 	
 	public ApprovalRootContentImport_New getApprovalRootContent(String companyID, String employeeID, Integer appTypeValue, GeneralDate appDate, String appID, Boolean isCreate);
 	
-	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String historyID, String appID);
+	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID);
 	
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
 			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue, GeneralDate appDate);
@@ -25,5 +25,13 @@ public interface ApprovalRootStateAdapter {
 	public ApproverApprovedImport_New getApproverApproved(String rootStateID); 
 	
 	public AgentPubImport getApprovalAgencyInformation(String companyID, List<String> approver);
+	
+	public List<String> getMailNotifierList(String companyID, String rootStateID);
+	
+	public void deleteApprovalRootState(String rootStateID);
+	
+	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
+	
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID);
 	
 }

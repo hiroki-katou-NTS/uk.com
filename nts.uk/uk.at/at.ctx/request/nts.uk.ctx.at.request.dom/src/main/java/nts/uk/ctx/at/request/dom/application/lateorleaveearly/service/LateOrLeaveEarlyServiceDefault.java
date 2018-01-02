@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -11,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
@@ -19,6 +21,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 
 @Stateless
+@Transactional
 public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 	@Inject
@@ -39,6 +42,8 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	@Inject
 	ApplicationDeadlineRepository deadlineRepository;	
 	
+	@Inject
+	ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Override
 	public boolean isExist(String companyID, String appID) {
@@ -93,6 +98,8 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		) {
 			throw new BusinessException("Msg_470");
 		}
+		//Register phase
+		approvalRootStateAdapter.insertByAppType(lateOrLeaveEarly.getCompanyID(), lateOrLeaveEarly.getEmployeeID(),Integer.valueOf( lateOrLeaveEarly.getAppType().value), lateOrLeaveEarly.getAppDate(), lateOrLeaveEarly.getAppID());
 		// Add LateOrLeaveEarly
 		lateOrLeaveEarlyRepository.add(lateOrLeaveEarly);
 	}

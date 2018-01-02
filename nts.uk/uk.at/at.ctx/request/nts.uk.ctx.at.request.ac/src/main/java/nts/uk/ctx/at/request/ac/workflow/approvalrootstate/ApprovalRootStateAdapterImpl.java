@@ -63,9 +63,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date,
-			String historyID, String appID) {
-		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, date, historyID, appID);
+	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID) {
+		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, date, appID);
 	}
 
 	@Override
@@ -123,6 +122,27 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 				approverRepresenterExport.getApprover(),
 				new RepresenterInformationImport(approverRepresenterExport.getRepresenter().getValue()) 
 				);
+	}
+
+	@Override
+	public List<String> getMailNotifierList(String companyID, String rootStateID) {
+		return approvalRootStatePub.getMailNotifierList(companyID, rootStateID);
+	}
+
+	@Override
+	public void deleteApprovalRootState(String rootStateID) {
+		approvalRootStatePub.deleteApprovalRootState(rootStateID);
+		
+	}
+
+	@Override
+	public Boolean doRelease(String companyID, String rootStateID, String employeeID) {
+		return approvalRootStatePub.doRelease(companyID, rootStateID, employeeID);
+	}
+
+	@Override
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
+		return approvalRootStatePub.doDeny(companyID, rootStateID, employeeID);
 	}
 	
 }
