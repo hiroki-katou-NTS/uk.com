@@ -24,7 +24,9 @@
 				<!-- BEGIN A40_3 ~ A40_11 -->
 				<tr>
 				<td width="300px">
-					<div data-bind="ntsCheckBox: { checked: workdayOffTimeUseDivision }" tabindex="139">#{i18n.getText('KMK003_105')}</div>
+					<div tabindex="139" data-bind="ntsCheckBox: { 
+							name: '#[KMK003_105]',
+							checked: workdayOffTimeUseDivision }">#{i18n.getText('KMK003_105')}</div>
 					<div tabindex="140">
 						<div class="padding-radio">
 							<label class="ntsRadioBox">
@@ -86,7 +88,9 @@
 				
 				<!-- BEGIN A41_1 ~ A41_9 -->
 				<td width="300px">
-					<div tabindex="144" data-bind="ntsCheckBox: { checked: fromOverTimeUseDivision }">#{i18n.getText('KMK003_109')}</div>
+					<div tabindex="144" data-bind="ntsCheckBox: { 
+							name: '#[KMK003_109]',
+							checked: fromOverTimeUseDivision }">#{i18n.getText('KMK003_109')}</div>
 					<div tabindex="145">
 						<div class="padding-radio">
 							<label class="ntsRadioBox">
