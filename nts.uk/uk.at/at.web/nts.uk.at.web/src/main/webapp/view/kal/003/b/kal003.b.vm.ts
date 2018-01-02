@@ -36,6 +36,7 @@ module nts.uk.at.view.kal003.b{
                     , category:                         0
                     , checkItem:                        0
                     , workTypeRange:                    []
+                    , workTypeSelections:               []
                     , workTimeItemSelections:           []
                     , comparisonOperator:               0
                     , minimumValue:                     ''
@@ -256,7 +257,7 @@ module nts.uk.at.view.kal003.b{
             private initialDaily() : JQueryPromise<any> {
                 let self = this,
                 dfd = $.Deferred();
-                switch (self.currentErrAlaAttendanceItemCondition().typeCheckWorkRecord()) {
+                switch (self.currentErrAlaCheckCondition().checkItem()) {
                     case enItemCheck.Time: //時間
                         
                         self.initialDailyItemChkTime().done((x) => {
@@ -330,7 +331,7 @@ module nts.uk.at.view.kal003.b{
             
             private initialDailyItemChkTime() : JQueryPromise<any> {
                 let self = this,
-                currentErrAlaCheckCondition = self.self.currentErrAlaCheckCondition()(),
+                currentErrAlaCheckCondition = self.self.currentErrAlaCheckCondition(),
                 dfd = $.Deferred();
                 //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
                 var jsItemCheckCmd : any = ko.toJS(currentErrAlaCheckCondition.itemCheck);
@@ -465,26 +466,51 @@ module nts.uk.at.view.kal003.b{
             }
             
               //==========Daily session End====================
+            /*
+            list(str: string):Array<string>{
+                return _.split(str, ',');
+            }
             
+            */
+            getListCode(listKdl002Model : Array<model.ItemModelKdl002>) : Array<string>{
+                let retListCode : Array<string> = [];
+                if (listKdl002Model == null || listKdl002Model == undefined) {
+                    return retListCode;
+                }
+                for(var i = 0; i < listKdl002Model.length; i++) {
+                    retListCode.push(listKdl002Model[i].code);
+                }
+                return retListCode;
+            }
             /**
              * open dialog for select working type
              */
             btnSettingBA1_3_click () {
-                let self = this;
+                let self = this,
+                    currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
                 
                 block.invisible();
-                let param = {
-                        id : 1,
-                        multiple :  true,
-                    };
-                windows.setShared('paramKdl002', param);
-                windows.sub.modal('/view/kdl/002/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                let lstSelectedCode = currentErrAlaCheckCondition.workTypeSelections();
+                let lstSelectableCode = [];
+                
+                windows.setShared('KDL002_Multiple',false,true);
+                //all possible items
+                windows.setShared('KDL002_AllItemObj',lstSelectableCode,true);
+                //selected items
+                windows.setShared('KDL002_SelectedItemId',lstSelectedCode,true);
+                
+                windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                   //get data from share window
 
-                    var listCds = windows.getShared('dataKdl002');
-                    if (listCds != undefined) {
-                        self.currentErrAlaCheckCondition.workTypeSelections(listCds);
+                    let listCds = windows.getShared('KDL002_SelectedNewItem');
+                    if (listCds == null || listCds == undefined) {
+                        
+                    } else {
+                        //items: KnockoutObservableArray<model.ItemModelKdl002> = ko.observableArray(listCds);
+                        currentErrAlaCheckCondition.workTypeSelections(self.getListCode(listCds));
                         self.displayWorkTypeSelections_BA1_4(listCds.toString());
+                        
                     }
                     block.clear();
                 });
@@ -513,7 +539,6 @@ module nts.uk.at.view.kal003.b{
              */
             btnDecision() {
                 let self = this;
-                alert(ko.toJS(self.currentErrAlaCheckCondition()).toString());
                 windows.setShared('outputKal003b', ko.toJS(self.currentErrAlaCheckCondition()));
                 nts.uk.ui.windows.close();
             }
@@ -547,6 +572,14 @@ module nts.uk.at.view.kal003.b{
         CompoundCondition   = 7// 複合条件
     }
     module model {
+        export class ItemModelKdl002 {
+            code: string;
+            name: string;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
         export interface IEnumModel {
             value : number;
             fieldName: string;

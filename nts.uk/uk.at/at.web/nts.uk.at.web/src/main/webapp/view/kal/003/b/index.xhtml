@@ -114,11 +114,25 @@
 	                            <td class = "pad_left_5px">
 	                               <div>
 		                                <!-- BA1-3 -->
+		                                <com:ko-if bind="checkItem() == 0
+                                        || checkItem() == 1
+                                        || checkItem() == 2
+                                        || checkItem() == 3
+                                        || checkItem() == 4
+                                        || checkItem() == 6">
+                                            <button id="btnSettingBA1_3"  data-bind="click : $parent.btnSettingBA1_3_click, enable: $parent.targetServiceTypeSelected_BA1_2() > 0">#{i18n.getText('KAL003_57')}</button>
+                                            <!-- BA1-4 -->
+                                            <input data-bind="ntsTextEditor: {
+                                              value: $parent.displayWorkTypeSelections_BA1_4,
+                                              readonly: true}"/>
+                                        </com:ko-if>
+		                                <com:ko-if bind="checkItem() == 5">
 			                                <button id="btnSettingBA1_3"  data-bind="click : $parent.btnSettingBA1_3_click, enable: true">#{i18n.getText('KAL003_57')}</button>
 			                                <!-- BA1-4 -->
 			                                <input data-bind="ntsTextEditor: {
 			                                  value: $parent.displayWorkTypeSelections_BA1_4,
 			                                  readonly: true}"/>
+			                            </com:ko-if>
 	                                </div>
 	                            </td>
 	                        </tr>
