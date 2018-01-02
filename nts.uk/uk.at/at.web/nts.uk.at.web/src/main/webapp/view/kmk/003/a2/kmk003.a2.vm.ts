@@ -115,7 +115,7 @@ module a2 {
             self.fixTableOptionOneDaySimpleMode = {
                 maxRow: 1,
                 minRow: 1,
-                maxRowDisplay: 1,
+                maxRowDisplay: 2,
                 isShowButton: false,
                 dataSource: self.dataSourceOneDaySimpleMode,
                 isMultipleSelect: false,
@@ -141,6 +141,12 @@ module a2 {
             // ====================================== SUBSCRIBER ======================================
             
             self.parentModel.isChangeItemTable.subscribe(newValue => {
+                self.bindDataToScreen();
+            });
+            input.selectedTab.subscribe((newValue: string) => {
+                if (newValue !== 'tab-2') {
+                    return;
+                }
                 self.bindDataToScreen();
             });
             
@@ -205,17 +211,18 @@ module a2 {
             if (self.isSimpleMode()) {
 
                 let emTimezone: EmTimeZoneSetModel;
-                self.dataSourceOneDaySimpleMode([]);
+                
+                let empTimeFrameNo: number = 1;
                 
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
                     emTimezone = self.parentModel.fixedWorkSetting.getHDWtzOneday()
-                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(1);
+                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
                 }
                 else if (self.parentModel.workTimeSetting.isFlex()) {
                     // all day
                     emTimezone = self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(1);
+                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
                 }
                 //============= DiffTime Mode =============
                 else if (self.parentModel.workTimeSetting.isDiffTime()) {
@@ -230,7 +237,8 @@ module a2 {
                     startTime: item.start(),
                     endTime: item.end()
                 }
-                self.dataSourceOneDaySimpleMode().push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
+                self.dataSourceOneDaySimpleMode([]);
+                self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
                     emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
             }
             // Detail mode
@@ -386,21 +394,21 @@ module a2 {
                 if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
                     self.parentModel.fixedWorkSetting.getHDWtzOneday().workTimezone
-                        .lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
+                        .lstWorkingTimezone = self.toDomain(self.dataSourceOneDaySimpleMode);
                 }
                 
                 //============= Flex Mode =============
-                else if (self.parentModel.workTimeSetting.isFixed()) {
+                else if (self.parentModel.workTimeSetting.isFlex()) {
                     // all day
                     self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDaySimpleMode);
                 }
                 
                 //============= DiffTime Mode =============
-                else if (self.parentModel.workTimeSetting.isFixed()) {
+                else if (self.parentModel.workTimeSetting.isDiffTime()) {
                     // all day
                     self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceOneDay);
+                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceOneDaySimpleMode);
                 }
                 
             }
@@ -488,7 +496,7 @@ module a2 {
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 243, 
                     enable: !self.isSimpleMode(),
-                    template: `<div data-bind="ntsTimeRangeEditor: { 
+                    template: `<div data-bind="ntsTimeRangeEditor: {startName: '#[KMK003_166]', endName: '#[KMK003_167]',
                         required: true, enable: true, inputFormat: 'time'}"/>`
                 }, {
                     headerText: nts.uk.resource.getText("KMK003_56"), 
