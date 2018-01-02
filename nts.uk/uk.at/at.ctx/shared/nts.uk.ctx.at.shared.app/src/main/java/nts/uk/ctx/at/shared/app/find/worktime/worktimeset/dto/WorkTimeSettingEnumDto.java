@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -87,6 +88,7 @@ public class WorkTimeSettingEnumDto {
 		dto.setRounding(EnumAdaptor.convertToValueNameList(Rounding.class, i18n));
 		List<EnumConstant> roundingSimple = EnumAdaptor.convertToValueNameList(Rounding.class, i18n);
 		roundingSimple.removeIf(enumConstant -> enumConstant.getValue() == Rounding.ROUNDING_DOWN_OVER.value);
+		Collections.reverse(roundingSimple);
 		dto.setRoundingSimple(roundingSimple);
 		dto.setLstLateEarlyAtr(EnumAdaptor.convertToValueNameList(LateEarlyAtr.class, i18n));
 		dto.setWorkSystemAtr(EnumAdaptor.convertToValueNameList(WorkSystemAtr.class, i18n));
