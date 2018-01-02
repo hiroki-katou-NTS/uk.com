@@ -124,5 +124,26 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 				new RepresenterInformationImport(approverRepresenterExport.getRepresenter().getValue()) 
 				);
 	}
+
+	@Override
+	public List<String> getMailNotifierList(String companyID, String rootStateID) {
+		return approvalRootStatePub.getMailNotifierList(companyID, rootStateID);
+	}
+
+	@Override
+	public void deleteApprovalRootState(String rootStateID) {
+		approvalRootStatePub.deleteApprovalRootState(rootStateID);
+		
+	}
+
+	@Override
+	public Boolean doRelease(String companyID, String rootStateID, String employeeID) {
+		return approvalRootStatePub.doRelease(companyID, rootStateID, employeeID);
+	}
+
+	@Override
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID) {
+		return approvalRootStatePub.doDeny(companyID, rootStateID, employeeID);
+	}
 	
 }

@@ -305,4 +305,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		}
 		return krqdtAppStamp;
 	}
+
+	@Override
+	public void delete(String companyID, String appID) {
+		this.commandProxy().remove(KrqdtAppStamp.class, new KrqdpAppStamp(companyID, appID));
+	}
 }

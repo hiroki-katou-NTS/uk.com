@@ -31,4 +31,20 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 				application.getAppID());
 	}
 
+	@Override
+	public void delete(String companyID, String appID, Long version, ApplicationType appType) {
+		switch (appType) {
+		case STAMP_APPLICATION:
+			
+			break;
+
+		default:
+			break;
+		}
+		applicationRepository.delete(companyID, appID);
+		approvalRootStateAdapter.deleteApprovalRootState(appID);
+		
+		
+	}
+
 }

@@ -17,4 +17,6 @@ public interface ApplicationRepository_New {
 	
 	public void updateWithVersion(Application_New application);
 	
+	public void delete(String companyID, String appID);
+	
 }

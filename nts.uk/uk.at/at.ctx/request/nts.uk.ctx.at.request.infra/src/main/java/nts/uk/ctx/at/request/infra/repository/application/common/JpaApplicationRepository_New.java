@@ -76,4 +76,9 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		this.commandProxy().update(krqdtApplication);
 		this.getEntityManager().flush();
 	}
+
+	@Override
+	public void delete(String companyID, String appID) {
+		this.commandProxy().remove(KrqdtApplication_New.class, new KrqdpApplicationPK_New(companyID, appID));
+	}
 }

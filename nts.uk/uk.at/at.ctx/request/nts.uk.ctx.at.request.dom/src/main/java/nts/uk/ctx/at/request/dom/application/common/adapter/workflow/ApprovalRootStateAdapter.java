@@ -26,4 +26,12 @@ public interface ApprovalRootStateAdapter {
 	
 	public AgentPubImport getApprovalAgencyInformation(String companyID, List<String> approver);
 	
+	public List<String> getMailNotifierList(String companyID, String rootStateID);
+	
+	public void deleteApprovalRootState(String rootStateID);
+	
+	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
+	
+	public Boolean doDeny(String companyID, String rootStateID, String employeeID);
+	
 }
