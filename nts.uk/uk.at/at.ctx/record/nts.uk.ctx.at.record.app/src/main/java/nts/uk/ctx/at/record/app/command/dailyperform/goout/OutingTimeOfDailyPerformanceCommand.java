@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.app.command.dailyperform.goout;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.goout.dto.OutingTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
@@ -30,39 +32,25 @@ public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public OutingTimeOfDailyPerformance toDomain() {
-		return data.isPresent()
-				? new OutingTimeOfDailyPerformance(getEmployeeId(), getWorkDate(), ConvertHelper.mapTo(data.get()
-						.getTimeZone(),
-						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), new TimeActualStamp(
-								new WorkStamp(
-										new TimeWithDayAttr(c.getOuting().getActualTime().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(c.getOuting().getActualTime().getTimesOfDay()),
-										new WorkLocationCD(c.getOuting().getActualTime().getPlaceCode()),
-										ConvertHelper.getEnum(c.getOuting().getActualTime().getStampSourceInfo(),
-												StampSourceInfo.class)),
-								new WorkStamp(new TimeWithDayAttr(c.getOuting().getTime().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(c.getOuting().getTime().getTimesOfDay()),
-										new WorkLocationCD(c.getOuting().getTime().getPlaceCode()),
-										ConvertHelper.getEnum(
-												c.getOuting().getTime().getStampSourceInfo(), StampSourceInfo.class)),
-								c.getOuting().getNumberOfReflectionStamp()), new AttendanceTime(c.getOutTimeCalc()),
-								new AttendanceTime(c.getOutTIme()),
+		return !data.isPresent() ? null
+				: new OutingTimeOfDailyPerformance(getEmployeeId(), getWorkDate(), ConvertHelper.mapTo(
+						data.get().getTimeZone(),
+						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), createTimeActual(c.getOuting()),
+								new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 								ConvertHelper.getEnum(c.getReason(), GoingOutReason.class),
-								new TimeActualStamp(new WorkStamp(
-										new TimeWithDayAttr(
-												c.getComeBack().getActualTime().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(c.getComeBack().getActualTime().getTimesOfDay()),
-										new WorkLocationCD(c.getComeBack().getActualTime().getPlaceCode()),
-										ConvertHelper.getEnum(c.getComeBack().getActualTime().getStampSourceInfo(),
-												StampSourceInfo.class)),
-										new WorkStamp(
-												new TimeWithDayAttr(
-														c.getComeBack().getTime().getAfterRoundingTimesOfDay()),
-												new TimeWithDayAttr(c.getComeBack().getTime().getTimesOfDay()),
-												new WorkLocationCD(c.getComeBack().getTime().getPlaceCode()),
-												ConvertHelper.getEnum(c.getComeBack().getTime().getStampSourceInfo(),
-														StampSourceInfo.class)),
-										c.getComeBack().getNumberOfReflectionStamp()))))
-				: null;
+								createTimeActual(c.getComeBack()))));
+	}
+
+	private TimeActualStamp createTimeActual(WithActualTimeStampDto c) {
+		return new TimeActualStamp(createWorkStamp(c.getActualTime()), createWorkStamp(c.getTime()),
+				c.getNumberOfReflectionStamp());
+	}
+
+	private WorkStamp createWorkStamp(TimeStampDto c) {
+		return new WorkStamp(
+				c.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
+				c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
+				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
+				ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

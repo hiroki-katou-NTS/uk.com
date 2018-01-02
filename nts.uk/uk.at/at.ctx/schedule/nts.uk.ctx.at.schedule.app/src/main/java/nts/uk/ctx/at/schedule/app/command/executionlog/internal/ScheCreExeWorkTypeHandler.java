@@ -68,7 +68,7 @@ public class ScheCreExeWorkTypeHandler {
 			WorkingConditionItem workingConditionItem) {
 
 		// 登録前削除区分をTrue（削除する）とする
-		command.setIsDeleteBeforInsert(true);
+		//command.setIsDeleteBeforInsert(true); FIX BUG #87113
 
 		// setup command getter
 		WorkTypeGetterCommand commandWorktypeGetter = new WorkTypeGetterCommand();
