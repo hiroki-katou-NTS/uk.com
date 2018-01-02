@@ -488,19 +488,20 @@ module a2 {
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 243, 
                     template: `<div data-bind="ntsTimeRangeEditor: { 
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                        required: true, enable: ` + self.isSimpleMode() + `, inputFormat: 'time'}"/>`
                 }, {
                     headerText: nts.uk.resource.getText("KMK003_57"), 
                     key: "roundingTime", 
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0), 
                     width: 150,
-                   template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    cssClassName: 'tab2-column2-combo-box',
+                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
                                     editable: false,
-                                    enable: ` + !self.isSimpleMode() + `,
+                                    enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
                                 </div>`
                 }, {
