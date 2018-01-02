@@ -33,6 +33,8 @@ module a1 {
         timeZoneModelTwo: TimezoneModel;
         coreTimeSettingModel: CoreTimeSettingModel;
         settingEnum: WorkTimeSettingEnumDto;
+        SBcoreTimezone: Array<any>;
+
         /**
         * Constructor.
         */
@@ -43,6 +45,11 @@ module a1 {
                 return !self.isFlexMode() && !self.isDiffTimeMode();
             });
 
+            self.SBcoreTimezone = [
+                { value: 1, localizedName: nts.uk.resource.getText("KMK003_158") }, // used
+                { value: 0, localizedName: nts.uk.resource.getText("KMK003_159") } // not used
+            ];
+
             //day start Time
             self.dayStartTime = ko.observable(0);
             self.dayStartTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
@@ -50,9 +57,8 @@ module a1 {
             }));
 
             //one day range Time
-            self.oneDayRangeTimeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
+            self.oneDayRangeTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
                 width: "50",
-                textmode: "text",
             }));
 
 

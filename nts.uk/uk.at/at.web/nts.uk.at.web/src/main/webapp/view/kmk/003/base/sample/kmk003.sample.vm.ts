@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk003.sample {
                 
                 self.itemList = ko.observableArray([
                     {code: 1, name: '基本給1'},
-                    {code: 2, name: '役職手当2'},
+                    {code: 2, name: '役職手�'},
                     {code: 3, name: '基本給3'}
                 ]);
                 self.isEnableAllControl = ko.observable(true);
@@ -89,13 +89,13 @@ module nts.uk.at.view.kmk003.sample {
             private columnSetting(): Array<any> {
                 let self = this;
                 return [
-                    {headerText: "カラム1", key: "column1", defaultValue: ko.observable(1200), width: 107, template: `<input data-bind="ntsTimeEditor: {
+                    {headerText: "カラ�1", key: "column1", defaultValue: ko.observable(1200), width: 107, template: `<input data-bind="ntsTimeEditor: {
                         inputFormat: 'time', mode: 'time', enable: true}" />`, cssClassName: 'column-time-editor'},
-                    {headerText: "カラム2", key: "column2", defaultValue: ko.observable(true), width: 60, template: `<div data-bind="ntsCheckBox: {
+                    {headerText: "カラ�2", key: "column2", defaultValue: ko.observable(true), width: 60, template: `<div data-bind="ntsCheckBox: {
                         enable: true}"></div>`},
-                    {headerText: "カラム3", key: "column3", defaultValue: ko.observable({startTime: 1000, endTime: 1200}), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
+                    {headerText: "カラ�3", key: "column3", defaultValue: ko.observable({startTime: 1000, endTime: 1200}), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
                         name: 'Duration', required: true, enable: true, inputFormat: 'time'}"/>`},
-                    {headerText: "カラム4", key: "column4", defaultValue: ko.observable(1), width: 300, dataSource: self.itemList(), template: `<div data-bind="ntsComboBox: {
+                    {headerText: "カラ�4", key: "column4", defaultValue: ko.observable(1), width: 300, dataSource: self.itemList(), template: `<div data-bind="ntsComboBox: {
                                             optionsValue: 'code',
                                             visibleItemsCount: 5,
                                             optionsText: 'name',

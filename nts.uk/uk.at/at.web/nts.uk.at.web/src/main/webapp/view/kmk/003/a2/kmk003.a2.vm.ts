@@ -84,43 +84,43 @@ module a2 {
                 dataSource: self.dataSourceOneDay,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
-                tabindex: -1
+                tabindex: 46
             };
             
             self.dataSourceMorning = ko.observableArray([]);
             self.fixTableOptionMorning = {
-                maxRow: 7,
+                maxRow: 5,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceMorning,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
-                tabindex: -1
+                tabindex: 47
             };
             
             self.dataSourceAfternoon = ko.observableArray([]);
             self.fixTableOptionAfternoon = {
-                maxRow: 7,
+                maxRow: 5,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceAfternoon,
                 isMultipleSelect: true,
                 columns: self.columnSetting(),
-                tabindex: -1
+                tabindex: 48
             };
             
             self.dataSourceOneDaySimpleMode = ko.observableArray([]);
             self.fixTableOptionOneDaySimpleMode = {
-                maxRow: 7,
-                minRow: 2,
-                maxRowDisplay: 5,
+                maxRow: 1,
+                minRow: 1,
+                maxRowDisplay: 2,
                 isShowButton: false,
                 dataSource: self.dataSourceOneDaySimpleMode,
                 isMultipleSelect: false,
                 columns: self.columnSetting(),
-                tabindex: -1
+                tabindex: 1
             };
             
             // ====================================== Defined Variable Flow Mode ======================================
@@ -141,6 +141,12 @@ module a2 {
             // ====================================== SUBSCRIBER ======================================
             
             self.parentModel.isChangeItemTable.subscribe(newValue => {
+                self.bindDataToScreen();
+            });
+            input.selectedTab.subscribe((newValue: string) => {
+                if (newValue !== 'tab-2') {
+                    return;
+                }
                 self.bindDataToScreen();
             });
             
@@ -198,21 +204,25 @@ module a2 {
         private bindDataOtherMode() {
             let self = this;
             
+            // update column setting
+            self.refreshColumnSet();
+            
             // Simple mode
             if (self.isSimpleMode()) {
 
                 let emTimezone: EmTimeZoneSetModel;
-                self.dataSourceOneDaySimpleMode([]);
+                
+                let empTimeFrameNo: number = 1;
                 
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
                     emTimezone = self.parentModel.fixedWorkSetting.getHDWtzOneday()
-                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(1);
+                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
                 }
                 else if (self.parentModel.workTimeSetting.isFlex()) {
                     // all day
                     emTimezone = self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(1);
+                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
                 }
                 //============= DiffTime Mode =============
                 else if (self.parentModel.workTimeSetting.isDiffTime()) {
@@ -227,13 +237,25 @@ module a2 {
                     startTime: item.start(),
                     endTime: item.end()
                 }
-                self.dataSourceOneDaySimpleMode().push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
+                self.dataSourceOneDaySimpleMode([]);
+                self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
                     emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
             }
             // Detail mode
             else {
                 self.bindingDataDto();
             }
+        }
+        
+        /**
+         * Update column setting
+         */
+        private refreshColumnSet() {
+            let self = this;
+            self.fixTableOptionOneDay.columns= self.columnSetting();
+            self.fixTableOptionMorning.columns= self.columnSetting();
+            self.fixTableOptionAfternoon.columns= self.columnSetting();
+            self.fixTableOptionOneDaySimpleMode.columns= self.columnSetting();
         }
         
         /**
@@ -372,21 +394,21 @@ module a2 {
                 if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
                     self.parentModel.fixedWorkSetting.getHDWtzOneday().workTimezone
-                        .lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
+                        .lstWorkingTimezone = self.toDomain(self.dataSourceOneDaySimpleMode);
                 }
                 
                 //============= Flex Mode =============
-                else if (self.parentModel.workTimeSetting.isFixed()) {
+                else if (self.parentModel.workTimeSetting.isFlex()) {
                     // all day
                     self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDaySimpleMode);
                 }
                 
                 //============= DiffTime Mode =============
-                else if (self.parentModel.workTimeSetting.isFixed()) {
+                else if (self.parentModel.workTimeSetting.isDiffTime()) {
                     // all day
                     self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceOneDay);
+                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceOneDaySimpleMode);
                 }
                 
             }
@@ -394,20 +416,6 @@ module a2 {
             else {
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
-                    // all day
-                    // TODO: 
-//                    _.forEach(self.parentModel.fixedWorkSetting.lstHalfDayWorkTimezone, (item: FixHalfDayWorkTimezoneModel) => {
-//                        if (item.dayAtr() == 0) {
-//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
-//                        }
-//                        if (item.dayAtr() == 1) {
-//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceMorning);
-//                        }
-//                        if (item.dayAtr() == 2) {
-//                            item.workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceAfternoon);
-//                        }
-//                    });
-                    
                     self.parentModel.fixedWorkSetting. getHDWtzOneday()
                         .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDay);
                     
@@ -487,10 +495,11 @@ module a2 {
                     key: "timeRange", 
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 243, 
-                    template: `<div data-bind="ntsTimeRangeEditor: { 
-                        required: true, enable: ` + self.isSimpleMode() + `, inputFormat: 'time'}"/>`
+                    enable: !self.isSimpleMode(),
+                    template: `<div data-bind="ntsTimeRangeEditor: {startName: '#[KMK003_166]', endName: '#[KMK003_167]',
+                        required: true, enable: true, inputFormat: 'time'}"/>`
                 }, {
-                    headerText: nts.uk.resource.getText("KMK003_57"), 
+                    headerText: nts.uk.resource.getText("KMK003_56"), 
                     key: "roundingTime", 
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0), 

@@ -83,6 +83,12 @@ module nts.uk.at.view.kmk003.a {
                     this.end = ko.observable(0);
                 }
 
+                resetData(): void {
+                    let self = this;
+                    self.start(0);
+                    self.end(0);
+                }
+
                 updateData(data: TimezoneDto) {
                     this.useAtr(data.useAtr);
                     this.workNo(data.workNo);
@@ -188,7 +194,8 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.morningEndTime(0);
                     this.afternoonStartTime(0);
-                    // TODO resetData list
+                    this.getTimezoneOne().resetData();
+                    this.getTimezoneTwo().resetData();
                 }
             }
 
@@ -201,7 +208,7 @@ module nts.uk.at.view.kmk003.a {
                 prescribedTimezoneSetting: PrescribedTimezoneSettingModel;
                 startDateClock: KnockoutObservable<number>;
                 predetermine: KnockoutObservable<boolean>;
-                static ONE_DAY = 24; // initial value of rangeTimeDay = 24
+                static ONE_DAY = 1440; // initial value of rangeTimeDay = 24h = 1440m
 
                 constructor() {
                     this.rangeTimeDay = ko.observable(PredetemineTimeSettingModel.ONE_DAY); 

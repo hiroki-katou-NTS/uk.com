@@ -119,6 +119,11 @@ module nts.fixedtable {
          * class JQuery
          */
         cssClassName?: string;
+        
+        /**
+         * Enable column
+         */
+        enable?: boolean;
     }
 
     /************************************************ SCREEN MODEL ************************************************
@@ -270,8 +275,10 @@ module nts.fixedtable {
             let self = this;
             let row: any = {};
             _.forEach(self.columns, (column: FixColumn) => {
-                row[column.key] = ko.observable(ko.unwrap(column.defaultValue));
+                let value: any = JSON.parse(JSON.stringify(ko.unwrap(column.defaultValue)));
+                row[column.key] = ko.observable(value);
                 
+                // Subscriber columns
                 row[column.key].subscribe((newValue: any) => {
                     self.itemList.valueHasMutated();
                 });
@@ -503,7 +510,7 @@ module nts.fixedtable {
             let newProperties: string = oldProperties.replace(/\s/g, '');
             
             // insert key value of control
-            newProperties = self.updateElement(newProperties, keyValue, columnSetting.key);
+            newProperties = self.updateElement(newProperties, keyValue, columnSetting.key, columnSetting.enable);
             
             // insert option value of control if has
             let keyOptionValue: string = infoControl.keyOptionValue;
@@ -513,7 +520,7 @@ module nts.fixedtable {
                 
                 // update option cotrol html
                 newProperties = self.updateElement(newProperties, keyOptionValue,
-                    "$parent.lstDataSource." + columnSetting.key);
+                    "$parent.lstDataSource." + columnSetting.key, columnSetting.enable);
             }
 
             // update tabindex
@@ -596,7 +603,7 @@ module nts.fixedtable {
         /**
          * update element html
          */
-        private updateElement(input: string, keyValue: string, value: string): string {
+        private updateElement(input: string, keyValue: string, value: string, enable: boolean): string {
             let self = this;
             
             // get index
@@ -608,6 +615,23 @@ module nts.fixedtable {
             } else {
                 input = input.replace(self.subString(input, idxKey), keyValue + "" + value);
             }
+            
+            //=================== Update Enable/Disable column ===================
+            if (enable == undefined) {
+                enable = true;
+            }
+            let keyEnable: string = "enable:true";
+            let keyDisable: string = "enable:false";
+            
+            if (input.indexOf(keyEnable) != -1) {
+                input = input.replace(keyEnable, "enable:" + enable);
+            }
+            else if (input.indexOf(keyDisable) != -1) {
+                input = input.replace(keyDisable, "enable:" + enable);
+            } else {
+                input += ",enable:" + enable;
+            }
+            
             return input;
         }
         
