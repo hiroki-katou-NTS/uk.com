@@ -357,9 +357,33 @@ module nts.uk.at.view.kmk003.a {
                         // recheck abolish condition of list worktime
                         self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
 
-                        // reload list work time
-                        _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
+                        // reload
+                        self.reloadAfterSave();
+
                     });
+            }
+
+            /**
+             * Reload worktime list after save
+             */
+            public reloadAfterSave(): void {
+                let self = this;
+                let loader = self.workTimeSettingLoader;
+                let wts = self.mainSettingModel.workTimeSetting;
+                let leftAtr = loader.workTimeDivision.workTimeDailyAtr;
+                let leftMethod = loader.workTimeDivision.workTimeMethodSet;
+                let rightAtr = wts.workTimeDivision.workTimeDailyAtr;
+                let rightMethod = wts.workTimeDivision.workTimeMethodSet;
+
+                let isSameWorkDivision = leftAtr() == rightAtr() && leftMethod() == rightMethod();
+
+                // reload list work time
+                if (loader.isAllWorkAtr() || isSameWorkDivision) {
+                    _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
+                } else {
+                    leftMethod(rightMethod());
+                    leftAtr(rightAtr());
+                }
             }
 
             /**
