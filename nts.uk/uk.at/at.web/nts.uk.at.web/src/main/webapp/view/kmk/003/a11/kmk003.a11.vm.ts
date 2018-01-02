@@ -100,19 +100,31 @@ module a11 {
             // Disable
             _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
                 if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    _self.workdayOffTimeCertainTime(0);
+                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {
+                        _self.workdayOffTimeCertainTime(0); 
+                    }
                 } else {
-                    _self.workdayOffTimeOneDayTime(0);
-                    _self.workdayOffTimeHalfDayTime(0);
+                    if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
+                        _self.workdayOffTimeOneDayTime(0); 
+                    }                
+                    if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
+                        _self.workdayOffTimeHalfDayTime(0); 
+                    }
                 }
             });
             
             _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {
                 if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    _self.fromOverTimeCertainTime(0);
+                    if (typeof _self.fromOverTimeCertainTime() !== 'number') {
+                        _self.fromOverTimeCertainTime(0); 
+                    }
                 } else {
-                    _self.fromOverTimeOneDayTime(0);
-                    _self.fromOverTimeHalfDayTime(0);
+                    if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
+                        _self.fromOverTimeOneDayTime(0); 
+                    }                
+                    if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
+                        _self.fromOverTimeHalfDayTime(0); 
+                    }
                 }
             });
         }   
