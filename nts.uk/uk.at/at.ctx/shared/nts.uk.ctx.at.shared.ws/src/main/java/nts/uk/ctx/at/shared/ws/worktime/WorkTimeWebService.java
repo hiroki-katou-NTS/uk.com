@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.find.worktime_old.WorkTimeFinder;
+import nts.uk.ctx.at.shared.app.find.worktime_old.WorktimeFinderNew;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 
 /**
@@ -31,6 +32,9 @@ public class WorkTimeWebService extends WebService {
 	/** The work time finder. */
 	@Inject
 	private WorkTimeFinder workTimeFinder;
+	
+	@Inject
+	private WorktimeFinderNew worktimeFinderNew_ver1;
 
 	/**
 	 * Find by company ID.
@@ -101,6 +105,19 @@ public class WorkTimeWebService extends WebService {
 	@Path("findById/{workTimeCode}")
 	public WorkTimeDto findById(@PathParam("workTimeCode") String workTimeCode){
 		return this.workTimeFinder.findById(workTimeCode);
+	}
+	// waitting nws
+	@POST
+	@Path("findByCodeListVer1")
+	public List<WorkTimeDto> findByCodeList_Ver1(List<String> codelist) {
+		return this.worktimeFinderNew_ver1.findByCodeList(codelist);
+	}
+	
+	@POST
+	@Path("findByTimeVer1")
+	public List<WorkTimeDto> findByTimeVer1(WorkTimeCommandFinder command) {
+		return this.worktimeFinderNew_ver1.findByTime(command.codelist, command.startTime,
+				command.endTime);
 	}
 }
 
