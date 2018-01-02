@@ -277,7 +277,7 @@ module nts.uk.at.view.kmk003.a {
                     self.clearAllError();
 
                     // update mainSettingModel data
-                    self.mainSettingModel.updateData(worktimeSettingInfo);
+                    self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
 
                     self.isLoading(true);
                     self.mainSettingModel.isChangeItemTable.valueHasMutated();
@@ -622,16 +622,18 @@ module nts.uk.at.view.kmk003.a {
                 return command;
             }
 
-            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): void {
+            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto, useHalfDay: KnockoutObservable<boolean>): void {
                 let self = this;
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
-                
                 
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
                     //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
+
+                    // set useHalfDay to mainScreen model
+                    useHalfDay(worktimeSettingInfo.flexWorkSetting.useHalfDayShift);
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
@@ -642,6 +644,9 @@ module nts.uk.at.view.kmk003.a {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
                     //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
+
+                    // set useHalfDay to mainScreen model
+                    useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
                 }
                 //TODO update diff viewmodel
             }
