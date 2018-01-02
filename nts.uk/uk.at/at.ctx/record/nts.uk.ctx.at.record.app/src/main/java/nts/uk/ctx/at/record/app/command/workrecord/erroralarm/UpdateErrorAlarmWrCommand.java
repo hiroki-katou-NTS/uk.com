@@ -167,40 +167,46 @@ public class UpdateErrorAlarmWrCommand {
 				errorDisplayItem != null ? new BigDecimal(errorDisplayItem) : null, lstApplicationTypeCode);
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setDisplayMessage(displayMessage);
-		// Set AlCheckTargetCondition
-		condition.createAlCheckTargetCondition(alCheckTargetCondition.isFilterByBusinessType(),
-				alCheckTargetCondition.isFilterByJobTitle(), alCheckTargetCondition.isFilterByEmployment(),
-				alCheckTargetCondition.isFilterByClassification(), alCheckTargetCondition.getLstBusinessType(),
-				alCheckTargetCondition.getLstJobTitle(), alCheckTargetCondition.getLstEmployment(),
-				alCheckTargetCondition.getLstClassification());
-		// Set WorkTypeCondition
-		condition.createWorkTypeCondition(workTypeCondition.isUseAtr(), workTypeCondition.getComparePlanAndActual());
-		if (workTypeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
-			condition.setWorkTypePlan(workTypeCondition.isPlanFilterAtr(), workTypeCondition.getPlanLstWorkType());
-			condition.setWorkTypeActual(workTypeCondition.isActualFilterAtr(),
-					workTypeCondition.getActualLstWorkType());
-			condition.chooseWorkTypeOperator(operatorBetweenPlanActual);
-		} else {
-			condition.setWorkTypeSingle(workTypeCondition.isPlanFilterAtr(), workTypeCondition.getPlanLstWorkType());
+		if (fixedAtr != 1) {
+			// Set AlCheckTargetCondition
+			condition.createAlCheckTargetCondition(alCheckTargetCondition.isFilterByBusinessType(),
+					alCheckTargetCondition.isFilterByJobTitle(), alCheckTargetCondition.isFilterByEmployment(),
+					alCheckTargetCondition.isFilterByClassification(), alCheckTargetCondition.getLstBusinessType(),
+					alCheckTargetCondition.getLstJobTitle(), alCheckTargetCondition.getLstEmployment(),
+					alCheckTargetCondition.getLstClassification());
+			// Set WorkTypeCondition
+			condition.createWorkTypeCondition(workTypeCondition.isUseAtr(),
+					workTypeCondition.getComparePlanAndActual());
+			if (workTypeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
+				condition.setWorkTypePlan(workTypeCondition.isPlanFilterAtr(), workTypeCondition.getPlanLstWorkType());
+				condition.setWorkTypeActual(workTypeCondition.isActualFilterAtr(),
+						workTypeCondition.getActualLstWorkType());
+				condition.chooseWorkTypeOperator(operatorBetweenPlanActual);
+			} else {
+				condition.setWorkTypeSingle(workTypeCondition.isPlanFilterAtr(),
+						workTypeCondition.getPlanLstWorkType());
+			}
+			// Set WorkTimeCondtion
+			condition.createWorkTimeCondition(workTimeCondition.isUseAtr(),
+					workTimeCondition.getComparePlanAndActual());
+			if (workTimeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
+				condition.setWorkTimePlan(workTimeCondition.isPlanFilterAtr(), workTimeCondition.getPlanLstWorkTime());
+				condition.setWorkTimeActual(workTimeCondition.isActualFilterAtr(),
+						workTimeCondition.getActualLstWorkTime());
+				condition.chooseWorkTimeOperator(operatorBetweenPlanActual);
+			} else {
+				condition.setWorkTimeSingle(workTimeCondition.isPlanFilterAtr(),
+						workTimeCondition.getPlanLstWorkTime());
+			}
+			// Set AttendanceItemCondition
+			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = erAlAtdItemConditionGroup1.stream()
+					.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
+			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = erAlAtdItemConditionGroup2.stream()
+					.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
+			condition.createAttendanceItemCondition(operatorBetweenGroups, group2UseAtr)
+					.setAttendanceItemConditionGroup1(operatorGroup1, conditionsGroup1)
+					.setAttendanceItemConditionGroup2(operatorGroup2, conditionsGroup2);
 		}
-		// Set WorkTimeCondtion
-		condition.createWorkTimeCondition(workTimeCondition.isUseAtr(), workTimeCondition.getComparePlanAndActual());
-		if (workTimeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
-			condition.setWorkTimePlan(workTimeCondition.isPlanFilterAtr(), workTimeCondition.getPlanLstWorkTime());
-			condition.setWorkTimeActual(workTimeCondition.isActualFilterAtr(),
-					workTimeCondition.getActualLstWorkTime());
-			condition.chooseWorkTimeOperator(operatorBetweenPlanActual);
-		} else {
-			condition.setWorkTimeSingle(workTimeCondition.isPlanFilterAtr(), workTimeCondition.getPlanLstWorkTime());
-		}
-		// Set AttendanceItemCondition
-		List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = erAlAtdItemConditionGroup1.stream()
-				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
-		List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = erAlAtdItemConditionGroup2.stream()
-				.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
-		condition.createAttendanceItemCondition(operatorBetweenGroups, group2UseAtr)
-				.setAttendanceItemConditionGroup1(operatorGroup1, conditionsGroup1)
-				.setAttendanceItemConditionGroup2(operatorGroup2, conditionsGroup2);
 		domain.setCondition(condition);
 		return domain;
 	}

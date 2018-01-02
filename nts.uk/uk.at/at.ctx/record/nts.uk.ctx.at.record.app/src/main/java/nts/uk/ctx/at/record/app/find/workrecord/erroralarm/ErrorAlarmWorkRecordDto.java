@@ -216,17 +216,16 @@ public class ErrorAlarmWorkRecordDto {
 				domain.getCancelableAtr() ? 1 : 0,
 				domain.getErrorDisplayItem() != null ? domain.getErrorDisplayItem().intValue() : null, 0,
 				domain.getLstApplication(),
-				domain.getErrorAlarmCondition() != null
-						? domain.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups().value : 0,
-				domain.getErrorAlarmCondition() != null
-						? domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getConditionOperator().value
-						: 0,
-				domain.getErrorAlarmCondition() != null
-						? domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2().getConditionOperator().value
-						: 0,
-				domain.getErrorAlarmCondition() != null
-						? domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2UseAtr() : false);
-		if (domain.getErrorAlarmCondition() != null) {
+				domain.getFixedAtr() ? 0
+						: domain.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups().value,
+				domain.getFixedAtr() ? 0
+						: domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1()
+								.getConditionOperator().value,
+				domain.getFixedAtr() ? 0
+						: domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2()
+								.getConditionOperator().value,
+				domain.getFixedAtr() ? false : domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2UseAtr());
+		if (!domain.getFixedAtr()) {
 			// Set AlarmCheckTargetConditionDto
 			errorAlarmWorkRecordDto.setAlCheckTargetCondition(new AlarmCheckTargetConditionDto(
 					domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByBusinessType(),
