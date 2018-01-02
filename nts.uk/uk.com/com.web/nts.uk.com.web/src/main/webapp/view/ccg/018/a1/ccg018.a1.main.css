@@ -71,7 +71,7 @@ td {
 
 /* for IE browser */
 *::-ms-backdrop, .table1 tbody {
-	height: 525px;
+	height: 300px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
