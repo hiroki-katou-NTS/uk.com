@@ -389,7 +389,7 @@ module a3 {
                  {
                      headerText: nts.uk.resource.getText("KMK003_174"),
                      key: "elapsedTime",
-                     defaultValue: ko.observable(1200), 
+                     defaultValue: ko.observable(0), 
                      width: 100, 
                      template: `<input data-bind="ntsTimeEditor: {
                         inputFormat: 'time'}" />`
@@ -520,7 +520,7 @@ module a3 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"), 
                     key: "timezone",
-                    defaultValue: ko.observable({ startTime: 1, endTime: 1 }), 
+                    defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 250, 
                     template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
