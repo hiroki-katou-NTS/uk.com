@@ -356,6 +356,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             workType.name(workType.dispName());
             workType.abbreviationName(workType.dispAbName());
             workType.oneDay().workTypeCode(workType.workTypeCode());
+            
             workType.morning().workTypeCode(workType.workTypeCode());
             workType.afternoon().workTypeCode(workType.workTypeCode());
 
@@ -375,7 +376,18 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-
+            if (workType.morningCls() == 4) {
+                if (workType.morning().sumSpHodidayNo() == "") {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_921" });
+                    return;
+                }
+            }
+             if (workType.morningCls() == 5) {
+                if (workType.morning().sumAbsenseNo() == "") {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_922" });
+                    return;
+                }
+            }
             nts.uk.ui.block.invisible();
             service.addWorkType(self.isCreated(), command).done(function() {
                 self.isCreated(false);
@@ -443,7 +455,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (self.langId() != 'ja') {
                 self.enableMethod(false);
             } else {
-                if (workTypeSetCode == WorkTypeCls.Holiday || workTypeSetCode == WorkTypeCls.Pause || workTypeSetCode == WorkTypeCls.LeaveOfAbsence || workTypeSetCode == WorkTypeCls.Closure|| workTypeSetCode == WorkTypeCls.ContinuousWork) {
+                if (workTypeSetCode == WorkTypeCls.Holiday || workTypeSetCode == WorkTypeCls.Pause || workTypeSetCode == WorkTypeCls.LeaveOfAbsence || workTypeSetCode == WorkTypeCls.Closure || workTypeSetCode == WorkTypeCls.ContinuousWork) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
                     self.enableMethod(false);
                 } else if (workTypeSetCode == WorkTypeCls.Attendance || workTypeSetCode == WorkTypeCls.AnnualHoliday || workTypeSetCode == WorkTypeCls.YearlyReserved || workTypeSetCode == WorkTypeCls.Shooting) {
