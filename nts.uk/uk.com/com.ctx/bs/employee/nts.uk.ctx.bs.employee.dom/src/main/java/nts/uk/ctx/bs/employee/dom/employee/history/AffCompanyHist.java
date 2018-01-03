@@ -26,6 +26,7 @@ public class AffCompanyHist extends AggregateRoot {
 		if (lstAffCompanyHistByEmployee == null) {
 			lstAffCompanyHistByEmployee = new ArrayList<AffCompanyHistByEmployee>();
 		}
+		AffCompanyHistByEmployee result = new AffCompanyHistByEmployee();
 
 		List<AffCompanyHistByEmployee> filter = lstAffCompanyHistByEmployee.stream().filter(m -> m.getSId().equals(sid))
 				.collect(Collectors.toList());
@@ -33,7 +34,7 @@ public class AffCompanyHist extends AggregateRoot {
 			return filter.get(0);
 		}
 		
-		return null;
+		return result;
 	}
 
 	public void addAffCompanyHistByEmployee(AffCompanyHistByEmployee domain) {

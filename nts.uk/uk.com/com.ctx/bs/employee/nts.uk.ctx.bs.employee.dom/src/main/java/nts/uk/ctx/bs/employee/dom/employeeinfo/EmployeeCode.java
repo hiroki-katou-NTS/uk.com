@@ -13,7 +13,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class EmployeeCode.
  */
 // 社員CD
-@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(12)
 public class EmployeeCode extends StringPrimitiveValue<EmployeeCode> {
 
