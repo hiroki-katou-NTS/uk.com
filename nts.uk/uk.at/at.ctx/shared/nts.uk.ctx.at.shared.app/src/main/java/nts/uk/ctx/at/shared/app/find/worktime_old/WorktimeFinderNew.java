@@ -83,7 +83,7 @@ public class WorktimeFinderNew {
 	 */
 	public List<WorkTimeDto> findByCompanyID() {
 		String companyID = AppContexts.user().companyId();
-		List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findAll(companyID);
+		List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findByCompanyId(companyID);
 		List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository.findByCompanyID(companyID);
 		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
 	}
@@ -95,7 +95,7 @@ public class WorktimeFinderNew {
 	 */
 	public List<WorkTimeDto> findAll() {
 		String companyID = AppContexts.user().companyId();
-		List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findAll(companyID);
+		List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findByCompanyId(companyID);
 		List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository.findByCompanyID(companyID);
 		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
 	}

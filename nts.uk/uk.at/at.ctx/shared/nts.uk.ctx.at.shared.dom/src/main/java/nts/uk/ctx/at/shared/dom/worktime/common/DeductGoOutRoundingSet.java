@@ -6,28 +6,45 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class DeductGoOutRoundingSet.
  */
-//計上控除別外出丸め設定
+// 計上控除別外出丸め設定
 @Getter
 public class DeductGoOutRoundingSet extends DomainObject {
 
 	/** The deduct time rounding setting. */
-	//控除時間の丸め設定
+	// 控除時間の丸め設定
 	private GoOutTimeRoundingSetting deductTimeRoundingSetting;
-	
+
 	/** The appro time rounding setting. */
-	//計上時間の丸め設定
+	// 計上時間の丸め設定
 	private GoOutTimeRoundingSetting approTimeRoundingSetting;
 
 	/**
 	 * Instantiates a new deduct go out rounding set.
 	 *
-	 * @param memento the memento
+	 * @param deductTimeRoundingSetting
+	 *            the deduct time rounding setting
+	 * @param approTimeRoundingSetting
+	 *            the appro time rounding setting
 	 */
-	public DeductGoOutRoundingSet (DeductGoOutRoundingSetGetMemento memento) {
+	public DeductGoOutRoundingSet(GoOutTimeRoundingSetting deductTimeRoundingSetting,
+			GoOutTimeRoundingSetting approTimeRoundingSetting) {
+		super();
+		this.deductTimeRoundingSetting = deductTimeRoundingSetting;
+		this.approTimeRoundingSetting = approTimeRoundingSetting;
+	}
+
+	/**
+	 * Instantiates a new deduct go out rounding set.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public DeductGoOutRoundingSet(DeductGoOutRoundingSetGetMemento memento) {
 		this.deductTimeRoundingSetting = memento.getDeductTimeRoundingSetting();
 		this.approTimeRoundingSetting = memento.getApproTimeRoundingSetting();
 	}
@@ -35,10 +52,21 @@ public class DeductGoOutRoundingSet extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento (DeductGoOutRoundingSetSetMemento memento) {
+	public void saveToMemento(DeductGoOutRoundingSetSetMemento memento) {
 		memento.setDeductTimeRoundingSetting(this.deductTimeRoundingSetting);
 		memento.setApproTimeRoundingSetting(this.approTimeRoundingSetting);
-	} 
+	}
+
+	/**
+	 * Restore data.
+	 */
+	public void restoreData(ScreenMode screenMode, DeductGoOutRoundingSet oldDomain) {
+		this.deductTimeRoundingSetting.restoreData(screenMode,
+				oldDomain.getDeductTimeRoundingSetting());
+		this.approTimeRoundingSetting.restoreData(screenMode,
+				oldDomain.getApproTimeRoundingSetting());
+	}
 }

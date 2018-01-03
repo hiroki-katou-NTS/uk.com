@@ -20,7 +20,9 @@ public interface ContinuousHistory<H extends HistoryItem<S, D>, S extends Genera
 		
 		this.constraints().forEach(c -> c.validateIfCanAdd(this, itemToBeAdded));
 		this.exValidateIfCanAdd(itemToBeAdded);
-
+		if (itemToBeAdded.span().isReversed()) {
+			throw new BusinessException("Msg_917");
+		}
 		this.latestStartItem().ifPresent(latest -> {
 			if (!(latest.span().isStart().before(itemToBeAdded.start()))
 					&& latest.span().isEnd().beforeOrEqual(itemToBeAdded.end())) {
@@ -59,7 +61,9 @@ public interface ContinuousHistory<H extends HistoryItem<S, D>, S extends Genera
 
 		this.constraints().forEach(c -> c.validateIfCanChangeSpan(this, itemToBeChanged, newSpan));
 		this.exValidateIfCanChangeSpan(itemToBeChanged, newSpan);
-		
+		if (newSpan.isReversed()) {
+			throw new BusinessException("Msg_917");
+		}
 		this.immediatelyBefore(itemToBeChanged).ifPresent(immediatelyBefore -> {
 
 			if (!(immediatelyBefore.span().isStart().before(newSpan.start()))) {

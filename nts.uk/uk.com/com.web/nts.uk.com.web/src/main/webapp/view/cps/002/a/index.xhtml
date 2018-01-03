@@ -27,6 +27,7 @@
 				nts.uk.ctx.at.record.dom.stamp.CardNumber
 				nts.uk.ctx.sys.gateway.dom.login.LoginId
 				nts.uk.ctx.sys.gateway.dom.login.RawPassword
+				nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
 			</com:ValidatorScript>
 
 		</ui:define>
@@ -103,13 +104,13 @@
 									<div class="div_line">
 										<div class="step1_top_left_col1">
 											<div
-												data-bind="ntsFormLabel: {  required: true,constraint:'UserName' }">#{i18n.getText('CPS002_105')}</div>
+												data-bind="ntsFormLabel: {  required: true,constraint:'FullName' }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
-											constraint:'UserName',
+											constraint:'FullName',
 											required:true,
 											name: '#{i18n.getText('CPS002_105')}',
 											option: {
@@ -131,8 +132,8 @@
 												 	width: '160' 
 												 }
 												 }" />
-											<button
-												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+											<!-- <button
+												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button> -->
 										</div>
 									</div>
 									<div class="div_line">
@@ -401,8 +402,10 @@
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
-												<td
-													data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></td>
+												<td>
+													<div class='ellipsis_title'
+														data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></div>
+												</td>
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>

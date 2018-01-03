@@ -69,8 +69,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             let list=[];
             self.getData().done(function(){
                 if(self.lstBusinessType().length == 0){
-                self.newMode();
-                return;
+                    self.newMode();
+                    return;
                 }
                 else{
                     self.selectedCode(self.lstBusinessType()[0].businessTypeCode.toString());
@@ -163,7 +163,7 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     })
                 })
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-            }).ifCancel(() => {     
+            }).ifNo(() => {     
             }); 
             $("#inpPattern").focus();
         }

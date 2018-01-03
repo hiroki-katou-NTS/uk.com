@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+// * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
@@ -10,8 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOtTimeSet;
 
 /**
  * The Class JpaFlexOverTimeOfTimeZoneSetGetMemento.
@@ -28,9 +27,6 @@ public class JpaFlexOverTimeOfTimeZoneSetGetMemento implements OverTimeOfTimeZon
 	 */
 	public JpaFlexOverTimeOfTimeZoneSetGetMemento(KshmtFlexOtTimeSet entity) {
 		super();
-		if(entity.getKshmtFlexOtTimeSetPK() == null){
-			entity.setKshmtFlexOtTimeSetPK(new KshmtFlexOtTimeSetPK());
-		}
 		this.entity = entity;
 	}
 

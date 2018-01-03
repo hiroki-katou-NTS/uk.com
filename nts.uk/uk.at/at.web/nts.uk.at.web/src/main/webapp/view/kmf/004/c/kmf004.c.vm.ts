@@ -261,7 +261,10 @@ module nts.uk.at.view.kmf004.c {
                         } else {  
                             self.getData();         
                             self.singleSelectedCode(self.code());
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                $("#input-name").focus();
+                            });
                         }
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
@@ -275,7 +278,10 @@ module nts.uk.at.view.kmf004.c {
                         } else {  
                             self.getData();         
                             self.singleSelectedCode(self.code());
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                $("#input-name").focus();
+                            });
                         }
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);

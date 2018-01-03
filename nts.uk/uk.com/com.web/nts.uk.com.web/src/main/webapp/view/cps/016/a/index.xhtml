@@ -55,7 +55,9 @@
    									comId: 'single-list',       
    									items: listItems,        
    									selected: perInfoSelectionItem().selectionItemId,       
-   									selectedKey: 'selectionItemId',        
+   									selectedKey: 'selectionItemId',
+   									placeHolder: '名称で検索…',
+									searchText: '検索',        
    									fields: ['selectionItemName'],        
    									mode: 'igGrid'       
    									}" />
@@ -64,7 +66,7 @@
 									height: 490,
 									options: listItems,
 									primaryKey: 'selectionItemId',
-									showNumbering:true,
+									showNumbering:false,
 									columns: [
 						                { headerText: '', key: 'selectionItemId', width: 20 ,hidden:true},
 						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 320 }

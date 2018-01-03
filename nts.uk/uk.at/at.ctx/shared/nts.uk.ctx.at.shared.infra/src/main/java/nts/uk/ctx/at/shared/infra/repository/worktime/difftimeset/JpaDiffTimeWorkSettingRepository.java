@@ -29,7 +29,19 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository
 	@Override
 	public Optional<DiffTimeWorkSetting> find(String companyId, String sworkTimeCode) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
+	}
+
+	@Override
+	public void save(DiffTimeWorkSetting diffTimeWorkSetting) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean remove(String companyId, String workTimeCode) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

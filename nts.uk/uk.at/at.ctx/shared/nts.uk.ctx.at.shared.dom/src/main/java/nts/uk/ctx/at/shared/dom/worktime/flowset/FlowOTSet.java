@@ -35,4 +35,13 @@ public class FlowOTSet extends DomainObject {
 	public void saveToMemento(FlOTSetMemento memento) {
 		memento.setFixedChangeAtr(this.fixedChangeAtr);
 	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param other the other
+	 */
+	public void restoreData(FlowOTSet other) {
+		this.fixedChangeAtr = other.getFixedChangeAtr();
+	}
 }

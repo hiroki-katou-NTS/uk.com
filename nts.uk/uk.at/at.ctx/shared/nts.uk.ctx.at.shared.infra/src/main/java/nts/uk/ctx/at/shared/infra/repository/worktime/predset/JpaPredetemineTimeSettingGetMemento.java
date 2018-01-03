@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -13,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingGetMement
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -24,20 +21,15 @@ public class JpaPredetemineTimeSettingGetMemento implements PredetemineTimeSetti
 	/** The kwtst work time set. */
 	private KshmtPredTimeSet entity;
 
-	/** The lst entity time. */
-	private List<KshmtWorkTimeSheetSet> lstEntityTime;
-
-
 	/**
 	 * Instantiates a new jpa predetemine time setting get memento.
 	 *
 	 * @param entity the entity
 	 * @param lstEntityTime the lst entity time
 	 */
-	public JpaPredetemineTimeSettingGetMemento(KshmtPredTimeSet entity, List<KshmtWorkTimeSheetSet> lstEntityTime) {
+	public JpaPredetemineTimeSettingGetMemento(KshmtPredTimeSet entity) {
 		super();
 		this.entity = entity;
-		this.lstEntityTime = lstEntityTime;
 	}
 
 	/*
@@ -103,7 +95,7 @@ public class JpaPredetemineTimeSettingGetMemento implements PredetemineTimeSetti
 	 */
 	@Override
 	public PrescribedTimezoneSetting getPrescribedTimezoneSetting() {
-		return new PrescribedTimezoneSetting(new JpaPrescribedTimezoneSettingGetMemento(entity, lstEntityTime));
+		return new PrescribedTimezoneSetting(new JpaPrescribedTimezoneSettingGetMemento(entity));
 	}
 
 	/*
@@ -126,7 +118,7 @@ public class JpaPredetemineTimeSettingGetMemento implements PredetemineTimeSetti
 	 */
 	@Override
 	public boolean isPredetermine() {
-		return BooleanGetAtr.getAtrByInteger(this.entity.getPredetermineAtr());
+		return BooleanGetAtr.getAtrByInteger(this.entity.getIsIncludeOt());
 	}
 
 }

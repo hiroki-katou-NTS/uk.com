@@ -10,14 +10,14 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class RoundingSet.
  */
-//丸め設定
+// 丸め設定
 @Getter
 public class RoundingSet extends DomainObject {
-	
+
 	/** The rounding set. */
 	// 時刻丸め
 	private InstantRounding roundingSet;
-	
+
 	/** The section. */
 	// 打優丸め区分
 	private Superiority section;
@@ -25,7 +25,8 @@ public class RoundingSet extends DomainObject {
 	/**
 	 * Instantiates a new rounding set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public RoundingSet(RoundingSetGetMemento memento) {
 		this.roundingSet = memento.getRoundingSet();
@@ -35,10 +36,12 @@ public class RoundingSet extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(RoundingSetSetMemento memento) {
 		memento.setRoundingSet(this.roundingSet);
 		memento.setSection(this.section);
 	}
+
 }
