@@ -502,9 +502,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				createStamp(companyId, workInfoOfDailyPerformanceUpdate, personalLaborHasData, timeLeavingOptional, employeeID, day);
 
 //				 check tay
-				stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
-				 employeeID, day,
-				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr, breakTimeOfDailyPerformance);
+//				stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
+//				 employeeID, day,
+//				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr, breakTimeOfDailyPerformance);
 
 			}
 
