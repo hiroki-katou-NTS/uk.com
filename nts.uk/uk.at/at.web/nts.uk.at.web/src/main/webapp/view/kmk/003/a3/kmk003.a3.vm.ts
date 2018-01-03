@@ -402,8 +402,9 @@ module a3 {
                      width: 120,
                      template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
+                                    name: '#[KMK003_201]',
                                     editable: false,
                                     enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
@@ -534,8 +535,9 @@ module a3 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
+                                    name: '#[KMK003_201]',
                                     editable: false,
                                     enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
