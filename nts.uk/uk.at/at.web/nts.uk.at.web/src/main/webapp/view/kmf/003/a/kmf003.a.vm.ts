@@ -120,7 +120,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.useCls04(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1 ? true : false);
                         self.conditionValue04(data.grantConditions[3] && data.grantConditions[3].conditionValue.toString());
                         self.useCls05(data.grantConditions[4] && data.grantConditions[4].useConditionAtr == 1 ? true : false);
-                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());  
+                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());
+                        self.btnSetting02Enable(data.grantConditions[1] && data.grantConditions[1].useConditionAtr == 1);
+                        self.btnSetting03Enable(data.grantConditions[2] && data.grantConditions[2].useConditionAtr == 1);
+                        self.btnSetting04Enable(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1);
+                        self.btnSetting05Enable(data.grantConditions[4] && data.grantConditions[4].useConditionAtr == 1);  
                         self.showLblSet01(data.grantConditions[0] ? data.grantConditions[0].hadSet : false);
                         self.showLblSet02(data.grantConditions[1] ? data.grantConditions[1].hadSet : false);
                         self.showLblSet03(data.grantConditions[2] ? data.grantConditions[2].hadSet : false);
@@ -537,18 +541,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(dataIsNotNull) {
                     if(conditionNo === 1){
-                        self.showLblSet01(false);
-                    } else if(conditionNo === 2){
-                        self.showLblSet02(false);
-                    } else if(conditionNo === 3){
-                        self.showLblSet03(false);
-                    } else if(conditionNo === 4){
-                        self.showLblSet04(false);
-                    } else if(conditionNo === 5){
-                        self.showLblSet05(false);
-                    }
-                } else {
-                    if(conditionNo === 1){
                         self.showLblSet01(true);
                     } else if(conditionNo === 2){
                         self.showLblSet02(true);
@@ -558,6 +550,18 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.showLblSet04(true);
                     } else if(conditionNo === 5){
                         self.showLblSet05(true);
+                    }
+                } else {
+                    if(conditionNo === 1){
+                        self.showLblSet01(false);
+                    } else if(conditionNo === 2){
+                        self.showLblSet02(false);
+                    } else if(conditionNo === 3){
+                        self.showLblSet03(false);
+                    } else if(conditionNo === 4){
+                        self.showLblSet04(false);
+                    } else if(conditionNo === 5){
+                        self.showLblSet05(false);
                     }
                 }
                 
@@ -746,7 +750,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.useCls02(false);
                     } else {
                         self.conditionValue02Enable(true);
-                        self.btnSetting02Enable(true);
+                        self.btnSetting02Enable(!self.editMode());
                         self.setConditionValues(Number(self.conditionValue01()), 2);
                     }                    
                 } else {

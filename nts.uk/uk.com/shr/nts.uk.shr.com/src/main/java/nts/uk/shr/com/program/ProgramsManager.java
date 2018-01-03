@@ -185,6 +185,9 @@ public class ProgramsManager {
 	public static final Program CMM044A = new Program(WebAppId.COM, ProgramIdConsts.CMM044A, "CMM044_1",
 			"/view/cmm/044/a/index.xhtml");
 	
+	public static final Program CMM044D = new Program(WebAppId.COM, ProgramIdConsts.CMM044D, "CMM044_33",
+			"/view/cmm/044/d/index.xhtml"); 
+		
 	/**
 	 * CPS005B
 	 */
@@ -605,15 +608,15 @@ public class ProgramsManager {
 	
 	/** The Constant KMF001H. */
 	public static final Program KMF001H  = new Program(WebAppId.AT, ProgramIdConsts.KMF001H, "KMF001_8",
-			"/view/kmk/001/h/index.xhtml");
+			"/view/kmf/001/h/index.xhtml");
 	
 	/** The Constant KMF001J. */
 	public static final Program KMF001J  = new Program(WebAppId.AT, ProgramIdConsts.KMF001J, "KMF001_10",
-			"/view/kmk/001/j/index.xhtml");
+			"/view/kmf/001/j/index.xhtml");
 	
 	/** The Constant KMF001L. */
 	public static final Program KMF001L  = new Program(WebAppId.AT, ProgramIdConsts.KMF001L, "KMF001_12",
-			"/view/kmk/001/l/index.xhtml");
+			"/view/kmf/001/l/index.xhtml");
 	
 	/**
 	 * KMF003A
