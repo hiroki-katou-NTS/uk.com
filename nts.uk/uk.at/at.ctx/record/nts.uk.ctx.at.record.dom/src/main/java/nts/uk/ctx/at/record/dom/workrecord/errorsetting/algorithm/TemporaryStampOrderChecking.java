@@ -42,15 +42,15 @@ public class TemporaryStampOrderChecking {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
-	public void temporaryStampOrderChecking(String employeeID, String companyID, GeneralDate processingDate) {
+	public void temporaryStampOrderChecking(String employeeID, String companyID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
 
 		List<Integer> attendanceItemIDList = new ArrayList<>();
 
-		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository
-				.findByKey(employeeID, processingDate);
+//		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository
+//				.findByKey(employeeID, processingDate);
 
-		if (temporaryTimeOfDailyPerformance.isPresent()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
+		if (temporaryTimeOfDailyPerformance != null && !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
 			timeLeavingWorks.sort((e1, e2) -> e1.getAttendanceStamp().getStamp().get().getTimeWithDay().v()
 					.compareTo(e2.getAttendanceStamp().getStamp().get().getTimeWithDay().v()));
 
@@ -80,7 +80,7 @@ public class TemporaryStampOrderChecking {
 						.lessThanOrEqualTo(timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay())) {
 					// 他の出退勤との時間帯重複を確認する
 					duplicationStateAttr = confirmDuplication(employeeID, processingDate, timeLeavingWork,
-							temporaryTimeOfDailyPerformance.get());
+							temporaryTimeOfDailyPerformance);
 					if (duplicationStateAttr == StateAttr.DUPLICATION) {
 						this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
 								processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);

@@ -8,12 +8,6 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 860,
-					height : 630
-				};
-			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode
 				nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName
@@ -34,8 +28,10 @@
 
 				<span id="button2">
 					<button class="normal" data-bind="click : setNewMode">#{i18n.getText('KDW008_2')}</button>
-					<button class="proceed" data-bind="click : addOrUpdateClick , enable: $root.errors.isEmpty">#{i18n.getText('KDW008_3')}</button>
-					<button class="danger" data-bind="click : remove, enable : isRemove">#{i18n.getText('KDW008_4')}</button>
+					<button class="proceed"
+						data-bind="click : addOrUpdateClick , enable: $root.errors.isEmpty">#{i18n.getText('KDW008_3')}</button>
+					<button class="danger"
+						data-bind="click : remove, enable : isRemove">#{i18n.getText('KDW008_4')}</button>
 				</span>
 			</div>
 
@@ -59,24 +55,22 @@
 						<td>
 							<div>
 								<div style="margin-bottom: 20px">
-									<span id="label2" class="label">#{i18n.getText('KDW008_7')}
-										(半角英数字3桁)</span> <input id="currentCode"
-										data-bind="ntsTextEditor: {value: currentDailyFormatCode,
+									<div id="label3" data-bind="ntsFormLabel: { constraint: 'DailyPerformanceFormatCode', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_7')}
+											</div> <input id="currentCode"
+											data-bind="ntsTextEditor: {value: currentDailyFormatCode,
 																   enable : showCode,
 																   constraint: 'DailyPerformanceFormatCode',
 																   option: {autofill:true, filldirection:'left'},
 																   name: '#[KDW008_7]',
 																   required: true	}" /><br />
+									
 								</div>
-								<div>
-									<span id="label4" class="label">#{i18n.getText('KDW008_8')}
-										（全角5文字)</span> <input style="margin-left: 23px" id="currentName"
+								<div id="label4" data-bind="ntsFormLabel: { constraint: 'DailyPerformanceFormatName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div> 
+										<input id="currentName"
 										data-bind="ntsTextEditor: {value: currentDailyFormatName,
 																   constraint: 'DailyPerformanceFormatName',
 																   name: '#[KDW008_8]',
-																   required: true}" />
-								</div>
-								<br />
+																   required: true}" /><br />
 								<div id="checkbox1"
 									data-bind="ntsCheckBox: { checked: checked }">#{i18n.getText('KDW008_32')}</div>
 							</div>
@@ -84,7 +78,7 @@
 								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 								<div class="tab-content-1" style="height: 500px; width: 900px;">
 									<div>
-										<span class="label">#{i18n.getText('KDW008_23')}</span>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 										<div id="A_SEL_002"
 											data-bind="ntsComboBox: {
 												options: sheetNoList,
@@ -93,8 +87,9 @@
 												value: selectedSheetNo,
 												enable: true}">
 										</div>
-										<span id="label2" class="label">#{i18n.getText('KDW008_8')}</span>
-										<input data-bind="ntsTextEditor: {value: selectedSheetName,
+										<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
+										<input class="need-check"
+											data-bind="ntsTextEditor: {value: selectedSheetName,
 																	   constraint: 'DailyPerFormatSheetName',
 																	   name: '#[KDW008_8]',
 																	   required: true}"></input>
