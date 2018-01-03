@@ -6,10 +6,17 @@ module nts.uk.com.view.cps009.b {
             $('#grid_B_virtualContainer').attr("tabindex", "1");
             $("#grid_B_headers>thead>tr>th:nth-child(1)>span").focus();
             $('span[data-role*="checkbox"]').attr("tabindex", "2");
+            let beforeIndex = -1;
             $(window).keyup((e)=>{
                  if(e.which === 9){
-                    console.log(e.target.tabIndex);
+                    
+                    let tabindex = e.target.attributes.tabindex ?e.target.attributes.getNamedItem("tabindex").value:e.target.attributes.getNamedItem("tab-index").value;
+                    if(beforeIndex == 6){
+                         $("#grid_B_headers>thead>tr>th:nth-child(1)>span").focus();
                     }
+                    beforeIndex = parseInt(tabindex);
+                    
+                }
               
             });
         });
