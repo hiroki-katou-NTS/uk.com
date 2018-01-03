@@ -67,24 +67,22 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 		perResult.setEmployeeId(employee.getEmployeeId());
 		perResult.setEmployeeCode(employee.getEmployeeCode() == null ? "" : employee.getEmployeeCode().v());
 		String cid = AppContexts.user().companyId();
-		
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeDesc(cid,employee.getEmployeeId());
 
-		if (affComHist.getLstAffCompanyHistByEmployee() != null) {
-			AffCompanyHistByEmployee affComHistByEmp = affComHist.getLstAffCompanyHistByEmployee().get(0);
-			
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeDesc(cid, employee.getEmployeeId());
+
+		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
+
+		if (affComHistByEmp != null) {
+
 			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
-			
-			if (affComHistByEmp.items() != null) {
-				
-				Optional<AffCompanyHistItem> history = affComHistByEmp.getHistory();
-				
-				if (history.isPresent()) {
-					affComHistItem = history.get();
-					perResult.setEntryDate(affComHistItem.start());
-					perResult.setRetiredDate(affComHistItem.end());
-					
-				}
+
+			Optional<AffCompanyHistItem> history = affComHistByEmp.getHistory();
+
+			if (history.isPresent()) {
+				affComHistItem = history.get();
+				perResult.setEntryDate(affComHistItem.start());
+				perResult.setRetiredDate(affComHistItem.end());
+
 			}
 		}
 	}
