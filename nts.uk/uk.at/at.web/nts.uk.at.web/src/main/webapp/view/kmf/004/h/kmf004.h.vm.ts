@@ -55,8 +55,12 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.findAll().done((lstData: Array<viewmodel.Relationship>) => {
-                let sortedData = _.orderBy(lstData, ['relationshipCode'], ['asc']);
-                self.lstRelationship(sortedData);
+                if(lstData.length == 0){
+                    self.lstRelationship([]);
+                }else{
+                    let sortedData = _.orderBy(lstData, ['relationshipCode'], ['asc']);
+                    self.lstRelationship(sortedData);
+                }
                 dfd.resolve();
             }).fail(function(error){
                     dfd.reject();
