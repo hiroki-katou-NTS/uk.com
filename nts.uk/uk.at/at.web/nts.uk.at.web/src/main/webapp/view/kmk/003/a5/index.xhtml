@@ -25,7 +25,7 @@
 	</com:ko>
 	<!-- End of Fixed rest time switch button -->
 	<!-- Begin Fixed timezones -->
-	<com:ko tag="if" bind="isFixed">
+	<com:ko tag="if" bind="isFixed() &amp;&amp; isDetailMode()">
 		<!-- One day -->
 		<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
 			<h3>
@@ -53,7 +53,7 @@
 	</com:ko>
 	<!-- End of Fixed timezones -->
 	<!-- Begin Flex timezones -->
-	<com:ko tag="if" bind="isFlexTimezone">
+	<com:ko tag="if" bind="isFlexTimezone() &amp;&amp; isDetailMode()">
 		<!-- One day -->
 		<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
 			<h3>
@@ -81,7 +81,7 @@
 	</com:ko>
 	<!-- End of Flex timezones -->
 	<!-- Begin Flex rest set -->
-	<com:ko tag="if" bind="isFlexRestTime">
+	<com:ko tag="if" bind="isFlexRestTime() &amp;&amp; isDetailMode()">
 		<!-- One day -->
 		<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
 			<h3>
