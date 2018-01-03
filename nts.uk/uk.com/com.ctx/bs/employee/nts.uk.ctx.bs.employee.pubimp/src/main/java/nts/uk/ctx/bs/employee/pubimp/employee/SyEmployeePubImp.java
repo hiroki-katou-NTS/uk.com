@@ -228,7 +228,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
 		
 		if(CollectionUtil.isEmpty(emps)) {
 			return null;
