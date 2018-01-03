@@ -96,6 +96,8 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				companyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
+		cq.orderBy(builder.asc(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo)));
+		
 		// Get results
 		List<KrcstOptionalItem> results = em.createQuery(cq).getResultList();
 
