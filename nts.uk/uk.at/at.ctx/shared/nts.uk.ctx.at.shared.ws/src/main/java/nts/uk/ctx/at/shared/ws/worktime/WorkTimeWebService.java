@@ -244,8 +244,8 @@ public class WorkTimeWebService extends WebService {
 @NoArgsConstructor
 class WorkTimeCommandFinder {
 	List<String> codelist;
-	int startAtr;
-	int startTime;
+	Integer startAtr;
+	Integer startTime;
 	int endAtr;
-	int endTime;
+	Integer endTime;
 }
