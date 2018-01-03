@@ -92,6 +92,7 @@ module nts.uk.at.view.kmk003.a {
                     } else {                       
                         self.changeTabMode(false);
                     }   
+                    self.reloadWorktimeSetting();
                 });
 
                 self.useHalfDayOptions = ko.observableArray([
@@ -262,6 +263,28 @@ module nts.uk.at.view.kmk003.a {
                     dfd.resolve();
                 });
                 return dfd.promise();
+            }
+
+            /**
+             * reload worktime setting
+             */
+            private reloadWorktimeSetting(): void {
+                let self = this;
+                // block ui.
+                _.defer(() => nts.uk.ui.block.invisible());
+
+                self.isLoading(false);
+                service.findWorktimeSetingInfoByCode(self.mainSettingModel.workTimeSetting.worktimeCode())
+                    .done(worktimeSettingInfo => {
+                        // clear all errors
+                        self.clearAllError();
+
+                        // update mainSettingModel data
+                        self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
+
+                        self.isLoading(true);
+                        self.mainSettingModel.isChangeItemTable.valueHasMutated();
+                    }).always(() => _.defer(() => nts.uk.ui.block.clear()));
             }
 
             /**
