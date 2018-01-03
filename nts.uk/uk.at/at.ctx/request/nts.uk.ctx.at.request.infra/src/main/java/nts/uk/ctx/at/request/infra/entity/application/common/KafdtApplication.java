@@ -153,9 +153,6 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
 	public KrqdtAppStamp krqdtAppStamp;
-
-	@OneToOne(targetEntity = KrqdtAppLateOrLeave.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
-	public KrqdtAppLateOrLeave krqdtAppLateOrLeave;
 	
 	@Override
 	protected Object getKey() {
@@ -171,7 +168,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 				domain.getReflectPerScheReason().value, domain.getReflectPerTime(), domain.getReflectPerState().value,
 				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate(),
 				domain.getListPhase().stream().map(c -> KrqdtAppApprovalPhase.toEntity(c)).collect(Collectors.toList()),
-				null, null);
+				null);
 	}
 
 	public Application toDomain() {

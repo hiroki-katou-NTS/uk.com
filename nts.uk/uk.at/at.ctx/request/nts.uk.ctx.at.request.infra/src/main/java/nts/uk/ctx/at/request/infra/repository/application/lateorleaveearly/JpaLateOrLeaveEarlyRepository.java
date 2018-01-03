@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
@@ -27,7 +26,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 				.query(SELECT_SINGLE, KrqdtAppLateOrLeave.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
-				.getSingle(c -> toDomain(c));
+				.getSingle(c -> c.toDomain());
 	}
 	/**
 	 * Add
@@ -36,7 +35,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	 */
 	@Override
 	public void add(LateOrLeaveEarly lateOrLeaveEarly) {
-		this.commandProxy().insert(toEntity(lateOrLeaveEarly));
+		this.commandProxy().insert(KrqdtAppLateOrLeave.toEntity(lateOrLeaveEarly));
 		
 	}
 	/**
@@ -46,9 +45,8 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	 */	
 	@Override
 	public void update(LateOrLeaveEarly lateOrLeaveEarly) {
-		KrqdtAppLateOrLeave newEntity = toEntity(lateOrLeaveEarly);
+		KrqdtAppLateOrLeave newEntity = KrqdtAppLateOrLeave.toEntity(lateOrLeaveEarly);
 		KrqdtAppLateOrLeave updateEntity = this.queryProxy().find(newEntity.krqdtAppLateOrLeavePK, KrqdtAppLateOrLeave.class).get();
-		updateEntity.kafdtApplication.appReason = newEntity.kafdtApplication.appReason;
 		updateEntity.actualCancelAtr = newEntity.actualCancelAtr;
 		updateEntity.early1 = newEntity.early1;
 		updateEntity.earlyTime1 = newEntity.earlyTime1;
@@ -59,9 +57,8 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		updateEntity.late2 = newEntity.late2;
 		updateEntity.lateTime2 = newEntity.lateTime2;
 		updateEntity.version = newEntity.version;
-		updateEntity.kafdtApplication.version = newEntity.version;
+		updateEntity.version = newEntity.version;
 		this.commandProxy().update(updateEntity);
-		this.commandProxy().update(updateEntity.kafdtApplication);
 		
 	}
 
@@ -72,58 +69,6 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		
 	}
 	
-	private LateOrLeaveEarly toDomain(KrqdtAppLateOrLeave entity) {
-		KrqdtAppLateOrLeave appLateOrLeaveEntity = entity;
-		KrqdtApplication_New applicationEntity = entity.kafdtApplication;
-		
-		LateOrLeaveEarly lateOrLeaveEarly = new LateOrLeaveEarly (
-				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.companyID, 
-				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.appID,
-				 applicationEntity.prePostAtr,
-				 applicationEntity.inputDate,
-				 applicationEntity.enteredPersonID,
-				 applicationEntity.reversionReason,
-				 applicationEntity.appDate,
-				 applicationEntity.appReason,
-				 applicationEntity.appType,
-				 applicationEntity.employeeID,
-				 applicationEntity.notReason,
-				 applicationEntity.dateTimeReflection,
-				 applicationEntity.stateReflection,
-				 applicationEntity.forcedReflection,
-				 applicationEntity.notReasonReal,
-				 applicationEntity.dateTimeReflectionReal,
-				 applicationEntity.stateReflectionReal,
-				 applicationEntity.forcedReflectionReal,
-				 applicationEntity.startDate,
-				 applicationEntity.endDate,
-				 appLateOrLeaveEntity.early1,
-				 appLateOrLeaveEntity.earlyTime1,
-				 appLateOrLeaveEntity.late1,
-				 appLateOrLeaveEntity.lateTime1,
-				 appLateOrLeaveEntity.early2 ,
-				 appLateOrLeaveEntity.earlyTime2,
-			 	 appLateOrLeaveEntity.late2,
-				 appLateOrLeaveEntity.lateTime2);
-		lateOrLeaveEarly.setVersion(entity.version);
-		return lateOrLeaveEarly;
-	}
-	
-	private KrqdtAppLateOrLeave toEntity(LateOrLeaveEarly domain){
-		return new KrqdtAppLateOrLeave (
-					new KrqdtAppLateOrLeavePK(domain.getCompanyID(), domain.getAppID()),
-					domain.getVersion(),
-					domain.getActualCancelAtr(),
-					domain.getEarly1().value,
-					domain.getEarlyTime1().v(),
-					domain.getLate1().value,
-					domain.getLateTime1().v(),
-					domain.getEarly2().value,
-					domain.getEarlyTime2().v(),
-					domain.getLate2().value,
-					domain.getLateTime2().v(),
-					KrqdtApplication_New.fromDomain(domain));
-	}
 	@Override
 	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {
 		// TODO Auto-generated method stub

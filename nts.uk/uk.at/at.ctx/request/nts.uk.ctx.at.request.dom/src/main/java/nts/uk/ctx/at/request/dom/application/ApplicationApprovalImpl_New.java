@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
@@ -37,6 +38,9 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	@Inject
 	private IAppWorkChangeRepository workChangeRepository;
 	
+	@Inject
+	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
+	
 	@Override
 	public void insert(Application_New application) {
 		applicationRepository.insert(application);
@@ -62,6 +66,9 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 			break;
 		case WORK_CHANGE_APPLICATION:
 			workChangeRepository.delete(companyID, appID);
+			break;
+		case EARLY_LEAVE_CANCEL_APPLICATION: 
+			lateOrLeaveEarlyRepository.remove(companyID, appID);
 			break;
 		default:
 			break;

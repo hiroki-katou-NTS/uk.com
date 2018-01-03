@@ -10,7 +10,10 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
@@ -45,6 +48,11 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	@Inject
 	ApprovalRootStateAdapter approvalRootStateAdapter;
 	
+	@Inject
+	private ApplicationRepository_New applicationRepository_New;
+	
+	@Inject
+	private ApplicationApprovalService_New appRepository;
 	@Override
 	public boolean isExist(String companyID, String appID) {
 		// TODO Auto-generated method stub
@@ -57,9 +65,9 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		/** 申請理由が必須  */
 
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(lateOrLeaveEarly.getCompanyID());
+				.getApplicationSettingByComID(lateOrLeaveEarly.getApplication().getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		int prePost = lateOrLeaveEarly.getPrePostAtr().value;
+		int prePost = lateOrLeaveEarly.getApplication().getPrePostAtr().value;
 		Integer lateTime1 = lateOrLeaveEarly.getLateTime1().valueAsMinutes();
 		Integer earlyTime1 = lateOrLeaveEarly.getEarlyTime1().valueAsMinutes();
 		Integer lateTime2 = lateOrLeaveEarly.getLateTime2().valueAsMinutes();
@@ -69,7 +77,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		int early1 = lateOrLeaveEarly.getEarly1().value;
 		int early2 = lateOrLeaveEarly.getEarly2().value;
 
-		String applicationReason = lateOrLeaveEarly.getAppReason().v();
+		String applicationReason = lateOrLeaveEarly.getApplication().getAppReason().v();
 		
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 				&& Strings.isBlank(applicationReason)) {
@@ -99,16 +107,23 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 			throw new BusinessException("Msg_470");
 		}
 		//Register phase
-		approvalRootStateAdapter.insertByAppType(lateOrLeaveEarly.getCompanyID(), lateOrLeaveEarly.getEmployeeID(),Integer.valueOf( lateOrLeaveEarly.getAppType().value), lateOrLeaveEarly.getAppDate(), lateOrLeaveEarly.getAppID());
+		/*approvalRootStateAdapter.insertByAppType(
+				lateOrLeaveEarly.getApplication().getCompanyID(), 
+				lateOrLeaveEarly.getApplication().getEmployeeID(),
+				lateOrLeaveEarly.getApplication().getAppType().value, 
+				lateOrLeaveEarly.getApplication().getAppDate(), 
+				lateOrLeaveEarly.getApplication().getAppID());*/
 		// Add LateOrLeaveEarly
+		appRepository.insert(lateOrLeaveEarly.getApplication());
 		lateOrLeaveEarlyRepository.add(lateOrLeaveEarly);
+		//applicationRepository_New.insert(lateOrLeaveEarly.getApplication());
 	}
 
 	@Override
 	public void updateLateOrLeaveEarly(LateOrLeaveEarly lateOrLeaveEarly) {
 		
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(lateOrLeaveEarly.getCompanyID());
+				.getApplicationSettingByComID(lateOrLeaveEarly.getApplication().getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 
 		int late1 = lateOrLeaveEarly.getLate1().value;
@@ -123,11 +138,12 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 		//申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isEmpty(lateOrLeaveEarly.getAppReason().v())) {
+				&& Strings.isEmpty(lateOrLeaveEarly.getApplication().getAppReason().v())) {
 			throw new BusinessException("Msg_115");
 		}
 		
 		lateOrLeaveEarlyRepository.update(lateOrLeaveEarly);
+		applicationRepository_New.update(lateOrLeaveEarly.getApplication());
 	}
 
 	@Override
@@ -153,6 +169,14 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	@Override
 	public String getApplicantName(String employeeID) {
 		return employeeAdapter.getEmployeeName(employeeID);
+	}
+
+	@Override
+	public LateOrLeaveEarly findByID(String companyID, String appID) {
+		LateOrLeaveEarly lateOrLeaveEarly = lateOrLeaveEarlyRepository.findByCode(companyID, appID).get();
+		Application_New application = applicationRepository_New.findByID(companyID, appID).get();
+		lateOrLeaveEarly.setApplication(application);
+		return lateOrLeaveEarly;
 	}
 
 }
