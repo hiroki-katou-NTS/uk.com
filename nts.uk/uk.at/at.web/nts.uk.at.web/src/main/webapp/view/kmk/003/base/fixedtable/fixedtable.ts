@@ -228,7 +228,6 @@ module nts.fixedtable {
                     } 
                     
                     $('#' + element.id).ntsEditor('validate');
-                    $('#' + element.id).validateTimeRange();
                 })
                 if (!newList) {
                      self.isSelectAll(false);

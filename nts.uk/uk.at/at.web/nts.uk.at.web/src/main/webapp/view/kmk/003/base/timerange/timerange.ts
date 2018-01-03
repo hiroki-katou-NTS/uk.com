@@ -163,16 +163,9 @@ module kmk003.base.timerange {
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
                 $('.time-range-custom').css("float", "left");
             });
-            
-            $.fn.validateTimeRange = function() {
-                screenModel.validTimeRange(screenModel.startInputId);
-            }
         }
 
     }
     ko.bindingHandlers['ntsTimeRangeEditor'] = new TimeRangeBindingHandler();
 
-}
-interface JQuery {
-    validateTimeRange(): void;
 }

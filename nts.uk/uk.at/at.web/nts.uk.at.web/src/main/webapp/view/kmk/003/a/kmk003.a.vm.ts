@@ -321,7 +321,6 @@ module nts.uk.at.view.kmk003.a {
                     } 
                     
                     $('#' + element.id).ntsEditor('validate');
-                    $('#' + element.id).validateTimeRange();
                 })
             }
 
