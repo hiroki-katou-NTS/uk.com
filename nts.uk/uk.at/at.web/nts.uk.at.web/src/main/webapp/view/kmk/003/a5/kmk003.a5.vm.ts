@@ -1,5 +1,5 @@
 module a5 {
-    import FixTableOption = nts.uk.at.view.kmk003.base.fixedtable.FixTableOption;
+    import FixTableOption = nts.fixedtable.FixTableOption;
     import FlowRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestTimezoneModel;
     import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
     import DeductionTimeDto = nts.uk.at.view.kmk003.a.service.model.common.DeductionTimeDto;
@@ -303,6 +303,26 @@ module a5 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+
+                // fixed table event listener
+                document.getElementById('fixedOneDay').addEventListener('timerangedatachange', e => {
+                    screenModel.oneDayFixedTimezones.valueHasMutated();
+                })
+                document.getElementById('fixedMorning').addEventListener('timerangedatachange', e => {
+                    screenModel.morningFixedTimezones.valueHasMutated();
+                })
+                document.getElementById('fixedAfternoon').addEventListener('timerangedatachange', e => {
+                    screenModel.afternoonFixedTimezones.valueHasMutated();
+                })
+                document.getElementById('flexOneDay').addEventListener('timerangedatachange', e => {
+                    screenModel.oneDayFlexTimezones.valueHasMutated();
+                })
+                document.getElementById('flexMorning').addEventListener('timerangedatachange', e => {
+                    screenModel.morningFlexTimezones.valueHasMutated();
+                })
+                document.getElementById('flexAfternoon').addEventListener('timerangedatachange', e => {
+                    screenModel.afternoonFlexTimezones.valueHasMutated();
+                })
             });
         }
 

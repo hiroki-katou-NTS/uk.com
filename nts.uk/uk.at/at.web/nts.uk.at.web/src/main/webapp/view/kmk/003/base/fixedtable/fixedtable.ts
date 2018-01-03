@@ -51,7 +51,7 @@ module nts.fixedtable {
         /**
         * Set width table
         */
-        width: number;
+        width?: number;
     }
 
     /**
