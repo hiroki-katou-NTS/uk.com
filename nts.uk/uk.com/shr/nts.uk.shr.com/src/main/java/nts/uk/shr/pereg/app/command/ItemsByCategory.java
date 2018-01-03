@@ -58,7 +58,7 @@ public class ItemsByCategory {
 			String itemCode = field.getAnnotation(PeregItem.class).value();
 			val inputItem = inputsMap.get(itemCode);
 			if (inputItem != null) {
-				if (field.getType() == String.class) {
+				if (inputItem.value() != null && field.getType() == String.class) {
 					ReflectionUtil.setFieldValue(field, command, inputItem.value().toString());
 				} else {
 					ReflectionUtil.setFieldValue(field, command, inputItem.value());
