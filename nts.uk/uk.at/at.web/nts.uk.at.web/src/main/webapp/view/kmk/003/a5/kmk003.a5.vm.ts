@@ -74,6 +74,7 @@ module a5 {
         isFlow: KnockoutComputed<boolean>;
         isFixed: KnockoutComputed<boolean>;
         isDiffTime: KnockoutComputed<boolean>;
+        isDetailMode: KnockoutObservable<boolean>;
 
         // show/hide
         //isFlexOrFlow: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow *19
@@ -98,6 +99,7 @@ module a5 {
 
             // load data from main setting model
             self.mainSettingModel = valueAccessor.mainSettingModel;
+            self.isDetailMode = valueAccessor.isDetailMode;
             self.loadData();
 
             // fix table option
@@ -205,7 +207,7 @@ module a5 {
          */
         private setFixedTableEvent(): void {
             let self = this;
-            if (self.isFlex()) {
+            if (self.isFlex() && self.isDetailMode()) {
                 document.getElementById('flexOneDay').addEventListener('timerangedatachange', e => {
                     self.oneDayFlexTimezones.valueHasMutated();
                 });
@@ -216,7 +218,7 @@ module a5 {
                     self.afternoonFlexTimezones.valueHasMutated();
                 });
             }
-            if (self.isFixed()) {
+            if (self.isFixed() && self.isDetailMode()) {
                 document.getElementById('fixedOneDay').addEventListener('timerangedatachange', e => {
                     self.oneDayFixedTimezones.valueHasMutated();
                 });
