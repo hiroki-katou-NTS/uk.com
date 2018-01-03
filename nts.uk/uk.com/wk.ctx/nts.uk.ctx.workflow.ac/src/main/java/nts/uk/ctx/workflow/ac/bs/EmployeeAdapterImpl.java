@@ -74,7 +74,7 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 					x,
 					perInfo.getEmployeeCode(),
 					perInfo.getEmployeeName(),
-					"","","",baseDate,baseDate);
+					"","","",null,null);
 		    }).collect(Collectors.toList());
 		return lstEmpDto;
 	}
