@@ -5,6 +5,9 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -79,7 +82,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	 * Check setting.
 	 */
 	private void checkSetting() {
-		if (CollectionUtil.isEmpty(this.lstWorkingTimezone)) {
+		if (CollectionUtil.isEmpty(this.lstWorkingTimezone) || CollectionUtil.isEmpty(this.lstOTTimezone)) {
 			return;
 		}
 
@@ -170,5 +173,19 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	public void saveToMemento(FixedWorkTimezoneSetSetMemento memento){
 		memento.setLstWorkingTimezone(this.lstWorkingTimezone);
 		memento.setLstOTTimezone(this.lstOTTimezone);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param other the other
+	 */
+	public void restoreData(FixedWorkTimezoneSet other) {
+		// restore 就業時間帯
+		Map<EmTimeFrameNo, EmTimeZoneSet> mapEmTimezone = other.getLstWorkingTimezone().stream().collect(
+				Collectors.toMap(item -> ((EmTimeZoneSet) item).getEmploymentTimeFrameNo(), Function.identity()));
+		this.lstWorkingTimezone.forEach(emTimezoneOther -> {
+			emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
+		});
 	}
 }

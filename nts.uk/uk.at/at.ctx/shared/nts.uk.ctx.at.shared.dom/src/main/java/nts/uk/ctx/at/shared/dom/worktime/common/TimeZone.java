@@ -24,7 +24,30 @@ public class TimeZone extends DomainObject {
 	// 終了
 	protected TimeWithDayAttr end;
 
-	/* (non-Javadoc)
+	/**
+	 * Instantiates a new time zone.
+	 *
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 */
+	public TimeZone(TimeWithDayAttr start, TimeWithDayAttr end) {
+		super();
+		this.start = start;
+		this.end = end;
+	}
+
+	/**
+	 * Instantiates a new time zone.
+	 */
+	public TimeZone() {
+		super();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
@@ -38,17 +61,20 @@ public class TimeZone extends DomainObject {
 	/**
 	 * Checks if is overlap.
 	 *
-	 * @param timezone the timezone
+	 * @param timezone
+	 *            the timezone
 	 * @return true, if is overlap
 	 */
 	public boolean isOverlap(TimeZone timezone) {
-		return !(this.end.lessThan(timezone.getStart()) || this.start.greaterThan(timezone.getEnd()));
+		return !(this.end.lessThanOrEqualTo(timezone.getStart())
+				|| this.start.greaterThanOrEqualTo(timezone.getEnd()));
 	}
 
 	/**
 	 * Checks if is start less than.
 	 *
-	 * @param timezone the timezone
+	 * @param timezone
+	 *            the timezone
 	 * @return true, if is start less than
 	 */
 	public boolean isStartLessThan(TimeZone timezone) {
@@ -58,20 +84,24 @@ public class TimeZone extends DomainObject {
 	/**
 	 * Checks if is between or equal.
 	 *
-	 * @param timezone the timezone
+	 * @param timezone
+	 *            the timezone
 	 * @return true, if is between or equal
 	 */
 	public boolean isBetweenOrEqual(TimeZone timezone) {
-		return this.start.greaterThanOrEqualTo(timezone.start) && this.end.lessThanOrEqualTo(timezone.getEnd());
+		return this.start.greaterThanOrEqualTo(timezone.start)
+				&& this.end.lessThanOrEqualTo(timezone.getEnd());
 	}
 
 	/**
 	 * Consist of.
 	 *
-	 * @param time the time
+	 * @param time
+	 *            the time
 	 * @return true, if successful
 	 */
 	public boolean consistOf(TimeWithDayAttr time) {
 		return time.greaterThanOrEqualTo(this.start) && time.lessThanOrEqualTo(this.end);
 	}
+
 }

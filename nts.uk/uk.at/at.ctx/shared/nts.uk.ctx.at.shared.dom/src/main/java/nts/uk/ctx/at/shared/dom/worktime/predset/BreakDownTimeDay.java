@@ -56,14 +56,9 @@ public class BreakDownTimeDay extends DomainObject{
 		
 		// １日の範囲時間内であること => Msg_781
 		if(this.oneDay.valueAsMinutes() >= TOTAL_ONE_DAY_MINUTES){
-			throw new BusinessException("Msg_518"); 
+			throw new BusinessException("Msg_781"); 
 		}
 		
-		// < 0:01 => Msg_778
-		if (this.oneDay.valueAsMinutes() <= ZERO_MINUTES || this.morning.valueAsMinutes() <= ZERO_MINUTES
-				|| this.afternoon.valueAsMinutes() <= ZERO_MINUTES) {
-			throw new BusinessException("Msg_778"); 
-		}
 	}
 
 

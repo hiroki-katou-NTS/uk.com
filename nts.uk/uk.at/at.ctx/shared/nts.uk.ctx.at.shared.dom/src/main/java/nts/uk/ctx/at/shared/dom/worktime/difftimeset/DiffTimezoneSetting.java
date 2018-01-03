@@ -5,10 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 
 /**
@@ -44,6 +48,20 @@ public class DiffTimezoneSetting extends DomainObject{
 	public void saveToMemento(DiffTimezoneSettingSetMemento memento) {
 		memento.setEmploymentTimezones(this.employmentTimezones);
 		memento.setOTTimezones(this.oTTimezones);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param other the other
+	 */
+	public void restoreData(DiffTimezoneSetting other) {
+		// restore 就業時間帯
+		Map<EmTimeFrameNo, EmTimeZoneSet> mapEmTimezone = other.getEmploymentTimezones().stream().collect(
+				Collectors.toMap(item -> ((EmTimeZoneSet) item).getEmploymentTimeFrameNo(), Function.identity()));
+		this.employmentTimezones.forEach(emTimezoneOther -> {
+			emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
+		});
 	}
 	
 	@Override

@@ -12,16 +12,22 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 /**
  * The Class EmTimeZoneSetDto.
  */
-
 @Getter
 public class EmTimeZoneSetDto implements EmTimeZoneSetSetMemento {
 
-	/** The Employment time frame no. */
+	/** The employment time frame no. */
 	private Integer employmentTimeFrameNo;
 
 	/** The timezone. */
 	private TimeZoneRoundingDto timezone;
 
+	/**
+	 * Instantiates a new em time zone set dto.
+	 */
+	public EmTimeZoneSetDto() {
+		this.timezone = new TimeZoneRoundingDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

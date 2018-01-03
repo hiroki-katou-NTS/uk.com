@@ -62,7 +62,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		List<KshmtEmpMonthDaySet> entities = this.findBy(domain.getCompanyId(), domain.getEmploymentCode(),
 				domain.getManagementYear(), null);
 		domain.saveToMemento(new JpaEmploymentMonthDaySettingSetMemento(entities));
-		this.commandProxy().insertAll(entities);
+		this.commandProxy().updateAll(entities);
 	}
 
 	/* (non-Javadoc)

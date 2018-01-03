@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+	<com:ValidatorScript>
+		nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime
+   	</com:ValidatorScript>
+
+	<div class="tab_15_setting_rows">
+		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_118')}</div>
+		<div class="tab_15_inline_item" style="width: 100px;">
+			<input tabindex="159" style="width: 60px;" data-bind="ntsTimeEditor: {
+					name: '#[KMK003_118]',					
+					value: dayShiftApplicationTime, 
+					inputFormat: 'time',
+					mode: 'time',
+					constraint:'OneDayTime' }" />
+		</div>		
+	</div>
+	
+	<div class="tab_15_setting_rows">
+		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_119')}</div>
+		<div class="tab_15_inline_item" style="width: 100px;">
+			<input tabindex="160" style="width: 60px;" data-bind="ntsTimeEditor: {
+					name: '#[KMK003_119]',		
+					value: nightShiftApplicationTime, 
+					inputFormat: 'time',
+					mode: 'time',
+					constraint:'OneDayTime' }" />
+		</div>		
+	</div>
+	
+	<div class="tab_15_setting_rows">
+		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_120')}</div>
+		<div class="tab_15_inline_item" style="width: 100px;">
+			<div tabindex="161" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
+					name: '#[KMK003_169]',
+					options: listRoundingTimeValue,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					visibleItemsCount: 8,
+					dropDownAttachedToBody: true,
+					value: dayShiftSettingRoundingTime,
+					editable: false,
+					enable: true }"></div>
+		</div>				
+		<div class="tab_15_inline_item">
+			<div tabindex="162" class="cf" data-bind="ntsSwitchButton: {
+					name: '#[KMK003_171]',
+					options: listRoundingValue,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					value: dayShiftSettingRounding }"></div>
+		</div>
+	</div>
+	
+	<div class="tab_15_setting_rows">
+		<div class="tab_15_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_121')}</div>
+		<div class="tab_15_inline_item" style="width: 100px;">
+			<div tabindex="163" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
+					name: '#[KMK003_169]',
+					options: listRoundingTimeValue,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					visibleItemsCount: 8,
+					dropDownAttachedToBody: true,
+					value: nightShiftSettingRoundingTime,
+					editable: false,
+					enable: true }"></div>
+		</div>				
+		<div class="tab_15_inline_item">
+			<div tabindex="164" class="cf" data-bind="ntsSwitchButton: {
+					name: '#[KMK003_171]',
+					options: listRoundingValue,
+					optionsValue: 'value',
+					optionsText: 'localizedName',
+					value: nightShiftSettingRounding }"></div>
+		</div>
+	</div>
+	
+</ui:composition>

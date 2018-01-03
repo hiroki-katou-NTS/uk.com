@@ -1,4 +1,4 @@
-module kmk003.base.fixedtable {
+module nts.uk.at.view.kmk003.base.fixedtable {
 
     /************************************************ PARAMETERS INITIAL FIXTABLE **********************************
     ***************************************************************************************************************/
@@ -42,6 +42,16 @@ module kmk003.base.fixedtable {
          * list columns table
          */
         columns: Array<FixColumn>;
+
+        /**
+         * Show/hide multiple select checkbox
+         */
+        isMultipleSelect: boolean;
+        
+        /**
+        * Set width table
+        */
+        width: number;
     }
 
     /**
@@ -109,6 +119,11 @@ module kmk003.base.fixedtable {
          * class JQuery
          */
         cssClassName?: string;
+        
+        /**
+         * Enable column
+         */
+        enable?: boolean;
     }
 
     /************************************************ SCREEN MODEL ************************************************
@@ -144,6 +159,7 @@ module kmk003.base.fixedtable {
         maxRow: number;
         minRow: number;
         maxRowDisplay: number;
+        width: number;
         tableStyle: TableStyle;
         
         $element: any;
@@ -175,6 +191,9 @@ module kmk003.base.fixedtable {
             
             // add properties isChecked when multiple select
             self.addCheckBoxItemAtr();
+            
+            // add event callback
+            self.callBackChangeDataSource();
             
             self.isSelectAll = ko.observable(false);
             
@@ -238,6 +257,11 @@ module kmk003.base.fixedtable {
             // calculate height table
             self.calStyleTable();
             
+            // update width table
+            if (!self.width) {
+                self.width = self.tableStyle.width + 130;
+            }
+            
             // render html table
             return self.renderTable();
         }
@@ -249,7 +273,13 @@ module kmk003.base.fixedtable {
             let self = this;
             let row: any = {};
             _.forEach(self.columns, (column: FixColumn) => {
-                row[column.key] = ko.observable(ko.utils.unwrapObservable(column.defaultValue));
+                let value: any = JSON.parse(JSON.stringify(ko.unwrap(column.defaultValue)));
+                row[column.key] = ko.observable(value);
+                
+                // Subscriber columns
+                row[column.key].subscribe((newValue: any) => {
+                    self.itemList.valueHasMutated();
+                });
             });
             self.itemList.push(row);
         }
@@ -266,6 +296,25 @@ module kmk003.base.fixedtable {
                 return;
             }
             self.itemList(self.itemList().filter(item => item.isChecked() == false));
+        }
+        
+        /**
+         * CallBack change dataSource when item of table update.
+         */
+        private callBackChangeDataSource() {
+            let self = this;
+            let isSubcriber: boolean = false;
+            _.forEach(self.itemList(), (item: any) => {
+                _.forEach(self.columns, (column: FixColumn, index: number) => {
+                    if (isSubcriber) {
+                        return;
+                    }
+                    item[column.key].subscribe((newValue: any) => {
+                        isSubcriber = true;
+                        self.itemList.valueHasMutated();
+                    });
+                });
+            });
         }
         
         /**
@@ -312,7 +361,7 @@ module kmk003.base.fixedtable {
          */
         public calStyleTable() {
             let self = this;
-            let heigthCell = 35;
+            let heigthCell = 33;
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
@@ -359,7 +408,7 @@ module kmk003.base.fixedtable {
             let dfd = $.Deferred<void>();
             
             // add tbody table
-            self.$tableSelector.append("<tbody data-bind='foreach: itemList'>");
+            self.$tableSelector.append("<tbody data-bind='rended: itemList, foreach: itemList'>");
             
             // add html row
             self.renderRowHtml();
@@ -376,11 +425,21 @@ module kmk003.base.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            rowHtml += "<td style='text-align: center;'><div data-bind=\"visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
+            rowHtml += "<td style='text-align: center;'><div data-bind=\"attr: {tabindex: $parent.tabindex}, " 
+                    + "visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
             
             // add html column base setting
             _.forEach(self.columns, (item: FixColumn) => {
+                
+                // set width fixed control TimeRange
+                if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
+                    item.width = 243;
+                }
+                if (item.template.indexOf('ntsComboBox') != -1) {
+                    item.width = item.width < 105 ? 105 : item.width;
+                }
+                
                 rowHtml += self.generateColumnHtml(item);
             });
             
@@ -449,7 +508,7 @@ module kmk003.base.fixedtable {
             let newProperties: string = oldProperties.replace(/\s/g, '');
             
             // insert key value of control
-            newProperties = self.updateElement(newProperties, keyValue, columnSetting.key);
+            newProperties = self.updateElement(newProperties, keyValue, columnSetting.key, columnSetting.enable);
             
             // insert option value of control if has
             let keyOptionValue: string = infoControl.keyOptionValue;
@@ -459,15 +518,31 @@ module kmk003.base.fixedtable {
                 
                 // update option cotrol html
                 newProperties = self.updateElement(newProperties, keyOptionValue,
-                    "$parent.lstDataSource." + columnSetting.key);
+                    "$parent.lstDataSource." + columnSetting.key, columnSetting.enable);
             }
 
+            // update tabindex
+            let idxSpace: number = template.indexOf(' ');
+            template = template.substring(0, idxSpace) + " tabindex=\"" + self.tabindex + "\" "
+                + template.substring(idxSpace + 1, template.length);
+            
+            // ==== add tabindex for ntsTimeRangeEditor ====
+            if (template.indexOf('ntsTimeRangeEditor') != -1) {
+                newProperties = newProperties + ",tabindex:" + self.tabindex;
+            }
+            
             template = template.replace(oldProperties, newProperties.replace(/"/g, "'"));
             
             // update width control
             template = self.updateWidthControl(template, newProperties, columnSetting.width);
             
-            return "<td style='text-align: center;' class='" + columnSetting.cssClassName + "'>" + template + "</td>";
+            // get cssClassName
+            let cssClassName: string = '';
+            if (!nts.uk.text.isNullOrEmpty(columnSetting.cssClassName)) {
+                cssClassName = columnSetting.cssClassName;
+            }
+            
+            return "<td style='text-align: center;' class='" + cssClassName + "'>" + template + "</td>";
         }
         
         /**
@@ -479,7 +554,7 @@ module kmk003.base.fixedtable {
             // ======================================== ntsComboBox ===================================
             if (template.indexOf('ntsComboBox') > -1) {
                 let idx: number = template.indexOf('data-bind');
-                return template.substring(0, idx-1) + " style='width: " + (width - 5) + "px;' "
+                return template.substring(0, idx-1) + " style='width: " + (width - 5) + "px;float:left;' "
                     + template.substring(idx, template.length);
             }
 
@@ -522,7 +597,7 @@ module kmk003.base.fixedtable {
         /**
          * update element html
          */
-        private updateElement(input: string, keyValue: string, value: string): string {
+        private updateElement(input: string, keyValue: string, value: string, enable: boolean): string {
             let self = this;
             
             // get index
@@ -534,6 +609,23 @@ module kmk003.base.fixedtable {
             } else {
                 input = input.replace(self.subString(input, idxKey), keyValue + "" + value);
             }
+            
+            //=================== Update Enable/Disable column ===================
+            if (enable == undefined) {
+                enable = true;
+            }
+            let keyEnable: string = "enable:true";
+            let keyDisable: string = "enable:false";
+            
+            if (input.indexOf(keyEnable) != -1) {
+                input = input.replace(keyEnable, "enable:" + enable);
+            }
+            else if (input.indexOf(keyDisable) != -1) {
+                input = input.replace(keyDisable, "enable:" + enable);
+            } else {
+                input += ",enable:" + enable;
+            }
+            
             return input;
         }
         
@@ -598,6 +690,11 @@ module kmk003.base.fixedtable {
                     
                     // set height table
                     screenModel.$tableSelector.height(screenModel.tableStyle.height);
+                    
+                    // remove min-width default of ntsComboBox
+                    screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
+                        $("." + column.cssClassName).css({"min-width" : ""});
+                    });
                 });
             });
         }
