@@ -497,8 +497,8 @@ module a2 {
                     width: 243, 
                     enable: !self.isSimpleMode(),
                     template: `<div data-bind="ntsTimeRangeEditor: {
-                                    startName: '#[KMK003_166]',
-                                    endName: '#[KMK003_167]',
+                                    startTimeNameId: '#[KMK003_166]',
+                                    endTimeNameId: '#[KMK003_167]',
                                     startConstraint: 'TimeWithDayAttr',
                                     endConstraint: 'TimeWithDayAttr',
                                     required: true,
