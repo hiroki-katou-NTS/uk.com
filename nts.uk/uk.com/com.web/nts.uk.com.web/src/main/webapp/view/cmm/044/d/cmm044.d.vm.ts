@@ -22,7 +22,7 @@ module cmm044.d.viewmodel {
             self.personList = ko.observableArray([]);
             self.dataPerson = ko.observableArray([]);
             self.tabs = ko.observableArray(nts.uk.ui.windows.getShared("CMM044_TABS"));
-            $("#fixed-table").ntsFixedTable({height:350});
+            $("#fixed-table").ntsFixedTable({height:374});
         }
         start() : JQueryPromise<any>  {
             var self = this,
