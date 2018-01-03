@@ -496,8 +496,14 @@ module a2 {
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 243, 
                     enable: !self.isSimpleMode(),
-                    template: `<div data-bind="ntsTimeRangeEditor: {startName: '#[KMK003_166]', endName: '#[KMK003_167]',
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    template: `<div data-bind="ntsTimeRangeEditor: {
+                                    startName: '#[KMK003_166]',
+                                    endName: '#[KMK003_167]',
+                                    startConstraint: 'TimeWithDayAttr',
+                                    endConstraint: 'TimeWithDayAttr',
+                                    required: true,
+                                    enable: true,
+                                    inputFormat: 'time'}"/>`
                 }, {
                     headerText: nts.uk.resource.getText("KMK003_56"), 
                     key: "roundingTime", 
@@ -507,7 +513,7 @@ module a2 {
                     cssClassName: 'tab2-column2-combo-box',
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
@@ -521,7 +527,7 @@ module a2 {
                     width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
