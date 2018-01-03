@@ -20,6 +20,11 @@
 	margin-top: 10px;
 }
 
+.caret-background.caret-right:after  {
+	top: 100px;
+}
+
+
 #item_register_grid_headers {
 	max-width: 330px;
 	padding-right: 17px;
