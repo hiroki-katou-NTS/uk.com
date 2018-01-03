@@ -296,7 +296,8 @@ module a7 {
             let mainSettingModel = input.mainSettingModel;
             let isLoading = input.isLoading;
             let isClickSave:KnockoutObservable<boolean> = input.isClickSave;
-
+            let isClickNew:KnockoutObservable<boolean> = input.isClickNew;
+            
             var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel, isLoading);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
@@ -314,6 +315,15 @@ module a7 {
                     if (v) {
                         screenModel.dataSourceForFlowOrFlexNotUse1.valueHasMutated();
                         screenModel.dataSourceForFlowOrFlexNotUse2.valueHasMutated();
+                    }
+                });
+
+                isClickNew.subscribe((v) => {
+                    if (v) {
+                        screenModel.dataSourceForFixedOrDiffTime([]);
+                        screenModel.dataSourceForFlowOrFlexUse([]);
+                        screenModel.dataSourceForFlowOrFlexNotUse1([]);
+                        screenModel.dataSourceForFlowOrFlexNotUse2([]);
                     }
                 });
 
