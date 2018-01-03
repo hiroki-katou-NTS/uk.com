@@ -126,6 +126,8 @@ module nts.fixedtable {
         enable?: boolean;
         
         isRoudingColumn?: boolean;
+        
+        unitAttrName?: string;
     }
 
     /************************************************ SCREEN MODEL ************************************************
@@ -170,7 +172,8 @@ module nts.fixedtable {
         tabindex: number;
         isEnableAllControl: KnockoutObservable<boolean>;
         roudingDataSource: KnockoutObservableArray<any>;
-        isSelectSpecialUnit: KnockoutObservable<boolean>
+        isSelectSpecialUnit: KnockoutObservable<boolean>;
+        specialRoudingDataSource: KnockoutObservableArray<any>;
         
         tableId: string;
         
@@ -192,11 +195,16 @@ module nts.fixedtable {
             }
             self.itemList = data.dataSource;
             self.isEnableAllControl = ko.observable(true);
-            self.roudingDataSource = ko.observableArray([]);
-            self.isSelectSpecialUnit = ko.observable(false);
-//            self.roudingDataSource = ko.computed(() {
-//                if ()
-//            })
+            self.roudingDataSource = ko.observableArray([
+                { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
+                { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' },
+                { value: 2, localizedName: '未満切捨、以上切上', fieldName: 'Enum_Rounding_Down_Over' }
+            ]);
+            self.specialRoudingDataSource = ko.observableArray([
+                { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
+                { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' }
+            ]);
+
             
             self.sortTimeASC();
             
@@ -453,7 +461,15 @@ module nts.fixedtable {
                 if (item.template.indexOf('ntsComboBox') != -1) {
                     item.width = item.width < 105 ? 105 : item.width;
                 }
-                
+                if (item.isRoudingColumn) {
+                    rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
+                                    + self.generateColumnHtml(item, true)
+                                    + '<!-- /ko -->'
+                                    + '<!-- ko ifnot: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
+                                    + self.generateColumnHtml(item, false)
+                                    + '<!-- /ko -->';
+                    return;
+                }
                 rowHtml += self.generateColumnHtml(item);
             });
             
@@ -501,7 +517,7 @@ module nts.fixedtable {
         /**
          * Generate control html
          */
-        private generateColumnHtml(columnSetting: FixColumn): string {
+        private generateColumnHtml(columnSetting: FixColumn, isSpecialUnit?: boolean): string {
             let self = this;
             
             // get template
@@ -529,7 +545,7 @@ module nts.fixedtable {
             if (keyOptionValue) {
                 if (columnSetting.isRoudingColumn) {
                     newProperties = self.updateElement(newProperties, keyOptionValue,
-                    "$parent.roudingDataSource", columnSetting.enable);
+                    isSpecialUnit ? "$parent.specialRoudingDataSource" : '$parent.roudingDataSource', columnSetting.enable);
                 } else {
                     // add data source for control
                     self.lstDataSource[columnSetting.key] = columnSetting.dataSource;
@@ -669,22 +685,6 @@ module nts.fixedtable {
             }
             return result;
         }
-        
-        public initUnitRoudingChange(element: JQuery) {
-            var self = this;
-//            element.find('.unit-combo').each((index, subElement) => {
-//                subElement.
-//            })
-            element.delegate('.unit-combo', "igcomboselectionchanged", function(evt, ui) {
-                //use to obtain reference to array of new selected items. That can be null.
-                var value = ui.items[0].data.value;
-                if (value == 4 || value == 6) {
-                    var comboDs = [{value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down'}, {value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up'}]
-                    $(evt.target).parent().next().find('.rouding-combo').first().igCombo("option", "dataSource", comboDs);
-                    $(evt.target).parent().next().find('.rouding-combo').first().igCombo("select", {value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down'});
-                }
-            });
-        }
     }
 }
 /**
@@ -738,7 +738,6 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
                     $("." + column.cssClassName).css({ "min-width": "" });
                 });
-                screenModel.initUnitRoudingChange($(element));
             });
         });
     }
