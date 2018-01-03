@@ -34,8 +34,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                 categoryCode: x.categoryCode,
                                 categoryName: x.categoryName,
                                 categoryType: x.categoryType,
-                                isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
-                            })));
+                                isAbolition: x.isAbolition
+                                })));
                             $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                         }
                     });
@@ -49,7 +49,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                 categoryCode: x.categoryCode,
                                 categoryName: x.categoryName,
                                 categoryType: x.categoryType,
-                                isAbolition: ""
+                                isAbolition: x.isAbolition
                             })));
                             let category = _.find(self.categoryList(), x => { return x.id == self.currentCategory().id() });
                             if (category === undefined) {
@@ -96,7 +96,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : "",
+                            isAbolition: x.isAbolition,
                         })));
 
                         self.categorySourceLst(_.map(data, x => new CategoryInfo({
@@ -104,7 +104,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition:  x.isAbolition
                         })));
 
                         if (id === undefined) {
@@ -128,14 +128,14 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition: x.isAbolition
                         })));
                         self.categorySourceLst(_.map(data, x => new CategoryInfo({
                             id: x.id,
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition: x.isAbolition
                         })));
 
                         if (id === undefined) {
@@ -218,7 +218,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: string;
         categoryCode: string;
         categoryType: number;
-        isAbolition: string;
+        isAbolition: number;
     }
 
     export class CategoryInfo {
@@ -226,7 +226,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryCode: string;
         categoryName: string;
         categoryType: number;
-        isAbolition: string;
+        isAbolition: number;
         constructor(params: ICategoryInfo) {
             this.id = params.id;
             this.categoryName = params.categoryName;
@@ -284,12 +284,14 @@ module nts.uk.com.view.cps006.a.viewmodel {
         itemColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
             { headerText: text('CPS006_16'), key: 'itemName', width: 250 },
-            { headerText: text('CPS006_17'), key: 'isAbolition', width: 50, formatter: makeIcon }
+            { headerText: text('CPS006_17'), key: 'isAbolition', width: 50,
+              template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'}
         ]);
         ctgColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
             { headerText: text('CPS006_6'), key: 'categoryName', width: 230 },
-            { headerText: text('CPS006_7'), key: 'isAbolition', width: 50 }
+            { headerText: text('CPS006_7'), key: 'isAbolition', width: 50, 
+              template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'}
         ]);
         constructor(params: ICategoryInfoDetail) {
             this.id = ko.observable("");
@@ -312,9 +314,5 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.itemList(params.itemList);
         }
     }
-    function makeIcon(value, row) {
-        if (value == '1')
-            return "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>";
-        return '';
-    }
+    
 }

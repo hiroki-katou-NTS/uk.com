@@ -7,7 +7,8 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento;
@@ -23,7 +24,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 /**
  * The Class WorkTimezoneCommonSetDto.
  */
-@Value
+@Getter
+@Setter
 public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento {
 
 	/** The zero H stradd calculate set. */
@@ -33,7 +35,7 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	private IntervalTimeSettingDto intervalSet;
 
 	/** The sub hol time set. */
-	private WorkTimezoneOtherSubHolTimeSetDto subHolTimeSet;
+	private List<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeSet;
 
 	/** The raising salary set. */
 	private String raisingSalarySet;
@@ -91,8 +93,8 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	 * getSubHolTimeSet()
 	 */
 	@Override
-	public WorkTimezoneOtherSubHolTimeSet getSubHolTimeSet() {
-		return new WorkTimezoneOtherSubHolTimeSet(this.subHolTimeSet);
+	public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {
+		return this.subHolTimeSet.stream().map(item -> new WorkTimezoneOtherSubHolTimeSet(item)).collect(Collectors.toList());
 	}
 
 	/*

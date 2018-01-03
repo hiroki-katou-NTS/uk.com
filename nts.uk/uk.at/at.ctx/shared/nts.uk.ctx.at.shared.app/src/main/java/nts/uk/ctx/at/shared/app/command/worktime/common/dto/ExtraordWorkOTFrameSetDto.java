@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordWorkOTFrameSetGetMemento;
@@ -19,11 +17,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 @Setter
 public class ExtraordWorkOTFrameSetDto implements ExtraordWorkOTFrameSetGetMemento {
 
-	/** The OT frame no. */
-	private BigDecimal oTFrameNo;
+	/** The ot frame no. */
+	private Integer otFrameNo;
 
 	/** The in legal work frame no. */
-	private BigDecimal inLegalWorkFrameNo;
+	private Integer inLegalWorkFrameNo;
 
 	/** The settlement order. */
 	private Integer settlementOrder;
@@ -32,8 +30,8 @@ public class ExtraordWorkOTFrameSetDto implements ExtraordWorkOTFrameSetGetMemen
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.ExtraordWorkOTFrameSetGetMemento#getOTFrameNo()
 	 */
 	@Override
-	public OTFrameNo getOTFrameNo() {
-		return new OTFrameNo(this.oTFrameNo);
+	public OTFrameNo getOtFrameNo() {
+		return new OTFrameNo(this.otFrameNo);
 	}
 
 	/* (non-Javadoc)

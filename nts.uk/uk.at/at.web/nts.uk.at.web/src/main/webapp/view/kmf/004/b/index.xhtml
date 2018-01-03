@@ -51,9 +51,9 @@
 				</com:ko-if>
 				<com:ko-if bind="currentTab()=='C'">
 					<!-- Buttons for C screen -->
-					<button tab-index="1" class="newBtn" data-bind="click: $parent.viewmodelC.newBtn.bind($parent.viewmodelC), hasfocus: true">#{i18n.getText('KMF004_1')}</button>
+					<button tab-index="1" class="newBtn" data-bind="click: $parent.viewmodelC.newBtn.bind($parent.viewmodelC), hasfocus: true, enable: !$parent.viewmodelC.editMode()">#{i18n.getText('KMF004_1')}</button>
 					<button tab-index="2" class="registerBtn proceed" data-bind="click: $parent.viewmodelC.registerBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_2')}</button>
-					<button tab-index="3" class="deleteBtn danger" data-bind="click: $parent.viewmodelC.deleteBtn.bind($parent.viewmodelC), enable: $parent.viewmodelC.items().length>0">#{i18n.getText('KMF004_3')}</button>
+					<button tab-index="3" class="deleteBtn danger" data-bind="click: $parent.viewmodelC.deleteBtn.bind($parent.viewmodelC), enable: $parent.viewmodelC.items().length > 0 &amp;&amp; !$parent.viewmodelC.editMode()">#{i18n.getText('KMF004_3')}</button>
 					<button tab-index="4" class="closeBtn" data-bind="click: $parent.viewmodelC.closeBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_4')}</button>
 				</com:ko-if>
 			</div>
@@ -96,6 +96,7 @@
 							<td class="hidden-right-border">
 								<input id="year" data-bind="ntsNumberEditor: {
 										value: year, 
+										constraint: 'GrantDateYear',
 										option: ko.mapping.fromJS({
 											unitID: 'YEARS',
 											width: '50'
@@ -104,6 +105,7 @@
 							<td>
 								<input id="month" data-bind="ntsNumberEditor: {
 										value: month, 
+										constraint: 'GrantDateMonth',
 										option: ko.mapping.fromJS({
 											unitID: 'MONTHS',
 											width: '60'

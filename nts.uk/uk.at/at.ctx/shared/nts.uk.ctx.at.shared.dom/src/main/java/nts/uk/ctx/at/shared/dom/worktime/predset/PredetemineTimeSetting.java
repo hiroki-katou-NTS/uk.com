@@ -166,5 +166,17 @@ public class PredetemineTimeSetting extends AggregateRoot {
 			return false;
 		return true;
 	}
+	
+	/**
+	 * Restore disabled data from.
+	 *
+	 * @param domain the domain
+	 */
+	public void restoreDisabledDataFrom(PredetemineTimeSetting domain) {
+		// check predetermine is TRUE
+		if (this.predetermine) {
+			this.prescribedTimezoneSetting.restoreDisabledDataFrom(domain.getPrescribedTimezoneSetting());
+		}
+	}
 
 }
