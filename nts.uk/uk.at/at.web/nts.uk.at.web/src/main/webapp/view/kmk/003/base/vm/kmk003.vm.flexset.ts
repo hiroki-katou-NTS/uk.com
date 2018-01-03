@@ -126,6 +126,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.restTimezone.resetData();
+                    this.workTimezone.resetData();    
+                }
             }
 
             export class FlexCalcSettingModel {
@@ -233,14 +238,17 @@ module nts.uk.at.view.kmk003.a {
 
                 public resetData(): void {
                     let self = this;
-                    self.workTimeCode('0');
+                    self.workTimeCode('');
                     self.useHalfDayShift(false);
                     self.coreTimeSetting.resetData();
                     self.restSetting.resetData();
                     self.offdayWorkTime.resetData();
                     self.commonSetting.resetData();
-                    //TODO 2 cai list
+                    self.getHDWtzOneday().resetData();
+                    self.getHDWtzMorning().resetData();
+                    self.getHDWtzAfternoon().resetData();
                     self.calculateSetting.resetData();
+                    self.lstStampReflectTimezone = [];
                 }
 
                 public getHDWtzOneday(): FlexHalfDayWorkTimeModel {

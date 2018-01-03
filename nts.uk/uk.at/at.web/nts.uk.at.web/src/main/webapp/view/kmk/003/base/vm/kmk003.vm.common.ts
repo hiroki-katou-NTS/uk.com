@@ -129,7 +129,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.roundingTime(0);
+                    this.roundingTime(0);                                       
                     this.rounding(1);
                 }
             }
@@ -1086,7 +1086,8 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.totalRoundingSet
+                    this.totalRoundingSet.resetData();
+                    this.diffTimezoneSetting.resetData();
                 }
             }
 
