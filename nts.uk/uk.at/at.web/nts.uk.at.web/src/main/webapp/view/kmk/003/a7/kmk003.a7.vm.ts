@@ -175,10 +175,12 @@ module a7 {
             });
 
             self.dataSourceForFlowOrFlexNotUse2.subscribe((newData: any) => {
-                let rest = new FlowRestSettingModel();
-                rest.flowRestTime(newData[0].column2());
-                rest.flowPassageTime(newData[0].column1());
-                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet = rest;
+                if (newData && newData.length > 0) {
+                    let rest = new FlowRestSettingModel();
+                    rest.flowRestTime(newData[0].column2());
+                    rest.flowPassageTime(newData[0].column1());
+                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet = rest;
+                }
             });
         }
 
