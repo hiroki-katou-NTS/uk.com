@@ -7,8 +7,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 /**
@@ -18,7 +20,8 @@ import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_Ne
  */
 @Stateless
 public class JpaApplicationRepository_New extends JpaRepository implements ApplicationRepository_New {
-	
+	private final String SELECT_FROM_APPLICATION = "SELECT a FROM KrqdtApplication_New a"
+			+ " WHERE a.krqdpApplicationPK.companyID = :companyID";
 	private final String UPDATE = "UPDATE KrqdtApplication_New a "
 			+ "SET a.reversionReason = :reversionReason"
 			+ ", a.appReason = :appReason"
@@ -31,6 +34,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ "AND c.prePostAtr = :prePostAtr "
 			+ "AND c.appType = :applicationType "
 			+ "ORDER BY c.inputDate DESC";
+	private final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class)
@@ -80,5 +84,14 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	@Override
 	public void delete(String companyID, String appID) {
 		this.commandProxy().remove(KrqdtApplication_New.class, new KrqdpApplicationPK_New(companyID, appID));
+	}
+	@Override
+	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate) {
+		List<Application_New> data = this.queryProxy().query(SELECT_BY_DATE, KrqdtApplication_New.class)
+				.setParameter("companyID", companyId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> c.toDomain());
+		return data;
 	}
 }
