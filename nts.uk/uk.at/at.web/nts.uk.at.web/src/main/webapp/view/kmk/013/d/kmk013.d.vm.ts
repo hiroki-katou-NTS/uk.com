@@ -60,7 +60,7 @@ module nts.uk.at.view.kmk013.d {
                 })
                 self.selectedId410.subscribe(newValue => {
                     if (newValue == 1) {
-                       nts.uk.ui.dialog.info({ messageId: "Msg_827" }).then(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_827" }).then(() => {
                             self.selectedId44(1);
                         });
                     }
@@ -113,3 +113,4 @@ module nts.uk.at.view.kmk013.d {
             }
         }
     }
+}

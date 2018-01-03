@@ -26,7 +26,7 @@ module nts.uk.at.view.kmf004.c {
             name: KnockoutObservable<string>;
             itemList: KnockoutObservableArray<any>;
             selectedBaseDateId: any;
-            standardDate: KnockoutObservable<number>;
+            standardDate: KnockoutObservable<string>;
             dataItems: KnockoutObservableArray<Item>;
             specialHolidayCode: KnockoutObservable<string>;
             standardDateEnable: KnockoutObservable<boolean>;
@@ -57,7 +57,7 @@ module nts.uk.at.view.kmf004.c {
                 ]);
                 
                 self.selectedBaseDateId = ko.observable(0); 
-                self.standardDate = ko.observable(101);
+                self.standardDate = ko.observable("");
                 self.standardDateEnable = ko.observable(true);
                 
                 self.dataItems = ko.observableArray([]);
@@ -90,6 +90,7 @@ module nts.uk.at.view.kmf004.c {
                         self.standardDateEnable(true);
                     } else {
                         self.standardDateEnable(false);
+                        self.standardDate("");
                     }
                 }); 
                 
@@ -195,7 +196,7 @@ module nts.uk.at.view.kmf004.c {
                 self.name(""); 
                 
                 self.selectedBaseDateId(0); 
-                self.standardDate(101);
+                self.standardDate("");
                 
                 self.dataItems.removeAll();
                 
@@ -249,7 +250,7 @@ module nts.uk.at.view.kmf004.c {
                     specialHolidayCode: self.specialHolidayCode(),
                     personalGrantDateCode: self.code(),
                     personalGrantDateName: self.name(),
-                    grantDate: self.standardDate(),
+                    grantDate: new Date(self.standardDate()),
                     grantDateAtr: self.selectedBaseDateId(),
                     grantDatePerSet: ko.toJS(perSetData)
                 };

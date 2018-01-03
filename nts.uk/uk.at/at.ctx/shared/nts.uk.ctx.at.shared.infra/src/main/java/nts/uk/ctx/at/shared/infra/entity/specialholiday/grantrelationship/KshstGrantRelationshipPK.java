@@ -19,7 +19,7 @@ public class KshstGrantRelationshipPK implements Serializable{
 	public String companyId;
 	/*コード*/
 	@Column(name = "SPHD_CD")
-	public int specialHolidayCode;
+	public String specialHolidayCode;
 	/*コード*/
 	@Column(name = "RELATIONSHIP_CD")
 	@DBCharPaddingAs(RelationshipCode.class)
