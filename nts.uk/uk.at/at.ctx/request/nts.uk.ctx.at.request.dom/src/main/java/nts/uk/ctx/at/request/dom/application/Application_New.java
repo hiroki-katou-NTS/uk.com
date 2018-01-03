@@ -79,8 +79,8 @@ public class Application_New extends DomainObject {
 				.appReason(appReason)
 				.appType(appType)
 				.employeeID(employeeID)
-				.startDate(Optional.empty())
-				.endDate(Optional.empty())
+				.startDate(Optional.of(appDate))
+				.endDate(Optional.of(appDate))
 				.reflectionInformation(ReflectionInformation_New.firstCreate())
 				.build();
 	}

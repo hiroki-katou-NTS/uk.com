@@ -9,7 +9,9 @@ public interface ApplicationRepository_New {
 	
 	public Optional<Application_New> findByID(String companyID, String appID);
 	
-	List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
+	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
+	
+	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
 	
 	public void insert(Application_New application);
 	

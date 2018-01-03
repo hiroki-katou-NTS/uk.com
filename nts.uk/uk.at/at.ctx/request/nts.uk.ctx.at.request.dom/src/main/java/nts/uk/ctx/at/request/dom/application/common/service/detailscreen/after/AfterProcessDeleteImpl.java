@@ -10,6 +10,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -59,6 +60,9 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
+	@Inject
+	private ApplicationApprovalService_New applicationApprovalService;
+	
 	@Override
 	public String screenAfterDelete(String companyID,String appID, Long version) {
 		ApplicationType appType = applicationRepo.getAppById(companyID, appID).get().getApplicationType();
@@ -92,7 +96,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 			}
 		}
 		//TODO delete domaim Application
-		applicationRepo.deleteApplication(companyID, appID, version);
+		applicationApprovalService.delete(companyID, appID, version, appType);
 		//TODO hien thi thong tin Msg_16 
 		/*if (converList != null) {
 			//TODO Hien thi thong tin 392
