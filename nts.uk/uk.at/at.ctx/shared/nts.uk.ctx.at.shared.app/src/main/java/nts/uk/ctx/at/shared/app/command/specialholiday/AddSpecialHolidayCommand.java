@@ -15,37 +15,37 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantSingle;
 @AllArgsConstructor
 public class AddSpecialHolidayCommand {
 
-	/* 会社ID */
+	/** 会社ID */
 	private String companyId;
 
-	/* 特別休暇コード */
+	/** 特別休暇コード */
 	private String specialHolidayCode;
 
-	/* 特別休暇名称 */
+	/** 特別休暇名称 */
 	private String specialHolidayName;
 
-	/* 定期付与 */
+	/** 定期付与 */
 	private int grantMethod;
 
-	/* メモ */
+	/** メモ */
 	private String memo;
 
-	/**/
+	/***/
 	private List<String> workTypeList;
 
-	/**/
+	/***/
 	private GrantRegularCommand grantRegular;
 
-	/**/
+	/***/
 	private GrantPeriodicCommand grantPeriodic;
 
-	/**/
+	/***/
 	private SphdLimitCommand sphdLimit;
 
-	/**/
+	/***/
 	private SubConditionCommand subCondition;
 
-	/**/
+	/***/
 	private GrantSingleCommand grantSingle;
 
 	public SpecialHoliday toDomain(String companyId) {
@@ -93,7 +93,7 @@ public class AddSpecialHolidayCommand {
 				this.subCondition.getUseAge(), this.subCondition.getGenderAtr(),
 				this.subCondition.getLimitAgeFrom(), this.subCondition.getLimitAgeTo(),
 				this.subCondition.getAgeCriteriaAtr(), this.subCondition.getAgeBaseYearAtr(),
-				this.subCondition.getAgeBaseDates());
+				this.subCondition.getAgeBaseDates(), this.subCondition.getEmploymentList(), this.subCondition.getClassificationList());
 	}
 
 	private GrantSingle toDomainGrantSingle(String companyId) {
