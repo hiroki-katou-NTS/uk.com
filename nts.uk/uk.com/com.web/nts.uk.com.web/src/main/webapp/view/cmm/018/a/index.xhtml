@@ -179,8 +179,7 @@
 											<!-- A3_16: -->
 											<td class="approver"><div>
 												<div data-bind="foreach: appPhase1.approver">
-													<div data-bind="text: name + confirmName">
-													<br /></div>
+													<div data-bind="text: name + confirmName"><br /></div>
 												</div>
 											</div></td>
 											<!-- A3_17: -->
@@ -737,13 +736,13 @@
 													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
-											<!-- B3_17: -->
+											<!-- D3_17: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
 														data-bind="click: function(){$parent.openDialogKB(appPhase2,approvalId,appTypeValue,employRootAtr,2)}"></button>
 												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
-											<!-- B3_19: -->
+											<!-- D3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
 													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
@@ -755,12 +754,12 @@
 														data-bind="click: function(){$parent.openDialogKB(appPhase3,approvalId,appTypeValue,employRootAtr,3)}"></button>
 												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
-											<!-- B3_22: -->										
+											<!-- D3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
 													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div></td>
-											<!-- B3_23: -->
+											<!-- D3_23: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
 														data-bind="click: function(){$parent.openDialogKB(appPhase4,approvalId,appTypeValue,employRootAtr,4)}"></button>
@@ -929,13 +928,13 @@
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
-											<!-- A3_14: -->
+											<!-- E3_14: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
 													data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
 												<div data-bind="text: appPhase1.appFormName"></div>
 											</td>
-											<!-- A3_16: -->
+											<!-- E3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
 													<div data-bind="text: name + confirmName"> <br /></div>
@@ -947,13 +946,13 @@
 													data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,employRootAtr,2)}"></button>
 												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
-											<!-- A3_19: -->
+											<!-- E3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
 													<div data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</td>
-											<!-- A3_20: -->
+											<!-- E3_20: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
 													data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,employRootAtr,3)}"></button>
@@ -1109,7 +1108,7 @@
 											<!-- F3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
 												</div>
 											</div></td>
 											<!-- F3_17: -->
