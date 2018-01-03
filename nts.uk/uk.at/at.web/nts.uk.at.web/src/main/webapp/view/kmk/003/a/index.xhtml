@@ -111,8 +111,9 @@
 						<td class="screen-content-left">
 							<div class="caret-left-width caret-right caret-background bg-green"><i
 							class="icon icon-searchbox"></i>
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 								<com:ko tag="with" bind="workTimeSettingLoader">
+								<div class="control-group">
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 									<div id="combo-box"
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_7]',
@@ -126,9 +127,10 @@
 										columns: [
 										{ prop: 'localizedName', length: 10 }]}">
 									</div>
-									<br />
+								</div>
+								<div class="control-group">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
-									<div id="combo-box" 
+									<span id="combo-box" 
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_8]',
 										options: workTimeMethodEnums,
@@ -140,11 +142,11 @@
 										enable: isRegularWork,
 										columns: [
 										{ prop: 'localizedName', length: 6 }]}">
-									</div>
-									<br />
-									<div class="checkbox_display"
-										data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
-									</div>
+									</span>
+								</div>
+								<div class="checkbox_display"
+									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
+								</div>
 								</com:ko>
 								<div style="width: 300px"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
@@ -155,6 +157,7 @@
 									data-bind="ntsGridList: {
 									name: '#[KMK003_86]',
 									height: 320,
+									width: 300,
 									options: workTimeSettings,
 									optionsValue: 'worktimeCode',
 									columns: columnWorktimeSettings,
@@ -217,8 +220,8 @@
 									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50}" />
 							</div>
 							<div class="setting_header_br">
-								<div style="width: 165px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
-								<div id="cbb-worktime-atr"
+								<div style="width: 135px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<div id="cbb-worktime-atr" style="margin-right: 10px"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_7]',
 									options: $parent.settingEnum.workTimeDailyAtr,

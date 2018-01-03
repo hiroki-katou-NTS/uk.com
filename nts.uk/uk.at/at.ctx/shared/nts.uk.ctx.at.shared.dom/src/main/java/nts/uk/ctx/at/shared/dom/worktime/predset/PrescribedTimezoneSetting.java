@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -139,7 +140,9 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		if(this.lstTimezone.size()> SIZE_ONE){
 			TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
 			if (tzWorkNo2.getStart().lessThan(tzWorkNo1.getEnd())) {
-				throw new BusinessException("Msg_772");
+				BundledBusinessException be = BundledBusinessException.newInstance();
+				be.addMessage("Msg_772");
+				be.throwExceptions();
 			}
 			
 			//TODO rcheck overlap 
