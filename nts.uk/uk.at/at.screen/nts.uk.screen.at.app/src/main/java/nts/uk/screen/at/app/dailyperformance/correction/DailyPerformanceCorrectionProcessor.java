@@ -148,6 +148,7 @@ public class DailyPerformanceCorrectionProcessor {
 			List<Integer> lstAtdItem = new ArrayList<>();
 			List<Integer> lstAtdItemUnique = new ArrayList<>();
 			List<DPAttendanceItem> lstAttendanceItem = new ArrayList<>();
+			Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 			if (dailyPerformanceDto != null && dailyPerformanceDto.getSettingUnit() == SettingUnit.AUTHORITY) {
 				// setting button A2_4 
 				result.setSettingUnit(true);
@@ -194,7 +195,6 @@ public class DailyPerformanceCorrectionProcessor {
 				if (!authorityFomatDailys.isEmpty()) {
 					lstFormat = new ArrayList<FormatDPCorrectionDto>();
 					lstSheet = new ArrayList<DPSheetDto>();
-					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 					// set FormatCode for button A2_4
 					lstSheet = authorityFormatSheets.stream()
 							.map(x -> new DPSheetDto(x.getSheetNo().toString(), x.getSheetName().toString()))
@@ -252,7 +252,6 @@ public class DailyPerformanceCorrectionProcessor {
 					}
 					/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
 					lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode);
-					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
 					if (!lstAtdItemUnique.isEmpty()) {
@@ -295,6 +294,12 @@ public class DailyPerformanceCorrectionProcessor {
 				if(!key.getGroup().isEmpty()){
 					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
 					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+				}else{
+					/*
+					 * 時間 - thoi gian hh:mm 5,  回数: so lan 2,  金額 : so tien 3, 日数: so ngay -
+					 */
+					DPAttendanceItem dPItem  = mapDP.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
 				}
 				result.getColumnSettings().add(columnSetting);
 
@@ -450,15 +455,15 @@ public class DailyPerformanceCorrectionProcessor {
 		//// 日別実績の勤務情報
 		List<DailyModifyResult> results = new ArrayList<>();
 		if(!dPControlDisplayItem.getItemIds().isEmpty()){
-		for (int i = 0; i < listEmployeeId.size(); i++) {
-			for (int j = 0; j < dateRange.toListDate().size(); j++) {
-				DailyModifyResult result = dailyModifyQueryProcessor.initScreen(
-						new DailyModifyQuery(listEmployeeId.get(i), dateRange.toListDate().get(j), null),
-						dPControlDisplayItem.getItemIds());
-				if (result != null)
-					results.add(result);
+			for (int i = 0; i < listEmployeeId.size(); i++) {
+				for (int j = 0; j < dateRange.toListDate().size(); j++) {
+					DailyModifyResult result = dailyModifyQueryProcessor.initScreen(
+							new DailyModifyQuery(listEmployeeId.get(i), dateRange.toListDate().get(j), null),
+							dPControlDisplayItem.getItemIds());
+					if (result != null)
+						results.add(result);
+				}
 			}
-		}
 		}
 		Map<String, DailyModifyResult> resultDailyMap = results.stream()
 				.collect(Collectors.toMap((x) -> x.getEmployeeId() + "|" + x.getDate(), Function.identity()));
