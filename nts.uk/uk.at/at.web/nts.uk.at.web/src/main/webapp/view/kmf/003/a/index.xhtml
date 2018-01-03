@@ -119,7 +119,7 @@
 									data-bind="text: limitedValue01"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td width="100"><button id="a7_9"
-									data-bind="click: openBDialog.bind($data, 1)">#{i18n.getText('KMF003_29')}</button></td>
+									data-bind="click: openBDialog.bind($data, 1), enable: !editMode()">#{i18n.getText('KMF003_29')}</button></td>
 							<td width="100" data-bind="if: !showLblSet01()"><label class="a9_1">#{i18n.getText('KMF003_31')}</label></td>
 							<td width="200"></td>
 						</tr>
