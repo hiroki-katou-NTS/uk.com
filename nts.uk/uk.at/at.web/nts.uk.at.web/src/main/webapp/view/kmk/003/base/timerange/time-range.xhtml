@@ -5,7 +5,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	
 	<div id="time-range-editor" style="width: 238px;">
-		<div id="start-time" class="time-range-custom"><input data-bind="attr: {tabindex: tabindex}, ntsTimeEditor: {
+		<div class="time-range-custom"><input id="start-time" data-bind="attr: {tabindex: tabindex}, ntsTimeEditor: {
 			value: startTime,
 			constraint: startConstraint,
 			name: startTimeNameId,
@@ -20,7 +20,7 @@
 		
 		<div class="time-range-custom" style="margin: 6px 10px;"><span>～</span></div>
 		
-		<div id="end-time" class="time-range-custom"><input data-bind="attr: {tabindex: tabindex}, ntsTimeEditor: {
+		<div class="time-range-custom"><input id="end-time" data-bind="attr: {tabindex: tabindex}, ntsTimeEditor: {
 			value: endTime,
 			constraint: endConstraint,
 			name: endTimeNameId,
