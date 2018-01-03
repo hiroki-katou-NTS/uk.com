@@ -33,4 +33,10 @@ public class DailyServiceTypeControlWebService extends WebService {
 			List<DailyServiceTypeControlCommand> lstDailyServiceTypeControlCommand){
 		this.dailyServiceTypeControlUpdateCommand.handle(lstDailyServiceTypeControlCommand);
 	}
+	@POST
+	@Path("getDailyServiceTypeControl/{workTypeCode}/{attendanceItemId}")
+	public DailyServiceTypeControlDto getDailyServiceTypeControl(
+			@PathParam("workTypeCode") String workTypeCode,@PathParam("attendanceItemId") int attendanceItemId ) {
+		return this.dailyServiceTypeControlFinder.getDailyServiceTypeControl(workTypeCode, attendanceItemId);
+	}
 }

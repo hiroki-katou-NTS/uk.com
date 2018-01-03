@@ -20,6 +20,14 @@ public class DeductGoOutRoundingSetDto implements DeductGoOutRoundingSetSetMemen
 	/** The appro time rounding setting. */
 	private GoOutTimeRoundingSettingDto approTimeRoundingSetting;
 
+	/**
+	 * Instantiates a new deduct go out rounding set dto.
+	 */
+	public DeductGoOutRoundingSetDto() {
+		this.deductTimeRoundingSetting = new GoOutTimeRoundingSettingDto();
+		this.approTimeRoundingSetting = new GoOutTimeRoundingSettingDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

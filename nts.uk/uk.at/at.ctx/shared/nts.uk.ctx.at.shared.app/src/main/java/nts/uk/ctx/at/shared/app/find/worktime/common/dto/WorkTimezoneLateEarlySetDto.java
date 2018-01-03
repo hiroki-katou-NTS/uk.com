@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetSetMemento;
@@ -26,6 +27,10 @@ public class WorkTimezoneLateEarlySetDto implements WorkTimezoneLateEarlySetSetM
 	/** The other class set. */
 	private List<OtherEmTimezoneLateEarlySetDto> otherClassSets;
 
+	public WorkTimezoneLateEarlySetDto() {
+		this.commonSet = new EmTimezoneLateEarlyCommonSetDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -46,6 +51,9 @@ public class WorkTimezoneLateEarlySetDto implements WorkTimezoneLateEarlySetSetM
 	 */
 	@Override
 	public void setOtherClassSet(List<OtherEmTimezoneLateEarlySet> list) {
+		if (CollectionUtil.isEmpty(list)) {
+			return;
+		}
 		this.otherClassSets = list.stream().map(domain->{
 			OtherEmTimezoneLateEarlySetDto dto =new OtherEmTimezoneLateEarlySetDto();
 			domain.saveToMemento(dto);

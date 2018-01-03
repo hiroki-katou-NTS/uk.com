@@ -4,7 +4,6 @@ module nts.uk.at.view.kmf002.d {
          * define path to service
          */
         var path: any = {
-                findList: "screen/com/systemresource/findList",
                 save: "bs/employee/holidaysetting/employment/save",
                 find: "bs/employee/holidaysetting/employment/findEmploymentMonthDaySetting",
                 remove: "bs/employee/holidaysetting/employment/remove"
@@ -13,21 +12,21 @@ module nts.uk.at.view.kmf002.d {
         /**
          * 
          */
-        export function save(year: number, data: model.EmploymentMonthDaySetting, empCd: number): JQueryPromise<any> {
-            model.EmploymentMonthDaySetting employmentMonthDaySetting = new model.EmploymentMonthDaySetting(year, empCd, new Array<model.PublicHolidayMonthSettingDto>);
+        export function save(year: number, data: any, empCd: string): JQueryPromise<any> {
+            model.EmploymentMonthDaySetting employmentMonthDaySetting = new model.EmploymentMonthDaySetting(year, empCd, new Array<model.PublicHolidayMonthSettingDto>());
             employmentMonthDaySetting.toDto(data);
             let command = {};
             command.year = year;
-            command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettings;
+            command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettingDto;
             command.empCd = empCd;
             return nts.uk.request.ajax("com", path.save, command);
         }
         
-        export function find(year: number, employmentCode: number): JQueryPromise<any> {
+        export function find(year: number, employmentCode: string): JQueryPromise<any> {
             return nts.uk.request.ajax("com", path.find + "/" + year + "/" + employmentCode);
         }
         
-        export function remove(year: number, employmentCode: number): JQueryPromise<any> {
+        export function remove(year: number, employmentCode: string): JQueryPromise<any> {
             model.EmploymentMonthDaySettingRemoveCommand employmentMonthDaySettingRemoveCommand = new model.EmploymentMonthDaySettingRemoveCommand(year, employmentCode);
             let command = {};
             command.year = year;
@@ -43,9 +42,9 @@ module nts.uk.at.view.kmf002.d {
         export class EmploymentMonthDaySetting {
             year: number;
             publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>;
-            empCd: number;
+            empCd: string;
             
-            constructor(year: number, empCd: number, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
+            constructor(year: number, empCd: string, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
@@ -55,16 +54,16 @@ module nts.uk.at.view.kmf002.d {
             toDto(data: any): void {
                 let _self = this;
                 _.forEach(data, function(newValue) {
-                    _self.publicHolidayMonthSettingDto.push(new PublicHolidayMonthSettingDto(_self.year,newValue.month(),newValue.day(),newValue.day()));
+                    _self.publicHolidayMonthSettingDto.push(new PublicHolidayMonthSettingDto(_self.year, newValue.month(), newValue.day()));
                 });
             }
         }
         
         export class EmploymentMonthDaySettingRemoveCommand {
             year: number;
-            empCd: number;
+            empCd: string;
             
-            constructor(year: number, empCd: number){
+            constructor(year: number, empCd: string){
                 let _self = this;
                 _self.year = year;
                 _self.empCd = empCd;
@@ -75,13 +74,11 @@ module nts.uk.at.view.kmf002.d {
             publicHdManagementYear: number;
             month: number;
             inLegalHoliday: number;
-            outLegalHoliday: number;
             
-            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number, outLegalHoliday: number) {
+            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
                 this.publicHdManagementYear = publicHdManagementYear;
                 this.month = month;
                 this.inLegalHoliday = inLegalHoliday;
-                this.outLegalHoliday = outLegalHoliday;
             }
         }
     }

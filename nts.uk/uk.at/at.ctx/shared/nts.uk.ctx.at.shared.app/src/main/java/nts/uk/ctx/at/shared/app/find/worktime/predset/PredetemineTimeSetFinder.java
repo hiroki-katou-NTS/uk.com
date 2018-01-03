@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.predset;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -23,16 +25,19 @@ public class PredetemineTimeSetFinder {
 	private PredetemineTimeSettingRepository predetemineTimeSetRepository;
 
 	/**
-	 * Find by code.
+	 * Find by work time code.
 	 *
 	 * @param workTimeCode the work time code
-	 * @return the pred dto
+	 * @return the predetemine time setting dto
 	 */
 	public PredetemineTimeSettingDto findByWorkTimeCode(String workTimeCode) {
 		String companyId = AppContexts.user().companyId();
-		PredetemineTimeSetting pred = this.predetemineTimeSetRepository.findByWorkTimeCode(companyId, workTimeCode);
+		Optional<PredetemineTimeSetting> optionalpredset = this.predetemineTimeSetRepository
+				.findByWorkTimeCode(companyId, workTimeCode);
 		PredetemineTimeSettingDto dto = new PredetemineTimeSettingDto();
-		pred.saveToMemento(dto);
+		if (optionalpredset.isPresent()) {
+			optionalpredset.get().saveToMemento(dto);
+		}
 		return dto;
 	}
 

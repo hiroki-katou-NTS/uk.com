@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.infra.repository.worktime.flexset.KshmtFlexHaGroup;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexHAFWRestTZGetMemento.
@@ -16,17 +16,17 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.flexset.KshmtFlexHaGroup;
 public class JpaFlexHAFWRestTZGetMemento implements FlowWorkRestTimezoneGetMemento{
 	
 	/** The entity group. */
-	private KshmtFlexHaGroup entityGroup;
+	private KshmtFlexHaRtSet entity;
 	
 
 	/**
 	 * Instantiates a new jpa flex HAFW rest TZ get memento.
 	 *
-	 * @param entityGroup the entity group
+	 * @param entity the entity
 	 */
-	public JpaFlexHAFWRestTZGetMemento(KshmtFlexHaGroup entityGroup) {
+	public JpaFlexHAFWRestTZGetMemento(KshmtFlexHaRtSet entity) {
 		super();
-		this.entityGroup = entityGroup;
+		this.entity = entity;
 	}
 
 	/* (non-Javadoc)
@@ -34,7 +34,7 @@ public class JpaFlexHAFWRestTZGetMemento implements FlowWorkRestTimezoneGetMemen
 	 */
 	@Override
 	public boolean getFixRestTime() {
-		return BooleanGetAtr.getAtrByInteger(this.entityGroup.getEntity().getFixRestTime());
+		return BooleanGetAtr.getAtrByInteger(this.entity.getFixRestTime());
 	}
 
 	/* (non-Javadoc)
@@ -42,8 +42,7 @@ public class JpaFlexHAFWRestTZGetMemento implements FlowWorkRestTimezoneGetMemen
 	 */
 	@Override
 	public TimezoneOfFixedRestTimeSet getFixedRestTimezone() {
-		return new TimezoneOfFixedRestTimeSet(
-				new JpaFlexHATzOFRTimeSetGetMemento(this.entityGroup.getEntityFixedRests()));
+		return new TimezoneOfFixedRestTimeSet(new JpaFlexHATzOFRTimeSetGetMemento(this.entity));
 	}
 
 	/* (non-Javadoc)
@@ -51,7 +50,7 @@ public class JpaFlexHAFWRestTZGetMemento implements FlowWorkRestTimezoneGetMemen
 	 */
 	@Override
 	public FlowRestTimezone getFlowRestTimezone() {
-		return new FlowRestTimezone(new JpaFlexHAFlowRestTzGetMemento(this.entityGroup.getEntity()));
+		return new FlowRestTimezone(new JpaFlexHAFlowRestTzGetMemento(this.entity));
 	}
 
 }

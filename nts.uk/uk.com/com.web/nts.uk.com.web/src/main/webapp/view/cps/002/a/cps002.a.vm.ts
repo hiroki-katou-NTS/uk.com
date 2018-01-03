@@ -315,7 +315,17 @@ module cps002.a.vm {
         }
 
         isError() {
-            $(".form_step1").trigger("validate");
+            let self = this;
+            if (self.currentStep() == 2) {
+                _.each(__viewContext.primitiveValueConstraints, x => {
+                    if (_.has(x, "itemCode")) {
+                        $('#' + x.itemCode).trigger('change');
+                    }
+                })
+            } else {
+                $(".form_step1").trigger("validate");
+
+            }
             if (nts.uk.ui.errors.hasError()) {
                 return true;
             }
@@ -630,8 +640,6 @@ module cps002.a.vm {
 
         openFModal() {
 
-            let self = this;
-
             subModal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(() => {
 
             });
@@ -679,7 +687,14 @@ module cps002.a.vm {
 
         openInitModal() {
 
-            jump('/view/cps/009/a/index.xhtml');
+
+            subModal('/view/cps/009/a/index.xhtml', { title: '', height: 800, width: 1400 }).onClosed(() => {
+
+            });
+            //            
+            //            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
+            //                
+            //            });
         }
 
 

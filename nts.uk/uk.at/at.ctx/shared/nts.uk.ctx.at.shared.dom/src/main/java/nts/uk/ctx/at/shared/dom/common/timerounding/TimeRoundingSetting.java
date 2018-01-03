@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit.Direction;
 @Getter
 public class TimeRoundingSetting extends DomainObject{
 	
-	/** The unit. */
+	/** The rounding time. */
 	// 単位
 	private Unit roundingTime;
 	
@@ -63,5 +63,15 @@ public class TimeRoundingSetting extends DomainObject{
 		default:
 			throw new RuntimeException("invalid case: " + this.rounding);
 		}
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(TimeRoundingSetting oldDomain) {
+		this.roundingTime = oldDomain.getRoundingTime();
+		this.rounding = oldDomain.getRounding();
 	}
 }

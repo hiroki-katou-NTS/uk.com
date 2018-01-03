@@ -4,39 +4,33 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class JpaPrescribedTimezoneSettingGetMemento.
  */
 public class JpaPrescribedTimezoneSettingGetMemento implements PrescribedTimezoneSettingGetMemento {
-	
 
 	/** The entity. */
 	private KshmtPredTimeSet entity;
 
-	/** The lst entity time. */
-	private List<KshmtWorkTimeSheetSet> lstEntityTime;
-	
 	/**
 	 * Instantiates a new jpa prescribed timezone setting get memento.
 	 *
-	 * @param entity the entity
-	 * @param lstEntityTime the lst entity time
+	 * @param entity
+	 *            the entity
+	 * @param lstEntityTime
+	 *            the lst entity time
 	 */
-	public JpaPrescribedTimezoneSettingGetMemento(KshmtPredTimeSet entity, List<KshmtWorkTimeSheetSet> lstEntityTime) {
+	public JpaPrescribedTimezoneSettingGetMemento(KshmtPredTimeSet entity) {
 		super();
 		this.entity = entity;
-		this.lstEntityTime = lstEntityTime;
 	}
 
 	/**
@@ -66,12 +60,9 @@ public class JpaPrescribedTimezoneSettingGetMemento implements PrescribedTimezon
 	 */
 	@Override
 	public List<TimezoneUse> getLstTimezone() {
-		if (CollectionUtil.isEmpty(lstEntityTime)) {
-			return new ArrayList<>();
-		}
-		return this.lstEntityTime.stream().map(entity -> new TimezoneUse(new JpaTimezoneGetMemento(entity)))
+		return this.entity.getKshmtWorkTimeSheetSets().stream()
+				.map(entity -> new TimezoneUse(new JpaTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
-
 
 }
