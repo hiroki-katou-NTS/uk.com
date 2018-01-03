@@ -455,15 +455,15 @@ public class DailyPerformanceCorrectionProcessor {
 		//// 日別実績の勤務情報
 		List<DailyModifyResult> results = new ArrayList<>();
 		if(!dPControlDisplayItem.getItemIds().isEmpty()){
-//			for (int i = 0; i < listEmployeeId.size(); i++) {
-//				for (int j = 0; j < dateRange.toListDate().size(); j++) {
-//					DailyModifyResult result = dailyModifyQueryProcessor.initScreen(
-//							new DailyModifyQuery(listEmployeeId.get(i), dateRange.toListDate().get(j), null),
-//							dPControlDisplayItem.getItemIds());
-//					if (result != null)
-//						results.add(result);
-//				}
-//			}
+			for (int i = 0; i < listEmployeeId.size(); i++) {
+				for (int j = 0; j < dateRange.toListDate().size(); j++) {
+					DailyModifyResult result = dailyModifyQueryProcessor.initScreen(
+							new DailyModifyQuery(listEmployeeId.get(i), dateRange.toListDate().get(j), null),
+							dPControlDisplayItem.getItemIds());
+					if (result != null)
+						results.add(result);
+				}
+			}
 		}
 		Map<String, DailyModifyResult> resultDailyMap = results.stream()
 				.collect(Collectors.toMap((x) -> x.getEmployeeId() + "|" + x.getDate(), Function.identity()));
