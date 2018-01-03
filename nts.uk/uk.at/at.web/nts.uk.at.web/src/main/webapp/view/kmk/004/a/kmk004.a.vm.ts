@@ -587,6 +587,7 @@ module nts.uk.at.view.kmk004.a {
              */
             private setAlreadySettingEmploymentList(): void {
                 let self = this;
+                self.employmentWTSetting.year(self.companyWTSetting.year());
                 service.findAllEmploymentSetting(self.employmentWTSetting.year()).done(listCode => {
                     self.alreadySettingEmployments(_.map(listCode, function(code) {
                         return { code: code, isAlreadySetting: true };
@@ -599,6 +600,7 @@ module nts.uk.at.view.kmk004.a {
              */
             private setAlreadySettingWorkplaceList(): void {
                 let self = this;
+                self.workplaceWTSetting.year(self.companyWTSetting.year());
                 service.findAllWorkplaceSetting(self.workplaceWTSetting.year()).done(listId => {
                     self.alreadySettingWorkplaces(_.map(listId, function(id) {
                         return { workplaceId: id, isAlreadySetting: true };
