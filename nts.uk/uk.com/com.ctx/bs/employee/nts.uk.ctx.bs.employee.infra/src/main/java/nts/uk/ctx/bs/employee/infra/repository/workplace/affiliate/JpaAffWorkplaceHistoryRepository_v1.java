@@ -308,11 +308,9 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	@Override
 	public List<String> getByWplIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate) {
 
-		List<String> listWkpHist = this.queryProxy().query(SELECT_BY_WKPID_PERIOD, Object[].class)
+		List<String> listWkpHist = this.queryProxy().query(SELECT_BY_WKPID_PERIOD, String.class)
 				.setParameter("workPlaceId", workplaceId).setParameter("startDate", startDate)
-				.setParameter("endDate", endDate).getList(i -> {
-					return i[0].toString();
-				});
+				.setParameter("endDate", endDate).getList();
 		if (!listWkpHist.isEmpty()) {
 			return listWkpHist;
 		} else {
