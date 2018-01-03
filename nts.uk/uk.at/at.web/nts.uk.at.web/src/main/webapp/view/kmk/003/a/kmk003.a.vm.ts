@@ -314,9 +314,15 @@ module nts.uk.at.view.kmk003.a {
              * Validate all input
              */
             private validateInput(): void {
-                $('#inp-worktimecode').ntsEditor('validate');
-                $('#inp-worktimename').ntsEditor('validate');
-                //TODO: validate chua het
+                this.clearAllError();
+                $('.nts-editor').each((index, element) => {
+                    if (!element.id) {
+                        element.id = nts.uk.util.randomId();
+                    } 
+                    
+                    $('#' + element.id).ntsEditor('validate');
+                    $('#' + element.id).validateTimeRange();
+                })
             }
 
             /**
