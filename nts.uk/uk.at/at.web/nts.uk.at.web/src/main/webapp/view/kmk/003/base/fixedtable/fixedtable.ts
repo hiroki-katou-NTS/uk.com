@@ -169,13 +169,11 @@ module nts.fixedtable {
         isEnableAllControl: KnockoutObservable<boolean>;
         
         tableId: string;
-        data: FixTableOption;
         
         constructor(data: FixTableOption) {
             let self = this;
             
             // set data parameter
-            self.data = data;
             self.isShowButton = data.isShowButton;
             self.columns = data.columns;
             self.maxRow = data.maxRow;
@@ -188,13 +186,16 @@ module nts.fixedtable {
             if (!self.tabindex) {
                 self.tabindex = -1;
             }
-            self.itemList = ko.observableArray(data.dataSource());
+            self.itemList = data.dataSource;
             self.isEnableAllControl = ko.observable(true);
             
             self.sortTimeASC();
             
             // add properties isChecked when multiple select
             self.addCheckBoxItemAtr();
+            
+            // add event callback
+            self.callBackChangeDataSource();
             
             self.isSelectAll = ko.observable(false);
             
@@ -219,10 +220,6 @@ module nts.fixedtable {
                 self.computedChange(newValue);
             });
             
-            self.data.dataSource.subscribe((newList) => {
-                self.itemList(newList);
-            });
-            
             // subscribe itemList
             self.itemList.subscribe((newList) => {
                 $('#' + self.tableId).find('.nts-editor').ntsError('clear');
@@ -234,11 +231,8 @@ module nts.fixedtable {
                     $('#' + element.id).ntsEditor('validate');
                 })
                 
-                // add event callback
-                self.callBackChangeDataSource();
-                
                 if (!newList) {
-                     self.isSelectAll(false);
+                    self.isSelectAll(false);
                     return;
                 }
                 
@@ -329,7 +323,7 @@ module nts.fixedtable {
                     }
                     item[column.key].subscribe((newValue: any) => {
                         isSubcriber = true;
-                        self.data.dataSource.valueHasMutated();
+                        self.itemList.valueHasMutated();
                     });
                 });
             });
