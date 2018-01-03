@@ -160,7 +160,10 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						//==========
 						deleteAppPh(com.getBranchId());
 						//=======
+						//delete root
 						repoCom.deleteComApprovalRoot(companyId, com.getApprovalId(), com.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						//delete branch
+						repoBranch.deleteBranch(companyId, com.getBranchId());
 					}
 				}
 			}
@@ -284,6 +287,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						deleteAppPh(wp.getBranchId());
 						//=======
 						repoWorkplace.deleteWpApprovalRoot(companyId, wp.getApprovalId(), workplaceId, wp.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						//delete branch
+						repoBranch.deleteBranch(companyId, wp.getBranchId());
 					}
 				}
 			}
@@ -400,6 +405,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						deleteAppPh(ps.getBranchId());
 						//=======
 						repoPerson.deletePsApprovalRoot(companyId, ps.getApprovalId(),employeeId, ps.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						//delete branch
+						repoBranch.deleteBranch(companyId, ps.getBranchId());
 					}
 				}
 			}

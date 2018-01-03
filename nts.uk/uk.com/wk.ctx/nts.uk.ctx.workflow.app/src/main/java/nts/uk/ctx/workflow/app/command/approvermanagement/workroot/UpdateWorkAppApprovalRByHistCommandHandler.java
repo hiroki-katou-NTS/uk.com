@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
@@ -39,6 +40,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
 	private ApproverRepository repoApprover;
+	@Inject
+	private ApprovalBranchRepository repoBranch;
 	private final int COMPANY = 0;
 	private final int WORKPLACE = 1;
 	private final int EDIT = 1;
@@ -100,6 +103,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					repoAppPhase.deleteAllAppPhaseByBranchId(companyId, comAppRoot.getBranchId());
 					//delete ComApprovalRoot
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
+					//delete branch
+					repoBranch.deleteBranch(companyId, comAppRoot.getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete( )== EDIT){//edit
@@ -138,6 +143,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					//delete history current
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
+					//delete branch
+					repoBranch.deleteBranch(companyId, comAppRoot.getBranchId());
 				}
 			}
 		}
@@ -229,6 +236,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					//delete WpApprovalRoot
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
+					//delete branch
+					repoBranch.deleteBranch(companyId, wpAppRoot.getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete() == EDIT){//edit
@@ -269,6 +278,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					//delete history current
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
+					//delete branch
+					repoBranch.deleteBranch(companyId, wpAppRoot.getBranchId());
 				}
 			}
 		}
@@ -359,6 +370,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					//delete PsApprovalRoot
 					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(), updateItem.getHistoryId());
+					//delete branch
+					repoBranch.deleteBranch(companyId, psAppRoot.getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete()==1){//edit
@@ -399,6 +412,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					//delete history current
 					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getEmploymentAppHistoryItems().get(0).getHistoryId());
+					//delete branch
+					repoBranch.deleteBranch(companyId, psAppRoot.getBranchId());
 				}
 			}
 		}
