@@ -143,7 +143,6 @@ module cmm044.a.viewmodel {
             self.histSelectedItem.subscribe(function(requestId) {
                 if (requestId) {
                     $.when(self.getAgen(self.selectedItem(), requestId)).done(function() {
-                        $("#daterangepicker").find(".ntsStartDatePicker").blur();
                         nts.uk.ui.errors.clearAll();
                         self.isEnableDelete(true);
                         self.isEnableAdd(true);
@@ -210,9 +209,6 @@ module cmm044.a.viewmodel {
                     nts.uk.ui.dialog.alertError(error);
                 });
             }
-            _.defer(() => {
-                $("#daterangepicker").find(".ntsStartDatePicker").focus();
-            });
             dfd.resolve();
             return dfd.promise();
 
@@ -389,9 +385,11 @@ module cmm044.a.viewmodel {
                         } else {
                             requestId = self.histItems()[index_of_itemDelete].requestId;
                         }
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16"));
-                        self.histSelectedItem(requestId);
-                        $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16")).then(() => {
+                            nts.uk.ui.errors.clearAll();
+                            self.histSelectedItem(requestId);
+                            $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                        });
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);

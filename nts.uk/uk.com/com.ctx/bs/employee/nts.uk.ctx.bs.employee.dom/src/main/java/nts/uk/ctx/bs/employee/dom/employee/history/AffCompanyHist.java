@@ -32,7 +32,7 @@ public class AffCompanyHist extends AggregateRoot {
 		if (filter != null && !filter.isEmpty()) {
 			return filter.get(0);
 		}
-		
+
 		return null;
 	}
 
@@ -40,7 +40,7 @@ public class AffCompanyHist extends AggregateRoot {
 		if (lstAffCompanyHistByEmployee == null) {
 			lstAffCompanyHistByEmployee = new ArrayList<AffCompanyHistByEmployee>();
 		}
-		
+
 		lstAffCompanyHistByEmployee.add(domain);
 		domain.toBePublished();
 	}

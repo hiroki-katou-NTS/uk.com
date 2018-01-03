@@ -29,8 +29,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             self.currentCode = ko.observable(3);
             self.selectedWorkTypeCode = ko.observable('');
             self.selectedWorkTimeCode = ko.observable('');
-            self.time1 = ko.observable('12:00');
-            self.time2 = ko.observable('15:00');
+            self.time1 = ko.observable('');
+            self.time2 = ko.observable('');
 
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
@@ -57,13 +57,13 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     if (c) {
                         workTimeName = c.abName;
                         workTimeCode = (c.siftCd == '000' ? '' : c.siftCd);
-                        startTime = c.start;
-                        endTime = c.end;
+                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.start, true).format() : '';
+                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.end, true).format() : '';
                     } else {
                         workTimeName = null;
                         workTimeCode = null;
-                        startTime = null;
-                        endTime = null;
+                        startTime = '';
+                        endTime = '';
                     }
                 }
                 return new ksu001.common.viewmodel.ExCell({
@@ -82,7 +82,15 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             });
 
             //init
-            self.findDataForComboBox();
+            $.when(self.findDataForComboBox()).done(() => {
+                //get state of list workTypeCode
+                // get data for screen A
+                let lstWorkTypeCode = [];
+                _.map(self.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
+                    lstWorkTypeCode.push(workType.workTypeCode);
+                });
+                __viewContext.viewModel.viewA.checkStateWorkTypeCode(lstWorkTypeCode);
+            });
         }
 
         openDialogO1(): void {
@@ -104,6 +112,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 }
             });
         }
+        
         search(): void {
             let self = this;
             if (!self.time1() && !self.time2()) {
@@ -126,11 +135,13 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             });
 
         }
+        
         clear(): void {
             let self = this;
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
         }
+        
         /**
          * Get data workType-workTime for 2 combo-box
          */
@@ -203,7 +214,6 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                         }));
                     }
                 });
-
                 dfd.resolve();
                 self.listWorkTimeComboBox(self.listWorkTime());
 

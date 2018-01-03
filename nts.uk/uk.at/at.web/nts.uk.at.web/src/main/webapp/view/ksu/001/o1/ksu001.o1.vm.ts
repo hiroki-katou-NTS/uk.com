@@ -6,8 +6,8 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         listWorkTime: KnockoutObservableArray<any>;
         selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
         selectedWorkTimeCode: KnockoutObservable<string> = ko.observable('');
-        time1: KnockoutObservable<string> = ko.observable('12:00');
-        time2: KnockoutObservable<string> = ko.observable('15:00');
+        time1: KnockoutObservable<string> = ko.observable('');
+        time2: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
@@ -38,14 +38,15 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
                 let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
+                let startTime, endTime: any;
                 if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
                     let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
                     if (d) {
                         workTypeName = d.abbreviationName;
                         workTypeCode = d.workTypeCode;
                     } else {
-                        workTypeName = '';
-                        workTypeCode = '';
+                        workTypeName = null;
+                        workTypeCode = null;
                     }
 
                     let siftCode: string = null;
@@ -58,17 +59,23 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                     let c = _.find(self.listWorkTime(), ['siftCd', siftCode]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = c.siftCd;
+                        workTimeCode = (c.siftCd == '000' ? '' : c.siftCd);
+                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.start, true).format() : '';
+                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.end, true).format() : '';
                     } else {
-                        workTimeName = '';
-                        workTimeCode = '';
+                        workTimeName = null;
+                        workTimeCode = null;
+                        startTime = '';
+                        endTime = '';
                     }
                 }
                 return new ksu001.common.viewmodel.ExCell({
                     workTypeCode: workTypeCode,
                     workTypeName: workTypeName,
                     workTimeCode: workTimeCode,
-                    workTimeName: workTimeName
+                    workTimeName: workTimeName,
+                    startTime: startTime,
+                    endTime: endTime
                 });
             });
 

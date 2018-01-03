@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,11 +25,12 @@ public class MissingOfTemporaryStampChecking {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 	
-	public void missingOfTemporaryStampChecking(String companyID, String employeeID, GeneralDate processingDate) {
-//		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
-		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
-		if (temporaryTimeOfDailyPerformance.isPresent()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
+	public void missingOfTemporaryStampChecking(String companyID, String employeeID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+		
+//		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
+		
+		if (temporaryTimeOfDailyPerformance != null && !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
 
 			List<Integer> attendanceItemIds = new ArrayList<>();
 			
@@ -58,7 +58,5 @@ public class MissingOfTemporaryStampChecking {
 				createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);
 			}
 		}
-
-//		return outPutProcess;
 	}
 }
