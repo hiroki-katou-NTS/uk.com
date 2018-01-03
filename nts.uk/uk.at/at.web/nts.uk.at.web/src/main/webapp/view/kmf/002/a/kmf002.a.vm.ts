@@ -69,9 +69,9 @@ module nts.uk.at.view.kmf002.a {
             constructor(){
                 let _self = this;
 //                _self.screenA = ko.observable(new viewModelTabA.viewmodel.ScreenModel());
-                _self.screenB = ko.observable(new viewModelTabB.ScreenModel());
                 _self.screenC = ko.observable(new viewModelTabC.ScreenModel());
                 _self.screenD = ko.observable(new viewModelTabD.ScreenModel());
+                _self.screenB = ko.observable(new viewModelTabB.ScreenModel());
                 _self.screenE = ko.observable(new viewModelTabE.ScreenModel());
 
                 _self.A9_6_7 = ko.observable();
@@ -210,7 +210,7 @@ module nts.uk.at.view.kmf002.a {
                     // Process for screen A (Mother of all screen)
                     dfd.resolve(_self);    
                 } else if (typeStart == 2) {
-                    $.when(_self.screenD().start_page()).done(function() {
+                    $.when(_self.screenE().start_page()).done(function() {
                         dfd.resolve(_self);
                     });    
                 } else if (typeStart == 4) {
@@ -218,7 +218,7 @@ module nts.uk.at.view.kmf002.a {
                         dfd.resolve(_self);
                     });    
                 } else if (typeStart == 5) {
-                    $.when(_self.screenE().start_page()).done(function() {
+                    $.when(_self.screenC().start_page()).done(function() {
                         dfd.resolve(_self);
                     });    
                 }
@@ -252,10 +252,10 @@ module nts.uk.at.view.kmf002.a {
             
             public onSelectTabC(): void {
                 $("#sidebar").ntsSideBar("init", {
-                    active: SideBarTabIndex.SECOND,
+                    active: SideBarTabIndex.FIFTH,
                     activate: (event, info) => {
                         let _self = this;
-                        _self.start_page(2);
+                        _self.start_page(5);
                     }
                 });
             }
@@ -272,10 +272,10 @@ module nts.uk.at.view.kmf002.a {
             
             public onSelectTabE(): void {
                 $("#sidebar").ntsSideBar("init", {
-                    active: SideBarTabIndex.FIFTH,
+                    active: SideBarTabIndex.SECOND,
                     activate: (event, info) => {
                         let _self = this;
-                        _self.start_page(5);
+                        _self.start_page(2);
                     }
                 });
             }

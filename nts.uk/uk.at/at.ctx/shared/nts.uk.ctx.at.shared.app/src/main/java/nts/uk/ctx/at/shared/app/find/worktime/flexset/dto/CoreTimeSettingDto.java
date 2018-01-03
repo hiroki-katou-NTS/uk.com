@@ -16,17 +16,16 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
  */
 @Getter
 @Setter
-public class CoreTimeSettingDto implements CoreTimeSettingSetMemento{
+public class CoreTimeSettingDto implements CoreTimeSettingSetMemento {
 
 	/** The core time sheet. */
 	private TimeSheetDto coreTimeSheet;
-	
+
 	/** The timesheet. */
 	private Integer timesheet;
-	
+
 	/** The min work time. */
 	private Integer minWorkTime;
-
 
 	/*
 	 * (non-Javadoc)
@@ -36,7 +35,10 @@ public class CoreTimeSettingDto implements CoreTimeSettingSetMemento{
 	 */
 	@Override
 	public void setCoreTimeSheet(TimeSheet coreTimeSheet) {
-		coreTimeSheet.saveToMemento(this.coreTimeSheet);
+		if (coreTimeSheet != null) {
+			this.coreTimeSheet = new TimeSheetDto();
+			coreTimeSheet.saveToMemento(this.coreTimeSheet);
+		}
 	}
 
 	/*
@@ -48,7 +50,7 @@ public class CoreTimeSettingDto implements CoreTimeSettingSetMemento{
 	@Override
 	public void setTimesheet(ApplyAtr timesheet) {
 		this.timesheet = timesheet.value;
-		
+
 	}
 
 	/*
@@ -61,6 +63,5 @@ public class CoreTimeSettingDto implements CoreTimeSettingSetMemento{
 	public void setMinWorkTime(AttendanceTime minWorkTime) {
 		this.minWorkTime = minWorkTime.valueAsMinutes();
 	}
-	
-	
+
 }

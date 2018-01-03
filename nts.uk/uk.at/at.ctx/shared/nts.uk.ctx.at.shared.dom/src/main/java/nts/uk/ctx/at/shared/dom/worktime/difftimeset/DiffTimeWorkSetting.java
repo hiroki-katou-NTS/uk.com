@@ -5,13 +5,21 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
  * The Class TimeDiffWorkSetting.
@@ -94,6 +102,30 @@ public class DiffTimeWorkSetting extends AggregateRoot {
 		memento.setHalfDayWorkTimezones(this.halfDayWorkTimezones);
 		memento.setStampReflectTimezone(this.stampReflectTimezone);
 		memento.setOvertimeSetting(this.overtimeSetting);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 * @param other the other
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting other) {
+		// restore 平日勤務時間帯
+		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
+				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.DIFFTIME_WORK) {
+			
+			// convert map
+			Map<AmPmAtr, DiffTimeHalfDayWorkTimezone> mapFixHalfWork = other.getHalfDayWorkTimezones().stream()
+					.collect(Collectors.toMap(item -> ((DiffTimeHalfDayWorkTimezone) item).getAmPmAtr(),
+							Function.identity()));
+			
+			this.halfDayWorkTimezones.forEach(item -> item.restoreData(screenMode, this,
+					mapFixHalfWork.get(item.getAmPmAtr())));
+		} else {
+			this.halfDayWorkTimezones = other.getHalfDayWorkTimezones();
+		}
 	}
 
 	/* (non-Javadoc)

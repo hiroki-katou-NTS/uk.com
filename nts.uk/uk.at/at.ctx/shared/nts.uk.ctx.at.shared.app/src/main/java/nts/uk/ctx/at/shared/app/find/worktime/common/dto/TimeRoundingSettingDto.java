@@ -22,6 +22,13 @@ public class TimeRoundingSettingDto{
 
 	/**
 	 * Instantiates a new time rounding setting dto.
+	 */
+	public TimeRoundingSettingDto() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new time rounding setting dto.
 	 *
 	 * @param roundingTime the rounding time
 	 * @param rounding the rounding
@@ -31,6 +38,5 @@ public class TimeRoundingSettingDto{
 		this.roundingTime = roundingTime;
 		this.rounding = rounding;
 	}
-	
 	
 }
