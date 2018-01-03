@@ -124,6 +124,8 @@ module nts.fixedtable {
          * Enable column
          */
         enable?: boolean;
+        
+        isRoudingColumn?: boolean;
     }
 
     /************************************************ SCREEN MODEL ************************************************
@@ -167,6 +169,8 @@ module nts.fixedtable {
         mapControl: Array<IControl>;
         tabindex: number;
         isEnableAllControl: KnockoutObservable<boolean>;
+        roudingDataSource: KnockoutObservableArray<any>;
+        isSelectSpecialUnit: KnockoutObservable<boolean>
         
         tableId: string;
         
@@ -188,6 +192,11 @@ module nts.fixedtable {
             }
             self.itemList = data.dataSource;
             self.isEnableAllControl = ko.observable(true);
+            self.roudingDataSource = ko.observableArray([]);
+            self.isSelectSpecialUnit = ko.observable(false);
+//            self.roudingDataSource = ko.computed(() {
+//                if ()
+//            })
             
             self.sortTimeASC();
             
@@ -223,13 +232,6 @@ module nts.fixedtable {
             // subscribe itemList
             self.itemList.subscribe((newList) => {
                 $('#' + self.tableId).find('.nts-editor').ntsError('clear');
-                $('#' + self.tableId).find('.nts-editor').each((index, element) => {
-                    if (!element.id) {
-                        element.id = nts.uk.util.randomId();
-                    } 
-                    
-                    $('#' + element.id).ntsEditor('validate');
-                })
                 
                 if (!newList) {
                     self.isSelectAll(false);
@@ -525,12 +527,17 @@ module nts.fixedtable {
             // insert option value of control if has
             let keyOptionValue: string = infoControl.keyOptionValue;
             if (keyOptionValue) {
-                // add data source for control
-                self.lstDataSource[columnSetting.key] = columnSetting.dataSource;
-                
-                // update option cotrol html
-                newProperties = self.updateElement(newProperties, keyOptionValue,
-                    "$parent.lstDataSource." + columnSetting.key, columnSetting.enable);
+                if (columnSetting.isRoudingColumn) {
+                    newProperties = self.updateElement(newProperties, keyOptionValue,
+                    "$parent.roudingDataSource", columnSetting.enable);
+                } else {
+                    // add data source for control
+                    self.lstDataSource[columnSetting.key] = columnSetting.dataSource;
+
+                    // update option cotrol html
+                    newProperties = self.updateElement(newProperties, keyOptionValue,
+                        "$parent.lstDataSource." + columnSetting.key, columnSetting.enable);
+                }
             }
 
             // update tabindex
@@ -586,7 +593,7 @@ module nts.fixedtable {
 
             // no option
             if (idx == -1) {
-                return template.replace(properties, properties + ",option:{width:'" + width + "'}");
+                return template.replace(properties, properties + ",option:{width:'" + width + "', textalign: 'center'}");
             }
             // has option 
             let oldOption: string = properties.substring(properties.indexOf("{") + 1, properties.lastIndexOf("}"));
@@ -662,6 +669,22 @@ module nts.fixedtable {
             }
             return result;
         }
+        
+        public initUnitRoudingChange(element: JQuery) {
+            var self = this;
+//            element.find('.unit-combo').each((index, subElement) => {
+//                subElement.
+//            })
+            element.delegate('.unit-combo', "igcomboselectionchanged", function(evt, ui) {
+                //use to obtain reference to array of new selected items. That can be null.
+                var value = ui.items[0].data.value;
+                if (value == 4 || value == 6) {
+                    var comboDs = [{value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down'}, {value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up'}]
+                    $(evt.target).parent().next().find('.rouding-combo').first().igCombo("option", "dataSource", comboDs);
+                    $(evt.target).parent().next().find('.rouding-combo').first().igCombo("select", {value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down'});
+                }
+            });
+        }
     }
 }
 /**
@@ -715,6 +738,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
                     $("." + column.cssClassName).css({ "min-width": "" });
                 });
+                screenModel.initUnitRoudingChange($(element));
             });
         });
     }
