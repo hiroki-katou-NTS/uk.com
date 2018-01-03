@@ -14,6 +14,8 @@ module kmk003.base.timerange {
         startTime: KnockoutObservable<number>;
         endTime: KnockoutObservable<number>;
         element: JQuery;
+        startTimeNameId: string;
+        endTimeNameId: string;
         
         /**
         * Constructor.
@@ -24,8 +26,6 @@ module kmk003.base.timerange {
             self.value = input.value;
             self.startConstraint = ko.unwrap(input.startConstraint);
             self.endConstraint = ko.unwrap(input.endConstraint);
-            self.startName = ko.unwrap(input.endConstraint);
-            self.endName = ko.unwrap(input.endConstraint);
             self.required = ko.unwrap(input.required);
             self.enable = ko.observable(input.enable ? input.enable() : true);
             self.inputFormat = ko.unwrap(input.inputFormat);
@@ -33,7 +33,8 @@ module kmk003.base.timerange {
             
             self.startTime = ko.observable(0);
             self.endTime = ko.observable(0);
-            
+            self.startTimeNameId = input.startTimeNameId ? input.startTimeNameId : '';
+            self.endTimeNameId = input.endTimeNameId ? input.endTimeNameId :'';
             // subscribe
             self.startTime.subscribe((newValue) => {
                 if (!self.validTimeRange(newValue, self.endTime())) {
