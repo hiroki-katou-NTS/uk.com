@@ -2,18 +2,18 @@ module nts.uk.at.view.kmf004.g.service {
     
     var paths: any = {
         findAll: "at/shared/relationship/findAll",
-        findAllGrantRelationship: "at/shared/grantrelationship/findAll",
+        findAllGrantRelationship: "at/shared/grantrelationship/findAll/",
 //        update: "at/shared/grantrelationship/update",
         insert: "at/shared/grantrelationship/add",
         remove: "at/shared/grantrelationship/delete"
     }
+   
+    export function findAll(specialHolidayCode: String): JQueryPromise<any>{
+        return nts.uk.request.ajax(paths.findAllGrantRelationship+specialHolidayCode);    
+    }  
     
-     export function findAll(){
-        return nts.uk.request.ajax(paths.findAll);    
-    }    
-    
-    export function findAllGrantRelationship(){
-        return nts.uk.request.ajax(paths.findAllGrantRelationship);    
+    export function findAllGrantRelationship(specialHolidayCode: String): JQueryPromise<any>{
+        return nts.uk.request.ajax(paths.findAllGrantRelationship+specialHolidayCode);    
     }    
     
 //    export function update(command: viewmodel.GrantRelationship): JQueryPromise<void>{

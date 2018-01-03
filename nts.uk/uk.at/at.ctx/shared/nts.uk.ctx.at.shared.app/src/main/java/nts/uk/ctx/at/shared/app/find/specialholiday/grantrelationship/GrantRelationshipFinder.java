@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday.grantrelationship;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,11 +26,11 @@ public class GrantRelationshipFinder {
 	@Inject
 	private RelationshipRepository relationshopRepo;
 	
-	public List<GrantRelationshipDto> finder() {
+	public List<GrantRelationshipDto> finder(String sphdCode) {
 		String companyId = AppContexts.user().companyId();
 		
 		List<Relationship> relationshipList = relationshopRepo.findAll(companyId);
-		List<GrantRelationship> grantRelationshipList = this.grantRelaRep.findAll(companyId);
+		List<GrantRelationship> grantRelationshipList = this.grantRelaRep.findBySPCode(companyId, sphdCode);
 		
 		Map<String, GrantRelationship> grantRelationshipMap = grantRelationshipList.stream().collect(Collectors.toMap(GrantRelationship::getRelationshipCode, x->x));
 		
@@ -37,7 +38,7 @@ public class GrantRelationshipFinder {
 			GrantRelationship grantRelationship = grantRelationshipMap.get(item.getRelationshipCode().v());
 			
 			return new GrantRelationshipDto(
-					grantRelationship != null ? grantRelationship.getSpecialHolidayCode() : 0, 
+					grantRelationship != null ? grantRelationship.getSpecialHolidayCode() : "00", 
 					item.getRelationshipCode().v(),
 					item.getRelationshipName().v(),
 					grantRelationship != null && grantRelationship.getGrantRelationshipDay() != null ? grantRelationship.getGrantRelationshipDay().v() : null,
@@ -45,6 +46,4 @@ public class GrantRelationshipFinder {
 					grantRelationship != null);
 		}).collect(Collectors.toList());
 	}
-	
-	
 }
