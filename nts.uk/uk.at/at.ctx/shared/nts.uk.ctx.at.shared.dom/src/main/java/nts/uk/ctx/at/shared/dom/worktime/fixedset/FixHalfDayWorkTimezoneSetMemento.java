@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
 
 /**
  * The Interface FixHalfDayWorkTimezoneGetMemento.
@@ -31,6 +31,6 @@ public interface FixHalfDayWorkTimezoneSetMemento {
 	 *
 	 * @param dayAtr the new day atr
 	 */
-	void setDayAtr(AmPmClassification dayAtr);
+	void setDayAtr(AmPmAtr dayAtr);
 	
 }

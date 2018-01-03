@@ -95,7 +95,8 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         getData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.findAllGrantRelationship().done((lstData: Array<viewmodel.GrantRelationship>) => {
+            let specialHolidayCode = getShared("KMF004G_SPHD_CD");
+            service.findAllGrantRelationship(specialHolidayCode).done((lstData: Array<viewmodel.GrantRelationship>) => {
                 let sortedData = _.orderBy(lstData, ['relationshipCode'], ['asc']);
                 self.lstRelationship(sortedData);
                 dfd.resolve();               
@@ -167,7 +168,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                     self.morningHour(null);
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 })
-            }).ifCancel(() => {
+            }).ifNo(() => {
             });
         }
 
@@ -177,13 +178,13 @@ module nts.uk.at.view.kmf004.g.viewmodel {
 
     }
     export class GrantRelationship {
-        specialHolidayCode: number;
+        specialHolidayCode: string;
         relationshipCode: string;
         relationshipName: string;
         grantRelationshipDay: number;
         morningHour: number;
         isAlreadySet: boolean;
-        constructor(specialHolidayCode: number, relationshipCode: string, relationshipName: string, grantRelationshipDay: number, morningHour: number, isAlreadySet: boolean) {
+        constructor(specialHolidayCode: string, relationshipCode: string, relationshipName: string, grantRelationshipDay: number, morningHour: number, isAlreadySet: boolean) {
             this.specialHolidayCode = specialHolidayCode;
             this.relationshipCode = relationshipCode;
             this.relationshipName = relationshipName;

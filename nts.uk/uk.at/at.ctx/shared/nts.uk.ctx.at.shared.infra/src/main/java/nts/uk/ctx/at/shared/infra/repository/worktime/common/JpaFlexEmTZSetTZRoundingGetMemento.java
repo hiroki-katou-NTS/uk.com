@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkTimeSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -31,37 +31,28 @@ public class JpaFlexEmTZSetTZRoundingGetMemento implements TimeZoneRoundingGetMe
 		this.entity = entity;
 	}
 
-	/**
-	 * Gets the rounding.
-	 *
-	 * @return the rounding
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento#getRounding()
 	 */
 	@Override
 	public TimeRoundingSetting getRounding() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TimeRoundingSetting(this.entity.getUnit(), this.entity.getRounding());
 	}
 
-	/**
-	 * Gets the start.
-	 *
-	 * @return the start
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento#getStart()
 	 */
 	@Override
 	public TimeWithDayAttr getStart() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TimeWithDayAttr(this.entity.getTimeStr());
 	}
 
-	/**
-	 * Gets the end.
-	 *
-	 * @return the end
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingGetMemento#getEnd()
 	 */
 	@Override
 	public TimeWithDayAttr getEnd() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TimeWithDayAttr(this.entity.getTimeEnd());
 	}
 	
 

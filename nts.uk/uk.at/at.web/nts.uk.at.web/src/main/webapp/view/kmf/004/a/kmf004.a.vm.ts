@@ -28,7 +28,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         //Input Screen
         roundingPeriodic: KnockoutObservableArray<any>;
         workTypeList: KnockoutObservableArray<any>;
+        employmentList: KnockoutObservableArray<any>;
+        classficationList: KnockoutObservableArray<any>;
+        List: KnockoutObservableArray<any>;
         workTypeNames: KnockoutObservable<string>;
+        employmentNames: KnockoutObservable<string>;
+        classficationNames: KnockoutObservable<string>;
         isEnableCode: KnockoutObservable<boolean>;
         inp_grantMethod: KnockoutObservable<number>;
 
@@ -56,7 +61,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.currentItem = ko.observable(new model.SpecialHolidayDto({}));
             self.workTypeList = ko.observableArray([]);
+            self.employmentList = ko.observableArray([]);
+            self.classficationList = ko.observableArray([]);
             self.workTypeNames = ko.observable("");
+            self.employmentNames = ko.observable("");
+            self.classficationNames = ko.observable("");
 
             self.itemAgeBaseYearAtr = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText('Enum_AgeBaseYearAtr_NEXT_MONTH') },
@@ -490,7 +499,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.windows.setShared('isMultipleSelection', true);
             nts.uk.ui.windows.setShared('isDisplayUnselect', false);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(() => {
-                var selected = nts.uk.ui.windows.getShared('selectedCodes');
+                var selected = nts.uk.ui.windows.getShared('outputCDL003');
                 self.currentItem().subCondition().clsCodes(selected);
             });
         }
@@ -500,12 +509,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
          */
         openCDL003(): void {
             let self = this;
+            var classficationCodes = _.map(self.classficationList(), function(item: IClassficationsModal) { return item.classficationCode });
             nts.uk.ui.windows.setShared('selectedCodes', []);
             nts.uk.ui.windows.setShared('isMultipleSelection', true);
             nts.uk.ui.windows.setShared('isDisplayUnselect', false);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/003/a/index.xhtml").onClosed(() => {
-                var selected = nts.uk.ui.windows.getShared('selectedCodes');
-                self.currentItem().subCondition().empCodes(selected);
+                var data = nts.uk.ui.windows.getShared('outputCDL003');
+                var name = [];
+                _.forEach(data, function(item: IClassficationsModal) {
+                    name.push(item.name);
+                });
+                self.classficationNames(name.join(" + "));
+
+                var classficationCodes = _.map(data, function(item: any) { return item.code; });
+                self.currentItem().subCondition().classficationList(classficationCodes);
             });
         }
 
@@ -570,6 +587,40 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
     export interface IWorkTypeModal {
         workTypeCode: string;
+        name: string;
+        memo: string;
+    }
+    
+    export class EmploymentModal {
+        employmentCode: string;
+        name: string;
+        memo: string;
+        constructor(param: IEmploymentModal) {
+            this.employmentCode = param.employmentCode;
+            this.name = param.name;
+            this.memo = param.memo;
+        }
+    }
+
+    export interface IEmploymentModal {
+        employmentCode: string;
+        name: string;
+        memo: string;
+    }
+    
+    export class ClassficationsModal {
+        classficationCode: string;
+        name: string;
+        memo: string;
+        constructor(param: IClassficationsModal) {
+            this.classficationCode = param.classficationCode;
+            this.name = param.name;
+            this.memo = param.memo;
+        }
+    }
+
+    export interface IClassficationsModal {
+        classficationCode: string;
         name: string;
         memo: string;
     }
@@ -693,8 +744,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ageBaseDates?: number;
             clsCodes?: Array<string>;
             empCodes?: Array<string>;
+            employmentList?: Array<string>;
+            classficationList?: Array<string>;
         }
-
         export class SubConditionDto {
             specialHolidayCode: KnockoutObservable<string>;
             useGender: KnockoutObservable<boolean>;
@@ -709,6 +761,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ageBaseDates: KnockoutObservable<number>;
             clsCodes: KnockoutObservableArray<string>;
             empCodes: KnockoutObservableArray<string>;
+            employmentList: KnockoutObservableArray<any>;
+            classficationList: KnockoutObservableArray<any>;
 
             constructor(param: ISubConditionDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
@@ -724,6 +778,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.ageBaseDates = ko.observable(param.ageBaseDates || null);
                 this.clsCodes = ko.observableArray(param.clsCodes || null);
                 this.empCodes = ko.observableArray(param.empCodes || null);
+                this.employmentList = ko.observableArray(param.employmentList || null);
+                this.classficationList = ko.observableArray(param.classficationList || null);
             }
         }
 

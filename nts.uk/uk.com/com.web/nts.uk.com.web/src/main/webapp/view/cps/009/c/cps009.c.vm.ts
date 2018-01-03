@@ -40,11 +40,12 @@ module nts.uk.com.view.cps009.c.viewmodel {
                     });
                 }).fail(function(res) {
                     //display message error.
-                    if (res.messageId == "Msg_3") {
-                        $('#codeInput').ntsError('set', { messageId: "Msg_3" });
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                    }
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(() => {
+                        if (res.messageId == "Msg_3") {
+                            $('#codeInput').focus();
+                        }
+
+                    })
                 });
             };
         }

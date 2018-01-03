@@ -299,19 +299,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             let self = this;
             self.ctgIdUpdate(false);
-            self.currentCategory().setData({
-                settingCode: "",
-                settingName: "",
-                ctgList: []
-            });
-            self.currentCategory().itemList.removeAll();
-            self.currentCategory().itemList([]);
-            self.currentCategory.valueHasMutated();
             block.invisible();
-
             modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
                 let id: string = getShared('CPS009D_PARAMS');
-                self.refresh(id);
+                if (id !== undefined) {
+                    self.refresh(id);
+                }
                 block.clear();
             });
 

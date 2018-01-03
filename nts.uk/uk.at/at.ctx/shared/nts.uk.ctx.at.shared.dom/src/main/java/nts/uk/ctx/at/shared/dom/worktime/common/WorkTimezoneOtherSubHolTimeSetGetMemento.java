@@ -28,5 +28,5 @@ public interface WorkTimezoneOtherSubHolTimeSetGetMemento {
 	 *
 	 * @return the origin atr
 	 */
-	 OriginAtr getOriginAtr();
+	 CompensatoryOccurrenceDivision getOriginAtr();
 }

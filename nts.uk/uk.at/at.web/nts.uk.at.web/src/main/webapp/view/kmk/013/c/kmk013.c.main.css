@@ -16,7 +16,7 @@
 .left-contents .ntsRadioBox {
 	margin-top: 5px;
 	margin-bottom: 6px;
-	margin-left: 18px;
+	margin-left: -18px;
 }
 
 .input-time {
@@ -62,4 +62,7 @@
 }
 #c3_1,#c4_1,#c5_1,#c6_1{
 	margin-bottom: -7px;
+}
+.col1{
+	background-color: #CFF1A5;
 }
