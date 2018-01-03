@@ -222,7 +222,14 @@ module nts.fixedtable {
             // subscribe itemList
             self.itemList.subscribe((newList) => {
                 $('#' + self.tableId).find('.nts-editor').ntsError('clear');
-                $('#' + self.tableId).find('.nts-editor').ntsEditor('validate')
+                $('#' + self.tableId).find('.nts-editor').each((index, element) => {
+                    if (!element.id) {
+                        element.id = nts.uk.util.randomId();
+                    } 
+                    
+                    $('#' + element.id).ntsEditor('validate');
+                    $('#' + element.id).validateTimeRange();
+                })
                 if (!newList) {
                      self.isSelectAll(false);
                     return;
