@@ -242,7 +242,16 @@ module a7 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: 0, endTime: 0 }),
-                    width: 243, template: `<div data-bind="ntsTimeRangeEditor: {required: true, enable: true, inputFormat: 'time',startTimeNameId: '#[KMK003_163]',endTimeNameId: '#[KMK003_164]'}"/>`,
+                    width: 243, template: 
+                    `<div data-bind="ntsTimeRangeEditor: {required: true,
+                            enable: true,
+                            inputFormat: 'time',
+                            startTimeNameId: '#[KMK003_163]',
+                            endTimeNameId: '#[KMK003_164]',
+                            startConstraint: 'TimeWithDayAttr',
+                            endConstraint: 'TimeWithDayAttr'
+                                }
+                            "/>`
                 }
             ];
         }
