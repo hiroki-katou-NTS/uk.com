@@ -422,15 +422,15 @@ module nts.uk.at.view.kmk003.a {
                 // clear all errors
                 self.clearAllError();
 
-                // set screen mode
-                self.screenMode(ScreenMode.NEW);
-
                 // set simple mode
                 self.enterSimpleMode();
 
                 // reset data
                 self.mainSettingModel.resetData();
 
+                // set screen mode
+                self.screenMode(ScreenMode.NEW);
+                
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
 
@@ -459,8 +459,6 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterCopyMode(): void {
                 let self = this;
-                // set screen mode
-                self.screenMode(ScreenMode.COPY);
 
                 // clear current worktimecode
                 self.mainSettingModel.workTimeSetting.worktimeCode('');
@@ -476,6 +474,9 @@ module nts.uk.at.view.kmk003.a {
                 //clear isAbolish
                 self.mainSettingModel.workTimeSetting.isAbolish(false);
 
+                // set screen mode
+                self.screenMode(ScreenMode.COPY);
+                
                 // focus worktime atr
                 $('#cbb-worktime-atr').focus();
             }
