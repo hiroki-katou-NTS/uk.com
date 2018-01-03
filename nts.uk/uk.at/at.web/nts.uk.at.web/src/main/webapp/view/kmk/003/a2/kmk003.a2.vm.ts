@@ -66,7 +66,7 @@ module a2 {
             self.settingEnum = input.enum;
             
             self.workTimeDailyAtr = self.parentModel.workTimeSetting.workTimeDivision.workTimeDailyAtr;
-            self.tabMode = input.screenMode;
+            self.tabMode = input.tabMode;
             self.isSimpleMode = ko.computed(() => {
                 return self.tabMode() == TabMode.SIMPLE;
             })
@@ -497,8 +497,8 @@ module a2 {
                     width: 243, 
                     enable: !self.isSimpleMode(),
                     template: `<div data-bind="ntsTimeRangeEditor: {
-                                    startName: '#[KMK003_166]',
-                                    endName: '#[KMK003_167]',
+                                    startTimeNameId: '#[KMK003_166]',
+                                    endTimeNameId: '#[KMK003_167]',
                                     startConstraint: 'TimeWithDayAttr',
                                     endConstraint: 'TimeWithDayAttr',
                                     required: true,

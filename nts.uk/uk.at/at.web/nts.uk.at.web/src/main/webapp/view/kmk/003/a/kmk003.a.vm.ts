@@ -92,7 +92,9 @@ module nts.uk.at.view.kmk003.a {
                     } else {                       
                         self.changeTabMode(false);
                     }   
-                    self.reloadWorktimeSetting();
+                    if (self.isUpdateMode()) {
+                        self.reloadWorktimeSetting();
+                    }
                 });
 
                 self.useHalfDayOptions = ko.observableArray([
@@ -446,14 +448,14 @@ module nts.uk.at.view.kmk003.a {
                 // clear all errors
                 self.clearAllError();
 
-                // set simple mode
-                self.enterSimpleMode();
-
                 // reset data
                 self.mainSettingModel.resetData();
 
                 // set screen mode
                 self.screenMode(ScreenMode.NEW);
+
+                // set simple mode
+                self.enterSimpleMode();
                 
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
@@ -632,13 +634,13 @@ module nts.uk.at.view.kmk003.a {
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommannd(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.alertError(err))
+                        .fail(err => nts.uk.ui.dialog.bundledErrors(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
                 if (self.workTimeSetting.isFixed()) {
                     service.saveFixedWorkSetting(self.toFixedCommand(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.alertError(err))
+                        .fail(err => nts.uk.ui.dialog.bundledErrors(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
