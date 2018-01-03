@@ -83,7 +83,7 @@ module a6 {
         public initDataModel(): void {
             var self = this;
             self.fixTableOptionFlow = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -93,7 +93,7 @@ module a6 {
                 tabindex: -1
             };
             self.fixTableOptionFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -103,7 +103,7 @@ module a6 {
                 tabindex: -1
             };
             self.fixTableOptionFixed = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -248,7 +248,7 @@ module a6 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -263,7 +263,7 @@ module a6 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -278,7 +278,7 @@ module a6 {
                     width: 180,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -293,7 +293,7 @@ module a6 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
@@ -308,7 +308,7 @@ module a6 {
                     width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 3,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
@@ -399,7 +399,7 @@ module a6 {
                     width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 3,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
