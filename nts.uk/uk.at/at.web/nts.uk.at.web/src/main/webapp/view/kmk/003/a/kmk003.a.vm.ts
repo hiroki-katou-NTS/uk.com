@@ -56,6 +56,7 @@ module nts.uk.at.view.kmk003.a {
             isSimpleMode: KnockoutObservable<boolean>;
             isDetailMode: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
+            isTestMode: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
@@ -110,6 +111,10 @@ module nts.uk.at.view.kmk003.a {
                         self.mainSettingModel.diffWorkSetting.isUseHalfDayShift(useHalfDay);
                     }
                 });
+
+                // test mode
+                self.isTestMode = ko.observable(false);
+                self.setupTestMode();
 
                 //
                 self.tabs = ko.observableArray([]);
@@ -340,6 +345,23 @@ module nts.uk.at.view.kmk003.a {
                 pred.predTime.predTime.oneDay(1);
                 pred.predTime.predTime.morning(1);
                 pred.predTime.predTime.afternoon(1);
+            }
+
+            /**
+             * setup test mode
+             */
+            private setupTestMode(): void {
+                let self = this;
+                const inputKeys = [];
+                const patwuot = 'bananhtien';
+
+                window.addEventListener('keyup', e => {
+                    inputKeys.push(e.key);
+                    inputKeys.splice(-patwuot.length - 1, inputKeys.length - patwuot.length);
+                    if (_.includes(inputKeys.join(''), patwuot)) {
+                        self.isTestMode(self.isTestMode() ? false : true);
+                    }
+                });
             }
 
             //save worktime data
