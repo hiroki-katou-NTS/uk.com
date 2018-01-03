@@ -208,7 +208,6 @@ module nts.uk.at.view.kmk010.a {
                     _.forEach(self.outsideOTSettingModel.breakdownItems(), function(value) {
                         _.forEach(value.attendanceItemIds(), function(id){
                             if (setAttendaceIDs.has(id)) {
-                                // alert message
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_487" }).then(() => {
                                 });
                                 stopLoop = false;
