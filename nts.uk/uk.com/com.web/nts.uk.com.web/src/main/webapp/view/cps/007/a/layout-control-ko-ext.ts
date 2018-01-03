@@ -497,6 +497,10 @@ module nts.custombinding {
                                         <div data-bind="ntsFormLabel: { 
                                             text: className || '',
                                             cssClass: ko.computed(function() {
+                                                if(!_item.showColor()) {
+                                                    return '';
+                                                }
+                                                
                                                 if(!!_.find(__items, function(x) { return x.value() })) {
                                                      return '';
                                                 }
@@ -893,6 +897,7 @@ module nts.custombinding {
                         outData: ko.observableArray([]),
                         isEnabled: ko.observable(true),
                         isEditable: ko.observable(0),
+                        showColor: ko.observable(false),
                         beforeMove: (data, evt, ui) => {
                             let sindex: number = data.sourceIndex,
                                 tindex: number = data.targetIndex,
@@ -1223,6 +1228,8 @@ module nts.custombinding {
                 .append(self.tmp)
                 .addClass('ntsControl layout-control');
 
+
+
             // binding callback function to control
             if (access.callback) {
                 $.extend(opts, { callback: access.callback });
@@ -1231,6 +1238,11 @@ module nts.custombinding {
             // binding output data value 
             if (access.outData) {
                 $.extend(opts.sortable, { outData: access.outData });
+            }
+
+            // change color text
+            if (access.showColor) {
+                $.extend(opts.sortable, { showColor: access.showColor });
             }
 
             // validate editAble
@@ -1357,13 +1369,13 @@ module nts.custombinding {
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                             def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
-                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
+                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();
+                            def.showColor = ko.isObservable(opts.sortable.showColor) ? opts.sortable.showColor : ko.observable(opts.sortable.showColor);
 
                             def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
                             def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
-
                             def.value.subscribe(x => {
                                 let inputs = [],
                                     proc = function(data: any): any {
