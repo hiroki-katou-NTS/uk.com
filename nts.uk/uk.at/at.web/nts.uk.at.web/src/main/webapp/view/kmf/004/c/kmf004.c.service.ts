@@ -45,7 +45,7 @@ module nts.uk.at.view.kmf004.c.service {
         specialHolidayCode: string;
         personalGrantDateCode: string;
         personalGrantDateName: string;
-        grantDate: number;
+        grantDate: string;
         grantDateAtr: number;
         grantDatePerSet: Array<GrantDatePerSetItem>;
     }

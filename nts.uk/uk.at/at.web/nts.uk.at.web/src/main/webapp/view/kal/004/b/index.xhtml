@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 850, height: 330 };</script>
+			<script>var dialogSize = { width: 750, height: 450 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -21,47 +21,58 @@
 		<ui:define name="content">
 
 			<div id="contents-area">
-				<div class="cf">
-					<div class="valign-center control-group rowFirst">
-						<span class="label" style="margin-right: 15px;">#{i18n.getText('KAL003_37')}</span>
-						<div id="combo-box" tabindex="1"
-							data-bind="ntsComboBox: {
-							options: listItems,
-							optionsValue: 'value',
-							value: selected,
-							optionsText: 'name',
-							columns: [
-								{ prop: 'description', length: 5 }
-							]}"></div>
-							
-						<span class="label" style="margin-right: 15px;">#{i18n.getText('KAL003_38')}</span>
-						<div id="radio-box" data-bind="ntsRadioBoxGroup: {
-							options: itemList,
-							optionsValue: 'id',
-							optionsText: 'name',
-							value: selectedId,
-							enable: enable}"></div>
+				<div class="header">
+					<span class="label" >Add QA</span>
+				</div>
+				<div class="cf"> 
+					<div class="valign-center control-group start">
+						<span class="label">#{i18n.getText('KAL004_29')}</span>
+						<div class="day">
+							<input type="radio" name="strRadio" data-bind="checkedValue: 0, checked: strSelected, enable: enable" />
+							<span class="label" data-bind="text: txtDay"></span>	
+							<input class="input-box" data-bind="enable: (strSelected() == 0)"/>
+							<span class="label" >#{i18n.getText('KAL004_34')}</span>	
+							<span class="label" >#{i18n.getText('KAL004_35')}</span>								
+						</div>
+						<div class="month">
+							<input type="radio" name="strRadio" data-bind="checkedValue: 1, checked: strSelected, enable: enable" />
+							<div class="combo-box" tabindex="2"
+								data-bind="ntsComboBox: {
+								options: listItems,
+								optionsValue: 'value',
+								value: selected,
+								optionsText: 'name',
+								enable: (strSelected() == 1),
+								columns: [
+									{ prop: 'description', length: 5 }
+								]}"></div>
+							<span class="label" data-bind="text: txtMonth"></span>
+						</div>
 					</div>
-					<div class="valign-center control-group rowSecond">
-						<span class="label" style="margin-right: 46px;">#{i18n.getText('KAL003_33')}</span>
-						
-						<span class="label">#{i18n.getText('KAL003_39')}</span>
-						<button id="" data-bind="">#{i18n.getText('KAL003_42')}</button>
-						<input class="input-box" data-bind="ntsTextEditor: {value: simpleValue}"/>
-						
-						<div id="combo-box2" tabindex="1"
-							data-bind="ntsComboBox: {
-							options: listItems,
-							optionsValue: 'value',
-							value: selected,
-							optionsText: 'name',
-							columns: [
-								{ prop: 'description', length: 10 }
-							]}"></div>
-							
-						<span class="label">#{i18n.getText('KAL003_39')}</span>
-						<button id="" data-bind="">#{i18n.getText('KAL003_42')}</button>
-						<input class="input-box" data-bind="ntsTextEditor: {value: simpleValue}" />	
+					<div class="centerSys">#{i18n.getText('KAL004_30')}</div>
+					<div class="valign-center control-group end">
+						<span class="label">#{i18n.getText('KAL004_31')}</span>
+						<div class="day">
+							<input type="radio" name="endRadio" data-bind="checkedValue: 0, checked: endSelected, enable: enable" />
+							<span class="label" data-bind="text: txtDay"></span>	
+							<input class="input-box" data-bind="enable: (endSelected() == 0)"/>
+							<span class="label" >#{i18n.getText('KAL004_34')}</span>	
+							<span class="label" >#{i18n.getText('KAL004_35')}</span>								
+						</div>
+						<div class="month">
+							<input type="radio" name="endRadio" data-bind="checkedValue: 1, checked: endSelected, enable: (strSelected() == 1)" />
+							<div class="combo-box" tabindex="1"
+								data-bind="ntsComboBox: {
+								options: listItems,
+								optionsValue: 'value',
+								value: selected,
+								optionsText: 'name',
+								enable: (endSelected() == 1),
+								columns: [
+									{ prop: 'description', length: 5 }
+								]}"></div>
+							<span class="label" data-bind="text: txtMonth"></span>
+						</div>
 					</div>
 				</div>
 			</div>

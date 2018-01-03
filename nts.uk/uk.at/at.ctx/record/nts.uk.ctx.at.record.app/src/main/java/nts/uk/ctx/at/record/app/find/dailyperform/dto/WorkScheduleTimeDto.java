@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class WorkScheduleTimeDto {
 
 	/** 合計時間: 勤怠時間 */
+	//TODO: confirm 
 	private Integer total;
 	
 	/** 所定外時間: 勤怠時間 */

@@ -10,7 +10,10 @@ import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.AutoC
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.AutoCalRaisingSalarySettingDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.AutoCalculationSettingDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
@@ -24,46 +27,55 @@ public class CalcAttrOfDailyPerformanceFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public CalcAttrOfDailyPerformanceDto find(String employeeId, GeneralDate baseDate) {
-		CalcAttrOfDailyPerformanceDto result = new CalcAttrOfDailyPerformanceDto();
 		CalAttrOfDailyPerformance domain = this.repo.find(employeeId, baseDate);
-		if(domain != null){
+		return toDto(domain);
+	}
+
+	private CalcAttrOfDailyPerformanceDto toDto(CalAttrOfDailyPerformance domain) {
+		CalcAttrOfDailyPerformanceDto result = new CalcAttrOfDailyPerformanceDto();
+		if (domain != null) {
 			result.setDivergenceTime(domain.getDivergenceTime().getDivergenceTime().value);
 			result.setEmployeeId(domain.getEmployeeId());
-			result.setFlexExcessTime(new AutoCalculationSettingDto(domain.getFlexExcessTime().getCalculationAttr().value,
-					domain.getFlexExcessTime().getUpperLimitSetting().value));
-			result.setHolidayTimeSetting(new AutoCalHolidaySettingDto(
-					new AutoCalculationSettingDto(
-							domain.getHolidayTimeSetting().getHolidayWorkTime().getCalculationAttr().value,
-							domain.getHolidayTimeSetting().getHolidayWorkTime().getUpperLimitSetting().value),
-					new AutoCalculationSettingDto(
-							domain.getHolidayTimeSetting().getLateNightTime().getCalculationAttr().value,
-							domain.getHolidayTimeSetting().getLateNightTime().getUpperLimitSetting().value)));
-			result.setLeaveEarlySetting(
-					new AutoCalOfLeaveEarlySettingDto(domain.getLeaveEarlySetting().getLeaveEarly().value,
-							domain.getLeaveEarlySetting().getLeaveLate().value));
+			result.setFlexExcessTime(newAutoCalcSetting(domain.getFlexExcessTime()));
+			result.setHolidayTimeSetting(newAutoCalcHolidaySetting(domain.getHolidayTimeSetting()));
+			result.setLeaveEarlySetting(newAutoCalcLeaveSetting(domain.getLeaveEarlySetting()));
 			result.setOvertimeSetting(getOverTimeSetting(domain.getOvertimeSetting()));
-			result.setRasingSalarySetting(
-					new AutoCalRaisingSalarySettingDto(domain.getRasingSalarySetting().getSalaryCalSetting().value,
-							domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value));
+			result.setRasingSalarySetting(newAutoCalcSalarySetting(domain));
 			result.setYmd(domain.getYmd());
 		}
 		return result;
 	}
 
+	private AutoCalRaisingSalarySettingDto newAutoCalcSalarySetting(CalAttrOfDailyPerformance domain) {
+		return domain == null ? null : new AutoCalRaisingSalarySettingDto(
+						domain.getRasingSalarySetting().getSalaryCalSetting().value,
+						domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value);
+	}
+
+	private AutoCalOfLeaveEarlySettingDto newAutoCalcLeaveSetting(AutoCalOfLeaveEarlySetting domain) {
+		return domain == null ? null : new AutoCalOfLeaveEarlySettingDto(
+						domain.getLeaveEarly().value, 
+						domain.getLeaveLate().value);
+	}
+
+	private AutoCalHolidaySettingDto newAutoCalcHolidaySetting(AutoCalHolidaySetting domain) {
+		return domain == null ? null : new AutoCalHolidaySettingDto(newAutoCalcSetting(domain.getHolidayWorkTime()),
+						newAutoCalcSetting(domain.getLateNightTime()));
+	}
+
 	private AutoCalOfOverTimeDto getOverTimeSetting(AutoCalOfOverTime domain) {
-		return new AutoCalOfOverTimeDto(
-				new AutoCalculationSettingDto(domain.getEarlyOverTime().getCalculationAttr().value,
-						domain.getEarlyOverTime().getUpperLimitSetting().value),
-				new AutoCalculationSettingDto(domain.getEarlyMidnightOverTime().getCalculationAttr().value,
-						domain.getEarlyMidnightOverTime().getUpperLimitSetting().value),
-				new AutoCalculationSettingDto(domain.getNormalOverTime().getCalculationAttr().value,
-						domain.getNormalOverTime().getUpperLimitSetting().value),
-				new AutoCalculationSettingDto(domain.getNormalMidnightOverTime().getCalculationAttr().value,
-						domain.getNormalMidnightOverTime().getUpperLimitSetting().value),
-				new AutoCalculationSettingDto(domain.getLegalOverTime().getCalculationAttr().value,
-						domain.getLegalOverTime().getUpperLimitSetting().value),
-				new AutoCalculationSettingDto(domain.getLegalMidnightOverTime().getCalculationAttr().value,
-						domain.getLegalMidnightOverTime().getUpperLimitSetting().value));
+		return domain == null ? null : new AutoCalOfOverTimeDto(newAutoCalcSetting(domain.getEarlyOverTime()),
+						newAutoCalcSetting(domain.getEarlyMidnightOverTime()),
+						newAutoCalcSetting(domain.getNormalOverTime()),
+						newAutoCalcSetting(domain.getNormalMidnightOverTime()),
+						newAutoCalcSetting(domain.getLegalOverTime()),
+						newAutoCalcSetting(domain.getLegalMidnightOverTime()));
+	}
+
+	private AutoCalculationSettingDto newAutoCalcSetting(AutoCalculationSetting domain) {
+		return domain == null ? null : new AutoCalculationSettingDto(
+					domain.getCalculationAttr().value, 
+					domain.getUpperLimitSetting().value);
 	}
 
 }

@@ -18,14 +18,14 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeSetMemento;
 
 @Getter
 @Setter
-public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeSetMemento{
-	
+public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeSetMemento {
+
 	/** The rest timezone. */
 	private FlowWorkRestTimezoneDto restTimezone;
-	
+
 	/** The work timezone. */
 	private FixedWorkTimezoneSetDto workTimezone;
-	
+
 	/** The ampm atr. */
 	private Integer ampmAtr;
 
@@ -38,7 +38,10 @@ public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeSetMemento{
 	 */
 	@Override
 	public void setRestTimezone(FlowWorkRestTimezone restTimezone) {
-		restTimezone.saveToMemento(this.restTimezone);
+		if (restTimezone != null) {
+			this.restTimezone = new FlowWorkRestTimezoneDto();
+			restTimezone.saveToMemento(this.restTimezone);
+		}
 	}
 
 	/*
@@ -51,7 +54,10 @@ public class FlexHalfDayWorkTimeDto implements FlexHalfDayWorkTimeSetMemento{
 	 */
 	@Override
 	public void setWorkTimezone(FixedWorkTimezoneSet workTimezone) {
-		workTimezone.saveToMemento(this.workTimezone);
+		if (workTimezone != null) {
+			this.workTimezone = new FixedWorkTimezoneSetDto();
+			workTimezone.saveToMemento(this.workTimezone);
+		}
 	}
 
 	/*

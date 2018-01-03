@@ -297,7 +297,7 @@
 									    	<input id="displayLstWorkTypeActual" class="display-list-label need-check" data-bind="ntsTextEditor: {
 									    	name: '#[KDW007_64]',value: selectedErrorAlarm().workTypeCondition.displayLstWorkTypeActual, 
 									    	readonly: true, 
-									    	required: ko.computed(()=>{return selectedErrorAlarm().workTypeCondition.comparePlanAndActual() != 1 &amp;&amp; selectedErrorAlarm().workTypeCondition.actualFilterAtr();})}" />
+									    	required: selectedErrorAlarm().workTypeCondition.requireWorkTypeActual}" />
 									    </td>
 									    <td>
 									    	<button data-bind="click: chooseWorkType.bind($data, 'actual'), 
@@ -314,7 +314,7 @@
 									    	<input id="displayLstWorkTimeActual" class="display-list-label need-check" data-bind="ntsTextEditor: {
 									    	name: '#[KDW007_65]',value: selectedErrorAlarm().workTimeCondition.displayLstWorkTimeActual, 
 									    	readonly: true, 
-									    	required: ko.computed(()=>{return selectedErrorAlarm().workTimeCondition.comparePlanAndActual() != 1 &amp;&amp; selectedErrorAlarm().workTimeCondition.actualFilterAtr();})}" />
+									    	required: selectedErrorAlarm().workTimeCondition.requireWorkTimeActual}" />
 									    </td>
 									    <td>
 									    	<button data-bind="click: chooseWorkTime.bind($data, 'actual'),

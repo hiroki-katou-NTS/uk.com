@@ -20,6 +20,11 @@ public class DesignatedTimeDto implements DesignatedTimeSetMemento {
 	/** The half day time. */
 	private Integer halfDayTime;
 
+	/**
+	 * Instantiates a new designated time dto.
+	 */
+	public DesignatedTimeDto() {}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

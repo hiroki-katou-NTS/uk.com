@@ -68,8 +68,6 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 				String alert = String.join(", ", dto.stream().map(m -> m.getItemName()).collect(Collectors.toList()));
 
 				throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_201").addRaw(alert).build()));
-				// new BusinessException(new RawErrorMessage(alert + " " +
-				// text.getItemName("Msg_201")));
 			}
 
 			throw new BusinessException(new I18NErrorMessage(I18NText.main("Msg_201").build()));

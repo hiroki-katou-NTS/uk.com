@@ -128,7 +128,7 @@ public class DailyRecordWorkCommandHandler {
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
 
 	public void handleAdd(DailyRecordWorkCommand command) {
-		this.attendanceTimeAddHandler.handle(command.getAttendanceTimeCommand());
+//		this.attendanceTimeAddHandler.handle(command.getAttendanceTimeCommand());
 		this.workInfoAddHandler.handle(command.getWorkInfoCommand());
 		this.calcAttrAddHandler.handle(command.getCalcAttrCommand());
 		this.affiliationInfoAddHandler.handle(command.getAffiliationInfoCommand());
@@ -148,19 +148,19 @@ public class DailyRecordWorkCommandHandler {
 	public void handleUpdate(DailyRecordWorkCommand command) {
 //		this.attendanceTimeUpdateHandler.handle(command.getAttendanceTimeCommand());
 		this.workInfoUpdateHandler.handle(command.getWorkInfoCommand());
-//		this.calcAttrUpdateHandler.handle(command.getCalcAttrCommand());
-//		this.affiliationInfoUpdateHandler.handle(command.getAffiliationInfoCommand());
-//		this.errorUpdateHandler.handle(command.getErrorCommand());
-//		this.outingTimeUpdateHandler.handle(command.getOutingTimeCommand());
-//		this.breakTimeUpdateHandler.handle(command.getBreakTimeCommand());
-//		this.attendanceTimeByWorkUpdateHandler.handle(command.getAttendanceTimeByWorkCommand());
-//		this.timeLeavingUpdatedHandler.handle(command.getTimeLeavingCommand());
-//		this.shortWorkTimeUpdateHandler.handle(command.getShortWorkTimeCommand());
-//		this.specificDateAttrUpdateHandler.handle(command.getSpecificDateAttrCommand());
-//		this.attendanceLeavingGateUpdateHandler.handle(command.getAttendanceLeavingGateCommand());
-//		this.optionalItemUpdateHandler.handle(command.getOptionalItemCommand());
-//		this.editStateUpdateHandler.handle(command.getEditStateCommand());
-//		this.temporaryTimeUpdateHandler.handle(command.getTemporaryTimeCommand());
+		this.calcAttrUpdateHandler.handle(command.getCalcAttrCommand());
+		this.affiliationInfoUpdateHandler.handle(command.getAffiliationInfoCommand());
+		this.errorUpdateHandler.handle(command.getErrorCommand());
+		this.outingTimeUpdateHandler.handle(command.getOutingTimeCommand());
+		this.breakTimeUpdateHandler.handle(command.getBreakTimeCommand());
+		this.attendanceTimeByWorkUpdateHandler.handle(command.getAttendanceTimeByWorkCommand());
+		this.timeLeavingUpdatedHandler.handle(command.getTimeLeavingCommand());
+		this.shortWorkTimeUpdateHandler.handle(command.getShortWorkTimeCommand());
+		this.specificDateAttrUpdateHandler.handle(command.getSpecificDateAttrCommand());
+		this.attendanceLeavingGateUpdateHandler.handle(command.getAttendanceLeavingGateCommand());
+		this.optionalItemUpdateHandler.handle(command.getOptionalItemCommand());
+		this.editStateUpdateHandler.handle(command.getEditStateCommand());
+		this.temporaryTimeUpdateHandler.handle(command.getTemporaryTimeCommand());
 	}
 
 }

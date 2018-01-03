@@ -10,11 +10,11 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 public interface ExtraordWorkOTFrameSetGetMemento {
 
 	/**
- 	 * Gets the OT frame no.
- 	 *
- 	 * @return the OT frame no
- 	 */
- 	OTFrameNo getOTFrameNo();
+	 * Gets the ot frame no.
+	 *
+	 * @return the ot frame no
+	 */
+ 	OTFrameNo getOtFrameNo();
 
 	/**
 	 * Gets the in legal work frame no.

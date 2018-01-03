@@ -20,6 +20,11 @@ public class FlowRestSettingDto implements FlowRestSettingSetMemento {
 	/** The flow passage time. */
 	private Integer flowPassageTime;
 
+	/**
+	 * Instantiates a new flow rest setting dto.
+	 */
+	public FlowRestSettingDto() {}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

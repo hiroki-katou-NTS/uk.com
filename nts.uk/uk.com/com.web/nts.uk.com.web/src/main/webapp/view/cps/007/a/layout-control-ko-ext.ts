@@ -616,8 +616,7 @@ module nts.custombinding {
                                         constraint: nameid,
                                         required: required,
                                         option: {
-                                            textmode: 'text',
-                                            placeholder: itemName
+                                            textmode: 'text'
                                         },
                                         enable: editable,
                                         readonly: readonly,
@@ -635,8 +634,7 @@ module nts.custombinding {
                                         constraint: nameid,
                                         required: required,
                                         option: {
-                                            textmode: 'text',
-                                            placeholder: itemName
+                                            textmode: 'text'
                                         },
                                         enable: editable,
                                         readonly: readonly,
@@ -657,8 +655,6 @@ module nts.custombinding {
                                         option: {
                                             grouplength: 3,
                                             decimallength: 2,
-                                            placeholder: itemName,
-                                            width: '',
                                             textalign: 'left'
                                         },
                                         enable: editable,
@@ -739,8 +735,7 @@ module nts.custombinding {
                                     }, attr: {
                                         id: nameid, 
                                         nameid: nameid,
-                                        title: itemName,
-                                        placeholder: itemName
+                                        title: itemName
                                     }" />
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT" class="timepoint">
@@ -755,8 +750,7 @@ module nts.custombinding {
                                     }, attr: {
                                         id: nameid, 
                                         nameid: nameid,
-                                        title: itemName,
-                                        placeholder: itemName
+                                        title: itemName
                                     }" />
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.SELECTION" class="selection">
@@ -771,7 +765,7 @@ module nts.custombinding {
                                         dropDownAttachedToBody: true,
                                         columns: [{ prop: 'optionText', length: 10 }]
                                     }, attr: {
-                                        id: nameid, 
+                                        id: nameid,
                                         nameid: nameid,
                                         title: itemName
                                     }"></div>
@@ -1953,8 +1947,16 @@ module nts.custombinding {
             });
 
             $(ctrls.sortable)
+                .on('click', (evt) => {
+                    setTimeout(() => {
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification')
+                            .removeClass('selected');
+                    }, 0);
+                })
                 .on('mouseover', '.form-group.item-classification', (evt) => {
-                    $(evt.target).removeClass('selected');
+                    $(evt.target)
+                        .removeClass('selected');
                 });
 
 

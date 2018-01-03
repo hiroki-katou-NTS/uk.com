@@ -3,9 +3,13 @@ module nts.uk.com.view.cps009.b {
         __viewContext["viewModel"] = new viewmodel.ViewModel();
         __viewContext["viewModel"].start().done(function(data) {
             init();
-             $("#grid_B").igGrid("option", "dataSource", __viewContext["viewModel"].itemInitLst);
+            $("#grid_B").igGrid("option", "dataSource", __viewContext["viewModel"].itemInitLst);
             __viewContext.bind(__viewContext["viewModel"]);
             $("#grid_B_table_isCheckBox").focus();
+            $('td[aria-describedby*="grid_B_table_itemName"]').attr("tabindex", "-1");
+            $("#grid_B_table_itemName").attr("tabindex", "-1");
+            $("tr").attr("tabindex", "-1");
+
         });
 
     });
@@ -14,7 +18,7 @@ module nts.uk.com.view.cps009.b {
 function init() {
     $("#grid_B").igGrid({
         width: '270px',
-        height: '300px',
+        height: '365px',
         dataSource: [],
         primaryKey: 'id',
         virtualization: true,
@@ -43,7 +47,7 @@ function init() {
             { headerText: 'id', key: 'id', width: 10, hidden: true },
             { headerText: 'REQUIRED', key: 'isRequired', width: 10, hidden: true },
             {
-                headerText:"<input class='isCheckBox' type='checkbox'  tabindex='2' ></input>",
+                headerText: "<input class='isCheckBox' type='checkbox'></input> tabindex='2'",
                 key: 'isCheckBox', width: "35px", height: "40px",
                 template: "<input style='width:30px, height:40px' class='checkRow isCheckBox' type='checkbox'"
                 + " data-checked='${isCheckBox}' data-id='${id}' tabindex='4'/>"

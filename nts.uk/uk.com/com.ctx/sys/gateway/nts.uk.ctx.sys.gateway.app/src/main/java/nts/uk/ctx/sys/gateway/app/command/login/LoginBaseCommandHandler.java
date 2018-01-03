@@ -15,12 +15,12 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
-import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
@@ -147,9 +147,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * @param em the em
 	 * @param companyCode the company code
 	 */
-	protected void setLoggedInfo(User user,EmployeeImport em,String companyCode) {
+	protected void setLoggedInfo(UserImport user, EmployeeImport em, String companyCode) {
 		//set info to session 
-		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode().v(), em.getCompanyId(),
+		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
 				companyCode, em.getEmployeeId(), em.getEmployeeCode());
 	}
 	
@@ -159,15 +159,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * @param user the user
 	 */
 	//init session 
-	protected void initSession(User user) {
-		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatedPersonId());
+	protected void initSession(UserImport user) {
+		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatedPersonId(), user.getContractCode().v(), null,
+			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
 					null, null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
-					user.getAssociatedPersonId());
+					user.getAssociatePersonId());
 
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter

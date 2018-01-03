@@ -22,9 +22,11 @@
 
 
 			<com:scriptfile set="IGNITE" />
-			
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			
 			
 			<com:stylefile path="../c/kmf002.c.main.css" />
@@ -56,11 +58,11 @@
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('KMF002_30')}</a></li>
 				<li data-bind="click: onSelectTabE"><a tabindex="-1"
 					href="#tabpanel-2" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectTabC"><a tabindex="-1"
+				<li data-bind="click: onSelectTabB"><a tabindex="-1"
 					href="#tabpanel-3" role="tab-navigator" class="active">#{i18n.getText('Com_Workplace')}</a></li>
 				<li data-bind="click: onSelectTabD"><a tabindex="-1"
 					href="#tabpanel-4" role="tab-navigator" class="active">#{i18n.getText('Com_Employment')}</a></li>
-				<li data-bind="click: onSelectTabD"><a tabindex="-1"
+				<li data-bind="click: onSelectTabC"><a tabindex="-1"
 					href="#tabpanel-5" role="tab-navigator" class="active">#{i18n.getText('Com_Person')}</a></li>
 				
 			</ul>
@@ -72,16 +74,14 @@
 			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenE">
 				<ui:include src="../e/index.xhtml" />
 			</div>
-			
-			
-			<div id="tabpanel-3" role="tabpanel" data-bind="with: screenC">
-				<ui:include src="../c/index.xhtml" />
+			<div id="tabpanel-3" role="tabpanel" data-bind="with: screenB">
+				<ui:include src="../b/index.xhtml" />
 			</div>
 			<div id="tabpanel-4" role="tabpanel" data-bind="with: screenD">
 				<ui:include src="../d/index.xhtml" />
 			</div>
-			<div id="tabpanel-5" role="tabpanel" data-bind="with: screenB">
-				<ui:include src="../b/index.xhtml" />
+			<div id="tabpanel-5" role="tabpanel" data-bind="with: screenC">
+				<ui:include src="../c/index.xhtml" />
 			</div>
 			
 		</ui:define>

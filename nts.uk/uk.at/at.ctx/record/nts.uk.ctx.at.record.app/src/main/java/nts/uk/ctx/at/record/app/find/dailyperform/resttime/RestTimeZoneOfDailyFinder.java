@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.RestTimeZoneOfDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 
@@ -25,24 +26,17 @@ public class RestTimeZoneOfDailyFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public RestTimeZoneOfDailyDto find(String employeeId, GeneralDate baseDate) {
-		RestTimeZoneOfDailyDto dto = new RestTimeZoneOfDailyDto();
 		List<BreakTimeOfDailyPerformance> domains = this.repo.findByKey(employeeId, baseDate);
 		if (!domains.isEmpty()) {
-			BreakTimeOfDailyPerformance domain = domains.get(0);
-			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setYmd(domain.getYmd());
-			dto.setRestTimeType(domain.getBreakType().value);
-			dto.setTimeZone(ConvertHelper.mapTo(domain.getBreakTimeSheets(), (c) -> new TimeSheetDto(
-					c.getBreakFrameNo().v().intValue(),
-					new TimeStampDto(c.getStartTime().getTimeWithDay().valueAsMinutes(),
-							c.getStartTime().getAfterRoundingTime().valueAsMinutes(),
-							c.getStartTime().getLocationCode().v(), c.getStartTime().getStampSourceInfo().value),
-					new TimeStampDto(c.getEndTime().getTimeWithDay().valueAsMinutes(),
-							c.getEndTime().getAfterRoundingTime().valueAsMinutes(),
-							c.getEndTime().getLocationCode().v(), c.getEndTime().getStampSourceInfo().value),
-					c.getBreakTime().valueAsMinutes())));
+			toBreakTime(domains.get(0));
 		}
-		return dto;
+		return new RestTimeZoneOfDailyDto();
+	}
+
+	private TimeStampDto getTimeStamp(WorkStamp c) {
+		return c == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
+				c.getAfterRoundingTime().valueAsMinutes(),
+				c.getLocationCode().v(), c.getStampSourceInfo().value);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -50,22 +44,21 @@ public class RestTimeZoneOfDailyFinder extends FinderFacade {
 	public List<RestTimeZoneOfDailyDto> finds(String employeeId, GeneralDate baseDate) {
 		List<BreakTimeOfDailyPerformance> domains = this.repo.findByKey(employeeId, baseDate);
 		return domains.stream().map(x -> {
-			RestTimeZoneOfDailyDto dto = new RestTimeZoneOfDailyDto();
-			dto.setEmployeeId(x.getEmployeeId());
-			dto.setYmd(x.getYmd());
-			dto.setRestTimeType(x.getBreakType().value);
-			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), (c) -> new TimeSheetDto(
-					c.getBreakFrameNo().v().intValue(),
-					new TimeStampDto(c.getStartTime().getTimeWithDay().valueAsMinutes(),
-							c.getStartTime().getAfterRoundingTime().valueAsMinutes(),
-							c.getStartTime().getLocationCode().v(), c.getStartTime().getStampSourceInfo().value),
-
-					new TimeStampDto(c.getEndTime().getTimeWithDay().valueAsMinutes(),
-							c.getEndTime().getAfterRoundingTime().valueAsMinutes(),
-							c.getEndTime().getLocationCode().v(), c.getEndTime().getStampSourceInfo().value),
-					c.getBreakTime().valueAsMinutes())));
-			return dto;
+			return toBreakTime(x);
 		}).collect(Collectors.toList());
+	}
+
+	private RestTimeZoneOfDailyDto toBreakTime(BreakTimeOfDailyPerformance x) {
+		RestTimeZoneOfDailyDto dto = new RestTimeZoneOfDailyDto();
+		dto.setEmployeeId(x.getEmployeeId());
+		dto.setYmd(x.getYmd());
+		dto.setRestTimeType(x.getBreakType().value);
+		dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), (c) -> new TimeSheetDto(
+				c.getBreakFrameNo().v().intValue(),
+				getTimeStamp(c.getStartTime()),
+				getTimeStamp(c.getEndTime()),
+				c.getBreakTime() == null ? null : c.getBreakTime().valueAsMinutes())));
+		return dto;
 	}
 
 }

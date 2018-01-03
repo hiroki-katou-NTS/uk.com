@@ -88,7 +88,10 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	 */
 	@Override
 	public void setOffdayWorkTimezone(FixOffdayWorkTimezone offdayWorkTimezone) {
-		offdayWorkTimezone.saveToMemento(this.offdayWorkTimezone);
+		if (offdayWorkTimezone != null) {
+			this.offdayWorkTimezone = new FixOffdayWorkTimezoneDto();
+			offdayWorkTimezone.saveToMemento(this.offdayWorkTimezone);
+		}
 	}
 
 	/*
@@ -101,7 +104,10 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	 */
 	@Override
 	public void setCommonSetting(WorkTimezoneCommonSet commonSetting) {
-		commonSetting.saveToMemento(this.commonSetting);
+		if (commonSetting != null) {
+			this.commonSetting = new WorkTimezoneCommonSetDto();
+			commonSetting.saveToMemento(this.commonSetting);
+		}
 	}
 
 	/*
@@ -126,7 +132,10 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	 */
 	@Override
 	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
-		fixedWorkRestSetting.saveToMemento(this.fixedWorkRestSetting);
+		if (fixedWorkRestSetting != null) {
+			this.fixedWorkRestSetting = new FixedWorkRestSetDto();
+			fixedWorkRestSetting.saveToMemento(this.fixedWorkRestSetting);
+		}
 	}
 
 	/*

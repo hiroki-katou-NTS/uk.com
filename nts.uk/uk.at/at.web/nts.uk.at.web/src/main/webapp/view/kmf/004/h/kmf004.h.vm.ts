@@ -185,7 +185,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     })
                  nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 })
-            }).ifCancel(() => {     
+            }).ifNo(() => {     
             }); 
             $("#inpPattern").focus();
         }

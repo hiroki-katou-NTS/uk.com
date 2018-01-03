@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
@@ -150,7 +151,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.shortComName = domain.getShortComName().v();
 		entity.isAbolition = domain.getIsAbolition().value;
 		entity.startMonth = domain.getStartMonth().value;
-		entity.taxNo = domain.getTaxNo() != null ? new BigDecimal(domain.getTaxNo().v()) : null;
+		entity.taxNo = domain.getTaxNo() != null && !StringUtil.isNullOrEmpty(domain.getTaxNo().v(), true) ? new BigDecimal(domain.getTaxNo().v()) : null;
 		if (domain.getAddInfor() != null) {
 			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor());
 		}

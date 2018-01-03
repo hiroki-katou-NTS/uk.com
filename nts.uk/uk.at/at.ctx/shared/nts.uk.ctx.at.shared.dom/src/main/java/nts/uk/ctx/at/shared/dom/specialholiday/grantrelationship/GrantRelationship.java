@@ -14,7 +14,7 @@ public class GrantRelationship extends AggregateRoot{
 	/*会社ID*/
 	private String companyId;
 	/*コード*/
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	/*コード*/
 	private String relationshipCode;
 	/* 付与日数 */
@@ -22,7 +22,7 @@ public class GrantRelationship extends AggregateRoot{
 	/* 喪主時加算日数 */
 	private MorningHour morningHour;
 	
-	public GrantRelationship(String companyId, int specialHolidayCode, String relationshipCode,
+	public GrantRelationship(String companyId, String specialHolidayCode, String relationshipCode,
 			GrantRelationshipDay grantRelationshipDay, MorningHour morningHour) {
 		super();
 		this.companyId = companyId;
@@ -32,7 +32,7 @@ public class GrantRelationship extends AggregateRoot{
 		this.morningHour = morningHour;
 	}
 	
-	public static GrantRelationship createFromJavaType(String companyId, int specialHolidayCode, String relationshipCode, int grantRelationshipDay, Integer morningHour){
+	public static GrantRelationship createFromJavaType(String companyId, String specialHolidayCode, String relationshipCode, int grantRelationshipDay, Integer morningHour){
 		return new GrantRelationship(companyId, 
 										specialHolidayCode, 
 										relationshipCode, 
