@@ -201,6 +201,33 @@ module nts.uk.at.view.kmk010.a {
                     nts.uk.ui.block.invisible();
                     var dtoSuper: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
                     dtoSuper.premiumExtra60HRates = self.toArrayRateDto();
+                    
+                    // check attendance item of breakdown item
+                    var setAttendaceIDs = new Set();
+                    var stopLoop = true;
+                    _.forEach(self.outsideOTSettingModel.breakdownItems(), function(value) {
+                        _.forEach(value.attendanceItemIds(), function(id){
+                            if (setAttendaceIDs.has(id)) {
+                                // alert message
+                                nts.uk.ui.dialog.alert({ messageId: "Msg_487" }).then(() => {
+                                });
+                                stopLoop = false;
+                                return stopLoop;    
+                            } else {
+                                setAttendaceIDs.add(id);
+                            }
+                        })
+                        return stopLoop;
+                    });
+                    
+                    if (!stopLoop) {
+                        self.startPage().done(() => {
+                            service.initTooltip();
+                            nts.uk.ui.block.clear();
+                        });
+                        return;    
+                    }
+                    
                     // save all
                     service.saveOutsideOTSettingAndSupperHD60H(self.outsideOTSettingModel.toDto(), dtoSuper).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
