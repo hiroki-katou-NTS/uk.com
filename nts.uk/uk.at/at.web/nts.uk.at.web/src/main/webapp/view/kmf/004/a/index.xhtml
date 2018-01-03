@@ -293,14 +293,14 @@
 									<button style="margin-left: 40px; margin-top: 5px;"
 										data-bind="click: $parent.openCDL002.bind($parent), enable: useEmployee()==1">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px"
-										data-bind="ntsTextEditor: {value: clsCodes, required: false, enable: false, name: '#[KMF004_60]',enable: useEmployee()==1}" />
+										data-bind="ntsTextEditor: {value: $parent.employmentNames, required: false, enable: false, name: '#[KMF004_60]',enable: useEmployee()==1}" />
 								</div>
 								<div>
 									<div style="" data-bind="ntsCheckBox: { checked: useCls }">#{i18n.getText('Com_Class')}</div>
 									<button style="margin-left: 67px; margin-top: 5px;"
 										data-bind="click: $parent.openCDL003.bind($parent), enable: useCls()==1">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px"
-										data-bind="ntsTextEditor: {value: $parent.employmentNames, required: false, enable: false, name: '#[Com_Class]', enable: useCls()==1}" />
+										data-bind="ntsTextEditor: {value: $parent.classficationNames, required: false, enable: false, name: '#[Com_Class]', enable: useCls()==1}" />
 								</div>
 								<div>
 									<div style="" data-bind="ntsCheckBox: { checked: useAge }">#{i18n.getText('KMF004_56')}</div>
