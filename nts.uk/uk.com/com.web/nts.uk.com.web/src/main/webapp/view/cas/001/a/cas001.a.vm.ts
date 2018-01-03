@@ -250,9 +250,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         OpenCModal() {
 
-            let self = this;
+            let self = this,
+                currentRole = {
+                    roleList: self.personRoleList(),
+                    personRole: self.currentRole()
+                };
 
-            setShared('personRole', self.currentRole());
+            setShared('currentRole', currentRole);
 
 
 
