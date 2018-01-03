@@ -101,4 +101,11 @@ public interface EmployeeDataMngInfoRepository {
 	
 	//sonnlb end
 
+	/**
+	 * Get List EmployeeDataMngInfo By List Sid
+	 * 
+	 * @param listSid
+	 * @return
+	 */
+	List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid);
 }

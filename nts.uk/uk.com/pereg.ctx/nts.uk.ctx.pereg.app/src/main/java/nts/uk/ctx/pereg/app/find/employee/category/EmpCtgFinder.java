@@ -1,7 +1,9 @@
 package nts.uk.ctx.pereg.app.find.employee.category;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -194,12 +196,11 @@ public class EmpCtgFinder {
 	}
 	
 	private List<ComboBoxObject> getHistInfoEmployeeType(List<String> timePerInfoItemDefIds, PeregQuery query){
-		List<ComboBoxObject> lstComboBoxObject = new ArrayList<>();	
 		// get EmpInfoCtgData to get record id
 		List<EmpInfoCtgData> lstEmpInfoCtgData = emInfoCtgDataRepository.getByEmpIdAndCtgId(query.getEmployeeId(), query.getCategoryId());
-		if(lstEmpInfoCtgData.size() == 0) return lstComboBoxObject;
+		if(lstEmpInfoCtgData.size() == 0) return new ArrayList<>();
 		
-		
+		Map<String, ComboBoxObject> comboBoxs = new HashMap<>();
 		for(EmpInfoCtgData empInfoCtgData :  lstEmpInfoCtgData){
 			//get option value value combo box
 			String value = empInfoCtgData.getRecordId();
@@ -215,10 +216,10 @@ public class EmpCtgFinder {
 				}
 				sortDate(optionText, query);
 				if(optionText.size() > 0)
-					lstComboBoxObject.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
+					comboBoxs.put(optionText.get(0), ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
 		}
-		return lstComboBoxObject;
+		return sortComboBox(comboBoxs);
 	}
 	private void sortDate(List<String> optionText, PeregQuery query){
 		optionText.sort((a, b) -> {
@@ -231,5 +232,15 @@ public class EmpCtgFinder {
 	}
 	private String dateToString(String dateValue, PeregQuery query){
 		return GeneralDate.max().equals(GeneralDate.fromString(dateValue, "yyyy/MM/dd")) && query.getCtgType() == 3? "" :dateValue;
+	}
+	
+	private List<ComboBoxObject> sortComboBox(Map<String, ComboBoxObject> comboBoxs){
+		List<String> strDates = comboBoxs.entrySet().stream().map(x -> x.getKey()).collect(Collectors.toList());
+		strDates.sort((a, b) -> {
+			GeneralDate before = GeneralDate.fromString(a, "yyyy/MM/dd");
+			GeneralDate after = GeneralDate.fromString(b, "yyyy/MM/dd");
+			return after.compareTo(before);
+		});
+		return strDates.stream().map(x -> comboBoxs.get(x)).collect(Collectors.toList());
 	}
 }

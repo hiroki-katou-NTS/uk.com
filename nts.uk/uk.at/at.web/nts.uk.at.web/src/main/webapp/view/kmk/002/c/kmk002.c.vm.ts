@@ -107,7 +107,9 @@ module nts.uk.at.view.kmk002.c {
                 // set displayNumber for right table
                 param.itemSelection.attendanceItems.forEach(item => {
                     let vl = _.find(data, it => it.attendanceItemId == item.attendanceItemId);
-                    item.attendanceItemDisplayNumber = vl.attendanceItemDisplayNumber;
+                    if (!_.isUndefined(vl)) {
+                        item.attendanceItemDisplayNumber = vl.attendanceItemDisplayNumber;    
+                    }
                 });
 
                 // Set param to view model.
