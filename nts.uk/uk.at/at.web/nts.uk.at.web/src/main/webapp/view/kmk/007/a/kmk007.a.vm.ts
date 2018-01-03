@@ -356,7 +356,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             workType.name(workType.dispName());
             workType.abbreviationName(workType.dispAbName());
             workType.oneDay().workTypeCode(workType.workTypeCode());
-            
+
             workType.morning().workTypeCode(workType.workTypeCode());
             workType.afternoon().workTypeCode(workType.workTypeCode());
 
@@ -376,17 +376,17 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            if (workType.morningCls() == 4) {
-                if (workType.morning().sumSpHodidayNo() == "") {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_921" });
-                    return;
-                }
+            if ((workType.oneDayCls() == 4 && workType.oneDay().sumSpHodidayNo() == "") ||
+                (workType.morningCls() == 4 && workType.morning().sumSpHodidayNo() == "") ||
+                (workType.afternoonCls() == 4 && workType.afternoon().sumSpHodidayNo() == "")) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_921" });
+                return;
             }
-             if (workType.morningCls() == 5) {
-                if (workType.morning().sumAbsenseNo() == "") {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_922" });
-                    return;
-                }
+            if ((workType.oneDayCls() == 5 && workType.oneDay().sumAbsenseNo() == "")
+                || (workType.morningCls() == 5 && workType.morning().sumAbsenseNo() == "") ||
+                (workType.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == "")) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_922" });
+                return;
             }
             nts.uk.ui.block.invisible();
             service.addWorkType(self.isCreated(), command).done(function() {
