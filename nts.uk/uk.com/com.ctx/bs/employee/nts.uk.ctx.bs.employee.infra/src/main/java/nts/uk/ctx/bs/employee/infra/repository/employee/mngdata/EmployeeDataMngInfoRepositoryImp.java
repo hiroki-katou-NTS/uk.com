@@ -5,6 +5,8 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +22,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
+import nts.uk.ctx.bs.person.dom.person.info.Person;
+import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 
 @Stateless
 public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements EmployeeDataMngInfoRepository {
@@ -87,6 +91,11 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	/** The select by cid and sid. */
 	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM
 			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
+	
+	
+	/** The select by cid and sid. */
+	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
+	
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -334,7 +343,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		if (CollectionUtil.isEmpty(listSid)) {
 			return new ArrayList<>();
 		}
-		
+
 		// Split query.
 		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
 		CollectionUtil.split(listSid, 1000, (subList) -> {
@@ -342,8 +351,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 					.setParameter("listSid", subList).getList());
 		});
 
-		return resultList.stream().map(entity -> this.toDomain(entity))
-				.collect(Collectors.toList());
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -395,4 +403,20 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// sonnlb code end
 
+	// laitv code start
+
+	@Override
+	public List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid) {
+		// check exist input
+		if (CollectionUtil.isEmpty(listSid)) {
+			return Collections.emptyList();
+		}
+
+		List<EmployeeDataMngInfo> result = this.queryProxy().query(SELECT_BY_SIDS, BsymtEmployeeDataMngInfo.class)
+				.setParameter("listSid", listSid).getList(c -> toDomain(c));
+
+		return result;
+	}
+
+	// laitv code end
 }
