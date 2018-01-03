@@ -325,16 +325,7 @@ module nts.uk.at.view.ksm005.b {
              * convert date month day => YYYYMMDD
              */
             public convertYMD(ymdk: string): string {
-                return moment(ymdk, "YYYYMMDD").format("YYYY-MM-DD");
-            }
-            
-            /**
-             * convert date to number
-             */
-            public convertDate(date: string): number{
-                date = date.replace('-','');
-                date = date.replace('-','');
-                return Number(date);    
+                return moment(ymdk, "YYYY/MM/DD").format("YYYY-MM-DD");
             }
             
             /**
@@ -343,7 +334,7 @@ module nts.uk.at.view.ksm005.b {
             public findByDate(date: string): WorkMonthlySettingDto{
                 var self = this;
                var workMonthlySetting : WorkMonthlySettingDto= _.find(self.lstWorkMonthlySetting(), function(item) {
-                    return item.ymdk == moment(date, "YYYYMMDD").utc().toISOString();
+                    return item.ymdk == date;
                 });
                 if (!workMonthlySetting) {
                     return  null;
@@ -359,7 +350,7 @@ module nts.uk.at.view.ksm005.b {
                 var dto: WorkMonthlySettingDto = {
                     workTypeCode: '',
                     workingCode: '',
-                    ymdk: moment(date, "YYYYMMDD").utc().toISOString(),
+                    ymdk: date,
                     monthlyPatternCode: '',
                     workTypeName: '',
                     typeColor: TypeColor.HOLIDAY,
@@ -414,17 +405,17 @@ module nts.uk.at.view.ksm005.b {
                 var dataUpdate: WorkMonthlySettingDto[] = [];
                 var isAdd: boolean = true;
                 for(var item of self.lstWorkMonthlySetting()){
-                    if(item.ymdk == setting.ymdk){
+                    if(item.ymdk == moment(setting.ymdk, "YYYY-MM-DD").format("YYYY/MM/DD")){
+                        setting.ymdk = moment(setting.ymdk, "YYYY-MM-DD").format("YYYY/MM/DD");
                         dataUpdate.push(setting);
-                        isAdd = false;
-                    }    
-                    else {
+//                        isAdd = false;
+                    } else {
                         dataUpdate.push(item);
                     }
                 } 
-                if (isAdd) {
-                    dataUpdate.push(setting);
-                }   
+//                if (isAdd) {
+//                    dataUpdate.push(setting);
+//                }   
                 console.log(dataUpdate);
                 self.lstWorkMonthlySetting(dataUpdate);
                 self.updateWorkMothlySetting(dataUpdate);

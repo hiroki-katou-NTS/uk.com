@@ -537,18 +537,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(dataIsNotNull) {
                     if(conditionNo === 1){
-                        self.showLblSet01(false);
-                    } else if(conditionNo === 2){
-                        self.showLblSet02(false);
-                    } else if(conditionNo === 3){
-                        self.showLblSet03(false);
-                    } else if(conditionNo === 4){
-                        self.showLblSet04(false);
-                    } else if(conditionNo === 5){
-                        self.showLblSet05(false);
-                    }
-                } else {
-                    if(conditionNo === 1){
                         self.showLblSet01(true);
                     } else if(conditionNo === 2){
                         self.showLblSet02(true);
@@ -558,6 +546,18 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.showLblSet04(true);
                     } else if(conditionNo === 5){
                         self.showLblSet05(true);
+                    }
+                } else {
+                    if(conditionNo === 1){
+                        self.showLblSet01(false);
+                    } else if(conditionNo === 2){
+                        self.showLblSet02(false);
+                    } else if(conditionNo === 3){
+                        self.showLblSet03(false);
+                    } else if(conditionNo === 4){
+                        self.showLblSet04(false);
+                    } else if(conditionNo === 5){
+                        self.showLblSet05(false);
                     }
                 }
                 

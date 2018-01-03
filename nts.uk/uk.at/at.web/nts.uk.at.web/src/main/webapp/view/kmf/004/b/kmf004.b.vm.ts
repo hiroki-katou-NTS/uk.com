@@ -112,15 +112,16 @@ module nts.uk.at.view.kmf004 {
                 ]);
 
                 self.value = ko.observable('');
-                self.enable = ko.observable(false);
+                self.enable = ko.observable(true);
                 self.selectedId = ko.observable(0);
                 self.items = ko.observableArray([]);
                 
                 self.selectedId.subscribe(function(value) {
-                    if(value == 1){
+                    if(value == 0){
                         self.enable(true);
                     } else {
                         self.enable(false);
+                        self.value("");
                     }
                 }); 
                 
@@ -182,7 +183,7 @@ module nts.uk.at.view.kmf004 {
                     });
                 } else {
                     self.selectedId(0);
-                    self.value("101");
+                    self.value("");
                     self.items.removeAll();
                     
                     for(var i = 0; i < 20; i++) {
@@ -229,7 +230,7 @@ module nts.uk.at.view.kmf004 {
                 var dataItem : service.ComItem = {
                     specialHolidayCode: self.specialHolidayCode(),
                     grantDateAtr: self.selectedId(),
-                    grantDate: self.value(),
+                    grantDate: new Date(self.value()),
                     grantDateSets: ko.toJS(setData)
                 }; 
                 

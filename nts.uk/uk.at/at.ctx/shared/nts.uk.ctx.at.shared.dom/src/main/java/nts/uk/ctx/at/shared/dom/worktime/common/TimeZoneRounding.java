@@ -6,11 +6,12 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class TimeZoneRounding.
  */
-//時間帯(丸め付き)
+// 時間帯(丸め付き)
 @Getter
 public class TimeZoneRounding extends TimeZone {
 
@@ -21,18 +22,32 @@ public class TimeZoneRounding extends TimeZone {
 	/**
 	 * Instantiates a new time zone rounding.
 	 *
-	 * @param memento the memento
+	 * @param start the start
+	 * @param end the end
+	 * @param rounding the rounding
+	 */
+	public TimeZoneRounding(TimeWithDayAttr start, TimeWithDayAttr end,
+			TimeRoundingSetting rounding) {
+		super(start, end);
+		this.rounding = rounding;
+	}
+
+	/**
+	 * Instantiates a new time zone rounding.
+	 *
+	 * @param memento
+	 *            the memento
 	 */
 	public TimeZoneRounding(TimeZoneRoundingGetMemento memento) {
+		super(memento.getStart(), memento.getEnd());
 		this.rounding = memento.getRounding();
-		this.start = memento.getStart();
-		this.end = memento.getEnd();
 	}
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(TimeZoneRoundingSetMemento memento) {
 		memento.setRounding(this.rounding);
@@ -40,12 +55,14 @@ public class TimeZoneRounding extends TimeZone {
 		memento.setEnd(this.end);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return this.start.v() + "," + this.end.v();
 	}
-	
+
 }

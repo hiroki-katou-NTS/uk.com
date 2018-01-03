@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
 
 /**
  * The Class JpaCoreTimeSettingGetMemento.
@@ -39,7 +39,7 @@ public class JpaCoreTimeSettingGetMemento implements CoreTimeSettingGetMemento {
 	 */
 	@Override
 	public TimeSheet getCoreTimeSheet() {
-		return new TimeSheet(new JpaTimeSheetGetMemento(this.entity));
+		return new TimeSheet(new JpaFlexTimeSheetGetMemento(this.entity));
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class JpaCoreTimeSettingGetMemento implements CoreTimeSettingGetMemento {
 	 */
 	@Override
 	public ApplyAtr getTimesheet() {
-		return ApplyAtr.valueOf(this.entity.getUseAtr());
+		return ApplyAtr.valueOf(this.entity.getCoretimeUseAtr());
 	}
 
 	/**

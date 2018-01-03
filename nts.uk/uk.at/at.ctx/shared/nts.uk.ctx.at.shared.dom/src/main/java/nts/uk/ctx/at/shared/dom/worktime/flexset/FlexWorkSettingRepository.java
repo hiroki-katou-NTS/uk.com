@@ -21,10 +21,25 @@ public interface FlexWorkSettingRepository {
 	public Optional<FlexWorkSetting> find(String companyId,String workTimeCode);
 
 	/**
-	 * Save flex work setting.
+	 * Adds the.
 	 *
 	 * @param domain the domain
 	 */
-	public void save(FlexWorkSetting domain);
+	public void add(FlexWorkSetting domain);
+	
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(FlexWorkSetting domain);
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param workTimeCode the work time code
+	 */
+	public void remove(String companyId,String workTimeCode);
 
 }

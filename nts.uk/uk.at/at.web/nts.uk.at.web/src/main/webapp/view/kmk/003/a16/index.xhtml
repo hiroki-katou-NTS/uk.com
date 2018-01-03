@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<div class="tab_16_setting_rows">
+		<div class="tab_16_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_122')}</div>			
+		<div class="tab_16_inline_item">
+			<div tabindex="166" class="cf" data-bind="ntsSwitchButton: {
+				name: '#[KMK003_122]',
+				options: listZeroHStraddCalculateSetting,
+				optionsValue: 'value',
+				optionsText: 'localizedName',
+				value: zeroHStraddCalculateSetting }"></div>
+		</div>
+	</div>
+
+</ui:composition>

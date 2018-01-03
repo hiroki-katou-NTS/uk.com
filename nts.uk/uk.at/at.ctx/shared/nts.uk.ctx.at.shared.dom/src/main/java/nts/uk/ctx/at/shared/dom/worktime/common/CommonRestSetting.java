@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 //共通の休憩設定
 @Getter
+@AllArgsConstructor
 public class CommonRestSetting extends DomainObject{
 	
 	/** The calculate method. */

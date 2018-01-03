@@ -7,8 +7,9 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FixHalfDayWorkTimezone.
@@ -27,7 +28,7 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 
 	/** The day atr. */
 	// 午前午後区分
-	private AmPmClassification dayAtr;
+	private AmPmAtr dayAtr;
 
 	/**
 	 * Instantiates a new fix half day work timezone.
@@ -51,6 +52,51 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 		memento.setRestTimezone(this.restTimezone);
 		memento.setWorkTimezone(this.workTimezone);
 		memento.setDayAtr(this.dayAtr);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param fixedWorkSet the fixed work set
+	 * @param other the other
+	 */
+	public void restoreData(ScreenMode screenMode, FixedWorkSetting fixedWorkSet,
+			FixHalfDayWorkTimezone other) {
+		switch (screenMode) {
+		case SIMPLE:
+			this.restoreSimpleMode(other);
+			break;
+		case DETAIL:
+			this.restoreDetailMode(fixedWorkSet, other);;
+			break;
+		default:
+			throw new RuntimeException("ScreenMode not found.");
+		}
+	}
+	
+	/**
+	 * Restore simple mode.
+	 *
+	 * @param other the other
+	 */
+	private void restoreSimpleMode(FixHalfDayWorkTimezone other) {
+		if (other.getDayAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(other.getWorkTimezone());
+		}
+	}
+	
+	/**
+	 * Restore detail mode.
+	 *
+	 * @param fixedWorkSet the fixed work set
+	 * @param other the other
+	 */
+	private void restoreDetailMode(FixedWorkSetting fixedWorkSet, FixHalfDayWorkTimezone other) {
+		// restore data of dayAtr = AM, PM
+		if (!fixedWorkSet.getUseHalfDayShift() && other.getDayAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(other.getWorkTimezone());
+		}
 	}
 
 	/*
