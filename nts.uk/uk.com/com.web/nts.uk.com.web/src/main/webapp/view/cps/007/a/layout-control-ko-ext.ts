@@ -1826,14 +1826,35 @@ module nts.custombinding {
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
-                            if (cats && cats.length) {
-                                opts.comboxbox.options(cats);
-                            } else {
-                                // show message if hasn't any category
-                                if (ko.toJS(opts.sortable.isEnabled)) {
-                                    alert(text('Msg_288')).then(opts.callback);
+
+                            let dfds: Array<JQueryDeferred<any>> = [];
+
+                            _.each(cats, cat => {
+                                let dfd = $.Deferred<any>();
+                                services.getItemByCat(cat.id).done((data: Array<IItemDefinition>) => {
+                                    let items = _.filter(_.flatten(data) as Array<IItemDefinition>, x => !x.isAbolition);
+                                    if (items.length) {
+                                        dfd.resolve(cat);
+                                    } else {
+                                        dfd.resolve(false);
+                                    }
+                                }).fail(x => dfd.reject(false));
+
+                                dfds.push(dfd);
+                            });
+
+                            // push all category to combobox when done
+                            $.when.apply($, dfds).then(function() {
+                                let items: Array<IItemCategory> = _.filter(_.flatten(arguments), x => !!x);
+                                if (items && items.length) {
+                                    opts.comboxbox.options(items);
+                                } else {
+                                    // show message if hasn't any category
+                                    if (ko.toJS(opts.sortable.isEnabled)) {
+                                        alert(text('Msg_288')).then(opts.callback);
+                                    }
                                 }
-                            }
+                            });
                         } else {
                             // show message if hasn't any category
                             if (ko.toJS(opts.sortable.isEnabled)) {
