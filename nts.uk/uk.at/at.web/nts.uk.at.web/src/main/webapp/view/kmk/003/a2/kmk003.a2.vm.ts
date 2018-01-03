@@ -66,7 +66,7 @@ module a2 {
             self.settingEnum = input.enum;
             
             self.workTimeDailyAtr = self.parentModel.workTimeSetting.workTimeDivision.workTimeDailyAtr;
-            self.tabMode = input.screenMode;
+            self.tabMode = input.tabMode;
             self.isSimpleMode = ko.computed(() => {
                 return self.tabMode() == TabMode.SIMPLE;
             })
