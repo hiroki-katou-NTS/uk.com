@@ -270,7 +270,7 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     defaultValue: ko.observable(1),
                     dataSource: self.lstSelectOrderModel,
-                    width: 120,
+                    width: 180,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'code',
                                     visibleItemsCount: 5,
@@ -361,7 +361,7 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     dataSource: self.lstSelectOrderModel,
                     defaultValue: ko.observable(1),
-                    width: 120,
+                    width: 180,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'code',
                                     visibleItemsCount: 5,
