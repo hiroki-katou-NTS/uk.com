@@ -67,8 +67,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         //Date time
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/11/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/30'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/10/28'));
+        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/27'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -1581,6 +1581,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
         }
+
         /**
          * open dialog L
          */
@@ -1819,7 +1820,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // create detailHeader (ex: 4/1 | 4/2)
             if (manual) {
                 for (let i = 0; i < arrDay.length; i++) {
-                    this['_' + arrDay[i].yearMonthDay] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    if (+arrDay[i].day == 1) {
+                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    } else {
+                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    }
                 }
                 return;
             }
