@@ -66,8 +66,8 @@ public class SubHolTransferSet extends DomainObject{
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Only designatedTime not get restore
 			this.certainTime = oldDomain.getCertainTime();
-			this.useDivision = oldDomain.isUseDivision();
-			this.subHolTransferSetAtr = oldDomain.getSubHolTransferSetAtr();
+			this.useDivision = true;
+			this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
 			return;
 		}
 		
