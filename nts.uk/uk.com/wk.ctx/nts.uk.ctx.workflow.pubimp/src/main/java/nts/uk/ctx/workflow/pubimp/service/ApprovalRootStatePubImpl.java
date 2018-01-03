@@ -122,9 +122,11 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 											y.getListApproverState().stream().map(z -> { 
 												String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
 												String representerName = "";
-												List<Agent> listAgent = agentRepository.find(companyID, Arrays.asList(employeeID), date);
+												List<Agent> listAgent = agentRepository.find(companyID, Arrays.asList(z.getApproverID()), date);
 												if(!CollectionUtil.isEmpty(listAgent)){
-													representerName = personAdapter.getPersonInfo(listAgent.get(0).getAgentSid1()).getEmployeeName();
+													if(Strings.isNotBlank(listAgent.get(0).getAgentSid1())){
+														representerName = personAdapter.getPersonInfo(listAgent.get(0).getAgentSid1()).getEmployeeName();
+													}
 												}
 												return new ApproverStateExport(approverName, representerName);
 											}).collect(Collectors.toList()), 
