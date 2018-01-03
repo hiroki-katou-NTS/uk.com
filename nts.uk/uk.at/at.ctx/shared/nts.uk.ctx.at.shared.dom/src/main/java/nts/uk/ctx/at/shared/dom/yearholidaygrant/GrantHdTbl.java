@@ -98,9 +98,12 @@ public class GrantHdTbl extends AggregateRoot {
 		for (int i = 0; i < grantHolidayList.size(); i++) {
 			GrantHdTbl currentCondition = grantHolidayList.get(i);
 			
+			if (currentCondition.getLengthOfServiceMonths() == null && currentCondition.getLengthOfServiceYears() == null) {
+				throw new BusinessException("Msg_270");
+			}
+			
 			// 勤続年数、0年0ヶ月は登録不可
-			if ((currentCondition.getLengthOfServiceMonths() == null && currentCondition.getLengthOfServiceYears() == null) ||
-					(currentCondition.getLengthOfServiceMonths().v() == 0 && currentCondition.getLengthOfServiceYears().v() == 0)) {
+			if (currentCondition.getLengthOfServiceMonths().v() == 0 && currentCondition.getLengthOfServiceYears().v() == 0) {
 				throw new BusinessException("Msg_268");
 			}
 						

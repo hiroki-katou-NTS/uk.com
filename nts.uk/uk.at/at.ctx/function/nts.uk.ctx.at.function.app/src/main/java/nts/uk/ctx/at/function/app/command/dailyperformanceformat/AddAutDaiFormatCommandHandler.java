@@ -48,6 +48,10 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 		String companyId = login.companyId();
 
 		AddAuthorityDailyFormatCommand command = context.getCommand();
+		
+		if (command.getAuthorityDailyCommand().getDailyAttendanceAuthorityDetailDtos().isEmpty()) {
+			throw new BusinessException("Msg_920");
+		}
 
 		// add Format Daily
 		List<AuthorityFomatDaily> authorityFomatDailies = command.getAuthorityDailyCommand().getDailyAttendanceAuthorityDetailDtos().stream()

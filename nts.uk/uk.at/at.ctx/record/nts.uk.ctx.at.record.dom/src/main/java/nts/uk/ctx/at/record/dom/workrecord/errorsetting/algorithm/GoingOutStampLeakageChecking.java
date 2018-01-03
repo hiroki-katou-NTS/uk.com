@@ -48,17 +48,17 @@ public class GoingOutStampLeakageChecking {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
-	public void goingOutStampLeakageChecking(String companID, String employeeID, GeneralDate processingDate) {
+	public void goingOutStampLeakageChecking(String companID, String employeeID, GeneralDate processingDate, OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
 
-		Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance = this.outingTimeOfDailyPerformanceRepository
-				.findByEmployeeIdAndDate(employeeID, processingDate);
+//		Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance = this.outingTimeOfDailyPerformanceRepository
+//				.findByEmployeeIdAndDate(employeeID, processingDate);
 
-		if (outingTimeOfDailyPerformance.isPresent()) {
+		if (outingTimeOfDailyPerformance != null && !outingTimeOfDailyPerformance.getOutingTimeSheets().isEmpty()) {
 
-			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.get().getOutingTimeSheets();
+			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.getOutingTimeSheets();
 
 			for (OutingTimeSheet outingTimeSheet : outingTimeSheets) {
-				if (outingTimeSheet.getGoOut().getStamp() == null) {
+				if (!outingTimeSheet.getGoOut().getStamp().isPresent()) {
 
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 
@@ -93,7 +93,7 @@ public class GoingOutStampLeakageChecking {
 					}
 				}
 
-				if (outingTimeSheet.getComeBack().getStamp() == null) {
+				if (!outingTimeSheet.getComeBack().getStamp().isPresent()) {
 
 					List<Integer> newAttendanceItemIDList = new ArrayList<>();
 

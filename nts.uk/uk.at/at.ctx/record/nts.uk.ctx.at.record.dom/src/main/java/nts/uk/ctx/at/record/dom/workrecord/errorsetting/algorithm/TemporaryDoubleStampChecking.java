@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,15 +26,15 @@ public class TemporaryDoubleStampChecking {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
-	public void temporaryDoubleStampChecking(String companyID, String employeeID, GeneralDate processingDate){
+	public void temporaryDoubleStampChecking(String companyID, String employeeID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance){
 		
 		List<Integer> attendanceItemIDList = new ArrayList<>();
 		
-		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository
-				.findByKey(employeeID, processingDate);
+//		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository
+//				.findByKey(employeeID, processingDate);
 		
-		if (temporaryTimeOfDailyPerformance.isPresent()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
+		if (temporaryTimeOfDailyPerformance != null && !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks){
 				
 				if(timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp() >= 2){

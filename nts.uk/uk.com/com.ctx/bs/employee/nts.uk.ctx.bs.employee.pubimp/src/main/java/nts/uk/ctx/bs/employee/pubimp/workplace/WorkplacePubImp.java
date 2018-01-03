@@ -158,8 +158,8 @@ public class WorkplacePubImp implements SyWorkplacePub {
 				List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem();
 
 				if (!CollectionUtil.isEmpty(listAffComHisItem)) {
-					listAffComHisItem.forEach(itemHist -> {
-						if (itemHist.end().afterOrEquals(startDate) && itemHist.start().beforeOrEquals(endDate)) {
+					listAffComHisItem.forEach(m -> {
+						if (m.start().beforeOrEquals(startDate) && m.end().afterOrEquals(endDate)) {
 							result.add(sid);
 						}
 					});

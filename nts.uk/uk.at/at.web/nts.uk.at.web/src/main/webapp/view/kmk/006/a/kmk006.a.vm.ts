@@ -141,7 +141,7 @@ module nts.uk.at.view.kmk006.a {
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
-                    maxRows: 20
+                    maxRows: 10
                 };
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
                 self.itemJobAutoCalModel = new JobAutoCalSettingModel();
@@ -207,7 +207,7 @@ module nts.uk.at.view.kmk006.a {
                     selectedCode: self.totalSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    maxRows: 20
+                    maxRows: 10
                 };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 

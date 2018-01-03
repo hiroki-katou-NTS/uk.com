@@ -120,7 +120,7 @@ module nts.uk.at.view.kmf004 {
             start() {
                 var self = this;
                 var dfd = $.Deferred();
-                service.findAll().done((lstData) => {
+                service.findAll(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData) => {
                     self.items([]);
                     $("#button_radio").focus();
                     for (let i = 0; i < 20; i++) {
