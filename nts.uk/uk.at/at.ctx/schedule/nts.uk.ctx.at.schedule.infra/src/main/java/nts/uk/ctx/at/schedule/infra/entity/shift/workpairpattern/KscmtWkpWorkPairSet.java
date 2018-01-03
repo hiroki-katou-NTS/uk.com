@@ -48,4 +48,10 @@ public class KscmtWkpWorkPairSet extends UkJpaEntity implements Serializable {
 		return this.kscmtWkpWorkPairSetPk;
 	}
 
+	public KscmtWkpWorkPairSet(KscmtWkpWorkPairSetPK kscmtWkpWorkPairSetPk, String workTypeCode, String workTimeCode) {
+		super();
+		this.kscmtWkpWorkPairSetPk = kscmtWkpWorkPairSetPk;
+		this.workTypeCode = workTypeCode;
+		this.workTimeCode = workTimeCode;
+	}
 }
