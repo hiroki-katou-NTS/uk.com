@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 
 /**
@@ -23,6 +24,9 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	@Inject
 	private AppStampRepository appStampRepository;
 	
+	@Inject
+	private OvertimeRepository overtimeRepository;
+	
 	@Override
 	public void insert(Application_New application) {
 		applicationRepository.insert(application);
@@ -40,7 +44,9 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 		case STAMP_APPLICATION:
 			appStampRepository.delete(companyID, appID);
 			break;
-
+		case OVER_TIME_APPLICATION:
+			overtimeRepository.delete(companyID, appID);
+			break;
 		default:
 			break;
 		}
