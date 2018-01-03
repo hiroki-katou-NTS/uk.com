@@ -36,10 +36,6 @@
 	margin-left: 130px !important;
 }
 
-.currency:before {
+.currency:after{
 	content: '¥';
-}
-
-.currency:after {
-	content: '.00';
 }
