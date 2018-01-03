@@ -24,6 +24,14 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	/** The use plural work rest time. */
 	private boolean usePluralWorkRestTime;
 
+	/**
+	 * Instantiates a new flow work rest setting detail dto.
+	 */
+	public FlowWorkRestSettingDetailDto() {
+		this.flowRestSetting = new FlowRestSetDto();
+		this.flowFixedRestSetting = new FlowFixedRestSetDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -33,7 +41,10 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	 */
 	@Override
 	public void setFlowRestSetting(FlowRestSet set) {
-		set.saveToMemento(this.flowRestSetting);
+		if (set != null) {
+			this.flowRestSetting = new FlowRestSetDto();
+			set.saveToMemento(this.flowRestSetting);
+		}
 	}
 
 	/*
@@ -45,7 +56,10 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	 */
 	@Override
 	public void setFlowFixedRestSetting(FlowFixedRestSet set) {
-		set.saveToMemento(this.flowFixedRestSetting);
+		if (set != null) {
+			this.flowFixedRestSetting = new FlowFixedRestSetDto();
+			set.saveToMemento(this.flowFixedRestSetting);
+		}
 	}
 
 	/*

@@ -27,6 +27,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.workTimeDailyAtr(0);
+                    this.workTimeMethodSet(0);    
+                }
             }
 
             export class WorkTimeDisplayNameModel {
@@ -54,6 +59,12 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.workTimeName('');
+                    this.workTimeAbName('');
+                    this.workTimeSymbol('');    
+                }
             }
             export class WorkTimeSettingModel {
                 worktimeCode: KnockoutObservable<string>;
@@ -71,6 +82,13 @@ module nts.uk.at.view.kmk003.a {
                 siftRemarkOption: KnockoutObservable<any>;
                 memoOption: KnockoutObservable<any>;
 
+                // flag
+                isFlex: KnockoutObservable<boolean>;
+                isRegularWork: KnockoutObservable<boolean>;
+                isFlow: KnockoutObservable<boolean>;
+                isFixed: KnockoutObservable<boolean>;
+                isDiffTime: KnockoutObservable<boolean>;
+
                 constructor() {
                     var self = this;
                     self.worktimeCode = ko.observable('');
@@ -81,7 +99,7 @@ module nts.uk.at.view.kmk003.a {
                     self.memo = ko.observable('');
                     self.note = ko.observable('');
                     self.siftCodeOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                        width: "60"
+                        width: "30"
                     }));
                     self.siftNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
                         width: "150"
@@ -90,7 +108,7 @@ module nts.uk.at.view.kmk003.a {
                         width: "60"
                     }));
                     self.siftSymbolNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                        width: "50"
+                        width: "30"
                     }));
                     self.siftRemarkOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
                         width: "300"
@@ -99,6 +117,26 @@ module nts.uk.at.view.kmk003.a {
                         width: "300"
                     }));
                     self.isUpdateMode = ko.observable(false);
+                    self.initComputed();
+                }
+
+                initComputed(): void {
+                    let self = this;
+                    self.isFlex = ko.computed(() => {
+                        return self.workTimeDivision.workTimeDailyAtr() == 1;
+                    });
+                    self.isRegularWork = ko.computed(() => {
+                        return self.workTimeDivision.workTimeDailyAtr() == 0;
+                    });
+                    self.isFixed = ko.computed(() => {
+                        return self.isRegularWork() && self.workTimeDivision.workTimeMethodSet() == 0;
+                    });
+                    self.isDiffTime = ko.computed(() => {
+                        return self.isRegularWork() && self.workTimeDivision.workTimeMethodSet() == 1;
+                    });
+                    self.isFlow = ko.computed(() => {
+                        return self.isRegularWork() && self.workTimeDivision.workTimeMethodSet() == 2;
+                    });
                 }
 
                 updateData(data: WorkTimeSettingDto) {
@@ -126,6 +164,16 @@ module nts.uk.at.view.kmk003.a {
 
                 updateMode(isUpdateMode: boolean) {
                     this.isUpdateMode(isUpdateMode);
+                }
+                
+                resetData(){
+                    this.worktimeCode('');
+                    this.workTimeDivision.resetData();
+                    this.isAbolish(false);   
+                    this.colorCode(''); 
+                    this.workTimeDisplayName.resetData();
+                    this.memo('');
+                    this.note('');
                 }
             }
         }

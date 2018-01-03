@@ -476,11 +476,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				workInfoOfDailyPerformanceUpdate.setRecordWorkInformation(scheduleWorkInformation);
 
 				// 所定時間帯を取得する
-				PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingRepository
+				Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository
 						.findByWorkTimeCode(companyId, calendarInfoDto.getWorkTypeCode());
 
-				if (predetemineTimeSetting != null) {
-					List<TimezoneUse> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting().getLstTimezone();
+				if (predetemineTimeSetting.isPresent()) {
+					List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
 					List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 					for (TimezoneUse timezone : lstTimezone) {
 						if (timezone.getUseAtr() == UseSetting.USE) {
@@ -657,12 +657,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
 
 						// 所定時間帯を取得する
-						PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingRepository
+						Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository
 								.findByWorkTimeCode(companyId, workInfoOfDailyPerformanceUpdate
 										.getRecordWorkInformation().getWorkTypeCode().v());
 
-						if (predetemineTimeSetting != null) {
-							List<TimezoneUse> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting()
+						if (predetemineTimeSetting.isPresent()) {
+							List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting()
 									.getLstTimezone();
 							for (TimezoneUse timezone : lstTimezone) {
 								if (timezone.getUseAtr() == UseSetting.USE) {

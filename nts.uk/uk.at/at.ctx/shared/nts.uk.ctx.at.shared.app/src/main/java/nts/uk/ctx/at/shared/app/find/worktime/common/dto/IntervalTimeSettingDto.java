@@ -29,6 +29,14 @@ public class IntervalTimeSettingDto implements IntervalTimeSettingSetMemento{
 	/** The use interval time. */
 	private boolean useIntervalTime;
 
+	/**
+	 * Instantiates a new interval time setting dto.
+	 */
+	public IntervalTimeSettingDto() {
+		this.intervalExemptionTimeRound = new TimeRoundingSettingDto();
+		this.intervalTime = new IntervalTimeDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -11,28 +11,28 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 public enum RoundingTimeUnit {
 	
 	/** The one. */
-	ONE(1, "Enum_RoundingTimeUnit_one", "1"),
+	ONE(0, "Enum_RoundingTimeUnit_one", "1"),
 	
 	/** The five. */
-	FIVE(5, "Enum_RoundingTimeUnit_five", "5"),
+	FIVE(1, "Enum_RoundingTimeUnit_five", "5"),
 	
 	/** The six. */
-	SIX(6, "Enum_RoundingTimeUnit_six", "6"),
+	SIX(2, "Enum_RoundingTimeUnit_six", "6"),
 	
 	/** The ten. */
-	TEN(10, "Enum_RoundingTimeUnit_ten", "10"),
+	TEN(3, "Enum_RoundingTimeUnit_ten", "10"),
 	
 	/** The fifteen. */
-	FIFTEEN(15, "Enum_RoundingTimeUnit_fifteen", "15"),
+	FIFTEEN(4, "Enum_RoundingTimeUnit_fifteen", "15"),
 	
 	/** The twenty. */
-	TWENTY(20, "Enum_RoundingTimeUnit_twenty", "20"),
+	TWENTY(5, "Enum_RoundingTimeUnit_twenty", "20"),
 	
 	/** The thirty. */
-	THIRTY(30, "Enum_RoundingTimeUnit_thirty", "30"),
+	THIRTY(6, "Enum_RoundingTimeUnit_thirty", "30"),
 	
 	/** The sixty. */
-	SIXTY(60, "Enum_FontRearSection_sixty", "60");
+	SIXTY(7, "Enum_FontRearSection_sixty", "60");
 
 	/** The value. */
 	public final int value;

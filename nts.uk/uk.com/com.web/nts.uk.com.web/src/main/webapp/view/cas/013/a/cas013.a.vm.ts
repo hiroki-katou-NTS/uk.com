@@ -42,7 +42,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             ]);
             self.columnsIndividual = ko.observableArray([
                 { headerText: '', key: 'userId', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 100 },
+                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 120 },
                 { headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 120 },
                 { headerText: nts.uk.resource.getText("CAS013_17"), key: 'datePeriod', width: 210 },
             ]);

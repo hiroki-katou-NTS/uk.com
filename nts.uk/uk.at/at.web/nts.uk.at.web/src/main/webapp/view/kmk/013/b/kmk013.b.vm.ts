@@ -92,9 +92,9 @@ module nts.uk.at.view.kmk013.b {
                     new BoxModel(1, nts.uk.resource.getText('KMK013_13')),
                     new BoxModel(0, nts.uk.resource.getText('KMK013_14')),
                 ]);
-                self.selectedB23 = ko.observable(0);
-                self.selectedB29 = ko.observable(0);
-                self.selectedB215 = ko.observable(0);
+                self.selectedB23 = ko.observable(1);
+                self.selectedB29 = ko.observable(1);
+                self.selectedB215 = ko.observable(1);
                 self.enableB29 = ko.observable(false);
                 self.enableB215 = ko.observable(false);
                 self.enableB217 = ko.observable(false);
@@ -116,9 +116,9 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB35 = ko.observable(false);
                 //B5 inner
                 self.enableB1 = ko.observable(false);
-                self.selectedValueB54 = ko.observable(0);
-                self.selectedValueB59 = ko.observable(0);
-                self.selectedValueB515 = ko.observable(0);
+                self.selectedValueB54 = ko.observable(1);
+                self.selectedValueB59 = ko.observable(1);
+                self.selectedValueB515 = ko.observable(1);
                 self.checkedB57 = ko.observable(false);
                 self.checkedB512 = ko.observable(false);
                 self.checkedB513 = ko.observable(false);
@@ -467,7 +467,7 @@ module nts.uk.at.view.kmk013.b {
                     self.selectedB29(obj.notReferringAch);
                     //会社単位の休暇時間を参照する
                     self.selectedB215(obj.referComHolidayTime);
-                    if (obj.referComHolidayTime != 1) {
+                    if (obj.referComHolidayTime == 1) {
                         self.enableB217(false);
                     }
                     //加算時間.1日
@@ -565,6 +565,11 @@ module nts.uk.at.view.kmk013.b {
                 let obj = {};
 
                 obj.referActualWorkHours = self.selectedB23();
+                obj.notReferringAch = 1;
+                obj.referComHolidayTime = 1;
+                obj.oneDay = 0;
+                obj.morning = 0;
+                obj.afternoon = 0;
                 if (self.selectedB23() == 0) {
                     obj.notReferringAch = self.selectedB29();
                     if (self.selectedB29() == 0) {
@@ -575,12 +580,6 @@ module nts.uk.at.view.kmk013.b {
                             obj.afternoon = self.timeB223()
                         }
                     }
-                } else {
-                    obj.notReferringAch = 1;
-                    obj.referComHolidayTime = 1;
-                    obj.oneDay = 0;
-                    obj.morning = 0;
-                    obj.afternoon = 0;
                 }
                 obj.annualHoliday = convertToInt(self.checkedB33());
                 obj.specialHoliday = convertToInt(self.checkedB35());
@@ -696,8 +695,8 @@ module nts.uk.at.view.kmk013.b {
                     self.initData();
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 }
-                ).fail((error)=>{
-                   console.log(error);     
+                ).fail((error) => {
+                    console.log(error);
                 });
             }
 
