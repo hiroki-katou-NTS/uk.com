@@ -36,6 +36,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		builderString.append("SELECT e");
 		builderString.append(" FROM BcmmtCompanyInfor e");
 		builderString.append(" WHERE e.isAbolition = 0 ");
+		builderString.append(" ORDER BY E.companyCode ");
 		GETALLCOMPANY = builderString.toString();
 	}
 	/**
