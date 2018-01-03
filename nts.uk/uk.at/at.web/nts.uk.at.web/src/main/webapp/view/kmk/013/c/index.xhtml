@@ -43,6 +43,7 @@
 								<span class="label label-width">#{i18n.getText('KMK013_94')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_95')}',
+								        enable:enableC23,
 										options: roundingC34,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -53,6 +54,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_98')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_99')}',
+								        enable:enableC23,
 										options: roundingC38,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -63,6 +65,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_102')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_103')}',
+								        enable:enableC23,
 										options: roundingC312,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -75,6 +78,7 @@
 								<span class="label label-width">#{i18n.getText('KMK013_107')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_108')}',
+								        enable:enableC23,
 										options: roundingC44,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -85,6 +89,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_111')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_112')}',
+								        enable:enableC23,
 										options: roundingC48,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -95,6 +100,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_115')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_116')}',
+								        enable:enableC23,
 										options: roundingC412,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -107,6 +113,7 @@
 								<span class="label label-width">#{i18n.getText('KMK013_120')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_121')}',
+								        enable:enableC23,
 										options: roundingC54,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -117,6 +124,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_124')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_125')}',
+								        enable:enableC23,
 										options: roundingC58,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -127,6 +135,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_128')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_129')}',
+								        enable:enableC23,
 										options: roundingC512,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -139,6 +148,7 @@
 								<span class="label label-width">#{i18n.getText('KMK013_133')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_134')}',
+								        enable:enableC23,
 										options: roundingC64,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -149,6 +159,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_137')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_138')}',
+								        enable:enableC23,
 										options: roundingC68,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -159,6 +170,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_141')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_142')}',
+								        enable:enableC23,
 										options: roundingC612,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -195,11 +207,11 @@
 										</thead>
 										<tbody data-bind="foreach :itemsC8 ">
 											<tr>
-												<td data-bind="text:col1"></td>
+												<td class="col1" data-bind="text:col1"></td>
 												<td>
 													<div id="combo-box"
 														data-bind="ntsComboBox: {
-															   options: $parent.comboItems,
+															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
 													           value: col2,
 													           optionsText: 'name',
@@ -211,7 +223,7 @@
 												<td>
 													<div id="combo-box"
 														data-bind="ntsComboBox: {
-															   options: $parent.comboItems,
+															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
 													           value: col3,
 													           optionsText: 'name',
@@ -223,7 +235,7 @@
 												<td>
 													<div id="combo-box"
 														data-bind="ntsComboBox: {
-															   options: $parent.comboItems,
+															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
 													           value: col4,
 													           optionsText: 'name',
@@ -252,11 +264,11 @@
 										</thead>
 										<tbody data-bind="foreach :itemsC9 ">
 											<tr>
-												<td data-bind="text:col1"></td>
+												<td class="col1" data-bind="text:col1"></td>
 												<td>
 													<div id="combo-box"
 														data-bind="ntsComboBox: {
-															   options: $parent.comboItems,
+															   options: $parent.comboItemOvertime,
 													           optionsValue: 'code',
 													           value: col2,
 													           optionsText: 'name',
@@ -287,11 +299,11 @@
 										</thead>
 										<tbody data-bind="foreach :itemsC10 ">
 											<tr>
-												<td data-bind="text:col1"></td>
+												<td class="col1" data-bind="text:col1"></td>
 												<td>
 													<div id="combo-box"
 														data-bind="ntsComboBox: {
-															   options: $parent.comboItems,
+															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
 													           value: col2,
 													           optionsText: 'name',
@@ -303,7 +315,7 @@
 												<td>
 													<div id="combo-box"
 														data-bind="ntsComboBox: {
-															   options: $parent.comboItems,
+															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
 													           value: col3,
 													           optionsText: 'name',
@@ -315,7 +327,7 @@
 												<td>
 													<div id="combo-box"
 														data-bind="ntsComboBox: {
-															   options: $parent.comboItems,
+															   options: $parent.comboItemsWorkOff,
 													           optionsValue: 'code',
 													           value: col4,
 													           optionsText: 'name',
