@@ -32,7 +32,6 @@ import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -157,9 +156,6 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 
 	@OneToOne(targetEntity = KrqdtAppLateOrLeave.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
 	public KrqdtAppLateOrLeave krqdtAppLateOrLeave;
-
-	@OneToOne(targetEntity = KrqdtAppWorkChange.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
-	public KrqdtAppWorkChange krqdtAppWorkChange;
 	
 	@Override
 	protected Object getKey() {
@@ -175,7 +171,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 				domain.getReflectPerScheReason().value, domain.getReflectPerTime(), domain.getReflectPerState().value,
 				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate(),
 				domain.getListPhase().stream().map(c -> KrqdtAppApprovalPhase.toEntity(c)).collect(Collectors.toList()),
-				null, null, null);
+				null, null);
 	}
 
 	public Application toDomain() {
