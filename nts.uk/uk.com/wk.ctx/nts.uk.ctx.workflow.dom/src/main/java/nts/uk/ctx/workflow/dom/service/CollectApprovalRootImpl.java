@@ -205,7 +205,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApproverID);
 			listApprover.stream().forEach(x -> {
 				approvalRepresenterOutput.getListApprovalAgentInfor().stream().filter(y -> y.getApprover().equals(x.getEmployeeId())).findAny().ifPresent(z -> {
-					if(z.getRepresenter().equals(RepresenterInforOutput.Path_Information)){
+					if(z.getRepresenter().getValue().equals(RepresenterInforOutput.Path_Information)){
 						listApprover.remove(x);
 					}
 				});;
