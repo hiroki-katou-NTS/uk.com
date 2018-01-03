@@ -71,7 +71,9 @@
 														value: selectedId,
 														enable: true}">
 					</div>
-					<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
+					<div id="monthdays">
+						<div class="cal-value" data-bind="ntsDatePicker: { value: value, dateFormat: 'YYYY/MM/DD', enable: enable }"></div>
+					</div>					
 				</div>
 				
 				<span class="setting-title">#{i18n.getText('KMF004_79')}</span>
@@ -87,7 +89,7 @@
 					<thead>
 						<tr>
 							<td width="19"></td>
-							<td colspan="2" width="153">#{i18n.getText('KMF003_43')}</td>
+							<td colspan="2" width="160">#{i18n.getText('KMF004_80')}</td>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: items">

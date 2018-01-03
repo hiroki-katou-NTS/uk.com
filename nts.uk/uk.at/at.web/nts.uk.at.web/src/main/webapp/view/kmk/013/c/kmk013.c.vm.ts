@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk013.c {
     export module viewmodel {
         export class ScreenModel {
             selectedValueC23: KnockoutObservable<any>;
+            enableC23: KnockoutObservable<boolean>;
             inline: KnockoutObservable<boolean>;
             //c3
             roundingC34: KnockoutObservableArray<any>;
@@ -46,14 +47,16 @@ module nts.uk.at.view.kmk013.c {
 
             //overTimeFrameNo Name
             overTimeFrameListName = [];
-
-            comboItems = [];
+            workOffFrameListName = [];
+            comboItemsWorkOff = [];
+            comboItemOvertime = [];
             comboColumns = [{ prop: 'name', length: 4 }];
 
             constructor() {
                 let self = this;
                 self.selectedValueC23 = ko.observable(0);
                 self.inline = ko.observable(true);
+                self.enableC23 = ko.observable(false);
                 //c3
                 self.roundingC34 = ko.observableArray([
                     { code: 1, name: nts.uk.resource.getText('KMK013_96') },
@@ -118,6 +121,13 @@ module nts.uk.at.view.kmk013.c {
                     { code: 0, name: nts.uk.resource.getText('KMK013_144') },
                 ]);
                 self.selectedC612 = ko.observable(1);
+                self.selectedValueC23.subscribe(newValue => {
+                    if (newValue == 1) {
+                        self.enableC23(true);
+                    } else {
+                        self.enableC23(false);
+                    }
+                });
                 //tab
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KMK013_145"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -128,18 +138,22 @@ module nts.uk.at.view.kmk013.c {
                 self.itemsC8 = ko.observableArray([]);
                 self.itemsC9 = ko.observableArray([]);
                 self.itemsC10 = ko.observableArray([]);
-                self.comboItems.push(new ItemModel('0', nts.uk.resource.getText("KMK013_235")));
+                self.comboItemsWorkOff.push(new ItemModel('0', nts.uk.resource.getText("KMK013_235")));
+                self.comboItemOvertime.push(new ItemModel('0', nts.uk.resource.getText("KMK013_235")));
                 service.findAllWorkDayOffFrame().done(
                     (arr) => {
                         _.forEach(arr, data => {
-                            self.comboItems.push(new ItemModel(data.workdayoffFrNo, data.workdayoffFrName));
+                            self.comboItemsWorkOff.push(new ItemModel(data.workdayoffFrNo, data.workdayoffFrName));
+                            self.workOffFrameListName.push(new ItemModel(data.workdayoffFrNo, data.workdayoffFrName));
                         });
                     }
                 );
                 service.findAllOvertimeWorkFrame().done(
                     (arr) => {
                         _.forEach(arr, data => {
-                            self.overTimeFrameListName.push(new ItemModel(data.overtimeWorkFrNo , data.overtimeWorkFrName));
+                            self.comboItemOvertime.push(new ItemModel(data.overtimeWorkFrNo, data.overtimeWorkFrName));
+                            self.overTimeFrameListName.push(new ItemModel(data.overtimeWorkFrNo, data.overtimeWorkFrName));
+
                         });
                     }
                 );
@@ -148,62 +162,77 @@ module nts.uk.at.view.kmk013.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                $(".fixed-table").ntsFixedTable({ height: 500});
+                $(".fixed-table").ntsFixedTable({ height: 500 });
                 self.initData().done(() => {
-                
+
                     dfd.resolve();
                 });
 
                 return dfd.promise();
             }
-            saveData() : void{
+            saveData(): void {
                 let self = this;
                 blockUI.invisible();
-                let data = {};
+                let data: any = {};
                 data.calcFromZeroTime = self.selectedValueC23();
-                data.legalHd = self.selectedC34();
-                data.nonLegalHd = self.selectedC38();
-                data.nonLegalPublicHd = self.selectedC312();
-                data.weekday1 = self.selectedC44();
-                data.nonLegalHd1 = self.selectedC48();
-                data.nonLegalPublicHd1 = self.selectedC412();
-                data.weekday2 = self.selectedC54();
-                data.legalHd2 = self.selectedC58();
-                data.nonLegalHd2 = self.selectedC512();
-                data.weekday3 = self.selectedC64();
-                data.legalHd3 = self.selectedC68();
-                data.nonLegalPublicHd3 = self.selectedC612();
+                if (self.enableC23() == true) {
+                    data.legalHd = self.selectedC34();
+                    data.nonLegalHd = self.selectedC38();
+                    data.nonLegalPublicHd = self.selectedC312();
+                    data.weekday1 = self.selectedC44();
+                    data.nonLegalHd1 = self.selectedC48();
+                    data.nonLegalPublicHd1 = self.selectedC412();
+                    data.weekday2 = self.selectedC54();
+                    data.legalHd2 = self.selectedC58();
+                    data.nonLegalHd2 = self.selectedC512();
+                    data.weekday3 = self.selectedC64();
+                    data.legalHd3 = self.selectedC68();
+                    data.nonLegalPublicHd3 = self.selectedC612();
+                } else {
+                    data.legalHd = 0;
+                    data.nonLegalHd = 0;
+                    data.nonLegalPublicHd = 0;
+                    data.weekday1 = 0;
+                    data.nonLegalHd1 = 0;
+                    data.nonLegalPublicHd1 = 0;
+                    data.weekday2 = 0;
+                    data.legalHd2 = 0;
+                    data.nonLegalHd2 = 0;
+                    data.weekday3 = 0;
+                    data.legalHd3 = 0;
+                    data.nonLegalPublicHd3 = 0;
+                }
                 data.weekdayHoliday = [];
-                _.forEach(self.itemsC8(),(obj)=>{
+                _.forEach(self.itemsC8(), (obj) => {
                     data.weekdayHoliday.push({
-                        overworkFrameNo:obj.code,
-                        weekdayNo:obj.col2(),
-                        excessHolidayNo:obj.col3(),
-                        excessSphdNo:obj.col4()    
+                        overworkFrameNo: obj.code,
+                        weekdayNo: obj.col2(),
+                        excessHolidayNo: obj.col3(),
+                        excessSphdNo: obj.col4()
                     });
                 });
                 data.overdayHolidayAtten = [];
-                _.forEach(self.itemsC9(),(obj)=>{
+                _.forEach(self.itemsC9(), (obj) => {
                     data.overdayHolidayAtten.push({
-                        holidayWorkFrameNo :obj.code,
-                        overWorkNo :obj.col2(),
+                        holidayWorkFrameNo: obj.code,
+                        overWorkNo: obj.col2(),
                     });
                 });
                 data.overdayCalcHoliday = [];
-                _.forEach(self.itemsC10(),(obj)=>{
+                _.forEach(self.itemsC10(), (obj) => {
                     data.overdayCalcHoliday.push({
-                        holidayWorkFrameNo :obj.code,
-                        calcOverDayEnd :obj.col2(),
-                        statutoryHd :obj.col3(),
-                        excessHd :obj.col4()    
+                        holidayWorkFrameNo: obj.code,
+                        calcOverDayEnd: obj.col2(),
+                        statutoryHd: obj.col3(),
+                        excessHd: obj.col4()
                     });
                 });
                 service.save(data).done(() => {
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                     blockUI.clear();
-                }).fail((error)=>{
+                }).fail((error) => {
                     console.log(error);
-                    blockUI.clear(); 
+                    blockUI.clear();
                 });
             }
             initData(): JQueryPromise<any> {
@@ -239,58 +268,58 @@ module nts.uk.at.view.kmk013.c {
                     self.selectedC612(data.nonLegalPublicHd3);
                     _.forEach(data.weekdayHoliday, obj => {
                         self.itemsC8.push(new GridItem(obj.overworkFrameNo,
-                            validate(obj.weekdayNo, self.comboItems),
+                            validate(obj.weekdayNo, self.comboItemsWorkOff),
                             nts.uk.resource.getText('KMK013_152'),
                             getName(self.overTimeFrameListName, obj.overworkFrameNo),
-                            validate(obj.excessHolidayNo, self.comboItems),
-                            validate(obj.excessSphdNo, self.comboItems)));
+                            validate(obj.excessHolidayNo, self.comboItemsWorkOff),
+                            validate(obj.excessSphdNo, self.comboItemsWorkOff)));
                     });
                     _.forEach(data.overdayHolidayAtten, obj => {
                         self.itemsC9.push(new GridItem(obj.holidayWorkFrameNo,
-                            validate(obj.overWorkNo, self.comboItems),
+                            validate(obj.overWorkNo, self.comboItemOvertime),
                             nts.uk.resource.getText('KMK013_157'),
-                            getName(self.overTimeFrameListName,
+                            getName(self.comboItemsWorkOff,
                                 obj.holidayWorkFrameNo)));
                     });
                     _.forEach(data.overdayCalcHoliday, obj => {
-                        self.itemsC10.push(new GridItem(obj.holidayWorkFrameNo ,
-                         validate(obj.calcOverDayEnd,self.comboItems) ,
-                         nts.uk.resource.getText('KMK013_163'),
-                         getName(self.overTimeFrameListName, obj.holidayWorkFrameNo ),
-                         validate(obj.statutoryHd,self.comboItems) , 
-                         validate(obj.excessHd ,self.comboItems)));
+                        self.itemsC10.push(new GridItem(obj.holidayWorkFrameNo,
+                            validate(obj.calcOverDayEnd, self.comboItemsWorkOff),
+                            nts.uk.resource.getText('KMK013_163'),
+                            getName(self.overTimeFrameListName, obj.holidayWorkFrameNo),
+                            validate(obj.statutoryHd, self.comboItemsWorkOff),
+                            validate(obj.excessHd, self.comboItemsWorkOff)));
                     });
                     dfd.resolve();
                 });
 
                 return dfd.promise();
             }
-            
+
 
 
 
         }
         function getName(arr, key) {
-            let obj :ItemModel = _.find(arr, ['code', key]);
+            let obj: ItemModel = _.find(arr, ['code', key]);
             if (obj) {
                 return obj.name;
             } else {
                 return arr[0].name;
             };
-                    
-       }
 
-            /**
-             * validate value . If value not include item list, set value = default
-             */
-            function validate(value, itemList) {
-                var index = _.findIndex(itemList, ['code', value]);
-                if (index != -1) {
-                    return value;
-                } else {
-                    return 0;
-                }
+        }
+
+        /**
+         * validate value . If value not include item list, set value = default
+         */
+        function validate(value, itemList) {
+            var index = _.findIndex(itemList, ['code', value]);
+            if (index != -1) {
+                return value;
+            } else {
+                return 0;
             }
+        }
         class ItemModel {
             code: number;
             name: string;
@@ -301,16 +330,16 @@ module nts.uk.at.view.kmk013.c {
             }
         }
         class GridItem {
-            code:number;
+            code: number;
             col1: string;
             col2: KnockoutObservable<number>;
             col3?: KnockoutObservable<number>;
             col4?: KnockoutObservable<number>;
             textBefore?: string;
             textAfter?: string;
-            constructor(code:number, col2: number, textBefore?: string, textAfter?: string, col3?: number, col4?: number) {
+            constructor(code: number, col2: number, textBefore?: string, textAfter?: string, col3?: number, col4?: number) {
                 this.code = code;
-                this.col1 = (code>9) ? textBefore + code + '　　   ' + textAfter : textBefore + code + '　　  ' + textAfter ;
+                this.col1 = (code > 9) ? textBefore + code + '　　   ' + textAfter : textBefore + code + '　　  ' + textAfter;
                 this.col2 = ko.observable(col2);
                 this.col3 = ko.observable(col3);
                 this.col4 = ko.observable(col4);

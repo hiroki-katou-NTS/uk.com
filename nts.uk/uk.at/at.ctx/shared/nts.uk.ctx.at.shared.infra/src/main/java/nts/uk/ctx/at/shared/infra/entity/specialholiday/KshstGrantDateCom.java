@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -30,7 +31,7 @@ public class KshstGrantDateCom extends UkJpaEntity implements Serializable {
 
 	/* 一律基準日 */
 	@Column(name = "GIANT_STANDARD_DATE")
-	public int grantDate;
+	public GeneralDate grantDate;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantDateCom", orphanRemoval = true)
 	public List<KshstGrantDateSet> grantDateSets;
