@@ -39,3 +39,11 @@
 #itemName {
 	width: 245px !important;
 }
+
+.currency:before {
+	content: '¥';
+}
+
+.currency:after {
+	content: '.00';
+}
