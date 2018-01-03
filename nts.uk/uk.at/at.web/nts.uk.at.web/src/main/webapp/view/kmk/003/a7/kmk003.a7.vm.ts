@@ -135,12 +135,6 @@ module a7 {
 
         private loadDataToScreen() {
             let self = this;
-
-            //old 
-//            self.dataSourceForFixedOrDiffTime = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.listTimeRange;
-            
-            //new 
-            
             self.dataSourceForFixedOrDiffTime.subscribe((newDataSource: any) => {
                 let listDeductionTimeModel: DeductionTimeModel[] = [];
                 for (let item of newDataSource) {
@@ -150,14 +144,8 @@ module a7 {
                     listDeductionTimeModel.push(deduct);
                 }
                 self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
-//                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(listDeductionTimeModel);
             });
-            
-            //when UI change
-            //self.dataSourceForFixedOrDiffTime.subscribe((v) => self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.fromListTimeRange(v)));
-
             //TODO not care difftime or flow
-
         }
 
         private setDataFlexOrFlowToModel() {
@@ -305,11 +293,28 @@ module a7 {
             let enumSetting = input.enum;
             let mainSettingModel = input.mainSettingModel;
             let isLoading = input.isLoading;
+            let isClickSave:KnockoutObservable<boolean> = input.isClickSave;
 
             var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel, isLoading);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                
+                document.getElementById('nts-fix-table-a7-fixed-difftime').addEventListener('timerangedatachange', e => {
+                    screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
+                });
+                
+                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
+                    screenModel.dataSourceForFlowOrFlexUse.valueHasMutated();
+                });
+                
+                isClickSave.subscribe((v) => {
+                    if (v) {
+                        screenModel.dataSourceForFlowOrFlexNotUse1.valueHasMutated();
+                        screenModel.dataSourceForFlowOrFlexNotUse2.valueHasMutated();
+                    }
+                });
+
             });
         }
 
