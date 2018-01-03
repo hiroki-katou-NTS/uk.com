@@ -241,7 +241,7 @@ module a7 {
             let self = this;
             return [
                 {
-                    headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: 0, endTime: 720 }),
+                    headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: 0, endTime: 0 }),
                     width: 243, template: `<div data-bind="ntsTimeRangeEditor: {required: true, enable: true, inputFormat: 'time',startTimeNameId: '#[KMK003_163]',endTimeNameId: '#[KMK003_164]'}"/>`,
                 }
             ];
@@ -251,12 +251,12 @@ module a7 {
             let self = this;
             return [
                 {
-                    headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable(720), width: 107,
+                    headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable(0), width: 107,
                     template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',inputFormat: 'time',mode: 'time',enable: false}" />`,
                     cssClassName: 'column-time-editor'
                 },
                 {
-                    headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable(720), width: 107,
+                    headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable(0), width: 107,
                     template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',inputFormat: 'time',mode: 'time',enable: false}" />`,
                     cssClassName: 'column-time-editor',
                     enable: self.isCheckFollowTime()
