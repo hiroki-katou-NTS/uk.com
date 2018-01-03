@@ -8,12 +8,13 @@ module nts.uk.com.view.cps009.b.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ViewModel {
-        itemInitLst: Array<any> = [];
+        itemInitLst: KnockoutObservableArray<any> = ko.observableArray([]);
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         categoryName: KnockoutObservable<string> = ko.observable('');
         dataSource: Array<any> = [];
-        isCancel: boolean = false;
+        itemColumns: Array<any> = [];
+        currentItem: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor() {
 
             let self = this;
@@ -22,6 +23,11 @@ module nts.uk.com.view.cps009.b.viewmodel {
                 { code: '2', name: ReferenceMethodType.FIXEDVALUE },
                 { code: '3', name: ReferenceMethodType.SAMEASLOGIN }
             ]);
+
+            self.itemColumns = [
+                { headerText: 'id', key: 'id', width: 10, hidden: true },
+                { headerText: 'REQUIRED', key: 'isRequired', width: 10, hidden: true },
+                { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', width: 150 }];
             self.selectedRuleCode = ko.observable(1);
         }
         /**
@@ -30,7 +36,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            self.itemInitLst = [];
+            self.itemInitLst([]);
             let param = getShared('CPS009B_PARAMS') || { ctgName: '', settingId: '', categoryId: '' };
             self.categoryName(param.ctgName);
             service.getAllItemByCtgId(param.settingId, param.categoryId).done(function(data) {
@@ -41,11 +47,14 @@ module nts.uk.com.view.cps009.b.viewmodel {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_353' }).then(function() {
                         close();
                     });
+                } else {
+                    self.dataSource = data;
+                    _.each(self.dataSource, function(item) {
+                        self.itemInitLst.push(new ItemInitValue(item.perInfoItemDefId, item.itemCode, item.itemName, item.isRequired, false));
+                    });
+
+
                 }
-                self.dataSource = data;
-                _.each(self.dataSource, function(item) {
-                    self.itemInitLst.push(new ItemInitValue(item.perInfoItemDefId, item.itemCode, item.itemName, item.isRequired, false));
-                });
                 dfd.resolve();
             });
 
@@ -59,7 +68,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
             //対象項目選択があろうかどうかをチェック (Kiểm tra có Item được chọn không)
             let lstIdResult = [];
             let lstItemResult = [];
-            _.each(self.itemInitLst, function(item) {
+            _.each(self.itemInitLst(), function(item) {
                 if (item.isCheckBox) {
                     lstIdResult.push(item.id);
                 }
@@ -73,7 +82,6 @@ module nts.uk.com.view.cps009.b.viewmodel {
                 let item = self.findItem(self.dataSource, itemId);
                 lstItemResult.push(item);
             });
-            self.isCancel = false;
             let obj = {
                 isCancel: false,
                 refMethodType: self.selectedRuleCode(),
@@ -94,8 +102,6 @@ module nts.uk.com.view.cps009.b.viewmodel {
                     lstItem: []
 
                 };
-
-            self.isCancel = true;
             setShared('CPS009B_DATA', obj);
             close();
         }
