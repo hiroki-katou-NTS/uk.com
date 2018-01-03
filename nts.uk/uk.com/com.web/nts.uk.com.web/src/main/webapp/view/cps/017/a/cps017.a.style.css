@@ -9,11 +9,11 @@
 
 #content-center {
 	margin-top: 10px;
-	width: 450px !important;
+	width: 435px !important;
 }
 
 #content-right {
-	margin-left: 40px;
+	margin-left: 20px;
 	margin-top: 10px;
 	width: 500px !important;
 	float: left;
@@ -21,9 +21,9 @@
 }
 
 #item_register_grid_headers {
-	max-width: 310px;
+	max-width: 330px;
 	padding-right: 17px;
-	width: 310px;
+	width: 330px;
 }
 
 #sel_item_grid_container {
@@ -55,7 +55,7 @@
 }
 
 .input {
-	clear: both;	
+	clear: both;
 	margin-left: 20px;
 	margin-bottom: 10px;
 }
@@ -87,7 +87,7 @@
 
 #itemRegisterLst {
 	margin-top: 20px;
-	width: 436px;
+	width: 420px;
 }
 
 #externalCode {
