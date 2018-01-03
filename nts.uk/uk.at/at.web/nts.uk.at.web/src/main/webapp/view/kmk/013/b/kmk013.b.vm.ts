@@ -116,9 +116,9 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB35 = ko.observable(false);
                 //B5 inner
                 self.enableB1 = ko.observable(false);
-                self.selectedValueB54 = ko.observable(1);
-                self.selectedValueB59 = ko.observable(1);
-                self.selectedValueB515 = ko.observable(1);
+                self.selectedValueB54 = ko.observable(0);
+                self.selectedValueB59 = ko.observable(0);
+                self.selectedValueB515 = ko.observable(0);
                 self.checkedB57 = ko.observable(false);
                 self.checkedB512 = ko.observable(false);
                 self.checkedB513 = ko.observable(false);
@@ -491,46 +491,46 @@ module nts.uk.at.view.kmk013.b {
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.通常、変形の所定超過時
                     self.selectedIdB59(obj.regularWork.deformatExcValuePre);
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB512(convertToBoolean(obj.regularWork.calcIncludCarePre));
+                    self.checkedB512(convertToBoolean(obj.regularWork.incChildNursingCarePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB513(convertToBoolean(obj.regularWork.notDeductLateleavePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB514(convertToBoolean(obj.regularWork.calcIntervalTimePre));
+                    self.checkedB514(convertToBoolean(obj.regularWork.exemptTaxTimePre));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.実働のみで計算する
-                    self.selectedValueB515(obj.regularWork.calcActualOperaWork);
+                    self.selectedValueB515(obj.regularWork.calcActualOperationWork);
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB518(convertToBoolean(obj.regularWork.additionTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB519(convertToBoolean(obj.regularWork.calcIncludCareWork));
+                    self.checkedB519(convertToBoolean(obj.regularWork.incChildNursingCareWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB520(convertToBoolean(obj.regularWork.notDeductLateleaveWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB521(convertToBoolean(obj.regularWork.calsIntervalTimeWork));
+                    self.checkedB521(convertToBoolean(obj.regularWork.exemptTaxTimeWork));
 
                     //休暇の計算方法の設定.休暇の割増計算方法.実働のみで計算する
                     self.selectedValueB64(obj.flexWork.calcActualOperationPre);
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB67(convertToBoolean(obj.flexWork.additionTimePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.フレックスの所定超過時
-                    self.checkedB68(convertToBoolean(obj.flexWork.predExcessTimeflexPre));
+                    self.checkedB68(convertToBoolean(obj.flexWork.predeterminedOvertimePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB69(convertToBoolean(obj.flexWork.calcIncludCarePre));
+                    self.checkedB69(convertToBoolean(obj.flexWork.incChildNursingCarePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB610(convertToBoolean(obj.flexWork.notDeductLateleavePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB611(convertToBoolean(obj.flexWork.calcIntervalTimePre));
+                    self.checkedB611(convertToBoolean(obj.flexWork.exemptTaxTimePre));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.実働のみで計算する
-                    self.selectedValueB612(obj.flexWork.calcActualOperaWork);
+                    self.selectedValueB612(obj.flexWork.calcActualOperationWork);
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB615(convertToBoolean(obj.flexWork.additionTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.フレックスの所定不足時
-                    self.checkedB616(convertToBoolean(obj.flexWork.predeterminDeficiency));
+                    self.checkedB616(convertToBoolean(obj.flexWork.predeterminDeficiencyWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB617(convertToBoolean(obj.flexWork.calcIncludCareWork));
+                    self.checkedB617(convertToBoolean(obj.flexWork.incChildNursingCareWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB618(convertToBoolean(obj.flexWork.notDeductLateleaveWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB619(convertToBoolean(obj.flexWork.calsIntervalTimeWork));
+                    self.checkedB619(convertToBoolean(obj.flexWork.exemptTaxTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.欠勤時間をマイナスする
                     self.checkedB620(convertToBoolean(obj.flexWork.minusAbsenceTimeWork));
 
@@ -541,21 +541,21 @@ module nts.uk.at.view.kmk013.b {
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.通常、変形の所定超過時
                     self.selectedIdB79(obj.irregularWork.deformatExcValue);
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB712(convertToBoolean(obj.irregularWork.calcIncludCarePre));
+                    self.checkedB712(convertToBoolean(obj.irregularWork.incChildNursingCarePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB713(convertToBoolean(obj.irregularWork.notDeductLateleavePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB714(convertToBoolean(obj.irregularWork.calcIntervalTimePre));
+                    self.checkedB714(convertToBoolean(obj.irregularWork.exemptTaxTimePre));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.実働のみで計算する
-                    self.selectedValueB715(obj.irregularWork.calcActualOperaWork);
+                    self.selectedValueB715(obj.irregularWork.calcActualOperationWork);
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB718(convertToBoolean(obj.irregularWork.additionTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB719(convertToBoolean(obj.irregularWork.calcIncludCareWork));
+                    self.checkedB719(convertToBoolean(obj.irregularWork.incChildNursingCareWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB720(convertToBoolean(obj.irregularWork.notDeductLateleaveWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB721(convertToBoolean(obj.irregularWork.calsIntervalTimeWork));
+                    self.checkedB721(convertToBoolean(obj.irregularWork.exemptTaxTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.欠勤時間をマイナスする
                     self.checkedB722(convertToBoolean(obj.irregularWork.minusAbsenceTimeWork));
                 });
@@ -590,32 +590,32 @@ module nts.uk.at.view.kmk013.b {
                 obj.regularWork.calcActualOperationPre = self.selectedValueB54();
                 if (self.selectedValueB54() == 1) {
                     obj.regularWork.additionTimePre = convertToInt(self.checkedB57());
-                    obj.regularWork.calcIncludCarePre = convertToInt(self.checkedB512());
+                    obj.regularWork.incChildNursingCarePre = convertToInt(self.checkedB512());
                     obj.regularWork.notDeductLateleavePre = convertToInt(self.checkedB513());
-                    obj.regularWork.calcIntervalTimePre = convertToInt(self.checkedB514());
+                    obj.regularWork.exemptTaxTimePre = convertToInt(self.checkedB514());
                 } else {
-                    obj.regularWork.calcIntervalTimePre = 0;
-                    obj.regularWork.calcIncludCarePre = 0;
+                    obj.regularWork.exemptTaxTimePre = 0;
+                    obj.regularWork.incChildNursingCarePre = 0;
                     obj.regularWork.additionTimePre = 0;
                     obj.regularWork.notDeductLateleavePre = 0;
                     obj.regularWork.deformatExcValuePre = 0;
                 }
                 if (self.enableB59() == true) {
-                    obj.regularWork.deformatExcValuePre = convertToInt(self.enableB59());
+                    obj.regularWork.deformatExcValuePre = convertToInt(self.selectedIdB59());
                 } else {
                     obj.regularWork.deformatExcValuePre = 0;
                 }
-                obj.regularWork.calcActualOperaWork = self.selectedValueB515();
+                obj.regularWork.calcActualOperationWork = self.selectedValueB515();
                 if (self.selectedValueB515() == 1) {
                     obj.regularWork.additionTimeWork = convertToInt(self.checkedB518());
-                    obj.regularWork.calcIncludCareWork = convertToInt(self.checkedB519());
+                    obj.regularWork.incChildNursingCareWork = convertToInt(self.checkedB519());
                     obj.regularWork.notDeductLateleaveWork = convertToInt(self.checkedB520());
-                    obj.regularWork.calsIntervalTimeWork = convertToInt(self.checkedB521());
+                    obj.regularWork.exemptTaxTimeWork = convertToInt(self.checkedB521());
                 } else {
                     obj.regularWork.additionTimeWork = 0;
-                    obj.regularWork.calcIncludCareWork = 0;
+                    obj.regularWork.incChildNursingCareWork = 0;
                     obj.regularWork.notDeductLateleaveWork = 0;
-                    obj.regularWork.calsIntervalTimeWork = 0;
+                    obj.regularWork.exemptTaxTimeWork = 0;
                 }
 
                 //flexWork
@@ -624,38 +624,38 @@ module nts.uk.at.view.kmk013.b {
                 obj.flexWork.calcActualOperationPre = self.selectedValueB64();
                 if (self.selectedValueB64() == 1) {
                     obj.flexWork.additionTimePre = convertToInt(self.checkedB67());
-                    obj.flexWork.calcIncludCarePre = convertToInt(self.checkedB69());
+                    obj.flexWork.incChildNursingCarePre = convertToInt(self.checkedB69());
                     obj.flexWork.notDeductLateleavePre = convertToInt(self.checkedB610());
-                    obj.flexWork.calcIntervalTimePre = convertToInt(self.checkedB611());
+                    obj.flexWork.exemptTaxTimePre = convertToInt(self.checkedB611());
                 } else {
                     obj.flexWork.additionTimePre = 0;
-                    obj.flexWork.calcIncludCarePre = 0;
+                    obj.flexWork.incChildNursingCarePre = 0;
                     obj.flexWork.notDeductLateleavePre = 0;
-                    obj.flexWork.calcIntervalTimePre = 0;
+                    obj.flexWork.exemptTaxTimePre = 0;
                 }
                 if (self.enableB68() == true) {
-                    obj.flexWork.predExcessTimeflexPre = convertToInt(self.enableB68());
+                    obj.flexWork.predeterminedOvertimePre = convertToInt(self.enableB68());
                 } else {
-                    obj.flexWork.predExcessTimeflexPre = 0;
+                    obj.flexWork.predeterminedOvertimePre = 0;
                 }
-                obj.flexWork.calcActualOperaWork = self.selectedValueB612();
+                obj.flexWork.calcActualOperationWork = self.selectedValueB612();
                 if (self.selectedValueB612() == 1) {
                     obj.flexWork.additionTimeWork = convertToInt(self.checkedB615());
-                    obj.flexWork.calcIncludCareWork = convertToInt(self.checkedB617());
+                    obj.flexWork.incChildNursingCareWork = convertToInt(self.checkedB617());
                     obj.flexWork.notDeductLateleaveWork = convertToInt(self.checkedB618());
-                    obj.flexWork.calsIntervalTimeWork = convertToInt(self.checkedB619());
+                    obj.flexWork.exemptTaxTimeWork = convertToInt(self.checkedB619());
                     obj.flexWork.minusAbsenceTimeWork = convertToInt(self.checkedB620());
                 } else {
                     obj.flexWork.additionTimeWork = 0;
-                    obj.flexWork.calcIncludCareWork = 0;
+                    obj.flexWork.incChildNursingCareWork = 0;
                     obj.flexWork.notDeductLateleaveWork = 0;
-                    obj.flexWork.calsIntervalTimeWork = 0;
+                    obj.flexWork.exemptTaxTimeWork = 0;
                     obj.flexWork.minusAbsenceTimeWork = 0;
                 }
                 if (self.enableB616() == true) {
-                    obj.flexWork.predeterminDeficiency = convertToInt(self.checkedB616());
+                    obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());
                 } else {
-                    obj.flexWork.predeterminDeficiency = 0;
+                    obj.flexWork.predeterminDeficiencyWork = 0;
                 }
                 //irregularWork
                 obj.irregularWork = {};
@@ -663,32 +663,32 @@ module nts.uk.at.view.kmk013.b {
                 obj.irregularWork.calcActualOperationPre = self.selectedValueB74();
                 if (self.selectedValueB74() == 1) {
                     obj.irregularWork.additionTimePre = convertToInt(self.checkedB57());
-                    obj.irregularWork.calcIncludCarePre = convertToInt(self.checkedB512());
+                    obj.irregularWork.incChildNursingCarePre = convertToInt(self.checkedB512());
                     obj.irregularWork.notDeductLateleavePre = convertToInt(self.checkedB513());
-                    obj.irregularWork.calcIntervalTimePre = convertToInt(self.checkedB514());
+                    obj.irregularWork.exemptTaxTimePre = convertToInt(self.checkedB514());
                 } else {
                     obj.irregularWork.additionTimePre = 0;
-                    obj.irregularWork.calcIncludCarePre = 0;
+                    obj.irregularWork.incChildNursingCarePre = 0;
                     obj.irregularWork.notDeductLateleavePre = 0;
-                    obj.irregularWork.calcIntervalTimePre = 0;
+                    obj.irregularWork.exemptTaxTimePre = 0;
                 }
                 if (self.enableB79() == true) {
                     obj.irregularWork.deformatExcValue = convertToInt(self.enableB79());
                 } else {
-                    obj.irregularWork.deformatExcValuePre = 0;
+                    obj.irregularWork.deformatExcValue = 0;
                 }
-                obj.irregularWork.calcActualOperaWork = self.selectedValueB715();
+                obj.irregularWork.calcActualOperationWork = self.selectedValueB715();
                 if (self.selectedValueB715() == 1) {
                     obj.irregularWork.additionTimeWork = convertToInt(self.checkedB718());
-                    obj.irregularWork.calcIncludCareWork = convertToInt(self.checkedB719());
+                    obj.irregularWork.incChildNursingCareWork = convertToInt(self.checkedB719());
                     obj.irregularWork.notDeductLateleaveWork = convertToInt(self.checkedB720());
-                    obj.irregularWork.calsIntervalTimeWork = convertToInt(self.checkedB721());
+                    obj.irregularWork.exemptTaxTimeWork = convertToInt(self.checkedB721());
                     obj.irregularWork.minusAbsenceTimeWork = convertToInt(self.checkedB722());
                 } else {
                     obj.irregularWork.additionTimeWork = 0;
-                    obj.irregularWork.calcIncludCareWork = 0;
+                    obj.irregularWork.incChildNursingCareWork = 0;
                     obj.irregularWork.notDeductLateleaveWork = 0;
-                    obj.irregularWork.calsIntervalTimeWork = 0;
+                    obj.irregularWork.exemptTaxTimeWork = 0;
                     obj.irregularWork.minusAbsenceTimeWork = 0;
                 }
                 service.save(obj).done(() => {
@@ -696,7 +696,7 @@ module nts.uk.at.view.kmk013.b {
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 }
                 ).fail((error) => {
-                    console.log(error);
+                   nts.uk.ui.dialog.alertError(error.message);
                 });
             }
 
