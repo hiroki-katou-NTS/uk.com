@@ -106,6 +106,8 @@ public class ProgramIdConsts {
 
 	public static final String CMM044A = "CMM044A";
 	
+	public static final String CMM044D = "CMM044D";
+		
 	public static final String KSU001A = "KSU001A";
 	
 	public static final String KSU001C = "KSU001C";
