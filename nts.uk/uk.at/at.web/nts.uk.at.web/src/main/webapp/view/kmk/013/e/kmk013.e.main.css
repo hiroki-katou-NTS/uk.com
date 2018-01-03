@@ -5,10 +5,14 @@
 #unit-combo-box {
 	min-width: 0 !important;
 	width: 90px !important;
-	margin-left: 60px;
-	margin-right: 10px;
 }
+
 #rounding-combo-box {
 	min-width: 0 !important;
 	width: 170px !important;
+}
+
+.nts-fixed-table .nts-fixed-body-container {
+	height: 513px;
+	max-width: 557px !important;
 }

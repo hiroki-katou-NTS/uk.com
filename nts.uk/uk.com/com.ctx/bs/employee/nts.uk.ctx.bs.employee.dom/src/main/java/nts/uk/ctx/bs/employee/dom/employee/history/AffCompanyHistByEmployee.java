@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.employee.history;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,19 +51,19 @@ public class AffCompanyHistByEmployee extends DomainEvent
 		lstAffCompanyHistoryItem.add(domain);
 		this.toBePublished();
 	}
-	
+
 	@Override
 	public List<AffCompanyHistItem> items() {
 		return lstAffCompanyHistoryItem;
 	}
-	
+
 	public Optional<AffCompanyHistItem> getHistoryWithReferDate(GeneralDate referenceDate) {
 		return this.lstAffCompanyHistoryItem.stream()
 				.filter(history -> history.getDatePeriod().start().beforeOrEquals(referenceDate)
 						&& history.getDatePeriod().end().afterOrEquals(referenceDate))
 				.findFirst();
 	}
-	
+
 	public Optional<AffCompanyHistItem> getHistoryBeforeReferDate(GeneralDate referenceDate) {
 		List<AffCompanyHistItem> matchedListEntryJobHist = this.lstAffCompanyHistoryItem.stream()
 				.filter(history -> history.getDatePeriod().end().before(referenceDate)).collect(Collectors.toList());
@@ -77,7 +78,7 @@ public class AffCompanyHistByEmployee extends DomainEvent
 		}
 		return Optional.of(lastJobEntryHistory);
 	}
-	
+
 	public Optional<AffCompanyHistItem> getHistoryAfterReferDate(GeneralDate referenceDate) {
 		List<AffCompanyHistItem> matchedListEntryJobHist = this.lstAffCompanyHistoryItem.stream()
 				.filter(history -> history.getDatePeriod().start().after(referenceDate)).collect(Collectors.toList());
@@ -92,5 +93,18 @@ public class AffCompanyHistByEmployee extends DomainEvent
 		}
 		return Optional.of(firstJobEntryHistory);
 	}
-	
+
+	public Optional<AffCompanyHistItem> getHistory() {
+
+		if (this.lstAffCompanyHistoryItem.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		List<AffCompanyHistItem> listHist = this.lstAffCompanyHistoryItem.stream()
+				.sorted((first, second) -> second.getDatePeriod().start().compareTo(first.getDatePeriod().start()))
+				.collect(Collectors.toList());
+
+		return Optional.of(listHist.get(0));
+	}
+
 }

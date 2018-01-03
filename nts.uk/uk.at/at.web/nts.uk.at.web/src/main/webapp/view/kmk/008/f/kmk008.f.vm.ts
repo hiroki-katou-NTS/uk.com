@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk008.f {
                     maxRows : 15,
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
-                    listType: 1,
+                    listType: 2,
                     selectType: 1,
                     selectedCode: self.selectedCode,
                     isDialog: self.isDialog(),

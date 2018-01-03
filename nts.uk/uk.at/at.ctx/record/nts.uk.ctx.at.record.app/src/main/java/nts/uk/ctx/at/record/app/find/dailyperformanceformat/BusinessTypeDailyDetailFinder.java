@@ -61,7 +61,7 @@ public class BusinessTypeDailyDetailFinder {
 		
 		Optional<BusinessFormatSheet> businessFormatSheet = businessFormatSheetRepository.getSheetInformation(companyId, new BusinessTypeCode(businessTypeCode), sheetNo);
 
-		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(sheetNo, businessFormatSheet.isPresent() ? businessFormatSheet.get().getSheetName(): "",
+		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(sheetNo, businessFormatSheet.isPresent() ? businessFormatSheet.get().getSheetName(): null,
 				businessTypeFormatDetailDtos);
 
 		return businessTypeFormatDailyDto;
