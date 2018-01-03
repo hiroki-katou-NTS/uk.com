@@ -69,7 +69,7 @@ module a3 {
             }
             self.selectedCodeAutoCalUse = ko.observable('1');
             self.fixTableOptionOnedayFixed = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -79,7 +79,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionMorningFixed = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -89,7 +89,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionAfternoonFixed = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -99,7 +99,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionOnedayFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -109,7 +109,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionMorningFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -119,7 +119,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionAfternoonFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,

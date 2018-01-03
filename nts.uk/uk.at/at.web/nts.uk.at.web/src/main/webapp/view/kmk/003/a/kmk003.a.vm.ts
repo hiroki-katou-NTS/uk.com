@@ -388,6 +388,7 @@ module nts.uk.at.view.kmk003.a {
                         // reload
                         self.reloadAfterSave();
                         self.isClickSave(false);
+                        self.loadWorktimeSetting(self.selectedWorkTimeCode());
                     });
             }
 
