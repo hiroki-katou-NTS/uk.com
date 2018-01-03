@@ -10,7 +10,6 @@ import nts.uk.ctx.at.schedule.dom.shift.team.teamsetting.TeamSet;
 import nts.uk.ctx.at.schedule.dom.shift.team.teamsetting.TeamSetRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.team.teamsetting.KscstTeamSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.team.teamsetting.KscstTeamSetPK;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
  * teamset repository implement
@@ -44,11 +43,11 @@ public class JpaTeamSetRepository extends JpaRepository implements TeamSetReposi
 	 */
 	private TeamSet toDomain(KscstTeamSet entity) {
 		return new TeamSet(new TeamCode(entity.teamCode), entity.ksctTeamSetPk.sId,
-				new WorkplaceId(entity.ksctTeamSetPk.workPlaceId));
+				entity.ksctTeamSetPk.workPlaceId);
 	}
 
 	private KscstTeamSet toEntity(TeamSet domain) {
-		KscstTeamSetPK pk = new KscstTeamSetPK(domain.getSId(), domain.getWorkPlaceId().v());
+		KscstTeamSetPK pk = new KscstTeamSetPK(domain.getSId(), domain.getWorkPlaceId());
 		return new KscstTeamSet(pk, domain.getTeamCode().v());
 	}
 
