@@ -1,0 +1,22 @@
+#left-content {
+	padding: 27px 0px 0px 10px;
+	float: left;
+	background-color: #E0F59E;
+	width: 352px;
+    height: 410px;
+    margin-top: 40px;
+	border-radius: 7px;
+    box-sizing: border-box;
+}
+
+#right-content {
+	margin-left: 50px;
+	float: left;
+	margin-top: 13px;
+	width: calc(100% - 550px);
+}
+
+.control-group td {
+	padding-bottom: 10px;
+	padding-left: 10px;
+}
