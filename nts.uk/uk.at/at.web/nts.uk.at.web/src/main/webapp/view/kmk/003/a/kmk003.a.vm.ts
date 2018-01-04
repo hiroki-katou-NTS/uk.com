@@ -435,8 +435,7 @@ module nts.uk.at.view.kmk003.a {
                 if (loader.isAllWorkAtr() || isSameWorkDivision) {
                     _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
                 } else {
-                    leftMethod(rightMethod());
-                    leftAtr(rightAtr());
+                    loader.selectAll();
                 }
             }
 
@@ -765,6 +764,12 @@ module nts.uk.at.view.kmk003.a {
                 all.localizedName = "全て";
                 self.workTimeAtrEnums.unshift(all);
                 self.workTimeMethodEnums.unshift(all);
+            }
+
+            public selectAll(): void {
+                let self = this;
+                self.workTimeDivision.workTimeDailyAtr(3);
+                self.workTimeDivision.workTimeMethodSet(3);
             }
 
             public isAllWorkAtr(): boolean {
