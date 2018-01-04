@@ -93,7 +93,7 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 			if (!(flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime().valueAsMinutes() >= startTime
 					&& flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime()
 							.valueAsMinutes() <= endTime)) {
-				throw new BusinessException("Msg_773");
+				//throw new BusinessException("Msg_773");
 			}
 		}
 		

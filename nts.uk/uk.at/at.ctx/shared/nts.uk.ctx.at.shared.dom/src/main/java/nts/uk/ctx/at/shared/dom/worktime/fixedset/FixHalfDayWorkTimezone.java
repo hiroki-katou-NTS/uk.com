@@ -126,6 +126,7 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 					});
 
 			// Throw exception if not match any condition
+			//TODO
 //			if (!isHasWorkTime && !isHasOTTTime) {
 //				throw new BusinessException("Msg_755");
 //			}
