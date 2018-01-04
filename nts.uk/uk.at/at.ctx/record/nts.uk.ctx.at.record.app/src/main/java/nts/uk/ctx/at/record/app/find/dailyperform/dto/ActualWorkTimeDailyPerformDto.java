@@ -46,10 +46,6 @@ public class ActualWorkTimeDailyPerformDto {
 	private List<DivergenceTimeDto> divergenceTime;
 
 	public static ActualWorkTimeDailyPerformDto toActualWorkTime(ActualWorkingTimeOfDaily domain) {
-		// List<PremiumTimeDto> premiumTimes, Integer constraintDifferenceTime,
-		// ConstraintTimeDto constraintTime, Integer timeDifferenceWorkingHours,
-		// TotalWorkingTimeDto totalWorkingTime, List<DivergenceTimeDto>
-		// divergenceTime
 		return domain == null ? null
 				: new ActualWorkTimeDailyPerformDto(
 						Arrays.asList(

@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRestTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexOffdayFlowRestTzGetMemento.
@@ -17,14 +20,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRestTime;
 public class JpaFlexHAFlowRestTzGetMemento implements FlowRestTimezoneGetMemento{
 	
 	/** The entity. */
-	private KshmtFlexHaRestTime entity;
+	private KshmtFlexHaRtSet entity;
 	
 	/**
 	 * Instantiates a new jpa flex HA flow rest tz get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHAFlowRestTzGetMemento(KshmtFlexHaRestTime entity) {
+	public JpaFlexHAFlowRestTzGetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
 	}
@@ -34,7 +37,12 @@ public class JpaFlexHAFlowRestTzGetMemento implements FlowRestTimezoneGetMemento
 	 */
 	@Override
 	public List<FlowRestSetting> getFlowRestSet() {
-		return null;
+		if(CollectionUtil.isEmpty(this.entity.getKshmtFlexHaRestSets())){
+			return new ArrayList<>();
+		}
+		return this.entity.getKshmtFlexHaRestSets().stream()
+				.map(entity -> new FlowRestSetting(new JpaFlexHAFlowRestGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
-import nts.uk.ctx.at.shared.infra.entity.worktime.worktimeset.KshmtWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -86,7 +86,7 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 	public WorkTimeDisplayName getWorkTimeDisplayName() {
 		return WorkTimeDisplayName.builder()
 				.workTimeName(new WorkTimeName(this.entity.getName()))
-				.workTimeAbName(new WorkTimeAbName(this.entity.getAbName()))
+				.workTimeAbName(new WorkTimeAbName(this.entity.getAbname()))
 				.workTimeSymbol(new WorkTimeSymbol(this.entity.getSymbol()))
 				.build();
 	}

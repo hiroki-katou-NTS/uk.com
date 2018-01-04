@@ -122,13 +122,12 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 				.setParameter("referDate", referDate).getList();
 		List<AffJobTitleHistoryItem_ver1> lstObj = new ArrayList<>();
 		if (!lstData.isEmpty()) {
-			for (BsymtAffJobTitleHistItem data: lstData) {
-				BsymtAffJobTitleHistItem ent = data;
-				lstObj.add(AffJobTitleHistoryItem_ver1.createFromJavaType(ent.hisId, ent.sid, ent.jobTitleId, ent.note));
+			for (BsymtAffJobTitleHistItem ent : lstData) {
+				lstObj.add(
+						AffJobTitleHistoryItem_ver1.createFromJavaType(ent.hisId, ent.sid, ent.jobTitleId, ent.note));
 			}
-			return lstObj;
 		}
-		return null;
+		return lstObj;
 	}
 
 	@Override

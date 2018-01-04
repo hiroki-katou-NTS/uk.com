@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
 
                 // set ntsFixedTable style
-                $("#tbl-calc-formula").ntsFixedTable({ height: 250, width: 814 });
+                $("#tbl-calc-formula").ntsFixedTable({ height: 250 });
 
                 // Load data.
                 self.loadEnum()

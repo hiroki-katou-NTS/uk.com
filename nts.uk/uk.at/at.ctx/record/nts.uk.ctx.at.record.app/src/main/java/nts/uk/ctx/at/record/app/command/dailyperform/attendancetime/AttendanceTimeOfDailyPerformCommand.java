@@ -21,9 +21,11 @@ public class AttendanceTimeOfDailyPerformCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public AttendanceTimeOfDailyPerformance toDomain() {
-		return data.isPresent() ? new AttendanceTimeOfDailyPerformance(this.getEmployeeId(), this.getWorkDate(),
-				data.get().getScheduleTime().toDomain(), data.get().getActualWorkTime().toDomain(),
-				data.get().getStayingTime().toDomain(), new AttendanceTime(data.get().getBudgetTimeVariance()),
-				new AttendanceTime(data.get().getUnemployedTime())) : null;
+		return !data.isPresent() ? null : new AttendanceTimeOfDailyPerformance(this.getEmployeeId(), this.getWorkDate(),
+				data.get().getScheduleTime() == null ? null : data.get().getScheduleTime().toDomain(), 
+				data.get().getActualWorkTime() == null ? null : data.get().getActualWorkTime().toDomain(),
+				data.get().getStayingTime() == null ? null : data.get().getStayingTime().toDomain(), 
+				data.get().getBudgetTimeVariance() == null ? null : new AttendanceTime(data.get().getBudgetTimeVariance()),
+				data.get().getUnemployedTime() == null ? null : new AttendanceTime(data.get().getUnemployedTime()));
 	}
 }

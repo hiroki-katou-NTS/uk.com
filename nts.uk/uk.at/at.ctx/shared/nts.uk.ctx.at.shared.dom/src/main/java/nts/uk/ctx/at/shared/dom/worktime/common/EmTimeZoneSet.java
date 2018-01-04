@@ -25,6 +25,18 @@ public class EmTimeZoneSet extends DomainObject {
 	/**
 	 * Instantiates a new em time zone set.
 	 *
+	 * @param employmentTimeFrameNo the employment time frame no
+	 * @param timezone the timezone
+	 */
+	public EmTimeZoneSet(EmTimeFrameNo employmentTimeFrameNo, TimeZoneRounding timezone) {
+		super();
+		this.employmentTimeFrameNo = employmentTimeFrameNo;
+		this.timezone = timezone;
+	}
+	
+	/**
+	 * Instantiates a new em time zone set.
+	 *
 	 * @param memento the memento
 	 */
 	public EmTimeZoneSet(EmTimeZoneSetGetMemento memento) {
@@ -42,6 +54,16 @@ public class EmTimeZoneSet extends DomainObject {
 		memento.setTimezone(this.timezone);
 	}
 	
+	/**
+	 * Restore data.
+	 *
+	 * @param other the other
+	 */
+	public void restoreData(EmTimeZoneSet other) {
+		this.employmentTimeFrameNo = other.employmentTimeFrameNo;
+		this.timezone = other.getTimezone();
+	}
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
@@ -50,4 +72,6 @@ public class EmTimeZoneSet extends DomainObject {
 		super.validate();
 
 	}
+
+	
 }

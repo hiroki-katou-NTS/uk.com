@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.RestTimeZoneOfDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -35,16 +36,17 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 				EnumAdaptor.valueOf(c.getRestTimeType(), BreakType.class),
 				ConvertHelper.mapTo(c.getTimeZone(),
 						(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
-								new WorkStamp(new TimeWithDayAttr(d.getStart().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(d.getStart().getTimesOfDay()),
-										new WorkLocationCD(d.getStart().getPlaceCode()),
-										EnumAdaptor.valueOf(d.getStart().getStampSourceInfo(), StampSourceInfo.class)),
-								new WorkStamp(new TimeWithDayAttr(d.getEnd().getAfterRoundingTimesOfDay()),
-										new TimeWithDayAttr(d.getEnd().getTimesOfDay()),
-										new WorkLocationCD(d.getEnd().getPlaceCode()),
-										EnumAdaptor.valueOf(d.getEnd().getStampSourceInfo(), StampSourceInfo.class)),
+								createWorkStamp(d.getStart()),
+								createWorkStamp(d.getEnd()),
 								// TODO: calculate break time
 								new AttendanceTime(d.getBreakTime()))),
 				c.getYmd()));
+	}
+
+	private WorkStamp createWorkStamp(TimeStampDto d) {
+		return d == null ? null : new WorkStamp(new TimeWithDayAttr(d.getAfterRoundingTimesOfDay()),
+				new TimeWithDayAttr(d.getTimesOfDay()),
+				new WorkLocationCD(d.getPlaceCode()),
+				EnumAdaptor.valueOf(d.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

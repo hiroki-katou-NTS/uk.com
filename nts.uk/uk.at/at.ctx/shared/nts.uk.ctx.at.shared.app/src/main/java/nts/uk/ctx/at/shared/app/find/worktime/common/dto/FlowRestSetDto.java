@@ -28,6 +28,11 @@ public class FlowRestSetDto implements FlowRestSetSetMemento {
 	/** The calculate method. */
 	private Integer calculateMethod;
 
+	/**
+	 * Instantiates a new flow rest set dto.
+	 */
+	public FlowRestSetDto() {}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

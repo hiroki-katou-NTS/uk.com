@@ -133,6 +133,7 @@
 											optionsText: 'localizedName',
 											editable: false,
 											enable: true,
+											dropDownAttachedToBody:true,
 											columns: [
 												{ prop: 'localizedName', length: 10 },
 											]}">
@@ -267,6 +268,7 @@
 											<span data-bind="text: '#{i18n.getText('CPS005_35')}' "></span>
 										</div>
 										<com:ko-if bind="$parents[2].isNotsetOrnull(decimalPart)">
+											<com:ko-if bind="numericItemAmount() === 0">
 											<input
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
@@ -299,10 +301,9 @@
 												enable: true,
 												readonly: false}" 
 												tabindex="17"/>
+											</com:ko-if>
 
-										</com:ko-if>
-
-										<com:ko-if bind="!$parents[2].isNotsetOrnull(decimalPart)">
+											<com:ko-if bind="numericItemAmount() === 1">
 											<input
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
@@ -338,6 +339,85 @@
 												enable: true,
 												readonly: false}"
 												tabindex="17" />
+												
+										</com:ko-if>
+										</com:ko-if>
+
+										<com:ko-if bind="!$parents[2].isNotsetOrnull(decimalPart)">
+											
+											<com:ko-if bind="numericItemAmount() === 1">
+											<input
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_38]',
+												value: numericItemMin,
+												constraint: 'NumericItemMin',
+												option:  new nts.uk.ui.option.CurrencyEditorOption({
+													grouplength: 3,
+									            	decimallength: decimalPart>8?8:decimalPart,
+									            	width: '70px',
+									            	textalign: 'left',
+									            	currencyformat: 'JPY',
+									            	currencyposition:'right'
+									            }),
+												required: false,
+												enable: true,
+												readonly: false}" 
+												tabindex="16"/>
+											<span class="label">～</span>
+											<input
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_39]',
+												value: numericItemMax,
+												constraint: 'NumericItemMax',
+												option:  new nts.uk.ui.option.CurrencyEditorOption({
+													grouplength: 3,
+									            	decimallength: decimalPart>8?8:decimalPart ,
+									            	width: '70px',
+									            	textalign: 'left',
+									            	currencyformat: 'JPY',
+									            	currencyposition:'right'
+									            }),
+												required: false,
+												enable: true,
+												readonly: false}"
+												tabindex="17" />
+												
+										</com:ko-if>
+										
+											<com:ko-if bind="numericItemAmount() === 0">
+											<input
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_38]',
+												value: numericItemMin,
+												constraint: 'NumericItemMin',
+												option: new nts.uk.ui.option.NumberEditorOption({
+							                        grouplength: 3,
+							                        decimallength: decimalPart>8?8:decimalPart,
+							                        width: '75px',
+							                        textalign: 'left'
+							                    }),
+												required: false,
+												enable: true,
+												readonly: false}" 
+												tabindex="16"/>
+											<span class="label">～</span>
+											<input
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_39]',
+												value: numericItemMax,
+												constraint: 'NumericItemMax',
+												option:  new nts.uk.ui.option.NumberEditorOption({
+							                        grouplength: 3,
+							                        decimallength: decimalPart>8?8:decimalPart,
+							                        width: '75px',
+							                        textalign: 'left'
+							                    }),
+												required: false,
+												enable: true,
+												readonly: false}"
+												tabindex="17" />
+												
+										</com:ko-if>
 
 										</com:ko-if>
 
