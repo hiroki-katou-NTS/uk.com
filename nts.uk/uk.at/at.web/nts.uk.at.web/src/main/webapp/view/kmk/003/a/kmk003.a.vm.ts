@@ -395,9 +395,29 @@ module nts.uk.at.view.kmk003.a {
                         self.reloadAfterSave();
                         self.isClickSave(false);
                         self.loadWorktimeSetting(self.selectedWorkTimeCode());
-                    }).fail(() => {
+                    }).fail((err) => {
                         self.isClickSave(false);
+                        self.showMessageError(err);
                     });
+            }
+            
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             }
 
             /**
@@ -616,13 +636,13 @@ module nts.uk.at.view.kmk003.a {
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommannd(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.bundledErrors(err))
+                        .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
                 if (self.workTimeSetting.isFixed()) {
                     service.saveFixedWorkSetting(self.toFixedCommand(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.bundledErrors(err))
+                        .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
