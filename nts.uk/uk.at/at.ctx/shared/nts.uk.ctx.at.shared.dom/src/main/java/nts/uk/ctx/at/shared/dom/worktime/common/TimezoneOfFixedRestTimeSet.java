@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
@@ -34,6 +36,8 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	 * Check overlap.
 	 */
 	private void checkOverlap() {
+		Collections.sort(this.timezones, Comparator.comparing(DeductionTime::getStart));
+		
 		for (int i = 0; i < this.timezones.size(); i++) {
 			DeductionTime deduct1 = this.timezones.get(i);
 			for (int j = i + 1; j < this.timezones.size(); j++) {
