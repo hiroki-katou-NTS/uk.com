@@ -162,7 +162,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		
 		// valid 時間帯.終了 >= 0:01
 		if (this.lstTimezone.stream()
-				.anyMatch(timezone -> !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
+				.anyMatch(timezone -> timezone.isUsed() && !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
 			throw new BusinessException("Msg_778");
 		}
 		
