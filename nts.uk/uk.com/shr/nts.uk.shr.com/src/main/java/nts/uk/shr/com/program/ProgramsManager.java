@@ -557,15 +557,15 @@ public class ProgramsManager {
 	
 	/** The Constant CCG007B. */
 	public static final Program CCG007B = new Program(WebAppId.COM, ProgramIdConsts.CCG007B,
-			"CCG007_2", "/view/ccg/007/a/index.xhtml");
+			"CCG007_2", "/view/ccg/007/b/index.xhtml");
 	
 	/** The Constant CCG007C. */
 	public static final Program CCG007C = new Program(WebAppId.COM, ProgramIdConsts.CCG007C,
-			"CCG007_3", "/view/ccg/007/a/index.xhtml");
+			"CCG007_3", "/view/ccg/007/c/index.xhtml");
 	
 	/** The Constant CCG007D. */
 	public static final Program CCG007D = new Program(WebAppId.COM, ProgramIdConsts.CCG007D,
-			"CCG007_4", "/view/ccg/007/a/index.xhtml");
+			"CCG007_4", "/view/ccg/007/d/index.xhtml");
 	
 	/** The Constant KMK004A. */
 	public static final Program KMK004A  = new Program(WebAppId.AT, ProgramIdConsts.KMK004A, "KMK004_1",
