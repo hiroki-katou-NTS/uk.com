@@ -122,5 +122,15 @@ public class OutsideOTSettingWs extends WebService {
 	public void save(OutsideOTSettingSaveCommand command) {
 		this.save.handle(command);
 	}
-
+	
+	/**
+	 * Find all month item.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll/mothItem")
+	public List<Integer> findAllMonthItem() {
+		return this.finder.getDataKMK011();
+	}
 }
