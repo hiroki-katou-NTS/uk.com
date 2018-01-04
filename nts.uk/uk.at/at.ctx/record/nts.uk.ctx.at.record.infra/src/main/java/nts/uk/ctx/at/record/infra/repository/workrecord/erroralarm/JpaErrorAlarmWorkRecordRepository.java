@@ -79,7 +79,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	}
 
     @Override
-    public Optional<ErrorAlarmWorkRecord> findByEralCheckId(String eralCheckId) {
+    public Optional<ErrorAlarmWorkRecord> findByErrorAlamCheckId(String eralCheckId) {
         Optional<KwrmtErAlWorkRecord> entity = this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_ID, KwrmtErAlWorkRecord.class)
                 .setParameter("companyId", AppContexts.user().companyId())
                 .setParameter("eralCheckId", eralCheckId).getSingle();
