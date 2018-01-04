@@ -19,19 +19,19 @@ import lombok.Setter;
 public class KrqdtOvertimeInputPK implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
-	    @Column(name = "CID")
-	    private String cid;
-		
-	    @Column(name = "APP_ID")
-	    private String appId;
-	    
-	    @Column(name = "ATTENDANCE_ID")
-	    private int attendanceId;
-	    
-	    @Column(name = "FRAME_NO")
-	    private int frameNo;
-	    
-	    @Column(name ="TIME_ITEM_TYPE_ATR")
-	    private int timeItemTypeAtr;
+
+	@Column(name = "CID")
+	private String cid;
+
+	@Column(name = "APP_ID")
+	private String appId;
+
+	@Column(name = "ATTENDANCE_ID")
+	private int attendanceId;
+
+	@Column(name = "FRAME_NO")
+	private int frameNo;
+
+	@Column(name = "TIME_ITEM_TYPE_ATR")
+	private int timeItemTypeAtr;
 }

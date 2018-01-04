@@ -94,6 +94,4 @@ public interface CollectApprovalRootService {
 	 */
 	public List<String> organizeBrowsingPhase(String companyID, String employeeID, GeneralDate date, ApprovalPhase approvalPhase);
 	
-	public ApprovalRootState createFromApprovalPhaseList(List<ApprovalPhase> listApprovalPhase);
-	
 }

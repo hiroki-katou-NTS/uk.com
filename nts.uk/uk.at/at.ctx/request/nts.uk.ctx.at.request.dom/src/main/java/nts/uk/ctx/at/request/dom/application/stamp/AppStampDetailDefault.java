@@ -1,20 +1,14 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
@@ -41,6 +35,9 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 	@Inject
 	private DetailAfterUpdate afterProcessDetail;
 	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	
 	@Override
 	public void appStampPreProcess(AppStamp appStamp) {
 //		beforePreBootMode.judgmentDetailScreenMode(appStamp, appStamp.getApplicationDate());
@@ -50,22 +47,23 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 	}
 
 	@Override
-	public void appStampUpdate(String applicationReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+	public List<String> appStampUpdate(String applicationReason, AppStamp appStamp) {
 		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
-		appStampUpdateProcess(appStamp, appApprovalPhases);
+		return appStampUpdateProcess(appStamp);
 	}
 	
-	private void appStampUpdateProcess(AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		/*appStamp.setListPhase(appApprovalPhases);
+	private List<String> appStampUpdateProcess(AppStamp appStamp) {
 		detailBeforeProcessRegister.processBeforeDetailScreenRegistration(
-				appStamp.getCompanyID(), 
-				appStamp.getApplicantSID(), 
-				appStamp.getApplicationDate(), 
+				appStamp.getApplication_New().getCompanyID(), 
+				appStamp.getApplication_New().getEmployeeID(), 
+				appStamp.getApplication_New().getAppDate(), 
 				1, 
-				appStamp.getApplicationID(), 
-				PrePostAtr.PREDICT);
+				appStamp.getApplication_New().getAppID(), 
+				appStamp.getApplication_New().getPrePostAtr(), 
+				appStamp.getVersion());
 		appStampRepository.updateStamp(appStamp);
-		afterProcessDetail.processAfterDetailScreenRegistration(appStamp);*/
+		applicationRepository.updateWithVersion(appStamp.getApplication_New());
+		return afterProcessDetail.processAfterDetailScreenRegistration(appStamp.getApplication_New());
 	}
 }
