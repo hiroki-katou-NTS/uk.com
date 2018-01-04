@@ -8,6 +8,7 @@ module a3 {
     import FlOTTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlOTTimezoneModel;
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a3.service.model.OvertimeWorkFrameFindDto;
     class ScreenModel {
 
         fixTableOptionOnedayFixed: any;
@@ -32,7 +33,7 @@ module a3 {
         selectedCodeAutoCalUse: KnockoutObservable<any>;
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
-        lstSelectOrderModel: SettlementOrder[];
+        lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
 
         /**
         * Constructor.
@@ -49,6 +50,7 @@ module a3 {
                 { code: 0, name: nts.uk.resource.getText("KMK003_142") },
                 { code: 1, name: nts.uk.resource.getText("KMK003_143") }
             ]);
+            self.lstOvertimeWorkFrame = [];
             self.dataSourceOvertimeFlow = ko.observableArray([]);
             self.dataSourceOnedayFixed = ko.observableArray([]);
             self.dataSourceMorningFixed = ko.observableArray([]);
@@ -63,81 +65,7 @@ module a3 {
             });
 
            
-            self.lstSelectOrderModel = [];
-            for (var i: number = 1; i <= 10; i++) {
-                self.lstSelectOrderModel.push({ code: i, name: '' + i });
-            }
             self.selectedCodeAutoCalUse = ko.observable('1');
-            self.fixTableOptionOnedayFixed = {
-                maxRow: 10,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceOnedayFixed,
-                isMultipleSelect: true,
-                columns: self.columnSettingFixed(),
-                tabindex: -1
-            };
-            self.fixTableOptionMorningFixed = {
-                maxRow: 10,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceMorningFixed,
-                isMultipleSelect: true,
-                columns: self.columnSettingFixed(),
-                tabindex: -1
-            };
-            self.fixTableOptionAfternoonFixed = {
-                maxRow: 10,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceAfternoonFixed,
-                isMultipleSelect: true,
-                columns: self.columnSettingFixed(),
-                tabindex: -1
-            };
-            self.fixTableOptionOnedayFlex = {
-                maxRow: 10,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceOnedayFlex,
-                isMultipleSelect: true,
-                columns: self.columnSettingFlex(),
-                tabindex: -1
-            };
-            self.fixTableOptionMorningFlex = {
-                maxRow: 10,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceMorningFlex,
-                isMultipleSelect: true,
-                columns: self.columnSettingFlex(),
-                tabindex: -1
-            };
-            self.fixTableOptionAfternoonFlex = {
-                maxRow: 10,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceAfternoonFlex,
-                isMultipleSelect: true,
-                columns: self.columnSettingFlex(),
-                tabindex: -1
-            };
-            self.fixTableOptionOvertimeFlow = {
-                maxRow: 10,
-                minRow: 0,
-                maxRowDisplay: 10,
-                isShowButton: true,
-                dataSource: self.dataSourceOvertimeFlow,
-                isMultipleSelect: true,
-                columns: self.columnSettingOvertimeFlow(),
-                tabindex: -1
-            };
             
             // update time zone flow
             self.dataSourceOvertimeFlow.subscribe(function(dataFlow: any[]) {
@@ -213,6 +141,80 @@ module a3 {
             });
         }
         
+        public initDataModel(): void {
+            var self = this;
+            self.fixTableOptionOnedayFixed = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceOnedayFixed,
+                isMultipleSelect: true,
+                columns: self.columnSettingFixed(),
+                tabindex: -1
+            };
+            self.fixTableOptionMorningFixed = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceMorningFixed,
+                isMultipleSelect: true,
+                columns: self.columnSettingFixed(),
+                tabindex: -1
+            };
+            self.fixTableOptionAfternoonFixed = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceAfternoonFixed,
+                isMultipleSelect: true,
+                columns: self.columnSettingFixed(),
+                tabindex: -1
+            };
+            self.fixTableOptionOnedayFlex = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceOnedayFlex,
+                isMultipleSelect: true,
+                columns: self.columnSettingFlex(),
+                tabindex: -1
+            };
+            self.fixTableOptionMorningFlex = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceMorningFlex,
+                isMultipleSelect: true,
+                columns: self.columnSettingFlex(),
+                tabindex: -1
+            };
+            self.fixTableOptionAfternoonFlex = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceAfternoonFlex,
+                isMultipleSelect: true,
+                columns: self.columnSettingFlex(),
+                tabindex: -1
+            };
+            self.fixTableOptionOvertimeFlow = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 10,
+                isShowButton: true,
+                dataSource: self.dataSourceOvertimeFlow,
+                isMultipleSelect: true,
+                columns: self.columnSettingOvertimeFlow(),
+                tabindex: -1
+            };
+
+        }
         private updateDataModel(): void {
             var self = this;
             if (self.isFlowMode()) {
@@ -428,46 +430,46 @@ module a3 {
                  {
                      headerText: nts.uk.resource.getText("KMK003_58"),
                      key: "otFrameNo",
-                     dataSource: self.lstSelectOrderModel,
+                     dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
                      width: 120,
                      template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'code',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'name',
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 8,
+                                    optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'name', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_186"),
                      key: "inLegalOTFrameNo",
-                     dataSource: self.lstSelectOrderModel,
+                     dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
                      width: 120,
                      template:  `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'code',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'name',
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 8,
+                                    optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'name', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_187"),
                      key: "settlementOrder",
-                     dataSource: self.lstSelectOrderModel,
+                     dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
                      width: 100,
                      template:  `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'code',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'name',
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 8,
+                                    optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'name', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                  }
              ];
@@ -482,31 +484,31 @@ module a3 {
              arraySettingFlex.push({
                  headerText: nts.uk.resource.getText("KMK003_186"),
                  key: "legalOTframeNo",
-                 dataSource: self.lstSelectOrderModel,
+                 dataSource: self.lstOvertimeWorkFrame,
                  defaultValue: ko.observable(1),
                  width: 75,
                  template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'code',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'name',
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 8,
+                                    optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'name', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
              });
              arraySettingFlex.push({
                  headerText: nts.uk.resource.getText("KMK003_187"),
                  key: "settlementOrder",
-                 dataSource: self.lstSelectOrderModel,
+                 dataSource: self.lstOvertimeWorkFrame,
                  defaultValue: ko.observable(1),
                  width: 75,
                  template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'code',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'name',
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 8,
+                                    optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'name', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
              });
             return arraySettingFlex;
@@ -561,16 +563,16 @@ module a3 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_58"), 
                     key: "otFrameNo",
-                    dataSource: self.lstSelectOrderModel,
+                    dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
                     width: 80,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'code',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'name',
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 8,
+                                    optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'name', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
@@ -583,10 +585,6 @@ module a3 {
             ];
         }
 
-    }
-    export interface SettlementOrder {
-        code: number;
-        name: string;
     }
 
     class KMK003A3BindingHandler implements KnockoutBindingHandler {
@@ -621,9 +619,13 @@ module a3 {
             var isLoading:  KnockoutObservable<boolean> = input.isLoading; 
 
             let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading);
-            $(element).load(webserviceLocator, function() {
-                ko.cleanNode($(element)[0]);
-                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+            nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
+                screenModel.lstOvertimeWorkFrame = data;
+                screenModel.initDataModel();
+                $(element).load(webserviceLocator, function() {
+                    ko.cleanNode($(element)[0]);
+                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                });
             });
         }
 

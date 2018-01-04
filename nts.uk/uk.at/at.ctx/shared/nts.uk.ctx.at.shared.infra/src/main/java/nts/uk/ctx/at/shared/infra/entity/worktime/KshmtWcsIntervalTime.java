@@ -10,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,7 +36,6 @@ public abstract class KshmtWcsIntervalTime extends UkJpaEntity implements Serial
 	private int useIntervalTime;
 
 	/** The raising salary set. */
-	@Size(min = 1, max = 3)
 	@Column(name = "RAISING_SALARY_SET")
 	private String raisingSalarySet;
 

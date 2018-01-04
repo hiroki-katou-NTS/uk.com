@@ -35,7 +35,6 @@ public class KshmtFlexHaFixRest extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-
 	/** The str time. */
 	@Column(name = "STR_TIME")
 	private int strTime;
@@ -48,6 +47,7 @@ public class KshmtFlexHaFixRest extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flex ha fix rest.
 	 */
 	public KshmtFlexHaFixRest() {
+		super();
 	}
 	
 	/**
@@ -102,7 +102,5 @@ public class KshmtFlexHaFixRest extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexHaFixRestPK;
 	}
-
-
 
 }

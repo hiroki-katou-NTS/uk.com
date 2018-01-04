@@ -353,7 +353,10 @@ module a7 {
                         screenModel.dataSourceForFixedOrDiffTime([]);
                         screenModel.dataSourceForFlowOrFlexUse([]);
                         screenModel.dataSourceForFlowOrFlexNotUse1([]);
-                        screenModel.dataSourceForFlowOrFlexNotUse2([]);
+                        screenModel.dataSourceForFlowOrFlexNotUse2([{
+                            column1: ko.observable(0),
+                            column2: ko.observable(0)
+                        }]);
                     }
                 });
 

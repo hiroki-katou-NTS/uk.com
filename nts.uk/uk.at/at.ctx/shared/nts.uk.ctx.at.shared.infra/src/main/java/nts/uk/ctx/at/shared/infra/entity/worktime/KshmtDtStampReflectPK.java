@@ -39,6 +39,7 @@ public class KshmtDtStampReflectPK implements Serializable {
 	 * Instantiates a new kshmt dt stamp reflect PK.
 	 */
 	public KshmtDtStampReflectPK() {
+		super();
 	}
 
 	/*

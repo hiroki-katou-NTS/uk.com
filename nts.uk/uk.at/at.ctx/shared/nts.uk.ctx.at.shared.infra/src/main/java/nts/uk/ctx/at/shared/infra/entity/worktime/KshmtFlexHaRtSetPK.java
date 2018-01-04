@@ -39,6 +39,7 @@ public class KshmtFlexHaRtSetPK implements Serializable {
 	 * Instantiates a new kshmt flex ha rt set PK.
 	 */
 	public KshmtFlexHaRtSetPK() {
+		super();
 	}
 	
 

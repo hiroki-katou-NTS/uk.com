@@ -39,6 +39,7 @@ public class KshmtFlowStampReflectPK implements Serializable {
 	 * Instantiates a new kshmt flow stamp reflect PK.
 	 */
 	public KshmtFlowStampReflectPK() {
+		super();
 	}
 
 	/*

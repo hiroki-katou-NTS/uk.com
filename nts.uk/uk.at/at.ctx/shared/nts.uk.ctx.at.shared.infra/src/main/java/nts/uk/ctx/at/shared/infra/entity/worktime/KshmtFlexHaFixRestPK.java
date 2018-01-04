@@ -43,6 +43,7 @@ public class KshmtFlexHaFixRestPK implements Serializable {
 	 * Instantiates a new kshmt flex ha fix rest PK.
 	 */
 	public KshmtFlexHaFixRestPK() {
+		super();
 	}
 	
 	/**

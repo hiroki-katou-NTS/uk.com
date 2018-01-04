@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -52,7 +54,8 @@ public class ReleaseImpl implements ReleaseService {
 				break;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(approvalFrame.getApproverID().equals(employeeID)||approvalFrame.getRepresenterID().equals(employeeID)){
+				if((Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)) ||
+						(Strings.isNotBlank(approvalFrame.getRepresenterID()) && approvalFrame.getRepresenterID().equals(employeeID))){
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 					approvalFrame.setApproverID("");
 					approvalFrame.setRepresenterID("");
@@ -74,7 +77,8 @@ public class ReleaseImpl implements ReleaseService {
 		Optional<ApprovalFrame> opConfirmFrame = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(Boolean.TRUE)).findAny();
 		if(opConfirmFrame.isPresent()){
 			ApprovalFrame approvalFrame = opConfirmFrame.get();
-			if(approvalFrame.getApproverID().equals(employeeID)||approvalFrame.getRepresenterID().equals(employeeID)){
+			if((Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)) ||
+					(Strings.isNotBlank(approvalFrame.getRepresenterID()) && approvalFrame.getRepresenterID().equals(employeeID))){
 				return true;
 			}
 			return false;

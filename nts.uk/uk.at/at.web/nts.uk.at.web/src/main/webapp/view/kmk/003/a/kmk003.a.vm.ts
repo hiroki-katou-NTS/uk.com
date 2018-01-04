@@ -357,24 +357,29 @@ module nts.uk.at.view.kmk003.a {
                 let wts = self.mainSettingModel.workTimeSetting;
                 let pred = self.mainSettingModel.predetemineTimeSetting;
                 let flex = self.mainSettingModel.flexWorkSetting;
-                wts.worktimeCode('111');
-                wts.workTimeDisplayName.workTimeName('test');
-                pred.startDateClock(1);
+                let fixed = self.mainSettingModel.fixedWorkSetting;
+                wts.worktimeCode('ttt');
+                wts.workTimeDisplayName.workTimeName('tuan test');
+                pred.startDateClock(300);
                 pred.rangeTimeDay(1440);
                 let tz1 = pred.prescribedTimezoneSetting.getTimezoneOne();
                 let tz2 = pred.prescribedTimezoneSetting.getTimezoneTwo();
-                tz1.start(1);
-                tz1.end(2);
+                tz1.start(510);
+                tz1.end(1050);
                 tz2.start(3);
                 tz2.end(4);
                 flex.coreTimeSetting.coreTimeSheet.startTime(1);
                 flex.coreTimeSetting.coreTimeSheet.endTime(2);
                 flex.coreTimeSetting.minWorkTime(1);
-                pred.prescribedTimezoneSetting.morningEndTime(1);
-                pred.prescribedTimezoneSetting.afternoonStartTime(2);
-                pred.predTime.predTime.oneDay(1);
-                pred.predTime.predTime.morning(1);
-                pred.predTime.predTime.afternoon(1);
+                pred.prescribedTimezoneSetting.morningEndTime(720);
+                pred.prescribedTimezoneSetting.afternoonStartTime(780);
+                pred.predTime.predTime.oneDay(480);
+                pred.predTime.predTime.morning(240);
+                pred.predTime.predTime.afternoon(240);
+                flex.commonSetting.getMedicalDayShift().applicationTime(15);
+                flex.commonSetting.getMedicalNightShift().applicationTime(15);
+                fixed.commonSetting.getMedicalDayShift().applicationTime(15);
+                fixed.commonSetting.getMedicalNightShift().applicationTime(15);
             }
 
             /**
@@ -414,6 +419,8 @@ module nts.uk.at.view.kmk003.a {
                         self.reloadAfterSave();
                         self.isClickSave(false);
                         self.loadWorktimeSetting(self.selectedWorkTimeCode());
+                    }).fail(() => {
+                        self.isClickSave(false);
                     });
             }
 
