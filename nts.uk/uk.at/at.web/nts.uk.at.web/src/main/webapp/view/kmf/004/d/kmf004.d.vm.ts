@@ -167,7 +167,6 @@ module nts.uk.at.view.kmf004 {
                 }
 
                 service.update(dataTranfer).done(function(errors) {
-                    self.start();
                     if (errors && errors.length > 0) {
                         self.addListError(errors);
                     } else {
@@ -178,6 +177,7 @@ module nts.uk.at.view.kmf004 {
                 }).fail(function(error) {
                     alert(error.message);
                 });
+                
                 nts.uk.ui.block.clear();
             }   
    
