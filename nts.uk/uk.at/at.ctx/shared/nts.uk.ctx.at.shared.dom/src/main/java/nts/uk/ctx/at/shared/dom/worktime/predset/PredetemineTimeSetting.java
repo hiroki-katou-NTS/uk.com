@@ -99,6 +99,8 @@ public class PredetemineTimeSetting extends AggregateRoot {
 			be.throwExceptions();
 		}
 		
+		this.validateOneDay();
+		
 		this.validatePrescribedTimezone();
 	}
 
@@ -130,6 +132,14 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		if (morningEnd.lessThan(this.startDateClock) || morningEnd.greaterThan(endDateClock)
 				|| afternoonStart.lessThan(this.startDateClock) || afternoonStart.greaterThan(endDateClock)) {
 			throw new BusinessException("Msg_516");
+		}
+	}
+	
+	private void validateOneDay() {
+		AttendanceTime oneDayRange = this.getRangeTimeDay();
+		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay(); 		
+		if (oneDayTime.greaterThan(oneDayRange)) {
+			throw new BusinessException("Msg_781");
 		}
 	}
 
