@@ -170,7 +170,7 @@ module a7 {
 
         private setDataFlexOrFlowToModel() {
             let self = this;
-            
+            self.isCheckFollowTime = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.useHereAfterRestSet;
             
             self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
                 let listDeductionTimeModel: DeductionTimeModel[] = [];
