@@ -284,11 +284,15 @@ module nts.uk.at.view.kmk003.a {
              */
             private reloadWorktimeSetting(): void {
                 let self = this;
+                let currentCode = self.mainSettingModel.workTimeSetting.worktimeCode();
+                if (!currentCode) {
+                    return;
+                }
                 // block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
 
                 self.isLoading(false);
-                service.findWorktimeSetingInfoByCode(self.mainSettingModel.workTimeSetting.worktimeCode())
+                service.findWorktimeSetingInfoByCode(currentCode)
                     .done(worktimeSettingInfo => {
                         // clear all errors
                         self.clearAllError();
