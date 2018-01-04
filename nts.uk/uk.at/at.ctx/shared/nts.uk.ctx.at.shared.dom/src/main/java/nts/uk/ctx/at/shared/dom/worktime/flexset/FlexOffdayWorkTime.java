@@ -67,7 +67,7 @@ public class FlexOffdayWorkTime extends DomainObject {
 		if (this.restTimezone.getFixedRestTimezone().getTimezones().isEmpty()) {
 			return true;
 		}
-		return this.restTimezone.getFixedRestTimezone().getTimezones().stream().anyMatch(
+		return this.restTimezone.getFixedRestTimezone().getTimezones().stream().allMatch(
 				resTz -> this.lstWorkTimezone.stream().anyMatch(hdWtz -> resTz.isBetweenOrEqual(hdWtz.getTimezone())));
 	}
 }

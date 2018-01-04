@@ -99,6 +99,8 @@ public class PredetemineTimeSetting extends AggregateRoot {
 			be.throwExceptions();
 		}
 		
+		this.validateOneDay();
+		
 		this.validatePrescribedTimezone();
 	}
 
@@ -115,21 +117,42 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	 * Validate prescribed timezone.
 	 */
 	private void validatePrescribedTimezone() {
-		val endDateClock = this.getEndDateClock();
 		val morningEnd = this.prescribedTimezoneSetting.getMorningEndTime();
 		val afternoonStart = this.prescribedTimezoneSetting.getAfternoonStartTime();
 		val timezones = this.prescribedTimezoneSetting.getLstTimezone();
 
 		// validate list time zone
-		if (timezones.stream()
-				.anyMatch(tz -> tz.getStart().greaterThan(endDateClock) || tz.getEnd().lessThan(this.startDateClock))) {
+		if (timezones.stream().anyMatch(tz -> this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
 			throw new BusinessException("Msg_516");
 		}
 
 		// validate morning End time and afternoon start time
-		if (morningEnd.lessThan(this.startDateClock) || morningEnd.greaterThan(endDateClock)
-				|| afternoonStart.lessThan(this.startDateClock) || afternoonStart.greaterThan(endDateClock)) {
+		if (this.isOutOfRangeTimeDay(morningEnd, afternoonStart)) {
 			throw new BusinessException("Msg_516");
+		}
+	}
+
+	/**
+	 * Checks if is out of range time day.
+	 *
+	 * @param start the start
+	 * @param end the end
+	 * @return true, if is out of range time day
+	 */
+	private boolean isOutOfRangeTimeDay(TimeWithDayAttr start, TimeWithDayAttr end) {
+		val endDateClock = this.getEndDateClock();
+		return start.lessThan(this.startDateClock) || start.greaterThan(endDateClock)
+				|| end.lessThan(this.startDateClock) || end.greaterThan(endDateClock);
+	}
+	
+	/**
+	 * Validate one day.
+	 */
+	private void validateOneDay() {
+		AttendanceTime oneDayRange = this.getRangeTimeDay();
+		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay(); 		
+		if (oneDayTime.greaterThan(oneDayRange)) {
+			throw new BusinessException("Msg_781");
 		}
 	}
 

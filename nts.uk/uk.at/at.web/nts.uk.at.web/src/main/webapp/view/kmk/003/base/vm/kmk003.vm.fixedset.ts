@@ -28,11 +28,11 @@ module nts.uk.at.view.kmk003.a {
             
             export class FixOffdayWorkTimezoneModel {
                 restTimezone: FixRestTimezoneSetModel;
-                lstWorkTimezone: HDWorkTimeSheetSettingModel[];
+                lstWorkTimezone: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
                 
                 constructor() {
                     this.restTimezone = new FixRestTimezoneSetModel();
-                    this.lstWorkTimezone = [];
+                    this.lstWorkTimezone = ko.observableArray([]);
                 }
                 
                 updateData(data: FixOffdayWorkTimezoneDto) {
@@ -41,35 +41,28 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 updateHDTimezone(lstWorkTimezone: HDWorkTimeSheetSettingDto[]) {
+                    var dataModelHDTimezone: HDWorkTimeSheetSettingModel[] = [];
                     for (var dataDTO of lstWorkTimezone) {
-                        var dataModel: HDWorkTimeSheetSettingModel = this.getHDTimezoneByWorktimeNo(dataDTO.workTimeNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new HDWorkTimeSheetSettingModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstWorkTimezone.push(dataModel);
-                        }
+                        var dataModel: HDWorkTimeSheetSettingModel = new HDWorkTimeSheetSettingModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelHDTimezone.push(dataModel);
                     }
+                    this.lstWorkTimezone(dataModelHDTimezone);
                 }
 
-                getHDTimezoneByWorktimeNo(worktimeNo: number): HDWorkTimeSheetSettingModel {
-                    return _.find(this.lstWorkTimezone, hdtimezone => hdtimezone.workTimeNo() == worktimeNo);
-                }
                 toDto(): FixOffdayWorkTimezoneDto {
-                    let lstWorkTimezone: HDWorkTimeSheetSettingDto[] = _.map(this.lstWorkTimezone, (dataModel) => dataModel.toDto());
-                    
+                    let lstWorkTimezone: HDWorkTimeSheetSettingDto[] = _.map(this.lstWorkTimezone(), (dataModel) => dataModel.toDto());
+
                     let dataDTO: FixOffdayWorkTimezoneDto = {
                         restTimezone: this.restTimezone.toDto(),
                         lstWorkTimezone: lstWorkTimezone
                     };
                     return dataDTO;
                 }
-                
+
                 resetData() {
                     this.restTimezone.resetData();
-                    this.lstWorkTimezone = [];
+                    this.lstWorkTimezone([]);
                 }
             }
             

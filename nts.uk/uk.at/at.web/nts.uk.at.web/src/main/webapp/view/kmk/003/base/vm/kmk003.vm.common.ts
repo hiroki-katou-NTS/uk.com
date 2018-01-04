@@ -1694,12 +1694,12 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FixedWorkTimezoneSetModel {
-                lstWorkingTimezone: common.EmTimeZoneSetModel[];
-                lstOTTimezone: common.OverTimeOfTimeZoneSetModel[];
+                lstWorkingTimezone: EmTimeZoneSetModel[];
+                lstOTTimezone: KnockoutObservableArray<OverTimeOfTimeZoneSetModel>;
 
                 constructor() {
                     this.lstWorkingTimezone = [];
-                    this.lstOTTimezone = [];
+                    this.lstOTTimezone = ko.observableArray([]);
                 }
 
                 updateData(data: FixedWorkTimezoneSetDto) {
@@ -1708,24 +1708,21 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateOvertimeZone(lstOTTimezone: OverTimeOfTimeZoneSetDto[]) {
+                    this.lstOTTimezone([]);
+                    var dataModelTimezone: OverTimeOfTimeZoneSetModel[] = [];
                     for (var dataDTO of lstOTTimezone) {
-                        var dataModel: OverTimeOfTimeZoneSetModel = this.getOvertimeZoneByWorkTimezoneNo(dataDTO.workTimezoneNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new OverTimeOfTimeZoneSetModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstOTTimezone.push(dataModel);
-                        }
+                        var dataModel: OverTimeOfTimeZoneSetModel = new OverTimeOfTimeZoneSetModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelTimezone.push(dataModel);
                     }
+                    this.lstOTTimezone(dataModelTimezone);
                 }
 
-                getOvertimeZoneByWorkTimezoneNo(workTimezoneNo: number) {
-                    return _.find(this.lstOTTimezone, timezone => timezone.workTimezoneNo() == workTimezoneNo);
-                }
 
                 updateWorkingTimezone(lstWorkingTimezone: EmTimeZoneSetDto[]) {
+                    for (var dataModel of this.lstWorkingTimezone) {
+
+                    }
                     for (var dataDTO of lstWorkingTimezone) {
                         var dataModel: EmTimeZoneSetModel = this.getWorkingTimezoneByEmploymentTimeFrameNo(dataDTO.employmentTimeFrameNo);
                         if (dataModel) {
@@ -1744,7 +1741,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 toDto(): FixedWorkTimezoneSetDto {
                     let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone, (dataModel) => dataModel.toDto());
-                    let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone, (dataModel) => dataModel.toDto());
+                    let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
 
                     let dataDTO: FixedWorkTimezoneSetDto = {
                         lstWorkingTimezone: lstWorkingTimezone,
@@ -1755,7 +1752,7 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.lstWorkingTimezone = [];
-                    this.lstOTTimezone = [];
+                    this.lstOTTimezone([]);
                 }
             }
 

@@ -225,17 +225,17 @@ module a3 {
 
             if (self.isFixedMode()) {
                 var dataFixedOneday: any[] = [];
-                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone) {
+                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone()) {
                     dataFixedOneday.push(self.toModelFixedColumnSetting(dataModelFixed.toDto()));
                 }
                 self.dataSourceOnedayFixed(dataFixedOneday);
                 var dataFixedMorning: any[] = [];
-                for (var dataModelMorningFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
+                for (var dataModelMorningFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone()) {
                     dataFixedMorning.push(self.toModelFixedColumnSetting(dataModelMorningFixed.toDto()));
                 }
                 self.dataSourceMorningFixed(dataFixedMorning);
                 var dataFixedAfternoon: any[] = [];
-                for (var dataModelAfternoonFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone) {
+                for (var dataModelAfternoonFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone()) {
                     dataFixedAfternoon.push(self.toModelFixedColumnSetting(dataModelAfternoonFixed.toDto()));
                 }
                 self.dataSourceAfternoonFixed(dataFixedAfternoon);
@@ -243,19 +243,19 @@ module a3 {
 
             if (self.isFlexMode()) {
                 var dataFlexOneday: any[] = [];
-                for (var dataModelOnedayFlex of self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone) {
+                for (var dataModelOnedayFlex of self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone()) {
                     dataFlexOneday.push(self.toModelFlexColumnSetting(dataModelOnedayFlex.toDto()));
                 }
                 self.dataSourceOnedayFlex(dataFlexOneday);
                 var dataFlexMorning: any[] = [];
                 if (self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
-                    for (var dataModelMorningFlex of self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
+                    for (var dataModelMorningFlex of self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone()) {
                         dataFlexMorning.push(self.toModelFlexColumnSetting(dataModelMorningFlex.toDto()));
                     }
                 }
                 self.dataSourceMorningFlex(dataFlexMorning);
                 var dataFlexAfternoon: any[] = [];
-                for (var dataModelAfternoonFlex of self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone) {
+                for (var dataModelAfternoonFlex of self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone()) {
                     dataFlexAfternoon.push(self.toModelFlexColumnSetting(dataModelAfternoonFlex.toDto()));
                 }
                 self.dataSourceAfternoonFlex(dataFlexAfternoon);
