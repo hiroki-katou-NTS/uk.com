@@ -174,11 +174,10 @@ public class GrantHdTbl extends AggregateRoot {
 			if (GrantSimultaneity.USE.equals(this.grantSimultaneity)) {
 				// 処理名4.付与日シュミレーション計算処理について
 				if ((referenceDate.month() == simultaneousGrantDate.month() && referenceDate.day() > simultaneousGrantDate.day()) || referenceDate.month() > simultaneousGrantDate.month()) {
-					this.grantDate = GeneralDate.ymd(referenceDate.year(), simultaneousGrantDate.month(), simultaneousGrantDate.day());;
+					this.grantDate = GeneralDate.ymd(referenceDate.year(), simultaneousGrantDate.month(), simultaneousGrantDate.day());
 				} else {
-					this.grantDate = referenceDate;
+					this.grantDate = GeneralDate.ymd(referenceDate.year() -1 , simultaneousGrantDate.month(), simultaneousGrantDate.day());
 				}
-				//this.grantDate = simultaneousGrantDate.after(referenceDate) ? referenceDate : simultaneousGrantDate;
 			} else {
 				this.grantDate = referenceDate;
 			}
