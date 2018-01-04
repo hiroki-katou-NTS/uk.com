@@ -60,4 +60,15 @@ public class GoOutTimezoneRoundingSet extends DomainObject {
 		this.workTimezone.restoreData(screenMode, oldDomain.getWorkTimezone());
 		this.ottimezone.restoreData(screenMode, oldDomain.getOttimezone());		
 	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.pubHolWorkTimezone.restoreDefaultData(screenMode);
+		this.workTimezone.restoreDefaultData(screenMode);
+		this.ottimezone.restoreDefaultData(screenMode);		
+	}
 }

@@ -30,6 +30,7 @@ public class TimeLeavingOfDailyPerformanceFinder extends FinderFacade {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.setWorkTimes(domain.getWorkTimes() != null ? domain.getWorkTimes().v() : null);
 			dto.setWorkAndLeave(ConvertHelper.mapTo(domain.getTimeLeavingWorks(),
 					(c) -> new WorkLeaveTimeDto(
 							c.getWorkNo().v(), 

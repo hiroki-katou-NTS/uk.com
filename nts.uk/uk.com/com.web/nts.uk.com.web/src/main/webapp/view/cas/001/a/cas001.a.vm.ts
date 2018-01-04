@@ -29,7 +29,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         checkboxSelectedAll: KnockoutObservable<boolean> = ko.observable(false);
 
         component: ccg.component.viewmodel.ComponentModel = new ccg.component.viewmodel.ComponentModel({
-            roleType: 1,
+            roleType: 8,
             multiple: false
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
@@ -250,9 +250,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         OpenCModal() {
 
-            let self = this;
+            let self = this,
+                currentRole = {
+                    roleList: self.personRoleList(),
+                    personRole: self.currentRole()
+                };
 
-            setShared('personRole', self.currentRole());
+            setShared('currentRole', currentRole);
 
 
 
@@ -291,7 +295,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 showHeader: true,
 
-                width: '830px',
+                width: '835px',
 
                 height: '315px',
 

@@ -12,6 +12,6 @@ public class KshmtFixedHolRestSet_ {
     public static volatile SingularAttribute<KshmtFixedHolRestSet, Integer> endTime;
     public static volatile SingularAttribute<KshmtFixedHolRestSet, Integer> exclusVer;
     public static volatile SingularAttribute<KshmtFixedHolRestSet, KshmtFixedHolRestSetPK> kshmtFixedHolRestSetPK;
-    public static volatile SingularAttribute<KshmtFixedHolRestSet, Integer> periodNo;
+    
 
 }

@@ -79,6 +79,7 @@ public class KshmtDtOtTimeSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt dt ot time set.
 	 */
 	public KshmtDtOtTimeSet() {
+		super();
 	}
 
 	/*

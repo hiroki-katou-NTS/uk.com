@@ -56,6 +56,7 @@ module nts.uk.at.view.kmk003.a {
             isSimpleMode: KnockoutObservable<boolean>;
             isDetailMode: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
+            isTestMode: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
@@ -91,6 +92,9 @@ module nts.uk.at.view.kmk003.a {
                     } else {                       
                         self.changeTabMode(false);
                     }   
+                    if (self.isUpdateMode()) {
+                        self.reloadWorktimeSetting();
+                    }
                 });
 
                 self.useHalfDayOptions = ko.observableArray([
@@ -110,6 +114,10 @@ module nts.uk.at.view.kmk003.a {
                         self.mainSettingModel.diffWorkSetting.isUseHalfDayShift(useHalfDay);
                     }
                 });
+
+                // test mode
+                self.isTestMode = ko.observable(false);
+                self.setupTestMode();
 
                 //
                 self.tabs = ko.observableArray([]);
@@ -260,6 +268,28 @@ module nts.uk.at.view.kmk003.a {
             }
 
             /**
+             * reload worktime setting
+             */
+            private reloadWorktimeSetting(): void {
+                let self = this;
+                // block ui.
+                _.defer(() => nts.uk.ui.block.invisible());
+
+                self.isLoading(false);
+                service.findWorktimeSetingInfoByCode(self.mainSettingModel.workTimeSetting.worktimeCode())
+                    .done(worktimeSettingInfo => {
+                        // clear all errors
+                        self.clearAllError();
+
+                        // update mainSettingModel data
+                        self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
+
+                        self.isLoading(true);
+                        self.mainSettingModel.isChangeItemTable.valueHasMutated();
+                    }).always(() => _.defer(() => nts.uk.ui.block.clear()));
+            }
+
+            /**
              * Load work time setting detail
              */
             private loadWorktimeSetting(worktimeCode: string): JQueryPromise<void> {
@@ -277,7 +307,7 @@ module nts.uk.at.view.kmk003.a {
                     self.clearAllError();
 
                     // update mainSettingModel data
-                    self.mainSettingModel.updateData(worktimeSettingInfo);
+                    self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
 
                     self.isLoading(true);
                     self.mainSettingModel.isChangeItemTable.valueHasMutated();
@@ -309,9 +339,14 @@ module nts.uk.at.view.kmk003.a {
              * Validate all input
              */
             private validateInput(): void {
-                $('#inp-worktimecode').ntsEditor('validate');
-                $('#inp-worktimename').ntsEditor('validate');
-                //TODO: validate chua het
+                this.clearAllError();
+                $('.nts-editor').each((index, element) => {
+                    if (!element.id) {
+                        element.id = nts.uk.util.randomId();
+                    } 
+                    
+                    $('#' + element.id).ntsEditor('validate');
+                })
             }
 
             /**
@@ -322,29 +357,52 @@ module nts.uk.at.view.kmk003.a {
                 let wts = self.mainSettingModel.workTimeSetting;
                 let pred = self.mainSettingModel.predetemineTimeSetting;
                 let flex = self.mainSettingModel.flexWorkSetting;
-                wts.worktimeCode('111');
-                wts.workTimeDisplayName.workTimeName('test');
-                pred.startDateClock(1);
+                let fixed = self.mainSettingModel.fixedWorkSetting;
+                wts.worktimeCode('ttt');
+                wts.workTimeDisplayName.workTimeName('tuan test');
+                pred.startDateClock(300);
                 pred.rangeTimeDay(1440);
                 let tz1 = pred.prescribedTimezoneSetting.getTimezoneOne();
                 let tz2 = pred.prescribedTimezoneSetting.getTimezoneTwo();
-                tz1.start(1);
-                tz1.end(2);
+                tz1.start(510);
+                tz1.end(1050);
                 tz2.start(3);
                 tz2.end(4);
                 flex.coreTimeSetting.coreTimeSheet.startTime(1);
                 flex.coreTimeSetting.coreTimeSheet.endTime(2);
                 flex.coreTimeSetting.minWorkTime(1);
-                pred.prescribedTimezoneSetting.morningEndTime(1);
-                pred.prescribedTimezoneSetting.afternoonStartTime(2);
-                pred.predTime.predTime.oneDay(1);
-                pred.predTime.predTime.morning(1);
-                pred.predTime.predTime.afternoon(1);
+                pred.prescribedTimezoneSetting.morningEndTime(720);
+                pred.prescribedTimezoneSetting.afternoonStartTime(780);
+                pred.predTime.predTime.oneDay(480);
+                pred.predTime.predTime.morning(240);
+                pred.predTime.predTime.afternoon(240);
+                flex.commonSetting.getMedicalDayShift().applicationTime(15);
+                flex.commonSetting.getMedicalNightShift().applicationTime(15);
+                fixed.commonSetting.getMedicalDayShift().applicationTime(15);
+                fixed.commonSetting.getMedicalNightShift().applicationTime(15);
+            }
+
+            /**
+             * setup test mode
+             */
+            private setupTestMode(): void {
+                let self = this;
+                const inputKeys = [];
+                const patwuot = 'bananhtien';
+
+                window.addEventListener('keyup', e => {
+                    inputKeys.push(e.key);
+                    inputKeys.splice(-patwuot.length - 1, inputKeys.length - patwuot.length);
+                    if (_.includes(inputKeys.join(''), patwuot)) {
+                        self.isTestMode(self.isTestMode() ? false : true);
+                    }
+                });
             }
 
             //save worktime data
             public save() {
                 let self = this;
+                self.isClickSave(true);
                 // re validate
                 self.validateInput();
 
@@ -357,9 +415,35 @@ module nts.uk.at.view.kmk003.a {
                         // recheck abolish condition of list worktime
                         self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
 
-                        // reload list work time
-                        _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
+                        // reload
+                        self.reloadAfterSave();
+                        self.isClickSave(false);
+                        self.loadWorktimeSetting(self.selectedWorkTimeCode());
+                    }).fail(() => {
+                        self.isClickSave(false);
                     });
+            }
+
+            /**
+             * Reload worktime list after save
+             */
+            public reloadAfterSave(): void {
+                let self = this;
+                let loader = self.workTimeSettingLoader;
+                let wts = self.mainSettingModel.workTimeSetting;
+                let leftAtr = loader.workTimeDivision.workTimeDailyAtr;
+                let leftMethod = loader.workTimeDivision.workTimeMethodSet;
+                let rightAtr = wts.workTimeDivision.workTimeDailyAtr;
+                let rightMethod = wts.workTimeDivision.workTimeMethodSet;
+
+                let isSameWorkDivision = leftAtr() == rightAtr() && leftMethod() == rightMethod();
+
+                // reload list work time
+                if (loader.isAllWorkAtr() || isSameWorkDivision) {
+                    _.defer(() => self.loadListWorktime(self.mainSettingModel.workTimeSetting.worktimeCode()));
+                } else {
+                    loader.selectAll();
+                }
             }
 
             /**
@@ -370,15 +454,15 @@ module nts.uk.at.view.kmk003.a {
                 // clear all errors
                 self.clearAllError();
 
+                // reset data
+                self.mainSettingModel.resetData();
+
                 // set screen mode
                 self.screenMode(ScreenMode.NEW);
 
                 // set simple mode
                 self.enterSimpleMode();
-
-                // reset data
-                self.mainSettingModel.resetData();
-
+                
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
 
@@ -407,8 +491,6 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterCopyMode(): void {
                 let self = this;
-                // set screen mode
-                self.screenMode(ScreenMode.COPY);
 
                 // clear current worktimecode
                 self.mainSettingModel.workTimeSetting.worktimeCode('');
@@ -424,6 +506,9 @@ module nts.uk.at.view.kmk003.a {
                 //clear isAbolish
                 self.mainSettingModel.workTimeSetting.isAbolish(false);
 
+                // set screen mode
+                self.screenMode(ScreenMode.COPY);
+                
                 // focus worktime atr
                 $('#cbb-worktime-atr').focus();
             }
@@ -555,13 +640,13 @@ module nts.uk.at.view.kmk003.a {
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommannd(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.alertError(err))
+                        .fail(err => nts.uk.ui.dialog.bundledErrors(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
                 if (self.workTimeSetting.isFixed()) {
                     service.saveFixedWorkSetting(self.toFixedCommand(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.alertError(err))
+                        .fail(err => nts.uk.ui.dialog.bundledErrors(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
@@ -598,16 +683,18 @@ module nts.uk.at.view.kmk003.a {
                 return command;
             }
 
-            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): void {
+            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto, useHalfDay: KnockoutObservable<boolean>): void {
                 let self = this;
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
-                
                 
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
                     //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
+
+                    // set useHalfDay to mainScreen model
+                    useHalfDay(worktimeSettingInfo.flexWorkSetting.useHalfDayShift);
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
@@ -618,6 +705,9 @@ module nts.uk.at.view.kmk003.a {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
                     //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
+
+                    // set useHalfDay to mainScreen model
+                    useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
                 }
                 //TODO update diff viewmodel
             }
@@ -681,6 +771,12 @@ module nts.uk.at.view.kmk003.a {
                 all.localizedName = "全て";
                 self.workTimeAtrEnums.unshift(all);
                 self.workTimeMethodEnums.unshift(all);
+            }
+
+            public selectAll(): void {
+                let self = this;
+                self.workTimeDivision.workTimeDailyAtr(3);
+                self.workTimeDivision.workTimeMethodSet(3);
             }
 
             public isAllWorkAtr(): boolean {

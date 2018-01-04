@@ -51,6 +51,7 @@ public class KshmtFlowFlowRtSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flow flow rt set.
 	 */
 	public KshmtFlowFlowRtSet() {
+		super();
 	}
 
 	/*

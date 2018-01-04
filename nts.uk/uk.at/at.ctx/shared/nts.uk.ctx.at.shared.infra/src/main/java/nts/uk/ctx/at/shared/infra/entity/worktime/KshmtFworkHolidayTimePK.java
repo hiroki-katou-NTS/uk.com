@@ -39,6 +39,7 @@ public class KshmtFworkHolidayTimePK implements Serializable {
 	 * Instantiates a new kshmt fwork holiday time PK.
 	 */
 	public KshmtFworkHolidayTimePK() {
+		super();
 	}
 
 	/*

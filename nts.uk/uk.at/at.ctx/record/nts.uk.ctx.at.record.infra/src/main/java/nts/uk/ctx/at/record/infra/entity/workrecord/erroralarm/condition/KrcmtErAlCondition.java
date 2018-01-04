@@ -50,28 +50,28 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "MESSAGE_DISPLAY")
 	public String messageDisplay;
 
-	@Column(name = "FiLTER_BY_BUSINESS_TYPE")
+	@Column(name = "FILTER_BY_BUSINESS_TYPE")
 	public BigDecimal filterByBusinessType;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlBusinessType> lstBusinessType;
 
-	@Column(name = "FiLTER_BY_JOB_TITLE")
+	@Column(name = "FILTER_BY_JOB_TITLE")
 	public BigDecimal filterByJobTitle;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlJobTitle> lstJobTitle;
 
-	@Column(name = "FiLTER_BY_EMPLOYMENT")
+	@Column(name = "FILTER_BY_EMPLOYMENT")
 	public BigDecimal filterByEmployment;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlEmployment> lstEmployment;
 
-	@Column(name = "FiLTER_BY_CLASSIFICATION")
+	@Column(name = "FILTER_BY_CLASSIFICATION")
 	public BigDecimal filterByClassification;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)

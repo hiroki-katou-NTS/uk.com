@@ -35,6 +35,7 @@ public class KshmtFstampReflectTimePK implements Serializable {
 	 * Instantiates a new kshmt fstamp reflect time PK.
 	 */
 	public KshmtFstampReflectTimePK() {
+		super();
 	}
 
 	/*

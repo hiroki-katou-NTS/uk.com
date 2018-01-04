@@ -35,6 +35,7 @@ public class KshmtFlowWorkSetPK implements Serializable {
 	 * Instantiates a new kshmt flow work set PK.
 	 */
 	public KshmtFlowWorkSetPK() {
+		super();
 	}
 
 	/*
