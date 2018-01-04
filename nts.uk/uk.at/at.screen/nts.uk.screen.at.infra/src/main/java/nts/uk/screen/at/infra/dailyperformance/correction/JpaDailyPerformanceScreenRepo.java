@@ -286,11 +286,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_FORMAT_SHEET = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT e FROM BsymtEmployment e ");
+		builderString.append("SELECT e FROM BsymtEmploymentHistItem e ");
 		builderString.append("JOIN  BsymtEmploymentHist b ");
-		builderString.append("ON e.bsymtEmploymentPK.cid =  b.companyId ");
+		builderString.append("ON e.hisId =  b.hisId ");
 		builderString.append("WHERE b.sid = :empId ");
-		builderString.append("AND e.bsymtEmploymentPK.cid = :companyId ");
+		builderString.append("AND b.companyId = :companyId ");
 		builderString.append("AND b.strDate <= :baseDate ");
 		builderString.append("AND b.endDate >= :baseDate");
 		SEL_EMPLOYMENT_HISTORY = builderString.toString();
@@ -630,10 +630,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public AffEmploymentHistoryDto getAffEmploymentHistory(String employeeId, DateRange dateRange) {
-		List<BsymtEmployment> entity = this.queryProxy().query(SEL_EMPLOYMENT_HISTORY, BsymtEmployment.class)
+		List<BsymtEmploymentHistItem> entity = this.queryProxy().query(SEL_EMPLOYMENT_HISTORY, BsymtEmploymentHistItem.class)
 				.setParameter("empId", employeeId).setParameter("baseDate", dateRange.getEndDate()).setParameter("companyId", AppContexts.user().companyId()).getList();
 		return entity.isEmpty()
-				? null :  new AffEmploymentHistoryDto(entity.get(0).getBsymtEmploymentPK().getCode(), employeeId);
+				? null :  new AffEmploymentHistoryDto(entity.get(0).empCode, employeeId);
 	}
 
 	@Override
