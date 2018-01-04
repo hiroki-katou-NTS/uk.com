@@ -61,6 +61,18 @@ module nts.uk.at.view.kmk003.a {
             constructor() {
                 let self = this;
                 self.mainSettingModel = new MainSettingModel();
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
+                    if (self.isNewMode()) {
+                        self.clearAllError();
+                        self.mainSettingModel.resetData(self.isNewMode());
+                    }
+                });
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
+                    if (self.isNewMode()) {
+                        self.clearAllError();
+                        self.mainSettingModel.resetData(self.isNewMode());
+                    }
+                });
 
                 self.workTimeSettingLoader = new WorkTimeSettingLoader();
                 
@@ -708,12 +720,15 @@ module nts.uk.at.view.kmk003.a {
                 //TODO update diff viewmodel
             }
             
-            resetData(){
+            resetData(isNewMode?: boolean){
                 this.workTimeSetting.resetData();
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();
                 this.flexWorkSetting.resetData();
                 this.commonSetting.resetData();
+                if (!isNewMode) {
+                    this.workTimeSetting.resetWorkTimeDivision();
+                }
                 //TODO update diff viewmodel
             }
         }
