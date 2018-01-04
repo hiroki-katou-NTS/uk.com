@@ -738,6 +738,12 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
                     $("." + column.cssClassName).css({ "min-width": "" });
                 });
+                if (!$(element)[0].hasAttribute('id')) {
+                    $(element).attr('id', nts.uk.util.randomId());
+                }
+                document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
+                    screenModel.itemList.valueHasMutated();
+                })
             });
         });
     }

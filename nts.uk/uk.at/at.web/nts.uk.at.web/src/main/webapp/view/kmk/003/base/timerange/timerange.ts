@@ -41,26 +41,22 @@ module kmk003.base.timerange {
             self.endInputId = nts.uk.util.randomId();
             // subscribe
             self.startTime.subscribe((newValue) => {
-                if (!self.validTimeRange(self.endInputId)) {
-                    return;
-                }
                 self.value().startTime = newValue;
                 self.value().endTime = self.endTime();
                 
                 // event callback
                 self.value.valueHasMutated();
                 self.fireEventChangeData();
+                self.validTimeRange(self.endInputId);
             });
             self.endTime.subscribe((newValue) => {
-                if (!self.validTimeRange(self.startInputId)) {
-                    return;
-                }
                 self.value().startTime = self.startTime();
                 self.value().endTime = newValue;
                 
                 // event callback
                 self.value.valueHasMutated();
                 self.fireEventChangeData();
+                self.validTimeRange(self.startInputId);
             });
         }
         
