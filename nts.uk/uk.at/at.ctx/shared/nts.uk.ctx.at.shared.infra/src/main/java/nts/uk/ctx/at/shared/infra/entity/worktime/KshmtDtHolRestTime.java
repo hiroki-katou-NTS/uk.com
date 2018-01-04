@@ -51,6 +51,7 @@ public class KshmtDtHolRestTime extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt dt hol rest time.
 	 */
 	public KshmtDtHolRestTime() {
+		super();
 	}
 
 	/*

@@ -75,6 +75,7 @@ public class KshmtFlexOtTimeSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flex ot time set.
 	 */
 	public KshmtFlexOtTimeSet() {
+		super();
 	}
 	
 

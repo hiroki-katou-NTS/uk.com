@@ -35,6 +35,7 @@ public class KshmtFlexRestSetPK implements Serializable {
 	 * Instantiates a new kshmt flex rest set PK.
 	 */
 	public KshmtFlexRestSetPK() {
+		super();
 	}
 	
 	/**

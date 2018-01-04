@@ -39,6 +39,7 @@ public class KshmtFlexStampReflectPK implements Serializable {
 	 * Instantiates a new kshmt flex stamp reflect PK.
 	 */
 	public KshmtFlexStampReflectPK() {
+		super();
 	}
 	
 	/**

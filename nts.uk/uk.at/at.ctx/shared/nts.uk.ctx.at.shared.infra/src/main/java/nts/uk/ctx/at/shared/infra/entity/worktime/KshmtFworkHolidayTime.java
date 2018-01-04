@@ -75,6 +75,7 @@ public class KshmtFworkHolidayTime extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt fwork holiday time.
 	 */
 	public KshmtFworkHolidayTime() {
+		super();
 	}
 
 	/*

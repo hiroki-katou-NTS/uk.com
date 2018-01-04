@@ -41,10 +41,11 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 	private EmployeeRequestAdapter employeeAdapter;
 
 	@Override
-	public String doDeny(String companyID, String appID, String employeeID) {
+	public String doDeny(String companyID, String appID, String employeeID, String memo) {
 		String strMail = "";
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
 		Boolean releaseFlg = approvalRootStateAdapter.doDeny(companyID, appID, employeeID);
+		approvalRootStateAdapter.updateReason(appID, employeeID, memo);
 		if(releaseFlg.equals(Boolean.TRUE)){
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
 			applicationRepository.updateWithVersion(application);

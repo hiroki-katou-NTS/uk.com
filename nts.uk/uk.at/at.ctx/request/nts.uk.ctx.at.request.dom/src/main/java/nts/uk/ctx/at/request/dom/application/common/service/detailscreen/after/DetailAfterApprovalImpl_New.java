@@ -61,6 +61,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				false, 
 				application.getAppType().value, 
 				application.getAppDate());
+		approvalRootStateAdapter.updateReason(appID, employeeID, memo);
 		if(allApprovalFlg.equals(Boolean.TRUE)){
 			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
 			applicationRepository.updateWithVersion(application);

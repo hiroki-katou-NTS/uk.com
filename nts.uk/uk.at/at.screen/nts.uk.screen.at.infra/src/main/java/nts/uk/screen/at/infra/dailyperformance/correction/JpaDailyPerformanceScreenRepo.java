@@ -47,7 +47,6 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60h
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplace;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment;
 import nts.uk.ctx.at.shared.infra.entity.worktime_old.KwtmtWorkTime;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
@@ -56,7 +55,6 @@ import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmploymentPK;
-import nts.uk.ctx.bs.employee.infra.entity.employment.affiliate.KmnmtAffiliEmploymentHist;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
@@ -100,7 +98,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkI
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInformationDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -112,10 +109,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_BUSINESS_TYPE;
 
 	private final static String SEL_FORMAT_DP_CORRECTION;
-
-	// private final static String SEL_CLOSURE;
-
-//	private final static String SEL_CLOSURE_ID;
 
 	private final static String SEL_CLOSURE_IDS;
 
@@ -204,41 +197,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" AND b.krcmtBusinessTypeDailyPK.businessTypeCode IN :lstBusinessTypeCode ");
 		builderString.append(" ORDER BY s.order ASC, b.krcmtBusinessTypeDailyPK.attendanceItemId ASC");
 		SEL_FORMAT_DP_CORRECTION = builderString.toString();
-
-		// builderString = new StringBuilder();
-		// builderString.append("SELECT closure FROM KclmtClosure closure JOIN
-		// ");
-		// builderString.append("BsymtEmployment emp JOIN ");
-		// builderString.append("KmnmtAffiliEmploymentHist hist ");
-		// builderString.append("WHERE hist.kmnmtEmploymentHistPK.empId = :sId
-		// ");
-		// builderString.append("AND hist.kmnmtEmploymentHistPK.strD <=
-		// :baseDate AND hist.endD >= :baseDate ");
-		// builderString.append("AND emp.bsymtEmploymentPK.cid = :companyId ");
-		// builderString.append("AND emp.bsymtEmploymentPK.code =
-		// hist.kmnmtEmploymentHistPK.emptcd ");
-		// builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
-		// builderString.append("AND closure.kclmtClosurePK.closureId =
-		// emp.workClosureId");
-		// SEL_CLOSURE = builderString.toString();
-
-		// builderString = new StringBuilder();
-		// builderString.append("SELECT closure FROM KclmtClosure closure JOIN
-		// ");
-		// builderString.append("KclmtClosureEmployment emp JOIN ");
-		// builderString.append("KmnmtAffiliEmploymentHist hist ");
-		// builderString.append("WHERE hist.kmnmtEmploymentHistPK.empId = :sId
-		// ");
-		// builderString.append("AND hist.kmnmtEmploymentHistPK.strD <=
-		// :baseDate AND hist.endD >= :baseDate ");
-		// builderString.append("AND emp.kclmpClosureEmploymentPK.companyId =
-		// :companyId ");
-		// builderString.append("AND emp.kclmpClosureEmploymentPK.employmentCD =
-		// hist.kmnmtEmploymentHistPK.emptcd ");
-		// builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
-		// builderString.append("AND closure.kclmtClosurePK.closureId =
-		// emp.closureId");
-		// SEL_CLOSURE_ID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT NEW ");
@@ -332,6 +290,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("JOIN  BsymtEmploymentHist b ");
 		builderString.append("ON e.bsymtEmploymentPK.cid =  b.companyId ");
 		builderString.append("WHERE b.sid = :empId ");
+		builderString.append("AND e.bsymtEmploymentPK.cid = :companyId ");
 		builderString.append("AND b.strDate <= :baseDate ");
 		builderString.append("AND b.endDate >= :baseDate");
 		SEL_EMPLOYMENT_HISTORY = builderString.toString();
@@ -419,37 +378,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("AND a.endD >= :baseDate ");
 		SEL_ALL_WORKPLACE = builderString.toString();
 
-	}
-
-	@Override
-	public ClosureDto getClosure(String sId, GeneralDate baseDate) {
-		// Optional<KclmtClosure> entity = this.queryProxy().query(SEL_CLOSURE,
-		// KclmtClosure.class)
-		// .setParameter("companyId",
-		// AppContexts.user().companyId()).setParameter("sId", sId)
-		// .setParameter("baseDate", baseDate).getSingle();
-		// if (entity.isPresent()) {
-		// return entity.map(c -> {
-		// return new ClosureDto(c.getKclmtClosurePK().getCid(),
-		// c.getKclmtClosurePK().getClosureId(),
-		// c.getUseClass(), c.getClosureMonth());
-		// }).get();
-		// }
-		return null;
-	}
-
-	@Override
-	public ClosureDto getClosureId(String sId, GeneralDate baseDate) {
-//		Optional<KclmtClosure> entity = this.queryProxy().query(SEL_CLOSURE_ID, KclmtClosure.class)
-//				.setParameter("companyId", AppContexts.user().companyId()).setParameter("sId", sId)
-//				.setParameter("baseDate", baseDate).getSingle();
-//		if (entity.isPresent()) {
-//			return entity.map(c -> {
-//				return new ClosureDto(c.getKclmtClosurePK().getCid(), c.getKclmtClosurePK().getClosureId(),
-//						c.getUseClass(), c.getClosureMonth());
-//			}).get();
-//		}
-		return null;
 	}
 
 	@Override
@@ -702,10 +630,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public AffEmploymentHistoryDto getAffEmploymentHistory(String employeeId, DateRange dateRange) {
-		Optional<BsymtEmployment> entity = this.queryProxy().query(SEL_EMPLOYMENT_HISTORY, BsymtEmployment.class)
-				.setParameter("empId", employeeId).setParameter("baseDate", dateRange.getEndDate()).getSingle();
-		return entity.isPresent()
-				? new AffEmploymentHistoryDto(entity.get().getBsymtEmploymentPK().getCode(), employeeId) : null;
+		List<BsymtEmployment> entity = this.queryProxy().query(SEL_EMPLOYMENT_HISTORY, BsymtEmployment.class)
+				.setParameter("empId", employeeId).setParameter("baseDate", dateRange.getEndDate()).setParameter("companyId", AppContexts.user().companyId()).getList();
+		return entity.isEmpty()
+				? null :  new AffEmploymentHistoryDto(entity.get(0).getBsymtEmploymentPK().getCode(), employeeId);
 	}
 
 	@Override
