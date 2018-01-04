@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+\<?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1"
 	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
@@ -24,7 +24,7 @@
 		<jar-file>lib/nts.uk.ctx.at.record.infra-0.3.6.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.request.infra-0.3.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.schedule.infra-0.4.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.at.shared.infra-0.4.18.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.shared.infra-0.4.20.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.pr.core.infra-0.2.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.pr.formula.infra-0.2.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.pr.report.infra-0.2.jar</jar-file>

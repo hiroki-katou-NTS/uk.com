@@ -366,6 +366,7 @@ public class DailyPerformanceErrorCodeProcessor {
 			List<Integer> lstAtdItem = new ArrayList<>();
 			List<Integer> lstAtdItemUnique = new ArrayList<>();
 			List<DPAttendanceItem> lstAttendanceItem = new ArrayList<>();
+			Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 			if (dailyPerformanceDto != null && dailyPerformanceDto.getSettingUnit() == SettingUnit.AUTHORITY) {
 				List<AuthorityFomatDailyDto> authorityFomatDailys = new ArrayList<>();
 				List<AuthorityFormatSheetDto> authorityFormatSheets = new ArrayList<>();
@@ -401,7 +402,6 @@ public class DailyPerformanceErrorCodeProcessor {
 				if (!authorityFomatDailys.isEmpty()) {
 					lstFormat = new ArrayList<FormatDPCorrectionDto>();
 					lstSheet = new ArrayList<DPSheetDto>();
-					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 					// set FormatCode for button A2_4
 					result.setFormatCode(authorityFomatDailys.stream().map(x -> x.getDailyPerformanceFormatCode())
 							.collect(Collectors.toSet()));
@@ -451,7 +451,6 @@ public class DailyPerformanceErrorCodeProcessor {
 					lstSheet = this.repo.getFormatSheets(lstBusinessTypeCode);
 					/// 対応するドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する
 					lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode);
-					Map<Integer, DPAttendanceItem> mapDP = new HashMap<>();
 					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
 					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
 					result.createSheets(lstSheet);
@@ -490,9 +489,12 @@ public class DailyPerformanceErrorCodeProcessor {
 			}
 			for (DPHeaderDto key : result.getLstHeader()) {
 				ColumnSetting columnSetting = new ColumnSetting(key.getKey(), false);
-				if (!key.getGroup().isEmpty()) {
+				if(!key.getGroup().isEmpty()){
 					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
 					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
+				}else{
+					DPAttendanceItem dPItem  = mapDP.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
 				}
 				result.getColumnSettings().add(columnSetting);
 

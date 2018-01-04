@@ -9,6 +9,9 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeSetMemento;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * The Class DeductionTimeDto.
+ */
 @Getter
 @Setter
 public class DeductionTimeDto implements DeductionTimeSetMemento{
@@ -19,6 +22,11 @@ public class DeductionTimeDto implements DeductionTimeSetMemento{
 	/** The end. */
 	private Integer end;
 
+	/**
+	 * Instantiates a new deduction time dto.
+	 */
+	public DeductionTimeDto() {}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

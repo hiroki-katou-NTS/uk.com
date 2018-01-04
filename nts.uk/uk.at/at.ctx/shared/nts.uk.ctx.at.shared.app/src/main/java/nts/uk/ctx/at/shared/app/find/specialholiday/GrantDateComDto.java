@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateCom;
 
 @Data
@@ -20,7 +21,7 @@ public class GrantDateComDto {
 	private int grantDateAtr;
 
 	/*一律基準日*/
-	private int grantDate;
+	private GeneralDate grantDate;
 	
 	private List<GrantDateSetDto> grantDateSets;
 
@@ -33,7 +34,7 @@ public class GrantDateComDto {
 				grantDateCom.getCompanyId(),
 				grantDateCom.getSpecialHolidayCode().v(),
 				grantDateCom.getGrantDateAtr().value,
-				grantDateCom.getGrantDate().v(),
+				grantDateCom.getGrantDate(),
 				setDto
 		);
 	}

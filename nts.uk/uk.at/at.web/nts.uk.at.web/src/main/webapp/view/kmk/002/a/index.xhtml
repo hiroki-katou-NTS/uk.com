@@ -12,6 +12,7 @@
                nts.uk.ctx.at.record.dom.optitem.NumberRangeValue
                nts.uk.ctx.at.record.dom.optitem.TimeRangeValue
                nts.uk.ctx.at.record.dom.optitem.AmountRangeValue
+               nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName
             </com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="kmk002.a.style.css" />
@@ -316,6 +317,7 @@
                                        name: '#[KMK002_40]',
                                        value: formulaName,
                                        enable: $parent.isUsed, 
+                                       constraint: 'FormulaName',
                                        required: true}"/>
                                     </td>
                                     <td>

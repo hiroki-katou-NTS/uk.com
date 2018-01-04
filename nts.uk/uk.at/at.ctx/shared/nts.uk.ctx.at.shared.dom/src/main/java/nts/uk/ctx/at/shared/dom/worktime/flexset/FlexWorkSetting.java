@@ -5,13 +5,20 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 
 /**
  * The Class FlexWorkSetting.
@@ -94,6 +101,28 @@ public class FlexWorkSetting extends AggregateRoot {
 		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
 		memento.setCalculateSetting(this.calculateSetting);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 * @param other the other
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlexWorkSetting other) {
+		// restore 平日勤務時間帯
+		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
+			
+			// convert map
+			Map<AmPmAtr, FlexHalfDayWorkTime> mapFixHalfWork = other.getLstHalfDayWorkTimezone().stream()
+					.collect(Collectors.toMap(item -> ((FlexHalfDayWorkTime) item).getAmpmAtr(), Function.identity()));
+			
+			this.lstHalfDayWorkTimezone.forEach(item -> item.restoreData(screenMode, this,
+					mapFixHalfWork.get(item.getAmpmAtr())));
+		} else {
+			this.lstHalfDayWorkTimezone = other.getLstHalfDayWorkTimezone();
+		}
 	}
 	
 }

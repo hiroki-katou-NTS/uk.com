@@ -14,7 +14,7 @@ body {
 	margin-left: 20px;
 }
 #search-div {
-	padding-left: 99px;
+	padding-left: 213px;
 	margin-bottom: 10px;
 }
 #search-div span:NTH-CHILD(3) {
@@ -58,5 +58,10 @@ div.nts-column{
 #contents-area{
 	overflow: hidden !important;
 }
-
-
+.inputTime{
+	width: 100px;
+    text-align: center !important;
+}
+.label{
+	margin-left: 10px;
+}

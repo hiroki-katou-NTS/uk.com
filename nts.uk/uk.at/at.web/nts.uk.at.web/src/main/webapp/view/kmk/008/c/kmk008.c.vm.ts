@@ -46,8 +46,9 @@ module nts.uk.at.view.kmk008.c {
                             nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                             return;
                         }
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                        self.startPage();
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(data) {
+                            self.startPage();
+                        });
                     });
                     return;
                 }
@@ -57,8 +58,9 @@ module nts.uk.at.view.kmk008.c {
                         nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
                         return;
                     }
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                    self.startPage();
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(data) {
+                        self.startPage();
+                    });
                 });
             }
 

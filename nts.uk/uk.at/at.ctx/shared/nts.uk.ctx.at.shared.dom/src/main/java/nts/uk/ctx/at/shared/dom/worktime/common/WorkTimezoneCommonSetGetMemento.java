@@ -32,7 +32,7 @@ public interface WorkTimezoneCommonSetGetMemento {
 	 *
 	 * @return the sub hol time set
 	 */
-	 WorkTimezoneOtherSubHolTimeSet getSubHolTimeSet();
+	 List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet();
 
 	/**
 	 * Gets the raising salary set.
