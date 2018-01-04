@@ -62,32 +62,42 @@ public class JpaFixRestHalfdayTzSetMemento implements FixRestTimezoneSetSetMemen
 	 */
 	@Override
 	public void setLstTimezone(List<DeductionTime> lstTimezone) {
-		// KSHMT_FIXED_HALF_REST_SET
-		if (CollectionUtil.isEmpty(lstTimezone)) {
-			// remove by condition
-			this.entity.setKshmtFixedHalfRestSets(this.entity.getKshmtFixedHalfRestSets().stream()
-					.filter(set -> set.getKshmtFixedHalfRestSetPK().getAmPmAtr() != this.type.value)
-					.collect(Collectors.toList()));
-			return;
-		}
 		
 		// Get settings with other type
 		List<KshmtFixedHalfRestSet> otherList = this.entity.getKshmtFixedHalfRestSets().stream()
 				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() != this.type.value)
 				.collect(Collectors.toList());
+				
+		// KSHMT_FIXED_HALF_REST_SET
+		if (CollectionUtil.isEmpty(lstTimezone)) {
+			this.entity.setKshmtFixedHalfRestSets(otherList);
+			return;
+		}
+		
+		// get list entity
+		List<KshmtFixedHalfRestSet> lstEntity = this.entity.getKshmtFixedHalfRestSets().stream()
+				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() == this.type.value)
+				.collect(Collectors.toList());
+		if (CollectionUtil.isEmpty(lstEntity)) {
+			lstEntity = new ArrayList<>();
+		}
+		
+		List<KshmtFixedHalfRestSet> newListEntity = new ArrayList<>();
 		
 		periodNo = 0;
-		otherList.addAll(lstTimezone.stream()
-				.map(domain -> {
-					periodNo++;
-					KshmtFixedHalfRestSetPK pk = new KshmtFixedHalfRestSetPK(this.cid, this.worktimeCd, this.type.value, periodNo);				
-					KshmtFixedHalfRestSet entity = new KshmtFixedHalfRestSet();
-					entity.setKshmtFixedHalfRestSetPK(pk);
-					domain.saveToMemento(new JpaFixedRestTZDeductionTimeSetMemento<KshmtFixedHalfRestSet>(entity));
-					return entity;
-				})
-				.collect(Collectors.toList()));
+		for (DeductionTime domain : lstTimezone) {			
+			periodNo++;
+			KshmtFixedHalfRestSetPK pk = new KshmtFixedHalfRestSetPK(this.cid, this.worktimeCd, this.type.value, periodNo);				
+			KshmtFixedHalfRestSet entity = new KshmtFixedHalfRestSet();
+			entity.setKshmtFixedHalfRestSetPK(pk);
+			domain.saveToMemento(new JpaFixedRestTZDeductionTimeSetMemento<KshmtFixedHalfRestSet>(entity));
+			
+			// add list
+			newListEntity.add(entity);
+		}
 		
-		this.entity.setKshmtFixedHalfRestSets(otherList);
+		newListEntity.addAll(otherList);
+		
+		this.entity.setKshmtFixedHalfRestSets(newListEntity);
 	}
 }
