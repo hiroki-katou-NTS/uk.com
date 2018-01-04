@@ -67,6 +67,10 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 	@Override
 	public void setLstWorkingTimezone(List<EmTimeZoneSet> lstWorkingTimezone) {
 		
+		if (CollectionUtil.isEmpty(this.parentEntity.getKshmtFixedWorkTimeSets())) {
+			this.parentEntity.setKshmtFixedWorkTimeSets(new ArrayList<>());
+		}
+		
 		List<KshmtFixedWorkTimeSet> otherList = this.parentEntity.getKshmtFixedWorkTimeSets().stream()
 				.filter(entity -> entity.getKshmtFixedWorkTimeSetPK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
@@ -122,6 +126,10 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 	 */
 	@Override
 	public void setLstOTTimezone(List<OverTimeOfTimeZoneSet> lstOTTimezone) {
+		
+		if (CollectionUtil.isEmpty(this.parentEntity.getKshmtFixedOtTimeSets())) {
+			this.parentEntity.setKshmtFixedOtTimeSets(new ArrayList<>());
+		}
 		
 		List<KshmtFixedOtTimeSet> otherList = this.parentEntity.getKshmtFixedOtTimeSets().stream()
 				.filter(entity -> entity.getKshmtFixedOtTimeSetPK().getAmPmAtr() != this.type)
