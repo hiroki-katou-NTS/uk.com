@@ -419,6 +419,8 @@ module nts.uk.at.view.kmk003.a {
                         self.reloadAfterSave();
                         self.isClickSave(false);
                         self.loadWorktimeSetting(self.selectedWorkTimeCode());
+                    }).fail(() => {
+                        self.isClickSave(false);
                     });
             }
 
