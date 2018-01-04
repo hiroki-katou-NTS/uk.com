@@ -386,7 +386,7 @@ module nts.uk.com.view.cps005.b {
                 } else if (value === 2) {
                     self.numericItem().numericItemMinus.subscribe(function(data) {
                         dataType = data;
-                        self.validateMin(dataType);
+                        self.numericItem().validateMin(dataType);
                     })
                 }
             });
@@ -477,8 +477,8 @@ module nts.uk.com.view.cps005.b {
         validateMin(datatype:number){
             if($("#integerPart").val() == "") return;
             let self = this;
-            let min = self.numericItemMin();
-            let max = self.numericItemMax();
+            let min = self.numericItemMin()?parseInt(self.numericItemMin().toString()):self.numericItemMin();
+            let max = self.numericItemMax()?parseInt(self.numericItemMax().toString()):self.numericItemMax();
             let milestone = Math.pow(10, self.integerPart());
             let minMilestone = milestone * (-1) + 1;
             let maxMilestone = milestone - 1;
