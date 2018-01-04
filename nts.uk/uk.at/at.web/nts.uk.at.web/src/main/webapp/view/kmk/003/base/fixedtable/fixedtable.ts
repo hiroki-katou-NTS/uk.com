@@ -751,9 +751,11 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
                     $("." + column.cssClassName).css({ "min-width": "" });
                 });
-                document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
-                    screenModel.itemList.valueHasMutated();
-                });
+                if (document.getElementById($(element)[0].id)) {
+                    document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
+                        screenModel.itemList.valueHasMutated();
+                    });
+                }
                 screenModel.initEventChangeComboBox($(element));
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
