@@ -129,7 +129,8 @@ public class PredetemineTimeSetting extends AggregateRoot {
 
 		// validate morning End time and afternoon start time
 		if (this.isOutOfRangeTimeDay(morningEnd, afternoonStart)) {
-			throw new BusinessException("Msg_516");
+			//throw new BusinessException("Msg_516");
+			//TODO: check useHalfDayShift in flex, fixed worksetting
 		}
 	}
 
