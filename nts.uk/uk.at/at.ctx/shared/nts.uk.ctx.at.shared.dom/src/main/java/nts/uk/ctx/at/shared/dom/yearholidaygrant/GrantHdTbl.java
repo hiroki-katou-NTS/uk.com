@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -172,7 +173,12 @@ public class GrantHdTbl extends AggregateRoot {
 		if (UseSimultaneousGrant.USE.equals(useSimultaneousGrant)) {
 			if (GrantSimultaneity.USE.equals(this.grantSimultaneity)) {
 				// 処理名4.付与日シュミレーション計算処理について
-				this.grantDate = simultaneousGrantDate.after(referenceDate) ? referenceDate : simultaneousGrantDate;
+				if ((referenceDate.month() == simultaneousGrantDate.month() && referenceDate.day() > simultaneousGrantDate.day()) || referenceDate.month() > simultaneousGrantDate.month()) {
+					this.grantDate = GeneralDate.ymd(referenceDate.year(), simultaneousGrantDate.month(), simultaneousGrantDate.day());;
+				} else {
+					this.grantDate = referenceDate;
+				}
+				//this.grantDate = simultaneousGrantDate.after(referenceDate) ? referenceDate : simultaneousGrantDate;
 			} else {
 				this.grantDate = referenceDate;
 			}
