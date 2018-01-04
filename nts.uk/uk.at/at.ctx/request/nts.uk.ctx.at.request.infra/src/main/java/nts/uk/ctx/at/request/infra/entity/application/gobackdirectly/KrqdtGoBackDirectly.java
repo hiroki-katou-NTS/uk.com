@@ -39,10 +39,10 @@ public class KrqdtGoBackDirectly extends UkJpaEntity{
 	public int workChangeAtr;
 	
 	@Column(name="WORK_TIME_START1")
-	public int workTimeStart1;
+	public Integer workTimeStart1;
 	
 	@Column(name="WORK_TIME_END1")
-	public int workTimeEnd1;
+	public Integer workTimeEnd1;
 	
 	@Column(name="WORK_LOCATION_CD1")
 	public String workLocationCd1;
@@ -54,10 +54,10 @@ public class KrqdtGoBackDirectly extends UkJpaEntity{
 	public int backHomeAtr1;
 	
 	@Column(name="WORK_TIME_START2")
-	public int workTimeStart2;
+	public Integer workTimeStart2;
 	
 	@Column(name="WORK_TIME_END2")
-	public int workTimeEnd2;
+	public Integer workTimeEnd2;
 
 	@Column(name="WORK_LOCATION_CD2")
 	public String workLocationCd2;

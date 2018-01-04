@@ -15,10 +15,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         workState : KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        appDate: KnockoutObservable<string> = ko.observable(moment().format(this.dateType));
+        appDate: KnockoutObservable<string> = ko.observable('');
         //TIME LINE 1
-        timeStart1: KnockoutObservable<number> = ko.observable(0);
-        timeEnd1: KnockoutObservable<number> = ko.observable(0);   
+        timeStart1: KnockoutObservable<number> = ko.observable(null);
+        timeEnd1: KnockoutObservable<number> = ko.observable(null);   
         //場所名前 
         workLocationCD: KnockoutObservable<string> = ko.observable('');
         workLocationName: KnockoutObservable<string> = ko.observable('');
@@ -33,8 +33,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //Go Work 2
         selectedGo2: any = ko.observable(1);
         //TIME LINE 2
-        timeStart2: KnockoutObservable<number> = ko.observable(0);
-        timeEnd2: KnockoutObservable<number> = ko.observable(0);
+        timeStart2: KnockoutObservable<number> = ko.observable(null);
+        timeEnd2: KnockoutObservable<number> = ko.observable(null);
         //場所名前 
         workLocationCD2: KnockoutObservable<string> = ko.observable('');
         workLocationName2: KnockoutObservable<string> = ko.observable('');
@@ -94,6 +94,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.appDate.subscribe(value => {
                         self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
                     });
+                    //フォーカス制御=>申請日付
+                    $('#inputdate').focus();
                 })                
             });
         }
@@ -468,9 +470,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     if (line == 1) {
                         self.workLocationCD(returnWorkLocationCD);
                         self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
+                        //フォーカス制御 => 直行区分1
+                        $('#goWorkAtr1').focus();
                     } else {
                         self.workLocationCD2(returnWorkLocationCD);
                         self.workLocationName2(self.findWorkLocationName(returnWorkLocationCD));
+                        //フォーカス制御 => 直行区分2
+                        $('#goWorkAtr2').focus();
                     };
                     nts.uk.ui.block.clear();
                 }
@@ -502,6 +508,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.workTypeName(childData.selectedWorkTypeName);
                     self.siftCD(childData.selectedWorkTimeCode);
                     self.siftName(childData.selectedWorkTimeName);
+                    //フォーカス制御 => 定型理由
+                    $('#combo-box').focus();
                 }
             })
         }
