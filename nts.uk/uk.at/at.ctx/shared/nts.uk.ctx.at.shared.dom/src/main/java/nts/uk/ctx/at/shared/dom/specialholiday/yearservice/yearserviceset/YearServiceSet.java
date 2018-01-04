@@ -45,6 +45,10 @@ public class YearServiceSet {
 	public static List<String> validateInput(List<YearServiceSet> yearServiceSetlst){
 		List<Integer> yearLst = new ArrayList<>();
 		List<String> bugLst = new ArrayList<>();
+		if(yearServiceSetlst.size() <= 0){
+			new BusinessException("Msg_145");
+			bugLst.add("Msg_145");
+		}
 		for(YearServiceSet item : yearServiceSetlst){ 
 			// check duplicate year
 			if(yearLst.contains(item.getYear())){

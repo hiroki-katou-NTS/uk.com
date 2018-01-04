@@ -10,5 +10,5 @@ public class KshmtFixedHolRestSetPK_ {
 
     public static volatile SingularAttribute<KshmtFixedHolRestSetPK, String> worktimeCd;
     public static volatile SingularAttribute<KshmtFixedHolRestSetPK, String> cid;
-
+    public static volatile SingularAttribute<KshmtFixedHolRestSetPK, Integer> periodNo;
 }

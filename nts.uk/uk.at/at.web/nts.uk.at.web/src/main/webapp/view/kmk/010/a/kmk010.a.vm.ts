@@ -33,10 +33,10 @@ module nts.uk.at.view.kmk010.a {
                 self.languageId = 'ja';
                 self.isManage = ko.observable(true);
                 self.checkRounding = ko.observable(0);
-                self.superHD60HConMedModel.roundingTime.subscribe(function(selectuint: number){
-                   self.updateSelectUnitRounding(selectuint); 
-                   self.checkRounding(selectuint);
+                self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number){
+                   self.updateSelectUnitRounding(selectUnit); 
                 });
+                
             }
 
             /**
@@ -326,13 +326,13 @@ module nts.uk.at.view.kmk010.a {
             /**
              * function update select unit rounding
              */
-            private updateSelectUnitRounding(selectunit: number){
+            private updateSelectUnitRounding(selectUnit: number){
                 var self = this;
                 //15 , 30
-                if ((self.checkRounding() == 15 || self.checkRounding() == 30) && selectunit != 15 && selectunit != 30) {
-                    self.lstRoundingSet(self.lstRoundingSub);
-                } else if((self.checkRounding() != 15 && self.checkRounding() != 30) && (selectunit == 15 || selectunit == 30)){
+                if (selectUnit == 15 || selectUnit == 30) {
                     self.lstRoundingSet(self.lstRounding);
+                } else {
+                    self.lstRoundingSet(self.lstRoundingSub);
                 }
             }
         }

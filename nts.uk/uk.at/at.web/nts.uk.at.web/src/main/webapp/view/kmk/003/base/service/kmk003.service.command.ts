@@ -23,6 +23,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 export interface FlexWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
                     flexWorkSetting: flexset.FlexWorkSettingDto;
+                    screenMode: TabMode;
                 }
             }
         }

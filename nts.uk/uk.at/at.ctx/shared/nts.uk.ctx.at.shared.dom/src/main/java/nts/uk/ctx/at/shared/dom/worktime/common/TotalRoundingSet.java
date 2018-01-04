@@ -25,10 +25,8 @@ public class TotalRoundingSet extends DomainObject {
 	/**
 	 * Instantiates a new total rounding set.
 	 *
-	 * @param setSameFrameRounding
-	 *            the set same frame rounding
-	 * @param frameStraddRoundingSet
-	 *            the frame stradd rounding set
+	 * @param setSameFrameRounding the set same frame rounding
+	 * @param frameStraddRoundingSet the frame stradd rounding set
 	 */
 	public TotalRoundingSet(int setSameFrameRounding, int frameStraddRoundingSet) {
 		super();
@@ -39,10 +37,8 @@ public class TotalRoundingSet extends DomainObject {
 	/**
 	 * Instantiates a new total rounding set.
 	 *
-	 * @param setSameFrameRounding
-	 *            the set same frame rounding
-	 * @param frameStraddRoundingSet
-	 *            the frame stradd rounding set
+	 * @param setSameFrameRounding the set same frame rounding
+	 * @param frameStraddRoundingSet the frame stradd rounding set
 	 */
 	public TotalRoundingSet(GoOutTimeRoundingMethod setSameFrameRounding,
 			GoOutTimeRoundingMethod frameStraddRoundingSet) {
@@ -54,8 +50,7 @@ public class TotalRoundingSet extends DomainObject {
 	/**
 	 * Instantiates a new total rounding set.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public TotalRoundingSet(TotalRoundingSetGetMemento memento) {
 		this.setSameFrameRounding = memento.getSetSameFrameRounding();
@@ -65,8 +60,7 @@ public class TotalRoundingSet extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(TotalRoundingSetSetMemento memento) {
 		memento.setSetSameFrameRounding(this.setSameFrameRounding);
@@ -76,14 +70,19 @@ public class TotalRoundingSet extends DomainObject {
 	/**
 	 * Restore data.
 	 *
-	 * @param screenMode
-	 *            the screen mode
-	 * @param oldDomain
-	 *            the old domain
+	 * @param oldDomain the old domain
 	 */
 	public void restoreData(TotalRoundingSet oldDomain) {
 		this.setSameFrameRounding = oldDomain.getFrameStraddRoundingSet();
 		this.frameStraddRoundingSet = oldDomain.getFrameStraddRoundingSet();
+	}
+	
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.setSameFrameRounding = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
+		this.frameStraddRoundingSet = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
 	}
 
 }

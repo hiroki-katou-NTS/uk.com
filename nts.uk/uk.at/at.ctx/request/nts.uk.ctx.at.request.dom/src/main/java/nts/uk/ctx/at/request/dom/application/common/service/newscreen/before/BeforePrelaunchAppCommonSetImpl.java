@@ -107,7 +107,8 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		}
 		
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する ( Execute the algorithm "Acquire employee affiliation employment history" )
-		String employmentCD = employeeAdaptor.getEmploymentCode(companyID, employeeID, baseDate);
+		//String employmentCD = employeeAdaptor.getEmploymentCode(companyID, employeeID, baseDate);
+		String employmentCD = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate).getEmploymentCode();
 		if(employmentCD ==null) {
 			throw new BusinessException("Msg_426");
 		}
