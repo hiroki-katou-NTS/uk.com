@@ -183,16 +183,27 @@ module nts.uk.at.view.kcp006.a {
             let events = []
             if (optionDates.length > 0) {
                 for (let i = 0; i < optionDates.length; i++) {
+                    let title = "";
+                    // if more than 3 lines display the 3rd line as '...'
                     for (let j = 0; j < optionDates[i].listText.length; j++) {
-                        events.push({
-                            id: (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase(),
-                            title: optionDates[i].listText[j],
-                            start: optionDates[i].start,
-                            end: optionDates[i].start,
-                            textColor: optionDates[i].textColor,
-                            color: optionDates[i].backgroundColor
-                        });
+                        if (title == "") {
+                            title += optionDates[i].listText[j];
+                        } else if (optionDates[i].listText.length > 3 && j == 2) {
+                            title += "\n。。。";
+                        } else if (optionDates[i].listText.length > 3 && j < 2) {
+                            title += ("\n" + optionDates[i].listText[j]);
+                        } else if (optionDates[i].listText.length == 3 && j < 3) {
+                            title += ("\n" + optionDates[i].listText[j]);
+                        }
                     }
+                    events.push({
+                        id: (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase(),
+                        title: title,
+                        start: optionDates[i].start,
+                        end: optionDates[i].start,
+                        textColor: optionDates[i].textColor,
+                        color: optionDates[i].backgroundColor
+                    });
                 }
             };
             // create duration month
@@ -203,6 +214,7 @@ module nts.uk.at.view.kcp006.a {
             //render view after load db
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
             if (lstDate.length > 0 && _.difference(lstDate, _lstDate).length > 0) {
+                // when init with new list date
                 fullCalendarRender.loadDataFromDB(lstDate, _lstHoliday, _lstEvent, workplaceId).done(() => {
                     $(container).fullCalendar('option', {
                         firstDay: firstDay,
@@ -214,18 +226,26 @@ module nts.uk.at.view.kcp006.a {
                             fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, _lstHoliday, _lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
                         }
                     });
+                    $(container).fullCalendar('removeEvents');
+                    $(container).fullCalendar('addEventSource', events, true);
                     $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
                 });
             } else if (lstDate.length > 0 && _.difference(lstDate, _lstDate).length === 0) {
-                let _events = $(container).fullCalendar('clientEvents');
+                // when the list date does not change but others change, no need to reload view render functions
+                // reload list event each day
+                let _events = $(container).fullCalendar('clientEvents'); // get current events
                 if (_events.length == 0 && events.length > 0) {
+                    // in case create new list event
                     $(container).fullCalendar('addEventSource', events, true);
                 } else if (_events.length > 0 && events.length > 0) {
+                    // in case update list event
                     _.forEach(events, (event) => {
                         let existedEvent = _.find(_events, (_event) => {
                             return _event.start.format("YYYY-MM-DD") == event.start;
                         });
+                        // check is existed event 
                         if (existedEvent) {
+                            // update existed event
                             if (event.title !== existedEvent.title) {
                                 existedEvent.title = event.title;
                                 existedEvent.textColor = event.textColor;
@@ -233,6 +253,7 @@ module nts.uk.at.view.kcp006.a {
                                 $(container).fullCalendar('updateEvent', existedEvent);
                             }
                         } else {
+                            // add new event
                             $(container).fullCalendar('addEventSource', [event]);
                         }
                     });
