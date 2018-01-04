@@ -378,7 +378,7 @@ module nts.uk.at.view.kmk010.a {
 
             toDto(): OvertimeDto {
                 var dto: OvertimeDto = {
-                    name: this.name(),
+                    name: this.name() == "" ? " " : this.name(),
                     overtime: this.overtime(),
                     overtimeNo: this.overtimeNo(),
                     useClassification: this.useClassification(),
@@ -440,7 +440,7 @@ module nts.uk.at.view.kmk010.a {
                 var dto: OutsideOTBRDItemDto = {
                     useClassification: this.useClassification(),
                     breakdownItemNo: this.breakdownItemNo(),
-                    name: this.name(),
+                    name: this.name() == "" ? " " : this.name(),
                     productNumber: this.productNumber(),
                     attendanceItemIds: this.attendanceItemIds()
                 };
