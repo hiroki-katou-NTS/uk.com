@@ -13,7 +13,7 @@ public interface YearServiceComRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	List<YearServiceSet> findAllSet (String companyId);
+	List<YearServiceSet> findAllSet (String companyId, String specialHolidayCode);
 	/**
 	 * update year month day
 	 * @param yearServiceSet
