@@ -5,10 +5,7 @@ module nts.uk.at.view.kaf007.share {
             //勤務変更申請
             workChange: KnockoutObservable<AppWorkChange>;                
             //申請
-            application: KnockoutObservable<ApplicationCommand>;
-            //Phase list
-            appApprovalPhases: Array<AppApprovalPhase>;
-            
+            application: KnockoutObservable<ApplicationCommand>;            
             //Data working
             dataWork:KnockoutObservable<DataWork>;
             constructor()
@@ -16,7 +13,6 @@ module nts.uk.at.view.kaf007.share {
                 let self = this;
                 self.workChange = ko.observable(new AppWorkChange());
                 self.application = ko.observable(new ApplicationCommand());
-                self.appApprovalPhases = [];
                 self.dataWork= ko.observable(new DataWork());
             }
         }
@@ -124,7 +120,6 @@ module nts.uk.at.view.kaf007.share {
            reflectPerEnforce: number;
            startDate: KnockoutObservable<string>;
            endDate: KnockoutObservable<string>;
-           listPhase: Array<any>;
            constructor() {
                let self = this;
                self.prePostAtr = ko.observable(0);

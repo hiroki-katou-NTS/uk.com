@@ -15,7 +15,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
@@ -78,9 +78,6 @@ public class AppOvertimeFinder {
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	
 	@Inject
-	private StartApprovalRootService startApprovalRootService;
-	
-	@Inject
 	private  StartCheckErrorService  startCheckErrorService;
 	
 	@Inject
@@ -108,9 +105,6 @@ public class AppOvertimeFinder {
 	private IOvertimePreProcess iOvertimePreProcess;
 	
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-	
-	@Inject
 	private OvertimeRepository overtimeRepository;
 	
 	@Inject
@@ -128,7 +122,7 @@ public class AppOvertimeFinder {
 	public OverTimeDto getOvertimeByUIType(String url,String appDate,int uiType){
 		
 		OverTimeDto result = new OverTimeDto();
-		ApplicationDto applicationDto = new ApplicationDto();
+		ApplicationDto_New applicationDto = new ApplicationDto_New();
 		List<OvertimeInputDto> overTimeInputs = new ArrayList<>();
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
@@ -236,11 +230,11 @@ public class AppOvertimeFinder {
 		}
 		AppOverTime appOverTime = opAppOverTime.get();
 		OverTimeDto overTimeDto = OverTimeDto.fromDomain(appOverTime);
-		String employeeName = employeeAdapter.getEmployeeName(appOverTime.getApplication().getApplicantSID());
+		String employeeName = employeeAdapter.getEmployeeName(appOverTime.getApplication().getEmployeeID());
 		overTimeDto.setEmployeeName(employeeName);
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
-				appOverTime.getApplication().getApplicantSID(),
-				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appOverTime.getApplication().getApplicationDate());
+				appOverTime.getApplication().getEmployeeID(),
+				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appOverTime.getApplication().getAppDate());
 		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
 		if(requestAppDetailSettings != null){
 			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
@@ -253,7 +247,7 @@ public class AppOvertimeFinder {
 					overTimeDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
 					
 					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
-					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, appOverTime.getApplication().getApplicantSID(),requestAppDetailSetting.get(0),appEmploymentWorkType);
+					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, appOverTime.getApplication().getEmployeeID(),requestAppDetailSetting.get(0),appEmploymentWorkType);
 					
 					List<String> workTypeCodes = new ArrayList<>();
 					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
@@ -262,7 +256,7 @@ public class AppOvertimeFinder {
 					overTimeDto.setWorkTypes(workTypeCodes);
 					
 					// 08_就業時間帯取得(lay loai gio lam viec) 
-					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, appOverTime.getApplication().getApplicantSID(), requestAppDetailSetting.get(0));
+					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, appOverTime.getApplication().getEmployeeID(), requestAppDetailSetting.get(0));
 					List<String> siftCodes = new ArrayList<>();
 					for(SiftType siftType : siftTypes){
 						siftCodes.add(siftType.getSiftCode());
@@ -353,9 +347,9 @@ public class AppOvertimeFinder {
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				overTimeDto.setDisplayBonusTime(true);
 				List<BonusPayTimeItem> bonusPayTimeItems= this.iOvertimePreProcess.getBonusTime(
-						appOverTime.getApplication().getApplicantSID(),
+						appOverTime.getApplication().getEmployeeID(),
 						overtimeRestAppCommonSet,
-						appOverTime.getApplication().getApplicationDate().toString(DATE_FORMAT),
+						appOverTime.getApplication().getAppDate().toString(DATE_FORMAT),
 						companyID, 
 						overTimeDto.getSiftType());
 				for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
@@ -393,7 +387,7 @@ public class AppOvertimeFinder {
 		overTimeDto.setOverTimeInputs(overTimeInputs);
 		//01-09_事前申請を取得
 				if(overTimeDto.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
-					AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(appOverTime.getApplication().getApplicantSID(),overtimeRestAppCommonSet, appOverTime.getApplication().getApplicationDate().toString(DATE_FORMAT),appOverTime.getApplication().getPrePostAtr().value);
+					AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, appOverTime.getApplication().getEmployeeID(),overtimeRestAppCommonSet, appOverTime.getApplication().getAppDate().toString(DATE_FORMAT),appOverTime.getApplication().getPrePostAtr().value);
 					if(appOvertime != null){
 						PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 						convertOverTimeDto(companyID,preAppOvertimeDto,overTimeDto,appOvertime);
@@ -424,7 +418,7 @@ public class AppOvertimeFinder {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		OverTimeDto result = new OverTimeDto();
-		ApplicationDto applicationDto = new ApplicationDto();
+		ApplicationDto_New applicationDto = new ApplicationDto_New();
 		PreAppOvertimeDto preAppOvertimeDto = new PreAppOvertimeDto();
 		// 申請日を変更する : chưa xử lí(Hung)
 		
@@ -442,7 +436,7 @@ public class AppOvertimeFinder {
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
 			
-			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,prePostAtr);
+			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, employeeID,overtimeRestAppCommonSet, appDate,prePostAtr);
 			if(appOvertime != null){
 				result.setPreAppPanelFlg(true);
 				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
@@ -537,7 +531,7 @@ public class AppOvertimeFinder {
 	 * @param overTimeInputs
 	 */
 	private void getData(OverTimeDto result,int uiType,String appDate,String companyID,String employeeID,
-			AppCommonSettingOutput appCommonSettingOutput,ApplicationDto applicationDto,int overtimeAtr,
+			AppCommonSettingOutput appCommonSettingOutput,ApplicationDto_New applicationDto,int overtimeAtr,
 			List<OvertimeInputDto> overTimeInputs,PreAppOvertimeDto preAppOvertimeDto){
 		//申請日付を取得 : lay thong tin lam them
 		applicationDto.setApplicationDate(appDate);
@@ -691,7 +685,7 @@ public class AppOvertimeFinder {
 		}
 		//01-09_事前申請を取得
 		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
-			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
+			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
 			if(appOvertime != null){
 				result.setPreAppPanelFlg(true);
 				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
@@ -728,8 +722,8 @@ public class AppOvertimeFinder {
 	 */
 	private void convertOverTimeDto(String companyID,PreAppOvertimeDto preAppOvertimeDto, OverTimeDto result,AppOverTime appOvertime){
 		if(appOvertime.getApplication() != null){
-			if(appOvertime.getApplication().getApplicationDate() != null){
-				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getApplicationDate().toString(DATE_FORMAT));
+			if(appOvertime.getApplication().getAppDate() != null){
+				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getAppDate().toString(DATE_FORMAT));
 			}
 		}
 		

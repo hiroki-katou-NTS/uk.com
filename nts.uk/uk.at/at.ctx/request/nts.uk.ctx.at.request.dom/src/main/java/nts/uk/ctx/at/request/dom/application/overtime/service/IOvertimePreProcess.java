@@ -88,7 +88,7 @@ public interface IOvertimePreProcess {
 	 * @return
 	 */
 	
-	public AppOverTime getPreApplication(String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
+	public AppOverTime getPreApplication(String companyID, String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
 	
 	/**
 	 * 01-10_0時跨ぎチェック
