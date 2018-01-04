@@ -6,15 +6,15 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 
 /**
  * The Class JpaFixRestHalfdayTzSetMemento.
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet
 public class JpaFixRestHalfdayTzSetMemento implements FixRestTimezoneSetSetMemento {
 
 	/** The entity sets. */
-	private List<KshmtFixedHalfRestSet> entitySets;
+	private KshmtFixedWorkSet entity;
 	
 	/** The cid. */
 	private String cid;
@@ -31,7 +31,10 @@ public class JpaFixRestHalfdayTzSetMemento implements FixRestTimezoneSetSetMemen
 	private String worktimeCd;
 	
 	/** The type. */
-	private int type;
+	private AmPmAtr type;
+	
+	/** The period no. */
+	private int periodNo;
 
 	/**
 	 * Instantiates a new jpa fix rest halfday tz set memento.
@@ -39,14 +42,14 @@ public class JpaFixRestHalfdayTzSetMemento implements FixRestTimezoneSetSetMemen
 	 * @param entitySets
 	 *            the entity sets
 	 */
-	public JpaFixRestHalfdayTzSetMemento(List<KshmtFixedHalfRestSet> entitySets, String cid, String worktimeCd, int type) {
+	public JpaFixRestHalfdayTzSetMemento(KshmtFixedWorkSet entity, String cid, String worktimeCd, AmPmAtr type) {
 		super();
-		this.entitySets = entitySets;
+		this.entity = entity;
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
 		this.type = type;
-		if (CollectionUtil.isEmpty(this.entitySets)) {
-			this.entitySets = new ArrayList<>();
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFixedHalfRestSets())) {
+			this.entity.setKshmtFixedHalfRestSets(new ArrayList<>());
 		}
 	}
 
@@ -60,24 +63,57 @@ public class JpaFixRestHalfdayTzSetMemento implements FixRestTimezoneSetSetMemen
 	@Override
 	public void setLstTimezone(List<DeductionTime> lstTimezone) {
 		// KSHMT_FIXED_HALF_REST_SET
+//		if (CollectionUtil.isEmpty(lstTimezone)) {
+//			// remove by condition
+//			this.entity.setKshmtFixedHalfRestSets(this.entity.getKshmtFixedHalfRestSets().stream()
+//					.filter(set -> set.getKshmtFixedHalfRestSetPK().getAmPmAtr() != this.type.value)
+//					.collect(Collectors.toList()));
+//			return;
+//		}
+//		
+//		// Get settings with other type
+//		List<KshmtFixedHalfRestSet> otherList = this.entity.getKshmtFixedHalfRestSets().stream()
+//				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() != this.type.value)
+//				.collect(Collectors.toList());
+//		
+//		// Get settings with current type
+//		List<KshmtFixedHalfRestSet> currentList = this.entity.getKshmtFixedHalfRestSets().stream()
+//				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() == this.type.value)
+//				.collect(Collectors.toList());
+//		
+//		
+//		Map<KshmtFixedHalfRestSetPK, KshmtFixedHalfRestSet> currentSets = this.entity.getKshmtFixedHalfRestSets().stream()
+//				.map(KshmtFixedHalfRestSet.class::cast)
+//				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() == this.type.value)
+//				.collect(Collectors.toMap(entity -> entity.getKshmtFixedHalfRestSetPK(), Function.identity()));
+//		
+//		currentList.addAll(lstTimezone.stream()
+//				.map(domain -> {
+//					KshmtFixedHalfRestSetPK pk = new KshmtFixedHalfRestSetPK(this.cid, this.worktimeCd, this.type.value);				
+//					KshmtFixedHalfRestSet entity = currentSets.get(pk);
+//					if (entity == null) {
+//						entity = new KshmtFixedHalfRestSet();
+//						entity.setKshmtFixedHalfRestSetPK(pk);
+//					}			
+//					domain.saveToMemento(new JpaFixedRestTZDeductionTimeSetMemento<KshmtFixedHalfRestSet>(entity));
+//					return entity;
+//				})
+//				.collect(Collectors.toList()));
+//		
+//		this.entity.setKshmtFixedHalfRestSets(currentList);
+		
 		if (CollectionUtil.isEmpty(lstTimezone)) {
-			return;
+			this.entity.setKshmtFixedHalfRestSets(new ArrayList<>());
+		} else {
+			periodNo = 0;
+			this.entity.setKshmtFixedHalfRestSets(lstTimezone.stream().map(domain -> {
+				periodNo++;
+				KshmtFixedHalfRestSetPK pk = new KshmtFixedHalfRestSetPK(this.cid, this.worktimeCd, this.type.value, periodNo);				
+				KshmtFixedHalfRestSet entity = new KshmtFixedHalfRestSet();
+				entity.setKshmtFixedHalfRestSetPK(pk);
+				domain.saveToMemento(new JpaFixedRestTZDeductionTimeSetMemento<KshmtFixedHalfRestSet>(entity));
+				return entity;
+			}).collect(Collectors.toList()));
 		}
-		Map<KshmtFixedHalfRestSetPK, KshmtFixedHalfRestSet> currentSets = this.entitySets.stream()
-				.map(KshmtFixedHalfRestSet.class::cast)
-				.collect(Collectors.toMap(entity -> entity.getKshmtFixedHalfRestSetPK(), Function.identity()));
-
-		this.entitySets.addAll(lstTimezone.stream()
-				.map(domain -> {
-					KshmtFixedHalfRestSetPK pk = new KshmtFixedHalfRestSetPK(this.cid, this.worktimeCd, this.type);				
-					KshmtFixedHalfRestSet entity = currentSets.get(pk);
-					if (entity == null) {
-						entity = new KshmtFixedHalfRestSet();
-						entity.setKshmtFixedHalfRestSetPK(pk);
-					}			
-					domain.saveToMemento(new JpaFixedRestTZDeductionTimeSetMemento<KshmtFixedHalfRestSet>(entity));
-					return entity;
-				})
-				.collect(Collectors.toList()));
 	}
 }
