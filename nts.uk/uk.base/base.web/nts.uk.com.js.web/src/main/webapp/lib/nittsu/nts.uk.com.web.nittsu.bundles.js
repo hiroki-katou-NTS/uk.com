@@ -2865,6 +2865,7 @@ var nts;
             var login;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+                var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
                 function keepUsedLoginPage() {
                     uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
                 }
@@ -2877,6 +2878,20 @@ var nts;
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+                function keepSerializedSession() {
+                    var dfd = $.Deferred();
+                    request.ajax("/shr/web/session/serialize").done(function (res) {
+                        uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+                        dfd.resolve();
+                    });
+                    return dfd.promise();
+                }
+                login.keepSerializedSession = keepSerializedSession;
+                function restoreSessionTo(webAppId) {
+                    var serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+                    return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket);
+                }
+                login.restoreSessionTo = restoreSessionTo;
             })(login = request.login || (request.login = {}));
             function resolvePath(path) {
                 var destination;
