@@ -305,27 +305,29 @@ module nts.uk.at.view.kmk003.a {
              * Load work time setting detail
              */
             private loadWorktimeSetting(worktimeCode: string): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-                self.isLoading(false);
-                // block ui.
-                _.defer(() => nts.uk.ui.block.invisible());
+                if (worktimeCode) {
+                    let self = this;
+                    let dfd = $.Deferred<void>();
+                    self.isLoading(false);
+                    // block ui.
+                    _.defer(() => nts.uk.ui.block.invisible());
 
-                service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
-                    // enter update mode
-                    self.enterUpdateMode();
+                    service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
+                        // enter update mode
+                        self.enterUpdateMode();
 
-                    // clear all errors
-                    self.clearAllError();
+                        // clear all errors
+                        self.clearAllError();
 
-                    // update mainSettingModel data
-                    self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
+                        // update mainSettingModel data
+                        self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
 
-                    self.isLoading(true);
-                    self.mainSettingModel.isChangeItemTable.valueHasMutated();
-                    dfd.resolve();
-                }).always(() => _.defer(() => nts.uk.ui.block.clear()));
-                return dfd.promise();
+                        self.isLoading(true);
+                        self.mainSettingModel.isChangeItemTable.valueHasMutated();
+                        dfd.resolve();
+                    }).always(() => _.defer(() => nts.uk.ui.block.clear()));
+                    return dfd.promise();
+                }
             }
             
             /**
