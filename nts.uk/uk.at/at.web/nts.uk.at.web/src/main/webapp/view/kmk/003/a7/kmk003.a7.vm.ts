@@ -30,6 +30,11 @@ module a7 {
         isFixedRestTime: KnockoutObservable<boolean>;
         isFlexOrFlowNotUse: KnockoutObservable<boolean>;
         isCheckFollowTime: KnockoutObservable<boolean>;
+        
+        //init for backup
+//        backUpOfFixedOrDiffTime: any;
+        backUpOfFlowOrFlexUse: any;
+        backUpOfFlowOrFlexNotUse: any;
         /**
         * Constructor.
         */
@@ -41,6 +46,9 @@ module a7 {
             //main model
             self.mainSettingModel = mainSettingModel;
             
+//            self.backUpOfFixedOrDiffTime=null;
+            self.backUpOfFlowOrFlexUse=null;
+            self.backUpOfFlowOrFlexNotUse=null;
 
             self.isCheckFollowTime = ko.observable(true);
             self.isCheckFollowTime.subscribe(function() {
@@ -65,7 +73,7 @@ module a7 {
             self.fixTableOptionForFlowOrFlexUse = {
                 maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceForFlowOrFlexUse,
                 isMultipleSelect: true,
@@ -120,6 +128,15 @@ module a7 {
             
             self.useFixedRestTime.subscribe((v) => {
                 self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(v == UseDivision.USE);
+                //TODO load
+//                self.dataSourceForFixedOrDiffTime(self.backUpOfFixedOrDiffTime);
+                if (v) {
+                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                }
+                else {
+                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                }
+                self.updateDataModel();
             });
             
             //load data to screen 
@@ -127,6 +144,9 @@ module a7 {
             isLoading.subscribe((isDone: boolean) => {
                 if (isDone) {
                     self.updateDataModel();
+//                    self.backUpOfFixedOrDiffTime = self.dataSourceForFixedOrDiffTime();
+                    self.backUpOfFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.toDto();
+                    self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.toDto();
                 }
             });
             
@@ -321,6 +341,7 @@ module a7 {
                 });
                 
                 isClickSave.subscribe((v) => {
+                    screenModel.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(screenModel.useFixedRestTime()==UseDivision.USE);
                     if (v) {
                         screenModel.dataSourceForFlowOrFlexNotUse1.valueHasMutated();
                         screenModel.dataSourceForFlowOrFlexNotUse2.valueHasMutated();
