@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Builder;
 import lombok.Getter;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -51,7 +52,9 @@ public class BreakDownTimeDay extends DomainObject{
 		// 1日＞午後 => Msg_518
 		if (this.oneDay.valueAsMinutes() > this.morning.valueAsMinutes()
 				|| this.oneDay.valueAsMinutes() > this.afternoon.valueAsMinutes()) {
-			throw new BusinessException("Msg_518");
+			BundledBusinessException be = BundledBusinessException.newInstance();
+			be.addMessage("Msg_518");
+			be.throwExceptions();
 		}
 		
 		// １日の範囲時間内であること => Msg_781

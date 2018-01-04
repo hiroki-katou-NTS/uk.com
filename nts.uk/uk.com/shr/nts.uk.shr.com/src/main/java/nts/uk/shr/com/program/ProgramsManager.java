@@ -895,17 +895,23 @@ public class ProgramsManager {
 	 */
 	public static final Program KDW007C  = new Program(WebAppId.AT, ProgramIdConsts.KDW007C, "#KDW007_92",
 			"/view/kdw/007/c/index.xhtml");
+
+	/**
+	 * KDW008A
+	 */
+	public static final Program KDW008A  = new Program(WebAppId.AT, ProgramIdConsts.KDW008A, "#KDW008_1",
+			"/view/kdw/008/a/index.xhtml");
 	
 	/**
-	 * KDW007A
+	 * KDW008B
 	 */
-	public static final Program KDW008B  = new Program(WebAppId.AT, ProgramIdConsts.KDW008B, "",
+	public static final Program KDW008B  = new Program(WebAppId.AT, ProgramIdConsts.KDW008B, "#KDW008_1",
 			"/view/kdw/008/b/index.xhtml");
 	
 	/**
-	 * KDW007A
+	 * KDW008C
 	 */
-	public static final Program KDW008C  = new Program(WebAppId.AT, ProgramIdConsts.KDW008C, "",
+	public static final Program KDW008C  = new Program(WebAppId.AT, ProgramIdConsts.KDW008C, "#KDW008_33",
 			"/view/kdw/008/c/index.xhtml");
 	
 	/**

@@ -144,7 +144,7 @@ module nts.uk.at.view.kdw008.a {
                 self.businessTypeList([]);
                 new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
                     if (data && data.length > 0) {
-                        data = _.orderBy(data, ["dailyPerformanceFormatCode"], ['asc']);
+                        data = _.orderBy(data, ["dailyPerformanceFormatCode"], ['asc']); 
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
                         self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
@@ -329,8 +329,9 @@ module nts.uk.at.view.kdw008.a {
                     nts.uk.ui.block.invisible();
                     if (self.isUpdate() == true) {
                         new service.Service().updateDailyDetail(addOrUpdateDailyFormat).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.reloadData(self.currentDailyFormatCode());
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
+                               self.reloadData(self.currentDailyFormatCode()); 
+                            });
                             $("#currentName").focus();
                         }).always(function() {
                             nts.uk.ui.block.clear();
@@ -339,8 +340,9 @@ module nts.uk.at.view.kdw008.a {
                         });
                     } else {
                         new service.Service().addDailyDetail(addOrUpdateDailyFormat).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.reloadData(self.currentDailyFormatCode());
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
+                               self.reloadData(self.currentDailyFormatCode()); 
+                            });
                             $("#currentName").focus();
                         }).always(function() {
                             nts.uk.ui.block.clear();
