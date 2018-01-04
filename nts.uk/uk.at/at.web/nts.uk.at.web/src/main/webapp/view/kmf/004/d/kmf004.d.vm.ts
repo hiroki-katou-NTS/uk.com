@@ -111,7 +111,7 @@ module nts.uk.at.view.kmf004 {
                 self.value = ko.observable('');
                 self.enable = ko.observable(true);
                 self.selectedId = ko.observable(0);
-                self.items = ko.observableArray([]);
+                self.items = ko.observableArray([]);  
                 self.lst = ko.observableArray([]);
                 self.display = ko.observable(false);
                 self.start();
@@ -121,7 +121,7 @@ module nts.uk.at.view.kmf004 {
                 var self = this;
                 var dfd = $.Deferred();
                 service.findAll(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData) => {
-                    let sortedData = _.orderBy(lstData, ['specialHolidayCode'], ['asc']);
+                    let sortedData = _.orderBy(lstData, ['yearServiceNo'], ['asc']);
                     self.items([]);
                     $("#button_radio").focus();
                     for (let i = 0; i < 20; i++) {
@@ -172,7 +172,7 @@ module nts.uk.at.view.kmf004 {
                         self.addListError(errors);
                     } else {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
-                            service.findAll(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'));
+                            self.start();
                             $("#button_radio").focus();
                         });
                     }
