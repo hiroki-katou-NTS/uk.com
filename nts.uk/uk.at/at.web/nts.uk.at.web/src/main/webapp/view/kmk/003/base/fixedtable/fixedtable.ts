@@ -693,7 +693,7 @@ module nts.fixedtable {
             var self = this;
             if (element) {
                 element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
-                    self.itemList.valueHasMutated();
+                    _.defer(() => self.itemList.valueHasMutated());
                 });
             }
         }
@@ -757,7 +757,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.initEventChangeComboBox($(element));
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
-                    screenModel.itemList.valueHasMutated();
+                    _.defer(() => screenModel.itemList.valueHasMutated());
                 })
             });
         });
