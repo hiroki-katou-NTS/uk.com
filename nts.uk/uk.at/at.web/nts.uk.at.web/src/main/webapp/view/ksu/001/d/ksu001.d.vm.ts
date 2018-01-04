@@ -89,6 +89,10 @@ module nts.uk.at.view.ksu001.d.viewmodel {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.windows.close();
             });
+            
+            setShared('dataFromScreenD', {
+                clickCloseDialog: false
+            });
 
         }
 
