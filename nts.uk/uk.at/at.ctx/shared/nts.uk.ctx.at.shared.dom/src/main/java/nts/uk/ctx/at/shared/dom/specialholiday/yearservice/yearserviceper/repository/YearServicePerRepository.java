@@ -48,7 +48,7 @@ public interface YearServicePerRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	List<YearServicePer> findAllPer (String companyId);
+	List<YearServicePer> findAllPer (String companyId, String specialHolidayCode);
 	/**
 	 * update name
 	 * @param yearServicePer

@@ -1,14 +1,14 @@
 module nts.uk.at.view.kmf004.e.service {
     
     var paths: any = {
-        getAllPer: "at/shared/yearserviceper/findAllPer",
+        getAllPer: "at/shared/yearserviceper/findAllPer/",
         update: "at/shared/yearserviceper/update",
         add: "at/shared/yearserviceper/add",
         remove: "at/shared/yearserviceper/delete"  
     }
     
-    export function getAll(){
-        return nts.uk.request.ajax(paths.getAllPer);    
+    export function getAll(specialHolidayCode: String) : JQueryPromise<any>{
+        return nts.uk.request.ajax(paths.getAllPer + specialHolidayCode);    
     }
     
     export function update(command: viewmodel.Per): JQueryPromise<Array<string>>{

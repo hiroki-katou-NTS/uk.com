@@ -39,6 +39,7 @@ public class KshmtDiffTimeHolSetPK implements Serializable {
 	 * Instantiates a new kshmt diff time hol set PK.
 	 */
 	public KshmtDiffTimeHolSetPK() {
+		super();
 	}
 
 	/*

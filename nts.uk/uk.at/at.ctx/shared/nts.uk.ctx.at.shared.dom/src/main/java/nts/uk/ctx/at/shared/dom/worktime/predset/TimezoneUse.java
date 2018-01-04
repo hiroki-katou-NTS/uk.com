@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -34,6 +35,24 @@ public class TimezoneUse extends TimeZone {
 	 */
 	public void updateEndTime(TimeWithDayAttr end) {
 		this.end = end;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZone#validate()
+	 */
+	@Override
+	public void validate() {
+		if (this.isUsed() && this.start.greaterThanOrEqualTo(this.end)) {
+			throw new BusinessException("Msg_770");
+		}
+	}
+
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.start = TimeWithDayAttr.THE_PRESENT_DAY_0000;
+		this.end = TimeWithDayAttr.THE_PRESENT_DAY_0000;
 	}
 	
 	/**

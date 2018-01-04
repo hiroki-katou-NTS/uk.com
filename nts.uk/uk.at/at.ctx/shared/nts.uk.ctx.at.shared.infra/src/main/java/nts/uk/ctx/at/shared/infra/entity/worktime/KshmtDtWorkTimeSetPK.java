@@ -43,6 +43,7 @@ public class KshmtDtWorkTimeSetPK implements Serializable {
 	 * Instantiates a new kshmt dt work time set PK.
 	 */
 	public KshmtDtWorkTimeSetPK() {
+		super();
 	}
 
 	/*

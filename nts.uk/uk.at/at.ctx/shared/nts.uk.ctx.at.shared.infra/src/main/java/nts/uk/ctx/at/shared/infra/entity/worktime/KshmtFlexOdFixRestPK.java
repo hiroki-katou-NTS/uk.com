@@ -39,6 +39,7 @@ public class KshmtFlexOdFixRestPK implements Serializable {
 	 * Instantiates a new kshmt flex od fix rest PK.
 	 */
 	public KshmtFlexOdFixRestPK() {
+		super();
 	}
 	
 
