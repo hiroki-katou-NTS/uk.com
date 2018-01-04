@@ -185,7 +185,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     isAbolition: self.ckbIsAbolition() === true ? 1 : 0,
                     isRequired: self.isRequired(),
                     dataType: self.dataType(),
-                    selectionItemId: self.currentItem().itemTypeState.dataTypeState.typeCode,
+                    selectionItemId: self.dataType() === 1? null: (self.currentItem().itemTypeState.dataTypeState !== undefined? self.currentItem().itemTypeState.dataTypeState.typeCode : null),
                     personEmployeeType: self.currentCategory.personEmployeeType
                 },
                 baseDate = moment(new Date()).format('YYYY-MM-DD');

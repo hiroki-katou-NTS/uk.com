@@ -1,7 +1,6 @@
 package nts.uk.ctx.pereg.app.command.person.info.category;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
