@@ -22,6 +22,6 @@ public interface GoBackDirectlyRepository {
 	 * 
 	 * @param goBackDirectly
 	 */
-	public void delete(GoBackDirectly goBackDirectly);
+	public void delete(String companyID, String appID);
 
 }

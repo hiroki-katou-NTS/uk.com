@@ -62,15 +62,17 @@ public class AppDataDateFinder {
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate appGeneralDate = GeneralDate.fromString(appDate, DATE_FORMAT);
 		OutputMessageDeadline outputMessageDeadline = getDataAppCfDetailFinder.getDataConfigDetail(new ApplicationMetaDto("", appTypeValue, appGeneralDate));
-		ApprovalRootPattern approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
-				companyID, 
-				employeeID, 
-				EmploymentRootAtr.APPLICATION, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appGeneralDate,
-				appID);
+		ApprovalRootPattern approvalRootPattern = null;
 		ApplicationDto_New applicationDto = null;
 		if(Strings.isNotBlank(appID)){
+			approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
+					companyID, 
+					employeeID, 
+					EmploymentRootAtr.APPLICATION, 
+					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+					appGeneralDate,
+					appID,
+					false);
 			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 			applicationDto = ApplicationDto_New.builder()
 					.version(application.getVersion())
@@ -93,6 +95,15 @@ public class AppDataDateFinder {
 					.reflectPlanTime(application.getReflectionInformation().getDateTimeReflection().map(x -> x.toString(DATE_FORMAT)).orElse(null))
 					.reflectPerTime(application.getReflectionInformation().getDateTimeReflectionReal().map(x -> x.toString(DATE_FORMAT)).orElse(null))
 					.build();
+		} else {
+			approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
+					companyID, 
+					employeeID, 
+					EmploymentRootAtr.APPLICATION, 
+					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+					appGeneralDate,
+					appID,
+					true);
 		}
 		if(isStartUp.equals(Boolean.TRUE)){
 			startupErrorCheckService.startupErrorCheck(appGeneralDate, approvalRootPattern.getApprovalRootContentImport());

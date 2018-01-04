@@ -151,7 +151,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 service.calculateGrantDate(dataTranfer).done(function(res) {
                     self.bindData(res);
                 }).fail(function(error){
-                    nts.uk.ui.dialog.alertError(error.message);    
+                    nts.uk.ui.dialog.alertError({messageId: error.messageId});    
                 });
             } else {
                 nts.uk.ui.dialog.alert({ messageId: "Msg_272" });
@@ -204,7 +204,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
                 nts.uk.ui.windows.close();
             }).fail(function(error){
-                nts.uk.ui.dialog.alertError(error.message);    
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });    
             });
         }
         

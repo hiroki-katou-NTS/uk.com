@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime_old.WorkTimeFinder;
+import nts.uk.ctx.at.shared.app.find.worktime_old.WorktimeFinderNew;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 
@@ -50,6 +51,9 @@ public class WorkTimeWebService extends WebService {
 	/** The work time finder. */
 	@Inject
 	private WorkTimeFinder workTimeFinder;
+	
+	@Inject
+	private WorktimeFinderNew worktimeFinderNew_ver1;
 
 	/** The flow handler. */
 	@Inject
@@ -155,7 +159,19 @@ public class WorkTimeWebService extends WebService {
 	public WorkTimeDto findByWorkTimeCode(@PathParam("workTimeCode") String workTimeCode){
 		return this.workTimeFinder.findById(workTimeCode);
 	}
-
+	// waitting nws
+	@POST
+	@Path("findByCodeListVer1")
+	public List<WorkTimeDto> findByCodeList_Ver1(List<String> codelist) {
+		return this.worktimeFinderNew_ver1.findByCodeList(codelist);
+	}
+	
+	@POST
+	@Path("findByTimeVer1")
+	public List<WorkTimeDto> findByTimeVer1(WorkTimeCommandFinder command) {
+		return this.worktimeFinderNew_ver1.findByTime(command.codelist, command.startTime,
+				command.endTime);
+	}
 	/**
 	 * Save.
 	 *
@@ -228,8 +244,8 @@ public class WorkTimeWebService extends WebService {
 @NoArgsConstructor
 class WorkTimeCommandFinder {
 	List<String> codelist;
-	int startAtr;
-	int startTime;
+	Integer startAtr;
+	Integer startTime;
 	int endAtr;
-	int endTime;
+	Integer endTime;
 }

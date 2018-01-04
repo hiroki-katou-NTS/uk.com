@@ -66,7 +66,11 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 //self.listEmployeeSwapTemp(_.clone(newListEmployeeSwap));
                 self.teamName(_.find(self.listTeam(), ['code', self.selectedTeam()]).name);
             });
-
+            self.selectedEmployeeSwap.subscribe(()=>{
+                let employees =_.orderBy(self.listEmployeeSwap(),['empId'],['asc']);
+                self.listEmployeeSwap(employees);
+                
+            });
             self.onlyEmpNotTeam.subscribe(function(value) {
                 self.filterEmpNotTeam(value);
             });
@@ -142,6 +146,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                             employee.teamCode = team.teamCode;
                             employee.teamCodeOld = team.teamCode;
                             employee.teamName = team.teamName;
+                        }else{
+                            employee.teamName = "なし";
                         }
                     } else {
                         employee.teamName = "なし";
@@ -164,6 +170,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     arrayTeam.push(team);
                 });
                 self.listTeam(arrayTeam);
+                self.filterEmpNotTeam(self.onlyEmpNotTeam());
                 dfd.resolve();
             }).fail(() => {
                 dfd.reject();
@@ -236,7 +243,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 self.listEmployeeSwap(teamSelected);
             } else {
                 let newListEmployeeSwap = self.listEmployeeSwap().concat(self.listEmployeeTemporary());
-                self.listEmployeeSwap(newListEmployeeSwap);
+                let employees =_.orderBy(newListEmployeeSwap,['empId'],['asc']);
+                self.listEmployeeSwap(employees);
             }
         }
     }

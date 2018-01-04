@@ -36,6 +36,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		builderString.append("SELECT e");
 		builderString.append(" FROM BcmmtCompanyInfor e");
 		builderString.append(" WHERE e.isAbolition = 0 ");
+		builderString.append(" ORDER BY e.companyCode ");
 		GETALLCOMPANY = builderString.toString();
 	}
 	/**
@@ -151,7 +152,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.shortComName = domain.getShortComName().v();
 		entity.isAbolition = domain.getIsAbolition().value;
 		entity.startMonth = domain.getStartMonth().value;
-		entity.taxNo = domain.getTaxNo() != null && !StringUtil.isNullOrEmpty(domain.getTaxNo().v(), true) ? new BigDecimal(domain.getTaxNo().v()) : null;
+		entity.taxNo = domain.getTaxNo() != null && !StringUtil.isNullOrEmpty(domain.getTaxNo().v(), true) ? domain.getTaxNo().v() : null;
 		if (domain.getAddInfor() != null) {
 			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor());
 		}
