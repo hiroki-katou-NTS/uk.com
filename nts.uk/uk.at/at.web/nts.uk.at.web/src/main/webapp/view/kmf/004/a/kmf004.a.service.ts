@@ -6,8 +6,13 @@ module nts.uk.at.view.kmf004.a.service {
         updateSpecialHoliday: "shared/specialholiday/update",
         findWorkType: "at/screen/worktype/findAll",
         findEmployment: "bs/employee/employment/findAll",
-        findClass: "bs/employee/classification/findAll"
+        findClass: "bs/employee/classification/findAll",
+        findAllGrantRelationship: "at/shared/grantrelationship/findAll/"
     }
+    
+    export function findAllGrantRelationship(specialHolidayCode: String): JQueryPromise<any>{
+        return nts.uk.request.ajax(paths.findAllGrantRelationship+specialHolidayCode);    
+    } 
 
     export function findAllSpecialHoliday(): JQueryPromise<Array<viewmodel.model.ISpecialHolidayDto>> {
         return nts.uk.request.ajax("at",paths.findAllSpecialHoliday);

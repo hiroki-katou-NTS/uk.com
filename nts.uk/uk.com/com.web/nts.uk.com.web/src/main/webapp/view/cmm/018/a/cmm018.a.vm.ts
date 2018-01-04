@@ -1579,7 +1579,7 @@ module nts.uk.com.view.cmm018.a {
             workplaceIdB: KnockoutObservable<string> = ko.observable('');
             ENDDATE_LATEST:string = '9999/12/31';
             //_____button Edit History___
-            enableDeleteB: KnockoutObservable<boolean> = ko.observable(true);
+            enableDeleteB: KnockoutObservable<boolean> = ko.observable(false);
             enableCreatNewB: KnockoutObservable<boolean> = ko.observable(true);
             constructor(){
                 let self = this;
@@ -1589,7 +1589,6 @@ module nts.uk.com.view.cmm018.a {
                     if(codeChanged == '-1' || codeChanged == '' ){
                         return;
                     }
-//                    self.enableDeleteB(true);
                     //TH: company
                     if(self.tabSelectedB()==0){
                         self.enableCreatNewB(true);
@@ -1610,9 +1609,7 @@ module nts.uk.com.view.cmm018.a {
                         //TH: 1,2,appName
                         else{
                             self.showItem(codeChanged);
-                            if(codeChanged !== null){
-                                self.enableDeleteB(self.checkEnableEditHistButton(codeChanged));
-                            }
+                            self.enableDeleteB(false);
                         }
                     }
                     //TH: work place
@@ -1634,9 +1631,7 @@ module nts.uk.com.view.cmm018.a {
                         //TH: 1,2,appName
                         else{
                             self.showItem(codeChanged);
-                            if(codeChanged !== null){
-                                self.enableDeleteB(self.checkEnableEditHistButton(codeChanged));
-                            }
+                            self.enableDeleteB(false);
                         }
                     }
                         
@@ -1659,10 +1654,7 @@ module nts.uk.com.view.cmm018.a {
                         //TH: 1,2,appName
                         else{
                             self.showItem(codeChanged);
-                            if(codeChanged !== null){
-                                self.enableDeleteB(self.checkEnableEditHistButton(codeChanged));
-                            }
-                            
+                            self.enableDeleteB(false);
                         }
                     }
                     self.comRoot.valueHasMutated();
@@ -1694,7 +1686,6 @@ module nts.uk.com.view.cmm018.a {
                         self.historyStr('');
                         self.dataSourceB();
                         self.cpA([]);
-                        self.enableDeleteB(false);
                         self.lstCompany([]);
                         self.singleSelectedCode(null);
                         self.dataDisplay(self.convert(lstRoot));
@@ -1703,7 +1694,6 @@ module nts.uk.com.view.cmm018.a {
                         dfd.resolve();
                         return dfd.promise();
                     }
-                    self.enableDeleteB(true);
                      __viewContext.viewModel.viewmodelA.enableRegister(true);
                     self.dataSourceB(data);
                     self.lstCompany(data.lstCompanyRoot);
@@ -1751,13 +1741,11 @@ module nts.uk.com.view.cmm018.a {
                         self.singleSelectedCode(null);
                         self.lstWorkplace([]);
                         self.dataDisplay(self.convert(lstRoot));
-                        self.enableDeleteB(false);
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
                     }
-                    self.enableDeleteB(true);
                     __viewContext.viewModel.viewmodelA.enableRegister(true);
                     self.dataSourceB(data);
                     self.lstWorkplace(data.lstWorkplaceRoot);
@@ -1803,13 +1791,11 @@ module nts.uk.com.view.cmm018.a {
                         self.singleSelectedCode(null);
                         self.lstPerson([]);
                         self.dataDisplay(self.convert(lstRoot));
-                        self.enableDeleteB(false);
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
                     }
-                    self.enableDeleteB(true);
                     __viewContext.viewModel.viewmodelA.enableRegister(true);
                     self.dataSourceB(data);
                     self.lstPerson(data.lstPersonRoot);
@@ -2607,58 +2593,6 @@ module nts.uk.com.view.cmm018.a {
                     let a1 = new vmbase.CompanyAppRootADto(false, value.employRootAtr, value.value, value.localizedName, '', '','', b, b, b, b, b);
                     self.comRoot(a1); 
                 }
-            }
-            /**
-             * check enable button edit history
-             * TH: select appName
-             * + history of application: exist -> return true;
-             * + history of application: not exist -> return false;
-             */
-            checkEnableEditHistButton(appName: string): boolean{
-                let self = this;
-                if(appName == getText("CMM018_7")){
-                    return true;
-                }
-                let app = self.findAppbyName(appName);
-                if(app == undefined){//common
-                    app = new vmbase.ApplicationType(null,'共通ルート',0);
-                }
-                let checkRootExist = self.findRootByType(app.value, app.employRootAtr, self.tabSelectedB());
-                return checkRootExist;
-            }
-            findRootByType(appType: number, employRootAtr: number, mode: number): boolean{
-                let self = this;
-                let check = false;
-                if(mode == vmbase.RootType.COMPANY){
-                    _.each(self.lstCompany(), function(obj: vmbase.CompanyAppRootDto){
-                        if(obj.company.employmentRootAtr == employRootAtr){
-                            if(obj.company.applicationType == appType || obj.company.confirmationRootType == appType){
-                                check = true;
-                                return;
-                            }
-                        }
-                    });
-                }else if(mode == vmbase.RootType.WORKPLACE){
-                   _.each(self.lstWorkplace(), function(obj: vmbase.WorkPlaceAppRootDto){
-                        if(obj.workplace.employmentRootAtr == employRootAtr){
-                            if(obj.workplace.applicationType == appType || obj.workplace.confirmationRootType == appType){
-                                check = true;
-                                return;
-                            }
-                        }
-                    }); 
-                }else{
-                    _.each(self.lstPerson(), function(obj: vmbase.PersonAppRootDto){
-                        if(obj.person.employmentRootAtr == employRootAtr){
-                            if(obj.person.applicationType == appType || obj.person.confirmationRootType == appType){
-                                check = true;
-                                return;
-                            }
-                        }
-                    });
-                    
-                }
-                return check;
             }
         }
     }

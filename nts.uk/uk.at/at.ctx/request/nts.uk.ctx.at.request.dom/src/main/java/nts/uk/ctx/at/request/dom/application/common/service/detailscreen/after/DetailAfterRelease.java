@@ -17,6 +17,6 @@ public interface DetailAfterRelease {
 	 * @param application Application
 	 * @param loginID Login ID
 	 */
-	public void detailAfterRelease(String companyID, String appID, String loginID);
+	public void detailAfterRelease(String companyID, String appID, String loginID, String memo);
 	
 }
