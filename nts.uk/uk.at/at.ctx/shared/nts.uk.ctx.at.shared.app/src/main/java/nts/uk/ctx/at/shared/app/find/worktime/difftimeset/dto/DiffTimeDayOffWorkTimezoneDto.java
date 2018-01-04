@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
  * The Class TimeDiffDayOffWorkTimezone.
  */
 @Getter
+@Setter
 public class DiffTimeDayOffWorkTimezoneDto implements DiffTimeDayOffWorkTimezoneSetMemento {
 
 	/** The rest timezone. */

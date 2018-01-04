@@ -31,15 +31,8 @@ module nts.uk.at.view.kcp006.a {
         }
     }
 
-    var _lstDate: Array<any> = [];
-    var _lstHoliday: Array<any> = [];
-    var _lstEvent: Array<any> = [];
-    var S4 = function() {
-        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-    }
 
     class CalendarBindingHandler implements KnockoutBindingHandler {
-
         /**
          * Constructor.
          */
@@ -105,7 +98,7 @@ module nts.uk.at.view.kcp006.a {
                 },
                 eventOrder: 'id',
                 defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
-                height: 500,
+                height: 550,
                 showNonCurrentDates: false,
                 handleWindowResize: false,
                 dragable: false,
@@ -120,7 +113,6 @@ module nts.uk.at.view.kcp006.a {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var self = this;
             //property default
             let eventDisplay = true;
             let eventUpdatable = true;
@@ -180,31 +172,23 @@ module nts.uk.at.view.kcp006.a {
                 return val === "Invalid date";
             });
             //convert date options to events
-            let events = []
+            let events = [];
             if (optionDates.length > 0) {
-                for (let i = 0; i < optionDates.length; i++) {
-                    let title = "";
-                    // if more than 3 lines display the 3rd line as '...'
-                    for (let j = 0; j < optionDates[i].listText.length; j++) {
-                        if (title == "") {
-                            title += optionDates[i].listText[j];
-                        } else if (optionDates[i].listText.length > 3 && j == 2) {
-                            title += "\n。。。";
-                        } else if (optionDates[i].listText.length > 3 && j < 2) {
-                            title += ("\n" + optionDates[i].listText[j]);
-                        } else if (optionDates[i].listText.length == 3 && j < 3) {
-                            title += ("\n" + optionDates[i].listText[j]);
-                        }
+                events = optionDates.map(function(option) {
+                    let lstEvent = [];
+                    for (let i = 0; i < option.listText.length; i++) {
+                        lstEvent.push({
+                            id: i,
+                            title: option.listText[i],
+                            start: option.start,
+                            textColor: option.textColor,
+                            color: option.backgroundColor
+                        });
                     }
-                    events.push({
-                        id: (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase(),
-                        title: title,
-                        start: optionDates[i].start,
-                        end: optionDates[i].start,
-                        textColor: optionDates[i].textColor,
-                        color: optionDates[i].backgroundColor
-                    });
-                }
+                    return lstEvent;
+                }).reduce(function(a, b) {
+                    return a.concat(b);
+                });
             };
             // create duration month
             let durationMonth = 1;
@@ -212,55 +196,24 @@ module nts.uk.at.view.kcp006.a {
                 durationMonth = 2;
             };
             //render view after load db
+            let lstHoliday = [];
+            let lstEvent = [];
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-            if (lstDate.length > 0 && _.difference(lstDate, _lstDate).length > 0) {
-                // when init with new list date
-                fullCalendarRender.loadDataFromDB(lstDate, _lstHoliday, _lstEvent, workplaceId).done(() => {
-                    $(container).fullCalendar('option', {
-                        firstDay: firstDay,
-                        validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
-                        viewRender: function(view, element) {
-                            fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, _lstHoliday, _lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
-                        },
-                        eventAfterAllRender: function(view) {
-                            fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, _lstHoliday, _lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
-                        }
-                    });
-                    $(container).fullCalendar('removeEvents');
-                    $(container).fullCalendar('addEventSource', events, true);
-                    $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
+            fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
+                $(container).fullCalendar('option', {
+                    firstDay: firstDay,
+                    validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
+                    viewRender: function(view, element) {
+                        fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                    },
+                    eventAfterAllRender: function(view) {
+                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
+                    }
                 });
-            } else if (lstDate.length > 0 && _.difference(lstDate, _lstDate).length === 0) {
-                // when the list date does not change but others change, no need to reload view render functions
-                // reload list event each day
-                let _events = $(container).fullCalendar('clientEvents'); // get current events
-                if (_events.length == 0 && events.length > 0) {
-                    // in case create new list event
-                    $(container).fullCalendar('addEventSource', events, true);
-                } else if (_events.length > 0 && events.length > 0) {
-                    // in case update list event
-                    _.forEach(events, (event) => {
-                        let existedEvent = _.find(_events, (_event) => {
-                            return _event.start.format("YYYY-MM-DD") == event.start;
-                        });
-                        // check is existed event 
-                        if (existedEvent) {
-                            // update existed event
-                            if (event.title !== existedEvent.title) {
-                                existedEvent.title = event.title;
-                                existedEvent.textColor = event.textColor;
-                                existedEvent.color = event.color;
-                                $(container).fullCalendar('updateEvent', existedEvent);
-                            }
-                        } else {
-                            // add new event
-                            $(container).fullCalendar('addEventSource', [event]);
-                        }
-                    });
-                }
+                $(container).fullCalendar('removeEvents');
+                $(container).fullCalendar('addEventSource', events);
                 $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
-            }
-            _lstDate = lstDate;
+            });
         }
     }
 

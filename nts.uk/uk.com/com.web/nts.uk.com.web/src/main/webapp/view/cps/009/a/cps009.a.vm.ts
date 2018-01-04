@@ -254,7 +254,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             // để set lại selected cho combox của cột 2 của item
                             let i: number = _.indexOf(_.map(ko.toJS(self.currentCategory().itemList()), function(obj) {
                                 return obj.perInfoItemDefId;
-                            }), item.perInfoItemDefId);
+                            }), item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
                             }

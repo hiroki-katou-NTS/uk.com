@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetSetMemento;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
  * The Class FlowRestSetDto.
  */
 @Getter
+@Setter
 public class FlowRestSetDto implements FlowRestSetSetMemento {
 
 	/** The use stamp. */
