@@ -129,7 +129,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.roundingTime(0);
+                    this.roundingTime(0);                                       
                     this.rounding(1);
                 }
             }
@@ -1086,7 +1086,8 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.totalRoundingSet
+                    this.totalRoundingSet.resetData();
+                    this.diffTimezoneSetting.resetData();
                 }
             }
 
@@ -1111,6 +1112,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.fontRearSection(0);
+                    this.roundingTimeUnit(0);
+                }
             }
 
             export class RoundingSetModel {
@@ -1133,6 +1139,10 @@ module nts.uk.at.view.kmk003.a {
                         section: this.section()
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    this.roundingSet.resetData();
                 }
             }
 
@@ -1157,6 +1167,10 @@ module nts.uk.at.view.kmk003.a {
                         stampAtr: this.stampAtr()
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    this.stampAtr(0);
                 }
             }
 
@@ -1216,10 +1230,13 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.roundingSets = [];
-                    this.prioritySets = [];
-                    this.initPrioritySets();
-                    this.initRoundingSets();
+                    this.roundingSets.forEach(function(item, index) {
+                        item.resetData();
+                    });
+
+                    this.prioritySets.forEach(function(item, index) {
+                        item.resetData();
+                    });
                 }
             }
 
