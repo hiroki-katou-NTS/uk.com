@@ -532,10 +532,16 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         openGDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('KMF004G_SPHD_CD', self.currentItem().specialHolidayCode());
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml').onClosed(function(): any {
-            });
-
+            service.findAllGrantRelationship(self.currentItem().specialHolidayCode()).done((lstData: Array<viewmodel.GrantRelationship>) => {
+                if(lstData.length == 0){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_375" });
+                    return;
+                }else{
+                    nts.uk.ui.windows.setShared('KMF004G_SPHD_CD', self.currentItem().specialHolidayCode());
+                    nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml').onClosed(function(): any {
+                    });
+                }               
+            }) 
         }
 
         openHDialog() {
