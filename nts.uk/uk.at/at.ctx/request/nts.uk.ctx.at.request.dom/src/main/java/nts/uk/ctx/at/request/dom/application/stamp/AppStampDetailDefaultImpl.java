@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
  *
  */
 @Stateless
-public class AppStampDetailDefault implements AppStampDetailDomainService {
+public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 
 	@Inject
 	private AppStampRepository appStampRepository; 
