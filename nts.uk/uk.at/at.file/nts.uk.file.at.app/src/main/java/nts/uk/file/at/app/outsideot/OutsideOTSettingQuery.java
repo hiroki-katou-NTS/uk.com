@@ -16,4 +16,7 @@ public class OutsideOTSettingQuery {
 	
 	/** The is manage. */
 	private boolean manage;
+	
+	/** The name company. */
+	private String nameCompany;
 }
