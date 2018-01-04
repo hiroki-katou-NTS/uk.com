@@ -189,17 +189,12 @@ module nts.uk.at.view.kmf004 {
              * Set error
              */
             addListError(errorsRequest: Array<string>) {
-                var messages = {};
+                var errors = [];
                 _.forEach(errorsRequest, function(err) {
-                    messages[err] = nts.uk.resource.getMessage(err);
+                    errors.push({message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
                 });
-    
-                var errorVm = {
-                    messageId: errorsRequest,
-                    messages: messages
-                };
-    
-                nts.uk.ui.dialog.bundledErrors(errorVm);
+                
+                nts.uk.ui.dialog.bundledErrors({ errors: errors});
             }
         }
         class BoxModel {
