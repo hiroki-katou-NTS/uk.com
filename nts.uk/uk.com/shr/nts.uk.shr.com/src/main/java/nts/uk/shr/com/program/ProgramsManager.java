@@ -553,7 +553,7 @@ public class ProgramsManager {
 	
 	/** The Constant CCG007. */
 	public static final Program CCG007A = new Program(WebAppId.COM, ProgramIdConsts.CCG007A,
-			"CCG007_1", "/view/ccg/007/a/index.xhtml");
+			"CCG007_9", "/view/ccg/007/a/index.xhtml");
 	
 	/** The Constant CCG007B. */
 	public static final Program CCG007B = new Program(WebAppId.COM, ProgramIdConsts.CCG007B,
