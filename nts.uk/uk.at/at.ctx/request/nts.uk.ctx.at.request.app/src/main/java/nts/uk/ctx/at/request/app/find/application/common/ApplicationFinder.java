@@ -12,12 +12,16 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ApplicationFinder {
 	@Inject
 	private ApplicationRepository appRepo;
+	
+	@Inject
+	private ApplicationRepository_New applicationRepository;
 	/**
 	 * get all application
 	 * @return
@@ -63,8 +67,8 @@ public class ApplicationFinder {
 	
 	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto){
 		String companyID = AppContexts.user().companyId();
-		return this.appRepo.getApplicationIdByDate(companyID, dto.getStartDate(), dto.getEndDate())
-				.stream().map(c -> { return new ApplicationMetaDto(c.getApplicationID(), c.getApplicationType().value, c.getApplicationDate()); })
+		return this.applicationRepository.getApplicationIdByDate(companyID, dto.getStartDate(), dto.getEndDate())
+				.stream().map(c -> { return new ApplicationMetaDto(c.getAppID(), c.getAppType().value, c.getAppDate()); })
 				.collect(Collectors.toList());
 	}
 

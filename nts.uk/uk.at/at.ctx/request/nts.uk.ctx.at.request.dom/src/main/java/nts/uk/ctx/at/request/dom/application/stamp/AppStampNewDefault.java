@@ -13,10 +13,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 /**
  * 
@@ -33,16 +36,16 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	private StartCheckErrorService startCheckErrorService;
 	
 	@Inject
-	private NewBeforeRegister newBeforeRegister; 
+	private NewBeforeRegister_New newBeforeRegister; 
 	
 	@Inject
-	private RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;
+	private RegisterAtApproveReflectionInfoService_New registerAtApproveReflectionInfoService;
 	
 	@Inject
 	private AppStampRepository appStampRepository;
 	
 	@Inject
-	private NewAfterRegister newAfterRegister;
+	private NewAfterRegister_New newAfterRegister;
 	
 	@Inject
 	private AppStampCommonDomainService appStampCommonDomainService;
@@ -77,13 +80,13 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	
 	// 打刻申請の新規登録
 	private String appStampRegistration(AppStamp appStamp) {
-		// newBeforeRegister.processBeforeRegister(appStamp);
-		// registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);
+		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New());
 		appStamp.customValidate();
 		appStampRepository.addStamp(appStamp);
 		applicationApprovalService.insert(appStamp.getApplication_New());
-		// approvalRegistration(appApprovalPhases, appStamp.getApplicationID());
-		//return newAfterRegister.processAfterRegister(appStamp);
-		return null;
+		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(
+				appStamp.getApplication_New().getEmployeeID(), 
+				appStamp.getApplication_New());
+		return newAfterRegister.processAfterRegister(appStamp.getApplication_New());
 	}
 }
