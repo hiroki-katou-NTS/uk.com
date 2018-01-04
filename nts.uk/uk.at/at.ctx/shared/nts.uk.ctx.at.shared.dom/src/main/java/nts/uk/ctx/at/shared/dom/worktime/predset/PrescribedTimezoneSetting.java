@@ -49,7 +49,6 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		this.morningEndTime = memento.getMorningEndTime();
 		this.afternoonStartTime = memento.getAfternoonStartTime();
 		this.lstTimezone = memento.getLstTimezone();
-		this.restoreDefaultData();
 	}
 	
 	/**

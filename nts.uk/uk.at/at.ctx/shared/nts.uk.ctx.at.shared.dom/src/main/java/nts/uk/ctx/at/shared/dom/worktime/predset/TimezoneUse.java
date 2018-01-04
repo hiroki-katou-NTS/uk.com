@@ -42,7 +42,6 @@ public class TimezoneUse extends TimeZone {
 	 */
 	@Override
 	public void validate() {
-		super.validate();
 		if (this.isUsed() && this.start.greaterThanOrEqualTo(this.end)) {
 			throw new BusinessException("Msg_770");
 		}
