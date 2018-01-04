@@ -39,6 +39,7 @@ public class KshmtFlowRtSetPK implements Serializable {
 	 * Instantiates a new kshmt flow rt set PK.
 	 */
 	public KshmtFlowRtSetPK() {
+		super();
 	}
 
 	/*

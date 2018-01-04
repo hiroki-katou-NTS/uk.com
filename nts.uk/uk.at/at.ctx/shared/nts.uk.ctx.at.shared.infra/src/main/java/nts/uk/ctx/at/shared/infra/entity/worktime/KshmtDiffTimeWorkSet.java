@@ -71,6 +71,7 @@ public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt diff time work set.
 	 */
 	public KshmtDiffTimeWorkSet() {
+		super();
 	}
 
 	/*
