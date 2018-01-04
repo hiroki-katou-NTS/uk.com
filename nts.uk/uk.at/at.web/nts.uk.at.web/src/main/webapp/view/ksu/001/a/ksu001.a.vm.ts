@@ -43,8 +43,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         ]);
         selectedCode1: KnockoutObservable<string> = ko.observable('0003');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: nts.uk.resource.getText("KSU001_89") },
-            { code: '2', name: nts.uk.resource.getText("KSU001_90") }
+            //            { code: '1', name: nts.uk.resource.getText("KSU001_89") },
+            //            { code: '2', name: nts.uk.resource.getText("KSU001_90") }
+            new BoxModel(1, nts.uk.resource.getText("KSU001_89")),
+            new BoxModel(2, nts.uk.resource.getText("KSU001_90")),
         ]);
         selectedDisplayLastWeek: any = ko.observable(1);
         selectedDisplayBank: any = ko.observable(1);
@@ -54,7 +56,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             new BoxModel(1, '画面サイズ'),
             new BoxModel(2, '高さを指定'),
         ]);
-        selectedId: KnockoutObservable<number> = ko.observable(1);
+        selectedTypeHeightExTable: KnockoutObservable<number> = ko.observable(1);
+        isEnableInputHeight: KnockoutObservable<boolean> = ko.observable(false);
+        isEnableCompareMonth: KnockoutObservable<boolean> = ko.observable(true);
 
         itemList2: KnockoutObservableArray<any> = ko.observableArray([
             new BoxModel(1, nts.uk.resource.getText("KSU001_339")),
@@ -67,8 +71,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         //Date time
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/10/28'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/27'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/11/01'));
+        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/30'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -129,44 +133,61 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
             }
 
-            self.selectedModeDisplay.subscribe(function(newValue) {
-                // close screen O1 when change mode
-                let currentScreen = __viewContext.viewModel.viewO.currentScreen;
-                if (currentScreen) {
-                    currentScreen.close();
-                }
-
+            self.selectedTypeHeightExTable.subscribe(function(newValue) {
                 if (newValue == 1) {
-                    $('#contain-view').show();
-                    $('#contain-view').removeClass('h-90');
-                    $('#group-bt').show();
-                    $('#oViewModel').show();
-                    $('#qViewModel').hide();
-                    $("#extable").exTable("updateMode", "none");
-                    $("#extable").exTable("viewMode", "shortName", { y: 175 });
-                } else if (newValue == 2) {
-                    $('#contain-view').hide();
-                    $("#extable").exTable("updateMode", "edit");
-                    $("#extable").exTable("viewMode", "time", { y: 115 });
+                    self.isEnableInputHeight(false);
                 } else {
-                    $('#contain-view').show();
-                    $('#contain-view').addClass('h-90');
-                    $('#oViewModel').hide();
-                    $('#qViewModel').show();
-                    $('#group-bt').show();
-                    $("#extable").exTable("updateMode", "none");
-                    $("#extable").exTable("viewMode", "symbol", { y: 235 });
-                    if (self.flag) {
-                        //select first link button
-                        __viewContext.viewModel.viewQ.init();
-                        self.flag = false;
-                    }
-                }
-
-                if (self.listSid() && self.listSid().length > 0) {
-                    self.updateExTable();
+                    self.isEnableInputHeight(true);
+                    $('#input-heightExtable').focus();
                 }
             });
+
+            self.selectedDisplayVertical.subscribe(function(newValue) {
+                if (newValue == 1) {
+                    self.isEnableCompareMonth(true);
+                } else {
+                    self.isEnableCompareMonth(false);
+                }
+            }
+
+            self.selectedModeDisplay.subscribe(function(newValue) {
+                    // close screen O1 when change mode
+                    let currentScreen = __viewContext.viewModel.viewO.currentScreen;
+                    if (currentScreen) {
+                        currentScreen.close();
+                    }
+
+                    if (newValue == 1) {
+                        $('#contain-view').show();
+                        $('#contain-view').removeClass('h-90');
+                        $('#group-bt').show();
+                        $('#oViewModel').show();
+                        $('#qViewModel').hide();
+                        $("#extable").exTable("updateMode", "none");
+                        $("#extable").exTable("viewMode", "shortName", { y: 175 });
+                    } else if (newValue == 2) {
+                        $('#contain-view').hide();
+                        $("#extable").exTable("updateMode", "edit");
+                        $("#extable").exTable("viewMode", "time", { y: 115 });
+                    } else {
+                        $('#contain-view').show();
+                        $('#contain-view').addClass('h-90');
+                        $('#oViewModel').hide();
+                        $('#qViewModel').show();
+                        $('#group-bt').show();
+                        $("#extable").exTable("updateMode", "none");
+                        $("#extable").exTable("viewMode", "symbol", { y: 235 });
+                        if (self.flag) {
+                            //select first link button
+                            __viewContext.viewModel.viewQ.init();
+                            self.flag = false;
+                        }
+                    }
+
+                    if (self.listSid() && self.listSid().length > 0) {
+                        self.updateExTable();
+                    }
+                });
 
             self.selectedModeDisplayObject.subscribe((newValue) => {
                 if (self.listSid().length > 0) {
@@ -436,7 +457,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             return ["startTime", "endTime"];
                     }
                 },
-                fields: ["workTypeCode", "workTimeCode"],
+                fields: ["workTypeCode", "workTimeCode", "startTime", "endTime"],
                 upperInput: "startTime",
                 lowerInput: "endTime"
             };
@@ -1569,8 +1590,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 empItems: self.empItems(),
                 startDate: self.dtPrev(),
                 endDate: self.dtAft(),
-                // in phare 2, permissionHandCorrection allow true
-                permissionHandCorrection: true,
+                // in phare 2, permissionHandCorrection allow false
+                permissionHandCorrection: false,
                 listColorOfHeader: self.listColorOfHeader()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
