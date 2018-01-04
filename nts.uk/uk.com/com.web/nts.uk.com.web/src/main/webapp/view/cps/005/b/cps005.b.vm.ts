@@ -190,11 +190,6 @@ module nts.uk.com.view.cps005.b {
                         block.clear();
                         return;
                     }
-                    else if (newItemDef.singleItem.decimalPart === null) {
-                        $("#decimalPart").focus();
-                        block.clear();
-                        return;
-                    }
                 }
 
                 if (newItemDef.singleItem.dataType === 4) {
@@ -379,6 +374,35 @@ module nts.uk.com.view.cps005.b {
 
                         });
                     });
+                } else if (value === 2) {
+                    self.numericItem().numericItemMinus.subscribe(function(data) {
+                        if (data == 0) {
+                            if (self.numericItem().numericItemMin() < 0 || self.numericItem().numericItemMax() < 0) {
+                                $('#numericItemMin').ntsError('set', 'numericItemMin khong duoc nhap so < 0');
+                            }
+
+                            if (self.numericItem().numericItemMax() < 0) {
+                                $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < 0');
+                            }
+
+                        }
+                    })
+                    self.numericItem().numericItemMin.subscribe(function(value) {
+                        if (self.numericItem().numericItemMinus() == 0) {
+                            if (value < 0) {
+                                $('#numericItemMin').ntsError('set', 'numericItemMin khong duoc nhap so < 0');
+                            }
+                        }
+                    })
+
+                    self.numericItem().numericItemMax.subscribe(function(value) {
+
+                        if (self.numericItem().numericItemMinus() == 0) {
+                            if (value < 0) {
+                                $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < 0');
+                            }
+                        }
+                    })
                 }
             });
             if (data) {
@@ -448,6 +472,39 @@ module nts.uk.com.view.cps005.b {
             self.numericItemMinus(data.numericItemMinus);
             self.decimalPart(data.decimalPart || null);
             self.integerPart(data.integerPart || null);
+            self.numericItemMinus.subscribe(function(data) {
+                if (data == 0) {
+                    if (self.numericItemMin() < 0 || self.numericItemMax() < 0) {
+                        $('#numericItemMin').ntsError('set', { messageId: "Msg_3" });
+                    }
+
+                    if (self.numericItemMax() < 0) {
+                        $('#numericItemMax').ntsError('set', { messageId: "Msg_3" });
+                    }
+
+                }
+            })
+            self.numericItemMin.subscribe(function(value) {
+                if (self.numericItemMinus() == 0) {
+                    if (value < 0) {
+                        $('#numericItemMin').ntsError('set', { messageId: "Msg_3" });
+                    }
+                }
+            })
+
+            self.numericItemMax.subscribe(function(value) {
+
+                if (self.numericItemMinus() == 0) {
+                    if (value < 0) {
+                        $('#numericItemMax').ntsError('set', { messageId: "Msg_3" });
+                    }
+                }
+                if(value > (Math.pow( 10, self.integerPart()) - 1)){
+                     $('#numericItemMax').ntsError('set', "so vuot qua gioi han");
+                }
+            })
+            
+           
         }
     }
     export class TimeItemModel {

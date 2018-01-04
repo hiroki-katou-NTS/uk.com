@@ -13,10 +13,13 @@ module nts.uk.com.view.cps006.a.viewmodel {
         currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable((new CategoryInfoDetail({
             id: '', categoryNameDefault: '',
             categoryName: '', categoryType: 4, isAbolition: "",
-             personEmployeeType : 0, itemList: [] 
+            personEmployeeType: 0, itemList: []
         })));
         // nếu sử dụng thì bằng true và ngược lại __viewContext["viewModel"].currentCategory().personEmployeeType
         isAbolished: KnockoutObservable<boolean> = ko.observable(false);
+
+        isFiltered: boolean = false;
+        ctgLstFilter: Array<any> = [];
 
         constructor() {
             let self = this;
@@ -25,39 +28,70 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 self.getDetailCategory(value);
             });
             self.isAbolished.subscribe(function(value) {
-                self.categoryList.removeAll();
                 if (value) {
-                    service.getAllCategory().done(function(data: Array<any>) {
-                        if (data.length > 0) {
-                            self.categoryList(_.map(data, x => new CategoryInfo({
-                                id: x.id,
-                                categoryCode: x.categoryCode,
-                                categoryName: x.categoryName,
-                                categoryType: x.categoryType,
-                                isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
-                            })));
-                            $("#category_grid").igGrid("option", "dataSource", self.categoryList());
-                        }
-                    });
+                    if (!self.isFiltered) {
+                        self.categoryList.removeAll();
+                        service.getAllCategory().done(function(data: Array<any>) {
+                            if (data.length > 0) {
+
+                                self.categoryList(_.map(data, x => new CategoryInfo({
+                                    id: x.id,
+                                    categoryCode: x.categoryCode,
+                                    categoryName: x.categoryName,
+                                    categoryType: x.categoryType,
+                                    isAbolition: x.isAbolition
+                                })));
+
+                                $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                            }
+                        });
+                    } else {
+
+                        service.getAllCategory().done(function(data: Array<any>) {
+                            if (data.length > 0) {
+
+                                self.categoryList(_.map(data, x => new CategoryInfo({
+                                    id: x.id,
+                                    categoryCode: x.categoryCode,
+                                    categoryName: x.categoryName,
+                                    categoryType: x.categoryType,
+                                    isAbolition: x.isAbolition
+                                })));
+
+                                $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                $('.search-btn').trigger('click');
+                            }
+                        });
+
+
+
+                        $("#category_grid").igGrid("option", "dataSource", self.ctgLstFilter);
+                    }
 
                 } else {
+                    if (self.isFiltered) {
+                        $("#category_grid").igGrid("option", "dataSource", _.filter(self.ctgLstFilter, x => { return x.isAbolition == 0 }));
 
-                    service.getAllCategory().done(function(data: Array<any>) {
-                        if (data.length > 0) {
-                            self.categoryList(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
-                                id: x.id,
-                                categoryCode: x.categoryCode,
-                                categoryName: x.categoryName,
-                                categoryType: x.categoryType,
-                                isAbolition: ""
-                            })));
-                            let category = _.find(self.categoryList(), x => { return x.id == self.currentCategory().id() });
-                            if (category === undefined) {
-                                self.currentCategory().id(self.categoryList()[0].id);
+                    } else {
+                        self.categoryList.removeAll();
+                        service.getAllCategory().done(function(data: Array<any>) {
+                            if (data.length > 0) {
+                                self.categoryList(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
+                                    id: x.id,
+                                    categoryCode: x.categoryCode,
+                                    categoryName: x.categoryName,
+                                    categoryType: x.categoryType,
+                                    isAbolition: x.isAbolition
+                                })));
+                                let category = _.find(self.categoryList(), x => { return x.id == self.currentCategory().id() });
+                                if (category === undefined) {
+                                    self.currentCategory().id(self.categoryList()[0].id);
+                                }
+                                $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                             }
-                            $("#category_grid").igGrid("option", "dataSource", self.categoryList());
-                        }
-                    });
+                        });
+
+                    }
 
                 }
 
@@ -71,7 +105,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 if (data) {
                     self.currentCategory().setData({
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
-                        categoryType: data.categoryType, isAbolition: data.abolition, 
+                        categoryType: data.categoryType, isAbolition: data.abolition,
                         personEmployeeType: data.personEmployeeType, itemList: data.itemLst
                     }, data.systemRequired, data.isExistedItemLst);
                     if (data.itemLst.length > 0) {
@@ -96,7 +130,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : "",
+                            isAbolition: x.isAbolition,
                         })));
 
                         self.categorySourceLst(_.map(data, x => new CategoryInfo({
@@ -104,7 +138,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition: x.isAbolition
                         })));
 
                         if (id === undefined) {
@@ -128,14 +162,14 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition: x.isAbolition
                         })));
                         self.categorySourceLst(_.map(data, x => new CategoryInfo({
                             id: x.id,
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition: x.isAbolition
                         })));
 
                         if (id === undefined) {
@@ -218,7 +252,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: string;
         categoryCode: string;
         categoryType: number;
-        isAbolition: string;
+        isAbolition: number;
     }
 
     export class CategoryInfo {
@@ -226,7 +260,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryCode: string;
         categoryName: string;
         categoryType: number;
-        isAbolition: string;
+        isAbolition: number;
         constructor(params: ICategoryInfo) {
             this.id = params.id;
             this.categoryName = params.categoryName;
@@ -284,12 +318,18 @@ module nts.uk.com.view.cps006.a.viewmodel {
         itemColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
             { headerText: text('CPS006_16'), key: 'itemName', width: 250 },
-            { headerText: text('CPS006_17'), key: 'isAbolition', width: 50, formatter: makeIcon }
+            {
+                headerText: text('CPS006_17'), key: 'isAbolition', width: 50,
+                template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'
+            }
         ]);
         ctgColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
             { headerText: text('CPS006_6'), key: 'categoryName', width: 230 },
-            { headerText: text('CPS006_7'), key: 'isAbolition', width: 50 }
+            {
+                headerText: text('CPS006_7'), key: 'isAbolition', width: 50,
+                template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'
+            }
         ]);
         constructor(params: ICategoryInfoDetail) {
             this.id = ko.observable("");
@@ -312,9 +352,5 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.itemList(params.itemList);
         }
     }
-    function makeIcon(value, row) {
-        if (value == '1')
-            return "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>";
-        return '';
-    }
+
 }

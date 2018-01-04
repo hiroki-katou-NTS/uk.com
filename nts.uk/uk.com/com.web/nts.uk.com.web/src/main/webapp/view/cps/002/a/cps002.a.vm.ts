@@ -444,7 +444,7 @@ module cps002.a.vm {
 
                 //start Screen C
 
-                $('#initSettingPanel').show();
+
                 self.loadInitSettingData();
 
 
@@ -452,7 +452,7 @@ module cps002.a.vm {
 
                 //start Screen B
 
-                $('#initSettingPanel').hide();
+                $('#search_box').hide();
 
                 self.loadCopySettingCtgData();
                 if (self.copyEmployee().employeeId == '') {
@@ -516,6 +516,8 @@ module cps002.a.vm {
                     self.currentStep(0);
                 });
 
+            }).always(() => {
+                $('#search_box').show();
             });
 
         }

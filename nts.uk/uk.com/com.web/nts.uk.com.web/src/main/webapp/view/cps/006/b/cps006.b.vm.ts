@@ -451,8 +451,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
     function makeIcon(value, row) {
         if (value == '1')
-            return "<i class='icon icon-close'></i>";
-        return '';
+            return '<img src="../a/images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
+        return '<span></span>';
     }
 
     export interface IItemInfoDef {
