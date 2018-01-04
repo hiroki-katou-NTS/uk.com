@@ -54,7 +54,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	public String targetConditionId;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "EXTRACT_TARGET_COND_ID")
+	@JoinColumn(name = "EXTRACT_TARGET_COND_ID", insertable = false, updatable = false)
 	public KfnmtAlarmCheckTargetCondition targetCondition;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
