@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -65,13 +66,21 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 	 */
 	@Override
 	public void setLstWorkingTimezone(List<EmTimeZoneSet> lstWorkingTimezone) {
+		
+		List<KshmtFixedWorkTimeSet> otherList = this.parentEntity.getKshmtFixedWorkTimeSets().stream()
+				.filter(entity -> entity.getKshmtFixedWorkTimeSetPK().getAmPmAtr() != this.type)
+				.collect(Collectors.toList());
+		
 		// KSHMT_FIXED_WORK_TIME_SET
 		if (CollectionUtil.isEmpty(lstWorkingTimezone)) {
+			this.parentEntity.setKshmtFixedWorkTimeSets(otherList);
 			return;
 		}
 		
 		// get list entity
-		List<KshmtFixedWorkTimeSet> lstEntity = this.parentEntity.getKshmtFixedWorkTimeSets();
+		List<KshmtFixedWorkTimeSet> lstEntity = this.parentEntity.getKshmtFixedWorkTimeSets().stream()
+				.filter(entity -> entity.getKshmtFixedWorkTimeSetPK().getAmPmAtr() == this.type)
+				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
@@ -98,6 +107,9 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 			// add list
 			newListEntity.add(entity);
 		}
+		
+		newListEntity.addAll(otherList);
+		
 		this.parentEntity.setKshmtFixedWorkTimeSets(newListEntity);
 	}
 
@@ -110,13 +122,21 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 	 */
 	@Override
 	public void setLstOTTimezone(List<OverTimeOfTimeZoneSet> lstOTTimezone) {
+		
+		List<KshmtFixedOtTimeSet> otherList = this.parentEntity.getKshmtFixedOtTimeSets().stream()
+				.filter(entity -> entity.getKshmtFixedOtTimeSetPK().getAmPmAtr() != this.type)
+				.collect(Collectors.toList());
+		
 		// KSHMT_FIXED_OT_TIME_SET
 		if (CollectionUtil.isEmpty(lstOTTimezone)) {
+			this.parentEntity.setKshmtFixedOtTimeSets(otherList);
 			return;
 		}
 		
 		// get list entity
-		List<KshmtFixedOtTimeSet> lstEntity = this.parentEntity.getKshmtFixedOtTimeSets();
+		List<KshmtFixedOtTimeSet> lstEntity = this.parentEntity.getKshmtFixedOtTimeSets().stream()
+				.filter(entity -> entity.getKshmtFixedOtTimeSetPK().getAmPmAtr() == this.type)
+				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
@@ -140,6 +160,9 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 			// add list
 			newListEntity.add(entity);
 		}
+		
+		newListEntity.addAll(otherList);
+		
 		this.parentEntity.setKshmtFixedOtTimeSets(newListEntity);
 	}
 
