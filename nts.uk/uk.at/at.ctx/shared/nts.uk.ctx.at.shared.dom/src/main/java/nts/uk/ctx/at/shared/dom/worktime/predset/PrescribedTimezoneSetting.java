@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.val;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
@@ -50,6 +49,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		this.morningEndTime = memento.getMorningEndTime();
 		this.afternoonStartTime = memento.getAfternoonStartTime();
 		this.lstTimezone = memento.getLstTimezone();
+		this.restoreDefaultData();
 	}
 	
 	/**
@@ -190,7 +190,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return true, if is morning and afternoon in shift 1
 	 */
 	private boolean isMorningAndAfternoonInShift1() {
-		val tzWorkNo1 = this.getTimezoneShiftOne();
+		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
 		
 		// (afternoon time or morning time) part of (shift1 or shift2)
 		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) || tzWorkNo1.consistOf(this.getMorningEndTime());
@@ -202,7 +202,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return true, if is morning and afternoon in shift 2
 	 */
 	private boolean isMorningAndAfternoonInShift2() {
-		val tzWorkNo2 = this.getTimezoneShiftTwo();
+		TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
 		
 		// (afternoon time or morning time) part of (shift1 or shift2)
 		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) || tzWorkNo2.consistOf(this.getMorningEndTime());
@@ -214,7 +214,15 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @param domain the domain
 	 */
 	public void restoreDisabledDataFrom(PrescribedTimezoneSetting domain) {
-		TimezoneUse timeTwo = this.getTimezoneShiftTwo();
+		int indexOfShift2 = this.lstTimezone.indexOf(this.getTimezoneShiftTwo());
+		this.lstTimezone.set(indexOfShift2, domain.getTimezoneShiftTwo());
+	}
+
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.getTimezoneShiftTwo().restoreDefaultData();
 	}
 
 }
