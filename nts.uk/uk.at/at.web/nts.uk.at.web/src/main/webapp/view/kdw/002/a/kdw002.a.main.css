@@ -52,6 +52,6 @@
 .leftpanel {
 	float: left;
 }
-.clear-btn, th {
+.clear-btn {
 	display: none !important;
 }

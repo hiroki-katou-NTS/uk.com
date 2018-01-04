@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk003.base.fixedtable {
+module nts.fixedtable {
 
     /************************************************ PARAMETERS INITIAL FIXTABLE **********************************
     ***************************************************************************************************************/
@@ -51,7 +51,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
         /**
         * Set width table
         */
-        width: number;
+        width?: number;
     }
 
     /**
@@ -124,6 +124,10 @@ module nts.uk.at.view.kmk003.base.fixedtable {
          * Enable column
          */
         enable?: boolean;
+        
+        isRoudingColumn?: boolean;
+        
+        unitAttrName?: string;
     }
 
     /************************************************ SCREEN MODEL ************************************************
@@ -166,6 +170,10 @@ module nts.uk.at.view.kmk003.base.fixedtable {
         $tableSelector: any;
         mapControl: Array<IControl>;
         tabindex: number;
+        isEnableAllControl: KnockoutObservable<boolean>;
+        roudingDataSource: KnockoutObservableArray<any>;
+        isSelectSpecialUnit: KnockoutObservable<boolean>;
+        specialRoudingDataSource: KnockoutObservableArray<any>;
         
         tableId: string;
         
@@ -186,6 +194,17 @@ module nts.uk.at.view.kmk003.base.fixedtable {
                 self.tabindex = -1;
             }
             self.itemList = data.dataSource;
+            self.isEnableAllControl = ko.observable(true);
+            self.roudingDataSource = ko.observableArray([
+                { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
+                { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' },
+                { value: 2, localizedName: '未満切捨、以上切上', fieldName: 'Enum_Rounding_Down_Over' }
+            ]);
+            self.specialRoudingDataSource = ko.observableArray([
+                { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
+                { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' }
+            ]);
+
             
             self.sortTimeASC();
             
@@ -217,10 +236,13 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             self.isSelectAll.subscribe(newValue => {
                 self.computedChange(newValue);
             });
+            
             // subscribe itemList
             self.itemList.subscribe((newList) => {
+                $('#' + self.tableId).find('.nts-editor').ntsError('clear');
+                
                 if (!newList) {
-                     self.isSelectAll(false);
+                    self.isSelectAll(false);
                     return;
                 }
                 
@@ -439,7 +461,15 @@ module nts.uk.at.view.kmk003.base.fixedtable {
                 if (item.template.indexOf('ntsComboBox') != -1) {
                     item.width = item.width < 105 ? 105 : item.width;
                 }
-                
+                if (item.isRoudingColumn) {
+                    rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
+                                    + self.generateColumnHtml(item, true)
+                                    + '<!-- /ko -->'
+                                    + '<!-- ko ifnot: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
+                                    + self.generateColumnHtml(item, false)
+                                    + '<!-- /ko -->';
+                    return;
+                }
                 rowHtml += self.generateColumnHtml(item);
             });
             
@@ -487,7 +517,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
         /**
          * Generate control html
          */
-        private generateColumnHtml(columnSetting: FixColumn): string {
+        private generateColumnHtml(columnSetting: FixColumn, isSpecialUnit?: boolean): string {
             let self = this;
             
             // get template
@@ -513,12 +543,17 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             // insert option value of control if has
             let keyOptionValue: string = infoControl.keyOptionValue;
             if (keyOptionValue) {
-                // add data source for control
-                self.lstDataSource[columnSetting.key] = columnSetting.dataSource;
-                
-                // update option cotrol html
-                newProperties = self.updateElement(newProperties, keyOptionValue,
-                    "$parent.lstDataSource." + columnSetting.key, columnSetting.enable);
+                if (columnSetting.isRoudingColumn) {
+                    newProperties = self.updateElement(newProperties, keyOptionValue,
+                    isSpecialUnit ? "$parent.specialRoudingDataSource" : '$parent.roudingDataSource', columnSetting.enable);
+                } else {
+                    // add data source for control
+                    self.lstDataSource[columnSetting.key] = columnSetting.dataSource;
+
+                    // update option cotrol html
+                    newProperties = self.updateElement(newProperties, keyOptionValue,
+                        "$parent.lstDataSource." + columnSetting.key, columnSetting.enable);
+                }
             }
 
             // update tabindex
@@ -535,6 +570,10 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             
             // update width control
             template = self.updateWidthControl(template, newProperties, columnSetting.width);
+            
+            // Add enable attr to control.
+            template = template.replace('enable: true', 'enable: $parent.isEnableAllControl');
+            template = template.replace('enable:true', 'enable: $parent.isEnableAllControl');
             
             // get cssClassName
             let cssClassName: string = '';
@@ -570,7 +609,7 @@ module nts.uk.at.view.kmk003.base.fixedtable {
 
             // no option
             if (idx == -1) {
-                return template.replace(properties, properties + ",option:{width:'" + width + "'}");
+                return template.replace(properties, properties + ",option:{width:'" + width + "', textalign: 'center'}");
             }
             // has option 
             let oldOption: string = properties.substring(properties.indexOf("{") + 1, properties.lastIndexOf("}"));
@@ -647,59 +686,62 @@ module nts.uk.at.view.kmk003.base.fixedtable {
             return result;
         }
     }
-    
+}
+/**
+    * FixTableBindingHandler
+    */
+class FixTableBindingHandler implements KnockoutBindingHandler {
+
     /**
-     * FixTableBindingHandler
+     * Constructor.
      */
-    class FixTableBindingHandler implements KnockoutBindingHandler {
-        
-        /**
-         * Constructor.
-         */
-        constructor() {
-        }
+    constructor() {
+    }
 
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
-            bindingContext: KnockoutBindingContext): void {
-            
-        }
+    /**
+     * Init.
+     */
+    init = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+        bindingContext: KnockoutBindingContext) => {
+        let input: any = valueAccessor();
+    }
 
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
-            bindingContext: KnockoutBindingContext): void {
-            
-            let webserviceLocator: any = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/base/fixedtable/fixedtable.xhtml').serialize();
-            
-            //get data
-            let input: any = valueAccessor();
-            let data: FixTableOption = input.option;
+    /**
+     * Update
+     */
+    update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+        bindingContext: KnockoutBindingContext) => {
 
-            let screenModel = new FixTableScreenModel(data);
-            screenModel.$element = $(element);
-            $(element).load(webserviceLocator, function() {
-                screenModel.initialScreen().done(() => {
-                    ko.cleanNode($(element)[0]);
-                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                    
-                    // set height table
-                    screenModel.$tableSelector.height(screenModel.tableStyle.height);
-                    
-                    // remove min-width default of ntsComboBox
-                    screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
-                        $("." + column.cssClassName).css({"min-width" : ""});
-                    });
-                });
+        let webserviceLocator: any = nts.uk.request.location.siteRoot
+            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
+            .mergeRelativePath('/view/kmk/003/base/fixedtable/fixedtable.xhtml').serialize();
+
+        //get data
+        let input: any = valueAccessor();
+        let data: nts.fixedtable.FixTableOption = input.option;
+
+        let screenModel = new nts.fixedtable.FixTableScreenModel(data);
+        if (input.isEnableAllControl) {
+            input.isEnableAllControl.subscribe(function(value: boolean) {
+                screenModel.isEnableAllControl(value);
             });
         }
+        $(element).load(webserviceLocator, function() {
+            screenModel.initialScreen().done(() => {
+                ko.cleanNode($(element)[0]);
+                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
 
+                // set height table
+                screenModel.$tableSelector.height(screenModel.tableStyle.height);
+
+                // remove min-width default of ntsComboBox
+                screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
+                    $("." + column.cssClassName).css({ "min-width": "" });
+                });
+            });
+        });
     }
-    
-    ko.bindingHandlers['ntsFixTableCustom'] = new FixTableBindingHandler();
+
 }
+
+ko.bindingHandlers['ntsFixTableCustom'] = new FixTableBindingHandler();

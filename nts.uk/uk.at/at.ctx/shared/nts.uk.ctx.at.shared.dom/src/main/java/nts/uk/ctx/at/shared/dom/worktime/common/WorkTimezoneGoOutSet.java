@@ -58,4 +58,19 @@ public class WorkTimezoneGoOutSet extends DomainObject{
 		// Go deeper
 		this.diffTimezoneSetting.restoreData(screenMode, oldDomain.getDiffTimezoneSetting());
 	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		// Simple mode
+		if (screenMode == ScreenMode.SIMPLE) {
+			this.totalRoundingSet.restoreDefaultData();			
+		} 
+		
+		// Go deeper
+		this.diffTimezoneSetting.restoreDefaultData(screenMode);
+	}
 }
