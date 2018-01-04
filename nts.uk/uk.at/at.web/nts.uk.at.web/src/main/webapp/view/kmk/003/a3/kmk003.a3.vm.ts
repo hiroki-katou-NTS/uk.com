@@ -69,7 +69,7 @@ module a3 {
             }
             self.selectedCodeAutoCalUse = ko.observable('1');
             self.fixTableOptionOnedayFixed = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -79,7 +79,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionMorningFixed = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -89,7 +89,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionAfternoonFixed = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -99,7 +99,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionOnedayFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -109,7 +109,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionMorningFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -119,7 +119,7 @@ module a3 {
                 tabindex: -1
             };
             self.fixTableOptionAfternoonFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
@@ -225,17 +225,17 @@ module a3 {
 
             if (self.isFixedMode()) {
                 var dataFixedOneday: any[] = [];
-                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone) {
+                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone()) {
                     dataFixedOneday.push(self.toModelFixedColumnSetting(dataModelFixed.toDto()));
                 }
                 self.dataSourceOnedayFixed(dataFixedOneday);
                 var dataFixedMorning: any[] = [];
-                for (var dataModelMorningFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
+                for (var dataModelMorningFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone()) {
                     dataFixedMorning.push(self.toModelFixedColumnSetting(dataModelMorningFixed.toDto()));
                 }
                 self.dataSourceMorningFixed(dataFixedMorning);
                 var dataFixedAfternoon: any[] = [];
-                for (var dataModelAfternoonFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone) {
+                for (var dataModelAfternoonFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone()) {
                     dataFixedAfternoon.push(self.toModelFixedColumnSetting(dataModelAfternoonFixed.toDto()));
                 }
                 self.dataSourceAfternoonFixed(dataFixedAfternoon);
@@ -243,19 +243,19 @@ module a3 {
 
             if (self.isFlexMode()) {
                 var dataFlexOneday: any[] = [];
-                for (var dataModelOnedayFlex of self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone) {
+                for (var dataModelOnedayFlex of self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone()) {
                     dataFlexOneday.push(self.toModelFlexColumnSetting(dataModelOnedayFlex.toDto()));
                 }
                 self.dataSourceOnedayFlex(dataFlexOneday);
                 var dataFlexMorning: any[] = [];
                 if (self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
-                    for (var dataModelMorningFlex of self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
+                    for (var dataModelMorningFlex of self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone()) {
                         dataFlexMorning.push(self.toModelFlexColumnSetting(dataModelMorningFlex.toDto()));
                     }
                 }
                 self.dataSourceMorningFlex(dataFlexMorning);
                 var dataFlexAfternoon: any[] = [];
-                for (var dataModelAfternoonFlex of self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone) {
+                for (var dataModelAfternoonFlex of self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone()) {
                     dataFlexAfternoon.push(self.toModelFlexColumnSetting(dataModelAfternoonFlex.toDto()));
                 }
                 self.dataSourceAfternoonFlex(dataFlexAfternoon);
@@ -389,7 +389,7 @@ module a3 {
                  {
                      headerText: nts.uk.resource.getText("KMK003_174"),
                      key: "elapsedTime",
-                     defaultValue: ko.observable(1200), 
+                     defaultValue: ko.observable(0), 
                      width: 100, 
                      template: `<input data-bind="ntsTimeEditor: {
                         inputFormat: 'time'}" />`
@@ -402,8 +402,9 @@ module a3 {
                      width: 120,
                      template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
+                                    name: '#[KMK003_201]',
                                     editable: false,
                                     enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
@@ -520,11 +521,11 @@ module a3 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"), 
                     key: "timezone",
-                    defaultValue: ko.observable({ startTime: 1, endTime: 1 }), 
+                    defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 250, 
                     template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                        required: true, enable: true, inputFormat: 'time',  startTimeNameId: '#[KMK003_166]', endTimeNameId: '#[KMK003_167]'}"/>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_56"),
@@ -534,8 +535,9 @@ module a3 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
+                                    name: '#[KMK003_201]',
                                     editable: false,
                                     enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">

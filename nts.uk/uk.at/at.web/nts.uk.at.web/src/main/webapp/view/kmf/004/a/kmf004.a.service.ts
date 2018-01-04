@@ -4,7 +4,9 @@ module nts.uk.at.view.kmf004.a.service {
         deleteSpecialHoliday: "shared/specialholiday/delete",
         addSpecialHoliday: "shared/specialholiday/add",
         updateSpecialHoliday: "shared/specialholiday/update",
-        findWorkType: "at/screen/worktype/findAll"
+        findWorkType: "at/screen/worktype/findAll",
+        findEmployment: "bs/employee/employment/findAll",
+        findClass: "bs/employee/classification/findAll"
     }
 
     export function findAllSpecialHoliday(): JQueryPromise<Array<viewmodel.model.ISpecialHolidayDto>> {
@@ -25,5 +27,11 @@ module nts.uk.at.view.kmf004.a.service {
     
      export function findWorkType(): JQueryPromise<any> {
         return nts.uk.request.ajax("at",paths.findWorkType);
+    }
+     export function findEmployment(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com",paths.findEmployment);
+    }
+    export function findClass(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com",paths.findClass);
     }
 }

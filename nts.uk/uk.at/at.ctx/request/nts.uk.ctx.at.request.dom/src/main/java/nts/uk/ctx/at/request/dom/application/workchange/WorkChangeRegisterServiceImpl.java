@@ -5,51 +5,47 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+
 @Stateless
 @Transactional
 public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService {
 
 	@Inject
-	private NewBeforeRegister newBeforeRegister;
+	private NewBeforeRegister_New newBeforeRegister;
 
 	@Inject
-	private RegisterAtApproveReflectionInfoService registerService;
+	private RegisterAtApproveReflectionInfoService_New registerService;
 
 	@Inject
-	ApplicationRepository appRepository;
-	
-	@Inject 
-	NewAfterRegister newAfterRegister;
-	
+	ApplicationApprovalService_New appRepository;
+
+	@Inject
+	NewAfterRegister_New newAfterRegister;
+
 	@Inject
 	private IAppWorkChangeRepository workChangeRepository;
-	
+
 	@Override
-	public String registerData(AppWorkChange workChange, Application app) {
-		// アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
-		//checkWorkHour(workChange);
-		
-		// アルゴリズム「勤務変更申請休憩時間１チェックの内容」を実行する
-		//checkBreakTime1(workChange);
-		
+	public String registerData(AppWorkChange workChange, Application_New app) {
+
 		// アルゴリズム「2-1.新規画面登録前の処理」を実行する
 		newBeforeRegister.processBeforeRegister(app);
 		
-		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
-		registerService.newScreenRegisterAtApproveInfoReflect(app.getApplicantSID(), app);
-		
 		// ドメインモデル「勤務変更申請設定」の新規登録をする
-		appRepository.addApplication(app);
+		appRepository.insert(app);
 		workChangeRepository.add(workChange);
 		
-		//共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-		String mails = newAfterRegister.processAfterRegister(app);
+		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
+		registerService.newScreenRegisterAtApproveInfoReflect(app.getEmployeeID(), app);
 		
+		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
+		String mails = newAfterRegister.processAfterRegister(app);
+
 		return mails;
 	}
 

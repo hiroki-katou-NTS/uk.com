@@ -1,5 +1,5 @@
 module a5 {
-    import FixTableOption = nts.uk.at.view.kmk003.base.fixedtable.FixTableOption;
+    import FixTableOption = nts.fixedtable.FixTableOption;
     import FlowRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestTimezoneModel;
     import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
     import DeductionTimeDto = nts.uk.at.view.kmk003.a.service.model.common.DeductionTimeDto;
@@ -10,6 +10,7 @@ module a5 {
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
 
     class ScreenModel {
+        mainSettingModel: MainSettingModel;
 
         // flex timezones
         oneDayFlexTimezones: KnockoutObservableArray<any>;
@@ -69,10 +70,11 @@ module a5 {
         flowFixedRestTime: KnockoutObservable<boolean>;
 
         // flag
-        isFlex: KnockoutObservable<boolean>;
-        isFlow: KnockoutObservable<boolean>;
-        isFixed: KnockoutObservable<boolean>;
-        isDiffTime: KnockoutObservable<boolean>;
+        isFlex: KnockoutComputed<boolean>;
+        isFlow: KnockoutComputed<boolean>;
+        isFixed: KnockoutComputed<boolean>;
+        isDiffTime: KnockoutComputed<boolean>;
+        isDetailMode: KnockoutObservable<boolean>;
 
         // show/hide
         //isFlexOrFlow: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow *19
@@ -96,28 +98,33 @@ module a5 {
             self.flowFixedRestTime = ko.observable(true); // initial value = lead
 
             // load data from main setting model
-            self.loadData(valueAccessor.mainSettingModel);
+            self.mainSettingModel = valueAccessor.mainSettingModel;
+            self.isDetailMode = valueAccessor.isDetailMode;
+            self.loadData();
 
             // fix table option
             self.setFixedTableOption();
+
+            // add fixed table event listener
+            self.initFixedTableEvent();
 
         }
 
         /**
          * Load data from main screen
          */
-        public loadData(mainSettingModel: MainSettingModel): void {
+        public loadData(): void {
             let self = this;
 
-            let flex = mainSettingModel.flexWorkSetting;
+            let flex = self.mainSettingModel.flexWorkSetting;
 
             let flexOneday = flex.getHDWtzOneday();
             let flexMorning = flex.getHDWtzMorning();
             let flexAfternoon = flex.getHDWtzAfternoon();
 
-            let fixedOneday = mainSettingModel.fixedWorkSetting.getHDWtzOneday();
-            let fixedMorning = mainSettingModel.fixedWorkSetting.getHDWtzMorning();
-            let fixedAfternoon = mainSettingModel.fixedWorkSetting.getHDWtzAfternoon();
+            let fixedOneday = self.mainSettingModel.fixedWorkSetting.getHDWtzOneday();
+            let fixedMorning = self.mainSettingModel.fixedWorkSetting.getHDWtzMorning();
+            let fixedAfternoon = self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon();
 
             // set flex timezones
             self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.listTimeRange;
@@ -142,14 +149,15 @@ module a5 {
             //TODO: chua lam
 
             // computed value initial
-            self.initComputed(mainSettingModel.workTimeSetting);
+            self.initComputed();
         }
 
         /**
          * Initial computed.
          */
-        private initComputed(workTimeSetting: WorkTimeSettingModel): void {
+        private initComputed(): void {
             let self = this;
+            let workTimeSetting = self.mainSettingModel.workTimeSetting;
 
             // set flag
             self.isFlex = workTimeSetting.isFlex;
@@ -171,6 +179,56 @@ module a5 {
             self.isFlexRestTime = ko.computed(() => {
                 return self.isFlex() && self.flexFixedRestTime() == false;
             });
+        }
+
+        /**
+         * Force to add fixed table event listener
+         */
+        public forceAddFixedTableEvent(): void {
+            let self = this;
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.valueHasMutated();
+        }
+
+        /**
+         * Set fixed table event listener
+         */
+        public initFixedTableEvent(): void {
+            let self = this;
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
+                self.setFixedTableEvent();
+            });
+            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
+                self.setFixedTableEvent();
+            });
+        }
+
+        /**
+         * Set fixed table event listener
+         */
+        private setFixedTableEvent(): void {
+            let self = this;
+            if (self.isFlex() && self.isDetailMode()) {
+                document.getElementById('flexOneDay').addEventListener('timerangedatachange', e => {
+                    self.oneDayFlexTimezones.valueHasMutated();
+                });
+                document.getElementById('flexMorning').addEventListener('timerangedatachange', e => {
+                    self.morningFlexTimezones.valueHasMutated();
+                });
+                document.getElementById('flexAfternoon').addEventListener('timerangedatachange', e => {
+                    self.afternoonFlexTimezones.valueHasMutated();
+                });
+            }
+            if (self.isFixed() && self.isDetailMode()) {
+                document.getElementById('fixedOneDay').addEventListener('timerangedatachange', e => {
+                    self.oneDayFixedTimezones.valueHasMutated();
+                });
+                document.getElementById('fixedMorning').addEventListener('timerangedatachange', e => {
+                    self.morningFixedTimezones.valueHasMutated();
+                });
+                document.getElementById('fixedAfternoon').addEventListener('timerangedatachange', e => {
+                    self.afternoonFixedTimezones.valueHasMutated();
+                });
+            }
         }
 
         /**
@@ -257,7 +315,7 @@ module a5 {
                     defaultValue: ko.observable(0),
                     width: 110,
                     template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
-                        required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
+                        required: true, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_174]' }" />`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"),
@@ -265,7 +323,7 @@ module a5 {
                     defaultValue: ko.observable(0),
                     width: 110,
                     template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
-                        required: true, inputFormat: 'time', mode: 'time', enable: true }" />`
+                        required: true, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_176]' }" />`
                 }
             ];
         }
@@ -280,7 +338,8 @@ module a5 {
                     width: 243,
                     template: `<div data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                        required: true, enable: true, inputFormat: 'time',
+                        startTimeNameId: '#[KMK003_163]', endTimeNameId: '#[KMK003_164]'}"/>`
                 }
             ];
         }
@@ -303,6 +362,7 @@ module a5 {
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                _.defer(() => screenModel.forceAddFixedTableEvent());
             });
         }
 

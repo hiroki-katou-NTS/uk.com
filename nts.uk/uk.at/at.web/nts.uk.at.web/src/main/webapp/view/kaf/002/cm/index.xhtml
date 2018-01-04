@@ -33,8 +33,13 @@
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KAF002_9')}</div>
 						</div>
-						<div class="cell">
-							<span class="label" data-bind="text: application().appDate() + ' ( 入力日 : ' + application().inputDate() + ' )'"></span>
+						<div class="cell cm-middle">
+							<div class="cell" data-bind="if: application().inputDate">
+								<span class="label" data-bind="text: application().appDate() + ' ( 入力日 : ' + application().inputDate() + ' )'"></span>	
+							</div>
+							<div class="cell" data-bind="if: !application().inputDate()">
+								<span class="label" data-bind="text: application().appDate()"></span>	
+							</div>
 						</div>
 					</div>
 					<div class="cm-title-div" data-bind="text: topComment().text, 

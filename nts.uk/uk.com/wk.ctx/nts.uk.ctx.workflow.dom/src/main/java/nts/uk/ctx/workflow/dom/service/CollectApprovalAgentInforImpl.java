@@ -56,14 +56,14 @@ public class CollectApprovalAgentInforImpl implements CollectApprovalAgentInforS
 					}
 					// ktra xem AgentAppType = PATH hay k
 					//if(agentAdapterDto.getAgentAppType1() != null
-					if (Strings.isNotBlank(agent.getAgentSid1()) || agent.getAgentAppType1().equals(AgentAppType.PATH)) {
+					if (Strings.isNotBlank(agent.getAgentSid1()) && agent.getAgentAppType1().equals(AgentAppType.PATH)) {
 						ApprovalRepresenterInforOutput obj = new ApprovalRepresenterInforOutput(approver, RepresenterInforOutput.pathInformation());
 						listApprovalAgentInfor.add(obj);
 						continue;
 					}
 					// ktra xem AgentAppType = SUBSTITUTE_DESIGNATION hay k
 					//if(agentAdapterDto.getAgentAppType1() != null
-					if (Strings.isNotBlank(agent.getAgentSid1()) ||agent.getAgentAppType1().equals(AgentAppType.SUBSTITUTE_DESIGNATION)) {
+					if (Strings.isNotBlank(agent.getAgentSid1()) && agent.getAgentAppType1().equals(AgentAppType.SUBSTITUTE_DESIGNATION)) {
 						ApprovalRepresenterInforOutput obj = new ApprovalRepresenterInforOutput(approver,
 								RepresenterInforOutput.representerInformation(agent.getAgentSid1()));
 						listApprovalAgentInfor.add(obj);

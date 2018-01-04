@@ -64,10 +64,11 @@ public class JpaFixedOffDayRestTimeSetMemento implements FixRestTimezoneSetSetMe
 			KshmtFixedHolRestSet entity = lstEntity.stream().filter(item -> {
 				KshmtFixedHolRestSetPK pk = item.getKshmtFixedHolRestSetPK();
 						return pk.getCid().compareTo(companyId) == EQUAL
-								&& pk.getWorktimeCd().compareTo(workTimeCd) == EQUAL;
+								&& pk.getWorktimeCd().compareTo(workTimeCd) == EQUAL
+								&&(pk.getPeriodNo()== lstTimezone.indexOf(time));
 					})
 					.findFirst()
-					.orElse(new KshmtFixedHolRestSet(companyId, workTimeCd));
+					.orElse(new KshmtFixedHolRestSet(companyId, workTimeCd,lstTimezone.indexOf(time)));
 			
 			// set data
 			entity.setStartTime(time.getStart().v());

@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf009.b {
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
+            DATE_FORMAT: string = 'YYYY/MM/DD';
             //kaf000
             kaf000_a: kaf000.a.viewmodel.ScreenModel;
             //current Data
@@ -14,7 +15,7 @@ module nts.uk.at.view.kaf009.b {
             workState : KnockoutObservable<boolean> = ko.observable(true);;
             typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
-            appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
+            appDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));;
             //TIME LINE 1
             timeStart1: KnockoutObservable<number> = ko.observable(0);
             timeEnd1: KnockoutObservable<number> = ko.observable(0);   

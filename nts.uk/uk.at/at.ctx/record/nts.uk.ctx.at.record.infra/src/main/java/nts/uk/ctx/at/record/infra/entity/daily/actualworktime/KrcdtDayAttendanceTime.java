@@ -151,6 +151,16 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	protected Object getKey() {
 		return this.krcdtDayAttendanceTimePK;
 	}
+    
+
+	public List<KrcdtDayLeaveEarlyTime> getKrcdtDayLeaveEarlyTime() {
+		return krcdtDayLeaveEarlyTime == null ? new ArrayList<>() : krcdtDayLeaveEarlyTime;
+	}
+
+	public List<KrcdtDayLateTime> getKrcdtDayLateTime() {
+		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
+	}
+
 
 	public static KrcdtDayAttendanceTime create(String employeeId, GeneralDate ymd,
 			AttendanceTimeOfDailyPerformance attendanceTime) {
@@ -214,30 +224,30 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	 */
 	public AttendanceTimeOfDailyPerformance toDomain(GeneralDate ymd) {
 
-		OverTimeOfDaily overTime = this.krcdtDayOvertimework.toDomain();
-		overTime.getOverTimeWorkFrameTimeSheet()
-				.addAll(this.krcdtDayOvertimeworkTs.toDomain().getOverTimeWorkFrameTimeSheet());
-		HolidayWorkTimeOfDaily holiday = this.krcdtDayHolidyWork.toDomain();
-		holiday.getHolidayWorkFrameTimeSheet().addAll(this.krcdtDayHolidyWorkTs.toDomain());
+		OverTimeOfDaily overTime = this.krcdtDayOvertimework == null  ? null : this.krcdtDayOvertimework.toDomain();
+		if(overTime != null) overTime.getOverTimeWorkFrameTimeSheet()
+				.addAll(this.krcdtDayOvertimeworkTs != null ? this.krcdtDayOvertimeworkTs.toDomain().getOverTimeWorkFrameTimeSheet() : new ArrayList<>());
+		HolidayWorkTimeOfDaily holiday = this.krcdtDayHolidyWork == null ? null : this.krcdtDayHolidyWork.toDomain();
+		if(holiday != null) holiday.getHolidayWorkFrameTimeSheet().addAll(this.krcdtDayHolidyWorkTs.toDomain());
 		ExcessOfStatutoryTimeOfDaily excess = new ExcessOfStatutoryTimeOfDaily(
 				new ExcessOfStatutoryMidNightTime(
 						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.outPrsMidnTime),
 								new AttendanceTime(this.preOutPrsMidnTime)),
 						new AttendanceTime(this.preOutPrsMidnTime)),
-				Optional.of(overTime), Optional.of(holiday));
+				Optional.ofNullable(overTime), Optional.ofNullable(holiday));
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
-		for (KrcdtDayLateTime krcdt : this.krcdtDayLateTime) {
+		for (KrcdtDayLateTime krcdt : getKrcdtDayLateTime()) {
 			lateTime.add(krcdt.toDomain());
 		}
 		List<LeaveEarlyTimeOfDaily> leaveEarly = new ArrayList<>();
-		for (KrcdtDayLeaveEarlyTime krcdt : this.krcdtDayLeaveEarlyTime) {
+		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
 			leaveEarly.add(krcdt.toDomain());
 		}
 
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(this.totalAttTime),
 				new AttendanceTime(this.totalCalcTime), new AttendanceTime(this.actWorkTime),
-				this.krcdtDayPrsIncldTime.toDomain(), excess, lateTime, leaveEarly,
+				this.krcdtDayPrsIncldTime == null ? null : this.krcdtDayPrsIncldTime.toDomain(), excess, lateTime, leaveEarly,
 				BreakTimeOfDaily
 						.sameTotalTime(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 								TimeWithCalculation.sameTime(new AttendanceTime(0)),
@@ -250,8 +260,8 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
 				this.bindDiffTime, this.diffTimeWorkTime);
 		// 日別実績の勤怠時間
-		return new AttendanceTimeOfDailyPerformance(this.krcdtDayAttendanceTimePK.employeeID, ymd,
-				this.krcdtDayWorkScheTime.toDomain(), actual,
+		return new AttendanceTimeOfDailyPerformance(this.krcdtDayAttendanceTimePK == null ? null : this.krcdtDayAttendanceTimePK.employeeID, ymd,
+				this.krcdtDayWorkScheTime == null ? null : this.krcdtDayWorkScheTime.toDomain(), actual,
 				new StayingTimeOfDaily(new AttendanceTime(this.aftPcLogoffTime),
 						new AttendanceTime(this.bfrPcLogonTime), new AttendanceTime(this.bfrWorkTime),
 						new AttendanceTime(this.stayingTime), new AttendanceTime(this.aftLeaveTime)),

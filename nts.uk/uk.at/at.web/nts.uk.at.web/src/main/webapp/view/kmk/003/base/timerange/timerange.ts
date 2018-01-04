@@ -7,12 +7,17 @@ module kmk003.base.timerange {
         startName: string;
         endName: string;
         required: boolean;
-        enable: boolean;
+        enable: KnockoutObservable<boolean>;
         inputFormat: string;
         tabindex: number;
         
         startTime: KnockoutObservable<number>;
         endTime: KnockoutObservable<number>;
+        element: JQuery;
+        startTimeNameId: string;
+        endTimeNameId: string;
+        startInputId: string;
+        endInputId: string;
         
         /**
         * Constructor.
@@ -23,37 +28,50 @@ module kmk003.base.timerange {
             self.value = input.value;
             self.startConstraint = ko.unwrap(input.startConstraint);
             self.endConstraint = ko.unwrap(input.endConstraint);
-            self.startName = ko.unwrap(input.endConstraint);
-            self.endName = ko.unwrap(input.endConstraint);
             self.required = ko.unwrap(input.required);
-            self.enable = ko.unwrap(input.enable);
+            self.enable = ko.observable(input.enable ? input.enable() : true);
             self.inputFormat = ko.unwrap(input.inputFormat);
             self.tabindex = ko.unwrap(input.tabindex);
             
-            self.startTime = ko.observable(0);
-            self.endTime = ko.observable(0);
-            
+            self.startTime = ko.observable(input.value().startTime ? input.value().startTime : 0);
+            self.endTime = ko.observable(input.value().endTime ? input.value().endTime : 0);
+            self.startTimeNameId = input.startTimeNameId ? input.startTimeNameId : '';
+            self.endTimeNameId = input.endTimeNameId ? input.endTimeNameId :'';
+            self.startInputId = nts.uk.util.randomId();
+            self.endInputId = nts.uk.util.randomId();
             // subscribe
             self.startTime.subscribe((newValue) => {
-                if (!self.validTimeRange(newValue, self.endTime())) {
-                    return;
-                }
                 self.value().startTime = newValue;
                 self.value().endTime = self.endTime();
                 
                 // event callback
                 self.value.valueHasMutated();
+                self.fireEventChangeData();
+                self.validTimeRange(self.endInputId);
             });
             self.endTime.subscribe((newValue) => {
-                if (!self.validTimeRange(self.startTime(), newValue)) {
-                    return;
-                }
                 self.value().startTime = self.startTime();
                 self.value().endTime = newValue;
                 
                 // event callback
                 self.value.valueHasMutated();
+                self.fireEventChangeData();
+                self.validTimeRange(self.startInputId);
             });
+        }
+        
+        public fireEventChangeData() {
+            // Create event changed.
+            var changedEvent = new CustomEvent("timerangedatachange", {
+                detail: {},
+                bubbles: true,
+                cancelable: true
+            });
+            var self = this;
+            var htmlElement = self.element.parents('.kmk003-table-component').first().parent();
+            if (htmlElement.length > 0 && htmlElement[0].id) {
+                document.getElementById(htmlElement[0].id).dispatchEvent(changedEvent);
+            }
         }
 
         /**
@@ -69,20 +87,19 @@ module kmk003.base.timerange {
         /**
          * validTimeRange
          */
-        private validTimeRange(startTime: number, endTime: number): boolean {
+        public validTimeRange(inputIdError: string): boolean {
             let self = this;
             
             // clear error
-            $('#start-time').ntsEditor('clear');
-            $('#end-time').ntsEditor('clear');
+            $('#' + self.startInputId).ntsError('clear');
+            $('#' + self.endInputId).ntsError('clear');
             
             // validate
-            $('#start-time').ntsEditor('validate');
-            $('#end-time').ntsEditor('validate');
+            $('#' + self.startInputId).ntsEditor('validate');
+            $('#' + self.endInputId).ntsEditor('validate');
             
-            $('#time-range-editor').ntsError('clear');
-            if (startTime >= endTime) {
-                $('#time-range-editor').ntsError('set', {messageId:'Msg_770',messageParams:[]});
+            if (self.startTime() >= self.endTime()) {
+                $('#' + inputIdError).ntsError('set', {messageId:'Msg_770',messageParams:[]});
                 return false;
             }
             return true
@@ -128,10 +145,18 @@ module kmk003.base.timerange {
             let value: any = input.value;
 
             let screenModel = new ScreenModel(input);
+            screenModel.element = $(element);
+            if (input.enable) {
+                input.enable.subscribe(function(val) {
+                    screenModel.enable(val);
+                });
+            }
             $(element).load(webserviceLocator, function() {
+                screenModel.element.find('#start-time').attr('id', screenModel.startInputId);
+                screenModel.element.find('#end-time').attr('id', screenModel.endInputId);
                 ko.cleanNode($(element)[0]);
+                //screenModel.bindDataToScreen(value);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.bindDataToScreen(value);
                 $('.time-range-custom').css("float", "left");
             });
         }

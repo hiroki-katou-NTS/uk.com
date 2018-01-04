@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -93,7 +94,9 @@ public class AddSpecialHolidayCommand {
 				this.subCondition.getUseAge(), this.subCondition.getGenderAtr(),
 				this.subCondition.getLimitAgeFrom(), this.subCondition.getLimitAgeTo(),
 				this.subCondition.getAgeCriteriaAtr(), this.subCondition.getAgeBaseYearAtr(),
-				this.subCondition.getAgeBaseDates(), this.subCondition.getEmploymentList(), this.subCondition.getClassificationList());
+				this.subCondition.getAgeBaseDates(), 
+				this.subCondition.getEmploymentList() == null ? Collections.emptyList() : this.subCondition.getEmploymentList(), 
+				this.subCondition.getClassificationList() == null ? Collections.emptyList() : this.subCondition.getClassificationList());
 	}
 
 	private GrantSingle toDomainGrantSingle(String companyId) {
