@@ -500,6 +500,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         openKDL002Dialog() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.block.invisible();
             var workTypeCodes = _.map(self.workTypeList(), function(item: IWorkTypeModal) { return item.workTypeCode });
             nts.uk.ui.windows.setShared('KDL002_Multiple', true);
@@ -557,6 +558,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
          */
         openCDL002(): void {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.setShared('CDL002Params', {
                 isMultiple: true,
                 selectedCodes: self.currentItem().subCondition().employmentList(),
@@ -580,6 +582,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
          * CDL003：分類選択ダイアログ
          */
         openCDL003(): void {
+            nts.uk.ui.errors.clearAll();
             let self = this;
             var classficationCodes = _.map(self.classificationList(), function(item: IClassficationsModal) { return item.classficationCode });
             nts.uk.ui.windows.setShared('inputCDL003', {

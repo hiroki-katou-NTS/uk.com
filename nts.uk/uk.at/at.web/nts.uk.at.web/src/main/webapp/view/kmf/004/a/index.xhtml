@@ -70,7 +70,7 @@
 								data-bind="click : $parent.openKDL002Dialog.bind($parent)" tabindex="8"
 								style="margin-left: 106px;" id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
 							<span><input id="text-target-item" style="width: 466px"
-								data-bind="ntsTextEditor: {value: $parent.workTypeNames, enable: false, name: '#[KMF004_13]'}" /></span>
+								data-bind="ntsTextEditor: {value: $parent.workTypeNames, enable: true, name: '#[KMF004_13]', required: true,}" /></span>
 						</div>
 						<div>
 							<div id="single-offer" style="margin-top: 10px;"
@@ -300,14 +300,18 @@
 									<button style="margin-left: 40px; margin-top: 5px;"
 										data-bind="click: $parent.openCDL002.bind($parent), enable: useEmployee()==1">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px" tabindex="29"
-										data-bind="ntsTextEditor: {value: $parent.employmentNames, required: false, enable: false, name: '#[KMF004_60]',enable: useEmployee()==1}" />
+										data-bind="ntsTextEditor: {value: $parent.employmentNames, 
+										required: ko.computed(function(){ return useEmployee ()==1 &amp;&amp; $parent.inp_grantMethod() == 0;})
+										, enable: false, name: '#[KMF004_60]',enable: useEmployee()==1}" />
 								</div>
 								<div>
 									<div style="" tabindex="30" data-bind="ntsCheckBox: { checked: useCls }">#{i18n.getText('Com_Class')}</div>
 									<button style="margin-left: 67px; margin-top: 5px;"
 										data-bind="click: $parent.openCDL003.bind($parent), enable: useCls()==1">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px" tabindex="31"
-										data-bind="ntsTextEditor: {value: $parent.classficationNames, required: false, enable: false, name: '#[Com_Class]', enable: useCls()==1}" />
+										data-bind="ntsTextEditor: {value: $parent.classficationNames, 
+										required: ko.computed(function(){ return useCls  ()==1 &amp;&amp; $parent.inp_grantMethod() == 0;}), 
+										enable: false, name: '#[Com_Class]', enable: useCls()==1}" />
 								</div>
 								<div>
 									<div style="" tabindex="32" data-bind="ntsCheckBox: { checked: useAge }">#{i18n.getText('KMF004_56')}</div>
