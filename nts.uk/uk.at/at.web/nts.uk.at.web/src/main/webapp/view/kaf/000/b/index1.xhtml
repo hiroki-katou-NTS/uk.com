@@ -43,11 +43,12 @@
 												<com:ko bind="$index() != 0" tag="if">
 													<label>,</label>
 												</com:ko>
-												<div style="display: inline-block;" data-bind="text: $data.approver()">
-													<div style="display: inline-block;" data-bind="if: $data.representer()!=null">
-														<label data-bind="'(' + $data.representer() + ')'"></label>
+												<div style="display: inline-block;">
+													<label data-bind="text: $data.approver()"></label>
+													<div style="display: inline-block;" data-bind="if: $data.representer().length > 0">
+														<label data-bind="text: '(' + $data.representer() + ')'"></label>
 													</div>
-												</div>
+												</div>	
 											</div>
 										</div>
 									</td>
