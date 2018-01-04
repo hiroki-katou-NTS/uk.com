@@ -191,7 +191,9 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 */
 	private boolean isMorningAndAfternoonInShift1() {
 		val tzWorkNo1 = this.getTimezoneShiftOne();
-		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) && tzWorkNo1.consistOf(this.getMorningEndTime());
+		
+		// (afternoon time or morning time) part of (shift1 or shift2)
+		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) || tzWorkNo1.consistOf(this.getMorningEndTime());
 	}
 
 	/**
@@ -201,7 +203,9 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 */
 	private boolean isMorningAndAfternoonInShift2() {
 		val tzWorkNo2 = this.getTimezoneShiftTwo();
-		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) && tzWorkNo2.consistOf(this.getMorningEndTime());
+		
+		// (afternoon time or morning time) part of (shift1 or shift2)
+		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) || tzWorkNo2.consistOf(this.getMorningEndTime());
 	}
 	
 	/**
