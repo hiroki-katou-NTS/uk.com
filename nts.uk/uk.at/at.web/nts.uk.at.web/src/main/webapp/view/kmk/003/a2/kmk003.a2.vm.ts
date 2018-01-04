@@ -151,6 +151,13 @@ module a2 {
                 self.bindDataToScreen();
             });
             
+            input.selectedTab.subscribe((newValue: string) => {
+                if (newValue !== 'tab-2' || !self.isSimpleMode()) {
+                    return;
+                }
+                self.bindDataToScreen();
+            });
+            
             self.parentModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
                 self.bindDataToScreen();
             });
