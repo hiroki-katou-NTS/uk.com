@@ -35,6 +35,7 @@ public class KshmtFlowTimeZonePK implements Serializable {
 	 * Instantiates a new kshmt flow time zone PK.
 	 */
 	public KshmtFlowTimeZonePK() {
+		super();
 	}
 
 	/*

@@ -54,6 +54,7 @@ public class KshmtFlexWorkTimeSet implements Serializable {
 	 * Instantiates a new kshmt flex work time set.
 	 */
 	public KshmtFlexWorkTimeSet() {
+		super();
 	}
 	
 	/**
