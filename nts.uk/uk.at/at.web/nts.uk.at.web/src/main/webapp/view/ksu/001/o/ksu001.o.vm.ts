@@ -112,7 +112,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 }
             });
         }
-        
+
         search(): void {
             let self = this;
             if (!self.time1() && !self.time2()) {
@@ -133,15 +133,16 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     self.listWorkTimeComboBox.push(obj);
                 }
             });
-
+            
+            $('#combo-box2').focus();
         }
-        
+
         clear(): void {
             let self = this;
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
         }
-        
+
         /**
          * Get data workType-workTime for 2 combo-box
          */
