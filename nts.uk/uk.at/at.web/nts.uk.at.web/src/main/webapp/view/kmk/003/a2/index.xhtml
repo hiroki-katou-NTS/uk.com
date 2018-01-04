@@ -24,6 +24,7 @@
 		<com:ko tag="if" bind="isSimpleMode() &amp;&amp; !isFlowMode()">
 			<div tabindex="-1" class="accordion setting_detail_tab2">
 				<div id="fixtable-tab2-one-day-simple-mode" data-bind="ntsFixTableCustom: {
+						isEnableAllControl: isDetailMode,
 						option: fixTableOptionOneDaySimpleMode}"></div>
 			</div>
 		</com:ko>
