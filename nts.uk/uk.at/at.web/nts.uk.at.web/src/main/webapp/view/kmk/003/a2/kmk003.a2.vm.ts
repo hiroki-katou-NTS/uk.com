@@ -165,29 +165,11 @@ module a2 {
             });
             
             
-            self.dataSourceOneDay.subscribe((newValue) => {
-                // when save, collect data
-                if (input.isClickSave()) { 
-                    self.convertData();
+            input.isClickSave.subscribe(newValue => {
+                if (!newValue) {
+                    return;
                 }
-            });
-            self.dataSourceMorning.subscribe((newValue) => {
-                // when save, collect data
-                if (input.isClickSave()) { 
-                    self.convertData();
-                }
-            });
-            self.dataSourceAfternoon.subscribe((newValue) => {
-                // when save, collect data
-                if (input.isClickSave()) { 
-                    self.convertData();
-                }
-            });
-            self.dataSourceOneDaySimpleMode.subscribe((newValue) => {
-                // when save, collect data
-                if (input.isClickSave()) { 
-                    self.convertData();
-                }
+                self.convertData();
             });
         }
 
