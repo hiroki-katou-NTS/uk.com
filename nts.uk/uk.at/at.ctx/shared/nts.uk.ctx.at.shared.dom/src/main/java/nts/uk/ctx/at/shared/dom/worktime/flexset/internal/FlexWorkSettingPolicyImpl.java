@@ -13,15 +13,15 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 
 /**
  * The Class FlexWorkSettingPolicyImpl.
  */
 @Stateless
-public class FlexWorkSettingPolicyImpl {
+public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 	
 	/** The service. */
 //	@Inject
