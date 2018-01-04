@@ -269,7 +269,7 @@
 										</div>
 										<com:ko-if bind="$parents[2].isNotsetOrnull(decimalPart)">
 											<com:ko-if bind="numericItemAmount() === 0">
-											<input
+											<input id="numericItemMin"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
 												value: numericItemMin,
@@ -286,7 +286,7 @@
 												tabindex="16" 
 												/>
 											<span class="label">～</span>
-											<input
+											<input id="numericItemMax"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_39]',
 												value: numericItemMax,
@@ -304,7 +304,7 @@
 											</com:ko-if>
 
 											<com:ko-if bind="numericItemAmount() === 1">
-											<input
+											<input id="numericItemMin"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
 												value: numericItemMin,
@@ -322,7 +322,7 @@
 												readonly: false}" 
 												tabindex="16"/>
 											<span class="label">～</span>
-											<input
+											<input id="numericItemMax"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_39]',
 												value: numericItemMax,
@@ -346,7 +346,7 @@
 										<com:ko-if bind="!$parents[2].isNotsetOrnull(decimalPart)">
 											
 											<com:ko-if bind="numericItemAmount() === 1">
-											<input
+											<input id="numericItemMin"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
 												value: numericItemMin,
@@ -364,7 +364,7 @@
 												readonly: false}" 
 												tabindex="16"/>
 											<span class="label">～</span>
-											<input
+											<input id="numericItemMax"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_39]',
 												value: numericItemMax,
@@ -385,7 +385,7 @@
 										</com:ko-if>
 										
 											<com:ko-if bind="numericItemAmount() === 0">
-											<input
+											<input id="numericItemMin"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
 												value: numericItemMin,
@@ -401,7 +401,7 @@
 												readonly: false}" 
 												tabindex="16"/>
 											<span class="label">～</span>
-											<input
+											<input id="numericItemMax" 
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_39]',
 												value: numericItemMax,
