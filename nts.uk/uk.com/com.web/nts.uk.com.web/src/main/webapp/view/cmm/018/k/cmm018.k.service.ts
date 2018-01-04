@@ -29,7 +29,7 @@ module nts.uk.com.view.cmm018.k.service{
     export module model{
         export class EmployeeSearchInDto {
                 baseDate: Date;
-                workplaceCodes: string[];
+                workplaceIds: string[];
             }    
         export class EmployeeSearchDto {
                 companyId: string;

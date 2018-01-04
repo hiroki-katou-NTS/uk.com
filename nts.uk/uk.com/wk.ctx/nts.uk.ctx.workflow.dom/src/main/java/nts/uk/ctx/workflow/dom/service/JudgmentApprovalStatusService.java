@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 
 /**
@@ -30,7 +31,7 @@ public interface JudgmentApprovalStatusService {
 	 * @param rootStateID インスタンスID
 	 * @return ステータス：（否認、承認済、未承認、差し戻し）
 	 */
-	public ApprovalBehaviorAtr judgmentApprovalStatus(String companyID, String rootStateID);
+	public ApprovalBehaviorAtr determineApprovalStatus(String companyID, String rootStateID);
 	
 	/**
 	 * 3.指定した社員が承認できるかの判断
@@ -49,6 +50,21 @@ public interface JudgmentApprovalStatusService {
 	 */
 	public List<String> getApproverFromPhase(ApprovalPhaseState approvalPhaseState);
 	
+	/**
+	 * 1.承認状況の判断
+	 * @param approvalPhaseState
+	 * @param employeeID
+	 */
+	public ApprovalStatusOutput judmentApprovalStatus(String companyID, ApprovalPhaseState approvalPhaseState, String employeeID);
+	
+	/**
+	 * 2.指定した社員が指定した承認者リストの代行承認者かの判断
+	 * @param companyID
+	 * @param employeeID
+	 * @param listApprover
+	 * @return
+	 */
+	public Boolean judgmentAgentListByEmployee(String companyID, String employeeID, List<String> listApprover);
 	
 	
 }

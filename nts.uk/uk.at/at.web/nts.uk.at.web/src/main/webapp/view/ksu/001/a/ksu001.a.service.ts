@@ -20,9 +20,11 @@ module nts.uk.at.view.ksu001.a.service {
     export function registerData(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.registerData, obj);
     }
+
     export function getShiftCondition(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getShiftCondition);
     }
+    
     export function getShiftConditionCategory(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getShiftConditionCategory);
     }
@@ -50,7 +52,7 @@ module nts.uk.at.view.ksu001.a.service {
     export function getDataComPattern(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataComPattern);
     }
-    
+
     export function getDataWkpPattern(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataWkpPattern, obj);
     }

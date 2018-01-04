@@ -241,6 +241,7 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(true);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
+                self.employmentWTSetting.year(self.companyWTSetting.year());
 
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
@@ -274,6 +275,7 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(true);
+                self.workplaceWTSetting.year(self.companyWTSetting.year());
 
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {

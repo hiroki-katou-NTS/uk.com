@@ -11,7 +11,9 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
@@ -58,6 +60,9 @@ public class LateOrLeaveEarlyFinder {
 	@Inject
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
+	@Inject
+	private ApplicationRepository_New appRepository;
+	
 	public ScreenLateOrLeaveEarlyDto getLateOrLeaveEarly(String appID) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
@@ -84,8 +89,10 @@ public class LateOrLeaveEarlyFinder {
 		if(Strings.isNotEmpty(appID)) {
 			Optional<LateOrLeaveEarly> lateOrLeaveEarlyOp = lateOrLeaveEarlyRepository.findByCode(companyID, appID);
 			if(lateOrLeaveEarlyOp.isPresent()){
+				//Get application data
+				lateOrLeaveEarlyOp.get().setApplication(appRepository.findByID(companyID, appID).get());
 				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarlyOp.get()); 
-				employeeID = lateOrLeaveEarlyOp.get().getApplicantSID();
+				employeeID = lateOrLeaveEarlyOp.get().getApplication().getEmployeeID();
 				applicantName = employeeAdapter.getEmployeeName(employeeID);
 			}
 		} else {

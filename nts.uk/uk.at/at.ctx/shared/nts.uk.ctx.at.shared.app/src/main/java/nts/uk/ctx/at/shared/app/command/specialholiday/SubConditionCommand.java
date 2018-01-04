@@ -3,7 +3,9 @@ package nts.uk.ctx.at.shared.app.command.specialholiday;
 import java.util.List;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 @Data
+@NoArgsConstructor
 public class SubConditionCommand {
 
 	/**特別休暇コード*/

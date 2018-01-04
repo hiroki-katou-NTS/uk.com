@@ -31,9 +31,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
-import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -155,22 +153,11 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
 	public KrqdtAppStamp krqdtAppStamp;
-
-	@OneToOne(targetEntity = KrqdtAppLateOrLeave.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
-	public KrqdtAppLateOrLeave krqdtAppLateOrLeave;
-
-	@OneToOne(targetEntity = KrqdtAppOvertime.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
-	public KrqdtAppOvertime krqdtAppOvertime;
-
-	@OneToOne(targetEntity = KrqdtAppWorkChange.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
-	public KrqdtAppWorkChange krqdtAppWorkChange;
 	
 	@Override
 	protected Object getKey() {
 		return kafdtApplicationPK;
 	}
-
-	private static final String SEPERATE_REASON_STRING = ":";
 
 	public static KafdtApplication toEntity(Application domain) {
 		return new KafdtApplication(new KafdtApplicationPK(domain.getCompanyID(), domain.getApplicationID()),
@@ -181,7 +168,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 				domain.getReflectPerScheReason().value, domain.getReflectPerTime(), domain.getReflectPerState().value,
 				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate(),
 				domain.getListPhase().stream().map(c -> KrqdtAppApprovalPhase.toEntity(c)).collect(Collectors.toList()),
-				null, null, null, null);
+				null);
 	}
 
 	public Application toDomain() {
