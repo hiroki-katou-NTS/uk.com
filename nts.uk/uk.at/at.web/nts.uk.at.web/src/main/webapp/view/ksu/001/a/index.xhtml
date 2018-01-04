@@ -152,7 +152,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_91')}</div>
 						</div>
 						<div style="width: 65%; float: left">
-							<div style="margin-bottom: 17px" id="combo-box"
+							<div style="margin-bottom: 17px" id="combo-box11"
 								data-bind="ntsComboBox: {
 									options: backgroundColorList,
 									optionsValue: 'code',
@@ -166,7 +166,7 @@
 								class="cf"
 								data-bind="ntsSwitchButton: {
 									options: roundingRules,
-									optionsValue: 'code',
+									optionsValue: 'id',
 									optionsText: 'name',
 									value: selectedDisplayLastWeek,
 									enable: true }"></div>
@@ -175,10 +175,10 @@
 									options: itemList1,
 									optionsValue: 'id',
 									optionsText: 'name',
-									value: selectedId,
+									value: selectedTypeHeightExTable,
 									enable: true}"></div>
-							<input style="width: 65px"
-								data-bind="ntsTextEditor: {value: ko.observable('')}" />
+							<input id="input-heightExtable"
+								data-bind="ntsTextEditor: {value: ko.observable(''), enable: isEnableInputHeight, required: isEnableInputHeight }" />
 						</div>
 					</div>
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_92')}</div>
@@ -195,7 +195,7 @@
 								class="cf"
 								data-bind="ntsSwitchButton: {
 									options: roundingRules,
-									optionsValue: 'code',
+									optionsValue: 'id',
 									optionsText: 'name',
 									value: selectedDisplayBank,
 									enable: true }"></div>
@@ -203,7 +203,7 @@
 								class="cf"
 								data-bind="ntsSwitchButton: {
 									options: roundingRules,
-									optionsValue: 'code',
+									optionsValue: 'id',
 									optionsText: 'name',
 									value: selectedDisplayVertical,
 									enable: true }"></div>
@@ -211,11 +211,11 @@
 								class="cf"
 								data-bind="ntsSwitchButton: {
 									options: roundingRules,
-									optionsValue: 'code',
+									optionsValue: 'id',
 									optionsText: 'name',
 									value: selectedCompareMonth,
-									enable: true }"></div>
-							<div id="combo-box"
+									enable: isEnableCompareMonth }"></div>
+							<div id="combo-box10"
 								data-bind="ntsComboBox: {
 									options: itemList,
 									optionsValue: 'code',

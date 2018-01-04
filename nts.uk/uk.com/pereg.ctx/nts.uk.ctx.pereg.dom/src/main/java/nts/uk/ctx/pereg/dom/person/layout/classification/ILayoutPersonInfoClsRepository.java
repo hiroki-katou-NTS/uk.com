@@ -15,5 +15,5 @@ public interface ILayoutPersonInfoClsRepository {
 
 	boolean checkExitItemCls(String layoutId);
 
-	List<LayoutPersonInfoClassificationWithCtgCd> getAllWithCtdCdByLayoutId(String layoutId);
+	List<LayoutPersonInfoClassificationWithCtgCd> getAllWithCtdCdByLayoutId(String layoutId, String contractCd);
 }

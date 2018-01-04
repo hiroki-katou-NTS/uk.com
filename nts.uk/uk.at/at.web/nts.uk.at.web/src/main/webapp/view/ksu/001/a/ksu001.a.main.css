@@ -290,3 +290,7 @@ table th, table td {
 .h-90 {
 	height: 90px
 }
+
+#input-heightExtable {
+	width: 65px
+}
