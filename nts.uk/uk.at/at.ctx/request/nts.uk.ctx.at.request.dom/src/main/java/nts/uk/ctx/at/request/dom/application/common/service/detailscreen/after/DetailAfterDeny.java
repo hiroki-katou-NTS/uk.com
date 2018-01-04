@@ -6,6 +6,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
  */
 public interface DetailAfterDeny {
 	
-	public String doDeny(String companyID, String appID, String employeeID);
+	public String doDeny(String companyID, String appID, String employeeID, String memo);
 	
 }
