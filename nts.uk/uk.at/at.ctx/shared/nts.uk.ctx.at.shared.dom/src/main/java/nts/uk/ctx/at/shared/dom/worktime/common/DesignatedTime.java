@@ -33,11 +33,11 @@ public class DesignatedTime extends DomainObject {
 		this.oneDayTime = oneDayTime;
 		this.halfDayTime = halfDayTime;
 	}
+	
 	/**
-	 * Instantiates a new designated time.
+	 * Save to memento.
 	 *
-	 * @param oneDayTime the one day time
-	 * @param halfDayTime the half day time
+	 * @param memento the memento
 	 */
 	public void saveToMemento(DesignatedTimeSetMemento memento) {
 		memento.setOneDayTime(this.oneDayTime);
@@ -67,12 +67,19 @@ public class DesignatedTime extends DomainObject {
 	/**
 	 * Restore data.
 	 *
-	 * @param otherDomain
-	 *            the other domain
+	 * @param oldDomain the old domain
 	 */
 	public void restoreData(DesignatedTime oldDomain) {
 		this.oneDayTime = oldDomain.getOneDayTime();
 		this.halfDayTime = oldDomain.getHalfDayTime();
+	}
+	
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.oneDayTime = new OneDayTime(0);
+		this.halfDayTime = new OneDayTime(0);
 	}
 
 }
