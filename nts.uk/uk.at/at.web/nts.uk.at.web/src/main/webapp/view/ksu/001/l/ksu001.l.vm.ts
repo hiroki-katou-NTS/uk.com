@@ -170,6 +170,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     arrayTeam.push(team);
                 });
                 self.listTeam(arrayTeam);
+                self.filterEmpNotTeam(self.onlyEmpNotTeam());
                 dfd.resolve();
             }).fail(() => {
                 dfd.reject();
