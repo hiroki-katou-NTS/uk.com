@@ -88,11 +88,11 @@ button.search-btn {
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 341px;
+	width: 359px;
 }
 
 input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
-	width: 190px !important;
+	width: 207px	 !important;
 }
 
 i.icon.icon-searchbox {
