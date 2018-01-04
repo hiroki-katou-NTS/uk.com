@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkRestSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
@@ -23,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
 /**
  * The Class TimeDiffWorkSetting.
  */
-
 @Getter
+@Setter
 public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingSetMemento {
 
 	/** The work time code. */

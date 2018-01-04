@@ -139,12 +139,6 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
 		if(this.lstTimezone.size()> SIZE_ONE){
 			TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
-			if (tzWorkNo2.getStart().lessThan(tzWorkNo1.getEnd())) {
-				BundledBusinessException be = BundledBusinessException.newInstance();
-				be.addMessage("Msg_772");
-				be.throwExceptions();
-			}
-			
 			//TODO rcheck overlap 
 			// valid: 2 時間帯 có 勤務NO=1 và 2 not overlap
 //			boolean isWorkNoOverlap = this.getTimezone(SHIFT_ONE).getWorkNo() == this.getTimezone(SHIFT_TWO).getWorkNo();
@@ -153,7 +147,14 @@ public class PrescribedTimezoneSetting extends DomainObject {
 //			}
 			
 			// 使用する
-			if (this.getTimezoneShiftTwo().isUsed()) {
+			if (tzWorkNo2.isUsed()) {
+				
+				if (tzWorkNo2.getStart().lessThan(tzWorkNo1.getEnd())) {
+					BundledBusinessException be = BundledBusinessException.newInstance();
+					be.addMessage("Msg_772");
+					be.throwExceptions();
+				}
+				
 				if (!(this.isMorningAndAfternoonInShift1() || this.isMorningAndAfternoonInShift2())) {
 					throw new BusinessException("Msg_774");
 				}
