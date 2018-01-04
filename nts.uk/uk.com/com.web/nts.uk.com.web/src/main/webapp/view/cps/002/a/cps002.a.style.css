@@ -185,13 +185,17 @@
 
 #cover_table {
 	width: 453px;
-	overflow: auto;
 }
 
 .table_item, th, td {
 	border: 1px solid black;
 	padding: 5px;
 	min-height: 20px;
+}
+
+.table_item td {
+	max-width: 250px;
+	word-break: keep-all;
 }
 
 .table_item th {
@@ -239,5 +243,19 @@
 
 .drag-panel {
 	height: 500px !important;
+}
+
+.ellipsis_step3_title {
+	white-space: nowrap;
+	width: 320px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.valueCell {
+	max-width: 250px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 /* step 3 end */

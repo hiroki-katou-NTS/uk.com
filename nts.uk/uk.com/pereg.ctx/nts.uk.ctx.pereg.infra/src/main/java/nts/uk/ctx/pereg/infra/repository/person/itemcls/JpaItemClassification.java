@@ -19,10 +19,10 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 	private static final String REMOVE_ALL_BY_LAYOUT_ID = "DELETE FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId";
 	private static final String GET_ALL_ITEM_CLASSIFICATION = "SELECT c FROM PpemtLayoutItemCls c WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
 	private static final String GET_ALL_ITEM_CLASSIFICATION_WITH_CTG_CD_BY_LAYOUT_ID = "SELECT c,ca.categoryCd,cm.categoryType"
-			+ " FROM PpemtLayoutItemCls c" + " LEFT JOIN PpemtPerInfoCtg ca"
+			+ " FROM PpemtLayoutItemCls c" + " INNER JOIN PpemtPerInfoCtg ca"
 			+ " ON c.categoryId= ca.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " LEFT JOIN PpemtPerInfoCtgCm cm ON cm.ppemtPerInfoCtgCmPK.categoryCd = ca.categoryCd"
-			+ " WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId"
+			+ " INNER JOIN PpemtPerInfoCtgCm cm ON cm.ppemtPerInfoCtgCmPK.categoryCd = ca.categoryCd"
+			+ " WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId AND cm.ppemtPerInfoCtgCmPK.contractCd=:contractCd"
 			+ " ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
 	private static final String CHECK_EXIT_ITEMCLS;
 
@@ -80,9 +80,9 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 	}
 
 	@Override
-	public List<LayoutPersonInfoClassificationWithCtgCd> getAllWithCtdCdByLayoutId(String layoutId) {
+	public List<LayoutPersonInfoClassificationWithCtgCd> getAllWithCtdCdByLayoutId(String layoutId, String contractCd) {
 		return this.queryProxy().query(GET_ALL_ITEM_CLASSIFICATION_WITH_CTG_CD_BY_LAYOUT_ID, Object[].class)
-				.setParameter("layoutId", layoutId)
+				.setParameter("layoutId", layoutId).setParameter("contractCd", contractCd)
 				.getList(x -> toDomainWithCD(x));
 
 	}
