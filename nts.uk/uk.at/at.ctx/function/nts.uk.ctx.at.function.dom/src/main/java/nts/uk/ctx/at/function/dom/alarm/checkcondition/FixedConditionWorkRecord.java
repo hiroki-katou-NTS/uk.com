@@ -11,12 +11,13 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @NoArgsConstructor
 public class FixedConditionWorkRecord extends DomainObject {
+	/** 日次のアラームチェック条件ID */
 	private String dailyAlarmConID;
-	
+	/** No */
 	private WorkRecordFixedCheckItem fixConWorkRecordNo;
-	
+	/** メッセージ */
 	private FixedConditionWorkRecordName message;
-	
+	/** 使用区分 */
 	private boolean useAtr;
 
 	public FixedConditionWorkRecord(String dailyAlarmConID, WorkRecordFixedCheckItem fixConWorkRecordNo,
@@ -27,6 +28,5 @@ public class FixedConditionWorkRecord extends DomainObject {
 		this.message = message;
 		this.useAtr = useAtr;
 	}
-	
 	
 }
