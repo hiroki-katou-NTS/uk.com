@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
  * The Class EmTimeZoneSetDto.
  */
 @Getter
+@Setter
 public class EmTimeZoneSetDto implements EmTimeZoneSetSetMemento {
 
 	/** The employment time frame no. */
