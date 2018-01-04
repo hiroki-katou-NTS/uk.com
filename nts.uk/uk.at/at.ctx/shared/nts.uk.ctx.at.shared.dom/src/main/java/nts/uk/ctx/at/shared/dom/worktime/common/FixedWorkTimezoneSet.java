@@ -100,9 +100,9 @@ public class FixedWorkTimezoneSet extends DomainObject {
 //			throw new BusinessException("Msg_779");
 //		}
 		
-		if (endTimeZone >= endTimeOvertime) {
-			throw new BusinessException("Msg_780");
-		}
+//		if (endTimeZone >= endTimeOvertime) {
+//			throw new BusinessException("Msg_780");
+//		}
 		
 	}
 
