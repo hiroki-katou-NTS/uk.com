@@ -17,10 +17,16 @@ public class PerInfoSelectionItemFinder {
 	@Inject
 	private IPerInfoSelectionItemRepository perInfoSelectionItemRepo;
 
-	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
+	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(boolean hasCompanyId) {
 		String contractCode = AppContexts.user().contractCode();
-		return this.perInfoSelectionItemRepo.getAllSelectionItemByContractCd(contractCode).stream()
-				.map(i -> PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
+		if (hasCompanyId) {
+			String companyId = AppContexts.user().companyId();
+			return this.perInfoSelectionItemRepo.getAllSelectionItemByContractCdAndCID(contractCode, companyId).stream()
+					.map(i -> PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
+		} else {
+			return this.perInfoSelectionItemRepo.getAllSelectionItemByContractCd(contractCode).stream()
+					.map(i -> PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
+		}
 	}
 
 	public PerInfoSelectionItemDto getPerInfoSelectionItem(String selectionItemId) {
@@ -32,11 +38,10 @@ public class PerInfoSelectionItemFinder {
 		}
 		return PerInfoSelectionItemDto.fromDomain(opt.get());
 	}
-	//getAllSelection
-	
+	// getAllSelection
+
 	public List<PerInfoSelectionItemDto> getAllSelectionItem(int selectionItemClsAtr) {
 		return this.perInfoSelectionItemRepo.getAllSelection(selectionItemClsAtr).stream()
-				.map(c -> PerInfoSelectionItemDto.fromDomain(c))
-				.collect(Collectors.toList());
+				.map(c -> PerInfoSelectionItemDto.fromDomain(c)).collect(Collectors.toList());
 	}
 }
