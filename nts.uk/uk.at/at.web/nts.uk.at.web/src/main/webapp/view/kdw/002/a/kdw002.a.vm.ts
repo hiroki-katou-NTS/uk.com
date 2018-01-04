@@ -54,7 +54,7 @@ module nts.uk.at.view.kdw002.a {
 
                 self.attendanceItemColumn = ko.observableArray([
                     { headerText: 'コード', key: 'attendanceItemId', width: 50, dataType: "number" },
-                    { headerText: '名称', key: 'attendanceItemName', width: 230, dataType: "string" },
+                    { headerText: '名称', key: 'attendanceItemName', width: 230, dataType: "string",formatter: _.escape },
                     { key: 'dailyAttendanceAtr', dataType: "number", hidden: true },
                     { key: 'nameLineFeedPosition', dataType: "number", hidden: true }
                 ]);
