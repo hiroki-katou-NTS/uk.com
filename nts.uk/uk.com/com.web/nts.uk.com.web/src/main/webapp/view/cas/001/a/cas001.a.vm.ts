@@ -295,7 +295,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 showHeader: true,
 
-                width: '830px',
+                width: '835px',
 
                 height: '315px',
 
