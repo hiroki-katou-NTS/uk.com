@@ -35,8 +35,7 @@ module nts.uk.at.view.kmk010.a {
                 self.checkRounding = ko.observable(0);
                 self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number){
                    self.updateSelectUnitRounding(selectUnit); 
-                });
-                
+                });               
             }
 
             /**
@@ -329,7 +328,7 @@ module nts.uk.at.view.kmk010.a {
             private updateSelectUnitRounding(selectUnit: number){
                 var self = this;
                 //15 , 30
-                if (selectUnit == 15 || selectUnit == 30) {
+                if (selectUnit == 4 || selectUnit == 6) {
                     self.lstRoundingSet(self.lstRounding);
                 } else {
                     self.lstRoundingSet(self.lstRoundingSub);
@@ -608,7 +607,7 @@ module nts.uk.at.view.kmk010.a {
             premiumExtra60HRates: PremiumExtra60HRateModel[];
 
             constructor() {
-                this.roundingTime = ko.observable(1);
+                this.roundingTime = ko.observable(null);
                 this.rounding = ko.observable(1);
                 this.superHolidayOccurrenceUnit = ko.observable(0);
                 this.premiumExtra60HRates = [];
