@@ -106,7 +106,7 @@ module nts.uk.at.view.kdw001.b {
                     new RecreateDevisionModel(0, getText('KDW001_56')),
                     new RecreateDevisionModel(1, getText('KDW001_57'))
                 ]);
-                self.selectedRecreateDevision = ko.observable(1);
+                self.selectedRecreateDevision = ko.observable(0);
 
 
 
@@ -232,7 +232,9 @@ module nts.uk.at.view.kdw001.b {
                     return;
                 }
 
-                if (self.selectedCreatDivisionCode() == 1 || self.selectedCalDivisionCode() == 1 || self.selectedAggregateClassCode() == 1) {
+                if ((self.selectedCreatDivisionCode() == 1 && self.dailyCalCheck() ==true) || 
+                    (self.selectedCalDivisionCode() == 1 && self.approvalResultCheck()==true) || 
+                    (self.selectedAggregateClassCode() == 1 && self.monthCountCheck()==true)) {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_575" }).ifYes(() => {
                         self.params.setParamsScreenB({
                             dailyCreation: self.dailyCreatedCheck(),
