@@ -154,11 +154,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.checkCreateaaa(false);
                             //self.enableSelName(true);
                             //self.revDisSel02(true);
-                            
+
                             // fix responsive bug
                             ko.utils.arrayPushAll(self.listSelection, itemList);
                             //itemList.forEach(x => self.listSelection.push(x));
-                            
+
                             self.selection().selectionID(self.listSelection()[0].selectionID);
                         } else {
                             //self.enableSelName(true);
