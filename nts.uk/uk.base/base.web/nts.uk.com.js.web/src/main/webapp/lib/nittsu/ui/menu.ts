@@ -47,24 +47,24 @@ module nts.uk.ui.menu {
             uk.request.jumpToTopPage();
         });
         
-//        displayUserInfo();
-//        nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function(menuSet) {
-//            let $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
-//            if (!menuSet || menuSet.length === 0) return;
-//            createMenuSelect($menuNav, menuSet);
-//            let menuCode = uk.localStorage.getItem(constants.MENU);
-//            if (menuCode.isPresent()) {
-//                let selectedMenu = _.find(menuSet, function(m) {
-//                    return m.webMenuCode === menuCode.get();
-//                });
-//                
-//                !util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
-//                    : generate($menuNav, menuSet[0]);
-//            } else {
-//                generate($menuNav, menuSet[0]);
-//            }
-//        });
-//        getProgram();
+        displayUserInfo();
+        nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function(menuSet) {
+            let $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
+            if (!menuSet || menuSet.length === 0) return;
+            createMenuSelect($menuNav, menuSet);
+            let menuCode = uk.localStorage.getItem(constants.MENU);
+            if (menuCode.isPresent()) {
+                let selectedMenu = _.find(menuSet, function(m) {
+                    return m.webMenuCode === menuCode.get();
+                });
+                
+                !util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
+                    : generate($menuNav, menuSet[0]);
+            } else {
+                generate($menuNav, menuSet[0]);
+            }
+        });
+        getProgram();
     }
     
     /**
