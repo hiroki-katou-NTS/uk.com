@@ -96,12 +96,13 @@ public class FixedWorkTimezoneSet extends DomainObject {
 		int startTimeOvertime = overTimeOfTimeZoneSet.getTimezone().getStart().valueAsMinutes();
 		int endTimeOvertime = overTimeOfTimeZoneSet.getTimezone().getEnd().valueAsMinutes();
 
-		if (startTimeZone < startTimeOvertime) {
-			throw new BusinessException("Msg_779");
-		}
-		if (endTimeZone >= endTimeOvertime) {
-			throw new BusinessException("Msg_780");
-		}
+//		if (startTimeZone < startTimeOvertime) {
+//			throw new BusinessException("Msg_779");
+//		}
+		
+//		if (endTimeZone >= endTimeOvertime) {
+//			throw new BusinessException("Msg_780");
+//		}
 		
 	}
 

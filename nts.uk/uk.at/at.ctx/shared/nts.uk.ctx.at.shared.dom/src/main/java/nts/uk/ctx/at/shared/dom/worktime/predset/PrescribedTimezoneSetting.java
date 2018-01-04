@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.val;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
@@ -163,7 +162,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		
 		// valid 時間帯.終了 >= 0:01
 		if (this.lstTimezone.stream()
-				.anyMatch(timezone -> !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
+				.anyMatch(timezone -> timezone.isUsed() && !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
 			throw new BusinessException("Msg_778");
 		}
 		
@@ -190,8 +189,10 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return true, if is morning and afternoon in shift 1
 	 */
 	private boolean isMorningAndAfternoonInShift1() {
-		val tzWorkNo1 = this.getTimezoneShiftOne();
-		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) && tzWorkNo1.consistOf(this.getMorningEndTime());
+		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
+		
+		// (afternoon time or morning time) part of (shift1 or shift2)
+		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) || tzWorkNo1.consistOf(this.getMorningEndTime());
 	}
 
 	/**
@@ -200,8 +201,10 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return true, if is morning and afternoon in shift 2
 	 */
 	private boolean isMorningAndAfternoonInShift2() {
-		val tzWorkNo2 = this.getTimezoneShiftTwo();
-		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) && tzWorkNo2.consistOf(this.getMorningEndTime());
+		TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
+		
+		// (afternoon time or morning time) part of (shift1 or shift2)
+		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) || tzWorkNo2.consistOf(this.getMorningEndTime());
 	}
 	
 	/**
@@ -210,7 +213,15 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @param domain the domain
 	 */
 	public void restoreDisabledDataFrom(PrescribedTimezoneSetting domain) {
-		TimezoneUse timeTwo = this.getTimezoneShiftTwo();
+		int indexOfShift2 = this.lstTimezone.indexOf(this.getTimezoneShiftTwo());
+		this.lstTimezone.set(indexOfShift2, domain.getTimezoneShiftTwo());
+	}
+
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.getTimezoneShiftTwo().restoreDefaultData();
 	}
 
 }

@@ -5,18 +5,26 @@ module nts.uk.at.view.kmk003.a3 {
          *  Service paths
          */
         let servicePath: any = {
-            getWorkTimeSetByCode: "at/shared/pred/findByCode"
+            findAllOvertimeWorkFrame: "at/shared/overtimeworkframe/findAll"
         };
 
-        export function findWorkTimeSetByCode(worktimeCode: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getWorkTimeSetByCode + "/" + worktimeCode);
+        /**
+         * function find all overtime work frame
+         */
+        export function findAllOvertimeWorkFrame(): JQueryPromise<model.OvertimeWorkFrameFindDto[]> {
+            return nts.uk.request.ajax(servicePath.findAllOvertimeWorkFrame);
         }
 
         /**
          * Data Model
          */
         export module model {
-
+            export interface OvertimeWorkFrameFindDto {
+                overtimeWorkFrNo: number;
+                overtimeWorkFrName: string;
+                transferFrName: string;
+                useAtr: number;
+            }
         }
     }
 }
