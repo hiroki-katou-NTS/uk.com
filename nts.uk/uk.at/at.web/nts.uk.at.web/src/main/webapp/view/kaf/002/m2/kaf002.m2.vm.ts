@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf002.m2 {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
             extendsModeDisplay: KnockoutObservable<boolean> = ko.observable(true);
             appStampList: KnockoutObservableArray<vmbase.AppStampWork> = ko.observableArray([]);    
-            supFrameNo: number = 1;
+            supFrameNo: number = 3;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             workLocationList: Array<vmbase.IWorkLocation> = [];
             displayAllLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_29'))); 
@@ -93,11 +93,17 @@ module nts.uk.at.view.kaf002.m2 {
                     employeeID: application.employeeID(),
                     stampRequestMode: 1,
                     appStampGoOutPermitCmds: null,
-                    appStampWorkCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
+                    appStampWorkCmds: _.filter(
+                                                _.map(self.appStampList(), (item) => self.convertToJS(item)), 
+                                                o => { return !nts.uk.util.isNullOrEmpty(o.startTime)||
+                                                              !nts.uk.util.isNullOrEmpty(o.startLocation)||
+                                                              !nts.uk.util.isNullOrEmpty(o.endTime)}),
                     appStampCancelCmds: null,
                     appStampOnlineRecordCmd: null 
                 }
-                if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
+                if(nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
+                    $('.m2-time-editor').first().ntsError('set', {messageId:"Msg_308"});        
+                } else {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
                     .done(() => {

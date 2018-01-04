@@ -67,7 +67,7 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 	}
 	
 	public LateOrLeaveEarly toDomain() {
-		return LateOrLeaveEarly.builder()
+		LateOrLeaveEarly lateOrLeaveEarly = LateOrLeaveEarly.builder()
 				.actualCancelAtr(this.actualCancelAtr)
 				.early1(EnumAdaptor.valueOf(this.early1, Select.class))
 				.earlyTime1(new TimeDay(this.earlyTime1))
@@ -78,6 +78,8 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 				.late2(EnumAdaptor.valueOf(this.late2, Select.class))
 				.lateTime2(new TimeDay(this.lateTime2))
 				.build();
+		lateOrLeaveEarly.setVersion(this.version);
+		return lateOrLeaveEarly;
 	}
 	
 	public static KrqdtAppLateOrLeave toEntity(LateOrLeaveEarly domain){
