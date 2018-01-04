@@ -63,7 +63,22 @@
 			                                 immediate: true}, hasFocus: !createMode()"/>		                                 
 									</td>
 								</tr>
-						</table>					
+						</table>
+						<div id="tab-panel"
+							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+							<div class="tab-content-1" >
+								<span>Tab Content 1</span><br />
+<!-- 								<ui:include src="../tab1/index.xhtml" /> -->
+							</div>
+							<div class="tab-content-2">
+								<span>Tab Content 2</span><br />
+<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							</div>
+							<div class="tab-content-3">
+								<span>Tab Content 3</span><br />
+<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							</div>
+						</div>											
 					</div>
 				</div>
 			</div>

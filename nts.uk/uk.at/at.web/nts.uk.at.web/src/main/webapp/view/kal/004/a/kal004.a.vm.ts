@@ -16,10 +16,17 @@ module kal004.a.model {
                 createMode : KnockoutObservable<boolean>;
                 alarmCode : KnockoutObservable<string>;
                 alarmName : KnockoutObservable<string>;
+                tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;  
+                selectedTab: KnockoutObservable<string>;                      
             constructor() {
                 let self = this;
                 self.items = ko.observableArray([]);                
-
+                self.tabs = ko.observableArray([
+                    { id: 'tab-1', title: getText('KAL004_12'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-2', title: getText('KAL004_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-3', title: getText('KAL004_14'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
+                ]);
+                self.selectedTab = ko.observable('tab-1');
                             
                 self.columns2 = ko.observableArray([
                 { headerText: 'コード', key: 'alarmPatternCD', width: 80 },
