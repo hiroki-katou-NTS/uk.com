@@ -62,6 +62,7 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 
 		// check is add mode
 		if (command.isAddMode()) {
+			flexWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			this.flexWorkSettingRepository.add(flexWorkSetting);
 		} 
 		else {

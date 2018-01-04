@@ -109,6 +109,7 @@ public class FlexWorkSetting extends AggregateRoot {
 		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
 		
 		// restore 平日勤務時間帯
+		//TODO
 //		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
 //			
 //			// convert map
@@ -120,6 +121,18 @@ public class FlexWorkSetting extends AggregateRoot {
 //		} else {
 //			this.lstHalfDayWorkTimezone = other.getLstHalfDayWorkTimezone();
 //		}
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.commonSetting.restoreDefaultData(screenMode);
+		
+		// restore 平日勤務時間帯
+		//TODO
 	}
 	
 }
