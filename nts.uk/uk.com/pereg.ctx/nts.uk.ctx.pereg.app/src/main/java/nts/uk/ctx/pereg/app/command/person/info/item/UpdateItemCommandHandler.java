@@ -49,6 +49,10 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 			}
 
 		}
+
+		if (itemCommand.getItemName().trim().equals("")) {
+			throw new BusinessException("");
+		}
 		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemCommand.getPerInfoCtgId(), itemCommand.getItemName(),
 				itemCommand.getPerInfoItemDefId())) {
 			throw new BusinessException(new RawErrorMessage("Msg_358"));
@@ -61,7 +65,8 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		oldItem.setItemName(itemCommand.getItemName());
 		PersonInfoItemDefinition newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand, oldItem);
 		// if (!checkQuantityItemData()) {
-		// newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand,
+		// newItem =
+		// MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand,
 		// oldItem);
 		// mess = null;
 		// }

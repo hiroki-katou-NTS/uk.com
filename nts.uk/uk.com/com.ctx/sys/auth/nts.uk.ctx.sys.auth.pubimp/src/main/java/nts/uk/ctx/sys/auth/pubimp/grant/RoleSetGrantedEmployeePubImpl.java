@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
@@ -15,7 +16,7 @@ import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
+@Stateless
 public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub {
 
 	@Inject

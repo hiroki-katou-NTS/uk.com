@@ -12,7 +12,7 @@ public class EmployeeSearch  implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	/** The workplace codes. */
-	private List<String> workplaceCodes;
+	private List<String> workplaceIds;
 	/** The base date. */
 	private GeneralDate baseDate;
 

@@ -177,7 +177,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             if(selectTypeSet === self.personSetting){                
                 var employeeSearch = new service.model.EmployeeSearchInDto();
                 employeeSearch.baseDate = self.standardDate();
-                employeeSearch.workplaceCodes = self.treeGrid.selectedWorkplaceId();
+                employeeSearch.workplaceIds = self.treeGrid.selectedWorkplaceId();
                 service.searchModeEmployee(employeeSearch).done(function(data: any){
                     let lstTmp = self.toUnitModelList(data);
                     _.each(lstTmp, function(item){

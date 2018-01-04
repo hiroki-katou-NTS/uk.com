@@ -25,13 +25,13 @@
 	</com:ko>
 	<!-- End of Fixed rest time switch button -->
 	<!-- Begin Fixed timezones -->
-	<com:ko tag="if" bind="isFixed">
+	<com:ko tag="if" bind="isFixed() &amp;&amp; isDetailMode()">
 		<!-- One day -->
 		<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
 			<h3>
 				<label>#{i18n.getText('KMK003_51')}</label>
 			</h3>
-			<div data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
+			<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
 		</div>
 		<!-- One day -->
 		<!-- Morning -->
@@ -39,7 +39,7 @@
 			<h3>
 				<label>#{i18n.getText('KMK003_60')}</label>
 			</h3>
-			<div data-bind="ntsFixTableCustom: {option: morningFixedTimezoneOption}"></div>
+			<div id="fixedMorning" data-bind="ntsFixTableCustom: {option: morningFixedTimezoneOption}"></div>
 		</div>
 		<!-- Morning -->
 		<!-- Afternoon -->
@@ -47,19 +47,19 @@
 			<h3>
 				<label>#{i18n.getText('KMK003_61')}</label>
 			</h3>
-			<div data-bind="ntsFixTableCustom: {option: afternoonFixedTimezoneOption}"></div>
+			<div id="fixedAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFixedTimezoneOption}"></div>
 		</div>
 		<!-- Afternoon -->
 	</com:ko>
 	<!-- End of Fixed timezones -->
 	<!-- Begin Flex timezones -->
-	<com:ko tag="if" bind="isFlexTimezone">
+	<com:ko tag="if" bind="isFlexTimezone() &amp;&amp; isDetailMode()">
 		<!-- One day -->
 		<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
 			<h3>
 				<label>#{i18n.getText('KMK003_51')}</label>
 			</h3>
-			<div data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
+			<div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
 		</div>
 		<!-- One day -->
 		<!-- Morning -->
@@ -67,7 +67,7 @@
 			<h3>
 				<label>#{i18n.getText('KMK003_60')}</label>
 			</h3>
-			<div data-bind="ntsFixTableCustom: {option: morningFlexTimezoneOption}"></div>
+			<div id="flexMorning" data-bind="ntsFixTableCustom: {option: morningFlexTimezoneOption}"></div>
 		</div>
 		<!-- Morning -->
 		<!-- Afternoon -->
@@ -75,21 +75,21 @@
 			<h3>
 				<label>#{i18n.getText('KMK003_61')}</label>
 			</h3>
-			<div data-bind="ntsFixTableCustom: {option: afternoonFlexTimezoneOption}"></div>
+			<div id="flexAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFlexTimezoneOption}"></div>
 		</div>
 		<!-- Afternoon -->
 	</com:ko>
 	<!-- End of Flex timezones -->
 	<!-- Begin Flex rest set -->
-	<com:ko tag="if" bind="isFlexRestTime">
+	<com:ko tag="if" bind="isFlexRestTime() &amp;&amp; isDetailMode()">
 		<!-- One day -->
 		<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
 			<h3>
 				<label>#{i18n.getText('KMK003_51')}</label>
 			</h3>
-			<button style="margin-left: 20px; display: none;"
-					data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_2.png', position: 'right top' }">?</button>
 			<div>
+				<button style="margin-left: 20px; display: none;"
+					data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_2.png', position: 'right top' }">?</button>
 				<div class="default-input-width" data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
 				<com:ko tag="with" bind="oneDayFlexRestSet">
 					<div data-bind="ntsCheckBox: {
@@ -104,6 +104,8 @@
 						<tr>
 							<td>
 								<input data-bind="ntsTimeEditor: {
+									name: '#[KMK003_174]',
+									option: {textalign: 'center'},
 									constraint: 'AttendanceTime',
 									value: hereAfterRestSet.flowRestTime,
 									required: true,
@@ -113,6 +115,8 @@
 							</td>
 							<td>
 								<input data-bind="ntsTimeEditor: {
+									name: '#[KMK003_176]',
+									option: {textalign: 'center'},
 									constraint: 'AttendanceTime',
 									value: hereAfterRestSet.flowPassageTime,
 									required: true,
@@ -145,6 +149,8 @@
 						<tr>
 							<td>
 								<input data-bind="ntsTimeEditor: {
+									name: '#[KMK003_174]',
+									option: {textalign: 'center'},
 									constraint: 'AttendanceTime',
 									value: hereAfterRestSet.flowRestTime,
 									required: true,
@@ -154,6 +160,8 @@
 							</td>
 							<td>
 								<input data-bind="ntsTimeEditor: {
+									name: '#[KMK003_176]',
+									option: {textalign: 'center'},
 									constraint: 'AttendanceTime',
 									value: hereAfterRestSet.flowPassageTime,
 									required: true,
@@ -186,6 +194,8 @@
 						<tr>
 							<td>
 								<input data-bind="ntsTimeEditor: {
+									name: '#[KMK003_174]',
+									option: {textalign: 'center'},
 									constraint: 'AttendanceTime',
 									value: hereAfterRestSet.flowRestTime,
 									required: true,
@@ -195,6 +205,8 @@
 							</td>
 							<td>
 								<input data-bind="ntsTimeEditor: {
+									name: '#[KMK003_176]',
+									option: {textalign: 'center'},
 									constraint: 'AttendanceTime',
 									value: hereAfterRestSet.flowPassageTime,
 									required: true,

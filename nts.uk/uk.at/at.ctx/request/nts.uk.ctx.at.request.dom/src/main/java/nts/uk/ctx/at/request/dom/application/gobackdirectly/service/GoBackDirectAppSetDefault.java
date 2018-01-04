@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
@@ -48,8 +49,8 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	@Inject
 	private ApplicationRepository_New appRepo;
 
-	//@Inject 
-	//private BeforePreBootMode beforePreBootMode;
+	@Inject 
+	private BeforePreBootMode beforePreBootMode;
 	
 	@Inject 
 	private BeforeAppCommonSetting beforeAppCommonSetting;
@@ -70,8 +71,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		Application_New application = applicationOpt.get();
 		data.setEmployeeName(employeeAdapter.getEmployeeName(application.getEmployeeID()));
 		//14-2.詳細画面起動前モードの判断
-		//TODO: waiting for Update common
-		DetailedScreenPreBootModeOutput preBootOuput = new DetailedScreenPreBootModeOutput(null, null, false, null, false, false);//beforePreBootMode.judgmentDetailScreenMode(application, application.getAppDate());
+		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(companyID, application.getEmployeeID(), appID, application.getAppDate());
 		data.detailedScreenPreBootModeOutput = preBootOuput;
 		//14-1.詳細画面起動前申請共通設定を取得する
 		PrelaunchAppSetting prelaunchAppSetting = beforeAppCommonSetting.getPrelaunchAppSetting(appID);

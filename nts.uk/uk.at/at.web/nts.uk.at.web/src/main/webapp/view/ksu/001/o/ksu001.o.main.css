@@ -19,16 +19,15 @@
 }
 
 #oViewModel #switch-o {
-	margin-left: 30px;
+	margin-left: 10px;
 }
 
 #oViewModel #combo-box2 {
 	margin-left: 16px;
-	min-width: 425px !important;
+	min-width: 520px !important;
 }
 
 #oViewModel #combo-box1 {
-	min-width: 310px !important;
 	margin-left: 31px;
 }
 

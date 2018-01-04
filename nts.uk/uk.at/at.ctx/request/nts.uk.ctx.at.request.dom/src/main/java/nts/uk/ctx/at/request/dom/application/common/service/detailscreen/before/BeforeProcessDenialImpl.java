@@ -14,8 +14,8 @@ public class BeforeProcessDenialImpl implements BeforeProcessDenial {
 	private DetailBeforeUpdate detailBeforeProcessRegisterRepo;
 
 	@Override
-	public void detailedScreenProcessBeforeDenial() {
-		detailBeforeProcessRegisterRepo.exclusiveCheck();
+	public void detailedScreenProcessBeforeDenial(String companyId, String appId, Long version) {
+		detailBeforeProcessRegisterRepo.exclusiveCheck(companyId, appId, version);
 		
 	}
 }

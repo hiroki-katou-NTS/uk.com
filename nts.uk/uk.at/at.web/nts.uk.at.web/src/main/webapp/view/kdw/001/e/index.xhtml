@@ -37,14 +37,14 @@
 						</tr>
 						<tr>
 							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
-							<td>
+							<td data-bind="css: {disappear: visibleDailiCreate()}" >
 								<span class="process-name">#{i18n.getText('KDW001_9')}</span>
 								<span class="process-count"><span data-bind="text: dailyCreateCount">0</span> / <span data-bind="text: dailyCreateTotal">0</span>人</span>
 								<span class="process-status" data-bind="text: dailyCreateStatus"></span>
 								<span class="process-error" data-bind="text: dailyCreateHasError"></span>
 							</td>
 						</tr>
-						<tr>
+						<tr data-bind="css: {disappear: visibleDailiCalculation()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_10')}</span>
 								<span class="process-count"><span>0</span> / <span>0</span>人</span>
@@ -52,7 +52,7 @@
 								<span class="process-error"></span>
 							</td>
 						</tr>
-						<tr>
+						<tr data-bind="css: {disappear: visibleApproval()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_11')}</span>
 								<span class="process-count"><span>0</span> / <span>0</span>人</span>
@@ -60,7 +60,7 @@
 								<span class="process-error"></span>
 							</td>
 						</tr>
-						<tr>
+						<tr data-bind="css: {disappear: visibleMonthly()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_12')}</span>
 								<span class="process-count"><span>0</span> / <span>0</span>人</span>
@@ -95,14 +95,15 @@
 						columns: [
 							{ prop: 'localizedName', length: 4 }
 						]}"></div>
-					<button class="pull-right disappear" tabindex="2" data-bind="css: {disappear: !isComplete()}, click: exportLog">#{i18n.getText('KDW001_31')}</button>
+						
+					<!-- <button class="pull-right disappear" tabindex="2" data-bind="css: {disappear: !isComplete()}, click: exportLog">#{i18n.getText('KDW001_31')}</button> -->
 				</div>
 				<div class="place-holder">
 					<table id="single-list" class="disappear"
 						data-bind="css: {disappear: !isComplete()},
 						ntsGridList: {
 							dataSource: errorMessageInfo,
-							primaryKey: 'code',
+							primaryKey: 'GUID',
 							columns: columns,
 							multiple: false,
 							value: currentCode,
@@ -112,7 +113,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" class="disable-button" data-bind="click: cancelTask">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="3" class="disable-button" data-bind="click: cancelTask,enable : enableCancelTask">#{i18n.getText('KDW001_39')}</button>
 				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
 			</div>
 		</ui:define>

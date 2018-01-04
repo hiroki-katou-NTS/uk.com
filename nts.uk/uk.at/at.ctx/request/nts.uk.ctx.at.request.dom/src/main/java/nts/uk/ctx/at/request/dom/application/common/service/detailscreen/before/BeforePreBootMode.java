@@ -20,7 +20,7 @@ public interface BeforePreBootMode {
 	 * @param baseDate
 	 * @return
 	 */
-	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(Application applicationData, GeneralDate baseDate);
+	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(String companyID, String employeeID, String appID, GeneralDate baseDate);
 	/** Can be Approved
 	 *3.承認できるかの判断
 	 * */
