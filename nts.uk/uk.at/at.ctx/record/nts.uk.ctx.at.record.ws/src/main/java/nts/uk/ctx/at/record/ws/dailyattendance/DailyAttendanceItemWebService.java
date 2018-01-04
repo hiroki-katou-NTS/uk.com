@@ -73,10 +73,10 @@ public class DailyAttendanceItemWebService extends WebService {
     }
     
     @POST
-    @Path("getattendcompound")
-    public List<AttdItemDto> getDailyAttendanceCompoundBy(String erAlCheckId) {
+    @Path("getattendcompound/{eralCheckId}")
+    public List<AttdItemDto> getDailyAttendanceCompoundBy(@PathParam("eralCheckId") int eralCheckId) {
        //check item as time
-        return this.finder.findDailyAttendanceCompoundBy( erAlCheckId);
+        return this.finder.findDailyAttendanceCompoundBy(eralCheckId);
     }
     
 	@POST
@@ -86,8 +86,8 @@ public class DailyAttendanceItemWebService extends WebService {
     }
 	
 	@POST
-    @Path("geterroralarmcondition")
-    public ErrorAlarmWorkRecordDto getErrorAlarmCategoryAndCondition(String eralCheckId) {
+    @Path("geterroralarmcondition/{eralCheckId}")
+    public ErrorAlarmWorkRecordDto getErrorAlarmCategoryAndCondition(@PathParam("eralCheckId") String eralCheckId) {
         return this.finder.getErrorAlarmCategoryAndCondition(eralCheckId);
     }
 	
