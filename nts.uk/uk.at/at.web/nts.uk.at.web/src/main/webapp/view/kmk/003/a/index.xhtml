@@ -31,12 +31,14 @@
 			<com:scriptfile path="../a2/kmk003.a2.vm.js" />
 			<com:stylefile path="../a2/kmk003.a2.style.css" /><!-- End tab 02 -->
 			
+			<com:scriptfile path="../a3/kmk003.a3.service.js" />
 			<com:scriptfile path="../a3/kmk003.a3.vm.js" />
 			<com:stylefile path="../a3/kmk003.a3.style.css" />
 			<com:scriptfile path="../a4/kmk003.a4.vm.js" />
 			<com:stylefile path="../a4/kmk003.a4.style.css" />
 			<com:scriptfile path="../a5/kmk003.a5.vm.js" />
 			<com:stylefile path="../a5/kmk003.a5.style.css" />
+			<com:scriptfile path="../a6/kmk003.a6.service.js" />
 			<com:scriptfile path="../a6/kmk003.a6.vm.js" />
 			<com:stylefile path="../a6/kmk003.a6.style.css" />
 			<com:scriptfile path="../a7/kmk003.a7.vm.js" />
@@ -101,7 +103,7 @@
 					#{i18n.getText('KMK003_5')}</button>
 				<button class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
 					#{i18n.getText('KMK003_6')}</button>
-				<button data-bind="click: testData" style="display: none">Fill test data</button>
+				<button style="display: none" data-bind="visible: isTestMode, click: testData">Fill test data</button>
 			</div>
 			<div id="contents-area" style="display: none"
 				data-bind="visible: true">
@@ -110,8 +112,9 @@
 						<td class="screen-content-left">
 							<div class="caret-left-width caret-right caret-background bg-green"><i
 							class="icon icon-searchbox"></i>
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 								<com:ko tag="with" bind="workTimeSettingLoader">
+								<div class="control-group">
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 									<div id="combo-box"
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_7]',
@@ -125,9 +128,10 @@
 										columns: [
 										{ prop: 'localizedName', length: 10 }]}">
 									</div>
-									<br />
+								</div>
+								<div class="control-group">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
-									<div id="combo-box" 
+									<span id="combo-box" 
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_8]',
 										options: workTimeMethodEnums,
@@ -139,11 +143,11 @@
 										enable: isRegularWork,
 										columns: [
 										{ prop: 'localizedName', length: 6 }]}">
-									</div>
-									<br />
-									<div class="checkbox_display"
-										data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
-									</div>
+									</span>
+								</div>
+								<div class="checkbox_display"
+									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
+								</div>
 								</com:ko>
 								<div style="width: 300px"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
@@ -154,6 +158,7 @@
 									data-bind="ntsGridList: {
 									name: '#[KMK003_86]',
 									height: 320,
+									width: 300,
 									options: workTimeSettings,
 									optionsValue: 'worktimeCode',
 									columns: columnWorktimeSettings,
@@ -216,8 +221,8 @@
 									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50}" />
 							</div>
 							<div class="setting_header_br">
-								<div style="width: 165px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
-								<div id="cbb-worktime-atr"
+								<div style="width: 135px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<div id="cbb-worktime-atr" style="margin-right: 10px"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_7]',
 									options: $parent.settingEnum.workTimeDailyAtr,
@@ -273,7 +278,7 @@
 							</com:ko>
 							<table style="width: 100%;">
 								
-								<tr>
+								<tr style="height: 50px;">
 									<td class="td-cell" width="300px">
 										<div class="cf"
 											data-bind="ntsSwitchButton: {
@@ -319,8 +324,9 @@
 											</div>
 											<div class="tab-a2">
 												<div data-bind="ntsKMK003A2: {
-													screenMode: tabMode,
-													selectedTab: selectedTab,
+													screenMode: screenMode,
+													tabMode: tabMode,
+													isClickSave: isClickSave,
 													enum: settingEnum,
 													mainModel: mainSettingModel }">
 												</div>
@@ -339,7 +345,7 @@
 												</div>
 											</div>
 											<div class="tab-a5">
-												<div data-bind="ntsKMK003A5: { screenMode: tabMode(),
+												<div data-bind="ntsKMK003A5: { isDetailMode: isDetailMode,
 													mainSettingModel: mainSettingModel }">
 												</div>
 											</div>
@@ -353,7 +359,9 @@
 													tabMode: tabMode, 
 													mainSettingModel: mainSettingModel,
 													enum: settingEnum, 
-													isLoading: isLoading }">
+													isLoading: isLoading,
+													isClickSave: isClickSave,
+													isClickNew: isNewMode}">
 												</div>
 											</div>
 											<div class="tab-a8">

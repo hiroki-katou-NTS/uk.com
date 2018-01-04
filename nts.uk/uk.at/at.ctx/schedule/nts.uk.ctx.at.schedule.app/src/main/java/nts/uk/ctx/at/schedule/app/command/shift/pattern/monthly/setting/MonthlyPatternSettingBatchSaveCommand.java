@@ -107,8 +107,8 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	 * @return the work monthly setting
 	 */
 	public WorkMonthlySetting toDomainPublicHolidays(String companyId, GeneralDate ymdk) {
-		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingPublicHolidays,
-				companyId, ymdk, monthlyPatternCode));
+		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(this.settingPublicHolidays,
+				companyId, ymdk, this.monthlyPatternCode));
 	}
 
 	public MonthlyPattern toDomainMonthlyPattern(String companyId) {

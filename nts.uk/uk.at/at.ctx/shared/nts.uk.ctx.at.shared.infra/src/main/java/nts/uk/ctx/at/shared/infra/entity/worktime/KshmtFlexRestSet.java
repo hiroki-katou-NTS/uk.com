@@ -79,6 +79,7 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flex rest set.
 	 */
 	public KshmtFlexRestSet() {
+		super();
 	}
 	
 	/**

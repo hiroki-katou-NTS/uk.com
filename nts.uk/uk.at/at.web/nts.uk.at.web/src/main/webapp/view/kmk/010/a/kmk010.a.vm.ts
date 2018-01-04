@@ -33,10 +33,9 @@ module nts.uk.at.view.kmk010.a {
                 self.languageId = 'ja';
                 self.isManage = ko.observable(true);
                 self.checkRounding = ko.observable(0);
-                self.superHD60HConMedModel.roundingTime.subscribe(function(selectuint: number){
-                   self.updateSelectUnitRounding(selectuint); 
-                   self.checkRounding(selectuint);
-                });
+                self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number){
+                   self.updateSelectUnitRounding(selectUnit); 
+                });               
             }
 
             /**
@@ -326,13 +325,13 @@ module nts.uk.at.view.kmk010.a {
             /**
              * function update select unit rounding
              */
-            private updateSelectUnitRounding(selectunit: number){
+            private updateSelectUnitRounding(selectUnit: number){
                 var self = this;
                 //15 , 30
-                if ((self.checkRounding() == 15 || self.checkRounding() == 30) && selectunit != 15 && selectunit != 30) {
-                    self.lstRoundingSet(self.lstRoundingSub);
-                } else if((self.checkRounding() != 15 && self.checkRounding() != 30) && (selectunit == 15 || selectunit == 30)){
+                if (selectUnit == 4 || selectUnit == 6) {
                     self.lstRoundingSet(self.lstRounding);
+                } else {
+                    self.lstRoundingSet(self.lstRoundingSub);
                 }
             }
         }
@@ -379,7 +378,7 @@ module nts.uk.at.view.kmk010.a {
 
             toDto(): OvertimeDto {
                 var dto: OvertimeDto = {
-                    name: this.name(),
+                    name: this.name() == "" ? " " : this.name(),
                     overtime: this.overtime(),
                     overtimeNo: this.overtimeNo(),
                     useClassification: this.useClassification(),
@@ -441,7 +440,7 @@ module nts.uk.at.view.kmk010.a {
                 var dto: OutsideOTBRDItemDto = {
                     useClassification: this.useClassification(),
                     breakdownItemNo: this.breakdownItemNo(),
-                    name: this.name(),
+                    name: this.name() == "" ? " " : this.name(),
                     productNumber: this.productNumber(),
                     attendanceItemIds: this.attendanceItemIds()
                 };
@@ -608,7 +607,7 @@ module nts.uk.at.view.kmk010.a {
             premiumExtra60HRates: PremiumExtra60HRateModel[];
 
             constructor() {
-                this.roundingTime = ko.observable(1);
+                this.roundingTime = ko.observable(null);
                 this.rounding = ko.observable(1);
                 this.superHolidayOccurrenceUnit = ko.observable(0);
                 this.premiumExtra60HRates = [];

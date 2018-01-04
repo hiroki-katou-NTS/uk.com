@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeZoneRoundingDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSettingSetMem
  * The Class DayOffTimezoneSettingDto.
  */
 @Getter
+@Setter
 public class DayOffTimezoneSettingDto implements DayOffTimezoneSettingSetMemento {
 
 	/** The work time no. */

@@ -169,7 +169,7 @@
 	width: 70px;
 }
 
-#A2_008_headers_v, #A2_008_virtualContainer td:FIRST-CHILD,
+#A2_008_headers_v, #A2_008_virtualContainer td:LAST-CHILD,
 	#A2_008_setting {
 	overflow: visible !important;
 }

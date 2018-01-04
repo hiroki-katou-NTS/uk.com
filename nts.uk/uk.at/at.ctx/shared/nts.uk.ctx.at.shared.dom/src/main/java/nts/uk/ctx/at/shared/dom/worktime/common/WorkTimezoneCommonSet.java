@@ -65,8 +65,7 @@ public class WorkTimezoneCommonSet extends DomainObject {
 	/**
 	 * Instantiates a new work timezone common set.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public WorkTimezoneCommonSet(WorkTimezoneCommonSetGetMemento memento) {
 		this.ZeroHStraddCalculateSet = memento.getZeroHStraddCalculateSet();
@@ -85,8 +84,7 @@ public class WorkTimezoneCommonSet extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(WorkTimezoneCommonSetSetMemento memento) {
 		memento.setZeroHStraddCalculateSet(this.ZeroHStraddCalculateSet);
@@ -105,14 +103,22 @@ public class WorkTimezoneCommonSet extends DomainObject {
 	/**
 	 * Restore data.
 	 *
-	 * @param screenMode
-	 *            the screen mode
-	 * @param oldDomain
-	 *            the old domain
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
 	 */
 	public void restoreData(ScreenMode screenMode, WorkTimezoneCommonSet oldDomain) {
 		this.goOutSet.restoreData(screenMode, oldDomain.getGoOutSet());
 		this.subHolTimeSet.forEach(item -> item.restoreData(screenMode, oldDomain.getSubHolTimeSet().stream()
 				.filter(oldItem -> oldItem.getOriginAtr().equals(item.getOriginAtr())).findFirst().orElse(null)));
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.goOutSet.restoreDefaultData(screenMode);
+		this.subHolTimeSet.forEach(item -> item.restoreDefaultData(screenMode));
 	}
 }

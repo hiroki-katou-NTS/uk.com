@@ -43,8 +43,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         ]);
         selectedCode1: KnockoutObservable<string> = ko.observable('0003');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: nts.uk.resource.getText("KSU001_89") },
-            { code: '2', name: nts.uk.resource.getText("KSU001_90") }
+            new BoxModel(1, nts.uk.resource.getText("KSU001_89")),
+            new BoxModel(2, nts.uk.resource.getText("KSU001_90")),
         ]);
         selectedDisplayLastWeek: any = ko.observable(1);
         selectedDisplayBank: any = ko.observable(1);
@@ -54,7 +54,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             new BoxModel(1, '画面サイズ'),
             new BoxModel(2, '高さを指定'),
         ]);
-        selectedId: KnockoutObservable<number> = ko.observable(1);
+        selectedTypeHeightExTable: KnockoutObservable<number> = ko.observable(1);
+        isEnableInputHeight: KnockoutObservable<boolean> = ko.observable(false);
+        isEnableCompareMonth: KnockoutObservable<boolean> = ko.observable(true);
 
         itemList2: KnockoutObservableArray<any> = ko.observableArray([
             new BoxModel(1, nts.uk.resource.getText("KSU001_339")),
@@ -129,6 +131,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
             }
 
+            self.selectedTypeHeightExTable.subscribe(function(newValue) {
+                if (newValue == 1) {
+                    self.isEnableInputHeight(false);
+                } else {
+                    self.isEnableInputHeight(true);
+                    $('#input-heightExtable').focus();
+                }
+            });
+
+            self.selectedDisplayVertical.subscribe(function(newValue) {
+                if (newValue == 1) {
+                    self.isEnableCompareMonth(true);
+                } else {
+                    self.isEnableCompareMonth(false);
+                }
+            });
+
             self.selectedModeDisplay.subscribe(function(newValue) {
                 // close screen O1 when change mode
                 let currentScreen = __viewContext.viewModel.viewO.currentScreen;
@@ -144,6 +163,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#qViewModel').hide();
                     $("#extable").exTable("updateMode", "none");
                     $("#extable").exTable("viewMode", "shortName", { y: 175 });
+                    $("#combo-box1").focus();
+                    // get data to stickData
+                    $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
                     $("#extable").exTable("updateMode", "edit");
@@ -156,6 +178,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#group-bt').show();
                     $("#extable").exTable("updateMode", "none");
                     $("#extable").exTable("viewMode", "symbol", { y: 235 });
+                    $("#tab-panel").focus();
+                    // get data to stickData
+                    // if buttonTable not selected, set stickData is null
+                    if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
+                        || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
+                        $("#extable").exTable("stickData", null);
+                    }
                     if (self.flag) {
                         //select first link button
                         __viewContext.viewModel.viewQ.init();
@@ -436,7 +465,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             return ["startTime", "endTime"];
                     }
                 },
-                fields: ["workTypeCode", "workTimeCode"],
+                fields: ["workTypeCode", "workTimeCode", "startTime", "endTime"],
                 upperInput: "startTime",
                 lowerInput: "endTime"
             };
@@ -1470,17 +1499,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * Set error
          */
         addListError(errorsRequest: Array<string>) {
-            var messages = {};
+            var errors = [];
             _.forEach(errorsRequest, function(err) {
-                messages[err] = nts.uk.resource.getMessage(err);
+                errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
             });
 
-            var errorVm = {
-                messageId: errorsRequest,
-                messages: messages
-            };
-
-            nts.uk.ui.dialog.bundledErrors(errorVm);
+            nts.uk.ui.dialog.bundledErrors({ errors: errors });
         }
 
         /**
@@ -1493,11 +1517,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("stickMode", "single");
             } else if (self.selectedModeDisplay() == 3) {
                 $("#extable").exTable("stickMode", "multi");
-                // if buttonTable not selected, set stickData is null
-                if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
-                    || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
-                    $("#extable").exTable("stickData", null);
-                }
             }
         }
 
@@ -1569,8 +1588,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 empItems: self.empItems(),
                 startDate: self.dtPrev(),
                 endDate: self.dtAft(),
-                // in phare 2, permissionHandCorrection allow true
-                permissionHandCorrection: true,
+                // in phare 2, permissionHandCorrection allow false
+                permissionHandCorrection: false,
                 listColorOfHeader: self.listColorOfHeader()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
@@ -1581,6 +1600,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
         }
+
         /**
          * open dialog L
          */
@@ -1819,7 +1839,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // create detailHeader (ex: 4/1 | 4/2)
             if (manual) {
                 for (let i = 0; i < arrDay.length; i++) {
-                    this['_' + arrDay[i].yearMonthDay] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    if (+arrDay[i].day == 1) {
+                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].month + '/' + arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    } else {
+                        this['_' + arrDay[i].yearMonthDay] = arrDay[i].day + "<br/>" + arrDay[i].weekDay;
+                    }
                 }
                 return;
             }

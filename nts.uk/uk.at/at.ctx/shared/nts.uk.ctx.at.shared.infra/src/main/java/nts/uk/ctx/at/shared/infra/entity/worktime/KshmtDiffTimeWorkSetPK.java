@@ -35,6 +35,7 @@ public class KshmtDiffTimeWorkSetPK implements Serializable {
 	 * Instantiates a new kshmt diff time work set PK.
 	 */
 	public KshmtDiffTimeWorkSetPK() {
+		super();
 	}
 
 	/*

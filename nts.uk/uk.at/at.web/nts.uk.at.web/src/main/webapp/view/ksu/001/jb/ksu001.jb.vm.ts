@@ -9,16 +9,18 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         selectedWorkTimeCode: KnockoutObservable<string> = ko.observable('');
         time1: KnockoutObservable<string> = ko.observable('');
         time2: KnockoutObservable<string> = ko.observable('');
+        isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
         nameWorkTimeType: KnockoutComputed<any>;
         textName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').text || null);
         arrTooltip: any[] = getShared('dataForJB').tooltip ? getShared('dataForJB').tooltip.match(/[^[\]]+(?=])/g) : [];
         source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJB').data || []);
         dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
         textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
+        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
 
         constructor() {
             let self = this;
-
+            self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
             //get workTypeCode, workTimeCode, workTypeName, workTimeName, startTime, endTime, symbolName
             self.nameWorkTimeType = ko.pureComputed(() => {
                 let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
@@ -149,6 +151,37 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
          */
         closeDialog(): void {
             nts.uk.ui.windows.close();
+        }
+
+        search(): void {
+            let self = this;
+            self.isEnableClearSearchButton(true);
+            if (!self.time1() && !self.time2()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+            }
+            if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+            }
+            self.listWorkTimeComboBox([]);
+            _.forEach(self.listWorkTime(), (obj) => {
+                if (self.time1() && self.time2()
+                    && (moment.duration(self.time1()).asMinutes() == obj.start)
+                    && (moment.duration(self.time2()).asMinutes() == obj.end)) {
+                    self.listWorkTimeComboBox.push(obj);
+                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.start)) {
+                    self.listWorkTimeComboBox.push(obj);
+                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.end)) {
+                    self.listWorkTimeComboBox.push(obj);
+                }
+            });
+
+        }
+
+        clearSearch(): void {
+            let self = this;
+            self.isEnableClearSearchButton(false);
+            self.listWorkTimeComboBox([]);
+            self.listWorkTimeComboBox(self.listWorkTime());
         }
     }
 }

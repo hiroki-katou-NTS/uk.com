@@ -27,7 +27,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
             self.itemColumns = [
                 { headerText: 'id', key: 'id', width: 10, hidden: true },
                 { headerText: 'REQUIRED', key: 'isRequired', width: 10, hidden: true },
-                { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', width: 150 }];
+                { headerText: nts.uk.resource.getText('CPS009_33'), key: 'itemName', width: 200}];
             self.selectedRuleCode = ko.observable(1);
         }
         /**
@@ -73,7 +73,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
                     lstIdResult.push(item.id);
                 }
             });
-            if (lstIdResult.length == 0) {
+            if (self.currentItem().length == 0) {
                 //メッセージ（Msg_362)を表示 (Hiển thị Error Message Msg_362)
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_362' });
                 return;
@@ -85,7 +85,7 @@ module nts.uk.com.view.cps009.b.viewmodel {
             let obj = {
                 isCancel: false,
                 refMethodType: self.selectedRuleCode(),
-                lstItem: lstItemResult
+                lstItem: self.currentItem()
             };
             setShared('CPS009B_DATA', obj);
 

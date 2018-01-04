@@ -89,7 +89,7 @@ public class TimeZone extends DomainObject {
 	 * @return true, if is between or equal
 	 */
 	public boolean isBetweenOrEqual(TimeZone timezone) {
-		return this.start.greaterThanOrEqualTo(timezone.start)
+		return this.start.greaterThanOrEqualTo(timezone.getStart())
 				&& this.end.lessThanOrEqualTo(timezone.getEnd());
 	}
 

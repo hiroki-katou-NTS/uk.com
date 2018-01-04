@@ -60,11 +60,11 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
-	public List<KrcmtDailyAlarmCondition> listDailyAlarmCondition;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KrcmtDailyAlarmCondition dailyAlarmCondition;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
-	public List<KfnmtAlarmCheck4W4D> list4W4DAlarmCondition;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition;
 
 	@Override
 	protected Object getKey() {
@@ -74,28 +74,26 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	public KfnmtAlarmCheckConditionCategory(String companyId, int category, String code, String name,
 			KfnmtAlarmCheckTargetCondition targetCondition,
 			List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole,
-			List<KrcmtDailyAlarmCondition> listDailyAlarmCondition, List<KfnmtAlarmCheck4W4D> list4W4DAlarmCondition) {
+			KrcmtDailyAlarmCondition dailyAlarmCondition, KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition) {
 		super();
 		this.pk = new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code);
 		this.name = name;
 		this.targetConditionId = targetCondition.id;
 		this.targetCondition = targetCondition;
 		this.listAvailableRole = listAvailableRole;
-		this.listDailyAlarmCondition = listDailyAlarmCondition;
-		this.list4W4DAlarmCondition = list4W4DAlarmCondition;
+		this.dailyAlarmCondition = dailyAlarmCondition;
+		this.schedule4W4DAlarmCondition = schedule4W4DAlarmCondition;
 	}
 
 	public static AlarmCheckConditionByCategory toDomain(KfnmtAlarmCheckConditionCategory entity) {
-		List<ExtractionCondition> listExtractionCondition = new ArrayList<>();
+		ExtractionCondition extractionCondition = null;
 		AlarmCategory category = AlarmCategory.values()[entity.pk.category];
 		switch (category) {
 		case DAILY:
-			listExtractionCondition = entity.listDailyAlarmCondition.stream().map(item -> item.toDomain())
-					.collect(Collectors.toList());
+			extractionCondition = entity.dailyAlarmCondition.toDomain();
 			break;
 		case SCHEDULE_4WEEK:
-			listExtractionCondition = entity.list4W4DAlarmCondition.stream().map(item -> item.toDomain())
-					.collect(Collectors.toList());
+			extractionCondition = entity.schedule4W4DAlarmCondition.toDomain();
 			break;
 		default:
 			break;
@@ -115,7 +113,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 						entity.targetCondition.listClassification.stream().map(item -> item.pk.classificationCode)
 								.collect(Collectors.toList())),
 				entity.listAvailableRole.stream().map(item -> item.pk.roleId).collect(Collectors.toList()),
-				listExtractionCondition);
+				extractionCondition);
 	}
 
 	public static KfnmtAlarmCheckConditionCategory fromDomain(AlarmCheckConditionByCategory domain) {
@@ -146,19 +144,13 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 						.map(item -> new KfnmtAlarmCheckConditionCategoryRole(domain.getCompanyId(),
 								domain.getCategory().value, domain.getCode().v(), item))
 						.collect(Collectors.toList()),
-				(List<KrcmtDailyAlarmCondition>) domain.getListExtractionCondition().stream()
-						.map(item -> item instanceof DailyAlarmCondition
-								? KrcmtDailyAlarmCondition.toEntity(domain.getCompanyId(), domain.getCode(),
-										domain.getCategory(), (DailyAlarmCondition) item)
-								: null)
-						.collect(
-								Collectors.toList()),
-				(List<KfnmtAlarmCheck4W4D>) domain.getListExtractionCondition().stream()
-						.map(item -> item instanceof AlarmCheckCondition4W4D
-								? KfnmtAlarmCheck4W4D.toEntity((AlarmCheckCondition4W4D) item, domain.getCompanyId(),
-										domain.getCategory(), domain.getCode())
-								: null)
-						.collect(Collectors.toList()));
+				domain.getCategory() == AlarmCategory.DAILY ? KrcmtDailyAlarmCondition.toEntity(domain.getCompanyId(),
+						domain.getCode(), domain.getCategory(), (DailyAlarmCondition) domain.getExtractionCondition())
+						: null,
+				domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK
+						? KfnmtAlarmCheck4W4D.toEntity((AlarmCheckCondition4W4D) domain.getExtractionCondition(),
+								domain.getCompanyId(), domain.getCategory(), domain.getCode())
+						: null);
 	}
 
 }

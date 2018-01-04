@@ -27,19 +27,29 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         selectedExeContent: KnockoutObservable<string> = ko.observable('1');
 
         // GridList
-        errorMessageInfo: KnockoutObservableArray<shareModel.PersonInfoErrMessageLogDto> = ko.observableArray([]);
+        errorMessageInfo: KnockoutObservableArray<shareModel.PersonInfoErrMessageLog> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
-
+        
+        //enable enableCancelTask
+        enableCancelTask : KnockoutObservable<boolean> = ko.observable(true);
+        
+        //disappear
+        visibleDailiCreate : KnockoutObservable<boolean> = ko.observable(false);
+        visibleDailiCalculation : KnockoutObservable<boolean> = ko.observable(false);
+        visibleApproval : KnockoutObservable<boolean> = ko.observable(false);
+        visibleMonthly : KnockoutObservable<boolean> = ko.observable(false);
+        
         constructor() {
             var self = this;
             self.elapseTime.start();
 
             self.columns = ko.observableArray([
-                { headerText: getText('KDW001_33'), key: 'empCD', width: 110 },
-                { headerText: getText('KDW001_35'), key: 'code', width: 150 },
+                { headerText: getText('KDW001_33'), key: 'personCode', width: 110 },
+                { headerText: getText('KDW001_35'), key: 'personName', width: 150 },
                 { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
-                { headerText: getText('KDW001_37'), key: 'errContents', width: 290 },
+                { headerText: getText('KDW001_37'), key: 'messageError', width: 290 },
+                { headerText: '', key: 'GUID', width: 1 ,hirren :true },
             ]);
             
             self.selectedExeContent.subscribe((value) => {
@@ -56,8 +66,33 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);
+                if(params.dailyCreation ==false){
+                    _.remove(res.enumComboBox, function(n) {
+                      return n.value == 0;
+                    });
+                    self.visibleDailiCreate(true);
+                }
+                if(params.dailyCalClass ==false){
+                    _.remove(res.enumComboBox, function(n) {
+                      return n.value == 1;
+                    });
+                    self.visibleDailiCalculation(true);
+                }
+                if(params.refApprovalresult ==false){
+                    _.remove(res.enumComboBox, function(n) {
+                      return n.value == 2;
+                    });
+                    self.visibleApproval(true);
+                }
+                if(params.monthlyAggregation ==false){
+                    _.remove(res.enumComboBox, function(n) {
+                      return n.value == 3;
+                    });
+                    self.visibleMonthly(true);
+                }
+                
                 self.executionContents(res.enumComboBox);
-                self.startAsyncTask();
+                self.startAsyncTask(); 
                 dfd.resolve();
             });
 
@@ -90,6 +125,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             service.checkTask(data).done(res => {
                 self.taskId(res.id);
                 self.repeatCheckAsyncResult();
+                
             });
         }
 
@@ -116,6 +152,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             // Get Log data
                             self.getLogData();
                         }
+                        self.enableCancelTask(false);
                     });
                 })
                 .while(info => info.pending || info.running)
@@ -127,7 +164,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             var result = _.find(data, (item) => {
                 return item.key == key;
             });
-            return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
+            return result || { valueAsString: "" , valueAsNumber: 0, valueAsBoolean: false };
         }
 
         private getLogData(): void {

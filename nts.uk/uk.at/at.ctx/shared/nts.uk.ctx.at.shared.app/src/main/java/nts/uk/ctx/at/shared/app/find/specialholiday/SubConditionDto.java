@@ -43,7 +43,7 @@ public class SubConditionDto {
 	
 	private List<String> employmentList;
 	
-	private List<String> classficationList;
+	private List<String> classificationList;
 	
 	
 }

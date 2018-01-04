@@ -43,6 +43,7 @@ public class KshmtFstampReflectTime extends UkJpaEntity implements Serializable 
 	 * Instantiates a new kshmt fstamp reflect time.
 	 */
 	public KshmtFstampReflectTime() {
+		super();
 	}
 
 	/*

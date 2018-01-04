@@ -51,8 +51,8 @@
 						<span id="spelcial">#{i18n.getText('KSU001_913')}</span> <input
 							id="time-edit2"
 							data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
-						<button class="reserved">#{i18n.getText('KSU001_67')}</button>
-						<button>#{i18n.getText('KSU001_68')}</button>
+						<button class="search" data-bind="click:search">#{i18n.getText('KSU001_67')}</button>
+						<button class="clear-search" data-bind="click:clearSearch, enable: isEnableClearSearchButton">#{i18n.getText('KSU001_68')}</button>
 					</div>
 					<div>
 						<div id="combo-box2"

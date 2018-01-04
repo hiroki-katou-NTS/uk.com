@@ -931,7 +931,7 @@ module nts.custombinding {
                             }
                         },
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
-                            let items = opts.sortable.data;
+                            let items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
 
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
@@ -953,11 +953,10 @@ module nts.custombinding {
                                     });
                                 }
                             });
-
                             return opts.sortable;
                         },
                         findExist: (ids: Array<string>) => {
-                            let items = opts.sortable.data();
+                            let items: Array<IItemClassification> = opts.sortable.data();
 
                             if (!ids || !ids.length) {
                                 return [];

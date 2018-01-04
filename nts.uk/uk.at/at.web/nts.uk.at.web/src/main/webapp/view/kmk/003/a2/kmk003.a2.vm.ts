@@ -14,6 +14,7 @@ module a2 {
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
+    import ScreenMode = nts.uk.at.view.kmk003.a.viewmodel.ScreenMode;
     
     /**
      * ScreenModel
@@ -54,7 +55,7 @@ module a2 {
         isSimpleMode: KnockoutObservable<boolean>;
         isFlowMode: KnockoutObservable<boolean>;
         isUseHalfDay: KnockoutObservable<boolean>;
-        
+
         /**
         * Constructor.
         */
@@ -66,7 +67,7 @@ module a2 {
             self.settingEnum = input.enum;
             
             self.workTimeDailyAtr = self.parentModel.workTimeSetting.workTimeDivision.workTimeDailyAtr;
-            self.tabMode = input.screenMode;
+            self.tabMode = input.tabMode;
             self.isSimpleMode = ko.computed(() => {
                 return self.tabMode() == TabMode.SIMPLE;
             })
@@ -143,14 +144,14 @@ module a2 {
             self.parentModel.isChangeItemTable.subscribe(newValue => {
                 self.bindDataToScreen();
             });
-            input.selectedTab.subscribe((newValue: string) => {
-                if (newValue !== 'tab-2') {
+            input.screenMode.subscribe((newValue: ScreenMode) => {
+                if (newValue == ScreenMode.UPDATE) {
                     return;
                 }
                 self.bindDataToScreen();
             });
             
-            self.parentModel.workTimeSetting. workTimeDivision.workTimeMethodSet.subscribe(newValue => {
+            self.parentModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
                 self.bindDataToScreen();
             });
             self.isSimpleMode.subscribe(newValue => {
@@ -164,16 +165,10 @@ module a2 {
             });
             
             
-            self.dataSourceOneDay.subscribe((newValue) => {
-                self.convertData();
-            });
-            self.dataSourceMorning.subscribe((newValue) => {
-                self.convertData();
-            });
-            self.dataSourceAfternoon.subscribe((newValue) => {
-                self.convertData();
-            });
-            self.dataSourceOneDaySimpleMode.subscribe((newValue) => {
+            input.isClickSave.subscribe(newValue => {
+                if (!newValue) {
+                    return;
+                }
                 self.convertData();
             });
         }
@@ -203,9 +198,6 @@ module a2 {
          */
         private bindDataOtherMode() {
             let self = this;
-            
-            // update column setting
-            self.refreshColumnSet();
             
             // Simple mode
             if (self.isSimpleMode()) {
@@ -245,17 +237,6 @@ module a2 {
             else {
                 self.bindingDataDto();
             }
-        }
-        
-        /**
-         * Update column setting
-         */
-        private refreshColumnSet() {
-            let self = this;
-            self.fixTableOptionOneDay.columns= self.columnSetting();
-            self.fixTableOptionMorning.columns= self.columnSetting();
-            self.fixTableOptionAfternoon.columns= self.columnSetting();
-            self.fixTableOptionOneDaySimpleMode.columns= self.columnSetting();
         }
         
         /**
@@ -393,8 +374,8 @@ module a2 {
                 //============= Fixed Mode =============
                 if (self.parentModel.workTimeSetting.isFixed()) {
                     // all day
-                    self.parentModel.fixedWorkSetting.getHDWtzOneday().workTimezone
-                        .lstWorkingTimezone = self.toDomain(self.dataSourceOneDaySimpleMode);
+                    self.parentModel.fixedWorkSetting.getHDWtzOneday()
+                        .workTimezone.lstWorkingTimezone = self.toDomain(self.dataSourceOneDaySimpleMode);
                 }
                 
                 //============= Flex Mode =============
@@ -495,9 +476,14 @@ module a2 {
                     key: "timeRange", 
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 243, 
-                    enable: !self.isSimpleMode(),
-                    template: `<div data-bind="ntsTimeRangeEditor: {startName: '#[KMK003_166]', endName: '#[KMK003_167]',
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    template: `<div data-bind="ntsTimeRangeEditor: {
+                                    startTimeNameId: '#[KMK003_166]',
+                                    endTimeNameId: '#[KMK003_167]',
+                                    startConstraint: 'TimeWithDayAttr',
+                                    endConstraint: 'TimeWithDayAttr',
+                                    required: true,
+                                    enable: true,
+                                    inputFormat: 'time'}"/>`
                 }, {
                     headerText: nts.uk.resource.getText("KMK003_56"), 
                     key: "roundingTime", 
@@ -505,9 +491,9 @@ module a2 {
                     defaultValue: ko.observable(0), 
                     width: 150,
                     cssClassName: 'tab2-column2-combo-box',
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div class="column-combo-box unit-combo" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
@@ -515,13 +501,15 @@ module a2 {
                                 </div>`
                 }, {
                     headerText: nts.uk.resource.getText("KMK003_57"), 
-                    key: "rounding", 
+                    key: "rounding",
+                    isRoudingColumn: true,
+                    unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0), 
                     width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div class="column-combo-box rouding-combo" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
