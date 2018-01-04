@@ -38,10 +38,9 @@ public class BreakDownTimeDay extends DomainObject{
 	public void validate() {
 		super.validate();
 		
-		// 1日＞午前 => Msg_518 
-		// 1日＞午後 => Msg_518
-		if (this.oneDay.valueAsMinutes() > this.morning.valueAsMinutes()
-				|| this.oneDay.valueAsMinutes() > this.afternoon.valueAsMinutes()) {
+		// if 1日<午前 => Msg_518 
+		// 1日<午後 => Msg_518
+		if (this.oneDay.lessThan(this.morning) || this.oneDay.lessThan(this.afternoon)) {
 			BundledBusinessException be = BundledBusinessException.newInstance();
 			be.addMessage("Msg_518");
 			be.throwExceptions();
