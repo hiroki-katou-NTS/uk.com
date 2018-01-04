@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.DetailedScreenPreBootModeDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.PrelaunchAppSettingDto;
 import nts.uk.ctx.at.request.dom.application.workchange.WorkChangeDetail;
@@ -19,7 +19,7 @@ public class WorkChangeDetailDto {
 	/**
 	 * 申請
 	 */
-	ApplicationDto applicationDto;
+	ApplicationDto_New applicationDto;
 	/**
 	 * 申請者名
 	 */
@@ -43,7 +43,7 @@ public class WorkChangeDetailDto {
 	
 	public static WorkChangeDetailDto  formDomain(WorkChangeDetail domain){
 		return new WorkChangeDetailDto(AppWorkChangeDto.fromDomain(domain.getAppWorkChange()), 
-				ApplicationDto.fromDomain(domain.getApplication()), 
+				ApplicationDto_New.fromDomain(domain.getApplication()), 
 				domain.getEmployeeName(), domain.getSID(), 
 				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),
 				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()), domain.getWorkTypeCodes(), domain.getWorkTimeCodes());

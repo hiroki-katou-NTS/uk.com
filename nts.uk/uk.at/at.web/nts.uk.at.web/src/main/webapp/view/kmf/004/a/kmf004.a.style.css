@@ -53,3 +53,7 @@ div#memo .nts-editor-wrapped {
 .label1{
 	margin-left: 137px;
 }
+
+.disabled {
+   color: darkgrey;
+}

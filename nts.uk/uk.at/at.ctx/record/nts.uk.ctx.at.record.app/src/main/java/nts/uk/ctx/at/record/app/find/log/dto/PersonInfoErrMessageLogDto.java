@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 @Value
 public class PersonInfoErrMessageLogDto {
 	
-	private String employeeCode;
+	private String personCode;
 
 	private String personName;
 	

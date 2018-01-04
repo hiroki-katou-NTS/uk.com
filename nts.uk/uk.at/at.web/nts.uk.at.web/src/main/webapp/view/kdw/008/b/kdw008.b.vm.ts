@@ -100,6 +100,7 @@ module nts.uk.at.view.kdw008.b {
                 ]);
                 self.selectedSheetNo = ko.observable(1);
                 self.selectedSheetNo.subscribe((value) => {
+                    nts.uk.ui.errors.clearAll();
                     self.getDetail(self.selectedCode());
                 });
 
@@ -121,6 +122,7 @@ module nts.uk.at.view.kdw008.b {
                         self.currentBusinessTypeCode(empSelect.businessTypeCode);
                         self.currentBusinessTypeName(empSelect.businessTypeName);
                     }
+                    nts.uk.ui.errors.clearAll();
                     self.getDetail(self.currentBusinessTypeCode());
                 });
 
@@ -129,16 +131,20 @@ module nts.uk.at.view.kdw008.b {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                nts.uk.ui.block.grayout();
                 self.businessTypeList([]);
                 new service.Service().getBusinessType().done(function(data: Array<IBusinessType>) {
                     if (data && data.length > 0) {
+                        data = _.orderBy(data, ["businessTypeCode"], ['asc']);
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentBusinessTypeCode(self.businessTypeList()[0].businessTypeCode);
                         self.currentBusinessTypeName(self.businessTypeList()[0].businessTypeName);
                         self.selectedCode(self.businessTypeList()[0].businessTypeCode);
                         self.getDetail(self.businessTypeList()[0].businessTypeCode);
+                        nts.uk.ui.block.clear();
                     } else {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_242" });
+                        nts.uk.ui.block.clear();
                         self.setNewMode();
                     }
                     dfd.resolve();
@@ -160,6 +166,7 @@ module nts.uk.at.view.kdw008.b {
                 self.currentBusinessTypeCode(null);
                 self.currentBusinessTypeName('');
                 self.selectedCode(null);
+                nts.uk.ui.errors.clearAll();
             }
 
             getDetail(businessTypeCode: string) {
@@ -274,8 +281,10 @@ module nts.uk.at.view.kdw008.b {
                     var addOrUpdateBusFormat = new AddOrUpdateBusFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
 
                     new service.Service().addDailyDetail(addOrUpdateBusFormat).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.reloadData(self.currentBusinessTypeCode());
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
+                            self.reloadData(self.currentBusinessTypeCode());    
+                        });
+                        nts.uk.ui.block.clear();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_920' });
                     });
@@ -289,6 +298,7 @@ module nts.uk.at.view.kdw008.b {
                 self.businessTypeList([]);
                 new service.Service().getBusinessType().done(function(data: Array<IBusinessType>) {
                     if (data && data.length > 0) {
+                        data = _.orderBy(data, ["businessTypeCode"], ['asc']);
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentBusinessTypeCode(currentBusinessTypeCode);
                         //                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);

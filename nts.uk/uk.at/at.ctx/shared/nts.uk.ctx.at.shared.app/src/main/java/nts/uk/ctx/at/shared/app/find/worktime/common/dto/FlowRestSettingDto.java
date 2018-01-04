@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingSetMemento;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingSetMemento;
  * The Class FlowRestSettingDto.
  */
 @Getter
+@Setter
 public class FlowRestSettingDto implements FlowRestSettingSetMemento {
 
 	/** The flow rest time. */

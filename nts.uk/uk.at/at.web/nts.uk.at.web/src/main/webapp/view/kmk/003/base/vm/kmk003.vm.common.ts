@@ -129,7 +129,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.roundingTime(0);
+                    this.roundingTime(0);                                       
                     this.rounding(1);
                 }
             }
@@ -651,8 +651,8 @@ module nts.uk.at.view.kmk003.a {
             export abstract class TimeRangeModelConverter<T> {
                 listTimeRange: KnockoutObservableArray<TimeRangeModel>;
                 originalList: KnockoutObservableArray<T>;
-                originalListTemp: Array<T>;
-                listTimeRangeTemp: Array<TimeRangeModel>;
+                originalListTemp: Array<any>;
+                listTimeRangeTemp: Array<any>;
 
                 constructor() {
                     let self = this;
@@ -662,33 +662,40 @@ module nts.uk.at.view.kmk003.a {
                     self.listTimeRangeTemp = [];
                     
                     self.originalList.subscribe(newList => {
-                        if (self.isNotEqual(newList, self.originalListTemp)) {
-                            self.originalListTemp = _.cloneDeep(newList);
+                        let newTemp = self.toOriginalListTemp(newList);
+                        if (self.isNotEqual(newTemp, self.originalListTemp)) {
+                            self.originalListTemp = newTemp;
                             self.listTimeRange(self.toListTimeRange());
                         }
                     });
 
                     self.listTimeRange.subscribe(newList => {
-                        if (self.isNotEqual(newList, self.listTimeRangeTemp)) {
-                            self.listTimeRangeTemp = _.cloneDeep(newList);
+                        let newTemp = self.toListTimeRangeTemp(newList);
+                        if (self.isNotEqual(newTemp, self.listTimeRangeTemp)) {
+                            self.listTimeRangeTemp = newTemp;
                             self.originalList(self.fromListTimeRange(newList));
                         }
                     });
 
                 }
 
+                private toListTimeRangeTemp(list: Array<TimeRangeModel>): any {
+                    return _.map(list, item => {
+                        return { start: item.column1().startTime, end: item.column1().endTime };
+                    });
+                }
+
+                private toOriginalListTemp(list: Array<any>) {
+                    return _.map(list, item => {
+                        return { start: item.start(), end: item.end() };
+                    });
+                }
+
                 /**
                  * Evaluate 2 arrays
                  */
-                private isNotEqual(value: Array<any>, other: Array<any>): boolean {
-                    // check length
-                    if (value.length != other.length) {
-                        return true;
-                    }
-                    // check value
-                    return _.some(value, vl => {
-                        !_.isMatch(vl, other);
-                    });
+                private isNotEqual(value, other): boolean {
+                    return !_.isEqual(value, other);
                 }
 
                 /**
@@ -1086,7 +1093,8 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.totalRoundingSet
+                    this.totalRoundingSet.resetData();
+                    this.diffTimezoneSetting.resetData();
                 }
             }
 
@@ -1111,6 +1119,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.fontRearSection(0);
+                    this.roundingTimeUnit(0);
+                }
             }
 
             export class RoundingSetModel {
@@ -1133,6 +1146,10 @@ module nts.uk.at.view.kmk003.a {
                         section: this.section()
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    this.roundingSet.resetData();
                 }
             }
 
@@ -1157,6 +1174,10 @@ module nts.uk.at.view.kmk003.a {
                         stampAtr: this.stampAtr()
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    this.stampAtr(0);
                 }
             }
 
@@ -1216,10 +1237,13 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.roundingSets = [];
-                    this.prioritySets = [];
-                    this.initPrioritySets();
-                    this.initRoundingSets();
+                    this.roundingSets.forEach(function(item, index) {
+                        item.resetData();
+                    });
+
+                    this.prioritySets.forEach(function(item, index) {
+                        item.resetData();
+                    });
                 }
             }
 
@@ -1670,12 +1694,12 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FixedWorkTimezoneSetModel {
-                lstWorkingTimezone: common.EmTimeZoneSetModel[];
-                lstOTTimezone: common.OverTimeOfTimeZoneSetModel[];
+                lstWorkingTimezone: EmTimeZoneSetModel[];
+                lstOTTimezone: KnockoutObservableArray<OverTimeOfTimeZoneSetModel>;
 
                 constructor() {
                     this.lstWorkingTimezone = [];
-                    this.lstOTTimezone = [];
+                    this.lstOTTimezone = ko.observableArray([]);
                 }
 
                 updateData(data: FixedWorkTimezoneSetDto) {
@@ -1684,24 +1708,21 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateOvertimeZone(lstOTTimezone: OverTimeOfTimeZoneSetDto[]) {
+                    this.lstOTTimezone([]);
+                    var dataModelTimezone: OverTimeOfTimeZoneSetModel[] = [];
                     for (var dataDTO of lstOTTimezone) {
-                        var dataModel: OverTimeOfTimeZoneSetModel = this.getOvertimeZoneByWorkTimezoneNo(dataDTO.workTimezoneNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new OverTimeOfTimeZoneSetModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstOTTimezone.push(dataModel);
-                        }
+                        var dataModel: OverTimeOfTimeZoneSetModel = new OverTimeOfTimeZoneSetModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelTimezone.push(dataModel);
                     }
+                    this.lstOTTimezone(dataModelTimezone);
                 }
 
-                getOvertimeZoneByWorkTimezoneNo(workTimezoneNo: number) {
-                    return _.find(this.lstOTTimezone, timezone => timezone.workTimezoneNo() == workTimezoneNo);
-                }
 
                 updateWorkingTimezone(lstWorkingTimezone: EmTimeZoneSetDto[]) {
+                    for (var dataModel of this.lstWorkingTimezone) {
+
+                    }
                     for (var dataDTO of lstWorkingTimezone) {
                         var dataModel: EmTimeZoneSetModel = this.getWorkingTimezoneByEmploymentTimeFrameNo(dataDTO.employmentTimeFrameNo);
                         if (dataModel) {
@@ -1720,7 +1741,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 toDto(): FixedWorkTimezoneSetDto {
                     let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone, (dataModel) => dataModel.toDto());
-                    let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone, (dataModel) => dataModel.toDto());
+                    let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
 
                     let dataDTO: FixedWorkTimezoneSetDto = {
                         lstWorkingTimezone: lstWorkingTimezone,
@@ -1731,7 +1752,7 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.lstWorkingTimezone = [];
-                    this.lstOTTimezone = [];
+                    this.lstOTTimezone([]);
                 }
             }
 

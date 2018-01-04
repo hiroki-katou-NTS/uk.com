@@ -145,7 +145,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.selectedTab = ko.observable('tab-5');
             self.selectedTab.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
-            })
+            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -781,6 +781,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.months = ko.observable(param.months || 0);
                 this.years = ko.observable(param.years || 0);
                 this.grantRegularMethod = ko.observable(param.grantRegularMethod || 0);
+                
+                if (this.grantRegularMethod() == 0) {
+                    $('#hidden-lbl02').addClass('disabled');
+                } else {
+                    $('#hidden-lbl02').removeClass('disabled');
+                }
+                
+                this.grantRegularMethod.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#hidden-lbl02').addClass('disabled');
+                    } else {
+                        $('#hidden-lbl02').removeClass('disabled');
+                    }
+                });
             }
         }
 
@@ -800,6 +814,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.grantDay = ko.observable(param.grantDay || null);
                 this.splitAcquisition = ko.observable(param.splitAcquisition || 0);
                 this.grantPeriodicMethod = ko.observable(param.grantPeriodicMethod || 0);
+                
+                if (this.grantPeriodicMethod() == 0) {
+                    $('#hidden-lbl03').addClass('disabled');
+                } else {
+                    $('#hidden-lbl03').removeClass('disabled');
+                }
+                
+                this.grantPeriodicMethod.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#hidden-lbl03').addClass('disabled');
+                    } else {
+                        $('#hidden-lbl03').removeClass('disabled');
+                    }
+                });
             }
         }
 
@@ -900,7 +928,21 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.fixNumberDays = ko.observable(param.fixNumberDays || 0);
                 this.makeInvitation = ko.observable(param.makeInvitation || 0);
                 this.holidayExclusionAtr = ko.observable(param.holidayExclusionAtr || 0);
-            }
+                
+                if (this.grantDaySingleType() == 0) {
+                    $('#hidden-lbl01').addClass('disabled');
+                } else {
+                    $('#hidden-lbl01').removeClass('disabled');
+                }
+                
+                this.grantDaySingleType.subscribe(function(value) {
+                    if (value == 0) {
+                        $('#hidden-lbl01').addClass('disabled');
+                    } else {
+                        $('#hidden-lbl01').removeClass('disabled');
+                    }
+                });
+            };
         }
 
         export enum GrantRegularMethod {

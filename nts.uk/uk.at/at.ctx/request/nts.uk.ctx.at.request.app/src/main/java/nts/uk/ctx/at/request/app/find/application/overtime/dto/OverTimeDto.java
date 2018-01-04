@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
@@ -23,7 +23,7 @@ public class OverTimeDto {
 	/**
 	 * application
 	 */
-	private ApplicationDto application;
+	private ApplicationDto_New application;
 	/**
 	 * 会社ID
 	 * companyID
@@ -197,7 +197,7 @@ public class OverTimeDto {
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
-				ApplicationDto.fromDomain(appOverTime.getApplication()), 
+				ApplicationDto_New.fromDomain(appOverTime.getApplication()), 
 				appOverTime.getCompanyID(), 
 				appOverTime.getAppID(), 
 				"", 

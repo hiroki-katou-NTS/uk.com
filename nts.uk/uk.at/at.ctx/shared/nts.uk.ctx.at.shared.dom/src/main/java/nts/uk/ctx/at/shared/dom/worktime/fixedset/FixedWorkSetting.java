@@ -140,6 +140,7 @@ public class FixedWorkSetting extends AggregateRoot {
 	 * Restore data.
 	 *
 	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
 	 * @param oldDomain the old domain
 	 */
 	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {
@@ -156,5 +157,17 @@ public class FixedWorkSetting extends AggregateRoot {
 		} else {
 			this.lstHalfDayWorkTimezone = oldDomain.getLstHalfDayWorkTimezone();
 		}
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.commonSetting.restoreDefaultData(screenMode);
+		
+		// restore 平日勤務時間帯
+		//TODO
 	}
 }

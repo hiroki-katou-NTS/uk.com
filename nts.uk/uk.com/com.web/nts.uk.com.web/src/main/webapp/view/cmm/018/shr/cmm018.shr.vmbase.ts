@@ -12,11 +12,12 @@ module nts.uk.com.view.cmm018.shr {
             addHist: IData;
             lstAppType: Array<ApplicationType>;
             root: Array<CompanyAppRootADto>;
+            checkMode: number;
             constructor(rootType: number, checkAddHist: boolean,
                 workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
                 addHist: IData,lstAppType: Array<ApplicationType>,
-                root: Array<CompanyAppRootADto>){
+                root: Array<CompanyAppRootADto>,checkMode: number){
                     this.rootType = rootType;
                     this.checkAddHist = checkAddHist;
                     this.workpplaceId = workpplaceId;
@@ -26,6 +27,7 @@ module nts.uk.com.view.cmm018.shr {
                     this.addHist = addHist;
                     this.lstAppType = lstAppType;
                     this.root = root;
+                    this.checkMode = checkMode;
             }
         }
         //data root delete
@@ -167,6 +169,7 @@ module nts.uk.com.view.cmm018.shr {
             startDatePrevious: string;
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
+            checkMode: number;
             constructor(startDate: string,
             endDate: string,
             workplaceId: string,
@@ -174,7 +177,8 @@ module nts.uk.com.view.cmm018.shr {
             check: number,
             editOrDelete: number,
             startDatePrevious: string,
-            lstUpdate: Array<UpdateHistoryDto>){
+            lstUpdate: Array<UpdateHistoryDto>,
+            checkMode: number){
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.workplaceId = workplaceId;
@@ -183,6 +187,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.editOrDelete = editOrDelete;
                 this.startDatePrevious = startDatePrevious;
                 this.lstUpdate = lstUpdate;
+                this.checkMode = checkMode;
             }
         }
         //ScrenJ

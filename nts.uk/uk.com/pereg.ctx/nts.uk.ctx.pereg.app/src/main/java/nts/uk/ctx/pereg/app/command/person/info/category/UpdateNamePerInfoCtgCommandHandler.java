@@ -11,8 +11,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.shr.com.context.AppContexts;
+
 /**
- * The class UpdateNamePerInfoCtgCommandHandler 
+ * The class UpdateNamePerInfoCtgCommandHandler
+ * 
  * @author lanlt
  *
  */
@@ -28,13 +30,17 @@ public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNam
 		UpdateNamePerInfoCtgCommand update = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		String contractCd = companyId.substring(0, 12);
-		boolean nameList = this.perInfoCtgRepositoty.checkCtgNameIsUnique(companyId, update.getCategoryName(), update.getCategoryId());
+
+		if (update.getCategoryName().trim().equals("")) {
+			throw new BusinessException("");
+		}
+		boolean nameList = this.perInfoCtgRepositoty.checkCtgNameIsUnique(companyId, update.getCategoryName(),
+				update.getCategoryId());
 		if (nameList) {
 			PersonInfoCategory categoryInfo = this.perInfoCtgRepositoty
 					.getDetailCategoryInfo(companyId, update.getCategoryId(), contractCd).orElse(null);
 			if (categoryInfo != null) {
-				List<String> ctgIdList = this.perInfoCtgRepositoty.getItemInfoId(update.getCategoryId(),
-						contractCd);
+				List<String> ctgIdList = this.perInfoCtgRepositoty.getItemInfoId(update.getCategoryId(), contractCd);
 				PersonInfoCategory categoryUpdate = null;
 				if (ctgIdList.size() > 0) {
 					categoryUpdate = PersonInfoCategory.createFromEntity(update.getCategoryId(), companyId,
