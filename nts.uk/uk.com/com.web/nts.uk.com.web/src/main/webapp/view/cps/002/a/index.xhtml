@@ -363,7 +363,8 @@
 													<tr>
 														<td
 															data-bind="text: itemName , css:{requiredCell: isRequired , notRequiredCell:  !isRequired}"></td>
-														<td class="disabledCell" data-bind="text: saveData.value "></td>
+														<td class="disabledCell"><div class="valueCell"
+																data-bind="text:saveData.value"></div></td>
 													</tr>
 												</tbody>
 											</table>
@@ -402,7 +403,7 @@
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
 												<td>
-													<div class='ellipsis_title'
+													<div class='ellipsis_step3_title'
 														data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></div>
 												</td>
 											</tr>
