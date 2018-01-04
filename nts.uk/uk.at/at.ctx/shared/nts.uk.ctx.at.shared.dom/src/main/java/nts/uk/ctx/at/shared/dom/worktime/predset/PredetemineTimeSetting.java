@@ -122,7 +122,8 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		val timezones = this.prescribedTimezoneSetting.getLstTimezone();
 
 		// validate list time zone
-		if (timezones.stream().anyMatch(tz -> this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
+		if (timezones.stream().anyMatch(
+				tz -> tz.getUseAtr() == UseSetting.USE && this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
 			throw new BusinessException("Msg_516");
 		}
 
