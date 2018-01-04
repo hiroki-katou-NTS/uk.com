@@ -1,12 +1,15 @@
 package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -97,6 +100,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd"
 			+ " AND ca.cid = :cid";
+	
+	private final static String SELECT_ALL_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
+			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
+			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd";
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -364,6 +372,16 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
 		return PersonInfoCategory.createFromEntity(personInfoCategoryId, null, categoryCode, categoryParentCd,
 				categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
+	}
+
+
+	@Override
+	public List<String> getAllCategoryByCtgCD(String categoryCD) {
+		List<String> ctg = this.queryProxy().query(SELECT_ALL_CATEGORY_BY_CATEGORY_CD_QUERY, Object[].class)
+				.setParameter("categoryCd", categoryCD).getList(c -> {
+					return createDomainFromEntity(c);
+				}).stream().map(c -> c.getPersonInfoCategoryId()).collect(Collectors.toList());
+		return ctg;
 	}
 
 }

@@ -272,7 +272,7 @@ module nts.uk.com.view.cps005.a {
     }
 
     export class UpdatePerInfoCtgModel {
-        id: string
+        id: string;
         categoryName: string;
         categoryType: number;
         constructor(data: PerInfoCtgModel) {
