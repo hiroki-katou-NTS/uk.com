@@ -55,6 +55,10 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 			}
 		}
 
+		if (addItemCommand.getItemName().trim().equals("")) {
+			throw new BusinessException(new RawErrorMessage(""));
+		}
+
 		// need perInfoItemDefId = ' ' becase sql oracle server can't query ''
 		if (!this.pernfoItemDefRep.checkItemNameIsUnique(addItemCommand.getPerInfoCtgId(), addItemCommand.getItemName(),
 				" ")) {
