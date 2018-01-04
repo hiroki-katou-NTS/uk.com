@@ -29,7 +29,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         checkboxSelectedAll: KnockoutObservable<boolean> = ko.observable(false);
 
         component: ccg.component.viewmodel.ComponentModel = new ccg.component.viewmodel.ComponentModel({
-            roleType: 1,
+            roleType: 8,
             multiple: false
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
