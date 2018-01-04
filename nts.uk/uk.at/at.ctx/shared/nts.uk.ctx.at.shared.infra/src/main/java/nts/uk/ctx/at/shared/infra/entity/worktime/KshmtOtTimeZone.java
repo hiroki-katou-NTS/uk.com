@@ -63,6 +63,7 @@ public class KshmtOtTimeZone extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt ot time zone.
 	 */
 	public KshmtOtTimeZone() {
+		super();
 	}
 
 	/*

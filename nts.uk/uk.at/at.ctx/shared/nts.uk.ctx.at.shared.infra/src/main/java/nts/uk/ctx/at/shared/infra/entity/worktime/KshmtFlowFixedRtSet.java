@@ -51,6 +51,7 @@ public class KshmtFlowFixedRtSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flow fixed rt set.
 	 */
 	public KshmtFlowFixedRtSet() {
+		super();
 	}
 
 	/*

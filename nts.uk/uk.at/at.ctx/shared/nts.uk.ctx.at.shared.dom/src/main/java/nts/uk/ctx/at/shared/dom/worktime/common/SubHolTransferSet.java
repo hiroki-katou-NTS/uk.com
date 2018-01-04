@@ -141,8 +141,7 @@ public class SubHolTransferSet extends DomainObject{
 	@Override
 	public void validate() {
 		// check use 
-		if (this.useDivision) {
-			
+		if (this.useDivision) {			
 			// one day >= half day
 			if (this.getDesignatedTime().getOneDayTime().lessThan(this.getDesignatedTime().getHalfDayTime())) {
 				throw new BusinessException("Msg_782");

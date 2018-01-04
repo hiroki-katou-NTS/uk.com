@@ -55,6 +55,7 @@ public class KshmtDtStampReflect extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt dt stamp reflect.
 	 */
 	public KshmtDtStampReflect() {
+		super();
 	}
 
 	/*

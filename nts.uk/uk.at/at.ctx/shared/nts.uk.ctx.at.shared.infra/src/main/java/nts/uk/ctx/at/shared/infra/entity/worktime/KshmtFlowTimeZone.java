@@ -43,6 +43,7 @@ public class KshmtFlowTimeZone extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flow time zone.
 	 */
 	public KshmtFlowTimeZone() {
+		super();
 	}
 
 	/*

@@ -1,24 +1,15 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
-import java.util.List;
-import java.util.UUID;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 /**
@@ -27,13 +18,10 @@ import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
  *
  */
 @Stateless
-public class AppStampNewDefault implements AppStampNewDomainService {
+public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	
-	@Inject
-	private StartCheckErrorService startCheckErrorService;
 	
 	@Inject
 	private NewBeforeRegister_New newBeforeRegister; 
@@ -51,9 +39,6 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	private AppStampCommonDomainService appStampCommonDomainService;
 	
 	@Inject
-	private AppApprovalPhaseRepository appApprovalPhaseRepository;
-	
-	@Inject
 	private ApplicationApprovalService_New applicationApprovalService;
 
 	@Override
@@ -62,10 +47,9 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 		appStampNewPreOutput.appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
 															companyID, 
 															employeeID, 
-															1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
+															EmploymentRootAtr.APPLICATION.value,
 															ApplicationType.STAMP_APPLICATION, 
 															appDate);
-		startCheckErrorService.checkError(ApplicationType.STAMP_APPLICATION.value);
 		appStampNewPreOutput.appStampSetOutput = appStampCommonDomainService.appStampSet(companyID);
 		appStampNewPreOutput.employeeName = appStampCommonDomainService.getEmployeeName(employeeID);
 		return appStampNewPreOutput;
