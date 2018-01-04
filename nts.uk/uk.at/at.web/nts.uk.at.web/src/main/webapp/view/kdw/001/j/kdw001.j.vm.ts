@@ -42,7 +42,7 @@ module nts.uk.at.view.kdw001.j {
                 self.items2 = ko.observableArray([]);
 
                 self.columns2 = ko.observableArray([
-                    { headerText: getText('KDW001_32'), key: 'caseSpecExeContentID', width: 70, hidden: false },
+                    { headerText: getText('KDW001_32'), key: 'caseSpecExeContentID', width: 1, hidden: true },
                     { headerText: getText('KDW001_85'), key: 'useCaseName', width: 200 }
                 ]);
 
@@ -249,8 +249,8 @@ module nts.uk.at.view.kdw001.j {
 
                     }
 
-                });
-
+                }); 
+                
             }
 
 

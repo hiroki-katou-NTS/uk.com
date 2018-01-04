@@ -44,7 +44,8 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
-					<div id="content-left" class="bg-green caret-right caret-background">
+					<div id="content-left"
+						class="bg-green caret-right caret-background">
 						<div data-bind='with:component'>
 							<div id="pannel-top"
 								data-bind="ntsPanel:{width: '220px', height: '300px', direction: '', showIcon: true, visible: true}">
@@ -280,7 +281,8 @@
 															</tr>
 														</table>
 													</com:ko-if>
-													<com:ko-if bind="categoryType === 3">
+													<com:ko-if
+														bind="categoryType &gt; 2 &amp;&amp; categoryType &lt; 7">
 														<table id="history_auth_table" class="auth_table">
 															<tr>
 																<th></th>
