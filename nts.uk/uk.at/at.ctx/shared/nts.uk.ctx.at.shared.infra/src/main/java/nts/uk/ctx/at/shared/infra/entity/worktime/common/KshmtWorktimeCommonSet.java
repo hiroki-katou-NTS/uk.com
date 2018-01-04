@@ -174,6 +174,7 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 	 * Instantiates a new kshmt worktime common set.
 	 */
 	public KshmtWorktimeCommonSet() {
+		super();
 	}
 	
 	/**

@@ -51,6 +51,7 @@ public class KshmtFlowWorkSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flow work set.
 	 */
 	public KshmtFlowWorkSet() {
+		super();
 	}
 
 	/*
