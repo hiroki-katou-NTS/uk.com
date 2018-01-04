@@ -166,7 +166,7 @@ module nts.fixedtable {
         width: number;
         tableStyle: TableStyle;
         
-        $element: any;
+        $element: JQuery;
         $tableSelector: any;
         mapControl: Array<IControl>;
         tabindex: number;
@@ -257,6 +257,7 @@ module nts.fixedtable {
                 // add properties isChecked when multiple select
                 self.addCheckBoxItemAtr();
                 self.subscribeChangeCheckbox();
+                self.initEventChangeComboBox(self.$element);
             });
         }
 
@@ -580,7 +581,9 @@ module nts.fixedtable {
             if (!nts.uk.text.isNullOrEmpty(columnSetting.cssClassName)) {
                 cssClassName = columnSetting.cssClassName;
             }
-            
+            if (template.indexOf('ntsCheckBox') > -1) {
+                cssClassName += ' check-box-column';
+            }
             return "<td style='text-align: center;' class='" + cssClassName + "'>" + template + "</td>";
         }
         
@@ -685,6 +688,15 @@ module nts.fixedtable {
             }
             return result;
         }
+
+        public initEventChangeComboBox(element: JQuery) {
+            var self = this;
+            if (element) {
+                element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
+                    self.itemList.valueHasMutated();
+                });
+            }
+        }
     }
 }
 /**
@@ -727,6 +739,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
             });
         }
         $(element).load(webserviceLocator, function() {
+            screenModel.$element = $(element);
             screenModel.initialScreen().done(() => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
@@ -742,6 +755,11 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                     $(element).attr('id', nts.uk.util.randomId());
                 }
                 document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
+                    screenModel.itemList.valueHasMutated();
+                });
+                screenModel.initEventChangeComboBox($(element));
+                //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
+                screenModel.$element.on('click', '.check-box-column > div', function(event){
                     screenModel.itemList.valueHasMutated();
                 })
             });
