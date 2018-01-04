@@ -24,7 +24,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
             ]);
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
-            
+
             self.columnsWorkTime = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KSU001_1402"), key: 'siftCd', width: 70 },
                 { headerText: nts.uk.resource.getText("KSU001_1403"), key: 'symbol', width: 70 },
@@ -135,7 +135,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                     self.listWorkTimeComboBox.push(obj);
                 }
             });
-
+            $("#single-list").focus();
         }
         clear(): void {
             let self = this;

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -93,7 +94,9 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		// validate startDateClock in -12:00 ~ 23:59
 		if ((this.startDateClock.valueAsMinutes() < TimeWithDayAttr.THE_PREVIOUS_DAY_1200.valueAsMinutes())
 				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {
-			throw new BusinessException("Msg_785");
+			BundledBusinessException be = BundledBusinessException.newInstance();
+			be.addMessage("Msg_785");
+			be.throwExceptions();
 		}
 		
 		this.validatePrescribedTimezone();

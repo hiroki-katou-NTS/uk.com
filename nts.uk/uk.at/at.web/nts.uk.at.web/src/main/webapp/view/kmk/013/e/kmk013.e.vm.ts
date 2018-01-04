@@ -51,11 +51,20 @@ module nts.uk.at.view.kmk013.e {
             initData(): void {
                 let self = this;
                 service.findByCompanyId().done(arr => {
-                    let arrSort = _.orderBy(arr, [(obj) => {
-                        return parseInt(obj.timeItemId);
-                    }], ['asc']);
-                    _.forEach(arrSort, (element) => {
-                        self.listData.push(new UnitRouding(element.timeItemId, element.unit, element.rounding));
+                });
+                service.getIdMonth().done(arr => {
+                    service.getPossibleItem(arr).done(listName => {
+                        service.findByCompanyId().done(listData => {
+                            _.forEach(listName, (element) => {
+                                let obj = _.find(listData, ['timeItemId', element.attendanceItemId.toString()]);
+                                if (obj) {
+                                    self.listData.push(new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding));
+                                } else {
+                                    self.listData.push(new UnitRouding(element.attendanceItemId, element.attendanceItemName, 0, 0));
+                                }
+                            });
+
+                        });
                     });
                 });
 
@@ -83,11 +92,13 @@ module nts.uk.at.view.kmk013.e {
 
         }
         class UnitRouding {
-            timeItemId: KnockoutObservableArray<string>;
+            timeItemId: string;
+            attendanceItemName: string;
             unit: KnockoutObservable<number>;
             rounding: KnockoutObservable<number>;
-            constructor(timeItemId: string, unit: number, rounding: number) {
-                this.timeItemId = ko.observable(timeItemId);
+            constructor(timeItemId: string, attendanceItemName: string, unit: number, rounding: number) {
+                this.timeItemId = timeItemId;
+                this.attendanceItemName = attendanceItemName;
                 this.unit = ko.observable(unit);
                 this.rounding = ko.observable(rounding);
             }

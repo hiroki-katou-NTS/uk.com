@@ -40,12 +40,13 @@ module a7 {
 
             //main model
             self.mainSettingModel = mainSettingModel;
-            self.loadDataToScreen();
+            
 
             self.isCheckFollowTime = ko.observable(true);
             self.isCheckFollowTime.subscribe(function() {
                 self.refreshColumnSet();
             });
+            self.dataSourceForFixedOrDiffTime = ko.observableArray([]);
             /////////////
             self.fixTableOptionForFixedOrDiffTime = {
                 maxRow: 10,
@@ -57,7 +58,8 @@ module a7 {
                 columns: self.columnSetting(),
                 tabindex: 92
             };
-
+            
+            self.loadDataToScreen();
             /////////////
             self.dataSourceForFlowOrFlexUse = ko.observableArray([]);
             self.fixTableOptionForFlowOrFlexUse = {
@@ -133,14 +135,17 @@ module a7 {
 
         private loadDataToScreen() {
             let self = this;
-
-            //to screen 
-            self.dataSourceForFixedOrDiffTime = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.listTimeRange;
-            //when UI change
-            //self.dataSourceForFixedOrDiffTime.subscribe((v) => self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.fromListTimeRange(v)));
-
+            self.dataSourceForFixedOrDiffTime.subscribe((newDataSource: any) => {
+                let listDeductionTimeModel: DeductionTimeModel[] = [];
+                for (let item of newDataSource) {
+                    let deduct = new DeductionTimeModel();
+                    deduct.start(item.column1().startTime);
+                    deduct.end(item.column1().endTime);
+                    listDeductionTimeModel.push(deduct);
+                }
+                self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
+            });
             //TODO not care difftime or flow
-
         }
 
         private setDataFlexOrFlowToModel() {
@@ -170,10 +175,12 @@ module a7 {
             });
 
             self.dataSourceForFlowOrFlexNotUse2.subscribe((newData: any) => {
-                let rest = new FlowRestSettingModel();
-                rest.flowRestTime(newData[0].column2());
-                rest.flowPassageTime(newData[0].column1());
-                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet = rest;
+                if (newData && newData.length > 0) {
+                    let rest = new FlowRestSettingModel();
+                    rest.flowRestTime(newData[0].column2());
+                    rest.flowPassageTime(newData[0].column1());
+                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet = rest;
+                }
             });
         }
 
@@ -206,6 +213,17 @@ module a7 {
                 });
                 self.dataSourceForFlowOrFlexNotUse2(data2);
             }
+            else//for fixed or difftime
+            {
+                let data: any = [];
+
+                for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone()) {
+                    data.push({
+                        column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                    });
+                }
+                self.dataSourceForFixedOrDiffTime(data);
+            }
         }
 
          /**
@@ -223,8 +241,17 @@ module a7 {
             let self = this;
             return [
                 {
-                    headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                    width: 243, template: '<div data-bind="ntsTimeRangeEditor: {required: true, enable: true, inputFormat: \'time\'}"/>'
+                    headerText: nts.uk.resource.getText("KMK003_54"), key: "column1", defaultValue: ko.observable({ startTime: 0, endTime: 0 }),
+                    width: 243, template: 
+                    `<div data-bind="ntsTimeRangeEditor: {required: true,
+                            enable: true,
+                            inputFormat: 'time',
+                            startTimeNameId: '#[KMK003_163]',
+                            endTimeNameId: '#[KMK003_164]',
+                            startConstraint: 'TimeWithDayAttr',
+                            endConstraint: 'TimeWithDayAttr'
+                                }
+                            "/>`
                 }
             ];
         }
@@ -233,13 +260,13 @@ module a7 {
             let self = this;
             return [
                 {
-                    headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable("12:00"), width: 107,
-                    template: '<input data-bind="ntsTimeEditor: {inputFormat: \'time\',enable: false}" />',
+                    headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable(0), width: 107,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',inputFormat: 'time',mode: 'time',enable: false}" />`,
                     cssClassName: 'column-time-editor'
                 },
                 {
-                    headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable("12:00"), width: 107,
-                    template: '<input data-bind="ntsTimeEditor: {inputFormat: \'time\',enable: false}" />',
+                    headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable(0), width: 107,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',inputFormat: 'time',mode: 'time',enable: false}" />`,
                     cssClassName: 'column-time-editor',
                     enable: self.isCheckFollowTime()
                 }
@@ -277,11 +304,38 @@ module a7 {
             let enumSetting = input.enum;
             let mainSettingModel = input.mainSettingModel;
             let isLoading = input.isLoading;
-
+            let isClickSave:KnockoutObservable<boolean> = input.isClickSave;
+            let isClickNew:KnockoutObservable<boolean> = input.isClickNew;
+            
             var screenModel = new ScreenModel(tabMode, enumSetting, mainSettingModel, isLoading);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                
+                document.getElementById('nts-fix-table-a7-fixed-difftime').addEventListener('timerangedatachange', e => {
+                    screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
+                });
+                
+                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
+                    screenModel.dataSourceForFlowOrFlexUse.valueHasMutated();
+                });
+                
+                isClickSave.subscribe((v) => {
+                    if (v) {
+                        screenModel.dataSourceForFlowOrFlexNotUse1.valueHasMutated();
+                        screenModel.dataSourceForFlowOrFlexNotUse2.valueHasMutated();
+                    }
+                });
+
+                isClickNew.subscribe((v) => {
+                    if (v) {
+                        screenModel.dataSourceForFixedOrDiffTime([]);
+                        screenModel.dataSourceForFlowOrFlexUse([]);
+                        screenModel.dataSourceForFlowOrFlexNotUse1([]);
+                        screenModel.dataSourceForFlowOrFlexNotUse2([]);
+                    }
+                });
+
             });
         }
 

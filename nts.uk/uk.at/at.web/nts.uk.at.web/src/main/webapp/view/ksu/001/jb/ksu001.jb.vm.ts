@@ -9,6 +9,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         selectedWorkTimeCode: KnockoutObservable<string> = ko.observable('');
         time1: KnockoutObservable<string> = ko.observable('');
         time2: KnockoutObservable<string> = ko.observable('');
+        isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
         nameWorkTimeType: KnockoutComputed<any>;
         textName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').text || null);
         arrTooltip: any[] = getShared('dataForJB').tooltip ? getShared('dataForJB').tooltip.match(/[^[\]]+(?=])/g) : [];
@@ -16,7 +17,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
         textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
-        
+
         constructor() {
             let self = this;
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
@@ -151,8 +152,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
+
         search(): void {
             let self = this;
+            self.isEnableClearSearchButton(true);
             if (!self.time1() && !self.time2()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
             }
@@ -173,8 +176,10 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             });
 
         }
+
         clearSearch(): void {
             let self = this;
+            self.isEnableClearSearchButton(false);
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
         }

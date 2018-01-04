@@ -4,6 +4,7 @@
 
 .checkbox_display {
 	padding-left: 170px;
+	margin-bottom: 10px;
 }
 
 .screen-content-left {
@@ -51,4 +52,8 @@
 
 .cf .nts-switch-button {
 	min-width: 80px;
+} 
+
+.control-group {
+	display: inline-flex;
 } 

@@ -83,11 +83,11 @@ module nts.uk.at.view.kmk003.a {
                 memoOption: KnockoutObservable<any>;
 
                 // flag
-                isFlex: KnockoutObservable<boolean>;
-                isRegularWork: KnockoutObservable<boolean>;
-                isFlow: KnockoutObservable<boolean>;
-                isFixed: KnockoutObservable<boolean>;
-                isDiffTime: KnockoutObservable<boolean>;
+                isFlex: KnockoutComputed<boolean>;
+                isRegularWork: KnockoutComputed<boolean>;
+                isFlow: KnockoutComputed<boolean>;
+                isFixed: KnockoutComputed<boolean>;
+                isDiffTime: KnockoutComputed<boolean>;
 
                 constructor() {
                     var self = this;
