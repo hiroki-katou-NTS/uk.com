@@ -651,8 +651,8 @@ module nts.uk.at.view.kmk003.a {
             export abstract class TimeRangeModelConverter<T> {
                 listTimeRange: KnockoutObservableArray<TimeRangeModel>;
                 originalList: KnockoutObservableArray<T>;
-                originalListTemp: Array<T>;
-                listTimeRangeTemp: Array<TimeRangeModel>;
+                originalListTemp: Array<any>;
+                listTimeRangeTemp: Array<any>;
 
                 constructor() {
                     let self = this;
@@ -662,33 +662,40 @@ module nts.uk.at.view.kmk003.a {
                     self.listTimeRangeTemp = [];
                     
                     self.originalList.subscribe(newList => {
-                        if (self.isNotEqual(newList, self.originalListTemp)) {
-                            self.originalListTemp = _.cloneDeep(newList);
+                        let newTemp = self.toOriginalListTemp(newList);
+                        if (self.isNotEqual(newTemp, self.originalListTemp)) {
+                            self.originalListTemp = newTemp;
                             self.listTimeRange(self.toListTimeRange());
                         }
                     });
 
                     self.listTimeRange.subscribe(newList => {
-                        if (self.isNotEqual(newList, self.listTimeRangeTemp)) {
-                            self.listTimeRangeTemp = _.cloneDeep(newList);
+                        let newTemp = self.toListTimeRangeTemp(newList);
+                        if (self.isNotEqual(newTemp, self.listTimeRangeTemp)) {
+                            self.listTimeRangeTemp = newTemp;
                             self.originalList(self.fromListTimeRange(newList));
                         }
                     });
 
                 }
 
+                private toListTimeRangeTemp(list: Array<TimeRangeModel>): any {
+                    return _.map(list, item => {
+                        return { start: item.column1().startTime, end: item.column1().endTime };
+                    });
+                }
+
+                private toOriginalListTemp(list: Array<any>) {
+                    return _.map(list, item => {
+                        return { start: item.start(), end: item.end() };
+                    });
+                }
+
                 /**
                  * Evaluate 2 arrays
                  */
-                private isNotEqual(value: Array<any>, other: Array<any>): boolean {
-                    // check length
-                    if (value.length != other.length) {
-                        return true;
-                    }
-                    // check value
-                    return _.some(value, vl => {
-                        !_.isMatch(vl, other);
-                    });
+                private isNotEqual(value, other): boolean {
+                    return !_.isEqual(value, other);
                 }
 
                 /**
