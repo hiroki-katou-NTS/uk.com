@@ -132,5 +132,65 @@ public class OutsideOTSettingFinder {
 		return attendanceItems;
 	}
 	
+	/**
+	 * get data kmk011
+	 */
+	public List<Integer> getDataKMK011() {
+		List<Integer> datas = new ArrayList<>();
+		datas.add(216);
+		datas.add(217);
+		datas.add(221);
+		datas.add(222);
+		datas.add(226);
+		datas.add(227);
+		datas.add(231);
+		datas.add(232);
+		datas.add(236);
+		datas.add(237);
+		datas.add(241);
+		datas.add(242);
+		datas.add(246);
+		datas.add(247);
+		datas.add(251);
+		datas.add(252);
+		datas.add(256);
+		datas.add(257);
+		datas.add(261);
+		datas.add(262);
+		datas.add(266);
+		datas.add(267);
+		datas.add(271);
+		datas.add(272);
+		datas.add(276);
+		datas.add(277);
+		datas.add(281);
+		datas.add(282);
+		datas.add(286);
+		datas.add(287);
+		datas.add(291);
+		datas.add(292);
+		datas.add(296);
+		datas.add(297);
+		datas.add(301);
+		datas.add(302);
+		datas.add(306);
+		datas.add(307);
+		datas.add(311);
+		datas.add(312);
+		datas.add(551);
+		datas.add(556);
+		datas.add(566);
+		datas.add(568);
+		datas.add(570);
+		datas.add(572);
+		datas.add(617);
+		datas.add(618);
+		datas.add(619);
+		datas.add(620);
+		datas.add(621);
+		datas.add(622);
+		return datas;
+
+	}
 	
 }
