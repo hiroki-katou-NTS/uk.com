@@ -73,7 +73,7 @@ module a7 {
             self.fixTableOptionForFlowOrFlexUse = {
                 maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceForFlowOrFlexUse,
                 isMultipleSelect: true,
