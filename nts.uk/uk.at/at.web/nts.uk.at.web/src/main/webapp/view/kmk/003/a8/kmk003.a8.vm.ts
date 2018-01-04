@@ -23,8 +23,6 @@ module a8 {
 
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
-        workTimeDailyAtr: KnockoutObservable<number>;
-        workTimeMethodSet: KnockoutObservable<number>;
         
         // Screen data model
         model: MainSettingModel;
@@ -81,10 +79,7 @@ module a8 {
             ]);
             _self.workTimeSelectedTab = ko.observable('personal-setting-tab');
             
-            // Init all data                        
-            _self.totalRoundingSameFrameRoundingSet = ko.observable(0);
-            _self.totalRoundingFrameStraddRoundingSet = ko.observable(0);
-            
+            // Init all data                                    
             _self.otTimePersonApproTimeSetting = new TimeRoundingSetting(settingEnum);
             _self.workTimePersonApproTimeSetting = new TimeRoundingSetting(settingEnum);
             _self.pubHolWorkTimePersonApproTimeSetting = new TimeRoundingSetting(settingEnum);
@@ -101,35 +96,19 @@ module a8 {
                 { value: 0, localizedName: nts.uk.resource.getText("KMK003_198") },
                 { value: 1, localizedName: nts.uk.resource.getText("KMK003_199") }
             ]);          
-            //_self.listRoundingBreakTimezone(_self.settingEnum.roundingBreakTimezone);   
+            //_self.listRoundingBreakTimezone(_self.settingEnum.roundingBreakTimezone);  
+            
+            _self.changeBinding(_self.model.commonSetting.goOutSet);
             
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                _self.changeWorkSettingMode();
-            });                                   
-            // Subscribe Work Setting Regular/Flex mode
-            _self.workTimeDailyAtr = ko.observable(0);
-            _self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(newValue => {
-                _self.workTimeDailyAtr(newValue);
-                _self.changeWorkSettingMode();
-            });  
-            // Subscribe Work Setting Fixed/Diff/Flow mode
-            _self.workTimeMethodSet = ko.observable(0); 
-            _self.model.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                _self.workTimeMethodSet(newValue);
-                _self.changeWorkSettingMode();
-            });                          
+                // Nothing to do
+            });                                                        
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            });
-            
-            // Subscribe change select item in table on hand left
-            _self.model.isChangeItemTable.subscribe(newValue => {
-                _self.startTab(_self.screenMode);
-                _self.changeWorkSettingMode();
-            });
+            }); 
         }
         
         /**
@@ -138,21 +117,7 @@ module a8 {
         public startTab(screenMode: any): void {
             let _self = this;
             screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            _self.workTimeDailyAtr(_self.model.workTimeSetting.workTimeDivision.workTimeDailyAtr());
-            _self.workTimeMethodSet(_self.model.workTimeSetting.workTimeDivision.workTimeMethodSet());
-        }
-        
-        /**
-         * UI - All: change WorkSetting mode
-         */
-        private changeWorkSettingMode(): void {
-            let _self = this;        
-                          
-            if (nts.uk.util.isNullOrUndefined(_self.model.commonSetting.goOutSet)) {
-                _self.model.commonSetting.goOutSet = _self.createBinding();                           
-            }
-            _self.changeBinding(_self.model.commonSetting.goOutSet);                                         
-        }       
+        }     
         
         /**
          * UI - All: create new Binding data
@@ -162,33 +127,16 @@ module a8 {
                  
             let result: WorkTimezoneGoOutSetModel = new WorkTimezoneGoOutSetModel();           
             return result;
-        }
-        
-        /**
-         * UI - All: change Binding mode
-         */
-        private changeBinding(goOutSet: WorkTimezoneGoOutSetModel): void {
-            let _self = this;
-            if (_self.isDetailMode()) {
-                _self.changeBindingDetail(goOutSet); 
-            } else {
-                _self.changeBindingSimple(goOutSet); 
-            }  
-        }
+        }        
         
         /**
          * UI - Detail: change Binding Detail mode
          */
-        private changeBindingDetail(goOutSet: WorkTimezoneGoOutSetModel): void {
+        private changeBinding(goOutSet: WorkTimezoneGoOutSetModel): void {
             let _self = this;
             
-            // Get model value into view model
-            _self.totalRoundingSameFrameRoundingSet(goOutSet.totalRoundingSet.setSameFrameRounding());
-            _self.totalRoundingFrameStraddRoundingSet(goOutSet.totalRoundingSet.frameStraddRoundingSet());
-            
-            // Update into model in case of data change
-            _self.totalRoundingSameFrameRoundingSet.subscribe(newValue => goOutSet.totalRoundingSet.setSameFrameRounding(newValue));
-            _self.totalRoundingFrameStraddRoundingSet.subscribe(newValue => goOutSet.totalRoundingSet.frameStraddRoundingSet(newValue));
+            _self.totalRoundingSameFrameRoundingSet = goOutSet.totalRoundingSet.setSameFrameRounding;
+            _self.totalRoundingFrameStraddRoundingSet = goOutSet.totalRoundingSet.frameStraddRoundingSet;
             
             // Update binding for Time Setting model
             _self.otTimePersonApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.ottimezone.privateUnionGoOut.approTimeRoundingSetting);
@@ -203,14 +151,6 @@ module a8 {
             _self.workTimePublicApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.workTimezone.officalUseCompenGoOut.approTimeRoundingSetting);
             _self.pubHolWorkTimePublicApproTimeSetting.updateBinding(goOutSet.diffTimezoneSetting.pubHolWorkTimezone.officalUseCompenGoOut.approTimeRoundingSetting);         
         }
-        
-        /**
-         * UI - Simple: change Binding Simple mode 
-         */
-        private changeBindingSimple(goOutSet: WorkTimezoneGoOutSetModel): void {
-            let _self = this;
-            _self.changeBindingDetail(goOutSet);
-        } 
     }
     
     class TimeRoundingSetting {
@@ -230,13 +170,11 @@ module a8 {
                 { value: 0, localizedName: nts.uk.resource.getText("KMK003_87") },
                 { value: 1, localizedName: nts.uk.resource.getText("KMK003_88") }
             ]);
-            _self.listRoundingTimeValue = ko.observableArray([]);
-            _self.listRoundingValue = ko.observableArray([]);
-            
             //_self.listRoundingBreakTime(settingEnum.roundingBreakTime);
-            _self.listRoundingTimeValue(settingEnum.roundingTime);
-            _self.listRoundingValue(settingEnum.roundingSimple);   
-            _self.isEnable = ko.observable(true);
+            _self.listRoundingTimeValue = ko.observableArray(settingEnum.roundingTime);
+            _self.listRoundingValue = ko.observableArray(settingEnum.roundingSimple);           
+            
+            _self.isEnable = ko.observable(false);
         }
         
         updateBinding(modelValue: GoOutTimeRoundingSettingModel) {

@@ -85,4 +85,32 @@ public class GoOutTimeRoundingSetting extends DomainObject {
 				throw new RuntimeException("GoOutTimeRoundingMethod not found.");
 		}
 	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		// Simple mode
+		if (screenMode == ScreenMode.SIMPLE) {
+			this.roundingMethod = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
+			this.roundingSetting.restoreDefaultData();			
+			return;
+		} 
+		
+		// Detail mode
+		switch (this.roundingMethod) {		
+			case TOTAL_AND_ROUNDING:
+				this.roundingSetting.restoreDefaultData();
+				break;
+	
+			case ROUNDING_AND_TOTAL:
+				// Nothing change
+				break;
+	
+			default:
+				throw new RuntimeException("GoOutTimeRoundingMethod not found.");
+		}
+	}
 }
