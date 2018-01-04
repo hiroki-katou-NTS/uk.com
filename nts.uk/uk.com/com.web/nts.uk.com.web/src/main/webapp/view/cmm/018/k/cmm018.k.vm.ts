@@ -172,7 +172,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //set data in swap-list
         setDataForSwapList(selectTypeSet: number){
             var self = this;
-            
+            //clear data before push employee new
+            self.employeeList([]);
             //個人設定 (employee setting)
             if(selectTypeSet === self.personSetting){                
                 var employeeSearch = new service.model.EmployeeSearchInDto();
