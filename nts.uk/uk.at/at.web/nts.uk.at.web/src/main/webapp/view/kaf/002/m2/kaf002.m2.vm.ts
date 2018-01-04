@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf002.m2 {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
             extendsModeDisplay: KnockoutObservable<boolean> = ko.observable(true);
             appStampList: KnockoutObservableArray<vmbase.AppStampWork> = ko.observableArray([]);    
-            supFrameNo: number = 3;
+            supFrameNo: number = 1;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             workLocationList: Array<vmbase.IWorkLocation> = [];
             displayAllLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_29'))); 

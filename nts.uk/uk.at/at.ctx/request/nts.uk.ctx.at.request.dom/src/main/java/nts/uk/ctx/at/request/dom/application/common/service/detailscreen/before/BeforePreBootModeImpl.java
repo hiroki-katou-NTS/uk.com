@@ -101,7 +101,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				outputData.setUser(User.OTHER);
 			}
 		}
-		if(outputData.getUser().equals(User.APPLICANT_APPROVER)||outputData.getUser().equals(User.APPLICANT)){
+		if(outputData.getUser().equals(User.APPLICANT_APPROVER)||outputData.getUser().equals(User.APPROVER)){
 			ApproverPersonImport approverPersonImport = approvalRootStateAdapter.judgmentTargetPersonCanApprove(companyID, applicationData.getAppID(), employeeID);
 			outputData.setAuthorizableFlags(approverPersonImport.getAuthorFlag());
 			outputData.setApprovalATR(EnumAdaptor.valueOf(approverPersonImport.getApprovalAtr().value, ApprovalAtr.class));
