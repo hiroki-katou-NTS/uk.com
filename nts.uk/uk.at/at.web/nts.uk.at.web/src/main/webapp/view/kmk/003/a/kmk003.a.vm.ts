@@ -61,6 +61,18 @@ module nts.uk.at.view.kmk003.a {
             constructor() {
                 let self = this;
                 self.mainSettingModel = new MainSettingModel();
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
+                    if (self.isNewMode()) {
+                        self.clearAllError();
+                        self.mainSettingModel.resetData(self.isNewMode());
+                    }
+                });
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
+                    if (self.isNewMode()) {
+                        self.clearAllError();
+                        self.mainSettingModel.resetData(self.isNewMode());
+                    }
+                });
 
                 self.workTimeSettingLoader = new WorkTimeSettingLoader();
                 
@@ -272,11 +284,15 @@ module nts.uk.at.view.kmk003.a {
              */
             private reloadWorktimeSetting(): void {
                 let self = this;
+                let currentCode = self.mainSettingModel.workTimeSetting.worktimeCode();
+                if (!currentCode) {
+                    return;
+                }
                 // block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
 
                 self.isLoading(false);
-                service.findWorktimeSetingInfoByCode(self.mainSettingModel.workTimeSetting.worktimeCode())
+                service.findWorktimeSetingInfoByCode(currentCode)
                     .done(worktimeSettingInfo => {
                         // clear all errors
                         self.clearAllError();
@@ -293,27 +309,29 @@ module nts.uk.at.view.kmk003.a {
              * Load work time setting detail
              */
             private loadWorktimeSetting(worktimeCode: string): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-                self.isLoading(false);
-                // block ui.
-                _.defer(() => nts.uk.ui.block.invisible());
+                if (worktimeCode) {
+                    let self = this;
+                    let dfd = $.Deferred<void>();
+                    self.isLoading(false);
+                    // block ui.
+                    _.defer(() => nts.uk.ui.block.invisible());
 
-                service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
-                    // enter update mode
-                    self.enterUpdateMode();
+                    service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
+                        // enter update mode
+                        self.enterUpdateMode();
 
-                    // clear all errors
-                    self.clearAllError();
+                        // clear all errors
+                        self.clearAllError();
 
-                    // update mainSettingModel data
-                    self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
+                        // update mainSettingModel data
+                        self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
 
-                    self.isLoading(true);
-                    self.mainSettingModel.isChangeItemTable.valueHasMutated();
-                    dfd.resolve();
-                }).always(() => _.defer(() => nts.uk.ui.block.clear()));
-                return dfd.promise();
+                        self.isLoading(true);
+                        self.mainSettingModel.isChangeItemTable.valueHasMutated();
+                        dfd.resolve();
+                    }).always(() => _.defer(() => nts.uk.ui.block.clear()));
+                    return dfd.promise();
+                }
             }
             
             /**
@@ -708,12 +726,15 @@ module nts.uk.at.view.kmk003.a {
                 //TODO update diff viewmodel
             }
             
-            resetData(){
+            resetData(isNewMode?: boolean){
                 this.workTimeSetting.resetData();
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();
                 this.flexWorkSetting.resetData();
                 this.commonSetting.resetData();
+                if (!isNewMode) {
+                    this.workTimeSetting.resetWorkTimeDivision();
+                }
                 //TODO update diff viewmodel
             }
         }

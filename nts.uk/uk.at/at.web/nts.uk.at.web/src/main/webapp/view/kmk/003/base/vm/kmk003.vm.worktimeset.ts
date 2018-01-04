@@ -165,10 +165,13 @@ module nts.uk.at.view.kmk003.a {
                 updateMode(isUpdateMode: boolean) {
                     this.isUpdateMode(isUpdateMode);
                 }
+
+                resetWorkTimeDivision(): void {
+                    this.workTimeDivision.resetData();
+                }
                 
                 resetData(){
                     this.worktimeCode('');
-                    this.workTimeDivision.resetData();
                     this.isAbolish(false);   
                     this.colorCode(''); 
                     this.workTimeDisplayName.resetData();
