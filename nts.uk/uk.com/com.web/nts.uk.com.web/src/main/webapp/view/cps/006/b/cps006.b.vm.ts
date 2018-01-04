@@ -185,7 +185,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     isAbolition: self.ckbIsAbolition() === true ? 1 : 0,
                     isRequired: self.isRequired(),
                     dataType: self.dataType(),
-                    selectionItemId: self.dataType() === 1? null: (self.currentItem().itemTypeState.dataTypeState !== undefined? self.currentItem().itemTypeState.dataTypeState.typeCode : null),
+                    selectionItemId: self.currentItem().itemTypeState.dataTypeState.typeCode,
                     personEmployeeType: self.currentCategory.personEmployeeType
                 },
                 baseDate = moment(new Date()).format('YYYY-MM-DD');
@@ -451,8 +451,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
     function makeIcon(value, row) {
         if (value == '1')
-            return "<i class='icon icon-close'></i>";
-        return '';
+            return '<img src="../a/images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
+        return '<span></span>';
     }
 
     export interface IItemInfoDef {

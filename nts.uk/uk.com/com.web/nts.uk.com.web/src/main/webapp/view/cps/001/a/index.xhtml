@@ -390,7 +390,8 @@
 					outData: outData
 				}">
 				<div style="padding-top: 10px"
-					data-bind="ntsLayoutControl: { 
+					data-bind="ntsLayoutControl: {
+					showColor: ko.observable(true), 
 					data: $data.items,
 					outData: $data.outData || ko.observableArray([]),
 					editAble: 2 }"></div>

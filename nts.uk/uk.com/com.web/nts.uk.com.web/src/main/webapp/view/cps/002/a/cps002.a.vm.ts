@@ -315,17 +315,7 @@ module cps002.a.vm {
         }
 
         isError() {
-            let self = this;
-            if (self.currentStep() == 2) {
-                _.each(__viewContext.primitiveValueConstraints, x => {
-                    if (_.has(x, "itemCode")) {
-                        $('#' + x.itemCode).trigger('change');
-                    }
-                })
-            } else {
-                $(".form_step1").trigger("validate");
-
-            }
+            $(".form_step1").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return true;
             }
@@ -454,7 +444,7 @@ module cps002.a.vm {
 
                 //start Screen C
 
-                $('#initSettingPanel').show();
+
                 self.loadInitSettingData();
 
 
@@ -462,7 +452,7 @@ module cps002.a.vm {
 
                 //start Screen B
 
-                $('#initSettingPanel').hide();
+                $('#search_box').hide();
 
                 self.loadCopySettingCtgData();
                 if (self.copyEmployee().employeeId == '') {
@@ -526,6 +516,8 @@ module cps002.a.vm {
                     self.currentStep(0);
                 });
 
+            }).always(() => {
+                $('#search_box').show();
             });
 
         }

@@ -27,7 +27,6 @@
 				nts.uk.ctx.at.record.dom.stamp.CardNumber
 				nts.uk.ctx.sys.gateway.dom.login.LoginId
 				nts.uk.ctx.sys.gateway.dom.login.RawPassword
-				nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
 			</com:ValidatorScript>
 
 		</ui:define>
@@ -104,13 +103,13 @@
 									<div class="div_line">
 										<div class="step1_top_left_col1">
 											<div
-												data-bind="ntsFormLabel: {  required: true,constraint:'FullName' }">#{i18n.getText('CPS002_105')}</div>
+												data-bind="ntsFormLabel: {  required: true,constraint:'UserName' }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
-											constraint:'FullName',
+											constraint:'UserName',
 											required:true,
 											name: '#{i18n.getText('CPS002_105')}',
 											option: {
@@ -256,25 +255,23 @@
 
 
 						<div class="step-2">
+							<div id="step2_title" class="div_line">
+								<com:ko-if bind="createTypeId()===1">
+									<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
+								</com:ko-if>
+								<com:ko-if bind="createTypeId()===2">
+									<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
+								</com:ko-if>
+							</div>
 							<div id="step2_content">
-								<div class="div_line">
-									<com:ko-if bind="createTypeId()===1">
-										<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
-									</com:ko-if>
-									<com:ko-if bind="createTypeId()===2">
-										<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
-									</com:ko-if>
-								</div>
-
-								<div class="float_left " id="initSettingPanel">
-									<div id="search_box" class="bg-green">
-										<i class="icon icon-searchbox"></i>
-										<div class="div_line">
-											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
-										</div>
-										<div class="div_line">
-											<div style="width: 190px" id="initSearchBox"
-												data-bind="ntsSearchBox: {
+								<div id="search_box" class="float_left bg-green">
+									<i class="icon icon-searchbox"></i>
+									<div class="div_line">
+										<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
+									</div>
+									<div class="div_line">
+										<div style="width: 190px" id="initSearchBox"
+											data-bind="ntsSearchBox: {
 															targetKey: 'itemCode',
 															mode:'igGrid', 
 															comId:'init_list', 
@@ -285,10 +282,10 @@
 															placeHolder:'#{i18n.getText('CPS002_41')}'
 															}" />
 
-										</div>
-										<div class="div_line">
-											<table id="init_list"
-												data-bind="ntsGridList: {								
+									</div>
+									<div class="div_line">
+										<table id="init_list"
+											data-bind="ntsGridList: {								
 															height: 350,
 															dataSource: initValueList ,
 															primaryKey: 'itemCode',
@@ -299,11 +296,11 @@
 															value: initSettingSelectedCode ,
 															rows:15
 														}">
-											</table>
+										</table>
 
-										</div>
 									</div>
 								</div>
+
 								<div class="float_left" id="value_item">
 									<div class="div_line">
 										<div class="step2_col1">
@@ -379,6 +376,7 @@
 									</div>
 								</div>
 							</div>
+
 						</div>
 						<!-- step2 end -->
 

@@ -497,6 +497,10 @@ module nts.custombinding {
                                         <div data-bind="ntsFormLabel: { 
                                             text: className || '',
                                             cssClass: ko.computed(function() {
+                                                if(!_item.showColor()) {
+                                                    return '';
+                                                }
+                                                
                                                 if(!!_.find(__items, function(x) { return x.value() })) {
                                                      return '';
                                                 }
@@ -893,6 +897,7 @@ module nts.custombinding {
                         outData: ko.observableArray([]),
                         isEnabled: ko.observable(true),
                         isEditable: ko.observable(0),
+                        showColor: ko.observable(false),
                         beforeMove: (data, evt, ui) => {
                             let sindex: number = data.sourceIndex,
                                 tindex: number = data.targetIndex,
@@ -928,6 +933,8 @@ module nts.custombinding {
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
                             let items = opts.sortable.data;
 
+                            opts.sortable.data.valueWillMutate();
+
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
                             } else if (data.listItemDf) { // remove item by item definition id
@@ -948,6 +955,8 @@ module nts.custombinding {
                                     });
                                 }
                             });
+
+                            opts.sortable.data.valueHasMutated();
 
                             return opts.sortable;
                         },
@@ -1001,6 +1010,7 @@ module nts.custombinding {
                                     }
                                 },
                                 pushItems = (defs: Array<IItemDefinition>) => {
+                                    opts.sortable.data.valueWillMutate();
                                     _(defs)
                                         .filter(x => !x.isAbolition) // remove all item if it's abolition
                                         .each(def => {
@@ -1030,6 +1040,7 @@ module nts.custombinding {
                                                 opts.sortable.pushItem(item);
                                             }
                                         });
+                                    opts.sortable.data.valueHasMutated();
                                 };
 
                             if (!defs || !defs.length) {
@@ -1223,6 +1234,8 @@ module nts.custombinding {
                 .append(self.tmp)
                 .addClass('ntsControl layout-control');
 
+
+
             // binding callback function to control
             if (access.callback) {
                 $.extend(opts, { callback: access.callback });
@@ -1231,6 +1244,11 @@ module nts.custombinding {
             // binding output data value 
             if (access.outData) {
                 $.extend(opts.sortable, { outData: access.outData });
+            }
+
+            // change color text
+            if (access.showColor) {
+                $.extend(opts.sortable, { showColor: access.showColor });
             }
 
             // validate editAble
@@ -1357,13 +1375,13 @@ module nts.custombinding {
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                             def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
-                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
+                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();
+                            def.showColor = ko.isObservable(opts.sortable.showColor) ? opts.sortable.showColor : ko.observable(opts.sortable.showColor);
 
                             def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
                             def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
-
                             def.value.subscribe(x => {
                                 let inputs = [],
                                     proc = function(data: any): any {
@@ -1814,14 +1832,35 @@ module nts.custombinding {
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
-                            if (cats && cats.length) {
-                                opts.comboxbox.options(cats);
-                            } else {
-                                // show message if hasn't any category
-                                if (ko.toJS(opts.sortable.isEnabled)) {
-                                    alert(text('Msg_288')).then(opts.callback);
+
+                            let dfds: Array<JQueryDeferred<any>> = [];
+
+                            _.each(cats, cat => {
+                                let dfd = $.Deferred<any>();
+                                services.getItemByCat(cat.id).done((data: Array<IItemDefinition>) => {
+                                    let items = _.filter(_.flatten(data) as Array<IItemDefinition>, x => !x.isAbolition);
+                                    if (items.length) {
+                                        dfd.resolve(cat);
+                                    } else {
+                                        dfd.resolve(false);
+                                    }
+                                }).fail(x => dfd.reject(false));
+
+                                dfds.push(dfd);
+                            });
+
+                            // push all category to combobox when done
+                            $.when.apply($, dfds).then(function() {
+                                let items: Array<IItemCategory> = _.filter(_.flatten(arguments), x => !!x);
+                                if (items && items.length) {
+                                    opts.comboxbox.options(items);
+                                } else {
+                                    // show message if hasn't any category
+                                    if (ko.toJS(opts.sortable.isEnabled)) {
+                                        alert(text('Msg_288')).then(opts.callback);
+                                    }
                                 }
-                            }
+                            });
                         } else {
                             // show message if hasn't any category
                             if (ko.toJS(opts.sortable.isEnabled)) {
