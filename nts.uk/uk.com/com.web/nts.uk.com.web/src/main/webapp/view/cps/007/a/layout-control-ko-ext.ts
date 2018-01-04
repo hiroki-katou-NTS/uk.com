@@ -933,6 +933,8 @@ module nts.custombinding {
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
                             let items = opts.sortable.data;
 
+                            opts.sortable.data.valueWillMutate();
+
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
                             } else if (data.listItemDf) { // remove item by item definition id
@@ -953,6 +955,8 @@ module nts.custombinding {
                                     });
                                 }
                             });
+
+                            opts.sortable.data.valueHasMutated();
 
                             return opts.sortable;
                         },
@@ -1006,6 +1010,7 @@ module nts.custombinding {
                                     }
                                 },
                                 pushItems = (defs: Array<IItemDefinition>) => {
+                                    opts.sortable.data.valueWillMutate();
                                     _(defs)
                                         .filter(x => !x.isAbolition) // remove all item if it's abolition
                                         .each(def => {
@@ -1035,6 +1040,7 @@ module nts.custombinding {
                                                 opts.sortable.pushItem(item);
                                             }
                                         });
+                                    opts.sortable.data.valueHasMutated();
                                 };
 
                             if (!defs || !defs.length) {

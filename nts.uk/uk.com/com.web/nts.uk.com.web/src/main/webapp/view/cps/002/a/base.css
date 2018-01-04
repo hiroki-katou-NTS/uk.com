@@ -34,12 +34,7 @@
 	padding: 10px 20px 10px 10px;
 }
 
-.ellipsis_title {
-	white-space: nowrap;
-	width: 320px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
+
 
 hr {
 	clear: both;

@@ -163,18 +163,18 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FlexOffdayWorkTimeModel {
-                lstWorkTimezone: HDWorkTimeSheetSettingModel[];
+                lstWorkTimezone: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
                 restTimezone: FlowWorkRestTimezoneModel;
 
                 constructor() {
-                    this.lstWorkTimezone = [];
+                    this.lstWorkTimezone = ko.observableArray([]);
                     this.restTimezone = new FlowWorkRestTimezoneModel();
                 }
 
                 public resetData(): void {
                     let self = this;
-                    //TODO: reset list
                     self.restTimezone.resetData();
+                    self.lstWorkTimezone([]);
                 } 
 
                 updateData(data: FlexOffdayWorkTimeDto) {
@@ -183,25 +183,18 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateHDTimezone(lstWorkTimezone: HDWorkTimeSheetSettingDto[]) {
+                    var dataModelWorktimezone: HDWorkTimeSheetSettingModel[] = [];
                     for (var dataDTO of lstWorkTimezone) {
-                        var dataModel: HDWorkTimeSheetSettingModel = this.getHDTimezoneByWorktimeNo(dataDTO.workTimeNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new HDWorkTimeSheetSettingModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstWorkTimezone.push(dataModel);
-                        }
+                        var dataModel: HDWorkTimeSheetSettingModel = new HDWorkTimeSheetSettingModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelWorktimezone.push(dataModel);
                     }
+                    this.lstWorkTimezone(dataModelWorktimezone);
                 }
 
-                getHDTimezoneByWorktimeNo(worktimeNo: number) : HDWorkTimeSheetSettingModel{
-                    return _.find(this.lstWorkTimezone, hdtimezone => hdtimezone.workTimeNo() == worktimeNo);
-                }
                 toDto(): FlexOffdayWorkTimeDto {
                     var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
-                    for (var dataModel of this.lstWorkTimezone) {
+                    for (var dataModel of this.lstWorkTimezone()) {
                         lstWorkTimezone.push(dataModel.toDto());
                     }
                     var dataDTO: FlexOffdayWorkTimeDto = {
