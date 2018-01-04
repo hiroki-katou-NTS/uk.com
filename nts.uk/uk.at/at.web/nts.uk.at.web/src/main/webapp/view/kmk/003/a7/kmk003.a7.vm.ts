@@ -59,7 +59,7 @@ module a7 {
             self.fixTableOptionForFixedOrDiffTime = {
                 maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceForFixedOrDiffTime,
                 isMultipleSelect: true,
@@ -357,6 +357,7 @@ module a7 {
                             column1: ko.observable(0),
                             column2: ko.observable(0)
                         }]);
+                        screenModel.useFixedRestTime(screenModel.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime() ? UseDivision.USE : UseDivision.NOTUSE);
                     }
                 });
 
