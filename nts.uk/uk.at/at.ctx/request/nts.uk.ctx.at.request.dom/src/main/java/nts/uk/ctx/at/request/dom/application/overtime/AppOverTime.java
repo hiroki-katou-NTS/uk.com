@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -27,7 +27,7 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * application
 	 */
-	private Application application;
+	private Application_New application;
 	/**
 	 * 会社ID
 	 * companyID
@@ -134,6 +134,4 @@ public class AppOverTime extends AggregateRoot{
 								overTimeShiftNight);
 		
 	}
-	
-	
 }

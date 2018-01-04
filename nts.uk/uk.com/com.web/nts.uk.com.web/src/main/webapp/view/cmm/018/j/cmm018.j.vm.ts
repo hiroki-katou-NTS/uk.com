@@ -41,7 +41,7 @@ module nts.uk.com.view.cmm018.j {
 //                block.invisible();
                 var self = this;
                 //data
-                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
+                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate,self.dataSource.mode);
                 if(self.isUpdate()) {//TH: edit
 //                //編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 //                    if(self.newStartDate() < self.beginStartDate()){

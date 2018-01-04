@@ -116,15 +116,28 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					throw new BusinessException("Msg_156");
 				}
 				listCom.add(com);
-				//find history by type and EmployRootAtr
-				List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByType(companyId, type, employRootAtr);
-				if(!comOld.isEmpty()){
-					//update ls cu
-					CompanyApprovalRoot comPre = CompanyApprovalRoot.updateEdate(comOld.get(0), endDateNew);
-					listComPre.add(comPre);
-				}
 				//Add approval
 				addApproval(commonRoot, branchId);
+			}
+			//find history by type and EmployRootAtr
+			if(data.getCheckMode() == 1){
+				// xử lí update phần riêng
+				if(!rootInsert.isEmpty()){
+					List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByType(companyId, rootInsert.get(0).getAppTypeValue(), rootInsert.get(0).getEmployRootAtr());
+					if(!comOld.isEmpty()){
+						//update ls cu
+						CompanyApprovalRoot comPre = CompanyApprovalRoot.updateEdate(comOld.get(0), endDateNew);
+						listComPre.add(comPre);
+					}
+				}
+			}else{
+				// xử lí update phần chung
+				List<CompanyApprovalRoot> comOlds = repoCom.getComAppRootLast(companyId, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+					for(CompanyApprovalRoot comAppRoot : comOlds){
+						CompanyApprovalRoot comPre = CompanyApprovalRoot.updateEdate(comAppRoot, endDateNew);
+						listComPre.add(comPre);
+					}
+				
 			}
 			//Add ls new, update ls old, add branch
 			repoCom.addAllComApprovalRoot(listCom);
@@ -147,7 +160,10 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						//==========
 						deleteAppPh(com.getBranchId());
 						//=======
+						//delete root
 						repoCom.deleteComApprovalRoot(companyId, com.getApprovalId(), com.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						//delete branch
+						repoBranch.deleteBranch(companyId, com.getBranchId());
 					}
 				}
 			}
@@ -227,16 +243,28 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					throw new BusinessException("Msg_156");
 				}
 				listWp.add(com);
-				//find history by type and 
-				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByType(companyId, workplaceId, type, employRootAtr);
+				
+				//Add approval
+				addApproval(commonRoot, branchId);
+			}
+			//find history by type and 
+			if(data.getCheckMode() == 1){
+				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByType(companyId, workplaceId, rootInsert.get(0).getAppTypeValue(), rootInsert.get(0).getEmployRootAtr());
 				if(!psOld.isEmpty()){
 					//update ls cu
 					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateEdate(psOld.get(0), endDateNew);
 					listWpPre.add(psPre);
 				}
-				//Add approval
-				addApproval(commonRoot, branchId);
+			}else{
+				// xu li update phan chung
+				List<WorkplaceApprovalRoot> psOlds = repoWorkplace.getWpAppRootLast(companyId, workplaceId, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+				for(WorkplaceApprovalRoot wpAppRoot : psOlds){
+					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateEdate(wpAppRoot, endDateNew);
+					listWpPre.add(psPre);
+				}
 			}
+			
+			
 			//Add ls new, update ls old, add branch
 			repoWorkplace.addAllWpApprovalRoot(listWp);
 			repoWorkplace.updateAllWpApprovalRoot(listWpPre);
@@ -259,6 +287,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						deleteAppPh(wp.getBranchId());
 						//=======
 						repoWorkplace.deleteWpApprovalRoot(companyId, wp.getApprovalId(), workplaceId, wp.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						//delete branch
+						repoBranch.deleteBranch(companyId, wp.getBranchId());
 					}
 				}
 			}
@@ -332,16 +362,27 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					throw new BusinessException("Msg_156");
 				}
 				listPs.add(com);
-				//find history by type and 
-				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByType(companyId, employeeId, type, employRootAtr);
+				
+				//Add approval
+				addApproval(commonRoot, branchId);
+			}
+			//find history by type and
+			if(data.getCheckMode() == 1){
+				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByType(companyId, employeeId, rootInsert.get(0).getAppTypeValue(), rootInsert.get(0).getEmployRootAtr());
 				if(!psOld.isEmpty()){
 					//update ls cu
 					PersonApprovalRoot psPre = PersonApprovalRoot.updateEdate(psOld.get(0), endDateNew);
 					listPsPre.add(psPre);
 				}
-				//Add approval
-				addApproval(commonRoot, branchId);
+			}else{
+				// xu li phan chung 
+				List<PersonApprovalRoot> psOlds = repoPerson.getPsAppRootLastest(companyId, employeeId, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
+				for(PersonApprovalRoot psAppRoot : psOlds){
+					PersonApprovalRoot psPre = PersonApprovalRoot.updateEdate(psAppRoot, endDateNew);
+					listPsPre.add(psPre);
+				}
 			}
+			
 			//Add ls new, update ls old, add branch
 			repoPerson.addAllPsApprovalRoot(listPs);
 			repoPerson.updateAllPsApprovalRoot(listPsPre);
@@ -364,6 +405,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 						deleteAppPh(ps.getBranchId());
 						//=======
 						repoPerson.deletePsApprovalRoot(companyId, ps.getApprovalId(),employeeId, ps.getEmploymentAppHistoryItems().get(0).getHistoryId());
+						//delete branch
+						repoBranch.deleteBranch(companyId, ps.getBranchId());
 					}
 				}
 			}

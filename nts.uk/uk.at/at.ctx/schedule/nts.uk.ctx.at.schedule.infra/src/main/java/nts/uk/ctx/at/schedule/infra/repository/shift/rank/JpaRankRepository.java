@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.rank.KscmtRank;
 @Stateless
 public class JpaRankRepository extends JpaRepository implements RankRepository {
 	private static final String SELECT_NO_WHERE = "SELECT k FROM KscmtRank k ";
-	private static final String SELECT_BY_COMPANYID = SELECT_NO_WHERE + "WHERE k.kscmtRankPk.companyId = :companyId";
+	private static final String SELECT_BY_COMPANYID = SELECT_NO_WHERE + "WHERE k.kscmtRankPk.companyId = :companyId ORDER BY k.displayOrder ASC";
 
 	@Override
 	public List<Rank> getListRank(String companyId) {

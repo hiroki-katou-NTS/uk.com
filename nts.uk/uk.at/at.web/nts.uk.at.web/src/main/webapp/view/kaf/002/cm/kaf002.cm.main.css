@@ -1,3 +1,6 @@
+.cm-middle {
+	vertical-align: middle;
+}
 #cm-content {
 	min-width: 1390px;
     margin-top: 10px;
