@@ -145,6 +145,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.selectedTab.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
             });
+            
+            $('#hidden-lbl01').removeClass('disabled');
+            $('#hidden-lbl02').removeClass('disabled');
+            $('#hidden-lbl03').removeClass('disabled');
         }
 
         startPage(): JQueryPromise<any> {
