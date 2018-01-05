@@ -165,6 +165,12 @@ public class ProgramsManager {
 	public static final Program CDL022A = new Program(WebAppId.COM, ProgramIdConsts.CDL022A, "CDL022_1",
 			"/view/cdl/022/a/index.xhtml");
 	/**
+	 * CPS007A
+	 */
+	public static final Program CPS007A = new Program(WebAppId.COM, ProgramIdConsts.CPS007A, "CPS007_1",
+			"/view/cps/007/b/index.xhtml");
+	
+	/**
 	 * CPS007B
 	 */
 	public static final Program CPS007B = new Program(WebAppId.COM, ProgramIdConsts.CPS007B, "CPS007_2",
