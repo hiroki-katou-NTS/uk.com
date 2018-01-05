@@ -237,7 +237,7 @@ module nts.uk.at.view.kal003.share.model {
     
     export interface ISettingCdlKal003B {
         category:               number;
-        errAlaCheckId:          string;
+        erAlCheckId:            string;
         checkItem:              number;
         workTypeRange:          string;
         workTypeSelections:     Array<string>;
@@ -251,12 +251,11 @@ module nts.uk.at.view.kal003.share.model {
         message:                string;
         isBold:                 boolean;
         compoundCondition :     CompoundCondition;
-        dailyAttendanceItemId:  string;
     }
     
     export class SettingCdlKal003B {
         category:               number;
-        errAlaCheckId:          string;
+        erAlCheckId:            string;
         checkItem:              KnockoutObservable<number>;
         workTypeRange:          KnockoutObservable<string>;
         workTypeSelections:     KnockoutObservableArray<string>;
@@ -270,11 +269,10 @@ module nts.uk.at.view.kal003.share.model {
         message:                KnockoutObservable<string>;
         isBold:                 KnockoutObservable<boolean>;
         compoundCondition :     KnockoutObservable<CompoundCondition>;
-        dailyAttendanceItemId:  KnockoutObservable<string>;
         constructor(param : ISettingCdlKal003B) {
             let self = this;
             self.category               = param.category || 0;
-            self.errAlaCheckId          = param.errAlaCheckId || '';
+            self.erAlCheckId            = param.erAlCheckId || '';
             self.checkItem              = ko.observable(param.checkItem || 0);
             self.workTypeRange          = ko.observable(param.workTypeRange || '');
             self.workTypeSelections     = ko.observableArray(param.workTypeSelections || []);
@@ -288,7 +286,6 @@ module nts.uk.at.view.kal003.share.model {
             self.message                = ko.observable(param.message || '');
             self.isBold                 = ko.observable(param.isBold || false);
             self.compoundCondition      = ko.observable(param.compoundCondition);
-            self.dailyAttendanceItemId  = ko.observable(param.dailyAttendanceItemId);
         }
     }
     //---------------- KAL003 - B end------------------//
