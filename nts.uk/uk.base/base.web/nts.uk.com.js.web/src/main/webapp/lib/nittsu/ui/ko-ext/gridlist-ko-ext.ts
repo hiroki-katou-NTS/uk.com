@@ -206,7 +206,7 @@ module nts.uk.ui.koExtentions {
             
             $grid.data("enable", enable);
             
-            if (!(String($grid.attr("filtered")) === "true") && $grid.data("ui-changed") !== true) {
+            if ($grid.data("ui-changed") !== true) {
                 let currentSources = sources.slice();
                 
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
@@ -225,21 +225,22 @@ module nts.uk.ui.koExtentions {
                     $grid.igGrid('option', 'dataSource', _.cloneDeep(currentSources));
                     $grid.igGrid("dataBind");
                 }
-            } else if(String($grid.attr("filtered")) === "true"){
-                let filteredSource = [];
-                _.forEach(gridSource, function(item){
-                    let itemX = _.find(sources, function (s){
-                        return s[optionsValue] === item[optionsValue];        
-                    });
-                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
-                        filteredSource.push(itemX);
-                    }     
-                });     
-                if(!_.isEqual(filteredSource, gridSource)){
-                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
-                    $grid.igGrid("dataBind");    
-                }
-            }
+            } 
+//            else if(String($grid.attr("filtered")) === "true"){
+//                let filteredSource = [];
+//                _.forEach(gridSource, function(item){
+//                    let itemX = _.find(sources, function (s){
+//                        return s[optionsValue] === item[optionsValue];        
+//                    });
+//                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+//                        filteredSource.push(itemX);
+//                    }     
+//                });     
+//                if(!_.isEqual(filteredSource, gridSource)){
+//                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
+//                    $grid.igGrid("dataBind");    
+//                }
+//            }
 
             var currentSelectedItems = $grid.ntsGridList('getSelected');
             var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function(current, newVal) {
