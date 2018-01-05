@@ -175,7 +175,7 @@ module a2 {
             });
             
             
-            input.isClickSave.subscribe(newValue => {
+            input.isClickSave.subscribe((newValue: any) => {
                 if (!newValue) {
                     return;
                 }
@@ -227,11 +227,12 @@ module a2 {
                         .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
                 }
                 //============= DiffTime Mode =============
-                else if (self.parentModel.workTimeSetting.isDiffTime()) {
-                    // all day
-                    emTimezone = self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones[0];
-                }
+                // TODO: need to check
+//                else if (self.parentModel.workTimeSetting.isDiffTime()) {
+//                    // all day
+//                    emTimezone = self.parentModel.diffWorkSetting.getHDWtzOneday()
+//                        .workTimezone.employmentTimezones[0];
+//                }
 
                 //============= Convert =============
                 let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();

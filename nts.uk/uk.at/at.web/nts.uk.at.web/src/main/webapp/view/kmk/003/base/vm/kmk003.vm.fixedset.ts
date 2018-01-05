@@ -119,12 +119,12 @@ module nts.uk.at.view.kmk003.a {
                     this.lstTimezone = this.originalList;
                 }
 
-                toListTimeRange(): Array<TimeRangeModel> {
+                toConvertedList(): Array<TimeRangeModel> {
                     let self = this;
                     return _.map(self.lstTimezone(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
                 }
 
-                fromListTimeRange(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
+                fromConvertedList(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
                     return _.map(newList, newVl => {
                         let vl = new DeductionTimeModel();
                         vl.start(newVl.column1().startTime);

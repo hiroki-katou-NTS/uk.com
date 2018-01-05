@@ -260,10 +260,20 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateListHalfDay(lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[]): void {
-                    lstHalfDayWorkTimezone.sort(item => item.ampmAtr);
-                    this.getHDWtzOneday().updateData(lstHalfDayWorkTimezone[0]);
-                    this.getHDWtzMorning().updateData(lstHalfDayWorkTimezone[1]);
-                    this.getHDWtzAfternoon().updateData(lstHalfDayWorkTimezone[2]);
+                    let self = this;
+                    _.forEach(lstHalfDayWorkTimezone, item => {
+                        switch (item.ampmAtr) {
+                            case 0:
+                                this.getHDWtzOneday().updateData(item);
+                                break;
+                            case 1:
+                                this.getHDWtzMorning().updateData(item);
+                                break;
+                            case 2:
+                                this.getHDWtzAfternoon().updateData(item);
+                                break;
+                        }
+                    });
                 }
 
                 updateData(data: FlexWorkSettingDto) {

@@ -4,11 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
@@ -54,10 +61,8 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 	 */
 	public void canRegisterFlexWorkSetting(FlexWorkSetting flexWorkSetting, PredetemineTimeSetting predetemineTimeSet) {
 		
-		// validate list emTimezone
-		flexWorkSetting.getLstHalfDayWorkTimezone()
-				.forEach(flexHalfDay -> flexHalfDay.getWorkTimezone().getLstWorkingTimezone()
-						.forEach(workTimezone -> this.emTzPolicy.validate(predetemineTimeSet, workTimezone)));
+		// validate list emTimezone, Msg_773
+		this.validWorkTimezone(flexWorkSetting, predetemineTimeSet);
 
 		// 使用区分 = 使用しない AND 最低勤務時間 > 所定時間.1日 => Msg_775
 		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.NOT_USE)
@@ -124,4 +129,31 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 	}
 	
 
+	/**
+	 * Valid work timezone.
+	 *
+	 * @param flexWorkSetting the flex work setting
+	 * @param predetemineTimeSet the predetemine time set
+	 * @see Check message Msg_773
+	 */
+	private void validWorkTimezone(FlexWorkSetting flexWorkSetting, PredetemineTimeSetting predetemineTimeSet) {
+		List<AmPmAtr> lstAmPm = new ArrayList<AmPmAtr>();
+		
+		// add one day
+		lstAmPm.add(AmPmAtr.ONE_DAY);
+		
+		// check use half day
+		if (flexWorkSetting.isUseHalfDayShift()) {
+			lstAmPm.add(AmPmAtr.AM);
+			lstAmPm.add(AmPmAtr.PM);
+		}
+		List<EmTimeZoneSet> lstFixHalfDay = flexWorkSetting.getLstHalfDayWorkTimezone().stream()
+				.filter(fixHalfWork -> lstAmPm.contains(fixHalfWork.getAmpmAtr()))
+				.map(fixHalfWork -> fixHalfWork.getWorkTimezone().getLstWorkingTimezone())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toList());
+		
+		// validate
+		lstFixHalfDay.forEach(workTimezone -> this.emTzPolicy.validate(predetemineTimeSet, workTimezone));
+	}
 }
