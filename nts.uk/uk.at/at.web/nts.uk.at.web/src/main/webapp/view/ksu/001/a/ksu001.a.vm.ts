@@ -283,7 +283,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.ccgcomponent = {
                 baseDate: ko.observable(new Date()),
                 // Show/hide options 
-                isQuickSearchTab: true,
+                isQuickSearchTab: false,
                 isAdvancedSearchTab: true,
                 isAllReferableEmployee: true,
                 isOnlyMe: true,
