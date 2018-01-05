@@ -28,25 +28,26 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCST_DAI_CALCULATION_SET")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "KrcstDaiCalculationSet.findAll", query = "SELECT k FROM KrcstDaiCalculationSet k"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsDate", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.insDate = :insDate"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsCcd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.insCcd = :insCcd"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsScd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.insScd = :insScd"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsPg", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.insPg = :insPg"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdDate", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.updDate = :updDate"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdCcd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.updCcd = :updCcd"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdScd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.updScd = :updScd"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdPg", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.updPg = :updPg"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByExclusVer", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.exclusVer = :exclusVer"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findBySid", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.krcstDaiCalculationSetPK.sid = :sid"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByYmd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.krcstDaiCalculationSetPK.ymd = :ymd"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByFlexExcessTimeId", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.flexExcessTimeId = :flexExcessTimeId"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByBonusPayNormalCalSet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.bonusPayNormalCalSet = :bonusPayNormalCalSet"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByBonusPaySpeCalSet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.bonusPaySpeCalSet = :bonusPaySpeCalSet"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByHolWorkTimeId", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.holWorkTimeId = :holWorkTimeId"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByOverTimeWorkId", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.overTimeWorkId = :overTimeWorkId"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByLeaveLateSet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.leaveLateSet = :leaveLateSet"),
-    @NamedQuery(name = "KrcstDaiCalculationSet.findByLeaveEarlySet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.leaveEarlySet = :leaveEarlySet")})
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findAll", query = "SELECT k FROM KrcstDaiCalculationSet k"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsDate", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.insDate = :insDate"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsCcd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.insCcd = :insCcd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsScd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.insScd = :insScd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByInsPg", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.insPg = :insPg"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdDate", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.updDate = :updDate"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdCcd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.updCcd = :updCcd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdScd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.updScd = :updScd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByUpdPg", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.updPg = :updPg"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByExclusVer", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findBySid", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.krcstDaiCalculationSetPK.sid = :sid"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByYmd", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.krcstDaiCalculationSetPK.ymd = :ymd"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByFlexExcessTimeId", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.flexExcessTimeId = :flexExcessTimeId"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByBonusPayNormalCalSet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.bonusPayNormalCalSet = :bonusPayNormalCalSet"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByBonusPaySpeCalSet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.bonusPaySpeCalSet = :bonusPaySpeCalSet"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByHolWorkTimeId", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.holWorkTimeId = :holWorkTimeId"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByOverTimeWorkId", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.overTimeWorkId = :overTimeWorkId"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByLeaveLateSet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.leaveLateSet = :leaveLateSet"),
+//    @NamedQuery(name = "KrcstDaiCalculationSet.findByLeaveEarlySet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.leaveEarlySet = :leaveEarlySet")
+	})
 public class KrcstDaiCalculationSet extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId

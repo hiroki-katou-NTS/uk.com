@@ -23,7 +23,7 @@ public class GoOutTimezoneRoundingSetDto implements GoOutTimezoneRoundingSetSetM
 	private GoOutTypeRoundingSetDto workTimezone;
 	
 	/** The OT timezone. */
-	private GoOutTypeRoundingSetDto oTTimezone;
+	private GoOutTypeRoundingSetDto ottimezone;
 
 	/*
 	 * (non-Javadoc)
@@ -34,7 +34,10 @@ public class GoOutTimezoneRoundingSetDto implements GoOutTimezoneRoundingSetSetM
 	 */
 	@Override
 	public void setPubHolWorkTimezone(GoOutTypeRoundingSet pubHolWorkTimezone) {
-		pubHolWorkTimezone.saveToMemento(this.pubHolWorkTimezone);
+		if (pubHolWorkTimezone != null) {
+			this.pubHolWorkTimezone = new GoOutTypeRoundingSetDto();
+			pubHolWorkTimezone.saveToMemento(this.pubHolWorkTimezone);
+		}
 	}
 
 	/*
@@ -46,7 +49,10 @@ public class GoOutTimezoneRoundingSetDto implements GoOutTimezoneRoundingSetSetM
 	 */
 	@Override
 	public void setWorkTimezone(GoOutTypeRoundingSet workTimezone) {
-		workTimezone.saveToMemento(this.workTimezone);
+		if (workTimezone != null) {
+			this.workTimezone = new GoOutTypeRoundingSetDto();
+			workTimezone.saveToMemento(this.workTimezone);
+		}
 	}
 
 	/*
@@ -57,8 +63,11 @@ public class GoOutTimezoneRoundingSetDto implements GoOutTimezoneRoundingSetSetM
 	 * .worktime.common.GoOutTypeRoundingSet)
 	 */
 	@Override
-	public void setOTTimezone(GoOutTypeRoundingSet OTTimezone) {
-		OTTimezone.saveToMemento(this.oTTimezone);
+	public void setOttimezone(GoOutTypeRoundingSet ottimezone) {
+		if (ottimezone != null) {
+			this.ottimezone = new GoOutTypeRoundingSetDto();
+			ottimezone.saveToMemento(this.ottimezone);
+		}
 	}
 
 	

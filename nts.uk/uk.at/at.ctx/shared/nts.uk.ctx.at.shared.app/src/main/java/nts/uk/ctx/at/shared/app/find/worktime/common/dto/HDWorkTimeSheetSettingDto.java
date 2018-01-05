@@ -57,8 +57,10 @@ public class HDWorkTimeSheetSettingDto implements HDWorkTimeSheetSettingSetMemen
 
 	@Override
 	public void setTimezone(TimeZoneRounding timezone) {
-		// TODO Auto-generated method stub
-		
+		if (timezone != null) {
+			this.timezone = new TimeZoneRoundingDto();
+			timezone.saveToMemento(this.timezone);
+		}
 	}
 
 	/*

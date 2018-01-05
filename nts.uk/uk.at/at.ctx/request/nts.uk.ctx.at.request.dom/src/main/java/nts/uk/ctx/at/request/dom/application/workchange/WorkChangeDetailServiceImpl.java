@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 
 	@Inject
-	private ApplicationRepository appRepository;
+	private ApplicationRepository_New appRepository;
 
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
@@ -61,16 +61,16 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
 		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
 		//15.詳細画面申請データを取得する
-		Optional<Application> applicationOpt = appRepository.getAppById(cid, appId);		
+		Optional<Application_New> applicationOpt = appRepository.findByID(cid, appId);		
 		if (!applicationOpt.isPresent()) {
 			throw new BusinessException("Msg_198");
 		}
-		Application application = applicationOpt.get();
+		Application_New application = applicationOpt.get();
 		// アルゴリズム「14-1.詳細画面起動前モードの判断」を実行する
 		workChangeDetail.setPrelaunchAppSetting(beforeAppCommonSetting.getPrelaunchAppSetting(appId));
 
 		// アルゴリズム「14-2.詳細画面起動前申請共通設定を取得する」を実行する
-		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(application, application.getApplicationDate());
+		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(cid, application.getEmployeeID(), appId, application.getAppDate());
 		workChangeDetail.setDetailedScreenPreBootModeOutput(preBootOuput);
 		
 		//アルゴリズム「勤務変更申請基本データ（更新）」を実行する
@@ -88,19 +88,25 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		
 		//アルゴリズム「14-3.詳細画面の初期モード」を実行する
 		workChangeDetail.setDetailScreenInitModeOutput(initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value));
-		
 		// Setting application property
 		workChangeDetail.setApplication(application);
-		workChangeDetail.setEmployeeName(employeeAdapter.getEmployeeName(application.getApplicantSID()));
+		workChangeDetail.setEmployeeName(employeeAdapter.getEmployeeName(application.getEmployeeID()));
 		
 		//基準日　＝　申請日付（開始日）
-		GeneralDate basicDate = application.getStartDate();
-		GeneralDate endDate = application.getEndDate();
+		GeneralDate basicDate = GeneralDate.today();
+		GeneralDate endDate = GeneralDate.today();
+		
+		if(application.getStartDate().isPresent()){
+			basicDate = application.getStartDate().get();
+		}
+		if(application.getEndDate().isPresent()){
+			endDate = application.getEndDate().get();
+		}
 		List<String> workTypes = new ArrayList<String>();
 		List<String> workTimes = new ArrayList<String>();		
 		while(basicDate.beforeOrEquals(endDate)){
 			//13.実績を取得する
-			AchievementOutput achievement  = collectAchievement.getAchievement(cid, application.getApplicantSID(), basicDate);
+			AchievementOutput achievement  = collectAchievement.getAchievement(cid, application.getEmployeeID(), basicDate);
 			workTypes.add(achievement.getWorkType().getWorkTypeCode());
 			workTimes.add(achievement.getWorkTime().getWorkTimeCD());
 			//基準日　＝　基準日＋１

@@ -13,17 +13,17 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecor
 @Getter
 @NoArgsConstructor
 public class WorkRecordExtractingCondition extends AggregateRoot {
-	
+	/** ID*/
 	private String errorAlarmCheckID;
-	
+	/** チェック項目*/
 	private TypeCheckWorkRecord checkItem;
-	
+	/** メッセージを太字にする   - メッセージ色*/
 	private DisplayMessages displayMessages;
-	
+	/** 並び順*/
 	private int sortOrderBy;
-	
+	/** 使用区分*/
 	private boolean useAtr;
-	
+	/** 名称*/
 	private NameWKRecord nameWKRecord;
 
 	public WorkRecordExtractingCondition(String errorAlarmCheckID, TypeCheckWorkRecord checkItem,

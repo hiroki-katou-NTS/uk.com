@@ -44,23 +44,11 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
-					<div id="content-left" class="bg-green caret-right caret-background">
-
-						<!-- 	<table id="A2_001"
-								data-bind="ntsGridList: {
-						dataSource: personRoleList ,
-						primaryKey: 'roleId' ,
-						columns: [
-						{ headerText: '#{i18n.getText('CAS001_8')}', key: 'roleId', width: 50, hidden : true},
-						{ headerText: '#{i18n.getText('CAS001_8')}', key: 'roleCode', width: 50},
-				        { headerText: '#{i18n.getText('CAS001_9')}', key: 'roleName', width: 170 } ] ,
-						multiple: false,
-						value: currentRoleId,
-						rows:5 }">
-							</table> -->
+					<div id="content-left"
+						class="bg-green caret-right caret-background">
 						<div data-bind='with:component'>
 							<div id="pannel-top"
-								data-bind="ntsPanel:{width: '220px', height: '360px', direction: '', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '220px', height: '300px', direction: '', showIcon: true, visible: true}">
 								<ui:include src="/view/ccg/025/component/index.xhtml" />
 							</div>
 						</div>
@@ -293,7 +281,8 @@
 															</tr>
 														</table>
 													</com:ko-if>
-													<com:ko-if bind="categoryType === 3">
+													<com:ko-if
+														bind="categoryType &gt; 2 &amp;&amp; categoryType &lt; 7">
 														<table id="history_auth_table" class="auth_table">
 															<tr>
 																<th></th>

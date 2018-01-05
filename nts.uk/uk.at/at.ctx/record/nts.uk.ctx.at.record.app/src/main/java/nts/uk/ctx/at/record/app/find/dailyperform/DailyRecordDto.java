@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,45 +48,45 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "", isOptional = true)
-	private Optional<OutingTimeOfDailyPerformanceDto> outingTime;
+	private Optional<OutingTimeOfDailyPerformanceDto> outingTime = Optional.empty();
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "", isList = true, listMaxLength = 10)
-	private List<RestTimeZoneOfDailyDto> breakTime;
+	private List<RestTimeZoneOfDailyDto> breakTime= new ArrayList<>();
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
 	@AttendanceItemLayout(layout = "G", jpPropertyName = "", isOptional = true)
-	private Optional<AttendanceTimeDailyPerformDto> attendanceTime;
+	private Optional<AttendanceTimeDailyPerformDto> attendanceTime = Optional.empty();
 
 	/** 作業別勤怠時間: 日別実績の作業別勤怠時間 */
 	@AttendanceItemLayout(layout = "H", jpPropertyName = "", isOptional = true)
-	private Optional<AttendanceTimeByWorkOfDailyDto> attendanceTimeByWork;
+	private Optional<AttendanceTimeByWorkOfDailyDto> attendanceTimeByWork = Optional.empty();
 
 	/** 出退勤: 日別実績の出退勤 */
 	@AttendanceItemLayout(layout = "I", jpPropertyName = "", isOptional = true)
-	private Optional<TimeLeavingOfDailyPerformanceDto> timeLeaving;
+	private Optional<TimeLeavingOfDailyPerformanceDto> timeLeaving = Optional.empty();
 
 	/** 短時間勤務時間帯: 日別実績の短時間勤務時間帯 */
 	@AttendanceItemLayout(layout = "J", jpPropertyName = "", isOptional = true)
-	private Optional<ShortTimeOfDailyDto> shortWorkTime;
+	private Optional<ShortTimeOfDailyDto> shortWorkTime = Optional.empty();
 
 	/** 特定日区分: 日別実績の特定日区分 */
 	@AttendanceItemLayout(layout = "K", jpPropertyName = "", isOptional = true)
-	private Optional<SpecificDateAttrOfDailyPerforDto> specificDateAttr;
+	private Optional<SpecificDateAttrOfDailyPerforDto> specificDateAttr = Optional.empty();
 
 	/** 入退門: 日別実績の入退門 */
 	@AttendanceItemLayout(layout = "L", jpPropertyName = "", isOptional = true)
-	private Optional<AttendanceLeavingGateOfDailyDto> attendanceLeavingGate;
+	private Optional<AttendanceLeavingGateOfDailyDto> attendanceLeavingGate = Optional.empty();
 
 	/** 任意項目: 日別実績の任意項目 */
 	@AttendanceItemLayout(layout = "M", jpPropertyName = "", isOptional = true)
-	private Optional<OptionalItemOfDailyPerformDto> optionalItem;
+	private Optional<OptionalItemOfDailyPerformDto> optionalItem = Optional.empty();
 
 	/** 編集状態: 日別実績の編集状態 */
-//	@AttendanceItemLayout(layout = "N", jpPropertyName = "", isList = true, listMaxLength = ?)
-	private List<EditStateOfDailyPerformanceDto> editStates;
+	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", isList = true, listMaxLength = ?)
+	private List<EditStateOfDailyPerformanceDto> editStates = new ArrayList<>();
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
 	@AttendanceItemLayout(layout = "O", jpPropertyName = "", isOptional = true)
-	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime;
+	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime = Optional.empty();
 }

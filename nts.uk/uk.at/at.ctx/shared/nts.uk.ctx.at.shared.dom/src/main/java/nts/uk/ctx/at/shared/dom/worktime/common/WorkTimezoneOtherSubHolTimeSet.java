@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class WorkTimezoneOtherSubHolTimeSet.
@@ -24,7 +25,8 @@ public class WorkTimezoneOtherSubHolTimeSet extends DomainObject {
 
 	/** The origin atr. */
 	// 発生元区分
-	private OriginAtr originAtr;
+	private CompensatoryOccurrenceDivision originAtr;
+	
 
 	/**
 	 * Instantiates a new work timezone other sub hol time set.
@@ -46,5 +48,24 @@ public class WorkTimezoneOtherSubHolTimeSet extends DomainObject {
 		memento.setSubHolTimeSet(this.subHolTimeSet);
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setOriginAtr(this.originAtr);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimezoneOtherSubHolTimeSet oldDomain) {
+		this.subHolTimeSet.restoreData(screenMode, oldDomain.getSubHolTimeSet());
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.subHolTimeSet.restoreDefaultData(screenMode);
 	}
 }

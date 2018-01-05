@@ -129,7 +129,7 @@ module ksm004.d.viewmodel {
                             if (self.workingDayAtr() == 0 && self.checkHoliday() == true) {
                                 //get holiday by date in list
                                 let holiday = _.find(self.listHoliday(), function(item: Holiday) {
-                                    return item.date == date;
+                                    return item.date == moment(date).format("YYYY/MM/DD");
                                 });
                                 //kt xem co chon check ngay nghỉ    
                                 if (holiday) {

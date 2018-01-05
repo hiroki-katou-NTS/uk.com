@@ -1,12 +1,12 @@
 @import url("base.css");
 
 .line_col_1 {
-	width: 200px;
+	width: 100px;
 	float: left;
 }
 
 .line_col_2 {
-	width: 200px;
+	width: 300px;
 	float: left;
 }
 
@@ -34,4 +34,8 @@
 
 #B_3 {
 	margin-left: 130px !important;
+}
+
+.currency:after{
+	content: '¥';
 }

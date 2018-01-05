@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.workinfo;
 
+import java.util.ArrayList;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInfoDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
@@ -29,8 +31,9 @@ public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand
 				ConvertHelper.getEnum(data.getCalculationState(), CalculationState.class),
 				ConvertHelper.getEnum(data.getGoStraightAtr(), NotUseAttribute.class),
 				ConvertHelper.getEnum(data.getBackStraightAtr(), NotUseAttribute.class), getWorkDate(),
-				ConvertHelper.mapTo(data.getScheduleTimeZone(),
-						(c) -> new ScheduleTimeSheet(c.getWorkNo(), c.getWorking(), c.getLeave())));
+				data.getScheduleTimeZone() == null ? new ArrayList<>() :
+						ConvertHelper.mapTo(data.getScheduleTimeZone(), (c) -> 
+							new ScheduleTimeSheet(c.getWorkNo(), c.getWorking(), c.getLeave())));
 	}
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {

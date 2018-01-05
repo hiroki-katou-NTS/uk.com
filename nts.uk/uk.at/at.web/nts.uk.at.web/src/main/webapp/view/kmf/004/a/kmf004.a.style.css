@@ -50,3 +50,10 @@ button.nts-switch-button {
 div#memo .nts-editor-wrapped {
 	position: absolute;
 }
+.label1{
+	margin-left: 137px;
+}
+
+.disabled {
+   color: darkgrey;
+}

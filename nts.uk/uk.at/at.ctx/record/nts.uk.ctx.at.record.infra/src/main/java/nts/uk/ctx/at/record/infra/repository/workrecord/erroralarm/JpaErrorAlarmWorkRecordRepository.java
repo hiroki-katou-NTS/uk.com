@@ -51,8 +51,10 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 				.find(new KwrmtErAlWorkRecordPK(domain.getCompanyId(), domain.getCode().v()), KwrmtErAlWorkRecord.class)
 				.get();
 		domain.setCheckId(targetEntity.eralCheckId);
-		domain.setGroupId1(targetEntity.krcmtErAlCondition.atdItemConditionGroup1);
-		domain.setGroupId2(targetEntity.krcmtErAlCondition.atdItemConditionGroup2);
+		if (!domain.getFixedAtr()) {
+			domain.setGroupId1(targetEntity.krcmtErAlCondition.atdItemConditionGroup1);
+			domain.setGroupId2(targetEntity.krcmtErAlCondition.atdItemConditionGroup2);
+		}
 		KwrmtErAlWorkRecord domainAfterConvert = KwrmtErAlWorkRecord.fromDomain(domain);
 		targetEntity.eralCheckId = domainAfterConvert.eralCheckId;
 		targetEntity.boldAtr = domainAfterConvert.boldAtr;

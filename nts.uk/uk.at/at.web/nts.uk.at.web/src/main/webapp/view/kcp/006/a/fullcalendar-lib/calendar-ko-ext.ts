@@ -98,7 +98,7 @@ module nts.uk.at.view.kcp006.a {
                 },
                 eventOrder: 'id',
                 defaultDate: moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"),
-                height: 500,
+                height: 550,
                 showNonCurrentDates: false,
                 handleWindowResize: false,
                 dragable: false,

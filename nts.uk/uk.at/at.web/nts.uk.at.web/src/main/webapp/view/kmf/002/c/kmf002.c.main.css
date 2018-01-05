@@ -1,35 +1,28 @@
-.pl {
-	padding-left: 50px;
-}
-.system_define{
-	width: 960px;
-	margin-top: 40px;
+#scrC table {
+	border-collapse: collapse;
 }
 
-.system_define > p {
-	margin-left: 35px;
-	margin-bottom: 40px;
+#scrC table th, #scrC table td{
+	border: 1px solid  black;
 }
 
-.system_define > #tab-panel {
-	margin-left: 40px;
+#scrC table td > span > input{
+	background-color:transparent;
+    border: 0px solid;
+    text-align: center;
 }
 
-.system_define > #tab-panel {
-	margin-left: 40px;
+#scrC.contents-area {
+	display: flex;
+	padding-top: 30px;
 }
 
-.system_define > #tab-panel .set_height {
-	height: 490px;
+#scrC #component-items-list {
+	padding-left:120px;
+	padding-right: 120px;
 }
 
-.system_define> #tab-panel .table_content {
-	float: left;
-	margin-left: 20px;
-    margin-top: 25px;
-    margin-right: 30px;
-}
-
-.system_define> #tab-panel .table_content td{
-	padding-bottom: 20px;
+#scrC #includeTableMonthlyDay > div:nth-child(2) {
+	padding-top: 20px;
+	padding-bottom: 20px
 }

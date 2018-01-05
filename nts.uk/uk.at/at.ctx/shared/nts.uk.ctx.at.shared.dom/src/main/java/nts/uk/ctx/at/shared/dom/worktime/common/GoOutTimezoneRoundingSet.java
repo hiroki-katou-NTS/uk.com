@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class GoOutTimezoneRoundingSet.
@@ -22,9 +23,9 @@ public class GoOutTimezoneRoundingSet extends DomainObject {
 	//就業時間帯
 	private GoOutTypeRoundingSet workTimezone;
 	
-	/** The OT timezone. */
+	/** The ottimezone. */
 	//残業時間帯
-	private GoOutTypeRoundingSet oTTimezone;
+	private GoOutTypeRoundingSet ottimezone;
 	
 	/**
 	 * Instantiates a new go out timezone rounding set.
@@ -34,7 +35,7 @@ public class GoOutTimezoneRoundingSet extends DomainObject {
 	public GoOutTimezoneRoundingSet(GoOutTimezoneRoundingSetGetMemento memento) {
 		this.pubHolWorkTimezone = memento.getPubHolWorkTimezone();
 		this.workTimezone = memento.getWorkTimezone();
-		this.oTTimezone = memento.getOTTimezone();
+		this.ottimezone = memento.getOttimezone();
 	}
 	
 	/**
@@ -45,6 +46,29 @@ public class GoOutTimezoneRoundingSet extends DomainObject {
 	public void saveToMememto(GoOutTimezoneRoundingSetSetMemento memento){
 		memento.setPubHolWorkTimezone(this.pubHolWorkTimezone);
 		memento.setWorkTimezone(this.workTimezone);
-		memento.setOTTimezone(this.oTTimezone);
+		memento.setOttimezone(this.ottimezone);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, GoOutTimezoneRoundingSet oldDomain) {
+		this.pubHolWorkTimezone.restoreData(screenMode, oldDomain.getPubHolWorkTimezone());
+		this.workTimezone.restoreData(screenMode, oldDomain.getWorkTimezone());
+		this.ottimezone.restoreData(screenMode, oldDomain.getOttimezone());		
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.pubHolWorkTimezone.restoreDefaultData(screenMode);
+		this.workTimezone.restoreDefaultData(screenMode);
+		this.ottimezone.restoreDefaultData(screenMode);		
 	}
 }

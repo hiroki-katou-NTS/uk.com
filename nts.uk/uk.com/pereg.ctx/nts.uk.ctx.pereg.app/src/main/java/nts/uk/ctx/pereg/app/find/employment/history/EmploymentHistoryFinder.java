@@ -82,7 +82,6 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 				query.getEmployeeId());
 		if (optHis.isPresent()) {
 			return optHis.get().getHistoryItems().stream()
-					.filter(x -> empHistItemRepo.getByHistoryId(x.identifier()).isPresent())
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
 							x.end().equals(GeneralDate.max()) && query.getCtgType() == 3 ? "" : x.end().toString()))
 					.collect(Collectors.toList());

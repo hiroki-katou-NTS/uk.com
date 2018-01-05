@@ -27,7 +27,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	
 	private static final String SELECT_BY_LIST_EMPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
-			+ " WHERE aw.sid IN (:employeeIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
@@ -35,7 +35,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	
 	private static final String SELECT_BY_LIST_WKPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
-			+ " WHERE awit.workPlaceId IN (:workplaceIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE awit.workPlaceId IN :workplaceIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	/** The Constant SELECT_BY_HISTIDS. */
 	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"

@@ -28,19 +28,20 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCST_FLEX_AUTO_CAL_SET")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findAll", query = "SELECT k FROM KrcstFlexAutoCalSet k"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByInsDate", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.insDate = :insDate"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByInsCcd", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.insCcd = :insCcd"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByInsScd", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.insScd = :insScd"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByInsPg", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.insPg = :insPg"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByUpdDate", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.updDate = :updDate"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByUpdCcd", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.updCcd = :updCcd"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByUpdScd", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.updScd = :updScd"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByUpdPg", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.updPg = :updPg"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByExclusVer", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.exclusVer = :exclusVer"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByFlexExcessTimeId", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.flexExcessTimeId = :flexExcessTimeId"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByFlexExcessTimeCalAtr", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.flexExcessTimeCalAtr = :flexExcessTimeCalAtr"),
-    @NamedQuery(name = "KrcstFlexAutoCalSet.findByFlexExcessLimitSet", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.flexExcessLimitSet = :flexExcessLimitSet")})
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findAll", query = "SELECT k FROM KrcstFlexAutoCalSet k"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByInsDate", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.insDate = :insDate"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByInsCcd", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.insCcd = :insCcd"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByInsScd", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.insScd = :insScd"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByInsPg", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.insPg = :insPg"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByUpdDate", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.updDate = :updDate"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByUpdCcd", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.updCcd = :updCcd"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByUpdScd", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.updScd = :updScd"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByUpdPg", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.updPg = :updPg"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByExclusVer", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByFlexExcessTimeId", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.flexExcessTimeId = :flexExcessTimeId"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByFlexExcessTimeCalAtr", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.flexExcessTimeCalAtr = :flexExcessTimeCalAtr"),
+//    @NamedQuery(name = "KrcstFlexAutoCalSet.findByFlexExcessLimitSet", query = "SELECT k FROM KrcstFlexAutoCalSet k WHERE k.flexExcessLimitSet = :flexExcessLimitSet")
+	})
 public class KrcstFlexAutoCalSet extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

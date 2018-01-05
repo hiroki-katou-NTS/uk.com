@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktimeset_old.KwtdtWorkTimeDay;
 import nts.uk.ctx.at.shared.infra.entity.worktimeset_old.KwtspWorkTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktimeset_old.KwtstWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktimeset_old.KwtstWorkTimeSet_old;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -30,10 +30,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeSetRepository{
 	
-	private final String findWorkTimeSetByCompanyID = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
+	private final String findWorkTimeSetByCompanyID = "SELECT DISTINCT a FROM KwtstWorkTimeSet_old a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID";
 	
-	private final String findWorkTimeSetByList = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
+	private final String findWorkTimeSetByList = "SELECT DISTINCT a FROM KwtstWorkTimeSet_old a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs";
 	public static final int FIRST_ITEM = 0;
@@ -44,12 +44,12 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	
 	@Override
 	public List<WorkTimeSet> findByCompanyID(String companyID) {
-		return this.queryProxy().query(findWorkTimeSetByCompanyID, KwtstWorkTimeSet.class).setParameter("companyID", companyID).getList(x -> convertToDomainWorkTimeSet(x));
+		return this.queryProxy().query(findWorkTimeSetByCompanyID, KwtstWorkTimeSet_old.class).setParameter("companyID", companyID).getList(x -> convertToDomainWorkTimeSet(x));
 	}
 	
 	@Override
 	public Optional<WorkTimeSet> findByCode(String companyID, String siftCD) {
-		return this.queryProxy().find(new KwtspWorkTimeSetPK(companyID, siftCD), KwtstWorkTimeSet.class)
+		return this.queryProxy().find(new KwtspWorkTimeSetPK(companyID, siftCD), KwtstWorkTimeSet_old.class)
 				.map(x -> convertToDomainWorkTimeSet(x));
 	}
 
@@ -60,14 +60,14 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		// query code 500 each, because limit record request by database 
 		while(siftCDs.size()-(i+500)>0) {
 			List<String> subCodelist = siftCDs.subList(i, i+500);
-			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet_old.class)
 					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
 					.getList(x -> convertToDomainWorkTimeSet(x));
 			result.addAll(subResult);
 			i+=500;
 		}
 		// query code remain or when code list size < 500  
-		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet_old.class)
 				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
 				.getList(x -> convertToDomainWorkTimeSet(x));
 		result.addAll(lastResult);
@@ -81,14 +81,14 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		// query code 500 each, because limit record request by database
 		while(siftCDs.size()-(i+500)>0) {
 			List<String> subCodelist = siftCDs.subList(i, i+500);
-			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet_old.class)
 					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
 					.getList(x -> convertToDomainWorkTimeSet(x));
 			result.addAll(subResult);
 			i+=500;
 		}
 		// query code remain or when code list size < 500 
-		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet_old.class)
 				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
 				.getList(x -> convertToDomainWorkTimeSet(x));
 		result.addAll(lastResult);
@@ -124,14 +124,14 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		// query code 500 each, because limit record request by database
 		while(siftCDs.size()-(i+500)>0) {
 			List<String> subCodelist = siftCDs.subList(i, i+500);
-			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet_old.class)
 					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
 					.getList(x -> convertToDomainWorkTimeSet(x));
 			result.addAll(subResult);
 			i+=500;
 		}
 		// query code remain or when code list size < 500 
-		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet_old.class)
 				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
 				.getList(x -> convertToDomainWorkTimeSet(x));
 		result.addAll(lastResult);
@@ -167,14 +167,14 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		// query code 500 each, because limit record request by database
 		while(siftCDs.size()-(i+500)>0) {
 			List<String> subCodelist = siftCDs.subList(i, i+500);
-			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet_old.class)
 					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
 					.getList(x -> convertToDomainWorkTimeSet(x));
 			result.addAll(subResult);
 			i+=500;
 		}
 		// query code remain or when code list size < 500 
-		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet_old.class)
 				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
 				.getList(x -> convertToDomainWorkTimeSet(x));
 		result.addAll(lastResult);
@@ -206,7 +206,7 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	 * @param kwtstWorkTimeSet Work Time Set entity object
 	 * @return Work Time Set domain object
 	 */
-	private WorkTimeSet convertToDomainWorkTimeSet(KwtstWorkTimeSet kwtstWorkTimeSet) {
+	private WorkTimeSet convertToDomainWorkTimeSet(KwtstWorkTimeSet_old kwtstWorkTimeSet) {
 		if (kwtstWorkTimeSet == null) {
 			return null;
 		}

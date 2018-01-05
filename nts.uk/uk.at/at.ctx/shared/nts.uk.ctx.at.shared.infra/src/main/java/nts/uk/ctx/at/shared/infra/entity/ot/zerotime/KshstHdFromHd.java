@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_HD_FROM_HD ")
+@Table(name = "KSHST_HD_FROM_HD")
 public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
@@ -52,8 +52,8 @@ public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 	}
 
 	public static KshstHdFromHd toEntity(HdFromHd domain) {
-		return new KshstHdFromHd(new KshstHdFromHdPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo().v()),
-				domain.getCalcOverDayEnd().v(), domain.getStatutoryHd().v(), domain.getExcessHd().v());
+		return new KshstHdFromHd(new KshstHdFromHdPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo()),
+				domain.getCalcOverDayEnd(), domain.getStatutoryHd(), domain.getExcessHd());
 	}
 
 	public KshstHdFromHd(KshstHdFromHdPK kshstOverDayHdSetPK, int calcOverDayEnd, int statutoryHd, int excessHd) {

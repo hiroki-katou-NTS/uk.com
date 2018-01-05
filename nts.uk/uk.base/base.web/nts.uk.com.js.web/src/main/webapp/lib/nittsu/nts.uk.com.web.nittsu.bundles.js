@@ -3121,7 +3121,8 @@ var nts;
                     uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
                         window.location.href = path;
                     }).ifEmpty(function () {
-                        request.jump('/view/ccg/007/a/index.xhtml');
+                        //request.jump('/view/ccg/007/a/index.xhtml');
+                        request.jump('/view/ccg/007/b/index.xhtml');
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
@@ -3501,7 +3502,7 @@ var nts;
                 }
                 var titleMenu;
                 (function (titleMenu) {
-                    titleMenu.WIDTH = 180;
+                    titleMenu.WIDTH = 192;
                     titleMenu.FR = 20;
                     /**
                      * Create titles.
@@ -3547,7 +3548,7 @@ var nts;
                                         window.location.href = path;
                                     });
                                     $titleDiv.append($item);
-                                    height += 40;
+                                    height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
                                 });
                             }
                             maxHeight = Math.max(maxHeight, height);
@@ -5989,17 +5990,25 @@ var nts;
                         if (selectedValue !== undefined && selectedValue !== null) {
                             container.igCombo("value", selectedValue);
                         }
+                        var isDropDownWidthSpecified = false;
                         // Set width for multi columns.
                         if (haveColumn && (isChangeOptions || isInitCombo)) {
-                            var totalWidth = 0;
+                            var componentWidth = 0;
                             var $dropDownOptions = $(container.igCombo("dropDown"));
                             _.forEach(columns, function (item, i) {
-                                var charLength = item.length;
-                                var width = charLength * maxWidthCharacter + 10;
-                                $dropDownOptions.find('.nts-combo-column-' + i).css("width", width);
-                                totalWidth += width + 10;
+                                isDropDownWidthSpecified = (isDropDownWidthSpecified || item.lengthDropDown !== undefined);
+                                if (item.lengthDropDown === undefined) {
+                                    item.lengthDropDown = item.length;
+                                }
+                                var componentColumnWidth = item.length * maxWidthCharacter + 10;
+                                var dropDownColumnWidth = item.lengthDropDown * maxWidthCharacter + 10;
+                                $dropDownOptions.find('.nts-combo-column-' + i).css("width", dropDownColumnWidth);
+                                componentWidth += componentColumnWidth + 10;
                             });
-                            container.css({ 'min-width': totalWidth });
+                            container.css({ 'min-width': componentWidth });
+                            if (isDropDownWidthSpecified) {
+                                container.find(".ui-igcombo-dropdown").css("width", "auto");
+                            }
                         }
                         container.data("columns", columns);
                         container.data("comboMode", comboMode);
@@ -6685,8 +6694,8 @@ var nts;
                         return self;
                     };
                     DatePickerNormalizer.prototype.onKeyup = function () {
-                        this.$input.off(this.EVENT_KEYUP, this._beforeShow);
-                        this.$input.on(this.EVENT_KEYUP, $.proxy(this._beforeShow, this));
+                        //            this.$input.off(this.EVENT_KEYUP, this._beforeShow);
+                        //            this.$input.on(this.EVENT_KEYUP, $.proxy(this._beforeShow, this));
                         return this;
                     };
                     DatePickerNormalizer.prototype.onPick = function () {
@@ -12533,7 +12542,8 @@ var nts;
                             var menu = _.map(contextMenu, function (m) {
                                 var action = function () {
                                     var element = self.container.data("context-opening");
-                                    m.action(element).done(function (result) {
+                                    //                        m.action(element).done(function(result){
+                                    m.action(element, element.parent().data("cell-data")).done(function (result) {
                                         element.trigger("contextmenufinished", result);
                                     });
                                 };
@@ -12605,23 +12615,27 @@ var nts;
                                 if (!c.data("empty-cell")) {
                                     if (c.hasClass("ntsButtonCellSelected")) {
                                         c.removeClass("ntsButtonCellSelected");
-                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
+                                        //                            self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
+                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1, data: c.parent().data("cell-data") });
                                     }
                                     else {
                                         self.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
                                         c.addClass("ntsButtonCellSelected");
                                         var oCell = c.parent();
-                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                        //                            self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data") });
                                     }
                                 }
                                 else {
                                     var oldSelected = self.container.find(".ntsButtonCellSelected");
                                     if (!nts.uk.util.isNullOrEmpty(oldSelected)) {
                                         var oCell = oldSelected.parent();
-                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                        //                            self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data") });
                                     }
                                     else {
-                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
+                                        //                            self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
+                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1, data: null });
                                     }
                                 }
                             });
@@ -18784,6 +18798,8 @@ var nts;
                         });
                         $(element).bind("cellselectedchanging", function (evt, value) {
                             if (!nts.uk.util.isNullOrUndefined(data.selectedCell)) {
+                                //insert on develop
+                                $(element).data("o-selected", _.cloneDeep(value));
                                 data.selectedCell(value);
                             }
                         });
@@ -18809,10 +18825,13 @@ var nts;
                         }
                         container.ntsButtonTable("row", row);
                         container.ntsButtonTable("column", column);
+                        // insert on develop "&& !_.isEqual(container.data("o-selected"), selectedCell)"
                         if (!nts.uk.util.isNullOrUndefined(selectedCell) && !nts.uk.util.isNullOrUndefined(selectedCell.column)
-                            && !nts.uk.util.isNullOrUndefined(selectedCell.row)) {
+                            && !nts.uk.util.isNullOrUndefined(selectedCell.row) && !_.isEqual(container.data("o-selected"), selectedCell)) {
                             container.ntsButtonTable("setSelectedCell", selectedCell.row, selectedCell.column);
                         }
+                        // insert on develop 
+                        container.data("o-selected", _.cloneDeep(selectedCell));
                     };
                     return NtsTableButtonBindingHandler;
                 }());

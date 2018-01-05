@@ -190,11 +190,6 @@ module nts.uk.com.view.cps005.b {
                         block.clear();
                         return;
                     }
-                    else if (newItemDef.singleItem.decimalPart === null) {
-                        $("#decimalPart").focus();
-                        block.clear();
-                        return;
-                    }
                 }
 
                 if (newItemDef.singleItem.dataType === 4) {
@@ -279,7 +274,7 @@ module nts.uk.com.view.cps005.b {
                 self.perInfoItemSelectCode.subscribe(newItemId => {
                     if (textUK.isNullOrEmpty(newItemId)) return;
                     nts.uk.ui.errors.clearAll();
-                    new service.Service().getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType ).done(function(data: IPersonInfoItem) {
+                    new service.Service().getPerInfoItemDefById(newItemId, __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: IPersonInfoItem) {
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
@@ -329,6 +324,7 @@ module nts.uk.com.view.cps005.b {
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);;
         constructor(data: IPersonInfoItem) {
             let self = this;
+            let dataType:number = 1;
             self.dataType.subscribe(function(value) {
                 self.stringItem(new StringItemModel(null));
                 self.numericItem(new NumericItemModel(null));
@@ -337,6 +333,14 @@ module nts.uk.com.view.cps005.b {
                 self.timePointItem(new TimePointItemModel(null));
                 self.selectionItem(new SelectionItemModel(null));
                 nts.uk.ui.errors.clearAll();
+                $("#numericItemMin").focusin(()=>{self.numericItem().checkIntegerEmpty();});
+                $("#numericItemMax").focusin(()=>{self.numericItem().checkIntegerEmpty();});
+                $("#numericItemMin").on("blur", ()=>{
+                    self.numericItem().validateMin(dataType);
+                });
+                $("#numericItemMax").on("blur", ()=>{
+                    self.numericItem().validateMin(dataType);
+                });
                 if (value === 6) {
                     self.selectionItem().selectionItemRefType(2);
                     let baseDate = moment(new Date()).format('YYYY-MM-DD');
@@ -379,6 +383,11 @@ module nts.uk.com.view.cps005.b {
 
                         });
                     });
+                } else if (value === 2) {
+                    self.numericItem().numericItemMinus.subscribe(function(data) {
+                        dataType = data;
+                        self.numericItem().validateMin(dataType);
+                    })
                 }
             });
             if (data) {
@@ -413,7 +422,7 @@ module nts.uk.com.view.cps005.b {
                     }
                 }
             }
-        }
+        }        
     }
 
     export class StringItemModel {
@@ -441,6 +450,7 @@ module nts.uk.com.view.cps005.b {
         integerPart: KnockoutObservable<number> = ko.observable(null);
         constructor(data: INumericItem) {
             let self = this;
+            let datatype:number =1;
             if (!data) return;
             self.numericItemMin(data.numericItemMin || null);
             self.numericItemMax(data.numericItemMax || null);
@@ -448,6 +458,69 @@ module nts.uk.com.view.cps005.b {
             self.numericItemMinus(data.numericItemMinus);
             self.decimalPart(data.decimalPart || null);
             self.integerPart(data.integerPart || null);
+            $("#numericItemMin").focusin(()=>{self.checkIntegerEmpty();});
+            $("#numericItemMax").focusin(()=>{self.checkIntegerEmpty();});
+            $("#numericItemMin").on("blur", ()=>{
+                self.validateMin(datatype);
+            });
+            $("#numericItemMax").on("blur", ()=>{
+                self.validateMin(datatype);
+            });
+            self.numericItemMinus.subscribe(function(data) {
+                datatype =data;
+                self.validateMin(datatype);
+            })
+            
+           
+        }
+        
+        validateMin(datatype:number){
+            if($("#integerPart").val() == "") return;
+            let self = this;
+            let min = self.numericItemMin()?parseInt(self.numericItemMin().toString()):self.numericItemMin();
+            let max = self.numericItemMax()?parseInt(self.numericItemMax().toString()):self.numericItemMax();
+            let milestone = Math.pow(10, self.integerPart());
+            let minMilestone = milestone * (-1) + 1;
+            let maxMilestone = milestone - 1;
+            if(datatype === 1){
+                if(min < minMilestone){
+                     $('#numericItemMin').ntsError('set', 'numericItemMin khong duoc nhap so < ' + minMilestone.toString());
+                }
+                if(max < minMilestone){
+                     $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < ' + minMilestone.toString());
+                }
+                if(min > maxMilestone){
+                     $('#numericItemMin').ntsError('set', 'numericItem khong duoc nhap so > ' + maxMilestone.toString());
+                }
+                if(max > maxMilestone){
+                     $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so > ' + maxMilestone.toString());
+                }
+                if(max <= min && min && max){
+                    $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < numericItemMin');
+                }
+            }
+            else if(datatype === 0){
+                if(min < 0){
+                     $('#numericItemMin').ntsError('set', 'numericItemMin khong duoc nhap so < 0');
+                }
+                if(max < 0){
+                     $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < 0');
+                }
+                if(min > maxMilestone){
+                     $('#numericItemMin').ntsError('set', 'numericItem khong duoc nhap so > ' + maxMilestone.toString());
+                }
+                if(max > maxMilestone){
+                     $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so > ' + maxMilestone.toString());
+                }
+                if(max <= min && min && max){
+                    $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < numericItemMin');
+                }
+            }
+        }
+        checkIntegerEmpty(){
+            if($("#integerPart").val() == ""){
+                $("#integerPart").focus();
+            }
         }
     }
     export class TimeItemModel {
@@ -685,28 +758,10 @@ module nts.uk.com.view.cps005.b {
             if (data.numericItem()) {
                 self.numericItemMinus = data.numericItem().numericItemMinus();
                 self.numericItemAmount = data.numericItem().numericItemAmount();
-                if (data.numericItem().integerPart() === null) {
-
-                    self.integerPart = 0;
-
-                } else {
-
-                    self.integerPart = data.numericItem().integerPart();
-
-                }
-                if (data.numericItem().decimalPart() === null) {
-
-                    self.decimalPart = 0;
-
-                } else {
-
-                    self.decimalPart = data.numericItem().decimalPart();
-                }
-
+                self.integerPart = data.numericItem().integerPart();
+                self.decimalPart = data.numericItem().decimalPart();
                 self.numericItemMin = data.numericItem().numericItemMin();
-
                 self.numericItemMax = data.numericItem().numericItemMax();
-
             }
             if (data.dateItem()) {
                 self.dateItemType = data.dateItem().dateItemType();

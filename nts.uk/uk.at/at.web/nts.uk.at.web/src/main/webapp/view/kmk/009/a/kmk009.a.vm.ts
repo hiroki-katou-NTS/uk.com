@@ -167,6 +167,26 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                             if (self.totalClsEnums.length > 0) {
                                 self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
                             }
+                            
+                            $(document).on("keydown", function(e) {
+                                var x = document.getElementsByClassName("check-focus"); 
+                                if (e.which === 8 && !$(e.target).is("input, textarea")) {
+                                    $('.check-focus').focus();                                                                                                                                                                                                                                                                                  
+                                    e.preventDefault();                                   
+                                }
+                            });
+                            
+                            $('.check-focus').keydown(function(event) { return cancelBackspace(event) });
+                            function cancelBackspace(event) {
+                                if (event.keyCode == 8) {
+                                    return false;
+                                }
+                            }
+                            
+                            function no_backspaces(event) {
+                                backspace = 8;
+                                if (event.keyCode == backspace) event.preventDefault();
+                            }
                             dfd.resolve();
                         });
                     });
@@ -591,6 +611,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.totalCondition.attendanceItemId(1);
             }
         }
+               
     }
 
 

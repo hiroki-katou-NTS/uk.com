@@ -20,11 +20,12 @@ module nts.uk.at.view.ksu001.n.viewmodel {
             self.currentCodeList = ko.observableArray([]);
 
         }
+
         initData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
 
-            let listEmployeeId = _.map(self.listEmployee, 'empId');
+            let listEmployeeId: any = _.map(self.listEmployee, 'empId');
             service.findAllRankSetting(listEmployeeId).done(function(ranksets) {
                 let rankSetarray = [];
                 _.forEach(self.listEmployee, function(employee) {
@@ -41,31 +42,33 @@ module nts.uk.at.view.ksu001.n.viewmodel {
             });
             return dfd.promise();
         }
+
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             self.initData().done(function() {
                 self.initGrid();
             });
-
             dfd.resolve();
             return dfd.promise();
         }
+
         /**
          * Close dialog
          */
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
+
         addRankSetting(): void {
             let self = this;
             nts.uk.ui.block.invisible();
-            let data = {};
+            let data: any = {};
             data.rankSetCommands = [];
             let flag = false;
             _.forEach(self.listRank(), function(value, index) {
                 if (value.rankCode != value.rankCodeOld) {
-                    let rankSet = {};
+                    let rankSet: any = {};
                     rankSet.sId = value.employeeId;
                     if (value.rankCode != 'なし') {
                         rankSet.rankCode = value.rankCode;
@@ -78,33 +81,18 @@ module nts.uk.at.view.ksu001.n.viewmodel {
                     }
                 }
             });
-//            if (flag == true) {
-//                nts.uk.ui.dialog.confirm({ messageId: "Msg_343" }).ifYes(() => {
-//                    service.addRankSetting(data).done(function() {
-//                        self.initData().done(function() {
-//                            self.initGrid();
-//                        });
-//                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-//                    }).fail(function(error) {
-//                        nts.uk.ui.dialog.alertError(error.message);
-//                    })
-//                }).then(function() {
-//                    nts.uk.ui.block.clear();
-//                });
-//            } else {
-                service.addRankSetting(data).done(function() {
-                    self.initData().done(function() {
-                        self.initGrid();
-                    });
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
-                }).then(function() {
-                    nts.uk.ui.block.clear();
+            service.addRankSetting(data).done(function() {
+                self.initData().done(function() {
+                    self.initGrid();
                 });
-            //}
-
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
+            }).then(function() {
+                nts.uk.ui.block.clear();
+            });
         }
+
         /**
          * init grid 
          */
@@ -134,11 +122,12 @@ module nts.uk.at.view.ksu001.n.viewmodel {
     export class ItemModel {
         rankCode: string;
         name: string;
-        constructor(code: string) {
-            this.rankCode = code;
-            this.name = code;
+        constructor(rankCode: string, name: string) {
+            this.rankCode = rankCode;
+            this.name = name;
         }
     }
+    
     export class RankItems {
         rankCode: string;
         rankName: string;
@@ -153,5 +142,4 @@ module nts.uk.at.view.ksu001.n.viewmodel {
             this.employeeCode = employeeCode;
         }
     }
-
 }
