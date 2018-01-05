@@ -824,15 +824,55 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FlowRestTimezoneModel {
+            export class FlowRestTimezoneModel extends FixedTableDataConverter<FixedTableTimeEditorModel, FlowRestSettingModel> {
                 flowRestSets: KnockoutObservableArray<FlowRestSettingModel>;
                 useHereAfterRestSet: KnockoutObservable<boolean>;
                 hereAfterRestSet: FlowRestSettingModel;
 
                 constructor() {
+                    super();
                     this.flowRestSets = ko.observableArray([]);
                     this.useHereAfterRestSet = ko.observable(false);
                     this.hereAfterRestSet = new FlowRestSettingModel();
+                }
+
+                toConvertedListTemp(list: Array<FixedTableTimeEditorModel>): any {
+                    return _.map(list, item => {
+                        return { start: item.startCol(), end: item.endCol() };
+                    });
+                }
+
+                /**
+                 * To original list temp
+                 */
+                toOriginalListTemp(list: Array<FlowRestSettingModel>): any {
+                    return _.map(list, item => {
+                        return { start: item.flowRestTime(), end: item.flowPassageTime() };
+                    });
+                }
+
+                /**
+                 * Convert to list time range
+                 */
+                toConvertedList(): Array<FixedTableTimeEditorModel> {
+                    let self = this;
+                    return _.map(self.flowRestSets(), rs => self.toTimeEditorItem(rs.flowRestTime(), rs.flowPassageTime()));
+                }
+
+                /**
+                 * Revert to original list
+                 */
+                fromConvertedList(newList: Array<FixedTableTimeEditorModel>): Array<FlowRestSettingModel> {
+                    return _.map(newList, newVl => {
+                        let vl = new FlowRestSettingModel();
+                        vl.flowRestTime(newVl.startCol());
+                        vl.flowPassageTime(newVl.endCol());
+                        return vl;
+                    });
+                }
+
+                private toTimeEditorItem(start: number, end: number): any {
+                    return { startCol: ko.observable(start), endCol: ko.observable(end) };
                 }
 
                 updateData(data: FlowRestTimezoneDto) {
@@ -863,6 +903,10 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
+            export class FixedTableTimeEditorModel {
+                startCol: KnockoutObservable<number>;
+                endCol: KnockoutObservable<number>;
+            }
 
             export class FlowWorkRestTimezoneModel {
                 fixRestTime: KnockoutObservable<boolean>;
