@@ -155,7 +155,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 				}
 				
 				if (!(this.isMorningAndAfternoonInShift1() || this.isMorningAndAfternoonInShift2())) {
-					throw new BusinessException("Msg_774");
+					//throw new BusinessException("Msg_774");
 				}
 			}
 		}

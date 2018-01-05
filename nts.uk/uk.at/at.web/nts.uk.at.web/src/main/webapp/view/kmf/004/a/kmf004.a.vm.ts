@@ -268,9 +268,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             $("#code-text").trigger("validate");
             $("#code-text2").trigger("validate");
-            if(self.workTypeList().length < 0){
-                $('#text-target-item').ntsError('set', {messageId:"Msg_93"});
-            }
+            $('#text-target-item').trigger("validate");
             
             var specialHoliday = ko.toJS(self.currentItem());
             if (self.inp_grantMethod() == 1) {

@@ -155,7 +155,7 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	public void setLstHalfDayWorkTimezone(List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone) {
 		if (CollectionUtil.isEmpty(lstHalfDayWorkTimezone)) {
 			lstHalfDayWorkTimezone = new ArrayList<>();
-		}
+		}		
 		lstHalfDayWorkTimezone.forEach(domain -> domain
 				.saveToMemento(new JpaFixHalfDayWorkTimezoneSetMemento(this.entity, domain.getDayAtr())));
 	}

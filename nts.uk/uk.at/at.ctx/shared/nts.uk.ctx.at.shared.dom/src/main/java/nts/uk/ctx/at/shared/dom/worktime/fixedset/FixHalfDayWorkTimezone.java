@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
@@ -127,9 +126,10 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 					});
 
 			// Throw exception if not match any condition
-			if (!isHasWorkTime && !isHasOTTTime) {
-				throw new BusinessException("Msg_755");
-			}
+			//TODO
+//			if (!isHasWorkTime && !isHasOTTTime) {
+//				throw new BusinessException("Msg_755");
+//			}
 		});
 	}
 

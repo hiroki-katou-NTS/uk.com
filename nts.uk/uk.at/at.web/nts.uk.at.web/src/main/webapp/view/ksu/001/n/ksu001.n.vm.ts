@@ -8,6 +8,8 @@ module nts.uk.at.view.ksu001.n.viewmodel {
         comboItems = [];
         comboColumns = [{ prop: 'name', length: 4 }];
         listEmployee: Array<any>;
+        workPlaceCode:KnockoutObservable<any> = ko.observable();
+        workPlaceDisplayName:KnockoutObservable<any> = ko.observable();
         constructor() {
             let self = this;
             self.listEmployee = nts.uk.ui.windows.getShared('listEmployee');
@@ -18,7 +20,16 @@ module nts.uk.at.view.ksu001.n.viewmodel {
                 });
             });
             self.currentCodeList = ko.observableArray([]);
-
+            if(self.listEmployee.length>0){
+            let data = {
+                workplaceId:self.listEmployee[0].workplaceId,
+                baseDate:moment().toISOString()    
+            }
+            service.getWorkPlaceById(data).done((wkp)=>{
+                self.workPlaceCode(wkp.workplaceCode);
+                self.workPlaceDisplayName(wkp.wkpDisplayName);
+            });
+            }
         }
 
         initData(): JQueryPromise<any> {
