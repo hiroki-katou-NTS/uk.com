@@ -66,15 +66,21 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		});
 
 		// validate Msg_516
-		fixedWorkSetting.getLstHalfDayWorkTimezone()
-				.forEach(halfDay -> this.fixHalfDayPolicy.validate(halfDay, predetemineTimeSet));
+		if (fixedWorkSetting.getUseHalfDayShift()) {
+			fixedWorkSetting.getLstHalfDayWorkTimezone()
+					.forEach(halfDay -> this.fixHalfDayPolicy.validate(halfDay, predetemineTimeSet));
+			// validate Msg_516
+			predService.validateOneDay(predetemineTimeSet,
+					predetemineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime(),
+					predetemineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
+
+		}
 
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(predetemineTimeSet, fixedWorkSetting.getCommonSetting());
 
 	}
 
-	
 	/**
 	 * Valid work timezone.
 	 *

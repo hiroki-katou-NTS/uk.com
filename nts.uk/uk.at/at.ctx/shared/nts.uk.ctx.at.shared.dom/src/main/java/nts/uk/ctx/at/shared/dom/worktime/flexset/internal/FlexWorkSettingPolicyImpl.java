@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 
 /**
  * The Class FlexWorkSettingPolicyImpl.
@@ -31,9 +32,9 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 @Stateless
 public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 	
-	/** The service. */
-//	@Inject
-//	private PredeteminePolicyService service;
+	/** The predetemine policy service. */
+	@Inject
+	private PredeteminePolicyService predeteminePolicyService;
 
 	/** The flex half day policy. */
 	@Inject
@@ -118,8 +119,16 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		});
 
 		// valiadte FlexHalfDayWorkTime
-		flexWorkSetting.getLstHalfDayWorkTimezone()
-				.forEach(halfDay -> this.flexHalfDayPolicy.validate(halfDay, predetemineTimeSet));
+		if (flexWorkSetting.isUseHalfDayShift()) {
+			flexWorkSetting.getLstHalfDayWorkTimezone()
+					.forEach(halfDay -> this.flexHalfDayPolicy.validate(halfDay, predetemineTimeSet));
+			
+			// validate Msg_516
+			predeteminePolicyService.validateOneDay(predetemineTimeSet,
+					predetemineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime(),
+					predetemineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
+
+		}
 
 		// validate FlexOffdayWorkTime
 		this.flexOffdayPolicy.validate(predetemineTimeSet, flexWorkSetting.getOffdayWorkTime());
