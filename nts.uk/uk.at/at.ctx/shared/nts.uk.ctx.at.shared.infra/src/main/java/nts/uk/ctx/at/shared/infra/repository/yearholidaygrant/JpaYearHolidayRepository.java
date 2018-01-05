@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSetPK;
 public class JpaYearHolidayRepository extends JpaRepository implements YearHolidayRepository {
 	
 	private final String findAllByCompanyID = "SELECT a FROM KshstGrantHdTblSet a "
-			+ "WHERE a.kshstGrantHdTblSetPK.companyId = :companyId";
+			+ "WHERE a.kshstGrantHdTblSetPK.companyId = :companyId ORDER BY a.kshstGrantHdTblSetPK.yearHolidayCode ASC";
 	private final String DELETE_CONDITION = "DELETE FROM KshstGrantCondition c "
 			+ "WHERE c.kshstGrantConditionPK.companyId =:companyId "
 			+ "AND c.kshstGrantConditionPK.yearHolidayCode =:yearHolidayCode ";
