@@ -257,10 +257,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             return dfd.promise();
         }
         checkRegister(){
-            nts.uk.ui.block.invisible();
             //inpStartTime1
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
+            //return if has error
+            if (nts.uk.ui.errors.hasError()){return;}
+            nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
             service.checkInsertGoBackDirect(self.getCommand()).done(function(){
