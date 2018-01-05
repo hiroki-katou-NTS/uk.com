@@ -173,7 +173,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     $('#contain-view').show();
                     $('#contain-view').addClass('h-90');
-                    $('#oViewModel').hide();
+                    $('#oViewModel').hide(); 
                     $('#qViewModel').show();
                     $('#group-bt').show();
                     $("#extable").exTable("updateMode", "none");
@@ -184,7 +184,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
                         || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
                         $("#extable").exTable("stickData", null);
+                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'company') {
+                        let dataToStick = $("#test1").ntsButtonTable("getSelectedCells")[0].data.data;
+                        $("#extable").exTable("stickData", dataToStick);
+                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'workplace') {
+                        let dataToStick = $("#test2").ntsButtonTable("getSelectedCells")[0].data.data;
+                        $("#extable").exTable("stickData", dataToStick);
                     }
+
                     if (self.flag) {
                         //select first link button
                         __viewContext.viewModel.viewQ.initScreenQ();
@@ -237,6 +244,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         startKSU001(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             //get data for screen O
             $.when(__viewContext.viewModel.viewO.findDataForComboBox(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
                 //get state of list workTypeCode
@@ -251,6 +259,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
                     self.initCCG001();
                     self.initExTable();
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
             });
@@ -1250,7 +1259,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCell.length == 0) {
                 return;
             }
-
+            
+            nts.uk.ui.block.grayout();
             if (self.selectedModeDisplay() == 2) {
                 _.each(arrTmp, (item) => {
                     let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
@@ -1296,8 +1306,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 //get data and update extable
                 self.setDatasource().done(function() {
                     self.updateExTable();
+                    nts.uk.ui.block.clear();
                 });
             }).fail(function(error: any) {
+                nts.uk.ui.block.grayout();
                 nts.uk.ui.dialog.alertError(error.message);
             });
         }
