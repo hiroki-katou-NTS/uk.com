@@ -36,6 +36,8 @@ public interface RoleIndividualGrantRepository {
 	List<RoleIndividualGrant> findByUserAndRole(String userId, int roleType);
 
 	Optional<RoleIndividualGrant> findByUserCompanyRoleType(String userID, String companyID, int roleType);
+	
+	Optional<RoleIndividualGrant> findByUserCompanyRoleTypeDate(String userId, String companyId, int roleType, GeneralDate date);
 
 	Optional<RoleIndividualGrant> findByKey(String userId, String companyId, String roleId);
 
