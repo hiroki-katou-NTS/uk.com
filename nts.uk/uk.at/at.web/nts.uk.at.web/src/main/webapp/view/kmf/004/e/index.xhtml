@@ -85,7 +85,7 @@
 					<tr>
 						<td data-bind="text: $index() + 1"></td>
 						<td class="hidden-right-border">
-							<input id="year" data-bind="ntsNumberEditor: {
+							<input id="year" tabindex="-1" data-bind="ntsNumberEditor: {
 									value: year, 
 									constraint: 'Year',
 									name: '#[KMF004_99]',
@@ -95,7 +95,7 @@
 									})}" />
 						</td>
 						<td>
-							<input id="month" data-bind="ntsNumberEditor: {
+							<input id="month" tabindex="-1" data-bind="ntsNumberEditor: {
 									value: month, 
 									constraint: 'Month',
 									name: '#[KMF004_100]',
@@ -105,13 +105,13 @@
 									})}" />
 						</td>
 						<td>
-							<input id="year" data-bind="ntsNumberEditor: {
+							<input id="year" tabindex="-1" data-bind="ntsNumberEditor: {
 									value: date, 
 									constraint: 'Date',
 									name: '#[KMF004_31]',
 									option: ko.mapping.fromJS({
 										unitID: 'DAYS',
-										width: '50'
+										width: '60'
 									})}" />
 						</td>
 					</tr>

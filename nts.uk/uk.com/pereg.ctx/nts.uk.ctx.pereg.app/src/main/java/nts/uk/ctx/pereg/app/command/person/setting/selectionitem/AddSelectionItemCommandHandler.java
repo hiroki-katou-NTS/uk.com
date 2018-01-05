@@ -46,7 +46,10 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 			throw new BusinessException(new RawErrorMessage("Msg_513"));
 		}
 
-		int isSelect = command.isSelectionItemClassification() == true ? 1 : 0;
+		//Checked -> person -> 0
+		//Uncheck -> employee -> 1
+		int isSelect = command.isSelectionItemClassification() == true ? 0 : 1;
+		
 		// ドメインモデル「個人情報の選択項目」を追加登録する
 		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(newId, command.getSelectionItemName(),
 				command.getMemo(), isSelect, AppContexts.user().contractCode(), command.getIntegrationCode(),

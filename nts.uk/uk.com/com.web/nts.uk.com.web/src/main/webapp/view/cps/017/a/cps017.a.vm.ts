@@ -40,6 +40,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         revDisSel03: KnockoutObservable<boolean> = ko.observable(false);
         revDisSel04: KnockoutObservable<boolean> = ko.observable(false);
         disbleAdUpHist: KnockoutObservable<boolean> = ko.observable(true);
+        constraints: KnockoutObservable<any> = ko.observable();
 
         constructor() {
             let self = this,
@@ -60,9 +61,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let selectedObject: ISelectionItem = _.find(self.listItems(), (item) => {
                         return item.selectionItemId == x;
                     });
-                    perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
-                    perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
 
+                    if (selectedObject != undefined) {
+                        perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
+                        perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
+                        //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    }
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         let changeData: Array<IHistorySelection> = _.each(_selectionItemList, (item) => {
@@ -173,6 +177,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     });
                 } else {
                     self.listSelection.removeAll();
+                    self.registerData();
                 }
             });
 
@@ -188,7 +193,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
-                } 
+                } else {
+                    self.registerData();
+                }
             });
 
         }
@@ -205,7 +212,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             //xu ly dialog: 
             let param = getShared('CPS017_PARAMS');
-
+            self.constraints = param;
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length > 0) {
@@ -223,6 +230,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     alertError({ messageId: "Msg_455" });
                     //                    self.registerData();
                     self.enableSelName(false);
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                 }
                 dfd.resolve();
             }).fail(error => {
@@ -282,7 +290,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 oldIds = listSelection.map(m => m.selectionID),
                 histList: HistorySelection = self.historySelection(),
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem();
-
+            if(!self.checkSelectionConstraints()) return;
             let oldIndex = _.find(listSelection, x => x.selectionID == currentItem.selectionID());
 
             currentItem.histId(self.historySelection().histId());
@@ -335,7 +343,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 currentItem: Selection = self.selection(),
                 listSelection: Array<Selection> = self.listSelection(),
                 _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
-
+            if(!self.checkSelectionConstraints()) return;
             currentItem.histId(self.historySelection().histId());
             let command = ko.toJS(currentItem);
 
@@ -536,6 +544,29 @@ module nts.uk.com.view.cps017.a.viewmodel {
         }
         close() {
             nts.uk.ui.windows.close();
+        }
+        
+        //check constraints from cps 016
+        checkSelectionConstraints(){
+            let self = this,
+            selCD = self.selection().selectionCD(),
+            selName = self.selection().selectionName(),
+            exCd = self.selection().externalCD(),
+            allValid = true;
+            if(!self.constraints) return false;
+            if(selCD.length != self.constraints.selectionCode){
+                allValid = false;
+                $('#code').ntsError('set', "Selection code length must equals " + self.constraints.selectionCode);
+            }
+            if(selName.length != self.constraints.selectionName){
+                allValid = false;
+                $('#name').ntsError('set',  "Selection code length must equals " + self.constraints.selectionName);
+            }
+            if(exCd.length != self.constraints.selectionExternalCode){
+                allValid = false;
+                $('#exCode').ntsError('set',  "Selection code length must equals " + self.constraints.selectionExternalCode);
+            }
+            return allValid;
         }
     }
 

@@ -4,14 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.portal.dom.adapter.roleset.RoleSetDto;
 
 public interface RoleGrantAdapter {
 
 	List<String> getRoleId(String userId);
 	
-	List<RoleDto> findRole(String roleId);
+	Optional<String> getRoleId(String userId, String companyId, int roleType);
 	
-	Optional<UserDto> getUserInfo(String userId);
+	List<RoleDto> findRole(String roleId);
 	
 	Optional<RoleSetGrantedPersonDto> getRoleSetPersonGrant(String employeeId);
 	
@@ -20,4 +21,6 @@ public interface RoleGrantAdapter {
 	Optional<RoleSetGrantedJobTitleDetailDto> getRoleSetJobTitleGrant(String companyId, String jobTitleId);
 	
 	Optional<DefaultRoleSetDto> getDefaultRoleSet(String companyId);
+	
+	Optional<RoleSetDto> getRoleSet(String companyId, String roleSetCd);
 }

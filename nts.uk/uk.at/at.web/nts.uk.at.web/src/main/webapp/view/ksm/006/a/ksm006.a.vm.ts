@@ -282,6 +282,11 @@ module nts.uk.at.view.ksm006.a {
                     if (res.messageId == "Msg_178") {
                         let errDetails = res.supplements;
                         let keys = Object.keys(errDetails);
+                        // Sort keys
+                        keys.sort(function(left, right) {
+                            return left == right ?
+                                0 : (left < right ? -1 : 1)
+                        });
                         keys.forEach(function(item) {
                             switch (item) {
                                 case "KSM006_6": {
@@ -351,6 +356,11 @@ module nts.uk.at.view.ksm006.a {
                     if (res.messageId == "Msg_178") {
                         let errDetails = res.supplements;
                         let keys = Object.keys(errDetails);
+                        // Sort keys
+                        keys.sort(function(left, right) {
+                            return left == right ?
+                                0 : (left < right ? -1 : 1)
+                        });
                         keys.forEach(function(item) {
                             switch (item) {
                                 case "KSM006_6": {
@@ -419,6 +429,11 @@ module nts.uk.at.view.ksm006.a {
                     if (res.messageId == "Msg_178") {
                         let errDetails = res.supplements;
                         let keys = Object.keys(errDetails);
+                        // Sort keys
+                        keys.sort(function(left, right) {
+                            return left == right ?
+                                0 : (left < right ? -1 : 1)
+                        });
                         keys.forEach(function(item) {
                             switch (item) {
                                 case "KSM006_6": {

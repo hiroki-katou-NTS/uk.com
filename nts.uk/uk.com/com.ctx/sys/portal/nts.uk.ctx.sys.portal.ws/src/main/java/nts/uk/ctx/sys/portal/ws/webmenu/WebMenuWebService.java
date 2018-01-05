@@ -23,6 +23,7 @@ import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommandHander;
 import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommandBase;
 import nts.uk.ctx.sys.portal.app.find.company.CompanyFinder;
 import nts.uk.ctx.sys.portal.app.find.company.ShortCompanyDto;
+import nts.uk.ctx.sys.portal.app.find.user.UserPortalFinder;
 import nts.uk.ctx.sys.portal.app.find.webmenu.EditMenuBarDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.PersonTypeDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
@@ -40,6 +41,9 @@ public class WebMenuWebService extends WebService {
 	
 	@Inject
 	private CompanyFinder companyFinder;
+	
+	@Inject
+	private UserPortalFinder userFinder;
 
 	@Inject
 	private AddWebMenuCommandHandler addWebMenuCommandHandler;
@@ -148,14 +152,16 @@ public class WebMenuWebService extends WebService {
 	
 	@POST
 	@Path("changeCompany")
-	public void changeCompany(String companyId) {
-		changeCompanyCommandHandler.handle(new ChangeCompanyCommand(companyId));
+	public JavaTypeResult<String> changeCompany(String companyId) {
+		ChangeCompanyCommand command = new ChangeCompanyCommand(companyId); 
+		changeCompanyCommandHandler.handle(command);
+		return new JavaTypeResult<String>(command.getPersonName());
 	}
 	
 	@POST
 	@Path("username")
 	public JavaTypeResult<String> userName() {
-		return new JavaTypeResult<String>("日通　太郎");
+		return new JavaTypeResult<String>(userFinder.userName());
 	}
 	
 	@POST

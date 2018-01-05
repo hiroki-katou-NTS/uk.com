@@ -41,7 +41,7 @@ module nts.uk.com.view.cmm018.i {
                     }
                 }
                 if (!nts.uk.ui.errors.hasError()){
-                    let data: vmbase.IData = new vmbase.IData(self.newStartDate(), self.dataSource.startDate, self.dataSource.check, self.dataSource.mode, self.copyDataFlag(),self.dataSource.lstAppType);
+                    let data: vmbase.IData = new vmbase.IData(self.newStartDate(), self.dataSource.startDate, self.dataSource.check, self.dataSource.mode, self.copyDataFlag(),self.dataSource.lstAppType, self.dataSource.overLap);
                     setShared('CMM018I_DATA', data);
                     nts.uk.ui.windows.close();
                 }
