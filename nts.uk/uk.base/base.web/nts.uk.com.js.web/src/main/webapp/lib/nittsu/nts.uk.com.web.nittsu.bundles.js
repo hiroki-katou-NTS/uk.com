@@ -3345,6 +3345,7 @@ var nts;
                     var $userInfo = $("#user-info");
                     var $company = $userInfo.find("#company");
                     var $user = $userInfo.find("#user");
+                    var $userName;
                     var notThen = function ($container, target, op) {
                         if (!$container.is(target) && $container.has(target).length === 0) {
                             op();
@@ -3369,8 +3370,10 @@ var nts;
                             var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
                             $compItem.on(constants.CLICK, function () {
                                 nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function () {
+                                    .done(function (personName) {
                                     $companyName.text(comp.companyName);
+                                    $userName.text(personName);
+                                    $companyList.css("right", $user.outerWidth() + 30);
                                 });
                             });
                         });
@@ -3386,7 +3389,7 @@ var nts;
                             $userImage.css("margin-right", "6px").on(constants.CLICK, function () {
                                 // TODO: Jump to personal profile.
                             });
-                            var $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
+                            $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
                             var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                             $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                             var userOptions = [new MenuItem("個人情報の設定"), new MenuItem("ログアウト")];
