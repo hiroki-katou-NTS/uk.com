@@ -1846,7 +1846,7 @@ var nts;
                 }
                 if (isMinutes) {
                     var hoursX = uk.ntsNumber.trunc(time / 60);
-                    time = hoursX + uk.text.padLeft((Math.abs(time - hoursX * 60)).toString(), '0', 2);
+                    time = (time < 0 && hoursX == 0 ? "-" : "") + hoursX + uk.text.padLeft((Math.abs(time - hoursX * 60)).toString(), '0', 2);
                 }
                 if (!(time instanceof String)) {
                     time = time.toString();
@@ -2145,25 +2145,23 @@ var nts;
                 var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
                 var momentObject = moment.utc(datetime, inputFormats, true);
                 var result = new MomentResult(momentObject, outputFormat);
-                if (momentObject.isValid()) {
-                    if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())) {
-                        var parsedFormat = momentObject.creationData().format;
-                        if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0) {
-                            result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
-                        }
-                        else if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") < 0 && parsedFormat.indexOf("Y") >= 0) {
-                            result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
-                        }
-                        else {
-                            result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
-                        }
-                    }
-                    else {
-                        result.succeeded();
-                    }
+                if (momentObject.isValid() && (momentObject.isSameOrBefore(result.systemMax()) && momentObject.isSameOrAfter(result.systemMin()))) {
+                    result.succeeded();
                 }
                 else {
-                    result.failed();
+                    var parsedFormat = momentObject.creationData().format;
+                    var isHasYear = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("Y") >= 0) || parsedFormat.indexOf("Y") >= 0;
+                    var isHasMonth = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("M") >= 0) || parsedFormat.indexOf("M") >= 0;
+                    var isHasDay = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("D") >= 0) || parsedFormat.indexOf("D") >= 0;
+                    if (isHasDay && isHasMonth && isHasYear) {
+                        result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
+                    }
+                    else if (isHasMonth && isHasYear) {
+                        result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
+                    }
+                    else {
+                        result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
+                    }
                 }
                 return result;
             }
@@ -3074,21 +3072,33 @@ var nts;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jump(webAppId, path, data) {
+                uk.ui.block.invisible();
+                // handle overload
                 if (typeof arguments[1] !== 'string') {
-                    return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
                 }
-                if (webAppId == nts.uk.request.location.currentAppId) {
-                    path = resolvePath(path);
-                }
-                else {
-                    path = nts.uk.request.location.siteRoot
-                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                        .mergeRelativePath(path).serialize();
+                if (webAppId != nts.uk.request.location.currentAppId) {
+                    jumpToOtherWebApp.apply(this, arguments);
+                    return;
                 }
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
-                window.location.href = path;
+                window.location.href = resolvePath(path);
             }
             request.jump = jump;
+            function jumpToOtherWebApp(webAppId, path, data) {
+                var resolvedPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(path).serialize();
+                uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                login.keepSerializedSession()
+                    .then(function () {
+                    return login.restoreSessionTo(webAppId);
+                })
+                    .then(function () {
+                    window.location.href = resolvedPath;
+                });
+            }
             function jumpToMenu(path) {
                 var end = path.charAt(0) === '/' ? path.indexOf("/", 1) : path.indexOf("/");
                 var appName = path.substring(0, end);
@@ -3113,6 +3123,7 @@ var nts;
             var login;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+                var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
                 function keepUsedLoginPage() {
                     uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
                 }
@@ -3126,6 +3137,20 @@ var nts;
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+                function keepSerializedSession() {
+                    var dfd = $.Deferred();
+                    request.ajax("/shr/web/session/serialize").done(function (res) {
+                        uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+                        dfd.resolve();
+                    });
+                    return dfd.promise();
+                }
+                login.keepSerializedSession = keepSerializedSession;
+                function restoreSessionTo(webAppId) {
+                    var serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+                    return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket);
+                }
+                login.restoreSessionTo = restoreSessionTo;
             })(login = request.login || (request.login = {}));
             function jumpToTopPage() {
                 jumpToMenu('nts.uk.com.web/view/ccg/008/a/index.xhtml');
@@ -4132,7 +4157,7 @@ var nts;
                         maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
                         if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
-                            result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_TIME");
+                            result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_CLOCK");
                         }
                         else {
                             result.success(parsed.asMinutes);
@@ -7908,7 +7933,7 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if (!(String($grid.attr("filtered")) === "true") && $grid.data("ui-changed") !== true) {
+                        if ($grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -7927,21 +7952,21 @@ var nts;
                                 $grid.igGrid("dataBind");
                             }
                         }
-                        else if (String($grid.attr("filtered")) === "true") {
-                            var filteredSource_1 = [];
-                            _.forEach(gridSource, function (item) {
-                                var itemX = _.find(sources, function (s) {
-                                    return s[optionsValue] === item[optionsValue];
-                                });
-                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
-                                    filteredSource_1.push(itemX);
-                                }
-                            });
-                            if (!_.isEqual(filteredSource_1, gridSource)) {
-                                $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
-                                $grid.igGrid("dataBind");
-                            }
-                        }
+                        //            else if(String($grid.attr("filtered")) === "true"){
+                        //                let filteredSource = [];
+                        //                _.forEach(gridSource, function(item){
+                        //                    let itemX = _.find(sources, function (s){
+                        //                        return s[optionsValue] === item[optionsValue];        
+                        //                    });
+                        //                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        //                        filteredSource.push(itemX);
+                        //                    }     
+                        //                });     
+                        //                if(!_.isEqual(filteredSource, gridSource)){
+                        //                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
+                        //                    $grid.igGrid("dataBind");    
+                        //                }
+                        //            }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
                             if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
@@ -8365,17 +8390,17 @@ var nts;
                             }
                         }
                         else if (String(container.attr("filtered")) === "true") {
-                            var filteredSource_2 = [];
+                            var filteredSource_1 = [];
                             _.forEach(currentSource, function (item) {
                                 var itemX = _.find(sources, function (s) {
                                     return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
-                                    filteredSource_2.push(itemX);
+                                    filteredSource_1.push(itemX);
                                 }
                             });
-                            if (!_.isEqual(filteredSource_2, currentSource)) {
-                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_2));
+                            if (!_.isEqual(filteredSource_1, currentSource)) {
+                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
                                 container.igGrid("dataBind");
                             }
                         }
@@ -9080,6 +9105,7 @@ var nts;
                         var leftColumns = data.leftColumns || data.columns;
                         var rightColumns = data.rightColumns || data.columns;
                         var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+                        var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
                         if (totalWidth !== undefined) {
                             $swap.parent().width(totalWidth);
@@ -9105,7 +9131,7 @@ var nts;
                         var gridHeight = (height - 20);
                         var grid1Id = "#" + elementId + "-grid1";
                         var grid2Id = "#" + elementId + "-grid2";
-                        var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
+                        //var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
                         if (!uk.util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
                             var initSearchArea = function ($SearchArea, searchMode, searchText) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
@@ -10097,6 +10123,10 @@ var nts;
                             var content = tabs[i].content;
                             container.children(content).wrap('<div id="' + id + '"></div>');
                         }
+                        container.bind("parentactived", function (evt, dataX) {
+                            dataX.child.find("div[role='tabpanel'][aria-hidden='false']:first").removeClass("disappear");
+                            //                data.active.valueHasMutated();
+                        });
                         container.tabs({
                             create: function (event, ui) {
                                 container.find('.ui-tabs-panel').addClass('disappear');
@@ -10110,6 +10140,8 @@ var nts;
                                 container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
                                 container.children('ul').children('.ui-state-disabled').addClass('disabled');
                                 container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                                var child = ui.newPanel.children().find(".ui-tabs:first");
+                                child.trigger("parentactived", { child: child });
                             }
                         }).addClass(direction);
                     };
@@ -12618,7 +12650,6 @@ var nts;
                                 if (!c.data("empty-cell")) {
                                     if (c.hasClass("ntsButtonCellSelected")) {
                                         c.removeClass("ntsButtonCellSelected");
-                                        //                            self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
                                         self.container.trigger("cellselectedchanging", { column: -1, row: -1, data: c.parent().data("cell-data") });
                                     }
                                     else {
@@ -12633,11 +12664,9 @@ var nts;
                                     var oldSelected = self.container.find(".ntsButtonCellSelected");
                                     if (!nts.uk.util.isNullOrEmpty(oldSelected)) {
                                         var oCell = oldSelected.parent();
-                                        //                            self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
                                         self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data") });
                                     }
                                     else {
-                                        //                            self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
                                         self.container.trigger("cellselectedchanging", { column: -1, row: -1, data: null });
                                     }
                                 }
@@ -13237,6 +13266,7 @@ var nts;
                                 if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
                                     self.cropper.destroy();
                                 }
+                                self.$root.data("original-img", image.src);
                                 var option = {
                                     viewMode: 1,
                                     guides: false,
@@ -18801,7 +18831,6 @@ var nts;
                         });
                         $(element).bind("cellselectedchanging", function (evt, value) {
                             if (!nts.uk.util.isNullOrUndefined(data.selectedCell)) {
-                                //insert on develop
                                 $(element).data("o-selected", _.cloneDeep(value));
                                 data.selectedCell(value);
                             }
@@ -18833,7 +18862,6 @@ var nts;
                             && !nts.uk.util.isNullOrUndefined(selectedCell.row) && !_.isEqual(container.data("o-selected"), selectedCell)) {
                             container.ntsButtonTable("setSelectedCell", selectedCell.row, selectedCell.column);
                         }
-                        // insert on develop 
                         container.data("o-selected", _.cloneDeep(selectedCell));
                     };
                     return NtsTableButtonBindingHandler;
@@ -26399,6 +26427,9 @@ var nts;
                             case "upload": {
                                 return uploadImage($element, option);
                             }
+                            case "uploadOriginal": {
+                                return uploadImageOriginal($element, option);
+                            }
                             case "selectByFileId": {
                                 return downloadImage($element, option);
                             }
@@ -26419,15 +26450,21 @@ var nts;
                         return $element.data("img-status");
                     }
                     function uploadImage($element, option) {
-                        var dfd = $.Deferred();
                         var dataFile = $element.find(".image-preview").attr("src");
-                        if (!isNotNull(dataFile)) {
+                        return upload($element, option, dataFile);
+                    }
+                    function uploadImageOriginal($element, option) {
+                        return upload($element, option, $element.data("original-img"));
+                    }
+                    function upload($element, option, fileData) {
+                        var dfd = $.Deferred();
+                        if (!isNotNull(fileData)) {
                             var cropper = $element.data("cropper");
                             var cropperData = cropper.getData(true);
                             var formData = {
                                 "fileName": $element.data("file-name"),
                                 "stereoType": isNotNull(option) ? "image" : option.stereoType,
-                                "file": dataFile,
+                                "file": fileData,
                                 "format": $element.data("file-type"),
                                 "x": cropperData.x,
                                 "y": cropperData.y,

@@ -1,7 +1,7 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
-    
+
     /**
 	 * TabPanel Binding Handler
 	 */
@@ -36,19 +36,26 @@ module nts.uk.ui.koExtentions {
                 var content = tabs[i].content;
                 container.children(content).wrap('<div id="' + id + '"></div>')
             }
+            container.bind("parentactived", function(evt, dataX) {
+                dataX.child.find("div[role='tabpanel'][aria-hidden='false']:first").removeClass("disappear");
+//                data.active.valueHasMutated();
+            });
+            
             container.tabs({
-            	create: function(event: Event, ui: any) {
-            		container.find('.ui-tabs-panel').addClass('disappear');
-            		ui.panel.removeClass('disappear');
-            	},
-            	activate: function(evt: Event, ui: any) {
+                create: function(event: Event, ui: any) {
+                    container.find('.ui-tabs-panel').addClass('disappear');
+                    ui.panel.removeClass('disappear'); 
+                },
+                activate: function(evt: Event, ui: any) {
                     data.active(ui.newPanel[0].id);
-            		container.find('.ui-tabs-panel').addClass('disappear');
+                    container.find('.ui-tabs-panel').addClass('disappear');
                     ui.newPanel.removeClass('disappear');
                     container.children('ul').children('.ui-tabs-active').addClass('active');
                     container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
                     container.children('ul').children('.ui-state-disabled').addClass('disabled');
                     container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                    let child = ui.newPanel.children().find(".ui-tabs:first");
+                    child.trigger("parentactived", {child: child});
                 }
             }).addClass(direction);
         }
@@ -64,25 +71,25 @@ module nts.uk.ui.koExtentions {
             // Container.
             var container = $(element);
             // Select tab.
-            var activeTab = _.find(tabs, function(tab){
+            var activeTab = _.find(tabs, function(tab) {
                 return tab.id == data.active();
-            }); 
+            });
             var indexActive = tabs.indexOf(activeTab);
             let oldIndexActive = container.tabs("option", "active");
-            if(oldIndexActive !== indexActive){
+            if (oldIndexActive !== indexActive) {
                 container.tabs("option", "active", indexActive);
             }
-             
-            if ( !activeTab.enable() || !activeTab.visible() ) {
-                let firstActiveTab = _.find(tabs, function(tab){
-                    return tab.enable() && tab.visible(); 
-                }); 
-                if(!nts.uk.util.isNullOrUndefined(firstActiveTab)) {
+
+            if (!activeTab.enable() || !activeTab.visible()) {
+                let firstActiveTab = _.find(tabs, function(tab) {
+                    return tab.enable() && tab.visible();
+                });
+                if (!nts.uk.util.isNullOrUndefined(firstActiveTab)) {
                     data.active(firstActiveTab.id);
                     var firstIndexActive = tabs.indexOf(firstActiveTab);
                     container.tabs("option", "active", firstIndexActive);
                 }
-            } 
+            }
 
             // Disable & visible tab.
             tabs.forEach(tab => {
@@ -101,10 +108,10 @@ module nts.uk.ui.koExtentions {
                     container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
                 }
             });
-            
+
             _.defer(() => { container.children('ul').children('li').attr("tabindex", "-1"); });
         }
     }
-    
+
     ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
 }
