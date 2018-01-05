@@ -64,14 +64,18 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel = new MainSettingModel(self.useHalfDay);
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
                     if (self.isNewMode()) {
+                        self.isLoading(false);
                         self.clearAllError();
                         self.mainSettingModel.resetData(self.isNewMode());
+                        self.isLoading(true);
                     }
                 });
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
                     if (self.isNewMode()) {
+                        self.isLoading(false);
                         self.clearAllError();
                         self.mainSettingModel.resetData(self.isNewMode());
+                        self.isLoading(true);
                     }
                 });
 
@@ -465,6 +469,7 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterNewMode(): void {
                 let self = this;
+                self.isLoading(false);
                 // clear all errors
                 self.clearAllError();
 
@@ -482,6 +487,7 @@ module nts.uk.at.view.kmk003.a {
 
                 // focus worktime atr
                 $('#cbb-worktime-atr').focus();
+                self.isLoading(true);
             }
 
             /**
