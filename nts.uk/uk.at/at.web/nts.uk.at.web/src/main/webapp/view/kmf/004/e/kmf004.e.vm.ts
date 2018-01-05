@@ -101,6 +101,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             var dfd = $.Deferred();
             let specialHolidayCode = nts.uk.ui.windows.getShared('KMF004D_SPHD_CD');
             service.getAll(specialHolidayCode).done((lstData: Array<Per>) => {
+                nts.uk.ui.errors.clearAll();
                 if(lstData.length == 0){
                     self.selectedId(0);
                     self.check(true);
