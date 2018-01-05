@@ -542,6 +542,7 @@ module nts.uk.at.view.kmk003.a {
             public clearAllError(): void {
                 $('.nts-editor').ntsError('clear');
                 $('.ntsControl').ntsError('clear');
+                $('.time-range-editor').ntsError('clear');
             }
 
             /**
