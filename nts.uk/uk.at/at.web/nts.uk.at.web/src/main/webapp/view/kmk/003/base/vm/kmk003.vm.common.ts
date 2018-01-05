@@ -648,65 +648,77 @@ module nts.uk.at.view.kmk003.a {
                 endTime: number;
             }
 
-            export abstract class TimeRangeModelConverter<T> {
-                listTimeRange: KnockoutObservableArray<TimeRangeModel>;
-                originalList: KnockoutObservableArray<T>;
+            export abstract class FixedTableDataConverter<C, O> {
+                convertedList: KnockoutObservableArray<C>;
+                originalList: KnockoutObservableArray<O>;
                 originalListTemp: Array<any>;
-                listTimeRangeTemp: Array<any>;
+                convertedListTemp: Array<any>;
 
                 constructor() {
                     let self = this;
-                    self.listTimeRange = ko.observableArray([]);
+                    self.convertedList = ko.observableArray([]);
                     self.originalList = ko.observableArray([]);
                     self.originalListTemp = [];
-                    self.listTimeRangeTemp = [];
+                    self.convertedListTemp = [];
                     
                     self.originalList.subscribe(newList => {
                         let newTemp = self.toOriginalListTemp(newList);
                         if (self.isNotEqual(newTemp, self.originalListTemp)) {
                             self.originalListTemp = newTemp;
-                            self.listTimeRange(self.toListTimeRange());
+                            self.convertedList(self.toConvertedList());
                         }
                     });
 
-                    self.listTimeRange.subscribe(newList => {
-                        let newTemp = self.toListTimeRangeTemp(newList);
-                        if (self.isNotEqual(newTemp, self.listTimeRangeTemp)) {
-                            self.listTimeRangeTemp = newTemp;
-                            self.originalList(self.fromListTimeRange(newList));
+                    self.convertedList.subscribe(newList => {
+                        let newTemp = self.toConvertedListTemp(newList);
+                        if (self.isNotEqual(newTemp, self.convertedListTemp)) {
+                            self.convertedListTemp = newTemp;
+                            self.originalList(self.fromConvertedList(newList));
                         }
                     });
-
                 }
 
-                private toListTimeRangeTemp(list: Array<TimeRangeModel>): any {
+                /**
+                 * To converted list temp
+                 */
+                abstract toConvertedListTemp(list: Array<C>): any;
+
+                /**
+                 * To original list temp
+                 */
+                abstract toOriginalListTemp(list: Array<O>): any;
+
+                /**
+                 * Convert to list time range
+                 */
+                abstract toConvertedList(): Array<C>;
+
+                /**
+                 * Revert to original list
+                 */
+                abstract fromConvertedList(newList: Array<C>): Array<O>;
+
+                /**
+                 * Evaluate 2 arrays
+                 */
+                isNotEqual(value, other): boolean {
+                    return !_.isEqual(value, other);
+                }
+            }
+
+            export abstract class TimeRangeModelConverter<T> extends FixedTableDataConverter<TimeRangeModel, T> {
+
+                toConvertedListTemp(list: Array<TimeRangeModel>): any {
                     return _.map(list, item => {
                         return { start: item.column1().startTime, end: item.column1().endTime };
                     });
                 }
 
-                private toOriginalListTemp(list: Array<any>) {
+                toOriginalListTemp(list: Array<any>): any {
                     return _.map(list, item => {
                         return { start: item.start(), end: item.end() };
                     });
                 }
-
-                /**
-                 * Evaluate 2 arrays
-                 */
-                private isNotEqual(value, other): boolean {
-                    return !_.isEqual(value, other);
-                }
-
-                /**
-                 * Convert to list time range
-                 */
-                abstract toListTimeRange(): Array<TimeRangeModel>;
-
-                /**
-                 * Revert to original list
-                 */
-                abstract fromListTimeRange(newList: Array<TimeRangeModel>): Array<T>;
 
                 /**
                  * Convert to TimeRangeItem
@@ -747,12 +759,12 @@ module nts.uk.at.view.kmk003.a {
                     this.timezones = this.originalList;
                 }
 
-                toListTimeRange(): Array<TimeRangeModel> {
+                toConvertedList(): Array<TimeRangeModel> {
                     let self = this;
                     return _.map(self.timezones(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
                 }
 
-                fromListTimeRange(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
+                fromConvertedList(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
                     return _.map(newList, newVl => {
                         let vl = new DeductionTimeModel();
                         vl.start(newVl.column1().startTime);
@@ -835,8 +847,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): FlowRestTimezoneDto {
-                    var flowRestSets: FlowRestSettingDto[] = [];
-                    _.forEach(this.flowRestSets(), model => flowRestSets.push(model.toDto()));
+                    let flowRestSets = this.flowRestSets().map(item => item.toDto());
                     var dataDTO: FlowRestTimezoneDto = {
                         flowRestSets: flowRestSets,
                         useHereAfterRestSet: this.useHereAfterRestSet(),
