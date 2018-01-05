@@ -281,12 +281,12 @@ module a7 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable(0), width: 107,
-                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',inputFormat: 'time',mode: 'time',enable: false}" />`,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',constraint: 'AttendanceTime', inputFormat: 'time',mode: 'time',enable: true}" />`,
                     cssClassName: 'column-time-editor'
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable(0), width: 107,
-                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',inputFormat: 'time',mode: 'time',enable: false}" />`,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',constraint: 'AttendanceTime',inputFormat: 'time',mode: 'time',enable: true}" />`,
                     cssClassName: 'column-time-editor',
                     enable: self.isCheckFollowTime()
                 }

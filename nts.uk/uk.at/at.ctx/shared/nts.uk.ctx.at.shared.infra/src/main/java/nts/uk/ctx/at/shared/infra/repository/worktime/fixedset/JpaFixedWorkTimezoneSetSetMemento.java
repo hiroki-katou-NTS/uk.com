@@ -98,7 +98,7 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 			
 			// get entity existed
 			KshmtFixedWorkTimeSet entity = lstEntity.stream()
-					.filter(item -> item.getKshmtFixedWorkTimeSetPK() == pk)
+					.filter(item -> item.getKshmtFixedWorkTimeSetPK().equals(pk))
 					.findFirst()
 					.orElse(new KshmtFixedWorkTimeSet(pk));
 			
@@ -158,7 +158,7 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 			
 			// get entity existed
 			KshmtFixedOtTimeSet entity = lstEntity.stream()
-					.filter(item -> item.getKshmtFixedOtTimeSetPK() == pk)
+					.filter(item -> item.getKshmtFixedOtTimeSetPK().equals(pk))
 					.findFirst()
 					.orElse(new KshmtFixedOtTimeSet(pk));
 			
