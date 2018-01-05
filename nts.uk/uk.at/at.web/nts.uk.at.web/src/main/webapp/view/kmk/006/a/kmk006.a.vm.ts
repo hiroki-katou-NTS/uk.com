@@ -141,7 +141,7 @@ module nts.uk.at.view.kmk006.a {
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
-                    maxRows: 20
+                    maxRows: 10
                 };
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
                 self.itemJobAutoCalModel = new JobAutoCalSettingModel();
@@ -207,9 +207,13 @@ module nts.uk.at.view.kmk006.a {
                     selectedCode: self.totalSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
-                    maxRows: 20
+                    maxRows: 10
                 };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
+                
+                self.createModeScreenB = ko.observable(false);
+                self.createModeScreenC = ko.observable(false);
+                self.createModeScreenD = ko.observable(false);  
 
 
                 //subscribe
@@ -236,7 +240,14 @@ module nts.uk.at.view.kmk006.a {
                             self.itemWkpAutoCalModel.resetData();
                             self.reLoadListEnum(self.itemWkpAutoCalModel);
                         }                        
-                    }  
+                    }
+                    service.getWkpAutoCal(codeChanged).done((data) => {
+                        if (data) {
+                            self.createModeScreenB(true);             
+                        } else {
+                            self.createModeScreenB(false);    
+                        }
+                    });  
                 });
 
                 //subscribe 
@@ -264,6 +275,13 @@ module nts.uk.at.view.kmk006.a {
                             self.reLoadListEnum(self.itemWkpJobAutoCalModel);                       
                         }
                     }  
+                    service.getWkpJobAutoCal(codeChanged, self.totalSelectedCode()).done((data) => {
+                        if (data) {
+                            self.createModeScreenD(true);             
+                        } else {
+                            self.createModeScreenD(false);    
+                        }
+                    });
                 });
 
                 //subscribe 
@@ -285,6 +303,13 @@ module nts.uk.at.view.kmk006.a {
                             self.reLoadListEnum(self.itemWkpJobAutoCalModel);
                         }   
                     }
+                    service.getWkpJobAutoCal(self.totalSelectedWorkplaceId(), codeChanged).done((data) => {
+                        if (data) {
+                            self.createModeScreenD(true);             
+                        } else {
+                            self.createModeScreenD(false);    
+                        }
+                    });
                 });
 
                 //subscribe 
@@ -306,6 +331,13 @@ module nts.uk.at.view.kmk006.a {
                             self.reLoadListEnum(self.itemJobAutoCalModel);
                         }
                     }
+                    service.getJobAutoCal(codeChanged).done((data) => {
+                        if (data) {
+                            self.createModeScreenC(true);             
+                        } else {
+                            self.createModeScreenC(false);    
+                        }
+                    });
                 });
 
 
@@ -335,18 +367,7 @@ module nts.uk.at.view.kmk006.a {
                 });
                 self.enableEnumResLatLi = ko.computed(function() {
                     return self.valueEnumResLatAtr() != 2;
-                });
-
-                // UI 
-                self.createModeScreenB = ko.computed(() => {
-                    return !nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp());
-                });
-                self.createModeScreenC = ko.computed(() => {
-                    return !nts.uk.text.isNullOrEmpty(self.selectedCurrentJob());
-                });
-                self.createModeScreenD = ko.computed(() => {
-                    return (!nts.uk.text.isNullOrEmpty(self.selectedCurrentWkp())) && (!nts.uk.text.isNullOrEmpty(self.selectedCurrentJob()));
-                });  
+                }); 
             }
 
 
@@ -737,6 +758,7 @@ module nts.uk.at.view.kmk006.a {
                                 // reload pa    
                                 self.selectedCode(jobId);
                                 self.loadJobAutoCal(jobId);
+                                self.createModeScreenC(true);  
 //                            });
                         });
                     });
@@ -781,6 +803,7 @@ module nts.uk.at.view.kmk006.a {
                             // reload pa    
                             self.multiSelectedWorkplaceId(wkpId);
                             self.loadWkpAutoCal(wkpId);
+                            self.createModeScreenB(true);
                         });
                     });
                 }).fail(function(error) {
@@ -837,6 +860,7 @@ module nts.uk.at.view.kmk006.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload pa    
                         self.loadWkpJobAutoCal(wkpId, jobId);
+                        self.createModeScreenD(true);
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -902,6 +926,7 @@ module nts.uk.at.view.kmk006.a {
 //                                $('#component-items-list').ntsListComponent(self.jobListOptions).done(function() {
                                     self.loadJobAutoCal(self.selectedCurrentJob());
                                     self.selectedCode(self.selectedCurrentJob());
+                                    self.createModeScreenC(false);
 //                                });
                             });
                         });
@@ -935,6 +960,7 @@ module nts.uk.at.view.kmk006.a {
 //                                $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
                                     self.loadWkpAutoCal(self.selectedCurrentWkp());
                                     self.multiSelectedWorkplaceId(self.selectedCurrentWkp());
+                                    self.createModeScreenB(false);
 //                                });
                             });
                            
@@ -970,6 +996,7 @@ module nts.uk.at.view.kmk006.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadWkpJobAutoCal(self.selectedCurrentJob(), self.selectedCurrentWkp());
                             self.loadWkpJobAlreadySettingList();
+                            self.createModeScreenD(false);
                         });
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });

@@ -38,6 +38,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     let foundItem = _.find(self.lstRelationship(), (item: Relationship) => {
                         return item.relationshipCode == value;
                     });
+                    $("#inpPattern").focus();
                     self.checkUpdate(true);
                     self.checkDelete(true);
                     self.selectedOption(foundItem);
@@ -48,14 +49,18 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             });
             
         }
-
+   
         /** get data to list **/
         getData(): JQueryPromise<any>{
             let self = this;
             let dfd = $.Deferred();
             service.findAll().done((lstData: Array<viewmodel.Relationship>) => {
-                let sortedData = _.orderBy(lstData, ['relationshipCode'], ['asc']);
-                self.lstRelationship(sortedData);
+                if(lstData.length == 0){
+                    self.lstRelationship([]);
+                }else{
+                    let sortedData = _.orderBy(lstData, ['relationshipCode'], ['asc']);
+                    self.lstRelationship(sortedData);
+                }
                 dfd.resolve();
             }).fail(function(error){
                     dfd.reject();
@@ -72,7 +77,12 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             let list=[];
             self.getData().done(function(){
                 if(self.lstRelationship().length == 0){
-                    self.clearFrom();
+                     self.check(true);
+                    self.checkUpdate(false);
+                    self.selectedCode("");
+                    self.codeObject("");
+                    self.selectedName("");
+                    nts.uk.ui.errors.clearAll(); 
                     self.checkDelete(false);
                 }
                 else{
@@ -98,8 +108,9 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     if(self.checkUpdate() == true){
                         service.update(updateOption).done(function(){
                             self.getData().done(function(){
-                                self.selectedCode(code);
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
+                                    self.selectedCode(code);  
+                                }); 
                             });
                         });
                     }
@@ -110,8 +121,9 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                         // insert item to list
                         service.insert(obj).done(function(){
                             self.getData().done(function(){
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                                self.selectedCode(code);  
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
+                                    self.selectedCode(code);  
+                                });
                             });
                         }).fail(function(res){
                             $('#inpCode').ntsError('set', res);
@@ -177,7 +189,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     })
                  nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 })
-            }).ifCancel(() => {     
+            }).ifNo(() => {     
             }); 
             $("#inpPattern").focus();
         }

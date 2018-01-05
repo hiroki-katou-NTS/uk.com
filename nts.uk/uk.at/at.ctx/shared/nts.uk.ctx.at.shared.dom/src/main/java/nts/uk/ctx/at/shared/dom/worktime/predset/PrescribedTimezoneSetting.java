@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.val;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -36,6 +36,9 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	
 	/** The shift two. */
 	public static Integer SHIFT_TWO = 2;
+	
+	/** The size one. */
+	public static Integer SIZE_ONE = 1;
 	
 	/**
 	 * Instantiates a new prescribed timezone setting.
@@ -133,21 +136,34 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		
 		// valid timezone must increase
 		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
-		TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
-		if (tzWorkNo2.getStart().lessThanOrEqualTo(tzWorkNo1.getEnd())) {
-			throw new BusinessException("Msg_772");
+		if(this.lstTimezone.size()> SIZE_ONE){
+			TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
+			//TODO rcheck overlap 
+			// valid: 2 時間帯 có 勤務NO=1 và 2 not overlap
+//			boolean isWorkNoOverlap = this.getTimezone(SHIFT_ONE).getWorkNo() == this.getTimezone(SHIFT_TWO).getWorkNo();
+//			if (isWorkNoOverlap) {
+//				throw new BusinessException("Msg_771");
+//			}
+			
+			// 使用する
+			if (tzWorkNo2.isUsed()) {
+				
+				if (tzWorkNo2.getStart().lessThan(tzWorkNo1.getEnd())) {
+					BundledBusinessException be = BundledBusinessException.newInstance();
+					be.addMessage("Msg_772");
+					be.throwExceptions();
+				}
+				
+				if (!(this.isMorningAndAfternoonInShift1() || this.isMorningAndAfternoonInShift2())) {
+					//throw new BusinessException("Msg_774");
+				}
+			}
 		}
 		
 		// valid 時間帯.終了 >= 0:01
 		if (this.lstTimezone.stream()
-				.anyMatch(timezone -> !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
+				.anyMatch(timezone -> timezone.isUsed() && !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
 			throw new BusinessException("Msg_778");
-		}
-		
-		// valid: 2 時間帯 có 勤務NO=1 và 2 not overlap
-		boolean isWorkNoOverlap = this.getTimezone(SHIFT_ONE).getWorkNo() == this.getTimezone(SHIFT_TWO).getWorkNo();
-		if (isWorkNoOverlap) {
-			throw new BusinessException("Msg_771");
 		}
 		
 		/**
@@ -161,16 +177,10 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * Valid time day.
 	 */
 	private void validTimeDay() {
-		// 使用する
-		if (this.getTimezoneShiftTwo().isUsed()) {
-			if (!(this.isMorningAndAfternoonInShift1() || this.isMorningAndAfternoonInShift2())) {
-				throw new BusinessException("Msg_774");
-			}
-		}
 		// 使用しない
-		else if (!this.isMorningAndAfternoonInShift1()) {
-			throw new BusinessException("Msg_773");
-		}
+//		if (!this.isMorningAndAfternoonInShift1()) {
+//			throw new BusinessException("Msg_773");
+//		}
 	}
 
 	/**
@@ -179,8 +189,10 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return true, if is morning and afternoon in shift 1
 	 */
 	private boolean isMorningAndAfternoonInShift1() {
-		val tzWorkNo1 = this.getTimezoneShiftOne();
-		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) && tzWorkNo1.consistOf(this.getAfternoonStartTime());
+		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
+		
+		// (afternoon time or morning time) part of (shift1 or shift2)
+		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) || tzWorkNo1.consistOf(this.getMorningEndTime());
 	}
 
 	/**
@@ -189,8 +201,27 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return true, if is morning and afternoon in shift 2
 	 */
 	private boolean isMorningAndAfternoonInShift2() {
-		val tzWorkNo2 = this.getTimezoneShiftTwo();
-		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) && tzWorkNo2.consistOf(this.getAfternoonStartTime());
+		TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
+		
+		// (afternoon time or morning time) part of (shift1 or shift2)
+		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) || tzWorkNo2.consistOf(this.getMorningEndTime());
 	}
 	
+	/**
+	 * Restore disabled data from.
+	 *
+	 * @param domain the domain
+	 */
+	public void restoreDisabledDataFrom(PrescribedTimezoneSetting domain) {
+		int indexOfShift2 = this.lstTimezone.indexOf(this.getTimezoneShiftTwo());
+		this.lstTimezone.set(indexOfShift2, domain.getTimezoneShiftTwo());
+	}
+
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.getTimezoneShiftTwo().restoreDefaultData();
+	}
+
 }

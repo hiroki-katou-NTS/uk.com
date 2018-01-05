@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit.Direction;
 @Getter
 public class TimeRoundingSetting extends DomainObject{
 	
-	/** The unit. */
+	/** The rounding time. */
 	// 単位
 	private Unit roundingTime;
 	
@@ -36,15 +36,22 @@ public class TimeRoundingSetting extends DomainObject{
 		this.rounding = rounding;
 	}
 	
+	/**
+	 * Instantiates a new time rounding setting.
+	 *
+	 * @param roundingTime the rounding time
+	 * @param rounding the rounding
+	 */
 	public TimeRoundingSetting(int roundingTime, int rounding) {
 		this.roundingTime = EnumAdaptor.valueOf(roundingTime, Unit.class);
 		this.rounding = EnumAdaptor.valueOf(rounding, Rounding.class);
 	}
 	
 	/**
-	 * 分単位の時間値を設定にもとづき丸める
-	 * @param timeAsMinutes　丸め対象の時間
-	 * @return 丸めた時間
+	 * Round.
+	 *
+	 * @param timeAsMinutes the time as minutes
+	 * @return the int
 	 */
 	public int round(int timeAsMinutes) {
 		
@@ -63,5 +70,23 @@ public class TimeRoundingSetting extends DomainObject{
 		default:
 			throw new RuntimeException("invalid case: " + this.rounding);
 		}
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(TimeRoundingSetting oldDomain) {
+		this.roundingTime = oldDomain.getRoundingTime();
+		this.rounding = oldDomain.getRounding();
+	}
+	
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.roundingTime = Unit.ROUNDING_TIME_1MIN;
+		this.rounding = Rounding.ROUNDING_UP;
 	}
 }

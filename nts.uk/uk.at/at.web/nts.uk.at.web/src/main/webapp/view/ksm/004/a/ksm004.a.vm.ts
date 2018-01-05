@@ -280,7 +280,7 @@ module nts.uk.at.view.ksm004.a {
             submitCalendar(value){
                 var self = this;
                 if(value==1){
-                    if(nts.uk.util.isNullOrUndefined(self.currentCalendarWorkPlace().key())){
+                    if(nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});      
                     } else {
                         $(".yearMonthPicker").trigger("validate");
@@ -301,7 +301,7 @@ module nts.uk.at.view.ksm004.a {
                         }        
                     }    
                 } else if(value==2){
-                    if(nts.uk.util.isNullOrUndefined(self.currentCalendarClass().key())){
+                    if(nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});   
                     } else {
                         $(".yearMonthPicker").trigger("validate");
@@ -870,8 +870,13 @@ module nts.uk.at.view.ksm004.a {
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     self.isShowDatepicker = false;
+                    let optionOLd = [];
+                   _.forEach(self.calendarPanel.optionDates(),(data) =>{
+                       optionOLd.push(data);
+                   });
                     $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                    .done(()=>{ 
+                    .done(()=>{
+                        self.calendarPanel.optionDates(optionOLd); 
                         self.isShowDatepicker = true;
                         nts.uk.ui.block.clear(); 
                     })
@@ -888,7 +893,7 @@ module nts.uk.at.view.ksm004.a {
                 nts.uk.ui.block.invisible()
                 var self = this;
                 if(value==1){
-                    if(nts.uk.util.isNullOrUndefined(self.currentCalendarWorkPlace().key())){
+                    if(nts.uk.util.isNullOrEmpty(self.currentCalendarWorkPlace().key())){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});      
                     } else {
                         nts.uk.ui.windows.setShared('KSM004_D_PARAM', 
@@ -912,7 +917,7 @@ module nts.uk.at.view.ksm004.a {
                         });     
                     }    
                 } else if(value==2){
-                    if(nts.uk.util.isNullOrUndefined(self.currentCalendarClass().key())){
+                    if(nts.uk.util.isNullOrEmpty(self.currentCalendarClass().key())){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_339" }).then(()=>{nts.uk.ui.block.clear();});  
                     } else {
                         nts.uk.ui.windows.setShared('KSM004_D_PARAM', 

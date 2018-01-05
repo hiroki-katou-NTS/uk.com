@@ -2,6 +2,8 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 
@@ -19,7 +21,7 @@ public interface ApproveService {
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID);
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate);
 	
 	/**
 	 * 1.指定する承認フェーズの承認が完了したか
@@ -36,7 +38,7 @@ public interface ApproveService {
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String companyID, String rootStateID);
+	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate);
 	
 	/**
 	 * 3.指定する承認フェーズに未承認の承認者一覧を取得する
@@ -52,7 +54,8 @@ public interface ApproveService {
 	 * @param approvalPhaseStateNumber ドメインモデル「承認フェーズインスタンス」・順序
 	 * @return
 	 */
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber);
+	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, Boolean isCreate,
+			String employeeID, ApplicationType appType, GeneralDate appDate);
 	
 	/**
 	 * 1.送信先の判断処理

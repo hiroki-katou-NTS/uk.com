@@ -1,54 +1,64 @@
-#tab-panel{
-    margin: 57px 0px 0px 51px;
+#tab-panel {
+	margin: 57px 0px 0px 51px;
 	display: inline-block;
 }
 
-#label2, #label3, #label4, #label5{
+#A_SEL_002 {
+	vertical-align: middle;
+	width: 70px !important;
+}
+
+#label2, #label3, #label4, #label5 {
 	margin-left: 55px;
 }
 
-#single-list_container{
+#single-list_container {
 	float: left;
 	display: inline-block;
 }
 
-#contents-area{
+#contents-area {
 	padding-left: 20px;
 }
 
-#functions-area{
+#functions-area {
 	padding-top: 20px;
-    padding-bottom: 13px;
+	padding-bottom: 13px;
 }
 
-#button3{
+#button3 {
 	margin-left: 256px;
 }
 
-#button2{
+#button2 {
 	margin-left: 20px;
 }
 
-#button1{
+#button1 {
 	margin-left: 37px;
 }
 
-#swap-list2_container, #swap-list_container{
+#messageSwaplist {
+	margin-left: 52%;
+	width: 48%;
+}
+
+#swap-list2_container, #swap-list_container {
 	display: inline-block;;
 }
 
 #swap-list2 col[data-role='rs'] {
-  width: 38px !important;
+	width: 38px !important;
 }
 
 #swap-list2 .ui-icon-triangle-1-e {
-  margin-top: 1px;
+	margin-top: 1px;
 }
 
 #swap-list col[data-role='rs'] {
-  width: 38px !important;
+	width: 38px !important;
 }
 
 #swap-list .ui-icon-triangle-1-e {
-  margin-top: 1px;
+	margin-top: 1px;
 }

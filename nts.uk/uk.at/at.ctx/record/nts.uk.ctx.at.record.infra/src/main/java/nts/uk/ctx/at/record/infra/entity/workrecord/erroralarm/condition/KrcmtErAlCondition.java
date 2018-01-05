@@ -50,28 +50,28 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "MESSAGE_DISPLAY")
 	public String messageDisplay;
 
-	@Column(name = "FiLTER_BY_BUSINESS_TYPE")
+	@Column(name = "FILTER_BY_BUSINESS_TYPE")
 	public BigDecimal filterByBusinessType;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlBusinessType> lstBusinessType;
 
-	@Column(name = "FiLTER_BY_JOB_TITLE")
+	@Column(name = "FILTER_BY_JOB_TITLE")
 	public BigDecimal filterByJobTitle;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlJobTitle> lstJobTitle;
 
-	@Column(name = "FiLTER_BY_EMPLOYMENT")
+	@Column(name = "FILTER_BY_EMPLOYMENT")
 	public BigDecimal filterByEmployment;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlEmployment> lstEmployment;
 
-	@Column(name = "FiLTER_BY_CLASSIFICATION")
+	@Column(name = "FILTER_BY_CLASSIFICATION")
 	public BigDecimal filterByClassification;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -130,17 +130,19 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@Column(name = "GROUP2_USE_ATR")
 	public BigDecimal group2UseAtr;
 
+	@Basic(optional = true)
 	@Column(name = "ATD_ITEM_CONDITION_GROUP1")
 	public String atdItemConditionGroup1;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP1", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
 	public KrcstErAlConGroup krcstErAlConGroup1;
 
+	@Basic(optional = true)
 	@Column(name = "ATD_ITEM_CONDITION_GROUP2")
 	public String atdItemConditionGroup2;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP2", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
 	public KrcstErAlConGroup krcstErAlConGroup2;
 

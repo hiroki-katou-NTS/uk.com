@@ -4,39 +4,37 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	
-	<table style="width: 100%;">
+	<div class="tab_12_setting_rows">
+		<div class="tab_12_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_110')}</div>		
+	</div>
+	
+	<div style="width: 330px; margin-left: 20px;">		
+		<hr/>
+	</div>
+	
+	<div style="margin-left: 40px;">
+		<div class="tab_12_setting_rows">
+			<div class="tab_12_inline_item" style="width: 100px;">
+				<div tabindex="150" id="combo-box-leave-early-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
+						name: '#[KMK003_169]',
+						options: listRoundingTimeValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						visibleItemsCount: 8,
+						value: lateNightSettingRoundingTime,
+						dropDownAttachedToBody: true,
+						editable: false,
+						enable: true }"></div>
+			</div>				
+			<div class="tab_12_inline_item">
+				<div tabindex="151" class="cf" data-bind="ntsSwitchButton: {
+						name: '#[KMK003_171]',
+						options: listRoundingValue,
+						optionsValue: 'value',
+						optionsText: 'localizedName',
+						value: lateNightSettingRounding }"></div>
+			</div>
+		</div>
+	</div>
 		
-		<tr>
-			<td colspan="2">
-				<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_110')}</div>
-			</td>
-		</tr>	
-		
-		<tr>
-			<td colspan="2">
-				<hr/>
-			</td>
-		</tr>
-		
-		<tr data-bind="with: lateNightSetting">
-			<td style="width: 100px; padding: 0px 10px 0px 10px;">
-				<div id="combo-box-late-rounding-time" style="width: 100px;" data-bind="ntsComboBox: {
-					options: listRoundingTimeValue,
-					optionsValue: 'value',
-					optionsText: 'text',
-					visibleItemsCount: 8,
-					value: selectRoundingTimeValue,
-					editable: false,
-					enable: true }"></div>
-			</td>
-			<td style="padding: 0px 10px 0px 10px;">
-				<div class="cf" data-bind="ntsSwitchButton: {
-					options: listRoundingValue,
-					optionsValue: 'value',
-					optionsText: 'text',
-					value: selectRoundingValue }">
-				</div>
-			</td>
-		</tr>				
-	</table>
 </ui:composition>

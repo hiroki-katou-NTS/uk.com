@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.grantrelationship;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 /**
  * insert grant relationship command
@@ -10,9 +11,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class InsertGrantRelationshipCommand {
 	/**コード**/
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	/**コード**/
 	private String relationshipCode;
 	/** 付与日数 **/

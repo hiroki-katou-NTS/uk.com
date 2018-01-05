@@ -4,7 +4,8 @@
 }
 
 #set-work-type, #set-work-time {
-	margin-bottom: 15px
+	margin-bottom: 10px;
+	margin-left: 10px
 }
 
 #time-edit1, #time-edit2 {

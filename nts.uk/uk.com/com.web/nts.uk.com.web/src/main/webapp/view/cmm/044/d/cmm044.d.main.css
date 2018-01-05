@@ -1,62 +1,21 @@
+#contents-area {
+	overflow: visible;
+}
 
 #D_BTN_001 {
 	margin-top: 2px;
 	margin-left: 23px;
-	width: 90px;
 }
 
 #D_BTN_002 {
 	margin-left: 15px;
-	width: 90px;
 }
+
 #label-d1-003{
 	margin-top: 20px;
 	margin-left: 19px;
 }
-.table-container {
-	margin-top: 42px;
-	margin-left: 35px;
-	height: 350px;
-	float:left;
-	overflow: auto;
-}
-.table1 .fixed-width-1{
-	width: 16px;
-}
-.table1 .fixed-width-3{
-	width: 214px;
-}
-.table1 {
-	margin-left: 20px;
-    margin-top: 30px;
-}
-.table1 thead{display:block;}
-/*.table1 thead tr{display:block;}*/
-.table1 th{
-	background-color: #E0F59E;
-	padding: 5px 0;	
-	width:101px;
-	border: 1px solid #ccc;
-	text-align: center;
-	box-sizing:border-box;
-}
-.table1 tbody {
-	display:block;
-    max-height: 320px;
-    overflow-y: scroll;
-}
-/*.table1 tbody tr {
-	display:block;
-}*/
-.table1 td{
-	border: 1px solid #ccc;
-	padding: 5px 3px;
-	width: 94px;
-}
 
-.table1 .fixed-width-2{
-	width: 214px;
-}
 .proceed{
 	margin-left: 25px !important;
 }
@@ -69,4 +28,15 @@
 .caret-bottom{
 	margin-left: 10px;
 }
+.nts-fixed-table.cf{
+	margin-top: 15px;
+}
 
+.nts-fixed-table .ui-widget-header {
+	text-align: center;
+	height: 30px;
+}
+
+.nts-fixed-table .nts-fixed-body-table > tbody > tr > td {
+	height: 22px;
+}

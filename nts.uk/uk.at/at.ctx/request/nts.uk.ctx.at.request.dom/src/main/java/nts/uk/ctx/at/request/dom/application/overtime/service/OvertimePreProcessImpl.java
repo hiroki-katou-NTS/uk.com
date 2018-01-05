@@ -8,13 +8,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -95,7 +98,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	@Inject
 	private DivergenceReasonRepository diReasonRepository;
 	@Inject
-	private ApplicationRepository applicationRepository;
+	private ApplicationRepository_New applicationRepository;
 
 	@Inject
 	private OvertimeRepository overtimeRepository;
@@ -394,19 +397,20 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public AppOverTime getPreApplication(String employeeId,
+	public AppOverTime getPreApplication(String companyID, String employeeId,
 			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, int prePostAtr) {
 		AppOverTime result = new AppOverTime();
 		if (prePostAtr == InitValueAtr.POST.value) {
-			Application applicationOvertime = new Application();
+			Application_New applicationOvertime = Application_New.firstCreate(companyID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+					GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, employeeId, new AppReason(Strings.EMPTY));
 			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value) {
-				List<Application> application = this.applicationRepository.getApp(employeeId,
+				List<Application_New> application = this.applicationRepository.getApp(employeeId,
 						GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
 						ApplicationType.OVER_TIME_APPLICATION.value);
-				if (application.size() > 0) {
-					applicationOvertime.setApplicationDate(application.get(0).getApplicationDate());
+				if (application!= null && application.size() > 0) {
+					applicationOvertime.setAppDate(application.get(0).getAppDate());
 					Optional<AppOverTime> appOvertime = this.overtimeRepository
-							.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getApplicationID());
+							.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppDate().toString(DATE_FORMAT));
 					if (appOvertime.isPresent()) {
 						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
 						result.setSiftCode(appOvertime.get().getSiftCode());

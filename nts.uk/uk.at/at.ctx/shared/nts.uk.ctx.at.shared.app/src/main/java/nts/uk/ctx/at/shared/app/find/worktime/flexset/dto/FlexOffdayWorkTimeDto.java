@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeSetMemento;
  */
 @Getter
 @Setter
-public class FlexOffdayWorkTimeDto implements FlexOffdayWorkTimeSetMemento{
+public class FlexOffdayWorkTimeDto implements FlexOffdayWorkTimeSetMemento {
 
 	/** The lst work timezone. */
 	private List<HDWorkTimeSheetSettingDto> lstWorkTimezone;
@@ -61,7 +61,10 @@ public class FlexOffdayWorkTimeDto implements FlexOffdayWorkTimeSetMemento{
 	 */
 	@Override
 	public void setRestTimezone(FlowWorkRestTimezone restTimezone) {
-		restTimezone.saveToMemento(this.restTimezone);
+		if (restTimezone != null) {
+			this.restTimezone = new FlowWorkRestTimezoneDto();
+			restTimezone.saveToMemento(this.restTimezone);
+		}
 	}
 
 }

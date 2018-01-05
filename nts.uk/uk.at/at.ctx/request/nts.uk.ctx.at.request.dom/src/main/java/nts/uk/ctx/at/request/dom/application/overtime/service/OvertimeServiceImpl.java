@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -45,7 +45,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private OvertimeRepository overTimeRepository;
 	@Inject
-	ApplicationRepository appRepository;
+	ApplicationApprovalService_New appRepository;
 	
 	@Inject
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
@@ -170,9 +170,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	 * 登録処理を実行
 	 */
 	@Override
-	public void CreateOvertime(AppOverTime domain, Application newApp){
+	public void CreateOvertime(AppOverTime domain, Application_New newApp){
 		//Register application
-		appRepository.addApplication(newApp);
+		appRepository.insert(newApp);
 		//Register overtime
 		overTimeRepository.Add(domain);
 	}

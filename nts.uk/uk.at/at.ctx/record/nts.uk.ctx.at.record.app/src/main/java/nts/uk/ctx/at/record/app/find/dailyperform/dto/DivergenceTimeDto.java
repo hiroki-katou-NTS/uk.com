@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 乖離時間 */
 @Data
@@ -43,12 +44,16 @@ public class DivergenceTimeDto {
 	private Integer divergenceTimeNo;
 	
 	public static DivergenceTimeDto fromDivergenceTime(DivergenceTime domain){
-		return new DivergenceTimeDto(
-				domain.getDivTime().valueAsMinutes(), 
-				domain.getDeductionTime().valueAsMinutes(),
-				domain.getDivResonCode().v(), 
-				domain.getDivReason().v(), 
-				domain.getDivTimeAfterDeduction().v(), 
+		return domain == null ? null : new DivergenceTimeDto(
+				getAttendanceTime(domain.getDivTime()), 
+				getAttendanceTime(domain.getDeductionTime()),
+				domain.getDivResonCode() == null ? null : domain.getDivResonCode().v(), 
+				domain.getDivReason() == null ? null : domain.getDivReason().v(), 
+				getAttendanceTime(domain.getDivTimeAfterDeduction()), 
 				domain.getDivTimeId());
+	}
+
+	private static int getAttendanceTime(AttendanceTime domain) {
+		return domain == null ? null : domain.valueAsMinutes();
 	}
 }

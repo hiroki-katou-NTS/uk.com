@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,6 +49,10 @@ public class SubCondition extends DomainObject {
 
 	/* 年齢基準日 */
 	private AgeBaseDates ageBaseDates;
+	
+	private List<String> employmentList;
+	
+	private List<String> classificationList;
 
 	@Override
 	public void validate() {
@@ -101,7 +107,7 @@ public class SubCondition extends DomainObject {
 	 */
 	public static SubCondition createFromJavaType(String companyId, String specialHolidayCode, int useGender,
 			int useEmployee, int useCls, int useAge, int genderAtr, Integer limitAgeFrom, Integer limitAgeTo,
-			int ageCriteriaAtr, int ageBaseYearAtr, int ageBaseDates) {
+			int ageCriteriaAtr, int ageBaseYearAtr, int ageBaseDates, List<String> employmentList, List<String> classificationList) {
 		return new SubCondition(companyId, new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(useGender, UseGender.class), EnumAdaptor.valueOf(useEmployee, UseEmployee.class),
 				EnumAdaptor.valueOf(useCls, UseCls.class), EnumAdaptor.valueOf(useAge, UseAge.class),
@@ -109,6 +115,6 @@ public class SubCondition extends DomainObject {
 				limitAgeFrom != null ? new LimitAgeFrom(limitAgeFrom) : null,
 				limitAgeTo != null ? new LimitAgeTo(limitAgeTo) : null,
 				EnumAdaptor.valueOf(ageCriteriaAtr, AgeCriteriaAtr.class),
-				EnumAdaptor.valueOf(ageBaseYearAtr, AgeBaseYearAtr.class), new AgeBaseDates(ageBaseDates));
+				EnumAdaptor.valueOf(ageBaseYearAtr, AgeBaseYearAtr.class), new AgeBaseDates(ageBaseDates) ,employmentList, classificationList);
 	}
 }

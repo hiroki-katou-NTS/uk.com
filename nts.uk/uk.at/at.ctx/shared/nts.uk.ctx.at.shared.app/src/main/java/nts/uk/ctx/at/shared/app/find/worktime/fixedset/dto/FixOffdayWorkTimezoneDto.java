@@ -38,7 +38,10 @@ public class FixOffdayWorkTimezoneDto implements FixOffdayWorkTimezoneSetMemento
 	 */
 	@Override
 	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
-		restTimezone.saveToMemento(this.restTimezone);
+		if (restTimezone != null) {
+			this.restTimezone = new FixRestTimezoneSetDto();
+			restTimezone.saveToMemento(this.restTimezone);
+		}
 	}
 
 	/*

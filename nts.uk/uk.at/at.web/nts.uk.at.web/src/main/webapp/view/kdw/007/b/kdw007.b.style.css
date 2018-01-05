@@ -3,4 +3,4 @@
 .display-list-label{width: 139px;}
 #compareOperator-cbb{width: 200px;}
 .value-input {width: 70px}
-.nts-editor-wrapped {display: initial !IMPORTANT;}
+.nts-editor-wrapped {display: initial !IMPORTANT; width: auto !IMPORTANT;}

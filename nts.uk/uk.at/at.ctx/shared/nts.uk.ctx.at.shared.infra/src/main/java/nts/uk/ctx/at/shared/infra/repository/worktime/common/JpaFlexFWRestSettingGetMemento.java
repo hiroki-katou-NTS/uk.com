@@ -1,21 +1,55 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexRestSet;
 
+/**
+ * The Class JpaFlexFWRestSettingGetMemento.
+ */
 public class JpaFlexFWRestSettingGetMemento implements FlowWorkRestSettingGetMemento{
+	
+	/** The entity. */
+	private KshmtFlexRestSet entity;
+	
 
-	@Override
-	public CommonRestSetting getCommonRestSetting() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Instantiates a new jpa flex FW rest setting get memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFlexFWRestSettingGetMemento(KshmtFlexRestSet entity) {
+		super();
+		this.entity = entity;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingGetMemento#
+	 * getCommonRestSetting()
+	 */
+	@Override
+	public CommonRestSetting getCommonRestSetting() {
+		return new CommonRestSetting(new JpaFlexCommonRestSettingGetMemento(this.entity));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingGetMemento#
+	 * getFlowRestSetting()
+	 */
 	@Override
 	public FlowWorkRestSettingDetail getFlowRestSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return new FlowWorkRestSettingDetail(new JpaFlexFlowWorkRestSettingDetailGetMemento(this.entity));
 	}
 
 }

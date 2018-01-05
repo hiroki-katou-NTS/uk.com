@@ -178,7 +178,6 @@ module nts.uk.at.view.kaf005.share {
             prePostAtr: number;
             applicantSID: string;
             applicationReason: string;
-            appApprovalPhaseCmds: Array<any>;
             workType: string;
             siftType: string;
             workClockFrom1: number;

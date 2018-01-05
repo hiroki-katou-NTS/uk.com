@@ -28,17 +28,18 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         useCls02: KnockoutObservable<boolean>;
         useCls03: KnockoutObservable<boolean>;
         useCls04: KnockoutObservable<boolean>;
-        useCls05: KnockoutObservable<boolean>;            
+        useCls05: KnockoutObservable<boolean>;  
+        
+        useCls02Enable: KnockoutObservable<boolean>;
+        useCls03Enable: KnockoutObservable<boolean>;
+        useCls04Enable: KnockoutObservable<boolean>;
+        useCls05Enable: KnockoutObservable<boolean>;
+        
         conditionValue01: KnockoutObservable<string>;
-        showLblSet01: KnockoutObservable<boolean>;
         conditionValue02: KnockoutObservable<string>;
-        showLblSet02: KnockoutObservable<boolean>;
         conditionValue03: KnockoutObservable<string>;
-        showLblSet03: KnockoutObservable<boolean>;
         conditionValue04: KnockoutObservable<string>;
-        showLblSet04: KnockoutObservable<boolean>;
         conditionValue05: KnockoutObservable<string>;
-        showLblSet05: KnockoutObservable<boolean>;
         note: KnockoutObservable<string>;
         conditionValue02Enable: KnockoutObservable<boolean>;
         conditionValue03Enable: KnockoutObservable<boolean>;
@@ -51,6 +52,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         
         isNewMode: KnockoutObservable<boolean>;
         grantHTData: any;
+        
+        showLblSet01: KnockoutObservable<boolean>;
+        showLblSet02: KnockoutObservable<boolean>;
+        showLblSet03: KnockoutObservable<boolean>;
+        showLblSet04: KnockoutObservable<boolean>;
+        showLblSet05: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -87,10 +94,23 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 self.isNewMode(true);
      
+                $('.a9_1').show();
+                $('.a9_2').show();
+                $('.a9_3').show();
+                $('.a9_4').show();
+                $('.a9_5').show();
+                $('.a9_6').hide();
+                
                 if(value.length > 0){
                     service.findByCode(value).done(function(data) {
                         self.editMode(false);
-                                                
+                        
+                        if(data.grantConditions.length > 0) {
+                            for(var i = 0; i < data.grantConditions.length; i++) {
+                                self.getGHTdata(data.grantConditions[i].conditionNo, data.grantConditions[i].yearHolidayCode);                                
+                            }
+                        }
+                        
                         self.code(data.yearHolidayCode);
                         self.name(data.yearHolidayName);
                         self.A6_2SelectedRuleCode(data.standardCalculation);  
@@ -106,12 +126,53 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.useCls04(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1 ? true : false);
                         self.conditionValue04(data.grantConditions[3] && data.grantConditions[3].conditionValue.toString());
                         self.useCls05(data.grantConditions[4] && data.grantConditions[4].useConditionAtr == 1 ? true : false);
-                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());      
+                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());
+                        self.btnSetting02Enable(data.grantConditions[1] && data.grantConditions[1].useConditionAtr == 1);
+                        self.btnSetting03Enable(data.grantConditions[2] && data.grantConditions[2].useConditionAtr == 1);
+                        self.btnSetting04Enable(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1);
+                        self.btnSetting05Enable(data.grantConditions[4] && data.grantConditions[4].useConditionAtr == 1);  
                         self.showLblSet01(data.grantConditions[0] ? data.grantConditions[0].hadSet : false);
                         self.showLblSet02(data.grantConditions[1] ? data.grantConditions[1].hadSet : false);
                         self.showLblSet03(data.grantConditions[2] ? data.grantConditions[2].hadSet : false);
                         self.showLblSet04(data.grantConditions[3] ? data.grantConditions[3].hadSet : false);
                         self.showLblSet05(data.grantConditions[4] ? data.grantConditions[4].hadSet : false); 
+                        
+                        if(self.conditionValue01() === "" || self.conditionValue01() == null) {
+                            self.useCls02Enable(false);
+                            self.useCls03Enable(false);
+                            self.useCls04Enable(false);
+                            self.useCls05Enable(false);
+                        } else {
+                            self.useCls02Enable(true);
+                            self.useCls03Enable(false);
+                            self.useCls04Enable(false);
+                            self.useCls05Enable(false);
+                        }
+            
+                        if(self.conditionValue02() === "" || self.conditionValue02() == null) {
+                            self.useCls03Enable(false);
+                            self.useCls04Enable(false);
+                            self.useCls05Enable(false);
+                        } else {
+                            self.useCls03Enable(true);
+                            self.useCls04Enable(false);
+                            self.useCls05Enable(false);
+                        }
+                        
+                        if(self.conditionValue03() === "" || self.conditionValue03() == null) {
+                            self.useCls04Enable(false);
+                            self.useCls05Enable(false);
+                        } else {
+                            self.useCls04Enable(true);
+                            self.useCls05Enable(false);
+                        }
+                        
+                        if(self.conditionValue04() === "" || self.conditionValue04() == null) {
+                            self.useCls05Enable(false);
+                        } else {
+                            self.useCls05Enable(true);
+                        }
+                                    
                         self.setFocus();             
                     }).fail(function(res) {
                           
@@ -145,8 +206,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                                 
                 if (self.items().length > 0) {
                     self.singleSelectedCode(self.items()[0].code);
-                } else {
-                    self.cleanForm();    
                 }
                 
                 dfd.resolve();
@@ -175,6 +234,49 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             });
             
             return dfd.promise();
+        }
+        
+        getGHTdata(conditionNo: number, yearHolidayCode: string) {
+            var self = this;
+            
+            service.findGrantHolidayTblByCodes(conditionNo, yearHolidayCode).done(function(data) {
+                if(data.length > 0) {
+                    self.grantHTData = data;
+                    
+                    _.forEach(self.grantHTData, function(item) {
+                        if(item.conditionNo === 1){
+                            $('.a9_1').hide();
+                        } else {
+                            $('.a9_1').show();
+                        }
+                        
+                        if(item.conditionNo === 2){
+                            $('.a9_2').hide();
+                        } else {
+                            $('.a9_2').show();
+                        }
+                        
+                        if(item.conditionNo === 3){
+                            $('.a9_3').hide();
+                        } else {
+                            $('.a9_3').show();
+                        }
+                        
+                        if(item.conditionNo === 4){
+                            $('.a9_4').hide();
+                        } else {
+                            $('.a9_4').show();
+                        }
+                        
+                        if(item.conditionNo === 5){
+                            $('.a9_5').hide();
+                        } else {
+                            $('.a9_5').show();
+                        }
+                    });
+                }
+            }).fail(function(res) {
+            });
         }
         
         /**
@@ -221,6 +323,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.btnSetting03Enable(false);
             self.btnSetting04Enable(false);
             self.btnSetting05Enable(false); 
+            
             self.showLblSet01(false);
             self.showLblSet02(false);
             self.showLblSet03(false);
@@ -233,14 +336,15 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.editMode(true);
             
             self.setFocus();
+            $('.a9_6').show();
         }
         
         setFocus() {
             var self = this;
             if (self.editMode()) {
-                setTimeout(function() { $('#input-code').focus() }, 500);
+                $("#input-code").focus();
             } else {
-                setTimeout(function() { $('#input-name').focus() }, 500);    
+                $("#input-name").focus();    
             }   
         }
         
@@ -257,6 +361,36 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             $(".input-code").trigger("validate");
             $(".input-name").trigger("validate");
             $(".a7_7").trigger("validate");
+            
+            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue01()) > 100 || Number(self.conditionValue01()) < 0)){
+                $('#cond01').ntsError('set', {messageId:"Msg_262"});
+            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue01()) > 366 || Number(self.conditionValue01()) < 0)){
+                $('#cond01').ntsError('set', {messageId:"Msg_263"});
+            }
+            
+            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue02()) > 100 || Number(self.conditionValue02()) < 0)){
+                $('#cond02').ntsError('set', {messageId:"Msg_262"});
+            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue02()) > 366 || Number(self.conditionValue02()) < 0)){
+                $('#cond02').ntsError('set', {messageId:"Msg_263"});
+            }
+            
+            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue03()) > 100 || Number(self.conditionValue03()) < 0)){
+                $('#cond03').ntsError('set', {messageId:"Msg_262"});
+            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue03()) > 366 || Number(self.conditionValue03()) < 0)){
+                $('#cond03').ntsError('set', {messageId:"Msg_263"});
+            }
+            
+            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue04()) > 100 || Number(self.conditionValue04()) < 0)){
+                $('#cond04').ntsError('set', {messageId:"Msg_262"});
+            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue04()) > 366 || Number(self.conditionValue04()) < 0)){
+                $('#cond04').ntsError('set', {messageId:"Msg_263"});
+            }
+            
+            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue05()) > 100 || Number(self.conditionValue05()) < 0)){
+                $('#cond05').ntsError('set', {messageId:"Msg_262"});
+            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue05()) > 366 || Number(self.conditionValue05()) < 0)){
+                $('#cond05').ntsError('set', {messageId:"Msg_263"});
+            }
             
             if (nts.uk.ui.errors.hasError()) {
                 return;    
@@ -276,8 +410,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 1,
                     yearHolidayCode: code,
                     useConditionAtr: 1,
-                    conditionValue: Number(self.conditionValue01()),
-                    hadSet: false
+                    conditionValue: Number(self.conditionValue01())
                 }));
             } else {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -289,8 +422,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 2,
                     yearHolidayCode: code,
                     useConditionAtr: self.useCls02() == true ? 1 : 0,
-                    conditionValue: Number(self.conditionValue02()),
-                    hadSet: false
+                    conditionValue: Number(self.conditionValue02())
                 }));
             } else if(self.useCls02() && self.conditionValue02().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -302,8 +434,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 3,
                     yearHolidayCode: code,
                     useConditionAtr: self.useCls03() == true ? 1 : 0,
-                    conditionValue: Number(self.conditionValue03()),
-                    hadSet: false
+                    conditionValue: Number(self.conditionValue03())
                 }));
             } else if(self.useCls03() && self.conditionValue03().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -315,8 +446,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 4,
                     yearHolidayCode: code,
                     useConditionAtr: self.useCls04() == true ? 1 : 0,
-                    conditionValue: Number(self.conditionValue04()),
-                    hadSet: false
+                    conditionValue: Number(self.conditionValue04())
                 }));
             } else if(self.useCls04() && self.conditionValue04().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -328,8 +458,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     conditionNo: 5,
                     yearHolidayCode: code,
                     useConditionAtr: self.useCls05() == true ? 1 : 0,
-                    conditionValue: Number(self.conditionValue05()),
-                    hadSet: false
+                    conditionValue: Number(self.conditionValue05())
                 }));
             } else if(self.useCls05() && self.conditionValue05().trim() === "") {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -524,19 +653,19 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 return false;
             }
             
-            if(conditionNo === 1 && nts.uk.text.isNullOrEmpty(self.conditionValue01())){
+            if(conditionNo === 1 && self.conditionValue01() === ""){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 2 && self.useCls02() && nts.uk.text.isNullOrEmpty(self.conditionValue02())){
+            } else if(conditionNo === 2 && self.useCls02() && self.conditionValue02() === ""){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 3 && self.useCls03() && nts.uk.text.isNullOrEmpty(self.conditionValue03())){
+            } else if(conditionNo === 3 && self.useCls03() && self.conditionValue03() === ""){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 4 && self.useCls04() && nts.uk.text.isNullOrEmpty(self.conditionValue04())){
+            } else if(conditionNo === 4 && self.useCls04() && self.conditionValue04() === ""){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 5 && self.useCls05() && nts.uk.text.isNullOrEmpty(self.conditionValue05())){
+            } else if(conditionNo === 5 && self.useCls05() && self.conditionValue05() === ""){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
             }
@@ -592,7 +721,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.btnSetting02Enable = ko.observable(false);
             self.btnSetting03Enable = ko.observable(false);
             self.btnSetting04Enable = ko.observable(false);
-            self.btnSetting05Enable = ko.observable(false); 
+            self.btnSetting05Enable = ko.observable(false);
+             
+            self.useCls02Enable = ko.observable(false);
+            self.useCls03Enable = ko.observable(false);
+            self.useCls04Enable = ko.observable(false);
+            self.useCls05Enable = ko.observable(false);
         }
         
         /**
@@ -602,6 +736,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             var count = 0;
             
+            self.useCls02Enable(false);
+            self.useCls03Enable(false);
+            self.useCls04Enable(false);
+            self.useCls05Enable(false);
+            
             self.A7_4SelectedRuleCode.subscribe(function(value) {
                 if(value == 0){
                     self.symbols("%");
@@ -609,7 +748,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     self.setConditionValueChanges();
                     
                     if((Number(self.conditionValue01()) > 100 || Number(self.conditionValue01()) < 0) && !self.isNewMode()) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
+                        $('#cond01').ntsError('set', {messageId:"Msg_262"});
                     }
                 } else if(value == 1) {
                     self.symbols("日");
@@ -617,7 +756,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     self.setConditionValueChanges();
                     
                     if((Number(self.conditionValue01()) > 366 || Number(self.conditionValue01()) < 0) && !self.isNewMode()) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
+                        $('#cond01').ntsError('set', {messageId:"Msg_262"});
                     }
                 }
                 
@@ -629,25 +768,30 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(count >= 1) {
                     count = 0;
+                    self.useCls02Enable(false);
+                    self.useCls03Enable(false);
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
                     return false;
                 }
                 
                 if(value === "") {
+                    self.useCls02Enable(false);
+                    self.useCls03Enable(false);
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
                     return false;
                 }
                 
                 if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > 100 || Number(self.conditionValue01()) < 0)){
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_262" });
+                    $('#cond01').ntsError('set', {messageId:"Msg_262"});
+                } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > 366 || Number(self.conditionValue01()) < 0)){
+                    $('#cond01').ntsError('set', {messageId:"Msg_263"});
                 } else {
-                    if(self.useCls02()) {
-                        result = Number(value) - 1;
-                        self.limitedValue02(result <= 0 ? "" : result.toString());
-                    }
-                }
-                
-                if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > 366 || Number(self.conditionValue01()) < 0)){
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_263" });
-                } else {
+                    self.useCls02Enable(true);
+                    self.useCls03Enable(false);
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
                     if(self.useCls02()) {
                         result = Number(value) - 1;
                         self.limitedValue02(result <= 0 ? "" : result.toString());
@@ -659,69 +803,201 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             
             self.conditionValue02.subscribe(function(value) {
                 var result = Number(value) - 1;
-                if(self.useCls03()) {
-                    self.limitedValue03(result <= 0 ? "" : result.toString());
+                
+                if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue01()) - 1) || Number(self.conditionValue02()) < 0)){
+                    $('#cond02').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls03Enable(false);
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
+                } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue01()) - 1) || Number(self.conditionValue02()) < 0)){
+                    $('#cond02').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls03Enable(false);
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
+                } else {
+                    self.useCls03Enable(true);
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
+                    if(self.useCls03()) {
+                        result = Number(value) - 1;
+                        self.limitedValue03(result <= 0 ? "" : result.toString());
+                    }
                 }
             });
             
             self.conditionValue03.subscribe(function(value) {
                 var result = Number(value) - 1;
-                if(self.useCls04()) {
-                    self.limitedValue04(result <= 0 ? "" : result.toString());
+                
+                if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)){
+                    $('#cond03').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
+                } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)){
+                    $('#cond03').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
+                } else {
+                    self.useCls04Enable(true);
+                    self.useCls05Enable(false);
+                    if(self.useCls04()) {
+                        result = Number(value) - 1;
+                        self.limitedValue04(result <= 0 ? "" : result.toString());
+                    }
                 }
             });
             
             self.conditionValue04.subscribe(function(value) {
                 var result = Number(value) - 1;
-                if(self.useCls05()) {
-                    self.limitedValue05(result <= 0 ? "" : result.toString());
+                
+                if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)){
+                    $('#cond04').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls05Enable(false);
+                } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)){
+                    $('#cond04').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls05Enable(false);
+                } else {
+                    self.useCls05Enable(true);
+                    if(self.useCls05()) {
+                        result = Number(value) - 1;
+                        self.limitedValue05(result <= 0 ? "" : result.toString());
+                    }
+                }
+            });
+            
+            self.conditionValue05.subscribe(function(value) {
+                var result = Number(value) - 1;
+                
+                if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue04()) - 1) || Number(self.conditionValue05()) < 0)){
+                    $('#cond05').ntsError('set', {messageId:"Msg_262"});
+                } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue04()) - 1) || Number(self.conditionValue05()) < 0)){
+                    $('#cond05').ntsError('set', {messageId:"Msg_263"});
                 }
             });
             
             self.useCls02.subscribe(function(value) {
                 if(value == true){
-                    self.conditionValue02Enable(true);
-                    self.btnSetting02Enable(true);
-                    self.setConditionValues(Number(self.conditionValue01()), 2);
+                    if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue01()) > 100 || Number(self.conditionValue01()) < 0 || self.conditionValue01() == "")) {
+                        self.conditionValue02Enable(false);
+                        self.btnSetting02Enable(false);
+                        self.limitedValue02("");
+                        self.conditionValue02("");
+                        self.useCls02(false);
+                        self.useCls02Enable(false);
+                    } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue01()) > 366 || Number(self.conditionValue01()) < 0 || self.conditionValue01() == "")) {
+                        self.conditionValue02Enable(false);
+                        self.btnSetting02Enable(false);
+                        self.limitedValue02("");
+                        self.conditionValue02("");
+                        self.useCls02(false);
+                        self.useCls02Enable(false);
+                    } else {
+                        self.useCls02Enable(true);
+                        self.conditionValue02Enable(true);
+                        self.btnSetting02Enable(!self.editMode());
+                        self.setConditionValues(Number(self.conditionValue01()), 2);
+                    }                    
                 } else {
                     self.conditionValue02Enable(false);
                     self.btnSetting02Enable(false);
                     self.limitedValue02("");
                     self.conditionValue02("");
+                    self.useCls03Enable(false);
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
                 }
             });
             
             self.useCls03.subscribe(function(value) {
                 if(value == true){
-                    self.conditionValue03Enable(true);
-                    self.btnSetting03Enable(true);
-                    self.setConditionValues(Number(self.conditionValue02()), 3);
+                    if(self.A7_4SelectedRuleCode() == 0 && 
+                            (Number(self.conditionValue02()) > 100 || Number(self.conditionValue02()) < 0 || self.conditionValue02() == "" || self.conditionValue02() == undefined)) {
+                        self.conditionValue03Enable(false);
+                        self.btnSetting03Enable(false);
+                        self.limitedValue03("");
+                        self.conditionValue03("");
+                        self.useCls03(false);
+                        self.useCls03Enable(false);
+                    } else if(self.A7_4SelectedRuleCode() == 1 && 
+                            (Number(self.conditionValue02()) > 366 || Number(self.conditionValue02()) < 0 || self.conditionValue02() == "" || self.conditionValue02() == undefined)) {
+                        self.conditionValue03Enable(false);
+                        self.btnSetting03Enable(false);
+                        self.limitedValue03("");
+                        self.conditionValue03("");
+                        self.useCls03(false);
+                        self.useCls03Enable(false);
+                    } else {
+                        self.useCls03Enable(true);
+                        self.conditionValue03Enable(true);
+                        self.btnSetting03Enable(true);
+                        self.setConditionValues(Number(self.conditionValue02()), 3);
+                    }                     
                 } else {
                     self.conditionValue03Enable(false);
                     self.btnSetting03Enable(false);
                     self.limitedValue03("");
                     self.conditionValue03("");
+                    self.useCls04Enable(false);
+                    self.useCls05Enable(false);
                 }
             });
             
             self.useCls04.subscribe(function(value) {
                 if(value == true){
-                    self.conditionValue04Enable(true);
-                    self.btnSetting04Enable(true);
-                    self.setConditionValues(Number(self.conditionValue03()), 4);
+                    if(self.A7_4SelectedRuleCode() == 0 && 
+                            (Number(self.conditionValue03()) > 100 || Number(self.conditionValue03()) < 0 || self.conditionValue03() == "" || self.conditionValue03() == undefined)) {
+                        self.conditionValue04Enable(false);
+                        self.btnSetting04Enable(false);
+                        self.limitedValue04("");
+                        self.conditionValue04("");
+                        self.useCls04(false);
+                        self.useCls04Enable(false);
+                    } else if(self.A7_4SelectedRuleCode() == 1 && 
+                            (Number(self.conditionValue03()) > 366 || Number(self.conditionValue03()) < 0 || self.conditionValue03() == "" || self.conditionValue03() == undefined)) {
+                        self.conditionValue04Enable(false);
+                        self.btnSetting04Enable(false);
+                        self.limitedValue04("");
+                        self.conditionValue04("");
+                        self.useCls04(false);
+                        self.useCls04Enable(false);
+                    } else {
+                        self.useCls04Enable(true);
+                        self.conditionValue04Enable(true);
+                        self.btnSetting04Enable(true);
+                        self.setConditionValues(Number(self.conditionValue03()), 4);
+                    }                    
                 } else {
                     self.conditionValue04Enable(false);
                     self.btnSetting04Enable(false);
                     self.limitedValue04("");
                     self.conditionValue04("");
+                    self.useCls05Enable(false);
                 }
             });
             
             self.useCls05.subscribe(function(value) {
                 if(value == true){
-                    self.conditionValue05Enable(true);
-                    self.btnSetting05Enable(true);
-                    self.setConditionValues(Number(self.conditionValue04()), 5);
+                    if(self.A7_4SelectedRuleCode() == 0 && 
+                            (Number(self.conditionValue04()) > 100 || Number(self.conditionValue04()) < 0 || self.conditionValue04() == "" || self.conditionValue04() == undefined)) {
+                        self.conditionValue05Enable(false);
+                        self.btnSetting05Enable(false);
+                        self.limitedValue05("");
+                        self.conditionValue05("");
+                        self.useCls05(false);
+                        self.useCls05Enable(false);
+                    } else if(self.A7_4SelectedRuleCode() == 1 && 
+                            (Number(self.conditionValue04()) > 366 || Number(self.conditionValue04()) < 0 || self.conditionValue04() == "" || self.conditionValue04() == undefined)) {
+                        self.conditionValue05Enable(false);
+                        self.btnSetting05Enable(false);
+                        self.limitedValue05("");
+                        self.conditionValue05("");
+                        self.useCls05(false);
+                        self.useCls05Enable(false);
+                    } else {
+                        self.useCls05Enable(true);
+                        self.conditionValue05Enable(true);
+                        self.btnSetting05Enable(true);
+                        self.setConditionValues(Number(self.conditionValue04()), 5);
+                    }                    
                 } else {
                     self.conditionValue05Enable(false);
                     self.btnSetting05Enable(false);
@@ -802,13 +1078,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         conditionNo: number;
         conditionValue: number;
         useConditionAtr: number; 
-        hadSet: boolean;
         constructor(param: IGrantCondition) {
             this.yearHolidayCode = param.yearHolidayCode;
             this.conditionNo = param.conditionNo;
             this.conditionValue = param.conditionValue;
             this.useConditionAtr = param.useConditionAtr;       
-            this.hadSet = param.hadSet;
         }
     }
     
@@ -816,7 +1090,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         yearHolidayCode: string;
         conditionNo: number;
         conditionValue: number;
-        useConditionAtr: number;    
-        hadSet: boolean; 
+        useConditionAtr: number;     
     }
 }

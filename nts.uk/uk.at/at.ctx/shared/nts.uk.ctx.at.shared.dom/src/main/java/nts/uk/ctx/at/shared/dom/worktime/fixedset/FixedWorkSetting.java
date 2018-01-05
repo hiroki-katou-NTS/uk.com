@@ -5,14 +5,22 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
  * The Class FixedWorkSetting.
@@ -48,7 +56,7 @@ public class FixedWorkSetting extends AggregateRoot {
 	/** The lst half day work timezone. */
 	// 平日勤務時間帯
 	private List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone;
-
+	
 	/** The lst stamp reflect timezone. */
 	// 打刻反映時間帯
 	private List<StampReflectTimezone> lstStampReflectTimezone;
@@ -128,4 +136,38 @@ public class FixedWorkSetting extends AggregateRoot {
 		return true;
 	}
 
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {
+		this.commonSetting.restoreData(screenMode, oldDomain.getCommonSetting());
+		
+		// restore 平日勤務時間帯
+		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
+				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
+			Map<AmPmAtr, FixHalfDayWorkTimezone> mapFixHalfWork = oldDomain.getLstHalfDayWorkTimezone().stream()
+					.collect(Collectors.toMap(item -> ((FixHalfDayWorkTimezone) item).getDayAtr(),
+							Function.identity()));
+			this.lstHalfDayWorkTimezone.forEach(item -> item.restoreData(screenMode, this,
+					mapFixHalfWork.get(item.getDayAtr())));
+		} else {
+			this.lstHalfDayWorkTimezone = oldDomain.getLstHalfDayWorkTimezone();
+		}
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.commonSetting.restoreDefaultData(screenMode);
+		
+		// restore 平日勤務時間帯
+		//TODO
+	}
 }

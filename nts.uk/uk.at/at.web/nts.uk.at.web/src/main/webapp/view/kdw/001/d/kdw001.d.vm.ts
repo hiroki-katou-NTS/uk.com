@@ -1,6 +1,6 @@
 module nts.uk.at.view.kdw001.d {
     import getText = nts.uk.resource.getText;
-
+    import errors = nts.uk.ui.errors;
     export module viewmodel {
         export class ScreenModel {
             //Declare screenName flag to forware screen B or screen J
@@ -45,7 +45,9 @@ module nts.uk.at.view.kdw001.d {
             }
             
             opendScreenBorJ() {
-                $("#wizard").ntsWizard("prev");        
+                if (!$(".nts-input").ntsError("hasError")) {
+                    $("#wizard").ntsWizard("prev");        
+                }
             }
             
             opendScreenE() {

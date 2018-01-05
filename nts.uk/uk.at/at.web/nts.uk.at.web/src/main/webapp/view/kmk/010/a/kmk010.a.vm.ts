@@ -33,10 +33,9 @@ module nts.uk.at.view.kmk010.a {
                 self.languageId = 'ja';
                 self.isManage = ko.observable(true);
                 self.checkRounding = ko.observable(0);
-                self.superHD60HConMedModel.roundingTime.subscribe(function(selectuint: number){
-                   self.updateSelectUnitRounding(selectuint); 
-                   self.checkRounding(selectuint);
-                });
+                self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number){
+                   self.updateSelectUnitRounding(selectUnit); 
+                });               
             }
 
             /**
@@ -201,6 +200,32 @@ module nts.uk.at.view.kmk010.a {
                     nts.uk.ui.block.invisible();
                     var dtoSuper: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
                     dtoSuper.premiumExtra60HRates = self.toArrayRateDto();
+                    
+                    // check attendance item of breakdown item
+                    var setAttendaceIDs = new Set();
+                    var stopLoop = true;
+                    _.forEach(self.outsideOTSettingModel.breakdownItems(), function(value) {
+                        _.forEach(value.attendanceItemIds(), function(id){
+                            if (setAttendaceIDs.has(id)) {
+                                nts.uk.ui.dialog.alert({ messageId: "Msg_487" }).then(() => {
+                                });
+                                stopLoop = false;
+                                return stopLoop;    
+                            } else {
+                                setAttendaceIDs.add(id);
+                            }
+                        })
+                        return stopLoop;
+                    });
+                    
+                    if (!stopLoop) {
+                        self.startPage().done(() => {
+                            service.initTooltip();
+                            nts.uk.ui.block.clear();
+                        });
+                        return;    
+                    }
+                    
                     // save all
                     service.saveOutsideOTSettingAndSupperHD60H(self.outsideOTSettingModel.toDto(), dtoSuper).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -211,6 +236,7 @@ module nts.uk.at.view.kmk010.a {
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
+                        nts.uk.ui.block.clear();
                     });
                 }
             }
@@ -291,21 +317,26 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 // check manage call service
                 service.checkManageSixtyHourVacationSetting().done(function(data){
-                    self.isManage(data.manage);
-                    // call service export                    
-                    service.exportOutsideOTSettingExcel(self.languageId, self.isManage());
+                    service.getCid().done(function(data1){
+                        self.isManage(data.manage);
+                        service.getCompanyName(data1.companyId.substr(data1.companyId.indexOf('-')+1)).done(function(data2){
+                            // call service export                    
+                            service.exportOutsideOTSettingExcel(self.languageId, self.isManage(), data2);    
+                        }) 
+                            
+                    })
                 });
             }
             /**
              * function update select unit rounding
              */
-            private updateSelectUnitRounding(selectunit: number){
+            private updateSelectUnitRounding(selectUnit: number){
                 var self = this;
                 //15 , 30
-                if ((self.checkRounding() == 15 || self.checkRounding() == 30) && selectunit != 15 && selectunit != 30) {
-                    self.lstRoundingSet(self.lstRoundingSub);
-                } else if((self.checkRounding() != 15 && self.checkRounding() != 30) && (selectunit == 15 || selectunit == 30)){
+                if (selectUnit == 4 || selectUnit == 6) {
                     self.lstRoundingSet(self.lstRounding);
+                } else {
+                    self.lstRoundingSet(self.lstRoundingSub);
                 }
             }
         }
@@ -352,7 +383,7 @@ module nts.uk.at.view.kmk010.a {
 
             toDto(): OvertimeDto {
                 var dto: OvertimeDto = {
-                    name: this.name(),
+                    name: this.name() == "" ? " " : this.name(),
                     overtime: this.overtime(),
                     overtimeNo: this.overtimeNo(),
                     useClassification: this.useClassification(),
@@ -414,7 +445,7 @@ module nts.uk.at.view.kmk010.a {
                 var dto: OutsideOTBRDItemDto = {
                     useClassification: this.useClassification(),
                     breakdownItemNo: this.breakdownItemNo(),
-                    name: this.name(),
+                    name: this.name() == "" ? " " : this.name(),
                     productNumber: this.productNumber(),
                     attendanceItemIds: this.attendanceItemIds()
                 };
@@ -581,7 +612,7 @@ module nts.uk.at.view.kmk010.a {
             premiumExtra60HRates: PremiumExtra60HRateModel[];
 
             constructor() {
-                this.roundingTime = ko.observable(1);
+                this.roundingTime = ko.observable(null);
                 this.rounding = ko.observable(1);
                 this.superHolidayOccurrenceUnit = ko.observable(0);
                 this.premiumExtra60HRates = [];

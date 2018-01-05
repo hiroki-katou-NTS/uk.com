@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FlowWorkDedicateSetting.
@@ -41,5 +42,24 @@ public class FlowWorkDedicateSetting extends DomainObject {
 		memento.setOvertimeSetting(this.overtimeSetting);
 		memento.setCalculateSetting(this.calculateSetting);
 	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param other the other
+	 */
+	public void restoreData(ScreenMode screenMode, FlowWorkDedicateSetting other) {
+		switch (screenMode) {
+		case SIMPLE:
+			this.overtimeSetting.restoreData(other.getOvertimeSetting());
+			break;
+		case DETAIL:
+			break;
+		default:
+			throw new RuntimeException("Screen Mode not found.");
+		}
+	}
+
 
 }
