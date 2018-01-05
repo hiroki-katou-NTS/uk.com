@@ -15,7 +15,7 @@ module nts.uk.ui.jqueryExtentions {
                     break;
                 }
                 case "dataSource": {
-                    builder = $element.data("builder");
+                    builder = $element.data("builder"); 
                     if (isNull(option) || !$.isArray(option)) {
                         return builder.getDataSource();
                     }
