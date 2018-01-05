@@ -166,7 +166,7 @@ module nts.fixedtable {
         width: number;
         tableStyle: TableStyle;
         
-        $element: any;
+        $element: JQuery;
         $tableSelector: any;
         mapControl: Array<IControl>;
         tabindex: number;
@@ -177,7 +177,7 @@ module nts.fixedtable {
         
         tableId: string;
         
-        constructor(data: FixTableOption) {
+        constructor(data: FixTableOption, isDisableAll?: any) {
             let self = this;
             
             // set data parameter
@@ -194,7 +194,7 @@ module nts.fixedtable {
                 self.tabindex = -1;
             }
             self.itemList = data.dataSource;
-            self.isEnableAllControl = ko.observable(true);
+            self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
             self.roudingDataSource = ko.observableArray([
                 { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
                 { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' },
@@ -257,6 +257,7 @@ module nts.fixedtable {
                 // add properties isChecked when multiple select
                 self.addCheckBoxItemAtr();
                 self.subscribeChangeCheckbox();
+                self.initEventChangeComboBox(self.$element);
             });
         }
 
@@ -580,7 +581,9 @@ module nts.fixedtable {
             if (!nts.uk.text.isNullOrEmpty(columnSetting.cssClassName)) {
                 cssClassName = columnSetting.cssClassName;
             }
-            
+            if (template.indexOf('ntsCheckBox') > -1) {
+                cssClassName += ' check-box-column';
+            }
             return "<td style='text-align: center;' class='" + cssClassName + "'>" + template + "</td>";
         }
         
@@ -656,14 +659,14 @@ module nts.fixedtable {
             let keyEnable: string = "enable:true";
             let keyDisable: string = "enable:false";
             
-            if (input.indexOf(keyEnable) != -1) {
-                input = input.replace(keyEnable, "enable:" + enable);
-            }
-            else if (input.indexOf(keyDisable) != -1) {
-                input = input.replace(keyDisable, "enable:" + enable);
-            } else {
-                input += ",enable:" + enable;
-            }
+//            if (input.indexOf(keyEnable) != -1) {
+//                input = input.replace(keyEnable, "enable:" + enable);
+//            }
+//            else if (input.indexOf(keyDisable) != -1) {
+//                input = input.replace(keyDisable, "enable:" + enable);
+//            } else {
+//                input += ",enable:" + enable;
+//            }
             
             return input;
         }
@@ -684,6 +687,15 @@ module nts.fixedtable {
                 result += input.charAt(i);
             }
             return result;
+        }
+
+        public initEventChangeComboBox(element: JQuery) {
+            var self = this;
+            if (element) {
+                element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
+                    _.defer(() => self.itemList.valueHasMutated());
+                });
+            }
         }
     }
 }
@@ -720,13 +732,14 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
         let input: any = valueAccessor();
         let data: nts.fixedtable.FixTableOption = input.option;
 
-        let screenModel = new nts.fixedtable.FixTableScreenModel(data);
+        let screenModel = new nts.fixedtable.FixTableScreenModel(data,input.isEnableAllControl);
         if (input.isEnableAllControl) {
             input.isEnableAllControl.subscribe(function(value: boolean) {
                 screenModel.isEnableAllControl(value);
             });
         }
         $(element).load(webserviceLocator, function() {
+            screenModel.$element = $(element);
             screenModel.initialScreen().done(() => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
@@ -738,6 +751,16 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
                     $("." + column.cssClassName).css({ "min-width": "" });
                 });
+                if (document.getElementById($(element)[0].id)) {
+                    document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
+                        screenModel.itemList.valueHasMutated();
+                    });
+                }
+                screenModel.initEventChangeComboBox($(element));
+                //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
+                screenModel.$element.on('click', '.check-box-column > div', function(event){
+                    _.defer(() => screenModel.itemList.valueHasMutated());
+                })
             });
         });
     }

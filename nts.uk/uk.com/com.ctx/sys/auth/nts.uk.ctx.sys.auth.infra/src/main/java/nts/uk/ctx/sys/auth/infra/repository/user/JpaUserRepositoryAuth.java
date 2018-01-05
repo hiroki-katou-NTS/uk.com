@@ -67,8 +67,8 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	}
 
 	private final String SELECT_BY_ID_OR_NAME = "SELECT c From SacmtUser c"
-			+ " WHERE (c.sacmtUserPK.userID LIKE CONCAT('%', :userIDName, '%')"
-			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))"
+			+ " WHERE (LOWER(c.sacmtUserPK.userID) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
+			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%')))"
 			+ " AND c.expirationDate >= :date";
 	@Override
 	public List<User> searchUser(String userIDName, GeneralDate date) {

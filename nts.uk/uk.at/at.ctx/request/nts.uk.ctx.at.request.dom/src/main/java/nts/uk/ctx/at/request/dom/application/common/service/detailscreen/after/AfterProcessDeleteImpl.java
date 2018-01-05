@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -11,17 +11,10 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.mail.MailSender;
@@ -35,15 +28,6 @@ import nts.uk.shr.com.mail.SendMailFailedException;
 @Stateless
 /** 5-2.詳細画面削除後の処理*/
 public class AfterProcessDeleteImpl implements AfterProcessDelete {
-
-	@Inject
-	private AppApprovalPhaseRepository appApprovalPhaseRepository;
-
-	@Inject
-	private AgentAdapter approvalAgencyInformationService;
-	
-	@Inject
-	private DestinationJudgmentProcess destinationJudgmentProcessService;
 	
 	@Inject
 	private  EmployeeRequestAdapter  employeeAdapter;
@@ -52,7 +36,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	private AppTypeDiscreteSettingRepository  appTypeDiscreteSettingRepo;
 	
 	@Inject
-	private ApplicationRepository applicationRepo;
+	private ApplicationRepository_New applicationRepo;
 	
 	@Inject
 	private MailSender mailSender;
@@ -65,7 +49,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	
 	@Override
 	public String screenAfterDelete(String companyID,String appID, Long version) {
-		ApplicationType appType = applicationRepo.getAppById(companyID, appID).get().getApplicationType();
+		ApplicationType appType = applicationRepo.findByID(companyID, appID).get().getAppType();
 		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
 				.get().getSendMailWhenRegisterFlg();
 		List<String> converList =new ArrayList<String>();

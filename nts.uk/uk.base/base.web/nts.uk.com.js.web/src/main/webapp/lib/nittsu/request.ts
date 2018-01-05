@@ -361,20 +361,41 @@ module nts.uk.request {
 
 
     export function jump(path: string, data?: any);
-    export function jump(webAppId: WebAppId, path: string, data?: any): string {
+    export function jump(webAppId: WebAppId, path: string, data?: any) {
+        
+        uk.ui.block.invisible();
+        
+        // handle overload
         if (typeof arguments[1] !== 'string') {
-            return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            return;
         }
-        if(webAppId==nts.uk.request.location.currentAppId){
-            path = resolvePath(path);
-        }else{
-            path = nts.uk.request.location.siteRoot
-            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-            .mergeRelativePath(path).serialize();
+        
+        if (webAppId != nts.uk.request.location.currentAppId) {
+            jumpToOtherWebApp.apply(this, arguments);
+            return;
         }
+        
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
 
-        window.location.href = path;
+        window.location.href = resolvePath(path);
+    }
+    
+    function jumpToOtherWebApp(webAppId: WebAppId, path: string, data?: any) {
+        
+        let resolvedPath = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                .mergeRelativePath(path).serialize();
+        
+        uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        
+        login.keepSerializedSession()
+            .then(() => {
+                return login.restoreSessionTo(webAppId);
+            })
+            .then(() => {
+                window.location.href = resolvedPath;
+            });
     }
     
     export function jumpToMenu(path: string) {
@@ -400,7 +421,8 @@ module nts.uk.request {
     
     export module login {
         
-        var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+        let STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+        let STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
         
         export function keepUsedLoginPage() {
             uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
@@ -410,8 +432,24 @@ module nts.uk.request {
             uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
                 window.location.href = path;
             }).ifEmpty(() => {
-                request.jump('/view/ccg/007/a/index.xhtml');
+                //request.jump('/view/ccg/007/a/index.xhtml');
+                request.jump('/view/ccg/007/b/index.xhtml');
             });
+        }
+        
+        export function keepSerializedSession() {
+            let dfd = $.Deferred();
+            request.ajax("/shr/web/session/serialize").done(res => {
+                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+                dfd.resolve();
+            });
+            
+            return dfd.promise();
+        }
+        
+        export function restoreSessionTo(webAppId: WebAppId) {
+            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+            return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket);
         }
     }
     

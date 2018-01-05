@@ -51,7 +51,7 @@ public class YearServiceSet {
 		}
 		for(YearServiceSet item : yearServiceSetlst){ 
 			// check duplicate year
-			if(yearLst.contains(item.getYear())){
+			if(item.getYear() !=null && yearLst.contains(item.getYear())){
 				new BusinessException("Msg_99");
 				bugLst.add("Msg_99");
 			} else {

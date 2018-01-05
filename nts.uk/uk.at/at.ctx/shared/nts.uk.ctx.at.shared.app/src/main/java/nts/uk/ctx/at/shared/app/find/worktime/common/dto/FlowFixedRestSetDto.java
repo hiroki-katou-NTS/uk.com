@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetSetMemento;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetSetMemento;
  * The Class FlowFixedRestSetDto.
  */
 @Getter
+@Setter
 public class FlowFixedRestSetDto implements FlowFixedRestSetSetMemento {
 
 	/** The is refer rest time. */

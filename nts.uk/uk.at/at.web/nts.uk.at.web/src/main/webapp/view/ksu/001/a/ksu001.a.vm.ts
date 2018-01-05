@@ -43,8 +43,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         ]);
         selectedCode1: KnockoutObservable<string> = ko.observable('0003');
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            //            { code: '1', name: nts.uk.resource.getText("KSU001_89") },
-            //            { code: '2', name: nts.uk.resource.getText("KSU001_90") }
             new BoxModel(1, nts.uk.resource.getText("KSU001_89")),
             new BoxModel(2, nts.uk.resource.getText("KSU001_90")),
         ]);
@@ -166,6 +164,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("updateMode", "none");
                     $("#extable").exTable("viewMode", "shortName", { y: 175 });
                     $("#combo-box1").focus();
+                    // get data to stickData
+                    $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
                     $("#extable").exTable("updateMode", "edit");
@@ -179,6 +179,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("updateMode", "none");
                     $("#extable").exTable("viewMode", "symbol", { y: 235 });
                     $("#tab-panel").focus();
+                    // get data to stickData
+                    // if buttonTable not selected, set stickData is null
+                    if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
+                        || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
+                        $("#extable").exTable("stickData", null);
+                    }
                     if (self.flag) {
                         //select first link button
                         __viewContext.viewModel.viewQ.init();
@@ -822,7 +828,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         //intended data display mode 
-                        //dataSour of detail
+                        //dataSource of detail
                         _.each(self.listSid(), (x) => {
                             let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
                             newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
@@ -1511,11 +1517,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("stickMode", "single");
             } else if (self.selectedModeDisplay() == 3) {
                 $("#extable").exTable("stickMode", "multi");
-                // if buttonTable not selected, set stickData is null
-                if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
-                    || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
-                    $("#extable").exTable("stickData", null);
-                }
             }
         }
 

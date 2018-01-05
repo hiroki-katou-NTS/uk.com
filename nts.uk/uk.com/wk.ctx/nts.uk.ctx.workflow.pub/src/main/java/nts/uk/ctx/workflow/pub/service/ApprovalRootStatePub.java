@@ -117,4 +117,6 @@ public interface ApprovalRootStatePub {
 	 */
 	public ApproverPersonExport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
 	
+	public void updateReason(String rootStateID, String employeeID, String reason);
+	
 }

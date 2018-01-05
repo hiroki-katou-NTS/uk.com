@@ -43,6 +43,7 @@ public class KshmtFlexOtTimeSetPK implements Serializable {
 	 * Instantiates a new kshmt flex ot time set PK.
 	 */
 	public KshmtFlexOtTimeSetPK() {
+		super();
 	}
 
 	/**

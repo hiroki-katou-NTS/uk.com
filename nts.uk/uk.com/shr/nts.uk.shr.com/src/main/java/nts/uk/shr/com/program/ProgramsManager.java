@@ -165,10 +165,23 @@ public class ProgramsManager {
 	public static final Program CDL022A = new Program(WebAppId.COM, ProgramIdConsts.CDL022A, "CDL022_1",
 			"/view/cdl/022/a/index.xhtml");
 	/**
+	 * CPS007A
+	 */
+	public static final Program CPS007A = new Program(WebAppId.COM, ProgramIdConsts.CPS007A, "CPS007_1",
+			"/view/cps/007/b/index.xhtml");
+	
+	/**
 	 * CPS007B
 	 */
 	public static final Program CPS007B = new Program(WebAppId.COM, ProgramIdConsts.CPS007B, "CPS007_2",
 			"/view/cps/007/b/index.xhtml");
+	
+	/**
+	 * CPS008A
+	 */
+	public static final Program CPS008A = new Program(WebAppId.COM, ProgramIdConsts.CPS008A, "CPS008_1",
+			"/view/cps/008/a/index.xhtml");
+	
 	/**
 	 * CPS008D
 	 */
@@ -604,19 +617,19 @@ public class ProgramsManager {
 	
 	/** The Constant CCG007. */
 	public static final Program CCG007A = new Program(WebAppId.COM, ProgramIdConsts.CCG007A,
-			"CCG007_1", "/view/ccg/007/a/index.xhtml");
+			"CCG007_9", "/view/ccg/007/a/index.xhtml");
 	
 	/** The Constant CCG007B. */
 	public static final Program CCG007B = new Program(WebAppId.COM, ProgramIdConsts.CCG007B,
-			"CCG007_2", "/view/ccg/007/a/index.xhtml");
+			"CCG007_2", "/view/ccg/007/b/index.xhtml");
 	
 	/** The Constant CCG007C. */
 	public static final Program CCG007C = new Program(WebAppId.COM, ProgramIdConsts.CCG007C,
-			"CCG007_3", "/view/ccg/007/a/index.xhtml");
+			"CCG007_3", "/view/ccg/007/c/index.xhtml");
 	
 	/** The Constant CCG007D. */
 	public static final Program CCG007D = new Program(WebAppId.COM, ProgramIdConsts.CCG007D,
-			"CCG007_4", "/view/ccg/007/a/index.xhtml");
+			"CCG007_4", "/view/ccg/007/d/index.xhtml");
 	
 	/** The Constant KMK004A. */
 	public static final Program KMK004A  = new Program(WebAppId.AT, ProgramIdConsts.KMK004A, "KMK004_1",
@@ -944,7 +957,7 @@ public class ProgramsManager {
 	/**
 	 * KDW007C
 	 */
-	public static final Program KDW007C  = new Program(WebAppId.AT, ProgramIdConsts.KDW007C, "#KDW007_92",
+	public static final Program KDW007C  = new Program(WebAppId.AT, ProgramIdConsts.KDW007C, "KDW007_92",
 			"/view/kdw/007/c/index.xhtml");
 
 	/**

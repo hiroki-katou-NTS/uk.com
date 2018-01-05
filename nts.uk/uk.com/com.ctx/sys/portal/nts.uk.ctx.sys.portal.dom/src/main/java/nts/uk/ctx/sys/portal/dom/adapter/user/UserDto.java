@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.adapter.role;
+package nts.uk.ctx.sys.portal.dom.adapter.user;
 
 import lombok.Value;
 

@@ -51,6 +51,7 @@ public class KshmtDtHalfRestTime extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt dt half rest time.
 	 */
 	public KshmtDtHalfRestTime() {
+		super();
 	}
 
 	/*

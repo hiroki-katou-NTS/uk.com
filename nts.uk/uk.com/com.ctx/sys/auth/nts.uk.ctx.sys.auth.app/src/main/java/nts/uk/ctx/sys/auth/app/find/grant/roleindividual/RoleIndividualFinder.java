@@ -41,7 +41,7 @@ public class RoleIndividualFinder {
     @Inject
     private CompanyAdapter companyAdapter;
 
-	private final String COMPANY_ID_SYSADMIN = "00000000000000000";
+	private final String COMPANY_ID_SYSADMIN = "000000000000-0000";
 
 	public RoleIndividualDto findByCompanyAndRoleType(String companyID, int roleType) {
 

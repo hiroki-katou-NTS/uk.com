@@ -40,9 +40,7 @@ public class KshmtWorkTimeSet extends UkJpaEntity implements Serializable {
 	private String name;
 
 	/** The abname. */
-	//@Column(name = "ABNAME")
-	//TODO: sua tam de chay (code tren moi dung).
-	@Column(name = "AB_NAME")
+	@Column(name = "ABNAME")
 	private String abname;
 
 	/** The symbol. */

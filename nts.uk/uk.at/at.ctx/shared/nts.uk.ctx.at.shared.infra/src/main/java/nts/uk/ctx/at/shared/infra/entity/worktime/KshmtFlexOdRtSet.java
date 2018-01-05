@@ -57,43 +57,39 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 	@Column(name = "AFTER_PASSAGE_TIME")
 	private int afterPassageTime;
 
-	
-
-	
 	/** The kshmt flex od fix rests. */
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexOdFixRest> kshmtFlexOdFixRests;
-	
+
 	/** The kshmt flex hol sets. */
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexHolSet> kshmtFlexHolSets;
-	
+
 	/** The kshmt flex od rest sets. */
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtFlexOdRestSet> kshmtFlexOdRestSets;
-	
 
-	
-	
 	/**
 	 * Instantiates a new kshmt flex od rt set.
 	 */
 	public KshmtFlexOdRtSet() {
+		super();
 	}
 
 	/**
 	 * Instantiates a new kshmt flex od rt set.
 	 *
-	 * @param kshmtFlexOdRtSetPK the kshmt flex od rt set PK
+	 * @param kshmtFlexOdRtSetPK
+	 *            the kshmt flex od rt set PK
 	 */
 	public KshmtFlexOdRtSet(KshmtFlexOdRtSetPK kshmtFlexOdRtSetPK) {
 		super();
@@ -140,7 +136,5 @@ public class KshmtFlexOdRtSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kshmtFlexOdRtSetPK;
 	}
-
-	
 
 }

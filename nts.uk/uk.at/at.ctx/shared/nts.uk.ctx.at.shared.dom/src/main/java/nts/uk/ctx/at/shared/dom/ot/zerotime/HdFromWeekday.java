@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
 /**
  * 
  * @author phongtq
@@ -22,10 +20,10 @@ public class HdFromWeekday extends DomainObject{
 	private String companyId;
 
 	/** 変更前の休出枠NO */
-	private BreakoutFrameNo holidayWorkFrameNo;
+	private int holidayWorkFrameNo;
 
 	/** 変更後の残業枠NO */
-	private OvertimeWorkFrameNo overWorkNo;
+	private BigDecimal overWorkNo;
 
 	/**
 	 * Create from Java Type of Hd From Weekday
@@ -35,6 +33,6 @@ public class HdFromWeekday extends DomainObject{
 	 * @return
 	 */
 	public static HdFromWeekday createFromJavaType(String companyId, int holidayWorkFrameNo, BigDecimal overWorkNo) {
-		return new HdFromWeekday(companyId, new BreakoutFrameNo(holidayWorkFrameNo), new OvertimeWorkFrameNo(overWorkNo));
+		return new HdFromWeekday(companyId, holidayWorkFrameNo, overWorkNo);
 	}
 }

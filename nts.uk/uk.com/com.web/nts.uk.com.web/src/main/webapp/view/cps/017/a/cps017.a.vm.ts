@@ -60,9 +60,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let selectedObject: ISelectionItem = _.find(self.listItems(), (item) => {
                         return item.selectionItemId == x;
                     });
-                    perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
-                    perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
 
+                    if (selectedObject != undefined) {
+                        perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
+                        perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
+                        //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    }
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
                         let changeData: Array<IHistorySelection> = _.each(_selectionItemList, (item) => {
@@ -154,11 +157,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.checkCreateaaa(false);
                             //self.enableSelName(true);
                             //self.revDisSel02(true);
-                            
+
                             // fix responsive bug
                             ko.utils.arrayPushAll(self.listSelection, itemList);
                             //itemList.forEach(x => self.listSelection.push(x));
-                            
+
                             self.selection().selectionID(self.listSelection()[0].selectionID);
                         } else {
                             //self.enableSelName(true);
@@ -173,6 +176,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     });
                 } else {
                     self.listSelection.removeAll();
+                    self.registerData();
                 }
             });
 
@@ -188,7 +192,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
+                } else {
+                    self.registerData();
                 }
+
             });
 
         }
@@ -223,6 +230,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     alertError({ messageId: "Msg_455" });
                     //                    self.registerData();
                     self.enableSelName(false);
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                 }
                 dfd.resolve();
             }).fail(error => {

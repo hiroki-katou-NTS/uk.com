@@ -131,7 +131,7 @@ module a6 {
             // mode flex
             if (self.isFlexMode()) {
                 var dataFlex: any[] = [];
-                for (var dataModelFlex of self.mainSettingModel.flexWorkSetting.offdayWorkTime.lstWorkTimezone) {
+                for (var dataModelFlex of self.mainSettingModel.flexWorkSetting.offdayWorkTime.lstWorkTimezone()) {
                     dataFlex.push(self.toModelOtherFlowColumnSetting(dataModelFlex.toDto()));
                 }
                 self.dataSourceFlex(dataFlex);
@@ -140,7 +140,7 @@ module a6 {
             // mode fixed
             if (self.isFixedMode()) {
                 var dataFixed: any[] = [];
-                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.lstWorkTimezone) {
+                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.lstWorkTimezone()) {
                     dataFixed.push(self.toModelOtherFlowColumnSetting(dataModelFixed.toDto()));
                 }
                 self.dataSourceFixed(dataFixed);
@@ -252,7 +252,7 @@ module a6 {
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
@@ -267,7 +267,7 @@ module a6 {
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
@@ -282,7 +282,7 @@ module a6 {
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
@@ -343,7 +343,7 @@ module a6 {
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
@@ -358,7 +358,7 @@ module a6 {
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
@@ -373,7 +373,7 @@ module a6 {
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 2 }]}">
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
                                 </div>`
                 },
                 {

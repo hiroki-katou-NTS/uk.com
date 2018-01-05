@@ -83,6 +83,7 @@ public class KshmtDiffTimeHolSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt diff time hol set.
 	 */
 	public KshmtDiffTimeHolSet() {
+		super();
 	}
 
 	/*

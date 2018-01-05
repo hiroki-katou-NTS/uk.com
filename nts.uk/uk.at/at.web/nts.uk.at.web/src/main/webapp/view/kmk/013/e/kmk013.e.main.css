@@ -1,5 +1,5 @@
 .panel.panel-gray-bg {
-	width: 609px;
+	width: 700px;
 }
 
 #unit-combo-box {
@@ -13,6 +13,7 @@
 }
 
 .nts-fixed-table .nts-fixed-body-container {
-	height: 513px;
-	max-width: 557px !important;
+    height: 558px;
+    max-width: 654px !important;
 }
+

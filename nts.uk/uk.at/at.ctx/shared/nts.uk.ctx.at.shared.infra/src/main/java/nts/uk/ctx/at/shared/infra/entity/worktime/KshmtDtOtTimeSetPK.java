@@ -43,6 +43,7 @@ public class KshmtDtOtTimeSetPK implements Serializable {
 	 * Instantiates a new kshmt dt ot time set PK.
 	 */
 	public KshmtDtOtTimeSetPK() {
+		super();
 	}
 
 	/*

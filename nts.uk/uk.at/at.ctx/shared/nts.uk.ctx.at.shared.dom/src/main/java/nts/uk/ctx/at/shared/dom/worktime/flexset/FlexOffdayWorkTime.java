@@ -64,7 +64,10 @@ public class FlexOffdayWorkTime extends DomainObject {
 	 * @return true, if is rest tz in hd wtz
 	 */
 	private boolean isRestTzInHolidayTz() {
-		return this.restTimezone.getFixedRestTimezone().getTimezones().stream().anyMatch(
+		if (this.restTimezone.getFixedRestTimezone().getTimezones().isEmpty()) {
+			return true;
+		}
+		return this.restTimezone.getFixedRestTimezone().getTimezones().stream().allMatch(
 				resTz -> this.lstWorkTimezone.stream().anyMatch(hdWtz -> resTz.isBetweenOrEqual(hdWtz.getTimezone())));
 	}
 }
