@@ -35,11 +35,10 @@ module nts.uk.ui.koExtentions {
                 contextMenu: contextMenu
             });
 
-            $(element).bind("cellselectedchanging", function(evt, value) {
-                if (!nts.uk.util.isNullOrUndefined(data.selectedCell)) {
-                    //insert on develop
+            
+            $(element).bind("cellselectedchanging", function(evt, value){
+                if(!nts.uk.util.isNullOrUndefined(data.selectedCell)){
                     $(element).data("o-selected", _.cloneDeep(value));
-
                     data.selectedCell(value);
                 }
             });
@@ -75,7 +74,6 @@ module nts.uk.ui.koExtentions {
                 && !nts.uk.util.isNullOrUndefined(selectedCell.row) && !_.isEqual(container.data("o-selected"), selectedCell)) {
                 container.ntsButtonTable("setSelectedCell", selectedCell.row, selectedCell.column);
             }
-            // insert on develop 
             container.data("o-selected", _.cloneDeep(selectedCell));
         }
     }

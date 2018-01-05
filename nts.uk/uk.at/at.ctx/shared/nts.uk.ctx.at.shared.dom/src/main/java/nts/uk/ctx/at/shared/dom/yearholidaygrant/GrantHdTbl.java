@@ -184,7 +184,7 @@ public class GrantHdTbl extends AggregateRoot {
 
 		} else {
 			// 処理名3.付与日シュミレーション計算処理について
-			this.grantDate = referenceDate;
+			this.grantDate = c;
 		}
 	}
 }
