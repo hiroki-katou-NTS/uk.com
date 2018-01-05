@@ -536,7 +536,7 @@ private OutsideOTSettingReportData convertToListReport(Boolean isLanugeJapan, Ou
 		OutsideOTSettingReportData dataReport = new OutsideOTSettingReportData();
 		
 		reportData.add(new OutsideOTSettingReport(2, 1, nameCompany));
-		reportData.add(new OutsideOTSettingReport(5, 1, isLanugeJapan ? "jp" : "en"));
+		reportData.add(new OutsideOTSettingReport(5, 1, isLanugeJapan ? "ja" : "en"));
 		dataReport.setData(reportData);
 		dataReport.setIsLanguageJapan(isLanugeJapan);
 		return dataReport;
