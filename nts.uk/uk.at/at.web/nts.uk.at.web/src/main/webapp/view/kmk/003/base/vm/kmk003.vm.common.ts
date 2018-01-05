@@ -1694,11 +1694,11 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FixedWorkTimezoneSetModel {
-                lstWorkingTimezone: EmTimeZoneSetModel[];
+                lstWorkingTimezone: KnockoutObservableArray<EmTimeZoneSetModel>;
                 lstOTTimezone: KnockoutObservableArray<OverTimeOfTimeZoneSetModel>;
 
                 constructor() {
-                    this.lstWorkingTimezone = [];
+                    this.lstWorkingTimezone = ko.observableArray([]);
                     this.lstOTTimezone = ko.observableArray([]);
                 }
 
@@ -1720,27 +1720,20 @@ module nts.uk.at.view.kmk003.a {
 
 
                 updateWorkingTimezone(lstWorkingTimezone: EmTimeZoneSetDto[]) {
-                    for (var dataModel of this.lstWorkingTimezone) {
-
-                    }
-                    for (var dataDTO of lstWorkingTimezone) {
-                        var dataModel: EmTimeZoneSetModel = this.getWorkingTimezoneByEmploymentTimeFrameNo(dataDTO.employmentTimeFrameNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new EmTimeZoneSetModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstWorkingTimezone.push(dataModel);
-                        }
-                    }
+                    let self = this;
+                    let updatedList = lstWorkingTimezone.map(item => {
+                        let m = new EmTimeZoneSetModel();
+                        m.updateData(item);
+                        return m;
+                    });
+                    self.lstWorkingTimezone(updatedList);
                 }
 
                 getWorkingTimezoneByEmploymentTimeFrameNo(employmentTimeFrameNo: number) {
-                    return _.find(this.lstWorkingTimezone, workingtimezone => workingtimezone.employmentTimeFrameNo() == employmentTimeFrameNo);
+                    return _.find(this.lstWorkingTimezone(), workingtimezone => workingtimezone.employmentTimeFrameNo() == employmentTimeFrameNo);
                 }
                 toDto(): FixedWorkTimezoneSetDto {
-                    let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone, (dataModel) => dataModel.toDto());
+                    let lstWorkingTimezone: EmTimeZoneSetDto[] = _.map(this.lstWorkingTimezone(), (dataModel) => dataModel.toDto());
                     let lstOTTimezone: OverTimeOfTimeZoneSetDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
 
                     let dataDTO: FixedWorkTimezoneSetDto = {
@@ -1751,7 +1744,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.lstWorkingTimezone = [];
+                    this.lstWorkingTimezone([]);
                     this.lstOTTimezone([]);
                 }
             }
