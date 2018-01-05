@@ -14,6 +14,7 @@ module cps001.a.vm {
     import format = nts.uk.text.format;
 
     const REPL_KEY = '__REPLACE',
+        RELOAD_KEY = "__RELOAD",
         RELOAD_DT_KEY = "__RELOAD_DATA",
         DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
@@ -102,10 +103,6 @@ module cps001.a.vm {
                     auth.allowAvatarRef(false);
                     auth.allowMapBrowse(false);
                 }
-            });
-
-            self.titleResource.subscribe(x => {
-                console.log(x);
             });
 
             self.tab.subscribe(tab => {
@@ -197,11 +194,26 @@ module cps001.a.vm {
             });
 
             employee.employeeId.subscribe(id => {
+                let reload = getShared(RELOAD_KEY);
+
                 if (id) {
                     _.each(list(), l => {
                         l.employeeId(id);
                         l.personId(person.personId());
                     });
+
+                    if (reload) {
+                        let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
+                            saveData: IReloadData = {
+                                id: firstData.id(),
+                                infoId: undefined,
+                                categoryId: firstData.categoryId()
+                            };
+
+                        if (!getShared(RELOAD_DT_KEY)) {
+                            setShared(RELOAD_DT_KEY, saveData);
+                        }
+                    }
 
                     self.tab.valueHasMutated();
                 }
@@ -212,12 +224,13 @@ module cps001.a.vm {
 
         start() {
             let self = this,
+                reload = getShared(RELOAD_KEY),
                 reloadData = getShared(RELOAD_DT_KEY),
                 employee = self.employee(),
                 employees = ko.toJS(self.employees),
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
-            if (reloadData) {
+            if (reload) {
                 if (employees.length == 1) {
                     $('.btn-quick-search[tabindex=4]').click();
                 } else {
@@ -259,6 +272,7 @@ module cps001.a.vm {
                             self.employees(employees);
                         }
                         employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        setShared(RELOAD_KEY, true);
                     });
                 });
             }

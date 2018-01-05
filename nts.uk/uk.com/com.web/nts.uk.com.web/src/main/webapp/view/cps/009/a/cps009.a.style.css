@@ -11,6 +11,7 @@
 #content-left {
 	width: 288px !important;
 	height: 407px !important;
+	margin-left: 10px !important;
 	float: left;
 }
 
