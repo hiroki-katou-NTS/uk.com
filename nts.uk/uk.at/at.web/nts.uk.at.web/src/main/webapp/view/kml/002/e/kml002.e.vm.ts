@@ -68,7 +68,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
             self.allItem = ko.observableArray([]);
             self.allItemAmount = ko.observableArray([]);
             self.allItemTime = ko.observableArray([]);
-            self.checked = ko.observable(true);
+            self.checked = ko.observable(false);
             self.checkedTime = ko.observable(true);
             self.uPCd = ko.observable(0);
             self.roundingCd = ko.observable(0);

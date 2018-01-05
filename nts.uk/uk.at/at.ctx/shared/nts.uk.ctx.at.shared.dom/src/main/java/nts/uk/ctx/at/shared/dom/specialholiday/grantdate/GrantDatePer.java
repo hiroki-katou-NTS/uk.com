@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 
 /**
@@ -33,7 +34,7 @@ public class GrantDatePer extends DomainObject {
 	private PersonalGrantDateName personalGrantDateName;
 
 	/*一律基準日*/
-	private GrantDate grantDate;
+	private GeneralDate grantDate;
  
 	/*付与基準日*/
 	private GrantDateAtr grantDateAtr;
@@ -44,12 +45,12 @@ public class GrantDatePer extends DomainObject {
 	 * Create from java type
 	 */
 	public static GrantDatePer createSimpleFromJavaType(String companyId, String specialHolidayCode, String personalGrantDateCode, String personalGrantDateName,
-			int grantDate, int grantDateAtr, List<GrantDatePerSet> grantDatePerSet) {
+			GeneralDate grantDate, int grantDateAtr, List<GrantDatePerSet> grantDatePerSet) {
 		return new GrantDatePer(companyId,
 				specialHolidayCode,
 				new PersonalGrantDateCode(personalGrantDateCode),
 				new PersonalGrantDateName(personalGrantDateName),
-				new GrantDate(grantDate),
+				grantDate,
 				EnumAdaptor.valueOf(grantDateAtr, GrantDateAtr.class),
 				grantDatePerSet);
 

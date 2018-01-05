@@ -51,6 +51,7 @@ public class KshmtFlowStampReflect extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt flow stamp reflect.
 	 */
 	public KshmtFlowStampReflect() {
+		super();
 	}
 
 	/*

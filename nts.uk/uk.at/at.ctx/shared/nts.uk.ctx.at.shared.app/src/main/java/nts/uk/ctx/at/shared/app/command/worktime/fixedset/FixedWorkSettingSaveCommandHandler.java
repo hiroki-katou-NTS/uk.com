@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveComman
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -57,13 +58,14 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 
 		// call repository save flex work setting
 		if (command.isAddMode()) {
+			fixedWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			this.fixedWorkSettingRepository.add(fixedWorkSetting);
 		} else {
 			Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.findByKey(companyId,
 					command.getWorktimeSetting().worktimeCode);
 			if (opFixedWorkSetting.isPresent()) {
-//				fixedWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
-//						command.getWorktimeSetting().getWorkTimeDivision(), opFixedWorkSetting.get());
+				fixedWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
+						command.getWorktimeSetting().getWorkTimeDivision(), opFixedWorkSetting.get());
 				this.fixedWorkSettingRepository.update(fixedWorkSetting);
 			}
 		}

@@ -402,7 +402,7 @@ public class DailyPerformanceCorrectionProcessor {
 			/// Acquire all domain model "employee's daily performance error
 			/// list" + "work error error alarm" | lay loi thanh tich trong
 			/// khoang thoi gian
-			List<DPErrorDto> lstError = this.repo.getListDPError(screenDto.getDateRange(), listEmployeeId);
+			List<DPErrorDto> lstError = listEmployeeId.isEmpty() ? new ArrayList<>() : repo.getListDPError(screenDto.getDateRange(), listEmployeeId);
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo

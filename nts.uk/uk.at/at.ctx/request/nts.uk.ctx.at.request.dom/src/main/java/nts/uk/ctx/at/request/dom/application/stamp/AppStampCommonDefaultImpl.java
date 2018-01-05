@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
  *
  */
 @Stateless
-public class AppStampCommonDefault implements AppStampCommonDomainService {
+public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 
 	@Inject
 	private StampRequestSettingRepository stampRequestSettingRepository;

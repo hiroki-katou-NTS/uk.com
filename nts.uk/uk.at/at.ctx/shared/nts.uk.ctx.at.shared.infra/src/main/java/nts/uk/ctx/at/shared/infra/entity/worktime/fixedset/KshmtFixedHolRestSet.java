@@ -35,12 +35,6 @@ public class KshmtFixedHolRestSet extends UkJpaEntity implements Serializable {
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
     
-    
-    /** The period no. */
-    @Column(name = "PERIOD_NO")
-    private int periodNo;
-    
-    
     /** The start time. */
     @Column(name = "START_TIME")
     private int startTime;
@@ -60,11 +54,22 @@ public class KshmtFixedHolRestSet extends UkJpaEntity implements Serializable {
     /**
      * Instantiates a new kshmt fixed hol rest set.
      *
+     * @param kshmtFixedHolRestSetPK the kshmt fixed hol rest set PK
+     */
+    public KshmtFixedHolRestSet(KshmtFixedHolRestSetPK kshmtFixedHolRestSetPK) {
+    	super();
+    	this.kshmtFixedHolRestSetPK = kshmtFixedHolRestSetPK;
+    }
+    
+    /**
+     * Instantiates a new kshmt fixed hol rest set.
+     *
      * @param cid the cid
      * @param worktimeCd the worktime cd
+     * @param periodNo the period no
      */
-    public KshmtFixedHolRestSet(String cid, String worktimeCd) {
-		this.kshmtFixedHolRestSetPK = new KshmtFixedHolRestSetPK(cid, worktimeCd);
+    public KshmtFixedHolRestSet(String cid, String worktimeCd,int periodNo) {
+		this.kshmtFixedHolRestSetPK = new KshmtFixedHolRestSetPK(cid, worktimeCd,periodNo);
 	}
 
     /* (non-Javadoc)

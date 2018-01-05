@@ -25,6 +25,10 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSingle;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSinglePK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHoliday;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHolidayPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdClassfication;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdClassficationPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdEmployment;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdEmploymentPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimit;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimitPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubCondition;
@@ -194,6 +198,19 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		if (subCondition == null) {
 			return null;
 		}
+		
+		List<KshstSphdEmployment> employments = subCondition.getEmploymentList().stream().map(x -> {
+			KshstSphdEmploymentPK key = new KshstSphdEmploymentPK(subCondition.getCompanyId(),
+					subCondition.getSpecialHolidayCode().v(), x);
+			return new KshstSphdEmployment(key);
+		}).collect(Collectors.toList());
+		
+		List<KshstSphdClassfication> classfications = subCondition.getClassificationList().stream().map(x -> {
+			KshstSphdClassficationPK key = new KshstSphdClassficationPK(subCondition.getCompanyId(),
+					subCondition.getSpecialHolidayCode().v(), x);
+			return new KshstSphdClassfication(key);
+		}).collect(Collectors.toList());
+		
 		KshstSphdSubCondition kshstSphdSubCondition = new KshstSphdSubCondition();
 		KshstSphdSubConditionPK kshstSphdSubConditionPK = new KshstSphdSubConditionPK(subCondition.getCompanyId(),
 				subCondition.getSpecialHolidayCode().v());
@@ -209,6 +226,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		kshstSphdSubCondition.ageCriteriaAtr = subCondition.getAgeCriteriaAtr().value;
 		kshstSphdSubCondition.ageBaseYearAtr = subCondition.getAgeBaseYearAtr().value;
 		kshstSphdSubCondition.ageBaseDates = subCondition.getAgeBaseDates().v();
+		kshstSphdSubCondition.sphdEmployments = employments;
+		kshstSphdSubCondition.sphdClassfications = classfications;
 		kshstSphdSubCondition.kshstSphdSubConditionPK = kshstSphdSubConditionPK;
 		return kshstSphdSubCondition;
 	}
@@ -295,13 +314,20 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		if (kshstSphdSubCondition == null) {
 			return null;
 		}
+		List<String> classficationsList = kshstSphdSubCondition.sphdClassfications.stream()
+				.map(x -> x.kshstSphdClassficationPK.classficationCode).collect(Collectors.toList());
+		
+		List<String> employmentsList = kshstSphdSubCondition.sphdEmployments.stream()
+				.map(x -> x.kshstSphdEmploymentPK.employmentCode).collect(Collectors.toList());
+				
 		SubCondition subCondition = SubCondition.createFromJavaType(
+				
 				kshstSphdSubCondition.kshstSphdSubConditionPK.companyId,
 				kshstSphdSubCondition.kshstSphdSubConditionPK.specialHolidayCode, kshstSphdSubCondition.useGender,
 				kshstSphdSubCondition.useEmployee, kshstSphdSubCondition.useCls, kshstSphdSubCondition.useAge,
 				kshstSphdSubCondition.genderAtr, kshstSphdSubCondition.limitAgeFrom, kshstSphdSubCondition.limitAgeTo,
 				kshstSphdSubCondition.ageCriteriaAtr, kshstSphdSubCondition.ageBaseYearAtr,
-				kshstSphdSubCondition.ageBaseDates);
+				kshstSphdSubCondition.ageBaseDates, employmentsList, classficationsList);
 
 		return subCondition;
 	}

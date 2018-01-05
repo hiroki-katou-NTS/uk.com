@@ -10,6 +10,6 @@ public class TeamSetDto {
 	private String workPlaceId;
 
 	public static TeamSetDto fromDomain(TeamSet teamSet) {
-		return new TeamSetDto(teamSet.getTeamCode().v(), teamSet.getSId(), teamSet.getWorkPlaceId().v());
+		return new TeamSetDto(teamSet.getTeamCode().v(), teamSet.getSId(), teamSet.getWorkPlaceId());
 	}
 }

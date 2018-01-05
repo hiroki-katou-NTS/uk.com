@@ -31,22 +31,43 @@ public class ExcessOfStatutoryTimeDailyPerformDto {
 	
 	public static ExcessOfStatutoryTimeDailyPerformDto fromExcessOfStatutoryTimeDailyPerform(ExcessOfStatutoryTimeOfDaily domain){
 		return domain == null ? null : new ExcessOfStatutoryTimeDailyPerformDto(
-				new ExcessOfStatutoryMidNightTimeDto(
-						new CalcAttachTimeDto(
-								domain.getExcessOfStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes(),
-								domain.getExcessOfStatutoryMidNightTime().getTime().getTime().valueAsMinutes()), 
-						domain.getExcessOfStatutoryMidNightTime().getBeforeApplicationTime().valueAsMinutes()), 
+				getExcessStatutory(domain.getExcessOfStatutoryMidNightTime()), 
 				OverTimeWorkDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getOverTimeWork().orElse(null)), 
 				WorkHolidayTimeDailyPerformDto.fromOverTimeWorkDailyPerform(domain.getWorkHolidayTime().orElse(null)));
+	}
+
+	private static ExcessOfStatutoryMidNightTimeDto getExcessStatutory(ExcessOfStatutoryMidNightTime domain) {
+		return domain == null ? null : new ExcessOfStatutoryMidNightTimeDto(
+				getTimeCalc(domain.getTime()), 
+				getAttendanceTime(domain.getBeforeApplicationTime()));
+	}
+
+	private static CalcAttachTimeDto getTimeCalc(TimeWithCalculation domain) {
+		return domain == null ? null : new CalcAttachTimeDto(
+					getAttendanceTime(domain.getCalcTime()),
+					getAttendanceTime(domain.getTime()));
 	}
 	
 	public ExcessOfStatutoryTimeOfDaily toDomain() {
 		return new ExcessOfStatutoryTimeOfDaily(
-				new ExcessOfStatutoryMidNightTime(
-						TimeWithCalculation.createTimeWithCalculation(
-								new AttendanceTime(excessOfStatutoryMidNightTime.getTime().getTime()),
-								new AttendanceTime(excessOfStatutoryMidNightTime.getTime().getCalcTime())),
-						new AttendanceTime(excessOfStatutoryMidNightTime.getBeforeApplicationTime())),
-				Optional.of(overTimeWork.toDomain()), Optional.of(workHolidayTime.toDomain()));
+				toExcessOfStatutory(),
+				overTimeWork == null ? Optional.empty() : Optional.of(overTimeWork.toDomain()), 
+				workHolidayTime == null ? Optional.empty() : Optional.of(workHolidayTime.toDomain()));
+	}
+
+	private ExcessOfStatutoryMidNightTime toExcessOfStatutory() {
+		return excessOfStatutoryMidNightTime == null ? null : new ExcessOfStatutoryMidNightTime(
+				TimeWithCalculation.createTimeWithCalculation(
+						toAttendanceTime(excessOfStatutoryMidNightTime.getTime().getTime()),
+						toAttendanceTime(excessOfStatutoryMidNightTime.getTime().getCalcTime())),
+				toAttendanceTime(excessOfStatutoryMidNightTime.getBeforeApplicationTime()));
+	}
+	
+	private AttendanceTime toAttendanceTime(Integer time) {
+		return time == null ? null : new AttendanceTime(time);
+	}
+	
+	private static int getAttendanceTime(AttendanceTime domain) {
+		return domain == null ? null : domain.valueAsMinutes();
 	}
 }

@@ -32,14 +32,15 @@
 }
 
 #A_BTN_JUMP {
+	min-width: 0px;
 	margin-left: 0px;
 	width: 120px;
 }
 
 #A_BTN_CPS016_4 {
-	margin-left: 100px;
-	margin-right: 140px;
-	width: 120px;
+	margin-left: 15px;
+	margin-right: 0px;
+	width: 80px;
 }
 
 #left-content {
@@ -87,7 +88,11 @@ button.search-btn {
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 395px;
+	width: 359px;
+}
+
+input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
+	width: 207px	 !important;
 }
 
 i.icon.icon-searchbox {

@@ -77,8 +77,8 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		HdFromWeekdayDto overdayHolidayAttenDto = new HdFromWeekdayDto();
-		overdayHolidayAttenDto.setHolidayWorkFrameNo(holidayAtten.getHolidayWorkFrameNo().v());
-		overdayHolidayAttenDto.setOverWorkNo(holidayAtten.getOverWorkNo().v());
+		overdayHolidayAttenDto.setHolidayWorkFrameNo(holidayAtten.getHolidayWorkFrameNo());
+		overdayHolidayAttenDto.setOverWorkNo(holidayAtten.getOverWorkNo());
 		return overdayHolidayAttenDto;
 	}
 
@@ -93,10 +93,10 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		HdFromHdDto overdayHolidayDto = new HdFromHdDto();
-		overdayHolidayDto.setCalcOverDayEnd(overdayCalcHoliday.getCalcOverDayEnd().v());
-		overdayHolidayDto.setExcessHd(overdayCalcHoliday.getExcessHd().v());
-		overdayHolidayDto.setStatutoryHd(overdayCalcHoliday.getStatutoryHd().v());
-		overdayHolidayDto.setHolidayWorkFrameNo(overdayCalcHoliday.getHolidayWorkFrameNo().v());
+		overdayHolidayDto.setCalcOverDayEnd(overdayCalcHoliday.getCalcOverDayEnd());
+		overdayHolidayDto.setExcessHd(overdayCalcHoliday.getExcessHd());
+		overdayHolidayDto.setStatutoryHd(overdayCalcHoliday.getStatutoryHd());
+		overdayHolidayDto.setHolidayWorkFrameNo(overdayCalcHoliday.getHolidayWorkFrameNo());
 		return overdayHolidayDto;
 	}
 
@@ -111,10 +111,10 @@ public class ZeroTimeFinder {
 			return null;
 		}
 		WeekdayHolidayDto weekdayHolidayDto = new WeekdayHolidayDto();
-		weekdayHolidayDto.setExcessHolidayNo(weekdayHoliday.getExcessHolidayNo().v());
-		weekdayHolidayDto.setExcessSphdNo(weekdayHoliday.getExcessSphdNo().v());
-		weekdayHolidayDto.setOverworkFrameNo(weekdayHoliday.getOverworkFrameNo().v());
-		weekdayHolidayDto.setWeekdayNo(weekdayHoliday.getWeekdayNo().v());
+		weekdayHolidayDto.setExcessHolidayNo(weekdayHoliday.getExcessHolidayNo());
+		weekdayHolidayDto.setExcessSphdNo(weekdayHoliday.getExcessSphdNo());
+		weekdayHolidayDto.setOverworkFrameNo(weekdayHoliday.getOverworkFrameNo());
+		weekdayHolidayDto.setWeekdayNo(weekdayHoliday.getWeekdayNo());
 		return weekdayHolidayDto;
 	}
 }

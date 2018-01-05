@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscret
 import nts.uk.ctx.at.request.app.find.setting.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDefault;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDefaultImpl;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;

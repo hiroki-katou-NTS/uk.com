@@ -47,6 +47,7 @@ module nts.uk.at.view.kaf002.m5 {
                     });
                 }
                 self.stampAtr.subscribe((value)=>{ 
+                    nts.uk.ui.errors.clearAll();
                     switch(value){
                         case 0: {
                             self.displayItemNo = 5; 
@@ -123,11 +124,17 @@ module nts.uk.at.view.kaf002.m5 {
                     employeeID: application.employeeID(),
                     stampRequestMode: 4,
                     appStampGoOutPermitCmds: null,
-                    appStampWorkCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
+                    appStampWorkCmds: _.filter(
+                                                _.map(self.appStampList(), (item) => self.convertToJS(item)), 
+                                                o => { return !nts.uk.util.isNullOrEmpty(o.startTime)||
+                                                              !nts.uk.util.isNullOrEmpty(o.startLocation)||
+                                                              !nts.uk.util.isNullOrEmpty(o.endTime)}),
                     appStampCancelCmds: null,
                     appStampOnlineRecordCmd: null
                 }
-                if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
+                if(nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
+                    $('.m5-time-editor').first().ntsError('set', {messageId:"Msg_308"});
+                } else {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
                     .done(() => {

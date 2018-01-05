@@ -186,6 +186,8 @@ public class SpecialHolidayFinder {
 		subConditionDto.setAgeCriteriaAtr(subCondition.getAgeCriteriaAtr().value);
 		subConditionDto.setAgeBaseYearAtr(subCondition.getAgeBaseYearAtr().value);
 		subConditionDto.setAgeBaseDates(subCondition.getAgeBaseDates().v());
+		subConditionDto.setEmploymentList(subCondition.getEmploymentList());
+		subConditionDto.setClassificationList(subCondition.getClassificationList());
 		return subConditionDto;
 	}
 	

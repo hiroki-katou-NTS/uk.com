@@ -126,6 +126,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.restTimezone.resetData();
+                    this.workTimezone.resetData();    
+                }
             }
 
             export class FlexCalcSettingModel {
@@ -158,18 +163,18 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class FlexOffdayWorkTimeModel {
-                lstWorkTimezone: HDWorkTimeSheetSettingModel[];
+                lstWorkTimezone: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
                 restTimezone: FlowWorkRestTimezoneModel;
 
                 constructor() {
-                    this.lstWorkTimezone = [];
+                    this.lstWorkTimezone = ko.observableArray([]);
                     this.restTimezone = new FlowWorkRestTimezoneModel();
                 }
 
                 public resetData(): void {
                     let self = this;
-                    //TODO: reset list
                     self.restTimezone.resetData();
+                    self.lstWorkTimezone([]);
                 } 
 
                 updateData(data: FlexOffdayWorkTimeDto) {
@@ -178,25 +183,18 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateHDTimezone(lstWorkTimezone: HDWorkTimeSheetSettingDto[]) {
+                    var dataModelWorktimezone: HDWorkTimeSheetSettingModel[] = [];
                     for (var dataDTO of lstWorkTimezone) {
-                        var dataModel: HDWorkTimeSheetSettingModel = this.getHDTimezoneByWorktimeNo(dataDTO.workTimeNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new HDWorkTimeSheetSettingModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstWorkTimezone.push(dataModel);
-                        }
+                        var dataModel: HDWorkTimeSheetSettingModel = new HDWorkTimeSheetSettingModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelWorktimezone.push(dataModel);
                     }
+                    this.lstWorkTimezone(dataModelWorktimezone);
                 }
 
-                getHDTimezoneByWorktimeNo(worktimeNo: number) : HDWorkTimeSheetSettingModel{
-                    return _.find(this.lstWorkTimezone, hdtimezone => hdtimezone.workTimeNo() == worktimeNo);
-                }
                 toDto(): FlexOffdayWorkTimeDto {
                     var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
-                    for (var dataModel of this.lstWorkTimezone) {
+                    for (var dataModel of this.lstWorkTimezone()) {
                         lstWorkTimezone.push(dataModel.toDto());
                     }
                     var dataDTO: FlexOffdayWorkTimeDto = {
@@ -233,14 +231,17 @@ module nts.uk.at.view.kmk003.a {
 
                 public resetData(): void {
                     let self = this;
-                    self.workTimeCode('0');
+                    self.workTimeCode('');
                     self.useHalfDayShift(false);
                     self.coreTimeSetting.resetData();
                     self.restSetting.resetData();
                     self.offdayWorkTime.resetData();
                     self.commonSetting.resetData();
-                    //TODO 2 cai list
+                    self.getHDWtzOneday().resetData();
+                    self.getHDWtzMorning().resetData();
+                    self.getHDWtzAfternoon().resetData();
                     self.calculateSetting.resetData();
+                    self.lstStampReflectTimezone = [];
                 }
 
                 public getHDWtzOneday(): FlexHalfDayWorkTimeModel {
