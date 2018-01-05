@@ -29,3 +29,17 @@
 #compareOperator-cbb{width: 200px;}
 .value-input {width: 70px}
 .nts-editor-wrapped {display: initial !IMPORTANT;}
+
+
+#table-groupcondition {
+    border-collapse: collapse;
+}
+
+#table-groupcondition .description {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+#table-groupcondition .border1 {
+    border: 1px solid black;
+}

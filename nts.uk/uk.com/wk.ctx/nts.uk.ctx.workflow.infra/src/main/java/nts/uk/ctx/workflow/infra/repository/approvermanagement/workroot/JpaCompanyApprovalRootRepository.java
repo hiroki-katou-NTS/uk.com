@@ -63,6 +63,8 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				   + " AND c.employmentRootAtr = :employmentRootAtr"
 				   + " AND c.applicationType IS NULL"
 				   + " ORDER BY c.startDate DESC";
+	private final String FIND_LAST_BY_END_DATE = FIND_BY_CID 
+					 +" AND c.endDate = :endDate";
 	/**
 	 * get All Company Approval Root
 	 * @param companyId
@@ -297,5 +299,13 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				.setParameter("applicationType", applicationType)
 				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainComApR(c));
+	}
+	@Override
+	public List<CompanyApprovalRoot> getComAppRootLast(String companyID, GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return this.queryProxy().query(FIND_LAST_BY_END_DATE,WwfmtComApprovalRoot.class)
+				.setParameter("companyId", companyID)
+				.setParameter("endDate", endDate)
+				.getList(c ->toDomainComApR(c));
 	}
 }

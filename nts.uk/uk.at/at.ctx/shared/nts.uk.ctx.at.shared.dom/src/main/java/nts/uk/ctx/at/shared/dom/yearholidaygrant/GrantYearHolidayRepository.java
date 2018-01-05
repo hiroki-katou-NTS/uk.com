@@ -55,4 +55,8 @@ public interface GrantYearHolidayRepository {
 	
 	void remove(String companyId, int conditionNo, String yearHolidayCode);
 	
+	void remove(String companyId, String yearHolidayCode);
+	
+	void remove(String companyId, String yearHolidayCode, List<Integer> conditionNos);
+	
 }

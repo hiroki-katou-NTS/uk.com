@@ -25,9 +25,18 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 			+ "AND a.kshstGrantHdTblPK.conditionNo = :conditionNo "
 			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
 	
-	private final String DELETE_ALL = "DELETE FROM KshstGrantHdTbl a "
+	private final String DELETE_ALL_BY_CONDITION = "DELETE FROM KshstGrantHdTbl a "
 			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
 			+ "AND a.kshstGrantHdTblPK.conditionNo = :conditionNo "
+			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
+	
+	private final String DELETE_ALL_BY_SPHD = "DELETE FROM KshstGrantHdTbl a "
+			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
+			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
+	
+	private final String DELETE_ALL_BY_CONDITIONS = "DELETE FROM KshstGrantHdTbl a "
+			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
+			+ "AND a.kshstGrantHdTblPK.conditionNo IN :conditionNos "
 			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
 	
 	@Override
@@ -65,10 +74,27 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 	
 	@Override
 	public void remove(String companyId, int conditionNo, String yearHolidayCode) {
-		this.getEntityManager().createQuery(DELETE_ALL)
+		this.getEntityManager().createQuery(DELETE_ALL_BY_CONDITION)
 			.setParameter("companyId", companyId)
 			.setParameter("conditionNo", conditionNo)
 			.setParameter("yearHolidayCode", yearHolidayCode)
+			.executeUpdate();
+	}
+	
+	@Override
+	public void remove(String companyId, String yearHolidayCode) {
+		this.getEntityManager().createQuery(DELETE_ALL_BY_SPHD)
+			.setParameter("companyId", companyId)
+			.setParameter("yearHolidayCode", yearHolidayCode)
+			.executeUpdate();
+	}
+	
+	@Override
+	public void remove(String companyId, String yearHolidayCode, List<Integer> conditionNos) {
+		this.getEntityManager().createQuery(DELETE_ALL_BY_CONDITIONS)
+			.setParameter("companyId", companyId)
+			.setParameter("yearHolidayCode", yearHolidayCode)
+			.setParameter("conditionNos", conditionNos)
 			.executeUpdate();
 	}
 		

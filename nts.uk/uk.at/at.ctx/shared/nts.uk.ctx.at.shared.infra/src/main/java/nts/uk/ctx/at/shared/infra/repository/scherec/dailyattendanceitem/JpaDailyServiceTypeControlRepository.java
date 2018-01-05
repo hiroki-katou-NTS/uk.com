@@ -21,6 +21,10 @@ public class JpaDailyServiceTypeControlRepository extends JpaRepository implemen
 			+ "AND c.kshstDailyServiceTypeControlPK.businessTypeCode = :businessTypeCode"
 			+ " WHERE k.krcmtDailyAttendanceItemPK.companyId = :companyId";
 
+	private final String SELECT_BY_BUSINESSCODE_AND_ATTENDANCEID = "SELECT c FROM KshstDailyServiceTypeControl c "
+			+ "WHERE c.kshstDailyServiceTypeControlPK.businessTypeCode = :businessTypeCode "
+			+ "AND c.kshstDailyServiceTypeControlPK.attendanceItemId =  :attendanceItemId";
+
 	@Override
 	public List<DailyServiceTypeControl> getListDailyServiceTypeControl(BusinessTypeCode businessTypeCode,
 			String companyId) {
@@ -39,10 +43,19 @@ public class JpaDailyServiceTypeControlRepository extends JpaRepository implemen
 							new BigDecimal(c.getAttendanceItemId())), KshstDailyServiceTypeControl.class);
 			if (kshstDailyServiceTypeControlOptional.isPresent()) {
 				KshstDailyServiceTypeControl kshstDailyServiceTypeControl = kshstDailyServiceTypeControlOptional.get();
-				kshstDailyServiceTypeControl.canBeChangedByOthers = new BigDecimal(c.isCanBeChangedByOthers() ? 1 : 0);
-				kshstDailyServiceTypeControl.youCanChangeIt = new BigDecimal(c.isYouCanChangeIt() ? 1 : 0);
-				kshstDailyServiceTypeControl.use = new BigDecimal(c.isUse() ? 1 : 0);
-				this.commandProxy().update(kshstDailyServiceTypeControl);
+				if (kshstDailyServiceTypeControl.use.intValue() != (c.isUse() ? 1 : 0)
+						|| kshstDailyServiceTypeControl.canBeChangedByOthers
+								.intValue() != (c.isCanBeChangedByOthers() ? 1 : 0)
+						|| kshstDailyServiceTypeControl.youCanChangeIt.intValue() != (c.isYouCanChangeIt() ? 1 : 0)) {
+					kshstDailyServiceTypeControl.use = new BigDecimal(c.isUse() ? 1 : 0);
+					if (c.isUse()) {
+						kshstDailyServiceTypeControl.canBeChangedByOthers = new BigDecimal(
+								c.isCanBeChangedByOthers() ? 1 : 0);
+						kshstDailyServiceTypeControl.youCanChangeIt = new BigDecimal(c.isYouCanChangeIt() ? 1 : 0);
+					}
+					this.commandProxy().update(kshstDailyServiceTypeControl);
+				}
+
 			} else {
 				this.commandProxy().insert(this.toDailyServiceTypeControlEntity(c));
 			}
@@ -76,6 +89,23 @@ public class JpaDailyServiceTypeControlRepository extends JpaRepository implemen
 				kshstDailyServiceTypeControl.canBeChangedByOthers.intValue() == 1 ? true : false,
 				kshstDailyServiceTypeControl.use.intValue() == 1 ? true : false, attendanceItemName, userCanSet);
 
+	}
+
+	@Override
+	public Optional<DailyServiceTypeControl> getDailyServiceTypeControl(BusinessTypeCode businessTypeCode,
+			int attendanceItemId) {
+		Optional<KshstDailyServiceTypeControl> kshstDailyServiceTypeControlOptional = this.queryProxy()
+				.query(SELECT_BY_BUSINESSCODE_AND_ATTENDANCEID, KshstDailyServiceTypeControl.class)
+				.setParameter("businessTypeCode", businessTypeCode, BusinessTypeCode.class)
+				.setParameter("attendanceItemId", attendanceItemId).getSingle();
+		if (kshstDailyServiceTypeControlOptional.isPresent()) {
+			KshstDailyServiceTypeControl kshstDailyServiceTypeControl = kshstDailyServiceTypeControlOptional.get();
+			Optional.ofNullable(DailyServiceTypeControl.createFromJavaType(attendanceItemId, businessTypeCode.v(),
+					kshstDailyServiceTypeControl.youCanChangeIt.intValue() == 1 ? true : false,
+					kshstDailyServiceTypeControl.canBeChangedByOthers.intValue() == 1 ? true : false,
+					kshstDailyServiceTypeControl.use.intValue() == 1 ? true : false, "", 0));
+		}
+		return Optional.empty();
 	}
 
 }

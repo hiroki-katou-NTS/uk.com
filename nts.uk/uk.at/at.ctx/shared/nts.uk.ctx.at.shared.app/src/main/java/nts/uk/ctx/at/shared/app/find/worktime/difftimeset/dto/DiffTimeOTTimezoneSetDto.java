@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeZoneRoundingDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
@@ -18,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSetMement
  * The Class DiffTimeOTTimezoneSet.
  */
 @Getter
+@Setter
 public class DiffTimeOTTimezoneSetDto implements DiffTimeOTTimezoneSetMemento {
 
 	/** The work timezone no. */
@@ -33,10 +33,10 @@ public class DiffTimeOTTimezoneSetDto implements DiffTimeOTTimezoneSetMemento {
 	private TimeZoneRoundingDto timezone;
 
 	/** The OT frame no. */
-	private BigDecimal oTFrameNo;
+	private Integer oTFrameNo;
 
 	/** The legal O tframe no. */
-	private BigDecimal legalOTframeNo;
+	private Integer legalOTframeNo;
 
 	/** The settlement order. */
 	private Integer settlementOrder;

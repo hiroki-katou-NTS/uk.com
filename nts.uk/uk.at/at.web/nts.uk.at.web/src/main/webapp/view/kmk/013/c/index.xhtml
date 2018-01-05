@@ -19,7 +19,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_87')} </a>
-				<button class="proceed save">#{i18n.getText('KMK013_88')}</button>
+				<button class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_88')}</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -32,7 +32,7 @@
 							</div>
 							<label class="ntsRadioBox"> <input type="radio"
 								name="textRadioC23"
-								data-bind="checkedValue: '1', checked: selectedValueC23" />
+								data-bind="checkedValue: 1, checked: selectedValueC23" />
 								<span class="box"></span>
 								<span class="label"
 								data-bind="text: '#{i18n.getText('KMK013_91')}'"></span>
@@ -43,6 +43,7 @@
 								<span class="label label-width">#{i18n.getText('KMK013_94')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_95')}',
+								        enable:enableC23,
 										options: roundingC34,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -53,6 +54,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_98')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_99')}',
+								        enable:enableC23,
 										options: roundingC38,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -63,6 +65,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_102')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_103')}',
+								        enable:enableC23,
 										options: roundingC312,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -75,6 +78,7 @@
 								<span class="label label-width">#{i18n.getText('KMK013_107')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_108')}',
+								        enable:enableC23,
 										options: roundingC44,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -85,6 +89,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_111')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_112')}',
+								        enable:enableC23,
 										options: roundingC48,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -95,6 +100,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_115')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_116')}',
+								        enable:enableC23,
 										options: roundingC412,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -107,6 +113,7 @@
 								<span class="label label-width">#{i18n.getText('KMK013_120')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_121')}',
+								        enable:enableC23,
 										options: roundingC54,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -117,6 +124,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_124')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_125')}',
+								        enable:enableC23,
 										options: roundingC58,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -127,6 +135,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_128')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_129')}',
+								        enable:enableC23,
 										options: roundingC512,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -139,6 +148,7 @@
 								<span class="label label-width">#{i18n.getText('KMK013_133')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_134')}',
+								        enable:enableC23,
 										options: roundingC64,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -149,6 +159,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_137')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_138')}',
+								        enable:enableC23,
 										options: roundingC68,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -159,6 +170,7 @@
 							<span class="label label-width">#{i18n.getText('KMK013_141')}</span>
 								<div class="cf" data-bind="ntsSwitchButton: {
 								        name:'#{i18n.getText('KMK013_142')}',
+								        enable:enableC23,
 										options: roundingC612,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -167,7 +179,7 @@
 							</div>
 							<label class="ntsRadioBox"> <input type="radio"
 								name="textRadioC23"
-								data-bind="checkedValue: '1', checked: selectedValueC23" />
+								data-bind="checkedValue: 0, checked: selectedValueC23" />
 								<span class="box"></span>
 								<span class="label"
 								data-bind="text: '#{i18n.getText('KMK013_92')}'"></span>
@@ -176,15 +188,157 @@
 						</td>
 						<td class="right-contents">
 							<div id="tab-panel"
-								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,width:300}">
+								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,width:300, height : 500}">
 								<div class="tab-content-1">
-									<table id="grid8"></table>
+									<table class="fixed-table">
+										<colgroup>
+											<col width="250px" />
+											<col width="200px" />
+											<col width="200px" />
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_148')}</th>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_149')}</th>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_150')}</th>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_151')}</th>
+											</tr>
+										</thead>
+										<tbody data-bind="foreach :itemsC8 ">
+											<tr>
+												<td class="col1" data-bind="text:col1"></td>
+												<td>
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+															   options: $parent.comboItemsWorkOff,
+													           optionsValue: 'code',
+													           value: col2,
+													           optionsText: 'name',
+													           columns: [
+													             { prop: 'name', length: 8 },
+													           ]}">
+													</div>
+												</td>
+												<td>
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+															   options: $parent.comboItemsWorkOff,
+													           optionsValue: 'code',
+													           value: col3,
+													           optionsText: 'name',
+													           columns: [
+													             { prop: 'name', length: 8 },
+													           ]}">
+													</div>
+												</td>
+												<td>
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+															   options: $parent.comboItemsWorkOff,
+													           optionsValue: 'code',
+													           value: col4,
+													           optionsText: 'name',
+													           columns: [
+													             { prop: 'name', length: 8 },
+													           ]}">
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 								<div class="tab-content-2">
-									<table id="grid9"></table>
+									<table class="fixed-table">
+										<colgroup>
+											<col width="250px" />
+											<col width="200px" />
+											
+										</colgroup>
+										<thead>
+											<tr>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_156')}</th>
+												<th class="ui-widget-header" rowspan="1"></th>
+												
+											</tr>
+										</thead>
+										<tbody data-bind="foreach :itemsC9 ">
+											<tr>
+												<td class="col1" data-bind="text:col1"></td>
+												<td>
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+															   options: $parent.comboItemOvertime,
+													           optionsValue: 'code',
+													           value: col2,
+													           optionsText: 'name',
+													           columns: [
+													             { prop: 'name', length: 8 },
+													           ]}">
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 								<div class="tab-content-3">
-									<table id="grid10"></table>
+									<table class="fixed-table">
+										<colgroup>
+											<col width="250px" />
+											<col width="200px" />
+											<col width="200px" />
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_159')}</th>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_160')}</th>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_161')}</th>
+												<th class="ui-widget-header" rowspan="1">#{i18n.getText('KMK013_162')}</th>
+											</tr>
+										</thead>
+										<tbody data-bind="foreach :itemsC10 ">
+											<tr>
+												<td class="col1" data-bind="text:col1"></td>
+												<td>
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+															   options: $parent.comboItemsWorkOff,
+													           optionsValue: 'code',
+													           value: col2,
+													           optionsText: 'name',
+													           columns: [
+													             { prop: 'name', length: 8 },
+													           ]}">
+													</div>
+												</td>
+												<td>
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+															   options: $parent.comboItemsWorkOff,
+													           optionsValue: 'code',
+													           value: col3,
+													           optionsText: 'name',
+													           columns: [
+													             { prop: 'name', length: 8 },
+													           ]}">
+													</div>
+												</td>
+												<td>
+													<div id="combo-box"
+														data-bind="ntsComboBox: {
+															   options: $parent.comboItemsWorkOff,
+													           optionsValue: 'code',
+													           value: col4,
+													           optionsText: 'name',
+													           columns: [
+													             { prop: 'name', length: 8 },
+													           ]}">
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</td>

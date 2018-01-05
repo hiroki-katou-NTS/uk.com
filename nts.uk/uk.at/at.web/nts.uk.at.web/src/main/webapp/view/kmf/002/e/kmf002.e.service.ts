@@ -6,8 +6,8 @@ module nts.uk.at.view.kmf002.e {
         var path: any = {
                 find: "bs/employee/holidaysetting/company/findCompanyMonthDaySetting",
                 save: "bs/employee/holidaysetting/company/save",
-                findFirstMonth: "basic/company/beginningmonth/find"
-                remove: "bs/employee/holidaysetting/company/remove",
+                findFirstMonth: "basic/company/beginningmonth/find",
+                remove: "bs/employee/holidaysetting/company/remove"
             };
         
         /**
@@ -20,7 +20,7 @@ module nts.uk.at.view.kmf002.e {
         
         
         export function save(year: number, data: any): JQueryPromise<any> {
-            model.SystemResourceDto sysResourceDto = new model.SystemResourceDto(year, new Array<model.PublicHolidayMonthSettingDto>);
+            model.SystemResourceDto sysResourceDto = new model.SystemResourceDto(year, new Array<model.PublicHolidayMonthSettingDto>());
             sysResourceDto.toDto(data);
             let command = {};
             command.year = year;
@@ -56,7 +56,7 @@ module nts.uk.at.view.kmf002.e {
             toDto(data: any): void {
                 let _self = this;
                 _.forEach(data, function(newValue) {
-                    _self.publicHolidayMonthSettings.push(new PublicHolidayMonthSettingDto(_self.year,newValue.month(),newValue.day(),newValue.day()));
+                    _self.publicHolidayMonthSettings.push(new PublicHolidayMonthSettingDto(_self.year,newValue.month(),newValue.day()));
                 });
             }
         }
@@ -73,13 +73,11 @@ module nts.uk.at.view.kmf002.e {
             publicHdManagementYear: number;
             month: number;
             inLegalHoliday: number;
-            outLegalHoliday: number;
             
-            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number, outLegalHoliday: number) {
+            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
                 this.publicHdManagementYear = publicHdManagementYear;
                 this.month = month;
                 this.inLegalHoliday = inLegalHoliday;
-                this.outLegalHoliday = outLegalHoliday;
             }
         }
     }

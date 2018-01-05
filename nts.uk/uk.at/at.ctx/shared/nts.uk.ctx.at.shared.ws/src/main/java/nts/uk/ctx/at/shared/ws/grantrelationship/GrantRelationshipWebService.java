@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.app.command.specialholiday.grantrelationship.InsertG
 import nts.uk.ctx.at.shared.app.command.specialholiday.grantrelationship.InsertGrantRelationshipCommandHandler;
 import nts.uk.ctx.at.shared.app.find.specialholiday.grantrelationship.GrantRelationshipDto;
 import nts.uk.ctx.at.shared.app.find.specialholiday.grantrelationship.GrantRelationshipFinder;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.repository.GrantRelationshipRepository;
 @Path("at/shared/grantrelationship")
 @Produces("application/json")
 public class GrantRelationshipWebService extends WebService{
@@ -30,10 +32,11 @@ public class GrantRelationshipWebService extends WebService{
 	 * @return
 	 */
 	@POST
-	@Path("findAll")
-	public List<GrantRelationshipDto> finder(){
-		return this.finder.finder();
+	@Path("findAll/{sphdCode}")
+	public List<GrantRelationshipDto> finder(@PathParam ("sphdCode") String sphdCode){
+		return this.finder.finder(sphdCode);
 	}
+	
 	/**
 	 * insert a grant relationship 
 	 * @param command

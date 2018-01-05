@@ -45,11 +45,11 @@ public class ImplementationResultFinder {
 		for (ErrMessageInfo errMessageInfo: listErrMessageInfo) {
 			EmpBasicInfoImport employeeLog = listPersonInfo.stream().filter(c -> c.getEmployeeId().equals(errMessageInfo.getEmployeeID())).findAny().get();
 			PersonInfoErrMessageLogDto personInfoErrMessageLogDto = new PersonInfoErrMessageLogDto(
-					employeeLog.getEmployeeCode(), employeeLog.getPName(), errMessageInfo.getDisposalDay(), errMessageInfo.getMessageError().v());
+					employeeLog.getEmployeeCode(), employeeLog.getNamePerson(), errMessageInfo.getDisposalDay(), errMessageInfo.getMessageError().v());
 			result.add(personInfoErrMessageLogDto);
 		}
 		
-		result = result.stream().sorted(Comparator.comparing(PersonInfoErrMessageLogDto::getEmployeeCode)).limit(100).collect(Collectors.toList());
+		result = result.stream().sorted(Comparator.comparing(PersonInfoErrMessageLogDto::getPersonCode)).limit(100).collect(Collectors.toList());
 
 		return result;
 		

@@ -369,11 +369,11 @@ function loadIgrid() {
         // virtualizationMode: "continuous",
         virtualizationMode: "fixed",
         columns: [
-            { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number" },
+            { key: "attendanceItemId", width: "50px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number" },
             { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string" },
             { key: "use", width: "100px", headerText: useHeader + nts.uk.resource.getText('KDW002_5'), dataType: "bool", template: useTemplate },
             { key: "youCanChangeIt", width: "120px", headerText: youCanChangeItHeader + nts.uk.resource.getText('KDW002_6'), dataType: "bool", template: youCanChangeItTemplate },
-            { key: "canBeChangedByOthers", width: "120px", headerText: canBeChangedByOthersHeader + nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
+            { key: "canBeChangedByOthers", width: "145px", headerText: canBeChangedByOthersHeader + nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
             { key: "userCanSet", dataType: "bool", hidden: true }
         ],
         features: [

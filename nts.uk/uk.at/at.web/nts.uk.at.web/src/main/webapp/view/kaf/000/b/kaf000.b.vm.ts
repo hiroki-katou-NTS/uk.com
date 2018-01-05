@@ -76,29 +76,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             self.inputDetail().baseDate = baseDate;
             let dfd = $.Deferred<any>();
-            // let dfdMessageDeadline = self.getMessageDeadline(self.appID(), self.appType());
-//            let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
-//            let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
-//
-//            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
-//                // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
-//                let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
-//                self.getDetailCheck(self.inputDetail());
-//                self.getMessageDeadline({
-//                    appID: data.appID,
-//                    appType: data.appType,
-//                    appDate: moment(data.appDate)   
-//                });
-//                nts.uk.ui.block.clear();
-//                dfd.resolve();
-//            });
-            
             nts.uk.at.view.kaf000.b.service.getAppDataDate({
                 appTypeValue: self.appType(),
                 appDate: baseDate,
                 isStartup: true,
                 appID: self.appID()})
             .done((data)=>{
+                self.inputCommandEvent().version = data.applicationDto.version;
+                self.dataApplication(data.applicationDto);
+                self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 let deadlineMsg = data.outputMessageDeadline;
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
@@ -399,81 +385,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //承認コメント
             self.displayButtonControl().enableMessageComment(false);    
         }
-
-        // getMessageDeadline
-        getMessageDeadline(inputMessageDeadline: any) {
-            let self = this;
-            let dfd = $.Deferred<any>();
-            service.getMessageDeadline(inputMessageDeadline).done(function(data) {
-                if(!nts.uk.util.isNullOrEmpty(data.message)){
-                    self.messageDeadlineTop(self.reasonAppMess + '　' + data.message);    
-                }
-                if(!nts.uk.util.isNullOrEmpty(data.deadline)){
-                    self.messageDeadlineBottom(self.reasonAppMessDealine + '　' + data.deadline);
-                }
-                self.outputMessageDeadline(data);
-                dfd.resolve(data);
-                //補足1 表示か非表示
-                if(data.chkShow){
-                    self.displayButtonControl().displayMessageArea(false);    
-                }else{
-                    self.displayButtonControl().displayMessageArea(true);
-                }
-            }).fail(function(res: any) {
-                dfd.reject();
-                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-            }); 
-            return dfd.promise();
-        }
-
-        //getAll data by App ID
-        getAllDataByAppID(appID: any) {
-            let self = this;
-            let dfd = $.Deferred<any>();
-            service.getAllDataByAppID(appID).done(function(data) {
-                self.inputCommandEvent().version = data.version;
-                self.dataApplication(data);
-                self.appType(data.applicationType);
-                let listPhase = self.dataApplication().listPhase; 
-                let approvalList = [];
-                for(let x = 1; x <= listPhase.length; x++){
-                    let phaseLoop = listPhase[x-1];
-                    let appPhase = new vmbase.AppApprovalPhase(
-                        phaseLoop.phaseID,
-                        phaseLoop.approvalForm,
-                        phaseLoop.dispOrder,
-                        phaseLoop.approvalATR,
-                        []); 
-                    for(let y = 1; y <= phaseLoop.listFrame.length; y++){
-                        let frameLoop = phaseLoop.listFrame[y-1];
-                        let appFrame = new vmbase.ApprovalFrame(
-                            frameLoop.frameID,
-                            frameLoop.dispOrder,
-                            []);
-                        for(let z = 1; z <= frameLoop.listApproveAccepted.length; z++){
-                            let acceptedLoop = frameLoop.listApproveAccepted[z-1];
-                            let appAccepted = new vmbase.ApproveAccepted(
-                                acceptedLoop.appAcceptedID,
-                                acceptedLoop.approverSID,
-                                acceptedLoop.approvalATR,
-                                acceptedLoop.confirmATR,
-                                acceptedLoop.approvalDate,
-                                acceptedLoop.reason,
-                                acceptedLoop.representerSID);
-                            appFrame.listApproveAccepted.push(appAccepted);
-                        }
-                        appPhase.listFrame.push(appFrame);   
-                    };
-                    approvalList.push(appPhase);    
-                };
-                self.approvalList = approvalList;
-                dfd.resolve(data);
-            }).fail(function(res: any) {
-                dfd.reject();
-                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-            }); 
-            return dfd.promise();
-        }
+        
         //get all reason by app ID
         getAllReasonByAppID(appID: string) {
             let self = this;
@@ -670,7 +582,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 }).fail(function(res: any) {
                     if(res.optimisticLock == true){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                            location.reload();
+                            nts.uk.request.jump("../test/index.xhtml");
                         });    
                     } else {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 

@@ -24,8 +24,9 @@
 				
 				<div style="margin-left: 30px" id="content" class="cf">
 					<h1>Table1</h1>
+					<div data-bind="ntsCheckBox:{checked: isEnableAllControl}">Disable/Enable All</div>
 					<button style="margin-bottom: 10px;" data-bind="click: testDataSource">Test datasource</button>
-					<div data-bind="ntsFixTableCustom: {option: fixTableOption1}"></div>
+					<div id="fixed-table" data-bind="ntsFixTableCustom: {option: fixTableOption1, isEnableAllControl: isEnableAllControl}"></div>
 					
 					<h1>Table2</h1>
 					<div data-bind="ntsFixTableCustom: {option: fixTableOption2}"></div>

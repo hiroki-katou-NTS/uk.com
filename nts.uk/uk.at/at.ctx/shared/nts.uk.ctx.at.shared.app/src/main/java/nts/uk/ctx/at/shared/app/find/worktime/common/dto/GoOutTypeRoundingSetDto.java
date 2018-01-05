@@ -22,6 +22,11 @@ public class GoOutTypeRoundingSetDto implements GoOutTypeRoundingSetSetMemento{
 	/** The private union go out. */
 	private DeductGoOutRoundingSetDto privateUnionGoOut;
 
+	public GoOutTypeRoundingSetDto() {
+		this.officalUseCompenGoOut = new DeductGoOutRoundingSetDto();
+		this.privateUnionGoOut = new DeductGoOutRoundingSetDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

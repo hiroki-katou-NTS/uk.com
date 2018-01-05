@@ -13,6 +13,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -55,7 +56,7 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	@JoinTable(name = "KRCMT_FIX_CON_WORK_RECORD")
 	public List<KrcmtFixedConditionWorkRecord> fixedConditionWorkRecord;
 	
-	@ManyToOne
+	@OneToOne
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false),
@@ -79,7 +80,6 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	protected Object getKey() {
 		return dailyAlarmConID;
 	}
-	
 
 	public static KrcmtDailyAlarmCondition toEntity(String companyId,AlarmCheckConditionCode code ,AlarmCategory category, DailyAlarmCondition domain) {
 		return new KrcmtDailyAlarmCondition(
@@ -102,12 +102,5 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 				this.fixedConditionWorkRecord.stream().map(c->c.toDomain()).collect(Collectors.toList())
 				);
 	}
-
-
-
-
-
-	
-
 
 }

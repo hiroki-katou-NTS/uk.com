@@ -12,33 +12,39 @@ public enum ApplyAtr {
 
 	/** The use. */
 	// 使用する
-	USE(1, "ENUM_APPLYATR_USE"),
+	USE(1, "使用する", "ENUM_APPLYATR_USE"),
 
 	/** The not use. */
 	// 使用しない
-	NOT_USE(0, "ENUM_APPLYATR_NOT_USE");
+	NOT_USE(0, "使用しない", "ENUM_APPLYATR_NOT_USE");
 
 	/** The value. */
 	public final int value;
 
 	/** The name id. */
 	public final String nameId;
+	
+	/** The description. */
+	public String description;
 
 	/** The Constant values. */
 	private final static ApplyAtr[] values = ApplyAtr.values();
 
+
 	/**
-	 * Instantiates a new use atr.
+	 * Instantiates a new apply atr.
 	 *
-	 * @param value
-	 *            the value
-	 * @param nameId
-	 *            the name id
+	 * @param value the value
+	 * @param nameId the name id
+	 * @param description the description
 	 */
-	private ApplyAtr(int value, String nameId) {
+	private ApplyAtr(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
+		this.description = description;
 	}
+
+
 
 	/**
 	 * Value of.

@@ -89,10 +89,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 textalign: "left",
             }));
             self.startPage().done(function() {
-                nts.uk.ui.block.clear();
-                self.appDate.subscribe(value => {
-                    self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
-                });
+                self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
+                    nts.uk.ui.block.clear();
+                    self.appDate.subscribe(value => {
+                        self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
+                    });
+                })                
             });
         }
         /**

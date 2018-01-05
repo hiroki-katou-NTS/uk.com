@@ -17,12 +17,12 @@ public class PublicHolidayMonthSettingDto {
 	public int month;
 
 	/** The in legal holiday. */
-	public int inLegalHoliday;
+	public double inLegalHoliday;
 	
 	/**
 	 * Instantiates a new public holiday month setting dto.
 	 */
-	public PublicHolidayMonthSettingDto(int publicHdManagementYear, int month, int inLegalHoliday){
+	public PublicHolidayMonthSettingDto(int publicHdManagementYear, int month, double inLegalHoliday){
 		this.publicHdManagementYear = publicHdManagementYear;
 		this.month = month;
 		this.inLegalHoliday = inLegalHoliday;
