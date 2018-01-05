@@ -92,6 +92,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.historySelection().histId(self.listHistorySelection()[0].histId);
                         }
                     });
+                    
                 } else {
                     //historySelection.histId(undefined);
                     self.registerData();
@@ -142,7 +143,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (ondeHisIdlits != undefined) {
                         if (ondeHisIdlits.endDate == '9999/12/31') {
                             self.enableSelName(true);
-                            self.registerData();
+//                            self.registerData();
                         } else {
                             self.enableSelName(false);
                         }
@@ -162,9 +163,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.selection().selectionID(self.listSelection()[0].selectionID);
                         } else {
                             //self.enableSelName(true);
-                            self.revDisSel02(false);
-                            self.revDisSel03(false);
-                            //self.registerData();
+                            
+                            self.registerData();
                             //$("#code").focus();
                         }
 
@@ -188,7 +188,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
-                }
+                } 
             });
 
         }
@@ -245,6 +245,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.memoSelection('');
             self.checkCreateaaa(true);
             self.enableSelName(true);
+            self.revDisSel02(false);
+            self.revDisSel03(false);
+            self.revDisSel04(false);
             $("#code").focus();
         }
 
@@ -304,6 +307,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                     self.selection().selectionID(itemSelected.selectionID);
                                     self.revDisSel02(true);
                                     self.revDisSel03(true);
+                                    self.revDisSel04(true);
                                 }
 
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function() {
@@ -378,6 +382,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 }
                                 let newItem = itemList[oldIndex];
                                 currentItem.selectionID(newItem.selectionID);
+                               
                             } else {
                                 self.registerData();
                                 histList.histId.valueHasMutated();
@@ -386,12 +391,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         });
                         self.listItems.valueHasMutated();
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
-
                         nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                     });
-
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();
+                    $("#name").focus();
                     return;
                 })
             } else {
