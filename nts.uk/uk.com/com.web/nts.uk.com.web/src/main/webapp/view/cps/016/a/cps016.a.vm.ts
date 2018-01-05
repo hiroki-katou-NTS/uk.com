@@ -309,7 +309,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             self.selectionItemId(param.selectionItemId || '');
             self.selectionItemName(param.selectionItemName || '');
             self.memo(param.memo || '');
-            self.selectionItemClassification(param.selectionItemClassification === 1 ? true : false);
+            self.selectionItemClassification(param.selectionItemClassification === 0 ? true : false);
             self.contractCode(param.contractCode || '');
             self.integrationCode(param.integrationCode || '');
 
