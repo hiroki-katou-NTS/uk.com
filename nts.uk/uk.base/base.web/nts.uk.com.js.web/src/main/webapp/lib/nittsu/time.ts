@@ -275,7 +275,7 @@ module nts.uk.time {
         }
         if (isMinutes) {
             var hoursX = ntsNumber.trunc(time / 60);
-            time = hoursX + text.padLeft((Math.abs(time - hoursX * 60)).toString(), '0', 2);
+            time = (time < 0 && hoursX == 0 ? "-" : "") + hoursX + text.padLeft((Math.abs(time - hoursX * 60)).toString(), '0', 2);
         }
         if (!(time instanceof String)) {
             time = time.toString();
