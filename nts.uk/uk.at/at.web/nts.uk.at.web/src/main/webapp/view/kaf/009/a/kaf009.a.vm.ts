@@ -2,7 +2,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     export class ScreenModel {
         dateType: string = 'YYYY/MM/DD';
-        isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
         isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
@@ -471,7 +470,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                 var self = this;
                 var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
-                if (returnWorkLocationCD !== undefined) {
+                if (!nts.uk.util.isNullOrEmpty(returnWorkLocationCD)) {
                     if (line == 1) {
                         self.workLocationCD(returnWorkLocationCD);
                         self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
@@ -482,13 +481,19 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         self.workLocationName2(self.findWorkLocationName(returnWorkLocationCD));
                         //フォーカス制御 => 直行区分2
                         $('#goWorkAtr2').focus();
-                    };
-                    nts.uk.ui.block.clear();
+                    }
+                   
                 }
                 else {
-                    self.workLocationCD = ko.observable("");
-                    nts.uk.ui.block.clear();
+                    if (line == 1) {
+                        self.workLocationCD('');    
+                        self.workLocationName('');
+                    } else {
+                        self.workLocationCD2('');    
+                        self.workLocationName2('');    
+                    }              
                 }
+                 nts.uk.ui.block.clear();
             });
         }
         /**

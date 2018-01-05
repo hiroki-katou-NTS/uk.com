@@ -417,22 +417,31 @@ module nts.uk.at.view.kaf009.b {
                     nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD2());
                 };
                 nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                    let self = this;
-                    let returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
-                    if (returnWorkLocationCD !== undefined) {
-                        if (line == 1) {
-                            self.workLocationCD(returnWorkLocationCD);
-                            self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
-                        } else {
-                            self.workLocationCD2(returnWorkLocationCD);
-                            self.workLocationName2(self.findWorkLocationName(returnWorkLocationCD));
-                        };
-                        nts.uk.ui.block.clear();
-                    }
-                    else {
-                        self.workLocationCD = ko.observable("");
-                        nts.uk.ui.block.clear();
-                    }
+                    var self = this;
+                var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                if (!nts.uk.util.isNullOrEmpty(returnWorkLocationCD)) {
+                    if (line == 1) {
+                        self.workLocationCD(returnWorkLocationCD);
+                        self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
+                        //フォーカス制御 => 直行区分1
+                        $('#goWorkAtr1').focus();
+                    } else {
+                        self.workLocationCD2(returnWorkLocationCD);
+                        self.workLocationName2(self.findWorkLocationName(returnWorkLocationCD));
+                        //フォーカス制御 => 直行区分2
+                        $('#goWorkAtr2').focus();
+                    }                   
+                }
+                else {
+                    if (line == 1) {
+                        self.workLocationCD('');    
+                        self.workLocationName('');
+                    } else {
+                        self.workLocationCD2('');    
+                        self.workLocationName2('');    
+                    }              
+                }
+                 nts.uk.ui.block.clear();
                 });
             }
 
