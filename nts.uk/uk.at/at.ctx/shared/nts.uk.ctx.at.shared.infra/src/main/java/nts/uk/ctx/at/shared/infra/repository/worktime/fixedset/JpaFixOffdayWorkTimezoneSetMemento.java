@@ -69,11 +69,7 @@ public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezone
 	 */
 	@Override
 	public void setLstWorkTimezone(List<HDWorkTimeSheetSetting> lstWorkTimezone) {
-		if (CollectionUtil.isEmpty(lstWorkTimezone)) {
-			return;
-		}
-		// get list entity
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedHolTimeSet())) {
+		if (CollectionUtil.isEmpty(lstWorkTimezone) || CollectionUtil.isEmpty(this.entity.getLstKshmtFixedHolTimeSet())) {
 			this.entity.setLstKshmtFixedHolTimeSet(new ArrayList<>());
 		}
 		List<KshmtFixedHolTimeSet> lstEntity = this.entity.getLstKshmtFixedHolTimeSet();
