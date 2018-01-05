@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -33,7 +34,10 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	private ApplicationRepository_New appRepo;
 
 	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
+	private ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private DetailAfterUpdate detailAfterUpdate;
 
 	/**
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
@@ -64,7 +68,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 		application.setVersion(goBackDirectly.getVersion());
 		appRepo.updateWithVersion(application);
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-		//this.detailAfterUpdate.processAfterDetailScreenRegistration(companyID, goBackDirectly.getAppID());
+		this.detailAfterUpdate.processAfterDetailScreenRegistration(application);
 	}
 
 }
