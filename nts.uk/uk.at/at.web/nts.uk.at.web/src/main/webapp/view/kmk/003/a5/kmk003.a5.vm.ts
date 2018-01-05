@@ -105,9 +105,6 @@ module a5 {
             // fix table option
             self.setFixedTableOption();
 
-            // add fixed table event listener
-            self.initFixedTableEvent();
-
         }
 
         /**
@@ -187,48 +184,6 @@ module a5 {
         public forceAddFixedTableEvent(): void {
             let self = this;
             self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.valueHasMutated();
-        }
-
-        /**
-         * Set fixed table event listener
-         */
-        public initFixedTableEvent(): void {
-            let self = this;
-            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
-                self.setFixedTableEvent();
-            });
-            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
-                self.setFixedTableEvent();
-            });
-        }
-
-        /**
-         * Set fixed table event listener
-         */
-        private setFixedTableEvent(): void {
-            let self = this;
-            if (self.isFlex() && self.isDetailMode()) {
-                document.getElementById('flexOneDay').addEventListener('timerangedatachange', e => {
-                    self.oneDayFlexTimezones.valueHasMutated();
-                });
-                document.getElementById('flexMorning').addEventListener('timerangedatachange', e => {
-                    self.morningFlexTimezones.valueHasMutated();
-                });
-                document.getElementById('flexAfternoon').addEventListener('timerangedatachange', e => {
-                    self.afternoonFlexTimezones.valueHasMutated();
-                });
-            }
-            if (self.isFixed() && self.isDetailMode()) {
-                document.getElementById('fixedOneDay').addEventListener('timerangedatachange', e => {
-                    self.oneDayFixedTimezones.valueHasMutated();
-                });
-                document.getElementById('fixedMorning').addEventListener('timerangedatachange', e => {
-                    self.morningFixedTimezones.valueHasMutated();
-                });
-                document.getElementById('fixedAfternoon').addEventListener('timerangedatachange', e => {
-                    self.afternoonFixedTimezones.valueHasMutated();
-                });
-            }
         }
 
         /**

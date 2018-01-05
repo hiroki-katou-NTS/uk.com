@@ -52,8 +52,8 @@ public class KshstHdFromHd extends UkJpaEntity implements Serializable {
 	}
 
 	public static KshstHdFromHd toEntity(HdFromHd domain) {
-		return new KshstHdFromHd(new KshstHdFromHdPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo().v()),
-				domain.getCalcOverDayEnd().v(), domain.getStatutoryHd().v(), domain.getExcessHd().v());
+		return new KshstHdFromHd(new KshstHdFromHdPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo()),
+				domain.getCalcOverDayEnd(), domain.getStatutoryHd(), domain.getExcessHd());
 	}
 
 	public KshstHdFromHd(KshstHdFromHdPK kshstOverDayHdSetPK, int calcOverDayEnd, int statutoryHd, int excessHd) {

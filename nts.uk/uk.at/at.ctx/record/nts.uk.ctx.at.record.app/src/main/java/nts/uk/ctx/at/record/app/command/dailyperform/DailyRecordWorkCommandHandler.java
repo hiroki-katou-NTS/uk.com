@@ -128,7 +128,7 @@ public class DailyRecordWorkCommandHandler {
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
 
 	public void handleAdd(DailyRecordWorkCommand command) {
-//		this.attendanceTimeAddHandler.handle(command.getAttendanceTimeCommand());
+		this.attendanceTimeAddHandler.handle(command.getAttendanceTimeCommand());
 		this.workInfoAddHandler.handle(command.getWorkInfoCommand());
 		this.calcAttrAddHandler.handle(command.getCalcAttrCommand());
 		this.affiliationInfoAddHandler.handle(command.getAffiliationInfoCommand());
@@ -146,7 +146,7 @@ public class DailyRecordWorkCommandHandler {
 	}
 	
 	public void handleUpdate(DailyRecordWorkCommand command) {
-//		this.attendanceTimeUpdateHandler.handle(command.getAttendanceTimeCommand());
+		this.attendanceTimeUpdateHandler.handle(command.getAttendanceTimeCommand());
 		this.workInfoUpdateHandler.handle(command.getWorkInfoCommand());
 		this.calcAttrUpdateHandler.handle(command.getCalcAttrCommand());
 		this.affiliationInfoUpdateHandler.handle(command.getAffiliationInfoCommand());

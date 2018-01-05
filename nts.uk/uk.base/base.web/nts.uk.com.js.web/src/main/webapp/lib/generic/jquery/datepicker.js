@@ -1,4 +1,8 @@
 /*!
+ * UK用にカスタマイズしてあるので注意。
+ * focusではshowしない。clickのみ。
+ *
+ *
  * Datepicker v@VERSION
  * https://github.com/fengyuanchen/datepicker
  *
@@ -312,7 +316,10 @@
         if (options.trigger) {
           this.$trigger.on(EVENT_CLICK, $.proxy(this.toggle, this));
         } else if (this.isInput) {
-          $this.on(EVENT_FOCUS, $.proxy(this.show, this));
+// ↓MOD Kitahira
+//          $this.on(EVENT_FOCUS, $.proxy(this.show, this));
+          $this.on(EVENT_CLICK, $.proxy(this.show, this));
+// ↑MOD
         } else {
           $this.on(EVENT_CLICK, $.proxy(this.show, this));
         }

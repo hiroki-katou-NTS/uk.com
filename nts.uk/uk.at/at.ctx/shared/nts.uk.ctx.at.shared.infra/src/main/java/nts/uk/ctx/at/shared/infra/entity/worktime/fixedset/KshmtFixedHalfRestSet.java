@@ -35,10 +35,6 @@ public class KshmtFixedHalfRestSet extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The period no. */
-	@Column(name = "PERIOD_NO")
-	private int periodNo;
-
 	/** The start time. */
 	@Column(name = "START_TIME")
 	private int startTime;
