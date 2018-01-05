@@ -22974,6 +22974,7 @@ var nts;
                                 if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
                                     self.cropper.destroy();
                                 }
+                                self.$root.data("original-img", image.src);
                                 var option = {
                                     viewMode: 1,
                                     guides: false,
@@ -23327,6 +23328,9 @@ var nts;
                             case "upload": {
                                 return uploadImage($element, option);
                             }
+                            case "uploadOriginal": {
+                                return uploadImageOriginal($element, option);
+                            }
                             case "selectByFileId": {
                                 return downloadImage($element, option);
                             }
@@ -23347,15 +23351,21 @@ var nts;
                         return $element.data("img-status");
                     }
                     function uploadImage($element, option) {
-                        var dfd = $.Deferred();
                         var dataFile = $element.find(".image-preview").attr("src");
-                        if (!isNotNull(dataFile)) {
+                        return upload($element, option, dataFile);
+                    }
+                    function uploadImageOriginal($element, option) {
+                        return upload($element, option, $element.data("original-img"));
+                    }
+                    function upload($element, option, fileData) {
+                        var dfd = $.Deferred();
+                        if (!isNotNull(fileData)) {
                             var cropper = $element.data("cropper");
                             var cropperData = cropper.getData(true);
                             var formData = {
                                 "fileName": $element.data("file-name"),
                                 "stereoType": isNotNull(option) ? "image" : option.stereoType,
-                                "file": dataFile,
+                                "file": fileData,
                                 "format": $element.data("file-type"),
                                 "x": cropperData.x,
                                 "y": cropperData.y,
