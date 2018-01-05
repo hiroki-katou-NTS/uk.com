@@ -477,8 +477,8 @@ module nts.uk.com.view.cps005.b {
         validateMin(datatype:number){
             if($("#integerPart").val() == "") return;
             let self = this;
-            let min = self.numericItemMin()?parseInt(self.numericItemMin().toString()):self.numericItemMin();
-            let max = self.numericItemMax()?parseInt(self.numericItemMax().toString()):self.numericItemMax();
+            let min = self.numericItemMin()?parseInt(self.numericItemMin().toString()):undefined;
+            let max = self.numericItemMax()?parseInt(self.numericItemMax().toString()):undefined;
             let milestone = Math.pow(10, self.integerPart());
             let minMilestone = milestone * (-1) + 1;
             let maxMilestone = milestone - 1;
@@ -495,7 +495,7 @@ module nts.uk.com.view.cps005.b {
                 if(max > maxMilestone){
                      $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so > ' + maxMilestone.toString());
                 }
-                if(max <= min && min && max){
+                if(max <= min && self.isNumber(max, min)){
                     $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < numericItemMin');
                 }
             }
@@ -512,7 +512,7 @@ module nts.uk.com.view.cps005.b {
                 if(max > maxMilestone){
                      $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so > ' + maxMilestone.toString());
                 }
-                if(max <= min && min && max){
+                if(max <= min && self.isNumber(max, min)){
                     $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < numericItemMin');
                 }
             }
@@ -521,6 +521,9 @@ module nts.uk.com.view.cps005.b {
             if($("#integerPart").val() == ""){
                 $("#integerPart").focus();
             }
+        }
+        isNumber(min, max){
+            return !isNaN(min) && !isNaN(max);
         }
     }
     export class TimeItemModel {

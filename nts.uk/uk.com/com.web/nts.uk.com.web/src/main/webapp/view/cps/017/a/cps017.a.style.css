@@ -4,6 +4,10 @@
 	margin-right: 30px;
 }
 
+#contents-area {
+	width: 1260px;
+} 
+
 .pull-left {
 	float : left;
 }
@@ -12,12 +16,12 @@
 #content-left {
 	margin-top: 10px;
 	margin-left: 10px !important;
-	width: 405px;
+	width: 370px;
 	height : 580px;
 }
 
 #caret {
-	margin-left: 135px;
+	margin-left: 112px;
 	font-size: 2rem;
 }
 
@@ -27,15 +31,22 @@
 }
 
 .history-control-button {
-	width: 32%;
+	width: 89px;
 	float : left;
-    margin-left: 2px;
+}
+
+#edit-history {
+	margin-left: 5px;
+}
+
+#remove-history {
+	margin-left: 5px;
 }
 
 /* ---------------------------------------- content-center -----------------------------------------------------------*/
 #content-center {
 	margin-top: 10px;
-	width: 425px !important;
+	width: 440px !important;
 	height : 580px;
 }
 
@@ -53,7 +64,7 @@
 
 #itemRegisterLst {
 	margin-top: 20px;
-    width: 405px;
+    width: 415px;
 }
 
 .caret-background.caret-right:after  {
@@ -65,7 +76,7 @@
 #content-right {
 	margin-left : 15px;
 	margin-top: 10px;
-	width: 400px !important;
+	width: 425px !important;
 	height : 580px;
 }
 

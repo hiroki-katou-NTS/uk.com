@@ -7,7 +7,6 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS001_1')}</title>
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
@@ -20,8 +19,7 @@
 			<com:stylefile path="cps001.a.style.css" />
 			<com:scriptfile path="/view/cps/007/a/layout-control-ko-ext.js"
 				of="/nts.uk.com.web" />
-
-			<com:scriptfile path="ko-custom-ext.js" />
+				
 			<com:scriptfile path="cbx-control-ko-ext.js" />
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
