@@ -91,8 +91,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ]);
 
             self.roundingGenderAtr = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText('KMF004_125') },
-                { code: 1, name: nts.uk.resource.getText('KMF004_126') }
+                { code: 0, name: nts.uk.resource.getText('KMF004_61') },
+                { code: 1, name: nts.uk.resource.getText('KMF004_62') }
             ]);
 
             self.roundingMakeInvitation = ko.observableArray([
