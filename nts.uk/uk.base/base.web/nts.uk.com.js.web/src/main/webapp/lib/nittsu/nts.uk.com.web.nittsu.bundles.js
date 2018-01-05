@@ -2847,21 +2847,32 @@ var nts;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jump(webAppId, path, data) {
+                uk.ui.block.invisible();
                 if (typeof arguments[1] !== 'string') {
-                    return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
                 }
-                if (webAppId == nts.uk.request.location.currentAppId) {
-                    path = resolvePath(path);
-                }
-                else {
-                    path = nts.uk.request.location.siteRoot
-                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                        .mergeRelativePath(path).serialize();
+                if (webAppId != nts.uk.request.location.currentAppId) {
+                    jumpToOtherWebApp.apply(this, arguments);
+                    return;
                 }
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
-                window.location.href = path;
+                window.location.href = resolvePath(path);
             }
             request.jump = jump;
+            function jumpToOtherWebApp(webAppId, path, data) {
+                var resolvedPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(path).serialize();
+                uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                login.keepSerializedSession()
+                    .then(function () {
+                    return login.restoreSessionTo(webAppId);
+                })
+                    .then(function () {
+                    window.location.href = resolvedPath;
+                });
+            }
             var login;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";

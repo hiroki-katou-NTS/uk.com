@@ -357,20 +357,41 @@ module nts.uk.request {
 
 
     export function jump(path: string, data?: any);
-    export function jump(webAppId: WebAppId, path: string, data?: any): string {
+    export function jump(webAppId: WebAppId, path: string, data?: any) {
+        
+        uk.ui.block.invisible();
+        
+        // handle overload
         if (typeof arguments[1] !== 'string') {
-            return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            return;
         }
-        if(webAppId==nts.uk.request.location.currentAppId){
-            path = resolvePath(path);
-        }else{
-            path = nts.uk.request.location.siteRoot
-            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-            .mergeRelativePath(path).serialize();
+        
+        if (webAppId != nts.uk.request.location.currentAppId) {
+            jumpToOtherWebApp.apply(this, arguments);
+            return;
         }
+        
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
 
-        window.location.href = path;
+        window.location.href = resolvePath(path);
+    }
+    
+    function jumpToOtherWebApp(webAppId: WebAppId, path: string, data?: any) {
+        
+        let resolvedPath = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                .mergeRelativePath(path).serialize();
+        
+        uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        
+        login.keepSerializedSession()
+            .then(() => {
+                return login.restoreSessionTo(webAppId);
+            })
+            .then(() => {
+                window.location.href = resolvedPath;
+            });
     }
     
     export module login {
