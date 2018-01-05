@@ -7,16 +7,19 @@
 }
 
 #roleName {
-	width: 240px!important;
 	margin-left: 5px!important;
 }
 #roleCodeOld {
-	margin-left: 110px;
 	width: 50px !important;
 }
 #roleNameOld {
     margin-left: 30px;
 }
 #C_001{
-	width: 110px !important;
+	
 }
+
+#label_code{
+	width: 200px !important;
+}
+
