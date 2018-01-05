@@ -60,14 +60,14 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     this.coreTimeSheet = new TimeSheetModel();
-                    this.timesheet = ko.observable(0);
+                    this.timesheet = ko.observable(1); // initial value = 利用する
                     this.minWorkTime = ko.observable(0);
                 }
 
                 public resetData(): void {
                     let self = this;
                     self.coreTimeSheet.resetData();
-                    self.timesheet(0);
+                    self.timesheet(1);
                     self.minWorkTime(0);
                 }
 
