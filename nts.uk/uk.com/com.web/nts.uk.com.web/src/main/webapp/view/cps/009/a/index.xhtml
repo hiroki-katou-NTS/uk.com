@@ -378,7 +378,7 @@
 											 	<com:ko-if bind="(isRequired() === 1)">
 													<input id="timePoint" class="sub-input-units save-error"
 															data-bind="ntsTimeWithDayEditor: { 
-															name: 'Time With Day', 
+															name: itemName, 
 															constraint: itemCode, 
 															value: dateWithDay, 
 															enable: true, 
@@ -390,7 +390,7 @@
 											 	<com:ko-if bind="(isRequired() === 0)">
 													<input id="timePoint" class="sub-input-units save-error"
 															data-bind="ntsTimeWithDayEditor: { 
-															name: 'Time With Day', 
+															name: itemName, 
 															constraint: itemCode, 
 															value: dateWithDay, 
 															enable: true, 
