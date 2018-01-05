@@ -122,3 +122,8 @@ div.form-label.broken {
 .clsWorkType{
 	margin-left: 50px !important;
 }
+
+.overlay-reason {
+	position: relative;
+	z-index: 1;
+}
