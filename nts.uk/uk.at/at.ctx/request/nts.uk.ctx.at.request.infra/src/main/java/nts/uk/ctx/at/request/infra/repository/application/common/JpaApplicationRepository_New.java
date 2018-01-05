@@ -59,7 +59,6 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	@Override
 	public void update(Application_New application) {
 		this.getEntityManager().createQuery(UPDATE)
-			.setParameter("version", application.getVersion())
 			.setParameter("companyID", application.getCompanyID())
 			.setParameter("appID", application.getAppID())
 			.setParameter("reversionReason", application.getReversionReason().v())
