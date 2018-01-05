@@ -121,6 +121,7 @@ module nts.uk.at.view.kmf004 {
                 var self = this;
                 var dfd = $.Deferred();
                 service.findAll(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData) => {
+                    nts.uk.ui.errors.clearAll();
                     let sortedData = _.orderBy(lstData, ['yearServiceNo'], ['asc']);
                     self.items([]);
                     $("#button_radio").focus();

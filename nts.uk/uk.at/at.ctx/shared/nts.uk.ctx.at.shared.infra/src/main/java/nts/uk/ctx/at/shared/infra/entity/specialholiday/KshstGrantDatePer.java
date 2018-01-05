@@ -9,8 +9,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -44,12 +44,12 @@ public class KshstGrantDatePer extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantDatePer", orphanRemoval = true)
 	public List<KshstGrantDatePerSet> grantDatePerSet;
 	
-	@OneToOne(optional = false)
+	@ManyToOne
 	@JoinColumns({
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
 		@JoinColumn(name = "SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
 	})
-public KshstGrantRegular grantRegular;
+public KshstGrantRegular grantRegularPer;
 	
 	@Override
 	protected Object getKey() {

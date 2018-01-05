@@ -18,6 +18,13 @@ public interface ApplicationReasonRepository {
 	 */
 	List<ApplicationReason> getReasonByAppType(String companyId, int appType);
 	/**
+	 * get application by company id and application type
+	 * @param companyId
+	 * @param appType
+	 * @return
+	 */
+	List<ApplicationReason> getReasonByAppType(String companyId, int appType, String defaultResource);
+	/**
 	 * get getReasonById by company id and reasonID
 	 * @param companyId
 	 * @param appType

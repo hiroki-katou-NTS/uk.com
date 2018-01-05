@@ -133,17 +133,21 @@ module cps001.a.vm {
                         }
                     };
 
-                self.multipleData.removeAll();
+                if (!loadData) {
+                    self.multipleData.removeAll();
+                }
 
                 if (!!employeeId) {
-                    let layoutData = new MultiData({
+                    let layoutData = _.first(self.multipleData()) || new MultiData({
                         personId: personId,
                         employeeId: employeeId
                     }),
                         layout = layoutData.layout();
 
-                    self.multipleData.push(layoutData);
-                    $.extend(layoutData, { title: self.titleResource });
+                    if (!loadData) {
+                        self.multipleData.push(layoutData);
+                        $.extend(layoutData, { title: self.titleResource });
+                    }
 
                     layoutData.mode(tab);
 

@@ -17,8 +17,9 @@ module nts.uk.at.view.kmk010.a {
             findAllOutsideOTBRDItem : "ctx/at/shared/outsideot/breakdown/findAll",
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
             checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage",
-            exportOutsideOTSettingExcel: "at/shared/outsideot/export/excel"
-            
+            exportOutsideOTSettingExcel: "at/shared/outsideot/export/excel",
+            getCid: "at/shared/outsideot/export/getCid",
+            getNameCompany: "bs/company/findComId"
             
         }
 
@@ -119,8 +120,8 @@ module nts.uk.at.view.kmk010.a {
         /**
          * export file excel outside overtime setting
          */
-        export function exportOutsideOTSettingExcel(languageId: string, manage: boolean): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, { languageId: languageId, manage: manage });
+        export function exportOutsideOTSettingExcel(languageId: string, manage: boolean, data: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, { languageId: languageId, manage: manage, nameCompany: data.companyName });
         }
         
         /**
@@ -128,6 +129,20 @@ module nts.uk.at.view.kmk010.a {
          */
         export function findAllAttendanceItemOvertime(): JQueryPromise<number[]> {
             return nts.uk.request.ajax('at', paths.findAllAttendanceItemOvertime);
+        }
+        
+        /**
+         * get Cid
+         */
+        export function getCid(): JQueryPromise<number[]> {
+            return nts.uk.request.ajax(paths.getCid);
+        }
+        
+        /**
+         * get Cid
+         */
+        export function getCompanyName(cid: string): JQueryPromise<string> {
+            return nts.uk.request.ajax("com",paths.getNameCompany + "/" + cid);
         }
         
         /**

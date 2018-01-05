@@ -20,7 +20,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	private KshmtFixedWorkSet entity;
 
 	/** The type. */
-	private int type;
+	private AmPmAtr type;
 
 	/**
 	 * Instantiates a new jpa fix half day work timezone set memento.
@@ -36,7 +36,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 		if (this.entity.getKshmtFixedWorkSetPK() == null) {
 			this.entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
 		}	
-		this.type = type.value;
+		this.type = type;
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	 */
 	@Override
 	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
-		restTimezone.saveToMemento(new JpaFixRestHalfdayTzSetMemento(this.entity.getKshmtFixedHalfRestSets(),
+		restTimezone.saveToMemento(new JpaFixRestHalfdayTzSetMemento(this.entity,
 				this.entity.getKshmtFixedWorkSetPK().getCid(), this.entity.getKshmtFixedWorkSetPK().getWorktimeCd(),
 				this.type));
 	}
@@ -62,7 +62,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	 */
 	@Override
 	public void setWorkTimezone(FixedWorkTimezoneSet workTimezone) {
-		workTimezone.saveToMemento(new JpaFixedWorkTimezoneSetSetMemento(this.entity, this.type));
+		workTimezone.saveToMemento(new JpaFixedWorkTimezoneSetSetMemento(this.entity, this.type.value));
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	 */
 	@Override
 	public void setDayAtr(AmPmAtr type) {
-		this.type = type.value;
+		this.type = type;
 	}
 
 }

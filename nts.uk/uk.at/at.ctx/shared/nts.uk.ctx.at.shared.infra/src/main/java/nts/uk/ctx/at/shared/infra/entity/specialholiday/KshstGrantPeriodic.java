@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.specialholiday;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,13 +9,12 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHolidayAdditionSet;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSet;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearservicecom.KshstYearServiceCom;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePer;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -52,8 +52,8 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 		@OneToOne(cascade = CascadeType.ALL, mappedBy="grantPeriodic", orphanRemoval = true)
 		public KshstYearServiceCom yearServiceCom;
 		
-		@OneToOne(cascade = CascadeType.ALL, mappedBy="grantPeriodic", orphanRemoval = true)
-		public KshstYearServicePer yearServicePer;
+		@OneToMany(cascade = CascadeType.ALL, mappedBy="grantPeriodic", orphanRemoval = true)
+		public List<KshstYearServicePer> yearServicePer;
 	
 	@Override
 	protected Object getKey() {
