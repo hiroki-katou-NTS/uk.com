@@ -3251,9 +3251,9 @@ var nts;
                 function checkCharType(inputText, charType) {
                     var result = new ValidationResult();
                     var validateResult;
-                    if (!util.isNullOrUndefined(this.charType)) {
-                        inputText = autoConvertText(inputText, this.charType);
-                        validateResult = this.charType.validate(inputText);
+                    if (!util.isNullOrUndefined(charType)) {
+                        inputText = autoConvertText(inputText, charType);
+                        validateResult = charType.validate(inputText);
                         if (!validateResult.isValid) {
                             result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !util.isNullOrUndefined(this.constraint)
                                     ? (!util.isNullOrUndefined(this.constraint.maxLength)
@@ -3265,13 +3265,13 @@ var nts;
                     return result;
                 }
                 function autoConvertText(inputText, charType) {
-                    if (this.charType.viewName === '半角英数字') {
+                    if (charType.viewName === '半角英数字') {
                         inputText = uk.text.toUpperCase(inputText);
                     }
-                    else if (this.charType.viewName === 'カタカナ') {
+                    else if (charType.viewName === 'カタカナ') {
                         inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
                     }
-                    else if (this.charType.viewName === 'カナ') {
+                    else if (charType.viewName === 'カナ') {
                         inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
                     }
                     return inputText;
@@ -3292,7 +3292,10 @@ var nts;
                                 return result;
                             }
                         }
-                        var validateResult;
+                        else if (util.isNullOrEmpty(inputText)) {
+                            result.success(inputText);
+                            return result;
+                        }
                         // Check CharType
                         result = checkCharType(inputText, this.charType);
                         if (!result.isValid)
@@ -3301,7 +3304,7 @@ var nts;
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
                                 var maxLength = this.constraint.maxLength;
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                                result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
                                 return result;
                             }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
@@ -3311,7 +3314,6 @@ var nts;
                                 }
                             }
                         }
-                        result.success(inputText);
                         return result;
                     };
                     return WorkplaceCodeValidator;
@@ -3492,6 +3494,10 @@ var nts;
                         }
                         else if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber, undefined, message)) {
                             validateFail = true;
+                        }
+                        if (!(/^-?\d*(\.\d+)?$/).test(inputText)) {
+                            result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
+                            return result;
                         }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
@@ -3683,7 +3689,7 @@ var nts;
                         maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
                         if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
-                            result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_TIME");
+                            result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_CLOCK");
                         }
                         else {
                             result.success(parsed.asMinutes);
