@@ -30,7 +30,7 @@ module nts.uk.at.view.kmk005.b {
                         for (i = 0; i < 10; i++) {
                             self.timeItemSpecList.push(
                                 new TimeItem(
-                                    "持定加給" + (i + 1), 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, ""
+                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, ""
                                 ));
                         }
                     } else {
@@ -45,7 +45,7 @@ module nts.uk.at.view.kmk005.b {
                         for (i = 0; i < 10; i++) {
                             self.timeItemList.push(
                                 new TimeItem(
-                                    "加給" + (i + 1), 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, ""
+                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, ""
                                 ));
                         }
                     } else {
