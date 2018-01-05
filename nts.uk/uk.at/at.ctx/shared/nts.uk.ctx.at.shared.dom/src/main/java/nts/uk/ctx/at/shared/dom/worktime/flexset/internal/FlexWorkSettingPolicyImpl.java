@@ -105,9 +105,9 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		
 		// 使用区分 = 使用する
 		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.USE)) {
-//			this.service.validateOneDay(predetemineTimeSet,
-//					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(),
-//					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime());
+			this.predeteminePolicyService.validateOneDay(predetemineTimeSet,
+					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(),
+					flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime());
 		}
 		// Msg_781 DesignatedTime
 //		this.service.compareWithOneDayRange(predetemineTimeSet,
