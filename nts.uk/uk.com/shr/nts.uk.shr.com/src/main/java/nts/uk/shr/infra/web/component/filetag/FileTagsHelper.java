@@ -5,7 +5,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.time.GeneralDateTime;
+
 final class FileTagsHelper {
+	
+	public static String VERSION = GeneralDateTime.now().toString("yyyyMMddHHmmss");
 
 	static String buildPath(FacesContext context, String specifiedPath) {
 
@@ -23,7 +27,7 @@ final class FileTagsHelper {
 
 	private static String appendVersionString(String filePath) {
 
-		return filePath + "?";
+		return filePath + "?v=" + VERSION;
 	}
 
 	static String buildPathUsingComWeb(FacesContext context, String specifiedPath) {

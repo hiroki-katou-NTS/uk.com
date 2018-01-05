@@ -210,7 +210,7 @@ module nts.uk.at.view.kmf004.c {
                     self.dataItems.push(new Item(item));    
                 }
                 
-                self.singleSelectedCode(" ");
+                self.singleSelectedCode("");
                 $("#input-code").focus();
             }
             

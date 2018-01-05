@@ -5,6 +5,9 @@
 package nts.uk.ctx.sys.auth.pub.grant;
 
 import java.util.List;
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * The Interface RoleIndividualGrantExportRepo.
@@ -22,5 +25,6 @@ public interface RoleIndividualGrantExportRepo {
 		
 	List<RoleIndividualGrantExport> getByUser(String userId);
 	
-	
+	Optional<RoleIndividualGrantExport> getByUserCompanyRoleTypeDate(
+			String userId, String companyId, int roleType, GeneralDate date);
 }
