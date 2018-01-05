@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.infra.repository.roles.auth.category;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -165,6 +166,11 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	@Override
 	public Map<String, PersonInfoCategoryAuth> getByRoleIdAndCategories(String roleId, List<String> categoryIdList) {
+		
+		if  (categoryIdList.isEmpty()) {
+			return new HashMap<>();
+		}
+		
 		return this.queryProxy().query(SEE_BY_ROLEID_AND_CTG_ID_LIST, PpemtPersonCategoryAuth.class)
 				.setParameter("roleId", roleId).setParameter("categoryIdList", categoryIdList).getList().stream()
 				.collect(Collectors.toMap(c -> c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, c -> toDomain(c)));
