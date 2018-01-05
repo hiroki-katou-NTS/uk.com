@@ -33,7 +33,8 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 			TimeWithDayAttr endTime) {
 		int predEndTime = pred.getStartDateClock().valueAsMinutes() + pred.getRangeTimeDay().valueAsMinutes();
 		int predStartTime = pred.getStartDateClock().valueAsMinutes();
-		if (startTime.valueAsMinutes() < predStartTime || endTime.valueAsMinutes() > predEndTime) {
+		if (!(predStartTime <= startTime.valueAsMinutes() && startTime.valueAsMinutes() <= predEndTime
+				&& predStartTime <= endTime.valueAsMinutes() && endTime.valueAsMinutes() <= predEndTime)) {
 			throw new BusinessException("Msg_516");
 		}
 	}

@@ -76,7 +76,7 @@ public class PerInfoCategoryFinder {
 	 */
 	public boolean checkPerInfoCtgAuth(String empId, String ctgId) {
 		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forCompanyAdmin();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
 		boolean isSelfAuth = empId.equals(loginEmpId);
 		// get perInfoCtgAuth
 		Optional<PersonInfoCategoryAuth> perInfoCtgAuth = personInfoCategoryAuthRepository

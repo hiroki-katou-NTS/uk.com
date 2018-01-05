@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.specialholiday;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,13 +9,13 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstGrantRelationshipItem;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePer;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -51,8 +52,8 @@ public class KshstGrantSingle extends UkJpaEntity implements Serializable {
 		
 		public KshstSpecialHoliday specialHoliday;
 		
-		@OneToOne(cascade = CascadeType.ALL, mappedBy="grantSingle", orphanRemoval = true)
-		public KshstGrantRelationshipItem relationshipItem;
+		@OneToMany(cascade = CascadeType.ALL, mappedBy="grantSingle", orphanRemoval = true)
+		public List<KshstGrantRelationshipItem> relationshipItem;
 
 	@Override
 	protected Object getKey() {

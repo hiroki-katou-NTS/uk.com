@@ -28,6 +28,10 @@ module nts.custombinding {
                     if (ui.items[0]) {
                         value(ui.items[0]["data"][valueKey]);
                     }
+                },
+                dropDownWidth: "auto",
+                dropDownOpening: function(evt, ui) {
+                    $(ui.list).css('min-width', $(evt.target).width() + 'px');
                 }
             });
 

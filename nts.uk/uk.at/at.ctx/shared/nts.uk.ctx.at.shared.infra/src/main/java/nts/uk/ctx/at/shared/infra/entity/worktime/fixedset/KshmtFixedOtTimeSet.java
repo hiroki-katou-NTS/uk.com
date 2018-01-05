@@ -78,6 +78,16 @@ public class KshmtFixedOtTimeSet extends UkJpaEntity implements Serializable {
 	public KshmtFixedOtTimeSet() {
 		super();
 	}
+	
+	/**
+	 * Instantiates a new kshmt fixed ot time set.
+	 *
+	 * @param kshmtFixedOtTimeSetPK the kshmt fixed ot time set PK
+	 */
+	public KshmtFixedOtTimeSet(KshmtFixedOtTimeSetPK kshmtFixedOtTimeSetPK) {
+		super();
+		this.kshmtFixedOtTimeSetPK = kshmtFixedOtTimeSetPK;
+	}
 
 	/*
 	 * (non-Javadoc)

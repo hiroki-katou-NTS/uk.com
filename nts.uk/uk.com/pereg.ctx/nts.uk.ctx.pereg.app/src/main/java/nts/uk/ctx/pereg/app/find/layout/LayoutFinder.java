@@ -113,7 +113,7 @@ public class LayoutFinder {
 
 		String loginEmpId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		String roleId = AppContexts.user().roles().forCompanyAdmin();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
 		// String roleId = "99900000-0000-0000-0000-000000000001";
 		boolean selfBrowsing = loginEmpId.equals(browsingEmpId);
 
@@ -159,7 +159,7 @@ public class LayoutFinder {
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
 		List<LayoutPersonInfoClsDto> authItemClasList = new ArrayList<>();
-		String roleId = AppContexts.user().roles().forCompanyAdmin();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
 
 		Set<String> setCategories = itemClassList.stream().map(classItem -> classItem.getPersonInfoCategoryID())
 				.collect(Collectors.toSet());

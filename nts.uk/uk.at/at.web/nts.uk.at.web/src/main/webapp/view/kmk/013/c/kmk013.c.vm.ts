@@ -143,17 +143,20 @@ module nts.uk.at.view.kmk013.c {
                 service.findAllWorkDayOffFrame().done(
                     (arr) => {
                         _.forEach(arr, data => {
-                            self.comboItemsWorkOff.push(new ItemModel(data.workdayoffFrNo, data.workdayoffFrName));
-                            self.workOffFrameListName.push(new ItemModel(data.workdayoffFrNo, data.workdayoffFrName));
+                            if (data.useAtr == 1) {
+                                self.comboItemsWorkOff.push(new ItemModel(data.workdayoffFrNo, data.workdayoffFrName));
+                                self.workOffFrameListName.push(new ItemModel(data.workdayoffFrNo, data.workdayoffFrName));
+                            }
                         });
                     }
                 );
                 service.findAllOvertimeWorkFrame().done(
                     (arr) => {
                         _.forEach(arr, data => {
-                            self.comboItemOvertime.push(new ItemModel(data.overtimeWorkFrNo, data.overtimeWorkFrName));
-                            self.overTimeFrameListName.push(new ItemModel(data.overtimeWorkFrNo, data.overtimeWorkFrName));
-
+                            if (data.useAtr == 1) {
+                                self.comboItemOvertime.push(new ItemModel(data.overtimeWorkFrNo, data.overtimeWorkFrName));
+                                self.overTimeFrameListName.push(new ItemModel(data.overtimeWorkFrNo, data.overtimeWorkFrName));
+                            }
                         });
                     }
                 );
@@ -206,25 +209,25 @@ module nts.uk.at.view.kmk013.c {
                 _.forEach(self.itemsC8(), (obj) => {
                     data.weekdayHoliday.push({
                         overworkFrameNo: obj.code,
-                        weekdayNo: obj.col2(),
-                        excessHolidayNo: obj.col3(),
-                        excessSphdNo: obj.col4()
+                        weekdayNo: (obj.col2().toString()!="0") ? obj.col2() : 0,
+                        excessHolidayNo: (obj.col3().toString()!="0") ? obj.col3() : 0,
+                        excessSphdNo: (obj.col4().toString()!="0") ? obj.col4() : 0
                     });
                 });
                 data.overdayHolidayAtten = [];
                 _.forEach(self.itemsC9(), (obj) => {
                     data.overdayHolidayAtten.push({
                         holidayWorkFrameNo: obj.code,
-                        overWorkNo: obj.col2(),
+                        overWorkNo: (obj.col2().toString()!="0") ? obj.col2() : 0,
                     });
                 });
                 data.overdayCalcHoliday = [];
                 _.forEach(self.itemsC10(), (obj) => {
                     data.overdayCalcHoliday.push({
                         holidayWorkFrameNo: obj.code,
-                        calcOverDayEnd: obj.col2(),
-                        statutoryHd: obj.col3(),
-                        excessHd: obj.col4()
+                        calcOverDayEnd: (obj.col2().toString() !="0") ? obj.col2() : 0,
+                        statutoryHd: (obj.col3().toString()!="0") ? obj.col3() : 0,
+                        excessHd: (obj.col4().toString()!="0") ? obj.col4() : 0
                     });
                 });
                 service.save(data).done(() => {
@@ -266,28 +269,45 @@ module nts.uk.at.view.kmk013.c {
                     self.selectedC68(data.legalHd3);
                     //計算するしない設定（法定外祝日）.法定外休日
                     self.selectedC612(data.nonLegalPublicHd3);
-                    _.forEach(data.weekdayHoliday, obj => {
-                        self.itemsC8.push(new GridItem(obj.overworkFrameNo,
-                            validate(obj.weekdayNo, self.comboItemsWorkOff),
-                            nts.uk.resource.getText('KMK013_152'),
-                            getName(self.overTimeFrameListName, obj.overworkFrameNo),
-                            validate(obj.excessHolidayNo, self.comboItemsWorkOff),
-                            validate(obj.excessSphdNo, self.comboItemsWorkOff)));
+                    
+                        _.forEach(self.overTimeFrameListName, ot => {
+                            let obj = _.find(data.weekdayHoliday, ['overworkFrameNo',ot.code]);
+                            if(obj){
+                                self.itemsC8.push(new GridItem(obj.overworkFrameNo,
+                                    validate(obj.weekdayNo, self.comboItemsWorkOff),
+                                    nts.uk.resource.getText('KMK013_152'),
+                                    ot.name,
+                                    validate(obj.excessHolidayNo, self.comboItemsWorkOff),
+                                    validate(obj.excessSphdNo, self.comboItemsWorkOff)));
+                            }else{
+                                self.itemsC8.push(new GridItem(ot.code,0,nts.uk.resource.getText('KMK013_152'),ot.name,0,0));    
+                            }
+                            
+                        });
+                        
+                    _.forEach(self.workOffFrameListName, wof => {
+                        let obj = _.find(data.overdayHolidayAtten, ['holidayWorkFrameNo',wof.code]);
+                        if (obj) {
+                            self.itemsC9.push(new GridItem(obj.holidayWorkFrameNo,
+                                validate(obj.overWorkNo, self.comboItemOvertime),
+                                nts.uk.resource.getText('KMK013_157'),
+                                wof.name));
+                        }else{
+                            self.itemsC9.push(new GridItem(wof.code,0,nts.uk.resource.getText('KMK013_157'),wof.name));    
+                        }
                     });
-                    _.forEach(data.overdayHolidayAtten, obj => {
-                        self.itemsC9.push(new GridItem(obj.holidayWorkFrameNo,
-                            validate(obj.overWorkNo, self.comboItemOvertime),
-                            nts.uk.resource.getText('KMK013_157'),
-                            getName(self.comboItemsWorkOff,
-                                obj.holidayWorkFrameNo)));
-                    });
-                    _.forEach(data.overdayCalcHoliday, obj => {
-                        self.itemsC10.push(new GridItem(obj.holidayWorkFrameNo,
-                            validate(obj.calcOverDayEnd, self.comboItemsWorkOff),
-                            nts.uk.resource.getText('KMK013_163'),
-                            getName(self.overTimeFrameListName, obj.holidayWorkFrameNo),
-                            validate(obj.statutoryHd, self.comboItemsWorkOff),
-                            validate(obj.excessHd, self.comboItemsWorkOff)));
+                    _.forEach(self.workOffFrameListName, wof => {
+                        let obj = _.find(data.overdayCalcHoliday, ['holidayWorkFrameNo', wof.code]);
+                        if (obj) {
+                            self.itemsC10.push(new GridItem(obj.holidayWorkFrameNo,
+                                validate(obj.calcOverDayEnd, self.comboItemsWorkOff),
+                                nts.uk.resource.getText('KMK013_163'),
+                                wof.name,
+                                validate(obj.statutoryHd, self.comboItemsWorkOff),
+                                validate(obj.excessHd, self.comboItemsWorkOff)));
+                        } else {
+                            self.itemsC10.push(new GridItem(wof.code, 0, nts.uk.resource.getText('KMK013_163'), wof.name, 0, 0));
+                        }
                     });
                     dfd.resolve();
                 });
@@ -339,7 +359,7 @@ module nts.uk.at.view.kmk013.c {
             textAfter?: string;
             constructor(code: number, col2: number, textBefore?: string, textAfter?: string, col3?: number, col4?: number) {
                 this.code = code;
-                this.col1 = (code > 9) ? textBefore + code + '　　   ' + textAfter : textBefore + code + '　　  ' + textAfter;
+                this.col1 = (code > 9) ? textBefore + code + '  ' + textAfter : textBefore + code + '   ' + textAfter;
                 this.col2 = ko.observable(col2);
                 this.col3 = ko.observable(col3);
                 this.col4 = ko.observable(col4);
