@@ -138,7 +138,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		KshstGrantDateComPK kshstGrantDateComPK = new KshstGrantDateComPK(grantDateCom.getCompanyId(),
 				grantDateCom.getSpecialHolidayCode().v());
 		kshstGrantDateCom.grantDateAtr = grantDateCom.getGrantDateAtr().value;
-		kshstGrantDateCom.grantDate = grantDateCom.getGrantDate().v();
+		kshstGrantDateCom.grantDate = grantDateCom.getGrantDate();
 		kshstGrantDateCom.kshstGrantDateComPK = kshstGrantDateComPK;
 
 		List<KshstGrantDateSet> dateSetList = grantDateCom.getGrantDateSets().stream().map(x -> convertToDbTypeSet(x))
@@ -210,7 +210,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		Optional<KshstGrantDateCom> entity = this.queryProxy().find(key, KshstGrantDateCom.class);
 		KshstGrantDateCom kshstGrantDateCom = entity.get();
 		kshstGrantDateCom.grantDateAtr = grantDateCom.getGrantDateAtr().value;
-		kshstGrantDateCom.grantDate = grantDateCom.getGrantDate().v();
+		kshstGrantDateCom.grantDate = grantDateCom.getGrantDate();
 				
 		List<KshstGrantDateSet> grantDateSets = grantDateCom.getGrantDateSets().stream()
 				.map(x -> {
@@ -286,7 +286,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		KshstGrantDatePerPK kshstGrantDatePerPK = new KshstGrantDatePerPK(grantDatePer.getCompanyId(),
 				grantDatePer.getSpecialHolidayCode(), grantDatePer.getPersonalGrantDateCode().v());
 		kshstGrantDatePer.personalGrantDateName = grantDatePer.getPersonalGrantDateName().v();
-		kshstGrantDatePer.grantDate = grantDatePer.getGrantDate().v();
+		kshstGrantDatePer.grantDate = grantDatePer.getGrantDate();
 		kshstGrantDatePer.grantDateAtr = grantDatePer.getGrantDateAtr().value;
 
 		List<KshstGrantDatePerSet> grantDatePerSet = grantDatePer.getGrantDatePerSet().stream().map(x -> convertToDbPerSet(x))
@@ -321,7 +321,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		Optional<KshstGrantDatePer> entity = this.queryProxy().find(key, KshstGrantDatePer.class);
 		KshstGrantDatePer kshstGrantDatePer = entity.get();
 		kshstGrantDatePer.personalGrantDateName = grantDatePer.getPersonalGrantDateName().v();
-		kshstGrantDatePer.grantDate = grantDatePer.getGrantDate().v();
+		kshstGrantDatePer.grantDate = grantDatePer.getGrantDate();
 		kshstGrantDatePer.grantDateAtr = grantDatePer.getGrantDateAtr().value;
 		
 		List<KshstGrantDatePerSet> grantDatePerSet = grantDatePer.getGrantDatePerSet().stream()

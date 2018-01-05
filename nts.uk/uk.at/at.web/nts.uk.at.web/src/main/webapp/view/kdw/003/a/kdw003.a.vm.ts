@@ -186,7 +186,56 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             ]);
             self.displayFormat(0);
         }
-
+        createSumColumn(data : any){
+            var self = this;
+            _.each(data.lstControlDisplayItem.columnSettings, function(item) {
+                if (self.displayFormat() == 0) {
+                    if (item.columnKey == "date") {
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
+                    }
+                } else {
+                    if (item.columnKey == "employeeCode") {
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
+                    }
+                }
+                if (item.typeFormat != undefined) {
+                    if (item.typeFormat == 2) {
+                        //so lan
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalNumber, this),
+                            order: 0
+                        }]
+                    }
+                    else if (item.typeFormat == 5) {
+                        //thoi gian
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalTime, this),
+                            order: 0
+                        }]
+                    }
+                    else if (item.typeFormat == 3) {
+                        //so tien 
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalNumber, this),
+                            order: 0
+                        }]
+                    }
+                }
+                delete item.typeFormat;
+                self.columnSettings(data.lstControlDisplayItem.columnSettings);
+            });
+        }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -209,46 +258,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                     item.columns.unshift("sign");
                 });
-                _.each(data.lstControlDisplayItem.columnSettings, function(item) {
-                    if (item.columnKey == "date") {
-                        item.allowSummaries = true;
-                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
-                    }
-                    if (item.typeFormat != undefined) {
-                        if (item.typeFormat == 2) {
-                            //so lan
-                            item.allowSummaries = true;
-                            item['summaryOperands'] = [{
-                                                    rowDisplayLabel: "合計",
-                                                    type: "custom",
-                                                    summaryCalculator: $.proxy(self.totalNumber, this),
-                                                    order: 0  
-                                                }]
-                        }
-                        else if (item.typeFormat == 5) {
-                            //thoi gian
-                             item.allowSummaries = true;
-                             item['summaryOperands'] = [{
-                                                    rowDisplayLabel: "合計",
-                                                    type: "custom",
-                                                    summaryCalculator: $.proxy(self.totalTime, this),
-                                                    order: 0  
-                                                }]
-                        }
-                        else if (item.typeFormat == 3) {
-                            //so tien 
-                             item.allowSummaries = true;
-                             item['summaryOperands'] = [{
-                                                    rowDisplayLabel: "合計",
-                                                    type: "custom",
-                                                    summaryCalculator: $.proxy(self.totalNumber, this),
-                                                    order: 0  
-                                                }]
-                        }
-                    }
-                    delete item.typeFormat;
-                self.columnSettings(data.lstControlDisplayItem.columnSettings);
-                });
+                self.createSumColumn(data);
                 // combo box
                 self.comboItemsCalc(data.lstControlDisplayItem.comboItemCalc);
                 self.comboItemsReason(data.lstControlDisplayItem.comboItemReason);
@@ -300,6 +310,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                                 item.columns.unshift("sign");
                             });
+                             self.createSumColumn(data);
                             self.employmentCode(data.employmentCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                             self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
@@ -466,14 +477,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                         item.columns.unshift("sign");
                     });
-                    if (self.displayFormat() != 2) {
-                        _.each(data.lstControlDisplayItem.columnSettings, function(item) {
-                            if (item.columnKey == "date") {
-                                item.allowSummaries = true;
-                                item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
-                            }
-                        });
-                    }
+                    self.createSumColumn(data);
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.receiveData(data);
                     self.extraction();
@@ -538,14 +542,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                                 item.columns.unshift("sign");
                             });
-                            if (self.displayFormat() != 2) {
-                                _.each(data.lstControlDisplayItem.columnSettings, function(item) {
-                                    if (item.columnKey == "date") {
-                                        item.allowSummaries = true;
-                                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
-                                    }
-                                });
-                            }
+                            self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
                             self.extraction();
@@ -590,14 +587,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                                 item.columns.unshift("sign");
                             });
-                            if (self.displayFormat() != 2) {
-                                _.each(data.lstControlDisplayItem.columnSettings, function(item) {
-                                    if (item.columnKey == "date") {
-                                        item.allowSummaries = true;
-                                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
-                                    }
-                                });
-                            }
+                            self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
                             self.extraction();
@@ -1023,7 +1013,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     },
                     {
                         name: "Updating",
-                        startEditTriggers: "dblclick,F2"
+                        enableAddRow: true,
+                        editMode: "cell",
+                        enableDeleteRow: true,
+                        rowEditDialogContainment: "owner",
+                        horizontalMoveOnEnter: true,
+                        showReadonlyEditors: false,
+                        enableDataDirtyException: false,
                     },
                     {
                         name: 'Selection',

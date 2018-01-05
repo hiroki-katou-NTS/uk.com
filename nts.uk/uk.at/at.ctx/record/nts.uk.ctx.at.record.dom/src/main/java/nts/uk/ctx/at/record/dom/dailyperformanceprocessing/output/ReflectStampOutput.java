@@ -19,8 +19,8 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 @Setter
 @NoArgsConstructor
 public class ReflectStampOutput {
-	List<OutingTimeOfDailyPerformance> lstOutingTimeOfDailyPerformance;
-	List<TemporaryTimeOfDailyPerformance> lstTemporaryTimeOfDailyPerformance;
+	OutingTimeOfDailyPerformance outingTimeOfDailyPerformance;
+	TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance;
 	List<StampItem> lstStamp;
-	List<TimeLeavingOfDailyPerformance> lstTimeLeavingOfDailyPerformance;
+	TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance;
 }

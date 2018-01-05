@@ -26,7 +26,7 @@
 		<ui:define name="content">
 		
 			<div id="functions-area">
-				<button id="register-button" class="proceed" data-bind="click: register">#{i18n.getText('KMK007_46')}</button>
+				<button id="register-button" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" >#{i18n.getText('KMK007_46')}</button>
 				<button id="close-button" data-bind="click: close">#{i18n.getText('KMK007_47')}</button>				
 			</div>
 			

@@ -55,6 +55,7 @@ public class KshmtDtWorkTimeSet extends UkJpaEntity implements Serializable {
 	 * Instantiates a new kshmt dt work time set.
 	 */
 	public KshmtDtWorkTimeSet() {
+		super();
 	}
 
 	/*

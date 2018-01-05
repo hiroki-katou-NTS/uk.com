@@ -13,9 +13,9 @@ import nts.uk.shr.com.context.AppContexts;
 public class YearServiceSetFinder {
 	@Inject
 	private YearServiceComRepository yearServiceSetRep;
-	public List<YearServiceSetDto> finder(){
+	public List<YearServiceSetDto> finder(String specialHolidayCode){
 		String companyId = AppContexts.user().companyId();
-		return this.yearServiceSetRep.findAllSet(companyId).stream().map(item ->{
+		return this.yearServiceSetRep.findAllSet(companyId, specialHolidayCode).stream().map(item ->{
 			return new YearServiceSetDto(item.getSpecialHolidayCode(), item.getYearServiceNo(), item.getYear(), item.getMonth(), item.getDate());
 		}).collect(Collectors.toList());
 	}

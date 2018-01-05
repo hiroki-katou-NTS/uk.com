@@ -29,7 +29,7 @@ module nts.uk.at.view.kmf004.b.service {
     export interface ComItem {
         specialHolidayCode: string;
         grantDateAtr: number;
-        grantDate: number;
+        grantDate: string;
         grantDateSets: Array<SetItem>;
     }
     

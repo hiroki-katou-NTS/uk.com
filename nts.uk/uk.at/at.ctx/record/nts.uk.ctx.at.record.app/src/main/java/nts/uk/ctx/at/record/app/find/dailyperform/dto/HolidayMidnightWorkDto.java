@@ -36,19 +36,26 @@ public class HolidayMidnightWorkDto {
 	private CalcAttachTimeDto publicHolidayWork;
 	
 	public static HolidayMidnightWorkDto fromHolidayMidnightWork(HolidayMidnightWork domain){
-		return domain == null ? null : new HolidayMidnightWorkDto(getWorkTime(domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork), 
+		return domain == null ? null : new HolidayMidnightWorkDto(getWorkTime(
+				domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork), 
 				getWorkTime(domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork), 
 				getWorkTime(domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.PublicHolidayWork));
 	}
 	
 	private static CalcAttachTimeDto getWorkTime(List<HolidayWorkMidNightTime> source, StaturoryAtrOfHolidayWork type){
-		return source.stream().filter(c -> c.getStatutoryAtr() == type).findFirst().map(c -> new CalcAttachTimeDto(c.getTime().getCalcTime().valueAsMinutes(), c.getTime().getTime().valueAsMinutes())).orElse(null);
+		return source.stream().filter(c -> c.getStatutoryAtr() == type).findFirst().map(c -> 
+			new CalcAttachTimeDto(c.getTime().getCalcTime() == null ? null : c.getTime().getCalcTime().valueAsMinutes(), 
+					c.getTime().getTime() == null ? null : c.getTime().getTime().valueAsMinutes())).orElse(null);
 	}
 	
 	public HolidayMidnightWork toDomain() {
-		return new HolidayMidnightWork(Arrays.asList(new HolidayWorkMidNightTime(
-				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(withinPrescribedHolidayWork.getTime()),
-						new AttendanceTime(withinPrescribedHolidayWork.getCalcTime())),
+		return withinPrescribedHolidayWork == null ? null : new HolidayMidnightWork(Arrays.asList(new HolidayWorkMidNightTime(
+				TimeWithCalculation.createTimeWithCalculation(toAttendanceTime(withinPrescribedHolidayWork.getTime()),
+						toAttendanceTime(withinPrescribedHolidayWork.getCalcTime())),
 				StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork)));
+	}
+	
+	private AttendanceTime toAttendanceTime(Integer time) {
+		return time == null ? null : new AttendanceTime(time);
 	}
 }

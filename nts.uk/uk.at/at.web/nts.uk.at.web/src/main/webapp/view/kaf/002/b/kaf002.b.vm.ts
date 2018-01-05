@@ -41,7 +41,6 @@ module nts.uk.at.view.kaf002.b {
                             nts.uk.ui.block.clear();
                         });
                     });   
-                    self.kaf000_a2.getMessageDeadline(applicationType, moment(new Date()).format("YYYY/MM/DD"));
                 }).fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){
                         nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 

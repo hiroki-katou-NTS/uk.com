@@ -20,8 +20,11 @@ import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelection
 public class JpaPerInfoSelectionItemRepository extends JpaRepository implements IPerInfoSelectionItemRepository {
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionItem si";
-	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE = SELECT_ALL
-			+ " WHERE si.contractCd = :contractCd " + " ORDER BY si.selectionItemName ";
+	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE = "SELECT DISTINCT si FROM PpemtSelectionItem si INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId  WHERE si.contractCd = :contractCd AND hs.histidPK.histId IS NOT NULL "
+			+ " ORDER BY si.selectionItemName ";
+
+	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE_AND_CID = "SELECT DISTINCT si FROM PpemtSelectionItem si INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId  WHERE si.contractCd = :contractCd AND hs.histidPK.histId IS NOT NULL AND hs.companyId=:companyId "
+			+ " ORDER BY si.selectionItemName ";
 	private static final String SELECT_All_SELECTION_ITEM_NAME = SELECT_ALL
 			+ " WHERE si.selectionItemName = :selectionItemName";
 	private static final String SELECT_ALL_BY_PERSON_TYPE = SELECT_ALL
@@ -65,9 +68,18 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	}
 
 	@Override
+	public List<PerInfoSelectionItem> getAllSelectionItemByContractCdAndCID(String contractCd, String companyId) {
+
+		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE_AND_CID, PpemtSelectionItem.class)
+				.setParameter("contractCd", contractCd).setParameter("companyId", companyId).getList(c -> toDomain(c));
+
+	}
+
+	@Override
 	public List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCd) {
 		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE, PpemtSelectionItem.class)
 				.setParameter("contractCd", contractCd).getList(c -> toDomain(c));
+
 	}
 
 	private PerInfoSelectionItem toDomain(PpemtSelectionItem entity) {

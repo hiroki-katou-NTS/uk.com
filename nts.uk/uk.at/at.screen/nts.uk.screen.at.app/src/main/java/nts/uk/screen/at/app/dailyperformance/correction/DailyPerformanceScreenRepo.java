@@ -58,9 +58,6 @@ public interface DailyPerformanceScreenRepo {
 	 * KCLMT_CLOSURE (company id, closure id) -> closure object
 	 * return: closure object
 	 */
-	ClosureDto getClosure(String sId, GeneralDate baseDate);
-	
-	ClosureDto getClosureId(String sId, GeneralDate baseDate);
 	
 	List<ClosureDto> getClosureId(List<String> sId, GeneralDate baseDate);
 

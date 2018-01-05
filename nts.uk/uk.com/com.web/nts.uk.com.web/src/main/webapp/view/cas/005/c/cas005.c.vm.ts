@@ -55,9 +55,7 @@ module nts.uk.com.view.csa005.c {
                 this.queryString = queryString;
                 this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6) + "/" + queryString + "/index.xhtml";
             }
-       }
-        }//end class Role
-        
+       }//end class Role        
 
     }//end module model
 

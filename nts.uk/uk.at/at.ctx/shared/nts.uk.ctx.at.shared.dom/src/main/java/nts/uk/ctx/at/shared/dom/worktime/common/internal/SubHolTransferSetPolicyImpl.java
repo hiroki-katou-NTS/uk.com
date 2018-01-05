@@ -29,9 +29,9 @@ public class SubHolTransferSetPolicyImpl implements SubHolTransferSetPolicy {
 	@Override
 	public void validate(PredetemineTimeSetting predSet, SubHolTransferSet subHdSet) {
 		AttendanceTime oneDayRange = predSet.getRangeTimeDay();
-		boolean isCertainDayInvalid = subHdSet.getCertainTime().greaterThanOrEqualTo(oneDayRange);
-		boolean isHalfDayInvalid = subHdSet.getDesignatedTime().getHalfDayTime().greaterThanOrEqualTo(oneDayRange);
-		boolean isOneDayInvalid = subHdSet.getDesignatedTime().getOneDayTime().greaterThanOrEqualTo(oneDayRange);
+		boolean isCertainDayInvalid = subHdSet.getCertainTime().greaterThan(oneDayRange);
+		boolean isHalfDayInvalid = subHdSet.getDesignatedTime().getHalfDayTime().greaterThan(oneDayRange);
+		boolean isOneDayInvalid = subHdSet.getDesignatedTime().getOneDayTime().greaterThan(oneDayRange);
 
 		if (isHalfDayInvalid || isOneDayInvalid || isCertainDayInvalid) {
 			throw new BusinessException("Msg_781");
