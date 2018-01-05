@@ -56,7 +56,7 @@
 						<button id="btnLocation1" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
 						<label id = "lblLocation"
-							data-bind="text : workLocationName()"></label>
+							data-bind="text : workLocationCD() + '　' +workLocationName()"></label>
 					</div>
 				</div>
 			</div>
@@ -136,7 +136,7 @@
 						<button id="btnLocation2" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(2)}">#{i18n.getText('KAF009_15')}</button>
 						<label
-							data-bind="text : workLocationName2()"></label>
+							data-bind="text : workLocationCD2() + '　' +workLocationName2()"></label>
 					</div>
 				</div>
 			</div>
