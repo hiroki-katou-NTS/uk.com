@@ -15,6 +15,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         ]);
         workPlaceId: string;
         workPlaceName: string;
+        workPlaceCode:KnockoutObservable<any> = ko.observable();
+        workPlaceDisplayName:KnockoutObservable<any> = ko.observable();
         listEmployee: Array<any>;
         listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         listEmployeeSwapTemp: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -73,6 +75,14 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             });
             self.onlyEmpNotTeam.subscribe(function(value) {
                 self.filterEmpNotTeam(value);
+            });
+            let data = {
+                workplaceId:self.workPlaceId,
+                baseDate:moment().toISOString()    
+            }
+            service.getWorkPlaceById(data).done((wkp)=>{
+                self.workPlaceCode(wkp.workplaceCode);
+                self.workPlaceDisplayName(wkp.wkpDisplayName);
             });
         }
 
