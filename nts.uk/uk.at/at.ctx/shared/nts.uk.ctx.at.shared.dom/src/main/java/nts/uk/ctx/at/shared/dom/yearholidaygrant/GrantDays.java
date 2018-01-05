@@ -3,9 +3,9 @@ package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 import java.math.BigDecimal;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMaxValue;
+import nts.arc.primitive.constraint.DecimalRange;
 
-@DecimalMaxValue("999")
+@DecimalRange(min = "0", max = "999")
 public class GrantDays extends DecimalPrimitiveValue<GrantDays> {
 
 	/**

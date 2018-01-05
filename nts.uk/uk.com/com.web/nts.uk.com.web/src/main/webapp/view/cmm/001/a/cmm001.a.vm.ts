@@ -270,7 +270,6 @@ module cmm001.a {
                     if (error.messageId == 'Msg_810') {
                         $('#checked2').addClass("error");
                         $('#checked2').ntsError('set', { messageId: "Msg_810" });
-                        //                           $('#checked2').focus();
                     }
                 }).always(() => {
                     nts.uk.ui.block.clear();

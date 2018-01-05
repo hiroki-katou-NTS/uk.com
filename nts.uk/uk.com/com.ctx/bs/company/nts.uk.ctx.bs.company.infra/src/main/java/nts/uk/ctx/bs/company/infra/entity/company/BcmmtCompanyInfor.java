@@ -60,7 +60,7 @@ public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	
 	/** 法人マイナンバー */
 	@Column(name = "TAX_NO")
-	public BigDecimal taxNo;
+	public String taxNo;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "bcmmtCompanyInfor", orphanRemoval = true)
 	public BcmmtAddInfor bcmmtAddInfor;

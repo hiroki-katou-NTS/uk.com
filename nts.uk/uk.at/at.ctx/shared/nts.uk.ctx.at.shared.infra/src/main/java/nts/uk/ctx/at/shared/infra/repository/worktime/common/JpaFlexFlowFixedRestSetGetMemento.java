@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexRestSetPK;
 
 /**
  * The Class JpaFlexFlowFixedRestSetGetMemento.

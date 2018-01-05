@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-
 /**
  * 
  * @author hieult
@@ -20,14 +17,6 @@ public interface DetailAfterRelease {
 	 * @param application Application
 	 * @param loginID Login ID
 	 */
-	public void detailAfterRelease(Application application, String loginID);
-
-	/**
-	 * 1.解除できるかチェックする
-	 * @param appApprovalPhase AppApprovalPhase
-	 * @param loginID Login ID
-	 * @return
-	 */
-	public boolean cancelCheck(AppApprovalPhase appApprovalPhase, String loginID);
+	public void detailAfterRelease(String companyID, String appID, String loginID, String memo);
 	
 }

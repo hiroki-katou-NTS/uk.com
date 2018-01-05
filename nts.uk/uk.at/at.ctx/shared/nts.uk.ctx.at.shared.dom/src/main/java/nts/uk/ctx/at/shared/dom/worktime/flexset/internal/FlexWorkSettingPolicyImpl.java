@@ -9,19 +9,20 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
 
 /**
  * The Class FlexWorkSettingPolicyImpl.
  */
 @Stateless
-public class FlexWorkSettingPolicyImpl {
+public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 	
 	/** The service. */
 //	@Inject
@@ -38,6 +39,10 @@ public class FlexWorkSettingPolicyImpl {
 	/** The wtz common set policy. */
 	@Inject
 	private WorkTimezoneCommonSetPolicy wtzCommonSetPolicy;
+	
+	/** The em tz policy. */
+	@Inject
+	private EmTimeZoneSetPolicy emTzPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -48,6 +53,11 @@ public class FlexWorkSettingPolicyImpl {
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSet)
 	 */
 	public void canRegisterFlexWorkSetting(FlexWorkSetting flexWorkSetting, PredetemineTimeSetting predetemineTimeSet) {
+		
+		// validate list emTimezone
+		flexWorkSetting.getLstHalfDayWorkTimezone()
+				.forEach(flexHalfDay -> flexHalfDay.getWorkTimezone().getLstWorkingTimezone()
+						.forEach(workTimezone -> this.emTzPolicy.validate(predetemineTimeSet, workTimezone)));
 
 		// 使用区分 = 使用しない AND 最低勤務時間 > 所定時間.1日 => Msg_775
 		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.NOT_USE)
@@ -83,7 +93,7 @@ public class FlexWorkSettingPolicyImpl {
 			if (!(flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime().valueAsMinutes() >= startTime
 					&& flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime()
 							.valueAsMinutes() <= endTime)) {
-				throw new BusinessException("Msg_773");
+				//throw new BusinessException("Msg_773");
 			}
 		}
 		

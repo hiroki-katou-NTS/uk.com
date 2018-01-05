@@ -42,5 +42,14 @@ public interface WorkplaceAdapter {
 	 */
 	List<String> findListWorkplaceIdByCidAndWkpIdAndBaseDate(String companyId, String workplaceId,
 			GeneralDate baseDate);
+	
+	/**
+	 * 
+	 * @param workplaceId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
 
 }

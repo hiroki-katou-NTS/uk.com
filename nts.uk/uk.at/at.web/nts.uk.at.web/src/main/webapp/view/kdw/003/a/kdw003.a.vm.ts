@@ -96,6 +96,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         itemValueAll: KnockoutObservableArray<any> = ko.observableArray([]);
         
+        itemValueAllTemp: KnockoutObservableArray<any> = ko.observableArray([]);
+        
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
         dataHoliday: KnockoutObservable<DataHoliday> =  ko.observable(new DataHoliday("12","13","11","11","11","11"));
@@ -184,7 +186,56 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             ]);
             self.displayFormat(0);
         }
-
+        createSumColumn(data : any){
+            var self = this;
+            _.each(data.lstControlDisplayItem.columnSettings, function(item) {
+                if (self.displayFormat() == 0) {
+                    if (item.columnKey == "date") {
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
+                    }
+                } else {
+                    if (item.columnKey == "employeeCode") {
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
+                    }
+                }
+                if (item.typeFormat != undefined) {
+                    if (item.typeFormat == 2) {
+                        //so lan
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalNumber, this),
+                            order: 0
+                        }]
+                    }
+                    else if (item.typeFormat == 5) {
+                        //thoi gian
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalTime, this),
+                            order: 0
+                        }]
+                    }
+                    else if (item.typeFormat == 3) {
+                        //so tien 
+                        item.allowSummaries = true;
+                        item['summaryOperands'] = [{
+                            rowDisplayLabel: "合計",
+                            type: "custom",
+                            summaryCalculator: $.proxy(self.totalNumber, this),
+                            order: 0
+                        }]
+                    }
+                }
+                delete item.typeFormat;
+                self.columnSettings(data.lstControlDisplayItem.columnSettings);
+            });
+        }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -207,13 +258,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                     item.columns.unshift("sign");
                 });
-                _.each(data.lstControlDisplayItem.columnSettings, function(item) {
-                    if (item.columnKey == "date") {
-                        item.allowSummaries = true;
-                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
-                    }
-                self.columnSettings(data.lstControlDisplayItem.columnSettings);
-                });
+                self.createSumColumn(data);
                 // combo box
                 self.comboItemsCalc(data.lstControlDisplayItem.comboItemCalc);
                 self.comboItemsReason(data.lstControlDisplayItem.comboItemReason);
@@ -265,6 +310,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                                 item.columns.unshift("sign");
                             });
+                             self.createSumColumn(data);
                             self.employmentCode(data.employmentCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                             self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
@@ -344,6 +390,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     }
                 }
             });
+            _.each(self.itemValueAllTemp(), (data: any) => {
+                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+                    let dataTemp = _.find(self.dpData, (item: any) => {
+                        return item.id == data.rowId.substring(1, data.rowId.length);
+                    });
+                    let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                        return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                    });
+                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), data.value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                    dataChangeProcess.push(dataMap);
+                }
+            });
             let param = { itemValues: dataChangeProcess }
             let dfd = $.Deferred();
             service.addAndUpdate(dataChangeProcess).done((data) => {
@@ -367,26 +425,33 @@ module nts.uk.at.view.kdw003.a.viewmodel {
               });
             return check;
         }
+        hideComponent() {
+            var self = this;
+            if (self.displayFormat() == 0) {
+                $("#emp-component").css("display", "block");
+                $("#cbListDate").css("display", "none");
+                $('#numberHoliday').show();
+                $('#fixed-table').show();
+                 $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
+            } else if (self.displayFormat() == 1) {
+                $("#cbListDate").css("display", "block");
+                $("#emp-component").css("display", "none");
+                $('#numberHoliday').hide();
+                $('#fixed-table').hide();
+                $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
+            } else {
+                $("#cbListDate").css("display", "none");
+                $("#emp-component").css("display", "none");
+                $('#numberHoliday').hide();
+                $('#fixed-table').hide();
+                $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
+            }
+        }
         btnExtraction_Click() {
             var self = this;
             console.log(self.dailyPerfomanceData());
             if (!nts.uk.ui.errors.hasError()) {
-                if (self.displayFormat() == 0) {
-                    $("#emp-component").css("display", "block");
-                    $("#cbListDate").css("display", "none");
-                    $('#numberHoliday').show();
-                     $('#fixed-table').show();
-                } else if (self.displayFormat() == 1) {
-                    $("#cbListDate").css("display", "block");
-                    $("#emp-component").css("display", "none");
-                    $('#numberHoliday').hide();
-                    $('#fixed-table').hide();
-                } else {
-                    $("#cbListDate").css("display", "none");
-                    $("#emp-component").css("display", "none");
-                    $('#numberHoliday').hide();
-                    $('#fixed-table').hide();
-                }
+                self.hideComponent();
                 let lstEmployee = [];
                 if (self.displayFormat() === 0) {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
@@ -408,17 +473,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.grayout();
                 service.startScreen(param).done((data) => {
                     self.formatCodes(data.lstControlDisplayItem.formatCode);
+                    self.itemValueAll(data.itemValues);
                     _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                         item.columns.unshift("sign");
                     });
-                    if (self.displayFormat() != 2) {
-                        _.each(data.lstControlDisplayItem.columnSettings, function(item) {
-                            if (item.columnKey == "date") {
-                                item.allowSummaries = true;
-                                item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
-                            }
-                        });
-                    }
+                    self.createSumColumn(data);
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.receiveData(data);
                     self.extraction();
@@ -454,23 +513,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         changeExtractionCondition() {
             var self = this;
             if (!nts.uk.ui.errors.hasError()) {
-                if (self.displayFormat() == 0) {
-                    $("#emp-component").css("display", "block");
-                    $("#cbListDate").css("display", "none");
-                    $('#numberHoliday').show();
-                    $('#fixed-table').show();
-                    
-                } else if (self.displayFormat() == 1) {
-                    $("#cbListDate").css("display", "block");
-                    $("#emp-component").css("display", "none");
-                    $('#numberHoliday').hide();
-                    $('#fixed-table').hide();
-                } else {
-                    $("#cbListDate").css("display", "none");
-                    $("#emp-component").css("display", "none");
-                    $('#numberHoliday').hide();
-                    $('#fixed-table').hide();
-                }
+                self.hideComponent();
                 let lstEmployee = [];
                 if (self.displayFormat() === 0) {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
@@ -499,14 +542,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                                 item.columns.unshift("sign");
                             });
-                            if (self.displayFormat() != 2) {
-                                _.each(data.lstControlDisplayItem.columnSettings, function(item) {
-                                    if (item.columnKey == "date") {
-                                        item.allowSummaries = true;
-                                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
-                                    }
-                                });
-                            }
+                            self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
                             self.extraction();
@@ -528,22 +564,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     var dataTemp = nts.uk.ui.windows.getShared('dailyPerfFmtList');
                     if (dataTemp != undefined) {
                         let data = [dataTemp.dailyPerformanceFormatCode()];
-                        if (self.displayFormat() == 0) {
-                            $("#emp-component").css("display", "block");
-                            $("#cbListDate").css("display", "none");
-                            $('#numberHoliday').show();
-                            $('#fixed-table').show();
-                        } else if (self.displayFormat() == 1) {
-                            $("#cbListDate").css("display", "block");
-                            $("#emp-component").css("display", "none");
-                            $('#numberHoliday').hide();
-                            $('#fixed-table').hide();
-                        } else {
-                            $("#cbListDate").css("display", "none");
-                            $("#emp-component").css("display", "none");
-                            $('#numberHoliday').hide();
-                            $('#fixed-table').hide();
-                        }
+                       self.hideComponent();
                         let lstEmployee = [];
                         if (self.displayFormat() === 0) {
                             lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
@@ -566,14 +587,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                                 item.columns.unshift("sign");
                             });
-                            if (self.displayFormat() != 2) {
-                                _.each(data.lstControlDisplayItem.columnSettings, function(item) {
-                                    if (item.columnKey == "date") {
-                                        item.allowSummaries = true;
-                                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
-                                    }
-                                });
-                            }
+                            self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
                             self.extraction();
@@ -800,7 +814,37 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return _.filter(self.dpData, (data) => { return data.error !== '' });
             }
         }
-
+        
+        totalNumber(data) {
+            let total = 0;
+            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            _.forEach(data, function(d, i) {
+                if (i < startIndex || i >= endIndex) return;
+                let n = parseInt(d);
+                if (!isNaN(n)) total += n;
+            });
+            return total;
+        }
+        totalTime(data) {
+            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            let total = moment.duration("0");
+            _.forEach(data, function(d, i) {
+                if (i < startIndex || i >= endIndex) return;
+                total.add(moment.duration(d));
+            });
+            let time = total.asHours();
+            let hour = Math.floor(time);
+            let minute = (time - hour) * 60;
+            let roundMin = Math.round(minute);
+            let minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
+            return hour + ":" + minuteStr;
+        }
         //load kcp009 component: employee picker
         loadKcp009() {
             let self = this;
@@ -967,6 +1011,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         columnSettings: self.columnSettings(),
                         resultTemplate: '{1}'
                     },
+                    {
+                        name: "Updating",
+                        enableAddRow: true,
+                        editMode: "cell",
+                        enableDeleteRow: true,
+                        rowEditDialogContainment: "owner",
+                        horizontalMoveOnEnter: true,
+                        showReadonlyEditors: false,
+                        enableDataDirtyException: false,
+                    },
+                    {
+                        name: 'Selection',
+                        mode: 'cell'
+                    },
                 ],
                 ntsFeatures: self.createNtsFeatures(),
                 ntsControls: [
@@ -1013,10 +1071,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             $(document).delegate("#dpGrid", 'iggridupdatingeditcellending', function(evt, ui) {
                 //information data edit 
-                let data : InfoCellEdit = self.pushDataEdit(evt, ui);
+                let data: InfoCellEdit = self.pushDataEdit(evt, ui);
                 let dfd = $.Deferred();
-//                nts.uk.ui.block.invisible();
-//                nts.uk.ui.block.grayout();
+                //                nts.uk.ui.block.invisible();
+                //                nts.uk.ui.block.grayout();
                 if (ui.columnKey.indexOf("Code") != -1) {
                     let item = _.find(self.lstAttendanceItem(), function(data) {
                         return data.id == ui.columnKey.substring(4, ui.columnKey.length);
@@ -1065,7 +1123,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         });
                         dfd.promise();
                     }
-                }
+                } else {
+                    let itemTemp = _.find(self.itemValueAllTemp(), item => {
+                        if (item.columnKey == ui.columnKey && item.rowId == ui.rowID) {
+                            item.value = ui.value;
+                            return item.columnKey == ui.columnKey && item.rowId == ui.rowID;
+                        }
+                    })
+                    if (!itemTemp) {
+                        self.itemValueAllTemp().push({ columnKey: ui.columnKey, rowId: ui.rowID, value: ui.value })
+                    }
+                    }
             });
         }
         
@@ -1103,6 +1171,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (mode == 0) {
                 _.forEach(self.employeeModeHeader, (header) => {
                     delete header.group;
+                     if (header.constraint == null) {
+                        delete header.constraint;
+                    }
 //                    if(header.key == "state"){
 //                         header["template"] =  "<img width = '30' height = '30' src = ${state}></img>"
 //                      }
@@ -1111,19 +1182,30 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else if (mode == 1) {
                 self.displayProfileIcon();
                 _.forEach(self.dateModeHeader, (header) => {
+                    if (header.constraint == null) {
+                        delete header.constraint;
+                    }
                     delete header.group;
                     tempList.push(header);
                 });
             } else if (mode == 2) {
                 _.forEach(self.errorModeHeader, (header) => {
+                    if (header.constraint == null) {
+                        delete header.constraint;
+                    }
                     delete header.group;
                     tempList.push(header);
                 });
             }
             self.dislayNumberHeaderText();
             _.forEach(self.optionalHeader, (header) => {
+                if (header.constraint == null) {
+                    delete header.constraint;
+                }
                 if (header.group != undefined) {
                     if (header.group.length > 0) {
+                       delete header.group[0].constraint;
+                       delete header.group[1].constraint;
                         delete header.group[0].group;
                         //delete header.key;
                         delete header.dataType;
@@ -1381,7 +1463,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 var objectName = {};
                                 objectName["Name" + self.attendenceId] = lst[0].name;
                                 var objectCode = {};
-                                objectCode["Code" + self.attendenceId] = lst[0].name;
+                                objectCode["Code" + self.attendenceId] = lst[0].code;
 
                                 $.when($("#dpGrid").ntsGrid("updateRow", self.rowId(), objectName),
                                     $("#dpGrid").ntsGrid("updateRow", self.rowId(), objectCode)

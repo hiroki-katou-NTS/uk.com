@@ -9,3 +9,7 @@
 .column-combo-box {
 	min-width: 100px !important;
 }
+
+.itemleft {
+	margin-left: 30px;
+}

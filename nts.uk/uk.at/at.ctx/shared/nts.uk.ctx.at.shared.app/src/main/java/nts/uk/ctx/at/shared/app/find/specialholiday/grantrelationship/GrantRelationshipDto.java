@@ -8,10 +8,11 @@ import lombok.Value;
  */
 @Value
 public class GrantRelationshipDto {
-	int specialHolidayCode;
+	String specialHolidayCode;
 	String relationshipCode;
 	String relationshipName;
 	Integer grantRelationshipDay;
 	Integer morningHour;
 	boolean activeAlready;
 }
+  

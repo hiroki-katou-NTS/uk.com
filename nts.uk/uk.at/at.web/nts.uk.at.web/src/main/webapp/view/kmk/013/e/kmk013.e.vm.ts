@@ -16,14 +16,14 @@ module nts.uk.at.view.kmk013.e {
                 var self = this;
                 self.listData = ko.observableArray([]);
                 self.itemListUnit = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText("Enum_RoundingTime_1Min")),
-                    new ItemModel(5, nts.uk.resource.getText("Enum_RoundingTime_5Min")),
-                    new ItemModel(6, nts.uk.resource.getText("Enum_RoundingTime_6Min")),
-                    new ItemModel(10, nts.uk.resource.getText("Enum_RoundingTime_10Min")),
-                    new ItemModel(15, nts.uk.resource.getText("Enum_RoundingTime_15Min")),
-                    new ItemModel(20, nts.uk.resource.getText("Enum_RoundingTime_20Min")),
-                    new ItemModel(30, nts.uk.resource.getText("Enum_RoundingTime_30Min")),
-                    new ItemModel(60, nts.uk.resource.getText("Enum_RoundingTime_60Min"))
+                    new ItemModel(0, nts.uk.resource.getText("Enum_RoundingTime_1Min")),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_RoundingTime_5Min")),
+                    new ItemModel(2, nts.uk.resource.getText("Enum_RoundingTime_6Min")),
+                    new ItemModel(3, nts.uk.resource.getText("Enum_RoundingTime_10Min")),
+                    new ItemModel(4, nts.uk.resource.getText("Enum_RoundingTime_15Min")),
+                    new ItemModel(5, nts.uk.resource.getText("Enum_RoundingTime_20Min")),
+                    new ItemModel(6, nts.uk.resource.getText("Enum_RoundingTime_30Min")),
+                    new ItemModel(7, nts.uk.resource.getText("Enum_RoundingTime_60Min"))
                 ]);
 
                 self.itemListRounding = ko.observableArray([
@@ -43,6 +43,7 @@ module nts.uk.at.view.kmk013.e {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                $("#fixed-table").ntsFixedTable({ height: 500, width: 540 });
                 self.initData();
                 dfd.resolve();
                 return dfd.promise();
@@ -50,11 +51,20 @@ module nts.uk.at.view.kmk013.e {
             initData(): void {
                 let self = this;
                 service.findByCompanyId().done(arr => {
-                    let arrSort = _.orderBy(arr, [(obj) => {
-                        return parseInt(obj.timeItemId);
-                    }], ['asc']);
-                    _.forEach(arrSort, (element) => {
-                        self.listData.push(new UnitRouding(element.timeItemId, element.unit, element.rounding));
+                });
+                service.getIdMonth().done(arr => {
+                    service.getPossibleItem(arr).done(listName => {
+                        service.findByCompanyId().done(listData => {
+                            _.forEach(listName, (element) => {
+                                let obj = _.find(listData, ['timeItemId', element.attendanceItemId.toString()]);
+                                if (obj) {
+                                    self.listData.push(new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding));
+                                } else {
+                                    self.listData.push(new UnitRouding(element.attendanceItemId, element.attendanceItemName, 0, 0));
+                                }
+                            });
+
+                        });
                     });
                 });
 
@@ -65,9 +75,9 @@ module nts.uk.at.view.kmk013.e {
                 service.save(ko.toJS(self.listData())).done(() => {
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                     blockUI.clear();
-                }).fail((error)=>{
+                }).fail((error) => {
                     console.log(error);
-                    blockUI.clear(); 
+                    blockUI.clear();
                 });
             }
         };
@@ -82,11 +92,13 @@ module nts.uk.at.view.kmk013.e {
 
         }
         class UnitRouding {
-            timeItemId: KnockoutObservableArray<string>;
-            unit: KnockoutObservableArray<number>;
-            rounding: KnockoutObservableArray<number>;
-            constructor(timeItemId: string, unit: number, rounding: number) {
-                this.timeItemId = ko.observable(timeItemId);
+            timeItemId: string;
+            attendanceItemName: string;
+            unit: KnockoutObservable<number>;
+            rounding: KnockoutObservable<number>;
+            constructor(timeItemId: string, attendanceItemName: string, unit: number, rounding: number) {
+                this.timeItemId = timeItemId;
+                this.attendanceItemName = attendanceItemName;
                 this.unit = ko.observable(unit);
                 this.rounding = ko.observable(rounding);
             }

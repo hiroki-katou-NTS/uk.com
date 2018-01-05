@@ -14,9 +14,9 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class ExtraordWorkOTFrameSet extends DomainObject {
 
-	/** The OT frame no. */
+	/** The ot frame no. */
 	// 残業枠NO
-	private OTFrameNo oTFrameNo;
+	private OTFrameNo otFrameNo;
 
 	/** The in legal work frame no. */
 	// 法内残業枠NO
@@ -32,7 +32,7 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 	 * @param memento the memento
 	 */
 	public ExtraordWorkOTFrameSet (ExtraordWorkOTFrameSetGetMemento memento) {
-		this.oTFrameNo = memento.getOTFrameNo();
+		this.otFrameNo = memento.getOtFrameNo();
 		this.inLegalWorkFrameNo = memento.getInLegalWorkFrameNo();
 		this.settlementOrder = memento.getSettlementOrder();
 	}
@@ -43,8 +43,23 @@ public class ExtraordWorkOTFrameSet extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(ExtraordWorkOTFrameSetSetMemento memento) {
-		memento.setOTFrameNo(this.oTFrameNo);
+		memento.setOTFrameNo(this.otFrameNo);
 		memento.setInLegalWorkFrameNo(this.inLegalWorkFrameNo);
 		memento.setSettlementOrder(this.settlementOrder);
+	}
+
+	/**
+	 * Instantiates a new extraord work OT frame set.
+	 *
+	 * @param oTFrameNo the o T frame no
+	 * @param inLegalWorkFrameNo the in legal work frame no
+	 * @param settlementOrder the settlement order
+	 */
+	public ExtraordWorkOTFrameSet(OTFrameNo oTFrameNo, OTFrameNo inLegalWorkFrameNo,
+			SettlementOrder settlementOrder) {
+		super();
+		this.otFrameNo = oTFrameNo;
+		this.inLegalWorkFrameNo = inLegalWorkFrameNo;
+		this.settlementOrder = settlementOrder;
 	}
 }

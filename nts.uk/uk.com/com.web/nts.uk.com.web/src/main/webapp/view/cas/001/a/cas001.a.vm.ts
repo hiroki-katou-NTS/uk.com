@@ -3,7 +3,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
     import ccg = nts.uk.com.view.ccg025.a;
     import model = nts.uk.com.view.ccg025.a.component.model;
@@ -30,7 +29,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         checkboxSelectedAll: KnockoutObservable<boolean> = ko.observable(false);
 
         component: ccg.component.viewmodel.ComponentModel = new ccg.component.viewmodel.ComponentModel({
-            roleType: 1,
+            roleType: 8,
             multiple: false
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
@@ -64,7 +63,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 service.getPersonRoleAuth(newRoleId).done((result: IPersonRole) => {
 
-                    newPersonRole.loadRoleCategoriesList(newPersonRole.roleId).done(() => {
+                    newPersonRole.loadRoleCategoriesList(newRoleId).done(() => {
 
                         newPersonRole.setRoleAuth(result);
 
@@ -251,9 +250,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         OpenCModal() {
 
-            let self = this;
+            let self = this,
+                currentRole = {
+                    roleList: self.personRoleList(),
+                    personRole: self.currentRole()
+                };
 
-            setShared('personRole', self.currentRole());
+            setShared('currentRole', currentRole);
 
 
 
@@ -292,7 +295,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 showHeader: true,
 
-                width: '830px',
+                width: '835px',
 
                 height: '315px',
 

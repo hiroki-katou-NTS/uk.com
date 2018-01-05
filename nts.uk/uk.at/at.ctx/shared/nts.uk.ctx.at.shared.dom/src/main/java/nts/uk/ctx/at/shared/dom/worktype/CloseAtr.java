@@ -18,7 +18,7 @@ public enum CloseAtr {
 	/**
 	 * 産後休業
 	 */
-	POSTPARTUM(1, "Enum_CloseAtr_ POSTPARTUM"),
+	POSTPARTUM(1, "Enum_CloseAtr_POSTPARTUM"),
 	
 	/**
 	 * 育児休業

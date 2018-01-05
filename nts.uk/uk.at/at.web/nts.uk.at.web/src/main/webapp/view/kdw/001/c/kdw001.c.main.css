@@ -26,3 +26,7 @@
 #formLabe12{
 	float: left;
 }
+
+#contents-area{
+ overflow: hidden;
+}

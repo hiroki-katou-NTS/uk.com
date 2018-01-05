@@ -5,39 +5,21 @@ module nts.uk.at.view.kal003.b{
         import dialog = nts.uk.ui.dialog;
         import windows = nts.uk.ui.windows;
         import resource = nts.uk.resource;
+        import shareModel = nts.uk.at.view.kal003.share.model;
 
         export class ScreenModel {
             
-            intGroupCondition = new model.GroupCondition({
+            intGroupCondition = new shareModel.GroupCondition({
                 groupOperator: 0
                 , groupListCondition: ([])
             });
-            initCompoundCondition = new  model.CompoundCondition ({
+            initCompoundCondition = new  shareModel.CompoundCondition ({
                 group1Condition: this.intGroupCondition
                 , hasGroup2: false
                 , group2Condition: this.intGroupCondition
                 , operatorBetweenG1AndG2: 0
             });
-            currentErrAlaAttendanceItemCondition: KnockoutObservable<model.ErrAlaAttendanceItemCondition> = ko.observable(new model.ErrAlaAttendanceItemCondition({
-                    errAlaAttendanceItemConditionId:    ''
-                    , category:                         0
-                    , typeCheckWorkRecord:              0
-                    , messageColor:                     ''
-                    , messageContent:                   ''
-                    , isBoldMessage:                    false
-                    , targetServiceType:                1 // default selection
-                    , targetServiceTypeWorkTypeSelection: ''
-                    , dailyAttendanceItemId:            ''
-                    , dailyAttendanceItemName:          ''
-                    , comparisonOperatorId:             0
-                    , comparisonMinValue:               ''
-                    , comparisonMaxValue:               ''
-                    , continuousPeriod:                 0
-                    , targetWorkingHoursCd:             ''
-                    , targetWorkingHoursTimeZoneSelection: ''
-                    , compoundCondition: this.initCompoundCondition
-                    
-            }));
+            currentErrAlaCheckCondition: KnockoutObservable<shareModel.SettingCdlKal003B>;
             // list item check
             listTypeCheckWorkRecords    : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
             listSingleValueCompareTypes : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -46,39 +28,53 @@ module nts.uk.at.view.kal003.b{
             itemListTargetServiceType_BA1_2         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
             itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
             itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
-
-            private defaultSetting: model.ISetting = {
-                category: 1,
-                typeCheckWorkRecord: 0,
-                errAlaAttendanceItemConditionId: ''
+            displayWorkTypeSelections_BA1_4 :       KnockoutObservable<string> = ko.observable('');
+            displayWorkTimeItemSelections_BA2_3:    KnockoutObservable<string> = ko.observable('');
+            displayWorkingTimeZoneSelections_BA5_3: KnockoutObservable<string> = ko.observable('');
+            private defaultSetting: shareModel.ISettingCdlKal003B = {
+                    errAlaCheckId:    ''
+                    , category:                         0
+                    , checkItem:                        0
+                    , workTypeRange:                    []
+                    , workTypeSelections:               []
+                    , workTimeItemSelections:           []
+                    , comparisonOperator:               0
+                    , minimumValue:                     ''
+                    , maximumValue:                     ''
+                    , continuousPeriodInput:            ''
+                    , workingTimeZoneSelections:        []
+                    , color:                            ''
+                    , message:                          ''
+                    , isBold:                           false
+                    , compoundCondition:                this.initCompoundCondition
             };
-            targetServiceTypeSelected_BA1_2 : KnockoutObservable<string> = ko.observable('1');
-            targetSelectionRangeSelected_BA1_5 : KnockoutObservable<string> = ko.observable('1');
-            targetSelectionRangeSelected_BA1_5_target_working_hours : KnockoutObservable<string> = ko.observable('0');
-            private setting: model.ISetting;
+            targetServiceTypeSelected_BA1_2 : KnockoutObservable<number> = ko.observable(1);
+            targetSelectionRangeSelected_BA1_5 : KnockoutObservable<number> = ko.observable(0);
+            targetSelectionRangeSelected_BA1_5_target_working_hours : KnockoutObservable<number> = ko.observable(1);
+            private setting: shareModel.ISettingCdlKal003B;
             swANDOR_B5_3: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
             swANDOR_B6_3: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
             swANDOR_B7_2: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
             enableComparisonMaxValue : KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
-                let self = this,
-                currentErrAlaAttendanceItemCondition = self.currentErrAlaAttendanceItemCondition();
+                let self = this;
                 var option = windows.getShared('dataKal003b');
                 self.setting = $.extend({}, self.defaultSetting, option);
+                self.currentErrAlaCheckCondition = ko.observable(new shareModel.SettingCdlKal003B(self.setting));
 
-                currentErrAlaAttendanceItemCondition.typeCheckWorkRecord(self.setting.typeCheckWorkRecord || self.defaultSetting.typeCheckWorkRecord);
                 // change select item check
-                currentErrAlaAttendanceItemCondition.typeCheckWorkRecord.subscribe((itemCheck) => {
+                self.currentErrAlaCheckCondition().checkItem.subscribe((itemCheck) => {
+                    errors.clearAll();
                     if (itemCheck && itemCheck != undefined) {
-                        self.initialScreen();
-                        self.showAndHide();
+                        //self.initialScreen();
                     }
                 });
-                currentErrAlaAttendanceItemCondition.comparisonOperatorId.subscribe((comparisonOperatorId) => {
+                self.currentErrAlaCheckCondition().comparisonOperator.subscribe((comparisonOperatorId) => {
+                    errors.clearAll();
                     self.settingEnableComparisonMaxValueField();
                 });
 
-                currentErrAlaAttendanceItemCondition.compoundCondition().hasGroup2.subscribe((item) => {
+                self.currentErrAlaCheckCondition().compoundCondition().hasGroup2.subscribe((item) => {
                     // show group 2
                     if (item === true) {
                         $('#div_b6_2').show();
@@ -101,84 +97,28 @@ module nts.uk.at.view.kal003.b{
                 errors.clearAll();
                 self.getAllEnums().done(function() {
                   //initial screen - in case update
-                    if (self.setting.errAlaAttendanceItemConditionId) {
+                    if (self.setting.errAlaCheckId) {
                         //self.initialScreen(); //.done(() => {
                            // dfd.resolve();
                         //});
                     }
-                    self.showAndHide();
                     self.settingEnableComparisonMaxValueField();
+                    errors.clearAll();
                     dfd.resolve();
                });
                 
                 return dfd.promise();
             }
-            
-            private showAndHide() {
-                let self = this;
-                switch (self.currentErrAlaAttendanceItemCondition().typeCheckWorkRecord()) {
-                case enItemCheck.Time: //時間
-                case enItemCheck.Times: // 回数
-                case enItemCheck.AmountOfMoney: // 金額
-                case enItemCheck.TimeOfDate: // 時刻の場合
-                    $('#div_target_service_type_ba1').show();
-                    $('#ba1_2').show();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').show();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').hide();
-                    $('#div_compound_condition').hide();
-                    break;
-                case enItemCheck.CountinuousTime: // 連続時間の場合
-                    $('#div_target_service_type_ba1').show();
-                    $('#ba1_2').show();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').show();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').show();
-                    $('#div_compound_condition').hide();
-                    break;
-                case enItemCheck.CountinuousTimeZone: // 連続勤務
-                    $('#div_target_service_type_ba1').show();
-                    $('#ba1_2').show();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').hide();
-                    $('#div_target_working_hours_ba5').show();
-                    $('#div_continuous_period_ba3').show();
-                    $('#div_compound_condition').hide();
-                    break;
-                case enItemCheck.CountinuousWork: // 連続時間帯 
-                    $('#div_target_service_type_ba1').show();
-                    $('#ba1_2').hide();
-                    $('#ba1_5').show();
-                    $('#div_check_conditions_ba2').hide();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').show();
-                    $('#div_compound_condition').hide();
-                    break;
-                case enItemCheck.CompoundCondition: // 複合条件
-                    $('#div_target_service_type_ba1').hide();
-                    $('#ba1_2').hide();
-                    $('#ba1_5').hide();
-                    $('#div_check_conditions_ba2').hide();
-                    $('#div_target_working_hours_ba5').hide();
-                    $('#div_continuous_period_ba3').hide();
-                    $('#div_compound_condition').show();
-                    break;
-                default:
-                    break;
-                }
-            }
-            
+
             private settingEnableComparisonMaxValueField() {
                 let self = this;
-                self.enableComparisonMaxValue(self.currentErrAlaAttendanceItemCondition().comparisonOperatorId() > 5);
+                self.enableComparisonMaxValue(self.currentErrAlaCheckCondition().comparisonOperator() > 5);
             }
             // initial screen
             private initialScreen() : JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                switch (self.currentErrAlaAttendanceItemCondition().typeCheckWorkRecord()) {
+                switch (self.currentErrAlaCheckCondition().checkItem()) {
                 case enItemCheck.Time: //時間
                     
                     self.initialDailyItemChkTime(); //.done((x) => {
@@ -317,7 +257,7 @@ module nts.uk.at.view.kal003.b{
             private initialDaily() : JQueryPromise<any> {
                 let self = this,
                 dfd = $.Deferred();
-                switch (self.currentErrAlaAttendanceItemCondition().typeCheckWorkRecord()) {
+                switch (self.currentErrAlaCheckCondition().checkItem()) {
                     case enItemCheck.Time: //時間
                         
                         self.initialDailyItemChkTime().done((x) => {
@@ -391,14 +331,14 @@ module nts.uk.at.view.kal003.b{
             
             private initialDailyItemChkTime() : JQueryPromise<any> {
                 let self = this,
-                currentErrAlaAttendanceItemCondition = self.currentErrAlaAttendanceItemCondition(),
+                currentErrAlaCheckCondition = self.self.currentErrAlaCheckCondition(),
                 dfd = $.Deferred();
                 //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
-                var jsItemCheckCmd : any = ko.toJS(self.itemCheck);
+                var jsItemCheckCmd : any = ko.toJS(currentErrAlaCheckCondition.itemCheck);
                 service.getDailyAttendanceItemByChkItem(jsItemCheckCmd).done((itemAttendance) => {
                     if (itemAttendance) {
-                        currentErrAlaAttendanceItemCondition.dailyAttendanceItemId(itemAttendance.id);
-                        currentErrAlaAttendanceItemCondition.dailyAttendanceItemName(itemAttendance.name);
+                        //self.currentErrAlaCheckCondition().dailyAttendanceItemId(itemAttendance.id);
+                        //self.currentErrAlaCheckCondition().dailyAttendanceItemName(itemAttendance.name);
                         //ドメインモデル「任意項目」を取得する  - Acquire domain model "OptionalItem"
                         var command : any = ko.toJS(itemAttendance.companyId, itemAttendance.attribute);
                         service.getOptionalItemBy(command).done((itemOptional) => {
@@ -427,7 +367,7 @@ module nts.uk.at.view.kal003.b{
                                                 dfd.reject();
                                             });
                                             
-                                            currentErrAlaAttendanceItemCondition.ErrAlaAttendanceItemConditionId(itemAttendance.id || '');
+                                            currentErrAlaCheckCondition.errAlaCheckId(itemAttendance.id || '');
                                         } else {
                                             dfd.reject();
                                         }
@@ -446,7 +386,7 @@ module nts.uk.at.view.kal003.b{
                     }
                     dfd.reject();
                 }).fail(error => {
-                    currentErrAlaAttendanceItemCondition.ErrAlaAttendanceItemConditionId('');
+                    currentErrAlaCheckCondition.errAlaCheckId('');
                     dfd.reject();
                 });
                 return dfd.promise();
@@ -526,17 +466,88 @@ module nts.uk.at.view.kal003.b{
             }
             
               //==========Daily session End====================
-            btnSettingBA5_2_click() {
-                alert("open dialog btnSettingBA5_2");
+            /*
+            list(str: string):Array<string>{
+                return _.split(str, ',');
             }
+            
+            */
+            getListCode(listKdl002Model : Array<model.ItemModelKdl002>) : Array<string>{
+                let retListCode : Array<string> = [];
+                if (listKdl002Model == null || listKdl002Model == undefined) {
+                    return retListCode;
+                }
+                for(var i = 0; i < listKdl002Model.length; i++) {
+                    retListCode.push(listKdl002Model[i].code);
+                }
+                return retListCode;
+            }
+            /**
+             * open dialog for select working type
+             */
             btnSettingBA1_3_click () {
-                alert("open dialog btnSettingBA1_3_click");
+                let self = this,
+                    currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+                
+                block.invisible();
+
+                let lstSelectedCode = currentErrAlaCheckCondition.workTypeSelections();
+                let lstSelectableCode = [];
+                
+                windows.setShared('KDL002_Multiple',false,true);
+                //all possible items
+                windows.setShared('KDL002_AllItemObj',lstSelectableCode,true);
+                //selected items
+                windows.setShared('KDL002_SelectedItemId',lstSelectedCode,true);
+                
+                windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                  //get data from share window
+
+                    let listCds = windows.getShared('KDL002_SelectedNewItem');
+                    if (listCds == null || listCds == undefined) {
+                        
+                    } else {
+                        //items: KnockoutObservableArray<model.ItemModelKdl002> = ko.observableArray(listCds);
+                        currentErrAlaCheckCondition.workTypeSelections(self.getListCode(listCds));
+                        self.displayWorkTypeSelections_BA1_4(listCds.toString());
+                        
+                    }
+                    block.clear();
+                });
+                
             }
+            /**
+             * open dialog for select working time zone (KDL002)
+             */
+            btnSettingBA5_2_click() {
+                let self = this;
+                alert("open dialog btnSettingBA5_2");
+                self.displayWorkingTimeZoneSelections_BA5_3("BA5_2");
+            }
+
+            /**
+             * open dialog for select working time zone
+             */
             btnSettingBA2_2_click() {
+                let self = this;
                 alert("open dialog btnSettingBA2_2_click");
+                self.displayWorkTimeItemSelections_BA2_3("BA2_2");
             }
+            
+            /**
+             * close dialog B and return result
+             */
+            btnDecision() {
+                let self = this;
+                windows.setShared('outputKal003b', ko.toJS(self.currentErrAlaCheckCondition()));
+                nts.uk.ui.windows.close();
+            }
+            /**
+             * close dialog B and return result
+             */
             closeDialog() {
-                nts.uk.ui.windows.close()
+                windows.setShared('outputKal003b', null);
+                nts.uk.ui.windows.close();
             }
         }
     }
@@ -561,13 +572,14 @@ module nts.uk.at.view.kal003.b{
         CompoundCondition   = 7// 複合条件
     }
     module model {
-        //Class Input parameter
-        export interface ISetting {
-            category: number;
-            typeCheckWorkRecord: number; //item check
-            errAlaAttendanceItemConditionId: string;
+        export class ItemModelKdl002 {
+            code: string;
+            name: string;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
         }
-        
         export interface IEnumModel {
             value : number;
             fieldName: string;
@@ -583,138 +595,6 @@ module nts.uk.at.view.kal003.b{
                 self.value =  ko.observable(param.value || -1);
                 self.fieldName = param.fieldName || '';
                 self.localizedName = param.localizedName || '';
-            }
-        }
-        
-        //Condition of group (C screen)
-        export interface ICondition{
-            itemCheck:  number;
-            target:     number;
-            operatorCd: string;
-            comparisonOperatorId: number;
-            itemConditionId: string;
-        
-        }
-        export class Condition{
-            itemCheck:  number;
-            target:     number;
-            operatorCd: string;
-            comparisonOperatorId: number;
-            itemConditionId: string;
-            constructor(param: ICondition) {
-                let self = this;
-                self.itemCheck  = param.itemCheck;
-                self.target     = param.target;
-                self.operatorCd = param.operatorCd;
-                self.comparisonOperatorId = param.comparisonOperatorId;
-                self.itemConditionId = param.itemConditionId;
-            }
-        
-        }
-        // group condition
-        export interface IGroupCondition {
-            groupOperator:      number; //0: OR|1: AND
-            groupListCondition: Array<Condition>;// max 3
-        }
-        
-        export class GroupCondition {
-            groupOperator:      KnockoutObservable<number>; //OR|AND B15-3, B17-3
-            groupListCondition: KnockoutObservableArray<Condition>;// max 3 item, B16-1 -> B16-4
-            constructor(param: IGroupCondition) {
-                let self = this;
-                self.groupOperator = ko.observable(param.groupOperator || 0);
-                self.groupListCondition = ko.observableArray(param.groupListCondition || []);
-            }
-        }
-        
-        export interface ICompoundCondition {
-            group1Condition:    GroupCondition;
-            hasGroup2:          boolean; // B17-1
-            group2Condition:    GroupCondition;
-            operatorBetweenG1AndG2: number; // B18-2: 0: OR, 1: AND
-        }
-        export class CompoundCondition {
-            group1Condition:    KnockoutObservable<GroupCondition>;
-            hasGroup2:          KnockoutObservable<boolean>;
-            group2Condition:    KnockoutObservable<GroupCondition>;
-            operatorBetweenG1AndG2: KnockoutObservable<number>;
-            constructor(param: ICompoundCondition) {
-                let self = this;
-                self.group1Condition = ko.observable(param.group1Condition);
-                self.hasGroup2 = ko.observable(param.hasGroup2 || false);
-                self.group2Condition = ko.observable(param.group2Condition);
-                self.operatorBetweenG1AndG2 = ko.observable(param.operatorBetweenG1AndG2);
-            }
-        }
-        // AlaAttendaceItemCodition
-        export interface IErrAlaAttendanceItemCondition {
-            //------common - begin------
-            errAlaAttendanceItemConditionId:  string;
-            category :                      number;
-            typeCheckWorkRecord:            number; // チェック項目 - item check
-            messageColor:                   string;
-            messageContent:                 string
-            isBoldMessage:                  boolean;
-            //------common - end------
-            // 時間、回数、金額、時刻の場合
-            targetServiceType :             number;  // get by enum 勤務種類 : BA1-2
-            targetServiceTypeWorkTypeSelection: string; //対象とする勤務種類 => for other: BA1-4 
-            // チェック条件  - check condition
-            dailyAttendanceItemId:          string; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
-            dailyAttendanceItemName:        string; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
-            comparisonOperatorId:           number; // 比較演算子:  単一値との比較演算の種別　＋　範囲との比較演算の種別 => enum BA2-4
-            comparisonMinValue:             string; //BA2-6
-            comparisonMaxValue:             string; //BA2-7
-            // 連続時間の場合 , 連続時間帯の場合
-            continuousPeriod:               number; //BA3-2: 連続期間入力欄 - Continuous period input field
-            //連続時間帯の場合 
-            targetWorkingHoursCd:           string; //BA5-1 - enum, 
-            targetWorkingHoursTimeZoneSelection: string; //BA5-3
-            compoundCondition :               CompoundCondition; 
-        }
-    
-        //ErrAlaAttendanceItemCondition
-        export class ErrAlaAttendanceItemCondition {
-            errAlaAttendanceItemConditionId:  string;
-            category :                      number;
-            typeCheckWorkRecord:            KnockoutObservable<number>; // チェック項目 - item check
-            messageColor:                   KnockoutObservable<string>;
-            messageContent:                 KnockoutObservable<string>;
-            isBoldMessage:                  KnockoutObservable<boolean>;
-            targetServiceType :             KnockoutObservable<number>;  // get by enum : BA1-2
-            targetServiceTypeWorkTypeSelection: KnockoutObservable<string>; //対象とする勤務種類 => for other: BA1-4 
-            // チェック条件  - check condition
-            dailyAttendanceItemId:          KnockoutObservable<string>; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
-            dailyAttendanceItemName:        KnockoutObservable<string>; // BA2-3 日次の勤怠項目 - DailyAttendanceItem
-            comparisonOperatorId:           KnockoutObservable<number>; // 比較演算子:  単一値との比較演算の種別　＋　範囲との比較演算の種別 => enum BA2-4
-            comparisonMinValue:             KnockoutObservable<string>; //BA2-6
-            comparisonMaxValue:             KnockoutObservable<string>; //BA2-7
-            // 連続時間の場合 , 連続時間帯の場合
-            continuousPeriod:               KnockoutObservable<number>; //BA3-2: 連続期間入力欄 - Continuous period input field
-            //連続時間帯の場合 
-            targetWorkingHoursCd:           KnockoutObservable<string>; //BA5-1 - enum
-            targetWorkingHoursTimeZoneSelection: KnockoutObservable<string>; //BA5-3
-            compoundCondition :             KnockoutObservable<CompoundCondition>; //B15-1 -> B18-2
-        
-            constructor(param: IErrAlaAttendanceItemCondition) {
-                let self = this;
-                self.errAlaAttendanceItemConditionId = param.errAlaAttendanceItemConditionId || '';
-                self.category                       = param.category || 0;
-                self.typeCheckWorkRecord = ko.observable(param.typeCheckWorkRecord || 0);
-                self.messageColor = ko.observable(param.messageColor || '');
-                self.messageContent = ko.observable(param.messageContent || '');
-                self.isBoldMessage = ko.observable(param.isBoldMessage || false);
-                self.targetServiceType = ko.observable(param.targetServiceType || 0);
-                self.targetServiceTypeWorkTypeSelection = ko.observable(param.targetServiceTypeWorkTypeSelection || '');
-                self.dailyAttendanceItemId = ko.observable(param.dailyAttendanceItemId || '');
-                self.dailyAttendanceItemName = ko.observable(param.dailyAttendanceItemName || '');
-                self.comparisonOperatorId = ko.observable(param.comparisonOperatorId || 0);
-                self.comparisonMinValue = ko.observable(param.comparisonMinValue || '');
-                self.comparisonMaxValue = ko.observable(param.comparisonMaxValue || '');
-                self.continuousPeriod = ko.observable(param.continuousPeriod || 0);
-                self.targetWorkingHoursCd = ko.observable(param.targetWorkingHoursCd || '');
-                self.targetWorkingHoursTimeZoneSelection = ko.observable(param.targetWorkingHoursTimeZoneSelection || '');
-                self.compoundCondition = ko.observable(param.compoundCondition);
             }
         }
     }

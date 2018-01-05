@@ -131,8 +131,8 @@
 												 	width: '160' 
 												 }
 												 }" />
-											<button
-												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+											<!-- <button
+												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button> -->
 										</div>
 									</div>
 									<div class="div_line">
@@ -255,25 +255,23 @@
 
 
 						<div class="step-2">
+							<div id="step2_title" class="div_line">
+								<com:ko-if bind="createTypeId()===1">
+									<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
+								</com:ko-if>
+								<com:ko-if bind="createTypeId()===2">
+									<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
+								</com:ko-if>
+							</div>
 							<div id="step2_content">
-								<div class="div_line">
-									<com:ko-if bind="createTypeId()===1">
-										<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
-									</com:ko-if>
-									<com:ko-if bind="createTypeId()===2">
-										<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
-									</com:ko-if>
-								</div>
-
-								<div class="float_left " id="initSettingPanel">
-									<div id="search_box" class="bg-green">
-										<i class="icon icon-searchbox"></i>
-										<div class="div_line">
-											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
-										</div>
-										<div class="div_line">
-											<div style="width: 190px" id="initSearchBox"
-												data-bind="ntsSearchBox: {
+								<div id="search_box" class="float_left bg-green">
+									<i class="icon icon-searchbox"></i>
+									<div class="div_line">
+										<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
+									</div>
+									<div class="div_line">
+										<div style="width: 190px" id="initSearchBox"
+											data-bind="ntsSearchBox: {
 															targetKey: 'itemCode',
 															mode:'igGrid', 
 															comId:'init_list', 
@@ -284,10 +282,10 @@
 															placeHolder:'#{i18n.getText('CPS002_41')}'
 															}" />
 
-										</div>
-										<div class="div_line">
-											<table id="init_list"
-												data-bind="ntsGridList: {								
+									</div>
+									<div class="div_line">
+										<table id="init_list"
+											data-bind="ntsGridList: {								
 															height: 350,
 															dataSource: initValueList ,
 															primaryKey: 'itemCode',
@@ -298,11 +296,11 @@
 															value: initSettingSelectedCode ,
 															rows:15
 														}">
-											</table>
+										</table>
 
-										</div>
 									</div>
 								</div>
+
 								<div class="float_left" id="value_item">
 									<div class="div_line">
 										<div class="step2_col1">
@@ -364,7 +362,8 @@
 													<tr>
 														<td
 															data-bind="text: itemName , css:{requiredCell: isRequired , notRequiredCell:  !isRequired}"></td>
-														<td class="disabledCell" data-bind="text: saveData.value "></td>
+														<td class="disabledCell"><div class="valueCell"
+																data-bind="text:saveData.value"></div></td>
 													</tr>
 												</tbody>
 											</table>
@@ -378,6 +377,7 @@
 									</div>
 								</div>
 							</div>
+
 						</div>
 						<!-- step2 end -->
 
@@ -401,8 +401,10 @@
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
-												<td
-													data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></td>
+												<td>
+													<div class='ellipsis_step3_title'
+														data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></div>
+												</td>
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>

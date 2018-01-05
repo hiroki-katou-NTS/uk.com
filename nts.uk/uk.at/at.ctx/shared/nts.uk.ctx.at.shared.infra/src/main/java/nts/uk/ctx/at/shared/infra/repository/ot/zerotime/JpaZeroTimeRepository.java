@@ -116,14 +116,14 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 */
 	private KshstWeekdayFromHd convertToDbTypeWeekday(WeekdayHoliday holiday) {
 		KshstWeekdayFromHdPK weekdayHdPK = new KshstWeekdayFromHdPK(holiday.getCompanyId(),
-				holiday.getOverworkFrameNo().v());
+				holiday.getOverworkFrameNo());
 		KshstWeekdayFromHd newEntity = KshstWeekdayFromHd.toEntity(holiday);
 		Optional<KshstWeekdayFromHd> optUpdateEntity = this.queryProxy().find(weekdayHdPK, KshstWeekdayFromHd.class);
 		if (optUpdateEntity.isPresent()) {
 			KshstWeekdayFromHd updateEntity = optUpdateEntity.get();
-			updateEntity.excessHolidayNo = holiday.getExcessHolidayNo().v();
-			updateEntity.excessSphdNo = holiday.getExcessSphdNo().v();
-			updateEntity.weekdayNo = holiday.getWeekdayNo().v();
+			updateEntity.excessHolidayNo = holiday.getExcessHolidayNo();
+			updateEntity.excessSphdNo = holiday.getExcessSphdNo();
+			updateEntity.weekdayNo = holiday.getWeekdayNo();
 			updateEntity.kshstWeekdayHdPK = weekdayHdPK;
 			return updateEntity;
 		}
@@ -133,11 +133,11 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	private KshstHdFromWeekday convertToDbTypeHolidayAtten(HdFromWeekday atten) {
 		KshstHdFromWeekday newEntity = KshstHdFromWeekday.toEntity(atten);
 		KshstHdFromWeekdayPK attSetPK = new KshstHdFromWeekdayPK(atten.getCompanyId(),
-				atten.getHolidayWorkFrameNo().v());
+				atten.getHolidayWorkFrameNo());
 		Optional<KshstHdFromWeekday> optUpdateEntity = this.queryProxy().find(attSetPK, KshstHdFromWeekday.class);
 		if (optUpdateEntity.isPresent()) {
 			KshstHdFromWeekday updateEntity = optUpdateEntity.get();
-			updateEntity.overWorkNo = atten.getOverWorkNo().v();
+			updateEntity.overWorkNo = atten.getOverWorkNo();
 			updateEntity.kshstOverdayHdAttSetPK = attSetPK;
 			return updateEntity;
 		}
@@ -154,13 +154,13 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	private KshstHdFromHd convertToDbTypeCalcHoliday(HdFromHd overdayCalcHoliday) {
 		KshstHdFromHd newEntity = KshstHdFromHd.toEntity(overdayCalcHoliday);
 		KshstHdFromHdPK dayHdSetPK = new KshstHdFromHdPK(overdayCalcHoliday.getCompanyId(),
-				overdayCalcHoliday.getHolidayWorkFrameNo().v());
+				overdayCalcHoliday.getHolidayWorkFrameNo());
 		Optional<KshstHdFromHd> optUpdateEntity = this.queryProxy().find(dayHdSetPK, KshstHdFromHd.class);
 		if (optUpdateEntity.isPresent()) {
 			KshstHdFromHd updateEntity = optUpdateEntity.get();
-			updateEntity.calcOverDayEnd = overdayCalcHoliday.getCalcOverDayEnd().v();
-			updateEntity.excessHd = overdayCalcHoliday.getExcessHd().v();
-			updateEntity.statutoryHd = overdayCalcHoliday.getStatutoryHd().v();
+			updateEntity.calcOverDayEnd = overdayCalcHoliday.getCalcOverDayEnd();
+			updateEntity.excessHd = overdayCalcHoliday.getExcessHd();
+			updateEntity.statutoryHd = overdayCalcHoliday.getStatutoryHd();
 			updateEntity.kshstOverDayHdSetPK = dayHdSetPK;
 			return updateEntity;
 		}

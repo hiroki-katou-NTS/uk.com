@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_WEEKDAY_FROM_HD ")
+@Table(name = "KSHST_WEEKDAY_FROM_HD")
 public class KshstWeekdayFromHd extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
@@ -52,8 +52,8 @@ public class KshstWeekdayFromHd extends UkJpaEntity implements Serializable {
 	}
 
 	public static KshstWeekdayFromHd toEntity(WeekdayHoliday domain) {
-		return new KshstWeekdayFromHd(new KshstWeekdayFromHdPK(domain.getCompanyId(), domain.getOverworkFrameNo().v()),
-				domain.getWeekdayNo().v(), domain.getExcessHolidayNo().v(), domain.getExcessSphdNo().v());
+		return new KshstWeekdayFromHd(new KshstWeekdayFromHdPK(domain.getCompanyId(), domain.getOverworkFrameNo()),
+				domain.getWeekdayNo(), domain.getExcessHolidayNo(), domain.getExcessSphdNo());
 	}
 
 	public KshstWeekdayFromHd(KshstWeekdayFromHdPK kshstWeekdayHdPK, int weekdayNo, int excessHolidayNo,
