@@ -103,11 +103,11 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             service.getAll(specialHolidayCode).done((lstData: Array<Per>) => {
                 if(lstData.length == 0){
                     self.selectedId(0);
-                    $("#inpCode").focus();
                     self.check(true);
                     self.codeObject(null);
                     self.selectedName(null);
                     self.checkUpdate(false);
+                    $("#inpCode").focus();
                     self.items([]);
                     for (let i = 0; i < 20; i++) {
                         if(self.items()[i] == undefined){
@@ -213,10 +213,11 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                                         $("#inpPattern").focus();
                                     });
                                 }
-                               
                             });
                         }).fail(function(res){
-                            $('#inpCode').ntsError('set', res);
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_3" }).then(() => { 
+                                $('#inpCode').focus();
+                            });
                         });
                     }
                 }
