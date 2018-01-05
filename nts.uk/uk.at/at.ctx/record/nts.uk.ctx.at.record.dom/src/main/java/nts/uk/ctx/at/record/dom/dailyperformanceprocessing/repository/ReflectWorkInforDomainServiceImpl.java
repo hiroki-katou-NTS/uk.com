@@ -29,12 +29,15 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPe
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.AutomaticStampSetDetailOutput;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPut;
@@ -178,8 +181,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// day);
 			// this.breakTimeOfDailyPerformanceRepository.delete(employeeId,
 			// day);
-			// this.outingTimeOfDailyPerformanceRepository.delete(employeeId,
-			// day);
+//			 this.outingTimeOfDailyPerformanceRepository.delete(employeeId,
+//			 day);
 		}
 		// ドメインモデル「日別実績の勤務情報」を取得する - not rerun
 		if (!this.workInformationRepository.find(employeeId, day).isPresent()) {
@@ -251,6 +254,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// 中断 : 1
 
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
+		
+		// result of stamp part
+		ReflectStampOutput stampOutput = new ReflectStampOutput();
 
 		WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate = new WorkInfoOfDailyPerformance();
 
@@ -471,11 +477,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				workInfoOfDailyPerformanceUpdate.setRecordWorkInformation(scheduleWorkInformation);
 
 				// 所定時間帯を取得する
-				PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingRepository
+				Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository
 						.findByWorkTimeCode(companyId, calendarInfoDto.getWorkTypeCode());
 
-				if (predetemineTimeSetting != null) {
-					List<TimezoneUse> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting().getLstTimezone();
+				if (predetemineTimeSetting.isPresent()) {
+					List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
 					List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 					for (TimezoneUse timezone : lstTimezone) {
 						if (timezone.getUseAtr() == UseSetting.USE) {
@@ -488,20 +494,23 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
 				}
 			}
-
+			
+			// this part will in processing part 3
+			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = null;
+			
 			if (errMesInfos.isEmpty()) {
 				createStamp(companyId, workInfoOfDailyPerformanceUpdate, personalLaborHasData, timeLeavingOptional, employeeID, day);
 
 //				 check tay
-//				 this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
+//				stampOutput = this.reflectStampDomainServiceImpl.reflectStampInfo(companyId,
 //				 employeeID, day,
-//				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr );
+//				 workInfoOfDailyPerformanceUpdate, timeLeavingOptional, empCalAndSumExecLogID,reCreateAttr, breakTimeOfDailyPerformance);
 
 			}
 
 		}
 
-		if (errMesInfos.isEmpty()) {
+		if (errMesInfos.isEmpty() && stampOutput != null) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する
 			// ドメインモデル「日別実績の勤務情報」を更新する - update
 			// WorkInfoOfDailyPerformance
@@ -524,6 +533,40 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// TimeLeavingOfDailyPerformance
 			// timeLeavingOptional.getTimeLeavingWorks();
 		}
+//		if (stampOutput != null) {
+//			if (stampOutput.getLstOutingTimeOfDailyPerformance() != null && !stampOutput.getLstOutingTimeOfDailyPerformance().isEmpty()) {
+//				stampOutput.getLstOutingTimeOfDailyPerformance().forEach(item -> {
+//					List<OutingFrameNo> outingFrameNos = item.getOutingTimeSheets().stream().map(outingTimeSheet -> {
+//						return outingTimeSheet.getOutingFrameNo();
+//					}).collect(Collectors.toList());
+//					for (OutingFrameNo outingFrameNo : outingFrameNos) {
+//						if(this.outingTimeOfDailyPerformanceRepository.checkExistData(employeeID, day, outingFrameNo)){
+//							this.outingTimeOfDailyPerformanceRepository.update(item);
+//						} else{
+//							this.outingTimeOfDailyPerformanceRepository.add(item);
+//						}
+//					}					
+//				});
+//			}
+//			if(stampOutput.getLstTemporaryTimeOfDailyPerformance() != null && !stampOutput.getLstTemporaryTimeOfDailyPerformance().isEmpty()){
+//				stampOutput.getLstTemporaryTimeOfDailyPerformance().forEach(item -> {
+//					if (this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, day).isPresent()) {
+//						this.temporaryTimeOfDailyPerformanceRepository.update(item);
+//					} else {
+//						this.temporaryTimeOfDailyPerformanceRepository.insert(item);
+//					}
+//				});
+//			}
+//			if(stampOutput.getLstTimeLeavingOfDailyPerformance() != null && !stampOutput.getLstTimeLeavingOfDailyPerformance().isEmpty()){
+//				stampOutput.getLstTimeLeavingOfDailyPerformance().forEach(item -> {
+//					if (this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeID, day).isPresent()) {
+//						this.timeLeavingOfDailyPerformanceRepository.update(item);
+//					} else {
+//						this.timeLeavingOfDailyPerformanceRepository.insert(item);
+//					}
+//				});
+//			}
+//		}
 
 	}
 
@@ -618,12 +661,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
 
 						// 所定時間帯を取得する
-						PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingRepository
+						Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository
 								.findByWorkTimeCode(companyId, workInfoOfDailyPerformanceUpdate
 										.getRecordWorkInformation().getWorkTypeCode().v());
 
-						if (predetemineTimeSetting != null) {
-							List<TimezoneUse> lstTimezone = predetemineTimeSetting.getPrescribedTimezoneSetting()
+						if (predetemineTimeSetting.isPresent()) {
+							List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting()
 									.getLstTimezone();
 							for (TimezoneUse timezone : lstTimezone) {
 								if (timezone.getUseAtr() == UseSetting.USE) {

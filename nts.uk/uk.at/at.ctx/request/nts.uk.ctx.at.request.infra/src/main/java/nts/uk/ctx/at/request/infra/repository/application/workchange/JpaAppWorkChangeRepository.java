@@ -65,8 +65,8 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
     }
     
     @Override
-    public void remove(String cid, String appId){
-        this.commandProxy().remove(KrqdtAppWorkChangePk.class, new KrqdtAppWorkChangePk(cid, appId));
+    public void delete(String cid, String appId){
+        this.commandProxy().remove(KrqdtAppWorkChange.class, new KrqdtAppWorkChangePk(cid, appId));
     }
     
 	private static AppWorkChange toDomain(KrqdtAppWorkChange entity) {
@@ -86,7 +86,7 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
 				domain.getWorkChangeAtr(), domain.getGoWorkAtr1(), domain.getBackHomeAtr1(),
 				domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(), domain.getWorkTimeStart1(),
 				domain.getWorkTimeEnd1(), domain.getWorkTimeStart2(), domain.getWorkTimeEnd2(), domain.getGoWorkAtr2(),
-				domain.getBackHomeAtr2(), null);
+				domain.getBackHomeAtr2());
 	}
 
 }

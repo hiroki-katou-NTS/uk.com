@@ -38,15 +38,20 @@ public interface ClosureEmploymentRepository {
 	 * @return the list
 	 */
 	List<ClosureEmployment> findListEmployment(String companyId, List<String> employmentCDs);
+	/**
+	 * get data by closureId
+	 * @param companyId
+	 * @param closureId
+	 * @return
+	 */
+	List<ClosureEmployment> findByClosureId(String companyId, int closureId);	
 	
 	/**
 	 * Find by closure id.
 	 *
 	 * @param companyId the company id
-	 * @param closureId the closure id
+	 * @param closureIds the closure ids
 	 * @return the list
 	 */
-	List<ClosureEmployment> findByClosureId(String companyId, int closureId);
-	
-	
+	List<ClosureEmployment> findByClosureIds(String companyId, List<Integer> closureIds);
 }

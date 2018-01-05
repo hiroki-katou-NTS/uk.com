@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf009.b {
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
+            DATE_FORMAT: string = 'YYYY/MM/DD';
             //kaf000
             kaf000_a: kaf000.a.viewmodel.ScreenModel;
             //current Data
@@ -14,7 +15,7 @@ module nts.uk.at.view.kaf009.b {
             workState : KnockoutObservable<boolean> = ko.observable(true);;
             typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
             // 申請日付
-            appDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));;
+            appDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));;
             //TIME LINE 1
             timeStart1: KnockoutObservable<number> = ko.observable(0);
             timeEnd1: KnockoutObservable<number> = ko.observable(0);   
@@ -297,12 +298,12 @@ module nts.uk.at.view.kaf009.b {
                 goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
                 goBackCommand.goWorkAtr1 = self.selectedGo();
                 goBackCommand.backHomeAtr1 = self.selectedBack();
-                goBackCommand.workTimeStart1 = self.timeStart1();
-                goBackCommand.workTimeEnd1 = self.timeEnd1();
+                goBackCommand.workTimeStart1 = nts.uk.util.isNullOrEmpty(self.timeStart1()) ? -1 : self.timeStart1();
+                goBackCommand.workTimeEnd1 = nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? -1 : self.timeEnd1();
                 goBackCommand.goWorkAtr2 = self.selectedGo2();
                 goBackCommand.backHomeAtr2 = self.selectedBack2();
-                goBackCommand.workTimeStart2 = self.timeStart2();
-                goBackCommand.workTimeEnd2 = self.timeEnd2();
+                goBackCommand.workTimeStart2 = nts.uk.util.isNullOrEmpty(self.timeStart2()) ? -1 : self.timeStart2();
+                goBackCommand.workTimeEnd2 = nts.uk.util.isNullOrEmpty(self.timeEnd2()) ? -1 : self.timeEnd2();
                 goBackCommand.workLocationCD1 = self.workLocationCD();
                 goBackCommand.workLocationCD2 = self.workLocationCD2();
                 
@@ -372,14 +373,14 @@ module nts.uk.at.view.kaf009.b {
                 let self = this;
                 if (!nts.uk.util.isNullOrUndefined(data)) {
                     //Line 1
-                    self.timeStart1(data.workTimeStart1);
-                    self.timeEnd1(data.workTimeEnd1);
+                    self.timeStart1(data.workTimeStart1 == -1 ? null : data.workTimeStart1);
+                    self.timeEnd1(data.workTimeEnd1 == -1 ? null : data.workTimeEnd1);
                     self.selectedGo(data.goWorkAtr1);
                     self.selectedBack(data.backHomeAtr1);
                     self.workLocationCD(data.workLocationCD1 == null ? '' : data.workLocationCD1);
                     //Line 2
-                    self.timeStart2(data.workTimeStart2  == null ? '' : data.workTimeStart2);
-                    self.timeEnd2(data.workTimeEnd2);
+                    self.timeStart2(data.workTimeStart2 == -1 ? null : data.workTimeStart2);
+                    self.timeEnd2(data.workTimeEnd2 == -1 ? null : data.workTimeEnd2);
                     self.selectedGo2(data.goWorkAtr2);
                     self.selectedBack2(data.backHomeAtr2);
                     self.workLocationCD2(data.workLocationCD2 == null ? '' : data.workLocationCD2);
@@ -416,22 +417,31 @@ module nts.uk.at.view.kaf009.b {
                     nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD2());
                 };
                 nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                    let self = this;
-                    let returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
-                    if (returnWorkLocationCD !== undefined) {
-                        if (line == 1) {
-                            self.workLocationCD(returnWorkLocationCD);
-                            self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
-                        } else {
-                            self.workLocationCD2(returnWorkLocationCD);
-                            self.workLocationName2(self.findWorkLocationName(returnWorkLocationCD));
-                        };
-                        nts.uk.ui.block.clear();
-                    }
-                    else {
-                        self.workLocationCD = ko.observable("");
-                        nts.uk.ui.block.clear();
-                    }
+                    var self = this;
+                var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                if (!nts.uk.util.isNullOrEmpty(returnWorkLocationCD)) {
+                    if (line == 1) {
+                        self.workLocationCD(returnWorkLocationCD);
+                        self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
+                        //フォーカス制御 => 直行区分1
+                        $('#goWorkAtr1').focus();
+                    } else {
+                        self.workLocationCD2(returnWorkLocationCD);
+                        self.workLocationName2(self.findWorkLocationName(returnWorkLocationCD));
+                        //フォーカス制御 => 直行区分2
+                        $('#goWorkAtr2').focus();
+                    }                   
+                }
+                else {
+                    if (line == 1) {
+                        self.workLocationCD('');    
+                        self.workLocationName('');
+                    } else {
+                        self.workLocationCD2('');    
+                        self.workLocationName2('');    
+                    }              
+                }
+                 nts.uk.ui.block.clear();
                 });
             }
 

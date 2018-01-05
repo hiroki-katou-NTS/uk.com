@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 650,
+					width : 750,
 					height :270
 				};
 			</script>
@@ -28,7 +28,7 @@
 			<div id="contents-area">
 				<div id="copy_row_1" style="margin-bottom: 5px;" class="flex valign-center">
 					<!-- C_001: label 複製元情報： -->
-					<label>#{i18n.getText('CPS009_26')}</label>
+					<label id="C_001">#{i18n.getText('CPS009_26')}</label>
 					<!-- C_002: label コード/名称 -->
 					<div id="label_code" data-bind="ntsFormLabel: {}" class="form-label "> #{i18n.getText('CPS009_12')}</div>
 					<!-- C3_003: 複製元のコード -->
@@ -38,7 +38,7 @@
 				</div>
 				<div id="copy_row_2"  class="flex valign-center">
 					<!-- C_005: label 複製先情報： -->
-					<label>#{i18n.getText('CPS009_27')}</label>
+					<label id="C_001">#{i18n.getText('CPS009_27')}</label>
 					<!-- C_006: label コード/名称 -->
 					<div id="label_code"  data-bind="ntsFormLabel: {required: true, 
 											constraint: ['ValueSettingCode' , 'ValueSettingName']}" 

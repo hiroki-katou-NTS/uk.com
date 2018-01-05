@@ -8,15 +8,19 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
+import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.RepresenterInforOutput;
 
 /**
@@ -36,14 +40,28 @@ public class ApproveImpl implements ApproveService {
 	@Inject
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
 	
+	@Inject
+	private CollectApprovalRootService collectApprovalRootService;
+	
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID) {
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate) {
 		Integer approvalPhaseNumber = 0;
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
-		if(!opApprovalRootState.isPresent()){
-			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		ApprovalRootState approvalRootState = null;
+		if(isCreate.equals(Boolean.TRUE)){
+			ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
+					companyID, 
+					employeeID, 
+					EmploymentRootAtr.APPLICATION, 
+					appType, 
+					appDate);
+			approvalRootState = approvalRootContentOutput.getApprovalRootState();
+		} else {
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			if(!opApprovalRootState.isPresent()){
+				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+			}
+			approvalRootState = opApprovalRootState.get();
 		}
-		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				continue;
@@ -80,7 +98,7 @@ public class ApproveImpl implements ApproveService {
 	
 	@Override
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, ApprovalPhaseState approvalPhaseState) {
-		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONEAPPROVED)){
+		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 			Optional<ApprovalFrame> opApprovalFrameNotApprove = approvalPhaseState.getListApprovalFrame().stream()
 			.filter(x -> !x.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)).findAny();
 			if(!opApprovalFrameNotApprove.isPresent()){
@@ -119,13 +137,24 @@ public class ApproveImpl implements ApproveService {
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String companyID, String rootStateID) {
+	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate) {
 		Boolean approveAllFlag = false;
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
-		if(!opApprovalRootState.isPresent()){
-			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		ApprovalRootState approvalRootState = null;
+		if(isCreate.equals(Boolean.TRUE)){
+			ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
+					companyID, 
+					employeeID, 
+					EmploymentRootAtr.APPLICATION, 
+					appType, 
+					appDate);
+			approvalRootState = approvalRootContentOutput.getApprovalRootState();
+		} else {
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			if(!opApprovalRootState.isPresent()){
+				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+			}
+			approvalRootState = opApprovalRootState.get();
 		}
-		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				approveAllFlag = true;
@@ -157,23 +186,34 @@ public class ApproveImpl implements ApproveService {
 	
 	@Override
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber) {
+			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, ApplicationType appType, GeneralDate appDate) {
 		List<String> mailList = new ArrayList<>();
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
-		if(!opApprovalRootState.isPresent()){
-			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+		ApprovalRootState approvalRootState = null;
+		if(isCreate.equals(Boolean.TRUE)){
+			ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootOfSubjectRequest(
+					companyID, 
+					employeeID, 
+					EmploymentRootAtr.APPLICATION, 
+					appType, 
+					appDate);
+			approvalRootState = approvalRootContentOutput.getApprovalRootState();
+		} else {
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			if(!opApprovalRootState.isPresent()){
+				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
+			}
+			approvalRootState = opApprovalRootState.get();
 		}
-		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		if(!(approvalPhaseStateNumber>=1&&approvalPhaseStateNumber<=5)){
 			return mailList;
 		}
-		Integer i = 0;
-		while(i<=5){
-			ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState()
-					.stream().filter(x -> x.getPhaseOrder()==i).findFirst()
-					.orElseThrow(() -> new RuntimeException("error: approvalRootState: "+rootStateID+", phaseNumber: "+i));
+		Integer i = approvalPhaseStateNumber;
+		List<ApprovalPhaseState> afterList = approvalRootState.getListApprovalPhaseState().stream()
+				.filter(x -> x.getPhaseOrder() >= approvalPhaseStateNumber).collect(Collectors.toList());
+		for(ApprovalPhaseState approvalPhaseState : afterList){
 			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(listApprover)){
+				i++;
 				continue;
 			}
 			List<String> listUnapproveApprover = this.getUnapproveApproverFromPhase(approvalPhaseState);

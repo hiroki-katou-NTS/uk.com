@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.portal.ws.webmenu;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,6 +12,8 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddPersonalTyingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.webmenu.ChangeCompanyCommand;
+import nts.uk.ctx.sys.portal.app.command.webmenu.ChangeCompanyCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.PersonTypingCommand;
@@ -20,11 +21,16 @@ import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommandHander;
 import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommandHander;
 import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommandBase;
+import nts.uk.ctx.sys.portal.app.find.company.CompanyFinder;
+import nts.uk.ctx.sys.portal.app.find.company.ShortCompanyDto;
+import nts.uk.ctx.sys.portal.app.find.user.UserPortalFinder;
 import nts.uk.ctx.sys.portal.app.find.webmenu.EditMenuBarDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.PersonTypeDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuFinder;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 
 @Path("sys/portal/webmenu")
 @Produces("application/json")
@@ -32,6 +38,12 @@ public class WebMenuWebService extends WebService {
 
 	@Inject
 	private WebMenuFinder webMenuFinder;
+	
+	@Inject
+	private CompanyFinder companyFinder;
+	
+	@Inject
+	private UserPortalFinder userFinder;
 
 	@Inject
 	private AddWebMenuCommandHandler addWebMenuCommandHandler;
@@ -48,6 +60,11 @@ public class WebMenuWebService extends WebService {
 	@Inject
 	private AddPersonalTyingCommandHandler addPersonTypeCommandHandler;
 	
+	@Inject
+	private ChangeCompanyCommandHandler changeCompanyCommandHandler;
+	
+	@Inject
+	private SessionLowLayer sessionLowLayer;
 
 	@POST
 	@Path("add")
@@ -122,15 +139,35 @@ public class WebMenuWebService extends WebService {
 	}
 	
 	@POST
+	@Path("currentCompany")
+	public JavaTypeResult<String> companyId() {
+		return new JavaTypeResult<String>(AppContexts.user().companyId());
+	}
+	
+	@POST
 	@Path("companies")
-	public List<String> companies() {
-		return Arrays.asList("日通システム株式会社", "KSB", "日通システムベトナム");
+	public List<ShortCompanyDto> companies() {
+		return companyFinder.findAll();
+	}
+	
+	@POST
+	@Path("changeCompany")
+	public JavaTypeResult<String> changeCompany(String companyId) {
+		ChangeCompanyCommand command = new ChangeCompanyCommand(companyId); 
+		changeCompanyCommandHandler.handle(command);
+		return new JavaTypeResult<String>(command.getPersonName());
 	}
 	
 	@POST
 	@Path("username")
 	public JavaTypeResult<String> userName() {
-		return new JavaTypeResult<String>("日通　太郎");
+		return new JavaTypeResult<String>(userFinder.userName());
+	}
+	
+	@POST
+	@Path("logout")
+	public void logout() {
+		sessionLowLayer.loggedOut();
 	}
 	
 }

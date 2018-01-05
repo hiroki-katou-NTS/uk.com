@@ -1,5 +1,7 @@
 package nts.uk.shr.com.context.loginuser;
 
+import nts.arc.security.ticket.DataTicket;
+
 /**
  * The class to update LoginUserContext
  * 
@@ -39,6 +41,25 @@ public interface LoginUserContextManager {
 			String employeeCode);
 	
 	/**
+	 * Change company.
+	 * @param userId
+	 * @param personId
+	 * @param contractCode
+	 * @param companyId
+	 * @param companyCode
+	 * @param employeeId
+	 * @param employeeCode
+	 */
+	void changeCompany(
+			String userId,
+			String personId,
+			String contractCode,
+			String companyId,
+			String companyCode,
+			String employeeId,
+			String employeeCode);
+	
+	/**
 	 * Returns RoleIdSetter to set role IDs of the user.
 	 * @return RoleIdSetter
 	 */
@@ -50,6 +71,12 @@ public interface LoginUserContextManager {
 	 * @param forPersonName for person name
 	 */
 	void setLanguage(String basic, String forPersonName);
+	
+	DataTicket toTicket();
+	
+	void restore(DataTicket ticket);
+	
+	void loggedOut();
 	
 	public static interface RoleIdSetter {
 

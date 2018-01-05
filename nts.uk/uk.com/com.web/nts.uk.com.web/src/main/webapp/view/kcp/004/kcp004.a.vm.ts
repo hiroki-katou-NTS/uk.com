@@ -78,9 +78,8 @@ module kcp004.a.viewmodel {
                 {code : 4, name: '人事', enable: self.enable},
                 {code : 5, name: '管理者', enable: self.enable}
             ]);
-            self.selectedSystemType = ko.observable(1);
-                       
-                    
+            self.selectedSystemType = ko.observable(5);
+                                      
             self.alreadySettingList = ko.observableArray([]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -111,11 +110,7 @@ module kcp004.a.viewmodel {
                     self.getSelectedData();
                 });
             });
-            
-            
-            
-            
-               
+                          
                  
             self.isDialog.subscribe(function(value) {
                 self.reloadTreeGrid();
@@ -131,16 +126,22 @@ module kcp004.a.viewmodel {
             });
             self.selectedSelectionType.subscribe((code) => {
                 if (code == 1) {
+                       self.selectedWorkplaceId();
+                       self.multiSelectedWorkplaceId();
+                }                
+                                
+                if (code == 4) {
                     self.resetSelectedWorkplace();
                 }
-
+                
                 self.reloadTreeGrid().done(function() {
                     self.getSelectedData();
                 });
             });
             
             self.selectedSystemType.subscribe((code) => {
-                if (code == 1) {
+                // check in case NoSelect button active
+                if (self.selectedSelectionType() == 4) {
                     self.resetSelectedWorkplace();
                 }
                 self.reloadTreeGrid().done(function() {
@@ -148,9 +149,7 @@ module kcp004.a.viewmodel {
                 });
             });
             
-            
-            
-                    
+                                          
             self.selectedWorkplaceId.subscribe(() => {
                 self.getSelectedData();
             });

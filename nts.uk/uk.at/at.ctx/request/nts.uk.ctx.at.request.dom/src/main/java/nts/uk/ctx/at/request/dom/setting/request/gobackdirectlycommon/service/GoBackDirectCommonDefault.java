@@ -6,8 +6,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.Bef
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
@@ -26,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
-
+	
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackRepo;
 
@@ -45,7 +42,11 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 	StartCheckErrorService startCheckErrorService;
 	@Inject
 	IDataWorkService dataWorkService;
-	@Override
+	
+	//定型理由「#KAF009_200(選択してください)」が選択されている場合は未選択とする
+	private static final String DEFAULT_REASON_RESOURCE = "KAF009_200";
+	
+	@Override	
 	public GoBackDirectBasicData getSettingData(String SID) {
 		String companyID = AppContexts.user().companyId();
 		//1-1.新規画面起動前申請共通設定を取得する
@@ -66,8 +67,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		dataSetting.setEmployeeName(employeeName);
 		dataSetting.setSID(AppContexts.user().employeeId());
 		// ドメインモデル「申請定型理由」を取得
-		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(companyID,
-				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(companyID, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value, DEFAULT_REASON_RESOURCE);
 		dataSetting.setListAppReason(listReason);
 		dataSetting.setAppCommonSettingOutput(appCommonSetting);
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する

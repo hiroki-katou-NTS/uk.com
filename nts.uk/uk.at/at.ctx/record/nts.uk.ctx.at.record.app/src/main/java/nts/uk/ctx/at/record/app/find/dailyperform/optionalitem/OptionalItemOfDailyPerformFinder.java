@@ -24,10 +24,14 @@ public class OptionalItemOfDailyPerformFinder extends FinderFacade {
 		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
 		AnyItemValueOfDaily domain = this.repo.find(employeeId, baseDate).orElse(null);
 		if (domain != null) {
+			dto.setDate(baseDate);
+			dto.setEmployeeId(employeeId);
 			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> {
-				Integer value = c.getAmount().isPresent() ? c.getAmount().get().v().intValue()
-						: c.getTime().isPresent() ? c.getTime().get().valueAsMinutes() : c.getTimes().get().v();
-				return new OptionalItemValueDto(value, c.getItemNo().v());
+				String value = c.getAmount().isPresent() ? c.getAmount().get().v().toString()
+						: c.getTime().isPresent() ? String.valueOf(c.getTime().get().valueAsMinutes())
+								: String.valueOf(c.getTimes().get().v());
+				return new OptionalItemValueDto(value, c.getItemNo().v(), c.getTime().isPresent(),
+						c.getTimes().isPresent(), c.getAmount().isPresent());
 			}));
 		}
 		return dto;

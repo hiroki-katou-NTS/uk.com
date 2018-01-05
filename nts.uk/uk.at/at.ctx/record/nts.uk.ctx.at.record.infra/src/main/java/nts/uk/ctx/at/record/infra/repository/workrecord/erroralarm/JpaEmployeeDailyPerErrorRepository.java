@@ -46,16 +46,22 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :ymd ");
 		List<KrcdtSyainDpErList> result = this.queryProxy()
-				.namedQuery(builderString.toString(), KrcdtSyainDpErList.class).setParameter("employeeId", employeeID)
+				.query(builderString.toString(), KrcdtSyainDpErList.class).setParameter("employeeId", employeeID)
 				.setParameter("ymd", processingDate).getList();
 		if (!result.isEmpty()) {
 			return new EmployeeDailyPerError(result.get(0).krcdtSyainDpErListPK.companyID,
 					result.get(0).krcdtSyainDpErListPK.employeeId, result.get(0).krcdtSyainDpErListPK.processingDate,
-					new ErrorAlarmWorkRecordCode(result.get(0).errorCode),
-					result.stream().map(c -> c.krcdtSyainDpErListPK.attendanceItemId).collect(Collectors.toList()));
+					new ErrorAlarmWorkRecordCode(result.get(0).krcdtSyainDpErListPK.errorCode),
+					result.stream().map(c -> c.attendanceItemId).collect(Collectors.toList()),
+					result.get(0).errorCancelable);
 		}
 
 		return null;
+	}
+
+	@Override
+	public void update(EmployeeDailyPerError employeeDailyPerformanceError) {
+		this.commandProxy().updateAll(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
 	}
 
 }

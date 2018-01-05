@@ -23,7 +23,7 @@
 					<div id="pairPatternName" class="mw-90"
 						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternName'}">#{i18n.getText('KSU001_908')}</div>
 					<input id="textName"
-						data-bind="ntsTextEditor: {value: ko.observable(''), required: true, constraint: 'WorkPairPatternName'}" />
+						data-bind="ntsTextEditor: {value: textName, required: true, constraint: 'WorkPairPatternName'}" />
 				</div>
 
 				<div id="set-work-type">
@@ -51,13 +51,13 @@
 						<span id="spelcial">#{i18n.getText('KSU001_913')}</span> <input
 							id="time-edit2"
 							data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
-						<button class="reserved">#{i18n.getText('KSU001_67')}</button>
-						<button>#{i18n.getText('KSU001_68')}</button>
+						<button class="search" data-bind="click:search">#{i18n.getText('KSU001_67')}</button>
+						<button class="clear-search" data-bind="click:clearSearch, enable: isEnableClearSearchButton">#{i18n.getText('KSU001_68')}</button>
 					</div>
 					<div>
 						<div id="combo-box2"
 							data-bind="ntsComboBox: {
-										options: listWorkTime,
+										options: listWorkTimeComboBox,
 										optionsValue: 'codeName',
 										value: selectedWorkTimeCode,
 										optionsText: 'labelDisplay', 
@@ -165,7 +165,8 @@
 				<div id="color-red">#{i18n.getText('KSU001_919')}</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed" data-bind="enable: $root.errors.isEmpty">決定</button>
+				<button class="proceed"
+					data-bind="enable: $root.errors.isEmpty, click: decision, text: textDecision"></button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_920')}</button>
 			</div>
 		</ui:define>

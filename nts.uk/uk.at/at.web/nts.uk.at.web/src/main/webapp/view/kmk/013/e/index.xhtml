@@ -19,353 +19,68 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_224')} </a>
-				<button class="proceed save">#{i18n.getText('KMK013_225')}</button>
+				<button class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_225')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="panel panel-gray-bg">
 					<div class="label">#{i18n.getText('KMK013_200')}</div>
 					<hr />
-					<table id="fixed-table">
-						<tbody>
+					<table id="fixed-table" >
+						<colgroup>
+							<col width="200px" />
+							<col width="100px" />
+							<col width="160px" />
+							<col width="180px" />
+						</colgroup>
+						<tbody data-bind="foreach: listData">
 							<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
+								<td><span class="label" data-bind="text:attendanceItemName"></span></td>
+								<td><div id="unit-combo-box"
 										data-bind="ntsComboBox: {
 								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
+								    width: 100,
+									options: $parent.itemListUnit,
 									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
+									value: unit,
 									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
+									editable: $parent.isEditable,
+									enable: $parent.isEnable,
 									columns: [
-										{ prop: 'name', length: 4 },
+										{ prop: 'name', length: 2 }
 									]}"></div>
 								</td>
 								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
 								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
+									<div data-bind="if:unit() == 30 || unit()==15">
+										<div id="rounding-combo-box"
+											data-bind="ntsComboBox: {
 									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
+									options: $parent.itemListRoundingFull,
 									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
+									value: rounding,
 									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
+									editable: $parent.isEditable,
+									enable: $parent.isEnable,
 									columns: [
-										{ prop: 'name', length: 4 },
+										{ prop: 'name', length : 10 }
 									]}"></div>
+									</div>
+									<div data-bind="ifnot: unit() == 30 || unit() == 15">
+										<div id="rounding-combo-box"
+											data-bind="ntsComboBox: {
+									name:'#{i18n.getText('KMK013_203')}',
+									options: $parent.itemListRounding,
+									optionsValue: 'code',
+									value: rounding,
+									optionsText: 'code',
+									editable: $parent.isEditable,
+									enable: $parent.isEnable,
+									columns: [
+										{ prop: 'name', length : 10 }
+									]}"></div>
+									</div>
 								</td>
 							</tr>
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
-														<tr>
-								<td><div class="label">月次項目1</div></td>
-								<td><div id="combo-box"
-										data-bind="ntsComboBox: {
-								    name:'#{i18n.getText('KMK013_201')}',
-									options: itemListUnit,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeUnit,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-								<td>
-									<div id="combo-box"
-										data-bind="ntsComboBox: {
-									name:'#{i18n.getText('KMK013_203')}',
-									options: itemListRounding,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: selectedCodeRounding,
-									optionsText: 'code',
-									editable: isEditable,
-									enable: isEnable,
-									columns: [
-										{ prop: 'name', length: 4 },
-									]}"></div>
-								</td>
-							</tr>
-							
 						</tbody>
 					</table>
 				</div>

@@ -44,8 +44,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();            
             self.startPage().done(function(){
-                self.kaf000_a.start(self.employeeID, 1, 2, moment(new Date()).format(self.dateFormat)).done(function(){
-                    self.appWorkChange().appApprovalPhases = self.kaf000_a.approvalList;
+                self.kaf000_a.start(self.employeeID, 1, 2, moment(new Date()).format(self.dateFormat)).done(function(){                    
                     nts.uk.ui.block.clear();
                 })    
             }).fail((res) => {
@@ -123,7 +122,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.appWorkChange().workChange().workTimeCd(self.appWorkChange().dataWork().selectedWorkTimeCd);
                 self.appWorkChange().workChange().workTimeName(self.appWorkChange().dataWork().selectedWorkTimeName);
                 //フォーカス制御
-                self.changeFocus('#inputdatestart');                
+                self.changeFocus('#inputdatestart'); 
+                              
                 dfd.resolve();
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
@@ -275,9 +275,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         private checkChangeAppDate(date: string){
             let self = this;
             date = moment(date).format(self.dateFormat);
-            self.kaf000_a.objApprovalRootInput().standardDate = date;
-            self.kaf000_a.getAllApprovalRoot();
-            self.kaf000_a.getMessageDeadline(2, date);
+            self.kaf000_a.getAppDataDate(2, date, false);
         }
         /**
          * フォーカス制御
@@ -377,7 +375,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     workChange.workTimeName(childData.selectedWorkTimeName);
                 }
                 //フォーカス制御
-                self.changeFocus('#inpStartTime1');
+                //self.changeFocus('#inpStartTime1');
+                $('#inpStartTime1').focus();
             })
         }
         

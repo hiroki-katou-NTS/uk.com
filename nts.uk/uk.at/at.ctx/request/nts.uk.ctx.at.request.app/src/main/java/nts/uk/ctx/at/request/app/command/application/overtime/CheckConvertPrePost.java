@@ -81,7 +81,7 @@ public class CheckConvertPrePost {
 				}
 				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value== UseAtr.USE.value){
 					result.setAllPreAppPanelFlg(true);
-					AppOverTime appOverTime = iOvertimePreProcess.getPreApplication(employeeID, overtimeRestAppCommonSet, appDate, prePostAtr);
+					AppOverTime appOverTime = iOvertimePreProcess.getPreApplication(companyID, employeeID, overtimeRestAppCommonSet, appDate, prePostAtr);
 					if(appOverTime != null){
 						convertOverTimeDto(companyID,preAppOvertimeDto,result,appOverTime);
 						result.setPreAppPanelFlg(true);
@@ -124,8 +124,8 @@ public class CheckConvertPrePost {
 	}
 	private void convertOverTimeDto(String companyID,PreAppOvertimeDto preAppOvertimeDto, OverTimeDto result,AppOverTime appOvertime){
 		if(appOvertime.getApplication() != null){
-			if(appOvertime.getApplication().getApplicationDate() != null){
-				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getApplicationDate().toString(DATE_FORMAT));
+			if(appOvertime.getApplication().getAppDate() != null){
+				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getAppDate().toString(DATE_FORMAT));
 			}
 		}
 		

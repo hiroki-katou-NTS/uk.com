@@ -72,25 +72,9 @@ module nts.uk.com.view.cas005.a {
                 let self = this;
                 //table enum RoleType,EmployeeReferenceRange
                 self.listEnumRoleType = ko.observableArray(__viewContext.enums.RoleType);
-                self.listEnumRoleType.unshift({
-                    value: -1,
-                    name: ""
-                });
                 self.listEmployeeReferenceRange = ko.observableArray(__viewContext.enums.EmployeeReferenceRange);
-                self.listEmployeeReferenceRange.unshift({
-                    value: -1,
-                    name: ""
-                });
                 self.listEmployeeRefRange = ko.observableArray(__viewContext.enums.EmployeeRefRange);
-                self.listEmployeeRefRange.unshift({
-                    value: -1,
-                    name: ""
-                });
                 self.listScheduleEmployeeRef = ko.observableArray(__viewContext.enums.ScheduleEmployeeRef);
-                self.listScheduleEmployeeRef.unshift({
-                    value: -1,
-                    name: ""
-                });
                 self.selectedEmployeeReferenceRange = ko.observable(0);
                 self.bookingScreen = ko.observable(0);
                 self.scheduleScreen = ko.observable(0);
@@ -112,6 +96,10 @@ module nts.uk.com.view.cas005.a {
                         self.visibleWebmenu(false);
                         self.enumEmployment(true);
                     }
+                    self.bookingScreen(0);
+                    self.scheduleScreen(0);
+                    self.registeredInquiries(0);
+                    self.specifyingAgent(0);
 
                 });
                 self.employeeReferenceRange = ko.observable(0);
@@ -157,12 +145,14 @@ module nts.uk.com.view.cas005.a {
                 //table right
                 self.component = new ccg.component.viewmodel.ComponentModel({
                     roleType: 3,
-                    multiple: false
+                    multiple: false,
+                    tabindex: 6
                 });
                 //ccg026
                 self.componentCcg026 = new ccg026.component.viewmodel.ComponentModel({
                     classification: 1,
-                    maxRow: 3
+                    maxRow: 3,
+                    tabindex: 17
                 });
                 self.componentCcg026.listPermissions.subscribe((value) => {
                     self.listWorkPlaceAuthorityCommand([]);
@@ -221,10 +211,10 @@ module nts.uk.com.view.cas005.a {
                     //web menu
                     if (item.assignAtr == 0) {
                         self.getRoleByRoleTiesById(value);
-                        self.scheduleScreen(-1);
-                        self.bookingScreen(-1);
-                        self.specifyingAgent(-1);
-                        self.registeredInquiries(-1);
+                        self.scheduleScreen(0);
+                        self.bookingScreen(0);
+                        self.specifyingAgent(0);
+                        self.registeredInquiries(0);
                         self.visibleWebmenu(true);
                     } else {
                         self.getEmploymentRoleById(value);
@@ -256,6 +246,7 @@ module nts.uk.com.view.cas005.a {
                     self.selectReferenceAuthority(0);
                     self.visibleWebmenu(true);
                 }
+                $("#roleNameFocus").focus(); 
             }
 
             /** Select TitleMenu by Index: Start & Delete case */
@@ -265,6 +256,7 @@ module nts.uk.com.view.cas005.a {
                 if (selectRoleCodeByIndex !== undefined) {
                     self.component.currentCode(selectRoleCodeByIndex.roleId);
                 }
+                
 
             }
             /**
@@ -315,11 +307,10 @@ module nts.uk.com.view.cas005.a {
                             self.selectRoleCodeByIndex(0);
                         else
                             self.createButton();
-                        
                         dfd.resolve();
                     });
                 });
-
+                
                 return dfd.promise();
             }//end start page
 
@@ -471,9 +462,12 @@ module nts.uk.com.view.cas005.a {
                 self.listWpkAuthoritySelect();
                 self.enableRoleCode(true);
                 self.isCopy(false);
-                errors.clearAll();
                 self.isRegister(true);
                 self.isDelete(false);
+                self.bookingScreen(0);
+                self.scheduleScreen(0);
+                self.registeredInquiries(0);
+                self.specifyingAgent(0);
 
                 self.listWpkAuthoritySelect([]);
                 self.listWorkPlaceAuthorityCommand([]);
@@ -488,6 +482,7 @@ module nts.uk.com.view.cas005.a {
                     self.listWpkAuthoritySelect.push(temp);
                 }
                 $("#roleTypeCd").focus();
+                errors.clearAll();
             }
 
             /**
@@ -505,21 +500,6 @@ module nts.uk.com.view.cas005.a {
                     self.listWorkPlaceAuthorityCommand().push(tempCommand);
                 }
                 
-                if (self.assignAtr() == 1) {
-                    if (self.bookingScreen() == -1) {
-                        return;
-                    }
-
-                    if (self.specifyingAgent() == -1) {
-                        return;
-                    }
-                    if (self.registeredInquiries() == -1) {
-                        return;
-                    }
-                    if (self.scheduleScreen() == -1) {
-                        return;
-                    }
-                }
                 
 
                 if (!$(".nts-input").ntsError("hasError")) {
@@ -662,6 +642,7 @@ Role screen Cas005
                 let self = this;
                 let dfd = $.Deferred<any>();
                 service.deleteRoleCas005(command).done(function() {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();

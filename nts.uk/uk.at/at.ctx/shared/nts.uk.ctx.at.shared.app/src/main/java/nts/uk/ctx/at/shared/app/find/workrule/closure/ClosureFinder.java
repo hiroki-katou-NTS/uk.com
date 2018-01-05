@@ -128,10 +128,9 @@ public class ClosureFinder {
 	/**
 	 * Gets the closure id name.
 	 *
-	 * @param referDate the refer date
 	 * @return the closure id name
 	 */
-	public List<ClosureIdNameDto> getClosureIdName(int referDate) {
+	public List<ClosureIdNameDto> getClosureIdName() {
 		// Get companyID.
 		String companyId = AppContexts.user().companyId();
 		
@@ -141,8 +140,12 @@ public class ClosureFinder {
 		// Get List ClosureHistory Domain by companyID, closureID, startDay.
 		List<ClosureHistory> lstClosureHistory = new ArrayList<>();
 		closureList.stream().forEach(x -> {
-			ClosureHistory closureInf = repository.findById(companyId, x.getClosureId().value, referDate).get();
-			lstClosureHistory.add(closureInf);
+			Optional<ClosureHistory> closureHist = repository.findBySelectedYearMonth(companyId, x.getClosureId().value,
+					GeneralDate.today().yearMonth().v());
+			if (closureHist.isPresent()) {
+				lstClosureHistory.add(closureHist.get());
+			}
+			
 		});
 		
 		// Get List ClosureIdNameDto from ClosureHistory Domain.
@@ -329,5 +332,42 @@ public class ClosureFinder {
 		}
 
 		return startDate;
+	}
+	
+	
+	/**
+	 * Find emp by closure id.
+	 *
+	 * @param closureId the closure id
+	 * @return the list
+	 */
+	public List<String> findEmploymentCodeByClosureId(int closureId) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Get ClosureEmployment
+		List<ClosureEmployment> closureEmpList = this.closureEmpRepo.findByClosureId(companyId, closureId);
+		
+		// Get Employment Codes from ClosureEmployment acquired above
+		return closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find emp by closure ids.
+	 *
+	 * @param closureIds the closure ids
+	 * @return the list
+	 */
+	public List<String> findEmpByClosureIds(List<Integer> closureIds) {
+		// Get companyID.
+		String companyId = AppContexts.user().companyId();
+		
+		// Get ClosureEmployment
+		List<ClosureEmployment> closureEmpList = this.closureEmpRepo.findByClosureIds(companyId, closureIds);
+		
+		// Get Employment Codes from ClosureEmployment acquired above
+		return closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
+				.collect(Collectors.toList());
 	}
 }

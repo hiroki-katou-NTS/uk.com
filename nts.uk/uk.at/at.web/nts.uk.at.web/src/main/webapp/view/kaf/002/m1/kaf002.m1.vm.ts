@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf002.m1 {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
             extendsModeDisplay: KnockoutObservable<boolean> = ko.observable(true);
             appStampList: KnockoutObservableArray<vmbase.AppStampGoOutPermit> = ko.observableArray([]);
-            supFrameNo: number = 1;
+            supFrameNo: number = 3;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             stampAtrList: KnockoutObservableArray<vmbase.SimpleObject> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -54,6 +54,7 @@ module nts.uk.at.view.kaf002.m1 {
                     });
                 }
                 self.stampAtr.subscribe((value)=>{ 
+                    nts.uk.ui.errors.clearAll();
                     if(value == 1){
                         self.displayItemNo = self.extendsMode() ? 10 : self.supFrameNo;   
                         self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1));      
@@ -100,8 +101,7 @@ module nts.uk.at.view.kaf002.m1 {
                 } 
             }
             
-            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
-                nts.uk.ui.block.invisible();
+            register(application : vmbase.Application){
                 var self = this;
                 let command = {
                     appID: "",
@@ -112,25 +112,32 @@ module nts.uk.at.view.kaf002.m1 {
                     detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 0,
-                    appStampGoOutPermitCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
+                    appStampGoOutPermitCmds: _.filter(
+                                                    _.map(self.appStampList(), (item) => self.convertToJS(item)), 
+                                                    o => { return !nts.uk.util.isNullOrEmpty(o.startTime)||
+                                                                  !nts.uk.util.isNullOrEmpty(o.startLocation)||
+                                                                  !nts.uk.util.isNullOrEmpty(o.endTime)}),
                     appStampWorkCmds: null,
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: null,
-                    appApprovalPhaseCmds: approvalList   
+                    appStampOnlineRecordCmd: null  
                 }
-                service.insert(command)
-                .done((data) => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                    });    
-                })
-                .fail(function(res) { 
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
-                });  
+                if(nts.uk.util.isNullOrEmpty(command.appStampGoOutPermitCmds)){
+                    $('.m1-time-editor').first().ntsError('set', {messageId:"Msg_308"});        
+                } else {
+                    nts.uk.ui.block.invisible();
+                    service.insert(command)
+                    .done((data) => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                            location.reload();
+                        });    
+                    })
+                    .fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
+                    });  
+                }
             }
             
-            update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
-                nts.uk.ui.block.invisible();
+            update(application : vmbase.Application){
                 var self = this;
                 let command = {
                     version: application.version,
@@ -142,27 +149,33 @@ module nts.uk.at.view.kaf002.m1 {
                     detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 0,
-                    appStampGoOutPermitCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
+                    appStampGoOutPermitCmds: _.filter(
+                                                    _.map(self.appStampList(), (item) => self.convertToJS(item)), 
+                                                    o => { return !nts.uk.util.isNullOrEmpty(o.startTime)||
+                                                                  !nts.uk.util.isNullOrEmpty(o.startLocation)||
+                                                                  !nts.uk.util.isNullOrEmpty(o.endTime)}),
                     appStampWorkCmds: null,
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: null,
-                    appApprovalPhaseCmds: approvalList    
+                    appStampOnlineRecordCmd: null 
                 }
-                service.update(command)
-                .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                    });     
-                })
-                .fail(function(res) { 
-                    if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                if(!nts.uk.util.isNullOrEmpty(command.appStampGoOutPermitCmds)){
+                    nts.uk.ui.block.invisible();
+                    service.update(command)
+                    .done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                             location.reload();
-                        });    
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                    }
-                });  
+                        });     
+                    })
+                    .fail(function(res) { 
+                        if(res.optimisticLock == true){
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                                location.reload();
+                            });    
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                        }
+                    });  
+                }
             }
             
             convertToJS(appStamp: KnockoutObservable<vmbase.AppStampGoOutPermit>){

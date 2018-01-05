@@ -18,8 +18,10 @@ module nts.uk.at.view.kdw007.c.viewmodel {
 
         constructor(param) {
             let self = this;
+            nts.uk.ui.block.grayout();
             self.initData(param).done(()=>{
                 self.removeDupplicateItems();
+                nts.uk.ui.block.clear();
             });
         }
         
@@ -31,9 +33,11 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let dfdLstSub = $.Deferred();
             if (param.lstAllItems.length > 0) {
                 service.getAttendanceItemByCodes(param.lstAllItems).done((lstItems) => {
+                    let lstAllItems = [];
                     _.forEach(lstItems, (item) => {
-                        self.lstAllItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, displayOrder: item.attendanceItemDisplayNumber });
+                        lstAllItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, displayOrder: item.attendanceItemDisplayNumber });
                     });
+                    self.lstAllItems(lstAllItems);
                     self.sortGridList();
                     dfdLstAll.resolve();
                 });
@@ -42,9 +46,11 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             }
             if (param.lstAddItems.length > 0) {
                 service.getAttendanceItemByCodes(param.lstAddItems).done((lstItems) => {
+                    let lstAddSubItems = self.lstAddSubItems();
                     _.forEach(lstItems, (item) => {
-                        self.lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '+', displayOrder: item.attendanceItemDisplayNumber });
+                        lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '+', displayOrder: item.attendanceItemDisplayNumber });
                     });
+                    self.lstAddSubItems(lstAddSubItems);
                     self.sortGridList();
                     dfdLstAdd.resolve();
                 });
@@ -53,9 +59,11 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             }
             if (param.lstSubItems.length > 0) {
                 service.getAttendanceItemByCodes(param.lstSubItems).done((lstItems) => {
+                    let lstAddSubItems = self.lstAddSubItems();
                     _.forEach(lstItems, (item) => {
-                        self.lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '-', displayOrder: item.attendanceItemDisplayNumber });
+                        lstAddSubItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: '-', displayOrder: item.attendanceItemDisplayNumber });
                     });
+                    self.lstAddSubItems(lstAddSubItems);
                     self.sortGridList();
                     dfdLstSub.resolve();
                 });

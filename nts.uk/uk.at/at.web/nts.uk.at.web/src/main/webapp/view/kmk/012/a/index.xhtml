@@ -19,8 +19,8 @@
 	
 			<ui:define name="content">
 				<div id="functions-area">
-					<button tabindex="-1" class="proceed large btnSave" id="btn_save" 
-						data-bind="click: saveClosureHistory, enable: $root.errors.isEmpty">登録</button>
+					<button tabindex="1" class="proceed large btnSave" id="btn_save" 
+						data-bind="click: saveClosureHistory, enable: $root.errors.isEmpty">#{i18n.getText('KMK012_1')}</button>
 						
 					<button id="button12" tabindex="2" data-bind="click: openDialogE">#{i18n.getText('KMK012_43')}</button>	
 				</div>
@@ -31,7 +31,7 @@
 							<td id="contents-left"
 								class="bg-green caret-right caret-background">
 								<div
-									tabindex="-1" 
+									tabindex="3" 
 									id="lstClosureHistory" 
 										data-bind="ntsListBox: {
 										options: lstClosureHistory,
@@ -46,12 +46,12 @@
 							<td id="contents-right">
 	
 								<div class="contents" data-bind="if : visibleUseClassification()">
-									<div class="lableData" data-bind="ntsFormLabel: {required: false}">
+									<div tabindex="-1" class="lableData" data-bind="ntsFormLabel: {required: false}">
 										<label>#{i18n.getText('KMK012_2')}</label>
 									</div>
 									<div class="valueData">
 											<div class="cf"
-												tabindex="1" 
+												tabindex="4" 
 												id="selUseClassification"
 												data-bind="ntsSwitchButton: {
 												options: useClassification,
@@ -66,7 +66,7 @@
 								<br />
 								<br />
 								<div class="contents" >
-									<div class="lableData" 
+									<div tabindex="-1" class="lableData" 
 										data-name="#{i18n.getText('KMK012_5')}" 
 										data-bind="ntsFormLabel: {required: true}">
 										<label>#{i18n.getText('KMK012_5')}</label>
@@ -75,7 +75,7 @@
 										<div 
 											class="nts-input"
 											id="inpMonth"
-											tabindex="2"  
+											tabindex="5"  
 											data-bind="ntsDatePicker: 
 											{value: closureModel.month, name:'#[KMK012_5]', 
 												required: true, 
@@ -92,7 +92,7 @@
 								</div>
 								
 								<div class="contents" >
-									<button tabindex="3" 
+									<button tabindex="6" 
 										data-bind="click: openConfirmClosingPeriodDialog, 
 										enable: enableUseClassification">#{i18n.getText('KMK012_6')}
 									</button>
@@ -100,7 +100,7 @@
 								
 								<div class="contents">
 									<div class="lableData"  
-										tabindex="5"  
+										tabindex="7"  
 										id="lstClosureHistoryHistory" 
 										data-bind="ntsListBox: {
 										options: closureModel.closureHistories,
@@ -111,48 +111,48 @@
 										enable: enableUseClassification,
 										rows: 10  }">
 									</div>	
-										<div class="contents">
-											<div class="lableDataEnd" 
-												data-bind="ntsFormLabel: {required: true, 
-												constraint: 'ClosureName'}">
-												<label>#{i18n.getText('KMK012_9')}</label>
-											</div>
-											<div class="valueData">
-												<input class="nts-input" 
-													id="inpname"
-													tabindex="7"   
-													data-bind="ntsTextEditor:{
-			                                        value: closureHistoryModel.closureName,
-			                                        required: false,
-			                                        name:'#[KMK012_9]', 
-			                                        enable: enableUseClassification,
-			                                       	option: textEditorOption,
-			                                        constraint: 'ClosureName'}" />
-											</div>
+									<div class="contents">
+										<div tabindex="-1" class="lableDataEnd" 
+											data-bind="ntsFormLabel: {required: true, 
+											constraint: 'ClosureName'}">
+											<label>#{i18n.getText('KMK012_9')}</label>
 										</div>
-										<br />
-										<br />
-										<br />
-										<div class="contents">
-											<div class="lableDataEnd" 
-												data-bind="ntsFormLabel: {required: true}">
-												<label>#{i18n.getText('KMK012_10')}</label>
-											</div>
-											<div class="valueData">
-												 <div id="cobxDayOfMonth"
-												 	tabindex="8"   
-												 	data-bind="ntsComboBox: {
-													options: lstDayOfMonth,
-													optionsValue: 'day',
-													value: closureHistoryModel.closureDate,
-													optionsText: 'name',
-													editable: false,
-													enable: enableChangeClosureDate,
-													columns: [
-														{ prop: 'name', length: 4 }
-													]}"></div>
-											</div>
+										<div class="valueData">
+											<input class="nts-input" 
+												id="inpname"
+												tabindex="8"   
+												data-bind="ntsTextEditor:{
+		                                        value: closureHistoryModel.closureName,
+		                                        required: false,
+		                                        name:'#[KMK012_9]', 
+		                                        enable: enableUseClassification,
+		                                       	option: textEditorOption,
+		                                        constraint: 'ClosureName'}" />
 										</div>
+									</div>
+									<br />
+									<br />
+									<br />
+									<div class="contents">
+										<div tabindex="-1" class="lableDataEnd" 
+											data-bind="ntsFormLabel: {required: true}">
+											<label>#{i18n.getText('KMK012_10')}</label>
+										</div>
+										<div class="valueData">
+											 <div id="cobxDayOfMonth"
+											 	tabindex="9"   
+											 	data-bind="ntsComboBox: {
+												options: lstDayOfMonth,
+												optionsValue: 'day',
+												value: closureHistoryModel.closureDate,
+												optionsText: 'name',
+												editable: false,
+												enable: enableChangeClosureDate,
+												columns: [
+													{ prop: 'name', length: 4 }
+												]}"></div>
+										</div>
+									</div>
 								</div>
 							</td>
 						</tr>

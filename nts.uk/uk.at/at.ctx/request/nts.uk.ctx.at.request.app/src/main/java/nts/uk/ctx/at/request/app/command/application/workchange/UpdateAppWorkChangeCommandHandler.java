@@ -1,25 +1,27 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeUpdateService;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,7 +29,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWorkChangeCommand> {
-	private static final String EMPTY_STRING = "";
 	private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeUpdateService updateService;
@@ -38,34 +39,44 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandler<AddAppWork
 		// Command data
 		CreateApplicationCommand appCommand = updateCommand.getApplication();
 		AppWorkChangeCommand workChangeCommand = updateCommand.getWorkChange();
-		List<AppApprovalPhaseCmd> approvalPhaseCommand = updateCommand.getAppApprovalPhases();
 		
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
 		String appID = appCommand.getApplicationID();
-		// Phase list
-		List<AppApprovalPhase> pharseList = ApprovalPhaseUtils.convertToDomain(approvalPhaseCommand, companyId, appID);
 		// 申請
-		Application updateApp = new Application(companyId,
-				// command.goBackCommand.getAppID(),
-				appID, EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), appCommand.getInputDate(),
+		Application_New updateApp = new Application_New(
+				0L, 
+				companyId, 
+				appID,
+				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), 
+				GeneralDateTime.now(), 
 				appCommand.getEnteredPersonSID(), 
-				new AppReason(EMPTY_STRING), 
-				appCommand.getApplicationDate(), 
+				new AppReason(Strings.EMPTY), 
+				appCommand.getStartDate(),
 				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())),
-				EnumAdaptor.valueOf(appCommand.getApplicationType(), ApplicationType.class),
+				ApplicationType.WORK_CHANGE_APPLICATION, 
 				appCommand.getApplicantSID(),
-				EnumAdaptor.valueOf(appCommand.getReflectPlanScheReason(), ReflectPlanScheReason.class),
-				appCommand.getReflectPlanTime(),
-				EnumAdaptor.valueOf(appCommand.getReflectPlanState(), ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(appCommand.getReflectPlanEnforce(), ReflectPlanPerEnforce.class),
-				EnumAdaptor.valueOf(appCommand.getReflectPerScheReason(), ReflectPerScheReason.class),
-				appCommand.getReflectPerTime(),
-				EnumAdaptor.valueOf(appCommand.getReflectPerState(), ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(appCommand.getReflectPerEnforce(), ReflectPlanPerEnforce.class),
-				appCommand.getStartDate(), appCommand.getEndDate(), pharseList);
-
+				Optional.of(appCommand.getStartDate()),
+				Optional.of(appCommand.getEndDate()), 
+				ReflectionInformation_New.builder()
+						.stateReflection(
+								EnumAdaptor.valueOf(appCommand.getReflectPlanState(), ReflectedState_New.class))
+						.stateReflectionReal(
+								EnumAdaptor.valueOf(appCommand.getReflectPerState(), ReflectedState_New.class))
+						.forcedReflection(
+								EnumAdaptor.valueOf(appCommand.getReflectPlanEnforce(), DisabledSegment_New.class))
+						.forcedReflectionReal(
+								EnumAdaptor.valueOf(appCommand.getReflectPerEnforce(), DisabledSegment_New.class))
+						.notReason(Optional.ofNullable(appCommand.getReflectPlanScheReason())
+								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflect_New.class)))
+						.notReasonReal(Optional.ofNullable(appCommand.getReflectPerScheReason())
+								.map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
+						.dateTimeReflection(Optional
+								.ofNullable(appCommand.getReflectPlanTime() == null ? null : GeneralDateTime.legacyDateTime(appCommand.getReflectPlanTime().date())))
+						.dateTimeReflectionReal(Optional
+								.ofNullable(appCommand.getReflectPerTime() == null ? null : GeneralDateTime.legacyDateTime(appCommand.getReflectPerTime().date())))
+						.build());
 		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(workChangeCommand.getCid(),
 				workChangeCommand.getAppId(), workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),

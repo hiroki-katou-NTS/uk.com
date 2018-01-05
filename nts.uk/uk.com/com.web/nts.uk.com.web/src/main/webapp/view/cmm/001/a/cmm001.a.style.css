@@ -1,5 +1,7 @@
 @CHARSET "UTF-8";
-
+#contents-area{
+	width: 1340px;
+}
 .outer {
 	outline: 1px solid #FF6138;
 }
@@ -153,7 +155,7 @@ input.ntsSearchBox {
 }
 
 #companyNameKana {
-	width: 360px !important;
+	width: 450px !important;
 	margin-bottom: 10px;
 	margin-left: -50px !important;
 }
@@ -203,29 +205,21 @@ input.ntsSearchBox {
 }
 
 #LBLAddress1 {
-	/* margin-left: 24px;
-	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
 
 #LBLAddress2 {
-	/* margin-left: 24px;
-	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
 
 #LBLAddressKana1 {
-	/* margin-left: 24px;
-	display: inline-block; */
 	line-height: 30px;
 	height: 40px;
 }
 
 #LBLAddressKana2 {
-	/* margin-left: 30px;
-	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }

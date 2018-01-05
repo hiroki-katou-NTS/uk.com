@@ -79,7 +79,8 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 							new BigDecimal(c.getTimeItemTypeAtr().value)), KbpstBonusPayTimeItem.class);
 			if (kbpstBonusPayTimeItemOptional.isPresent()) {
 				KbpstBonusPayTimeItem kbpstBonusPayTimeItem = kbpstBonusPayTimeItemOptional.get();
-				kbpstBonusPayTimeItem.timeItemName = c.getTimeItemName().v();
+				kbpstBonusPayTimeItem.timeItemName = c.getUseAtr().value == 1
+						? c.getTimeItemName().v() : kbpstBonusPayTimeItem.timeItemName;
 				kbpstBonusPayTimeItem.useAtr = new BigDecimal(c.getUseAtr().value);
 				this.commandProxy().update(kbpstBonusPayTimeItem);
 			}

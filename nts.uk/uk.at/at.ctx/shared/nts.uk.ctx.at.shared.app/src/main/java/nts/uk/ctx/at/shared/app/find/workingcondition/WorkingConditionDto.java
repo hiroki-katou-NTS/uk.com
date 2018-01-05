@@ -4,14 +4,12 @@ import java.util.Optional;
 
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
@@ -783,13 +781,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 年休就時設定 就業時間帯の自動設定区分
 	 */
 	@PeregItem("IS00247")
-	private NotUseAtr autoIntervalSetAtr;
+	private int autoIntervalSetAtr;
 
 	/**
 	 * 加算時間利用区分 休暇加算時間利用区分
 	 */
 	@PeregItem("IS00248")
-	private NotUseAtr vacationAddedTimeAtr;
+	private int vacationAddedTimeAtr;
 
 	/**
 	 * 加算時間１日 休暇加算時間設定.１日
@@ -813,7 +811,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 就業区分 労働制
 	 */
 	@PeregItem("IS00252")
-	private WorkingSystem laborSystem;
+	private int laborSystem;
 
 	/**
 	 * 契約時間 契約時間
@@ -828,7 +826,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	public static WorkingConditionDto createWorkingConditionDto(DateHistoryItem dateHistoryItem,
 			WorkingConditionItem workingConditionItem) {
 		WorkingConditionDto dto = new WorkingConditionDto(dateHistoryItem.identifier());
-		
+		dto.setRecordId(dateHistoryItem.identifier());
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
 
@@ -905,14 +903,14 @@ public class WorkingConditionDto extends PeregDomainDto {
 			setSaturday(dto, workDayOfWeek.getSaturday().get());
 		}
 
-		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr());
-		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr());
+		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr().value);
+		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
 		if(workingConditionItem.getHolidayAddTimeSet().isPresent()){
 			dto.setOneDay(workingConditionItem.getHolidayAddTimeSet().get().getOneDay().v());
 			dto.setMorning(workingConditionItem.getHolidayAddTimeSet().get().getMorning().v());
 			dto.setAfternoon(workingConditionItem.getHolidayAddTimeSet().get().getAfternoon().v());
 		}
-		dto.setLaborSystem(workingConditionItem.getLaborSystem());
+		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
 		dto.setContractTime(workingConditionItem.getContractTime().v());
 
 		return dto;
@@ -1002,7 +1000,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 		if(timeZone1.isPresent()){
 			TimeZone tz = timeZone1.get();
 			dto.setInLawBreakTimeStartTime1(tz.getStart().v());
-			dto.setInLawBreakTimeEndTime1(tz.getStart().v());
+			dto.setInLawBreakTimeEndTime1(tz.getEnd().v());
 		}
 		if(timeZone2.isPresent()){
 			TimeZone tz = timeZone2.get();

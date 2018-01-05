@@ -1,11 +1,13 @@
 package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -13,9 +15,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -27,6 +37,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name="WWFDT_APPROVAL_PHASE_ST")
+@Builder
 public class WwfdtApprovalPhaseState extends UkJpaEntity {
 	
 	@EmbeddedId
@@ -53,4 +64,28 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 		return wwfdpApprovalPhaseStatePK;
 	}
 	
+	public static WwfdtApprovalPhaseState fromDomain(ApprovalPhaseState approvalPhaseState){
+		return WwfdtApprovalPhaseState.builder()
+				.wwfdpApprovalPhaseStatePK(
+						new WwfdpApprovalPhaseStatePK(
+								approvalPhaseState.getRootStateID(), 
+								approvalPhaseState.getPhaseOrder()))
+				.approvalAtr(approvalPhaseState.getApprovalAtr().value)
+				.approvalForm(approvalPhaseState.getApprovalForm().value)
+				.listWwfdtApprovalFrame(
+						approvalPhaseState.getListApprovalFrame().stream()
+						.map(x -> WwfdtApprovalFrame.fromDomain(x)).collect(Collectors.toList()))
+				.build();
+	}
+	
+	public ApprovalPhaseState toDomain(){
+		return ApprovalPhaseState.builder()
+				.rootStateID(this.wwfdpApprovalPhaseStatePK.rootStateID)
+				.phaseOrder(this.wwfdpApprovalPhaseStatePK.phaseOrder)
+				.approvalAtr(EnumAdaptor.valueOf(this.approvalAtr, ApprovalBehaviorAtr.class))
+				.approvalForm(EnumAdaptor.valueOf(this.approvalForm, ApprovalForm.class))
+				.listApprovalFrame(this.listWwfdtApprovalFrame.stream()
+									.map(x -> x.toDomain()).collect(Collectors.toList()))
+				.build();
+	}
 }

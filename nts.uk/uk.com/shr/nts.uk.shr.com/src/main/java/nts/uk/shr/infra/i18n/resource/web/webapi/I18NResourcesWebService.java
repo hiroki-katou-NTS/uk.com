@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.LanguageConsts;
@@ -27,6 +28,8 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 @Path("i18n/resources")
 @Produces("text/javascript")
 public class I18NResourcesWebService {
+	
+	public static String VERSION = GeneralDateTime.now().toString("yyyyMMddHHmmss");
 	
 	private static final int SECONDS_IN_YEAR = 365 * 24 * 60 * 60;
 
@@ -41,7 +44,7 @@ public class I18NResourcesWebService {
 	}
 	
 	public static String getHtmlToLoadResources() {
-		return "<script src=\"/nts.uk.com.web/webapi/i18n/resources/screen\"></script>";
+		return "<script src=\"/nts.uk.com.web/webapi/i18n/resources/screen?v=" + VERSION + "\"></script>";
 	}
 	
 	@GET

@@ -45,7 +45,8 @@ module nts.uk.ui.koExtentions {
             var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
             var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
             var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
-
+            var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
+    
             $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
             if (totalWidth !== undefined) {
                 $swap.parent().width(totalWidth);
@@ -73,7 +74,7 @@ module nts.uk.ui.koExtentions {
             
             var grid1Id = "#" + elementId + "-grid1";
             var grid2Id = "#" + elementId + "-grid2";
-            var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
+            //var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
             if (!util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
                 
                 var initSearchArea = function ($SearchArea, searchMode, searchText){

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.ws.workrule.closure;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -12,6 +13,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureEmpAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
@@ -33,6 +36,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthOutDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -57,6 +61,10 @@ public class ClosureWs {
 	/** The current closure finder. */
 	@Inject
 	private CurrentClosureFinder currentClosureFinder;
+	
+	/** The closure repository. */
+	@Inject
+	private ClosureRepository closureRepository;
 
 	/** The Constant CLOSURE_ID_BEGIN. */
 	public static final int CLOSURE_ID_BEGIN = 1;
@@ -66,6 +74,9 @@ public class ClosureWs {
 
 	/** The Constant TOTAL_MONTH_OF_YEAR. */
 	public static final int TOTAL_MONTH_OF_YEAR = 12;
+	
+	/** The Constant FULL_CLOSURE_ID. */
+	public static final int FULL_CLOSURE_ID = 0;
 
 	@POST
 	@Path("addClousureEmp")
@@ -79,18 +90,6 @@ public class ClosureWs {
 		return this.finder.getClosureEmploy();
 	}
 	
-	/**
-	 * Gets the closure id name.
-	 *
-	 * @param referDate the refer date
-	 * @return the closure id name
-	 */
-	@POST
-	@Path("getClosureIdName/{referDate}")
-	public List<ClosureIdNameDto> getClosureIdName(@PathParam("referDate") int referDate) {
-		return this.finder.getClosureIdName(referDate);
-	}
-
 	/**
 	 * Find all.
 	 *
@@ -243,5 +242,55 @@ public class ClosureWs {
 	public List<CurrentClosureDto> findStartEndDate() {
 		return this.currentClosureFinder.findCurrentClosure();
 	}
+	
+	/**
+	 * Gets the closure id name.
+	 *
+	 * @param referDate the refer date
+	 * @return the closure id name
+	 */
+	@POST
+	@Path("getClosureIdName")
+	public List<ClosureIdNameDto> getClosureIdName() {
+		return this.finder.getClosureIdName();
+	}
 
+	/**
+	 * Find emp by closure id.
+	 *
+	 * @param closureId the closure id
+	 * @return the list
+	 */
+	@POST
+	@Path("findEmpByClosureId/{closureId}")
+	public List<String> findEmpByClosureId(@PathParam("closureId") int closureId) {
+		// Find by closure id.
+		if (closureId != FULL_CLOSURE_ID) {
+			return this.finder.findEmploymentCodeByClosureId(closureId);
+		}
+		
+		// Find by All closure.
+		List<Integer> ids = this.findClosureListByCurrentMonth()
+				.stream().map(dto -> dto.id).collect(Collectors.toList());
+		return this.finder.findEmpByClosureIds(ids);
+	}
+	
+	/**
+	 * Find closure list by current month.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findClosureListByCurrentMonth")
+	public List<ClosureDto> findClosureListByCurrentMonth() {
+		GeneralDate now = GeneralDate.today();
+		YearMonth currentMonth = YearMonth.of(now.year(), now.month());
+		return this.closureRepository.findByCurrentMonth(currentMonth).stream().map(item -> {
+			return ClosureDto.builder()
+					.id(item.getClosureId().value)
+					.name(item.getClosureName().v())
+					.build();
+		}).collect(Collectors.toList());
+	}
+	
 }

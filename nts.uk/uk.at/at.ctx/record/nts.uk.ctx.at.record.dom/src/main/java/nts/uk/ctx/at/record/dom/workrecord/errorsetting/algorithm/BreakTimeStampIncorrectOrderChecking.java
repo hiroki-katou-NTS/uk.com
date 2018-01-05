@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +28,10 @@ public class BreakTimeStampIncorrectOrderChecking {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
-	public void breakTimeStampIncorrectOrderChecking(String companyId, String employeeId, GeneralDate processingDate) {
-		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformances = breakTimeOfDailyPerformanceRepository
-				.findByKey(employeeId, processingDate);
-		if (!breakTimeOfDailyPerformances.isEmpty()) {
-			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = breakTimeOfDailyPerformances.get(0);
+	public void breakTimeStampIncorrectOrderChecking(String companyId, String employeeId, GeneralDate processingDate, BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
+//		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformances = breakTimeOfDailyPerformanceRepository
+//				.findByKey(employeeId, processingDate);
+		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
 
 			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
 
@@ -44,7 +42,7 @@ public class BreakTimeStampIncorrectOrderChecking {
 			for (BreakTimeSheet item : breakTimeSheets) {
 				WorkStamp startTime = item.getStartTime();
 				WorkStamp endTime = item.getEndTime();
-				item = new BreakTimeSheet(new BreakFrameNo(new BigDecimal(breakFrameNo)), startTime, endTime, item.getBreakTime());
+				item = new BreakTimeSheet(new BreakFrameNo(breakFrameNo), startTime, endTime, item.getBreakTime());
 				breakFrameNo++;
 			}
 

@@ -30,7 +30,7 @@ public class CheckDisplayMessage {
 			return false;
 		}
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = 
-				beforePreBootModeRepo.judgmentDetailScreenMode(applicationData, baseDate);
+				beforePreBootModeRepo.judgmentDetailScreenMode(companyID, employeeID, applicationData.getApplicationID(), baseDate);
 		if(detailedScreenPreBootModeOutput.getReflectPlanState().value ==0 || 
 				detailedScreenPreBootModeOutput.getReflectPlanState().value ==1) {
 			check = true;
@@ -49,10 +49,12 @@ public class CheckDisplayMessage {
 	 */
 	public boolean checkDisplayAuthorizationComment(Application applicationData,
 			GeneralDate baseDate) {
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
 		boolean check = false;
 		
 		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = 
-				beforePreBootModeRepo.judgmentDetailScreenMode(applicationData, baseDate);
+				beforePreBootModeRepo.judgmentDetailScreenMode(companyID, employeeID, applicationData.getApplicationID(), baseDate);
 		if(detailedScreenPreBootModeOutput.getUser().value ==0 || 
 				detailedScreenPreBootModeOutput.getUser().value ==1) {
 			check = true;

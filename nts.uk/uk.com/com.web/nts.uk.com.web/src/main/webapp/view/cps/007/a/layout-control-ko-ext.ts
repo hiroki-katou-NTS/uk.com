@@ -497,6 +497,10 @@ module nts.custombinding {
                                         <div data-bind="ntsFormLabel: { 
                                             text: className || '',
                                             cssClass: ko.computed(function() {
+                                                if(!_item.showColor()) {
+                                                    return '';
+                                                }
+                                                
                                                 if(!!_.find(__items, function(x) { return x.value() })) {
                                                      return '';
                                                 }
@@ -611,12 +615,12 @@ module nts.custombinding {
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.STRING" class="string">
                             <div data-bind="if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80)">
                                 <input data-bind=" ntsTextEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
                                         option: {
-                                            textmode: 'text',
-                                            placeholder: itemName
+                                            textmode: 'text'
                                         },
                                         enable: editable,
                                         readonly: readonly,
@@ -629,12 +633,12 @@ module nts.custombinding {
                             </div>
                             <div data-bind="if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80))">
                                 <textarea data-bind="ntsMultilineEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
                                         option: {
-                                            textmode: 'text',
-                                            placeholder: itemName
+                                            textmode: 'text'
                                         },
                                         enable: editable,
                                         readonly: readonly,
@@ -648,14 +652,13 @@ module nts.custombinding {
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.NUMERIC" class="numeric">
                             <input data-bind="ntsNumberEditor: { 
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
                                         option: {
                                             grouplength: 3,
                                             decimallength: 2,
-                                            placeholder: itemName,
-                                            width: '',
                                             textalign: 'left'
                                         },
                                         enable: editable,
@@ -669,18 +672,19 @@ module nts.custombinding {
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.DATE" class="date">
                             <div data-bind="if: index <= 1">
                                 <div data-bind="ntsDatePicker: {
-                                            value: value,
-                                            startDate: startDate,
-                                            endDate: endDate,
-                                            constraint: nameid,
-                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
-                                            enable: editable,
-                                            readonly: readonly
-                                        }, attr: { 
-                                            id: nameid, 
-                                            nameid: nameid,
-                                            title: itemName
-                                        }"></div>
+                                        name: itemName,
+                                        value: value,
+                                        startDate: startDate,
+                                        endDate: endDate,
+                                        constraint: nameid,
+                                        dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                        enable: editable,
+                                        readonly: readonly
+                                    }, attr: { 
+                                        id: nameid, 
+                                        nameid: nameid,
+                                        title: itemName
+                                    }"></div>
                             </div>
                             <div data-bind="if: index == 2">
                                 <div data-bind="if: typeof ctgType !== 'undefined'">
@@ -689,6 +693,7 @@ module nts.custombinding {
                                     </div>
                                     <div data-bind="if: [CAT_TYPE.CONTI].indexOf(ctgType) == -1">
                                         <div data-bind="ntsDatePicker: {
+                                                name: itemName,
                                                 value: value,
                                                 startDate: startDate,
                                                 endDate: endDate,
@@ -705,6 +710,7 @@ module nts.custombinding {
                                 </div>
                                 <div data-bind="if: typeof ctgType === 'undefined'">
                                     <div data-bind="ntsDatePicker: {
+                                            name: itemName,
                                             value: value,
                                             startDate: startDate,
                                             endDate: endDate,
@@ -722,6 +728,7 @@ module nts.custombinding {
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIME" class="time">
                             <input data-bind="ntsTimeEditor: {
+                                        name: itemName,
                                         value: value,
                                         constraint: nameid,
                                         required: required,
@@ -732,13 +739,12 @@ module nts.custombinding {
                                     }, attr: {
                                         id: nameid, 
                                         nameid: nameid,
-                                        title: itemName,
-                                        placeholder: itemName
+                                        title: itemName
                                     }" />
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT" class="timepoint">
-                            <input data-bind="ntsTimeWithDayEditor: 
-                                    { 
+                            <input data-bind="ntsTimeWithDayEditor: { 
+                                        name: itemName,
                                         name: nameid,
                                         constraint: nameid,
                                         value: value,
@@ -748,12 +754,12 @@ module nts.custombinding {
                                     }, attr: {
                                         id: nameid, 
                                         nameid: nameid,
-                                        title: itemName,
-                                        placeholder: itemName
+                                        title: itemName
                                     }" />
                         </div>
                         <div data-bind="if: item.dataTypeValue == ITEM_TYPE.SELECTION" class="selection">
                             <div data-bind="ntsComboBox: {
+                                        name: itemName,
                                         value: value,
                                         options: ko.observableArray(lstComboBoxValue || []),
                                         optionsText: 'optionText',
@@ -763,7 +769,7 @@ module nts.custombinding {
                                         dropDownAttachedToBody: true,
                                         columns: [{ prop: 'optionText', length: 10 }]
                                     }, attr: {
-                                        id: nameid, 
+                                        id: nameid,
                                         nameid: nameid,
                                         title: itemName
                                     }"></div>
@@ -891,6 +897,7 @@ module nts.custombinding {
                         outData: ko.observableArray([]),
                         isEnabled: ko.observable(true),
                         isEditable: ko.observable(0),
+                        showColor: ko.observable(false),
                         beforeMove: (data, evt, ui) => {
                             let sindex: number = data.sourceIndex,
                                 tindex: number = data.targetIndex,
@@ -924,7 +931,7 @@ module nts.custombinding {
                             }
                         },
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
-                            let items = opts.sortable.data;
+                            let items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
 
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
@@ -946,11 +953,10 @@ module nts.custombinding {
                                     });
                                 }
                             });
-
                             return opts.sortable;
                         },
                         findExist: (ids: Array<string>) => {
-                            let items = opts.sortable.data();
+                            let items: Array<IItemClassification> = opts.sortable.data();
 
                             if (!ids || !ids.length) {
                                 return [];
@@ -1044,7 +1050,10 @@ module nts.custombinding {
                                 if (dups && dups.length) {
                                     // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
                                     // Show Msg_204 if itemdefinition is exist
-                                    info(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_204'))
+                                    info({
+                                        messageId: 'Msg_204',
+                                        messageParams: dups.map((x: IItemDefinition) => x.itemName)
+                                    })
                                         .then(() => {
                                             removeItems(dups.map((x: IItemDefinition) => {
                                                 return {
@@ -1067,7 +1076,10 @@ module nts.custombinding {
                                 if (dupids && dupids.length) {
                                     // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
                                     // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                                    alert(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_202'));
+                                    alert({
+                                        messageId: 'Msg_202',
+                                        messageParams: dups.map((x: IItemDefinition) => x.itemName)
+                                    });
                                 }
 
                                 pushItems(nodups);
@@ -1188,7 +1200,6 @@ module nts.custombinding {
                                 break;
                         }
                     }
-
                     return constraint;
                 },
                 primitiveConsts = () => {
@@ -1216,6 +1227,8 @@ module nts.custombinding {
                 .append(self.tmp)
                 .addClass('ntsControl layout-control');
 
+
+
             // binding callback function to control
             if (access.callback) {
                 $.extend(opts, { callback: access.callback });
@@ -1224,6 +1237,11 @@ module nts.custombinding {
             // binding output data value 
             if (access.outData) {
                 $.extend(opts.sortable, { outData: access.outData });
+            }
+
+            // change color text
+            if (access.showColor) {
+                $.extend(opts.sortable, { showColor: access.showColor });
             }
 
             // validate editAble
@@ -1350,13 +1368,13 @@ module nts.custombinding {
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                             def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
-                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();;
+                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();
+                            def.showColor = ko.isObservable(opts.sortable.showColor) ? opts.sortable.showColor : ko.observable(opts.sortable.showColor);
 
                             def.type = _.has(def, "type") ? def.type : (item.itemTypeState || <any>{}).itemType;
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
                             def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
-
                             def.value.subscribe(x => {
                                 let inputs = [],
                                     proc = function(data: any): any {
@@ -1612,9 +1630,6 @@ module nts.custombinding {
                         case IT_CLA_TYPE.ITEM:
                             _.each((x.items()), (def, i) => {
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
-                                    // write contraint
-                                    writeConstraint(def.itemCode, def);
-
                                     // validate date range
                                     switch (def.item.dataTypeValue) {
                                         case ITEM_SINGLE_TYPE.DATE:
@@ -1810,14 +1825,35 @@ module nts.custombinding {
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
-                            if (cats && cats.length) {
-                                opts.comboxbox.options(cats);
-                            } else {
-                                // show message if hasn't any category
-                                if (ko.toJS(opts.sortable.isEnabled)) {
-                                    alert(text('Msg_288')).then(opts.callback);
+
+                            let dfds: Array<JQueryDeferred<any>> = [];
+
+                            _.each(cats, cat => {
+                                let dfd = $.Deferred<any>();
+                                services.getItemByCat(cat.id).done((data: Array<IItemDefinition>) => {
+                                    let items = _.filter(_.flatten(data) as Array<IItemDefinition>, x => !x.isAbolition);
+                                    if (items.length) {
+                                        dfd.resolve(cat);
+                                    } else {
+                                        dfd.resolve(false);
+                                    }
+                                }).fail(x => dfd.reject(false));
+
+                                dfds.push(dfd);
+                            });
+
+                            // push all category to combobox when done
+                            $.when.apply($, dfds).then(function() {
+                                let items: Array<IItemCategory> = _.filter(_.flatten(arguments), x => !!x);
+                                if (items && items.length) {
+                                    opts.comboxbox.options(items);
+                                } else {
+                                    // show message if hasn't any category
+                                    if (ko.toJS(opts.sortable.isEnabled)) {
+                                        alert(text('Msg_288')).then(opts.callback);
+                                    }
                                 }
-                            }
+                            });
                         } else {
                             // show message if hasn't any category
                             if (ko.toJS(opts.sortable.isEnabled)) {
@@ -1871,6 +1907,19 @@ module nts.custombinding {
                                         // order by dispOrder asc
                                         data = _(data)
                                             .filter(m => !m.isAbolition)
+                                            .filter(f => {
+                                                if (location.href.indexOf('/view/cps/007/a/') > -1) {
+                                                    if (item.id === "COM1_00000000000000000000000_CS00002") {
+                                                        return f.id !== "COM1_000000000000000_CS00002_IS00003";
+                                                    }
+
+                                                    if (item.id === "COM1_00000000000000000000000_CS00003") {
+                                                        return f.id !== "COM1_000000000000000_CS00003_IS00020";
+                                                    }
+                                                }
+
+                                                return true;
+                                            })
                                             .orderBy(m => m.dispOrder).value();
 
                                         opts.listbox.options(data);
@@ -1929,12 +1978,41 @@ module nts.custombinding {
                 opts.sortable.pushItem(item);
             });
 
+            $(ctrls.sortable)
+                .on('click', (evt) => {
+                    setTimeout(() => {
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification')
+                            .removeClass('selected');
+                    }, 0);
+                })
+                .on('mouseover', '.form-group.item-classification', (evt) => {
+                    $(evt.target)
+                        .removeClass('selected');
+                });
+
+
             $(ctrls.button).on('click', () => {
                 // アルゴリズム「項目追加処理」を実行する
                 // Execute the algorithm "項目追加処理"
-                let ids: Array<string> = ko.toJS(opts.listbox.value);
+                let ids: Array<string> = ko.toJS(opts.listbox.value),
+                    scrollDown = () => {
+                        // remove old selected items
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification')
+                            .removeClass('selected');
+                        // scroll to bottom
+                        $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
+                        // select lastest item
+                        setTimeout(() => {
+                            $(ctrls.sortable)
+                                .find('.form-group.item-classification:last-child')
+                                .addClass('selected');
+                        }, 0);
+                    };
+
                 if (!ids || !ids.length) {
-                    alert(text('Msg_203'));
+                    alert({ messageId: 'Msg_203' });
                     return;
                 }
 
@@ -1951,7 +2029,7 @@ module nts.custombinding {
                             // if category is exist in sortable box.
                             let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
                             if (_catcls) {
-                                alert(text('Msg_202'));
+                                alert({ messageId: 'Msg_202' });
                                 return;
                             }
 
@@ -1983,6 +2061,7 @@ module nts.custombinding {
                                             };
                                             opts.sortable.data.push(item);
                                             opts.listbox.value.removeAll();
+                                            scrollDown();
                                         });
                                     });
                                 }
@@ -1996,6 +2075,7 @@ module nts.custombinding {
                                 services.getItemsByIds(idefs.map(x => x.id)).done((defs: Array<IItemDefinition>) => {
                                     if (defs && defs.length) {
                                         opts.sortable.pushItems(defs, false);
+                                        scrollDown();
                                     }
                                 });
                             }
@@ -2024,6 +2104,7 @@ module nts.custombinding {
                             let items = _.filter(_.flatten(arguments) as Array<IItemDefinition>, x => !x.isAbolition);
                             if (items && items.length) {
                                 opts.sortable.pushItems(items, true);
+                                scrollDown();
                             }
                         });
                     }

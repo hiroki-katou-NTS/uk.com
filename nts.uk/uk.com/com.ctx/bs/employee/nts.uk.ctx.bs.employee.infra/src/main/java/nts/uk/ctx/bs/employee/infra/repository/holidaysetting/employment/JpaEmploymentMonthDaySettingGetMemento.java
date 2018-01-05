@@ -59,8 +59,7 @@ public class JpaEmploymentMonthDaySettingGetMemento implements EmploymentMonthDa
 		return this.listKshmtEmpMonthDaySet.stream().map(e -> {
 			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtEmpMonthDaySetPK().getManageYear()),
 					new Integer(e.getKshmtEmpMonthDaySetPK().getMonth()),
-					new MonthlyNumberOfDays(e.getInLegalHd().intValue()),
-					new MonthlyNumberOfDays(e.getOutLegalHd().intValue()));
+					new MonthlyNumberOfDays(e.getInLegalHd()));
 			return domain;
 		}).collect(Collectors.toList());
 	}

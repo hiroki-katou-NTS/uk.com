@@ -25,8 +25,8 @@ public class KrcdtSyainDpErListPK  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "ATTENDANCE_ITEM_ID")
-	public int attendanceItemId;
+	@Column(name = "ERROR_CODE")
+	public String errorCode;
 	
 	@Column(name = "SID")
 	public String employeeId;

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +133,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	public List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate) {
 		// Query
 		List<AffJobTitleHistoryItem_ver1> affJobTitleHistories = this.jobTitleHistoryItemRepository_v1.getByJobIdAndReferDate(jobId, baseDate);
+		
+		// Check exist
+		if(CollectionUtil.isEmpty(affJobTitleHistories)) {
+			return Collections.emptyList();
+		}
 
 		List<String> employeeIds = affJobTitleHistories.stream().map(AffJobTitleHistoryItem_ver1::getEmployeeId)
 				.collect(Collectors.toList());
@@ -224,12 +231,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<EmployeeBasicInfoExport> findBySIds(List<String> sIds) {
 
-		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
 		String cid = AppContexts.user().companyId();
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
 		
 		if(CollectionUtil.isEmpty(emps)) {
 			return null;
@@ -243,6 +249,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
 
 		return emps.stream().map(employee -> {
+			
+			EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
 
 			// Get Person
 			Person person = mapPersons.get(employee.getPersonId());

@@ -1,15 +1,22 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** 日別実績の休憩時間 */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BreakTimeSheetDailyPerformDto {
 
 	/** 計上用合計時間: 控除合計時間 */
@@ -26,7 +33,7 @@ public class BreakTimeSheetDailyPerformDto {
 	private Integer duringWork;
 
 	/** 補正後時間帯: 休憩時間帯 */
-	// @AttendanceItemLayout(layout = "D", isList = true)
+	// @AttendanceItemLayout(layout = "D", isList = true, listMaxLength = ?)
 	private List<BreakTimeSheetDto> correctedTimeSheet;
 
 	/** 休憩回数: 休憩外出回数 */
@@ -35,37 +42,38 @@ public class BreakTimeSheetDailyPerformDto {
 	private Integer breakTimes;
 
 	public static BreakTimeSheetDailyPerformDto fromBreakTimeOfDaily(BreakTimeOfDaily domain) {
-		return domain == null ? null
-				: new BreakTimeSheetDailyPerformDto(new TotalDeductionTimeDto(new CalcAttachTimeDto(
-						domain.getToRecordTotalTime().getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes(),
-						domain.getToRecordTotalTime().getExcessOfStatutoryTotalTime().getTime().valueAsMinutes()),
-						new CalcAttachTimeDto(
-								domain.getToRecordTotalTime().getWithinStatutoryTotalTime().getCalcTime()
-										.valueAsMinutes(),
-								domain.getToRecordTotalTime().getWithinStatutoryTotalTime().getTime().valueAsMinutes()),
-						new CalcAttachTimeDto(
-								domain.getToRecordTotalTime().getTotalTime().getCalcTime().valueAsMinutes(),
-								domain.getToRecordTotalTime().getTotalTime().getTime().valueAsMinutes())),
-						new TotalDeductionTimeDto(
-								new CalcAttachTimeDto(
-										domain.getDeductionTotalTime().getExcessOfStatutoryTotalTime().getCalcTime()
-												.valueAsMinutes(),
-										domain.getDeductionTotalTime().getExcessOfStatutoryTotalTime().getTime()
-												.valueAsMinutes()),
-								new CalcAttachTimeDto(
-										domain.getDeductionTotalTime().getWithinStatutoryTotalTime().getCalcTime()
-												.valueAsMinutes(),
-										domain.getDeductionTotalTime().getWithinStatutoryTotalTime().getTime()
-												.valueAsMinutes()),
-								new CalcAttachTimeDto(
-										domain.getDeductionTotalTime().getTotalTime().getCalcTime().valueAsMinutes(),
-										domain.getDeductionTotalTime().getTotalTime().getTime().valueAsMinutes())),
-						domain.getWorkTime().valueAsMinutes(),
-						ConvertHelper.mapTo(domain.getBreakTimeSheet(),
-								(c) -> new BreakTimeSheetDto(c.getStartTime().getAfterRoundingTime().valueAsMinutes(),
-										c.getEndTime().getAfterRoundingTime().valueAsMinutes(), c.getBreakTime()
-												.valueAsMinutes(),
+		return domain == null ? null : new BreakTimeSheetDailyPerformDto(
+						getĐeuctionTime(domain.getToRecordTotalTime()),
+						getĐeuctionTime(domain.getDeductionTotalTime()),
+						getAttendanceTime(domain.getWorkTime()),
+						domain.getBreakTimeSheet() == null ? new ArrayList<>() : 
+							ConvertHelper.mapTo(domain.getBreakTimeSheet(),
+								(c) -> new BreakTimeSheetDto(
+										getAttendanceTime(c.getStartTime().getAfterRoundingTime()),
+										getAttendanceTime(c.getEndTime().getAfterRoundingTime()), 
+										getAttendanceTime(c.getBreakTime()),
 										c.getBreakFrameNo().v().intValue())),
-						domain.getGooutTimes().v());
+						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
+	}
+	
+	private static int getAttendanceTime(TimeWithDayAttr domain) {
+		return domain == null ? null : domain.valueAsMinutes();
+	}
+	
+	private static int getAttendanceTime(AttendanceTime domain) {
+		return domain == null ? null : domain.valueAsMinutes();
+	}
+
+	private static TotalDeductionTimeDto getĐeuctionTime(DeductionTotalTime domain) {
+		return domain == null ? null : new TotalDeductionTimeDto(
+				getCalcTime(domain.getExcessOfStatutoryTotalTime()),
+				getCalcTime(domain.getWithinStatutoryTotalTime()),
+				getCalcTime(domain.getTotalTime()));
+	}
+
+	private static CalcAttachTimeDto getCalcTime(TimeWithCalculation domain) {
+		return domain == null ? null : new CalcAttachTimeDto(
+					getAttendanceTime(domain.getCalcTime()),
+					getAttendanceTime(domain.getTime()));
 	}
 }

@@ -52,8 +52,7 @@ public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySetti
 		return this.listKshmtComMonthDaySet.stream().map(e -> {
 			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtComMonthDaySetPK().getManageYear()),
 					new Integer(e.getKshmtComMonthDaySetPK().getMonth()),
-					new MonthlyNumberOfDays(e.getInLegalHd().intValue()),
-					new MonthlyNumberOfDays(e.getOutLegalHd().intValue()));
+					new MonthlyNumberOfDays(e.getInLegalHd()));
 			return domain;
 		}).collect(Collectors.toList());
 	}

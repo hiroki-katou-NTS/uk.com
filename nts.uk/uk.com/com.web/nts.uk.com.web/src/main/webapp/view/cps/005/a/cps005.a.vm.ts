@@ -168,6 +168,7 @@ module nts.uk.com.view.cps005.a {
                 nts.uk.ui.errors.clearAll();
                 new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
                     self.currentCtgSelected(new PerInfoCtgModel(data));
+                    nts.uk.ui.errors.clearAll();
                     self.isHisTypeUpdateModel(true);
                     self.isEnableButtonProceed(true);
                     self.isEnableButtonOpenDialog(true);
@@ -271,7 +272,7 @@ module nts.uk.com.view.cps005.a {
     }
 
     export class UpdatePerInfoCtgModel {
-        id: string
+        id: string;
         categoryName: string;
         categoryType: number;
         constructor(data: PerInfoCtgModel) {

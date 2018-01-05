@@ -15,6 +15,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         ]);
         workPlaceId: string;
         workPlaceName: string;
+        workPlaceCode:KnockoutObservable<any> = ko.observable();
+        workPlaceDisplayName:KnockoutObservable<any> = ko.observable();
         listEmployee: Array<any>;
         listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         listEmployeeSwapTemp: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -33,24 +35,27 @@ module nts.uk.at.view.ksu001.l.viewmodel {
 
         constructor() {
             let self = this;
+
             self.workPlaceId = getShared('dataForScreenL').workplaceId;
             self.listEmployee = getShared('dataForScreenL').empItems;
             self.selectedEmployeeSwap = ko.observableArray([]);
             self.listEmployeeTemporary = ko.observableArray([]);
             self.selectedTeam('');
             self.teamName('');
+
             if (self.listEmployee.length > 0) {
                 self.workPlaceName = self.listEmployee[0].workplaceName;
             } else {
                 self.workPlaceName = '';
             }
+
             self.selectedTeam.subscribe(function(newValue) {
                 if (self.onlyEmpNotTeam() == false) {
                     self.listEmployeeSwap().concat(self.listEmployeeTemporary());
                     let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', newValue]);
                     let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
                     self.selectedEmployeeSwap(teamSelected);
-                    self.listEmployeeSwap(newListEmployeeSwap);
+                    self.listEmployeeSwap(_.orderBy(newListEmployeeSwap,['empId'],['asc']));
                 } else {
                     //self.listEmployeeTemporary(self.selectedEmployeeSwap());
                     let teamSelected = _.filter(self.listEmployeeTemporary(), ['teamCode', newValue]);
@@ -63,8 +68,21 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 //self.listEmployeeSwapTemp(_.clone(newListEmployeeSwap));
                 self.teamName(_.find(self.listTeam(), ['code', self.selectedTeam()]).name);
             });
+            self.selectedEmployeeSwap.subscribe(()=>{
+                let employees =_.orderBy(self.listEmployeeSwap(),['empId'],['asc']);
+                self.listEmployeeSwap(employees);
+                
+            });
             self.onlyEmpNotTeam.subscribe(function(value) {
                 self.filterEmpNotTeam(value);
+            });
+            let data = {
+                workplaceId:self.workPlaceId,
+                baseDate:moment().toISOString()    
+            }
+            service.getWorkPlaceById(data).done((wkp)=>{
+                self.workPlaceCode(wkp.workplaceCode);
+                self.workPlaceDisplayName(wkp.wkpDisplayName);
             });
         }
 
@@ -84,7 +102,6 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 }).fail(() => {
                     dfd.reject();
                 });
-
             });
             return dfd.promise();
         }
@@ -130,7 +147,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 let teamDB = self.listTeamDB();
                 _.forEach(self.listEmployee, value => {
                     // add teamcode to employee
-                    let employeeSeting = _.find(data, ["sid", value.empId]);
+                    let employeeSeting: any = _.find(data, ["sid", value.empId]);
                     let employee = new EmployeeModel(value);
                     if (employeeSeting) {
                         //check team exist
@@ -139,6 +156,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                             employee.teamCode = team.teamCode;
                             employee.teamCodeOld = team.teamCode;
                             employee.teamName = team.teamName;
+                        }else{
+                            employee.teamName = "なし";
                         }
                     } else {
                         employee.teamName = "なし";
@@ -161,6 +180,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     arrayTeam.push(team);
                 });
                 self.listTeam(arrayTeam);
+                self.filterEmpNotTeam(self.onlyEmpNotTeam());
                 dfd.resolve();
             }).fail(() => {
                 dfd.reject();
@@ -174,14 +194,14 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
+
         /**
          * add employee to team
          */
-
         addEmToTeam(): void {
             let self = this;
             nts.uk.ui.block.invisible();
-            let data = {};
+            let data: any = {};
             let teamCodes = _.map(self.selectedEmployeeSwap(), 'teamCode');
             data.employeeCodes = _.map(self.selectedEmployeeSwap(), 'empId');
             data.teamCode = self.selectedTeam();
@@ -233,7 +253,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 self.listEmployeeSwap(teamSelected);
             } else {
                 let newListEmployeeSwap = self.listEmployeeSwap().concat(self.listEmployeeTemporary());
-                self.listEmployeeSwap(newListEmployeeSwap);
+                let employees =_.orderBy(newListEmployeeSwap,['empId'],['asc']);
+                self.listEmployeeSwap(employees);
             }
         }
     }
@@ -302,5 +323,4 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             this.sid = sid;
         }
     }
-
 }

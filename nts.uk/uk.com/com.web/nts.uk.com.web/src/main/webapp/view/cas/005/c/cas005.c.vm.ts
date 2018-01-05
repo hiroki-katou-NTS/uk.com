@@ -14,8 +14,10 @@ module nts.uk.com.view.csa005.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getPerMissingMenu().done(function(res){                    
+                service.getPerMissingMenu().done(function(res){    
+                    $("#list_link").focus();                
                     self.listMenu(_.map(res,  x =>{return new model.Menu(x.code, x.displayName, x.screenId, x.programId, x.queryString)}));
+                    
                 });
                 dfd.resolve();
                 return dfd.promise();
@@ -53,9 +55,7 @@ module nts.uk.com.view.csa005.c {
                 this.queryString = queryString;
                 this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6) + "/" + queryString + "/index.xhtml";
             }
-       }
-        }//end class Role
-        
+       }//end class Role        
 
     }//end module model
 

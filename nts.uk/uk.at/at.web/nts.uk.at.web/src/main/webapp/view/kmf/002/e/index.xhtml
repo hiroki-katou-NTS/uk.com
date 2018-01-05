@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition >
+		
+		<div class="sidebar-content-header">
+   			<!-- E1_1 -->
+   			<button tabindex="1" data-bind="click: save">#{i18n.getText('KMF002_2')}</button>
+   			<!-- E1_2 -->
+   			<button tabindex="2" data-bind="click: deleteObj">#{i18n.getText('KMF002_11')}</button>
+		</div>
+		
+		<div id="scrE" class="contents-area" data-bind="with: commonTableMonthDaySet">
+			<ui:include src="../base.xhtml"></ui:include>	
+			
+		
+		</div>
+		
+		
+	</ui:composition>
+</body>
+</html>

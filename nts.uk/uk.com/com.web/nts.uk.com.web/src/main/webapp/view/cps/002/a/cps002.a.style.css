@@ -43,10 +43,12 @@
 }
 
 #step1_content_top_right {
-	float: left;
+	float: right;
 	width: 370px;
 	background-color: #F2F2F2;
 	padding: 10px;
+	position: absolute;
+	display: inline-block;
 }
 
 .nts-wizard.vertical>.steps {
@@ -54,12 +56,8 @@
 }
 
 .nts-wizard.vertical>.content {
-	width: 1050px;
+	/* width: 1050px; */
 	height: 800px;
-}
-
-#emp_reg_info_wizard {
-	width: 1400px !important;
 }
 
 #top_right_hr {
@@ -100,7 +98,7 @@
 }
 
 .lastHistName {
-	margin-left: 10px;
+	margin-left: 8px;
 	white-space: nowrap;
 	width: 75px;
 	overflow: hidden;
@@ -136,6 +134,7 @@
 
 #step2_content {
 	margin-left: 20px;
+	display: inline-flex;
 }
 
 #step2_des {
@@ -166,7 +165,6 @@
 
 #search_box {
 	height: 500px;
-	width: 200px;
 	position: relative;
 	border-radius: 5px;
 	padding: 0px 5px 10px 25px;
@@ -187,13 +185,17 @@
 
 #cover_table {
 	width: 453px;
-	overflow: auto;
 }
 
 .table_item, th, td {
 	border: 1px solid black;
 	padding: 5px;
 	min-height: 20px;
+}
+
+.table_item td {
+	max-width: 250px;
+	word-break: keep-all;
 }
 
 .table_item th {
@@ -205,11 +207,15 @@
 }
 
 .nts-wizard, .nts-wizard>.content {
-	overflow: unset !important;
+	overflow: visible !important;
 }
 /* step 2 */
 .textLabel {
 	line-height: 37px;
+}
+
+.step2_title {
+	margin-left: 20px;
 }
 
 .requiredCell {
@@ -237,5 +243,19 @@
 
 .drag-panel {
 	height: 500px !important;
+}
+
+.ellipsis_step3_title {
+	white-space: nowrap;
+	width: 320px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.valueCell {
+	max-width: 250px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 /* step 3 end */

@@ -48,6 +48,10 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 		String companyId = login.companyId();
 
 		AddAuthorityDailyFormatCommand command = context.getCommand();
+		
+		if (command.getAuthorityDailyCommand().getDailyAttendanceAuthorityDetailDtos().isEmpty()) {
+			throw new BusinessException("Msg_920");
+		}
 
 		// add Format Daily
 		List<AuthorityFomatDaily> authorityFomatDailies = command.getAuthorityDailyCommand().getDailyAttendanceAuthorityDetailDtos().stream()
@@ -90,7 +94,7 @@ public class AddAutDaiFormatCommandHandler extends CommandHandler<AddAuthorityDa
 			}
 		}
 		
-		// add Format monthly		
+		// add Format monthly	
 		List<AuthorityFomatMonthly> authorityFomatMonthlies = command.getAuthorityMonthlyCommand().getDailyAttendanceAuthorityDetailDtos().stream()
 				.map(f -> {
 					return new AuthorityFomatMonthly(companyId,

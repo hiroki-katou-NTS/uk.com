@@ -91,8 +91,10 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public void updateByKey(WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
-		KrcdtDaiPerWorkInfo data = this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", workInfoOfDailyPerformance.getEmployeeId())
-				.setParameter("ymd", workInfoOfDailyPerformance.getYmd()).getSingle().get();
+		Optional<KrcdtDaiPerWorkInfo> dataOpt = this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", workInfoOfDailyPerformance.getEmployeeId())
+				.setParameter("ymd", workInfoOfDailyPerformance.getYmd()).getSingle();
+		KrcdtDaiPerWorkInfo data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiPerWorkInfo();
+		if(workInfoOfDailyPerformance != null){
 		data.krcdtDaiPerWorkInfoPK.employeeId = workInfoOfDailyPerformance.getEmployeeId();
 		data.krcdtDaiPerWorkInfoPK.ymd = workInfoOfDailyPerformance.getYmd();
 		data.recordWorkWorktimeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode().v();
@@ -105,8 +107,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		
 		List<ScheduleTimeSheet> scheduleTimeSheets = workInfoOfDailyPerformance.getScheduleTimeSheets();
 		data.scheduleTimes.forEach(item -> {
-			Optional<ScheduleTimeSheet> scheduleTimeSheet = scheduleTimeSheets.stream().filter(items -> item.krcdtWorkScheduleTimePK.employeeId == workInfoOfDailyPerformance.getEmployeeId()
-					&& item.krcdtWorkScheduleTimePK.ymd == workInfoOfDailyPerformance.getYmd()).findFirst();
+			Optional<ScheduleTimeSheet> scheduleTimeSheet = scheduleTimeSheets.stream().filter(items -> item.krcdtWorkScheduleTimePK.employeeId.equals(workInfoOfDailyPerformance.getEmployeeId())
+					&& item.krcdtWorkScheduleTimePK.ymd.equals(workInfoOfDailyPerformance.getYmd())).findFirst();
 			item.krcdtWorkScheduleTimePK.employeeId = workInfoOfDailyPerformance.getEmployeeId();
 			item.krcdtWorkScheduleTimePK.ymd = workInfoOfDailyPerformance.getYmd();
 			item.krcdtWorkScheduleTimePK.workNo = scheduleTimeSheet.get().getWorkNo().v();
@@ -114,6 +116,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			item.leaveWork = scheduleTimeSheet.get().getLeaveWork().v();
 		});
 		this.commandProxy().update(data);
+		}
 	}
 
 	@Override

@@ -111,9 +111,43 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 				closureId));
 
 		// Create Query
+		cq.where(predicateList.toArray(new Predicate[] {}));
 		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository#
+	 * findByClosureId(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<ClosureEmployment> findByClosureIds(String companyId, List<Integer> closureIds) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<KclmtClosureEmployment> cq = cb.createQuery(KclmtClosureEmployment.class);
+
+		// Root
+		Root<KclmtClosureEmployment> root = cq.from(KclmtClosureEmployment.class);
+		cq.select(root);
+
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		// Equal companyId
+		predicateList.add(cb.equal(
+				root.get(KclmtClosureEmployment_.kclmpClosureEmploymentPK).get(KclmpClosureEmploymentPK_.companyId),
+				companyId));
+		// in ClosureIds
+		predicateList.add(root.get(KclmtClosureEmployment_.closureId).in(closureIds));
+
+		// Create Query.
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
+
+		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
+	}
 }

@@ -80,7 +80,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         getData(): JQueryPromise<any>{
             let self = this;  
             let dfd = $.Deferred();
-            service.getAll().done((lstData: Array<viewmodel.Per>) => {
+            service.getAll(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData: Array<viewmodel.Per>) => {
                 if(lstData.length == 0){
                     self.check(true);
                     self.selectedId(0);
@@ -99,14 +99,16 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            service.getAll().done((lstData: Array<Per>) => {
+            let specialHolidayCode = nts.uk.ui.windows.getShared('KMF004D_SPHD_CD');
+            service.getAll(specialHolidayCode).done((lstData: Array<Per>) => {
+                nts.uk.ui.errors.clearAll();
                 if(lstData.length == 0){
                     self.selectedId(0);
-                    $("#inpCode").focus();
                     self.check(true);
                     self.codeObject(null);
                     self.selectedName(null);
                     self.checkUpdate(false);
+                    $("#inpCode").focus();
                     self.items([]);
                     for (let i = 0; i < 20; i++) {
                         if(self.items()[i] == undefined){
@@ -177,44 +179,50 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             }
             
             code = self.codeObject();
-            _.defer(() => {
+          
                 if (nts.uk.ui.errors.hasError() === false) {
                     // update item to list  
-                    if(self.checkUpdate() == true){
+                    if(self.checkUpdate()){
                         $("#inpPattern").focus();   
                         service.update(dataTransfer).done(function(errors: Array<string>){
                             self.getData().done(function(){
                                 self.selectedCode(code);   
-                                if (errors && errors.length > 0) {
-                                    self.addListError(errors);
+                                if (errors.length > 0) {
+                                   self.addListError(errors);
                                 }else{
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                        self.selectedCode(code);
                                         $("#inpPattern").focus();
-                                    }); 
+                                    });
                                 }
                             });
               
                         }).fail(function(res){
                             $('#inpCode').ntsError('set', res);
                             });
-                    }
-                    else{
+                    }else{
                         code = self.codeObject();
                         self.selectedOption(null);
                         // insert item to list
-                        service.add(dataTransfer).done(function(){
+                        service.add(dataTransfer).done(function(errors: Array<string>){
                             self.getData().done(function(){
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                                    self.selectedCode(code);  
-                                    $("#inpPattern").focus();
-                                });
+                                if (errors.length > 0) {
+                                   self.addListError(errors);
+                                }else{
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                       self.selectedCode(code);  
+                                        $("#inpPattern").focus();
+                                    });
+                                }
                             });
                         }).fail(function(res){
-                            $('#inpCode').ntsError('set', res);
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_3" }).then(() => { 
+                                $('#inpCode').focus();
+                            });
                         });
                     }
                 }
-            }); 
+           
             nts.uk.ui.block.clear();   
         } 
         
@@ -289,21 +297,14 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         /**
              * Set error
              */
-            addListError(errorsRequest: Array<string>) {
-                var messages = {};
-                _.forEach(errorsRequest, function(err) {
-                    messages[err] = nts.uk.resource.getMessage(err);
-                });
-    
-                var errorVm = {
-                    messageId: errorsRequest,
-                    messages: messages
-                };
-    
-                nts.uk.ui.dialog.bundledErrors(errorVm);
-            }
-        
-        
+        addListError(errorsRequest: Array<string>) {
+            var errors = [];
+            _.forEach(errorsRequest, function(err) {
+                errors.push({message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+            });
+            
+            nts.uk.ui.dialog.bundledErrors({ errors: errors});
+        }
     } 
     export interface Per{
         specialHolidayCode: string

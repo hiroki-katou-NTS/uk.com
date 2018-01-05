@@ -60,5 +60,8 @@ public class SampleSessionWebService extends WebService {
 		roles.forPayroll();
 		roles.forPersonnel();
 		roles.forPersonalInfo();
+
+		loggedin.language().changeBasicLanguage("ja");
+		loggedin.language().changeBasicLanguage("ja");
 	}
 }

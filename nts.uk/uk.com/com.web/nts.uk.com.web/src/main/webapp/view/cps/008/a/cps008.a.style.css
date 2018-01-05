@@ -1,3 +1,22 @@
+#functions-area button ~ .ntsControl {
+	margin-left: 15px;
+}
+
+#functions-area button+.ntsControl {
+	margin-left: 580px;
+}
+
+#functions-area, #contents-area {
+	min-width: 1260px;
+}
+
+@media ( min-width : 1280px) {
+	#functions-area, #contents-area {
+		overflow-x: hidden;
+	}
+}
+
+
 .valign-center {
 	vertical-align: middle !important;
 }
@@ -7,27 +26,19 @@
 }
 
 #A_BTN_NEW {
-	margin-left: 19px;
 	width: 85px;
 }
 
 #A_BTN_REGISTER {
-	margin-left: 10px;
 	width: 85px;
 }
 
 #A_BTN_COPPY {
-	margin-left: 15px;
 	width: 85px;
 }
 
-#functions-area button.danger {
-	margin-left: 205px;
-	margin-right: 380px;
-}
-
 #A_BTN_DELETE {
-	margin-left: 100px;
+	margin-left: 45px !important;
 	width: 80px;
 }
 
@@ -79,7 +90,7 @@ button.search-btn {
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 330px;
+	width: 300px;
 }
 
 i.icon.icon-searchbox {
@@ -89,3 +100,18 @@ i.icon.icon-searchbox {
 .layout-control .drag-panel{
 	height: 500px !important;
 }
+
+.nosetarea {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: 810px;
+    height: 500px;
+    padding: 10px;
+    padding-top: 10px;
+    box-sizing: border-box;
+}
+
+
+
+
+

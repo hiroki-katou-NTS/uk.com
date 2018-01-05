@@ -25,6 +25,12 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
 				.setParameter("date", date).getSingle(c -> c.toDomain());
 	}
+	
+	@Override
+	public List<RoleIndividualGrant> findListByUserAndDate(String userId, GeneralDate date) {
+		return this.queryProxy().query(SELECT_BY_DATE, SacmtRoleIndiviGrant.class).setParameter("userID", userId)
+				.setParameter("date", date).getList(c -> c.toDomain());
+	}
 
 	private final String SELECT_BY_ROLE_USER = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.companyID = :cid"
 			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType AND c.sacmtRoleIndiviGrantPK.userID = :userID";
@@ -33,6 +39,19 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	public Optional<RoleIndividualGrant> findByUserCompanyRoleType(String userID, String companyID, int roleType) {
 		return this.queryProxy().query(SELECT_BY_ROLE_USER, SacmtRoleIndiviGrant.class).setParameter("cid", companyID)
 				.setParameter("roleType", roleType).setParameter("userID", userID).getSingle(c -> c.toDomain());
+	}
+	
+	private final String SELECT_BY_COMPANY_USER_ROLE_DATE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE"
+			+ " (c.sacmtRoleIndiviGrantPK.companyID = :companyId"
+			+ " OR c.sacmtRoleIndiviGrantPK.companyID = '000000000000-0000')"
+			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType AND c.sacmtRoleIndiviGrantPK.userID = :userId"
+			+ " AND c.strD <= :date AND c.endD >= :date";
+	
+	@Override
+	public Optional<RoleIndividualGrant> findByUserCompanyRoleTypeDate(String userId, String companyId, int roleType, GeneralDate date) {
+		return this.queryProxy().query(SELECT_BY_COMPANY_USER_ROLE_DATE, SacmtRoleIndiviGrant.class)
+				.setParameter("companyId", companyId).setParameter("userId", userId)
+				.setParameter("roleType", roleType).setParameter("date", date).getSingle(c -> c.toDomain());
 	}
 
 	private final String SELECT_BY_KEY = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"

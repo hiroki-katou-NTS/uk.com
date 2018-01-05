@@ -30,10 +30,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeSetRepository{
 	
-	private final String findWorkTimeSetByCompanyID = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
+	private final String findWorkTimeSetByCompanyID = "SELECT DISTINCT a FROM KwtstWorkTimeSet_old a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID";
 	
-	private final String findWorkTimeSetByList = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
+	private final String findWorkTimeSetByList = "SELECT DISTINCT a FROM KwtstWorkTimeSet_old a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs";
 	public static final int FIRST_ITEM = 0;

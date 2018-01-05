@@ -49,14 +49,14 @@ public class RoleWorkplaceIDFinder {
 	 */
 	public WorkplaceIdDto findListWokplaceId(Integer systemType) {
 
-
-		String roleId = this.findRoleId(systemType);
+		String roleId = this.findRoleIdBySystemType(systemType);
 
 		Optional<Role> opRole = roleRepository.findByRoleId(roleId);
 		GeneralDate referenceDate = GeneralDate.today();
 		List<String> listWkpId = new ArrayList<>();
 		WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
 
+		// if role is present
 		if (opRole.isPresent()) {
 			if (opRole.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
 				listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
@@ -67,6 +67,10 @@ public class RoleWorkplaceIDFinder {
 				workplaceIdDto.setListWorkplaceIds(listWkpId);
 				workplaceIdDto.setIsAllEmp(false);
 			}
+		// if role is not present	
+		} else {
+			workplaceIdDto.setListWorkplaceIds(listWkpId);
+			workplaceIdDto.setIsAllEmp(true);
 		}
 		return workplaceIdDto;
 
@@ -93,20 +97,26 @@ public class RoleWorkplaceIDFinder {
 		listWkpId = listWkpManager.stream().map(m -> m.getWorkplaceId()).collect(Collectors.toList());
 				
 		// requestList #30 get aff workplace history
-		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter.findWkpByBaseDateAndEmployeeId(referenceDate, employeeId);	
-		
-		// add wkpId to listWkpId		
-		workplaceId = opAffWorkplaceHistImport.get().getWorkplaceId();
-		if(!workplaceId.isEmpty()){
-			listWkpId.add(workplaceId);
-		}		
-		
-		// action RequestList #154
-		if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
-			List<String> list = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId, referenceDate);
-			listWkpId.addAll(list);			
+		Optional<AffWorkplaceHistImport> opAffWorkplaceHistImport = workplaceAdapter
+				.findWkpByBaseDateAndEmployeeId(referenceDate, employeeId);
+
+		// add wkpId to listWkpId
+		if (opAffWorkplaceHistImport.isPresent()) {
+			workplaceId = opAffWorkplaceHistImport.get().getWorkplaceId();
 		}
-	
+
+		// check workplace id != null
+		if (workplaceId != null) {
+			listWkpId.add(workplaceId);
+		}
+
+		// action RequestList #154
+		if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD && workplaceId != null) {
+			List<String> list = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId,
+					referenceDate);
+			listWkpId.addAll(list);
+		}
+
 		return listWkpId.stream().distinct().collect(Collectors.toList());
 	}
 		
@@ -117,35 +127,30 @@ public class RoleWorkplaceIDFinder {
 	 * @param systemType the system type
 	 * @return the string
 	 */
-	public String findRoleId(Integer systemType) {
+	public String findRoleIdBySystemType(Integer systemType) {
 		LoginUserRoles loginUserRoles = AppContexts.user().roles();
 
 		// Mock data
 		switch (SystemType.valueOf(systemType)) {
 		case PERSONAL_INFORMATION:
-			// return loginUserRoles.forPersonalInfo();
 			// EmployeeReferenceRange = 0
-			return "085d32db-7809-4769-8cd2-c61d69fd1b51";
+			return loginUserRoles.forPersonalInfo();
 
 		case EMPLOYMENT:
-			// return loginUserRoles.forAttendance();
 			// EmployeeReferenceRange = 2
-			return "32c67880-ff0a-4969-9056-9b49135d37d5";
+			return loginUserRoles.forAttendance();
 
 		case SALARY:
-			// return loginUserRoles.forPayroll();
 			// EmployeeReferenceRange = 1
-			return "55b0c0fc-e2e3-4afd-8853-fbc491725ec5";
+			return loginUserRoles.forPayroll();
 
 		case HUMAN_RESOURCES:
-			// return loginUserRoles.forPersonnel();
 			// EmployeeReferenceRange = 1
-			return "004";
+			return loginUserRoles.forPersonnel();
 
 		case ADMINISTRATOR:
-			// return loginUserRoles.forCompanyAdmin();
 			// EmployeeReferenceRange = 0
-			return "f73d4feb-4f2f-41e8-96a2-44681cdd24eb";
+			return loginUserRoles.forCompanyAdmin();
 
 		default:
 			break;

@@ -14,16 +14,27 @@ import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
 @Stateless
 public class JpaUserRepositoryAuth extends JpaRepository implements UserRepository {
 	
-	private final String SELECT_BY_LOGIN_ID = "SELECT c FROM SacmtUser c WHERE c.loginID=:loginID";
+	private final String SELECT_BY_LOGIN_ID = "SELECT c FROM SacmtUser c WHERE c.loginID = :loginID";
 	@Override
 	public List<User> getByLoginId(String loginID) {
 		return this.queryProxy().query(SELECT_BY_LOGIN_ID, SacmtUser.class).setParameter("loginID", loginID).getList(c->c.toDomain());
 	}
+	
+	private final String SELECT_BY_CONTRACT_LOGIN_ID = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCode AND c.loginID = :loginID";
+	@Override
+	public Optional<User> getByContractAndLoginId(String contractCode, String loginId) {
+		return this.queryProxy().query(SELECT_BY_CONTRACT_LOGIN_ID, SacmtUser.class)
+				.setParameter("contractCode", contractCode)
+				.setParameter("loginID", loginId)
+				.getSingle(c->c.toDomain());
+	}
 
+	private final String SELECT_BY_ASSOCIATE_PERSIONID = "SELECT c FROM SacmtUser c WHERE c.associatedPersonID = :associatedPersonID";
 	@Override
 	public Optional<User> getByAssociatedPersonId(String associatedPersonId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_BY_ASSOCIATE_PERSIONID, SacmtUser.class)
+				.setParameter("associatedPersonID", associatedPersonId)
+				.getSingle(c->c.toDomain());
 	}
 
 	private final String SELECT_BY_USER = "SELECT c FROM SacmtUser c" + " WHERE c.sacmtUserPK.userID = :userID";
@@ -56,8 +67,8 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	}
 
 	private final String SELECT_BY_ID_OR_NAME = "SELECT c From SacmtUser c"
-			+ " WHERE (c.sacmtUserPK.userID LIKE CONCAT('%', :userIDName, '%')"
-			+ " OR c.userName LIKE CONCAT('%', :userIDName, '%'))"
+			+ " WHERE (LOWER(c.sacmtUserPK.userID) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
+			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%')))"
 			+ " AND c.expirationDate >= :date";
 	@Override
 	public List<User> searchUser(String userIDName, GeneralDate date) {

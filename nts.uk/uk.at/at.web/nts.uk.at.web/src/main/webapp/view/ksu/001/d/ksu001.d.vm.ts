@@ -85,10 +85,16 @@ module nts.uk.at.view.ksu001.d.viewmodel {
                 checkedHandler: checkedHandler
             };
 
+
             service.updateBasicSchedule(command).done(() => {
                 nts.uk.ui.block.clear();
+                setShared('dataFromScreenD', {
+                    clickCloseDialog: false
+                });
                 nts.uk.ui.windows.close();
             });
+
+
 
         }
 

@@ -14,12 +14,13 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         selectedRuleCode: any;
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         currentScreen: any = null;
-        listWorkTimeComboBox:KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        
         constructor() {
             let self = this;
             self.listWorkType = ko.observableArray([]);
             self.listWorkTime = ko.observableArray([]);
-             self.listWorkTimeComboBox = ko.observableArray([]);
+            self.listWorkTimeComboBox = ko.observableArray([]);
             self.roundingRules = ko.observableArray([
                 { code: '1', name: nts.uk.resource.getText("KSU001_71") },
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
@@ -29,10 +30,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             self.currentCode = ko.observable(3);
             self.selectedWorkTypeCode = ko.observable('');
             self.selectedWorkTimeCode = ko.observable('');
-            self.time1 = ko.observable('12:00');
-            self.time2 = ko.observable('15:00');
-
-            self.findDataForComboBox();
+            self.time1 = ko.observable('');
+            self.time2 = ko.observable('');
 
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
@@ -58,14 +57,14 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     let c = _.find(self.listWorkTime(), ['siftCd', siftCode]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = c.siftCd;
-                        startTime = c.start;
-                        endTime = c.end;
+                        workTimeCode = (c.siftCd == '000' ? '' : c.siftCd);
+                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.start, true).format() : '';
+                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.end, true).format() : '';
                     } else {
                         workTimeName = null;
                         workTimeCode = null;
-                        startTime = null;
-                        endTime = null;
+                        startTime = '';
+                        endTime = '';
                     }
                 }
                 return new ksu001.common.viewmodel.ExCell({
@@ -82,6 +81,17 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 //Paste data into cell (set-sticker-single)
                 $("#extable").exTable("stickData", value);
             });
+
+            //init screen O
+//            $.when(self.findDataForComboBox()).done(() => {
+//                //get state of list workTypeCode
+//                // get data for screen A
+//                let lstWorkTypeCode = [];
+//                _.map(self.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
+//                    lstWorkTypeCode.push(workType.workTypeCode);
+//                });
+//                __viewContext.viewModel.viewA.checkStateWorkTypeCode(lstWorkTypeCode);
+//            });
         }
 
         openDialogO1(): void {
@@ -103,41 +113,50 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 }
             });
         }
-        search():void{
+
+        search(): void {
             let self = this;
-            if(!self.time1() && !self.time2()){
+            if (!self.time1() && !self.time2()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
             }
-            if(self.time1() && self.time2() && moment(self.time1(),'HH:mm').isSameOrAfter(moment(self.time2(),'HH:mm'))){
-                   nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });  
+            if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
             }
             self.listWorkTimeComboBox([]);
-            _.forEach(self.listWorkTime(),(obj)=>{
-                if(self.time1() && self.time2() 
-                    && (moment.duration(self.time1()).asMinutes()== obj.start)
-                    && (moment.duration(self.time2()).asMinutes()== obj.end)){
-                       self.listWorkTimeComboBox.push(obj);    
-                }else if(!self.time2()&& (moment.duration(self.time1()).asMinutes() <= obj.start)){
+            _.forEach(self.listWorkTime(), (obj) => {
+                if (self.time1() && self.time2()
+                    && (moment.duration(self.time1()).asMinutes() == obj.start)
+                    && (moment.duration(self.time2()).asMinutes() == obj.end)) {
                     self.listWorkTimeComboBox.push(obj);
-                }else if(!self.time1()&&(moment.duration(self.time2()).asMinutes() >= obj.end)){
-                    self.listWorkTimeComboBox.push(obj);    
+                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.start)) {
+                    self.listWorkTimeComboBox.push(obj);
+                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.end)) {
+                    self.listWorkTimeComboBox.push(obj);
                 }
             });
-            
+
+            $('#combo-box2').focus();
         }
-        clear():void{
+
+        clear(): void {
             let self = this;
             self.listWorkTimeComboBox([]);
-            self. findDataForComboBox();
+            self.listWorkTimeComboBox(self.listWorkTime());
         }
+
         /**
          * Get data workType-workTime for 2 combo-box
          */
         findDataForComboBox(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataForComboBox().done(function(data) {
+                // sort
+                let listWorkTypeOrder: any[] = _.orderBy(data.listWorkType, ['workTypeCode'], ['asc']);
+                let listWorkTimeOrder: any[] = _.orderBy(data.listWorkTime, ['siftCd'], ['asc']);
+
                 //set data for listWorkType
-                self.listWorkType(data.listWorkType);
+                self.listWorkType(listWorkTypeOrder);
+
                 //set data for listWorkTime
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     siftCd: '000',
@@ -180,7 +199,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     end: undefined,
                     timeNumberCnt: undefined,
                 }));
-                _.each(data.listWorkTime, function(wT) {
+                _.each(listWorkTimeOrder, function(wT) {
                     let workTimeObj: ksu001.common.viewmodel.WorkTime = _.find(self.listWorkTime(), ['siftCd', wT.siftCd]);
                     if (workTimeObj && wT.timeNumberCnt == 1) {
                         workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.start, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.end, true).format();
@@ -202,7 +221,6 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                         }));
                     }
                 });
-
                 dfd.resolve();
                 self.listWorkTimeComboBox(self.listWorkTime());
 

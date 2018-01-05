@@ -30,18 +30,18 @@ public class EmployeeDailyPerError extends AggregateRoot {
 	/** 項目一覧: 勤怠項目ID */
 	private List<Integer> attendanceItemList;
 //	
-//	// エラー解除する
-//	private int errorCancelAble;
+	// エラー解除する
+	private int errorCancelAble;
 
 	public EmployeeDailyPerError(String companyID, String employeeID, GeneralDate date,
-			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, List<Integer> attendanceItemList) {
+			ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode, List<Integer> attendanceItemList, int errorCancelAble) {
 		super();
 		this.companyID = companyID;
 		this.employeeID = employeeID;
 		this.date = date;
 		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
 		this.attendanceItemList = attendanceItemList;
-//		this.errorCancelAble = errorCancelAble;
+		this.errorCancelAble = errorCancelAble;
 	}
 
 }

@@ -57,14 +57,18 @@ module nts.uk.com.view.cps017.a.viewmodel {
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
 
-                    let selectedObject = _.find(self.listItems(), (item) => {
+                    let selectedObject: ISelectionItem = _.find(self.listItems(), (item) => {
                         return item.selectionItemId == x;
                     });
-                    perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
 
+                    if (selectedObject != undefined) {
+                        perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
+                        perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
+                        //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    }
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
-                        let changeData = _.each(_selectionItemList, (item) => {
+                        let changeData: Array<IHistorySelection> = _.each(_selectionItemList, (item) => {
                             item.displayDate = item.startDate + "  " + getText('CPS017_12') + "  " + item.endDate;
                             return item;
                         });
@@ -154,7 +158,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             //self.enableSelName(true);
                             //self.revDisSel02(true);
 
-                            itemList.forEach(x => self.listSelection.push(x));
+                            // fix responsive bug
+                            ko.utils.arrayPushAll(self.listSelection, itemList);
+                            //itemList.forEach(x => self.listSelection.push(x));
+
                             self.selection().selectionID(self.listSelection()[0].selectionID);
                         } else {
                             //self.enableSelName(true);
@@ -169,6 +176,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     });
                 } else {
                     self.listSelection.removeAll();
+                    self.registerData();
                 }
             });
 
@@ -184,7 +192,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.externalCD(selectLists.externalCD);
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
+                } else {
+                    self.registerData();
                 }
+
             });
 
         }
@@ -219,6 +230,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     alertError({ messageId: "Msg_455" });
                     //                    self.registerData();
                     self.enableSelName(false);
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                 }
                 dfd.resolve();
             }).fail(error => {
@@ -328,7 +340,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 listSelection: Array<Selection> = self.listSelection(),
                 _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
 
-            let oldIndex = _.findIndex(listSelection, x => x.selectionID == currentItem.selectionID());
             currentItem.histId(self.historySelection().histId());
             let command = ko.toJS(currentItem);
 
@@ -339,6 +350,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listSelection.push(x));
                     }
+                    let oldIndex = _.findIndex(itemList, x => x.selectionID == currentItem.selectionID());
                     let newItem = itemList[oldIndex];
                     currentItem.selectionID(newItem.selectionID);
                 });
@@ -535,12 +547,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
     interface ISelectionItem {
         selectionItemId: string;
         selectionItemName: string;
+        formatSelection: any;
     }
 
     class SelectionItem {
         selectionItemId: KnockoutObservable<string> = ko.observable('');
         selectionItemName: KnockoutObservable<string> = ko.observable('');
-
+        selectionCodeCharacter: KnockoutObservable<number> = ko.observable(1);
         constructor(param: ISelectionItem) {
             let self = this;
             self.selectionItemId(param.selectionItemId || '');

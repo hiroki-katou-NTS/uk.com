@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Data
+@AllArgsConstructor
 public class DPErrorDto {
 	private String errorCode;
 	private String errorType;
@@ -18,16 +20,4 @@ public class DPErrorDto {
 	private GeneralDate processingDate;
 	private Integer attendanceItemId;
 	private boolean errorCancelable;
-	public DPErrorDto(String errorCode, String errorType, String employeeId, GeneralDate processingDate,
-			Integer attendanceItemId) {
-		super();
-		this.errorCode = errorCode;
-		this.errorType = errorType;
-		this.employeeId = employeeId;
-		this.processingDate = processingDate;
-		this.attendanceItemId = attendanceItemId;
-		this.errorCancelable = false;
-	}
-	
-	
 }

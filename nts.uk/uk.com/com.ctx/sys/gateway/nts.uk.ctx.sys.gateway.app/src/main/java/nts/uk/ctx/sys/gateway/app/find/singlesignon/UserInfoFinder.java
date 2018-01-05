@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +22,8 @@ import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.person.PersonInfoImport;
-import nts.uk.ctx.sys.gateway.dom.login.User;
-import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
@@ -43,10 +44,6 @@ public class UserInfoFinder {
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
 
-	/** The user repo. */
-	@Inject
-	private UserRepository userRepo;
-
 	/** The window account repository. */
 	@Inject
 	private WindowAccountRepository windowAccountRepository;
@@ -54,6 +51,9 @@ public class UserInfoFinder {
 	/** The other sys account repository. */
 	@Inject
 	private OtherSysAccountRepository otherSysAccountRepository;
+	
+	/** The user adapter. */
+	private UserAdapter userAdapter;
 
 	/**
 	 * Find list user info.
@@ -73,24 +73,28 @@ public class UserInfoFinder {
 		
 		List<String> listPersonId = new ArrayList<>();
 		List<UserDto> listUserMap = new ArrayList<>();
-		List<User> listUser = new ArrayList<>();
+		List<UserImport> listUser = new ArrayList<>();
 		List<UserDto> listUserAccount = new ArrayList<>();
 		
 		Set<String> list = new HashSet<>();
 
 		// Step 1 - add employee info
-		listEmpl.forEach(employee -> {
-			UserDto userDto = new UserDto();
-			userDto.setEmployeeCode(employee.getEmployeeCode());
-			userDto.setPersonId(employee.getPersonId());
-			userDto.setEmployeeId(employee.getEmployeeId());
-			listUserAccount.add(userDto);
-			list.add(employee.getPersonId());
-		});
-		
+		if (!listEmpl.isEmpty()) {
+			listEmpl.forEach(employee -> {
+				UserDto userDto = new UserDto();
+				userDto.setEmployeeCode(employee.getEmployeeCode());
+				userDto.setPersonId(employee.getPersonId());
+				userDto.setEmployeeId(employee.getEmployeeId());
+				listUserAccount.add(userDto);
+				list.add(employee.getPersonId());
+			});
+		}
 		// reject duplicate element
-		listPersonId.addAll(list);
-
+		if (!list.isEmpty()) {
+			listPersonId.addAll(list);
+			// remove element == null
+			listPersonId.removeAll(Collections.singleton(null));
+		}
 		// Step 2 - add person info
 		List<PersonInfoImport> listPerson = this.personInfoAdapter.getListPersonInfo(listPersonId);
 		Map<String, PersonInfoImport> mapPerson = listPerson.stream()
@@ -105,17 +109,17 @@ public class UserInfoFinder {
 
 		// Step 3 - add user info
 		for (String personId : listPersonId) {
-			Optional<User> user = userRepo.getByAssociatedPersonId(personId);
+			Optional<UserImport> user = userAdapter.findUserByAssociateId(personId);
 			if (user.isPresent()) {
 				listUser.add(user.get());
 			}
 		}
 
-		Map<String, User> mapUser = listUser.stream()
-				.collect(Collectors.toMap(User::getAssociatedPersonId, Function.identity()));
+		Map<String, UserImport> mapUser = listUser.stream()
+				.collect(Collectors.toMap(UserImport::getAssociatePersonId, Function.identity()));
 
 		listUserAccount.forEach(item -> {
-			User user = mapUser.get(item.getPersonId());
+			UserImport user = mapUser.get(item.getPersonId());
 			if (user != null) {
 				item.setLoginId(user.getLoginId().toString());
 				item.setUserId(user.getUserId());

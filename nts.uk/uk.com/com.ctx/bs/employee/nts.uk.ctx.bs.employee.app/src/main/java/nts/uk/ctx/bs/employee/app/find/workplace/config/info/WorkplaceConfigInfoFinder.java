@@ -92,7 +92,12 @@ public class WorkplaceConfigInfoFinder {
 		
 		List<WorkplaceHierarchy> result = new ArrayList<>();
 		
+		// if listWorkplaceIds is empty
+		if(workplaceIDImport.getListWorkplaceIds().isEmpty()){
+			return this.initTree(baseD, result);
+		}
 		
+		// if listWorkplaceIds is not empty
 		for (WorkplaceHierarchy item : lstHierarchy) {
 			if (workplaceIDImport.getListWorkplaceIds().contains(item.getWorkplaceId())) {
 				// if get part of list workplace id
@@ -116,10 +121,11 @@ public class WorkplaceConfigInfoFinder {
 					result.add(item);
 				}
 			}
-		}
+		
 		// remove dublicate element in list
 		result = result.stream().distinct().collect(Collectors.toList());
-
+		
+		}
 		return this.initTree(baseD, result);
 	}
 	
