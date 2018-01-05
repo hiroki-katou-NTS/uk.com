@@ -15,6 +15,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         currentScreen: any = null;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        
         constructor() {
             let self = this;
             self.listWorkType = ko.observableArray([]);
@@ -81,16 +82,16 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 $("#extable").exTable("stickData", value);
             });
 
-            //init
-            $.when(self.findDataForComboBox()).done(() => {
-                //get state of list workTypeCode
-                // get data for screen A
-                let lstWorkTypeCode = [];
-                _.map(self.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
-                    lstWorkTypeCode.push(workType.workTypeCode);
-                });
-                __viewContext.viewModel.viewA.checkStateWorkTypeCode(lstWorkTypeCode);
-            });
+            //init screen O
+//            $.when(self.findDataForComboBox()).done(() => {
+//                //get state of list workTypeCode
+//                // get data for screen A
+//                let lstWorkTypeCode = [];
+//                _.map(self.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
+//                    lstWorkTypeCode.push(workType.workTypeCode);
+//                });
+//                __viewContext.viewModel.viewA.checkStateWorkTypeCode(lstWorkTypeCode);
+//            });
         }
 
         openDialogO1(): void {
@@ -133,7 +134,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     self.listWorkTimeComboBox.push(obj);
                 }
             });
-            
+
             $('#combo-box2').focus();
         }
 
@@ -149,8 +150,13 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         findDataForComboBox(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataForComboBox().done(function(data) {
+                // sort
+                let listWorkTypeOrder: any[] = _.orderBy(data.listWorkType, ['workTypeCode'], ['asc']);
+                let listWorkTimeOrder: any[] = _.orderBy(data.listWorkTime, ['siftCd'], ['asc']);
+
                 //set data for listWorkType
-                self.listWorkType(data.listWorkType);
+                self.listWorkType(listWorkTypeOrder);
+
                 //set data for listWorkTime
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     siftCd: '000',
@@ -193,7 +199,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     end: undefined,
                     timeNumberCnt: undefined,
                 }));
-                _.each(data.listWorkTime, function(wT) {
+                _.each(listWorkTimeOrder, function(wT) {
                     let workTimeObj: ksu001.common.viewmodel.WorkTime = _.find(self.listWorkTime(), ['siftCd', wT.siftCd]);
                     if (workTimeObj && wT.timeNumberCnt == 1) {
                         workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.start, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.end, true).format();
