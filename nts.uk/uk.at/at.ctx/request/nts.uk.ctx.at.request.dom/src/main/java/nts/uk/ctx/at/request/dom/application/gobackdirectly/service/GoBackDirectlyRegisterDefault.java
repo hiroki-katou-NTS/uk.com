@@ -181,14 +181,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		if (line == 1) {
 			// MERGE NODE 1
 			// 勤務直行の確認
-			if (goBackDirectly.getGoWorkAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeStart1().v() != 0) {
+			if (goBackDirectly.getGoWorkAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeStart1() != null) {
 				// 入力する
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeStart(null);
 			}
 			// 勤務直帰の確認
-			if (goBackDirectly.getBackHomeAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeEnd1().v() != 0) {
+			if (goBackDirectly.getBackHomeAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeEnd1() != null) {
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeEnd(null);
@@ -196,14 +196,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		} else {
 			// MERGE NODE 1
 			// 勤務直行の確認
-			if (goBackDirectly.getGoWorkAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeStart2().v() != 0) {
+			if (goBackDirectly.getGoWorkAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeStart2() != null) {
 				// 入力する
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeStart(null);
 			}
 			// 勤務直帰の確認
-			if (goBackDirectly.getBackHomeAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeEnd2().v() != 0) {
+			if (goBackDirectly.getBackHomeAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeEnd2() != null) {
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeEnd(null);

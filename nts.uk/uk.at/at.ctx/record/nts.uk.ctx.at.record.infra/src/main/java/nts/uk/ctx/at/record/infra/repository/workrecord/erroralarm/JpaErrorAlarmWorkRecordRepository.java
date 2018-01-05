@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecordPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,6 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements ErrorAlarmWorkRecordRepository {
 
 	private final String FIND_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId ";
+	private final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.eralCheckId = :eralCheckId ";
 
 	@Override
 	public Optional<ErrorAlarmWorkRecord> findByCode(String code) {
@@ -77,5 +77,13 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		this.commandProxy().remove(KwrmtErAlWorkRecord.class,
 				new KwrmtErAlWorkRecordPK(AppContexts.user().companyId(), code));
 	}
+
+    @Override
+    public Optional<ErrorAlarmWorkRecord> findByErrorAlamCheckId(String eralCheckId) {
+        Optional<KwrmtErAlWorkRecord> entity = this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_ID, KwrmtErAlWorkRecord.class)
+                .setParameter("companyId", AppContexts.user().companyId())
+                .setParameter("eralCheckId", eralCheckId).getSingle();
+                return Optional.ofNullable(entity.isPresent() ? KwrmtErAlWorkRecord.toDomain(entity.get()) : null);
+    }
 
 }
