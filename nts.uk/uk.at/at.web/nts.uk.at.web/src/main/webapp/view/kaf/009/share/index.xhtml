@@ -36,6 +36,7 @@
 						<input class="row-cell-margin" id="inpStartTime1"
 							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
 															constraint:'TimeWithDayAttr',
+															required:true,
 															value: timeStart1, 
 															enable: true, 
 															readonly: false }" />
@@ -44,7 +45,8 @@
 					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
 						<input id="inpEndTime1"
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
-															constraint:'TimeWithDayAttr', 
+															constraint:'TimeWithDayAttr',
+															required:true, 
 															value: timeEnd1, 
 															enable: true, 
 															readonly: false}" />
@@ -54,7 +56,7 @@
 						<button id="btnLocation1" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
 						<label id = "lblLocation"
-							data-bind="text : workLocationName()"></label>
+							data-bind="text : workLocationCD() + '　' +workLocationName()"></label>
 					</div>
 				</div>
 			</div>
@@ -63,7 +65,7 @@
 				</div>
 				<div class="cell valign-center">	
 					<div style="display: inline-block; width: 250px;">
-						<div class="row-cell-margin"
+						<div class="row-cell-margin" id="goWorkAtr1"
 							data-bind="ntsSwitchButton: {
 									options:ko.observableArray([
 							                { goCode: 1, goName: '#{i18n.getText('KAF009_16')}' },
@@ -134,7 +136,7 @@
 						<button id="btnLocation2" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(2)}">#{i18n.getText('KAF009_15')}</button>
 						<label
-							data-bind="text : workLocationName2()"></label>
+							data-bind="text : workLocationCD2() + '　' +workLocationName2()"></label>
 					</div>
 				</div>
 			</div>
@@ -143,7 +145,7 @@
 				</div>
 				<div class="cell valign-center">	
 					<div style="display: inline-block; width: 250px;">
-						<div class="row-cell-margin"
+						<div class="row-cell-margin" id="goWorkAtr2"
 							data-bind="ntsSwitchButton: {
 									options:ko.observableArray([
 							                { goCode: 1, goName: '#{i18n.getText('KAF009_16')}' },
