@@ -65,6 +65,10 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (selectedObject != undefined) {
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
                         perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
+                        
+                        self.constraints.selectionCode = selectedObject.formatSelection.selectionCode;
+                        self.constraints.selectionName = selectedObject.formatSelection.selectionName;
+                        self.constraints.selectionExternalCode = selectedObject.formatSelection.selectionExternalCode;
                         //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
                     //history
@@ -213,7 +217,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             //xu ly dialog: 
             let param = getShared('CPS017_PARAMS');
-            self.constraints = param;
             // ドメインモデル「個人情報の選択項目」をすべて取得する
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length > 0) {
@@ -559,7 +562,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 allValid = false;
                 $('#name').ntsError('set',  "Selection code length must equals " + self.constraints.selectionName);
             }
-            if(exCd.length != self.constraints.selectionExternalCode){
+            if(exCd.length != self.constraints.selectionExternalCode && exCd != ""){
                 allValid = false;
                 $('#exCode').ntsError('set',  "Selection code length must equals " + self.constraints.selectionExternalCode);
             }
