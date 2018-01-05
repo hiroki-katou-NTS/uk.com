@@ -14,19 +14,14 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverWithFlagImport_New;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -37,22 +32,7 @@ import nts.uk.shr.com.mail.SendMailFailedException;
 public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 
 	@Inject
-	private AppApprovalPhaseRepository appApprovalPhaseRepository;
-
-	@Inject
-	private ApprovalFrameRepository approvalFrameRepository;
-	
-	@Inject
-	private ApproveAcceptedRepository approveAcceptedRepository;
-
-	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-
-	@Inject
-	private AgentAdapter approvalAgencyInformationService;
-
-	@Inject
-	private AfterApprovalProcess detailedScreenAfterApprovalProcessService;
 	
 	@Inject
 	private MailSender mailSender;

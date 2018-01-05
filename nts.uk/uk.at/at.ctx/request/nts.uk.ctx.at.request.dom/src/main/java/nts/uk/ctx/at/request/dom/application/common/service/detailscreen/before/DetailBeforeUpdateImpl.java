@@ -8,17 +8,13 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 
 @Stateless
-public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
+public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {	
 	
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithmService;
-	
-	@Inject
-	private NewBeforeRegister newBeforeRegister;
+	private NewBeforeRegister_New newBeforeRegister;
 	
 	@Inject
 	private ApplicationRepository_New applicationRepository;
