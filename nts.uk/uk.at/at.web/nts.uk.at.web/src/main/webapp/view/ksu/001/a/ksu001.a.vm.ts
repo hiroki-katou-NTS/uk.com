@@ -187,7 +187,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     if (self.flag) {
                         //select first link button
-                        __viewContext.viewModel.viewQ.init();
+                        __viewContext.viewModel.viewQ.initScreenQ();
                         self.flag = false;
                     }
                 }
@@ -222,13 +222,46 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
 
             //start
-            self.initCCG001();
-            self.initExTable();
-            self.initShiftCondition();
+            //            self.initCCG001();
+            //            self.initExTable();
+            //            self.initShiftCondition();
             //get data ComPattern for screen Q
-            self.getDataComPattern();
+            //            self.getDataComPattern();
             // tap hop nhung ham can lay data ngay luc dau, se khong bi query nhieu lan vao database nua
-            self.getDataScheduleDisplayControl();
+            //            self.getDataScheduleDisplayControl(); // return dataScheduleDisplayControl = {"symbolAtr","symbolHalfDayAtr","symbolHalfDayName"}
+            //            self.getDataWorkEmpCombine(); // return dataWorkEmpCombine = [{"workTypeCode","workTimeCode","symbolName"}]
+        }
+
+        /**
+         * get data for screen O, Q , A before bind
+         */
+        startKSU001(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            //get data for screen O
+            $.when(__viewContext.viewModel.viewO.findDataForComboBox(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
+                //get state of list workTypeCode
+                // get data for screen A
+                let lstWorkTypeCode = [];
+                _.map(__viewContext.viewModel.viewO.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
+                    lstWorkTypeCode.push(workType.workTypeCode);
+                });
+                // get data for dialog C
+                self.initShiftCondition();
+                //init and get data for screen A
+                $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
+                    self.initCCG001();
+                    self.initExTable();
+                    dfd.resolve();
+                });
+            });
+            //get data ComPattern for screen Q
+            //            self.getDataComPattern();
+            //init and get data for screen A
+            //            self.initCCG001();
+            //            self.initExTable();
+            //            self.initShiftCondition();
+            //            self.getDataScheduleDisplayControl(); // return dataScheduleDisplayControl = {"symbolAtr","symbolHalfDayAtr","symbolHalfDayName"}
+            return dfd.promise();
         }
 
         /**
@@ -254,7 +287,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //get data WorkPattern
             $.when(self.getDataWkpPattern()).done(() => {
                 if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
-                    __viewContext.viewModel.viewQ.init();
+                    __viewContext.viewModel.viewQ.initScreenQ();
                 }
             });
 
@@ -278,7 +311,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * init CCG001
          */
-        initCCG001() {
+        initCCG001(): void {
             let self = this;
             self.ccgcomponent = {
                 baseDate: ko.observable(new Date()),
@@ -1004,27 +1037,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * Get data to display symbol for dataSource(exTable)
          */
-        getDataToDisplaySymbol(dataS): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
+        setDataToDisplaySymbol(dataS): void {
+            let self = this;
             if (+self.dataScheduleDisplayControl().symbolAtr == 1) {
-                $.when(self.getDataWorkEmpCombine()).done(() => {
-                    _.each(dataS, (x) => {
-                        let workEmpCombine = _.find(self.dataWorkEmpCombine(), { 'workTypeCode': x.workTypeCode, 'workTimeCode': x.workTimeCode });
-                        if (workEmpCombine) {
-                            x.symbolName = workEmpCombine.symbolName;
-                        } else {
-                            self.handleSetSymbolForCell(x);
-                        }
-                    });
-                    dfd.resolve();
+                _.each(dataS, (x) => {
+                    let workEmpCombine = _.find(self.dataWorkEmpCombine(), { 'workTypeCode': x.workTypeCode, 'workTimeCode': x.workTimeCode });
+                    if (workEmpCombine) {
+                        x.symbolName = workEmpCombine.symbolName;
+                    } else {
+                        self.handleSetSymbolForCell(x);
+                    }
                 });
             } else {
                 _.each(dataS, (item) => {
                     self.handleSetSymbolForCell(item);
                 });
-                dfd.resolve();
             }
-            return dfd.promise();
         }
 
         handleSetSymbolForCell(item: any): void {
@@ -1059,9 +1087,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setDatasource(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             $.when(self.getDataBasicSchedule()).done(function() {
-                $.when(self.getDataToDisplaySymbol(self.dataSource())).done(function() {
-                    dfd.resolve();
-                });
+                self.setDataToDisplaySymbol(self.dataSource())
+                dfd.resolve();
             });
             return dfd.promise();
         }
