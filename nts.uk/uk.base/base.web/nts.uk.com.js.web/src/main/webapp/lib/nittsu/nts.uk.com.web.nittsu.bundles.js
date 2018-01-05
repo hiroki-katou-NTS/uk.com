@@ -2847,24 +2847,36 @@ var nts;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jump(webAppId, path, data) {
+                uk.ui.block.invisible();
                 if (typeof arguments[1] !== 'string') {
-                    return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
                 }
-                if (webAppId == nts.uk.request.location.currentAppId) {
-                    path = resolvePath(path);
-                }
-                else {
-                    path = nts.uk.request.location.siteRoot
-                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                        .mergeRelativePath(path).serialize();
+                if (webAppId != nts.uk.request.location.currentAppId) {
+                    jumpToOtherWebApp.apply(this, arguments);
+                    return;
                 }
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
-                window.location.href = path;
+                window.location.href = resolvePath(path);
             }
             request.jump = jump;
+            function jumpToOtherWebApp(webAppId, path, data) {
+                var resolvedPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(path).serialize();
+                uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                login.keepSerializedSession()
+                    .then(function () {
+                    return login.restoreSessionTo(webAppId);
+                })
+                    .then(function () {
+                    window.location.href = resolvedPath;
+                });
+            }
             var login;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+                var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
                 function keepUsedLoginPage() {
                     uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
                 }
@@ -2877,6 +2889,20 @@ var nts;
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+                function keepSerializedSession() {
+                    var dfd = $.Deferred();
+                    request.ajax("/shr/web/session/serialize").done(function (res) {
+                        uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+                        dfd.resolve();
+                    });
+                    return dfd.promise();
+                }
+                login.keepSerializedSession = keepSerializedSession;
+                function restoreSessionTo(webAppId) {
+                    var serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+                    return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket);
+                }
+                login.restoreSessionTo = restoreSessionTo;
             })(login = request.login || (request.login = {}));
             function resolvePath(path) {
                 var destination;
