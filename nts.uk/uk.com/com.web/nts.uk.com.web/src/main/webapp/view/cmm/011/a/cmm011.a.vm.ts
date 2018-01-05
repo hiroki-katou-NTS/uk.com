@@ -45,7 +45,7 @@ module nts.uk.com.view.cmm011.a {
                 self.workplaceName = ko.observable('');
                 self.wkpDisplayName = ko.observable(null);
                 self.wkpFullName = ko.observable(null);
-
+                
                 self.creationType = null;
 
                 self.isWkpHistoryLatest = ko.computed(function() {
@@ -97,11 +97,19 @@ module nts.uk.com.view.cmm011.a {
                     } else {
                         wkpFullName = newValue;
                     }
-                    self.wkpDisplayName(newValue);
-                    self.wkpFullName(wkpFullName);
-                    
-                    // clear error
-                    self.clearError();
+                    if (!_.isEmpty(self.workplaceName())) {
+                        if (_.isEmpty(self.wkpDisplayName())) {
+                        self.wkpDisplayName(newValue);    
+                        }
+                        if (_.isEmpty(self.wkpFullName())) {
+                            self.wkpFullName(wkpFullName);    
+                        }
+                        
+                        // clear error
+                        self.clearError();
+                        $('#wkpDisplayName').ntsEditor("validate");
+                        $('#wkpFullName').ntsEditor("validate");    
+                    }
                 });
             }
 
