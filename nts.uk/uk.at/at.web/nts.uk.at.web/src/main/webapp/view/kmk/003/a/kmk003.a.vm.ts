@@ -60,6 +60,7 @@ module nts.uk.at.view.kmk003.a {
 
             constructor() {
                 let self = this;
+                self.useHalfDay = ko.observable(false); // A5_19 initial value = false
                 self.mainSettingModel = new MainSettingModel(self.useHalfDay);
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
                     if (self.isNewMode()) {
@@ -114,7 +115,6 @@ module nts.uk.at.view.kmk003.a {
                     { code: false, name: nts.uk.resource.getText("KMK003_50") }
                 ]);
 
-                self.useHalfDay = ko.observable(false); // A5_19 initial value = false
                 self.useHalfDay.subscribe(useHalfDay => {
                     if (self.mainSettingModel.workTimeSetting.isFlex()) {
                         self.mainSettingModel.flexWorkSetting.useHalfDayShift(useHalfDay);
