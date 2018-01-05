@@ -369,6 +369,9 @@ module nts.uk.at.view.kmk003.a {
                     
                     $('#' + element.id).ntsEditor('validate');
                 })
+                $('.time-range-editor').each((index, element) => {
+                    $('#' + element.id).validateTimeRange();
+                });
             }
 
             /**
@@ -405,7 +408,7 @@ module nts.uk.at.view.kmk003.a {
                 self.validateInput();
 
                 // stop function if has error.
-                if ($('.nts-editor').ntsError('hasError')) {
+                if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
                     return;
                 }
                 self.mainSettingModel.save(self.isNewOrCopyMode(), self.tabMode())

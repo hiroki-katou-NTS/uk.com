@@ -18,6 +18,8 @@ module kmk003.base.timerange {
         endTimeNameId: string;
         startInputId: string;
         endInputId: string;
+        elementId: string;
+        paramId: string;
         
         /**
         * Constructor.
@@ -32,6 +34,7 @@ module kmk003.base.timerange {
             self.enable = ko.observable(input.enable ? input.enable() : true);
             self.inputFormat = ko.unwrap(input.inputFormat);
             self.tabindex = ko.unwrap(input.tabindex);
+            self.elementId = nts.uk.util.randomId();
             
             self.startTime = ko.observable(input.value().startTime ? input.value().startTime : 0);
             self.endTime = ko.observable(input.value().endTime ? input.value().endTime : 0);
@@ -39,24 +42,29 @@ module kmk003.base.timerange {
             self.endTimeNameId = input.endTimeNameId ? input.endTimeNameId :'';
             self.startInputId = nts.uk.util.randomId();
             self.endInputId = nts.uk.util.randomId();
+            self.paramId = input.paramId ? input.paramId : 'Need paramId for this message';
             // subscribe
             self.startTime.subscribe((newValue) => {
+                if (!self.validTimeRange($('#' + self.elementId))) {
+                    return;
+                }
                 self.value().startTime = newValue;
                 self.value().endTime = self.endTime();
                 
                 // event callback
                 self.value.valueHasMutated();
                 self.fireEventChangeData();
-                self.validTimeRange(self.endInputId);
             });
             self.endTime.subscribe((newValue) => {
+                if (!self.validTimeRange($('#' + self.elementId))) {
+                    return;
+                }
                 self.value().startTime = self.startTime();
                 self.value().endTime = newValue;
                 
                 // event callback
                 self.value.valueHasMutated();
                 self.fireEventChangeData();
-                self.validTimeRange(self.startInputId);
             });
         }
         
@@ -87,22 +95,43 @@ module kmk003.base.timerange {
         /**
          * validTimeRange
          */
-        public validTimeRange(inputIdError: string): boolean {
-            let self = this;
+        public validTimeRange(element: JQuery, isGlobalValidate?: boolean): boolean {
+            var self = this;
+            var elementId = element.attr('id');
+            var startInputId = element.data('start');
+            var endInputId = element.data('end');
+            var startTime = isGlobalValidate ? self.convertTimeInput(startInputId) : self.startTime();
+            var endTime = isGlobalValidate ? self.convertTimeInput(endInputId) : self.endTime();
+            var paramId = element.data('parram');
             
             // clear error
-            $('#' + self.startInputId).ntsError('clear');
-            $('#' + self.endInputId).ntsError('clear');
+            $('#' + startInputId).ntsError('clear');
+            $('#' + endInputId).ntsError('clear');
+            $('#' + elementId).ntsError('clear');
             
             // validate
-            $('#' + self.startInputId).ntsEditor('validate');
-            $('#' + self.endInputId).ntsEditor('validate');
+            $('#' + startInputId).ntsEditor('validate');
+            $('#' + endInputId).ntsEditor('validate');
             
-            if (self.startTime() >= self.endTime()) {
-                $('#' + inputIdError).ntsError('set', {messageId:'Msg_770',messageParams:[]});
+            if (startTime >= endTime) {
+                $('#' + elementId).ntsError('set', {messageId:'Msg_770',messageParams:[]});
+                if (!$('#' + startInputId).parent().hasClass('error')) {
+                    _.defer(() =>$('#' + startInputId).parent().addClass('error'));
+                }
+                if (!$('#' + endInputId).parent().hasClass('error')) {
+                    _.defer(() =>$('#' + endInputId).parent().addClass('error'));
+                }
                 return false;
             }
             return true
+        }
+        
+        private convertTimeInput(id: string): number {
+            var time = moment($('#' + id).val(), 'HH:mm');
+            if (time.isValid) {
+                return time.hour() * 60 + time.minute();
+            }
+            return 0;
         }
     }
     
@@ -158,10 +187,16 @@ module kmk003.base.timerange {
                 //screenModel.bindDataToScreen(value);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
                 $('.time-range-custom').css("float", "left");
+                
+                $.fn.validateTimeRange = function() {
+                    screenModel.validTimeRange($(this), true);
+                }
             });
         }
 
     }
     ko.bindingHandlers['ntsTimeRangeEditor'] = new TimeRangeBindingHandler();
-
+}
+interface JQuery {
+        validateTimeRange(): void;
 }

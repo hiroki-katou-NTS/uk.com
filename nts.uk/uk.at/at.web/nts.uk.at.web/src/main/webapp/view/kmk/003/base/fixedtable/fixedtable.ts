@@ -239,12 +239,16 @@ module nts.fixedtable {
             
             // subscribe itemList
             self.itemList.subscribe((newList) => {
-                $('#' + self.tableId).find('.nts-editor').ntsError('clear');
-                
                 if (!newList) {
                     self.isSelectAll(false);
                     return;
                 }
+                if (self.$element && newList.length > 0) {
+                    self.$element.find('.time-range-editor').ntsError('clear');
+                    self.$element.find('.time-range-editor').each((index, element) => {
+                        $('#' + element.id).validateTimeRange();
+                    });
+                } 
                 
                 // update status button
                 self.isEnaleAddButton(newList.length < self.maxRow);
@@ -305,6 +309,10 @@ module nts.fixedtable {
                 });
             });
             self.itemList.push(row);
+            self.$element.find('.time-range-editor').ntsError('clear');
+            self.$element.find('.time-range-editor').each((index, element) => {
+                $('#' + element.id).validateTimeRange();
+            });
         }
         
         /**
@@ -318,7 +326,11 @@ module nts.fixedtable {
             if (lstItemChecked.length <= 0) {
                 return;
             }
+            self.$element.find('.time-range-editor').ntsError('clear');
             self.itemList(self.itemList().filter(item => item.isChecked() == false));
+            self.$element.find('.time-range-editor').each((index, element) => {
+                _.defer(() => $('#' + element.id).validateTimeRange());
+            });
         }
         
         /**
