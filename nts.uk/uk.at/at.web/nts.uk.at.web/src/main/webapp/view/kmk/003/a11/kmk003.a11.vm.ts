@@ -64,6 +64,9 @@ module a11 {
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
                 // Nothing to do
+                if ($('.nts-editor').ntsError("hasError") == true) {
+                    $('.nts-input').ntsError('clear');
+                }
             });                                                        
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
