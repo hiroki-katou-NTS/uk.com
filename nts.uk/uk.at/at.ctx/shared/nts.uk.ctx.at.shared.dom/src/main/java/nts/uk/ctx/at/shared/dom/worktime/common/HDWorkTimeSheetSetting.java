@@ -57,7 +57,7 @@ public class HDWorkTimeSheetSetting extends DomainObject {
 		this.isLegalHolidayConstraintTime = memento.getIsLegalHolidayConstraintTime();
 		this.inLegalBreakFrameNo = memento.getInLegalBreakFrameNo();
 		this.isNonStatutoryDayoffConstraintTime = memento.getIsNonStatutoryDayoffConstraintTime();
-		this.outLegalBreakFrameNo = memento.getInLegalBreakFrameNo();
+		this.outLegalBreakFrameNo = memento.getOutLegalBreakFrameNo();
 		this.isNonStatutoryHolidayConstraintTime = memento.getIsNonStatutoryHolidayConstraintTime();
 		this.outLegalPubHDFrameNo = memento.getOutLegalPubHDFrameNo();
 	}
