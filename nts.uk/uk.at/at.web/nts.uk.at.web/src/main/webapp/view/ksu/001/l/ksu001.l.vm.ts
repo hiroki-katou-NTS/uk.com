@@ -55,7 +55,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', newValue]);
                     let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
                     self.selectedEmployeeSwap(teamSelected);
-                    self.listEmployeeSwap(newListEmployeeSwap);
+                    self.listEmployeeSwap(_.orderBy(newListEmployeeSwap,['empId'],['asc']));
                 } else {
                     //self.listEmployeeTemporary(self.selectedEmployeeSwap());
                     let teamSelected = _.filter(self.listEmployeeTemporary(), ['teamCode', newValue]);
