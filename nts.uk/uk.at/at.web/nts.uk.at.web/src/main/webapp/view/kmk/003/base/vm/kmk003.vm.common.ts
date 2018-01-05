@@ -831,7 +831,7 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     super();
-                    this.flowRestSets = ko.observableArray([]);
+                    this.flowRestSets = this.originalList;
                     this.useHereAfterRestSet = ko.observable(false);
                     this.hereAfterRestSet = new FlowRestSettingModel();
                 }
