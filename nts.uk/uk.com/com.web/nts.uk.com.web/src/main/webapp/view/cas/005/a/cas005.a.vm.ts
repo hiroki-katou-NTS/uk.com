@@ -151,7 +151,8 @@ module nts.uk.com.view.cas005.a {
                 //ccg026
                 self.componentCcg026 = new ccg026.component.viewmodel.ComponentModel({
                     classification: 1,
-                    maxRow: 3
+                    maxRow: 3,
+                    tabindex: 17
                 });
                 self.componentCcg026.listPermissions.subscribe((value) => {
                     self.listWorkPlaceAuthorityCommand([]);
