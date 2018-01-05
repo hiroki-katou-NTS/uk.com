@@ -92,8 +92,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                     self.messageArea(true);
                 }
                 dfd.resolve();
-            }).fail(()=>{
-                dfd.reject();    
+            }).fail((res)=>{
+                dfd.reject(res);    
             });            
             return dfd.promise();
         }
