@@ -177,7 +177,7 @@ module nts.fixedtable {
         
         tableId: string;
         
-        constructor(data: FixTableOption) {
+        constructor(data: FixTableOption, isDisableAll?: any) {
             let self = this;
             
             // set data parameter
@@ -194,7 +194,7 @@ module nts.fixedtable {
                 self.tabindex = -1;
             }
             self.itemList = data.dataSource;
-            self.isEnableAllControl = ko.observable(true);
+            self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
             self.roudingDataSource = ko.observableArray([
                 { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
                 { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' },
@@ -659,14 +659,14 @@ module nts.fixedtable {
             let keyEnable: string = "enable:true";
             let keyDisable: string = "enable:false";
             
-            if (input.indexOf(keyEnable) != -1) {
-                input = input.replace(keyEnable, "enable:" + enable);
-            }
-            else if (input.indexOf(keyDisable) != -1) {
-                input = input.replace(keyDisable, "enable:" + enable);
-            } else {
-                input += ",enable:" + enable;
-            }
+//            if (input.indexOf(keyEnable) != -1) {
+//                input = input.replace(keyEnable, "enable:" + enable);
+//            }
+//            else if (input.indexOf(keyDisable) != -1) {
+//                input = input.replace(keyDisable, "enable:" + enable);
+//            } else {
+//                input += ",enable:" + enable;
+//            }
             
             return input;
         }
@@ -693,7 +693,7 @@ module nts.fixedtable {
             var self = this;
             if (element) {
                 element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
-                    self.itemList.valueHasMutated();
+                    _.defer(() => self.itemList.valueHasMutated());
                 });
             }
         }
@@ -732,7 +732,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
         let input: any = valueAccessor();
         let data: nts.fixedtable.FixTableOption = input.option;
 
-        let screenModel = new nts.fixedtable.FixTableScreenModel(data);
+        let screenModel = new nts.fixedtable.FixTableScreenModel(data,input.isEnableAllControl);
         if (input.isEnableAllControl) {
             input.isEnableAllControl.subscribe(function(value: boolean) {
                 screenModel.isEnableAllControl(value);
@@ -751,16 +751,15 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
                     $("." + column.cssClassName).css({ "min-width": "" });
                 });
-                if (!$(element)[0].hasAttribute('id')) {
-                    $(element).attr('id', nts.uk.util.randomId());
+                if (document.getElementById($(element)[0].id)) {
+                    document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
+                        screenModel.itemList.valueHasMutated();
+                    });
                 }
-                document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
-                    screenModel.itemList.valueHasMutated();
-                });
                 screenModel.initEventChangeComboBox($(element));
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
-                    screenModel.itemList.valueHasMutated();
+                    _.defer(() => screenModel.itemList.valueHasMutated());
                 })
             });
         });

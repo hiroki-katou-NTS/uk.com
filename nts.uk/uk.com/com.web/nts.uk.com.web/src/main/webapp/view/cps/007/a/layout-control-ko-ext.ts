@@ -931,9 +931,7 @@ module nts.custombinding {
                             }
                         },
                         removeItem: (data: IItemClassification, byItemId?: boolean) => {
-                            let items = opts.sortable.data;
-
-                            opts.sortable.data.valueWillMutate();
+                            let items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
 
                             if (!byItemId) { // remove item by classification id (virtual id)
                                 items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
@@ -955,13 +953,10 @@ module nts.custombinding {
                                     });
                                 }
                             });
-
-                            opts.sortable.data.valueHasMutated();
-
                             return opts.sortable;
                         },
                         findExist: (ids: Array<string>) => {
-                            let items = opts.sortable.data();
+                            let items: Array<IItemClassification> = opts.sortable.data();
 
                             if (!ids || !ids.length) {
                                 return [];
@@ -1010,7 +1005,6 @@ module nts.custombinding {
                                     }
                                 },
                                 pushItems = (defs: Array<IItemDefinition>) => {
-                                    opts.sortable.data.valueWillMutate();
                                     _(defs)
                                         .filter(x => !x.isAbolition) // remove all item if it's abolition
                                         .each(def => {
@@ -1040,7 +1034,6 @@ module nts.custombinding {
                                                 opts.sortable.pushItem(item);
                                             }
                                         });
-                                    opts.sortable.data.valueHasMutated();
                                 };
 
                             if (!defs || !defs.length) {

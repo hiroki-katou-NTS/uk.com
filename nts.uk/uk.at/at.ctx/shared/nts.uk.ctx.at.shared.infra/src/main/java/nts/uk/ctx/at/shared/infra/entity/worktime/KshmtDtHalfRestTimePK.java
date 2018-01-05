@@ -39,6 +39,7 @@ public class KshmtDtHalfRestTimePK implements Serializable {
 	 * Instantiates a new kshmt dt half rest time PK.
 	 */
 	public KshmtDtHalfRestTimePK() {
+		super();
 	}
 
 	/*

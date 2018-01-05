@@ -20,13 +20,14 @@ public class ExcessOverTimeWorkMidNightTimeDto {
 
 	public static ExcessOverTimeWorkMidNightTimeDto fromOverTimeWorkDailyPerform(
 			ExcessOverTimeWorkMidNightTime domain) {
-		return domain == null ? null
-				: new ExcessOverTimeWorkMidNightTimeDto(new CalcAttachTimeDto(
-						domain.getTime().getCalcTime().valueAsMinutes(), domain.getTime().getTime().valueAsMinutes()));
+		return domain == null || domain.getTime() == null ? null : new ExcessOverTimeWorkMidNightTimeDto(new CalcAttachTimeDto(
+					domain.getTime().getCalcTime() == null ? null : domain.getTime().getCalcTime().valueAsMinutes(),
+					domain.getTime().getTime() == null ? null : domain.getTime().getTime().valueAsMinutes()));
 	}
 
 	public ExcessOverTimeWorkMidNightTime toDomain() {
-		return new ExcessOverTimeWorkMidNightTime(TimeWithCalculation
-				.createTimeWithCalculation(new AttendanceTime(time.getTime()), new AttendanceTime(time.getCalcTime())));
+		return time == null ? null : new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(
+							time.getTime() == null ? null : new AttendanceTime(time.getTime()),  
+							time.getCalcTime() == null ? null : new AttendanceTime(time.getCalcTime())));
 	}
 }

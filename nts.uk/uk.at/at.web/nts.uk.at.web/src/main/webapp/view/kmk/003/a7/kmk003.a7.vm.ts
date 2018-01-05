@@ -59,7 +59,7 @@ module a7 {
             self.fixTableOptionForFixedOrDiffTime = {
                 maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceForFixedOrDiffTime,
                 isMultipleSelect: true,
@@ -170,7 +170,7 @@ module a7 {
 
         private setDataFlexOrFlowToModel() {
             let self = this;
-            
+            self.isCheckFollowTime = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.useHereAfterRestSet;
             
             self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
                 let listDeductionTimeModel: DeductionTimeModel[] = [];
@@ -353,7 +353,11 @@ module a7 {
                         screenModel.dataSourceForFixedOrDiffTime([]);
                         screenModel.dataSourceForFlowOrFlexUse([]);
                         screenModel.dataSourceForFlowOrFlexNotUse1([]);
-                        screenModel.dataSourceForFlowOrFlexNotUse2([]);
+                        screenModel.dataSourceForFlowOrFlexNotUse2([{
+                            column1: ko.observable(0),
+                            column2: ko.observable(0)
+                        }]);
+                        screenModel.useFixedRestTime(screenModel.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime() ? UseDivision.USE : UseDivision.NOTUSE);
                     }
                 });
 

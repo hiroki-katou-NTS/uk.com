@@ -18,17 +18,21 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	private static final String SELECT_EMP_DATA_BY_SID_AND_CTG_ID = "SELECT e FROM PpemtEmpInfoCtgData e"
 			+ " WHERE e.employeeId = :employeeId AND e.personInfoCtgId = :personInfoCtgId";
 
+	private static final String SELECT_EMP_DATA_BY_CTG_ID_LST = "SELECT e FROM PpemtEmpInfoCtgData e"
+			+ " WHERE e.personInfoCtgId IN :personInfoCtgId";
+
 	private EmpInfoCtgData toDomain(PpemtEmpInfoCtgData entity) {
 		return new EmpInfoCtgData(entity.recordId, entity.personInfoCtgId, entity.employeeId);
 	}
 
 	@Override
 	public List<EmpInfoCtgData> getByEmpIdAndCtgId(String employeeId, String categoryId) {
-		List<PpemtEmpInfoCtgData> lstEntities = this.queryProxy().query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtEmpInfoCtgData.class)
+		List<PpemtEmpInfoCtgData> lstEntities = this.queryProxy()
+				.query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtEmpInfoCtgData.class)
 				.setParameter("employeeId", employeeId).setParameter("personInfoCtgId", categoryId).getList();
-		if(lstEntities == null) return new ArrayList<>();
-		return lstEntities.stream()
-				.map(x -> toDomain(x)).collect(Collectors.toList());
+		if (lstEntities == null)
+			return new ArrayList<>();
+		return lstEntities.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
 	// sonnlb code start
@@ -69,6 +73,18 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 			return;
 		}
 		this.commandProxy().remove(PpemtEmpInfoCtgData.class, recordId);
+	}
+
+	@Override
+	public List<EmpInfoCtgData> getByEmpIdAndCtgId(List<String> ctgId) {
+		List<PpemtEmpInfoCtgData> lstEntities = this.queryProxy()
+				.query(SELECT_EMP_DATA_BY_CTG_ID_LST, PpemtEmpInfoCtgData.class)
+				.setParameter("personInfoCtgId", ctgId)
+				.getList();
+		if (lstEntities == null)
+			return new ArrayList<>();
+		
+		return lstEntities.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
 }

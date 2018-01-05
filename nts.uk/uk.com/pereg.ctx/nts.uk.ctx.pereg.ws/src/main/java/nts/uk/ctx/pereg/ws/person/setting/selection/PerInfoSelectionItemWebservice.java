@@ -98,9 +98,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	private UpdateSelOrderCommandHandler updateSelOrder;
 
 	@POST
-	@Path("findAll")
-	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
-		return this.finder.getAllPerInfoSelectionItem();
+	@Path("findAll/{hasCompanyId}")
+	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(@PathParam("hasCompanyId") boolean hasCompanyId) {
+		return this.finder.getAllPerInfoSelectionItem(hasCompanyId);
 	}
 
 	@POST

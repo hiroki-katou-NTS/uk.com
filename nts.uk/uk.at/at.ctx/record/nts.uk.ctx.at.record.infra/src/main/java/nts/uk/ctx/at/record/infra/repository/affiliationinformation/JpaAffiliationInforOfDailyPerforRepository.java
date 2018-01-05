@@ -87,9 +87,12 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public void updateByKey(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
-		KrcdtDaiAffiliationInf data = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class).setParameter("employeeId", affiliationInforOfDailyPerfor.getEmployeeId())
-				.setParameter("ymd", affiliationInforOfDailyPerfor.getYmd()).getSingle().get();
-		
+		Optional<KrcdtDaiAffiliationInf> dataOpt = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class).setParameter("employeeId", affiliationInforOfDailyPerfor.getEmployeeId())
+				.setParameter("ymd", affiliationInforOfDailyPerfor.getYmd()).getSingle();
+		KrcdtDaiAffiliationInf data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiAffiliationInf();
+		if(!dataOpt.isPresent()){
+			data.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
+		}
 		data.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		data.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
 		data.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode().v();

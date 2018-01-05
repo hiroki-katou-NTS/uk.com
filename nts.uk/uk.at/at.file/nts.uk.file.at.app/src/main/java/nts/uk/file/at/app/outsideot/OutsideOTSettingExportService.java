@@ -266,10 +266,10 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
 	private static final String NAME_VALUE_A15_3= "KMK010_62";
 
 	/** The Constant TRUE_SETTING_RATE. */
-	private static final String TRUE_SETTING_RATE= "莨第嚊逋ｺ逕溘☆繧�";
+	private static final String TRUE_SETTING_RATE= "休暇発生する";
 	
 	/** The Constant FALSE_SETTING_RATE. */
-	private static final String FALSE_SETTING_RATE= "莨第嚊逋ｺ逕溘＠縺ｪ縺�";
+	private static final String FALSE_SETTING_RATE= "休暇発生しない";
 	
 	
     
@@ -349,7 +349,7 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
 		data.setMapAttendanceItem(mapAttendanceItem);
         // generate file
 		this.generator.generate(context.getGeneratorContext(),
-				this.convertToListReport(query.getLanguageId().equals(LANGUAGE_ID_JAPAN), data));
+				this.convertToListReport(query.getLanguageId().equals(LANGUAGE_ID_JAPAN), data, context.getQuery().getNameCompany()));
     }
 
 	/**
@@ -382,7 +382,7 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
  * @param data the data
  * @return the list
  */
-private OutsideOTSettingReportData convertToListReport(Boolean isLanugeJapan, OutsideOTSettingData data){
+private OutsideOTSettingReportData convertToListReport(Boolean isLanugeJapan, OutsideOTSettingData data, String nameCompany){
 		List<OutsideOTSettingReport> reportData = new ArrayList<>();
 		
 		// add header
@@ -534,6 +534,9 @@ private OutsideOTSettingReportData convertToListReport(Boolean isLanugeJapan, Ou
 			startRow++;
 		});
 		OutsideOTSettingReportData dataReport = new OutsideOTSettingReportData();
+		
+		reportData.add(new OutsideOTSettingReport(2, 1, nameCompany));
+		reportData.add(new OutsideOTSettingReport(5, 1, isLanugeJapan ? "jp" : "en"));
 		dataReport.setData(reportData);
 		dataReport.setIsLanguageJapan(isLanugeJapan);
 		return dataReport;

@@ -39,4 +39,6 @@ public interface ApprovalRootStateAdapter {
 	
 	public ApproverPersonImport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
 	
+	public void updateReason(String appID, String employeeID, String reason);
+	
 }
