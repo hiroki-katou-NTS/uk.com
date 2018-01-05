@@ -156,40 +156,44 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                  // findByChangeAppDate
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
-                    service.findByChangeAppDate({
-                        appDate: moment(value).format(self.DATE_FORMAT),
-                        prePostAtr: self.prePostSelected(),
-                        siftCD: self.siftCD(),
-                        overtimeHours: ko.toJS(self.overtimeHours)    
-                    }).done((data) =>{
-                        self.findBychangeAppDateData(data);
-                        self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
-                        self.convertAppOvertimeReferDto(data);
-                        self.preAppPanelFlg(data.preAppPanelFlg);
-                        dfd.resolve(data);
-                    }).fail((res) =>{
-                            dfd.reject(res);
-                        });
+                    if(!nts.uk.util.isNullOrEmpty(value)){
+                            service.findByChangeAppDate({
+                                appDate: moment(value).format(self.DATE_FORMAT),
+                                prePostAtr: self.prePostSelected(),
+                                siftCD: self.siftCD(),
+                                overtimeHours: ko.toJS(self.overtimeHours)    
+                            }).done((data) =>{
+                                self.findBychangeAppDateData(data);
+                                self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
+                                self.convertAppOvertimeReferDto(data);
+                                self.preAppPanelFlg(data.preAppPanelFlg);
+                                dfd.resolve(data);
+                            }).fail((res) =>{
+                                dfd.reject(res);
+                            });
+                    }
                         return dfd.promise();
                     });
                 self.prePostSelected.subscribe(function(value){
                     let dfd =$.Deferred();
-                    service.checkConvertPrePost({
-                    prePostAtr: value,
-                    appDate: moment(self.appDate()).format(self.DATE_FORMAT),
-                    siftCD: self.siftCD(),
-                    overtimeHours: ko.toJS(self.overtimeHours) 
-                    }).done((data) =>{
-                        self.convertpreAppOvertimeDto(data);
-                        self.convertAppOvertimeReferDto(data);
-                        self.referencePanelFlg(data.referencePanelFlg);
-                        self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-                        self.preAppPanelFlg(data.preAppPanelFlg);
-                        self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
-                        self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
-                    }).fail((res) =>{
-                        dfd.reject(res);    
-                    });
+                    if(!nts.uk.util.isNullOrEmpty(self.appDate()){
+                            service.checkConvertPrePost({
+                                prePostAtr: value,
+                                appDate: moment(self.appDate()).format(self.DATE_FORMAT),
+                                siftCD: self.siftCD(),
+                                overtimeHours: ko.toJS(self.overtimeHours) 
+                            }).done((data) =>{
+                                self.convertpreAppOvertimeDto(data);
+                                self.convertAppOvertimeReferDto(data);
+                                self.referencePanelFlg(data.referencePanelFlg);
+                                self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+                                self.preAppPanelFlg(data.preAppPanelFlg);
+                                self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
+                                self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
+                            }).fail((res) =>{
+                                dfd.reject(res);    
+                            });
+                    }
                      return dfd.promise();
                 });
                                 
