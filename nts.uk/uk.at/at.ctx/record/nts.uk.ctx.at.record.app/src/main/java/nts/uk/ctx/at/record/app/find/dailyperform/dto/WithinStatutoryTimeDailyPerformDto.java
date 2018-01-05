@@ -47,23 +47,37 @@ public class WithinStatutoryTimeDailyPerformDto {
 
 	public static WithinStatutoryTimeDailyPerformDto fromWithinStatutoryTimeDailyPerform(
 			WithinStatutoryTimeOfDaily domain) {
-		return domain == null ? null
-				: new WithinStatutoryTimeDailyPerformDto(domain.getWorkTime().valueAsMinutes(),
-						domain.getWorkTimeIncludeVacationTime().valueAsMinutes(),
-						domain.getWithinPrescribedPremiumTime().valueAsMinutes(),
-						new CalcAttachTimeDto(
-								domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes(),
-								domain.getWithinStatutoryMidNightTime().getTime().getTime().valueAsMinutes()),
-						domain.getVacationAddTime().valueAsMinutes());
+		return domain == null ? null: new WithinStatutoryTimeDailyPerformDto(
+						getAttendanceTime(domain.getWorkTime()),
+						getAttendanceTime(domain.getWorkTimeIncludeVacationTime()),
+						getAttendanceTime(domain.getWithinPrescribedPremiumTime()),
+						getWithStatutory(domain.getWithinStatutoryMidNightTime()),
+						getAttendanceTime(domain.getVacationAddTime()));
+	}
+
+	private static CalcAttachTimeDto getWithStatutory(WithinStatutoryMidNightTime domain) {
+		return domain == null || domain.getTime() == null ? null : new CalcAttachTimeDto(
+				getAttendanceTime(domain.getTime().getCalcTime()),
+				getAttendanceTime(domain.getTime().getTime()));
 	}
 
 	public WithinStatutoryTimeOfDaily toDomain() {
-		return WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(workTime),
-				workTimeIncludeVacationTime == null ? null : new AttendanceTime(workTimeIncludeVacationTime), 
-				withinPrescribedPremiumTime == null ? null : new AttendanceTime(withinPrescribedPremiumTime),
-				new WithinStatutoryMidNightTime(TimeWithCalculation.createTimeWithCalculation(
-						withinStatutoryMidNightTime == null ? null : new AttendanceTime(withinStatutoryMidNightTime.getTime()),
-						withinStatutoryMidNightTime == null ? null : new AttendanceTime(withinStatutoryMidNightTime.getCalcTime()))),
-				vacationAddTime == null ? null : new AttendanceTime(vacationAddTime));
+		return WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
+				toAttendanceTime(workTime),
+				toAttendanceTime(workTimeIncludeVacationTime), 
+				toAttendanceTime(withinPrescribedPremiumTime),
+				withinStatutoryMidNightTime == null ? null : new WithinStatutoryMidNightTime(
+					TimeWithCalculation.createTimeWithCalculation(
+						toAttendanceTime(withinStatutoryMidNightTime.getTime()),
+						toAttendanceTime(withinStatutoryMidNightTime.getCalcTime()))),
+				toAttendanceTime(vacationAddTime));
+	}
+	
+	private static int getAttendanceTime(AttendanceTime domain) {
+		return domain == null ? null : domain.valueAsMinutes();
+	}
+	
+	private AttendanceTime toAttendanceTime(Integer time) {
+		return time == null ? null : new AttendanceTime(time);
 	}
 }

@@ -34,6 +34,10 @@ public class KshmtFixedHalfRestSetPK implements Serializable {
 	/** The am pm atr. */
 	@Column(name = "AM_PM_ATR")
 	private int amPmAtr;
+	
+	/** The period no. */
+	@Column(name = "PERIOD_NO")
+	private int periodNo;
 
 	/**
 	 * Instantiates a new kshmt fixed half rest set PK.
@@ -48,12 +52,14 @@ public class KshmtFixedHalfRestSetPK implements Serializable {
 	 * @param cid the cid
 	 * @param worktimeCd the worktime cd
 	 * @param amPmAtr the am pm atr
+	 * @param periodNo the period no
 	 */
-	public KshmtFixedHalfRestSetPK(String cid, String worktimeCd, int amPmAtr) {
+	public KshmtFixedHalfRestSetPK(String cid, String worktimeCd, int amPmAtr,int periodNo) {
 		super();
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
 		this.amPmAtr = amPmAtr;
+		this.periodNo = periodNo;
 	}
 
 

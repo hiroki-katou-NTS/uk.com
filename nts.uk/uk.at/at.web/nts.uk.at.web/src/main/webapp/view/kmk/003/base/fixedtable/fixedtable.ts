@@ -177,7 +177,7 @@ module nts.fixedtable {
         
         tableId: string;
         
-        constructor(data: FixTableOption) {
+        constructor(data: FixTableOption, isDisableAll?: any) {
             let self = this;
             
             // set data parameter
@@ -194,7 +194,7 @@ module nts.fixedtable {
                 self.tabindex = -1;
             }
             self.itemList = data.dataSource;
-            self.isEnableAllControl = ko.observable(true);
+            self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
             self.roudingDataSource = ko.observableArray([
                 { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
                 { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' },
@@ -659,14 +659,14 @@ module nts.fixedtable {
             let keyEnable: string = "enable:true";
             let keyDisable: string = "enable:false";
             
-            if (input.indexOf(keyEnable) != -1) {
-                input = input.replace(keyEnable, "enable:" + enable);
-            }
-            else if (input.indexOf(keyDisable) != -1) {
-                input = input.replace(keyDisable, "enable:" + enable);
-            } else {
-                input += ",enable:" + enable;
-            }
+//            if (input.indexOf(keyEnable) != -1) {
+//                input = input.replace(keyEnable, "enable:" + enable);
+//            }
+//            else if (input.indexOf(keyDisable) != -1) {
+//                input = input.replace(keyDisable, "enable:" + enable);
+//            } else {
+//                input += ",enable:" + enable;
+//            }
             
             return input;
         }
@@ -732,7 +732,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
         let input: any = valueAccessor();
         let data: nts.fixedtable.FixTableOption = input.option;
 
-        let screenModel = new nts.fixedtable.FixTableScreenModel(data);
+        let screenModel = new nts.fixedtable.FixTableScreenModel(data,input.isEnableAllControl);
         if (input.isEnableAllControl) {
             input.isEnableAllControl.subscribe(function(value: boolean) {
                 screenModel.isEnableAllControl(value);

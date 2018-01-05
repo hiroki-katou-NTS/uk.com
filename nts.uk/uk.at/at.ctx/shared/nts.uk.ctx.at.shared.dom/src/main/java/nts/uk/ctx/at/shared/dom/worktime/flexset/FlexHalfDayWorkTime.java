@@ -75,9 +75,9 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public FlexHalfDayWorkTime(FlexHalfDayWorkTimeGetMemento memento) {
+		this.ampmAtr = memento.getAmpmAtr();
 		this.restTimezone = memento.getRestTimezone();
 		this.workTimezone = memento.getWorkTimezone();
-		this.ampmAtr = memento.getAmpmAtr();
 	}
 	
 	/**
@@ -86,9 +86,9 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(FlexHalfDayWorkTimeSetMemento memento){
+		memento.setAmpmAtr(this.ampmAtr);
 		memento.setRestTimezone(this.restTimezone);
 		memento.setWorkTimezone(this.workTimezone);
-		memento.setAmpmAtr(this.ampmAtr);
 	}
 	
 	/**

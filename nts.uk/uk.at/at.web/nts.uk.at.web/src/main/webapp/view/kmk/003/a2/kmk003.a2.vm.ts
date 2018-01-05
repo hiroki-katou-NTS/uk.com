@@ -53,6 +53,7 @@ module a2 {
         workTimeDailyAtr: KnockoutObservable<number>
         tabMode: KnockoutObservable<number>
         isSimpleMode: KnockoutObservable<boolean>;
+        isDetailMode: KnockoutObservable<boolean>;
         isFlowMode: KnockoutObservable<boolean>;
         isUseHalfDay: KnockoutObservable<boolean>;
 
@@ -70,7 +71,8 @@ module a2 {
             self.tabMode = input.tabMode;
             self.isSimpleMode = ko.computed(() => {
                 return self.tabMode() == TabMode.SIMPLE;
-            })
+            });
+            self.isDetailMode = ko.observable(self.isSimpleMode());
             self.isFlowMode = self.parentModel.workTimeSetting.isFlow;
             self.isUseHalfDay = self.parentModel.fixedWorkSetting.useHalfDayShift; 
             
@@ -151,10 +153,18 @@ module a2 {
                 self.bindDataToScreen();
             });
             
+            input.selectedTab.subscribe((newValue: string) => {
+                if (newValue !== 'tab-2' || !self.isSimpleMode()) {
+                    return;
+                }
+                self.bindDataToScreen();
+            });
+            
             self.parentModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
                 self.bindDataToScreen();
             });
             self.isSimpleMode.subscribe(newValue => {
+                self.isDetailMode(!newValue);
                 self.bindDataToScreen();
             });
             self.isFlowMode.subscribe(newValue => {
@@ -496,7 +506,6 @@ module a2 {
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
-                                    enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
                                 </div>`
                 }, {
@@ -512,7 +521,6 @@ module a2 {
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
-                                    enable: true,
                                     columns: [{ prop: 'localizedName', length: 10 }]}">
                                 </div>`
                 }

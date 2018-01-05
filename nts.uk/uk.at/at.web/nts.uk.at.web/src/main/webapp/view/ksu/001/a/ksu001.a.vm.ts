@@ -828,7 +828,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         //intended data display mode 
-                        //dataSour of detail
+                        //dataSource of detail
                         _.each(self.listSid(), (x) => {
                             let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
                             newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));

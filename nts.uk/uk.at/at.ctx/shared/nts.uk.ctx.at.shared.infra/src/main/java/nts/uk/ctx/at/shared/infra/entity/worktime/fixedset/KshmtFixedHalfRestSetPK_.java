@@ -11,5 +11,5 @@ public class KshmtFixedHalfRestSetPK_ {
     public static volatile SingularAttribute<KshmtFixedHalfRestSetPK, Integer> amPmAtr;
     public static volatile SingularAttribute<KshmtFixedHalfRestSetPK, String> worktimeCd;
     public static volatile SingularAttribute<KshmtFixedHalfRestSetPK, String> cid;
-
+    public static volatile SingularAttribute<KshmtFixedHalfRestSetPK, Integer> periodNo;
 }
