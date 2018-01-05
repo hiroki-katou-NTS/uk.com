@@ -127,9 +127,11 @@ module kmk003.base.timerange {
         }
         
         private convertTimeInput(id: string): number {
-            var time = moment($('#' + id).val(), 'HH:mm');
-            if (time.isValid) {
-                return time.hour() * 60 + time.minute();
+            if (!$('#' + id).ntsError('hasError')) {
+                var time: string = $('#' + id).val();
+                var timeArray = time.split(":");
+                
+                return parseInt(timeArray[0]) * 60 + parseInt(timeArray[1]);
             }
             return 0;
         }
