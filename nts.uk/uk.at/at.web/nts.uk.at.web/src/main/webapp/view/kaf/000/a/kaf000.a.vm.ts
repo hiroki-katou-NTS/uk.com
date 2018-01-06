@@ -79,6 +79,23 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 isStartup: isStartup
             }).done((data)=>{
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                if(isStartup==false){
+                    switch(data.errorFlag){
+                        case 1:
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_324" });
+                            break;
+                        case 2: 
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_238" });
+                            break;
+                        case 3:
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_237" });
+                            break;
+                        default: 
+                    }               
+                }
                 let deadlineMsg = data.outputMessageDeadline;
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
                     self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);    

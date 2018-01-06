@@ -315,7 +315,17 @@ module cps002.a.vm {
         }
 
         isError() {
-            $(".form_step1").trigger("validate");
+            let self = this;
+            if (self.currentStep() == 2) {
+                _.each(__viewContext.primitiveValueConstraints, x => {
+                    if (_.has(x, "itemCode")) {
+                        $('#' + x.itemCode).trigger('change');
+                    }
+                })
+            } else {
+                $(".form_step1").trigger("validate");
+
+            }
             if (nts.uk.ui.errors.hasError()) {
                 return true;
             }

@@ -124,18 +124,14 @@ module a5 {
             let fixedAfternoon = self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon();
 
             // set flex timezones
-            self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.listTimeRange;
-
-            self.morningFlexTimezones = flexMorning.restTimezone.fixedRestTimezone.listTimeRange;
-
-            self.afternoonFlexTimezones = flexAfternoon.restTimezone.fixedRestTimezone.listTimeRange;
+            self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.convertedList;
+            self.morningFlexTimezones = flexMorning.restTimezone.fixedRestTimezone.convertedList;
+            self.afternoonFlexTimezones = flexAfternoon.restTimezone.fixedRestTimezone.convertedList;
 
             // set fixed timezones
-            self.oneDayFixedTimezones = fixedOneday.restTimezone.listTimeRange;
-
-            self.morningFixedTimezones = fixedMorning.restTimezone.listTimeRange;
-
-            self.afternoonFixedTimezones = fixedAfternoon.restTimezone.listTimeRange;
+            self.oneDayFixedTimezones = fixedOneday.restTimezone.convertedList;
+            self.morningFixedTimezones = fixedMorning.restTimezone.convertedList;
+            self.afternoonFixedTimezones = fixedAfternoon.restTimezone.convertedList;
 
             // set flex rest set value
             self.oneDayFlexRestSet = flexOneday.restTimezone.flowRestTimezone;
@@ -218,11 +214,11 @@ module a5 {
 
             // flex restSet option
             self.oneDayFlexRestSetOption = self.getDefaultRestSetOption();
-            self.oneDayFlexRestSetOption.dataSource = self.oneDayFlexRestSet.flowRestSets;
+            self.oneDayFlexRestSetOption.dataSource = self.oneDayFlexRestSet.convertedList;
             self.morningFlexRestSetOption = self.getDefaultRestSetOption();
-            self.morningFlexRestSetOption.dataSource = self.morningFlexRestSet.flowRestSets;
+            self.morningFlexRestSetOption.dataSource = self.morningFlexRestSet.convertedList;
             self.afternoonFlexRestSetOption = self.getDefaultRestSetOption();
-            self.afternoonFlexRestSetOption.dataSource = self.afternoonFlexRestSet.flowRestSets;
+            self.afternoonFlexRestSetOption.dataSource = self.afternoonFlexRestSet.convertedList;
 
             // flow timezone option
             self.flowTimezoneOption = self.getDefaultTimezoneOption();

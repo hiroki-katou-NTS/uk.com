@@ -341,9 +341,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 let self = this;
                 let workTypeCondition = self.selectedErrorAlarm().workTypeCondition;
                 let lstSelectedCode = planOrActual === "plan" ? workTypeCondition.planLstWorkType() : workTypeCondition.actualLstWorkType();
-                setShared('KDL002_Multiple', true, true);
-                setShared('KDL002_AllItemObj', _.map(lstWorkType, (workType) => { return workType.workTypeCode; }), true);
-                setShared('KDL002_SelectedItemId', lstSelectedCode, true);
+                setShared('KDL002_Multiple', true);
+                setShared('KDL002_AllItemObj', _.map(lstWorkType, (workType) => { return workType.workTypeCode; }));
+                setShared('KDL002_SelectedItemId', lstSelectedCode);
                 nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(() => {
                     let results = getShared('KDL002_SelectedNewItem');
                     if (results) {

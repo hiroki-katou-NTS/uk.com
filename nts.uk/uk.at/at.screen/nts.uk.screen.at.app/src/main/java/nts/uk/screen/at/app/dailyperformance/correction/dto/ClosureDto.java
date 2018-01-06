@@ -18,7 +18,7 @@ public class ClosureDto {
 	private Integer useAtr;
 	private Integer closureMonth;
 	private String sid;
-	private String closureCode;
+	private String employmentCode;
 
 	public ClosureDto(String companyId, Integer closureId, Integer useAtr, Integer closureMonth) {
 		this.companyId = companyId;
@@ -37,14 +37,14 @@ public class ClosureDto {
 	}
 
 	public ClosureDto(String companyId, Integer closureId, Integer useAtr, Integer closureMonth, String sid,
-			String closureCode) {
+			String employmentCode) {
 		super();
 		this.companyId = companyId;
 		this.closureId = closureId;
 		this.useAtr = useAtr;
 		this.closureMonth = closureMonth;
 		this.sid = sid;
-		this.closureCode = closureCode;
+		this.employmentCode = employmentCode;
 	}
 
 }

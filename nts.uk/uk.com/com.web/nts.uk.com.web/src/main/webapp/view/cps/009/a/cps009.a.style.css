@@ -287,7 +287,7 @@ table tr td, table tr th {
 
 span.caret-background.caret-right.direction-right {
 	position: fixed !important;
-	margin-top: 90px !important; 
+	margin-top: 50px !important; 
 }
 
 .table-container {
@@ -373,5 +373,5 @@ label[for] {
 
 
 .caret-background caret-right direction-right{
-	margin-top: 95px !important;
+	margin-top:90px !important;
 }
