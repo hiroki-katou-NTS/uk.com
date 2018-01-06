@@ -585,7 +585,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             nts.uk.request.jump("../test/index.xhtml");
                         });    
                     } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){
+                            nts.uk.request.jump("../test/index.xhtml");
+                        }); 
                     }
                 }); 
             }).ifNo(function(){
