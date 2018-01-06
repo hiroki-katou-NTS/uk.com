@@ -14,8 +14,9 @@ public interface FixedWorkTimezoneSetPolicy {
 	/**
 	 * Validate.
 	 *
+	 * @param useHalfDayShift the use half day shift
 	 * @param fixedWtz the fixed wtz
 	 * @param predTime the pred time
 	 */
-	void validate(FixedWorkTimezoneSet fixedWtz, PredetemineTimeSetting predTime);
+	void validate(boolean useHalfDayShift, FixedWorkTimezoneSet fixedWtz, PredetemineTimeSetting predTime);
 }
