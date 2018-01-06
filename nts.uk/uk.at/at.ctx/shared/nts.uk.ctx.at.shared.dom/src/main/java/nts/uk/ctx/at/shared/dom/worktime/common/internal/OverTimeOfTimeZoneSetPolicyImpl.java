@@ -45,7 +45,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		// validate msg_519
 		if (!predTime.isPredetermine() && predTime.getPrescribedTimezoneSetting().getLstTimezone().stream()
 				.anyMatch(shift -> otTimezone.isOverlap(shift))) {
-			throw new BusinessException("Msg_519");
+			throw new BusinessException("Msg_519","KMK003_89");
 		}
 
 		// validate msg_779

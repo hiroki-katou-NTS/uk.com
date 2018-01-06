@@ -482,7 +482,7 @@ module kcp.share.list {
          */
         private createGlobalVarDataList(dataList: Array<UnitModel>, $input: JQuery) {
             var dataListCloned : Array<UnitModel> = _.cloneDeep(dataList);
-            dataListCloned = _.remove(dataListCloned, item => !item.id && !item.code)
+            _.remove(dataListCloned, item => !item.id && !item.code)
             $('#script-for-' + $input.attr('id')).remove();
             var s = document.createElement("script");
             s.type = "text/javascript";

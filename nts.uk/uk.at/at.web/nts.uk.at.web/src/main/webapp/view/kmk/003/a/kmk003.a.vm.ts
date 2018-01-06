@@ -83,8 +83,8 @@ module nts.uk.at.view.kmk003.a {
                 
                 self.workTimeSettings = ko.observableArray([]);
                 self.columnWorktimeSettings = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 100 },
-                    { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 130 },
+                    { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 50 },
+                    { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 180 },
                     { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'isAbolish', width: 40,
                         formatter: isAbolish => {
                             if (isAbolish === true || isAbolish === 'true') {

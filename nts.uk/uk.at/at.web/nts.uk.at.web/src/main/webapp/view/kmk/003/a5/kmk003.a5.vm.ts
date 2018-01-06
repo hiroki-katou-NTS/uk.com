@@ -290,7 +290,7 @@ module a5 {
                     template: `<div data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
                         required: true, enable: true, inputFormat: 'time',
-                        startTimeNameId: '#[KMK003_163]', endTimeNameId: '#[KMK003_164]'}"/>`
+                        startTimeNameId: '#[KMK003_163]', endTimeNameId: '#[KMK003_164]',paramId: 'KMK003_20'}"/>`
                 }
             ];
         }
