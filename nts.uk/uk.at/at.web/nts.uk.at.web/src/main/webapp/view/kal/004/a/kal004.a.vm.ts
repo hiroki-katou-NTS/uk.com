@@ -18,6 +18,10 @@ module kal004.a.model {
                 alarmName : KnockoutObservable<string>;
                 tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;  
                 selectedTab: KnockoutObservable<string>;                      
+            
+                // SetPermission
+                setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
+            
             constructor() {
                 let self = this;
                 self.items = ko.observableArray([]);                

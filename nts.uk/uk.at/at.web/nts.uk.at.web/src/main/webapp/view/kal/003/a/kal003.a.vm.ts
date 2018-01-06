@@ -23,7 +23,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
         listAlarmCheckCondition: KnockoutObservableArray<model.AlarmCheckConditionByCategory>;
         selectedAlarmCheckConditionCode: KnockoutObservable<string>;
         selectedAlarmCheckCondition: KnockoutObservable<model.AlarmCheckConditionByCategory>;
-
+        checkConditionTab : nts.uk.at.view.kal003.CheckCheckConditionTab = new nts.uk.at.view.kal003.CheckConditionTab();
         constructor() {
             var self = this;
             self.tabs = ko.observableArray([

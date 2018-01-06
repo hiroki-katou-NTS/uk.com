@@ -123,7 +123,12 @@ module nts.uk.at.view.kdw001.f {
                         // set name closure by date
                         _.find(self.listClosure(), function(closure) { 
                             if (closure.closureId == item.closureID) {
+                                //id
                                 item.changeName(_.find(closure.listClosureHistoryForLog, (historyClosure: any) => {
+                                    return item.processingMonth >= historyClosure.startYearMonth && item.processingMonth <= historyClosure.endYearMonth;
+                                }).closureId,
+                                //name
+                                _.find(closure.listClosureHistoryForLog, (historyClosure: any) => {
                                     return item.processingMonth >= historyClosure.startYearMonth && item.processingMonth <= historyClosure.endYearMonth;
                                 }).closureName);
                             }
@@ -361,9 +366,9 @@ module nts.uk.at.view.kdw001.f {
                 this.personName = data.personName;
             }
             
-            public changeName(name: string): void {
+            public changeName(id : any,name: string): void {
                 this.closureName = name;
-                this.processingMonthName = this.processingMonth%100 + "月度     " + (name==undefined?"":name);
+                this.processingMonthName = this.processingMonth%100 +"月度  " + ((id==undefined ||name==undefined)?"":id+":"+name);
             }
             
             public changeIsTextRed(isTextRed: boolean): void {
