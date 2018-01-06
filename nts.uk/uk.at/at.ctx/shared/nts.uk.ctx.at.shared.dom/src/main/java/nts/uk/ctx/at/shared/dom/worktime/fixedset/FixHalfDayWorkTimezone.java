@@ -147,6 +147,8 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 			item.validateRange("KMK003_20");
 		});
 
+		//validate Msg_515 for rest time
+		this.restTimezone.validOverlap("KMK003_20");
 	}
 
 }
