@@ -32,9 +32,13 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	}
 	
 	public void exclusiveCheck(String companyID, String appID, Long version){
-		Application_New application = applicationRepository.findByID(companyID, appID).get();
-		if(!application.getVersion().equals(version)){
-			throw new BusinessException("Msg_197");
+		if(applicationRepository.findByID(companyID, appID).isPresent()){
+			Application_New application = applicationRepository.findByID(companyID, appID).get();
+			if(!application.getVersion().equals(version)){
+				throw new BusinessException("Msg_197");
+			}
+		}else{
+			throw new BusinessException("Msg_198");
 		}
 	}
 }
