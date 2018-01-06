@@ -133,7 +133,7 @@ public class TotalWorkingTimeDto {
 				domain.getWorkTimes().v());
 	}
 	
-	private static int getAttendanceTime(AttendanceTime domain) {
+	private static Integer getAttendanceTime(AttendanceTime domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 

@@ -653,19 +653,19 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 return false;
             }
             
-            if(conditionNo === 1 && self.conditionValue01() === ""){
+            if(conditionNo === 1 && (self.conditionValue01() === "" || self.conditionValue01() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 2 && self.useCls02() && self.conditionValue02() === ""){
+            } else if(conditionNo === 2 && (self.conditionValue02() === "" || self.conditionValue02() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 3 && self.useCls03() && self.conditionValue03() === ""){
+            } else if(conditionNo === 3 && (self.conditionValue03() === "" || self.conditionValue03() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 4 && self.useCls04() && self.conditionValue04() === ""){
+            } else if(conditionNo === 4 && (self.conditionValue04() === "" || self.conditionValue04() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 5 && self.useCls05() && self.conditionValue05() === ""){
+            } else if(conditionNo === 5 && (self.conditionValue05() === "" || self.conditionValue05() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
             }
@@ -766,16 +766,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue01.subscribe(function(value) {
                 var result = 0;
                 
-                if(count >= 1) {
-                    count = 0;
-                    self.useCls02Enable(false);
-                    self.useCls03Enable(false);
-                    self.useCls04Enable(false);
-                    self.useCls05Enable(false);
-                    return false;
-                }
-                
                 if(value === "") {
+                    self.useCls02(false);
+                    self.useCls03(false);
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls02Enable(false);
                     self.useCls03Enable(false);
                     self.useCls04Enable(false);
@@ -788,6 +783,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > 366 || Number(self.conditionValue01()) < 0)){
                     $('#cond01').ntsError('set', {messageId:"Msg_263"});
                 } else {
+                    self.useCls03(false);
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls02Enable(true);
                     self.useCls03Enable(false);
                     self.useCls04Enable(false);
@@ -797,8 +795,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.limitedValue02(result <= 0 ? "" : result.toString());
                     }
                 }
-                
-                count = 1;
             });
             
             self.conditionValue02.subscribe(function(value) {
@@ -806,15 +802,23 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue01()) - 1) || Number(self.conditionValue02()) < 0)){
                     $('#cond02').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls03(false);
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls03Enable(false);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
                 } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue01()) - 1) || Number(self.conditionValue02()) < 0)){
                     $('#cond02').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls03(false);
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls03Enable(false);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
                 } else {
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls03Enable(true);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
@@ -830,13 +834,18 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)){
                     $('#cond03').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
                 } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)){
                     $('#cond03').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
                 } else {
+                    self.useCls05(false);
                     self.useCls04Enable(true);
                     self.useCls05Enable(false);
                     if(self.useCls04()) {
@@ -851,9 +860,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)){
                     $('#cond04').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls05(false);
                     self.useCls05Enable(false);
                 } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)){
                     $('#cond04').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls05(false);
                     self.useCls05Enable(false);
                 } else {
                     self.useCls05Enable(true);

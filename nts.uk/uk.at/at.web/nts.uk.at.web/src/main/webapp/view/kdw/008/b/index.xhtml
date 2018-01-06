@@ -88,7 +88,7 @@
 								</div>
 								<div class="tab-content-2" style="height: 500px; width: 900px">
 									<div>
-										<span class="label">#{i18n.getText('KDW008_23')}</span>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 										<div id="A_SEL_002"
 											data-bind="ntsComboBox: {
 											options: sheetNoList,
@@ -97,7 +97,7 @@
 											value: selectedSheetNo,
 											enable: true}">
 										</div>
-										<span id="label2" class="label" >#{i18n.getText('KDW008_8')}</span>
+										<div id="label2" data-bind="ntsFormLabel: { constraint: 'DailyPerFormatSheetName', inline: true, required: true, enable: true}">#{i18n.getText('KDW008_8')}</div>
 										<input class="need-check" data-bind="ntsTextEditor: {value: selectedSheetName,
 																	   	  constraint: 'DailyPerFormatSheetName',
 																	   	  name: '#[KDW008_8]',

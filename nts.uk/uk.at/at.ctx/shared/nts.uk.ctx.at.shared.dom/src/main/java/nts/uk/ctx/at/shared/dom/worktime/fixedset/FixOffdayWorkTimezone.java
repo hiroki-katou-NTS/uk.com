@@ -82,7 +82,7 @@ public class FixOffdayWorkTimezone extends DomainObject {
 				break;
 			}
 			TimeZoneRounding next = iterator.next().getTimezone();
-			if (current.getEnd().greaterThanOrEqualTo(next.getStart())) {
+			if (current.getEnd().greaterThan(next.getStart())) {
 				throw new BusinessException("Msg_515");
 			}
 		}
