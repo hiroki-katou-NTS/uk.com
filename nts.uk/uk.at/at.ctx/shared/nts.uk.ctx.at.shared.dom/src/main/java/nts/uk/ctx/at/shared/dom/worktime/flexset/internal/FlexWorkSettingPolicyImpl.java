@@ -80,7 +80,7 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 				&& predetemineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()
 						.valueAsMinutes() <= flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime()
 								.valueAsMinutes())) {
-			throw new BusinessException("Msg_777");
+			throw new BusinessException("Msg_777","KMK003_157");
 		}
 		
 		// 使用区分 = 使用する 
