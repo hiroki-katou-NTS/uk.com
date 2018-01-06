@@ -154,15 +154,21 @@ public class PrescribedTimezoneSetting extends DomainObject {
 					be.throwExceptions();
 				}
 				
-				if (!(this.isMorningAndAfternoonInShift1() || this.isMorningAndAfternoonInShift2())) {
-					//throw new BusinessException("Msg_774");
+				//check Msg_774
+				if (!tzWorkNo1.consistOf(this.getMorningEndTime()) && !tzWorkNo2.consistOf(this.getMorningEndTime())) {
+					throw new BusinessException("Msg_774", "KMK003_39");
+				}
+
+				if (!tzWorkNo1.consistOf(this.getAfternoonStartTime())
+						&& !tzWorkNo2.consistOf(this.getAfternoonStartTime())) {
+					throw new BusinessException("Msg_774", "KMK003_40");
 				}
 			}
 		}
 		
 		// valid 時間帯.終了 >= 0:01
-		if (this.lstTimezone.stream()
-				.anyMatch(timezone -> timezone.isUsed() && !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
+		if (this.lstTimezone.stream().anyMatch(timezone -> timezone.isUsed()
+				&& !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
 			throw new BusinessException("Msg_778");
 		}
 		
@@ -178,35 +184,18 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 */
 	private void validTimeDay() {
 		// 使用しない
-//		if (!this.isMorningAndAfternoonInShift1()) {
-//			throw new BusinessException("Msg_773");
-//		}
+		if (!this.getTimezoneShiftTwo().isUsed()) {
+			TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
+			if (!tzWorkNo1.consistOf(this.getAfternoonStartTime())) {
+				throw new BusinessException("Msg_773", "KMK003_40");
+			}
+
+			if (!tzWorkNo1.consistOf(this.getMorningEndTime())) {
+				throw new BusinessException("Msg_773", "KMK003_39");
+			}
+		}
 	}
 
-	/**
-	 * Checks if is morning and afternoon in shift 1.
-	 *
-	 * @return true, if is morning and afternoon in shift 1
-	 */
-	private boolean isMorningAndAfternoonInShift1() {
-		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
-		
-		// (afternoon time or morning time) part of (shift1 or shift2)
-		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) || tzWorkNo1.consistOf(this.getMorningEndTime());
-	}
-
-	/**
-	 * Checks if is morning and afternoon in shift 2.
-	 *
-	 * @return true, if is morning and afternoon in shift 2
-	 */
-	private boolean isMorningAndAfternoonInShift2() {
-		TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
-		
-		// (afternoon time or morning time) part of (shift1 or shift2)
-		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) || tzWorkNo2.consistOf(this.getMorningEndTime());
-	}
-	
 	/**
 	 * Restore disabled data from.
 	 *

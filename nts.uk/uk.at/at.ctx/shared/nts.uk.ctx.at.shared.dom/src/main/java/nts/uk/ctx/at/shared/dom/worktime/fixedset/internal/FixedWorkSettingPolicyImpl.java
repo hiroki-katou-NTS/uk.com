@@ -67,14 +67,14 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 
 		// validate Msg_516
 		if (fixedWorkSetting.getUseHalfDayShift()) {
-			fixedWorkSetting.getLstHalfDayWorkTimezone()
-					.forEach(halfDay -> this.fixHalfDayPolicy.validate(halfDay, predetemineTimeSet));
 			// validate Msg_516
 			predService.validateOneDay(predetemineTimeSet,
 					predetemineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime(),
 					predetemineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
-
 		}
+
+		// validate list HalfDayWorkTimezone
+		this.fixHalfDayPolicy.validate(fixedWorkSetting, predetemineTimeSet);
 
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(predetemineTimeSet, fixedWorkSetting.getCommonSetting());

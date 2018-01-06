@@ -99,7 +99,7 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 			if (!(flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime().valueAsMinutes() >= startTime
 					&& flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime()
 							.valueAsMinutes() <= endTime)) {
-				//throw new BusinessException("Msg_773");
+				throw new BusinessException("Msg_773","KMK003_157");
 			}
 		}
 		
@@ -119,10 +119,9 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		});
 
 		// valiadte FlexHalfDayWorkTime
+		flexWorkSetting.getLstHalfDayWorkTimezone().forEach(halfDay -> this.flexHalfDayPolicy
+				.validate(flexWorkSetting.isUseHalfDayShift(), halfDay, predetemineTimeSet));
 		if (flexWorkSetting.isUseHalfDayShift()) {
-			flexWorkSetting.getLstHalfDayWorkTimezone()
-					.forEach(halfDay -> this.flexHalfDayPolicy.validate(halfDay, predetemineTimeSet));
-			
 			// validate Msg_516
 			predeteminePolicyService.validateOneDay(predetemineTimeSet,
 					predetemineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime(),

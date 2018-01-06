@@ -132,7 +132,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	private void checkOverTimeAndEmTimeOverlap() {
 		if (this.lstOTTimezone.stream().anyMatch(
 				ot -> this.lstWorkingTimezone.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())))) {
-			throw new BusinessException("Msg_845");
+			throw new BusinessException("Msg_845","KMK003_89");
 		}
 	}
 

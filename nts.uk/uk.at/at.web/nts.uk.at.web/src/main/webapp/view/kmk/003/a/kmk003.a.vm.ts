@@ -740,6 +740,7 @@ module nts.uk.at.view.kmk003.a {
             }
             
             resetData(isNewMode?: boolean){
+                this.useHalfDay(false);
                 this.workTimeSetting.resetData();
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();
