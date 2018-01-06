@@ -166,6 +166,8 @@ module nts.uk.com.view.cps005.a {
             self.perInfoCtgSelectCode.subscribe(newId => {
                 if (textUK.isNullOrEmpty(newId)) return;
                 nts.uk.ui.errors.clearAll();
+                let vm = __viewContext['screenModel'];
+                vm.isUpdate = true;
                 new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
                     self.currentCtgSelected(new PerInfoCtgModel(data));
                     nts.uk.ui.errors.clearAll();

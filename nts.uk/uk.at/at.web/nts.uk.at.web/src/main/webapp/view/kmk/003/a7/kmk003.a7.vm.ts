@@ -269,7 +269,8 @@ module a7 {
                             startTimeNameId: '#[KMK003_163]',
                             endTimeNameId: '#[KMK003_164]',
                             startConstraint: 'TimeWithDayAttr',
-                            endConstraint: 'TimeWithDayAttr'
+                            endConstraint: 'TimeWithDayAttr',
+                            paramId: 'KMK003_21'
                                 }
                             "/>`
                 }

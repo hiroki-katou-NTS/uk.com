@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 350, height: 260 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="kal004.f.style.css" />
+			<com:scriptfile path="kal004.f.start.js" />
+			<com:scriptfile path="kal004.f.vm.js" />
+			<com:scriptfile path="kal004.f.service.js" />
+			<com:EnumScript>
+					nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.SegmentationOfCycle
+				</com:EnumScript>
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<label>Chưa có Text</label>
+				<hr></hr>
+				<div
+					data-bind="ntsRadioBoxGroup: {
+					options: list4weekClassEnum,
+					optionsValue: 'value',
+					optionsText: 'name',
+					value: selectedId,
+					enable: enable}"></div>
+			</div>
+			<div id="functions-area-bottom">
+				<button data-bind="click : submit" class="proceed x-large">#{i18n.getText('KAL007_44')}</button>
+				<button data-bind="click : closeDialog">#{i18n.getText('KAL007_45')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
