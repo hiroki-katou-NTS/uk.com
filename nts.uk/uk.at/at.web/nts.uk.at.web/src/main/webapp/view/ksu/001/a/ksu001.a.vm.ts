@@ -69,8 +69,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         //Date time
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/11/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/30'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/09/01'));
+        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/09/30'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -173,7 +173,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     $('#contain-view').show();
                     $('#contain-view').addClass('h-90');
-                    $('#oViewModel').hide(); 
+                    $('#oViewModel').hide();
                     $('#qViewModel').show();
                     $('#group-bt').show();
                     $("#extable").exTable("updateMode", "none");
@@ -1240,7 +1240,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dtMoment = moment(self.dtPrev());
                 dtMoment.subtract(1, 'days');
                 self.dtAft(dtMoment.toDate());
-                dtMoment = dtMoment.subtract(1, 'months');
+                if (dtMoment.date() === dtMoment.daysInMonth()) {
+                    dtMoment = dtMoment.subtract(1, 'months');
+                    dtMoment.endOf('months');
+                } else {
+                    dtMoment = dtMoment.subtract(1, 'months');
+                }
                 dtMoment.add(1, 'days');
                 self.dtPrev(dtMoment.toDate());
                 self.dataSource([]);
@@ -1259,7 +1264,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCell.length == 0) {
                 return;
             }
-            
+
             nts.uk.ui.block.grayout();
             if (self.selectedModeDisplay() == 2) {
                 _.each(arrTmp, (item) => {
