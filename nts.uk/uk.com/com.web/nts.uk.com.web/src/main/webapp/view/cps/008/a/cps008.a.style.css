@@ -16,6 +16,10 @@
 	}
 }
 
+#contents-area {
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
 
 .valign-center {
 	vertical-align: middle !important;
@@ -97,21 +101,16 @@ i.icon.icon-searchbox {
 	top: 8px;
 }
 
-.layout-control .drag-panel{
+.layout-control .drag-panel {
 	height: 500px !important;
 }
 
 .nosetarea {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    width: 810px;
-    height: 500px;
-    padding: 10px;
-    padding-top: 10px;
-    box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	width: 810px;
+	height: 500px;
+	padding: 10px;
+	padding-top: 10px;
+	box-sizing: border-box;
 }
-
-
-
-
-
