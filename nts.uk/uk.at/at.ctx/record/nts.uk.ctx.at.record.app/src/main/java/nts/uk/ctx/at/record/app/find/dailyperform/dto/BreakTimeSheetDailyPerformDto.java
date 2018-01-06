@@ -56,11 +56,11 @@ public class BreakTimeSheetDailyPerformDto {
 						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
 	}
 	
-	private static int getAttendanceTime(TimeWithDayAttr domain) {
+	private static Integer getAttendanceTime(TimeWithDayAttr domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 	
-	private static int getAttendanceTime(AttendanceTime domain) {
+	private static Integer getAttendanceTime(AttendanceTime domain) {
 		return domain == null ? null : domain.valueAsMinutes();
 	}
 

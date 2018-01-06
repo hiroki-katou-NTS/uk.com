@@ -333,12 +333,8 @@ module nts.uk.com.view.cps005.b {
                 self.timePointItem(new TimePointItemModel(null));
                 self.selectionItem(new SelectionItemModel(null));
                 nts.uk.ui.errors.clearAll();
-                $("#numericItemMin").focusin(()=>{self.numericItem().checkIntegerEmpty();});
-                $("#numericItemMax").focusin(()=>{self.numericItem().checkIntegerEmpty();});
-                $("#numericItemMin").on("blur", ()=>{
-                    self.numericItem().validateMin(dataType);
-                });
-                $("#numericItemMax").on("blur", ()=>{
+                $(document).on("focusin", "#numericItemMin, #numericItemMax", ()=>{self.numericItem().checkIntegerEmpty();});
+                $(document).on("blur focusout", "#numericItemMin, #numericItemMax", ()=>{
                     self.numericItem().validateMin(dataType);
                 });
                 if (value === 6) {
@@ -458,14 +454,10 @@ module nts.uk.com.view.cps005.b {
             self.numericItemMinus(data.numericItemMinus);
             self.decimalPart(data.decimalPart || null);
             self.integerPart(data.integerPart || null);
-            $("#numericItemMin").focusin(()=>{self.checkIntegerEmpty();});
-            $("#numericItemMax").focusin(()=>{self.checkIntegerEmpty();});
-            $("#numericItemMin").on("blur", ()=>{
-                self.validateMin(datatype);
-            });
-            $("#numericItemMax").on("blur", ()=>{
-                self.validateMin(datatype);
-            });
+            $(document).on("focusin", "#numericItemMin, #numericItemMax", ()=>{self.checkIntegerEmpty();});
+                $(document).on("blur focusout", "#numericItemMin, #numericItemMax", ()=>{
+                    self.validateMin(datatype);
+                });
             self.numericItemMinus.subscribe(function(data) {
                 datatype =data;
                 self.validateMin(datatype);
@@ -667,7 +659,7 @@ module nts.uk.com.view.cps005.b {
 
             setShared('CPS005B_PARAMS', params);
             let itemCurrent: string = ko.toJS(__viewContext.screenModelB.currentItemData().currentItemSelected().id);
-            modal('/view/cps/016/a/index.xhtml', { title: '', height: 800, width: 1500 }).onClosed(function(): any {
+            modal('/view/cps/016/a/index.xhtml', { title: '', height: 850, width: 1200 }).onClosed(function(): any {
                 __viewContext['screenModelB'].reloadData().done(() => {
                     __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode(itemCurrent);
                     self.selectionItemId(params.selectionItemId);

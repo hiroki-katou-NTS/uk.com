@@ -38,10 +38,10 @@ public class GrantHolidayTblDto {
 	private int limitedHalfHdCnt;
 	
 	/* 勤続年数月数 */
-	private int lengthOfServiceMonths;
+	private Integer lengthOfServiceMonths;
 	
 	/* 勤続年数年数 */
-	private int lengthOfServiceYears;
+	private Integer lengthOfServiceYears;
 	
 	/* 付与基準日 */
 	private int grantReferenceDate;

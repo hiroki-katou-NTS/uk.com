@@ -145,12 +145,14 @@ module nts.uk.com.view.cas005.a {
                 //table right
                 self.component = new ccg.component.viewmodel.ComponentModel({
                     roleType: 3,
-                    multiple: false
+                    multiple: false,
+                    tabindex: 6
                 });
                 //ccg026
                 self.componentCcg026 = new ccg026.component.viewmodel.ComponentModel({
                     classification: 1,
-                    maxRow: 3
+                    maxRow: 3,
+                    tabindex: 17
                 });
                 self.componentCcg026.listPermissions.subscribe((value) => {
                     self.listWorkPlaceAuthorityCommand([]);

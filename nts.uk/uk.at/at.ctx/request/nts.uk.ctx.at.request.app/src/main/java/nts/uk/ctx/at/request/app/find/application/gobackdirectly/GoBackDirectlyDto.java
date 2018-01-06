@@ -86,13 +86,13 @@ public class GoBackDirectlyDto {
 				domain.getWorkChangeAtr().value, 
 				domain.getGoWorkAtr1().value,
 				domain.getBackHomeAtr1().value, 
-				domain.getWorkTimeStart1().v(), 
-				domain.getWorkTimeEnd1().v(),
+				domain.getWorkTimeStart1() == null ? null : domain.getWorkTimeStart1().v(), 
+				domain.getWorkTimeEnd1() == null ? null : domain.getWorkTimeEnd1().v(),
 				domain.getWorkLocationCD1(), 
 				domain.getGoWorkAtr2().value, 
 				domain.getBackHomeAtr2().value,
-				domain.getWorkTimeStart2().v(), 
-				domain.getWorkTimeEnd2().v(), 
+				domain.getWorkTimeStart2() == null ? null : domain.getWorkTimeStart2().v(), 
+				domain.getWorkTimeEnd2() == null ? null : domain.getWorkTimeEnd2().v(),
 				domain.getWorkLocationCD2());
 	}
 }

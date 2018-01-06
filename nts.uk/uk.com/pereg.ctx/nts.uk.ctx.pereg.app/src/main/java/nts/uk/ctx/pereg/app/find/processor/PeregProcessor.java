@@ -124,7 +124,7 @@ public class PeregProcessor {
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forCompanyAdmin();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
 
 		// get Person ID
 		query.setPersonId(empRepo.findByEmpId(query.getEmployeeId()).get().getPersonId());
