@@ -13,6 +13,7 @@ import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.info.category.HistoryTypes;
+import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -142,7 +143,8 @@ public class PerInfoCategoryFinder {
 				.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(p -> {
 					return new PerInfoCtgWithItemsNameDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 							p.getCategoryType().value, p.getIsFixed().value, p.getPersonEmployeeType().value,
-							itemNameList, isChangeAbleCtgType(p.getPersonInfoCategoryId()));
+							itemNameList, p.getIsFixed().equals(IsFixed.NOT_FIXED)
+									? isChangeAbleCtgType(p.getPersonInfoCategoryId()) : false);
 				}).orElse(null);
 
 		return resultCtg;
