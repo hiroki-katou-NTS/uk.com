@@ -34,6 +34,6 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 	@Override
 	public void validate(FixedWorkSetting fixedWorkSetting, PredetemineTimeSetting predTime) {
 		fixedWorkSetting.getLstHalfDayWorkTimezone().forEach(item -> this.fixedWtzPolicy
-				.validate(fixedWorkSetting.getUseHalfDayShift(), item.getWorkTimezone(), predTime));
+				.validate(item.getWorkTimezone(), predTime));
 	}
 }

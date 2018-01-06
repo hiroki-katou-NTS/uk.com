@@ -36,11 +36,9 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(boolean useHalfDayShift, FixedWorkTimezoneSet fixedWtz, PredetemineTimeSetting predTime) {
+	public void validate(FixedWorkTimezoneSet fixedWtz, PredetemineTimeSetting predTime) {
 		// validate list emTimezone
-		if (useHalfDayShift) {
-			fixedWtz.getLstWorkingTimezone().forEach(wtz -> this.emTzPolicy.validate(predTime, wtz));
-		}
+		fixedWtz.getLstWorkingTimezone().forEach(wtz -> this.emTzPolicy.validate(predTime, wtz));
 
 		// validate list OTtimezone
 		val emTimezone1 = fixedWtz.getLstWorkingTimezone().stream()
