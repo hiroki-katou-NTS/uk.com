@@ -134,7 +134,7 @@ module nts.uk.at.view.kmk005.f {
                                 item.timeSheetNO,
                                 item.useAtr,
                                 item.bonusPaySettingCode,
-                                item.timeItemId,
+                                item.timeItemID,
                                 item.startTime,
                                 item.endTime,
                                 item.roundingTimeAtr,
@@ -147,7 +147,7 @@ module nts.uk.at.view.kmk005.f {
                                 item.timeSheetNO,
                                 item.useAtr,
                                 item.bonusPaySettingCode,
-                                item.timeItemId,
+                                item.timeItemID,
                                 item.startTime,
                                 item.endTime,
                                 item.roundingTimeAtr,
@@ -247,7 +247,9 @@ module nts.uk.at.view.kmk005.f {
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                         });
-                    });
+                    }).ifNo(() => {
+                        nts.uk.ui.block.clear();
+                    });;
 
             }
 
@@ -286,14 +288,12 @@ module nts.uk.at.view.kmk005.f {
 
         export class BonusPayTimeItem {
             companyId: string;
-            timeItemId: string;
             useAtr: number;
             timeItemName: string;
             timeItemNo: number;
             timeItemTypeAtr: number;
-            constructor(companyId: string, timeItemId: string, useAtr: number, timeItemName: string, timeItemNo: number, timeItemTypeAtr: number) {
+            constructor(companyId: string, useAtr: number, timeItemName: string, timeItemNo: number, timeItemTypeAtr: number) {
                 this.companyId = companyId;
-                this.timeItemId = timeItemId;
                 this.useAtr = useAtr;
                 this.timeItemName = timeItemName;
                 this.timeItemNo = timeItemNo;
@@ -319,18 +319,18 @@ module nts.uk.at.view.kmk005.f {
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
             bonusPaySettingCode: KnockoutObservable<string>;
-            timeItemId: KnockoutObservable<string>;
+            timeItemID: KnockoutObservable<string>;
             startTime: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             roundingTimeAtr: KnockoutObservable<number>;
             roundingAtr: KnockoutObservable<number>;
-            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemId: string,
+            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: string,
                 startTime: number, endTime: number, roundingTimeAtr: number, roundingAtr: number) {
                 this.companyId = ko.observable(companyId);
                 this.timeSheetNO = ko.observable(timeSheetNO);
                 this.useAtr = ko.observable(useAtr);
                 this.bonusPaySettingCode = ko.observable(bonusPaySettingCode);
-                this.timeItemId = ko.observable(timeItemId);
+                this.timeItemID = ko.observable(timeItemID);
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
                 this.roundingTimeAtr = ko.observable(roundingTimeAtr);
@@ -343,19 +343,19 @@ module nts.uk.at.view.kmk005.f {
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
             bonusPaySettingCode: KnockoutObservable<string>;
-            timeItemId: KnockoutObservable<string>;
+            timeItemID: KnockoutObservable<string>;
             startTime: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             roundingTimeAtr: KnockoutObservable<number>;
             roundingAtr: KnockoutObservable<number>;
             specialDateItemNO: KnockoutObservable<number>;
-            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemId: string,
+            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: string,
                 startTime: number, endTime: number, roundingTimeAtr: number, roundingAtr: number, specialDateItemNO: number) {
                 this.companyId = ko.observable(companyId);
                 this.timeSheetNO = ko.observable(timeSheetNO);
                 this.useAtr = ko.observable(useAtr);
                 this.bonusPaySettingCode = ko.observable(bonusPaySettingCode);
-                this.timeItemId = ko.observable(timeItemId);
+                this.timeItemID = ko.observable(timeItemID);
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
                 this.roundingTimeAtr = ko.observable(roundingTimeAtr);
