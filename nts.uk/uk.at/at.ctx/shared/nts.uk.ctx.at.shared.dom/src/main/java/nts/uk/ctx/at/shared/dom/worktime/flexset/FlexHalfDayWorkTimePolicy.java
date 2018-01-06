@@ -14,9 +14,8 @@ public interface FlexHalfDayWorkTimePolicy {
 	/**
 	 * Validate.
 	 *
-	 * @param useHalfDayShift the use half day shift
 	 * @param flexHalfDay the flex half day
 	 * @param predTime the pred time
 	 */
-	void validate(boolean useHalfDayShift, FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime);
+	void validate(FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime);
 }

@@ -113,20 +113,24 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 //		this.service.compareWithOneDayRange(predetemineTimeSet,
 //				flexWorkSetting.getCommonSetting().getSubHolTimeSet().getSubHolTimeSet().getDesignatedTime());
 		
-		// Msg_516
+		// Msg_516 StampReflectTimezone
 		flexWorkSetting.getLstStampReflectTimezone().forEach(setting -> {
 //			this.service.validateOneDay(predetemineTimeSet, setting.getStartTime(), setting.getEndTime());
 		});
 
+		// validate Msg_516 CoreTimeSetting
+		if (this.predeteminePolicyService.validateOneDay(predetemineTimeSet,
+				flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(),
+				flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime())) {
+			throw new BusinessException("Msg_516", "KMK003_157");
+		}
 		// valiadte FlexHalfDayWorkTime
 		flexWorkSetting.getLstHalfDayWorkTimezone().forEach(halfDay -> this.flexHalfDayPolicy
-				.validate(flexWorkSetting.isUseHalfDayShift(), halfDay, predetemineTimeSet));
+				.validate(halfDay, predetemineTimeSet));
+		
 		if (flexWorkSetting.isUseHalfDayShift()) {
-			// validate Msg_516
-			predeteminePolicyService.validateOneDay(predetemineTimeSet,
-					predetemineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime(),
-					predetemineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
-
+			// validate Msg_516 PredetemineTime
+			predeteminePolicyService.validatePredetemineTime(predetemineTimeSet);
 		}
 
 		// validate FlexOffdayWorkTime
