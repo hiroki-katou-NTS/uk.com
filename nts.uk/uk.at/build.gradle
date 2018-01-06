@@ -142,7 +142,7 @@ project (':at.ctx:at.auth:nts.uk.ctx.at.auth.ac') {
 	dependencies {
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.dom')
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
-		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2.1')
+		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.6')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.19')
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.6.2')
 	}
@@ -352,7 +352,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.ac') {
 		
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: '0.6.2')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.19')
-		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2.1')
+		compile(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.6')
 	}
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pub') {
@@ -645,27 +645,19 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: '0.2')
 		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: '0.2.2')
 		
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.app', version: '0.2.6')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: '0.2.6')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: '0.2.6')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.2.6')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: '0.2.6')
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: '0.2.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.app', version: '0.3.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: '0.3.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: '0.3.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: '0.3.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: '0.3.6')
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: '0.3.6')
 		
-		// Add by ThanhNC - pls review 
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.app', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.infra', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: '0.1.1')
-		
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.app', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.infra', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: '0.1.1')
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: '0.1.1')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: '0.1.2')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.app', version: '0.1.2')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.infra', version: '0.1.2')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: '0.1.2')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: '0.1.2')
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: '0.1.2')
 		
 		// implement eraAdapter
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.app', version: '0.4'
