@@ -69,6 +69,7 @@ public class Application_New extends DomainObject {
 	
 	public static Application_New firstCreate(String companyID, PrePostAtr prePostAtr, GeneralDate appDate, ApplicationType appType, String employeeID, AppReason appReason){
 		return Application_New.builder()
+				.version(0L)
 				.companyID(companyID)
 				.appID(IdentifierUtil.randomUniqueId())
 				.prePostAtr(prePostAtr)

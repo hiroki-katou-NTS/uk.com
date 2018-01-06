@@ -198,6 +198,7 @@ module nts.uk.com.view.cps005.a {
         //all visiable
         historyTypesDisplay: KnockoutObservable<boolean> = ko.observable(true);
         fixedIsSelected: KnockoutObservable<boolean> = ko.observable(false);
+        isChangeAbleCtgType: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IPersonInfoCtg) {
             let self = this;
             if (data) {
@@ -237,6 +238,7 @@ module nts.uk.com.view.cps005.a {
                     self.historyClassSelectedText(getText("CPS005_54"));
                 }
                 self.fixedIsSelected(data.isFixed == 1 ? true : false);
+                self.isChangeAbleCtgType(data.isChangeAbleCtgType);
             }
             //subscribe select history type (1: history, 2: not history)
             self.historyClassSelected.subscribe(newHisClassification => {
@@ -299,6 +301,7 @@ module nts.uk.com.view.cps005.a {
         categoryType?: number;
         personEmployeeType: number;
         itemNameList?: Array<string>;
+        isChangeAbleCtgType: boolean;
     }
 }
 

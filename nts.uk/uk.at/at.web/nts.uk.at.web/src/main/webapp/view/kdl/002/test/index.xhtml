@@ -28,16 +28,17 @@
                  <br></br>
 				<div>選択中の勤務種類コード</div>
 				<!-- A1_2 -->
-				<input class="nts-input"
+				<TEXTAREA rows="7" cols="31" data-bind="value: SelectedCode"></TEXTAREA>
+				<!-- <input class="nts-input" 
 					data-bind="ntsTextEditor: {
                                    value: SelectedCode,
                                    enable: true, 
-                                   required: false}"/>
+                                   required: false}"/> -->
                  <div>(Eg: Single: 001 | Multiple: 001,002,003,...)</div>
                  <br></br>
-				<div style="float: left; margin-bottom: 20px;">
+<!-- 				<div style="float: left; margin-bottom: 20px;">
 					<div>
-						<!-- A1_3 -->
+						A1_3
 						<table id="single-list" tabindex="2"
 							data-bind="ntsGridList: {
 										height: 390,
@@ -48,7 +49,7 @@
 						</table>
 					</div>
 					<hr />
-				</div>
+				</div> -->
 			</div>
 		</ui:define>
 	</ui:composition>

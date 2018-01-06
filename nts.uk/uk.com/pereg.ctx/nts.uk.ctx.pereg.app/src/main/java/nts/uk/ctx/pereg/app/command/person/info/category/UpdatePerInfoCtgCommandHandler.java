@@ -1,7 +1,5 @@
 package nts.uk.ctx.pereg.app.command.person.info.category;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -9,12 +7,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
-import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfoCtgCommand> {
@@ -22,26 +17,10 @@ public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfo
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
 
-	@Inject
-	private EmInfoCtgDataRepository empDataRepo;
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePerInfoCtgCommand> context) {
-		String contractCd = AppContexts.user().contractCode();
+
 		UpdatePerInfoCtgCommand perInfoCtgCommand = context.getCommand();
-		
-		PersonInfoCategory ctg = this.perInfoCtgRep.getPerInfoCategory(perInfoCtgCommand.getId(), contractCd).get();
-		
-		List<String> ctgLogin = this.perInfoCtgRep.getAllCategoryByCtgCD(ctg.getCategoryCode().toString());
-		
-		if(ctgLogin.size() > 0) {
-			
-			List<EmpInfoCtgData> empDataLst = this.empDataRepo.getByEmpIdAndCtgId(ctgLogin);
-			
-			if(empDataLst.size() > 0) {
-				throw new BusinessException("Msg_358");
-			}
-		}
-		
 
 		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
 				perInfoCtgCommand.getCategoryName(), perInfoCtgCommand.getId())) {

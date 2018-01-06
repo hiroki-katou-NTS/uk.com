@@ -184,7 +184,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
                         || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
                         $("#extable").exTable("stickData", null);
+                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'company') {
+                        let dataToStick = $("#test1").ntsButtonTable("getSelectedCells")[0].data.data;
+                        $("#extable").exTable("stickData", dataToStick);
+                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'workplace') {
+                        let dataToStick = $("#test2").ntsButtonTable("getSelectedCells")[0].data.data;
+                        $("#extable").exTable("stickData", dataToStick);
                     }
+
                     if (self.flag) {
                         //select first link button
                         __viewContext.viewModel.viewQ.initScreenQ();
@@ -237,6 +244,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         startKSU001(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             //get data for screen O
             $.when(__viewContext.viewModel.viewO.findDataForComboBox(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
                 //get state of list workTypeCode
@@ -251,6 +259,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
                     self.initCCG001();
                     self.initExTable();
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
             });
@@ -1231,7 +1240,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dtMoment = moment(self.dtPrev());
                 dtMoment.subtract(1, 'days');
                 self.dtAft(dtMoment.toDate());
-                dtMoment = dtMoment.subtract(1, 'months');
+                if (dtMoment.date() === dtMoment.daysInMonth()) {
+                    dtMoment = dtMoment.subtract(1, 'months');
+                    dtMoment.endOf('months');
+                } else {
+                    dtMoment = dtMoment.subtract(1, 'months');
+                }
                 dtMoment.add(1, 'days');
                 self.dtPrev(dtMoment.toDate());
                 self.dataSource([]);
@@ -1251,6 +1265,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return;
             }
 
+            nts.uk.ui.block.grayout();
             if (self.selectedModeDisplay() == 2) {
                 _.each(arrTmp, (item) => {
                     let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
@@ -1296,9 +1311,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 //get data and update extable
                 self.setDatasource().done(function() {
                     self.updateExTable();
+                    nts.uk.ui.block.clear();
                 });
             }).fail(function(error: any) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.block.grayout();
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
             });
         }
 
@@ -1620,7 +1637,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listColorOfHeader: self.listColorOfHeader()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
-                if (!getShared("dataFromScreenD").clickCloseDialog) {
+                if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
                     $.when(self.setDatasource()).done(() => {
                         self.updateExTable();
                     });

@@ -168,40 +168,35 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class DiffTimezoneSettingModel {
-                employmentTimezones: EmTimeZoneSetModel[];
-                oTTimezones: DiffTimeOTTimezoneSetModel[];
+                employmentTimezones: KnockoutObservableArray<EmTimeZoneSetModel>;
+                oTTimezones: KnockoutObservableArray<DiffTimeOTTimezoneSetModel>;
 
                 constructor() {
-                    this.employmentTimezones = [];
-                    this.oTTimezones = [];
+                    this.employmentTimezones = ko.observableArray([]);
+                    this.oTTimezones = ko.observableArray([]);
                 }
 
                 updateData(data: DiffTimezoneSettingDto) {
-                    this.employmentTimezones = [];
-                    for (var dataDTOTimezone of data.employmentTimezones) {
-                        var dataModelTimezone: EmTimeZoneSetModel = new EmTimeZoneSetModel();
-                        dataModelTimezone.updateData(dataDTOTimezone);
-                        this.employmentTimezones.push(dataModelTimezone);
-                    }
+                    let self = this;
+                    self.employmentTimezones(data.employmentTimezones.map(item => {
+                        let m = new EmTimeZoneSetModel();
+                        m.updateData(item);
+                        return m;
+                    }));
 
-                    this.oTTimezones = []
-                    for (var dataDTOOvertime of data.oTTimezones) {
-                        var dataModelOvertime: DiffTimeOTTimezoneSetModel = new DiffTimeOTTimezoneSetModel();
-                        dataModelOvertime.updateData(dataDTOOvertime);
-                        this.oTTimezones.push(dataModelOvertime);
-                    }
+                    self.oTTimezones(data.oTTimezones.map(item => {
+                        let m = new DiffTimeOTTimezoneSetModel();
+                        m.updateData(item);
+                        return m;
+                    }));
+
                 }
 
                 toDto(): DiffTimezoneSettingDto {
-                    var employmentTimezones: EmTimeZoneSetDto[] = [];
-                    for (var dataModelTimezone of this.employmentTimezones) {
-                        employmentTimezones.push(dataModelTimezone.toDto());
-                    }
+                    let self = this;
+                    let employmentTimezones = self.employmentTimezones().map(item => item.toDto()); 
+                    let oTTimezones = self.oTTimezones().map(item => item.toDto());
 
-                    var oTTimezones: DiffTimeOTTimezoneSetDto[] = [];
-                    for (var dataModelOvertime of this.oTTimezones) {
-                        oTTimezones.push(dataModelOvertime.toDto());
-                    }
                     var dataDTO: DiffTimezoneSettingDto = {
                         employmentTimezones: employmentTimezones,
                         oTTimezones: oTTimezones

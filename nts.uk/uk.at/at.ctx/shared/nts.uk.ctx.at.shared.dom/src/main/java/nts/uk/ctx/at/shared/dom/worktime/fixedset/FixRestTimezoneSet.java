@@ -75,7 +75,7 @@ public class FixRestTimezoneSet extends DomainObject {
 				break;
 			}
 			DeductionTime next = iterator.next();
-			if (current.getEnd().greaterThanOrEqualTo(next.getStart())) {
+			if (current.getEnd().greaterThan(next.getStart())) {
 				throw new BusinessException("Msg_515");
 			}
 		}

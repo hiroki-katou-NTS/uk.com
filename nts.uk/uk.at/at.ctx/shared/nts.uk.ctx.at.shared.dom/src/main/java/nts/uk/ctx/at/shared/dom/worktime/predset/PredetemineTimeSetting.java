@@ -117,20 +117,11 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	 * Validate prescribed timezone.
 	 */
 	private void validatePrescribedTimezone() {
-		val morningEnd = this.prescribedTimezoneSetting.getMorningEndTime();
-		val afternoonStart = this.prescribedTimezoneSetting.getAfternoonStartTime();
 		val timezones = this.prescribedTimezoneSetting.getLstTimezone();
-
 		// validate list time zone
 		if (timezones.stream().anyMatch(
 				tz -> tz.getUseAtr() == UseSetting.USE && this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
 			throw new BusinessException("Msg_516");
-		}
-
-		// validate morning End time and afternoon start time
-		if (this.isOutOfRangeTimeDay(morningEnd, afternoonStart)) {
-			//throw new BusinessException("Msg_516");
-			//TODO: check useHalfDayShift in flex, fixed worksetting
 		}
 	}
 

@@ -84,7 +84,7 @@ public class EmpCtgFinder {
 		//App contexts
 		String companyId = AppContexts.user().companyId();
 		String empIdCurrentLogin = AppContexts.user().employeeId();
-		String roleIdOfLogin = AppContexts.user().roles().forCompanyAdmin();
+		String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
 
 		// get list Category
 		List<PersonInfoCategory> listCategory = perInfoCategoryRepositoty.getAllPerInfoCtg(companyId);
@@ -145,7 +145,7 @@ public class EmpCtgFinder {
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forCompanyAdmin();
+		String roleId = AppContexts.user().roles().forPersonalInfo();
 
 		// get item def
 		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService

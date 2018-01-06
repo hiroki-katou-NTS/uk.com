@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen;
 
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
@@ -18,9 +18,6 @@ public class InitModeImp implements InitMode {
 	/** 14-3.詳細画面の初期モード */
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
-
-	@Inject
-	ApplicationRepository applicationRepository;
 
 	private ReflectPlanPerState status;
 
