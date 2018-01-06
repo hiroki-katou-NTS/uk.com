@@ -371,7 +371,7 @@ module nts.uk.at.view.kaf009.b {
              */
             setValueControl(data: common.GoBackDirectData) {
                 let self = this;
-                if (!nts.uk.util.isNullOrUndefined(data)) {
+                if (!nts.uk.util.isNullOrEmpty(data)) {
                     //Line 1
                     self.timeStart1(data.workTimeStart1 == -1 ? null : data.workTimeStart1);
                     self.timeEnd1(data.workTimeEnd1 == -1 ? null : data.workTimeEnd1);

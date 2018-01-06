@@ -7,15 +7,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
@@ -39,7 +39,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 
 	@Inject
-	private ApplicationRepository appRepository;
+	private ApplicationRepository_New appRepository;
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
 	// @Inject
@@ -101,7 +101,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		}
 		// ドメインモデル「申請」を取得
 		// 事前申請漏れチェック
-		List<Application> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
+		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
 				ApplicationType.OVER_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
 			// TODO: QA Pending
@@ -111,14 +111,14 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 事前申請否認チェック
 		// 否認以外：
 		// 反映情報.実績反映状態＝ 否認、差し戻し
-		ReflectPlanPerState refPlan = beforeApplication.get(0).getReflectPerState();
-		if (!refPlan.equals(ReflectPlanPerState.DENIAL) && !refPlan.equals(ReflectPlanPerState.REMAND)) {
+		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
+		if (!refPlan.equals(ReflectedState_New.DENIAL) && !refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
 			result.setErrorCode(1);
 			return result;
 		}
 		String beforeCid = beforeApplication.get(0).getCompanyID();
-		String beforeAppId = beforeApplication.get(0).getApplicationID();
+		String beforeAppId = beforeApplication.get(0).getAppID();
 
 		// 事前申請の申請時間
 		List<OverTimeInput> beforeOvertimeInputs = overtimeInputRepository.getOvertimeInput(beforeCid, beforeAppId)
@@ -204,16 +204,16 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setErrorCode(0);
 		// ドメインモデル「申請」
-		List<Application> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
+		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
 				ApplicationType.OVER_TIME_APPLICATION.value, prePostAtr.value);
 		if (beforeApplication.isEmpty()) {
 			return result;
 		}
 		//承認区分が否認かチェック
 		//ドメインモデル「申請」．「反映情報」．実績反映状態をチェックする
-		ReflectPlanPerState stateLatestApp = beforeApplication.get(0).getReflectPerState();
+		ReflectedState_New stateLatestApp = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
 		//否認、差戻しの場合
-		if (stateLatestApp.equals(ReflectPlanPerState.DENIAL) || stateLatestApp.equals(ReflectPlanPerState.REMAND)) {
+		if (stateLatestApp.equals(ReflectedState_New.DENIAL) || stateLatestApp.equals(ReflectedState_New.REMAND)) {
 			result.setConfirm(true);
 			return result;
 		}

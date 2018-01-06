@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,19 +9,13 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect_New;
-import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 

@@ -419,6 +419,11 @@ module nts.custombinding {
                     .layout-control .item-classification tbody tr td.index>div {
                         line-height: 27px;
                     }
+
+                    .layout-control #cps007_btn_line {
+                        width: 125px;
+                    }
+    
                 </style>`;
 
         private tmp = `<div class="left-area">
