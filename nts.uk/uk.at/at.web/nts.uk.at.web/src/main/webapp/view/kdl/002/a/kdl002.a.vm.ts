@@ -95,13 +95,13 @@ module kdl002.a.viewmodel {
                     return;
                 }
                 let lstItem2 = _.orderBy(lstObj,['code'],['asc'])
-                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2,true);
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2);
             }else{
                 let objectNew2 = self.findItem(self.currentCodeList().toString());
                 if(objectNew2 != undefined && objectNew2 != null){
                     var lstObj2 ={ "code": objectNew2.workTypeCode, "name":objectNew2.name};
                 }
-                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', [lstObj2],true);
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', [lstObj2]);
             }
             nts.uk.ui.windows.close();
         }
