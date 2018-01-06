@@ -119,26 +119,26 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		return domain;
 	}
 
-	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain) {
-		WorkStamp attendanceStamp = domain.getAttendanceStamp().getStamp().orElse(null);
-		WorkStamp leaveStamp = domain.getAttendanceStamp().getStamp().orElse(null);
-		return new KrcdtTimeLeavingWork(new KrcdtTimeLeavingWorkPK(employeeId, domain.getWorkNo().v(), ymd),
-				domain.getAttendanceStamp().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
-				domain.getAttendanceStamp().getActualStamp().getTimeWithDay().valueAsMinutes(),
-				domain.getAttendanceStamp().getActualStamp().getLocationCode().v(),
-				domain.getAttendanceStamp().getActualStamp().getStampSourceInfo().value,
+	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {
+		WorkStamp attendanceStamp = domain.getAttendanceStamp().get().getStamp().orElse(null);
+		WorkStamp leaveStamp = domain.getAttendanceStamp().get().getStamp().orElse(null);
+		return new KrcdtTimeLeavingWork(new KrcdtTimeLeavingWorkPK(employeeId, domain.getWorkNo().v(), ymd, type),
+				domain.getAttendanceStamp().get().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
+				domain.getAttendanceStamp().get().getActualStamp().getTimeWithDay().valueAsMinutes(),
+				domain.getAttendanceStamp().get().getActualStamp().getLocationCode().v(),
+				domain.getAttendanceStamp().get().getActualStamp().getStampSourceInfo().value,
 				attendanceStamp == null ? null : attendanceStamp.getAfterRoundingTime().valueAsMinutes(),
 				attendanceStamp == null ? null : attendanceStamp.getTimeWithDay().valueAsMinutes(),
 				attendanceStamp.getLocationCode().v(),
-				attendanceStamp.getStampSourceInfo().value, domain.getAttendanceStamp().getNumberOfReflectionStamp(), 
-				domain.getLeaveStamp().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
-				domain.getLeaveStamp().getActualStamp().getTimeWithDay().valueAsMinutes(),
-				domain.getLeaveStamp().getActualStamp().getLocationCode().v(),
-				domain.getLeaveStamp().getActualStamp().getStampSourceInfo().value,
+				attendanceStamp.getStampSourceInfo().value, domain.getAttendanceStamp().get().getNumberOfReflectionStamp(), 
+				domain.getLeaveStamp().get().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
+				domain.getLeaveStamp().get().getActualStamp().getTimeWithDay().valueAsMinutes(),
+				domain.getLeaveStamp().get().getActualStamp().getLocationCode().v(),
+				domain.getLeaveStamp().get().getActualStamp().getStampSourceInfo().value,
 				leaveStamp == null ? null : leaveStamp.getAfterRoundingTime().valueAsMinutes(),
 				leaveStamp == null ? null : leaveStamp.getTimeWithDay().valueAsMinutes(),
 				leaveStamp.getLocationCode().v(),
-				leaveStamp.getStampSourceInfo().value, domain.getLeaveStamp().getNumberOfReflectionStamp());
+				leaveStamp.getStampSourceInfo().value, domain.getLeaveStamp().get().getNumberOfReflectionStamp());
 
 	}
 
@@ -185,26 +185,26 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		return krcdtTimeLeavingWorks.stream().map(f -> f.toDomain()).collect(Collectors.toList());
 	};
 
-	public static KrcdtTimeLeavingWork toEntity(TimeLeavingWork timeLeavingWork, String employeeId, GeneralDate ymd, int workNo) {
-		return new KrcdtTimeLeavingWork(new KrcdtTimeLeavingWorkPK(employeeId, workNo, ymd),
-				timeLeavingWork.getAttendanceStamp().getActualStamp().getAfterRoundingTime().v(),
-				timeLeavingWork.getAttendanceStamp().getActualStamp().getTimeWithDay().v(),
-				timeLeavingWork.getAttendanceStamp().getActualStamp().getLocationCode().v(),
-				timeLeavingWork.getAttendanceStamp().getActualStamp().getStampSourceInfo().value,
-				timeLeavingWork.getAttendanceStamp().getStamp().isPresent() ?  timeLeavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime().v() : null,
-				timeLeavingWork.getAttendanceStamp().getStamp().isPresent() ?  timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay().v() : null,
-				timeLeavingWork.getAttendanceStamp().getStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().getStamp().get().getLocationCode().v() : null,
-				timeLeavingWork.getAttendanceStamp().getStamp().isPresent() ?  timeLeavingWork.getAttendanceStamp().getStamp().get().getStampSourceInfo().value : null,
-				timeLeavingWork.getAttendanceStamp().getNumberOfReflectionStamp(), 
-				timeLeavingWork.getLeaveStamp().getActualStamp().getAfterRoundingTime().v(),
-				timeLeavingWork.getLeaveStamp().getActualStamp().getTimeWithDay().v(),
-				timeLeavingWork.getLeaveStamp().getActualStamp().getLocationCode().v(), 
-				timeLeavingWork.getLeaveStamp().getActualStamp().getStampSourceInfo().value,
-				timeLeavingWork.getLeaveStamp().getStamp().isPresent() ?  timeLeavingWork.getLeaveStamp().getStamp().get().getAfterRoundingTime().v() : null,
-				timeLeavingWork.getLeaveStamp().getStamp().isPresent() ?  timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay().v() : null,
-				timeLeavingWork.getLeaveStamp().getStamp().isPresent() ? timeLeavingWork.getLeaveStamp().getStamp().get().getLocationCode().v() : null,
-				timeLeavingWork.getLeaveStamp().getStamp().isPresent() ?  timeLeavingWork.getLeaveStamp().getStamp().get().getStampSourceInfo().value : null,
-				timeLeavingWork.getLeaveStamp().getNumberOfReflectionStamp());
+	public static KrcdtTimeLeavingWork toEntity(TimeLeavingWork timeLeavingWork, String employeeId, GeneralDate ymd, int workNo, int type) {
+		return new KrcdtTimeLeavingWork(new KrcdtTimeLeavingWorkPK(employeeId, workNo, ymd, type),
+				timeLeavingWork.getAttendanceStamp().get().getActualStamp().getAfterRoundingTime().v(),
+				timeLeavingWork.getAttendanceStamp().get().getActualStamp().getTimeWithDay().v(),
+				timeLeavingWork.getAttendanceStamp().get().getActualStamp().getLocationCode().v(),
+				timeLeavingWork.getAttendanceStamp().get().getActualStamp().getStampSourceInfo().value,
+				timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent() ?  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime().v() : null,
+				timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent() ?  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v() : null,
+				timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode().v() : null,
+				timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent() ?  timeLeavingWork.getAttendanceStamp().get().getStamp().get().getStampSourceInfo().value : null,
+				timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp(), 
+				timeLeavingWork.getLeaveStamp().get().getActualStamp().getAfterRoundingTime().v(),
+				timeLeavingWork.getLeaveStamp().get().getActualStamp().getTimeWithDay().v(),
+				timeLeavingWork.getLeaveStamp().get().getActualStamp().getLocationCode().v(), 
+				timeLeavingWork.getLeaveStamp().get().getActualStamp().getStampSourceInfo().value,
+				timeLeavingWork.getLeaveStamp().get().getStamp().isPresent() ?  timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime().v() : null,
+				timeLeavingWork.getLeaveStamp().get().getStamp().isPresent() ?  timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay().v() : null,
+				timeLeavingWork.getLeaveStamp().get().getStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode().v() : null,
+				timeLeavingWork.getLeaveStamp().get().getStamp().isPresent() ?  timeLeavingWork.getLeaveStamp().get().getStamp().get().getStampSourceInfo().value : null,
+				timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp());
 	}
 
 	@Override

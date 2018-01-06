@@ -48,15 +48,17 @@ public class KrcdtDaiTemporaryTime extends UkJpaEntity implements Serializable {
 	public TemporaryTimeOfDailyPerformance toDomain() {
 		TemporaryTimeOfDailyPerformance domain = new TemporaryTimeOfDailyPerformance(
 				this.krcdtDaiTemporaryTimePK.employeeId, new WorkTimes(this.workTimes.intValue()),
-				KrcdtTimeLeavingWork.toDomain(timeLeavingWorks), this.krcdtDaiTemporaryTimePK.ymd);
+				KrcdtTimeLeavingWork.toDomain(timeLeavingWorks.stream()
+						.filter(item -> item.krcdtTimeLeavingWorkPK.timeLeavingType == 1).collect(Collectors.toList())),
+				this.krcdtDaiTemporaryTimePK.ymd);
 		return domain;
 	}
 
 	public static KrcdtDaiTemporaryTime toEntity(TemporaryTimeOfDailyPerformance domain) {
-		return new KrcdtDaiTemporaryTime(
-				new KrcdtDaiTemporaryTimePK(domain.getEmployeeId(), domain.getYmd()), domain.getWorkTimes().v(),
+		return new KrcdtDaiTemporaryTime(new KrcdtDaiTemporaryTimePK(domain.getEmployeeId(), domain.getYmd()),
+				domain.getWorkTimes().v(),
 				domain.getTimeLeavingWorks().stream()
-						.map(c -> KrcdtTimeLeavingWork.toEntity(domain.getEmployeeId(), domain.getYmd(), c))
+						.map(c -> KrcdtTimeLeavingWork.toEntity(domain.getEmployeeId(), domain.getYmd(), c, 1))
 						.collect(Collectors.toList()));
 	}
 
