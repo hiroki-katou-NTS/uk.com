@@ -1,12 +1,11 @@
 package nts.uk.screen.at.app.schedule.basicschedule;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.gul.text.StringUtil;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class WorkTypeScreenDto {
 	/* 勤務種類コード */
 	private String workTypeCode;
@@ -18,4 +17,14 @@ public class WorkTypeScreenDto {
 	private String symbolicName;
 	/* 勤務種類備考 */
 	private String memo;
+	
+	public WorkTypeScreenDto(String workTypeCode, String name, String abbreviationName, String symbolicName,
+			String memo) {
+		super();
+		this.workTypeCode = workTypeCode;
+		this.name = name;
+		this.abbreviationName = abbreviationName;
+		this.symbolicName = symbolicName;
+		this.memo = memo == null ? "" : memo;
+	}	
 }
