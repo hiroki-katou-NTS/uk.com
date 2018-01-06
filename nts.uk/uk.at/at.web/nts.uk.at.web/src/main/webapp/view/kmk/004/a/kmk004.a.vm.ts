@@ -654,7 +654,7 @@ module nts.uk.at.view.kmk004.a {
                     isMultiSelect: false, // is multiselect.
                     isShowSelectButton: false, // Show button select all and selected sub parent
                     treeType: 1, // workplace tree.
-                    selectType: 3, // select first item.
+                    selectType: 2, // select first item.
                     maxRows: 12, // maximum rows can be displayed.
                     selectedWorkplaceId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
