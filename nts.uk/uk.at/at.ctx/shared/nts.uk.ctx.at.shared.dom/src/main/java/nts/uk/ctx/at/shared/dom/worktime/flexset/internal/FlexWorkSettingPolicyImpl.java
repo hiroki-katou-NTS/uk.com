@@ -119,10 +119,9 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		});
 
 		// valiadte FlexHalfDayWorkTime
+		flexWorkSetting.getLstHalfDayWorkTimezone().forEach(halfDay -> this.flexHalfDayPolicy
+				.validate(flexWorkSetting.isUseHalfDayShift(), halfDay, predetemineTimeSet));
 		if (flexWorkSetting.isUseHalfDayShift()) {
-			flexWorkSetting.getLstHalfDayWorkTimezone()
-					.forEach(halfDay -> this.flexHalfDayPolicy.validate(halfDay, predetemineTimeSet));
-			
 			// validate Msg_516
 			predeteminePolicyService.validateOneDay(predetemineTimeSet,
 					predetemineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime(),
