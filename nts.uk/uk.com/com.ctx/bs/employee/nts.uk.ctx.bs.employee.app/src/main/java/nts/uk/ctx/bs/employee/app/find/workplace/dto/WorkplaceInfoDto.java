@@ -5,7 +5,7 @@
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoSetMemento;
@@ -90,7 +90,7 @@ public class WorkplaceInfoDto implements WorkplaceInfoSetMemento {
      * setWorkplaceCode(nts.uk.ctx.bs.employee.dom.workplace.WorkplaceCode)
      */
     @Override
-    public void setWorkplaceCode(WorkplaceCode workplaceCode) {
+    public void setWorkplaceCode(WkpCode workplaceCode) {
         this.workplaceCode = workplaceCode.v();
     }
 
