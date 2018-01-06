@@ -981,13 +981,13 @@ public class ProgramsManager {
 	/**
 	 * CPS006A
 	 */
-	public static final Program CPS006A  = new Program(WebAppId.COM, ProgramIdConsts.CPS006A, "CPS005_36",
+	public static final Program CPS006A  = new Program(WebAppId.COM, ProgramIdConsts.CPS006A, "CPS006_56",
 			"/view/cps/006/a/index.xhtml");
 
 	/**
 	 * CPS006B
 	 */
-	public static final Program CPS006B  = new Program(WebAppId.COM, ProgramIdConsts.CPS006B, "CPS005_37",
+	public static final Program CPS006B  = new Program(WebAppId.COM, ProgramIdConsts.CPS006B, "CPS006_57",
 			"/view/cps/006/b/index.xhtml");
 	
 	

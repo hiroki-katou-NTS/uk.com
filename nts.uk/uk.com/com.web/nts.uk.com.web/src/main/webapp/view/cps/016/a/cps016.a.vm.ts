@@ -153,10 +153,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     confirm({ messageId: "Msg_456" }).ifYes(() => {
                         let params = {
                             isDialog: true,
-                            selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId),
-                            selectionCode: self.perInfoSelectionItem().formatSelection().selectionCode(),
-                            selectionName: self.perInfoSelectionItem().formatSelection().selectionName(),
-                            selectionExternalCode: self.perInfoSelectionItem().formatSelection().selectionExternalCode()
+                            selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
                         }
                         setShared('CPS017_PARAMS', params);
 
@@ -267,10 +264,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let self = this,
                 params = {
                     isDialog: true,
-                    selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId),
-                    selectionCode: self.perInfoSelectionItem().formatSelection().selectionCode(),
-                    selectionName: self.perInfoSelectionItem().formatSelection().selectionName(),
-                    selectionExternalCode: self.perInfoSelectionItem().formatSelection().selectionExternalCode()
+                    selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
                         
                 }
             setShared('CPS017_PARAMS', params);
