@@ -34,10 +34,9 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(boolean useHalfDayShift, FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime) {
+	public void validate(FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime) {
 		// validate FixedWorkTimezoneSet
-		this.fixedWtzSetPolicy.validate(useHalfDayShift, flexHalfDay.getWorkTimezone(), predTime);
-
+		this.fixedWtzSetPolicy.validate(flexHalfDay.getWorkTimezone(), predTime);
 		// validate FlowWorkRestTimezone
 		this.flowRestPolicy.validate(predTime, flexHalfDay.getRestTimezone());
 	}

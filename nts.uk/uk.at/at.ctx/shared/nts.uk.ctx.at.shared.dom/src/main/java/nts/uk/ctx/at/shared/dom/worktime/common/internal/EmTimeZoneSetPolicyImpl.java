@@ -38,7 +38,9 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 		val prescribed = predTime.getPrescribedTimezoneSetting();
 
 		// validate msg_516
-		this.tzrPolicy.validateRange(predTime, emTimezon);
+		if (this.tzrPolicy.validateRange(predTime, emTimezon)) {
+			throw new BusinessException("Msg_516","KMK003_86");
+		}
 
 		// validate msg_773
 		if (!prescribed.getTimezoneShiftTwo().isUsed()
