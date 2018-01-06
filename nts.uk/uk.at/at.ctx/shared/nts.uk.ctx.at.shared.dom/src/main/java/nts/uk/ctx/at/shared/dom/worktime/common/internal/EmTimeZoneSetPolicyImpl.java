@@ -43,7 +43,7 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 		// validate msg_773
 		if (!prescribed.getTimezoneShiftTwo().isUsed()
 				&& !emTimezon.isBetweenOrEqual(prescribed.getTimezoneShiftOne())) {
-			throw new BusinessException("Msg_773");
+			throw new BusinessException("Msg_773","KMK003_86");
 		}
 
 		// validate msg_774

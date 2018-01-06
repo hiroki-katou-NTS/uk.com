@@ -184,19 +184,16 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 */
 	private void validTimeDay() {
 		// 使用しない
-		if (!this.isMorningAndAfternoonInShift1()) {
-			throw new BusinessException("Msg_773");
-		}
-	}
+		if (!this.getTimezoneShiftTwo().isUsed()) {
+			TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
+			if (!tzWorkNo1.consistOf(this.getAfternoonStartTime())) {
+				throw new BusinessException("Msg_773", "KMK003_40");
+			}
 
-	/**
-	 * Checks if is morning and afternoon in shift 1.
-	 *
-	 * @return true, if is morning and afternoon in shift 1
-	 */
-	private boolean isMorningAndAfternoonInShift1() {
-		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
-		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) && tzWorkNo1.consistOf(this.getMorningEndTime());
+			if (!tzWorkNo1.consistOf(this.getMorningEndTime())) {
+				throw new BusinessException("Msg_773", "KMK003_39");
+			}
+		}
 	}
 
 	/**
