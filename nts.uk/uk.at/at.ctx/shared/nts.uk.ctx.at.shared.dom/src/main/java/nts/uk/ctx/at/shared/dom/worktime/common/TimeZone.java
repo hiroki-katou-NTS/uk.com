@@ -69,7 +69,7 @@ public class TimeZone extends DomainObject {
 		return !(this.end.lessThanOrEqualTo(timezone.getStart())
 				|| this.start.greaterThanOrEqualTo(timezone.getEnd()));
 	}
-
+	
 	/**
 	 * Checks if is start less than.
 	 *
