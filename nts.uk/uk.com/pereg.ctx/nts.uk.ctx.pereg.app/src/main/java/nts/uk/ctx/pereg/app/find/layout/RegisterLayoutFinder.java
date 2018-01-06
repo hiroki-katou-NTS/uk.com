@@ -30,6 +30,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSe
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -126,8 +127,9 @@ public class RegisterLayoutFinder {
 	private void createInfoValueDtoByItemCls(List<SettingItemDto> dataServer, LayoutPersonInfoClsDto itemCls,
 			int createType) {
 		List<PerInfoItemDefDto> itemDefList = itemCls.getListItemDf();
+		List<Object> itemDataList = new ArrayList<Object>();
 		if (!CollectionUtil.isEmpty(itemDefList)) {
-			List<Object> itemDataList = new ArrayList<Object>();
+
 			itemDefList.forEach(itemDef -> {
 				Optional<SettingItemDto> setItemOpt = dataServer.stream()
 						.filter(item -> item.getItemDefId().equals(itemDef.getId())).findFirst();
@@ -161,6 +163,15 @@ public class RegisterLayoutFinder {
 			}
 
 			itemCls.setItems(itemDataList);
+		}
+
+		if (!CollectionUtil.isEmpty(itemDataList)) {
+
+			itemCls.setItems(itemDataList);
+		} else {
+			if (itemCls.getLayoutItemType().equals(LayoutItemType.SeparatorLine))
+
+				itemCls.setItems(null);
 		}
 
 	}
