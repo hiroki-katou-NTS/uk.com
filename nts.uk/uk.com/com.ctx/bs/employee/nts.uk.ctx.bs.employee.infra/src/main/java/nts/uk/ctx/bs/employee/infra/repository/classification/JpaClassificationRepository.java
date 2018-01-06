@@ -108,7 +108,7 @@ public class JpaClassificationRepository extends JpaRepository
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		// order by no id asc
-		cq.orderBy(criteriaBuilder.asc(root.get(BsymtClassification_.bsymtClassificationPK).get(BsymtClassificationPK_.code)));
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtClassification_.bsymtClassificationPK).get(BsymtClassificationPK_.clscd)));
 
 		// creat query
 		TypedQuery<BsymtClassification> query = em.createQuery(cq);
