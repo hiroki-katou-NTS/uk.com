@@ -304,10 +304,14 @@ module kcp.share.list {
                 data.employeeInputList.subscribe(dataList => {
                     self.addAreadySettingAttr(dataList, self.alreadySettingList());
                     self.itemList(dataList);
-                    self.createGlobalVarDataList(dataList, $input);
                 })
                 return dfd.promise();
             }
+            
+            // When itemList change -> refesh data list.
+            self.itemList.subscribe(newList => {
+                self.createGlobalVarDataList(newList, $input);
+            })
             
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
@@ -477,10 +481,12 @@ module kcp.share.list {
          * create Global Data List.
          */
         private createGlobalVarDataList(dataList: Array<UnitModel>, $input: JQuery) {
+            var dataListCloned : Array<UnitModel> = _.cloneDeep(dataList);
+            _.remove(dataListCloned, item => !item.id && !item.code)
             $('#script-for-' + $input.attr('id')).remove();
             var s = document.createElement("script");
             s.type = "text/javascript";
-            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataList);
+            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataListCloned);
             s.id = 'script-for-' + $input.attr('id');
             $("head").append(s);
         }

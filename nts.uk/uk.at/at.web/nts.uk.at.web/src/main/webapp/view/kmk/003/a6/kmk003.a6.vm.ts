@@ -238,7 +238,7 @@ module a6 {
                     width: 250,
                     template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                        required: true, enable: true, inputFormat: 'time',paramId: 'KMK003_90'}"/>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.goout;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -42,11 +44,11 @@ public class OutingTimeOfDailyPerformanceFinder extends FinderFacade {
 		return dto;
 	}
 
-	private WithActualTimeStampDto toWithActualTimeStamp(TimeActualStamp c) {
+	private WithActualTimeStampDto toWithActualTimeStamp(Optional<TimeActualStamp> c) {
 		return new WithActualTimeStampDto(
-				getTimeStamp(c.getStamp().orElse(null)),
-				getTimeStamp(c.getActualStamp()),
-				c.getNumberOfReflectionStamp());
+				getTimeStamp(c.get().getStamp().orElse(null)),
+				getTimeStamp(c.get().getActualStamp()),
+				c.get().getNumberOfReflectionStamp());
 	}
 
 	private TimeStampDto getTimeStamp(WorkStamp c) {

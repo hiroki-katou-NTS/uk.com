@@ -46,7 +46,9 @@ public class KrcdtDaiLeavingWork extends UkJpaEntity implements Serializable {
 
 	public TimeLeavingOfDailyPerformance toDomain() {
 		TimeLeavingOfDailyPerformance domain = new TimeLeavingOfDailyPerformance(this.krcdtDaiLeavingWorkPK.employeeId,
-				new WorkTimes(this.workTimes), KrcdtTimeLeavingWork.toDomain(timeLeavingWorks),
+				new WorkTimes(this.workTimes),
+				KrcdtTimeLeavingWork.toDomain(timeLeavingWorks.stream()
+						.filter(item -> item.krcdtTimeLeavingWorkPK.timeLeavingType == 0).collect(Collectors.toList())),
 				this.krcdtDaiLeavingWorkPK.ymd);
 		return domain;
 	}
@@ -55,7 +57,7 @@ public class KrcdtDaiLeavingWork extends UkJpaEntity implements Serializable {
 		return new KrcdtDaiLeavingWork(new KrcdtDaiLeavingWorkPK(domain.getEmployeeId(), domain.getYmd()),
 				domain.getWorkTimes().v(),
 				domain.getTimeLeavingWorks().stream()
-						.map(c -> KrcdtTimeLeavingWork.toEntity(domain.getEmployeeId(), domain.getYmd(), c))
+						.map(c -> KrcdtTimeLeavingWork.toEntity(domain.getEmployeeId(), domain.getYmd(), c, 0))
 						.collect(Collectors.toList()));
 	}
 }

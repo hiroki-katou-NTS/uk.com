@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -52,6 +53,12 @@ public class BPSettingAddCommandHandler extends CommandHandlerWithResult<BPSetti
 			}
 		});
 		if(errorLists.isEmpty()) {
+			bpSettingAddCommand.setLstBonusPayTimesheet(bpSettingAddCommand.getLstBonusPayTimesheet().stream()
+				.map(x -> new BPTimesheetAddCommand(x.timeSheetNO, x.useAtr, x.bonusPaySettingCode, 
+						IdentifierUtil.randomUniqueId(), x.startTime, x.endTime, x.roundingTimeAtr, x.roundingAtr)).collect(Collectors.toList()));
+			bpSettingAddCommand.setLstSpecBonusPayTimesheet(bpSettingAddCommand.getLstSpecBonusPayTimesheet().stream()
+					.map(x -> new SpecBPTimesheetAddCommand(x.timeSheetNO, x.useAtr, x.bonusPaySettingCode, 
+							IdentifierUtil.randomUniqueId(), x.startTime, x.endTime, x.roundingTimeAtr, x.roundingAtr, x.specialDateItemNO)).collect(Collectors.toList()));
 			bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand,companyId));			
 		}
 		return errorLists;
