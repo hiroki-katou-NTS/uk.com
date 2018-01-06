@@ -33,7 +33,7 @@ public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand
 	public TimeLeavingOfDailyPerformance toDomain() {
 		return !data.isPresent() ? null : new TimeLeavingOfDailyPerformance(
 				getEmployeeId(), new WorkTimes(data.get().getWorkTimes()), 
-				ConvertHelper.mapTo(data.get().getWorkAndLeave(),c -> 
+				data.get().getWorkAndLeave() == null ? null : ConvertHelper.mapTo(data.get().getWorkAndLeave(),c -> 
 					new TimeLeavingWork(new WorkNo(c.getWorkNo()), getStamp(c.getWorking()), getStamp(c.getLeave()))),
 				getWorkDate());
 	}

@@ -273,7 +273,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#code-text").trigger("validate");
             $("#code-text2").trigger("validate");
             $('#text-target-item').trigger("validate");
-            $('#grant-start-date').trigger("validate");
             var specialHoliday = ko.toJS(self.currentItem());
             if (self.inp_grantMethod() == 1) {
                 $("#fixNumberDays").trigger("validate");
@@ -662,7 +661,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             var errors = [];
             _.forEach(errorsRequest, function(err) {
-                errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, suppliments: {} });
+                errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
             });
 
             nts.uk.ui.dialog.bundledErrors({ errors: errors });
