@@ -154,8 +154,14 @@ public class PrescribedTimezoneSetting extends DomainObject {
 					be.throwExceptions();
 				}
 				
-				if (!(this.isMorningAndAfternoonInShift1() || this.isMorningAndAfternoonInShift2())) {
-					//throw new BusinessException("Msg_774");
+				//check Msg_774
+				if (!tzWorkNo1.consistOf(this.getMorningEndTime()) && !tzWorkNo2.consistOf(this.getMorningEndTime())) {
+					throw new BusinessException("Msg_774", "KMK003_39");
+				}
+
+				if (!tzWorkNo1.consistOf(this.getAfternoonStartTime())
+						&& !tzWorkNo2.consistOf(this.getAfternoonStartTime())) {
+					throw new BusinessException("Msg_774", "KMK003_40");
 				}
 			}
 		}
