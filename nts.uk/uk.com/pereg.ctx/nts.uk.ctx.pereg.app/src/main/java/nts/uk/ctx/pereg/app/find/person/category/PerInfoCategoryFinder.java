@@ -148,7 +148,6 @@ public class PerInfoCategoryFinder {
 				}).orElse(null);
 
 		return resultCtg;
-		// check change able type
 
 	};
 
