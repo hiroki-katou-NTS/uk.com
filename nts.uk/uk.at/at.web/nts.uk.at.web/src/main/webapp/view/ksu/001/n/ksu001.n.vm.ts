@@ -98,7 +98,7 @@ module nts.uk.at.view.ksu001.n.viewmodel {
                 });
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError(error.messageId);
             }).then(function() {
                 nts.uk.ui.block.clear();
             });

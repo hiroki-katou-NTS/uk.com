@@ -69,8 +69,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         //Date time
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/09/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/09/30'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/11/01'));
+        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/30'));
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -1315,7 +1315,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
             }).fail(function(error: any) {
                 nts.uk.ui.block.grayout();
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
             });
         }
 
@@ -1637,7 +1637,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listColorOfHeader: self.listColorOfHeader()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
-                if (!getShared("dataFromScreenD").clickCloseDialog) {
+                if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
                     $.when(self.setDatasource()).done(() => {
                         self.updateExTable();
                     });
