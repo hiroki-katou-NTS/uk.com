@@ -363,7 +363,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 let workTimeCondition = self.selectedErrorAlarm().workTimeCondition;
                 let lstSelectedCode = planOrActual === "plan" ? workTimeCondition.planLstWorkTime() : workTimeCondition.actualLstWorkTime();
                 setShared('kml001multiSelectMode', true);
-                nts.uk.ui.windows.setShared('kml001selectAbleCodeList', lstWorkTime.map((worktime) => { return worktime.code; }));
+                nts.uk.ui.windows.setShared('kml001selectAbleCodeList', lstWorkTime.map((worktime) => { return worktime.worktimeCode; }));
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', lstSelectedCode);
                 nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定" }).onClosed(function() {
                     let results = getShared("kml001selectedCodeList");
@@ -833,18 +833,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 if (lstWorkTimeCode && lstWorkTimeCode.length > 0) {
                     let displayText = "";
                     let lstWorkTime = [];
-                    service.getWorkTimeByListCode(lstWorkTimeCode).done((data) => {
+                    service.getAllWorkTime().done((data) => {
                         if (data && data.length > 0) {
                             lstWorkTime = data;
                         }
                     }).then(() => {
                         for (let i = 0; i < lstWorkTimeCode.length; i++) {
                             for (let workTime of lstWorkTime) {
-                                if (lstWorkTimeCode[i] === workTime.code) {
+                                if (lstWorkTimeCode[i] === workTime.worktimeCode) {
                                     if (displayText !== "") {
-                                        displayText = displayText + ", " + workTime.name;
+                                        displayText = displayText + ", " + workTime.workTimeName;
                                     } else {
-                                        displayText = displayText + workTime.name;
+                                        displayText = displayText + workTime.workTimeName;
                                     }
                                     if (i === lstWorkTimeCode.length - 1) {
                                         this.displayLstWorkTimePlan(displayText);
@@ -861,18 +861,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 if (lstWorkTimeCode && lstWorkTimeCode.length > 0) {
                     let displayText = "";
                     let lstWorkTime = [];
-                    service.getWorkTimeByListCode(lstWorkTimeCode).done((data) => {
+                    service.getAllWorkTime().done((data) => {
                         if (data && data.length > 0) {
                             lstWorkTime = data;
                         }
                     }).then(() => {
                         for (let i = 0; i < lstWorkTimeCode.length; i++) {
                             for (let workTime of lstWorkTime) {
-                                if (lstWorkTimeCode[i] === workTime.code) {
+                                if (lstWorkTimeCode[i] === workTime.worktimeCode) {
                                     if (displayText !== "") {
-                                        displayText = displayText + ", " + workTime.name;
+                                        displayText = displayText + ", " + workTime.workTimeName;
                                     } else {
-                                        displayText = displayText + workTime.name;
+                                        displayText = displayText + workTime.workTimeName;
                                     }
                                     if (i === lstWorkTimeCode.length - 1) {
                                         this.displayLstWorkTimeActual(displayText);
