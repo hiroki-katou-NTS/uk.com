@@ -70,7 +70,7 @@ public class BPSettingUpdateCommandHandler extends CommandHandlerWithResult<BPSe
 
 	private BonusPayTimesheet toBonusPayTimesheetDomain(BPTimesheetUpdateCommand bpTimesheetUpdateCommand) {
 		return BonusPayTimesheet.createFromJavaType(bpTimesheetUpdateCommand.timeSheetNO,
-				bpTimesheetUpdateCommand.useAtr, bpTimesheetUpdateCommand.timeItemId,
+				bpTimesheetUpdateCommand.useAtr, bpTimesheetUpdateCommand.timeItemID,
 				bpTimesheetUpdateCommand.startTime, bpTimesheetUpdateCommand.endTime,
 				bpTimesheetUpdateCommand.roundingTimeAtr, bpTimesheetUpdateCommand.roundingAtr);
 	}
@@ -78,7 +78,7 @@ public class BPSettingUpdateCommandHandler extends CommandHandlerWithResult<BPSe
 	private SpecBonusPayTimesheet toSpecBonusPayTimesheetDomain(
 			SpecBPTimesheetUpdateCommand specBPTimesheetUpdateCommand) {
 		return SpecBonusPayTimesheet.createFromJavaType(specBPTimesheetUpdateCommand.timeSheetNO,
-				specBPTimesheetUpdateCommand.useAtr, specBPTimesheetUpdateCommand.timeItemId,
+				specBPTimesheetUpdateCommand.useAtr, specBPTimesheetUpdateCommand.timeItemID,
 				specBPTimesheetUpdateCommand.startTime,
 				specBPTimesheetUpdateCommand.endTime, specBPTimesheetUpdateCommand.roundingTimeAtr,
 				specBPTimesheetUpdateCommand.roundingAtr, specBPTimesheetUpdateCommand.specialDateItemNO);
