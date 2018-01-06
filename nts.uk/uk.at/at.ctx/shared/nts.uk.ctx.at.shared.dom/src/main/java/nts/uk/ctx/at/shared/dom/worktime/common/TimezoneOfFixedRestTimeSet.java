@@ -29,13 +29,13 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	@Override
 	public void validate() {
 		super.validate();
-		this.checkOverlap();
+//		this.checkOverlap();
 	}
 
 	/**
 	 * Check overlap.
 	 */
-	private void checkOverlap() {
+	public void checkOverlap(String param) {
 		Collections.sort(this.timezones, Comparator.comparing(DeductionTime::getStart));
 		
 		for (int i = 0; i < this.timezones.size(); i++) {
@@ -44,7 +44,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 				DeductionTime deduct2 = this.timezones.get(j);
 				// check overlap
 				if (deduct1.isOverlap(deduct2)) {
-					throw new BusinessException("Msg_515");
+					throw new BusinessException("Msg_515",param);
 				}
 			}
 		}
