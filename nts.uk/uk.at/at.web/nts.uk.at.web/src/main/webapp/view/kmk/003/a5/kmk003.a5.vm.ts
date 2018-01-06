@@ -105,9 +105,6 @@ module a5 {
             // fix table option
             self.setFixedTableOption();
 
-            // add fixed table event listener
-            self.initFixedTableEvent();
-
         }
 
         /**
@@ -127,18 +124,14 @@ module a5 {
             let fixedAfternoon = self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon();
 
             // set flex timezones
-            self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.listTimeRange;
-
-            self.morningFlexTimezones = flexMorning.restTimezone.fixedRestTimezone.listTimeRange;
-
-            self.afternoonFlexTimezones = flexAfternoon.restTimezone.fixedRestTimezone.listTimeRange;
+            self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.convertedList;
+            self.morningFlexTimezones = flexMorning.restTimezone.fixedRestTimezone.convertedList;
+            self.afternoonFlexTimezones = flexAfternoon.restTimezone.fixedRestTimezone.convertedList;
 
             // set fixed timezones
-            self.oneDayFixedTimezones = fixedOneday.restTimezone.listTimeRange;
-
-            self.morningFixedTimezones = fixedMorning.restTimezone.listTimeRange;
-
-            self.afternoonFixedTimezones = fixedAfternoon.restTimezone.listTimeRange;
+            self.oneDayFixedTimezones = fixedOneday.restTimezone.convertedList;
+            self.morningFixedTimezones = fixedMorning.restTimezone.convertedList;
+            self.afternoonFixedTimezones = fixedAfternoon.restTimezone.convertedList;
 
             // set flex rest set value
             self.oneDayFlexRestSet = flexOneday.restTimezone.flowRestTimezone;
@@ -190,48 +183,6 @@ module a5 {
         }
 
         /**
-         * Set fixed table event listener
-         */
-        public initFixedTableEvent(): void {
-            let self = this;
-            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
-                self.setFixedTableEvent();
-            });
-            self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
-                self.setFixedTableEvent();
-            });
-        }
-
-        /**
-         * Set fixed table event listener
-         */
-        private setFixedTableEvent(): void {
-            let self = this;
-            if (self.isFlex() && self.isDetailMode()) {
-                document.getElementById('flexOneDay').addEventListener('timerangedatachange', e => {
-                    self.oneDayFlexTimezones.valueHasMutated();
-                });
-                document.getElementById('flexMorning').addEventListener('timerangedatachange', e => {
-                    self.morningFlexTimezones.valueHasMutated();
-                });
-                document.getElementById('flexAfternoon').addEventListener('timerangedatachange', e => {
-                    self.afternoonFlexTimezones.valueHasMutated();
-                });
-            }
-            if (self.isFixed() && self.isDetailMode()) {
-                document.getElementById('fixedOneDay').addEventListener('timerangedatachange', e => {
-                    self.oneDayFixedTimezones.valueHasMutated();
-                });
-                document.getElementById('fixedMorning').addEventListener('timerangedatachange', e => {
-                    self.morningFixedTimezones.valueHasMutated();
-                });
-                document.getElementById('fixedAfternoon').addEventListener('timerangedatachange', e => {
-                    self.afternoonFixedTimezones.valueHasMutated();
-                });
-            }
-        }
-
-        /**
          * Set fixed table option
          */
         private setFixedTableOption(): void {
@@ -263,11 +214,11 @@ module a5 {
 
             // flex restSet option
             self.oneDayFlexRestSetOption = self.getDefaultRestSetOption();
-            self.oneDayFlexRestSetOption.dataSource = self.oneDayFlexRestSet.flowRestSets;
+            self.oneDayFlexRestSetOption.dataSource = self.oneDayFlexRestSet.convertedList;
             self.morningFlexRestSetOption = self.getDefaultRestSetOption();
-            self.morningFlexRestSetOption.dataSource = self.morningFlexRestSet.flowRestSets;
+            self.morningFlexRestSetOption.dataSource = self.morningFlexRestSet.convertedList;
             self.afternoonFlexRestSetOption = self.getDefaultRestSetOption();
-            self.afternoonFlexRestSetOption.dataSource = self.afternoonFlexRestSet.flowRestSets;
+            self.afternoonFlexRestSetOption.dataSource = self.afternoonFlexRestSet.convertedList;
 
             // flow timezone option
             self.flowTimezoneOption = self.getDefaultTimezoneOption();

@@ -10,6 +10,8 @@ import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** 日別実績の休憩時間 */
 @Data
@@ -40,16 +42,26 @@ public class BreakTimeSheetDailyPerformDto {
 	private Integer breakTimes;
 
 	public static BreakTimeSheetDailyPerformDto fromBreakTimeOfDaily(BreakTimeOfDaily domain) {
-		return domain == null ? null : new BreakTimeSheetDailyPerformDto(getĐeuctionTime(domain.getToRecordTotalTime()),
+		return domain == null ? null : new BreakTimeSheetDailyPerformDto(
+						getĐeuctionTime(domain.getToRecordTotalTime()),
 						getĐeuctionTime(domain.getDeductionTotalTime()),
-						domain.getWorkTime() == null ? null : domain.getWorkTime().valueAsMinutes(),
-						domain.getBreakTimeSheet() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getBreakTimeSheet(),
+						getAttendanceTime(domain.getWorkTime()),
+						domain.getBreakTimeSheet() == null ? new ArrayList<>() : 
+							ConvertHelper.mapTo(domain.getBreakTimeSheet(),
 								(c) -> new BreakTimeSheetDto(
-										c.getStartTime().getAfterRoundingTime() == null ? null : c.getStartTime().getAfterRoundingTime().valueAsMinutes(),
-										c.getEndTime().getAfterRoundingTime() == null ? null : c.getEndTime().getAfterRoundingTime().valueAsMinutes(), 
-										c.getBreakTime() == null ? null :c.getBreakTime().valueAsMinutes(),
+										getAttendanceTime(c.getStartTime().getAfterRoundingTime()),
+										getAttendanceTime(c.getEndTime().getAfterRoundingTime()), 
+										getAttendanceTime(c.getBreakTime()),
 										c.getBreakFrameNo().v().intValue())),
 						domain.getGooutTimes() == null ? null : domain.getGooutTimes().v());
+	}
+	
+	private static Integer getAttendanceTime(TimeWithDayAttr domain) {
+		return domain == null ? null : domain.valueAsMinutes();
+	}
+	
+	private static Integer getAttendanceTime(AttendanceTime domain) {
+		return domain == null ? null : domain.valueAsMinutes();
 	}
 
 	private static TotalDeductionTimeDto getĐeuctionTime(DeductionTotalTime domain) {
@@ -61,7 +73,7 @@ public class BreakTimeSheetDailyPerformDto {
 
 	private static CalcAttachTimeDto getCalcTime(TimeWithCalculation domain) {
 		return domain == null ? null : new CalcAttachTimeDto(
-				domain.getCalcTime() == null ? null : domain.getCalcTime().valueAsMinutes(),
-				domain.getTime() == null ? null : domain.getTime().valueAsMinutes());
+					getAttendanceTime(domain.getCalcTime()),
+					getAttendanceTime(domain.getTime()));
 	}
 }

@@ -13,19 +13,13 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.i18n.I18NResources;
 import nts.arc.scoped.request.RequestContextProvider;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.portal.app.find.roleset.RoleSetPortalFinder;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.MenuBarDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TitleBarDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.TreeMenuDetailDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
-import nts.uk.ctx.sys.portal.dom.adapter.employee.EmployeeAdapter;
-import nts.uk.ctx.sys.portal.dom.adapter.employee.EmployeeDto;
-import nts.uk.ctx.sys.portal.dom.adapter.role.AffJobHistoryDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
-import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedJobTitleDetailDto;
-import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedPersonDto;
-import nts.uk.ctx.sys.portal.dom.adapter.role.UserDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
@@ -72,7 +66,7 @@ public class WebMenuFinder {
 	private RoleGrantAdapter roleAdapter;
 	
 	@Inject
-	private EmployeeAdapter employeeAdapter;
+	private RoleSetPortalFinder roleSetFinder;
 
 	/**
 	 * Find a web menu by code
@@ -162,7 +156,7 @@ public class WebMenuFinder {
 		
 		List<String> menuCodes = new ArrayList<>();
 		// Get role set
-		Optional<String> roleSetCdOpt = getRoleSetCode(companyId, userId);
+		Optional<String> roleSetCdOpt = roleSetFinder.getRoleSetCode(companyId, userId);
 		if (roleSetCdOpt.isPresent()) {
 			List<RoleSetLinkWebMenu> menus = roleSetLinkMenuRepo.findByRoleSetCd(companyId, roleSetCdOpt.get());
 			menuCodes = menus.stream().map(m -> m.getWebMenuCd().v()).collect(Collectors.toList());
@@ -174,49 +168,6 @@ public class WebMenuFinder {
 			}
 		}
 		return menuCodes;
-	}
-	
-	private Optional<String> getRoleSetCode(String companyId, String userId) {
-		Optional<UserDto> userOpt = roleAdapter.getUserInfo(userId);
-		if (!userOpt.isPresent()) return Optional.empty(); 
-		UserDto user = userOpt.get();
-		if (user.getAssociatedPersonID() == null) return Optional.empty();
-		Optional<EmployeeDto> employeeOpt = employeeAdapter.getEmployee(companyId, user.getAssociatedPersonID());
-		if (!employeeOpt.isPresent()) return Optional.empty();
-		EmployeeDto employee = employeeOpt.get();
-		Optional<RoleSetGrantedPersonDto> roleSetGrantedPerson = roleAdapter.getRoleSetPersonGrant(employee.getEmployeeId());
-		
-		String roleSetCd = null;
-		if (roleSetGrantedPerson.isPresent()) {
-			roleSetCd = roleSetGrantedPerson.get().getRoleSetCd();
-		} else {
-			Optional<AffJobHistoryDto> jobHistory = roleAdapter.getAffJobHist(employee.getEmployeeId(), GeneralDate.today());
-			if (jobHistory.isPresent()) {
-				Optional<RoleSetGrantedJobTitleDetailDto> roleSetGrantedJobTitle = roleAdapter.getRoleSetJobTitleGrant(companyId, jobHistory.get().getJobTitleId());
-				if (roleSetGrantedJobTitle.isPresent()) {
-					roleSetCd = roleSetGrantedJobTitle.get().getRoleSetCd();
-				} else {
-					// TODO: Get 兼務職位履歴 and check if not present, then get default role set 
-					// otherwise, get RoleSetGrantedJobTitleDetailDto with retrieved job title Id
-					// and applyToConcurrentPerson = true
-					roleSetCd = getDefaultRoleSet(companyId);
-				}
-			} else {
-				roleSetCd = getDefaultRoleSet(companyId);
-			}
-		}
-		return Optional.ofNullable(roleSetCd);
-	}
-	
-	/**
-	 * Get default role set.
-	 * @param companyId company Id
-	 * @return default role set
-	 */
-	private String getDefaultRoleSet(String companyId) {
-		return roleAdapter.getDefaultRoleSet(companyId)
-				.orElseThrow(() -> new RuntimeException("Default role set not found."))
-				.getRoleSetCd();
 	}
 	
 	/**

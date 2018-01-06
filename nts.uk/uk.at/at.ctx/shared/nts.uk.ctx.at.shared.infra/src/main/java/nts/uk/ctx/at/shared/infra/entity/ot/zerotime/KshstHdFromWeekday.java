@@ -59,7 +59,7 @@ public class KshstHdFromWeekday extends UkJpaEntity implements Serializable {
 
 	public static KshstHdFromWeekday toEntity(HdFromWeekday domain) {
 		return new KshstHdFromWeekday(
-				new KshstHdFromWeekdayPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo().v()),
-				domain.getOverWorkNo().v());
+				new KshstHdFromWeekdayPK(domain.getCompanyId(), domain.getHolidayWorkFrameNo()),
+				domain.getOverWorkNo());
 	}
 }

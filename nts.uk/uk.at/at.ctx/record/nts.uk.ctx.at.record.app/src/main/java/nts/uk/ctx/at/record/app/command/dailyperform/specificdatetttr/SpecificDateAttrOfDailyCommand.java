@@ -27,7 +27,7 @@ public class SpecificDateAttrOfDailyCommand extends DailyWorkCommonCommand {
 		return !data.isPresent() ? null : new SpecificDateAttrOfDailyPerfor(getEmployeeId(),
 						ConvertHelper.mapTo(data.get().getSepecificDateAttrs(),
 								(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getItemNo()),
-										c.isSpecificDate() ? SpecificDateAttr.USE : SpecificDateAttr.NOT_USE)),
+										ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
 						getWorkDate());
 	}
 }

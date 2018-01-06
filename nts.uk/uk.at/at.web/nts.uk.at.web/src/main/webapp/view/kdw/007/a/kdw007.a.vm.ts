@@ -279,6 +279,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(function() {
                 var output = getShared('CDL002Output');
                 if (output) {
+                    output.sort();
                     self.selectedErrorAlarm().alCheckTargetCondition.lstEmployment(output);
                 }
             });
@@ -295,6 +296,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", '/view/cdl/003/a/index.xhtml').onClosed(function(): any {
                 var output = getShared('outputCDL003');
                 if (output) {
+                    output.sort();
                     self.selectedErrorAlarm().alCheckTargetCondition.lstClassification(output);
                 }
             })
@@ -312,6 +314,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", '/view/cdl/004/a/index.xhtml').onClosed(function(): any {
                 let output = nts.uk.ui.windows.getShared('outputCDL004');
                 if (output) {
+                    output.sort();
                     self.selectedErrorAlarm().alCheckTargetCondition.lstJobTitle(output);
                 }
             })
@@ -326,6 +329,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/024/index.xhtml").onClosed(() => {
                 let output = getShared("currentCodeList");
                 if (output) {
+                    output.sort();
                     self.selectedErrorAlarm().alCheckTargetCondition.lstBusinessType(output);
                 }
             });
@@ -534,21 +538,32 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.lstBusinessType.subscribe((lstBussinessType) => {
                 if (lstBussinessType && lstBussinessType.length > 0) {
                     let displayText = "";
+                    let lstItem = [];
+                    let dfd = $.Deferred();
                     for (let i = 0; i < lstBussinessType.length; i++) {
                         service.getBusinessTypeByCode(lstBussinessType[i]).done((businessType) => {
-                            if (businessType && businessType.businessTypeName) {
-                                if (displayText !== "") {
-                                    displayText = displayText + ", " + businessType.businessTypeName;
-                                } else {
-                                    displayText = displayText + businessType.businessTypeName;
-                                }
-                                if (i === lstBussinessType.length - 1) {
-                                    this.displayLstBusinessType(displayText);
-                                    $("#displayLstBusinessType").trigger('validate');
-                                }
+                            if (businessType) {
+                                lstItem.push({ order: i, text: businessType.businessTypeName });
+                            }
+                            if (lstItem.length == lstBussinessType.length) {
+                                dfd.resolve();
                             }
                         });
                     }
+                    dfd.done(() => {
+                        lstItem = _.orderBy(lstItem, ['order'], ['asc']);
+                        for (let i = 0; i < lstItem.length; i++) {
+                            if (displayText !== "") {
+                                displayText = displayText + ", " + lstItem[i].text;
+                            } else {
+                                displayText = displayText + lstItem[i].text;
+                            }
+                            if (i === lstItem.length - 1) {
+                                this.displayLstBusinessType(displayText);
+                                $("#displayLstBusinessType").trigger('validate');
+                            }
+                        }
+                    });
                 } else {
                     this.displayLstBusinessType("");
                 }
@@ -585,21 +600,32 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.lstEmployment.subscribe((lstEmpt) => {
                 let displayText = "";
                 if (lstEmpt && lstEmpt.length > 0) {
+                    let lstItem = [];
+                    let dfd = $.Deferred();
                     for (let i = 0; i < lstEmpt.length; i++) {
                         service.getEmploymentByCode(lstEmpt[i]).done((empt) => {
-                            if (empt && empt.name) {
-                                if (displayText !== "") {
-                                    displayText = displayText + ", " + empt.name;
-                                } else {
-                                    displayText = displayText + empt.name;
-                                }
-                                if (i === lstEmpt.length - 1) {
-                                    this.displayLstEmployment(displayText);
-                                    $("#displayLstEmployment").trigger('validate');
-                                }
+                            if (empt) {
+                                lstItem.push({ order: i, text: empt.name });
+                            }
+                            if (lstItem.length == lstEmpt.length) {
+                                dfd.resolve();
                             }
                         });
                     }
+                    dfd.done(() => {
+                        lstItem = _.orderBy(lstItem, ['order'], ['asc']);
+                        for (let i = 0; i < lstItem.length; i++) {
+                            if (displayText !== "") {
+                                displayText = displayText + ", " + lstItem[i].text;
+                            } else {
+                                displayText = displayText + lstItem[i].text;
+                            }
+                            if (i === lstItem.length - 1) {
+                                this.displayLstEmployment(displayText);
+                                $("#displayLstEmployment").trigger('validate');
+                            }
+                        }
+                    });
                 } else {
                     this.displayLstEmployment("");
                 }
@@ -607,21 +633,32 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.lstClassification.subscribe((lstClss) => {
                 let displayText = "";
                 if (lstClss && lstClss.length > 0) {
+                    let lstItem = [];
+                    let dfd = $.Deferred();
                     for (let i = 0; i < lstClss.length; i++) {
                         service.getClassificationByCode(lstClss[i]).done((clss) => {
-                            if (clss && clss.name) {
-                                if (displayText !== "") {
-                                    displayText = displayText + ", " + clss.name;
-                                } else {
-                                    displayText = displayText + clss.name;
-                                }
-                                if (i === lstClss.length - 1) {
-                                    this.displayLstClassification(displayText);
-                                    $("#displayLstClassification").trigger('validate');
-                                }
+                            if (clss) {
+                                lstItem.push({ order: i, text: clss.name });
+                            }
+                            if (lstItem.length == lstClss.length) {
+                                dfd.resolve();
                             }
                         });
                     }
+                    dfd.done(() => {
+                        lstItem = _.orderBy(lstItem, ['order'], ['asc']);
+                        for (let i = 0; i < lstItem.length; i++) {
+                            if (displayText !== "") {
+                                displayText = displayText + ", " + lstItem[i].text;
+                            } else {
+                                displayText = displayText + lstItem[i].text;
+                            }
+                            if (i === lstItem.length - 1) {
+                                this.displayLstClassification(displayText);
+                                $("#displayLstClassification").trigger('validate');
+                            }
+                        }
+                    });
                 } else {
                     this.displayLstClassification("");
                 }
@@ -777,7 +814,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.planLstWorkTime = param ? ko.observable(param.planLstWorkTime) : ko.observableArray([]);
             this.actualFilterAtr = param ? ko.observable(param.actualFilterAtr) : ko.observable(false);
             this.actualLstWorkTime = param ? ko.observable(param.actualLstWorkTime) : ko.observableArray([]);
-            this.requireWorkTimeActual = ko.computed(()=>{
+            this.requireWorkTimeActual = ko.computed(() => {
                 return this.comparePlanAndActual() != 1 && this.actualFilterAtr();
             });
             this.planFilterAtr.subscribe((val) => {

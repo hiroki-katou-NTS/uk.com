@@ -91,8 +91,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ]);
 
             self.roundingGenderAtr = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText('KMF004_125') },
-                { code: 1, name: nts.uk.resource.getText('KMF004_126') }
+                { code: 0, name: nts.uk.resource.getText('KMF004_61') },
+                { code: 1, name: nts.uk.resource.getText('KMF004_62') }
             ]);
 
             self.roundingMakeInvitation = ko.observableArray([
@@ -126,12 +126,16 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.selectedTab('tab-5');
                     nts.uk.ui.errors.clearAll();
                     $("#code-text").focus();
+                    self.hiddenRegular();
+                    self.hiddenPeriodic();
                 } else {
                     self.visibleGrantSingle(false);
                     self.visibleGrant(true);
                     self.selectedTab('tab-1');
                     nts.uk.ui.errors.clearAll();
                     $("#code-text").focus();
+                    self.hiddenSingle();
+                    
                 }
             })
 
@@ -162,7 +166,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }).fail(function() {
                 dfd.reject();
             });
-
+            self.hiddenSingle();
             return dfd.promise();
         }
 
@@ -187,7 +191,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         grantSingle: specialHolidayRes.grantSingle
                     };
                     self.items.push(new model.SpecialHolidayDto(specialHoliday));
-                    
+
                 });
                 dfd.resolve();
             }).fail(function(error) {
@@ -268,7 +272,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             $("#code-text").trigger("validate");
             $("#code-text2").trigger("validate");
-
+            $('#text-target-item').trigger("validate");
             var specialHoliday = ko.toJS(self.currentItem());
             if (self.inp_grantMethod() == 1) {
                 $("#fixNumberDays").trigger("validate");
@@ -331,6 +335,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 })
+                nts.uk.ui.block.clear();
             }
             else {
                 service.updateSpecialHoliday(specialHoliday).done(function(errors) {
@@ -373,8 +378,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             if (self.employmentList().length > 0) {
-                dfd.resolve();  
-                return dfd.promise();    
+                dfd.resolve();
+                return dfd.promise();
             }
             service.findEmployment().done(function(res) {
                 _.forEach(res, function(item) {
@@ -396,8 +401,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             if (self.classificationList().length > 0) {
-                dfd.resolve();  
-                return dfd.promise();    
+                dfd.resolve();
+                return dfd.promise();
             }
             service.findClass().done(function(res) {
                 _.forEach(res, function(item) {
@@ -461,8 +466,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.isEnableCode(true);
             $("#code-text").focus();
             nts.uk.ui.errors.clearAll();
+            self.hiddenSingle();
+            self.hiddenRegular();
+            self.hiddenPeriodic();
         }
-        
+
         focus(): void {
             var self = this;
             if (nts.uk.text.isNullOrEmpty(self.currentCode())) {
@@ -519,7 +527,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 var workTypeCodes = _.map(data, function(item: any) { return item.code; });
                 self.currentItem().workTypeList(workTypeCodes);
             });
-
+            nts.uk.ui.block.clear();
         }
 
         openBDialog() {
@@ -541,15 +549,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openGDialog() {
             let self = this;
             service.findAllGrantRelationship(self.currentItem().specialHolidayCode()).done((lstData: Array<viewmodel.GrantRelationship>) => {
-                if(lstData.length == 0){
+                if (lstData.length == 0) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_375" });
                     return;
-                }else{
+                } else {
                     nts.uk.ui.windows.setShared('KMF004G_SPHD_CD', self.currentItem().specialHolidayCode());
                     nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml').onClosed(function(): any {
                     });
-                }               
-            }) 
+                }
+            })
         }
 
         openHDialog() {
@@ -648,16 +656,70 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         /**
          * Set error
-         */        
+         */
         addListError(errorsRequest: Array<string>) {
             var self = this;
             var errors = [];
             _.forEach(errorsRequest, function(err) {
-                errors.push({message: nts.uk.resource.getMessage(err), messageId: err, suppliments: {} });
+                errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
             });
-            
-            nts.uk.ui.dialog.bundledErrors({ errors: errors});
+
+            nts.uk.ui.dialog.bundledErrors({ errors: errors });
         }
+
+        hiddenSingle() {
+            var self = this;
+            var grantDaySingle = self.currentItem().grantSingle().grantDaySingleType;
+            if (grantDaySingle() == 0) {
+                $('#hidden-lbl01').addClass('disabled');
+            } else {
+                $('#hidden-lbl01').removeClass('disabled');
+            }
+
+            grantDaySingle.subscribe(function(value) {
+                if (value == 0) {
+                    $('#hidden-lbl01').addClass('disabled');
+                } else {
+                    $('#hidden-lbl01').removeClass('disabled');
+                }
+            });
+        }
+        hiddenRegular() {
+            var self = this;
+            var grantRegular = self.currentItem().grantRegular().grantRegularMethod;
+            if (grantRegular() == 0) {
+                $('#hidden-lbl02').addClass('disabled');
+            } else {
+                $('#hidden-lbl02').removeClass('disabled');
+            }
+
+            grantRegular.subscribe(function(value) {
+                if (value == 0) {
+                    $('#hidden-lbl02').addClass('disabled');
+                } else {
+                    $('#hidden-lbl02').removeClass('disabled');
+                }
+            });
+        }
+
+        hiddenPeriodic() {
+            var self = this;
+            var grantPeriodic = self.currentItem().grantPeriodic().grantPeriodicMethod;
+            if (grantPeriodic() == 0) {
+                $('#hidden-lbl03').addClass('disabled');
+            } else {
+                $('#hidden-lbl03').removeClass('disabled');
+            }
+
+            grantPeriodic.subscribe(function(value) {
+                if (value == 0) {
+                    $('#hidden-lbl03').addClass('disabled');
+                } else {
+                    $('#hidden-lbl03').removeClass('disabled');
+                }
+            });
+        }
+
     }
 
     class ItemModelSpecialHoliday {
@@ -801,6 +863,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         $('#hidden-lbl02').removeClass('disabled');
                     }
                 });
+
             }
         }
 
@@ -820,6 +883,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.grantDay = ko.observable(param.grantDay || null);
                 this.splitAcquisition = ko.observable(param.splitAcquisition || 0);
                 this.grantPeriodicMethod = ko.observable(param.grantPeriodicMethod || 0);
+                
                 
                 if (this.grantPeriodicMethod() == 0) {
                     $('#hidden-lbl03').addClass('disabled');
@@ -948,6 +1012,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         $('#hidden-lbl01').removeClass('disabled');
                     }
                 });
+
             };
         }
 

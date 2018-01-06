@@ -2,7 +2,10 @@
 	min-width: 1270px;
 }
 
-
 #functions-area .ntsControl {
 	margin-left: 910px;
+}
+
+#A_BTN_REGISTER {
+	width: 81px;
 }

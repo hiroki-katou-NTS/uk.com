@@ -477,8 +477,8 @@ module nts.uk.com.view.cps005.b {
         validateMin(datatype:number){
             if($("#integerPart").val() == "") return;
             let self = this;
-            let min = self.numericItemMin()?parseInt(self.numericItemMin().toString()):self.numericItemMin();
-            let max = self.numericItemMax()?parseInt(self.numericItemMax().toString()):self.numericItemMax();
+            let min = self.numericItemMin()?parseInt(self.numericItemMin().toString()):undefined;
+            let max = self.numericItemMax()?parseInt(self.numericItemMax().toString()):undefined;
             let milestone = Math.pow(10, self.integerPart());
             let minMilestone = milestone * (-1) + 1;
             let maxMilestone = milestone - 1;
@@ -495,7 +495,7 @@ module nts.uk.com.view.cps005.b {
                 if(max > maxMilestone){
                      $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so > ' + maxMilestone.toString());
                 }
-                if(max <= min && min && max){
+                if(max <= min && self.isNumber(max, min)){
                     $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < numericItemMin');
                 }
             }
@@ -512,7 +512,7 @@ module nts.uk.com.view.cps005.b {
                 if(max > maxMilestone){
                      $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so > ' + maxMilestone.toString());
                 }
-                if(max <= min && min && max){
+                if(max <= min && self.isNumber(max, min)){
                     $('#numericItemMax').ntsError('set', 'numericItemMax khong duoc nhap so < numericItemMin');
                 }
             }
@@ -521,6 +521,9 @@ module nts.uk.com.view.cps005.b {
             if($("#integerPart").val() == ""){
                 $("#integerPart").focus();
             }
+        }
+        isNumber(min, max){
+            return !isNaN(min) && !isNaN(max);
         }
     }
     export class TimeItemModel {
@@ -664,7 +667,7 @@ module nts.uk.com.view.cps005.b {
 
             setShared('CPS005B_PARAMS', params);
             let itemCurrent: string = ko.toJS(__viewContext.screenModelB.currentItemData().currentItemSelected().id);
-            modal('/view/cps/016/a/index.xhtml', { title: '', height: 800, width: 1500 }).onClosed(function(): any {
+            modal('/view/cps/016/a/index.xhtml', { title: '', height: 850, width: 1200 }).onClosed(function(): any {
                 __viewContext['screenModelB'].reloadData().done(() => {
                     __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode(itemCurrent);
                     self.selectionItemId(params.selectionItemId);

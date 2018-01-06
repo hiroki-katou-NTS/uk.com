@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class SpecificDateAttrDto {
 
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定日区分")
-	@AttendanceItemValue(type = ValueType.STRING, itemId = { 416, 417, 418, 419, 420, 421, 422, 423, 424, 425 })
-	private boolean specificDate;
+	@AttendanceItemValue(type = ValueType.INTEGER, itemId = { 416, 417, 418, 419, 420, 421, 422, 423, 424, 425 })
+	private int specificDate;
 
 	private Integer itemNo;
 }

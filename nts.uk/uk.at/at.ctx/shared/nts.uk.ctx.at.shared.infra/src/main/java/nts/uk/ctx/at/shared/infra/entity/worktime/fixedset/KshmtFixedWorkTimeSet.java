@@ -56,6 +56,15 @@ public class KshmtFixedWorkTimeSet extends UkJpaEntity implements Serializable {
 	 */
 	public KshmtFixedWorkTimeSet() {
 	}
+	
+	/**
+	 * Instantiates a new kshmt fixed work time set.
+	 *
+	 * @param kshmtFixedWorkTimeSetPK the kshmt fixed work time set PK
+	 */
+	public KshmtFixedWorkTimeSet(KshmtFixedWorkTimeSetPK kshmtFixedWorkTimeSetPK) {
+		this.kshmtFixedWorkTimeSetPK = kshmtFixedWorkTimeSetPK;
+	}
 
 	/*
 	 * (non-Javadoc)

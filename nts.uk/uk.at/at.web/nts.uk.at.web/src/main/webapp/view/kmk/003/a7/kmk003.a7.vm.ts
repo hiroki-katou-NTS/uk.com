@@ -59,7 +59,7 @@ module a7 {
             self.fixTableOptionForFixedOrDiffTime = {
                 maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceForFixedOrDiffTime,
                 isMultipleSelect: true,
@@ -170,7 +170,7 @@ module a7 {
 
         private setDataFlexOrFlowToModel() {
             let self = this;
-            
+            self.isCheckFollowTime = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.useHereAfterRestSet;
             
             self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
                 let listDeductionTimeModel: DeductionTimeModel[] = [];
@@ -281,12 +281,12 @@ module a7 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable(0), width: 107,
-                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',inputFormat: 'time',mode: 'time',enable: false}" />`,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',constraint: 'AttendanceTime', inputFormat: 'time',mode: 'time',enable: true}" />`,
                     cssClassName: 'column-time-editor'
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable(0), width: 107,
-                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',inputFormat: 'time',mode: 'time',enable: false}" />`,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',constraint: 'AttendanceTime',inputFormat: 'time',mode: 'time',enable: true}" />`,
                     cssClassName: 'column-time-editor',
                     enable: self.isCheckFollowTime()
                 }
@@ -357,6 +357,7 @@ module a7 {
                             column1: ko.observable(0),
                             column2: ko.observable(0)
                         }]);
+                        screenModel.useFixedRestTime(screenModel.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime() ? UseDivision.USE : UseDivision.NOTUSE);
                     }
                 });
 

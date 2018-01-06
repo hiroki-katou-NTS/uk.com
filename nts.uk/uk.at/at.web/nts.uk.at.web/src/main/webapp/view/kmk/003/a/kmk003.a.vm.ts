@@ -60,7 +60,24 @@ module nts.uk.at.view.kmk003.a {
 
             constructor() {
                 let self = this;
-                self.mainSettingModel = new MainSettingModel();
+                self.useHalfDay = ko.observable(false); // A5_19 initial value = false
+                self.mainSettingModel = new MainSettingModel(self.useHalfDay);
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
+                    if (self.isNewMode()) {
+                        self.isLoading(false);
+                        self.clearAllError();
+                        self.mainSettingModel.resetData(self.isNewMode());
+                        self.isLoading(true);
+                    }
+                });
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
+                    if (self.isNewMode()) {
+                        self.isLoading(false);
+                        self.clearAllError();
+                        self.mainSettingModel.resetData(self.isNewMode());
+                        self.isLoading(true);
+                    }
+                });
 
                 self.workTimeSettingLoader = new WorkTimeSettingLoader();
                 
@@ -102,7 +119,6 @@ module nts.uk.at.view.kmk003.a {
                     { code: false, name: nts.uk.resource.getText("KMK003_50") }
                 ]);
 
-                self.useHalfDay = ko.observable(false); // A5_19 initial value = false
                 self.useHalfDay.subscribe(useHalfDay => {
                     if (self.mainSettingModel.workTimeSetting.isFlex()) {
                         self.mainSettingModel.flexWorkSetting.useHalfDayShift(useHalfDay);
@@ -272,17 +288,21 @@ module nts.uk.at.view.kmk003.a {
              */
             private reloadWorktimeSetting(): void {
                 let self = this;
+                let currentCode = self.mainSettingModel.workTimeSetting.worktimeCode();
+                if (!currentCode) {
+                    return;
+                }
                 // block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
 
                 self.isLoading(false);
-                service.findWorktimeSetingInfoByCode(self.mainSettingModel.workTimeSetting.worktimeCode())
+                service.findWorktimeSetingInfoByCode(currentCode)
                     .done(worktimeSettingInfo => {
                         // clear all errors
                         self.clearAllError();
 
                         // update mainSettingModel data
-                        self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
+                        self.mainSettingModel.updateData(worktimeSettingInfo);
 
                         self.isLoading(true);
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
@@ -293,27 +313,29 @@ module nts.uk.at.view.kmk003.a {
              * Load work time setting detail
              */
             private loadWorktimeSetting(worktimeCode: string): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-                self.isLoading(false);
-                // block ui.
-                _.defer(() => nts.uk.ui.block.invisible());
+                if (worktimeCode) {
+                    let self = this;
+                    let dfd = $.Deferred<void>();
+                    self.isLoading(false);
+                    // block ui.
+                    _.defer(() => nts.uk.ui.block.invisible());
 
-                service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
-                    // enter update mode
-                    self.enterUpdateMode();
+                    service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
+                        // enter update mode
+                        self.enterUpdateMode();
 
-                    // clear all errors
-                    self.clearAllError();
+                        // clear all errors
+                        self.clearAllError();
 
-                    // update mainSettingModel data
-                    self.mainSettingModel.updateData(worktimeSettingInfo, self.useHalfDay);
+                        // update mainSettingModel data
+                        self.mainSettingModel.updateData(worktimeSettingInfo);
 
-                    self.isLoading(true);
-                    self.mainSettingModel.isChangeItemTable.valueHasMutated();
-                    dfd.resolve();
-                }).always(() => _.defer(() => nts.uk.ui.block.clear()));
-                return dfd.promise();
+                        self.isLoading(true);
+                        self.mainSettingModel.isChangeItemTable.valueHasMutated();
+                        dfd.resolve();
+                    }).always(() => _.defer(() => nts.uk.ui.block.clear()));
+                    return dfd.promise();
+                }
             }
             
             /**
@@ -347,6 +369,9 @@ module nts.uk.at.view.kmk003.a {
                     
                     $('#' + element.id).ntsEditor('validate');
                 })
+                $('.time-range-editor').each((index, element) => {
+                    $('#' + element.id).validateTimeRange();
+                });
             }
 
             /**
@@ -354,32 +379,8 @@ module nts.uk.at.view.kmk003.a {
              */
             public testData(): void {
                 let self = this;
-                let wts = self.mainSettingModel.workTimeSetting;
-                let pred = self.mainSettingModel.predetemineTimeSetting;
-                let flex = self.mainSettingModel.flexWorkSetting;
-                let fixed = self.mainSettingModel.fixedWorkSetting;
-                wts.worktimeCode('ttt');
-                wts.workTimeDisplayName.workTimeName('tuan test');
-                pred.startDateClock(300);
-                pred.rangeTimeDay(1440);
-                let tz1 = pred.prescribedTimezoneSetting.getTimezoneOne();
-                let tz2 = pred.prescribedTimezoneSetting.getTimezoneTwo();
-                tz1.start(510);
-                tz1.end(1050);
-                tz2.start(3);
-                tz2.end(4);
-                flex.coreTimeSetting.coreTimeSheet.startTime(1);
-                flex.coreTimeSetting.coreTimeSheet.endTime(2);
-                flex.coreTimeSetting.minWorkTime(1);
-                pred.prescribedTimezoneSetting.morningEndTime(720);
-                pred.prescribedTimezoneSetting.afternoonStartTime(780);
-                pred.predTime.predTime.oneDay(480);
-                pred.predTime.predTime.morning(240);
-                pred.predTime.predTime.afternoon(240);
-                flex.commonSetting.getMedicalDayShift().applicationTime(15);
-                flex.commonSetting.getMedicalNightShift().applicationTime(15);
-                fixed.commonSetting.getMedicalDayShift().applicationTime(15);
-                fixed.commonSetting.getMedicalNightShift().applicationTime(15);
+                let testData = JSON.parse('{"predseting":{"companyId":"000000000000-0001","rangeTimeDay":1440,"workTimeCode":"123","predTime":{"addTime":{"oneDay":0,"morning":0,"afternoon":0},"predTime":{"oneDay":480,"morning":240,"afternoon":240}},"nightShift":false,"prescribedTimezoneSetting":{"morningEndTime":720,"afternoonStartTime":780,"lstTimezone":[{"useAtr":true,"workNo":1,"start":510,"end":1050},{"useAtr":false,"workNo":2,"start":5,"end":6}]},"startDateClock":300,"predetermine":true},"worktimeSetting":{"companyId":"000000000000-0001","worktimeCode":"123","workTimeDivision":{"workTimeDailyAtr":0,"workTimeMethodSet":0},"isAbolish":true,"colorCode":"","workTimeDisplayName":{"workTimeName":"zxcv","workTimeAbName":"","workTimeSymbol":""},"memo":"","note":""},"flexWorkSetting":{"workTimeCode":null,"coreTimeSetting":null,"restSetting":null,"offdayWorkTime":null,"commonSetting":null,"useHalfDayShift":false,"lstHalfDayWorkTimezone":null,"lstStampReflectTimezone":null,"calculateSetting":null},"fixedWorkSetting":{"workTimeCode":"123","offdayWorkTimezone":{"restTimezone":{"lstTimezone":[{"start":720,"end":780}]},"lstWorkTimezone":[{"workTimeNo":1,"timezone":{"rounding":{"roundingTime":0,"rounding":0},"start":510,"end":1050},"inLegalBreakFrameNo":1,"outLegalBreakFrameNo":1,"outLegalPubHDFrameNo":1,"nonStatutoryDayoffConstraintTime":false,"nonStatutoryHolidayConstraintTime":false,"legalHolidayConstraintTime":false}]},"commonSetting":{"zeroHStraddCalculateSet":false,"intervalSet":{"useIntervalExemptionTime":false,"intervalExemptionTimeRound":{"roundingTime":0,"rounding":0},"intervalTime":{"intervalTime":0,"rounding":{"roundingTime":0,"rounding":0}},"useIntervalTime":false},"subHolTimeSet":[{"subHolTimeSet":{"certainTime":0,"useDivision":false,"designatedTime":{"oneDayTime":0,"halfDayTime":0},"subHolTransferSetAtr":0},"workTimeCode":"123","originAtr":0},{"subHolTimeSet":{"certainTime":0,"useDivision":false,"designatedTime":{"oneDayTime":0,"halfDayTime":0},"subHolTransferSetAtr":0},"workTimeCode":"123","originAtr":1}],"raisingSalarySet":"","medicalSet":[{"roundingSet":{"roundingTime":0,"rounding":0},"workSystemAtr":0,"applicationTime":15},{"roundingSet":{"roundingTime":0,"rounding":0},"workSystemAtr":1,"applicationTime":15}],"goOutSet":{"totalRoundingSet":{"setSameFrameRounding":0,"frameStraddRoundingSet":0},"diffTimezoneSetting":{"pubHolWorkTimezone":{"officalUseCompenGoOut":{"deductTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":0,"rounding":0}},"approTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":6,"rounding":0}}},"privateUnionGoOut":{"deductTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":0,"rounding":0}},"approTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":0,"rounding":0}}}},"workTimezone":{"officalUseCompenGoOut":{"deductTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":0,"rounding":0}},"approTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":5,"rounding":1}}},"privateUnionGoOut":{"deductTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":0,"rounding":0}},"approTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":0,"rounding":0}}}},"ottimezone":{"officalUseCompenGoOut":{"deductTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":0,"rounding":0}},"approTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":5,"rounding":0}}},"privateUnionGoOut":{"deductTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":0,"rounding":0}},"approTimeRoundingSetting":{"roundingMethod":0,"roundingSetting":{"roundingTime":1,"rounding":1}}}}}},"stampSet":{"roundingSets":[{"roundingSet":{"fontRearSection":0,"roundingTimeUnit":4},"section":0},{"roundingSet":{"fontRearSection":0,"roundingTimeUnit":0},"section":1}],"prioritySets":[{"priorityAtr":0,"stampAtr":0},{"priorityAtr":1,"stampAtr":1}]},"lateNightTimeSet":{"roundingSetting":{"roundingTime":0,"rounding":0}},"shortTimeWorkSet":{"nursTimezoneWorkUse":false,"employmentTimeDeduct":false,"childCareWorkUse":false},"extraordTimeSet":{"holidayFrameSet":{"inLegalBreakoutFrameNo":1,"outLegalBreakoutFrameNo":1,"outLegalPubHolFrameNo":1},"timeRoundingSet":{"roundingTime":0,"rounding":0},"otFrameSet":{"otFrameNo":1,"inLegalWorkFrameNo":1,"settlementOrder":1},"calculateMethod":0},"lateEarlySet":{"commonSet":{"delFromEmTime":false},"otherClassSets":[{"delTimeRoundingSet":{"roundingTime":0,"rounding":0},"stampExactlyTimeIsLateEarly":false,"graceTimeSet":{"includeWorkingHour":false,"graceTime":0},"recordTimeRoundingSet":{"roundingTime":0,"rounding":0},"lateEarlyAtr":0},{"delTimeRoundingSet":{"roundingTime":0,"rounding":0},"stampExactlyTimeIsLateEarly":false,"graceTimeSet":{"includeWorkingHour":false,"graceTime":0},"recordTimeRoundingSet":{"roundingTime":0,"rounding":0},"lateEarlyAtr":1}]}},"useHalfDayShift":true,"fixedWorkRestSetting":{"commonRestSet":{"calculateMethod":0},"fixedRestCalculateMethod":0},"lstHalfDayWorkTimezone":[{"restTimezone":{"lstTimezone":[]},"workTimezone":{"lstWorkingTimezone":[{"employmentTimeFrameNo":1,"timezone":{"rounding":{"roundingTime":2,"rounding":2},"start":510,"end":1050}}],"lstOTTimezone":[{"workTimezoneNo":1,"restraintTimeUse":false,"earlyOTUse":true,"timezone":{"rounding":{"roundingTime":0,"rounding":0},"start":1080,"end":1200},"otFrameNo":2,"legalOTframeNo":2,"settlementOrder":2},{"workTimezoneNo":2,"restraintTimeUse":false,"earlyOTUse":true,"timezone":{"rounding":{"roundingTime":0,"rounding":0},"start":1200,"end":1320},"otFrameNo":1,"legalOTframeNo":1,"settlementOrder":1}]},"dayAtr":0},{"restTimezone":{"lstTimezone":[]},"workTimezone":{"lstWorkingTimezone":[],"lstOTTimezone":[]},"dayAtr":1},{"restTimezone":{"lstTimezone":[]},"workTimezone":{"lstWorkingTimezone":[],"lstOTTimezone":[]},"dayAtr":2}],"lstStampReflectTimezone":[],"legalOTSetting":0},"flowWorkSetting":{"workingCode":null,"restSetting":null,"offdayWorkTimezone":null,"commonSetting":null,"halfDayWorkTimezone":null,"stampReflectTimezone":null,"designatedSetting":null,"flowSetting":null},"diffTimeWorkSetting":{"workTimeCode":null,"restSet":null,"dayoffWorkTimezone":null,"commonSet":null,"changeExtent":null,"halfDayWorkTimezones":null,"stampReflectTimezone":null,"overtimeSetting":null,"useHalfDayShift":false}}');
+                self.mainSettingModel.updateData(testData);
             }
 
             /**
@@ -407,7 +408,7 @@ module nts.uk.at.view.kmk003.a {
                 self.validateInput();
 
                 // stop function if has error.
-                if ($('.nts-editor').ntsError('hasError')) {
+                if ($('.nts-editor').ntsError('hasError') || $('.time-range-editor').ntsError('hasError')) {
                     return;
                 }
                 self.mainSettingModel.save(self.isNewOrCopyMode(), self.tabMode())
@@ -419,9 +420,29 @@ module nts.uk.at.view.kmk003.a {
                         self.reloadAfterSave();
                         self.isClickSave(false);
                         self.loadWorktimeSetting(self.selectedWorkTimeCode());
-                    }).fail(() => {
+                    }).fail((err) => {
                         self.isClickSave(false);
+                        self.showMessageError(err);
                     });
+            }
+            
+            /**
+             * showMessageError
+             */
+            public showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
             }
 
             /**
@@ -451,6 +472,7 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterNewMode(): void {
                 let self = this;
+                self.isLoading(false);
                 // clear all errors
                 self.clearAllError();
 
@@ -468,6 +490,7 @@ module nts.uk.at.view.kmk003.a {
 
                 // focus worktime atr
                 $('#cbb-worktime-atr').focus();
+                self.isLoading(true);
             }
 
             /**
@@ -519,6 +542,7 @@ module nts.uk.at.view.kmk003.a {
             public clearAllError(): void {
                 $('.nts-editor').ntsError('clear');
                 $('.ntsControl').ntsError('clear');
+                $('.time-range-editor').ntsError('clear');
             }
 
             /**
@@ -605,9 +629,11 @@ module nts.uk.at.view.kmk003.a {
             flexWorkSetting: FlexWorkSettingModel;
             
             isChangeItemTable: KnockoutObservable<boolean>;
+            useHalfDay: KnockoutObservable<boolean>;
             
-            constructor() {
+            constructor(useHalfDay: KnockoutObservable<boolean>) {
                 this.isChangeItemTable = ko.observable(false);
+                this.useHalfDay = useHalfDay; // bind to useHalfDay of main screen
                 
                 this.workTimeSetting = new WorkTimeSettingModel();
                 this.predetemineTimeSetting = new PredetemineTimeSettingModel();
@@ -640,13 +666,13 @@ module nts.uk.at.view.kmk003.a {
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommannd(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.bundledErrors(err))
+                        .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
                 if (self.workTimeSetting.isFixed()) {
                     service.saveFixedWorkSetting(self.toFixedCommand(addMode, tabMode))
                         .done(() => self.onSaveSuccess(dfd))
-                        .fail(err => nts.uk.ui.dialog.bundledErrors(err))
+                        .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
@@ -675,6 +701,7 @@ module nts.uk.at.view.kmk003.a {
                 let self = this;
                 let command: FlexWorkSettingSaveCommand;
                 command = {
+                    screenMode: tabMode,
                     addMode: addMode,
                     flexWorkSetting: self.flexWorkSetting.toDto(self.commonSetting),
                     predseting: self.predetemineTimeSetting.toDto(),
@@ -683,7 +710,7 @@ module nts.uk.at.view.kmk003.a {
                 return command;
             }
 
-            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto, useHalfDay: KnockoutObservable<boolean>): void {
+            updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): void {
                 let self = this;
                 self.workTimeSetting.updateData(worktimeSettingInfo.worktimeSetting);
                 self.predetemineTimeSetting.updateData(worktimeSettingInfo.predseting);
@@ -694,7 +721,7 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
-                    useHalfDay(worktimeSettingInfo.flexWorkSetting.useHalfDayShift);
+                    self.useHalfDay(worktimeSettingInfo.flexWorkSetting.useHalfDayShift);
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
@@ -707,17 +734,20 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
-                    useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
+                    self.useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
                 }
                 //TODO update diff viewmodel
             }
             
-            resetData(){
+            resetData(isNewMode?: boolean){
                 this.workTimeSetting.resetData();
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();
                 this.flexWorkSetting.resetData();
                 this.commonSetting.resetData();
+                if (!isNewMode) {
+                    this.workTimeSetting.resetWorkTimeDivision();
+                }
                 //TODO update diff viewmodel
             }
         }

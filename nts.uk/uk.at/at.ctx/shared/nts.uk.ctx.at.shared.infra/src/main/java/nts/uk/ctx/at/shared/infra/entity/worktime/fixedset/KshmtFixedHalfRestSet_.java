@@ -12,6 +12,5 @@ public class KshmtFixedHalfRestSet_ {
     public static volatile SingularAttribute<KshmtFixedHalfRestSet, Integer> startTime;
     public static volatile SingularAttribute<KshmtFixedHalfRestSet, Integer> endTime;
     public static volatile SingularAttribute<KshmtFixedHalfRestSet, Integer> exclusVer;
-    public static volatile SingularAttribute<KshmtFixedHalfRestSet, Integer> periodNo;
 
 }

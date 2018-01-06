@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primi
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
-@IntegerRange(max = 12, min = 0)
+@IntegerRange(max = 11, min = 0)
 public class Month extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
