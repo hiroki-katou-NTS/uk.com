@@ -263,7 +263,7 @@ public class AttendanceItemUtil {
 		if (itemValueAnno.getIdFromUtil()) {
 			String key = StringUtils.join(pathName,
 					extraCondition.isEmpty() ? "" : StringUtils.join("-", extraCondition),
-					(needCheckWithIdx ? String.valueOf(idx) : ""));
+					(needCheckWithIdx ? String.valueOf(idx+1) : ""));
 			Integer itemId = AttendanceItemIdContainer.getId(key);
 			if (itemId != null && itemId >= 0) {
 				return Arrays.asList(itemId);
