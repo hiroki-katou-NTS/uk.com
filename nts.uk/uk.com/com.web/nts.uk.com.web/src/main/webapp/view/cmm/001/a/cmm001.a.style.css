@@ -304,11 +304,15 @@ body>div:nth-child(4) {
 }
 
 #switchhelpbtn {
-	margin-left: 85px;
+	margin-left: 10px;
 	height: 27px;
+	z-index: 100px !important;
 }
 
 #tab-1, #tab-2, #tab-3 {
 	height: 370px;
 }
 
+#tab-3{
+	overflow: visible !important;
+}

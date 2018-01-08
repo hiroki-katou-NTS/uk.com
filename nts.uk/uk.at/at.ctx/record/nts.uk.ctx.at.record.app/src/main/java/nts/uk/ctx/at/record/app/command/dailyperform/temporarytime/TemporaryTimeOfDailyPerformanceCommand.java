@@ -37,8 +37,8 @@ public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonComma
 	}
 
 	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
-		return c == null ? null : new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()),
-						toTimeActualStamp(c.getLeave()));
+		return c == null ? null : new TimeLeavingWork(new WorkNo(c.getWorkNo()), Optional.of(toTimeActualStamp(c.getWorking())),
+				Optional.of(toTimeActualStamp(c.getLeave())));
 	}
 
 	private TimeActualStamp toTimeActualStamp(WithActualTimeStampDto c) {

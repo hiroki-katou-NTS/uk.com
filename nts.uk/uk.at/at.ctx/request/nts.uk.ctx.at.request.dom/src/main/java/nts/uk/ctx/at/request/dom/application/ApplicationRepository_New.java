@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 public interface ApplicationRepository_New {
 	
@@ -12,6 +13,17 @@ public interface ApplicationRepository_New {
 	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
 	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
+	
+	/**
+	 * 事前申請を取得したい
+	 * @param companyId: 社員ID
+	 * @param appDate: 申請日
+	 * @param inputDate: 入力日
+	 * @param appType: 申請種類
+	 * @param prePostAtr: 事前事後区分
+	 * @return
+	 */
+	public List<Application_New>  getBeforeApplication(String companyId, GeneralDate appDate, GeneralDateTime inputDate, int appType, int prePostAtr);
 	
 	public void insert(Application_New application);
 	

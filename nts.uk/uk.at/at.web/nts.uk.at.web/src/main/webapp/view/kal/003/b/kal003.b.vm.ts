@@ -4,21 +4,26 @@ module nts.uk.at.view.kal003.b.viewmodel{
     import dialog = nts.uk.ui.dialog;
     import windows = nts.uk.ui.windows;
     import resource = nts.uk.resource;
-    import shareModel = nts.uk.at.view.kal003.share.model;
+    import sharemodel = nts.uk.at.view.kal003.share.model;
+    import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class ScreenModel {
         
-        intGroupCondition = new shareModel.GroupCondition({
+        /*(intGroupCondition =  new shareModel.GroupCondition({
             groupOperator: 0
             , groupListCondition: ([])
-        });
+        });*/
+        //intGroupCondition : shareModel.GroupCondition = shareModel.Kal003Utils.getDefaultGroupCondition();
+        /*
         initCompoundCondition = new  shareModel.CompoundCondition ({
             group1Condition: this.intGroupCondition
             , hasGroup2: false
             , group2Condition: this.intGroupCondition
             , operatorBetweenG1AndG2: 0
         });
-        currentErrAlaCheckCondition: KnockoutObservable<shareModel.SettingCdlKal003B>;
+        */
+        //initCompoundCondition CompoundCondition : shareModel.Kal003utils
+        currentErrAlaCheckCondition: KnockoutObservable<sharemodel.ErrorAlarmCondition>;
         // list item check
         listTypeCheckWorkRecords    : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listSingleValueCompareTypes : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -34,8 +39,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
         displayWorkTypeSelections_BA1_4 :       KnockoutObservable<string> = ko.observable('');
         displayWorkTimeItemSelections_BA2_3:    KnockoutObservable<string> = ko.observable('');
         displayWorkingTimeZoneSelections_BA5_3: KnockoutObservable<string> = ko.observable('');
-
-        private defaultSetting: shareModel.ISettingCdlKal003B = {
+/*
+        private defaultSetting: shareModel.IErrorAlarmCondition = {
                 category:                   0
                 , erAlCheckId:              ''
                 , checkItem:                0
@@ -52,19 +57,20 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 , isBold:                   false
                 , compoundCondition:        this.initCompoundCondition
         };
+        */
         targetServiceTypeSelected_BA1_2 : KnockoutObservable<number> = ko.observable(1);
         targetSelectionRangeSelected_BA1_5 : KnockoutObservable<number> = ko.observable(0);
         targetSelectionRangeSelected_BA1_5_target_working_hours : KnockoutObservable<number> = ko.observable(1);
-        private setting: shareModel.ISettingCdlKal003B;
+        private setting: sharemodel.IErrorAlarmCondition;
         swANDOR_B5_3: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B6_3: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B7_2: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         enableComparisonMaxValue : KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
-            var option = windows.getShared('dataKal003b');
-            self.setting = $.extend({}, self.defaultSetting, option);
-            self.currentErrAlaCheckCondition = ko.observable(new shareModel.SettingCdlKal003B(self.setting));
+            var option = windows.getShared('inputKal003b');
+            self.setting = $.extend({}, shareutils.getDefaultErrorAlarmCondition(0), option);
+            self.currentErrAlaCheckCondition = ko.observable(new sharemodel.ErrorAlarmCondition(self.setting));
             // change select item check
             self.currentErrAlaCheckCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
@@ -77,22 +83,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.settingEnableComparisonMaxValueField();
             });
 
-            self.currentErrAlaCheckCondition().compoundCondition().hasGroup2.subscribe((item) => {
-                // show group 2
-                /*
-                if (item === true) {
-                    $('#div_b6_2').show();
-                    $('#div_b6_3').show();
-                    $('#div_b16').show();
-                    $('#div_b7').show();
-                } else { // hide group 2
-                    $('#div_b6_2').hide();
-                    $('#div_b6_3').hide();
-                    $('#div_b16').hide();
-                    $('#div_b7').hide();
-                }
-                */
-            });
             
         }
 
@@ -211,20 +201,14 @@ module nts.uk.at.view.kal003.b.viewmodel{
             return [];
         }
         
-        private initGroupCondition(listGroupCondition : Array<shareModel.Condition>) : Array<shareModel.Condition> {
-            let listCondition : Array<shareModel.Condition> = [];
+        private initGroupCondition(listGroupCondition : Array<sharemodel.Condition>) : Array<sharemodel.Condition> {
+            let listCondition : Array<sharemodel.Condition> = [];
             for(var i = 0; i < listGroupCondition.length && i < 3; i++) {
                 listCondition.push(listGroupCondition[i]);
             }
             if (listCondition.length < 3) {
                 for(var i = listCondition.length; i < 3; i++) {
-                    listCondition.push(new shareModel.Condition ({
-                        itemCheck: 7,
-                        target:                 0,
-                        operatorCd:             'a',
-                        comparisonOperatorId:   0,
-                        itemConditionId:        ''
-                    }));
+                    listCondition.push(shareutils.getDefaultCondition(7));
                 }
             }
             return listCondition;
@@ -618,7 +602,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * close dialog B and return result
          */
         closeDialog() {
-            windows.setShared('outputKal003b', null);
+            windows.setShared('outputKal003b', undefined);
             nts.uk.ui.windows.close();
         }
     }

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
@@ -62,19 +63,27 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		
 		// Check #Msg_516 domain HDWorkTimeSheetSetting
 		fixedWorkSetting.getOffdayWorkTimezone().getLstWorkTimezone().forEach(setting -> {
-			this.predService.validateOneDay(predetemineTimeSet, setting.getTimezone().getStart(), setting.getTimezone().getEnd());
+			if (this.predService.validateOneDay(predetemineTimeSet, setting.getTimezone().getStart(),
+					setting.getTimezone().getEnd())) {
+				throw new BusinessException("Msg_516", "KMK003_90");
+			}
+		});
+		
+		// Check #Msg_516 domain FixRestTimezoneSet
+		fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getLstTimezone().forEach(setting -> {
+			if (this.predService.validateOneDay(predetemineTimeSet, setting.getStart(), setting.getEnd())) {
+				throw new BusinessException("Msg_516", "KMK003_21");
+			}
 		});
 
-		// validate Msg_516
+		// check use half day
 		if (fixedWorkSetting.getUseHalfDayShift()) {
-			fixedWorkSetting.getLstHalfDayWorkTimezone()
-					.forEach(halfDay -> this.fixHalfDayPolicy.validate(halfDay, predetemineTimeSet));
-			// validate Msg_516
-			predService.validateOneDay(predetemineTimeSet,
-					predetemineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime(),
-					predetemineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
-
+			// validate Msg_516 PredetemineTimeSetting
+			predService.validatePredetemineTime(predetemineTimeSet);
 		}
+
+		// validate list HalfDayWorkTimezone
+		this.fixHalfDayPolicy.validate(fixedWorkSetting, predetemineTimeSet);
 
 		// validate WorkTimezoneCommonSet
 		this.wtzCommonSetPolicy.validate(predetemineTimeSet, fixedWorkSetting.getCommonSetting());

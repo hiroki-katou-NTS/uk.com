@@ -77,7 +77,7 @@ public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecB
 		return new KbpmtSpecBPTimesheet(
 				new KbpmtSpecBPTimesheetPK(companyId, specBonusPayTimesheet.getTimeSheetId(), bonusPaySettingCode),
 				new BigDecimal(specBonusPayTimesheet.getUseAtr().value),
-				specBonusPayTimesheet.getTimeItemId().toString(),
+				specBonusPayTimesheet.getTimeItemId(),
 				new BigDecimal(specBonusPayTimesheet.getStartTime().minute()),
 				new BigDecimal(specBonusPayTimesheet.getEndTime().minute()),
 				new BigDecimal(specBonusPayTimesheet.getRoundingTimeAtr().value),

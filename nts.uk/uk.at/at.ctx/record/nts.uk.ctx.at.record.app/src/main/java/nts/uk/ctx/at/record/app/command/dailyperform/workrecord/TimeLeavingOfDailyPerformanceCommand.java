@@ -34,7 +34,7 @@ public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand
 		return !data.isPresent() ? null : new TimeLeavingOfDailyPerformance(
 				getEmployeeId(), new WorkTimes(data.get().getWorkTimes()), 
 				data.get().getWorkAndLeave() == null ? null : ConvertHelper.mapTo(data.get().getWorkAndLeave(),c -> 
-					new TimeLeavingWork(new WorkNo(c.getWorkNo()), getStamp(c.getWorking()), getStamp(c.getLeave()))),
+					new TimeLeavingWork(new WorkNo(c.getWorkNo()), Optional.of(getStamp(c.getWorking())), Optional.of(getStamp(c.getLeave())))),
 				getWorkDate());
 	}
 

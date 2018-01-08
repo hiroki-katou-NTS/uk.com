@@ -43,9 +43,10 @@ public class RegisterAtApproveReflectionInfoDefault_New implements RegisterAtApp
 				application.getAppDate());
 		//承認完了フラグがtrue
 		if (approvalCompletionFlag.equals(Boolean.TRUE)) {
+			Application_New application_New = applicationRepository.findByID(application.getCompanyID(), application.getAppID()).get();
 			// 「反映情報」．実績反映状態を「反映待ち」にする
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
-			applicationRepository.update(application);
+			application_New.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
+			applicationRepository.update(application_New);
 		}
 	}
 }

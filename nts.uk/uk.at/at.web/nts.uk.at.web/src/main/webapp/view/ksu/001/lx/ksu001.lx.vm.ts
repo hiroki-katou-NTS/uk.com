@@ -144,7 +144,7 @@ module nts.uk.at.view.ksu001.lx.viewmodel {
                     });
                 }).fail(function(error) {
                     self.isCreated(false);
-                    nts.uk.ui.dialog.alertError(error.message);
+                    nts.uk.ui.dialog.alertError(error.messageId);
                 });
             }).then(function() {
                 nts.uk.ui.block.clear();
