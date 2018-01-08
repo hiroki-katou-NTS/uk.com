@@ -67,7 +67,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.getAppDataDate(appType, standardDate, true).done(function() {
                 dfd.resolve(); 
             }).fail((res)=>{
-                nts.uk.ui.dialog.alertError({ messageId: res1.messageId }).then(function(){
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
                     nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
                     nts.uk.ui.block.clear();
                 });  
