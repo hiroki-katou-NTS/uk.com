@@ -450,15 +450,24 @@ module nts.uk.com.view.cmm018.a {
                             });
                             if(transferData.screen == 'Application'){//screen Application
                                 //list person
-                                self.lstPerson(data.lstPerson);
-                                self.convertHistForPs(data.lstPerson);
-                                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                                if(data.lstPerson.length == 0){
+                                    self.lstPerson([]);
+                                    self.cpA([]);
+                                    self.listHistory([]);
+                                    self.enableRegister(false);
+                                    self.enableDelete(false);
+                                }else{
+                                    self.lstPerson(data.lstPerson);
+                                    self.convertHistForPs(data.lstPerson);
+                                    $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                                }
                             }else{
                                 if(data.lstCompany.length == 0){
                                     self.lstCompany([]);
                                     self.cpA([]);
                                     self.listHistory([]);
                                     self.enableRegister(false);
+                                    self.enableDelete(false);
                                 }else{
                                     //list company
                                 self.lstCompany(data.lstCompany);
