@@ -459,8 +459,8 @@ module nts.uk.com.view.cmm018.a {
                                 }else{
                                     self.lstPerson(data.lstPerson);
                                     self.convertHistForPs(data.lstPerson);
-                                    $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                                 }
+                                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                             }else{
                                 if(data.lstCompany.length == 0){
                                     self.lstCompany([]);
