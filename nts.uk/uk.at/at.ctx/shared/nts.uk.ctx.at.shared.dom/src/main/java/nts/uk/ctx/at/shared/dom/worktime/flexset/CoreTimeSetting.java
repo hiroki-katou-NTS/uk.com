@@ -60,7 +60,7 @@ public class CoreTimeSetting extends DomainObject {
 	 */
 	@Override
 	public void validate(){
-		
+		super.validate();
 		// 使用区分 = 使用しない AND 最低勤務時間 <= 0
 		if (this.timesheet.equals(ApplyAtr.NOT_USE) && this.minWorkTime.valueAsMinutes() <= ZERO_MINUTES) {
 			throw new BusinessException("Msg_776");

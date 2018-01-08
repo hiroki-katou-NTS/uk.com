@@ -60,7 +60,8 @@ module nts.uk.at.view.ksm004.a {
                 isShowSelectButton: false,
                 baseDate: ko.observable(new Date()),
                 selectedWorkplaceId: this.currentCalendarWorkPlace().key,
-                alreadySettingList: ko.observableArray([])
+                alreadySettingList: ko.observableArray([]),
+                systemType : 2
             };
             kcpGridlist: IGridList = {
                 listType: 2,
@@ -985,6 +986,7 @@ module nts.uk.at.view.ksm004.a {
             baseDate: KnockoutObservable<any>;
             selectedWorkplaceId: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
+            systemType : number;
         }
         
         interface IGridList {

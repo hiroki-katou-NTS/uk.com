@@ -16,6 +16,7 @@ module kcp004.a.viewmodel {
         listSelectionType: KnockoutObservableArray<any>;
         selectedSelectionType: KnockoutObservable<number>;
         
+        isMultipleUse: KnockoutObservable<boolean>;
         isMultipleTreeGrid: KnockoutObservable<boolean>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
@@ -42,9 +43,11 @@ module kcp004.a.viewmodel {
             let self = this;
             
             // Control common
+            self.isMultipleUse =  ko.observable(false);
+            
             self.listTreeType = ko.observableArray([
-                {code : 0, name: 'Single tree grid'},
-                {code : 1, name: 'Multiple tree grid'}
+                {code : 0, name: 'Single tree select grid'},
+                {code : 1, name: 'Multiple tree select grid'}
             ]);
             self.selectedTreeType = ko.observable(1);
             self.isMultipleTreeGrid = ko.computed(function () {
@@ -83,6 +86,7 @@ module kcp004.a.viewmodel {
             self.alreadySettingList = ko.observableArray([]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
+                isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultipleTreeGrid(),
                 treeType: TreeType.WORK_PLACE,
                 selectedWorkplaceId: self.getSelectedWorkplaceId(),
@@ -100,6 +104,12 @@ module kcp004.a.viewmodel {
             self.isBindingTreeGrid = ko.observable(false);
             
             // Subscribe
+            self.isMultipleUse.subscribe(function(code) {
+                self.resetSelectedWorkplace();
+                self.reloadTreeGrid().done(() => {
+                    self.getSelectedData();
+                });
+            });
             self.selectedTreeType.subscribe(function(code) {
                 // single tree grid
                 if (code == 0 && self.selectedSelectionType() == 2) {
@@ -215,6 +225,7 @@ module kcp004.a.viewmodel {
             let self = this;
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
+                isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultipleTreeGrid(),
                 treeType: TreeType.WORK_PLACE,
                 selectedWorkplaceId: self.getSelectedWorkplaceId(),

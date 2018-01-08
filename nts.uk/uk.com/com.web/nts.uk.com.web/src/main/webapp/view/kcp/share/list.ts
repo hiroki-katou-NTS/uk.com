@@ -22,7 +22,12 @@ module kcp.share.list {
         isShowAlreadySet: boolean;
         
         /**
-         * is Multi select.
+         * is Multi use (複数使用区分). Setting use multiple components?
+         */
+        isMultipleUse: boolean;
+        
+        /**
+         * is Multi select (選択モード). Setting multiple selection in grid.
          */
         isMultiSelect: boolean;
         
@@ -189,7 +194,8 @@ module kcp.share.list {
         itemList: KnockoutObservableArray<UnitModel>;
         selectedCodes: KnockoutObservable<any>;
         listComponentColumn: Array<any>;
-        isMultiple: boolean;
+        isMultipleUse: boolean;
+        isMultipleSelect: boolean;
         isDialog: boolean;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
@@ -212,7 +218,8 @@ module kcp.share.list {
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
-            this.isMultiple = false;
+            this.isMultipleUse = false;
+            this.isMultipleSelect = false;
             this.componentGridId = (Date.now()).toString();
             this.alreadySettingList = ko.observableArray([]);
             this.isDisplayClosureSelection = false;
@@ -232,12 +239,15 @@ module kcp.share.list {
             ko.cleanNode($input[0]);
             
             // Init self data.
-            self.isMultiple = data.isMultiSelect;
+            if (data.isMultipleUse) {
+                self.isMultipleUse = data.isMultipleUse;
+            }
+            self.isMultipleSelect = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
@@ -413,7 +423,7 @@ module kcp.share.list {
             }
             $.fn.reloadJobtitleDataList = self.reload;
             $.fn.isNoSelectRowSelected = function() {
-                if (self.isMultiple) {
+                if (self.isMultipleSelect) {
                     return false;
                 }
                 var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
@@ -434,7 +444,7 @@ module kcp.share.list {
             self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             
             // Check is show no select row.
-            if (isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
+            if (isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultipleSelect) {
                 self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
         }
@@ -512,7 +522,7 @@ module kcp.share.list {
                     //self.selectedCodes(data.selectedCode());
                     return;
                 case SelectType.SELECT_ALL:
-                    if (!self.isMultiple){
+                    if (!self.isMultipleSelect){
                         return;
                     }
                     self.selectedCodes(dataList.map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
@@ -550,7 +560,7 @@ module kcp.share.list {
          * Select data for multiple or not
          */
         private selectData(option: ComponentOption, data: UnitModel) :any {
-            if (this.isMultiple) {
+            if (this.isMultipleSelect) {
                 return option.listType == ListType.JOB_TITLE ? [data.id] : [data.code];
             }
             if (option.listType == ListType.JOB_TITLE) {
@@ -650,7 +660,7 @@ module kcp.share.list {
          */
         public selectAll() {
             var self = this;
-            if (self.itemList().length == 0 || !self.isMultiple) {
+            if (self.itemList().length == 0 || !self.isMultipleSelect) {
                 return;
             }
             self.selectedCodes(self.itemList().map(item => item.code));

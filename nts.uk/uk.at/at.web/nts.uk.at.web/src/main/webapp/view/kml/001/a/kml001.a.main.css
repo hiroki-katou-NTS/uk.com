@@ -152,7 +152,7 @@ input, textarea {
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(3) > .cell{
 	height: 40px;
 }
-img {
+.symbol-img {
 	margin-top: 5px; 
 	position: absolute;
     height: 90px;

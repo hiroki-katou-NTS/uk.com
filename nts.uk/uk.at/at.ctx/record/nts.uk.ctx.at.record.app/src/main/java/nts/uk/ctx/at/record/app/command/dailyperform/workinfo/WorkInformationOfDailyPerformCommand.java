@@ -33,7 +33,7 @@ public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand
 				ConvertHelper.getEnum(data.getBackStraightAtr(), NotUseAttribute.class), getWorkDate(),
 				data.getScheduleTimeZone() == null ? new ArrayList<>() :
 						ConvertHelper.mapTo(data.getScheduleTimeZone(), (c) -> 
-							new ScheduleTimeSheet(c.getWorkNo(), c.getWorking(), c.getLeave())));
+							new ScheduleTimeSheet(c.getWorkNo(), c.getWorking() == null ?  0 : c.getWorking(), c.getLeave() == null ? 0: c.getLeave())));
 	}
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {

@@ -146,7 +146,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 				for (int j = i + 1; j < size; j++) {
 					if (this.lstWorkingTimezone.get(i).getTimezone()
 							.isOverlap(this.lstWorkingTimezone.get(j).getTimezone())) {
-						throw new BusinessException("Msg_515");
+						throw new BusinessException("Msg_515","KMK003_86");
 					}
 				}
 			}
@@ -158,7 +158,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 				for (int j = i + 1; j < size; j++) {
 					if (this.lstOTTimezone.get(i).getTimezone()
 							.isOverlap(this.lstOTTimezone.get(j).getTimezone())) {
-						throw new BusinessException("Msg_515");
+						throw new BusinessException("Msg_515","KMK003_89");
 					}
 				}
 			}

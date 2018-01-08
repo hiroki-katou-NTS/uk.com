@@ -951,7 +951,7 @@ public class ProgramsManager {
 	/**
 	 * KDW007B
 	 */
-	public static final Program KDW007B  = new Program(WebAppId.AT, ProgramIdConsts.KDW007B, "",
+	public static final Program KDW007B  = new Program(WebAppId.AT, ProgramIdConsts.KDW007B, "KDW007_40",
 			"/view/kdw/007/b/index.xhtml");
 	
 	/**
@@ -1369,6 +1369,37 @@ public class ProgramsManager {
 			"/view/ksm/011/c/index.xhtml");
 	public static final Program KSM011E = new Program(WebAppId.AT, ProgramIdConsts.KSM011E, "KSM011_44",
 			"/view/ksm/011/e/index.xhtml");
+	
+	/**	KSC001A	 */
+	public static final Program KSC001A = new Program(WebAppId.AT, ProgramIdConsts.KSC001A, null,
+			"/view/ksc/001/a/index.xhtml");
+	/**	KSC001B	 */
+	public static final Program KSC001B = new Program(WebAppId.AT, ProgramIdConsts.KSC001B, null,
+			"/view/ksc/001/b/index.xhtml");
+	/**	KSC001C	 */
+	public static final Program KSC001C = new Program(WebAppId.AT, ProgramIdConsts.KSC001C, null,
+			"/view/ksc/001/c/index.xhtml");
+	/**	KSC001D	 */
+	public static final Program KSC001D = new Program(WebAppId.AT, ProgramIdConsts.KSC001D, null,
+			"/view/ksc/001/d/index.xhtml");
+	/**	KSC001E	 */
+	public static final Program KSC001E = new Program(WebAppId.AT, ProgramIdConsts.KSC001E, null,
+			"/view/ksc/001/e/index.xhtml");
+	/**	KSC001F	 */
+	public static final Program KSC001F = new Program(WebAppId.AT, ProgramIdConsts.KSC001F, "KSC001_3",
+			"/view/ksc/001/f/index.xhtml");
+	/**	KSC001G	 */
+	public static final Program KSC001G = new Program(WebAppId.AT, ProgramIdConsts.KSC001G, null,
+			"/view/ksc/001/g/index.xhtml");
+	/**	KSC001H	 */
+	public static final Program KSC001H = new Program(WebAppId.AT, ProgramIdConsts.KSC001H, "KSC001_70",
+			"/view/ksc/001/h/index.xhtml");
+	/**	KSC001I	 */
+	public static final Program KSC001I = new Program(WebAppId.AT, ProgramIdConsts.KSC001I, "KSC001_79",
+			"/view/ksc/001/i/index.xhtml");
+	/**	KSC001K	 */
+	public static final Program KSC001K = new Program(WebAppId.AT, ProgramIdConsts.KSC001K, "KSC001_80",
+			"/view/ksc/001/k/index.xhtml");
 	
 	
 	// TODO: Define new programs here.
