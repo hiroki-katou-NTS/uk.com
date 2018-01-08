@@ -12,8 +12,9 @@ module nts.custombinding {
     import parseTime = nts.uk.time.parseTime;
     import clearError = nts.uk.ui.errors.clearAll;
 
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
-    let writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'];
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
+        writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'],
+        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
@@ -496,7 +497,7 @@ module nts.custombinding {
                                     }">
                                <div data-bind="if: layoutItemType == LAYOUT_TYPE.ITEM">
                                     <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
-                                            .filter(function(x) { return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((x.item||{}).dataTypeValue) == -1})
+                                            .filter(function(x) { return (__items.length == 1 ? [ITEM_TYPE.SELECTION] : [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION]).indexOf((x.item||{}).dataTypeValue) == -1})
                                             .map(function(x) { return x.itemDefId.replace(/[-_]/g, '') })
                                             .value() }">
                                         <div data-bind="ntsFormLabel: { 
@@ -1149,13 +1150,13 @@ module nts.custombinding {
                                     constraint.mantissaMaxLength = dts.decimalPart;
                                 }
                                 constraint.charType = 'Numeric';
-                                constraint.max = dts.numericItemMax || undefined;
+                                constraint.max = dts.numericItemMax || '';
                                 constraint.min = dts.numericItemMin || 0;
                                 break;
                             case ITEM_SINGLE_TYPE.DATE:
                                 constraint.valueType = "Date";
-                                constraint.max = parseTime(dts.max, true).format() || undefined;
-                                constraint.min = parseTime(dts.min, true).format() || undefined;
+                                constraint.max = parseTime(dts.max, true).format() || '';
+                                constraint.min = parseTime(dts.min, true).format() || '';
                                 break;
                             case ITEM_SINGLE_TYPE.TIME:
                                 constraint.valueType = "Time";
@@ -1164,8 +1165,8 @@ module nts.custombinding {
                                 break;
                             case ITEM_SINGLE_TYPE.TIMEPOINT:
                                 constraint.valueType = "Clock";
-                                constraint.max = parseTime(dts.timePointItemMax, true).format();
-                                constraint.min = parseTime(dts.timePointItemMin, true).format();
+                                constraint.max = parseTimeWidthDay(dts.timePointItemMax).shortText;
+                                constraint.min = parseTimeWidthDay(dts.timePointItemMin).shortText;
                                 break;
                             case ITEM_SINGLE_TYPE.SELECTION:
                                 constraint.valueType = "Selection";
@@ -1188,6 +1189,20 @@ module nts.custombinding {
                         exceptConsts = [];
                         writeConstraints(constraints);
                     }
+                },
+                scrollDown = () => {
+                    // remove old selected items
+                    $(ctrls.sortable)
+                        .find('.form-group.item-classification')
+                        .removeClass('selected');
+                    // scroll to bottom
+                    $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
+                    // select lastest item
+                    setTimeout(() => {
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification:last-child')
+                            .addClass('selected');
+                    }, 0);
                 };
 
             // add style to <head> on first run
@@ -1948,6 +1963,7 @@ module nts.custombinding {
 
                 // add line to list sortable
                 opts.sortable.pushItem(item);
+                scrollDown();
             });
 
             $(ctrls.sortable)
@@ -1967,21 +1983,7 @@ module nts.custombinding {
             $(ctrls.button).on('click', () => {
                 // アルゴリズム「項目追加処理」を実行する
                 // Execute the algorithm "項目追加処理"
-                let ids: Array<string> = ko.toJS(opts.listbox.value),
-                    scrollDown = () => {
-                        // remove old selected items
-                        $(ctrls.sortable)
-                            .find('.form-group.item-classification')
-                            .removeClass('selected');
-                        // scroll to bottom
-                        $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
-                        // select lastest item
-                        setTimeout(() => {
-                            $(ctrls.sortable)
-                                .find('.form-group.item-classification:last-child')
-                                .addClass('selected');
-                        }, 0);
-                    };
+                let ids: Array<string> = ko.toJS(opts.listbox.value);
 
                 if (!ids || !ids.length) {
                     alert({ messageId: 'Msg_203' });
@@ -2001,7 +2003,10 @@ module nts.custombinding {
                             // if category is exist in sortable box.
                             let _catcls = _.find(ko.unwrap(opts.sortable.data), (x: IItemClassification) => x.personInfoCategoryID == cat.id);
                             if (_catcls) {
-                                alert({ messageId: 'Msg_202' });
+                                alert({
+                                    messageId: 'Msg_202',
+                                    messageParams: [cat.categoryName]
+                                });
                                 return;
                             }
 
