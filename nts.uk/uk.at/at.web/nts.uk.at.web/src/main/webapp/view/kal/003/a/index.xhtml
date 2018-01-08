@@ -10,6 +10,8 @@
 			<title>#{i18n.getText('KAL003_1')}</title>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="../share/kal003utils.js" />
+			<com:scriptfile path="common/checkconditiontab.js" />
 			<com:stylefile path="kal003.a.style.css" />
 			<!-- 			<com:scriptfile path="cas014.a.service.js" /> -->
 			<com:scriptfile path="kal003.a.vm.js" />
@@ -100,9 +102,8 @@
 								<span>Tab Content 2</span><br />
 <!-- 								<ui:include src="../b/index.xhtml" /> -->
 							</div>
-							<div class="tab-content-3">
-								<span>Tab Content 3</span><br />
-<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							<div class="tab-content-3" data-bind="with: $parent.checkConditionTab">
+ 								<ui:include src="common/checkconditions.xhtml" />
 							</div>
 							<div class="tab-content-4">
 								<span>Tab Content 4</span><br />

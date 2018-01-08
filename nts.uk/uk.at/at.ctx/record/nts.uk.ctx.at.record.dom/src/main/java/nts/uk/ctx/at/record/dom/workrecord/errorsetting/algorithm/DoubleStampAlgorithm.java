@@ -33,11 +33,11 @@ public class DoubleStampAlgorithm {
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 				// 出勤の二重打刻チェック処理
-				TimeActualStamp attendanceTimeActual = timeLeavingWork.getAttendanceStamp();
+				TimeActualStamp attendanceTimeActual = timeLeavingWork.getAttendanceStamp().orElse(null);
 				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, attendanceTimeActual);
 
 				// 退勤の二重打刻チェック処理
-				TimeActualStamp leavingTimeActual = timeLeavingWork.getLeaveStamp();
+				TimeActualStamp leavingTimeActual = timeLeavingWork.getLeaveStamp().orElse(null);
 				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, leavingTimeActual);
 			}
 		}
@@ -48,7 +48,7 @@ public class DoubleStampAlgorithm {
 
 		List<Integer> attendanceItemIDs = new ArrayList<>();
 
-		if (timeActualStamp.getNumberOfReflectionStamp() >= 2) {
+		if (timeActualStamp != null && timeActualStamp.getNumberOfReflectionStamp() >= 2) {
 			createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
 					new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDs);
 		}

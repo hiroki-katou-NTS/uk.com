@@ -173,7 +173,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     $('#contain-view').show();
                     $('#contain-view').addClass('h-90');
-                    $('#oViewModel').hide(); 
+                    $('#oViewModel').hide();
                     $('#qViewModel').show();
                     $('#group-bt').show();
                     $("#extable").exTable("updateMode", "none");
@@ -291,8 +291,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }));
             });
             //get workPlaceName to display A3-1
-            self.workPlaceNameDisplay(self.empItems()[0].workplaceName);
+            
             self.workplaceId = self.empItems()[0].workplaceId;
+            let data = {
+                workplaceId:self.workplaceId,
+                baseDate:moment().toISOString()    
+            }
+            service.getWorkPlaceById(data).done((wkp)=>{
+                self.workPlaceNameDisplay(wkp.wkpDisplayName);
+            });
             //get data WorkPattern
             $.when(self.getDataWkpPattern()).done(() => {
                 if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
@@ -990,7 +997,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         * Get data of Basic Schedule
+         * Get data of Basic Schedule = listDataShortName + listDataTimeZone
          */
         getDataBasicSchedule(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(),
@@ -1022,20 +1029,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 });
                 //set dataSource for mode timeZone
-                _.each(data.listDataTimeZone, (itemData: BasicSchedule) => {
-                    let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
-                    if (itemDataSource) {
-                        itemDataSource.scheduleStartClock = itemData.scheduleStartClock;
-                        itemDataSource.scheduleEndClock = itemData.scheduleEndClock;
-                    } else {
-                        self.dataSource.push(new BasicSchedule({
-                            date: itemData.date,
-                            employeeId: itemData.employeeId,
-                            scheduleStartClock: itemData.scheduleStartClock,
-                            scheduleEndClock: itemData.scheduleEndClock,
-                        }));
+                _.each(self.dataSource(), (itemDataSource: BasicSchedule) => {
+                    let itemDataTimeZone: any = _.find(data.listDataTimeZone, { 'employeeId': itemDataSource.employeeId, 'date': itemDataSource.date });
+                    if (itemDataTimeZone) {
+                        itemDataSource.scheduleStartClock = itemDataTimeZone.scheduleStartClock;
+                        itemDataSource.scheduleEndClock = itemDataTimeZone.scheduleEndClock;
+                    }else{
+                        itemDataSource.scheduleStartClock = null;
+                        itemDataSource.scheduleEndClock = null;
                     }
                 });
+
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1240,7 +1244,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dtMoment = moment(self.dtPrev());
                 dtMoment.subtract(1, 'days');
                 self.dtAft(dtMoment.toDate());
-                dtMoment = dtMoment.subtract(1, 'months');
+                if (dtMoment.date() === dtMoment.daysInMonth()) {
+                    dtMoment = dtMoment.subtract(1, 'months');
+                    dtMoment.endOf('months');
+                } else {
+                    dtMoment = dtMoment.subtract(1, 'months');
+                }
                 dtMoment.add(1, 'days');
                 self.dtPrev(dtMoment.toDate());
                 self.dataSource([]);
@@ -1259,7 +1268,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCell.length == 0) {
                 return;
             }
-            
+
             nts.uk.ui.block.grayout();
             if (self.selectedModeDisplay() == 2) {
                 _.each(arrTmp, (item) => {
@@ -1310,7 +1319,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
             }).fail(function(error: any) {
                 nts.uk.ui.block.grayout();
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
             });
         }
 
@@ -1540,7 +1549,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         addListError(errorsRequest: Array<string>) {
             var errors = [];
             _.forEach(errorsRequest, function(err) {
-                errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+                var errSplits = err.split(",");
+                if (errSplits.length == 1) {
+                    errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+                } else {
+                    errors.push({ message: nts.uk.resource.getMessage(errSplits[0],nts.uk.resource.getText(errSplits[1]),nts.uk.resource.getText(errSplits[2])), messageId: errSplits[0], supplements: {} });
+                }
             });
 
             nts.uk.ui.dialog.bundledErrors({ errors: errors });
@@ -1632,7 +1646,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listColorOfHeader: self.listColorOfHeader()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
-                if (!getShared("dataFromScreenD").clickCloseDialog) {
+                if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
                     $.when(self.setDatasource()).done(() => {
                         self.updateExTable();
                     });

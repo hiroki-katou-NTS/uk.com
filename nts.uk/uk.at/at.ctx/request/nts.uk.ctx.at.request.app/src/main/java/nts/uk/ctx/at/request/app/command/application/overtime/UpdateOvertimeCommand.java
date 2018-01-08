@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 /**
  * 
  * @author Doan Duy Hung
@@ -111,9 +110,6 @@ public class UpdateOvertimeCommand {
 	 * 申請.申請者
 	 */
 	private String applicantSID;
-
-	/** Phase list */
-	private List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
 
 	/**
 	 * 登録時にメールを送信する

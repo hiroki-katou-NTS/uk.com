@@ -48,17 +48,20 @@ public class GoingOutStampLeakageChecking {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
-	public void goingOutStampLeakageChecking(String companID, String employeeID, GeneralDate processingDate, OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
+	public void goingOutStampLeakageChecking(String companID, String employeeID, GeneralDate processingDate,
+			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance) {
 
-//		Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance = this.outingTimeOfDailyPerformanceRepository
-//				.findByEmployeeIdAndDate(employeeID, processingDate);
+		// Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance =
+		// this.outingTimeOfDailyPerformanceRepository
+		// .findByEmployeeIdAndDate(employeeID, processingDate);
 
 		if (outingTimeOfDailyPerformance != null && !outingTimeOfDailyPerformance.getOutingTimeSheets().isEmpty()) {
 
 			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.getOutingTimeSheets();
 
 			for (OutingTimeSheet outingTimeSheet : outingTimeSheets) {
-				if (!outingTimeSheet.getGoOut().getStamp().isPresent()) {
+				if (!outingTimeSheet.getGoOut().isPresent()
+						|| !outingTimeSheet.getGoOut().get().getStamp().isPresent()) {
 
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 
@@ -93,7 +96,8 @@ public class GoingOutStampLeakageChecking {
 					}
 				}
 
-				if (!outingTimeSheet.getComeBack().getStamp().isPresent()) {
+				if (!outingTimeSheet.getComeBack().isPresent()
+						|| !outingTimeSheet.getComeBack().get().getStamp().isPresent()) {
 
 					List<Integer> newAttendanceItemIDList = new ArrayList<>();
 
@@ -161,7 +165,7 @@ public class GoingOutStampLeakageChecking {
 	}
 
 	private WorkStamp leakageCorrection(String companyId, String employeeID, GeneralDate processingDate,
-			TimeActualStamp comeBack) {
+			Optional<TimeActualStamp> comeBack) {
 		// 漏れ補正打刻をクリア
 		WorkStamp stamp = null;
 
@@ -172,26 +176,34 @@ public class GoingOutStampLeakageChecking {
 			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
-				if ((timeLeavingWork.getAttendanceStamp().getStamp() != null)
-						&& (timeLeavingWork.getLeaveStamp().getStamp() != null)) {
-					if (timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay()
-							.lessThanOrEqualTo(comeBack.getStamp().get().getTimeWithDay())
-							&& timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay()
-									.greaterThanOrEqualTo(comeBack.getStamp().get().getTimeWithDay())) {
-						if (timeLeavingWork.getAttendanceStamp().getStamp().get()
-								.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
-								|| timeLeavingWork.getAttendanceStamp().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
-								|| timeLeavingWork.getAttendanceStamp().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {							
-							stamp = new WorkStamp(timeLeavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime(),
-									timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay(),
-									timeLeavingWork.getAttendanceStamp().getStamp().get().getLocationCode(),
-									StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+				if (timeLeavingWork.getAttendanceStamp().isPresent() && timeLeavingWork.getLeaveStamp().isPresent()) {
+					if ((timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
+							&& (timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
+						if ((comeBack.isPresent() && comeBack.get().getStamp().isPresent()
+								&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
+										.lessThanOrEqualTo(comeBack.get().getStamp().get().getTimeWithDay())
+								&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
+										.greaterThanOrEqualTo(comeBack.get().getStamp().get().getTimeWithDay()))
+								|| !comeBack.isPresent()
+								|| (comeBack.isPresent() && !comeBack.get().getStamp().isPresent())) {
+							if (timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
+									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
+								stamp = new WorkStamp(
+										timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+												.getAfterRoundingTime(),
+										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
+										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+							}
 						}
-					}
 
+					}
 				}
+
 			}
 		}
 
@@ -202,26 +214,31 @@ public class GoingOutStampLeakageChecking {
 			List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
 
 			for (TimeLeavingWork leavingWork : leavingWorks) {
-				if (leavingWork.getAttendanceStamp().getStamp() != null
-						&& leavingWork.getLeaveStamp().getStamp() != null) {
-					if (leavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay()
-							.lessThanOrEqualTo(comeBack.getStamp().get().getTimeWithDay())
-							&& leavingWork.getLeaveStamp().getStamp().get().getTimeWithDay()
-									.greaterThanOrEqualTo(comeBack.getStamp().get().getTimeWithDay())) {
-						if (leavingWork.getAttendanceStamp().getStamp().get()
-								.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
-								|| leavingWork.getAttendanceStamp().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
-								|| leavingWork.getAttendanceStamp().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
-							stamp = new WorkStamp(leavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime(), 
-									leavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay(), 
-									leavingWork.getAttendanceStamp().getStamp().get().getLocationCode(), 
-									StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+				if (leavingWork.getAttendanceStamp().isPresent() && leavingWork.getLeaveStamp().isPresent()) {
+					if (leavingWork.getAttendanceStamp().get().getStamp().isPresent()
+							&& leavingWork.getLeaveStamp().get().getStamp().isPresent()) {
+						if ((comeBack.isPresent() && comeBack.get().getStamp().isPresent()
+								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
+										.lessThanOrEqualTo(comeBack.get().getStamp().get().getTimeWithDay())
+								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
+										.greaterThanOrEqualTo(comeBack.get().getStamp().get().getTimeWithDay()))
+								|| !comeBack.isPresent()
+								|| (comeBack.isPresent() && !comeBack.get().getStamp().isPresent())) {
+							if (leavingWork.getAttendanceStamp().get().getStamp().get()
+									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
+									|| leavingWork.getAttendanceStamp().get().getStamp().get()
+											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+									|| leavingWork.getAttendanceStamp().get().getStamp().get()
+											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
+								stamp = new WorkStamp(
+										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
+										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
+										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+							}
 						}
 					}
 				}
-
 			}
 		}
 		return stamp;
@@ -255,7 +272,7 @@ public class GoingOutStampLeakageChecking {
 	}
 
 	private WorkStamp leaveWorkLeakageCorrection(String companyId, String employeeID, GeneralDate processingDate,
-			TimeActualStamp goOut) {
+			Optional<TimeActualStamp> goOut) {
 		// 漏れ補正打刻をクリア
 		WorkStamp stamp = null;
 
@@ -265,26 +282,32 @@ public class GoingOutStampLeakageChecking {
 			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
-				if ((timeLeavingWork.getAttendanceStamp().getStamp() != null)
-						&& (timeLeavingWork.getLeaveStamp().getStamp() != null)) {
-					if (timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay()
-							.lessThanOrEqualTo(goOut.getStamp().get().getTimeWithDay())
-							&& timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay()
-									.greaterThanOrEqualTo(goOut.getStamp().get().getTimeWithDay())) {
-						if (timeLeavingWork.getAttendanceStamp().getStamp().get()
-								.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
-								|| timeLeavingWork.getAttendanceStamp().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
-								|| timeLeavingWork.getAttendanceStamp().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {							
-							stamp = new WorkStamp(timeLeavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime(), 
-									timeLeavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay(), 
-									timeLeavingWork.getAttendanceStamp().getStamp().get().getLocationCode(), 
-									StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+				if (timeLeavingWork.getAttendanceStamp().isPresent()
+						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
+					if ((timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
+							&& (timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
+						if ((goOut.isPresent() && goOut.get().getStamp().isPresent()
+								&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
+										.lessThanOrEqualTo(goOut.get().getStamp().get().getTimeWithDay())
+								&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
+										.greaterThanOrEqualTo(goOut.get().getStamp().get().getTimeWithDay()))
+								|| !goOut.isPresent() || (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
+							if (timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
+									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
+								stamp = new WorkStamp(
+										timeLeavingWork.getAttendanceStamp().get().getStamp().get()
+												.getAfterRoundingTime(),
+										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
+										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+							}
 						}
 					}
 				}
-
 			}
 		}
 
@@ -295,26 +318,32 @@ public class GoingOutStampLeakageChecking {
 			List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
 
 			for (TimeLeavingWork leavingWork : leavingWorks) {
-				if (leavingWork.getAttendanceStamp().getStamp() != null
-						&& leavingWork.getLeaveStamp().getStamp() != null) {
-					if (leavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay()
-							.lessThanOrEqualTo(goOut.getStamp().get().getTimeWithDay())
-							&& leavingWork.getLeaveStamp().getStamp().get().getTimeWithDay()
-									.greaterThanOrEqualTo(goOut.getStamp().get().getTimeWithDay())) {
-						if (leavingWork.getAttendanceStamp().getStamp().get()
-								.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
-								|| leavingWork.getAttendanceStamp().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
-								|| leavingWork.getAttendanceStamp().getStamp().get()
-										.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {							
-							stamp = new WorkStamp(leavingWork.getAttendanceStamp().getStamp().get().getAfterRoundingTime(), 
-									leavingWork.getAttendanceStamp().getStamp().get().getTimeWithDay(), 
-									leavingWork.getAttendanceStamp().getStamp().get().getLocationCode(), 
-									StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+				if (leavingWork.getAttendanceStamp().isPresent()
+						&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
+					if (leavingWork.getAttendanceStamp().get().getStamp() != null
+							&& leavingWork.getLeaveStamp().get().getStamp() != null) {
+						if ((goOut.isPresent() && goOut.get().getStamp().isPresent()
+								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
+										.lessThanOrEqualTo(goOut.get().getStamp().get().getTimeWithDay())
+								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
+										.greaterThanOrEqualTo(goOut.get().getStamp().get().getTimeWithDay()))
+								|| !goOut.isPresent() || (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
+							if (leavingWork.getAttendanceStamp().get().getStamp().get()
+									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
+									|| leavingWork.getAttendanceStamp().get().getStamp().get()
+											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION
+									|| leavingWork.getAttendanceStamp().get().getStamp().get()
+											.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON) {
+								stamp = new WorkStamp(
+										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
+										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
+										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										StampSourceInfo.STAMP_LEAKAGE_CORRECTION);
+							}
 						}
 					}
-				}
 
+				}
 			}
 		}
 

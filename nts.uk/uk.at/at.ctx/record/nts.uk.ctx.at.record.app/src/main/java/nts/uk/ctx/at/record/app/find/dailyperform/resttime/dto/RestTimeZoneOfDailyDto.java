@@ -17,7 +17,7 @@ public class RestTimeZoneOfDailyDto implements ConvertibleAttendanceItem {
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", isList = true, needCheckIDWithMethod = "restTimeType", listMaxLength = 10)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", isList = true, needCheckIDWithMethod = "restTimeType", listMaxLength = 10, setFieldWithIndex = "timeSheetNo")
 	private List<TimeSheetDto> timeZone;
 
 	/** 休憩種類 */
