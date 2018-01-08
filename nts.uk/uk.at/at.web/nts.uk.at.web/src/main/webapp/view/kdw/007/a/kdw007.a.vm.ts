@@ -957,6 +957,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         setDisplayOperator() {
             let self = this;
+            self.displayLeftOperator("");
+            self.displayRightOperator("");
             switch (self.compareOperator()) {
                 case 0:
                     self.displayLeftOperator("＝");
