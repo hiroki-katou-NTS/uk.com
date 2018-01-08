@@ -517,7 +517,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         id: string;
         personEmployeeType: number;
         constructor(param) {
-            this.id = param.id();
+            this.id = param.id;
             this.personEmployeeType = param.personEmployeeType;
         }
 

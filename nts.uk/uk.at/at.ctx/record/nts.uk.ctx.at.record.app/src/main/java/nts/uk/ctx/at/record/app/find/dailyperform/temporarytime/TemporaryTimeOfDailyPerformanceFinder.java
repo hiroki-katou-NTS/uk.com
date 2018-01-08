@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.temporarytime;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -37,8 +39,8 @@ public class TemporaryTimeOfDailyPerformanceFinder extends FinderFacade {
 	}
 
 	private WorkLeaveTimeDto newWorkLeaveTime(TimeLeavingWork c) {
-		return new WorkLeaveTimeDto(c.getWorkNo().v(), newTimeWithActual(c.getAttendanceStamp()),
-					newTimeWithActual(c.getLeaveStamp()));
+		return new WorkLeaveTimeDto(c.getWorkNo().v(), newTimeWithActual(c.getAttendanceStamp().get()),
+					newTimeWithActual(c.getLeaveStamp().get()));
 	}
 
 	private WithActualTimeStampDto newTimeWithActual(TimeActualStamp c) {

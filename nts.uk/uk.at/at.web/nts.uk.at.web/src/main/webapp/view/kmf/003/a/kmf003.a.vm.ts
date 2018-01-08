@@ -41,6 +41,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         conditionValue04: KnockoutObservable<string>;
         conditionValue05: KnockoutObservable<string>;
         note: KnockoutObservable<string>;
+        conditionValue01Enable: KnockoutObservable<boolean>;
         conditionValue02Enable: KnockoutObservable<boolean>;
         conditionValue03Enable: KnockoutObservable<boolean>;
         conditionValue04Enable: KnockoutObservable<boolean>;
@@ -105,6 +106,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     service.findByCode(value).done(function(data) {
                         self.editMode(false);
                         
+                        self.conditionValue01Enable(true);
+                        
                         if(data.grantConditions.length > 0) {
                             for(var i = 0; i < data.grantConditions.length; i++) {
                                 self.getGHTdata(data.grantConditions[i].conditionNo, data.grantConditions[i].yearHolidayCode);                                
@@ -118,7 +121,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.useConditionCls(data.useSimultaneousGrant === 1 ? true : false);
                         self.grantDate(data.simultaneousGrandMonthDays.toString());
                         self.note(data.yearHolidayNote);                    
-                        self.conditionValue01(data.grantConditions[0] && data.grantConditions[0].conditionValue.toString());
+                        self.conditionValue01(data.grantConditions[0] && (data.grantConditions[0].conditionValue != null ? data.grantConditions[0].conditionValue.toString() : ""));
                         self.useCls02(data.grantConditions[1] && data.grantConditions[1].useConditionAtr == 1 ? true : false);
                         self.conditionValue02(data.grantConditions[1] && data.grantConditions[1].conditionValue.toString());
                         self.useCls03(data.grantConditions[2] && data.grantConditions[2].useConditionAtr == 1 ? true : false);
@@ -315,6 +318,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue04("");
             self.conditionValue05("");
             self.note("");
+            self.conditionValue01Enable(false);
             self.conditionValue02Enable(false);
             self.conditionValue03Enable(false);
             self.conditionValue04Enable(false);
@@ -405,12 +409,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var memo = self.note();
             var grandConditions = new Array<GrantCondition>();
             
-            if(self.conditionValue01().trim() !== ""){
+            if(self.conditionValue01().trim() !== "" || self.editMode()){
                 grandConditions.push(new GrantCondition({
                     conditionNo: 1,
                     yearHolidayCode: code,
                     useConditionAtr: 1,
-                    conditionValue: Number(self.conditionValue01())
+                    conditionValue: self.conditionValue01() !== "" ? Number(self.conditionValue01()) : self.conditionValue01()
                 }));
             } else {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -653,19 +657,19 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 return false;
             }
             
-            if(conditionNo === 1 && self.conditionValue01() === ""){
+            if(conditionNo === 1 && (self.conditionValue01() === "" || self.conditionValue01() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 2 && self.useCls02() && self.conditionValue02() === ""){
+            } else if(conditionNo === 2 && (self.conditionValue02() === "" || self.conditionValue02() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 3 && self.useCls03() && self.conditionValue03() === ""){
+            } else if(conditionNo === 3 && (self.conditionValue03() === "" || self.conditionValue03() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 4 && self.useCls04() && self.conditionValue04() === ""){
+            } else if(conditionNo === 4 && (self.conditionValue04() === "" || self.conditionValue04() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
-            } else if(conditionNo === 5 && self.useCls05() && self.conditionValue05() === ""){
+            } else if(conditionNo === 5 && (self.conditionValue05() === "" || self.conditionValue05() === undefined)){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
                 return false;
             }
@@ -714,6 +718,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue04 = ko.observable("");
             self.conditionValue05 = ko.observable("");
             self.note = ko.observable("");
+            self.conditionValue01Enable = ko.observable(false);
             self.conditionValue02Enable = ko.observable(false);
             self.conditionValue03Enable = ko.observable(false);
             self.conditionValue04Enable = ko.observable(false);
@@ -766,16 +771,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue01.subscribe(function(value) {
                 var result = 0;
                 
-                if(count >= 1) {
-                    count = 0;
-                    self.useCls02Enable(false);
-                    self.useCls03Enable(false);
-                    self.useCls04Enable(false);
-                    self.useCls05Enable(false);
-                    return false;
-                }
-                
                 if(value === "") {
+                    self.useCls02(false);
+                    self.useCls03(false);
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls02Enable(false);
                     self.useCls03Enable(false);
                     self.useCls04Enable(false);
@@ -788,6 +788,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > 366 || Number(self.conditionValue01()) < 0)){
                     $('#cond01').ntsError('set', {messageId:"Msg_263"});
                 } else {
+                    self.useCls03(false);
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls02Enable(true);
                     self.useCls03Enable(false);
                     self.useCls04Enable(false);
@@ -797,8 +800,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.limitedValue02(result <= 0 ? "" : result.toString());
                     }
                 }
-                
-                count = 1;
             });
             
             self.conditionValue02.subscribe(function(value) {
@@ -806,15 +807,23 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue01()) - 1) || Number(self.conditionValue02()) < 0)){
                     $('#cond02').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls03(false);
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls03Enable(false);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
                 } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue01()) - 1) || Number(self.conditionValue02()) < 0)){
                     $('#cond02').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls03(false);
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls03Enable(false);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
                 } else {
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls03Enable(true);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
@@ -830,13 +839,18 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)){
                     $('#cond03').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
                 } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue02()) - 1) || Number(self.conditionValue03()) < 0)){
                     $('#cond03').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls04(false);
+                    self.useCls05(false);
                     self.useCls04Enable(false);
                     self.useCls05Enable(false);
                 } else {
+                    self.useCls05(false);
                     self.useCls04Enable(true);
                     self.useCls05Enable(false);
                     if(self.useCls04()) {
@@ -851,9 +865,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 
                 if(self.A7_4SelectedRuleCode() == 0 && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)){
                     $('#cond04').ntsError('set', {messageId:"Msg_262"});
+                    self.useCls05(false);
                     self.useCls05Enable(false);
                 } else if(self.A7_4SelectedRuleCode() == 1 && (Number(value) > (Number(self.conditionValue03()) - 1) || Number(self.conditionValue04()) < 0)){
                     $('#cond04').ntsError('set', {messageId:"Msg_263"});
+                    self.useCls05(false);
                     self.useCls05Enable(false);
                 } else {
                     self.useCls05Enable(true);
@@ -1076,7 +1092,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
     class GrantCondition {
         yearHolidayCode: string;
         conditionNo: number;
-        conditionValue: number;
+        conditionValue: any;
         useConditionAtr: number; 
         constructor(param: IGrantCondition) {
             this.yearHolidayCode = param.yearHolidayCode;
@@ -1089,7 +1105,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
     interface IGrantCondition {
         yearHolidayCode: string;
         conditionNo: number;
-        conditionValue: number;
+        conditionValue: any;
         useConditionAtr: number;     
     }
 }

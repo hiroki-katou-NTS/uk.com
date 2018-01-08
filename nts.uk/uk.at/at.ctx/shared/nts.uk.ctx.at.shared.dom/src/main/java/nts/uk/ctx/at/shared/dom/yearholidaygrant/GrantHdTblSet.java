@@ -56,14 +56,14 @@ public class GrantHdTblSet extends AggregateRoot {
 
 			// 付与日数の計算対象」が「出勤率」の場合、条件値<=100
 			if (CalculationMethod.WORKING_DAY.equals(this.calculationMethod)) {
-				if (currentCondition.getConditionValue().v() > 100) {
+				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 100) {
 					throw new BusinessException("Msg_262");
 				}
 			}
 			
 			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
 			if (CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)) {
-				if (currentCondition.getConditionValue().v() > 366) {
+				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 366) {
 					throw new BusinessException("Msg_263");
 				}
 			}

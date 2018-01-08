@@ -544,9 +544,6 @@ module nts.custombinding {
                                                 <table>
                                                     <thead>
                                                         <tr data-bind="foreach: { data: _item, as: 'header' }">
-                                                            <!-- ko if: $index() == 0 -->
-                                                            <th class="index"><div>⁝</div></th>
-                                                            <!-- /ko -->
                                                             <th data-bind="template: { afterRender: function(childs, data) { let div = $(childs[1]); setInterval(function() { div.css('width', (div.parent().width() - 3) + 'px') }, 0); } }">
                                                                 <div data-bind="ntsFormLabel: { 
                                                                     constraint: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/[-_]/g, '') : undefined,
@@ -559,12 +556,6 @@ module nts.custombinding {
                                                     <tbody>
                                                         <!-- ko foreach: { data: __items, as: '_row' } -->
                                                         <tr data-bind="foreach: { data: _row, as: '_column' }">
-                                                            <!-- ko if: $index() == 0 -->
-                                                            <td class="index">
-                                                                <div class="number" data-bind="text: ($parentContext.$index() + 1)"></div>
-                                                                <div class="remove-btn" data-bind="click: function(viewModel, event) { if(cls.items().length > 1) { cls.items.remove(function(x) { return _row == x; }) }}">✖</div>
-                                                            </td>
-                                                            <!-- /ko -->
                                                             <td data-bind="template: { 
                                                                     data: _column,
                                                                     name: 'ctr_template'
@@ -572,31 +563,6 @@ module nts.custombinding {
                                                             </td>
                                                         </tr>
                                                         <!-- /ko -->
-                                                        <tr class="add-rows">
-                                                            <td data-bind="attr: { colspan: _item.length + 1 }">
-                                                                <button tabindex="-1" title="挿す" data-bind="click: function(item, event) {
-                                                                        let row = [];
-                                                                        _.each(_item, function(_obj) {
-                                                                            let def = {
-                                                                                itemCode: _obj.itemCode,
-                                                                                itemName: _obj.itemName,
-                                                                                required: _obj.required,
-                                                                                itemDefId: _obj.itemDefId,
-                                                                                value: ko.observable(undefined),
-                                                                                readonly: ko.observable(false),
-                                                                                editable: ko.observable(true),
-                                                                                'type': _obj.type,
-                                                                                item: $.extend({}, _obj.item)
-                                                                            };
-                                                                            row.push(def);
-                                                                        });
-                                                                        cls.items.push(row);
-                                                                        $(event.target).closest('.table-scroll').trigger('scroll').animate({
-                                                                            scrollTop: $(event.target).offset().top
-                                                                        }, 0);
-                                                                    }">▼</button>
-                                                            </td>
-                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -1166,7 +1132,8 @@ module nts.custombinding {
                                         } else {
                                             constraint.valueType = "Integer";
                                         }
-                                        constraint.max = dts.numericItemMax || undefined;
+                                        debugger;
+                                        constraint.max = dts.numericItemMax || '';
                                         constraint.min = dts.numericItemMin || 0;
                                         break;
                                     case ITEM_STRING_TYPE.KANA:

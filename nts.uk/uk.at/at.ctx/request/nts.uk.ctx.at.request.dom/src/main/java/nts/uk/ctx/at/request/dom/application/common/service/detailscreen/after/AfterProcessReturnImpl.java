@@ -1,33 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.mail.MailSender;
-import nts.uk.shr.com.mail.SendMailFailedException;
 
 /**
  * 
@@ -36,13 +16,6 @@ import nts.uk.shr.com.mail.SendMailFailedException;
  */
 @Stateless
 public class AfterProcessReturnImpl implements AfterProcessReturn {
-
-	@Inject
-	private ApplicationRepository appRepo;
-	@Inject
-	private AppApprovalPhaseRepository phaseRepo;
-	@Inject
-	private ApprovalFrameRepository frameRepo;
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeSettingRepo;
 	@Inject
@@ -52,7 +25,8 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 	@Inject
 	private MailSender mailSender;
 	@Override
-	public void detailScreenProcessAfterReturn(Application application, boolean checkApplicant, int orderPhase) {
+	public void detailScreenProcessAfterReturn(Application_New application, boolean checkApplicant, int orderPhase) {
+		/*
 		//String companyID = AppContexts.user().companyId();
 		// if 差し戻し先が申請本人の場合(the applicant )
 		
@@ -113,7 +87,7 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 						listPhase.get(i).getCompanyID(), 
 						listPhase.get(i).getPhaseID());
 				// 2017.09.25
-				/*for(ApprovalFrame approvalFrame:listFrame) {
+				for(ApprovalFrame approvalFrame:listFrame) {
 					approvalFrame.setApprovalATR(null);
 					approvalFrame.setApprovalDate(null);
 					approvalFrame.setApproverSID(null);
@@ -121,7 +95,7 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 					approvalFrame.setRepresenterSID(null);
 					// set value frame =  null
 					frameRepo.update(approvalFrame);
-				}*/
+				}
 				
 				for(ApprovalFrame approvalFrame:listFrame) {
 					approvalFrame.getListApproveAccepted().forEach(x -> {
@@ -171,9 +145,10 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 			});
 			
 		}
-			
+		*/	
 		
 	}
-
+	
+	
 
 }

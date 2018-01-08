@@ -49,8 +49,12 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " ORDER BY c.dispOrder ASC";
 	private static final String SELECT_BY_CID_DEPRECATE_CLS = "SELECT NEW " + WorkTypeScreenDto.class.getName()
 			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo)"
-			+ " FROM KshmtWorkType c" + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.deprecateAtr = :deprecateClassification";
+			+ " FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o "
+			+ "ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode "
+			+" WHERE c.kshmtWorkTypePK.companyId = :companyId "
+			+ " AND c.deprecateAtr = :deprecateClassification "
+			+ " ORDER BY  CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ";
+	
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
 			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode IN :workTypeCode"
 			+ " OR c.workTimeCode IN :workTimeCode";

@@ -253,15 +253,30 @@ module nts.uk.ui {
                 return subWindow;
             }
 
-            getShared(key: string): any {
+            getShared(key: string): any {               
                 return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
             }
 
             setShared(key: string, data: any, isRoot: boolean, persist?: boolean) {
+                var transferData;
+                
+                // Null or Undefined
+                if (util.isNullOrUndefined(data)) {
+                    transferData = data;
+                }
+                // Data or KO data
+                else if (!_.isFunction(data) || ko.isObservable(data)) {
+                    transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
+                }
+                // Callback function
+                else {
+                    transferData = data;
+                }
+                
                 if (persist || isRoot) {
-                    this.shared[key] = data;
+                    this.shared[key] = transferData;
                 } else {
-                    this.localShared[key] = data;
+                    this.localShared[key] = transferData;
                 }
             }
 
