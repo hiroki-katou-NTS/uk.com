@@ -11,6 +11,12 @@
 				nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode
 				nts.uk.ctx.at.function.dom.alarm.AlarmPatternName
             </com:ValidatorScript>
+            <!-- Tab2 -->
+            <com:stylefile path="alarmPermissionSetting/kal004.a.tab2.style.css" />
+            <com:scriptfile path="alarmPermissionSetting/kal004.tab2.vm.js" />
+            			
+            <!--End Tab2 -->
+            			
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="../share/model.js" />
 			<com:stylefile path="kal004.a.style.css" />
@@ -83,9 +89,8 @@
 						            showSort:{ showLeft : false, showRight: false}									
 								  }"></div>
 							</div>
-							<div class="tab-content-2">
-								<span>Tab Content 2</span><br />
-									<ui:include src="Tab2/index.xhtml" /> 
+							<div class="tab-content-2" data-bind="with: alarmPermissionSetting" >
+								<ui:include src="alarmPermissionSetting/index.xhtml" /> 
 							</div>
 							<div class="tab-content-3" data-bind="with: setPermissionModel" >
 							<ui:include src="setpermission/index.xhtml" />
