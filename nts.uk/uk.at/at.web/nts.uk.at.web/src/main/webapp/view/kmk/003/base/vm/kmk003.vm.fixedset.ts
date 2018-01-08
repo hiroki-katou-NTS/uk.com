@@ -135,11 +135,11 @@ module nts.uk.at.view.kmk003.a {
                 
                 updateData(data: FixRestTimezoneSetDto) {
                     let mapped = _.map(data.lstTimezone, (dataDTO) => {
-                        let dataModel: DeductionTimeModel = new DeductionTimeModel();
+                        let dataModel = new DeductionTimeModel();
                         dataModel.updateData(dataDTO);
                         return dataModel;
                     });  
-                    this.lstTimezone(mapped);
+                    this.lstTimezone(_.sortBy(mapped, item => item.start()));
                 }
                 
                 toDto(): FixRestTimezoneSetDto {

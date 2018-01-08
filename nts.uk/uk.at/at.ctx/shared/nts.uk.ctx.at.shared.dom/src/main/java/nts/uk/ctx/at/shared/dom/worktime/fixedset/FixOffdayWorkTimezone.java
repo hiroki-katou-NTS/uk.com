@@ -93,9 +93,12 @@ public class FixOffdayWorkTimezone extends DomainObject {
 			}
 			TimeZoneRounding next = iterator.next().getTimezone();
 			if (current.getEnd().greaterThan(next.getStart())) {
-				throw new BusinessException("Msg_515");
+				throw new BusinessException("Msg_515","KMK003_90");
 			}
 		}
+		
+		//validate msg_515
+		this.restTimezone.validOverlap("KMK003_21");
 	}
 	
 	/**
