@@ -97,7 +97,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     });
                     //フォーカス制御=>申請日付
                     $('#inputdate').focus();
-                })                
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });     
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
             });
         }
         /**
@@ -218,29 +222,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 nts.uk.ui.block.clear();    
             })    
         }
-        
-        /**
-         * Clean Screen
-         */
-        cleanScreen(){
-            let self = this;
-            self.prePostSelected(0);
-            self.appDate(moment().format(self.dateType));
-            self.timeStart1(0);   
-            self.timeEnd1(0);
-            self.timeStart2(0);
-            self.timeEnd2(0);
-            self.workLocationCD('');
-            self.workLocationName('');
-            self.workLocationCD2('');
-            self.workLocationName2('');
-            self.siftCD('');
-            self.siftName(''); 
-            self.workTypeCd('');
-            self.workTypeName('');
-            self.selectedReason(null);
-            self.multilContent('');
-        }
         /**
          * //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
             //直行直帰するチェック
@@ -276,21 +257,56 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                             self.registry();
                             dfd.resolve(true);
                         }).ifNo(function() {
+                            let showMsg : boolean = true;
                             nts.uk.ui.block.clear();
+                            //入力項目を警告「黄色」枠を表示する
+                            if(self.selectedGo() == 1 && !nts.uk.util.isNullOrEmpty(self.timeStart1())){
+                                $('#inpStartTime1').css('background', '#FFFF00');
+                                showMsg = false;
+                            }
+                            if(self.selectedBack()== 1 && !nts.uk.util.isNullOrEmpty(self.timeEnd1())){
+                                $('#inpEndTime1').css('background', '#FFFF00');
+                                showMsg = false;
+                            }
+                            if(self.useMulti()){
+                                if(self.selectedGo2()==1 && !nts.uk.util.isNullOrEmpty(self.timeStart2())){
+                                    $('#inpStartTime2').css('background', '#FFFF00');
+                                    showMsg = false;
+                                }
+                                if(self.selectedBack2()==1 && !nts.uk.util.isNullOrEmpty(self.timeEnd2())){
+                                    $('#inpEndTime2').css('background', '#FFFF00');
+                                    showMsg = false;
+                                }
+                            }
+                            if(showMsg){
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                            }
                             dfd.resolve(false);
                         });
                     } else if(res.messageId == "Msg_298"){
                         dfd.reject();
                         nts.uk.ui.block.clear();
-                        //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
-                        //khi có so sánh trên server thì gửi thêm vị trí giá trị giờ nhập sai nữa
-                        $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
-                        $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
-                        if(self.selectedGo2()==1){
-                            $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                        let showMsg : boolean = true;
+                        if(self.selectedGo() == 1 && !nts.uk.util.isNullOrEmpty(self.timeStart1())){
+                            $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
+                            showMsg = false;
                         }
-                        if(self.selectedBack2()==1){
-                            $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                        if(self.selectedBack()== 1 && !nts.uk.util.isNullOrEmpty(self.timeEnd1())){
+                            $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
+                            showMsg = false;
+                        }
+                        if(self.useMulti()){
+                            if(self.selectedGo2()==1 && !nts.uk.util.isNullOrEmpty(self.timeStart2())){
+                                $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                                showMsg = false;
+                            }
+                            if(self.selectedBack2()==1 && !nts.uk.util.isNullOrEmpty(self.timeEnd2())){
+                                $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                                showMsg = false;
+                            }
+                        }
+                        if(showMsg){
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                         }
                     }else{
                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
