@@ -435,7 +435,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
                 return false;
             };
-            if ( !nts.uk.util.isNullOrUndefined(self.timeStart2()) && self.timeStart2() != "") {
+            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
                 if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
                     return false;
                 };

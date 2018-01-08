@@ -203,6 +203,11 @@ module nts.uk.at.view.ksc001.b {
                 self.isReSetting = ko.computed(function() {
                     return self.checkProcessExecutionAtrReconfig() && self.isReCreate();
                 });
+                self.periodDate.subscribe((newValue)=>{
+                    if(newValue.startDate){
+                        self.copyStartDate(newValue.startDate);    
+                    }    
+                });
             }
             /**
              * save to client service PersonalSchedule by employeeId

@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,34 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 
 				throw new BusinessException(new RawErrorMessage("Msg_587"));
 
+			}
+
+		} else if (itemCommand.getSingleItem().getDataType() == 2) {
+
+			SingleItemCommand number = itemCommand.getSingleItem();
+			BigDecimal max = new BigDecimal(Math.pow(10, number.getIntegerPart().doubleValue())
+					- Math.pow(10, number.getDecimalPart() == null ? 0 : number.getDecimalPart().intValue()));
+			BigDecimal min = new BigDecimal(0);
+
+			if (number.getNumericItemMinus() == 0) {
+				if (number.getNumericItemMin().compareTo(min) < 0 || number.getNumericItemMax().compareTo(min) < 0) {
+					throw new BusinessException(new RawErrorMessage("Msg_596"));
+
+				}
+
+			} else {
+				min = max.negate();
+			}
+			if (number.getNumericItemMin().compareTo(number.getNumericItemMax()) > 0) {
+				throw new BusinessException(new RawErrorMessage("Msg_598"));
+			}
+
+			if (number.getNumericItemMin().compareTo(max) > 0 || number.getNumericItemMin().compareTo(min) < 0) {
+				throw new BusinessException(new RawErrorMessage("Msg_599"));
+			}
+
+			if (number.getNumericItemMax().compareTo(max) > 0 || number.getNumericItemMax().compareTo(min) < 0) {
+				throw new BusinessException(new RawErrorMessage("Msg_600"));
 			}
 
 		}

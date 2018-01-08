@@ -14,7 +14,7 @@ module nts.uk.at.view.kdw002.c {
                 self.bussinessCodeItems = ko.observableArray([]);
 
                 this.bussinessColumn = ko.observableArray([
-                    { headerText: 'ID', key: 'roleId', width: 100, hidden: true  },
+                    { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
                     { headerText: getText('KDW002_12'), key: 'roleCode', width: 100 },
                     { headerText: getText('KDW002_4'), key: 'roleName', width: 150, formatter: _.escape },
                 ]);
@@ -42,6 +42,8 @@ module nts.uk.at.view.kdw002.c {
                                         var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
                                         cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
                                         cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+                                        cellYouCanChangeIt.firstChild.disabled = true;
+                                        cellCanBeChangedByOthers.firstChild.disabled = true;
 
                                         if (!filteredData[i].userCanSet) {
                                             $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
@@ -228,9 +230,13 @@ function useChanged(element, rowId) {
 
         cellYouCanChangeIt.addClass('readOnlyColorIsUse');
         cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
+        cellYouCanChangeIt.children().prop("disabled", true);
+        cellCanBeChangedByOthers.children().prop("disabled", true);
     } else if (value != true && $("#grid").igGrid("getCellValue", rowId, "userCanSet")) {
         cellYouCanChangeIt.removeClass('readOnlyColorIsUse');
         cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
+        cellYouCanChangeIt.children().prop("disabled", false);
+        cellCanBeChangedByOthers.children().prop("disabled", false);
     }
 }
 
@@ -276,6 +282,8 @@ function useHeaderChanged(element) {
                 if (cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
                     cellCanBeChangedByOthers.classList.remove('readOnlyColorIsUse');
                 }
+                cellYouCanChangeIt.firstChild.disabled = false;
+                cellCanBeChangedByOthers.firstChild.disabled = false;
             }
         }
 
@@ -294,6 +302,8 @@ function useHeaderChanged(element) {
                 if (!cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
                     cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
                 }
+                cellYouCanChangeIt.children().prop("disabled", true);
+                cellCanBeChangedByOthers.children().prop("disabled", true);
             }
         }
 
