@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.checkcondition;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
