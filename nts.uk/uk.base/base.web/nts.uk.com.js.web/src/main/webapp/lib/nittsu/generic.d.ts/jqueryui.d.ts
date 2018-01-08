@@ -18,6 +18,7 @@ declare namespace JQueryUI {
         header?: string;
         heightStyle?: string;
         icons?: any;
+        classes?: any;
     }
 
     interface AccordionUIParams {
@@ -320,6 +321,10 @@ declare namespace JQueryUI {
          * Additional text to display after the year in the month headers.
          */
         yearSuffix?: string;
+        
+        language?: string;
+        format?: string;
+        autoHide?: boolean;
     }
 
     interface DatepickerFormatDateOptions {

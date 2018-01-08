@@ -1,6 +1,21 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui {
+    
+    export module toBeResource {
+        export let yes = "はい";
+        export let no = "いいえ";
+        export let cancel = "キャンセル";
+        export let close = "閉じる";
+        export let info = "情報";
+        export let warn = "警告";
+        export let error = "エラー";
+        export let unset = "未設定";
+        export let errorContent = "エラー内容";
+        export let errorCode = "エラーコード";
+        export let errorList = "エラー一覧";
+        export let plzWait = "お待ちください";
+    }
 
     export module windows {
 
@@ -90,7 +105,7 @@ module nts.uk.ui {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
                     let dialogName = this.globalContext.__viewContext["program"]["programName"];
-                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? "未設定" : dialogName;
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? toBeResource.unset : dialogName;
 //                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
                 
                     this.$dialog.dialog('option', {
@@ -274,7 +289,7 @@ module nts.uk.ui {
 
         export function setShared(key: string, data: any, persist?: boolean) {
             container.setShared(key, data, windows.getSelf().isRoot, persist);
-        }
+        } 
 
         export function getSelf() {
             return container.windows[selfId];
@@ -355,7 +370,7 @@ module nts.uk.ui {
             return max;
         }
         function createNoticeDialog(message, buttons, header?: DialogHeader) {
-            var $control = $('<div/>').addClass('control');
+            var $control = $('<div/>').addClass('control').addClass("pre");
             let text;
             if (typeof message === "object") {
                 //business exception
@@ -433,13 +448,13 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     text,
                     [{
-                        text: "はい",
+                        text: toBeResource.yes,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');
                             then();
                         }
-                    }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: nts.uk.resource.getText("infor") });
+                    }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: toBeResource.info });
             }, 0);
 
             return {
@@ -461,13 +476,13 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     message,
                     [{
-                        text: "はい",
+                        text: toBeResource.yes,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');
                             then();
                         }
-                    }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: nts.uk.resource.getText("error") });
+                    }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: toBeResource.error });
             }, 0);
 
             return {
@@ -483,7 +498,7 @@ module nts.uk.ui {
 		 *			text information text
 		 * @returns handler
 		 */
-        export function alert(text) {
+        export function alert(text) {  
             var then = $.noop;
             var $dialog = parent.$('<div/>').hide();
             $(function() {
@@ -496,13 +511,13 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     text,
                     [{
-                        text: "はい",
+                        text: toBeResource.yes,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');
                             then();
                         }
-                    }]);
+                    }], { text: nts.uk.resource.getText(toBeResource.warn) });
             }, 0);
 
             return {
@@ -554,7 +569,7 @@ module nts.uk.ui {
                 var buttons = [];
                 // yes button
                 buttons.push({
-                    text: "はい",
+                    text: toBeResource.yes,
                     "class": "yes large danger",
                     click: function() {
                         $this.dialog('close');
@@ -565,7 +580,7 @@ module nts.uk.ui {
                 // no button
                 if (hasNoButton) {
                     buttons.push({
-                        text: "いいえ",
+                        text: toBeResource.no,
                         "class": "no large",
                         click: function() {
                             $this.dialog('close');
@@ -577,7 +592,7 @@ module nts.uk.ui {
                 // cancel button
                 if (hasCancelButton) {
                     buttons.push({
-                        text: "キャンセル",
+                        text: toBeResource.cancel,
                         "class": "cancel large",
                         click: function() {
                             $this.dialog('close');
@@ -593,40 +608,111 @@ module nts.uk.ui {
             return handlers;
         };
         
+        function addError(errorBody: JQuery, error: any, idx: number){
+            let row = $("<tr/>");
+            row.append("<td style='display: none;'>" + idx + "/td><td>" + error["message"] + "</td><td>" + error["messageId"] + "</td>");
+            let nameId = error["supplements"]["NameID"];   
+            if (!util.isNullOrUndefined(nameId)) {
+                row.click(function(evt, ui){
+                    let element = $("body").find('[NameID="' + nameId + '"]');
+                    let tab = element.closest("[role='tabpanel']");
+                    while(!util.isNullOrEmpty(tab)){
+                        let tabId = tab.attr("id");
+                        tab.siblings(":first").children("li[aria-controls='" + tabId + "']").children("a").click();
+                        tab = tab.parent().closest("[role='tabpanel']");
+                    } 
+                    element.focus();
+                    let $dialogContainer = errorBody.closest(".bundled-errors-alert").closest("[role='dialog']");
+                    let $self = nts.uk.ui.windows.getSelf();
+                    let additonalTop = 0;
+                    let additonalLeft = 0;
+                    if(!$self.isRoot) {
+                        let $currentDialog = $self.$dialog.closest("[role='dialog']");
+                        let $currentHeadBar = $currentDialog.find(".ui-dialog-titlebar");
+                        let currentDialogOffset = $currentDialog.offset();
+                        additonalTop = currentDialogOffset.top+ $currentHeadBar.height();
+                        additonalLeft = currentDialogOffset.left;
+                    }
+                    
+                    let currentControlOffset = element.offset();
+                    let top = additonalTop + currentControlOffset.top  + element.outerHeight() - window.scrollY;
+                    let left = additonalLeft + currentControlOffset.left - window.scrollX;
+                    let $errorDialogOffset = $dialogContainer.offset();
+                    let maxLeft = $errorDialogOffset.left + $dialogContainer.width();
+                    let maxTop = $errorDialogOffset.top + $dialogContainer.height();
+                    if($errorDialogOffset.top < top && top < maxTop){
+                        $dialogContainer.css("top", top + 15);
+                    }
+                    if (($errorDialogOffset.left < left && left < maxLeft) ){
+                        $dialogContainer.css("left", left);
+                    }
+                });    
+            }
+            row.appendTo(errorBody);  
+        }
+        
+        function getRoot(): JQuery {
+            let self = nts.uk.ui.windows.getSelf();
+            while(!self.isRoot){
+                self = self.parent; 
+            }
+            return $(self.globalContext.document).find("body");
+        }
         
         export function bundledErrors(errors) {
+            var then = $.noop;
             let id = util.randomId();
-            $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
-            let container = $("body").find("#" + id);
-            container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
-                    "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
-            let errorBody = container.find("tbody");
-            _.forEach(errors["messageId"], function(id, idx){ 
-                let row = $("<tr/>");
-                row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");   
-                row.appendTo(errorBody);     
-            });
-            let functionArea = container.find("#functions-area-bottom");
-            functionArea.append("<button class='ntsButton ntsClose large'/>");
-            container.dialog({
-                    title: "エラー一覧",   
+            let container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), 
+                functionArea = $("<div id='functions-area-bottom'/>"),
+                errorBoard = $(`<div id='error-board'>    <table> <thead> <tr>    <th style='width: auto;'>`
+                     + toBeResource.errorContent + `</th><th style='display: none;'/>    <th style='width: 150px;'>`
+                     + toBeResource.errorCode + `</th>   </tr>   </thead>    <tbody/>    </table> </div>`),
+                closeButton = $("<button class='ntsButton ntsClose large'/>");
+            
+            let errorBody = errorBoard.find("tbody");
+            if($.isArray(errors["errors"])) {
+                 _.forEach(errors["errors"], function(error, idx: number){ 
+                    addError(errorBody, error, idx + 1);  
+                 });   
+            } else {
+                return alertError(errors);
+            }
+                       
+            closeButton.appendTo(functionArea);
+            functionArea.appendTo(container);
+            errorBoard.appendTo(container);
+            container.appendTo(getRoot()); 
+            
+            setTimeout(function() {
+                container.dialog({ 
+                    title: toBeResource.errorList,   
                     dialogClass: "no-close-btn",
-                    modal: true,
+                    modal: false,
                     resizable: false,
                     width: 450,
                     maxHeight: 500,
                     closeOnEscape: false,
                     open: function() {
-                        container.find("#error-board").css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
-                        container.find("#functions-area-bottom").css({"left": "0px"});
-                        functionArea.find(".ntsClose").text("閉じる").click(function(evt){
+                        errorBoard.css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
+                        functionArea.css({"left": "0px"});
+                        closeButton.text(toBeResource.close).click(function(evt){
                             container.dialog("destroy");  
                             container.remove();
-                        });   
+                            then();
+                        });
+                        
+                        container.closest("div[role='dialog']").position({ my: "center", at: "center", of: window.parent });
                     },
                     close: function(event) {
                     }
                 });
+            }, 0);
+            
+            return {
+                then: function(callback) {
+                    then = callback;
+                }
+            };
         };
     }
 
@@ -708,7 +794,7 @@ module nts.uk.ui {
             let rect = calcRect();
 
             (<any>$).blockUI({
-                message: '<div class="block-ui-message">お待ちください</div>',
+                message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
                 fadeIn: 200,
                 css: {
                     width: rect.width,
@@ -813,12 +899,68 @@ module nts.uk.ui {
                 }
             }
         }
+        
+        export module tree {
+            export module grid {
+                export function expandTo(targetKey: any, $treeGrid: JQuery) {
+                    let option = $treeGrid.igTreeGrid("option");
+                    let ancestorKeys = dataSource.collectAncestorKeys(targetKey, option.dataSource, option.primaryKey, option.childDataKey);
+                    if (ancestorKeys === null) {
+                        return;
+                    }
+                    
+                    let expand = (currentIndex) => {
+                        if (currentIndex >= ancestorKeys.length) return;
+                        $treeGrid.igTreeGrid("expandRow", ancestorKeys[currentIndex]);
+                        setTimeout(() => { expand(currentIndex + 1); }, 0);
+                    };
+                    
+                    expand(0);
+                    
+                    setTimeout(() => {
+                        scrollTo(targetKey, $treeGrid);
+                    }, 1);
+                }
+                
+                export function scrollTo(targetKey: any, $treeGrid: JQuery) {
+                    let $scroll: any = $treeGrid.igTreeGrid("scrollContainer");
+                    let $targetNode = $treeGrid.find("tr[data-id='" + targetKey + "']").first();
+                    if ($targetNode.length === 0) return;
+                    
+                    $scroll.exposeVertically($targetNode);
+                }
+            }
+            
+            export module dataSource {
+                export function collectAncestorKeys(targetKey: any, dataSource: any[], primaryKey: string, childDataKey: string): any[] {
+                    if (typeof dataSource === "undefined") {
+                        return null;
+                    }
+                    
+                    for (var i = 0, len = dataSource.length; i < len; i++) {
+                        let currentData: any = dataSource[i];
+                        if (currentData[primaryKey] === targetKey) {
+                            return [targetKey];
+                        }
+                        
+                        let children: any[] = currentData[childDataKey];
+                        let results = collectAncestorKeys(targetKey, children, primaryKey, childDataKey);
+                        if (results !== null) {
+                            results.unshift(currentData[primaryKey]);
+                            return results;
+                        }
+                    }
+                    
+                    return null;
+                }
+            }
+        }
     }
 
     module smallExtensions {
 
         $(() => {
-            $('.limited-label').on('mouseenter', e => {
+            $(document).on('mouseenter', '.limited-label', e => {
                 let $label = $(e.target);
 
                 // Check if contents is overflow

@@ -61,4 +61,9 @@ public class NullLoginUserContext implements LoginUserContext, Serializable {
 		return new DefaultLoginUserRoles();
 	}
 
+	@Override
+	public SelectedLanguage language() {
+		return new SelectedLanguage();
+	}
+
 }

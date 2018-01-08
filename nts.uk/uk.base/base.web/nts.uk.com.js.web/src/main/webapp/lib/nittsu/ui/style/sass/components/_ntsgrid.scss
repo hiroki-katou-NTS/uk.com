@@ -12,7 +12,8 @@
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
 .nts-grid tr td.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ui-state-hover {
-	background-color: aqua;
+  background-color: aqua;
+  border-color: #AAB7B8;
 }
 
 .nts-grid-wrapper table tr td.ntsgrid-disable,
@@ -218,9 +219,19 @@
 	background-color: #007fff;
 }
 
-.nts-image-container {
+.nts-image-container, .nts-fleximage-container {
 	height: 100%;
 	text-align: center;
+}
+
+.nts-editor-container {
+	height: 100%;
+	margin-left: -1px;
+}
+
+.nts-editor-wrapper {
+	width: 100%;
+	margin: 1px;
 }
 
 .nts-grid-wrapper {

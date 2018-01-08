@@ -90,6 +90,7 @@ __viewContext.ready(function () {
                 else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
+                else if (i === 6) this["_" + i] = new ExCell(null, null, null, null);
                 else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
         }
@@ -153,7 +154,14 @@ __viewContext.ready(function () {
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
         if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
         else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green"));
-        if (i % 7 === 0) detailContentDeco.push(new CellColor("_3", i.toString(), "cell-light-green", 0));
+        if (i % 7 === 0) {
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 0));
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 0));
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xseal", 1));
+            detailContentDeco.push(new CellColor("_2", i.toString(), "xcustom", 1));
+            detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 0));
+            detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 1));
+        }
         if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
         vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
         newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00"});
@@ -328,16 +336,17 @@ __viewContext.ready(function () {
             name: "TimeRange",
             ranges: timeRanges
         }],
-        view: function(mode, obj) {
+        view: function(mode) {
             switch (mode) {
                 case "shortName":
-                    return [ obj.workTypeName, obj.workTimeName ];
+                    return [ "workTypeName", "workTimeName" ];
                 case "symbol": 
-                    return obj.symbol;
+                    return [ "symbol" ];
                 case "time":
-                    return [ obj.startTime, obj.endTime ]; 
+                    return [ "startTime", "endTime" ]; 
             }
         },
+        fields: [ "workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "symbol", "startTime", "endTime" ],
         upperInput: "startTime",
         lowerInput: "endTime"
     };
@@ -407,7 +416,7 @@ __viewContext.ready(function () {
             horizontalSumBodyRowHeight: "20px",
             areaResize: true, 
             bodyHeightMode: "dynamic",
-            windowXOccupation: 120,
+            windowXOccupation: 170,
             windowYOccupation: 300,
             updateMode: "stick",
             pasteOverWrite: true,
@@ -618,7 +627,16 @@ __viewContext.ready(function () {
         });
         $("#set-sticker-single").click(function() {
 //            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
-            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
+//            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
+            $("#extable").exTable("stickData", 
+            { workTypeCode: "001",
+                workTypeName: "出勤A0",
+                workTimeCode: "1",
+                workTimeName: "通常８ｈ0",
+                symbol: "◯",
+                startTime: "8:30",
+                endTime: "17:30",
+                state: 1, register: 0 });
         });
         $("#stick-undo").click(function() {
             $("#extable").exTable("stickUndo");
@@ -638,7 +656,7 @@ __viewContext.ready(function () {
         });
     
         $("#open-dialog").click(function() {
-            nts.uk.ui.windows.sub.modal("/view/sample/extable/dialog/sample.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/sample/component/extable/dialog/sample.xhtml");
         });
     
     let newVertSumColumns = [

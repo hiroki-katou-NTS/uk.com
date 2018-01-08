@@ -52,6 +52,7 @@ module nts.uk.ui.koExtentions {
                 enablePagination: false,
                 enableFinishButton: false,
                 autoFocus: false,
+                enableKeyNavigation: false,
                 onStepChanged: function() {
                     // Remove old class.
                     container.children('.steps').children('ul').children('li').removeClass('step-current');
@@ -65,6 +66,10 @@ module nts.uk.ui.koExtentions {
                     container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
                     
                     active(container.steps("getCurrentIndex"));
+                    
+                    if(container.data("waitStepShowed")){
+                        container.trigger("stepShowed");
+                    }
                     
                     return true;
                 }

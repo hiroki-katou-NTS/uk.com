@@ -94,7 +94,7 @@ module nts.uk.ui.jqueryExtentions {
                             if ($grid.igGrid("scrollContainer").length > 0){
                                 let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
                                 let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);    
+                                $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
                             } else { 
                                 let index = $(selected["element"]).attr("data-row-idx");
                                 $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
@@ -107,12 +107,16 @@ module nts.uk.ui.jqueryExtentions {
         
         function getSelectRow($grid: JQuery) {
             var row = null;
-            var selectedRows = $grid.igGrid("selectedRows");
-            if (selectedRows) {
-                row = selectedRows[0];
-            } else {
-                row = $grid.igGrid("selectedRow");
-            }    
+            
+            if($grid.data("igGrid")) {
+                var selectedRows = $grid.igGrid("selectedRows");
+                if (selectedRows) {
+                    row = selectedRows[0];
+                } else {
+                    row = $grid.igGrid("selectedRow");
+                }    
+            }
+            
             return row;
         }
 

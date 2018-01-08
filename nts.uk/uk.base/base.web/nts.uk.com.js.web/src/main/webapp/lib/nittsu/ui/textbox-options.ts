@@ -49,15 +49,17 @@ module nts.uk.ui.option {
     }
 
     // Time Editor Option
-    export interface ITimeEditorOption{
+    export interface ITimeEditorOption {
         inputFormat?: string;
         placeholder?: string;
         width?: string;
         textalign?: string;
+        defaultValue?: string;
     }
     
     export class TimeEditorOption extends EditorOptionBase {
         inputFormat: string;
+        defaultValue?: string;
         
         constructor(option?: ITimeEditorOption) {
             super();
@@ -65,6 +67,7 @@ module nts.uk.ui.option {
             this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "date";
             this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
             this.width = (option !== undefined && option.width !== undefined ) ? option.width : "";
+            this.defaultValue = (option !== undefined && option.defaultValue !== undefined ) ? option.defaultValue : "";
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
         }
     }

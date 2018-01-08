@@ -12,7 +12,10 @@ __viewContext.ready(function () {
             nts.uk.ui.block.grayout();
             $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
                 self.uploaded = data;
-                nts.uk.ui.block.clear()
+                nts.uk.ui.block.clear();
+            }).fail(function(error){
+                alert(error.message);
+                nts.uk.ui.block.clear();
             });
         }
         getImage(){

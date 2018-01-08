@@ -50,7 +50,7 @@ module nts.uk.ui.koExtentions {
                     });      
                 }            
             })
-            container.mouseleave(function(evt: Event, ui: any){
+            container.mouseleave((evt: JQueryMouseEventObject) => {
                 let current = header.find(".function-item");
                 itemAreas.find(".function-item-container").hide("fast", function (){
                     current.data("dbClick", true);     
@@ -68,7 +68,7 @@ module nts.uk.ui.koExtentions {
             let readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
             let width: string = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
             let headerText: boolean = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
-            let items: boolean = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];  
+            let items: any = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];  
  
             // Container
             let container = $(element);
@@ -78,7 +78,7 @@ module nts.uk.ui.koExtentions {
             
             headerLink.text(headerText);
             itemAreas.empty();
-            _.forEach(items, function(item: any, idx: number){
+            _.forEach(items, function(item: any, idx: any){
                 let div = $("<div class='function-item-container' />");     
                 div.attr("data-idx", idx); 
                 div.width(width);    

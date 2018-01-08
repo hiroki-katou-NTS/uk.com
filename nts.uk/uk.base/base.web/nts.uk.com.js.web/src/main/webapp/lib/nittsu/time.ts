@@ -4,13 +4,17 @@ module nts.uk.time {
     
     const MINUTES_IN_DAY = 24 * 60;
 
-    var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
-    var listEmpire: { [year: string]: string } = {
-        "明治": "1868/01/01",
-        "大正": "1912/07/30",
-        "昭和": "1926/12/25",
-        "平成": "1989/01/08"
-    };
+    var defaultInputFormat = [
+        "YYYY/M/D",
+        "YYYY-M-D",
+        "YYYYMMDD",
+        "YYYY/M",
+        "YYYY-M",
+        "YYYYMM",
+        "H:mm",
+        "Hmm",
+        "YYYY"];
+    
     var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
 
     function getYearMonthJapan(year, month?) {
@@ -271,7 +275,7 @@ module nts.uk.time {
         }
         if (isMinutes) {
             var hoursX = ntsNumber.trunc(time / 60);
-            time = hoursX + text.padLeft((Math.abs(time - hoursX * 60)).toString(), '0', 2);
+            time = (time < 0 && hoursX == 0 ? "-" : "") + hoursX + text.padLeft((Math.abs(time - hoursX * 60)).toString(), '0', 2);
         }
         if (!(time instanceof String)) {
             time = time.toString();
@@ -583,21 +587,20 @@ module nts.uk.time {
         var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
         var momentObject = moment.utc(datetime, inputFormats, true);
         var result = new MomentResult(momentObject, outputFormat);
-        if (momentObject.isValid()) {
-            if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())) {
-                let parsedFormat = momentObject.creationData().format;
-                if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0) {
-                    result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
-                } else if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") < 0 && parsedFormat.indexOf("Y") >= 0) {
-                    result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
-                } else {
-                    result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
-                }
-            } else {
-                result.succeeded();
-            }
+        if (momentObject.isValid() && (momentObject.isSameOrBefore(result.systemMax()) && momentObject.isSameOrAfter(result.systemMin()))) {
+            result.succeeded();
         } else {
-            result.failed();
+            let parsedFormat = momentObject.creationData().format;
+            let isHasYear = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("Y") >= 0) || parsedFormat.indexOf("Y") >= 0;
+            let isHasMonth = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("M") >= 0) || parsedFormat.indexOf("M") >= 0;
+            let isHasDay = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("D") >= 0) || parsedFormat.indexOf("D") >= 0;
+            if (isHasDay && isHasMonth && isHasYear) {
+                result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
+            } else if (isHasMonth && isHasYear) {
+                result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
+            } else {
+                result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
+            }
         }
         return result;
     }

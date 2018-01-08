@@ -44,7 +44,9 @@ module nts.uk.ui.koExtentions {
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
             var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
-
+            var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+            var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
+    
             $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
             if (totalWidth !== undefined) {
                 $swap.parent().width(totalWidth);
@@ -72,9 +74,10 @@ module nts.uk.ui.koExtentions {
             
             var grid1Id = "#" + elementId + "-grid1";
             var grid2Id = "#" + elementId + "-grid2";
+            //var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
             if (!util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
                 
-                var initSearchArea = function ($SearchArea, targetId, searchMode){
+                var initSearchArea = function ($SearchArea, searchMode, searchText){
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                         .append("<div class='ntsSearchButtonContainer'/>");
                     if(searchMode === "filter"){
@@ -87,7 +90,7 @@ module nts.uk.ui.koExtentions {
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                     $SearchArea.find(".ntsSearchButtonContainer")
                         .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
-                    $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").wrap("<span class='nts-editor-wrapped ntsControl'/>");
+                    $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
                     $SearchArea.find(".search-btn").text("検索");  
                 }
                 
@@ -103,7 +106,8 @@ module nts.uk.ui.koExtentions {
                     
                     $searchLeftContainer.width(searchAreaWidth).css({position: "absolute", left: 0});
                     
-                    initSearchArea($searchLeftContainer, grid1Id, data.searchMode);
+                    initSearchArea($searchLeftContainer, data.searchMode, data.leftSearchBoxText || defaultSearchText);
+                    $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                 }
                 
                 if(showSearchBox.showRight){
@@ -111,9 +115,10 @@ module nts.uk.ui.koExtentions {
                     
                     $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
                     
-                    initSearchArea($searchRightContainer, grid2Id, data.searchMode);
+                    initSearchArea($searchRightContainer, data.searchMode, data.rightSearchBoxText || defaultSearchText);
+                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                 }
-                $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                
                 $searchArea.height(SEARCH_AREA_HEIGHT);
                 gridHeight -= SEARCH_AREA_HEIGHT;
             }
@@ -130,7 +135,7 @@ module nts.uk.ui.koExtentions {
 
             var features = [{ name: 'Selection', multipleSelection: true },
 //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
           
             $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
             $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
@@ -239,6 +244,10 @@ module nts.uk.ui.koExtentions {
             });
             
             $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
+            
+            this.swapper.Model.$container.bind("swaplistgridsizeexceed", function(evt, data){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_887" });
+            });
         }
 
         /**
@@ -624,6 +633,7 @@ module nts.uk.ui.koExtentions {
             });
             
             this.$searchBox.keydown(function(evt, ui) {
+                let $input = this;
                 if (evt.which === 13) {
                     proceedSearch.apply(self);
                     _.defer(() => {

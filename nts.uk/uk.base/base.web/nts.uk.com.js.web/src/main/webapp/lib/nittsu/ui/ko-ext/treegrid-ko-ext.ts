@@ -26,6 +26,7 @@ module nts.uk.ui.koExtentions {
 
             var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
             var extColumns: Array<any> = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
+            let initialExpandDepth: number = ko.unwrap(data.initialExpandDepth);
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
             let rows = ko.unwrap(data.rows);
@@ -105,23 +106,51 @@ module nts.uk.ui.koExtentions {
                 $treegrid.addClass("row-limited");
             }
 
+            $treegrid.data("expand", new ExpandNodeHolder());
+            $treegrid.data("autoExpanding", false);
+            
             // Init ig grid.
             $treegrid.igTreeGrid({
                 width: width,
                 height: height,
+                indentation: "12px",
                 dataSource: _.cloneDeep(options),
                 primaryKey: optionsValue,
                 columns: displayColumns,
                 childDataKey: optionsChild,
-                initialExpandDepth: 10,
+                initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                 tabIndex: -1,
-                features: features
+                features: features,
+                rowExpanded: function (evt, ui) {
+                    if (!$treegrid.data("autoExpanding")) {
+                        let holder: ExpandNodeHolder = $treegrid.data("expand");
+                        holder.addNode(ui["dataRecord"][optionsValue]);
+                        $treegrid.data("expand", holder);
+                    }
+                }, rowCollapsed: function (evt, ui) {
+                    if (!$treegrid.data("autoExpanding")) {
+                        let holder: ExpandNodeHolder = $treegrid.data("expand");
+                        holder.removeNodeAndChilds(ui["dataRecord"], optionsValue, optionsChild);
+                        $treegrid.data("expand", holder);
+                    }
+                }, rowsRendered: function(evt, ui) {
+                    $treegrid.data("autoExpanding", true);
+                    let holder: ExpandNodeHolder = $treegrid.data("expand");
+//                    if(!nts.uk.util.isNullOrEmpty(holder.nodes)){
+                    _.forEach(holder.nodes, function(node: any){
+                        $treegrid.igTreeGrid("expandRow", node); 
+                    });
+                    
+//                    }
+                    
+                    $treegrid.data("autoExpanding", false);   
+                }
             });
             var treeGridId = $treegrid.attr('id');
             $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
             
             $treegrid.bind('selectionchanged', () => {
-                if (data.multiple) {
+                if (data.multiple) { 
                     let selected: Array<any> = $treegrid.ntsTreeView('getSelected');
                     if (!nts.uk.util.isNullOrEmpty(selected)) {
                         data.selectedValues(_.map(selected, s => s.id));
@@ -150,32 +179,33 @@ module nts.uk.ui.koExtentions {
             var options: Array<any> = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
-
+            
+            let $treegrid = $(element);
             // Update datasource.
             var originalSource = $(element).igTreeGrid('option', 'dataSource');
             if (!_.isEqual(originalSource, options)) {
-                $(element).igTreeGrid("option", "dataSource", _.cloneDeep(options));
-                $(element).igTreeGrid("dataBind");
+                $treegrid.igTreeGrid("option", "dataSource", _.cloneDeep(options));
+                $treegrid.igTreeGrid("dataBind");
             }
 
             // Set multiple data source.
             var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
-            if ($(element).igTreeGridSelection("option", "multipleSelection") !== multiple) {
-                $(element).igTreeGridSelection("option", "multipleSelection", multiple);
+            if ($treegrid.igTreeGridSelection("option", "multipleSelection") !== multiple) {
+                $treegrid.igTreeGridSelection("option", "multipleSelection", multiple);
             } 
 
             // Set show checkbox.
             var showCheckBox = ko.unwrap(data.showCheckBox != undefined ? data.showCheckBox : true);
-            if ($(element).igTreeGridRowSelectors("option", "enableCheckBoxes") !== showCheckBox) {
-                $(element).igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
+            if ($treegrid.igTreeGridRowSelectors("option", "enableCheckBoxes") !== showCheckBox) {
+                $treegrid.igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
             }
 
             // Clear selection.
             if ((selectedValues === null || selectedValues === undefined) && (singleValue === null || singleValue === undefined)) {
-                $(element).igTreeGridSelection("clearSelection");
+                $treegrid.igTreeGridSelection("clearSelection");
             } else {
                 // Compare value.
-                var olds = _.map($(element).igTreeGridSelection("selectedRow") as Array<any>, function(row: any) {
+                var olds = _.map($treegrid.igTreeGridSelection("selectedRow") as Array<any>, function(row: any) {
                     return row.id;
                 });
                 // Not change, do nothing.
@@ -184,18 +214,136 @@ module nts.uk.ui.koExtentions {
                         return;
                     }
                     // Update.
-                    $(element).igTreeGridSelection("clearSelection");
+                    $treegrid.igTreeGridSelection("clearSelection");
                     selectedValues.forEach(function(val) {
-                        $(element).igTreeGridSelection("selectRowById", val);
+                        $treegrid.igTreeGridSelection("selectRowById", val);
                     })
                 } else {
                     if (olds.length > 1 && olds[0] === singleValue) {
                         return;
                     }
-                    $(element).igTreeGridSelection("clearSelection");
-                    $(element).igTreeGridSelection("selectRowById", singleValue);
+                    $treegrid.igTreeGridSelection("clearSelection");
+                    $treegrid.igTreeGridSelection("selectRowById", singleValue);
+                    
+                    ui.ig.tree.grid.expandTo(singleValue, $treegrid);
                 }
             }
+        }
+    }
+    
+    import isEmpty = nts.uk.util.isNullOrEmpty;
+    
+    class ExpandNodeHolder{
+        nodes: Array<any>;
+        
+        constructor(){
+            this.nodes = [];  
+        }
+        
+        isEmpty (): boolean {
+            return isEmpty(this.nodes);
+        }
+        
+        addNode (nodeId: any): void {
+            this.nodes.push(nodeId);
+        }
+        
+        removeNodeAndChilds(nodeSource: any, nodeKey, nodeChildKey): void {
+            let ids: Array<any> = Helper.getAllIdFromNodeSource(_.cloneDeep(nodeSource), nodeKey, nodeChildKey);
+            _.remove(this.nodes, function(node: any){
+                return ids.indexOf(node) >= 0;
+            });
+        }
+        
+    }
+     
+    module Helper {
+        export function getAllIdFromNodeSource(nodeSource: any, nodeKey: string, childKey: string): Array<any>{
+            let ids = [nodeSource[nodeKey]];
+            let children = [].concat(nodeSource[childKey]);
+            while (!isEmpty(children)){
+                let currentNode = children.shift();
+                ids.push(currentNode[nodeKey]);
+                if(!isEmpty(currentNode)){
+                    children = children.concat(currentNode[childKey]);        
+                }
+            }
+            return ids;
+        } 
+        
+        export function flatTree(tree: Array<any>, childKey: string): Array<any> {
+            let ids = [];
+            _.forEach(tree, function(nodeSource){
+                ids.push(nodeSource);
+                let children = [].concat(nodeSource[childKey]);
+                while (!isEmpty(children)){
+                    let currentNode = children.shift();
+                    ids.push(currentNode);
+                    if(!isEmpty(currentNode)){
+                        children = children.concat(currentNode[childKey]);        
+                    }
+                }  
+            });
+            
+            return ids;
+        }
+        
+        export function getAllParentId(tree: JQuery, id: string, nodeKey: string, childKey: string): Array<string> {
+            let source = _.cloneDeep(tree.igTreeGrid("option", "dataSource"));
+            let parentIds = [];
+            
+            _.forEach(source, function(node){
+                let result = checkIfInBranch(node, id, nodeKey, childKey);   
+                if(result.inThis){
+                    parentIds = [node[nodeKey]].concat(result.ids);
+                    return false;
+                } 
+            });
+            
+            return parentIds;
+        }
+        
+        function checkIfInBranch(source: any, id: string, nodeKey: string, childKey: string): any{
+            if (source[nodeKey] === id) {
+                return { 
+                    inThis: true,
+                    ids: []
+                };
+            } else {
+                let result = { 
+                    inThis: false,
+                    ids: []
+                };
+                _.forEach(source[childKey], function(node){
+                    result = checkIfInBranch(node, id, nodeKey, childKey);    
+                    if (result.inThis) {
+                        result.ids = [node[nodeKey]].concat(result.ids);
+                        return false;
+                    }
+                });
+                return result;
+                
+            }
+        }
+    }
+
+    class ExpandNode{
+        nodeKey: string;
+        childKey: string;
+        nodeSource: any;
+        nodeLevel: number;
+        element: JQuery;
+        
+        constructor(source: any, nodeKey?: string, childKey?: string, element?: JQuery, nodeLevel?: number){
+            this.nodeSource = source;
+            this.nodeLevel = nodeLevel;
+            this.element = element;
+            this.nodeKey = nodeKey;
+            this.childKey = childKey;
+        }
+        
+        getNode() {
+           return this.nodeSource; 
         }
     }
     

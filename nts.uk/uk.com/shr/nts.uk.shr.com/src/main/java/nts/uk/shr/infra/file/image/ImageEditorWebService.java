@@ -2,7 +2,6 @@ package nts.uk.shr.infra.file.image;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
@@ -15,9 +14,9 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
+import nts.arc.layer.infra.file.temp.ApplicationTemporaryFile;
+import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.ws.WebService;
-import nts.arc.system.ServerSystemProperties;
-import nts.gul.text.IdentifierUtil;
 
 @Path("image/editor")
 @Produces("application/json")
@@ -25,42 +24,58 @@ public class ImageEditorWebService extends WebService{
 	
 	@Inject
 	private FileStorage fileStorage;
+	
+	@Inject 
+	private ApplicationTemporaryFileFactory tempFileFactory;
 
 	@POST
 	@Path("/cropimage")
 	public StoredFileInfo cropImage(ImageCropQuery query) {
 		try {
-			String string64 = query.getFile().substring(query.getFile().indexOf(",")+1);
-			InputStream is = new ByteArrayInputStream(Base64.getDecoder().decode(string64));
-			BufferedImage bfi = ImageIO.read(is);
-			int width = getWidth(query, bfi);
-			int height = getHeight(query, bfi);
-			if(query.isCrop() && isCroppable(width, height)){
-				bfi = bfi.getSubimage(query.getX(), query.getY(), width, height);
-			}
 			
-			File file = new File(ServerSystemProperties.fileStoragePath() + query.getFileName());
-
-			ImageIO.write(bfi, query.getFormat(), file);
-
-			StoredFileInfo fileInfo = this.fileStorage.store(IdentifierUtil.randomUniqueId(),
-					file.toPath(), query.getFileName(), query.getStereoType());
-			file.delete();
-			return fileInfo;
+			return storeFile(query, getImageBuffer(query));
+			
 		} catch (IOException e) {
 			throw new RuntimeException("File is not a image.");
 		}
+	}
+
+	private StoredFileInfo storeFile(ImageCropQuery query, BufferedImage bfi) throws IOException {
+		ApplicationTemporaryFile tempFile = tempFileFactory.createTempFile();
+
+		ImageIO.write(bfi, query.getFormat(), tempFile.getPath().toFile());
+
+		StoredFileInfo fileInfo = this.fileStorage.store(tempFile.getPath(), query.getFileName(), query.getStereoType());
+		
+		tempFile.getPath().toFile().delete();
+		
+		return fileInfo;
+	}
+
+	private BufferedImage getImageBuffer(ImageCropQuery query) throws IOException {
+		BufferedImage bfi = ImageIO.read(toImageInputStream(query.getFile()));
+		
+		int width = getMin(query.getWidth(), bfi.getWidth() - query.getX()), 
+			height = getMin(query.getHeight(), bfi.getHeight() - query.getY());
+		
+		if(query.isCrop() && isCroppable(width, height)){
+			bfi = bfi.getSubimage(query.getX(), query.getY(), width, height);
+		}
+		
+		return bfi;
+	}
+
+	private InputStream toImageInputStream(StringBuffer dataBase64) {
+		String string64 = dataBase64.substring(dataBase64.indexOf(",") + 1);
+		
+		return new ByteArrayInputStream(Base64.getDecoder().decode(string64));
 	} 
 	
 	private boolean isCroppable(int width, int height){
 		return width > 0 && height > 0;
 	}
 	
-	private int getWidth(ImageCropQuery query, BufferedImage bfi){
-		return Math.min(query.getHeight(), bfi.getHeight() - query.getX());
-	}
-	
-	private int getHeight(ImageCropQuery query, BufferedImage bfi){
-		return Math.min(query.getHeight(), bfi.getHeight() - query.getY());
+	private int getMin(int base, int target){
+		return Math.min(base, target);
 	}
 }

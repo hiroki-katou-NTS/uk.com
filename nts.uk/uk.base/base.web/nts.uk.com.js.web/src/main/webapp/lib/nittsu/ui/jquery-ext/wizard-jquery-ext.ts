@@ -32,29 +32,80 @@ module nts.uk.ui.jqueryExtentions {
             };
         }
 
-        function begin(wizard: JQuery): JQuery {
+        function begin(wizard: JQuery): JQueryDeferred<any> {
+            let dfd = $.Deferred();
+
+            wizard.data("waitStepShowed", true);
+            
             wizard.setStep(0);
-            return wizard;
+            
+            wizard.bind("stepShowed", function(evt, ui) {
+                wizard.unbind("stepShowed");
+                wizard.data("waitStepShowed", false);
+                dfd.resolve();
+            });
+
+            return dfd.promise();
         }
 
-        function end(wizard: JQuery): JQuery {
+        function end(wizard: JQuery): JQueryDeferred<any> {
+            let dfd = $.Deferred();
+            
+            wizard.data("waitStepShowed", true);
             wizard.setStep(wizard.data("length") - 1);
-            return wizard;
+            
+            wizard.bind("stepShowed", function(evt, ui) {
+                wizard.unbind("stepShowed");
+                wizard.data("waitStepShowed", false);
+                dfd.resolve();
+            });
+
+            return dfd.promise();
         }
 
-        function goto(wizard: JQuery, index: number): JQuery {
+        function goto(wizard: JQuery, index: number): JQueryDeferred<any> {
+            let dfd = $.Deferred();
+
+            wizard.data("waitStepShowed", true);
             wizard.setStep(index);
-            return wizard;
+            
+            wizard.bind("stepShowed", function(evt, ui) {
+                wizard.unbind("stepShowed");
+                wizard.data("waitStepShowed", false);
+                dfd.resolve();
+            });
+
+            return dfd.promise();
         }
 
-        function prev(wizard: JQuery): JQuery {
+        function prev(wizard: JQuery): JQueryDeferred<any> {
+            let dfd = $.Deferred();
+
+            wizard.data("waitStepShowed", true);
             wizard.steps("previous");
-            return wizard;
+            
+            wizard.bind("stepShowed", function(evt, ui) {
+                wizard.unbind("stepShowed");
+                wizard.data("waitStepShowed", false);
+                dfd.resolve();
+            });
+
+            return dfd.promise();
         }
 
-        function next(wizard: JQuery): JQuery {
+        function next(wizard: JQuery): JQueryDeferred<any> {
+            let dfd = $.Deferred();
+
+            wizard.data("waitStepShowed", true);
             wizard.steps("next");
-            return wizard;
+            
+            wizard.bind("stepShowed", function(evt, ui) {
+                wizard.unbind("stepShowed");
+                wizard.data("waitStepShowed", false);
+                dfd.resolve();
+            });
+
+            return dfd.promise();
         }
 
         function getCurrentStep(wizard: JQuery): number {

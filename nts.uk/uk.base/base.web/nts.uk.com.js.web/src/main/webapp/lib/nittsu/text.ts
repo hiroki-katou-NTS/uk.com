@@ -26,6 +26,7 @@
             allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
             allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
             allHiragana: /^[ぁ-ん　ー ]*$/,
+            workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/
         };
 
         /**
@@ -46,6 +47,31 @@
                 }
             }
             return count;
+        }
+        
+        export function limitText(str: string, maxlength: number, index?: number) : string {
+            let idx = nts.uk.util.isNullOrUndefined(index) ? 0 : index;
+            return str.substring(idx, findIdxFullHafl(str, maxlength, idx));
+        }
+        
+        function findIdxFullHafl(text: string, max: number, index: number) {
+            var count = 0;
+            for (var i = index; i < text.length; i++) {
+                var c = text.charCodeAt(i);
+                let charLength = 2;
+                // 0x20 ～ 0x80: 半角記号と半角英数字
+                // 0xff61 ～ 0xff9f: 半角カタカナ
+                if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
+                    charLength = 1;
+                }
+                
+                if (charLength + count <= max) {
+                    count += charLength;
+                } else {
+                    return i;    
+                }
+            }
+            return text.length - index;
         }
         
         export function toOneByteAlphaNumberic(text: string){
@@ -232,6 +258,17 @@
                         probe: probe,
                         messageId: 'FND_E_HALFINT'
                     };
+        }
+        
+        /**
+         * Determinies if text is workplace code
+         * @param text text to check
+         */
+        export function workplaceCode(text: string) {
+            return {
+                probe: regexp.workplaceCode.test(text),
+                messageId: 'FND_E_ALPHANUMERIC'
+            };            
         }
 
         /**
@@ -450,14 +487,20 @@
             HalfInt: new CharType(
                 '半整数',
                 0.5,
-                nts.uk.text.halfInt)
+                nts.uk.text.halfInt),
+            WorkplaceCode: new CharType(
+                '半角英数字',
+                0.5,
+                nts.uk.text.workplaceCode)
         };
 
         export function getCharType(primitiveValueName: string): CharType {
             var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
             if (constraint === undefined)
                 return null;
-            if (constraint.charType === undefined)
+            if (primitiveValueName === "WorkplaceCode" && !constraint.charType) {
+                constraint.charType = "WorkplaceCode";
+            } else if (constraint.charType === undefined)
                 constraint.charType = "Any";
             var charType = charTypes[constraint.charType];
             if (charType === undefined) {

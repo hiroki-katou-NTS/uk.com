@@ -32,7 +32,7 @@ module nts.uk.ui.jqueryExtentions {
                     formData.append("filename", files[0].name);
                     nts.uk.request.uploadFile(formData, option).done(function(data, textStatus, jqXHR) {
                         // Business Exception
-                        if (data !== undefined && data.businessException) {
+                        if (nts.uk.util.exception.isBusinessError(data)) {
                             if (option.onFail) option.onFail();
                             dfd.reject(data);
                         }
@@ -41,16 +41,21 @@ module nts.uk.ui.jqueryExtentions {
                             dfd.resolve(data);
                         }
                     }).fail(function(jqXHR, textStatus, errorThrown) {
-                        // Client Exception
-                        dfd.reject({ message: "Please check your network", messageId: "0" });
+                        
+                        if (jqXHR.status === 413) {
+                            dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
+                        } else {
+                            // Client Exception
+                            dfd.reject({ message: "アップロード処理に失敗しました。", messageId: "0" });
+                        }
                     });
                 }
                 else {
-                    dfd.reject({ message: "Please select file", messageId: "0" });
+                    dfd.reject({ message: "ファイルを選択してください。", messageId: "0" });
                 }
             }
             else {
-                dfd.reject({ messageId: "0", message: "Can not find control" });
+                dfd.reject({ messageId: "0", message: "ファイルを読み込めません。" });
             }
             return dfd.promise();
         }

@@ -12,11 +12,11 @@ import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
  * @param <S> self
  * @param <D> endpoint
  */
-public interface ContinuousHistory<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
-		extends History<S, D> {
+public interface ContinuousHistory<H extends HistoryItem<S, D>, S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
+		extends History<H, S, D> {
 
 	@Override
-	default void add(HistoryItem<S, D> itemToBeAdded) {
+	default void add(H itemToBeAdded) {
 		
 		this.constraints().forEach(c -> c.validateIfCanAdd(this, itemToBeAdded));
 		this.exValidateIfCanAdd(itemToBeAdded);
@@ -24,7 +24,7 @@ public interface ContinuousHistory<S extends GeneralPeriod<S, D>, D extends Comp
 		this.latestStartItem().ifPresent(latest -> {
 			if (!(latest.span().isStart().before(itemToBeAdded.start()))
 					&& latest.span().isEnd().beforeOrEqual(itemToBeAdded.end())) {
-				throw new BusinessException("");
+				throw new BusinessException("Msg_102");
 			}
 			
 			latest.shortenEndToAccept(itemToBeAdded);
@@ -36,7 +36,7 @@ public interface ContinuousHistory<S extends GeneralPeriod<S, D>, D extends Comp
 	}
 
 	@Override
-	default void remove(HistoryItem<S, D> itemToBeRemoved) {
+	default void remove(H itemToBeRemoved) {
 
 		this.constraints().forEach(c -> c.validateIfCanRemove(this, itemToBeRemoved));
 		this.exValidateIfCanRemove(itemToBeRemoved);
@@ -48,14 +48,14 @@ public interface ContinuousHistory<S extends GeneralPeriod<S, D>, D extends Comp
 			}
 		});
 		
-		this.exCorrectToRemove(itemToBeRemoved);
-		
 		// if no items, no error (common default spec)
 		this.items().remove(itemToBeRemoved);
+		
+		this.exCorrectToRemove(itemToBeRemoved);
 	}
 
 	@Override
-	default void changeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
+	default void changeSpan(H itemToBeChanged, S newSpan) {
 
 		this.constraints().forEach(c -> c.validateIfCanChangeSpan(this, itemToBeChanged, newSpan));
 		this.exValidateIfCanChangeSpan(itemToBeChanged, newSpan);
@@ -74,21 +74,21 @@ public interface ContinuousHistory<S extends GeneralPeriod<S, D>, D extends Comp
 		itemToBeChanged.changeSpan(newSpan);
 	}
 
-	default void exValidateIfCanAdd(HistoryItem<S, D> itemToBeAdded) {
+	default void exValidateIfCanAdd(H itemToBeAdded) {
 	}
 	
-	default void exCorrectToAdd(HistoryItem<S, D> itemToBeAdded) {
+	default void exCorrectToAdd(H itemToBeAdded) {
 	}
 	
-	default void exValidateIfCanRemove(HistoryItem<S, D> itemToBeRemoved) {
+	default void exValidateIfCanRemove(H itemToBeRemoved) {
 	}
 	
-	default void exCorrectToRemove(HistoryItem<S, D> itemToBeRemoved) {
+	default void exCorrectToRemove(H itemToBeRemoved) {
 	}
 	
-	default void exValidateIfCanChangeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
+	default void exValidateIfCanChangeSpan(H itemToBeChanged, S newSpan) {
 	}
 	
-	default void exCorrectToChangeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
+	default void exCorrectToChangeSpan(H itemToBeChanged, S newSpan) {
 	}
 }

@@ -22,7 +22,8 @@ __viewContext.ready(function () {
                 value: ko.observable(200001),
                 constraint: 'LayoutCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-                    inputFormat: 'yearmonth'
+                    inputFormat: 'yearmonth',
+                    defaultValue: "201101"
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),

@@ -110,8 +110,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.32'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.43.1'
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.39.2'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.53.2'
 		
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.6.4.2'
 	}
@@ -322,6 +322,11 @@ project (':pr.web:nts.uk.pr.web') {
 	dependencies {
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		// Java Mail
+		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
+		
+		// for SMTP authentications
+		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.ac')
 		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.app')

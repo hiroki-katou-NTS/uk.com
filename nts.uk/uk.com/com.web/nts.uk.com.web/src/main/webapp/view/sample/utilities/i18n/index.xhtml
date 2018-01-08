@@ -27,18 +27,19 @@
 					//scope annotation
 					//param can be plain text or resource id
 					public class A{
-						@Inject
-						IInternationalization internationalization;
-						
 						public void greeting(){
-							System.out.println(internationalization.getItemName("code"));
-							System.out.println(internationalization.getItemName("code","param1","param2",......));
-							System.out.println(internationalization.getItemName("code","#resource_id1","#resource_id2",......));
-							System.out.println(internationalization.getItemName("code",new String[]{"a","b"}));
+							System.out.println(TextResources.localize("code"));
+							System.out.println(TextResources.localize("code","param1","param2",......));
+							System.out.println(TextResources.localize("code","#resource_id1","#resource_id2",......));
+							System.out.println(TextResources.localize("code",new String[]{"a","b"}));
 						}
 					}
 					</pre>
 					<h2>Use in xhtml file</h2>
+					<p>
+						<h:inputText value="#{i18n.getText('KMF004_106')}"></h:inputText>
+						<div>#{i18n.getText('KMF004_106')}</div>
+					</p>
 					<pre>
 					<![CDATA[
 					//remove space character after #

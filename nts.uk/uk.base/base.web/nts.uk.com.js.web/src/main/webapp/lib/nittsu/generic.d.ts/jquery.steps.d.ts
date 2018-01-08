@@ -15,6 +15,7 @@ interface JQueryStepsOptions {
     enableFinishButton?: boolean;
     autoFocus?: boolean;
     labels?: JQueryStepsLabelsOptions;
+    enableKeyNavigation?: boolean;
 
     onInit?: (event: any, currentIndex: number) => void;
     onStepChanging?: (event: any, currentIndex: number, newIndex: number) => void;

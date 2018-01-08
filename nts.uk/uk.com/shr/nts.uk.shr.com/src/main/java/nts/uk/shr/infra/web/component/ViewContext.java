@@ -10,9 +10,15 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
-import nts.arc.i18n.custom.IInternationalization;
+import nts.arc.scoped.session.SessionContextProvider;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.context.loginuser.SelectedLanguage;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
+import nts.uk.shr.infra.i18n.resource.web.webapi.I18NResourcesWebService;
 import nts.uk.shr.infra.web.component.env.ViewContextEnvWriter;
 
 @FacesComponent(tagName = "viewcontext", createTag = true)
@@ -45,13 +51,16 @@ public class ViewContext extends UIComponentBase {
 
 		writeProgramInfo(requestedPath, rw, applicationContextPath);
 		rw.write(",");
+		writeLoginPersonInfo(rw);
+		rw.write(",");
 		
 		rw.write("};");
 		rw.write("__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints || {};");
 
 		CDI.current().select(ViewContextEnvWriter.class).get().write(rw);
 		rw.write("</script>");
-		rw.write("<script src='/nts.uk.com.web/webapi/loadresource'></script>");
+		
+		rw.write(I18NResourcesWebService.getHtmlToLoadResources());
 
 	}
 	
@@ -63,13 +72,52 @@ public class ViewContext extends UIComponentBase {
 		ProgramsManager.find(webApi, requestedPath).ifPresent(pr -> {
 			builder.append("webapi: '" + pr.getAppId().name + "', ");
 			builder.append("programId: '" + pr.getPId() + "', ");
-			IInternationalization internationalization = CDI.current().select(IInternationalization.class).get();
-			String programName = internationalization.getItemName(pr.getPName()).orElse(pr.getPName());
+			String programName = TextResource.localize(pr.getPName());
 			builder.append("programName: '" + programName + "', ");
 			builder.append("path: '" + pr.getPPath() + "'");
 		});
 		
 		rw.write("program: {" + builder.toString() + "}");
+	}
+	
+	private void writeLoginPersonInfo (ResponseWriter rw) throws IOException {
+		LoginUserContext userInfo = AppContexts.user();
+		StringBuilder builder = new StringBuilder();
+//		if(userInfo.hasLoggedIn()){
+			builder.append("contractCode: '" + userInfo.contractCode() + "', ");
+			builder.append("companyId: '" + userInfo.companyId() + "', ");
+			builder.append("companyCode: '" + userInfo.companyCode() + "', ");
+			builder.append("isEmployee: '" + userInfo.isEmployee() + "', ");
+			builder.append("employeeId: '" + userInfo.employeeId() + "', ");
+			builder.append("employeeCode: '" + userInfo.employeeCode() + "', ");
+			writeSelectedLanguage(userInfo.language(), builder);
+			writeRole(userInfo.roles(), builder);
+//		}
+		
+		rw.write("user: {" + builder.toString() + "}");
+	}
+	
+	private void writeSelectedLanguage (SelectedLanguage language, StringBuilder builder) {
+		builder.append("selectedLanguage: { ");
+		if(language != null){
+			builder.append("basicLanguageId: '" + language.basicLanguageId() + "', ");
+			builder.append("personNameLanguageId: '" + language.personNameLanguageId() + "'");
+		}
+		builder.append(" }, ");
+	}
+	
+	private void writeRole (LoginUserRoles role, StringBuilder builder) {
+		builder.append("role: { ");
+		if(role != null){
+			builder.append("attendance: '" + role.forAttendance() + "', ");
+			builder.append("companyAdmin: '" + role.forCompanyAdmin() + "', ");
+			builder.append("officeHelper: '" + role.forOfficeHelper() + "', ");
+			builder.append("payroll: '" + role.forPayroll() + "', ");
+			builder.append("personalInfo: '" + role.forPersonalInfo() + "', ");
+			builder.append("personnel: '" + role.forPersonnel() + "', ");
+			builder.append("systemAdmin: '" + role.forSystemAdmin() + "'");
+		}
+		builder.append(" }");
 	}
 
 	private static void writeRootPath(String requestedPath, ResponseWriter rw) throws IOException {

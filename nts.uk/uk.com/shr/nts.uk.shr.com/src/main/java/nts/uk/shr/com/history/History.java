@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.gul.util.value.DiscreteValue;
 import nts.uk.shr.com.history.constraint.HistoryConstraint;
 import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
@@ -13,47 +14,55 @@ import static java.util.Comparator.*;
 
 import java.util.Collections;
 
-public interface History<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>> {
+public interface History<H extends HistoryItem<S, D>, S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>> {
 	
-	List<HistoryItem<S, D>> items();
+	List<H> items();
 	
-	default List<HistoryConstraint<S, D>> constraints() {
+	default List<HistoryConstraint<H, S, D>> constraints() {
 		return Collections.emptyList();
 	}
 
-	default void add(HistoryItem<S, D> itemToBeAdded) {
+	default void add(H itemToBeAdded) {
+		if (itemToBeAdded.span().isReversed()) {
+			throw new BusinessException("Msg_917");
+		}
+		
 		this.constraints().forEach(c -> c.validateIfCanAdd(this, itemToBeAdded));
 		this.items().add(itemToBeAdded);
 	}
 	
-	default void remove(HistoryItem<S, D> itemToBeRemoved) {
+	default void remove(H itemToBeRemoved) {
 		this.constraints().forEach(c -> c.validateIfCanRemove(this, itemToBeRemoved));
 		this.items().remove(itemToBeRemoved);
 	}
 	
-	default void changeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
+	default void changeSpan(H itemToBeChanged, S newSpan) {
+		if (newSpan.isReversed()) {
+			throw new BusinessException("Msg_917");
+		}
+		
 		this.constraints().forEach(c -> c.validateIfCanChangeSpan(this, itemToBeChanged, newSpan));
 		itemToBeChanged.changeSpan(newSpan);
 	}
 	
-	default List<HistoryItem<S, D>> itemsStartAscending() {
+	default List<H> itemsStartAscending() {
 		return this.items().stream()
 				.sorted(comparing(item -> item.span().start()))
 				.collect(Collectors.toList());
 	}
 	
-	default List<HistoryItem<S, D>> itemsStartDescending() {
+	default List<H> itemsStartDescending() {
 		return this.items().stream()
 				.sorted(comparing(item -> item.span().start(), reverseOrder()))
 				.collect(Collectors.toList());
 	}
 	
-	default Optional<HistoryItem<S, D>> latestStartItem() {
+	default Optional<H> latestStartItem() {
 		return this.itemsStartDescending().stream().findFirst();
 	}
 	
-	default Optional<HistoryItem<S, D>> immediatelyBefore(HistoryItem<S, D> baseItem) {
-		HistoryItem<S, D> immediatelyBefore = null;
+	default Optional<H> immediatelyBefore(HistoryItem<S, D> baseItem) {
+		H immediatelyBefore = null;
 		for (val currentItem : this.itemsStartAscending()) {
 			if (currentItem.equals(baseItem)) {
 				return Optional.ofNullable(immediatelyBefore);
@@ -65,8 +74,8 @@ public interface History<S extends GeneralPeriod<S, D>, D extends Comparable<D> 
 		return Optional.empty();
 	}
 	
-	default Optional<HistoryItem<S, D>> immediatelyAfter(HistoryItem<S, D> baseItem) {
-		HistoryItem<S, D> immediatelyAfter = null;
+	default Optional<H> immediatelyAfter(HistoryItem<S, D> baseItem) {
+		H immediatelyAfter = null;
 		for (val currentItem : this.itemsStartDescending()) {
 			if (currentItem.equals(baseItem)) {
 				return Optional.ofNullable(immediatelyAfter);

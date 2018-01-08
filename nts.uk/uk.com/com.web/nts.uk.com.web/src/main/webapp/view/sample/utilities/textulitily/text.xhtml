@@ -33,6 +33,18 @@ Result: 10]]></pre>
 							</div>
 						</div>
 						<div class="feature-box">
+							<div class="header"><h3>limitText</h3></div>
+							<div class="content">
+								<p>This function will receive a string as parameter and substring this string with max length is provided by Nittsu rule.</p>
+								<p>Parameters: <br/>str (string): original string<br/>maxlength (number): max length to cut, index (number, optional): start with index<br/></p>
+<pre><![CDATA[//Try to paste this to console
+nts.uk.text.limitText("123日本11の日です456", 7, 1);
+Result: "23日本1"
+nts.uk.text.limitText("123日本11の日です456", 7);
+Result: "123日本"]]></pre>
+							</div>
+						</div>
+						<div class="feature-box">
 							<div class="header"><h3>allHalfNumeric</h3></div>
 							<div class="content">
 							<p>This function will receive a string as parameter and check that string's character is only contain number.</p>

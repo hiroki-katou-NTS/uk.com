@@ -21,9 +21,13 @@ module nts.uk.ui.koExtentions {
             let fileName: KnockoutObservable<string> = data.filename;
             let onchange: (filename: string) => void = (data.onchange !== undefined) ? data.onchange : $.noop;
             let onfilenameclick: (filename: string) => void = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
+            let uploadFinished: (fileInfo: any) => void = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
             
             // Container
-            let container = $(element);
+            let container = $(element)
+                .data("stereotype", ko.unwrap(data.stereoType))
+                .data("immediate-upload", ko.unwrap(data.immediateUpload) === true);
+            
             let $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
             let $fileBrowserButton = $("<button class='browser-button'></button>");
             let $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
@@ -38,23 +42,38 @@ module nts.uk.ui.koExtentions {
             $fileuploadContainer.append($fileInput);
             $fileuploadContainer.appendTo(container);
 
-            $fileBrowserButton.click(function() {
+            $fileBrowserButton.attr("tabindex", -1).click(function() {
                 $fileInput.click();
             });
-
+            
             $fileInput.change(function() {
                 var selectedFilePath = $(this).val();
                 if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
                     if (!nts.uk.util.isNullOrUndefined(container.data("file"))) {
-                        this.files = (container.data("file"));        
+                        this.files = (container.data("file"));
                     }
-                    return;    
+                    return;
                 }
+                
                 container.data("file", this.files);
                 var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
                 container.data("file-name", getSelectedFileName);
                 fileName(getSelectedFileName);
                 onchange(getSelectedFileName);
+                
+                if (container.data("immediate-upload")) {
+                    nts.uk.ui.block.grayout();
+                    $fileInput.ntsFileUpload({ stereoType: container.data("stereotype") })
+                        .done(data => {
+                            uploadFinished.call(bindingContext.$data, data[0]);
+                        })
+                        .fail(data => {
+                            nts.uk.ui.dialog.alertError(data);
+                        })
+                        .always(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                }
             });
             
             $fileNameLabel.click(function() {
@@ -73,7 +92,10 @@ module nts.uk.ui.koExtentions {
             let text: string = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             
-            let container = $(element);
+            let container = $(element)
+                .data("stereotype", ko.unwrap(data.stereoType))
+                .data("immediate-upload", ko.unwrap(data.immediateUpload) === true);
+            
             container.find("input[type='file']").attr("accept", accept.toString());
             let $fileNameWrap = container.find(".nts-editor-wrapped");
             let $fileNameInput = container.find(".nts-input");

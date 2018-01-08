@@ -2,8 +2,9 @@ module nts.uk.request {
 
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
 
-    export type WebAppId = 'com' | 'pr' | 'at';
+    export type WebAppId = 'comjs' | 'com' | 'pr' | 'at';
     export const WEB_APP_NAME = {
+        comjs: 'nts.uk.com.js.web',
         com: 'nts.uk.com.web',
         pr: 'nts.uk.pr.web',
         at: 'nts.uk.at.web'
@@ -182,13 +183,15 @@ module nts.uk.request {
                 'PG-Path': location.current.serialize()
             }
         }).done(function(res) {
-            if (res !== undefined && isErrorToReject(res)) {
+            if (nts.uk.util.exception.isErrorToReject(res)) {
                 dfd.reject(res);
             } else if (res !== undefined && res.commandResult === true) {
                 dfd.resolve(res.value);
             } else {
                 dfd.resolve(res);
             }
+        }).fail(function () {
+            specials.errorPages.systemError();
         });
 
         return dfd.promise();
@@ -223,7 +226,7 @@ module nts.uk.request {
                 'PG-Path': location.current.serialize()
             },
             success: function(res) {
-                if (res !== undefined && isErrorToReject(res)) {
+                if (nts.uk.util.exception.isErrorToReject(res)) {
                     dfd.reject(res);
                 } else if (res !== undefined && res.commandResult === true) {
                     dfd.resolve(res.value);
@@ -232,16 +235,11 @@ module nts.uk.request {
                 }
             },
             error: function(xhr,status, error) {
-                alert(error);
-                dfd.reject(); 
+                specials.errorPages.systemError();
             }
         });
 
         return dfd.promise();
-    }
-	
-	function isErrorToReject(res) : boolean{
-        return res.businessException || res.optimisticLock;
     }
 	
     export function uploadFile(data: FormData, option?: any): JQueryPromise<any> {
@@ -323,7 +321,7 @@ module nts.uk.request {
 
         export function donwloadFile(fileId: string) {
             var dfd = $.Deferred();
-            $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+            $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
                 successCallback: function(url) {
                     dfd.resolve();
                 },
@@ -336,28 +334,97 @@ module nts.uk.request {
             return dfd.promise();
         }
         
+        export function deleteFile(fileId: string) {
+            return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
+        }
+        
         export function isFileExist(fileId: string): boolean {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
         }
         
+        export module errorPages {
+            
+            export function systemError() {
+                //jump('com', '/view/common/error/system/index.xhtml');
+            }
+            
+            export function sessionTimeout() {
+                jump('com', '/view/common/error/sessiontimeout/index.xhtml');
+            }
+            
+        }
     }
 
 
     export function jump(path: string, data?: any);
-    export function jump(webAppId: WebAppId, path: string, data?: any): string {
+    export function jump(webAppId: WebAppId, path: string, data?: any) {
+        
+        uk.ui.block.invisible();
+        
+        // handle overload
         if (typeof arguments[1] !== 'string') {
-            return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            return;
         }
-        if(webAppId==nts.uk.request.location.currentAppId){
-            path = resolvePath(path);
-        }else{
-            path = nts.uk.request.location.siteRoot
-            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-            .mergeRelativePath(path).serialize();
+        
+        if (webAppId != nts.uk.request.location.currentAppId) {
+            jumpToOtherWebApp.apply(this, arguments);
+            return;
         }
+        
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
 
-        window.location.href = path;
+        window.location.href = resolvePath(path);
+    }
+    
+    function jumpToOtherWebApp(webAppId: WebAppId, path: string, data?: any) {
+        
+        let resolvedPath = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                .mergeRelativePath(path).serialize();
+        
+        uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        
+        login.keepSerializedSession()
+            .then(() => {
+                return login.restoreSessionTo(webAppId);
+            })
+            .then(() => {
+                window.location.href = resolvedPath;
+            });
+    }
+    
+    export module login {
+        
+        let STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+        let STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
+        
+        export function keepUsedLoginPage() {
+            uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
+        }
+        
+        export function jumpToUsedLoginPage() {
+            uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
+                window.location.href = path;
+            }).ifEmpty(() => {
+                request.jump('/view/ccg/007/b/index.xhtml');
+            });
+        }
+        
+        export function keepSerializedSession() {
+            let dfd = $.Deferred();
+            request.ajax("/shr/web/session/serialize").done(res => {
+                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+                dfd.resolve();
+            });
+            
+            return dfd.promise();
+        }
+        
+        export function restoreSessionTo(webAppId: WebAppId) {
+            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+            return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket);
+        }
     }
 
     export function resolvePath(path: string) {

@@ -10,6 +10,9 @@ module nts.uk.ui.jqueryExtentions {
                 case "upload": {
                     return uploadImage($element, option);     
                 } 
+                case "uploadOriginal": {
+                    return uploadImageOriginal($element, option);     
+                } 
                 case "selectByFileId": {
                     return downloadImage($element, option);     
                 } 
@@ -32,10 +35,18 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function uploadImage($element: JQuery, option){
+            let dataFile = $element.find(".image-preview").attr("src");
+            return upload($element, option, dataFile);   
+        }
+        
+        function uploadImageOriginal($element: JQuery, option){
+            return upload($element, option, $element.data("original-img"));   
+        }
+        
+        function upload($element: JQuery, option, fileData){
             let dfd = $.Deferred();
             
-            let dataFile = $element.find(".image-preview").attr("src");
-            if (!isNotNull(dataFile)) {
+            if (!isNotNull(fileData)) {
                 
                 let cropper = $element.data("cropper");
                 let cropperData = cropper.getData(true);
@@ -43,23 +54,23 @@ module nts.uk.ui.jqueryExtentions {
                 var formData = {
                         "fileName": $element.data("file-name"),
                         "stereoType": isNotNull(option) ? "image" : option.stereoType,
-                        "file": dataFile,
+                        "file": fileData,
                         "format": $element.data("file-type"),
                         "x": cropperData.x,
                         "y": cropperData.y,
                         "width": cropperData.width,
                         "height": cropperData.height,
-                        "crop": nts.uk.util.isNullOrEmpty($element.data('checkbox')) ? false : $element.data('checkbox').checked() 
+                        "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked() 
                      };
                 
                 nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data) {
-                    if (data !== undefined && data.businessException) {
+                    if (nts.uk.util.exception.isBusinessError(data)) {
                         dfd.reject(data);
                     } else {
                         dfd.resolve(data);
                     }
                 }).fail(function() {
-                    dfd.reject({ message: "Please check your network", messageId: "0" });
+                    dfd.reject({ message: "Please check your network", messageId: "1" });
                 });
             }
             else {
@@ -79,7 +90,9 @@ module nts.uk.ui.jqueryExtentions {
             
         function clear($element: JQuery){
             let cropper = $element.data("cropper");
-            cropper.clear();
+            if (!isNotNull(cropper)) {
+                cropper.clear();    
+            }
         }   
     }
 }

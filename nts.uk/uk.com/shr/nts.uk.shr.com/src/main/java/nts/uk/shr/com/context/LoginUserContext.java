@@ -1,5 +1,6 @@
 package nts.uk.shr.com.context;
 
+import nts.uk.shr.com.context.loginuser.SelectedLanguage;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 public interface LoginUserContext {
@@ -57,4 +58,10 @@ public interface LoginUserContext {
 	 * @return roles
 	 */
 	LoginUserRoles roles();
+	
+	/**
+	 * Returns language ID
+	 * @return language ID
+	 */
+	SelectedLanguage language();
 }

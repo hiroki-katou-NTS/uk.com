@@ -10,11 +10,11 @@ import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
  * @param <S> self
  * @param <D> endpoint
  */
-public interface PersistentHistory<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
-		extends ContinuousHistory<S, D> {
+public interface PersistentHistory<H extends HistoryItem<S, D>, S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
+		extends ContinuousHistory<H, S, D> {
 
 	@Override
-	default void exValidateIfCanAdd(HistoryItem<S, D> itemToBeAdded) {
+	default void exValidateIfCanAdd(H itemToBeAdded) {
 		
 		// this should be restricted by UI
 		if (!itemToBeAdded.span().isEndMax()) {
@@ -23,7 +23,7 @@ public interface PersistentHistory<S extends GeneralPeriod<S, D>, D extends Comp
 	}
 	
 	@Override
-	default void exCorrectToRemove(HistoryItem<S, D> itemToBeRemoved) {
+	default void exCorrectToRemove(H itemToBeRemoved) {
 		
 		this.latestStartItem().ifPresent(latest -> {
 			latest.changeSpan(latest.span().newSpanWithMaxEnd());
@@ -31,7 +31,7 @@ public interface PersistentHistory<S extends GeneralPeriod<S, D>, D extends Comp
 	}
 	
 	@Override
-	default void exValidateIfCanChangeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
+	default void exValidateIfCanChangeSpan(H itemToBeChanged, S newSpan) {
 		
 		// this should be restricted by UI
 		if (!itemToBeChanged.end().equals(newSpan.end())) {

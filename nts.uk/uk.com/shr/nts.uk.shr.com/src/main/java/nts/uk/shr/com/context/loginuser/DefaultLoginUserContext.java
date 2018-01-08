@@ -39,6 +39,8 @@ public class DefaultLoginUserContext implements LoginUserContext, DeepClonable<D
 	private String employeeCode;
 	
 	private final LoginUserRoles roles = new DefaultLoginUserRoles();
+	
+	private SelectedLanguage language = new SelectedLanguage();
 
 	@Override
 	public boolean hasLoggedIn() {
@@ -83,6 +85,11 @@ public class DefaultLoginUserContext implements LoginUserContext, DeepClonable<D
 	@Override
 	public LoginUserRoles roles() {
 		return this.roles;
+	}
+
+	@Override
+	public SelectedLanguage language() {
+		return this.language;
 	}
 	
 	@Override

@@ -77,4 +77,14 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	public void setRoleIdforCompanyAdmin(String roleId) {
 		this.forCompanyAdmin = roleId;
 	}
+	
+	public void restore(LoginUserRoles source) {
+		this.forAttendance = source.forAttendance();
+		this.forPayroll = source.forPayroll();
+		this.forPersonnel = source.forPersonnel();
+		this.forPersonalInfo = source.forPersonalInfo();
+		this.forOfficeHelper = source.forOfficeHelper();
+		this.forSystemAdmin = source.forSystemAdmin();
+		this.forCompanyAdmin = source.forCompanyAdmin();
+	}
 }

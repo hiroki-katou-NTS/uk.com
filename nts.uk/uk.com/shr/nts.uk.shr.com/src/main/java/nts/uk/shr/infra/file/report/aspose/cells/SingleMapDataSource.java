@@ -6,11 +6,11 @@ import com.aspose.cells.ICellsDataTable;
 
 public class SingleMapDataSource implements ICellsDataTable {
 	
-    private final Map<String, Object> source;
+    private final Map<String, ?> source;
     private final String[] columns;
     private boolean hasFetched;
     
-    public SingleMapDataSource(Map<String, Object> source) {
+    public SingleMapDataSource(Map<String, ?> source) {
     	this.source = source;
     	this.columns = new String[source.size()];
     	source.keySet().toArray(this.columns);

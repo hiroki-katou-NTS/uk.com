@@ -9,7 +9,7 @@
 		
         <ui:composition template="../../../../master/base.xhtml">
             <ui:define name="htmlHead">
-            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	<script>var dialogSize = { width: 800, height: 800 };</script>
             	
 				<com:ValidatorScript>
                     nts.arc.time.YearMonth
@@ -46,9 +46,10 @@
 								name: '#[FND_L_SEARCH_RELEASE]',
 								value: value,
 								constraint: 'SampleCode',
-								required: true,
+								required: required,
 								enable: enable,
 								readonly: readonly}" />
+							<span data-bind="ntsCheckBox: {checked: required}">Required</span>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 							<button data-bind="click: clear">Clear Error</button>

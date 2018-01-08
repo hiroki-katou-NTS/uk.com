@@ -48,14 +48,18 @@ __viewContext.ready(function () {
         
         resetSelection(): void {
             var self = this;
-            self.items1([new Node('0001', 'サービス部', [
-                new Node('0001-1', 'サービス部1', []),
-                new Node('0001-2', 'サービス部2', []),
-                new Node('0001-3', 'サービス部3', [])
-            ]), new Node('0002', '開発部', [])]);
-            self.items2(self.items1());
-            self.singleSelectedCode('0002');
-            self.selectedCode(['0001-1', '0002']);
+//            self.items1([new Node('0001', 'サービス部', [
+//                new Node('0001-1', 'サービス部1', []),
+//                new Node('0001-2', 'サービス部2', []),
+//                new Node('0001-3', 'サービス部3', [])
+//            ]), new Node('0002', '開発部', [])]);
+            let x = self.items2().slice();
+            let y = x[0];
+            x[0]= x[1];
+            x[1] = y;
+            self.items2(x); 
+//            self.singleSelectedCode('0002');
+//            self.selectedCode(['0001-1', '0002']);
         }
         
         changeDataSource(): void {
@@ -74,7 +78,7 @@ __viewContext.ready(function () {
     
     class Node {
         code: string;
-        name: string;
+        name: string; 
         nodeText: string;
         custom: string;
         childs: Array<Node>;
