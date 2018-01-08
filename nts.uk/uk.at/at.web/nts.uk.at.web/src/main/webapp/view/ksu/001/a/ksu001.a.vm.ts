@@ -227,16 +227,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.lengthListSid = ko.pureComputed(() => {
                 return nts.uk.resource.getText('KSU001_54', [self.listSid().length.toString()]);
             });
-
-            //start
-            //            self.initCCG001();
-            //            self.initExTable();
-            //            self.initShiftCondition();
-            //get data ComPattern for screen Q
-            //            self.getDataComPattern();
-            // tap hop nhung ham can lay data ngay luc dau, se khong bi query nhieu lan vao database nua
-            //            self.getDataScheduleDisplayControl(); // return dataScheduleDisplayControl = {"symbolAtr","symbolHalfDayAtr","symbolHalfDayName"}
-            //            self.getDataWorkEmpCombine(); // return dataWorkEmpCombine = [{"workTypeCode","workTimeCode","symbolName"}]
         }
 
         /**
@@ -245,9 +235,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         startKSU001(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            //get data for screen O
-            $.when(__viewContext.viewModel.viewO.findDataForComboBox(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
-                //get state of list workTypeCode
+            // get data for screen O 
+            // getWorkTypeTimeAndStartEndDate: get data workType-workTime for 2 combo-box of screen O
+            // and startDate-endDate of screen A
+            $.when(__viewContext.viewModel.viewO.getWorkTypeTimeAndStartEndDate(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
+                // get state of list workTypeCode
                 // get data for screen A
                 let lstWorkTypeCode = [];
                 _.map(__viewContext.viewModel.viewO.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
@@ -255,7 +247,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
                 // get data for dialog C
                 self.initShiftCondition();
-                //init and get data for screen A
+                // init and get data for screen A
                 $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
                     self.initCCG001();
                     self.initExTable();
@@ -1027,7 +1019,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (itemDataTimeZone) {
                         itemDataSource.scheduleStartClock = itemDataTimeZone.scheduleStartClock;
                         itemDataSource.scheduleEndClock = itemDataTimeZone.scheduleEndClock;
-                    }else{
+                    } else {
                         itemDataSource.scheduleStartClock = null;
                         itemDataSource.scheduleEndClock = null;
                     }
@@ -1068,7 +1060,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let workTypeItem: any = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': item.workTypeCode });
                 symbolName = workTypeItem ? workTypeItem.symbolicName : null;
             } else {
-                let workTimeItem: any = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'siftCd': item.workTimeCode });
+                let workTimeItem: any = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': item.workTimeCode });
                 symbolName = workTimeItem ? workTimeItem.symbolName : null;
             }
             //state = 0 || 3 : rest || work all day
@@ -1174,7 +1166,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 lstWorkTypeCode.push(item.workTypeCode);
             });
             _.each(__viewContext.viewModel.viewO.listWorkTime(), (item) => {
-                lstWorkTimeCode.push(item.siftCd);
+                lstWorkTimeCode.push(item.workTimeCode);
             });
 
             obj = {
@@ -1546,7 +1538,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (errSplits.length == 1) {
                     errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
                 } else {
-                    errors.push({ message: nts.uk.resource.getMessage(errSplits[0],nts.uk.resource.getText(errSplits[1]),nts.uk.resource.getText(errSplits[2])), messageId: errSplits[0], supplements: {} });
+                    errors.push({ message: nts.uk.resource.getMessage(errSplits[0], nts.uk.resource.getText(errSplits[1]), nts.uk.resource.getText(errSplits[2])), messageId: errSplits[0], supplements: {} });
                 }
             });
 
@@ -1910,7 +1902,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTypeName = null;
                     }
 
-                    let workTime = _.find(listWorkTime, ['siftCd', obj.workTimeCode]);
+                    let workTime = _.find(listWorkTime, ['workTimeCode', obj.workTimeCode]);
                     if (workTime) {
                         workTimeCode = obj.workTimeCode;
                         workTimeName = workTime.abName;
