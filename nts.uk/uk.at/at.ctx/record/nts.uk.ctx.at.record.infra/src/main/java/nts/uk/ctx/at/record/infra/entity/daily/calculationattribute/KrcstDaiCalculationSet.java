@@ -82,9 +82,9 @@ public class KrcstDaiCalculationSet extends UkJpaEntity implements Serializable 
     @NotNull
     @Column(name = "LEAVE_EARLY_SET")
     public int leaveEarlySet;
-//    @Basic(optional = false)
-//    @NotNull
-//    @Column(name = "DIVERGENCE_TIME")
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "DIVERGENCE_TIME")
     public int divergenceTime;
 
     public KrcstDaiCalculationSet() {
