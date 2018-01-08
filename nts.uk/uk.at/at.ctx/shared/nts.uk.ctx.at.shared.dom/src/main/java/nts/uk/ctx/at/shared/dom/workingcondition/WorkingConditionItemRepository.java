@@ -29,6 +29,15 @@ public interface WorkingConditionItemRepository {
 	 * @return the optional
 	 */
 	Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+	
+	/**
+	 * Gets the by sid and hist id.
+	 *
+	 * @param employeeId the employee id
+	 * @param historyId the history id
+	 * @return the by sid and hist id
+	 */
+	Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String historyId);
 
 	/**
 	 * Adds the.
