@@ -2,7 +2,7 @@
 	padding: 27px 0px 0px 10px;
 	float: left;
 	background-color: #E0F59E;
-	width: 352px;
+	width: 300px;
     height: 410px;
     margin-top: 40px;
 	border-radius: 7px;
@@ -15,15 +15,7 @@
 	margin-top: 13px;
 	width: calc(100% - 550px);
 }
-
-.control-group td {
-	padding-bottom: 10px;
-	padding-left: 10px;
-}
-
-
-/* tab2 */
-table th, table td {
-    padding: 5px 5px;
-    border: 1px solid #ccc;
+.container{
+	width: 1320px !important;
+	
 }

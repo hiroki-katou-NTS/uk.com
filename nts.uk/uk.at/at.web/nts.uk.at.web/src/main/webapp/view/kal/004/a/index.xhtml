@@ -12,10 +12,12 @@
 				nts.uk.ctx.at.function.dom.alarm.AlarmPatternName
             </com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="../share/model.js" />
 			<com:stylefile path="kal004.a.style.css" />
 			<com:scriptfile path="kal004.a.service.js" />
 			<com:scriptfile path="kal004.a.start.js" />
 			<com:scriptfile path="kal004.a.vm.js" />
+			<com:scriptfile path="setpermission/kal004.tab3.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -32,9 +34,9 @@
 					<div id="left-content" >
 						<table id="single-list" data-bind="ntsGridList: {								
 								height: 350,
-								dataSource: items,
+								dataSource: alarmSource,
 								primaryKey: 'alarmPatternCD',
-								columns: columns2,
+								columns: alarmHeader,
 								value: currentCode
 							}"></table>				
 					</div>
@@ -64,19 +66,29 @@
 									</td>
 								</tr>
 						</table>
-						<div id="tab-panel"
-							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<div class="tab-content-1" >
-								<span>Tab Content 1</span><br />
-<!-- 								<ui:include src="../tab1/index.xhtml" /> -->
+								<div id="swap-list" data-bind="ntsSwapList: {
+									showSearchBox: { showLeft : true, showRight: true},
+									height: 300,
+									dataSource: checkConditionList,
+									primaryKey: 'GUID',
+									columns: checkHeader,
+									value: currentCodeListSwap,
+									searchMode: 'highlight',
+									multiple: true,
+						            searchCriterion:['checkConditonCode','checkConditionName'],
+						            enableRowNumbering: false ,
+						            showNumbering: false,
+						            showSort:{ showLeft : false, showRight: false}									
+								  }"></div>
 							</div>
 							<div class="tab-content-2">
 								<span>Tab Content 2</span><br />
 									<ui:include src="Tab2/index.xhtml" /> 
 							</div>
-							<div class="tab-content-3">
-								<span>Tab Content 3</span><br />
-<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							<div class="tab-content-3" data-bind="with: setPermissionModel" >
+							<ui:include src="setpermission/index.xhtml" />
 							</div>
 						</div>											
 					</div>
