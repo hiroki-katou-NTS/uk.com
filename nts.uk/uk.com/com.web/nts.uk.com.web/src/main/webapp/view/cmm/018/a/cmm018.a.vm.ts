@@ -336,6 +336,7 @@ module nts.uk.com.view.cmm018.a {
                        let dataEmployee: vmbase.EmployeeSearchDto[] = [];
                        dataEmployee.push(data);
                        self.selectedEmployee(dataEmployee);
+                       self.convertEmployeeCcg01ToKcp009(dataEmployee);
                    },
                    onSearchOfWorkplaceClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
                        self.showinfoSelectedEmployee(true);
@@ -364,8 +365,20 @@ module nts.uk.com.view.cmm018.a {
                 self.employeeInputList([]);
                 _.each(dataList, function(item){
                         self.employeeInputList.push(new vmbase.EmployeeKcp009(item.employeeId, item.employeeCode,item.employeeName,item.workplaceName,""));
-                    });
-                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                });
+               $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                if(dataList.length == 0){
+                   self.selectedItem('');
+               }else{
+                   let item = self.findIdSelected(dataList,self.selectedItem());
+                   if(item == undefined) self.selectedItem(dataList[0].employeeId);
+               }
+                
+            }
+            findIdSelected(dataList: Array<any>, selectedItem: string): any{
+                return _.find(dataList, function(obj){
+                    return obj.employeeId == selectedItem;
+                })
             }
             /**
              * open dialog CDL008

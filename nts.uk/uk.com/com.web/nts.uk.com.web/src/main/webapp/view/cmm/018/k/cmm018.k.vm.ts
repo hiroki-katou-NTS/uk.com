@@ -269,7 +269,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             baseDate: KnockoutObservable<any>;
             selectedWorkplaceId: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
-            systemType : KnockoutObservableArray<any>;
+            systemType : number;
         }
     class SimpleObject {
             key: KnockoutObservable<string>;
