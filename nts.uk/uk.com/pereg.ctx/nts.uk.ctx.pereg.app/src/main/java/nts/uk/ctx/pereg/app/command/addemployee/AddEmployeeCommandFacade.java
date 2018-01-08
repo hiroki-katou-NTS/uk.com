@@ -197,7 +197,7 @@ public class AddEmployeeCommandFacade {
 
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
-			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getSaveData().getValue(),
+			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getSaveData().getValue().toString(),
 					item.getDataType().value));
 		});
 		if (CollectionUtil.isEmpty(items)) {
