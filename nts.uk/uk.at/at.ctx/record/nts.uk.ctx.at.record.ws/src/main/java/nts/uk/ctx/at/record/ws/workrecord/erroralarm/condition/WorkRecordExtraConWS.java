@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.condition.WorkReco
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkRecordExtraConDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkRecordExtraConFinder;
 
-@Path("auth/condition/workRecordextracon")
+@Path("at/record/condition/workRecordextracon")
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkRecordExtraConWS {
 	

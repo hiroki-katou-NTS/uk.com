@@ -26,6 +26,9 @@ module kal004.a.model {
         // SetPermission
         setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
 
+        // SetPermission
+        alarmPermissionSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
+
         constructor() {
             let self = this;
             self.alarmSource = ko.observableArray([]);
@@ -62,19 +65,19 @@ module kal004.a.model {
             let self = this;
 
 
-            service.getCheckConditionCode().done((listCheckCondition: Array<share.ModelCheckConditonCode>) => {
-                self.checkConditionList(_.cloneDeep(listCheckCondition));
-                self.checkSource = _.cloneDeep(listCheckCondition);
+            service.getCheckConditionCode().done((res1) => {
+                self.checkConditionList(_.cloneDeep(res1));
+                self.checkSource = _.cloneDeep(res1);
 
-                service.getAlarmPattern().done((data) => {
-                    self.alarmSource(data);
+                service.getAlarmPattern().done((res) => {
+                    self.alarmSource(res);
 
                     self.currentCode.subscribe((newV) => {
                         self.alarmCodeChange(newV);
                     });
 
-                    if (data.length > 0) {
-                        self.currentCode(data[0].alarmPatternCD);
+                    if (res.length > 0) {
+                        self.currentCode(res[0].alarmPatternCD);
                     }
                 }).fail((error) => {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId });
@@ -90,21 +93,20 @@ module kal004.a.model {
             if (newV == '') self.createMode(true);
             else {
                 self.createMode(false);
-                let currentAlarm = _.find(self.alarmSource(), (a) => { return a.alarmPatternCD == newV });
+                let currentAlarm = _.find(self.alarmSource(), function(a) { return a.alarmPatternCD == newV });
                 self.alarmCode(currentAlarm.alarmPatternCD);
                 self.alarmName(currentAlarm.alarmPatternName);
 
-                // Tab 1
                 let currentCodeListSwap = [];
                 let checkSource = _.cloneDeep(self.checkSource);
-                
+
                 currentAlarm.checkConList.forEach((x) => {
                     x.checkConditionCodes.forEach((y) => {
                         let CD = _.find(_.cloneDeep(self.checkSource), { 'category': x.alarmCategory, 'checkConditonCode': y });
                         currentCodeListSwap.push(_.cloneDeep(CD));
                     });
                 });
-                
+
                 _.remove(checkSource, (leftItem) => {
                     let optItem = _.find(currentCodeListSwap, (rightItem) => {
                         return leftItem.GUID == rightItem.GUID;
@@ -117,12 +119,9 @@ module kal004.a.model {
                 self.currentCodeListSwap(currentCodeListSwap);
 
             }
+
         }
-
-
     }
-
-
 
 }
 

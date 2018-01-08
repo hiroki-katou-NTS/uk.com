@@ -23,7 +23,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KrcmtFixedConditionWorkRecord;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -52,10 +51,6 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	@Column(name = "ADD_APPLICATION")
 	public int addApplication;
 	
-	@OneToMany(mappedBy="dailyalarmcondition", cascade = CascadeType.ALL)
-	@JoinTable(name = "KRCMT_FIX_CON_WORK_RECORD")
-	public List<KrcmtFixedConditionWorkRecord> fixedConditionWorkRecord;
-	
 	@OneToOne
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
@@ -65,7 +60,7 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	public KfnmtAlarmCheckConditionCategory condition;
 
 	public KrcmtDailyAlarmCondition(String dailyAlarmConID, String companyId, String code, int category,
-			int conExtractedDaily, int addApplication, List<KrcmtFixedConditionWorkRecord> fixedConditionWorkRecord) {
+			int conExtractedDaily, int addApplication) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.companyId = companyId;
@@ -73,7 +68,6 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 		this.category = category;
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
-		this.fixedConditionWorkRecord = fixedConditionWorkRecord;
 	}
 	
 	@Override
@@ -88,9 +82,7 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 					code.v(),
 					category.value,
 					domain.getConExtractedDaily().value,
-					domain.isAddApplication()?1:0,
-					domain.getListFixedConditionWorkRecord().stream()
-						.map(c->KrcmtFixedConditionWorkRecord.toEntity(c)).collect(Collectors.toList())
+					domain.isAddApplication()?1:0
 				);
 	}
 	
@@ -98,8 +90,7 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 		return new DailyAlarmCondition(
 				this.dailyAlarmConID,
 				EnumAdaptor.valueOf(this.conExtractedDaily, ConExtractedDaily.class) ,
-				this.addApplication == 1?true:false,
-				this.fixedConditionWorkRecord.stream().map(c->c.toDomain()).collect(Collectors.toList())
+				this.addApplication == 1?true:false
 				);
 	}
 
