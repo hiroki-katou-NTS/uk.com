@@ -10,6 +10,11 @@
 	float: left;
 }
 
+.national_string {
+	width: 200px;
+	float: left;
+}
+
 #content-left {
 	padding: 10px;
 }
@@ -21,6 +26,10 @@
 }
 
 .line_col_2>span {
+	line-height: 37px;
+}
+
+.national_string>span {
 	line-height: 37px;
 }
 
@@ -36,6 +45,6 @@
 	margin-left: 130px !important;
 }
 
-.currency:after{
+.currency:after {
 	content: '¥';
 }
