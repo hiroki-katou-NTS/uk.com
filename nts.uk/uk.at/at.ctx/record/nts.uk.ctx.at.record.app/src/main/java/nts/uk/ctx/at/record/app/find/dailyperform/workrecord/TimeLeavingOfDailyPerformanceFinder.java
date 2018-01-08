@@ -34,8 +34,8 @@ public class TimeLeavingOfDailyPerformanceFinder extends FinderFacade {
 			dto.setWorkAndLeave(ConvertHelper.mapTo(domain.getTimeLeavingWorks(),
 					(c) -> new WorkLeaveTimeDto(
 							c.getWorkNo().v(), 
-							getActualTimeStamp(c.getAttendanceStamp().get()),
-							getActualTimeStamp(c.getLeaveStamp().get()))));
+							getActualTimeStamp(c.getAttendanceStamp().orElse(null)),
+							getActualTimeStamp(c.getLeaveStamp().orElse(null)))));
 		}
 		return dto;
 	}
