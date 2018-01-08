@@ -33,7 +33,7 @@ public class BreakTimeSheetDailyPerformDto {
 	private Integer duringWork;
 
 	/** 補正後時間帯: 休憩時間帯 */
-	// @AttendanceItemLayout(layout = "D", isList = true, listMaxLength = ?)
+	// @AttendanceItemLayout(layout = "D", isList = true, listMaxLength = ?, setFieldWithIndex = "breakFrameNo")
 	private List<BreakTimeSheetDto> correctedTimeSheet;
 
 	/** 休憩回数: 休憩外出回数 */

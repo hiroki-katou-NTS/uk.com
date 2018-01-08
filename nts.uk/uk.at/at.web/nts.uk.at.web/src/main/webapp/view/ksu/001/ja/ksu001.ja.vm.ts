@@ -271,7 +271,7 @@ module nts.uk.at.view.ksu001.ja.viewmodel {
                 self.isDeleteEnable(true);
                 dfd.resolve();
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 dfd.reject();
             });
             return dfd.promise();

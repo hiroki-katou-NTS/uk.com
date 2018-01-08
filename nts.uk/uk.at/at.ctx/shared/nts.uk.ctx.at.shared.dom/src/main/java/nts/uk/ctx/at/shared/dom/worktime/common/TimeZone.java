@@ -50,11 +50,9 @@ public class TimeZone extends DomainObject {
 	 * 
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
-	@Override
-	public void validate() {
-		super.validate();
+	public void validateRange(String param) {
 		if (this.start.greaterThanOrEqualTo(this.end)) {
-			throw new BusinessException("Msg_770");
+			throw new BusinessException("Msg_770", param);
 		}
 	}
 
@@ -69,7 +67,7 @@ public class TimeZone extends DomainObject {
 		return !(this.end.lessThanOrEqualTo(timezone.getStart())
 				|| this.start.greaterThanOrEqualTo(timezone.getEnd()));
 	}
-
+	
 	/**
 	 * Checks if is start less than.
 	 *

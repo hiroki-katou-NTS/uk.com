@@ -152,9 +152,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		}
 
 		// エラーチェック
-//		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
-//				reflectStamp.getLstTimeLeavingOfDailyPerformance(), reflectStamp.getLstOutingTimeOfDailyPerformance(), 
-//				reflectStamp.getLstTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
+		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+				reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(), 
+				reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
 		
 		return reflectStamp;
 	}

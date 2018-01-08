@@ -131,6 +131,22 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 //				throw new BusinessException("Msg_755");
 //			}
 		});
+		
+		//validate Msg_770 for list work
+		this.workTimezone.getLstWorkingTimezone().stream().forEach(item->{
+			item.getTimezone().validateRange("KMK003_86");
+		});
+		
+		// validate Msg_770 for list ot
+		this.workTimezone.getLstOTTimezone().stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_89");
+		});
+		
+		// validate Msg_770 for rest time
+		this.restTimezone.getLstTimezone().stream().forEach(item -> {
+			item.validateRange("KMK003_20");
+		});
+
 	}
 
 }
