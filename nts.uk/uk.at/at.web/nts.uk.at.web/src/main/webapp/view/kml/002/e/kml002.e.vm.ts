@@ -526,13 +526,13 @@ module nts.uk.at.view.kml002.e.viewmodel {
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             var dailyAttendanceAtrs = [];
             dailyAttendanceAtrs.push(DailyAttendanceAtr.DAILY);
-            var param = {
+            var param1 = {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
-                scheduleAtr: 2,
+                scheduleAtr: 6,
                 budgetAtr: data.attributeId,
                 unitAtr: 0
             };
-            service.getDailyItems(param).done(function(data) {
+            service.getDailyItems(param1).done(function(data) {
                 let temp = [];
                 let items = _.sortBy(data, ['companyId', 'dispOrder']);
                 _.forEach(items, function(item: service.BaseItemsDto) {
