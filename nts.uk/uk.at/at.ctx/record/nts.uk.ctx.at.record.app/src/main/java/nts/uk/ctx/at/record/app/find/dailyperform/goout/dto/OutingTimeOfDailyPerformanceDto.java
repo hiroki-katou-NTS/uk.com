@@ -16,6 +16,6 @@ public class OutingTimeOfDailyPerformanceDto implements ConvertibleAttendanceIte
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", isList = true, listMaxLength = 10)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", isList = true, listMaxLength = 10, setFieldWithIndex = "workNo")
 	private List<OutingTimeZoneDto> timeZone;
 }

@@ -42,7 +42,7 @@ public class GoOutTimeSheetDailyPerformDto {
 	private int goOutReason;
 
 	/** 補正後時間帯: 外出時間帯 */
-	@AttendanceItemLayout(layout = "H", isList = true, jpPropertyName = "補正後時間帯", listMaxLength = 10)
+	@AttendanceItemLayout(layout = "H", isList = true, jpPropertyName = "補正後時間帯", listMaxLength = 10, setFieldWithIndex = "outingFrameNo")
 	private List<GoOutTimeDto> afterCorrectedTimeSheet;
 
 	public String goOutReason() {
