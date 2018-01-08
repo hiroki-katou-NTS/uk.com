@@ -65,13 +65,13 @@ public class SettingItemDto {
 
 		switch (saveDataType) {
 		case DATE:
-			resultDto = new SaveDataDto(SaveDataType.STRING, stringValue);
+			resultDto = new SaveDataDto(SaveDataType.DATE, dateValue);
 			break;
 		case NUMBERIC:
 			resultDto = new SaveDataDto(SaveDataType.NUMBERIC, intValue);
 			break;
 		case STRING:
-			resultDto = new SaveDataDto(SaveDataType.DATE, dateValue);
+			resultDto = new SaveDataDto(SaveDataType.DATE, stringValue);
 			break;
 		}
 
