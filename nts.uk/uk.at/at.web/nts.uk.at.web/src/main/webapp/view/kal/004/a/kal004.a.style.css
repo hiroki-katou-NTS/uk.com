@@ -20,3 +20,10 @@
 	padding-bottom: 10px;
 	padding-left: 10px;
 }
+
+
+/* tab2 */
+table th, table td {
+    padding: 5px 5px;
+    border: 1px solid #ccc;
+}

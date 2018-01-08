@@ -8,10 +8,10 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 750, height: 450 };</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
+			<script>var dialogSize = { width: 750, height: 500 };</script>
+			<com:EnumScript>
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
+			</com:EnumScript>
 			<com:stylefile path="kal004.b.style.css" />
 			<com:scriptfile path="kal004.b.service.js" />
 			<com:scriptfile path="kal004.b.start.js" />
@@ -35,16 +35,17 @@
 							<span class="label" >#{i18n.getText('KAL004_35')}</span>								
 						</div>
 						<div class="month">
-							<input type="radio" name="strRadio" data-bind="checkedValue: 1, checked: strSelected, enable: enable" />
+							<input type="radio" name="strRadio" data-bind="checkedValue: 1, checked: strSelected,, enable: enable" />
 							<div class="combo-box" tabindex="2"
 								data-bind="ntsComboBox: {
-								options: listItems,
+								options: strListSpecifiedMonth,
 								optionsValue: 'value',
-								value: selected,
+								value: strMonthSelected,
+								visibleItemsCount: 4,
 								optionsText: 'name',
 								enable: (strSelected() == 1),
 								columns: [
-									{ prop: 'description', length: 5 }
+									{ prop: 'name', length: 5 }
 								]}"></div>
 							<span class="label" data-bind="text: txtMonth"></span>
 						</div>
@@ -60,16 +61,17 @@
 							<span class="label" >#{i18n.getText('KAL004_35')}</span>								
 						</div>
 						<div class="month">
-							<input type="radio" name="endRadio" data-bind="checkedValue: 1, checked: endSelected, enable: (strSelected() == 1)" />
+							<input type="radio" name="endRadio" data-bind="checkedValue: 1, checked: endSelected, enable: strSelected() == 1 " />
 							<div class="combo-box" tabindex="1"
 								data-bind="ntsComboBox: {
-								options: listItems,
+								options: endListSpecifiedMonth,
 								optionsValue: 'value',
-								value: selected,
+								value: endMonthSelected,
 								optionsText: 'name',
-								enable: (endSelected() == 1),
+								visibleItemsCount: 4,
+								enable: (strSelected() == 1 &amp;&amp; endSelected() == 1),
 								columns: [
-									{ prop: 'description', length: 5 }
+									{ prop: 'name', length: 5 }
 								]}"></div>
 							<span class="label" data-bind="text: txtMonth"></span>
 						</div>
