@@ -126,7 +126,7 @@ module kmk003.base.timerange {
                 }
                 return false;
             }
-            return true;
+            return $('#' + startInputId).ntsError('hasError') && $('#' + endInputId).ntsError('hasError');
         }
         
         private convertTimeInput(id: string): number {
