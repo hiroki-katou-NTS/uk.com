@@ -103,6 +103,9 @@ module kmk003.base.timerange {
             var startTime = isGlobalValidate ? self.convertTimeInput(startInputId) : self.startTime();
             var endTime = isGlobalValidate ? self.convertTimeInput(endInputId) : self.endTime();
             var paramId = element.data('param');
+            if($('#' + startInputId).prop('disabled') && $('#' + endInputId).prop('disabled')) {
+                return true;
+            }
             
             // clear error
             $('#' + startInputId).ntsError('clear');
@@ -123,7 +126,7 @@ module kmk003.base.timerange {
                 }
                 return false;
             }
-            return true
+            return true;
         }
         
         private convertTimeInput(id: string): number {
