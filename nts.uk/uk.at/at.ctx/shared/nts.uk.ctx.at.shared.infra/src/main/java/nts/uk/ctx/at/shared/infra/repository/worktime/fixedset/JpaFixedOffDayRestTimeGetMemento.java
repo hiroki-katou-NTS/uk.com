@@ -47,6 +47,7 @@ public class JpaFixedOffDayRestTimeGetMemento implements FixRestTimezoneSetGetMe
 		return this.lstEntity.stream()
 				.map(entity -> new DeductionTime(
 						new JpaFixedRestTZDeductionTimeGetMemento<KshmtFixedHolRestSet>(entity)))
+				.sorted((item1, item2) -> item1.getStart().v() - item2.getStart().v())
 				.collect(Collectors.toList());
 	}
 
