@@ -1,5 +1,5 @@
 #contents-area {
-	width: 1280px;
+	width: 1290px;
 	height: 100%;
 	/* overflow-y: hidden !important; */
 	overflow-y: inherit !important;
@@ -72,7 +72,7 @@
 
 #content-right {
 	float: left;
-	width: 930px;
+	width: 940px;
 }
 
 #category_grid_container {
@@ -132,7 +132,7 @@ input.ntsSearchBox {
 
 #sub-right {
 	float: left;
-	width: 630px;
+	width: 645px;
 	margin-left: 30px;
 }
 
