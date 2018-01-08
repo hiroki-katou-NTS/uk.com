@@ -218,8 +218,9 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         validateRange() {
             let self = this;
             if (self.currentAtdItemCondition.conditionType() === 0 && self.currentAtdItemCondition.compareOperator() > 5) {
-                if (self.currentAtdItemCondition.compareStartValue() >= self.currentAtdItemCondition.compareEndValue()) {
-                    $('.value-input').ntsError('set', '開始時刻と終了値の入力が不正です');
+                if (parseInt(self.currentAtdItemCondition.compareStartValue()) >= parseInt(self.currentAtdItemCondition.compareEndValue())) {
+                    $('#startValue').ntsError('set', {messageId:"Msg_927"});
+                    $('#endValue').ntsError('set', {messageId:"Msg_927"});
                 } else {
                     $('.value-input').ntsError('clear');
                 }
