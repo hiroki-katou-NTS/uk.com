@@ -987,12 +987,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.displayRightOperator("≦");
                     break;
                 case 8:
-                    self.displayLeftOperator("＞");
-                    self.displayRightOperator("＞");
+                    self.displayLeftOperator("＜");
+                    self.displayRightOperator("＜");
                     break;
                 case 9:
-                    self.displayLeftOperator("≧");
-                    self.displayRightOperator("≧");
+                    self.displayLeftOperator("≦");
+                    self.displayRightOperator("≦");
                     break;
             }
         }
