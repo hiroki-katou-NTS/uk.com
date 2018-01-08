@@ -488,8 +488,9 @@ module nts.uk.at.view.kmk003.a {
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
 
-                // focus worktime atr
-                $('#cbb-worktime-atr').focus();
+                // focus worktimecode
+                $('#inp-worktimecode').focus();
+                
                 self.isLoading(true);
             }
 
