@@ -370,8 +370,7 @@ module nts.uk.ui.validation {
                 if (parts[1] !== undefined && parts[1].length > mantissaMaxLength) validateFail = true;
             }
             if(!(/^-?\d*(\.\d+)?$/).test(inputText)){
-                result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]), message.id);  
-                return result;
+                validateFail = true;
             }
             
             if (validateFail) {
