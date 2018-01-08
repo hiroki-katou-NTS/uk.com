@@ -239,8 +239,7 @@ module a5 {
                 dataSource: ko.observableArray([]),
                 isMultipleSelect: true,
                 columns: self.getTimezoneColumns(),
-                tabindex: -1,
-                helpImageUrl: 'test'
+                tabindex: 1,
             };
         }
 
@@ -254,8 +253,8 @@ module a5 {
                 dataSource: ko.observableArray([]),
                 isMultipleSelect: true,
                 columns: self.getRestSetColumns(),
-                tabindex: -1,
-                helpImageUrl: 'test'
+                tabindex: 1,
+                helpImageUrl: 'img/IMG_KMK003_2.png'
             };
         }
 
