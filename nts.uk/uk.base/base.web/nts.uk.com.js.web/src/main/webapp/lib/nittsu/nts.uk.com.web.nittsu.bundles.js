@@ -11512,20 +11512,23 @@ var nts;
                                 settings.activate.call(this, event, info);
                             }
                         });
-                        active(control, settings.active);
+                        active(control, settings.active, true);
                         return control;
                     }
-                    function active(control, index) {
+                    function active(control, index, isInit) {
+                        if (isInit === void 0) { isInit = false; }
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
                         control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
                         var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
                         if ($displayPanel.length > 0) {
-                            if (currentTabIndex !== undefined) {
-                                errorMementos[currentTabIndex] = ui.errors.errorsViewModel().stashMemento();
-                            }
-                            if (errorMementos[index] !== undefined) {
-                                ui.errors.errorsViewModel().restoreFrom(errorMementos[index]);
+                            if (!isInit) {
+                                if (currentTabIndex !== undefined) {
+                                    errorMementos[currentTabIndex] = ui.errors.errorsViewModel().stashMemento();
+                                }
+                                if (errorMementos[index] !== undefined) {
+                                    ui.errors.errorsViewModel().restoreFrom(errorMementos[index]);
+                                }
                             }
                             currentTabIndex = index;
                             $displayPanel.removeClass("disappear");
