@@ -9072,6 +9072,8 @@ var nts;
                         features.push({
                             name: "RowSelectors",
                             enableCheckBoxes: showCheckBox,
+                            rowSelectorColumnWidth: showCheckBox ? 40 : 0,
+                            enableRowNumbering: false,
                             checkBoxMode: "biState"
                         });
                         features.push({ name: "Resizing" });
