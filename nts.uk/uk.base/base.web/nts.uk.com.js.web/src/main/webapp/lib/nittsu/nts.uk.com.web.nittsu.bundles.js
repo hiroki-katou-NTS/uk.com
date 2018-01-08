@@ -3354,9 +3354,6 @@ var nts;
                         else if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber, undefined, message)) {
                             validateFail = true;
                         }
-                        if (!(/^-?\d*(\.\d+)?$/).test(inputText)) {
-                            validateFail = true;
-                        }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
                         if (!util.isNullOrUndefined(this.constraint.max)) {
@@ -3374,6 +3371,9 @@ var nts;
                             var parts = String(value).split(".");
                             if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
                                 validateFail = true;
+                        }
+                        if (!(/^-?\d*(\.\d+)?$/).test(inputText)) {
+                            validateFail = true;
                         }
                         if (validateFail) {
                             result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
@@ -6255,9 +6255,22 @@ var nts;
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
-                                $input.ntsError('clear');
                                 if (!result.isValid) {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    var oldError = $("#companyCode").ntsError('getError');
+                                    if (nts.uk.util.isNullOrUndefined(oldError)) {
+                                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    }
+                                    else {
+                                        if (oldError.errorCode !== result.errorCode) {
+                                            $input.ntsError('clear');
+                                            setTimeout(function () {
+                                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                            }, 10);
+                                        }
+                                    }
+                                }
+                                else {
+                                    $input.ntsError('clear');
                                 }
                             }
                         });
