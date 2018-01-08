@@ -99,7 +99,7 @@ module kml002.l.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(()=>{
                     nts.uk.ui.block.clear();    
                 });

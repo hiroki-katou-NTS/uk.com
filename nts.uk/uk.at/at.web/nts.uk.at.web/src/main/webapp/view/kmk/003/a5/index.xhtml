@@ -38,7 +38,9 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_51')}</label>
 				</h3>
-				<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
+				<div class ="accordion-content">
+					<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
+				</div>
 			</div>
 			<!-- One day -->
 			<!-- Morning -->
@@ -46,7 +48,9 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_60')}</label>
 				</h3>
-				<div id="fixedMorning" data-bind="ntsFixTableCustom: {option: morningFixedTimezoneOption}"></div>
+				<div class ="accordion-content">
+					<div id="fixedMorning" data-bind="ntsFixTableCustom: {option: morningFixedTimezoneOption}"></div>
+				</div>
 			</div>
 			<!-- Morning -->
 			<!-- Afternoon -->
@@ -54,7 +58,9 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_61')}</label>
 				</h3>
-				<div id="fixedAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFixedTimezoneOption}"></div>
+				<div class ="accordion-content">
+					<div id="fixedAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFixedTimezoneOption}"></div>
+				</div>
 			</div>
 			<!-- Afternoon -->
 		</com:ko>
@@ -73,7 +79,9 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_51')}</label>
 				</h3>
-				<div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
+				<div class ="accordion-content">
+					<div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
+				</div>
 			</div>
 			<!-- One day -->
 			<!-- Morning -->
@@ -81,7 +89,9 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_60')}</label>
 				</h3>
-				<div id="flexMorning" data-bind="ntsFixTableCustom: {option: morningFlexTimezoneOption}"></div>
+				<div class ="accordion-content">
+					<div id="flexMorning" data-bind="ntsFixTableCustom: {option: morningFlexTimezoneOption}"></div>
+				</div>
 			</div>
 			<!-- Morning -->
 			<!-- Afternoon -->
@@ -89,7 +99,9 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_61')}</label>
 				</h3>
-				<div id="flexAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFlexTimezoneOption}"></div>
+				<div class ="accordion-content">
+					<div id="flexAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFlexTimezoneOption}"></div>
+				</div>
 			</div>
 			<!-- Afternoon -->
 		</com:ko>
@@ -100,8 +112,6 @@
 		<!-- Simple mode -->
 		<com:ko tag="if" bind="!isDetailMode()">
 			<div>
-					<button style="margin-left: 20px; display: none;"
-						data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_2.png', position: 'right top' }">?</button>
 					<div id="flexRestOneDay" class="default-input-width"
 						data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
 					<com:ko tag="with" bind="oneDayFlexRestSet">
@@ -149,9 +159,7 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_51')}</label>
 				</h3>
-				<div>
-					<button style="margin-left: 20px; display: none;"
-						data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_2.png', position: 'right top' }">?</button>
+				<div class="accordion-content">
 					<div id="flexRestOneDay" class="default-input-width"
 						data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
 					<com:ko tag="with" bind="oneDayFlexRestSet">
@@ -197,7 +205,7 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_60')}</label>
 				</h3>
-				<div class="control-group">
+				<div class="accordion-content">
 					<div id="flexRestMorning" class="default-input-width"
 						data-bind="ntsFixTableCustom: {option: morningFlexRestSetOption}"></div>
 					<com:ko tag="with" bind="morningFlexRestSet">
@@ -243,7 +251,7 @@
 				<h3>
 					<label>#{i18n.getText('KMK003_61')}</label>
 				</h3>
-				<div class="control-group">
+				<div class="accordion-content">
 					<div id="flexRestAfternoon" class="default-input-width"
 						data-bind="ntsFixTableCustom: {option: afternoonFlexRestSetOption}"></div>
 					<com:ko tag="with" bind="afternoonFlexRestSet">

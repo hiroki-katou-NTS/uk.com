@@ -37,7 +37,12 @@ module kcp.share.tree {
         isShowAlreadySet: boolean;
 
         /**
-         * is Multi select.
+         * is Multi use (複数使用区分). Setting use multiple components?
+         */
+        isMultipleUse: boolean;
+        
+        /**
+         * is Multi select (選択モード). Setting multiple selection in grid.
          */
         isMultiSelect: boolean;
 
@@ -139,7 +144,8 @@ module kcp.share.tree {
         selectedWorkplaceIds: KnockoutObservable<any>;
         isShowSelectButton: boolean;
         treeComponentColumn: Array<any>;
-        isMultiple: boolean;
+        isMultipleUse: boolean;
+        isMultiSelect: boolean;
         isDialog: boolean;
         hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
@@ -177,6 +183,8 @@ module kcp.share.tree {
                 { level: 10, name: '10' }
             ];
             self.levelSelected = ko.observable(10);
+            self.isMultipleUse = false;
+            self.isMultiSelect = false;
             
             self.treeStyle = {
                 width: 410,
@@ -190,8 +198,15 @@ module kcp.share.tree {
             ko.cleanNode($input[0]);
             self.data = data;
             self.$input = $input;
-            self.isMultiple = data.isMultiSelect;
-            self.hasBaseDate(!self.isMultiple);
+            
+            // set parameter 
+            if (data.isMultipleUse) {
+                self.isMultipleUse = data.isMultipleUse;
+            }
+            if (data.isMultiSelect) {
+                self.isMultiSelect = data.isMultiSelect;
+            }
+            self.hasBaseDate(!self.isMultipleUse);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
@@ -229,7 +244,7 @@ module kcp.share.tree {
             self.backupItemList.subscribe((newData) => {
                 // data is empty, set selected work place id empty
                 if (!newData || newData.length <= 0) {
-                    self.selectedWorkplaceIds(self.isMultiple ? [] : '');
+                    self.selectedWorkplaceIds(self.isMultiSelect ? [] : '');
                 }
                 self.createGlobalVarDataList();
             });
@@ -388,12 +403,12 @@ module kcp.share.tree {
             }
             switch (self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
-                    if (self.isMultiple) {
+                    if (self.isMultiSelect) {
                         self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
                     }
                     break;
                 case SelectionType.SELECT_ALL:
-                    if (self.isMultiple) {
+                    if (self.isMultiSelect) {
                         self.selectAll();
                     }
                     break;
@@ -614,7 +629,7 @@ module kcp.share.tree {
          * Select data for multiple or not
          */
         private selectData(option: TreeComponentOption, data: UnitModel): any {
-            if (this.isMultiple) {
+            if (this.isMultiSelect) {
                 return [data.workplaceId];
             }
             return data.workplaceId;
@@ -624,7 +639,7 @@ module kcp.share.tree {
          * Get selected work place id
          */
         private getSelectedWorkplace(): any {
-            if (this.isMultiple) {
+            if (this.isMultiSelect) {
                 return this.selectedWorkplaceIds() ? this.selectedWorkplaceIds() : [];
             }
             return [this.selectedWorkplaceIds()];
@@ -673,7 +688,7 @@ module kcp.share.tree {
          * Get ComId Search Box by multiple choice
          */
         private getComIdSearchBox(): string {
-            if (this.isMultiple) {
+            if (this.isMultiSelect) {
                 return 'multiple-tree-grid';
             }
             return 'single-tree-grid';

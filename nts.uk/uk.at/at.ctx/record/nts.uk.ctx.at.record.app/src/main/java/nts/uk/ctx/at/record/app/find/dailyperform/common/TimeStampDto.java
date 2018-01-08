@@ -19,7 +19,7 @@ public class TimeStampDto {
 
 	/** 丸め後の時刻 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "丸め後の時刻", needCheckIDWithIndex = true)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
 	private Integer afterRoundingTimesOfDay;
 
 	/** 場所コード */

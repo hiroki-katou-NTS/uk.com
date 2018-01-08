@@ -38,6 +38,14 @@ module a11 {
         fromOverTimeOneDayTime: KnockoutObservable<number>;
         fromOverTimeHalfDayTime: KnockoutObservable<number>;
         fromOverTimeCertainTime: KnockoutObservable<number>;
+        
+        // Old data (using for reset value)
+        oldWorkdayOffTimeOneDayTime: KnockoutObservable<number>;
+        oldWorkdayOffTimeHalfDayTime: KnockoutObservable<number>;
+        oldWorkdayOffTimeCertainTime: KnockoutObservable<number>;        
+        oldFromOverTimeOneDayTime: KnockoutObservable<number>;
+        oldFromOverTimeHalfDayTime: KnockoutObservable<number>;
+        oldFromOverTimeCertainTime: KnockoutObservable<number>;
     
         // Simple mode - Data (nothing)
         
@@ -53,12 +61,18 @@ module a11 {
                 return;    
             }
             
+            // Init all data          
+            _self.oldWorkdayOffTimeOneDayTime = ko.observable(0);
+            _self.oldWorkdayOffTimeHalfDayTime = ko.observable(0);
+            _self.oldWorkdayOffTimeCertainTime = ko.observable(0);       
+            _self.oldFromOverTimeOneDayTime = ko.observable(0);
+            _self.oldFromOverTimeHalfDayTime = ko.observable(0);
+            _self.oldFromOverTimeCertainTime = ko.observable(0);
+            
             // Binding data
             _self.model = model; 
             _self.settingEnum = settingEnum;
             _self.bindingData();   
-    
-            // Init all data          
     
             // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -72,6 +86,10 @@ module a11 {
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
             });                  
+            
+            _self.model.isChangeItemTable.subscribe(newValue => {
+                _self.bindingData();
+            });
         }
 
         /**
@@ -100,18 +118,26 @@ module a11 {
             _self.fromOverTimeHalfDayTime = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime;
             _self.fromOverTimeCertainTime = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.certainTime;
             
+            // Set old data 
+            _self.oldWorkdayOffTimeOneDayTime(_self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime());
+            _self.oldWorkdayOffTimeHalfDayTime(_self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime());
+            _self.oldWorkdayOffTimeCertainTime(_self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime());        
+            _self.oldFromOverTimeOneDayTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime());
+            _self.oldFromOverTimeHalfDayTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime());
+            _self.oldFromOverTimeCertainTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.certainTime());
+            
             // Disable
             _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
                 if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {
-                        _self.workdayOffTimeCertainTime(0); 
+                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
+                        _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
                     }
                 } else {
                     if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
-                        _self.workdayOffTimeOneDayTime(0); 
+                        _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
                     }                
                     if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
-                        _self.workdayOffTimeHalfDayTime(0); 
+                        _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
                     }
                 }
             });
@@ -119,14 +145,14 @@ module a11 {
             _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {
                 if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
                     if (typeof _self.fromOverTimeCertainTime() !== 'number') {
-                        _self.fromOverTimeCertainTime(0); 
+                        _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
                     }
                 } else {
                     if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
-                        _self.fromOverTimeOneDayTime(0); 
+                        _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
                     }                
                     if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
-                        _self.fromOverTimeHalfDayTime(0); 
+                        _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
                     }
                 }
             });

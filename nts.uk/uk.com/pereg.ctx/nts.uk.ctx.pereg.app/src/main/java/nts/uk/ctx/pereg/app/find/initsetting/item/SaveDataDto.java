@@ -17,6 +17,6 @@ public class SaveDataDto {
 
 	private SaveDataType saveDataType;
 
-	private String value;
+	private Object value;
 
 }

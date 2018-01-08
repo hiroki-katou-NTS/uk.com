@@ -13,15 +13,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkTimeScreenDto {
-	private String siftCd;
+	private String workTimeCode;
 	private String name;
 	private String abName;
 	private String symbol;
 	private int dailyWorkAtr;
-	private int methodAtr;
-	private int displayAtr;
+	private int worktimeSetMethod;
+	private int abolitionAtr;
+	private String color;
+	private String memo;
 	private String note;
-	private int start;
-	private int end;
-	private int timeNumberCnt;
+	private int workNo;
+	private int useAtr;
+	private int startTime;
+	private int endTime;
 }

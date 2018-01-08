@@ -516,6 +516,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
             });
         }
 
+        closeDialog() {
+            nts.uk.ui.windows.close();
+        }
+
     }
     export class InitValueSettingDetail {
         settingCode: KnockoutObservable<string>;
