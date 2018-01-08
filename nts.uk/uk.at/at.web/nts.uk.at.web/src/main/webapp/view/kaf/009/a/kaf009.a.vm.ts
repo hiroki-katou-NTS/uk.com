@@ -124,7 +124,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         //申請種類別設定.事前事後区分を変更できる 〇
                         //申請種類別設定.事前事後区分を変更できない  ×
                         self.prePostEnable(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);
-                        self.prePostSelected(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostInitFlg);
+                        let initPrePost = settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostInitFlg;
+                        self.prePostSelected(initPrePost > 1 ? null : initPrePost);
                     }
                     //事前事後区分 ※A１
                     //申請表示設定.事前事後区分　＝　表示する　〇
