@@ -52,6 +52,8 @@ module nts.fixedtable {
         * Set width table
         */
         width?: number;
+        
+        helpImageUrl?: string;
     }
 
     /**
@@ -174,6 +176,7 @@ module nts.fixedtable {
         roudingDataSource: KnockoutObservableArray<any>;
         isSelectSpecialUnit: KnockoutObservable<boolean>;
         specialRoudingDataSource: KnockoutObservableArray<any>;
+        helpImageUrl: string;
         
         tableId: string;
         
@@ -193,6 +196,7 @@ module nts.fixedtable {
             if (!self.tabindex) {
                 self.tabindex = -1;
             }
+            self.helpImageUrl = data.helpImageUrl;
             self.itemList = data.dataSource;
             self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
             self.roudingDataSource = ko.observableArray([
@@ -280,7 +284,7 @@ module nts.fixedtable {
             
             // update width table
             if (!self.width) {
-                self.width = self.tableStyle.width + 130;
+                self.width = self.tableStyle.width;
             }
             
             // render html table
@@ -320,9 +324,18 @@ module nts.fixedtable {
             if (lstItemChecked.length <= 0) {
                 return;
             }
+            self.$element.find('.nts-editor').ntsError('clear');
+            self.$element.find('.ntsControl').ntsError('clear');
             self.$element.find('.time-range-editor').ntsError('clear');
             _.defer(() => {
                 self.itemList(self.itemList().filter(item => item.isChecked() == false));
+                self.$element.find('.nts-editor').each((index, element) => {
+                    if (!element.id) {
+                        element.id = nts.uk.util.randomId();
+                    } 
+                    
+                    $('#' + element.id).ntsEditor('validate');
+                });
                 self.$element.find('.time-range-editor').each((index, element) => {
                     $('#' + element.id).validateTimeRange();
                 });
@@ -395,7 +408,7 @@ module nts.fixedtable {
             let heigthCell = 33;
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
             
-            self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
+            self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
         }
         
         /**
