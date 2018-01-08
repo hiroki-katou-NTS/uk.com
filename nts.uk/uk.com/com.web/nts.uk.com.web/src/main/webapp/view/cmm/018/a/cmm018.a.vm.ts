@@ -1639,10 +1639,10 @@ module nts.uk.com.view.cmm018.a {
                         //TH: item data
                         if(com != null && com !== undefined){
                             self.historyStr(com.company.startDate + ' ~ ' + com.company.endDate);
-                            let name = self.findNameApp(com.company.applicationType, com.company.employmentRootAtr);
+                            let name = self.findNameApp(com.company.employmentRootAtr == 2 ? com.company.confirmationRootType : com.company.applicationType, com.company.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(com.lstAppPhase);
                             let color: boolean = com.lstAppPhase.length > 0 ? true : false;
-                            let aaa = new vmbase.CompanyAppRootADto(color,com.company.employmentRootAtr,com.company.applicationType,name,com.company.approvalId,com.company.historyId,com.company.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
+                            let aaa = new vmbase.CompanyAppRootADto(color,com.company.employmentRootAtr,com.company.employmentRootAtr == 2 ? com.company.confirmationRootType : com.company.applicationType,name,com.company.approvalId,com.company.historyId,com.company.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
                             self.enableDeleteB(true);
                         }
@@ -1661,10 +1661,10 @@ module nts.uk.com.view.cmm018.a {
                         let wp = self.findRootWpD(codeChanged);
                         if(wp != null && wp !== undefined){
                             self.historyStr(wp.workplace.startDate + ' ~ ' + wp.workplace.endDate);
-                            let name = self.findNameApp(wp.workplace.applicationType, wp.workplace.employmentRootAtr);
+                            let name = self.findNameApp(wp.workplace.employmentRootAtr == 2 ? wp.workplace.confirmationRootType : wp.workplace.applicationType, wp.workplace.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(wp.lstAppPhase);
                             let color: boolean = wp.lstAppPhase.length > 0 ? true : false;
-                            let aaa = new vmbase.CompanyAppRootADto(color,wp.workplace.employmentRootAtr,wp.workplace.applicationType,name,wp.workplace.approvalId,wp.workplace.historyId,wp.workplace.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
+                            let aaa = new vmbase.CompanyAppRootADto(color,wp.workplace.employmentRootAtr,wp.workplace.employmentRootAtr == 2 ? wp.workplace.confirmationRootType : wp.workplace.applicationType,name,wp.workplace.approvalId,wp.workplace.historyId,wp.workplace.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
                             self.enableDeleteB(true);
                         }
@@ -1684,10 +1684,10 @@ module nts.uk.com.view.cmm018.a {
                         let ps = self.findRootPsF(codeChanged);
                         if(ps != null && ps !== undefined){
                             self.historyStr(ps.person.startDate + ' ~ ' + ps.person.endDate);
-                            let name = self.findNameApp(ps.person.applicationType, ps.person.employmentRootAtr);
+                            let name = self.findNameApp(ps.person.employmentRootAtr == 2 ? ps.person.confirmationRootType : ps.person.applicationType, ps.person.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(ps.lstAppPhase);
                             let color: boolean = ps.lstAppPhase.length > 0 ? true : false;
-                            let aaa = new vmbase.CompanyAppRootADto(color,ps.person.employmentRootAtr,ps.person.applicationType,name,ps.person.approvalId,ps.person.historyId,ps.person.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
+                            let aaa = new vmbase.CompanyAppRootADto(color,ps.person.employmentRootAtr,ps.person.employmentRootAtr == 2 ? ps.person.confirmationRootType : ps.person.applicationType,name,ps.person.approvalId,ps.person.historyId,ps.person.branchId,appPhase[0],appPhase[1],appPhase[2],appPhase[3],appPhase[4]);
                             self.comRoot(aaa);
                             self.enableDeleteB(true);
                         }
@@ -1740,7 +1740,7 @@ module nts.uk.com.view.cmm018.a {
                     //list left
                     _.each(self.lstCompany(), function(item){
                         lstRoot.push(new vmbase.DataCheckModeB(item.company.approvalId, item.company.startDate,
-                            item.company.endDate, item.company.applicationType, item.company.employmentRootAtr));
+                            item.company.endDate, item.company.employmentRootAtr == 2 ? item.company.confirmationRootType : item.company.applicationType, item.company.employmentRootAtr));
                     });
                     self.dataDisplay(self.convert(lstRoot));
                    let a:any = null;
@@ -1792,7 +1792,7 @@ module nts.uk.com.view.cmm018.a {
                     //list left
                     _.each(self.lstWorkplace(), function(item){
                         lstRoot.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate,
-                            item.workplace.endDate, item.workplace.applicationType, item.workplace.employmentRootAtr));
+                            item.workplace.endDate, item.workplace.employmentRootAtr == 2 ? item.workplace.confirmationRootType : item.workplace.applicationType, item.workplace.employmentRootAtr));
                     });
                     //list right
                      let com = self.findRootWpD(self.singleSelectedCode());
@@ -1842,7 +1842,7 @@ module nts.uk.com.view.cmm018.a {
                     //list left
                     _.each(self.lstPerson(), function(item){
                         lstRoot.push(new vmbase.DataCheckModeB(item.person.approvalId, item.person.startDate,
-                            item.person.endDate, item.person.applicationType, item.person.employmentRootAtr));
+                            item.person.endDate, item.person.employmentRootAtr == 2 ? item.person.confirmationRootType : item.person.applicationType, item.person.employmentRootAtr));
                     });
                     //list right
                     let com = self.findRootWpD(self.singleSelectedCode());
