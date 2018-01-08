@@ -7953,6 +7953,7 @@ var nts;
                         var rightColumns = data.rightColumns || data.columns;
                         var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
                         var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
+                        data.draggable = false;
                         $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
                         if (totalWidth !== undefined) {
                             $swap.parent().width(totalWidth);
