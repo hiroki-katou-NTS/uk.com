@@ -27,12 +27,12 @@ module kal004.share.model {
            checkConditonCode: string;
            checkConditionName: string;
            listRoleId: Array<string>; 
-           constructor(category: number,categoryName: string, checkConditonCode: string, checkConditionName: string, listRoleId: Array<string>) {
-               this.category = category;
-               this.categoryName = categoryName;
-               this.checkConditonCode = checkConditonCode;
-               this.checkConditionName = checkConditionName;
-               this.listRoleId = listRoleId;
+           constructor(dto : AlarmCheckConditonCodeDto) {
+               this.category = dto.category.value;
+               this.categoryName = dto.category.fieldName;
+               this.checkConditonCode = dto.checkConditonCode;
+               this.checkConditionName = dto.checkConditionName;
+               this.listRoleId = dto.listRoleId;
                this.GUID = nts.uk.util.randomId();               
            }
     }
