@@ -20,7 +20,8 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		stringBuilder.append("(c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.deprecateAtr, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr, c.calculatorMethod, o.dispOrder) ");
 		stringBuilder.append("FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o ");
 		stringBuilder.append("ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode ");
-		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId");
+		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId ");
+		stringBuilder.append(" ORDER BY  CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ");
 		SELECT_ALL_WORKTYPE = stringBuilder.toString();
 		
 		stringBuilder = new StringBuilder();
@@ -32,6 +33,7 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		stringBuilder.append("AND c.oneDayAtr IN :workTypeAtr ");
 		stringBuilder.append("OR c.morningAtr IN :workTypeAtr ");
 		stringBuilder.append("OR c.afternoonAtr IN :workTypeAtr ");
+		stringBuilder.append("ORDER BY  CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ");
 		SELECT_BY_WORKTYPE_ATR = stringBuilder.toString();
 	}
 	

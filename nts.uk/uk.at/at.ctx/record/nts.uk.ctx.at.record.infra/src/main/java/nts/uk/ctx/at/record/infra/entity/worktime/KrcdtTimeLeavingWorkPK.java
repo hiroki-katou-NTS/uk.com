@@ -24,4 +24,11 @@ public class KrcdtTimeLeavingWorkPK implements Serializable {
 
 	@Column(name = "YMD")
 	public GeneralDate ymd;
+	
+	/**
+	 * 0. 日別実績の出退勤 - timeLeaving
+	 * 1. 日別実績の臨時出退勤 - temporaryTime
+	 */
+	@Column(name = "TIME_LEAVING_TYPE")
+	public int timeLeavingType;
 }

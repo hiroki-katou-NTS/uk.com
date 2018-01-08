@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 public class KbpmtSpecBPTimesheetPK {
 	@Column(name = "CID")
 	public String companyId;
+	//加給時間帯ID
 	@Column(name = "BONUS_PAY_TIMESHEET_NO")
 	public int timeSheetNO;
 	@DBCharPaddingAs(BonusPaySettingCode.class)

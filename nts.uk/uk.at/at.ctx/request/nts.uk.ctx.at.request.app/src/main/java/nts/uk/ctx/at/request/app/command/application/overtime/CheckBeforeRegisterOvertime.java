@@ -10,16 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -104,35 +98,6 @@ public class CheckBeforeRegisterOvertime {
 		result.setConfirm(res.isConfirm());
 
 		return result;
-	}
-
-	/**
-	 * Convert Phase command list to Approve Phase list
-	 * 
-	 * @param command: create command
-	 * @param companyId: 会社ID
-	 * @param appID: 申請ID
-	 * @return
-	 */
-	public static List<AppApprovalPhase> getAppApprovalPhaseList(CreateOvertimeCommand command, String companyId,
-			String appID) {
-		return command.getAppApprovalPhaseCmds().stream()
-				.map(appApprovalPhaseCmd -> new AppApprovalPhase(companyId, appID, IdentifierUtil.randomUniqueId(),
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class),
-						appApprovalPhaseCmd.dispOrder,
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class),
-						appApprovalPhaseCmd.getListFrame().stream()
-								.map(approvalFrame -> new ApprovalFrame(companyId,
-										IdentifierUtil.randomUniqueId(), approvalFrame.dispOrder,
-										approvalFrame.listApproveAccepted
-												.stream()
-												.map(approveAccepted -> ApproveAccepted.createFromJavaType(companyId,
-														IdentifierUtil.randomUniqueId(), approveAccepted.approverSID,
-														ApprovalAtr.UNAPPROVED.value, approveAccepted.confirmATR, null,
-														approveAccepted.reason, approveAccepted.representerSID))
-												.collect(Collectors.toList())))
-								.collect(Collectors.toList())))
-				.collect(Collectors.toList());
 	}
 
 	public static List<OverTimeInput> getOverTimeInput(CreateOvertimeCommand command, String Cid, String appId) {
