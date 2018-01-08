@@ -18,7 +18,7 @@ public class WorkScheduleTimeDailyPerformDto {
 
 	/** 勤務予定時間: 勤務予定時間 */
 	// TODO: confirm item ID and type for 勤務予定時間
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "実績所定労働時間")
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "予定時間")
 	private WorkScheduleTimeDto workSchedule;
 	// @AttendanceItemLayout(layout = "A", jpPropertyName = "勤務予定時間")
 	// @AttendanceItemValue(itemId = 529, type = ValueType.INTEGER)

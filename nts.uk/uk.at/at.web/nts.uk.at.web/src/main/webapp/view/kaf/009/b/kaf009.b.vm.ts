@@ -183,7 +183,7 @@ module nts.uk.at.view.kaf009.b {
             update() {
                 nts.uk.ui.block.invisible();
                 let self = this;
-                var promiseResult = self.checkBeforeUpdate();
+                var promiseResult = self.checkUse();
                 promiseResult.done((result) => {
                     if (result) {
                         service.updateGoBackDirect(self.getCommand()).done(function() {
@@ -203,38 +203,34 @@ module nts.uk.at.view.kaf009.b {
                     }
                 });
             }
-            
-            
-            checkBeforeUpdate(): JQueryPromise<boolean> {
-                let self = this;
-                let dfd = $.Deferred();
-                //check before Insert 
-                let errorFlag = self.kaf000_a.errorFlag;
-                let errorMsg = self.kaf000_a.errorMsg;
-                if(errorFlag!=0){
-                    nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
-                } else {
-                    self.checkUse();
-                }
-                return dfd.promise();
-            }
-            
             /**
              * アルゴリズム「直行直帰するチェック」を実行する
              */
-            checkUse(){
+            checkUse(): JQueryPromise<boolean> {
                 let self = this;
-                if ((!self.useMulti() && self.selectedGo() == 0 && self.selectedBack()== 0)
-                    || (self.useMulti() && self.selectedGo() == 0 && self.selectedBack()== 0 && self.selectedGo2() == 0 && self.selectedBack2()== 0)) {
+                let dfd = $.Deferred();
+
+                if ((!self.useMulti() && self.selectedGo() == 0 && self.selectedBack() == 0)
+                    || (self.useMulti() && self.selectedGo() == 0 && self.selectedBack() == 0 && self.selectedGo2() == 0 && self.selectedBack2() == 0)) {
                     //直行直帰区分＝なし
                     nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
-                        self.checkUpdate();
+                        self.checkUpdate().done(function(result) {
+                            dfd.resolve(result);
+                        }).fail(function(res) {
+                            dfd.resolve(res);
+                        });
                     }).ifNo(function() {
                         nts.uk.ui.block.clear();
                     });
                 } else {
-                     self.checkUpdate();
+                    self.checkUpdate().done(function(result) {
+                        dfd.resolve(result);
+                    }).fail(function(res) {
+                        dfd.resolve(res);
+                    });
                 }
+
+                return dfd.promise();
             }
             checkUpdate(): JQueryPromise<boolean> {
                 let self = this;
