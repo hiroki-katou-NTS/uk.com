@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDtoMapping;
@@ -95,6 +96,9 @@ public class CopySettingItemFinder {
 			setTextForSetItem(result);
 
 			this.settingItemMap.setTextForSelectionItem(result);
+
+			return result.stream().filter(item -> StringUtils.isEmpty(item.getItemParentCd()))
+					.collect(Collectors.toList());
 		}
 		return result;
 
