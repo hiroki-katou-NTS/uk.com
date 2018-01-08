@@ -24,4 +24,8 @@ public @interface AttendanceItemLayout {
 	int listMaxLength() default -1;
 	
 	boolean isOptional() default false;
+	
+	String setFieldWithIndex() default "";
+	
+	boolean isUpdate() default false;
 }

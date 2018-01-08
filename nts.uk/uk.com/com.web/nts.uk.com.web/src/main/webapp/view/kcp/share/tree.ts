@@ -231,6 +231,7 @@ module kcp.share.tree {
                 if (!newData || newData.length <= 0) {
                     self.selectedWorkplaceIds(self.isMultiple ? [] : '');
                 }
+                self.createGlobalVarDataList();
             });
 
             // Find data.
@@ -514,19 +515,24 @@ module kcp.share.tree {
                 ko.applyBindings(self, self.$input[0]);
 
                 // defined function get data list.
-                $('#script-for-' + self.$input.attr('id')).remove();
-                var s = document.createElement("script");
-                s.type = "text/javascript";
-                s.innerHTML = 'var dataList' + self.$input.attr('id').replace(/-/gi, '') + ' = '
-                    + JSON.stringify(self.backupItemList());
-                s.id = 'script-for-' + self.$input.attr('id');
-                $("head").append(s);
+                self.createGlobalVarDataList();
                 $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                     return window['dataList' + this.attr('id').replace(/-/gi, '')];
                 }
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        
+        private createGlobalVarDataList() {
+            var self = this;
+            $('#script-for-' + self.$input.attr('id')).remove();
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.innerHTML = 'var dataList' + self.$input.attr('id').replace(/-/gi, '') + ' = '
+                + JSON.stringify(self.backupItemList());
+            s.id = 'script-for-' + self.$input.attr('id');
+            $("head").append(s);
         }
 
         /**

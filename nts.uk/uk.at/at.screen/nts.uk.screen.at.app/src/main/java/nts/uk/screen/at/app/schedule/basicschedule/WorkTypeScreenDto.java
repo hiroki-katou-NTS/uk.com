@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.schedule.basicschedule;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.gul.text.StringUtil;
 
 @Data
 @NoArgsConstructor

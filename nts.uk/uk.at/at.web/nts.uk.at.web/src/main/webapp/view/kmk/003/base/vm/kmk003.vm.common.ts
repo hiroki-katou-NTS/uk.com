@@ -847,7 +847,7 @@ module nts.uk.at.view.kmk003.a {
                  */
                 toOriginalListTemp(list: Array<FlowRestSettingModel>): any {
                     return _.map(list, item => {
-                        return { start: item.flowRestTime(), end: item.flowPassageTime() };
+                        return { start: item.flowPassageTime(), end: item.flowRestTime() };
                     });
                 }
 
@@ -856,7 +856,7 @@ module nts.uk.at.view.kmk003.a {
                  */
                 toConvertedList(): Array<FixedTableTimeEditorModel> {
                     let self = this;
-                    return _.map(self.flowRestSets(), rs => self.toTimeEditorItem(rs.flowRestTime(), rs.flowPassageTime()));
+                    return _.map(self.flowRestSets(), rs => self.toTimeEditorItem(rs.flowPassageTime(), rs.flowRestTime()));
                 }
 
                 /**
@@ -865,8 +865,8 @@ module nts.uk.at.view.kmk003.a {
                 fromConvertedList(newList: Array<FixedTableTimeEditorModel>): Array<FlowRestSettingModel> {
                     return _.map(newList, newVl => {
                         let vl = new FlowRestSettingModel();
-                        vl.flowRestTime(newVl.startCol());
-                        vl.flowPassageTime(newVl.endCol());
+                        vl.flowPassageTime(newVl.startCol());
+                        vl.flowRestTime(newVl.endCol());
                         return vl;
                     });
                 }

@@ -41,6 +41,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         conditionValue04: KnockoutObservable<string>;
         conditionValue05: KnockoutObservable<string>;
         note: KnockoutObservable<string>;
+        conditionValue01Enable: KnockoutObservable<boolean>;
         conditionValue02Enable: KnockoutObservable<boolean>;
         conditionValue03Enable: KnockoutObservable<boolean>;
         conditionValue04Enable: KnockoutObservable<boolean>;
@@ -105,6 +106,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     service.findByCode(value).done(function(data) {
                         self.editMode(false);
                         
+                        self.conditionValue01Enable(true);
+                        
                         if(data.grantConditions.length > 0) {
                             for(var i = 0; i < data.grantConditions.length; i++) {
                                 self.getGHTdata(data.grantConditions[i].conditionNo, data.grantConditions[i].yearHolidayCode);                                
@@ -118,7 +121,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.useConditionCls(data.useSimultaneousGrant === 1 ? true : false);
                         self.grantDate(data.simultaneousGrandMonthDays.toString());
                         self.note(data.yearHolidayNote);                    
-                        self.conditionValue01(data.grantConditions[0] && data.grantConditions[0].conditionValue.toString());
+                        self.conditionValue01(data.grantConditions[0] && (data.grantConditions[0].conditionValue != null ? data.grantConditions[0].conditionValue.toString() : ""));
                         self.useCls02(data.grantConditions[1] && data.grantConditions[1].useConditionAtr == 1 ? true : false);
                         self.conditionValue02(data.grantConditions[1] && data.grantConditions[1].conditionValue.toString());
                         self.useCls03(data.grantConditions[2] && data.grantConditions[2].useConditionAtr == 1 ? true : false);
@@ -315,6 +318,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue04("");
             self.conditionValue05("");
             self.note("");
+            self.conditionValue01Enable(false);
             self.conditionValue02Enable(false);
             self.conditionValue03Enable(false);
             self.conditionValue04Enable(false);
@@ -405,12 +409,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var memo = self.note();
             var grandConditions = new Array<GrantCondition>();
             
-            if(self.conditionValue01().trim() !== ""){
+            if(self.conditionValue01().trim() !== "" || self.editMode()){
                 grandConditions.push(new GrantCondition({
                     conditionNo: 1,
                     yearHolidayCode: code,
                     useConditionAtr: 1,
-                    conditionValue: Number(self.conditionValue01())
+                    conditionValue: self.conditionValue01() !== "" ? Number(self.conditionValue01()) : self.conditionValue01()
                 }));
             } else {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_271" });
@@ -714,6 +718,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.conditionValue04 = ko.observable("");
             self.conditionValue05 = ko.observable("");
             self.note = ko.observable("");
+            self.conditionValue01Enable = ko.observable(false);
             self.conditionValue02Enable = ko.observable(false);
             self.conditionValue03Enable = ko.observable(false);
             self.conditionValue04Enable = ko.observable(false);
@@ -1087,7 +1092,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
     class GrantCondition {
         yearHolidayCode: string;
         conditionNo: number;
-        conditionValue: number;
+        conditionValue: any;
         useConditionAtr: number; 
         constructor(param: IGrantCondition) {
             this.yearHolidayCode = param.yearHolidayCode;
@@ -1100,7 +1105,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
     interface IGrantCondition {
         yearHolidayCode: string;
         conditionNo: number;
-        conditionValue: number;
+        conditionValue: any;
         useConditionAtr: number;     
     }
 }

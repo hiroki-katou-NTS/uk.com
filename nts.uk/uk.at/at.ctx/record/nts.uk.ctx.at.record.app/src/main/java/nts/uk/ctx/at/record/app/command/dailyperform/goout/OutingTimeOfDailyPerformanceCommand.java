@@ -35,10 +35,10 @@ public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand 
 		return !data.isPresent() ? null
 				: new OutingTimeOfDailyPerformance(getEmployeeId(), getWorkDate(), ConvertHelper.mapTo(
 						data.get().getTimeZone(),
-						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), createTimeActual(c.getOuting()),
+						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), Optional.of(createTimeActual(c.getOuting())),
 								new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 								ConvertHelper.getEnum(c.getReason(), GoingOutReason.class),
-								createTimeActual(c.getComeBack()))));
+								Optional.of(createTimeActual(c.getComeBack())))));
 	}
 
 	private TimeActualStamp createTimeActual(WithActualTimeStampDto c) {
