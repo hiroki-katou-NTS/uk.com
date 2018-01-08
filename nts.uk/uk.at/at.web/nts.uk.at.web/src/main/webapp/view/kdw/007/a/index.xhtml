@@ -372,7 +372,7 @@
 			                            	</com:ko-if>
 			                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
 			                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
-			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog">#{i18n.getText('KDW007_100')}</button></td>
+			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog, enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
 		                            	</tr>
 		                            </com:ko-foreach>
 								</table>
@@ -422,7 +422,7 @@
 			                            	</com:ko-if>
 			                            	<td><span class="limited-label" style="width: 50px" data-bind="text: $data.displayRightOperator"></span></td>
 			                            	<td><span class="limited-label" style="width: 160px" data-bind="text: $data.displayRightCompare"></span></td>
-			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog">#{i18n.getText('KDW007_100')}</button></td>
+			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog, enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
 		                            	</tr>
 		                            </com:ko-foreach>
 								</table>
