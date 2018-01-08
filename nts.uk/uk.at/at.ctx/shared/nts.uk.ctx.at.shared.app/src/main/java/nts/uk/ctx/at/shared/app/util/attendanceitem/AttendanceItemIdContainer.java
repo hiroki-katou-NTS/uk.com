@@ -276,26 +276,26 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put("日別実績の入退門.入退門時刻.開始時間.時刻2", 79);
 		ITEM_ID_CONTAINER.put("日別実績の入退門.入退門時刻.開始時間.時刻3", 83);
 
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻.場所コード1", 30);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻.時刻1", 31);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻.丸め後の時刻1", 32);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.実打刻.場所コード1", 36);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.実打刻.時刻1", 37);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.実打刻.場所コード2", 46);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.実打刻.時刻2", 47);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻	.場所コード1", 30);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻.時刻1", 31);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻.場所コード2", 40);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻.時刻2", 41);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻.丸め後の時刻1", 32);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.打刻.丸め後の時刻2", 42);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.実打刻.場所コード2", 46);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.出勤.実打刻.時刻2", 47);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻.場所コード1", 33);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻.時刻1", 34);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻.丸め後の時刻1", 35);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.実打刻.場所コード1", 38);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.実打刻.時刻1", 39);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻.場所コード2", 43);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻.時刻2", 44);
+		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻.丸め後の時刻2", 45);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.実打刻.場所コード2", 48);
 		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.実打刻.時刻2", 49);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻	.場所コード1", 33);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻	.時刻1", 34);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻	.場所コード2", 43);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻	.時刻2", 44);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻.丸め後の時刻1", 35);
-		ITEM_ID_CONTAINER.put("日別実績の出退勤.出退勤.退勤.打刻.丸め後の時刻2", 45);
 
 		ITEM_ID_CONTAINER.put("日別実績の臨時出退勤.出退勤.出勤.実打刻.場所コード1", 54);
 		ITEM_ID_CONTAINER.put("日別実績の臨時出退勤.出退勤.出勤.実打刻.時刻1", 55);

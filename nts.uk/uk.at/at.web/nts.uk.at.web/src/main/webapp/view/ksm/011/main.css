@@ -1,5 +1,9 @@
 @CHARSET "UTF-8";
 
+.sidebar-html #master-content {
+    height: calc(100% - 93px) !important;
+}
+
 #sidebar-area {
 	width: 105px !important;
 }
@@ -27,7 +31,7 @@ table.link-control td {
 
 .block-1, .block-2, .block-3, .block-4, .block-5, .block-6, .block-7, .block-8 {
 	float: left;
-	width: 100%;
+	width: 90%;
 }
 
 hr {

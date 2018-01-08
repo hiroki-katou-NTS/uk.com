@@ -277,6 +277,7 @@ module nts.uk.at.view.kmk003.a {
                 let dfd = $.Deferred<void>();
                 service.getEnumWorktimeSeting().done(function(setting: any) {
                     self.settingEnum = setting;
+                    self.settingEnum.workTimeMethodSet = self.settingEnum.workTimeMethodSet.slice(0,1);
                     self.workTimeSettingLoader.setEnums(setting);
                     dfd.resolve();
                 });
@@ -488,8 +489,9 @@ module nts.uk.at.view.kmk003.a {
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
 
-                // focus worktime atr
-                $('#cbb-worktime-atr').focus();
+                // focus worktimecode
+                $('#inp-worktimecode').focus();
+                
                 self.isLoading(true);
             }
 
@@ -759,7 +761,7 @@ module nts.uk.at.view.kmk003.a {
             loadListWorktime: (selectedCode?: string, selectedIndex?: number) => JQueryPromise<void>;
             constructor() {
                 super();
-                this.isAbolish(true); // initial value in specs = checked
+                this.isAbolish(false); // initial value in specs = clear
                 this.workTimeDivision.workTimeDailyAtr(3);
                 this.workTimeDivision.workTimeMethodSet(3);
                 this.workTimeDivision.workTimeDailyAtr.subscribe(() => {

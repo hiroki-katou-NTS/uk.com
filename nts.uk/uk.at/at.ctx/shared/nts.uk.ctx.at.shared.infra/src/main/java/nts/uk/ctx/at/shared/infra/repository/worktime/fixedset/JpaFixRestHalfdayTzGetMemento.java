@@ -51,9 +51,9 @@ public class JpaFixRestHalfdayTzGetMemento implements FixRestTimezoneSetGetMemen
 		
 		// KSHMT_FIXED_HALF_REST_SET
 		return this.entitySets.stream()
-				.map(KshmtFixedHalfRestSet.class::cast)
 				.map(entity -> new DeductionTime(
 						new JpaFixedRestTZDeductionTimeGetMemento<KshmtFixedHalfRestSet>(entity)))
+				.sorted((item1, item2) -> item1.getStart().v() - item2.getStart().v())
 				.collect(Collectors.toList());	
 	}
 

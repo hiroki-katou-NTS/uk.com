@@ -46,6 +46,14 @@ public interface WorkTimeSettingRepository {
 	 * @return the list
 	 */
 	public List<WorkTimeSetting> findWithCondition(String companyId, WorkTimeSettingCondition condition);
+	
+	/**
+	 * Gets the list work time set by list code.
+	 *
+	 * @param workTimeCodes the work time codes
+	 * @return the list work time set by list code
+	 */
+	public List<WorkTimeSetting> getListWorkTimeSetByListCode(String companyId, List<String> workTimeCodes);
 
 	/**
 	 * Insert.

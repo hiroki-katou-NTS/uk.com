@@ -406,6 +406,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred();
             service.addAndUpdate(dataChangeProcess).done((data) => {
                // alert("done");
+                dataChange = {};
                 self.btnExtraction_Click();
                 dfd.resolve();
             }).fail((data) => {
@@ -681,8 +682,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstHeader: {}
             };
             _.forEach(self.headersGrid(), (header) => {
-                if (nts.uk.ntsNumber.isNumber(header.key)) {
-                    command.lstHeader[header.key] = header.width.split("px")[0];
+                if (header.key.indexOf('A') != -1) {
+                    if (nts.uk.ntsNumber.isNumber(header.key.substring(1, header.key.length))) {
+                        command.lstHeader[header.key.substring(1, header.key.length)] = header.width.split("px")[0];
+                    }
                 }
             });
             service.saveColumnWidth(command);
@@ -1209,7 +1212,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         delete header.group[0].group;
                         //delete header.key;
                         delete header.dataType;
-                        delete header.width;
+                       // delete header.width;
                         delete header.ntsControl;
                         delete header.changedByOther;
                         delete header.changedByYou;

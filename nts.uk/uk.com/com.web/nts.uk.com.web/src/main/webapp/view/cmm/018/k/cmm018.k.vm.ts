@@ -44,7 +44,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 isShowSelectButton: true,
                 baseDate: ko.observable(this.standardDate()),
                 selectedWorkplaceId: ko.observableArray(_.map(this.currentCalendarWorkPlace(), o => o.key)),
-                alreadySettingList: ko.observableArray([])
+                alreadySettingList: ko.observableArray([]),
+                systemType : 2
         };
         //選択可能な職位一覧
         //承認者の登録(個人別)
@@ -268,6 +269,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             baseDate: KnockoutObservable<any>;
             selectedWorkplaceId: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
+            systemType : number;
         }
     class SimpleObject {
             key: KnockoutObservable<string>;
