@@ -497,7 +497,7 @@ module nts.custombinding {
                                     }">
                                <div data-bind="if: layoutItemType == LAYOUT_TYPE.ITEM">
                                     <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
-                                            .filter(function(x) { return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((x.item||{}).dataTypeValue) == -1})
+                                            .filter(function(x) { return (__items.length == 1 ? [] : [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION]).indexOf((x.item||{}).dataTypeValue) == -1})
                                             .map(function(x) { return x.itemDefId.replace(/[-_]/g, '') })
                                             .value() }">
                                         <div data-bind="ntsFormLabel: { 
@@ -1189,6 +1189,20 @@ module nts.custombinding {
                         exceptConsts = [];
                         writeConstraints(constraints);
                     }
+                },
+                scrollDown = () => {
+                    // remove old selected items
+                    $(ctrls.sortable)
+                        .find('.form-group.item-classification')
+                        .removeClass('selected');
+                    // scroll to bottom
+                    $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
+                    // select lastest item
+                    setTimeout(() => {
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification:last-child')
+                            .addClass('selected');
+                    }, 0);
                 };
 
             // add style to <head> on first run
@@ -1949,6 +1963,7 @@ module nts.custombinding {
 
                 // add line to list sortable
                 opts.sortable.pushItem(item);
+                scrollDown();
             });
 
             $(ctrls.sortable)
@@ -1968,21 +1983,7 @@ module nts.custombinding {
             $(ctrls.button).on('click', () => {
                 // アルゴリズム「項目追加処理」を実行する
                 // Execute the algorithm "項目追加処理"
-                let ids: Array<string> = ko.toJS(opts.listbox.value),
-                    scrollDown = () => {
-                        // remove old selected items
-                        $(ctrls.sortable)
-                            .find('.form-group.item-classification')
-                            .removeClass('selected');
-                        // scroll to bottom
-                        $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
-                        // select lastest item
-                        setTimeout(() => {
-                            $(ctrls.sortable)
-                                .find('.form-group.item-classification:last-child')
-                                .addClass('selected');
-                        }, 0);
-                    };
+                let ids: Array<string> = ko.toJS(opts.listbox.value);
 
                 if (!ids || !ids.length) {
                     alert({ messageId: 'Msg_203' });
