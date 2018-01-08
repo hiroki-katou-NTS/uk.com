@@ -745,7 +745,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}			
 				
 
-				return new TimeLeavingWork(item.getWorkNo(), attendanceStamp, leaveStamp);
+				return new TimeLeavingWork(item.getWorkNo(), Optional.of(attendanceStamp), Optional.of(leaveStamp));
 			}).collect(Collectors.toList());
 			automaticStampSetDetailDto.setTimeLeavingWorks(timeLeavingWorks);
 
@@ -776,7 +776,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
 							|| (stampReflectionManagement.get()
 									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
-									&& timeLeaving.getAttendanceStamp().getStamp().get().getTimeWithDay()
+									&& timeLeaving.getAttendanceStamp().isPresent()
+									&& timeLeaving.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
 											.lessThanOrEqualTo(currentMinuteOfDay))) {
 						TimeLeavingWorkOutput outPut = new TimeLeavingWorkOutput();
 						// 勤務NOが同じ実績．出退勤を確認する
@@ -790,10 +791,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							if(timeLeaving.getAttendanceStamp() != null){
 								TimeActualStampOutPut actualStampOutPut = new TimeActualStampOutPut();
 								WorkStampOutPut actualStampTemp = new WorkStampOutPut(
-										timeLeaving.getAttendanceStamp().getStamp().get().getAfterRoundingTime(),
-										timeLeaving.getAttendanceStamp().getStamp().get().getTimeWithDay(),
-										timeLeaving.getAttendanceStamp().getStamp().get().getLocationCode(),
-										timeLeaving.getAttendanceStamp().getStamp().get().getStampSourceInfo());
+										timeLeaving.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
+										timeLeaving.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
+										timeLeaving.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										timeLeaving.getAttendanceStamp().get().getStamp().get().getStampSourceInfo());
 								actualStampOutPut.setStamp(actualStampTemp);
 								outPut.setWorkNo(timeLeaving.getWorkNo());
 								outPut.setAttendanceStamp(actualStampOutPut);
@@ -810,35 +811,35 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						if ((timeLeavingOptional.getTimeLeavingWorks() != null
 								&& timeLeavingOptional.getTimeLeavingWorks().stream()
 										.anyMatch(item -> item.getWorkNo().v() == timeLeaving.getWorkNo().v()))
-								&& (stamp != null && (stamp.getLeaveStamp() == null || (stamp.getLeaveStamp() != null
-										&& stamp.getLeaveStamp().getStamp() == null)))) {
+								&& (stamp != null && (stamp.getLeaveStamp().isPresent() || (stamp.getLeaveStamp().get() != null
+										&& stamp.getLeaveStamp().get().getStamp() == null)))) {
 
-							TimeActualStamp leaveStamp = stamp.getLeaveStamp();
+							TimeActualStamp leaveStamp = stamp.getLeaveStamp().get();
 							WorkNo workNo = stamp.getWorkNo();
 							int numberOfReflectionStamp = 0;
 							WorkStamp actualStampTemp = null;
 							WorkStamp stampTemp = null;
-							if(stamp.getAttendanceStamp() != null){
+							if(stamp.getAttendanceStamp().isPresent() && stamp.getAttendanceStamp().get() != null){
 
-								numberOfReflectionStamp = stamp.getAttendanceStamp().getNumberOfReflectionStamp();
-								actualStampTemp = stamp.getAttendanceStamp().getActualStamp();
+								numberOfReflectionStamp = stamp.getAttendanceStamp().get().getNumberOfReflectionStamp();
+								actualStampTemp = stamp.getAttendanceStamp().get().getActualStamp();
 								stampTemp = new WorkStamp(
-										timeLeaving.getAttendanceStamp().getStamp().get().getAfterRoundingTime(),
-										timeLeaving.getAttendanceStamp().getStamp().get().getTimeWithDay(),
-										timeLeaving.getAttendanceStamp().getStamp().get().getLocationCode(),
-										timeLeaving.getAttendanceStamp().getStamp().get().getStampSourceInfo());
+										timeLeaving.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
+										timeLeaving.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
+										timeLeaving.getAttendanceStamp().get().getStamp().get().getLocationCode(),
+										timeLeaving.getAttendanceStamp().get().getStamp().get().getStampSourceInfo());
 
 							}
 
 							TimeActualStamp attendanceStamp = new TimeActualStamp(actualStampTemp, stampTemp,
 									numberOfReflectionStamp);
 
-							stamp = new TimeLeavingWork(workNo, attendanceStamp, leaveStamp);
+							stamp = new TimeLeavingWork(workNo, Optional.of(attendanceStamp), Optional.of(leaveStamp));
 							
 							TimeLeavingWork timeLeavingWorkOld = timeLeavingOptional.getTimeLeavingWorks().stream()
 									.filter(itemx -> itemx.getWorkNo().v().equals(timeLeaving.getWorkNo().v())).findFirst()
 									.get();
-							timeLeavingWorkOld.setTimeLeavingWork(workNo, attendanceStamp, leaveStamp);
+							timeLeavingWorkOld.setTimeLeavingWork(workNo, Optional.of(attendanceStamp), Optional.of(leaveStamp));
 //							timeLeavingWorkOutputs.add(timeLeavingWorkOld);
 							// this.lateCorrection(timeLeavingOptional.get().getTimeLeavingWorks().stream()
 							// .filter(item ->
@@ -889,7 +890,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					}
 					
 
-					return new TimeLeavingWork(item.getWorkNo(), attendanceStamp, leaveStamp);
+					return new TimeLeavingWork(item.getWorkNo(), Optional.of(attendanceStamp), Optional.of(leaveStamp));
 				}).collect(Collectors.toList());
 //				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
 
@@ -902,7 +903,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				List<TimeLeavingWorkOutput> newTimeLeavingWorkOutputs = new ArrayList<>();
 
 				automaticStampSetDetailDto.getTimeLeavingWorks().stream().forEach(timeLeavingWork -> {
-
+					
 					TimeLeavingWork stamp = null;
 					if (timeLeavingOptional.getTimeLeavingWorks() != null) {
 						stamp = timeLeavingOptional.getTimeLeavingWorks().stream()
@@ -914,7 +915,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.SET_AUTO_STAMP
 							|| (stampReflectionManagement.get()
 									.getAutoStampForFutureDayClass() == AutoStampForFutureDayClass.DO_NOT_SET_AUTO_STAMP
-									&& timeLeavingWork.getLeaveStamp().getStamp().get().getTimeWithDay()
+									&& timeLeavingWork.getLeaveStamp().isPresent()
+									&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 											.lessThanOrEqualTo(currentMinuteOfDay))) {
 
 						TimeLeavingWork timeLeaving = new TimeLeavingWork();
@@ -929,12 +931,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 							TimeActualStampOutPut leaveActualStampOutPut = new TimeActualStampOutPut();
 							WorkStampOutPut leaveActualStampTemp = new WorkStampOutPut(
-									timeLeaving.getLeaveStamp().getStamp().get().getAfterRoundingTime(),
-									timeLeaving.getLeaveStamp().getStamp().get().getTimeWithDay(),
-									timeLeaving.getLeaveStamp().getStamp().get().getLocationCode(),
-									timeLeaving.getLeaveStamp().getStamp().get().getStampSourceInfo());
+									timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
+									timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay(),
+									timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode(),
+									timeLeavingWork.getLeaveStamp().get().getStamp().get().getStampSourceInfo());
 							leaveActualStampOutPut.setStamp(leaveActualStampTemp);
-							newOutPut.setWorkNo(timeLeaving.getWorkNo());
+							newOutPut.setWorkNo(timeLeavingWork.getWorkNo());
 							newOutPut.setLeaveStamp(leaveActualStampOutPut);
 
 							newTimeLeavingWorkOutputs.add(newOutPut);
@@ -948,25 +950,25 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						if ((timeLeavingOptional.getTimeLeavingWorks() != null
 								&& timeLeavingOptional.getTimeLeavingWorks().stream()
 										.anyMatch(item -> item.getWorkNo().v() == timeLeavingWork.getWorkNo().v()))
-								&& (stamp != null && (stamp.getLeaveStamp() == null || (stamp.getLeaveStamp() != null
-										&& stamp.getLeaveStamp().getStamp() == null)))) {
+								&& (stamp != null && (stamp.getLeaveStamp() == null || (stamp.getLeaveStamp().isPresent()
+										&& stamp.getLeaveStamp().get().getStamp() == null)))) {
 
-							TimeActualStamp attendanceStamp = stamp.getAttendanceStamp();
+							TimeActualStamp attendanceStamp = stamp.getAttendanceStamp().get();
 							WorkNo workNo = stamp.getWorkNo();
 							
 							int numberOfReflectionStamp = 0;
 							WorkStamp leaveActualStampTemp = null;
 							WorkStamp leaveStampTemp = null;
-							if(stamp.getLeaveStamp() != null){
-								numberOfReflectionStamp = stamp.getLeaveStamp().getNumberOfReflectionStamp();
+							if(stamp.getLeaveStamp().isPresent()){
+								numberOfReflectionStamp = stamp.getLeaveStamp().get().getNumberOfReflectionStamp();
 
 								
-								leaveActualStampTemp = stamp.getLeaveStamp().getActualStamp();
+								leaveActualStampTemp = stamp.getLeaveStamp().get().getActualStamp();
 								leaveStampTemp = new WorkStamp(
-										timeLeaving.getLeaveStamp().getStamp().get().getAfterRoundingTime(),
-										timeLeaving.getLeaveStamp().getStamp().get().getTimeWithDay(),
-										timeLeaving.getLeaveStamp().getStamp().get().getLocationCode(),
-										timeLeaving.getLeaveStamp().getStamp().get().getStampSourceInfo());
+										timeLeavingWork.getLeaveStamp().get().getStamp().get().getAfterRoundingTime(),
+										timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay(),
+										timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode(),
+										timeLeavingWork.getLeaveStamp().get().getStamp().get().getStampSourceInfo());
 							}
 
 							TimeActualStamp leaveStamp = new TimeActualStamp(leaveActualStampTemp, leaveStampTemp,
@@ -977,7 +979,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							TimeLeavingWork timeLeavingWorkOld = timeLeavingOptional.getTimeLeavingWorks().stream()
 									.filter(itemm -> itemm.getWorkNo().v().equals(timeLeavingWork.getWorkNo().v()))
 									.findAny().get();
-							timeLeavingWorkOld.setTimeLeavingWork(workNo, attendanceStamp, leaveStamp);
+							timeLeavingWorkOld.setTimeLeavingWork(workNo, Optional.of(attendanceStamp), Optional.of(leaveStamp));
 							
 							// timeLeavingOptional.getTimeLeavingWorks().stream()
 							// .filter(item ->
@@ -1031,7 +1033,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					}
 					
 
-					return new TimeLeavingWork(item.getWorkNo(), attendanceStamp, leaveStamp);
+					return new TimeLeavingWork(item.getWorkNo(), Optional.of(attendanceStamp), Optional.of(leaveStamp));
 				}).collect(Collectors.toList());
 				for(TimeLeavingWork item : timeLeavingWorkLst){
 					timeLeavingWorkList.add(item);

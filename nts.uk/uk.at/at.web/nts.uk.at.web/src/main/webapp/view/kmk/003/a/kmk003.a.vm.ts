@@ -83,8 +83,8 @@ module nts.uk.at.view.kmk003.a {
                 
                 self.workTimeSettings = ko.observableArray([]);
                 self.columnWorktimeSettings = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 100 },
-                    { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 130 },
+                    { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 50 },
+                    { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 180 },
                     { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'isAbolish', width: 40,
                         formatter: isAbolish => {
                             if (isAbolish === true || isAbolish === 'true') {
@@ -488,8 +488,9 @@ module nts.uk.at.view.kmk003.a {
                 // deselect current worktimecode
                 self.selectedWorkTimeCode('');
 
-                // focus worktime atr
-                $('#cbb-worktime-atr').focus();
+                // focus worktimecode
+                $('#inp-worktimecode').focus();
+                
                 self.isLoading(true);
             }
 
@@ -740,6 +741,7 @@ module nts.uk.at.view.kmk003.a {
             }
             
             resetData(isNewMode?: boolean){
+                this.useHalfDay(false);
                 this.workTimeSetting.resetData();
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();

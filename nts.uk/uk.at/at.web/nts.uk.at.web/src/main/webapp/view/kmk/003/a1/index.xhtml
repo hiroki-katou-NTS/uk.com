@@ -103,7 +103,7 @@
 			immediate: false}"
 		/>
 		<com:ko tag="if" bind="isDetailMode">
-		<div data-bind="ntsCheckBox: { enable: timeZoneModelTwo.useAtr, checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
+		<div data-bind="ntsCheckBox: { enable: true, checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
 		</com:ko>
 	</div>
 	<com:ko tag="if" bind="isDetailMode">
@@ -117,7 +117,7 @@
 			inputFormat: 'time',
 			mode: 'time',
 			option: beforeUpdateWorkTimeOption,
-			required: true,
+			required: false,
 			enable: isTimezoneTwoEnabled() &amp;&amp; timeZoneModelTwo.useAtr(),
 			readonly: false,
 			immediate: false}" 
@@ -130,7 +130,7 @@
 			inputFormat: 'time',
 			mode: 'time',
 			option: afterUpdateWorkTimeOption,
-			required: true,
+			required: false,
 			enable: isTimezoneTwoEnabled() &amp;&amp; timeZoneModelTwo.useAtr(),
 			readonly: false,
 			immediate: false}" 
@@ -174,7 +174,7 @@
 		/>
 	</div>
 	<div class="setting_rows">
-		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_184')}</div>
+		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_184')}</div>
 		<input data-bind="ntsTimeEditor: {
 			name: '#[KMK003_208]',
 			value: coreTimeSettingModel.minWorkTime,
@@ -182,7 +182,7 @@
 			inputFormat: 'time',
 			mode: 'time',
 			option: beforeUpdateWorkTimeOption,
-			required: true,
+			required: false,
 			enable: coreTimeSettingModel.timesheet() == 0,
 			readonly: false,
 			immediate: false}" 
@@ -199,7 +199,7 @@
 		mode: 'time',
 		option: beforeUpdateWorkTimeOption,
 		required: true,
-		enable: useHalfDay,
+		enable: true,
 		readonly: false,
 		immediate: false}" 
 	/>
@@ -214,7 +214,7 @@
 		mode: 'time',
 		option: beforeUpdateWorkTimeOption,
 		required: true,
-		enable: useHalfDay,
+		enable: true,
 		readonly: false,
 		immediate: false}" 
 	/>

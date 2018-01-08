@@ -12,7 +12,7 @@ import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 import nts.uk.shr.infra.web.component.util.ObjectWriter;
 
 @Stateless
-public class  ViewContextEnvWriter{
+public class ViewContextEnvWriter {
 	
 	@Inject
 	private JapaneseErasProvider japaneseErasProvider;
@@ -20,7 +20,15 @@ public class  ViewContextEnvWriter{
 	public void write(ResponseWriter rw) throws IOException {
 		rw.write("__viewContext.env = {};");
 		
+		this.writeSystemName(rw);
 		this.writeJapanseEras(rw);
+	}
+	
+	private void writeSystemName(ResponseWriter rw) throws IOException {
+		
+		String systemName = "勤次郎";
+		
+		rw.write("__viewContext.env.systemName = '" + systemName + "';");
 	}
 	
 	private void writeJapanseEras(ResponseWriter rw) throws IOException {

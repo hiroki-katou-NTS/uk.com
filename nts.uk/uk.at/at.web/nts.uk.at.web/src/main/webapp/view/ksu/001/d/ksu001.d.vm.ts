@@ -63,11 +63,11 @@ module nts.uk.at.view.ksu001.d.viewmodel {
             let self = this;
 
             if (!self.multiSelectedCode() || self.multiSelectedCode().length == 0) {
-                nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage('Msg_499'));
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_499' });
                 return;
             }
             if (self.selectedIds().length === 0) {
-                nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage('Msg_500'));
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_500' });
                 return;
             }
             nts.uk.ui.block.grayout();

@@ -265,7 +265,7 @@ module a5 {
                     key: "startCol",
                     defaultValue: ko.observable(0),
                     width: 110,
-                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
+                    template: `<input class="time-edior-column" data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_174]' }" />`
                 },
                 {
@@ -273,7 +273,7 @@ module a5 {
                     key: "endCol",
                     defaultValue: ko.observable(0),
                     width: 110,
-                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
+                    template: `<input class="time-edior-column" data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_176]' }" />`
                 }
             ];
@@ -290,7 +290,7 @@ module a5 {
                     template: `<div data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
                         required: true, enable: true, inputFormat: 'time',
-                        startTimeNameId: '#[KMK003_163]', endTimeNameId: '#[KMK003_164]'}"/>`
+                        startTimeNameId: '#[KMK003_163]', endTimeNameId: '#[KMK003_164]',paramId: 'KMK003_20'}"/>`
                 }
             ];
         }

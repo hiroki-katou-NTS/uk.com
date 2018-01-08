@@ -121,7 +121,7 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		// validate list time zone
 		if (timezones.stream().anyMatch(
 				tz -> tz.getUseAtr() == UseSetting.USE && this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
-			throw new BusinessException("Msg_516");
+			throw new BusinessException("Msg_516" , "KMK003_216");
 		}
 	}
 

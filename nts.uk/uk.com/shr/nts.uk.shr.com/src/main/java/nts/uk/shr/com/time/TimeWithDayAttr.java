@@ -72,7 +72,7 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 	}
 	
 	public String getInDayTimeWithFormat(){
-		return this.hour() + ":" + this.minute();
+		return this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
 	}
 	
 	public String getRawTimeWithFormat(){
