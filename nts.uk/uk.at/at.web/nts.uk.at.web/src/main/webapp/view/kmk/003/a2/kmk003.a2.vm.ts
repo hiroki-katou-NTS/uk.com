@@ -74,7 +74,7 @@ module a2 {
             });
             self.isDetailMode = ko.observable(self.isSimpleMode());
             self.isFlowMode = self.parentModel.workTimeSetting.isFlow;
-            self.isUseHalfDay = self.parentModel.fixedWorkSetting.useHalfDayShift; 
+            self.isUseHalfDay = input.useHalfDay; 
             
             
             // ====================================== Defined Variable Other Mode ======================================
@@ -227,12 +227,11 @@ module a2 {
                         .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
                 }
                 //============= DiffTime Mode =============
-                // TODO: need to check
-//                else if (self.parentModel.workTimeSetting.isDiffTime()) {
-//                    // all day
-//                    emTimezone = self.parentModel.diffWorkSetting.getHDWtzOneday()
-//                        .workTimezone.employmentTimezones[0];
-//                }
+                else if (self.parentModel.workTimeSetting.isDiffTime()) {
+                    // all day
+                    emTimezone = self.parentModel.diffWorkSetting.getHDWtzOneday()
+                        .workTimezone.employmentTimezones()[0];
+                }
 
                 //============= Convert =============
                 let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
@@ -311,20 +310,19 @@ module a2 {
             }
             
             //============= DiffTime Mode =============
-            // TODO: need to check
-//            else if (self.parentModel.workTimeSetting.isDiffTime()) {
-//                // all day
-//                dataSourceAllDay = self.parentModel.diffWorkSetting.getHDWtzOneday()
-//                    .workTimezone.employmentTimezones;
-//                
-//                // morning
-//                dataSourceMorning = self.parentModel.diffWorkSetting.getHDWtzMorning()
-//                    .workTimezone.employmentTimezones;
-//                
-//                // afternoon
-//                dataSourceAfternoon = self.parentModel.diffWorkSetting.getHDWtzAfternoon()
-//                    .workTimezone.employmentTimezones;
-//            }
+            else if (self.parentModel.workTimeSetting.isDiffTime()) {
+                // all day
+                dataSourceAllDay = self.parentModel.diffWorkSetting.getHDWtzOneday()
+                    .workTimezone.employmentTimezones;
+                
+                // morning
+                dataSourceMorning = self.parentModel.diffWorkSetting.getHDWtzMorning()
+                    .workTimezone.employmentTimezones;
+                
+                // afternoon
+                dataSourceAfternoon = self.parentModel.diffWorkSetting.getHDWtzAfternoon()
+                    .workTimezone.employmentTimezones;
+            }
             // convert data
             self.toModel(dataSourceMorning, self.dataSourceMorning);
             self.toModel(dataSourceAllDay, self.dataSourceOneDay);
@@ -437,20 +435,19 @@ module a2 {
                 }
                 
                 //============= DiffTime Mode =============
-                // TODO: need to check
-//                else if (self.parentModel.workTimeSetting.isDiffTime()) {
-//                    // all day
-//                    self.parentModel.diffWorkSetting.getHDWtzOneday()
-//                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceOneDay);
-//                    
-//                    // morning
-//                    self.parentModel.diffWorkSetting.getHDWtzMorning()
-//                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceMorning);
-//                    
-//                    // afternoon
-//                    self.parentModel.diffWorkSetting.getHDWtzAfternoon()
-//                        .workTimezone.employmentTimezones = self.toDomain(self.dataSourceAfternoon);
-//                }
+                else if (self.parentModel.workTimeSetting.isDiffTime()) {
+                    // all day
+                    self.parentModel.diffWorkSetting.getHDWtzOneday()
+                        .workTimezone.employmentTimezones(self.toDomain(self.dataSourceOneDay));
+                    
+                    // morning
+                    self.parentModel.diffWorkSetting.getHDWtzMorning()
+                        .workTimezone.employmentTimezones(self.toDomain(self.dataSourceMorning));
+                    
+                    // afternoon
+                    self.parentModel.diffWorkSetting.getHDWtzAfternoon()
+                        .workTimezone.employmentTimezones(self.toDomain(self.dataSourceAfternoon));
+                }
             }
 
         }

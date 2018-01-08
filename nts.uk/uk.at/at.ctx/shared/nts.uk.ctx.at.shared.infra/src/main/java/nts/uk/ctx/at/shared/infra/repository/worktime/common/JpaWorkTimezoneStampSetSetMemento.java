@@ -6,6 +6,9 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
@@ -45,23 +48,25 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 			lstEntity = new ArrayList<>();
 		}
 		
+		// convert list entity to map
+		Map<KshmtRoundingSetPK, KshmtRoundingSet> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(item -> ((KshmtRoundingSet) item).getKshmtRoundingSetPK(),
+						Function.identity()));
+		
 		List<KshmtRoundingSet> newLstEntity = new ArrayList<>();
 		
 		for (RoundingSet rounding : rdSet) {
 			
 			// new pk
-			KshmtRoundingSetPK newPK = this.setPrimaryKey(parentEntity, new KshmtRoundingSetPK());
+			KshmtRoundingSetPK newPK = new KshmtRoundingSetPK();
+			newPK.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
+			newPK.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
+			newPK.setAtr(rounding.getSection().value);
 			
 			// get entity existed
-			KshmtRoundingSet entity = lstEntity.stream().filter(item -> {
-				KshmtRoundingSetPK pk = item.getKshmtRoundingSetPK();
-					
-					return pk.getCid().equals(newPK.getCid()) && pk.getWorktimeCd().equals(newPK.getWorktimeCd())
-							&& pk.getWorkFormAtr() == newPK.getWorkFormAtr()
-							&& pk.getWorkTimeSetMethod() == newPK.getWorkTimeSetMethod()
-							&& pk.getAtr() == rounding.getSection().value;
-					}).findFirst()
-					.orElse(new KshmtRoundingSet(newPK));
+			KshmtRoundingSet entity = mapEntity.get(newPK) == null ? new KshmtRoundingSet(newPK) : mapEntity.get(newPK);
 			
 			// save to memento
 			rounding.saveToMemento(new JpaRoundingSetSetMemento(entity));
@@ -83,23 +88,25 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 			lstEntity = new ArrayList<>();
 		}
 		
+		// convert list entity to map
+		Map<KshmtPioritySetPK, KshmtPioritySet> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(item -> ((KshmtPioritySet) item).getKshmtPioritySetPK(),
+						Function.identity()));
+		
 		List<KshmtPioritySet> newLstEntity = new ArrayList<>();
 		
 		for (PrioritySetting pioritySet : prSet) {
 			
 			// new pk
-			KshmtPioritySetPK newPK = this.setPrimaryKey(this.parentEntity, new KshmtPioritySetPK());
+			KshmtPioritySetPK newPK = new KshmtPioritySetPK();
+			newPK.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
+			newPK.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
+			newPK.setPiorityAtr(pioritySet.getPriorityAtr().value);
 			
 			// get entity existed
-			KshmtPioritySet entity = lstEntity.stream().filter(item -> {
-				KshmtPioritySetPK pk = item.getKshmtPioritySetPK();
-					
-					return pk.getCid().equals(newPK.getCid()) && pk.getWorktimeCd().equals(newPK.getWorktimeCd())
-							&& pk.getWorkFormAtr() == newPK.getWorkFormAtr()
-							&& pk.getWorkTimeSetMethod() == newPK.getWorkTimeSetMethod()
-							&& pk.getPiorityAtr() == pioritySet.getPriorityAtr().value;
-					}).findFirst()
-					.orElse(new KshmtPioritySet(newPK));
+			KshmtPioritySet entity = mapEntity.get(newPK) == null ? new KshmtPioritySet(newPK) : mapEntity.get(newPK);
 			
 			// save to memento
 			pioritySet.saveToMemento(new JpaPrioritySettingSetMemento(entity));
@@ -109,37 +116,5 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 		}
 		// update entity
 		this.parentEntity.setKshmtPioritySets(newLstEntity);
-	}
-
-	/**
-	 * Sets the primary key.
-	 *
-	 * @param <T> the generic type
-	 * @param parentEntity the parent entity
-	 * @param primaryKey the primary key
-	 * @return the t
-	 */
-	private <T> T setPrimaryKey(KshmtWorktimeCommonSet parentEntity, T primaryKey) {
-		
-		// KshmtRoundingSetPK
-		if (primaryKey instanceof KshmtRoundingSetPK) {
-			KshmtRoundingSetPK pk = (KshmtRoundingSetPK) primaryKey;
-			
-			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
-			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
-			pk.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-		}
-		
-		// KshmtPioritySetPK
-		if (primaryKey instanceof KshmtPioritySetPK) {
-			KshmtPioritySetPK pk = (KshmtPioritySetPK) primaryKey;
-			
-			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
-			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
-			pk.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-		}
-		return primaryKey;
 	}
 }

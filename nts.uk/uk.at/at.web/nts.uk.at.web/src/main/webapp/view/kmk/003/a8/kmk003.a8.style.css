@@ -15,10 +15,6 @@
 	display: inline-block;
 }
 
-.tab_8_radio {
-	display: inline-grid;
-}
-
 .tab_8_round_setting {
 	width: 300px;
 	display: inline-block;
@@ -27,4 +23,8 @@
 
 .tab_8_radio_setting {
     margin-top: 10px;
+}
+
+.tab_8_radio_cell {
+	width: 200px;
 }
