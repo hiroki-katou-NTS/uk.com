@@ -406,7 +406,7 @@ module nts.fixedtable {
         public calStyleTable() {
             let self = this;
             let heigthCell = 33;
-            self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
+            self.tableStyle.height = heigthCell * self.maxRowDisplay + 29;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
         }
@@ -766,7 +766,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
 
                 // set height table
-                screenModel.$tableSelector.height(screenModel.tableStyle.height);
+                //screenModel.$tableSelector.height(screenModel.tableStyle.height);
 
                 // remove min-width default of ntsComboBox
                 screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
@@ -778,6 +778,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                     });
                 }
                 screenModel.initEventChangeComboBox($(element));
+                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height})
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());

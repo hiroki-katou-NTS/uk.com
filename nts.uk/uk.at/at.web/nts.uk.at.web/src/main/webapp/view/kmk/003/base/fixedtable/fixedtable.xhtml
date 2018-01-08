@@ -8,6 +8,9 @@
 		.kmk003-table-component .ntsHelpButton {
 			float: right;
 		}
+		.table-fixed-kmk003 tbody tr{
+			height: 33px;
+		}
 	</style>
 
 	<div class="ui-iggrid kmk003-table-component" data-bind="attr: {tabindex: tabindex}">
@@ -25,10 +28,10 @@
 
 
 		<!-- BEGIN CONTENT AREA -->
-		<div data-bind="style: {width: width + 'px'}">
+		<div data-bind="style: {}">
 			<!-- BEGIN BINDING HEADER -->
-			<table data-bind="style: {width: tableStyle.width + 'px'}"
-				class="ui-iggrid-headertable ui-widget-header ui-helper-reset">
+			<table data-bind="style: {}" id="fixed-table-custom"
+				class="table-fixed-kmk003">
 				<colgroup>
 					<col width="36"></col>
 					<com:ko-foreach bind="columns">
@@ -57,15 +60,15 @@
 			<!-- END BINDING HEADER -->
 
 			<!-- BEGIN BINDING CONTENT -->
-			<table id="fixed-table-custom"
-				style="overflow: auto; display: inline-block;">
-				<colgroup>
-					<col width="36"></col>
-					<com:ko-foreach bind="columns">
-						<col data-bind="attr: {width: width}"></col>
-					</com:ko-foreach>
-				</colgroup>
-			</table>
+<!-- 			<table id="fixed-table-custom" -->
+<!-- 				style="overflow: auto; display: inline-block;"> -->
+<!-- 				<colgroup> -->
+<!-- 					<col width="36"></col> -->
+<!-- 					<com:ko-foreach bind="columns"> -->
+<!-- 						<col data-bind="attr: {width: width}"></col> -->
+<!-- 					</com:ko-foreach> -->
+<!-- 				</colgroup> -->
+<!-- 			</table> -->
 			<!-- END BINDING CONTENT -->
 		</div><!-- END CONTENT AREA -->
 	</div>
