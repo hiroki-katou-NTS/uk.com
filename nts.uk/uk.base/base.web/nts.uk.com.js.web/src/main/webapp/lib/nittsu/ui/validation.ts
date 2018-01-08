@@ -356,8 +356,7 @@ module nts.uk.ui.validation {
                 validateFail = true;
             }
             if(!(/^-?\d*(\.\d+)?$/).test(inputText)){
-                result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]), message.id);  
-                return result;
+                validateFail = true;
             }
             var value = isDecimalNumber ?
                 ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
