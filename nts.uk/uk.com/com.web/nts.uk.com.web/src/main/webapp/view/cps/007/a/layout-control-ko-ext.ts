@@ -41,10 +41,6 @@ module nts.custombinding {
                         padding-left: 10px;
                     }
 
-                    .layout-control #cps007_btn_add {
-                        width: 140px;
-                    }
-
                     .layout-control #cps007_cbx_control {
                         min-width: 248px;
                     }
@@ -395,36 +391,10 @@ module nts.custombinding {
                     .layout-control.readonly:not(.inputable) .color-operation-case-character {
                         color: #000 !important;
                     }
-
-                    .layout-control .add-rows button {
-                        width: 100%;
-                        height: 27px;
-                        margin: 0;
-                        border: none;
-                        box-shadow: none;
-                    } 
-
-                    .layout-control .add-rows button:focus,
-                    .layout-control .add-rows button:active {
-                        top: 0;
-                        height: 27px;
-                        margin: 0;
-                        border: none;
-                        box-shadow: none;
-                    }
-
-                    .layout-control .add-rows button:not(:active) {
-                        border: none;
-                    }
                     
                     .layout-control .item-classification tbody tr td.index>div {
                         line-height: 27px;
-                    }
-
-                    .layout-control #cps007_btn_line {
-                        width: 125px;
-                    }
-    
+                    }    
                 </style>`;
 
         private tmp = `<div class="left-area">
@@ -1149,9 +1119,12 @@ module nts.custombinding {
                                     constraint.valueType = "Decimal";
                                     constraint.mantissaMaxLength = dts.decimalPart;
                                 }
+
+                                let max = (Math.pow(10, dts.integerPart) - Math.pow(10, -(dts.decimalPart || 0)));
+
                                 constraint.charType = 'Numeric';
-                                constraint.max = dts.numericItemMax || '';
-                                constraint.min = dts.numericItemMin || 0;
+                                constraint.max = dts.numericItemMax || max;
+                                constraint.min = dts.numericItemMin || -max;
                                 break;
                             case ITEM_SINGLE_TYPE.DATE:
                                 constraint.valueType = "Date";

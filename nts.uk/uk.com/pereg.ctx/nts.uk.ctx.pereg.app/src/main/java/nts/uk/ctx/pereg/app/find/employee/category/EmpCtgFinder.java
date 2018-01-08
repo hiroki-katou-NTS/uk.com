@@ -84,8 +84,8 @@ public class EmpCtgFinder {
 		//App contexts
 		String companyId = AppContexts.user().companyId();
 		String empIdCurrentLogin = AppContexts.user().employeeId();
-		//String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
-		String roleIdOfLogin = "99900000-0000-0000-0000-000000000001";
+		String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
+		//String roleIdOfLogin = "99900000-0000-0000-0000-000000000001";
 
 		// get list Category
 		List<PersonInfoCategory> listCategory = perInfoCategoryRepositoty.getAllPerInfoCtg(companyId);
