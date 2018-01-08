@@ -769,6 +769,10 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
                 })
+                
+                screenModel.$element.on('change', '.time-edior-column', function(event){
+                    _.defer(() => screenModel.itemList.valueHasMutated());
+                })
             });
         });
     }

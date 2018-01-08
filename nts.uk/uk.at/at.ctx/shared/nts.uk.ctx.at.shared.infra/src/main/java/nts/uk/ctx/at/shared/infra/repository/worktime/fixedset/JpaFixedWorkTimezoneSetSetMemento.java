@@ -91,6 +91,11 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 		
 		List<KshmtFixedWorkTimeSet> newListEntity = new ArrayList<>();
 		
+		// sort asc start time
+		lstWorkingTimezone.stream()
+				.sorted((item1, item2) -> item1.getTimezone().getStart().v() - item2.getTimezone().getStart().v())
+				.collect(Collectors.toList());
+		
 		for (EmTimeZoneSet domain : lstWorkingTimezone) {
 			
 			KshmtFixedWorkTimeSetPK pk = new KshmtFixedWorkTimeSetPK(this.cid, this.worktimeCd, this.type,
@@ -150,6 +155,11 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 		}
 		
 		List<KshmtFixedOtTimeSet> newListEntity = new ArrayList<>();
+		
+		// sort asc start time
+		lstOTTimezone.stream()
+				.sorted((item1, item2) -> item1.getTimezone().getStart().v() - item2.getTimezone().getStart().v())
+				.collect(Collectors.toList());
 		
 		for (OverTimeOfTimeZoneSet domain : lstOTTimezone) {
 			
