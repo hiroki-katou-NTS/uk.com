@@ -495,7 +495,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
                 scheduleAtr: 0,
                 budgetAtr: data.attributeId,
-                unitAtr: 0
+                unitAtr: data.unit
             };
             service.getDailyItems(param).done(function(data) {
                 let temp = [];
@@ -529,7 +529,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
                 scheduleAtr: 6,
                 budgetAtr: data.attributeId,
-                unitAtr: 0
+                unitAtr: data.unit
             };
             service.getDailyItems(param1).done(function(data) {
                 let temp = [];
@@ -565,12 +565,12 @@ module nts.uk.at.view.kml002.e.viewmodel {
             }
         }
 
-        displayItemsRuleTime(allItemTime: any, category: number, display: boolean) {
+        displayItemsRuleTime(allItemTime: any, category: number, display: number) {
             let self = this;
             let temp = [];
-            if (category == CategoryIndicator.EXTERNAL_BUDGET_RECORD_ITEMS && display) {
+            if (category == CategoryIndicator.EXTERNAL_BUDGET_RECORD_ITEMS && display ==0) {
                 self.itemsTime(_.filter(allItemTime, ['itemType', GrantPeriodicMethod.SCHEDULE]));
-            } else if (category == 0 && display) {
+            } else if (category == 0 && display ==0 ) {
                 self.itemsTime(_.filter(allItemTime, ['itemType', GrantPeriodicMethod.SCHEDULE]));
             } else {
                 self.itemsTime(_.filter(allItemTime, function(item: ItemModel) {
