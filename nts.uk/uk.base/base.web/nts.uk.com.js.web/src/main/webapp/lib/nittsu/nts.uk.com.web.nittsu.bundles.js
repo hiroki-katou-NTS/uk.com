@@ -3355,8 +3355,7 @@ var nts;
                             validateFail = true;
                         }
                         if (!(/^-?\d*(\.\d+)?$/).test(inputText)) {
-                            result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
-                            return result;
+                            validateFail = true;
                         }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
