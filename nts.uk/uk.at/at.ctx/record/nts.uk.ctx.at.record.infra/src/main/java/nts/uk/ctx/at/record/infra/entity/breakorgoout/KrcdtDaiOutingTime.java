@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
+import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -99,8 +100,12 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 	}
 
 	public static KrcdtDaiOutingTime toEntity(String employeeId, GeneralDate date, OutingTimeSheet outingTime) {
-		WorkStamp outStamp = outingTime.getGoOut().getStamp().orElseGet(null);
-		WorkStamp backStamp = outingTime.getComeBack().getStamp().orElseGet(null);
+		TimeActualStamp gooutactualStamp = outingTime.getGoOut().orElse(null);
+		TimeActualStamp backactualStamp = outingTime.getComeBack().orElse(null);
+		WorkStamp outStamp = gooutactualStamp == null ? null : gooutactualStamp.getStamp().orElseGet(null);
+		WorkStamp backStamp = backactualStamp == null ? null : backactualStamp.getStamp().orElseGet(null);
+		WorkStamp outActual = gooutactualStamp == null ? null : gooutactualStamp.getActualStamp();
+		WorkStamp backActual = backactualStamp == null ? null : backactualStamp.getActualStamp();
 		return new KrcdtDaiOutingTime(new KrcdtDaiOutingTimePK(employeeId, date, outingTime.getOutingFrameNo().v()),
 				outStamp == null ? null
 						: outStamp.getTimeWithDay() == null ? null : outStamp.getTimeWithDay().valueAsMinutes(),
@@ -109,26 +114,26 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 								: outStamp.getAfterRoundingTime().valueAsMinutes(),
 				outStamp == null ? null : outStamp.getLocationCode().v(),
 				outStamp == null ? null : outStamp.getStampSourceInfo().value,
-				outingTime.getGoOut().getActualStamp().getTimeWithDay() == null ? null
-						: outingTime.getGoOut().getActualStamp().getTimeWithDay().valueAsMinutes(),
-				outingTime.getGoOut().getActualStamp().getAfterRoundingTime() == null ? null
-						: outingTime.getGoOut().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
-				outingTime.getGoOut().getActualStamp().getLocationCode().v(),
-				outingTime.getGoOut().getActualStamp().getStampSourceInfo().value,
-				outingTime.getGoOut().getNumberOfReflectionStamp(),
+				outActual == null || outActual.getTimeWithDay() == null ? null
+						: outActual.getTimeWithDay().valueAsMinutes(),
+				outActual == null || outActual.getAfterRoundingTime() == null ? null
+						: outActual.getAfterRoundingTime().valueAsMinutes(),
+				outActual == null ? null :  outActual.getLocationCode().v(),
+				outActual == null ? null : outActual.getStampSourceInfo().value,
+					gooutactualStamp == null ? null : gooutactualStamp.getNumberOfReflectionStamp(),
 				backStamp == null ? null : backStamp.getTimeWithDay() == null ? null
 						: backStamp.getTimeWithDay().valueAsMinutes(),
 				backStamp == null ? null : backStamp.getAfterRoundingTime() == null ? null
 						: backStamp.getAfterRoundingTime().valueAsMinutes(),
 				backStamp == null ? null : backStamp.getLocationCode().v(),
 				backStamp == null ? null : backStamp.getStampSourceInfo().value,
-				outingTime.getComeBack().getActualStamp().getTimeWithDay() == null ? null
-						: outingTime.getComeBack().getActualStamp().getTimeWithDay().valueAsMinutes(),
-				outingTime.getComeBack().getActualStamp().getAfterRoundingTime() == null ? null
-						: outingTime.getComeBack().getActualStamp().getAfterRoundingTime().valueAsMinutes(),
-				outingTime.getComeBack().getActualStamp().getLocationCode().v(),
-				outingTime.getComeBack().getActualStamp().getStampSourceInfo().value,
-				outingTime.getComeBack().getNumberOfReflectionStamp(),
+				backActual == null || backActual.getTimeWithDay() == null ? null
+						: backActual.getTimeWithDay().valueAsMinutes(),
+				backActual == null || backActual.getAfterRoundingTime() == null ? null
+						: backActual.getAfterRoundingTime().valueAsMinutes(),
+				backActual == null ? null :  backActual.getLocationCode().v(),
+				backActual == null ? null : backActual.getStampSourceInfo().value,
+				backactualStamp == null ? null : backactualStamp.getNumberOfReflectionStamp(),
 				outingTime.getOutingTimeCalculation().valueAsMinutes(), outingTime.getOutingTime().valueAsMinutes(),
 				outingTime.getReasonForGoOut().value);
 	}

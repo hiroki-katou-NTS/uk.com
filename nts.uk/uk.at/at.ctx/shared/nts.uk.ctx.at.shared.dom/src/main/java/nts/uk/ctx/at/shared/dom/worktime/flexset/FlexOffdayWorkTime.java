@@ -56,6 +56,18 @@ public class FlexOffdayWorkTime extends DomainObject {
 		if (this.restTimezone.isFixRestTime() && !this.isRestTzInHolidayTz()) {
 			throw new BusinessException("Msg_756");
 		}
+		
+		// validate 770
+		this.lstWorkTimezone.stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_90");
+		});
+		
+		// validate 770 for rest
+		if (this.restTimezone.isFixRestTime()) {
+			this.restTimezone.getFixedRestTimezone().getTimezones().stream().forEach(item -> {
+				item.validateRange("KMK003_21");
+			});
+		}
 	}
 
 	/**

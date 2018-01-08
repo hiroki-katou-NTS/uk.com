@@ -53,7 +53,7 @@ public class TimeSheet extends DomainObject {
 		
 		// コアタイム時間帯.開始時刻 >= コアタイム時間帯.終了時刻 => Msg_770 
 		if (this.startTime.greaterThanOrEqualTo(this.endTime)) {
-			throw new BusinessException("Msg_770");
+			throw new BusinessException("Msg_770","KMK003_157");
 		}
 	}
 }

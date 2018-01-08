@@ -22,8 +22,9 @@ public class KbpmtSpecBPTimesheet extends UkJpaEntity implements Serializable {
 	public KbpmtSpecBPTimesheetPK kbpstSpecBPTimesheetPK  ;
 	@Column(name = "USE_ATR")
 	public BigDecimal useAtr;
+	//特定加給時間項目NO
 	@Column(name = "TIME_ITEM_ID")
-	public String timeItemId;
+	public int timeItemId;
 	@Column(name = "START_TIME")
 	public BigDecimal startTime;
 	@Column(name = "END_TIME")

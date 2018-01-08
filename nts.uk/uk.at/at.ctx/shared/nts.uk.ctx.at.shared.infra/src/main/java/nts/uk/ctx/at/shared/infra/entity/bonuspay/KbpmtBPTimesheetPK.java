@@ -20,6 +20,7 @@ public class KbpmtBPTimesheetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Column(name = "CID")
 	public String companyId;
+	//加給時間帯ID
 	@Column(name = "BONUS_PAY_TIMESHEET_NO")
 	public int timeSheetNO;
 	@DBCharPaddingAs(BonusPaySettingCode.class)

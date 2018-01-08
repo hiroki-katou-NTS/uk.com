@@ -16,6 +16,7 @@ public interface TimeZoneRoundingPolicy {
 	 *
 	 * @param predTime the pred time
 	 * @param tzRounding the tz rounding
+	 * @return true, if successful
 	 */
-	void validateRange(PredetemineTimeSetting predTime, TimeZoneRounding tzRounding);
+	boolean validateRange(PredetemineTimeSetting predTime, TimeZoneRounding tzRounding);
 }
