@@ -33,7 +33,7 @@ module kal004.share.model {
                this.checkConditonCode = dto.checkConditonCode;
                this.checkConditionName = dto.checkConditionName;
                this.listRoleId = dto.listRoleId;
-               this.GUID = nts.uk.util.randomId();               
+               this.GUID = dto.category.value + dto.checkConditonCode;
            }
     }
       export interface EnumConstantDto {
