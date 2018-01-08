@@ -12,8 +12,9 @@ module nts.custombinding {
     import parseTime = nts.uk.time.parseTime;
     import clearError = nts.uk.ui.errors.clearAll;
 
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
-    let writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'];
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
+        writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'],
+        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
@@ -1149,13 +1150,13 @@ module nts.custombinding {
                                     constraint.mantissaMaxLength = dts.decimalPart;
                                 }
                                 constraint.charType = 'Numeric';
-                                constraint.max = dts.numericItemMax || undefined;
+                                constraint.max = dts.numericItemMax || '';
                                 constraint.min = dts.numericItemMin || 0;
                                 break;
                             case ITEM_SINGLE_TYPE.DATE:
                                 constraint.valueType = "Date";
-                                constraint.max = parseTime(dts.max, true).format() || undefined;
-                                constraint.min = parseTime(dts.min, true).format() || undefined;
+                                constraint.max = parseTime(dts.max, true).format() || '';
+                                constraint.min = parseTime(dts.min, true).format() || '';
                                 break;
                             case ITEM_SINGLE_TYPE.TIME:
                                 constraint.valueType = "Time";
@@ -1164,8 +1165,8 @@ module nts.custombinding {
                                 break;
                             case ITEM_SINGLE_TYPE.TIMEPOINT:
                                 constraint.valueType = "Clock";
-                                constraint.max = parseTime(dts.timePointItemMax, true).format();
-                                constraint.min = parseTime(dts.timePointItemMin, true).format();
+                                constraint.max = parseTimeWidthDay(dts.timePointItemMax).shortText;
+                                constraint.min = parseTimeWidthDay(dts.timePointItemMin).shortText;
                                 break;
                             case ITEM_SINGLE_TYPE.SELECTION:
                                 constraint.valueType = "Selection";
