@@ -46,7 +46,8 @@ module nts.uk.com.view.cdl009.a {
                     isShowSelectButton: true,
                     isDialog: true,
                     maxRows: 12,
-                    tabindex: 1
+                    tabindex: 1,
+                    systemType : 2
                 };
                 self.listComponentOpt = {
                     isMultiSelect: self.isMultiSelect(),

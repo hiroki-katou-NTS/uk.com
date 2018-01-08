@@ -130,7 +130,8 @@ module nts.uk.at.view.kmk006.a {
                     isShowSelectButton: false,
                     isDialog: false,
                     alreadySettingList: self.wkpAlreadySettingList,
-                    maxRows: 20
+                    maxRows: 20,
+                    systemType: 2
                 };
                 self.treeOptionsWkpTotal = {
                     isShowAlreadySet: false,
@@ -141,7 +142,8 @@ module nts.uk.at.view.kmk006.a {
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
-                    maxRows: 10
+                    maxRows: 10,
+                    systemType: 2
                 };
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
                 self.itemJobAutoCalModel = new JobAutoCalSettingModel();
