@@ -172,9 +172,21 @@ module nts.uk.ui.koExtentions {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
-                    $input.ntsError('clear');
+                    
                     if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                        let oldError = $("#companyCode").ntsError('getError');
+                        if(nts.uk.util.isNullOrUndefined(oldError)){
+                           $input.ntsError('set', result.errorMessage, result.errorCode);
+                        } else {
+                            if(oldError.errorCode !== result.errorCode){
+                                $input.ntsError('clear');
+                                setTimeout(function() {
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                }, 10);
+                            }
+                        }
+                    } else {
+                        $input.ntsError('clear');
                     }
                 }
             });
