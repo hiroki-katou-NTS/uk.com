@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -10,7 +11,6 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -42,8 +42,6 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	NewBeforeRegister_New processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
-	@Inject
-	AppApprovalPhaseRepository appApprovalPhaseRepository;
 	@Inject 
 	NewAfterRegister_New newAfterRegister;
 	@Inject

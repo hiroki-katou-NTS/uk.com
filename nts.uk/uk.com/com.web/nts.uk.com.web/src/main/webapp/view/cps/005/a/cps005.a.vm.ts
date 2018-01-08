@@ -83,7 +83,10 @@ module nts.uk.com.view.cps005.a {
                     let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
                     new service.Service().updatePerInfoCtg(updateCategory).done(function() {
                         self.reloadData();
-                        info({ messageId: "Msg_15" }).then(() => { block.clear(); });
+                        info({ messageId: "Msg_15" }).then(() => {
+                            $("#category-name-control").focus();
+                            block.clear();
+                        });
                     }).fail(error => {
                         alertError({ messageId: error.message });
                         block.clear();
@@ -104,6 +107,7 @@ module nts.uk.com.view.cps005.a {
                                     let ctgCode = self.currentData().perInfoCtgSelectCode();
                                     self.currentData().perInfoCtgSelectCode("");
                                     self.currentData().perInfoCtgSelectCode(ctgCode);
+                                    $("#category-name-control").focus();
                                     block.clear();
                                 });
                             }).ifNo(() => {

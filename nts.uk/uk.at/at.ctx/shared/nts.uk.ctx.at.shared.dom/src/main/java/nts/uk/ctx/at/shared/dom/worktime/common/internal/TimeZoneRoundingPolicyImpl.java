@@ -29,8 +29,8 @@ public class TimeZoneRoundingPolicyImpl implements TimeZoneRoundingPolicy {
 	 * validateRange()
 	 */
 	@Override
-	public void validateRange(PredetemineTimeSetting predTime, TimeZoneRounding tzRounding) {
-		this.predService.validateOneDay(predTime, tzRounding.getStart(), tzRounding.getEnd());
+	public boolean validateRange(PredetemineTimeSetting predTime, TimeZoneRounding tzRounding) {
+		return this.predService.validateOneDay(predTime, tzRounding.getStart(), tzRounding.getEnd());
 	}
 
 }

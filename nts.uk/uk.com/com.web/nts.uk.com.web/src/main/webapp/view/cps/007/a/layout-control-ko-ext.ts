@@ -12,8 +12,9 @@ module nts.custombinding {
     import parseTime = nts.uk.time.parseTime;
     import clearError = nts.uk.ui.errors.clearAll;
 
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
-    let writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'];
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
+        writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'],
+        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
@@ -496,7 +497,7 @@ module nts.custombinding {
                                     }">
                                <div data-bind="if: layoutItemType == LAYOUT_TYPE.ITEM">
                                     <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
-                                            .filter(function(x) { return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((x.item||{}).dataTypeValue) == -1})
+                                            .filter(function(x) { return (__items.length == 1 ? [] : [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION]).indexOf((x.item||{}).dataTypeValue) == -1})
                                             .map(function(x) { return x.itemDefId.replace(/[-_]/g, '') })
                                             .value() }">
                                         <div data-bind="ntsFormLabel: { 
@@ -544,9 +545,6 @@ module nts.custombinding {
                                                 <table>
                                                     <thead>
                                                         <tr data-bind="foreach: { data: _item, as: 'header' }">
-                                                            <!-- ko if: $index() == 0 -->
-                                                            <th class="index"><div>⁝</div></th>
-                                                            <!-- /ko -->
                                                             <th data-bind="template: { afterRender: function(childs, data) { let div = $(childs[1]); setInterval(function() { div.css('width', (div.parent().width() - 3) + 'px') }, 0); } }">
                                                                 <div data-bind="ntsFormLabel: { 
                                                                     constraint: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/[-_]/g, '') : undefined,
@@ -559,12 +557,6 @@ module nts.custombinding {
                                                     <tbody>
                                                         <!-- ko foreach: { data: __items, as: '_row' } -->
                                                         <tr data-bind="foreach: { data: _row, as: '_column' }">
-                                                            <!-- ko if: $index() == 0 -->
-                                                            <td class="index">
-                                                                <div class="number" data-bind="text: ($parentContext.$index() + 1)"></div>
-                                                                <div class="remove-btn" data-bind="click: function(viewModel, event) { if(cls.items().length > 1) { cls.items.remove(function(x) { return _row == x; }) }}">✖</div>
-                                                            </td>
-                                                            <!-- /ko -->
                                                             <td data-bind="template: { 
                                                                     data: _column,
                                                                     name: 'ctr_template'
@@ -572,31 +564,6 @@ module nts.custombinding {
                                                             </td>
                                                         </tr>
                                                         <!-- /ko -->
-                                                        <tr class="add-rows">
-                                                            <td data-bind="attr: { colspan: _item.length + 1 }">
-                                                                <button tabindex="-1" title="挿す" data-bind="click: function(item, event) {
-                                                                        let row = [];
-                                                                        _.each(_item, function(_obj) {
-                                                                            let def = {
-                                                                                itemCode: _obj.itemCode,
-                                                                                itemName: _obj.itemName,
-                                                                                required: _obj.required,
-                                                                                itemDefId: _obj.itemDefId,
-                                                                                value: ko.observable(undefined),
-                                                                                readonly: ko.observable(false),
-                                                                                editable: ko.observable(true),
-                                                                                'type': _obj.type,
-                                                                                item: $.extend({}, _obj.item)
-                                                                            };
-                                                                            row.push(def);
-                                                                        });
-                                                                        cls.items.push(row);
-                                                                        $(event.target).closest('.table-scroll').trigger('scroll').animate({
-                                                                            scrollTop: $(event.target).offset().top
-                                                                        }, 0);
-                                                                    }">▼</button>
-                                                            </td>
-                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -1166,7 +1133,8 @@ module nts.custombinding {
                                         } else {
                                             constraint.valueType = "Integer";
                                         }
-                                        constraint.max = dts.numericItemMax || undefined;
+                                        debugger;
+                                        constraint.max = dts.numericItemMax || '';
                                         constraint.min = dts.numericItemMin || 0;
                                         break;
                                     case ITEM_STRING_TYPE.KANA:
@@ -1182,13 +1150,13 @@ module nts.custombinding {
                                     constraint.mantissaMaxLength = dts.decimalPart;
                                 }
                                 constraint.charType = 'Numeric';
-                                constraint.max = dts.numericItemMax || undefined;
+                                constraint.max = dts.numericItemMax || '';
                                 constraint.min = dts.numericItemMin || 0;
                                 break;
                             case ITEM_SINGLE_TYPE.DATE:
                                 constraint.valueType = "Date";
-                                constraint.max = parseTime(dts.max, true).format() || undefined;
-                                constraint.min = parseTime(dts.min, true).format() || undefined;
+                                constraint.max = parseTime(dts.max, true).format() || '';
+                                constraint.min = parseTime(dts.min, true).format() || '';
                                 break;
                             case ITEM_SINGLE_TYPE.TIME:
                                 constraint.valueType = "Time";
@@ -1197,8 +1165,8 @@ module nts.custombinding {
                                 break;
                             case ITEM_SINGLE_TYPE.TIMEPOINT:
                                 constraint.valueType = "Clock";
-                                constraint.max = parseTime(dts.timePointItemMax, true).format();
-                                constraint.min = parseTime(dts.timePointItemMin, true).format();
+                                constraint.max = parseTimeWidthDay(dts.timePointItemMax).shortText;
+                                constraint.min = parseTimeWidthDay(dts.timePointItemMin).shortText;
                                 break;
                             case ITEM_SINGLE_TYPE.SELECTION:
                                 constraint.valueType = "Selection";
@@ -1221,6 +1189,20 @@ module nts.custombinding {
                         exceptConsts = [];
                         writeConstraints(constraints);
                     }
+                },
+                scrollDown = () => {
+                    // remove old selected items
+                    $(ctrls.sortable)
+                        .find('.form-group.item-classification')
+                        .removeClass('selected');
+                    // scroll to bottom
+                    $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
+                    // select lastest item
+                    setTimeout(() => {
+                        $(ctrls.sortable)
+                            .find('.form-group.item-classification:last-child')
+                            .addClass('selected');
+                    }, 0);
                 };
 
             // add style to <head> on first run
@@ -1981,6 +1963,7 @@ module nts.custombinding {
 
                 // add line to list sortable
                 opts.sortable.pushItem(item);
+                scrollDown();
             });
 
             $(ctrls.sortable)
@@ -2000,21 +1983,7 @@ module nts.custombinding {
             $(ctrls.button).on('click', () => {
                 // アルゴリズム「項目追加処理」を実行する
                 // Execute the algorithm "項目追加処理"
-                let ids: Array<string> = ko.toJS(opts.listbox.value),
-                    scrollDown = () => {
-                        // remove old selected items
-                        $(ctrls.sortable)
-                            .find('.form-group.item-classification')
-                            .removeClass('selected');
-                        // scroll to bottom
-                        $(ctrls.sortable).scrollTop($(ctrls.sortable).prop("scrollHeight"));
-                        // select lastest item
-                        setTimeout(() => {
-                            $(ctrls.sortable)
-                                .find('.form-group.item-classification:last-child')
-                                .addClass('selected');
-                        }, 0);
-                    };
+                let ids: Array<string> = ko.toJS(opts.listbox.value);
 
                 if (!ids || !ids.length) {
                     alert({ messageId: 'Msg_203' });

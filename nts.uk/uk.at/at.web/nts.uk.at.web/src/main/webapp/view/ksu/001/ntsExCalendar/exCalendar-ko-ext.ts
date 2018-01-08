@@ -38,7 +38,8 @@ module nts.uk.at.view.ksu001 {
 
                 //set color for header of cell, which is not disable
                 _.each($('span.fc-day-number'), (y) => {
-                    let clazz: string = _.find(arrayColor, ['columnKey', moment($(y.closest('td')).attr('data-date'), 'YYYY-MM-DD').format('_YYYYMMDD')]).clazz;
+                    var element = $(y);
+                    let clazz: string = _.find(arrayColor, ['columnKey', moment($(element.closest('td')).attr('data-date'), 'YYYY-MM-DD').format('_YYYYMMDD')]).clazz;
                     $(y).addClass(clazz);
                 });
             } 
@@ -76,7 +77,8 @@ module nts.uk.at.view.ksu001 {
             $(container).on("click", ".checkBox-calendar", function(event) {
                 event.preventDefault();
                 event.stopPropagation();
-                var choosenDate = $(this).closest('td').attr("data-date");
+                var element = $(event.target);
+                var choosenDate = element.closest('td').attr("data-date");
                 if ($(this).find('input')[0].checked) {
                     _.remove(data.value(), (x) => {
                         return x == choosenDate;
@@ -92,7 +94,8 @@ module nts.uk.at.view.ksu001 {
             $('#checkAll').click(() => {
                 data.value([]);
                 _.each($('.checkBox-calendar .ntsCheckBox-label'), (x) => {
-                    data.value.push($(x).closest('td').attr("data-date"));
+                    var element = $(x);
+                    data.value.push(element.closest('td').attr("data-date"));
                     $(x)[0].childNodes[0].checked = true;
                 });
             });

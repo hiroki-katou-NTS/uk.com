@@ -5,6 +5,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -148,7 +149,6 @@ public class AttendanceItemUtil {
 				value = new ArrayList<>();
 			}
 			if(value.size() < max){
-				//TODO: insert with correct order
 				for(int x = value.size(); x < max; x++){
 					value.add(ReflectionUtil.newInstance(classType));
 				}
@@ -208,6 +208,42 @@ public class AttendanceItemUtil {
 			}
 		}
 	}
+	
+	private static <T> List<T> processFieldList(Field f, T object, AttendanceItemLayout layout, List<ItemValue> attendanceItems,
+			int layoutIdx, Class<T> classType, String pathName, String extraCondition, boolean needCheckWithIdx) {
+		List<T> value = getNotNullListValue(f, object);
+		Map<String, List<ItemValue>> listGroup = groupMapLayout(attendanceItems, layoutIdx, true);
+		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
+		String newExCondition = getExCondition("", object, layout);
+		boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
+		String idxFieldName = layout.setFieldWithIndex();
+		boolean isIndexField = !idxFieldName.isEmpty();
+		processListToMax(value, layout.listMaxLength(), classType, idxFieldName);
+		Field idxField = isIndexField ? getField(idxFieldName, classType) : null;
+		return IntStream.range(0, layout.listMaxLength()).mapToObj(idx -> {
+			List<ItemValue> values = listGroup.get(String.valueOf(idx));
+			T v = value.get(idx);
+			if (values != null) {
+				// TODO: for multiple index (current, not need)
+				return mergeToObject(v, values, layoutIdx + 1, idx, newPathName,
+						newExCondition, newNeedCheckWithIdx);
+			}
+			if(isIndexField){
+				ReflectionUtil.setFieldValue(idxField, v, idx + 1);
+			}
+			return v;
+		}).collect(Collectors.toList());
+
+	}
+
+	private static <T> Field getField(String fieldName, Class<T> classType) {
+		try {
+			return classType.getField(fieldName);
+		} catch (NoSuchFieldException | SecurityException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	private static <T> T getFieldItemValue(List<ItemValue> attendanceItems, Field field, String pathName,
 			String extraCondition, boolean needCheckWithIdx, int idx) {
@@ -238,37 +274,31 @@ public class AttendanceItemUtil {
 
 		return Collections.emptyList();
 	}
-
-	private static <T> List<T> processFieldList(Field f, T object, AttendanceItemLayout layout, List<ItemValue> attendanceItems,
-			int layoutIdx, Class<T> classType, String pathName, String extraCondition, boolean needCheckWithIdx) {
-		List<T> value = getNotNullListValue(f, object);
-		Map<String, List<ItemValue>> listGroup = groupMapLayout(attendanceItems, layoutIdx, true);
-		if (!listGroup.isEmpty()) {
-			String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
-			String newExCondition = getExCondition("", object, layout);
-			boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
-//			int max = getMax(listGroup);
-			processListToMax(value, layout.listMaxLength(), classType);
-			return IntStream.range(0, layout.listMaxLength()).mapToObj(idx -> {
-				List<ItemValue> values = listGroup.get(String.valueOf(idx));
-				T v = value.get(idx);
-				if (values != null) {
-					// TODO: for multiple index (current, not need)
-					return mergeToObject(v, values, layoutIdx + 1, idx, newPathName,
-							newExCondition, newNeedCheckWithIdx);
-				}
-				return v;
-			}).collect(Collectors.toList());
-		}
-		return value;
-
-	}
 	
-	private static <T> void processListToMax(List<T> list, int max, Class<T> targetClass){
+	private static <T> void processListToMax(List<T> list, int max, Class<T> targetClass, String idxFieldName){
 		//TODO: check result list
-		//TODO: insert with correct order
 		for(int x = list.size(); x < max; x++){
 			list.add(ReflectionUtil.newInstance(targetClass));
+		}
+		if(!idxFieldName.isEmpty()){
+			Field idxField = getField(idxFieldName, targetClass);
+			Collections.sort(list, new Comparator<T>() {
+			    @Override
+			    public int compare(T c1, T c2) {
+			    	Integer idx1 = ReflectionUtil.getFieldValue(idxField, c1);
+					Integer idx2 = ReflectionUtil.getFieldValue(idxField, c2);
+					if(c1 == null && c2 == null){
+						return 0;
+					}
+					if(c1 == null) {
+						return -1;
+					}
+					if(c2 == null) {
+						return 1;
+					}
+					return idx1.compareTo(idx2);
+			    }
+			});
 		}
 	}
 	
@@ -455,7 +485,6 @@ public class AttendanceItemUtil {
 				refeField = object.getClass().getField(layout.needCheckIDWithField());
 				return ReflectionUtil.getFieldValue(refeField, object).toString();
 			} catch (NoSuchFieldException | SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

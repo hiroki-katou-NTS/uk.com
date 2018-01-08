@@ -5,7 +5,9 @@ module CPS009Constraint {
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
     import parseTime = nts.uk.time.parseTime;
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
+        parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
+
     export function primitiveConst(data: any) {
         let dts = data,
             constraint: any = {
@@ -68,8 +70,8 @@ module CPS009Constraint {
                     break;
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                     constraint.valueType = "Clock";
-                    constraint.max = parseTime(dts.timepointItemMax, true).format();
-                    constraint.min = parseTime(dts.timepointItemMin, true).format();
+                    constraint.max = parseTimeWidthDay(dts.timepointItemMax).shortText;
+                    constraint.min = parseTimeWidthDay(dts.timepointItemMin).shortText;
                     break;
                 case ITEM_SINGLE_TYPE.SELECTION:
                     constraint.valueType = "Selection";

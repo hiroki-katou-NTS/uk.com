@@ -4618,11 +4618,22 @@ var nts;
                         return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
                     };
                     ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
-                        if (persist || isRoot) {
-                            this.shared[key] = data;
+                        var transferData;
+                        // Null or Undefined
+                        if (uk.util.isNullOrUndefined(data)) {
+                            transferData = data;
+                        }
+                        else if (!_.isFunction(data) || ko.isObservable(data)) {
+                            transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
                         else {
-                            this.localShared[key] = data;
+                            transferData = data;
+                        }
+                        if (persist || isRoot) {
+                            this.shared[key] = transferData;
+                        }
+                        else {
+                            this.localShared[key] = transferData;
                         }
                     };
                     ScreenWindowContainer.prototype.close = function (id) {

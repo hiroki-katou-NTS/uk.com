@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.after;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 

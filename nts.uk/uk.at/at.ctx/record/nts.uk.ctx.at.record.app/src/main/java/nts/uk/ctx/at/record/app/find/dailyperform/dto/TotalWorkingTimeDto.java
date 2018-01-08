@@ -52,15 +52,15 @@ public class TotalWorkingTimeDto {
 	private ExcessOfStatutoryTimeDailyPerformDto excessOfStatutoryTime;
 
 	/** 臨時時間: 日別実績の臨時時間 */
-	@AttendanceItemLayout(layout = "F", isList = true, jpPropertyName = "臨時時間", listMaxLength = 3)
+	@AttendanceItemLayout(layout = "F", isList = true, jpPropertyName = "臨時時間", listMaxLength = 3, setFieldWithIndex = "workNo")
 	private List<TemporaryTimeFrameDto> temporaryTime;
 
 	/** 遅刻時間: 日別実績の遅刻時間 */
-	@AttendanceItemLayout(layout = "G", isList = true, jpPropertyName = "遅刻時間", listMaxLength = 2)
+	@AttendanceItemLayout(layout = "G", isList = true, jpPropertyName = "遅刻時間", listMaxLength = 2, setFieldWithIndex = "workNo")
 	private List<LateTimeDto> lateTime;
 
 	/** 早退時間: 日別実績の早退時間 */
-	@AttendanceItemLayout(layout = "H", isList = true, jpPropertyName = "早退時間", listMaxLength = 2)
+	@AttendanceItemLayout(layout = "H", isList = true, jpPropertyName = "早退時間", listMaxLength = 2, setFieldWithIndex = "workNo")
 	private List<LeaveEarlyTimeDailyPerformDto> leaveEarlyTime;
 
 	/** 休憩時間: 日別実績の休憩時間 */
@@ -156,7 +156,7 @@ public class TotalWorkingTimeDto {
 						(c) -> new LeaveEarlyTimeOfDaily(
 								createTimeWithCalc(c.getLeaveEarlyTime()),
 								createTimeWithCalc(c.getLeaveEarlyDeductionTime()),
-								new WorkNo(c.getWorkTimes()),
+								new WorkNo(c.getWorkNo()),
 								createTimeValication(c.getValicationUseTime()),
 								new IntervalExemptionTime(null, null, toAttendanceTime(c.getIntervalExemptionTime()))
 								)),
