@@ -255,13 +255,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     dfd.resolve();
                 });
             });
-            //get data ComPattern for screen Q
-            //            self.getDataComPattern();
-            //init and get data for screen A
-            //            self.initCCG001();
-            //            self.initExTable();
-            //            self.initShiftCondition();
-            //            self.getDataScheduleDisplayControl(); // return dataScheduleDisplayControl = {"symbolAtr","symbolHalfDayAtr","symbolHalfDayName"}
             return dfd.promise();
         }
 
