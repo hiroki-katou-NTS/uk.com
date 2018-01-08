@@ -358,10 +358,10 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
 		//退勤時間を含んでいるかチェック
-		if(oneDayRange.contains(time.getLeaveStamp().getStamp().get().getTimeWithDay())) {
+		if(oneDayRange.contains(time.getLeaveStamp().get().getStamp().get().getTimeWithDay())) {
 			//出勤時間を含んでいるチェック
-			if(oneDayRange.contains(time.getAttendanceStamp().getStamp().get().getTimeWithDay())){
-				newStart = time.getAttendanceStamp().getStamp().get().getTimeWithDay();
+			if(oneDayRange.contains(time.getAttendanceStamp().get().getStamp().get().getTimeWithDay())){
+				newStart = time.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
 			}
 		
 			switch(calcMethod) {
@@ -373,7 +373,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 					return Optional.of(new TimeSpanForCalc(newStart,newEnd));
 				//退勤時間まで計上
 				case RecordUntilLeaveWork:
-					return Optional.of(new TimeSpanForCalc(newStart,time.getLeaveStamp().getStamp().get().getTimeWithDay()));
+					return Optional.of(new TimeSpanForCalc(newStart,time.getLeaveStamp().get().getStamp().get().getTimeWithDay()));
 				default:
 					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
 			}
@@ -381,7 +381,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		else
 		{
 			//1日の計算範囲と出退勤の重複範囲取得
-			return Optional.of(oneDayRange.getDuplicatedWith(new TimeSpanForCalc(time.getAttendanceStamp().getStamp().get().getTimeWithDay(),time.getLeaveStamp().getStamp().get().getTimeWithDay())).get());
+			return Optional.of(oneDayRange.getDuplicatedWith(new TimeSpanForCalc(time.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),time.getLeaveStamp().get().getStamp().get().getTimeWithDay())).get());
 		}
 	}
 }

@@ -433,7 +433,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index > 0) {
-                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
+                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index -1].appType, self.listAppMeta[index -1].appDate);
             }
             return null;
         }
@@ -451,7 +451,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index < self.listAppMeta.length - 1) {
-                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index + 1].appDate);
+                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index+1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index +1].appDate);
             }
             return null;
         }
@@ -585,7 +585,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             nts.uk.request.jump("../test/index.xhtml");
                         });    
                     } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){
+                            nts.uk.request.jump("../test/index.xhtml");
+                        }); 
                     }
                 }); 
             }).ifNo(function(){
@@ -602,6 +604,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
             
             self.listAppMeta.splice(index, 1);
+            //if list # null    
+            if (self.listAppMeta.length == 0) {
+                //nếu list null thì trả về màn hình mẹ
+                nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+            }
+            
             if(self.listAppMeta.length == 1){
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
                     'listAppMeta': self.listAppMeta, 
@@ -610,19 +618,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 return;
             }
             //nếu vị trí vừa xóa khác vị trí cuối
-            if (index != self.listAppMeta.length - 1) {
+            if (index != self.listAppMeta.length) {
                 //gán lại appId mới tại vị trí chính nó
-                self.btnAfter();
+                //self.btnAfter();
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
+                    'listAppMeta': self.listAppMeta, 
+                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[index].appID, self.listAppMeta[index].appType, self.listAppMeta[index].appDate)
+                });
             } else {
                 //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
-                self.btnBefore();
+//                self.btnBefore();
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
+                    'listAppMeta': self.listAppMeta, 
+                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[self.listAppMeta.length -1].appID, self.listAppMeta[self.listAppMeta.length -1].appType, self.listAppMeta[self.listAppMeta.length -1].appDate)
+                });
             }
             
-            //if list # null    
-            if (self.listAppMeta.length == 0) {
-                //nếu list null thì trả về màn hình mẹ
-                nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
-            }
         }
         
         /**

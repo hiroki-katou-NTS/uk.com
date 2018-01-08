@@ -24,7 +24,7 @@ module nts.uk.at.view.ksu001.common.viewmodel {
             this.symbolicName = params.symbolicName;
             this.name = params.name;
             this.abbreviationName = params.abbreviationName;
-            this.memo = params.memo;
+            this.memo = nts.uk.text.isNullOrEmpty(params.memo) ? "" : params.memo;
             this.displayAtr = params.displayAtr;
         }
     }

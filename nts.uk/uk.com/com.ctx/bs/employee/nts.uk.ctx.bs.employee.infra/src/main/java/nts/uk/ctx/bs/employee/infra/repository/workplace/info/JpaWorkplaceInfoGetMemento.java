@@ -5,7 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.info;
 
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoGetMemento;
@@ -57,8 +57,8 @@ public class JpaWorkplaceInfoGetMemento implements WorkplaceInfoGetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoGetMemento#getWorkplaceCode()
 	 */
 	@Override
-	public WorkplaceCode getWorkplaceCode() {
-		return new WorkplaceCode(this.bsymtWorkplaceInfo.getWkpcd());
+	public WkpCode getWorkplaceCode() {
+		return new WkpCode(this.bsymtWorkplaceInfo.getWkpcd());
 	}
 
 	/* (non-Javadoc)

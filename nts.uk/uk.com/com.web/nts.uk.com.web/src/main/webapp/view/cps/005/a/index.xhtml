@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		<title>#{i18n.getText('CPS005_36')}</title>
+			<title>#{i18n.getText('CPS005_36')}</title>
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.person.info.category.CategoryName
 			</com:ValidatorScript>
@@ -123,7 +123,7 @@
 								optionsValue: 'value',
 								optionsText: 'localizedName',
 								value: historyTypesSelected,
-								enable: true }">
+								enable: isChangeAbleCtgType }">
 									</div>
 									<button tabindex="7"
 										data-bind="ntsHelpButton: {image: '../image/history_type.png', position: 'right top', enable: true }">?</button>
