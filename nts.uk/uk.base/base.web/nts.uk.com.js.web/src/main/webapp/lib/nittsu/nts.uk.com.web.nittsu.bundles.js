@@ -4619,8 +4619,11 @@ var nts;
                     };
                     ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
                         var transferData;
-                        // Check is data or KO data
-                        if (!_.isFunction(data) || ko.isObservable(data)) {
+                        // Null or Undefined
+                        if (uk.util.isNullOrUndefined(data)) {
+                            transferData = data;
+                        }
+                        else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
                         else {
