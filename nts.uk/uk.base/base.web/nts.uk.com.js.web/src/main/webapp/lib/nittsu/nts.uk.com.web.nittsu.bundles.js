@@ -2804,15 +2804,11 @@ var nts;
                 }
                 asyncTask.requestToCancel = requestToCancel;
             })(asyncTask = request.asyncTask || (request.asyncTask = {}));
-            var specials;
-            (function (specials) {
-                function getAsyncTaskInfo(taskId) {
-                    return asyncTask.getInfo(taskId);
-                }
-                specials.getAsyncTaskInfo = getAsyncTaskInfo;
-                function donwloadFile(fileId) {
+            var file;
+            (function (file) {
+                function donwload(fileId) {
                     var dfd = $.Deferred();
-                    $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
+                    $.fileDownload(pathToGet(fileId), {
                         successCallback: function (url) {
                             dfd.resolve();
                         },
@@ -2824,13 +2820,36 @@ var nts;
                     });
                     return dfd.promise();
                 }
+                file.donwload = donwload;
+                function remove(fileId) {
+                    return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
+                }
+                file.remove = remove;
+                function isExist(fileId) {
+                    return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+                }
+                file.isExist = isExist;
+                function pathToGet(fileId) {
+                    return resolvePath('/webapi/shr/infra/file/storage/get/' + fileId);
+                }
+                file.pathToGet = pathToGet;
+            })(file = request.file || (request.file = {}));
+            var specials;
+            (function (specials) {
+                function getAsyncTaskInfo(taskId) {
+                    return asyncTask.getInfo(taskId);
+                }
+                specials.getAsyncTaskInfo = getAsyncTaskInfo;
+                function donwloadFile(fileId) {
+                    return file.donwload(fileId);
+                }
                 specials.donwloadFile = donwloadFile;
                 function deleteFile(fileId) {
-                    return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
+                    return file.remove(fileId);
                 }
                 specials.deleteFile = deleteFile;
                 function isFileExist(fileId) {
-                    return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+                    return file.isExist(fileId);
                 }
                 specials.isFileExist = isFileExist;
                 var errorPages;
