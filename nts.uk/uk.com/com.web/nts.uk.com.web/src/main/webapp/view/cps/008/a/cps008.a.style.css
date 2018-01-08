@@ -3,7 +3,7 @@
 }
 
 #functions-area button+.ntsControl {
-	margin-left: 580px;
+	margin-left: 645px;
 }
 
 #functions-area, #contents-area {
@@ -29,21 +29,9 @@
 	margin: 5px;
 }
 
-#A_BTN_NEW {
-	width: 85px;
-}
-
-#A_BTN_REGISTER {
-	width: 85px;
-}
-
-#A_BTN_COPPY {
-	width: 85px;
-}
 
 #A_BTN_DELETE {
 	margin-left: 45px !important;
-	width: 80px;
 }
 
 #left-content {
