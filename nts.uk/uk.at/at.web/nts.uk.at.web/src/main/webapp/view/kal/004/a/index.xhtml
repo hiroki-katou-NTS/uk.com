@@ -68,6 +68,14 @@
 						</table>
 						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<div class="tab-content-1" >
+								<div>						
+									<div id='check-condition-text'> 
+										<div id = 'select-text'><span>#{i18n.getText('KAL004_15')}</span></div>
+										<div id='selected-text'><span>#{i18n.getText('KAL004_16')}</span></div>									
+									</div>
+
+
+								</div>
 								<div id="swap-list" data-bind="ntsSwapList: {
 									showSearchBox: { showLeft : true, showRight: true},
 									height: 300,
@@ -79,7 +87,6 @@
 									multiple: true,
 						            searchCriterion:['checkConditonCode','checkConditionName'],
 						            enableRowNumbering: false ,
-						            showNumbering: false,
 						            showSort:{ showLeft : false, showRight: false}									
 								  }"></div>
 							</div>

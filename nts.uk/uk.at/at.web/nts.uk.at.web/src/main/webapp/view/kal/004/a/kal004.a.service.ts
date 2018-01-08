@@ -60,15 +60,14 @@ module kal004.a.service {
             } 
             let enum2 ={
                 value: 2,
-                fieldName: "月次",
+                fieldName: "年休付与用出勤率",
                 localizedName : ""    
             } 
             let enum3 ={
                 value: 3,
                 fieldName: "スケジュール日次",
                 localizedName : ""    
-            }                         
-            
+            }                                
             let alarmCheck1 ={
                 category: enum1,
                 checkConditonCode: '001',
@@ -77,7 +76,6 @@ module kal004.a.service {
             }
             let alarmCheck2 ={
                 category: enum1,
-                categoryName : 'Category2',
                 checkConditonCode: '002',
                 checkConditionName: 'checkCondition002',
                 listRoleId: ['0001', '0002', '0003', '0004', '0005', '0006'],   
@@ -126,7 +124,7 @@ module kal004.a.service {
                 listRoleId: ['0001', '0002', '0003', '0004', '0005', '0006'],   
             }
             let result = [alarmCheck1, alarmCheck2, alarmCheck3, alarmCheck4, alarmCheck5, alarmCheck6, alarmCheck7, alarmCheck8, alarmCheck9];
-            let resolve = _.map(result, (x) =>{return new share.ModelCheckConditonCode(x.category.value, x.category.fieldName, x.checkConditonCode, x.checkConditionName, x.listRoleId) });                   
+            let resolve = _.map(result, (x) =>{return new share.ModelCheckConditonCode(x) });                   
             let dfd = $.Deferred();
             dfd.resolve(resolve);
             return dfd.promise(resolve);                                      
