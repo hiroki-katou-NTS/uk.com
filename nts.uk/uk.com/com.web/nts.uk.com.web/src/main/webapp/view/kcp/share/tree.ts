@@ -37,7 +37,7 @@ module kcp.share.tree {
         isShowAlreadySet: boolean;
 
         /**
-         * is Multi select (複数使用区分). Setting use multiple components?
+         * is Multi use (複数使用区分). Setting use multiple components?
          */
         isMultipleUse: boolean;
         
@@ -183,6 +183,8 @@ module kcp.share.tree {
                 { level: 10, name: '10' }
             ];
             self.levelSelected = ko.observable(10);
+            self.isMultipleUse = false;
+            self.isMultiSelect = false;
             
             self.treeStyle = {
                 width: 410,
@@ -200,13 +202,9 @@ module kcp.share.tree {
             // set parameter 
             if (data.isMultipleUse) {
                 self.isMultipleUse = data.isMultipleUse;
-            } else {
-                self.isMultipleUse = false;
             }
             if (data.isMultiSelect) {
                 self.isMultiSelect = data.isMultiSelect;
-            } else {
-                self.isMultiSelect = false;
             }
             self.hasBaseDate(!self.isMultipleUse);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
