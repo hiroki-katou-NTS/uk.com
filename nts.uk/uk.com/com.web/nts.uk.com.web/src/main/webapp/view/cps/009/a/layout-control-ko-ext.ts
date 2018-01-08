@@ -56,9 +56,15 @@ module CPS009Constraint {
                         constraint.valueType = "Decimal";
                         constraint.mantissaMaxLength = dts.numberDecimalPart;
                     }
+
+                    debugger;
+                    let max = (Math.pow(10, dts.numberIntegerPart) - Math.pow(10, -(dts.numberDecimalPart || 0)));
+
                     constraint.charType = 'Numeric';
-                    constraint.max = dts.numericItemMax || 99999999;
+                    constraint.max = dts.numericItemMax || '';
                     constraint.min = dts.numericItemMin || 0;
+                    constraint.max = dts.numericItemMax || max;
+                    constraint.min = dts.numericItemMin || -max;
                     break;
                 case ITEM_SINGLE_TYPE.DATE:
                     constraint.valueType = "Date";
