@@ -283,8 +283,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }));
             });
             //get workPlaceName to display A3-1
-            self.workPlaceNameDisplay(self.empItems()[0].workplaceName);
+            
             self.workplaceId = self.empItems()[0].workplaceId;
+            let data = {
+                workplaceId:self.workplaceId,
+                baseDate:moment().toISOString()    
+            }
+            service.getWorkPlaceById(data).done((wkp)=>{
+                self.workPlaceNameDisplay(wkp.wkpDisplayName);
+            });
             //get data WorkPattern
             $.when(self.getDataWkpPattern()).done(() => {
                 if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {

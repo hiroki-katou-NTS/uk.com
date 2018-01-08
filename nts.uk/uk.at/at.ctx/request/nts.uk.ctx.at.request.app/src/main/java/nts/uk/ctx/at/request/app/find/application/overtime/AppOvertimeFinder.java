@@ -27,11 +27,9 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -64,8 +62,8 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -87,7 +85,7 @@ public class AppOvertimeFinder {
 	private EmployeeRequestAdapter employeeAdapter;
 	
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -263,8 +261,8 @@ public class AppOvertimeFinder {
 					}
 					overTimeDto.setSiftTypes(siftCodes);
 					
-					WorkTime workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
-					overTimeDto.setSiftType(new SiftType(workTime.getSiftCD().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+					WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
+					overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
 					
 					;
 					
@@ -741,7 +739,7 @@ public class AppOvertimeFinder {
 			SiftType siftType = new SiftType();
 
 			siftType.setSiftCode(appOvertime.getSiftCode().toString());
-			Optional<WorkTime> workTime = workTimeRepository.findByCode(companyID,
+			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
 					appOvertime.getSiftCode().toString());
 			if (workTime.isPresent()) {
 				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());

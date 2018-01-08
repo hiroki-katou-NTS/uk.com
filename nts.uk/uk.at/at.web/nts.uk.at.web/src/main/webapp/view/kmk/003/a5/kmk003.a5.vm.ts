@@ -239,7 +239,7 @@ module a5 {
                 dataSource: ko.observableArray([]),
                 isMultipleSelect: true,
                 columns: self.getTimezoneColumns(),
-                tabindex: -1
+                tabindex: 1,
             };
         }
 
@@ -253,7 +253,8 @@ module a5 {
                 dataSource: ko.observableArray([]),
                 isMultipleSelect: true,
                 columns: self.getRestSetColumns(),
-                tabindex: -1
+                tabindex: 1,
+                helpImageUrl: 'img/IMG_KMK003_2.png'
             };
         }
 
@@ -265,7 +266,7 @@ module a5 {
                     key: "startCol",
                     defaultValue: ko.observable(0),
                     width: 110,
-                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
+                    template: `<input class="time-edior-column" data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_174]' }" />`
                 },
                 {
@@ -273,7 +274,7 @@ module a5 {
                     key: "endCol",
                     defaultValue: ko.observable(0),
                     width: 110,
-                    template: `<input data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
+                    template: `<input class="time-edior-column" data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
                         required: true, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_176]' }" />`
                 }
             ];

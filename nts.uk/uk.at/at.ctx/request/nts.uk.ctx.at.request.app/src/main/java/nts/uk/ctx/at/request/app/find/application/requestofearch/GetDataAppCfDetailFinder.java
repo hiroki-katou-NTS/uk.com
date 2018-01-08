@@ -11,6 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
+import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -48,7 +49,6 @@ public class GetDataAppCfDetailFinder {
 	@Inject
 	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
 	
-
 	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto metaDto) {
 		String message = "";
 		String deadline = "";
@@ -166,4 +166,20 @@ public class GetDataAppCfDetailFinder {
 	private String formatTime(int time) {
 		  return String.format("%02d:%02d", time / 60, time % 60);
 		 }
+	
+	/**
+	 * find Application Deadline By Closure Id
+	 * @param closureId
+	 * @return
+	 * @author yennth
+	 */
+	public ApplicationDeadlineDto findByClosureId(int closureId){
+		String companyId = AppContexts.user().companyId();
+		return this.applicationDeadlineRepository.getDeadlineByClosureId(companyId, closureId)
+				.map(c -> {
+					return new ApplicationDeadlineDto(companyId, closureId, 
+														c.getUserAtr().value, c.getDeadline().v(), 
+														c.getDeadlineCriteria().value);
+				}).orElse(null);
+	}
 }

@@ -779,7 +779,7 @@ module nts.uk.at.view.kmk003.a {
                         model.updateData(dto);
                         return model
                     });
-                    this.timezones(mapped);
+                    this.timezones(_.sortBy(mapped, item => item.start()));
                 }
 
                 toDto(): TimezoneOfFixedRestTimeSetDto {
@@ -881,7 +881,7 @@ module nts.uk.at.view.kmk003.a {
                         model.updateData(dto);
                         return model
                     });
-                    this.flowRestSets(mapped);
+                    this.flowRestSets(_.sortBy(mapped, item => item.flowPassageTime()));
                     this.useHereAfterRestSet(data.useHereAfterRestSet);
                     this.hereAfterRestSet.updateData(data.hereAfterRestSet);
                 }

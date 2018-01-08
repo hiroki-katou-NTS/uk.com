@@ -96,8 +96,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ]);
 
             self.roundingMakeInvitation = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText('KMF004_61') },
-                { code: 1, name: nts.uk.resource.getText('KMF004_62') }
+                { code: 0, name: nts.uk.resource.getText('KMF004_125') },
+                { code: 1, name: nts.uk.resource.getText('KMF004_126') }
             ]);
 
             //Tab1
@@ -539,7 +539,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.currentItem().workTypeList());
 
-            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
                 nts.uk.ui.block.clear();
                 var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                 var name = [];

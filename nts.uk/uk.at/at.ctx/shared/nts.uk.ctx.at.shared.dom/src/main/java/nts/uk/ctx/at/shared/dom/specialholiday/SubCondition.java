@@ -55,6 +55,7 @@ public class SubCondition extends DomainObject {
 	private List<String> classificationList;
 
 	@Override
+	
 	public void validate() {
 		super.validate();
 	}

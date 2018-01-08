@@ -45,25 +45,10 @@ public class FixRestTimezoneSet extends DomainObject {
 		memento.setLstTimezone(this.lstTimezone);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.arc.layer.dom.DomainObject#validate()
-	 */
-	@Override
-	public void validate() {
-		super.validate();
-
-		// 時間帯が重複してはいけない。
-		this.validOverlap();
-
-		// TODO: validate message 516
-	}
-
 	/**
 	 * Valid overlap.
 	 */
-	private void validOverlap() {
+	public void validOverlap(String param) {
 		// sort asc by start time
 		Collections.sort(this.lstTimezone, Comparator.comparing(DeductionTime::getStart));
 
@@ -76,7 +61,7 @@ public class FixRestTimezoneSet extends DomainObject {
 			}
 			DeductionTime next = iterator.next();
 			if (current.getEnd().greaterThan(next.getStart())) {
-				throw new BusinessException("Msg_515");
+				throw new BusinessException("Msg_515",param);
 			}
 		}
 	}

@@ -4,8 +4,12 @@
 package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -106,11 +110,16 @@ public class DailyPerformanceCorrectionWebService {
 		mapSidDate.entrySet().forEach(x -> {
 			List<ItemValue> itemCovert = x.getValue().stream().map(y -> new ItemValue(y.getValue(),
 					ValueType.valueOf(y.getValueType()), y.getLayoutCode(), y.getItemId()))
-					.collect(Collectors.toList());
+					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId())).collect(Collectors.toList());
 			Map<String, List<ItemValue>> itemMap = new HashMap<>();
 			itemMap.put("AttendanceTimeOfDailyPerformance", itemCovert);
 			dailyModifyCommandFacade.handleUpdate(
 					new DailyModifyQuery(x.getValue().get(0).getEmployeeId(), x.getValue().get(0).getDate(), itemCovert));
 		});
+	}
+	
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+	    final Set<Object> seen = new HashSet<>();
+	    return t -> seen.add(keyExtractor.apply(t));
 	}
 }

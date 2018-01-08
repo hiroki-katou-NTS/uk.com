@@ -124,8 +124,8 @@ module nts.uk.at.view.kmk005.f {
                     self.currentSpecBonusPayTimesheets.removeAll();
                     if (nts.uk.util.isNullOrEmpty(dfdTimesheetListData) || nts.uk.util.isNullOrEmpty(dfdGetSpecTimesheetListData)) {
                         for (let i = 0; i < 10; i++) {
-                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0));
-                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0, 0));
+                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
+                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
                         }
                     } else {
                         dfdTimesheetListData.forEach(function(item) {
@@ -173,8 +173,8 @@ module nts.uk.at.view.kmk005.f {
                 self.currentBonusPayTimesheets.removeAll();
                 self.currentSpecBonusPayTimesheets.removeAll();
                 for (let i = 0; i < 10; i++) {
-                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0));
-                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
                 }
             }
 
@@ -319,12 +319,12 @@ module nts.uk.at.view.kmk005.f {
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
             bonusPaySettingCode: KnockoutObservable<string>;
-            timeItemID: KnockoutObservable<string>;
+            timeItemID: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             roundingTimeAtr: KnockoutObservable<number>;
             roundingAtr: KnockoutObservable<number>;
-            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: string,
+            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: number,
                 startTime: number, endTime: number, roundingTimeAtr: number, roundingAtr: number) {
                 this.companyId = ko.observable(companyId);
                 this.timeSheetNO = ko.observable(timeSheetNO);
@@ -343,13 +343,13 @@ module nts.uk.at.view.kmk005.f {
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
             bonusPaySettingCode: KnockoutObservable<string>;
-            timeItemID: KnockoutObservable<string>;
+            timeItemID: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             roundingTimeAtr: KnockoutObservable<number>;
             roundingAtr: KnockoutObservable<number>;
             specialDateItemNO: KnockoutObservable<number>;
-            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: string,
+            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: number,
                 startTime: number, endTime: number, roundingTimeAtr: number, roundingAtr: number, specialDateItemNO: number) {
                 this.companyId = ko.observable(companyId);
                 this.timeSheetNO = ko.observable(timeSheetNO);
