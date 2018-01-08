@@ -11,7 +11,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,9 +22,6 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 	// 4-1.詳細画面登録前の処理
 	@Inject
 	private DetailBeforeUpdate beforeRegisterRepo;
-	// 8-2.詳細画面承認後の処理
-	@Inject
-	private AfterApprovalProcess afterApprovalProcessRepo;
 	
 	@Inject
 	private DetailAfterApproval_New detailAfterApproval_New;
@@ -40,8 +36,6 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<In
 		// 4-1.詳細画面登録前の処理 lan nay deu bi hoan lai
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, command.getApplicationID(),
 				GeneralDate.today(), 1,command.getApplicationID(), EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), command.getVersion());
-
-		afterApprovalProcessRepo.invidialApplicationErrorCheck(command.getApplicationID());
 		
 		//8-2.詳細画面承認後の処理
 		return detailAfterApproval_New.doApproval(companyID, command.getApplicationID(), employeeID, memo);

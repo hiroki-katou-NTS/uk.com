@@ -151,8 +151,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             let self = this, dfd = $.Deferred();
             service.getDataForComboBox().done(function(data) {
                 // sort
-                let listWorkTypeOrder: any[] = _.orderBy(data.listWorkType, ['workTypeCode'], ['asc']);
-                let listWorkTimeOrder: any[] = _.orderBy(data.listWorkTime, ['siftCd'], ['asc']);
+                let listWorkTypeOrder: any[] = data.listWorkType;
+                let listWorkTimeOrder: any[] = data.listWorkTime;
 
                 //set data for listWorkType
                 self.listWorkType(listWorkTypeOrder);

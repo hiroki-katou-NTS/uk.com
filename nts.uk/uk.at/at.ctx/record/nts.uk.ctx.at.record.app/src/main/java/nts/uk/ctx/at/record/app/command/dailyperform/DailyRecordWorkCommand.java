@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommand;
@@ -20,57 +23,126 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDai
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
 
-@Getter
 public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
+	
+	private final List<ItemValue> itemValues = new ArrayList<>();
 
 	/** 勤務情報： 日別実績の勤務情報 */
+	@Getter
 	private final WorkInformationOfDailyPerformCommand workInfoCommand = new WorkInformationOfDailyPerformCommand();
 
 	/** 計算区分： 日別実績の計算区分 */
+	@Getter
 	private final CalcAttrOfDailyPerformanceCommand calcAttrCommand = new CalcAttrOfDailyPerformanceCommand();
 
 	/** 所属情報： 日別実績の所属情報 */
+	@Getter
 	private final AffiliationInforOfDailyPerformCommand affiliationInfoCommand = new AffiliationInforOfDailyPerformCommand();
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
+	@Getter
 	private final EmployeeDailyPerErrorCommand errorCommand = new EmployeeDailyPerErrorCommand();
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
+	@Getter
 	private final OutingTimeOfDailyPerformanceCommand outingTimeCommand = new OutingTimeOfDailyPerformanceCommand();
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
+	@Getter
 	private final BreakTimeOfDailyPerformanceCommand breakTimeCommand = new BreakTimeOfDailyPerformanceCommand();
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
+	@Getter
 	private final AttendanceTimeOfDailyPerformCommand attendanceTimeCommand = new AttendanceTimeOfDailyPerformCommand();
 
 	/** 作業別勤怠時間: 日別実績の作業別勤怠時間 */
+	@Getter
 	private final AttendanceTimeByWorkOfDailyCommand attendanceTimeByWorkCommand = new AttendanceTimeByWorkOfDailyCommand();
 
 	/** 出退勤: 日別実績の出退勤 */
+	@Getter
 	private final TimeLeavingOfDailyPerformanceCommand timeLeavingCommand = new TimeLeavingOfDailyPerformanceCommand();
 
 	/** 短時間勤務時間帯: 日別実績の短時間勤務時間帯 */
+	@Getter
 	private final ShortTimeOfDailyCommand shortWorkTimeCommand = new ShortTimeOfDailyCommand();
 
 	/** 特定日区分: 日別実績の特定日区分 */
+	@Getter
 	private final SpecificDateAttrOfDailyCommand specificDateAttrCommand = new SpecificDateAttrOfDailyCommand();
 
 	/** 入退門: 日別実績の入退門 */
+	@Getter
 	private final AttendanceLeavingGateOfDailyCommand attendanceLeavingGateCommand = new AttendanceLeavingGateOfDailyCommand();
 
 	/** 任意項目: 日別実績の任意項目 */
+	@Getter
 	private final OptionalItemOfDailyPerformCommand optionalItemCommand = new OptionalItemOfDailyPerformCommand();
 
 	/** 編集状態: 日別実績の編集状態 */
+	@Getter
 	private final EditStateOfDailyPerformCommand editStateCommand = new EditStateOfDailyPerformCommand();
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
+	@Getter
 	private final TemporaryTimeOfDailyPerformanceCommand temporaryTimeCommand = new TemporaryTimeOfDailyPerformanceCommand();
 
-	
+	public DailyWorkCommonCommand getCommand(String group){
+		DailyWorkCommonCommand command = null;
+		switch (group) {
+		case "A":
+			command = this.workInfoCommand;
+			break;
+		case "B":
+			command = this.calcAttrCommand;
+			break;
+		case "C":
+			command = this.affiliationInfoCommand;
+			break;
+		case "D":
+			command = this.errorCommand;
+			break;
+		case "E":
+			command = this.outingTimeCommand;
+			break;
+		case "F":
+			command = this.breakTimeCommand;
+			break;
+		case "G":
+			command = this.attendanceTimeCommand;
+			break;
+		case "H":
+			command = this.attendanceTimeByWorkCommand;
+			break;
+		case "I":
+			command = this.timeLeavingCommand;
+			break;
+		case "J":
+			command = this.shortWorkTimeCommand;
+			break;
+		case "K":
+			command = this.specificDateAttrCommand;
+			break;
+		case "L":
+			command = this.attendanceLeavingGateCommand;
+			break;
+		case "M":
+			command = this.optionalItemCommand;
+			break;
+		case "N":
+			command = this.editStateCommand;
+			break;
+		case "O":
+			command = this.temporaryTimeCommand;
+			break;
+		default:
+			break;
+		}
+		return command;
+	}
 	
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
@@ -146,9 +218,18 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		return this;
 	}
 	
+	public DailyRecordWorkCommand fromItems(List<ItemValue> itemValues){
+		this.itemValues.addAll(itemValues);
+		return this;
+	}
+	
 	public DailyRecordWorkCommand withData(DailyRecordDto data){
 		this.setRecords(data);
 		return this;
+	}
+	
+	public List<ItemValue> itemValues(){
+		return new ArrayList<>(this.itemValues);
 	}
 
 	@Override

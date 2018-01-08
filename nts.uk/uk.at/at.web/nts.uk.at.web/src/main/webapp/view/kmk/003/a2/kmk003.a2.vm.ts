@@ -496,7 +496,8 @@ module a2 {
                                     endConstraint: 'TimeWithDayAttr',
                                     required: true,
                                     enable: true,
-                                    inputFormat: 'time'}"/>`
+                                    inputFormat: 'time',
+                                    paramId: 'KMK003_86'}"/>`
                 }, {
                     headerText: nts.uk.resource.getText("KMK003_56"), 
                     key: "roundingTime", 

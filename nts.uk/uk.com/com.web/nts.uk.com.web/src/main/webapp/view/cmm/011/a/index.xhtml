@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 		
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode
+				nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode
 				nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode
 				nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName
 				nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName
@@ -98,7 +98,7 @@
 						<!-- BEGIN A5_1 ~ A_5_5 -->
 						<tr data-bind="with: workplaceHistory">
 							<td class="first-row" style="vertical-align: top;"><div
-									data-bind="ntsFormLabel: {constraint: 'WorkplaceCode'}">#{i18n.getText('Com_Workplace')}</div></td>
+									data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Workplace')}</div></td>
 							<td><div id="list-box" tabindex="9" data-bind="ntsListBox: {
 								options: lstWpkHistory,
 								optionsValue: 'historyId',
@@ -126,12 +126,12 @@
 						
 						<!-- BEGIN A6_1 ~ A7_2 -->
 						<tr>
-							<td class="td-detail"><div data-bind="ntsFormLabel: {required: true, constraint: 'WorkplaceCode'}">
+							<td class="td-detail"><div data-bind="ntsFormLabel: {required: true, constraint: 'WkpCode'}">
 								#{i18n.getText('CMM011_13')}</div></td>
 							<td><div><input id="wkpCd" tabindex="13" data-bind="ntsTextEditor: {
 											value: workplaceCode,
 											name: '#[CMM011_13]',
-											constraint: 'WorkplaceCode',
+											constraint: 'WkpCode',
 											option: {
 												width: '100px',
 											},

@@ -9,7 +9,7 @@ public class BPTimesheetDeleteCommand {
 	public int timeSheetNO;
 	public int useAtr;
 	public String bonusPaySettingCode;
-	public String timeItemId;
+	public int timeItemId;
 	public int startTime;
 	public int endTime;
 	public int roundingTimeAtr;
