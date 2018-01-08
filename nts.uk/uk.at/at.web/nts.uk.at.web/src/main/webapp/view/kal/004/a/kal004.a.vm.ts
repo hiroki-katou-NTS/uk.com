@@ -26,6 +26,9 @@ module kal004.a.model {
                 // SetPermission
                 setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
             
+                // SetPermission
+                alarmPermissionSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
+            
             constructor() {
                 let self = this;
                 self.alarmSource = ko.observableArray([]);                
