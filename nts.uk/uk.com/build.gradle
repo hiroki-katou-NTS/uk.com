@@ -110,8 +110,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-        compile group: 'nts.gul', name: 'nts.gul', version: '0.39.2'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.53.2'
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.41'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.54'
 	}
 }
 //=============com.file↓===========================================
