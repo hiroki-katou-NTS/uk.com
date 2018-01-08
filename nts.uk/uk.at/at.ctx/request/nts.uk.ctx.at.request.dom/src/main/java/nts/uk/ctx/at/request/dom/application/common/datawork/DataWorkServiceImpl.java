@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -22,8 +21,8 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -36,7 +35,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeSettingRepository;
 	@Inject
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
 
@@ -123,17 +122,17 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	public List<String> getSiftType(String companyID, String employeeID,
 			RequestAppDetailSetting requestAppDetailSetting) {
 		if (requestAppDetailSetting == null) {
-			return null;
+			return Collections.emptyList();
 		}
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
 				GeneralDate.today());
 
 		if (!CollectionUtil.isEmpty(listWorkTimeCodes)) {
-			List<WorkTime> workTimes = workTimeRepository.findByCodes(companyID, listWorkTimeCodes);
-			return workTimes.stream().map(item -> item.getSiftCD().v()).collect(Collectors.toList());
+			List<WorkTimeSetting> workTimes = workTimeSettingRepository.findByCodes(companyID, listWorkTimeCodes);
+			return workTimes.stream().map(item -> item.getWorktimeCode().v()).collect(Collectors.toList());
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
@@ -177,11 +176,13 @@ public class DataWorkServiceImpl implements IDataWorkService {
 				selectedData.setSelectedWorkTypeName(workType.get().getName().v());
 			}
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
-			Optional<WorkTime> workTime = workTimeRepository.findByCode(companyId,
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-			selectedData.setSelectedWorkTimeCd(
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
-			selectedData.setSelectedWorkTimeName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
+			WorkTimeSetting workTime = workTimeSettingRepository.findByCode(companyId,
+					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
+					.orElseGet(()->{
+						return workTimeSettingRepository.findByCompanyId(companyId).get(0);
+					});
+			selectedData.setSelectedWorkTimeCd(workTime.getWorktimeCode().toString());
+			selectedData.setSelectedWorkTimeName(workTime.getWorkTimeDisplayName().getWorkTimeName().v());
 		}
 	}
 
@@ -252,7 +253,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	private void SettingWorTimekName(String companyId, String workTimeCode, DataWork selectedData) {
 
 		// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
-		Optional<WorkTime> workTime = workTimeRepository.findByCode(companyId, workTimeCode);
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		selectedData.setSelectedWorkTimeCd(workTimeCode);
 		if (workTime.isPresent()) {
 			selectedData.setSelectedWorkTimeName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
