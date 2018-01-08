@@ -223,13 +223,13 @@ public class AttendanceItemUtil {
 		return IntStream.range(0, layout.listMaxLength()).mapToObj(idx -> {
 			List<ItemValue> values = listGroup.get(String.valueOf(idx));
 			T v = value.get(idx);
+			if(isIndexField){
+				ReflectionUtil.setFieldValue(idxField, v, idx + 1);
+			}
 			if (values != null) {
 				// TODO: for multiple index (current, not need)
 				return mergeToObject(v, values, layoutIdx + 1, idx, newPathName,
 						newExCondition, newNeedCheckWithIdx);
-			}
-			if(isIndexField){
-				ReflectionUtil.setFieldValue(idxField, v, idx + 1);
 			}
 			return v;
 		}).collect(Collectors.toList());
@@ -238,7 +238,7 @@ public class AttendanceItemUtil {
 
 	private static <T> Field getField(String fieldName, Class<T> classType) {
 		try {
-			return classType.getField(fieldName);
+			return classType.getDeclaredField(fieldName);
 		} catch (NoSuchFieldException | SecurityException e) {
 			e.printStackTrace();
 			return null;
@@ -287,14 +287,14 @@ public class AttendanceItemUtil {
 			    public int compare(T c1, T c2) {
 			    	Integer idx1 = ReflectionUtil.getFieldValue(idxField, c1);
 					Integer idx2 = ReflectionUtil.getFieldValue(idxField, c2);
-					if(c1 == null && c2 == null){
+					if(idx1 == null && idx2 == null){
 						return 0;
 					}
-					if(c1 == null) {
-						return -1;
-					}
-					if(c2 == null) {
+					if(idx1 == null) {
 						return 1;
+					}
+					if(idx2 == null) {
+						return -1;
 					}
 					return idx1.compareTo(idx2);
 			    }
@@ -387,7 +387,7 @@ public class AttendanceItemUtil {
 			// throw new NotFoundException("Item id not found exception!!!");
 		}
 		int itemId = valueType.getIdFromUtil() ? itemIds.get(0) : itemIds.get(idx);
-		System.out.println("id:" + itemId);
+		//System.out.println("id:" + itemId);
 		if (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemId)) {
 			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), itemId);
 			itemValue.value(value);
