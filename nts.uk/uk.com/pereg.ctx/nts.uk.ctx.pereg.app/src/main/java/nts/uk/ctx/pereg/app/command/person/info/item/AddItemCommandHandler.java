@@ -57,7 +57,7 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		} else if (addItemCommand.getSingleItem().getDataType() == 2) {
 			SingleItemCommand number = addItemCommand.getSingleItem();
 			BigDecimal max = new BigDecimal(Math.pow(10, number.getIntegerPart().doubleValue())
-					- Math.pow(10, number.getDecimalPart() == null ? 0 : number.getDecimalPart().intValue()));
+					- Math.pow(10, number.getDecimalPart() == null ? 0 : -number.getDecimalPart().intValue()));
 			BigDecimal min = new BigDecimal(0);
 			// if (number.getNumericItemMin() != null && number.getNumericItemMax() != null)
 			// {
