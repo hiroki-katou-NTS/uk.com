@@ -32,7 +32,6 @@ public class RegisterBasicScheduleCommand {
 	private String workTypeCode;
 	private String workTimeCode;
 	private int confirmedAtr;
-	private int workDayAtr;
 	private List<WorkScheduleTimeZoneSaveCommand> workScheduleTimeZoneSaveCommands;
 
 	/**
@@ -78,11 +77,6 @@ public class RegisterBasicScheduleCommand {
 			@Override
 			public List<WorkScheduleBreak> getWorkScheduleBreaks() {
 				return new ArrayList<>();
-			}
-
-			@Override
-			public WorkdayDivision getWorkDayAtr() {
-				return WorkdayDivision.valuesOf(workDayAtr);
 			}
 
 			@Override

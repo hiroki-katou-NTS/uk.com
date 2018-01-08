@@ -1008,7 +1008,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTimeCode: itemData.workTimeCode,
                             workTypeCode: itemData.workTypeCode,
                             confirmedAtr: itemData.confirmedAtr,
-                            workDayAtr: itemData.workDayAtr,
                             isIntendedData: true
                         }));
                     }
@@ -1276,9 +1275,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     workTimeCode: arrCell[i].value.workTimeCode,
                     workTypeCode: arrCell[i].value.workTypeCode,
                     //TO-DO 
-                    //set static confirmedAtr= 0, workDayAtr = 0
+                    //set static confirmedAtr= 0
                     confirmedAtr: 0,
-                    workDayAtr: 0,
                     workScheduleTimeZoneSaveCommands: [{
                         scheduleCnt: 1,
                         scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime
@@ -1761,7 +1759,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workTimeCode?: string,
         workTypeCode?: string,
         confirmedAtr?: number,
-        workDayAtr?: number,
         isIntendedData?: boolean,
         scheduleCnt?: number,
         scheduleStartClock?: number,
@@ -1776,7 +1773,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workTimeCode: string;
         workTypeCode: string;
         confirmedAtr: number;
-        workDayAtr: number;
         isIntendedData: boolean;
         scheduleCnt: number;
         scheduleStartClock: number;
@@ -1790,7 +1786,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             this.workTimeCode = params.workTimeCode;
             this.workTypeCode = params.workTypeCode;
             this.confirmedAtr = params.confirmedAtr;
-            this.workDayAtr = params.workDayAtr;
             this.isIntendedData = params.isIntendedData;
             this.scheduleCnt = params.scheduleCnt;
             this.scheduleStartClock = params.scheduleStartClock;
