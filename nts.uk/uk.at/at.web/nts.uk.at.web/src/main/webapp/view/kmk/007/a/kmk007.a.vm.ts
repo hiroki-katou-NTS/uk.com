@@ -11,7 +11,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         listSpecialHlFrame: KnockoutObservableArray<any>;
         listAbsenceFrame: KnockoutObservableArray<any>;
         oneDay: KnockoutObservable<WorkTypeSet>;
-
         currentOneDayCls: KnockoutObservable<number>;
         currentMorningCls: KnockoutObservable<number>;
         currentAfternoonCls: KnockoutObservable<number>;
@@ -22,6 +21,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         itemCloseAtr: KnockoutObservableArray<ItemModel>;
         itemListHaftDay: KnockoutObservableArray<ItemModel>;
         itemCalculatorMethod: KnockoutObservableArray<ItemModel>;
+        itemCalculatorMethod1: KnockoutObservableArray<any>;
         enableMethod: KnockoutObservable<boolean>;
         isCreated: KnockoutObservable<boolean>;
         index: KnockoutObservable<number>;
@@ -29,6 +29,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         checkDisabled: KnockoutObservable<boolean> = ko.observable(false);
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
         langId: KnockoutObservable<string> = ko.observable('ja');
+
 
         constructor() {
             var self = this,
@@ -136,6 +137,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 new ItemModel(2, nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY'), 0),
                 new ItemModel(3, nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION'), 0),
             ]);
+            self.itemCalculatorMethod1 = ko.observableArray(__viewContext.enums.CalculateMethod);
 
             self.roundingRules = ko.observableArray([
                 { code: '0', name: nts.uk.resource.getText('KMK007_19') },

@@ -14,6 +14,9 @@
 					nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName
 					nts.uk.ctx.at.shared.dom.worktype.WorkTypeMemo
 				</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.at.shared.dom.worktype.CalculateMethod
+			</com:EnumScript>
 			<com:stylefile path="kmk007.a.style.css" />
 			<com:scriptfile path="kmk007.a.start.js" />
 			<com:scriptfile path="kmk007.a.vm.js" />
@@ -529,8 +532,8 @@
 						<div style="margin-top: 30px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK007_44')}</div>
 						<div class="calulator-method-combo-box" id="combo-box"
 							data-bind="ntsComboBox: {
-														options: $parent.itemCalculatorMethod,
-														optionsValue: 'code',
+														options: $parent.itemCalculatorMethod1,
+														optionsValue: 'value',
 														visibleItemsCount: 4,
 														value: calculatorMethod,
 														optionsText: 'name',

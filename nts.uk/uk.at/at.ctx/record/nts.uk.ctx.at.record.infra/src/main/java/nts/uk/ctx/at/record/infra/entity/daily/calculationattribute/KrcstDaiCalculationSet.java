@@ -12,7 +12,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -83,6 +82,10 @@ public class KrcstDaiCalculationSet extends UkJpaEntity implements Serializable 
     @NotNull
     @Column(name = "LEAVE_EARLY_SET")
     public int leaveEarlySet;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "DIVERGENCE_TIME")
+    public int divergenceTime;
 
     public KrcstDaiCalculationSet() {
     }
@@ -92,7 +95,7 @@ public class KrcstDaiCalculationSet extends UkJpaEntity implements Serializable 
     }
 
     public KrcstDaiCalculationSet(KrcstDaiCalculationSetPK krcstDaiCalculationSetPK, String flexExcessTimeId, int bonusPayNormalCalSet, 
-    		int bonusPaySpeCalSet, String holWorkTimeId, String overTimeWorkId, int leaveLateSet, int leaveEarlySet) {
+    		int bonusPaySpeCalSet, String holWorkTimeId, String overTimeWorkId, int leaveLateSet, int leaveEarlySet, int divergenceTime) {
         this.krcstDaiCalculationSetPK = krcstDaiCalculationSetPK;
         this.flexExcessTimeId = flexExcessTimeId;
         this.bonusPayNormalCalSet = bonusPayNormalCalSet;
@@ -101,6 +104,7 @@ public class KrcstDaiCalculationSet extends UkJpaEntity implements Serializable 
         this.overTimeWorkId = overTimeWorkId;
         this.leaveLateSet = leaveLateSet;
         this.leaveEarlySet = leaveEarlySet;
+        this.divergenceTime = divergenceTime;
     }
 
     @Override

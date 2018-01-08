@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
@@ -74,27 +76,27 @@ public class JpaFixRestHalfdayTzSetMemento implements FixRestTimezoneSetSetMemen
 			return;
 		}
 		
-		// get list entity
-		List<KshmtFixedHalfRestSet> lstEntity = this.entity.getKshmtFixedHalfRestSets().stream()
+		// get list old entity
+		Map<KshmtFixedHalfRestSetPK, KshmtFixedHalfRestSet> lstOldEntity = this.entity.getKshmtFixedHalfRestSets().stream()
 				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() == this.type.value)
-				.collect(Collectors.toList());
-		if (CollectionUtil.isEmpty(lstEntity)) {
-			lstEntity = new ArrayList<>();
-		}
+				.collect(Collectors.toMap(KshmtFixedHalfRestSet::getKshmtFixedHalfRestSetPK, Function.identity()));
 		
 		List<KshmtFixedHalfRestSet> newListEntity = new ArrayList<>();
-		
-		periodNo = 0;
-		for (DeductionTime domain : lstTimezone) {			
+				
+		periodNo = 0;		
+		lstTimezone.forEach(domain -> {
 			periodNo++;
 			KshmtFixedHalfRestSetPK pk = new KshmtFixedHalfRestSetPK(this.cid, this.worktimeCd, this.type.value, periodNo);				
-			KshmtFixedHalfRestSet entity = new KshmtFixedHalfRestSet();
-			entity.setKshmtFixedHalfRestSetPK(pk);
+			KshmtFixedHalfRestSet entity = lstOldEntity.get(pk);
+			if (entity == null) {
+				entity = new KshmtFixedHalfRestSet();
+				entity.setKshmtFixedHalfRestSetPK(pk);
+			}						
 			domain.saveToMemento(new JpaFixedRestTZDeductionTimeSetMemento<KshmtFixedHalfRestSet>(entity));
 			
 			// add list
 			newListEntity.add(entity);
-		}
+		});
 		
 		newListEntity.addAll(otherList);
 		

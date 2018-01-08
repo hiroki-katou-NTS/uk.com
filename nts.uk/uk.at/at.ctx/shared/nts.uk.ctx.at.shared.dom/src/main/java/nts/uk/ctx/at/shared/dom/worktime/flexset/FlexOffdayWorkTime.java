@@ -4,13 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 
 /**
  * The Class FlexOffdayWorkTime.
@@ -67,6 +70,36 @@ public class FlexOffdayWorkTime extends DomainObject {
 			this.restTimezone.getFixedRestTimezone().getTimezones().stream().forEach(item -> {
 				item.validateRange("KMK003_21");
 			});
+		}
+		
+		this.validOverlap();
+	}
+	
+	/**
+	 * Valid overlap.
+	 */
+	private void validOverlap() {
+		// sort asc by start time		
+		this.lstWorkTimezone = this.lstWorkTimezone.stream()
+				.sorted((obj1, obj2) -> obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart()))
+				.collect(Collectors.toList());
+
+		Iterator<HDWorkTimeSheetSetting> iterator = this.lstWorkTimezone.iterator();
+		while (iterator.hasNext()) {
+			TimeZoneRounding current = iterator.next().getTimezone();
+
+			if (!iterator.hasNext()) {
+				break;
+			}
+			TimeZoneRounding next = iterator.next().getTimezone();
+			if (current.getEnd().greaterThan(next.getStart())) {
+				throw new BusinessException("Msg_515","KMK003_90");
+			}
+		}
+		
+		//validate msg_515
+		if (this.restTimezone.isFixRestTime()) {
+			this.restTimezone.getFixedRestTimezone().checkOverlap("KMK003_21");;
 		}
 	}
 

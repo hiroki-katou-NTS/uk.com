@@ -556,7 +556,7 @@ module nts.uk.com.view.cmm018.shr {
                         lstC.push(obj);
                     }
                     if(obj.employRootAtr == 3){//anyItem
-                        lstC.push(obj);
+                        lstD.push(obj);
                     }
                 });
                 let sortByA =  _.orderBy(lstA, ["appTypeValue"], ["asc"]);

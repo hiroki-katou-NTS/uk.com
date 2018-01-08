@@ -195,7 +195,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         openBModal() {
 
             let self = this;
-            setShared('categoryInfo', self.currentCategory());
+            setShared('categoryInfo', ko.toJS(self.currentCategory()));
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/006/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 self.getDetailCategory(self.currentCategory().id());
