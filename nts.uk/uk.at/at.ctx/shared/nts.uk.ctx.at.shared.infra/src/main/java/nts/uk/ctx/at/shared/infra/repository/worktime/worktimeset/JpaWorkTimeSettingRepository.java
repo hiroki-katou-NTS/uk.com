@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -170,9 +171,9 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.worktimeSetMethod),
 					condition.getWorkTimeMethodSet()));
 		}
-		if (condition.getIsAbolish() != null) {
+		if (!condition.getIsAbolish() && condition.getIsAbolish() != null) {
 			lstpredicateWhere.add(
-					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), condition.getIsAbolish() ? 0 : 1));
+					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
 		}
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
