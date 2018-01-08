@@ -65,7 +65,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
 
             self.selectedTab.subscribe((newValue) => {
                 if (newValue === 'workplace' && self.flag) {
-                    self.init();
+                    self.initScreenQ();
                     self.flag = false;
                 }
             });
@@ -102,15 +102,13 @@ module nts.uk.at.view.ksu001.q.viewmodel {
         /**
          * get content of link button
          */
-        init(): void {
+        initScreenQ(): void {
             let self = this;
             if (self.selectedTab() === 'company') {
-                self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany);
+                self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, ko.observable(0));
             } else {
-                self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace);
+                self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace, ko.observable(0));
             }
-            //select first link button
-            self.clickLinkButton(null, ko.observable(0));
         }
 
         /**
@@ -118,7 +116,8 @@ module nts.uk.at.view.ksu001.q.viewmodel {
          * change text of linkbutton
          * set data for datasource
          */
-        handleInit(listPattern: any, listTextButton: any, dataSource: any): any {
+        handleInit(listPattern: any, listTextButton: any, dataSource: any, index: any): any {
+            let self = this;
             //set default for listTextButton and dataSource
             listTextButton([
                 { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１'])), id: 0 },
@@ -168,22 +167,24 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                         arrDataOfArrPairObject.push(data.data);
                     });
                     //set symbol for arrPairObject
-                    $.when(__viewContext.viewModel.viewA.getDataToDisplaySymbol(arrDataOfArrPairObject)).done(() => {
-                        // set tooltip
-                        let arrTooltipClone = _.clone(arrPairShortName);
-                        for (let i = 7; i < arrTooltipClone.length; i += 7) {
-                            arrPairShortName.splice(i, 0, 'lb');
-                            i++;
-                        }
-                        let tooltip: string = arrPairShortName.join('→');
-                        tooltip = tooltip.replace(/→lb/g, '\n');
+                    //                    $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(arrDataOfArrPairObject)).done(() => {
+                    __viewContext.viewModel.viewA.setDataToDisplaySymbol(arrDataOfArrPairObject)
+                    // set tooltip
+                    let arrTooltipClone = _.clone(arrPairShortName);
+                    for (let i = 7; i < arrTooltipClone.length; i += 7) {
+                        arrPairShortName.splice(i, 0, 'lb');
+                        i++;
+                    }
+                    let tooltip: string = arrPairShortName.join('→');
+                    tooltip = tooltip.replace(/→lb/g, '\n');
 
-                        //insert data to source
-                        source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
-                    });
+                    //insert data to source
+                    source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
+                    //                });
                 });
                 dataSource().splice(listPattern[i].groupNo - 1, 1, source);
             }
+            self.clickLinkButton(null, index);
         }
 
         /**
@@ -272,13 +273,11 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 let selectedLB = getShared("dataFromJA").selectedLinkButton;
                 if (self.selectedTab() == 'company') {
                     $.when(__viewContext.viewModel.viewA.getDataComPattern()).done(() => {
-                        self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany);
-                        self.clickLinkButton(null, selectedLB);
+                        self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, selectedLB);
                     });
                 } else {
                     $.when(__viewContext.viewModel.viewA.getDataWkpPattern()).done(() => {
-                        self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace);
-                        self.clickLinkButton(null, selectedLB);
+                        self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace, selectedLB);
                     });
                 }
 
@@ -304,7 +303,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 self.textName(data ? data.text : self.textName());
                 self.tooltip(data ? data.tooltip : self.tooltip());
                 //set symbol for object
-                $.when(__viewContext.viewModel.viewA.getDataToDisplaySymbol(data.data)).done(() => {
+                $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(data.data)).done(() => {
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: data.data });
                     self.refreshDataSource();
                 });

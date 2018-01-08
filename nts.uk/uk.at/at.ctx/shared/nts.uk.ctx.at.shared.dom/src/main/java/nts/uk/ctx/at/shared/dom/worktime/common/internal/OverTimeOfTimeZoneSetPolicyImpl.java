@@ -40,12 +40,15 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		val shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();
 
 		// validate msg_516
-		this.tzrPolicy.validateRange(predTime, otSet.getTimezone());
+		if (this.tzrPolicy.validateRange(predTime, otSet.getTimezone())) {
+			throw new BusinessException("Msg_516", "KMK003_89");
+		}
+			
 
 		// validate msg_519
 		if (!predTime.isPredetermine() && predTime.getPrescribedTimezoneSetting().getLstTimezone().stream()
-				.anyMatch(shift -> otTimezone.isBetweenOrEqual(shift))) {
-			throw new BusinessException("Msg_519");
+				.anyMatch(shift -> otTimezone.isOverlap(shift))) {
+			throw new BusinessException("Msg_519","KMK003_89");
 		}
 
 		// validate msg_779

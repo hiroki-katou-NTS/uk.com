@@ -2,7 +2,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     export class ScreenModel {
         dateType: string = 'YYYY/MM/DD';
-        isDisplayOpenCmm018:  KnockoutObservable<boolean> = ko.observable(true);
         isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
@@ -15,10 +14,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         workState : KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible : KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        appDate: KnockoutObservable<string> = ko.observable(moment().format(this.dateType));
+        appDate: KnockoutObservable<string> = ko.observable('');
         //TIME LINE 1
-        timeStart1: KnockoutObservable<number> = ko.observable(0);
-        timeEnd1: KnockoutObservable<number> = ko.observable(0);   
+        timeStart1: KnockoutObservable<number> = ko.observable(null);
+        timeEnd1: KnockoutObservable<number> = ko.observable(null);   
         //場所名前 
         workLocationCD: KnockoutObservable<string> = ko.observable('');
         workLocationName: KnockoutObservable<string> = ko.observable('');
@@ -33,8 +32,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //Go Work 2
         selectedGo2: any = ko.observable(1);
         //TIME LINE 2
-        timeStart2: KnockoutObservable<number> = ko.observable(0);
-        timeEnd2: KnockoutObservable<number> = ko.observable(0);
+        timeStart2: KnockoutObservable<number> = ko.observable(null);
+        timeEnd2: KnockoutObservable<number> = ko.observable(null);
         //場所名前 
         workLocationCD2: KnockoutObservable<string> = ko.observable('');
         workLocationName2: KnockoutObservable<string> = ko.observable('');
@@ -92,8 +91,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
                     nts.uk.ui.block.clear();
                     self.appDate.subscribe(value => {
-                        self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
+                        if(!nts.uk.util.isNullOrEmpty(value)){
+                            self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
+                        }
                     });
+                    //フォーカス制御=>申請日付
+                    $('#inputdate').focus();
                 })                
             });
         }
@@ -120,12 +123,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         //事前事後区分 Enable ※A２
                         //申請種類別設定.事前事後区分を変更できる 〇
                         //申請種類別設定.事前事後区分を変更できない  ×
-                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
+                        self.prePostEnable(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);
+                        self.prePostSelected(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostInitFlg);
                     }
                     //事前事後区分 ※A１
                     //申請表示設定.事前事後区分　＝　表示する　〇
                     //申請表示設定.事前事後区分　＝　表示しない ×
-                    self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
+                    self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);                    
                     if(settingData.goBackSettingDto　!= undefined){
                         
                         //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
@@ -254,6 +258,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             return dfd.promise();
         }
         checkRegister(){
+            //inpStartTime1
+            $("#inpStartTime1").trigger("validate");
+            $("#inpEndTime1").trigger("validate");
+            //return if has error
+            if (nts.uk.ui.errors.hasError()){return;}
             nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
@@ -345,12 +354,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
             goBackCommand.goWorkAtr1 = self.selectedGo();
             goBackCommand.backHomeAtr1 = self.selectedBack();
-            goBackCommand.workTimeStart1 = self.timeStart1();
-            goBackCommand.workTimeEnd1 = self.timeEnd1();
+            goBackCommand.workTimeStart1 = nts.uk.util.isNullOrEmpty(self.timeStart1()) ? -1 : self.timeStart1();
+            goBackCommand.workTimeEnd1 = nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? -1 : self.timeEnd1();
             goBackCommand.goWorkAtr2 = self.selectedGo2();
             goBackCommand.backHomeAtr2 = self.selectedBack2();
-            goBackCommand.workTimeStart2 = self.timeStart2();
-            goBackCommand.workTimeEnd2 = self.timeEnd2();
+            goBackCommand.workTimeStart2 = nts.uk.util.isNullOrEmpty(self.timeStart2()) ? -1 : self.timeStart2();
+            goBackCommand.workTimeEnd2 = nts.uk.util.isNullOrEmpty(self.timeEnd2()) ? -1 : self.timeEnd2();
             goBackCommand.workLocationCD1 = self.workLocationCD();
             goBackCommand.workLocationCD2 = self.workLocationCD2();
             let txtReasonTmp = self.selectedReason();
@@ -412,30 +421,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 }
                 //self.workState(data.workChangeFlg == 1 ? true : false);
             }
-        }
-        /**
-         * set data from Server 
-         */
-        setValueControl(data: common.GoBackDirectData) {
-            var self = this;
-            self.prePostSelected(data.workChangeAtr);
-            //Line 1
-            self.timeStart1(data.workTimeStart1);
-            self.timeEnd1(data.workTimeEnd1);
-            self.selectedGo(data.goWorkAtr1);
-            self.selectedBack(data.backHomeAtr1);
-            self.workLocationCD(data.workLocationCD1);
-            //LINe 2
-            self.timeStart2(data.workTimeStart2);
-            self.timeEnd2(data.workTimeEnd2);
-            self.selectedGo2(data.goWorkAtr2);
-            self.selectedBack2(data.backHomeAtr2);
-            self.workLocationCD2(data.workLocationCD2);
-            //workType, Sift
-            self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
-            self.workTypeCd(data.workTypeCD);
-            self.siftCD(data.siftCD);
-        }
+        }        
         /**
          * set reason 
          */
@@ -464,20 +450,30 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                 var self = this;
                 var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
-                if (returnWorkLocationCD !== undefined) {
+                if (!nts.uk.util.isNullOrEmpty(returnWorkLocationCD)) {
                     if (line == 1) {
                         self.workLocationCD(returnWorkLocationCD);
                         self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
+                        //フォーカス制御 => 直行区分1
+                        $('#goWorkAtr1').focus();
                     } else {
                         self.workLocationCD2(returnWorkLocationCD);
                         self.workLocationName2(self.findWorkLocationName(returnWorkLocationCD));
-                    };
-                    nts.uk.ui.block.clear();
+                        //フォーカス制御 => 直行区分2
+                        $('#goWorkAtr2').focus();
+                    }
+                   
                 }
                 else {
-                    self.workLocationCD = ko.observable("");
-                    nts.uk.ui.block.clear();
+                    if (line == 1) {
+                        self.workLocationCD('');    
+                        self.workLocationName('');
+                    } else {
+                        self.workLocationCD2('');    
+                        self.workLocationName2('');    
+                    }              
                 }
+                 nts.uk.ui.block.clear();
             });
         }
         /**
@@ -502,6 +498,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.workTypeName(childData.selectedWorkTypeName);
                     self.siftCD(childData.selectedWorkTimeCode);
                     self.siftName(childData.selectedWorkTimeName);
+                    //フォーカス制御 => 定型理由
+                    $('#combo-box').focus();
                 }
             })
         }
@@ -511,7 +509,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         openCMM018(){
             let self = this;
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID()});  
+            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID});  
         }
     }
     

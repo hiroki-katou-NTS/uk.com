@@ -102,6 +102,7 @@ module nts.uk.ui.menu {
         let $userInfo = $("#user-info");
         let $company = $userInfo.find("#company");
         let $user = $userInfo.find("#user");
+        let $userName;
         
         let notThen = function($container: JQuery, target: any, op: any) {
             if (!$container.is(target) && $container.has(target).length === 0) {
@@ -126,8 +127,10 @@ module nts.uk.ui.menu {
                 let $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
                 $compItem.on(constants.CLICK, function() {
                     nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                    .done(function() {
+                    .done(function(personName) {
                         $companyName.text(comp.companyName);
+                        $userName.text(personName);
+                        $companyList.css("right", $user.outerWidth() + 30);
                     });
                 });
             });
@@ -145,7 +148,7 @@ module nts.uk.ui.menu {
                 $userImage.css("margin-right", "6px").on(constants.CLICK, function() {
                     // TODO: Jump to personal profile.
                 });
-                let $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
+                $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
                 let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                 $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                 let userOptions = [ new MenuItem("個人情報の設定"), new MenuItem("ログアウト") ];

@@ -45,7 +45,7 @@ public class KshstGrantDateCom extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
 		@JoinColumn(name = "SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
 	})
-public KshstGrantRegular grantRegular;
+public KshstGrantRegular grantRegularCom;
 
 	@Override
 	protected Object getKey() {

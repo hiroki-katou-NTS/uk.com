@@ -279,6 +279,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(function() {
                 var output = getShared('CDL002Output');
                 if (output) {
+                    output.sort();
                     self.selectedErrorAlarm().alCheckTargetCondition.lstEmployment(output);
                 }
             });
@@ -295,6 +296,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", '/view/cdl/003/a/index.xhtml').onClosed(function(): any {
                 var output = getShared('outputCDL003');
                 if (output) {
+                    output.sort();
                     self.selectedErrorAlarm().alCheckTargetCondition.lstClassification(output);
                 }
             })
@@ -312,6 +314,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", '/view/cdl/004/a/index.xhtml').onClosed(function(): any {
                 let output = nts.uk.ui.windows.getShared('outputCDL004');
                 if (output) {
+                    output.sort();
                     self.selectedErrorAlarm().alCheckTargetCondition.lstJobTitle(output);
                 }
             })
@@ -326,6 +329,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/024/index.xhtml").onClosed(() => {
                 let output = getShared("currentCodeList");
                 if (output) {
+                    output.sort();
                     self.selectedErrorAlarm().alCheckTargetCondition.lstBusinessType(output);
                 }
             });
@@ -337,9 +341,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 let self = this;
                 let workTypeCondition = self.selectedErrorAlarm().workTypeCondition;
                 let lstSelectedCode = planOrActual === "plan" ? workTypeCondition.planLstWorkType() : workTypeCondition.actualLstWorkType();
-                setShared('KDL002_Multiple', true, true);
-                setShared('KDL002_AllItemObj', _.map(lstWorkType, (workType) => { return workType.workTypeCode; }), true);
-                setShared('KDL002_SelectedItemId', lstSelectedCode, true);
+                setShared('KDL002_Multiple', true);
+                setShared('KDL002_AllItemObj', _.map(lstWorkType, (workType) => { return workType.workTypeCode; }));
+                setShared('KDL002_SelectedItemId', lstSelectedCode);
                 nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(() => {
                     let results = getShared('KDL002_SelectedNewItem');
                     if (results) {
@@ -359,7 +363,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 let workTimeCondition = self.selectedErrorAlarm().workTimeCondition;
                 let lstSelectedCode = planOrActual === "plan" ? workTimeCondition.planLstWorkTime() : workTimeCondition.actualLstWorkTime();
                 setShared('kml001multiSelectMode', true);
-                nts.uk.ui.windows.setShared('kml001selectAbleCodeList', lstWorkTime.map((worktime) => { return worktime.code; }));
+                nts.uk.ui.windows.setShared('kml001selectAbleCodeList', lstWorkTime.map((worktime) => { return worktime.worktimeCode; }));
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', lstSelectedCode);
                 nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定" }).onClosed(function() {
                     let results = getShared("kml001selectedCodeList");
@@ -534,21 +538,32 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.lstBusinessType.subscribe((lstBussinessType) => {
                 if (lstBussinessType && lstBussinessType.length > 0) {
                     let displayText = "";
+                    let lstItem = [];
+                    let dfd = $.Deferred();
                     for (let i = 0; i < lstBussinessType.length; i++) {
                         service.getBusinessTypeByCode(lstBussinessType[i]).done((businessType) => {
-                            if (businessType && businessType.businessTypeName) {
-                                if (displayText !== "") {
-                                    displayText = displayText + ", " + businessType.businessTypeName;
-                                } else {
-                                    displayText = displayText + businessType.businessTypeName;
-                                }
-                                if (i === lstBussinessType.length - 1) {
-                                    this.displayLstBusinessType(displayText);
-                                    $("#displayLstBusinessType").trigger('validate');
-                                }
+                            if (businessType) {
+                                lstItem.push({ order: i, text: businessType.businessTypeName });
+                            }
+                            if (lstItem.length == lstBussinessType.length) {
+                                dfd.resolve();
                             }
                         });
                     }
+                    dfd.done(() => {
+                        lstItem = _.orderBy(lstItem, ['order'], ['asc']);
+                        for (let i = 0; i < lstItem.length; i++) {
+                            if (displayText !== "") {
+                                displayText = displayText + ", " + lstItem[i].text;
+                            } else {
+                                displayText = displayText + lstItem[i].text;
+                            }
+                            if (i === lstItem.length - 1) {
+                                this.displayLstBusinessType(displayText);
+                                $("#displayLstBusinessType").trigger('validate');
+                            }
+                        }
+                    });
                 } else {
                     this.displayLstBusinessType("");
                 }
@@ -585,21 +600,32 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.lstEmployment.subscribe((lstEmpt) => {
                 let displayText = "";
                 if (lstEmpt && lstEmpt.length > 0) {
+                    let lstItem = [];
+                    let dfd = $.Deferred();
                     for (let i = 0; i < lstEmpt.length; i++) {
                         service.getEmploymentByCode(lstEmpt[i]).done((empt) => {
-                            if (empt && empt.name) {
-                                if (displayText !== "") {
-                                    displayText = displayText + ", " + empt.name;
-                                } else {
-                                    displayText = displayText + empt.name;
-                                }
-                                if (i === lstEmpt.length - 1) {
-                                    this.displayLstEmployment(displayText);
-                                    $("#displayLstEmployment").trigger('validate');
-                                }
+                            if (empt) {
+                                lstItem.push({ order: i, text: empt.name });
+                            }
+                            if (lstItem.length == lstEmpt.length) {
+                                dfd.resolve();
                             }
                         });
                     }
+                    dfd.done(() => {
+                        lstItem = _.orderBy(lstItem, ['order'], ['asc']);
+                        for (let i = 0; i < lstItem.length; i++) {
+                            if (displayText !== "") {
+                                displayText = displayText + ", " + lstItem[i].text;
+                            } else {
+                                displayText = displayText + lstItem[i].text;
+                            }
+                            if (i === lstItem.length - 1) {
+                                this.displayLstEmployment(displayText);
+                                $("#displayLstEmployment").trigger('validate');
+                            }
+                        }
+                    });
                 } else {
                     this.displayLstEmployment("");
                 }
@@ -607,21 +633,32 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.lstClassification.subscribe((lstClss) => {
                 let displayText = "";
                 if (lstClss && lstClss.length > 0) {
+                    let lstItem = [];
+                    let dfd = $.Deferred();
                     for (let i = 0; i < lstClss.length; i++) {
                         service.getClassificationByCode(lstClss[i]).done((clss) => {
-                            if (clss && clss.name) {
-                                if (displayText !== "") {
-                                    displayText = displayText + ", " + clss.name;
-                                } else {
-                                    displayText = displayText + clss.name;
-                                }
-                                if (i === lstClss.length - 1) {
-                                    this.displayLstClassification(displayText);
-                                    $("#displayLstClassification").trigger('validate');
-                                }
+                            if (clss) {
+                                lstItem.push({ order: i, text: clss.name });
+                            }
+                            if (lstItem.length == lstClss.length) {
+                                dfd.resolve();
                             }
                         });
                     }
+                    dfd.done(() => {
+                        lstItem = _.orderBy(lstItem, ['order'], ['asc']);
+                        for (let i = 0; i < lstItem.length; i++) {
+                            if (displayText !== "") {
+                                displayText = displayText + ", " + lstItem[i].text;
+                            } else {
+                                displayText = displayText + lstItem[i].text;
+                            }
+                            if (i === lstItem.length - 1) {
+                                this.displayLstClassification(displayText);
+                                $("#displayLstClassification").trigger('validate');
+                            }
+                        }
+                    });
                 } else {
                     this.displayLstClassification("");
                 }
@@ -777,7 +814,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             this.planLstWorkTime = param ? ko.observable(param.planLstWorkTime) : ko.observableArray([]);
             this.actualFilterAtr = param ? ko.observable(param.actualFilterAtr) : ko.observable(false);
             this.actualLstWorkTime = param ? ko.observable(param.actualLstWorkTime) : ko.observableArray([]);
-            this.requireWorkTimeActual = ko.computed(()=>{
+            this.requireWorkTimeActual = ko.computed(() => {
                 return this.comparePlanAndActual() != 1 && this.actualFilterAtr();
             });
             this.planFilterAtr.subscribe((val) => {
@@ -796,18 +833,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 if (lstWorkTimeCode && lstWorkTimeCode.length > 0) {
                     let displayText = "";
                     let lstWorkTime = [];
-                    service.getWorkTimeByListCode(lstWorkTimeCode).done((data) => {
+                    service.getAllWorkTime().done((data) => {
                         if (data && data.length > 0) {
                             lstWorkTime = data;
                         }
                     }).then(() => {
                         for (let i = 0; i < lstWorkTimeCode.length; i++) {
                             for (let workTime of lstWorkTime) {
-                                if (lstWorkTimeCode[i] === workTime.code) {
+                                if (lstWorkTimeCode[i] === workTime.worktimeCode) {
                                     if (displayText !== "") {
-                                        displayText = displayText + ", " + workTime.name;
+                                        displayText = displayText + ", " + workTime.workTimeName;
                                     } else {
-                                        displayText = displayText + workTime.name;
+                                        displayText = displayText + workTime.workTimeName;
                                     }
                                     if (i === lstWorkTimeCode.length - 1) {
                                         this.displayLstWorkTimePlan(displayText);
@@ -824,18 +861,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 if (lstWorkTimeCode && lstWorkTimeCode.length > 0) {
                     let displayText = "";
                     let lstWorkTime = [];
-                    service.getWorkTimeByListCode(lstWorkTimeCode).done((data) => {
+                    service.getAllWorkTime().done((data) => {
                         if (data && data.length > 0) {
                             lstWorkTime = data;
                         }
                     }).then(() => {
                         for (let i = 0; i < lstWorkTimeCode.length; i++) {
                             for (let workTime of lstWorkTime) {
-                                if (lstWorkTimeCode[i] === workTime.code) {
+                                if (lstWorkTimeCode[i] === workTime.worktimeCode) {
                                     if (displayText !== "") {
-                                        displayText = displayText + ", " + workTime.name;
+                                        displayText = displayText + ", " + workTime.workTimeName;
                                     } else {
-                                        displayText = displayText + workTime.name;
+                                        displayText = displayText + workTime.workTimeName;
                                     }
                                     if (i === lstWorkTimeCode.length - 1) {
                                         this.displayLstWorkTimeActual(displayText);

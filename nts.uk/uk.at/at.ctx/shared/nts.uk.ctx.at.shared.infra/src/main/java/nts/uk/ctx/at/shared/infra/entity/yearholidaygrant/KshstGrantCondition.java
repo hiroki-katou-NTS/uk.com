@@ -33,7 +33,7 @@ public class KshstGrantCondition extends UkJpaEntity {
 	
 	/* 条件値 */
 	@Column(name = "CONDITION_VALUE")
-	public int conditionValue;
+	public Integer conditionValue;
 	
 	/* 条件利用区分 */
 	@Column(name = "USE_CONDITION_ATR")
@@ -54,7 +54,7 @@ public class KshstGrantCondition extends UkJpaEntity {
 		return kshstGrantConditionPK;
 	}
 
-	public KshstGrantCondition(KshstGrantConditionPK kshstGrantConditionPK, int conditionValue, int useConditionAtr) {
+	public KshstGrantCondition(KshstGrantConditionPK kshstGrantConditionPK, Integer conditionValue, int useConditionAtr) {
 		super();
 		this.kshstGrantConditionPK = kshstGrantConditionPK;
 		this.conditionValue = conditionValue;

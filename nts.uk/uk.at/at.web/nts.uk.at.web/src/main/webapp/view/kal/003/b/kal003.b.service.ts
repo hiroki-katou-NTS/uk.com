@@ -3,33 +3,58 @@ module nts.uk.at.view.kal003.b.service {
     import format = nts.uk.text.format;
 
     var paths = {
-            //アルゴリズム「日次の初期起動」を実行する
-            
-            getAllDailyAttendanceItemBy:        "at/function/alarm/checkcondition/kal003b/getAllDailyAttendanceItemBy",
-            getOptionItemByAtr:                 "at/function/alarm/checkcondition/kal003b/findByAtr",
-            getAllAttendanceAndFrameLinking:    "at/function/alarm/checkcondition/kal003b/getAllAttendanceAndFrameLinking",
-            getDailyAttendanceItemByChkItem:    "/at/function/alarm/checkcondition/kal003b/getDailyAttendanceItemByChkItem",
-            getEnumSingleValueCompareTypse:     "/at/function/alarm/checkcondition/kal003b/getEnumSingleValueCompareTypse",
-            getEnumRangeCompareType:            "/at/function/alarm/checkcondition/kal003b/getEnumRangeCompareType",
-            getEnumTypeCheckWorkRecord:         "/at/function/alarm/checkcondition/kal003b/getEnumTypeCheckWorkRecord",
-            getEnumTargetSelectionRange:        "/at/function/alarm/checkcondition/kal003b/getEnumTargetSelectionRange",
-            getEnumTargetServiceType:           "/at/function/alarm/checkcondition/kal003b/getEnumTargetServiceType",
-            getEnumLogicalOperator:             "/at/function/alarm/checkcondition/kal003b/getEnumLogicalOperator",
+            getAttendComparison:            "at/record/attendanceitem/daily/getattendcomparison/{0}",
+            getAttendCoutinousTime:         "at/record/attendanceitem/daily/getattendcoutinoustime",
+            getAttendCoutinousWork:         "at/record/attendanceitem/daily/getattendcoutinouswork",
+            getAttendCoutinousTimeZone:     "at/record/attendanceitem/daily/getattendcoutinoustimezone",
+            getAttendCompound:              "at/record/attendanceitem/daily/getattendcompound/{0}",
+            getAttendNameByIds:             "at/record/attendanceitem/daily/getattendnamebyids",
+            getErrorAlarmCondition:         "at/record/attendanceitem/daily/geterroralarmcondition/{0}",
+
+            getEnumSingleValueCompareTypse: "/at/function/alarm/checkcondition/kal003b/getEnumSingleValueCompareTypse",
+            getEnumRangeCompareType:        "/at/function/alarm/checkcondition/kal003b/getEnumRangeCompareType",
+            getEnumTypeCheckWorkRecord:     "/at/function/alarm/checkcondition/kal003b/getEnumTypeCheckWorkRecord",
+            getEnumTargetSelectionRange:    "/at/function/alarm/checkcondition/kal003b/getEnumTargetSelectionRange",
+            getEnumTargetServiceType:       "/at/function/alarm/checkcondition/kal003b/getEnumTargetServiceType",
+            getEnumLogicalOperator:         "/at/function/alarm/checkcondition/kal003b/getEnumLogicalOperator",
 
     }
     ////アルゴリズム「日次の初期起動」を実行する
-
-    export function getAllDailyAttendanceItemBy(command) : JQueryPromise<any> {
-        return ajax(paths.getAllDailyAttendanceItemBy, command);
+    //command: checkItem => return List<AttdItemDto>
+    export function getDailyItemChkItemComparison(checkItem) : JQueryPromise<any> {
+        return ajax(format(paths.getAttendComparison, checkItem));
     }
 
-    export function getCurrentDefaultRoleSet(command) : JQueryPromise<any> {
-        return ajax(paths.getOptionItemByAtr, command);
+    //return List<AttdItemDto>
+    export function getAttendCoutinousTime() : JQueryPromise<any> {
+        return ajax(paths.getAttendCoutinousTime);
+    }
+    
+    // return List<WorkTypeDto>
+    export function getAttendCoutinousWork() : JQueryPromise<any> {
+        return ajax(paths.getAttendCoutinousWork);
     }
 
-    export function getDailyAttendanceItemByChkItem(command) : JQueryPromise<any> {
-        return ajax(paths.getDailyAttendanceItemByChkItem, command);
+    //return List<SimpleWorkTimeSettingDto>
+    export function getAttendCoutinousTimeZone() : JQueryPromise<any> {
+        return ajax(paths.getAttendCoutinousTimeZone);
     }
+    
+    //command erAlCheckId => return ???
+    export function getAttendCompound(erAlCheckId) : JQueryPromise<any> {
+        return ajax(format(paths.getAttendCompound, erAlCheckId));
+    }
+
+    //command List<Integer> dailyAttendanceItemIds => return List<DailyAttendanceItemNameAdapterDto>
+    export function getAttendNameByIds(command) : JQueryPromise<any> {
+        return ajax(paths.getAttendNameByIds, command);
+    }
+    // command erAlCheckId => return ErrorAlarmWorkRecordDto
+    export function getErrorAlarmCondition(erAlCheckId) : JQueryPromise<any> {
+        return ajax(format(paths.getErrorAlarmCondition, erAlCheckId));
+    }
+
+    
     // get all Enums:
     export function getEnumSingleValueCompareTypse() : JQueryPromise<any> {
         return ajax(paths.getEnumSingleValueCompareTypse);

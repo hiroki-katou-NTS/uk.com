@@ -70,11 +70,11 @@
 								data-bind="click : $parent.openKDL002Dialog.bind($parent)" tabindex="8"
 								style="margin-left: 106px;" id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
 							<span><input id="text-target-item" style="width: 466px"
-								data-bind="ntsTextEditor: {value: $parent.workTypeNames, enable: true, name: '#[KMF004_13]', required: true}" /></span>
+								data-bind="ntsTextEditor: {value: $parent.workTypeNames, enable: true, name: '#[KMF004_13]', required: true, readonly: true}" /></span>
 						</div>
 						<div>
 							<div id="single-offer" style="margin-top: 10px;"
-								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_14')}</div>
+								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_22')}</div>
 							<div id="check-single-offer" style="margin-left: 107px;" tabindex="10"
 								data-bind="ntsSwitchButton: {
 												options: $parent.roundingPeriodic,
@@ -188,7 +188,7 @@
 											data-bind="enable: grantPeriodicMethod()==1 &amp;&amp; !$parent.isEnableCode(), click: $parent.openDDialog.bind($parent)"
 											style="margin-top: 10px; margin-left: 30px;" tabindex="20">#{i18n.getText('KMF004_34')}</button>
 									</div>
-									<span id="hidden-lbl03" style="margin-left: 40px;">#{i18n.getText('KMF004_30')}</span>
+									<span id="hidden-lbl03" style="margin-left: 40px;">#{i18n.getText('KMF004_35')}</span>
 								</div>
 								<div style="margin-top: 20px;">
 									<span>#{i18n.getText('KMF004_36')}</span>
@@ -287,7 +287,7 @@
 									<span>#{i18n.getText('KMF004_55')}</span>
 								</div>
 								<div>
-									<div style="" data-bind="ntsCheckBox: { checked: useGender }" tabindex="26">#{i18n.getText('KMF004_60')}</div>
+									<div style="" data-bind="ntsCheckBox: { checked: useGender }" tabindex="26">#{i18n.getText('KMF004_59')}</div>
 									<div style="margin-left: 40px; margin-top: 10px;" tabindex="27 " class="cf"
 										data-bind="ntsSwitchButton: {
 													options: $parent.roundingGenderAtr,
@@ -297,26 +297,26 @@
 													enable: useGender()==1}"></div>
 								</div>
 								<div>
-									<div style="" data-bind="ntsCheckBox: { checked: useEmployee }" tabindex="28">#{i18n.getText('KMF004_60')}</div>
+									<div style="" data-bind="ntsCheckBox: { checked: useEmployee }" tabindex="28">#{i18n.getText('Com_Employment')}</div>
 									<button style="margin-left: 40px; margin-top: 5px;"
 										data-bind="click: $parent.openCDL002.bind($parent), enable: useEmployee()==1">#{i18n.getText('KMF004_63')}</button>
-									<input style="width: 360px" tabindex="29"
+									<input class = "emplName" style="width: 360px" tabindex="29"
 										data-bind="ntsTextEditor: {value: $parent.employmentNames, 
 										required: ko.computed(function(){ return useEmployee ()==1 &amp;&amp; $parent.inp_grantMethod() == 0;})
-										, enable: false, name: '#[KMF004_60]',enable: useEmployee()==1}" />
+										, readonly: true, name: '#[KMF004_60]',enable: useEmployee()==1}" />
 								</div>
 								<div>
 									<div style="" tabindex="30" data-bind="ntsCheckBox: { checked: useCls }">#{i18n.getText('Com_Class')}</div>
-									<button style="margin-left: 67px; margin-top: 5px;"
+									<button style="margin-left: 40px; margin-top: 5px;"
 										data-bind="click: $parent.openCDL003.bind($parent), enable: useCls()==1">#{i18n.getText('KMF004_63')}</button>
-									<input style="width: 360px" tabindex="31"
+									<input class="className" style="width: 360px" tabindex="31"
 										data-bind="ntsTextEditor: {value: $parent.classficationNames, 
 										required: ko.computed(function(){ return useCls  ()==1 &amp;&amp; $parent.inp_grantMethod() == 0;}), 
-										enable: false, name: '#[Com_Class]', enable: useCls()==1}" />
+										readonly: true, name: '#[Com_Class]', enable: useCls()==1}" />
 								</div>
 								<div>
 									<div style="" tabindex="32" data-bind="ntsCheckBox: { checked: useAge }">#{i18n.getText('KMF004_56')}</div>
-									<input style="width: 30px; margin-left: 66px; margin-top: 5px;"
+									<input style="width: 30px; margin-left: 40px; margin-top: 5px;"
 										id="limitAgeFrom" tabindex="33"
 										data-bind="ntsNumberEditor: {
 												value: limitAgeFrom,
@@ -341,7 +341,7 @@
 								</div>
 								<span style="margin-left: 75px;">#{i18n.getText('KMF004_132')}</span>
 								<button
-									style="width: 25px; height: 25px; margin-left: 20px; margin-top: 5px;" tabindex="35"
+									style="width: 25px; height: 25px; margin-left: 20px; margin-top: 5px;" tabindex="-1"
 									data-bind="ntsHelpButton: {image: 'IMG_KMF004_3.png', position: 'right top', enable: true }">?</button>
 								<div>
 									<label> <span class="label1">#{i18n.getText('KMF004_134')}</span>
@@ -362,14 +362,14 @@
 							</div>
 							<div class="tab-content-5"
 								data-bind="with: currentItem().grantSingle">
-								<span style="display: block;">#{i18n.getText('KMF004_31')}</span>
+								<span style="display: block;">#{i18n.getText('KMF004_32')}</span>
 								<div style="margin-left: 25px;">
 									<div>
 										<div>
-											<label class="ntsRadioBox"> <input type="radio"
+											<label class="ntsRadioBox"> <input type="radio" 
 												name="grantDaySingleType"
-												data-bind="checkedValue: 0, checked: grantDaySingleType, enable: true" />
-												<span class="box"></span><span class="label">#{i18n.getText('KMF004_43')}</span>
+												data-bind="checkedValue: 0, checked: grantDaySingleType, enable: true "  tabindex="35"/>
+												<span class="box" tabindex="35"></span><span class="label">#{i18n.getText('KMF004_43')}</span>
 											</label> <span style="vertical-align: middle; margin-left: 80px;">#{i18n.getText('KMF004_31')}</span>
 											<input style="width: 40px;" id="fixNumberDays"
 												data-bind="ntsNumberEditor: {
@@ -396,12 +396,12 @@
 										</div>
 
 									</div>
-									<span id="hidden-lbl01" style="margin-left: 40px;">#{i18n.getText('KMF004_30')}</span>
+									<span id="hidden-lbl01" style="margin-left: 40px;">#{i18n.getText('KMF004_72')}</span>
 								</div>
 								<div style="margin-top: 20px;">
 									<span style="display: block;">オプション</span>
 									<div style="margin-left: 35px;">
-										<span>#{i18n.getText('KMF004_68')}</span>
+										<span>#{i18n.getText('KMF004_126')}</span>
 										<div style="margin-left: 100px;" class="cf"
 											data-bind="ntsSwitchButton: {
 													options: $parent.roundingMakeInvitation,
@@ -410,10 +410,10 @@
 													value: makeInvitation,
 													enable: true}"></div>
 									</div>
-									<div style="margin-top: 10px;">
-										<div style="margin-left: 35px;">
-											<span>#{i18n.getText('KMF004_69')}</span>
-											<div style="margin-left: 38px;" class="cf"
+									<div  style="margin-top: 10px;">
+										<div style="margin-left: 34px;">
+											<span >#{i18n.getText('KMF004_126')}</span>
+											<div id="sw1" class="cf1"
 												data-bind="ntsSwitchButton: {
 													options: $parent.roundingMakeInvitation,
 													optionsValue: 'code',

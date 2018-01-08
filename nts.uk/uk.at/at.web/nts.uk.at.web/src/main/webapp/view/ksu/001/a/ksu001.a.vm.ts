@@ -184,10 +184,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if ((__viewContext.viewModel.viewQ.selectedTab() == 'company' && $("#test1").ntsButtonTable("getSelectedCells")[0] == undefined)
                         || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
                         $("#extable").exTable("stickData", null);
+                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'company') {
+                        let dataToStick = $("#test1").ntsButtonTable("getSelectedCells")[0].data.data;
+                        $("#extable").exTable("stickData", dataToStick);
+                    } else if (__viewContext.viewModel.viewQ.selectedTab() == 'workplace') {
+                        let dataToStick = $("#test2").ntsButtonTable("getSelectedCells")[0].data.data;
+                        $("#extable").exTable("stickData", dataToStick);
                     }
+
                     if (self.flag) {
                         //select first link button
-                        __viewContext.viewModel.viewQ.init();
+                        __viewContext.viewModel.viewQ.initScreenQ();
                         self.flag = false;
                     }
                 }
@@ -222,13 +229,48 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
 
             //start
-            self.initCCG001();
-            self.initExTable();
-            self.initShiftCondition();
+            //            self.initCCG001();
+            //            self.initExTable();
+            //            self.initShiftCondition();
             //get data ComPattern for screen Q
-            self.getDataComPattern();
+            //            self.getDataComPattern();
             // tap hop nhung ham can lay data ngay luc dau, se khong bi query nhieu lan vao database nua
-            self.getDataScheduleDisplayControl();
+            //            self.getDataScheduleDisplayControl(); // return dataScheduleDisplayControl = {"symbolAtr","symbolHalfDayAtr","symbolHalfDayName"}
+            //            self.getDataWorkEmpCombine(); // return dataWorkEmpCombine = [{"workTypeCode","workTimeCode","symbolName"}]
+        }
+
+        /**
+         * get data for screen O, Q , A before bind
+         */
+        startKSU001(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
+            //get data for screen O
+            $.when(__viewContext.viewModel.viewO.findDataForComboBox(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
+                //get state of list workTypeCode
+                // get data for screen A
+                let lstWorkTypeCode = [];
+                _.map(__viewContext.viewModel.viewO.listWorkType(), (workType: nts.uk.at.view.ksu001.common.viewmodel.WorkType) => {
+                    lstWorkTypeCode.push(workType.workTypeCode);
+                });
+                // get data for dialog C
+                self.initShiftCondition();
+                //init and get data for screen A
+                $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
+                    self.initCCG001();
+                    self.initExTable();
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
+                });
+            });
+            //get data ComPattern for screen Q
+            //            self.getDataComPattern();
+            //init and get data for screen A
+            //            self.initCCG001();
+            //            self.initExTable();
+            //            self.initShiftCondition();
+            //            self.getDataScheduleDisplayControl(); // return dataScheduleDisplayControl = {"symbolAtr","symbolHalfDayAtr","symbolHalfDayName"}
+            return dfd.promise();
         }
 
         /**
@@ -254,7 +296,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //get data WorkPattern
             $.when(self.getDataWkpPattern()).done(() => {
                 if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
-                    __viewContext.viewModel.viewQ.init();
+                    __viewContext.viewModel.viewQ.initScreenQ();
                 }
             });
 
@@ -278,12 +320,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * init CCG001
          */
-        initCCG001() {
+        initCCG001(): void {
             let self = this;
             self.ccgcomponent = {
                 baseDate: ko.observable(new Date()),
                 // Show/hide options 
-                isQuickSearchTab: true,
+                isQuickSearchTab: false,
                 isAdvancedSearchTab: true,
                 isAllReferableEmployee: true,
                 isOnlyMe: true,
@@ -948,7 +990,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         * Get data of Basic Schedule
+         * Get data of Basic Schedule = listDataShortName + listDataTimeZone
          */
         getDataBasicSchedule(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred(),
@@ -980,20 +1022,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 });
                 //set dataSource for mode timeZone
-                _.each(data.listDataTimeZone, (itemData: BasicSchedule) => {
-                    let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
-                    if (itemDataSource) {
-                        itemDataSource.scheduleStartClock = itemData.scheduleStartClock;
-                        itemDataSource.scheduleEndClock = itemData.scheduleEndClock;
-                    } else {
-                        self.dataSource.push(new BasicSchedule({
-                            date: itemData.date,
-                            employeeId: itemData.employeeId,
-                            scheduleStartClock: itemData.scheduleStartClock,
-                            scheduleEndClock: itemData.scheduleEndClock,
-                        }));
+                _.each(self.dataSource(), (itemDataSource: BasicSchedule) => {
+                    let itemDataTimeZone: any = _.find(data.listDataTimeZone, { 'employeeId': itemDataSource.employeeId, 'date': itemDataSource.date });
+                    if (itemDataTimeZone) {
+                        itemDataSource.scheduleStartClock = itemDataTimeZone.scheduleStartClock;
+                        itemDataSource.scheduleEndClock = itemDataTimeZone.scheduleEndClock;
+                    }else{
+                        itemDataSource.scheduleStartClock = null;
+                        itemDataSource.scheduleEndClock = null;
                     }
                 });
+
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1004,27 +1043,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * Get data to display symbol for dataSource(exTable)
          */
-        getDataToDisplaySymbol(dataS): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
+        setDataToDisplaySymbol(dataS): void {
+            let self = this;
             if (+self.dataScheduleDisplayControl().symbolAtr == 1) {
-                $.when(self.getDataWorkEmpCombine()).done(() => {
-                    _.each(dataS, (x) => {
-                        let workEmpCombine = _.find(self.dataWorkEmpCombine(), { 'workTypeCode': x.workTypeCode, 'workTimeCode': x.workTimeCode });
-                        if (workEmpCombine) {
-                            x.symbolName = workEmpCombine.symbolName;
-                        } else {
-                            self.handleSetSymbolForCell(x);
-                        }
-                    });
-                    dfd.resolve();
+                _.each(dataS, (x) => {
+                    let workEmpCombine = _.find(self.dataWorkEmpCombine(), { 'workTypeCode': x.workTypeCode, 'workTimeCode': x.workTimeCode });
+                    if (workEmpCombine) {
+                        x.symbolName = workEmpCombine.symbolName;
+                    } else {
+                        self.handleSetSymbolForCell(x);
+                    }
                 });
             } else {
                 _.each(dataS, (item) => {
                     self.handleSetSymbolForCell(item);
                 });
-                dfd.resolve();
             }
-            return dfd.promise();
         }
 
         handleSetSymbolForCell(item: any): void {
@@ -1059,9 +1093,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setDatasource(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             $.when(self.getDataBasicSchedule()).done(function() {
-                $.when(self.getDataToDisplaySymbol(self.dataSource())).done(function() {
-                    dfd.resolve();
-                });
+                self.setDataToDisplaySymbol(self.dataSource())
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -1204,7 +1237,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dtMoment = moment(self.dtPrev());
                 dtMoment.subtract(1, 'days');
                 self.dtAft(dtMoment.toDate());
-                dtMoment = dtMoment.subtract(1, 'months');
+                if (dtMoment.date() === dtMoment.daysInMonth()) {
+                    dtMoment = dtMoment.subtract(1, 'months');
+                    dtMoment.endOf('months');
+                } else {
+                    dtMoment = dtMoment.subtract(1, 'months');
+                }
                 dtMoment.add(1, 'days');
                 self.dtPrev(dtMoment.toDate());
                 self.dataSource([]);
@@ -1224,6 +1262,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return;
             }
 
+            nts.uk.ui.block.grayout();
             if (self.selectedModeDisplay() == 2) {
                 _.each(arrTmp, (item) => {
                     let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
@@ -1269,9 +1308,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 //get data and update extable
                 self.setDatasource().done(function() {
                     self.updateExTable();
+                    nts.uk.ui.block.clear();
                 });
             }).fail(function(error: any) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.block.grayout();
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
             });
         }
 
@@ -1501,7 +1542,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         addListError(errorsRequest: Array<string>) {
             var errors = [];
             _.forEach(errorsRequest, function(err) {
-                errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+                var errSplits = err.split(",");
+                if (errSplits.length == 1) {
+                    errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+                } else {
+                    errors.push({ message: nts.uk.resource.getMessage(errSplits[0],nts.uk.resource.getText(errSplits[1]),nts.uk.resource.getText(errSplits[2])), messageId: errSplits[0], supplements: {} });
+                }
             });
 
             nts.uk.ui.dialog.bundledErrors({ errors: errors });
@@ -1593,7 +1639,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listColorOfHeader: self.listColorOfHeader()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
-                if (!getShared("dataFromScreenD").clickCloseDialog) {
+                if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
                     $.when(self.setDatasource()).done(() => {
                         self.updateExTable();
                     });

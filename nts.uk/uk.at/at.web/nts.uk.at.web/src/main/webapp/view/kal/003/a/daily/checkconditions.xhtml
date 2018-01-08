@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+    <com:ValidatorScript>
+        nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord
+    </com:ValidatorScript>
+    <com:scriptfile path="/share/model.js" />
+    <com:scriptfile path="../checkconditiontab.js" />
+    
+	<div id="div_group_function">
+	    <!-- A11_1 -->
+		<div><button tabindex="10" data-bind="click: createNewCheckCondition, enable: listWorkRecordExtractingConditions().length < 51">#{i18n.getText('KAL003_17')}</button></div>
+		<!-- A11_2 -->
+        <div><button tabindex="10" data-bind="click: deleteCheckCondition, enable: true">#{i18n.getText('KAL003_17')}</button></div>
+	</div>
+	<div id="div_table_check_conditions">
+		<table id="table-check_condition" class="fixed-table" >
+			<colgroup>
+			    <col width="15px"/>
+			    <col width="15"/>
+			    <col width="100"/>
+			    <col width="30"/>
+			    <col width="100"/>
+			</colgroup>
+			<thead>
+			   <tr> 
+			      <!-- A11_4 -->
+			     <th class="ui-widget-header" colspan="1" style ="text-align: center;"><div data-bind="ntsCheckBox: { checked: isAllCheckCondistion, enable: true }"></div></th>
+			      <!-- A11_5 -->
+	             <th class="ui-widget-header" colspan="1" style ="text-align: center;">#{i18n.getText('KAL003_A11_5')}</th>
+	             <!-- A11_6 -->
+	             <th class="ui-widget-header" colspan="1" style ="text-align: center;">#{i18n.getText('KAL003_A11_6')}</th>
+	             <!-- A11_7 -->
+	             <th class="ui-widget-header" colspan="1" style ="text-align: center;">#{i18n.getText('KAL003_A11_7')}</th>
+	             <!-- A11_8 -->
+	             <th class="ui-widget-header" colspan="1" style ="text-align: center;">#{i18n.getText('KAL003_A11_8')}</th>
+			   </tr>
+			</thead>
+			<tbody data-bind = "foreach: listWorkRecordExtractingConditions">
+			    <tr>
+			      <!-- A11_9 -->
+			      <td class = "pad_left_5px"><div data-bind="ntsCheckBox: { checked: useAtr, enable: true }"></div></td>
+			      <!-- A11_10 -->
+			      <td class = "pad_left_5px"><div data-bind = "text: 1" class="limited-label description"></div></td>
+			      <!-- A11_11 -->
+			      <td class = "pad_left_5px"><div class="limited-label description">
+			             <input class="nts-input lab_txt_width" id="inpp"
+                                data-bind="ntsTextEditor:{
+                                         value: nameWKRecord,
+                                         required: false,
+                                         enable: true
+                                         }"/>
+                         </div>
+                  </td>
+			      <!-- A11_12 -->
+		           <td><button data-bind="click : function() {$parents.btnSettingCheckCondition_click(1)}, enable: true">#{i18n.getText('KAL003_A11_12')}</button></td>
+		           <!-- A11_13 -->
+                  <td class = "pad_left_5px"><div class="limited-label description">
+                         <input class="nts-input lab_txt_width" id="inpp"
+                                data-bind="ntsTextEditor:{
+                                         value: errorAlamCondition().message,
+                                         required: false,
+                                         enable: true
+                                         }"/>
+                         </div>
+                  </td>
+		       </tr>
+		    </tbody>
+		</table>
+		<table id="multi-list" data-bind="ntsGridList: {
+                                height: 350,
+                                dataSource: listWorkRecordExtractingConditions,
+                                optionsValue: 'code',
+                                columns: columnsWorkRecordExtractingCondition,
+                                enable: enable,
+                                multiple: true,
+                                value: currentCodeList,
+                                rows: 10
+                            }"></table>
+	</div>
+
+</ui:composition>

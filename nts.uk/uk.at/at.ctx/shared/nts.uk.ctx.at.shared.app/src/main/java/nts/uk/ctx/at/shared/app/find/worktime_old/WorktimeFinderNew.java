@@ -221,13 +221,18 @@ public class WorktimeFinderNew {
 		}
 		return workTimeDtos;
 	}
-	
+	/**
+	 * if not use 
+	 * @param workTimeSet
+	 * @return if not use => True
+	 *  if use => Fasle
+	 */
 	private boolean checkNotUse(PredetemineTimeSetting workTimeSet) {
 		for (TimezoneUse timezone : workTimeSet.getPrescribedTimezoneSetting().getLstTimezone()) {
-			if (timezone.getUseAtr().equals(UseSetting.NOT_USE))
-				return true;
+			if (!timezone.getUseAtr().equals(UseSetting.NOT_USE))
+				return false;
 		}
-		return false;
+		return true;
 	}
 	/**
 	 * format to String form input time day

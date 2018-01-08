@@ -116,17 +116,25 @@ public class AttendanceItemUtil {
 				if (layout.isList()) {
 					processListProperty(object, group, field);
 				} else {
-					R fieldInstance = ReflectionUtil.getFieldValue(field, object);
-					if (fieldInstance == null) {
-						fieldInstance = ReflectionUtil.newInstance(field.getType());
-					}
-					fieldInstance = toConvertibleAttendanceItem(fieldInstance, group.getValue(), 1);
+					R fieldInstance = toConvertibleAttendanceItem(getInstance(object, field, layout.isOptional()), group.getValue(), 1);
 					ReflectionUtil.setFieldValue(field, object,
 							layout.isOptional() ? Optional.of(fieldInstance) : fieldInstance);
 				}
 			}
 		});
 		return object;
+	}
+
+	private static <R extends ConvertibleAttendanceItem, T extends ConvertibleAttendanceItem> R getInstance(T object,
+			Field field, boolean isOptional) {
+		if(isOptional){
+			Optional<R> optionalR = ReflectionUtil.getFieldValue(field, object);
+			return optionalR == null ? ReflectionUtil.newInstance(getGenericType(field)) : optionalR.get();
+		} else {
+			R fieldInstance = ReflectionUtil.getFieldValue(field, object);
+			return fieldInstance == null ? ReflectionUtil.newInstance(field.getType()) : fieldInstance;
+		}
+		
 	}
 
 	private static <R extends ConvertibleAttendanceItem, T extends ConvertibleAttendanceItem> void processListProperty(

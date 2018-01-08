@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		<title>#{i18n.getText('CPS005_36')}</title>
+			<title>#{i18n.getText('CPS005_36')}</title>
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.person.info.category.CategoryName
 			</com:ValidatorScript>
@@ -34,13 +34,13 @@
 				<div id="content" data-bind="with: currentData">
 					<div id="contents-area-right">
 						<div
-							data-bind="ntsPanel:{width: '300px', height: '525px', direction: 'right', showIcon: false, visible: true}">
+							data-bind="ntsPanel:{width: '300px', height: '530px', direction: 'right', showIcon: false, visible: true}">
 							<div tabindex="3" style="width: 300px"
 								data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchMode: 'filter',targetKey: 'id', comId: 'category-list-items', 
 									items: categoryList, selected: perInfoCtgSelectCode, selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid'}" />
 							<table id="category-list-items"
 								data-bind="ntsGridList: {								
-								height: 475,
+								rows:20 ,
 								name: '#[CPS005_27]',
 								dataSource: categoryList,
 								primaryKey: 'id',
@@ -123,7 +123,7 @@
 								optionsValue: 'value',
 								optionsText: 'localizedName',
 								value: historyTypesSelected,
-								enable: true }">
+								enable: isChangeAbleCtgType }">
 									</div>
 									<button tabindex="7"
 										data-bind="ntsHelpButton: {image: '../image/history_type.png', position: 'right top', enable: true }">?</button>
