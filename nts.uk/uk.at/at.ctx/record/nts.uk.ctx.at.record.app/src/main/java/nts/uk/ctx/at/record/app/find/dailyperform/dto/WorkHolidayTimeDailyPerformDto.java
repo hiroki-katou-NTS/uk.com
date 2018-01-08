@@ -27,7 +27,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class WorkHolidayTimeDailyPerformDto {
 
 	/** 休出枠時間帯: 休出枠時間帯 */
-//	@AttendanceItemLayout(layout = "A", isList = true, listMaxLength = ?)
+//	@AttendanceItemLayout(layout = "A", isList = true, listMaxLength = ?, setFieldWithIndex = "holidayWorkFrameNo")
 	private List<HolidayWorkFrameTimeSheetDto> holidyWorkFrameTimeSheet;
 
 	/** 休出深夜: 休出深夜 */
@@ -40,7 +40,7 @@ public class WorkHolidayTimeDailyPerformDto {
 	private Integer holidayTimeSpentAtWork;
 
 	/** 休出枠時間: 休出枠時間 */
-	@AttendanceItemLayout(layout = "D", isList = true, jpPropertyName="休出枠時間", listMaxLength = 10)
+	@AttendanceItemLayout(layout = "D", isList = true, jpPropertyName="休出枠時間", listMaxLength = 10, setFieldWithIndex = "holidayFrameNo")
 	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
 	
 	public static WorkHolidayTimeDailyPerformDto fromOverTimeWorkDailyPerform(HolidayWorkTimeOfDaily domain){
