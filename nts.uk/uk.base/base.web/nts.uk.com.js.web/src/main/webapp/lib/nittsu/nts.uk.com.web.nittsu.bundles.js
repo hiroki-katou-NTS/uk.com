@@ -23364,12 +23364,12 @@ var nts;
                     }
                     function uploadImage($element, option) {
                         var dataFile = $element.find(".image-preview").attr("src");
-                        return upload($element, option, dataFile);
+                        return upload($element, option, dataFile, isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked());
                     }
                     function uploadImageOriginal($element, option) {
-                        return upload($element, option, $element.data("original-img"));
+                        return upload($element, option, $element.data("original-img"), false);
                     }
-                    function upload($element, option, fileData) {
+                    function upload($element, option, fileData, isCrop) {
                         var dfd = $.Deferred();
                         if (!isNotNull(fileData)) {
                             var cropper = $element.data("cropper");
@@ -23383,7 +23383,7 @@ var nts;
                                 "y": cropperData.y,
                                 "width": cropperData.width,
                                 "height": cropperData.height,
-                                "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked()
+                                "crop": isCrop
                             };
                             nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
                                 if (nts.uk.util.exception.isBusinessError(data)) {
