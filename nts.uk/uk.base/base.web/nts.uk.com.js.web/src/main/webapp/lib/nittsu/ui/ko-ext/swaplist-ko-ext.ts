@@ -46,6 +46,9 @@ module nts.uk.ui.koExtentions {
             var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
             var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
             var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
+            
+            // 動作が不安定なので、使わないようにする
+            data.draggable = false;
     
             $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
             if (totalWidth !== undefined) {
