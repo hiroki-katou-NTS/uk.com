@@ -2953,7 +2953,16 @@ var nts;
             ui.viewModelBuilt = $.Callbacks();
             var KibanViewModel = (function () {
                 function KibanViewModel(dialogOptions) {
-                    this.title = ko.observable('');
+                    var _this = this;
+                    this.systemName = ko.observable("");
+                    this.programName = ko.observable("");
+                    this.title = ko.computed(function () {
+                        var pgName = _this.programName();
+                        if (pgName === "" || pgName === undefined || pgName === null) {
+                            return _this.systemName();
+                        }
+                        return _this.programName() + " - " + _this.systemName();
+                    });
                     this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
                 }
                 return KibanViewModel;
@@ -2974,7 +2983,10 @@ var nts;
                             isEmpty: ko.computed(function () { return !kiban.errorDialogViewModel.occurs(); })
                         }
                     };
-                    kiban.title(__viewContext.title || 'THIS IS TITLE');
+                    kiban.title.subscribe(function (newTitle) {
+                        document.title = newTitle;
+                    });
+                    kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     $(".reset-not-apply").find(".reset-element").off("reset");
