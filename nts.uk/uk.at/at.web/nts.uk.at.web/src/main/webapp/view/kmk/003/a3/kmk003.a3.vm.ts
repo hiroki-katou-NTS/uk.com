@@ -523,7 +523,7 @@ module a3 {
                  width: 75,
                  template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'settlementOrder',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'settlementOrderName',
                                     editable: false,
                                     enable: true,
