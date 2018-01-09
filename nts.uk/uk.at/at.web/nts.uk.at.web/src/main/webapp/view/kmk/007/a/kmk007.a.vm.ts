@@ -130,12 +130,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             ]);
 
             //出勤率の計算方法
-            self.itemCalculatorMethod = ko.observableArray([
-                new ItemModel(0, nts.uk.resource.getText('Enum_CalculateMethod_DO_NOT_GO_TO_WORK'), 0),
-                new ItemModel(1, nts.uk.resource.getText('Enum_CalculateMethod_MAKE_ATTENDANCE_DAY'), 0),
-                new ItemModel(2, nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY'), 0),
-                new ItemModel(3, nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION'), 0),
-            ]);
+            self.itemCalculatorMethod = ko.observableArray(__viewContext.enums.CalculateMethod);
 
             self.roundingRules = ko.observableArray([
                 { code: '0', name: nts.uk.resource.getText('KMK007_19') },
