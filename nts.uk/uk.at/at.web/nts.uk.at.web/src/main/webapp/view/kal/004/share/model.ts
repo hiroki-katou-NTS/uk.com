@@ -12,6 +12,7 @@ module kal004.share.model {
     export interface CheckConditionDto{
         alarmCategory: number;
         checkConditionCodes: Array<string>;  
+        extractionDailyDto: ExtractionDailyDto; 
     }
     
     export interface AlarmCheckConditonCodeDto{

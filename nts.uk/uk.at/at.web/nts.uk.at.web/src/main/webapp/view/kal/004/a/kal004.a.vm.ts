@@ -61,10 +61,10 @@ module kal004.a.model {
             self.currentCode = ko.observable('');
         }
 
-        public startPage(): any {
+        public startPage(): JQueryPromise<any> {
             let self = this;
-
-
+            let dfd = $.Deferred<any>();
+            
             service.getCheckConditionCode().done((res1) => {
                 self.checkConditionList(_.cloneDeep(res1));
                 self.checkSource = _.cloneDeep(res1);
@@ -79,12 +79,17 @@ module kal004.a.model {
                     if (res.length > 0) {
                         self.currentCode(res[0].alarmPatternCD);
                     }
+                    
                 }).fail((error) => {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                }).always(()=>{
+                    dfd.resolve();
                 });
             }).fail((error1) => {
                 nts.uk.ui.dialog.alert({ messageId: error1.messageId });
+                dfd.resolve();
             });
+           return dfd.promise();
 
         }
 
@@ -117,12 +122,13 @@ module kal004.a.model {
                 self.currentCodeListSwap([]);
                 self.checkConditionList(checkSource);
                 self.currentCodeListSwap(currentCodeListSwap);
-
+                
+                // Tab 3: Permission Setting
+                self.setPermissionModel.listRoleID(currentAlarm.alarmPerSet.roleIds);
             }
 
         }
-           // Tab 3: Permission Setting
-                self.setPermissionModel.listRoleID(currentAlarm.alarmPerSet.roleIds);
+
                 
     }
 
