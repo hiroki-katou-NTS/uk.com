@@ -437,6 +437,7 @@ project (':at.screen:nts.uk.screen.at.app') {
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.app')
 	 	compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+	 	compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
 	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
 	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.app')
@@ -615,7 +616,7 @@ project (':at.web:nts.uk.at.web') {
 		
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: '0.11.1.7')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.11.1.8')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.10.7.4')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.10.7.5')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.11.1.3')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.11.4')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.10.9.7')

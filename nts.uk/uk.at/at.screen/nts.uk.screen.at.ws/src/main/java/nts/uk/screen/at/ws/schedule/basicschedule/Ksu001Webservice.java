@@ -54,8 +54,8 @@ public class Ksu001Webservice extends WebService {
 	 * @return List WorkType WorkTime
 	 */
 	@POST
-	public ListDataInitScreenDto init() {
-		ListDataInitScreenDto result = new ListDataInitScreenDto(this.bScheduleScreenProces.findByCIdAndDeprecateCls(),
+	public DataInitScreenDto init() {
+		DataInitScreenDto result = new DataInitScreenDto(this.bScheduleScreenProces.findByCIdAndDeprecateCls(),
 				this.bScheduleScreenProces.getListWorkTime());
 		return result;
 	}
@@ -65,7 +65,7 @@ public class Ksu001Webservice extends WebService {
 	public List<ComPatternScreenDto> getDataComPattern() {
 		return this.bScheduleScreenProces.getDataComPattern();
 	}
-	
+
 	@POST
 	@Path("getDataWkpPattern")
 	public List<WkpPatternScreenDto> getDataWkpPattern(String workplaceId) {

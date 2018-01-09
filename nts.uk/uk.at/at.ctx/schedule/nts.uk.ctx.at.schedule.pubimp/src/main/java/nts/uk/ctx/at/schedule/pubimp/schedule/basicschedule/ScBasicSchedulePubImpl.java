@@ -50,7 +50,6 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub{
 		ScBasicScheduleExport export = new ScBasicScheduleExport();
 		export.setDate(domain.getDate());
 		export.setEmployeeId(domain.getEmployeeId());
-		export.setWorkDayAtr(domain.getWorkDayAtr().value);
 		export.setWorkScheduleTimeZones(domain.getWorkScheduleTimeZones().stream()
 				.map(timezone -> this.convertTimeZoneExport(timezone)).collect(Collectors.toList()));
 		export.setWorkTimeCode(domain.getWorkTimeCode());
