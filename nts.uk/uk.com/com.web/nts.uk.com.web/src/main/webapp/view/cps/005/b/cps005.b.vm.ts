@@ -222,7 +222,12 @@ module nts.uk.com.view.cps005.b {
             }
 
             genTextTime(time) {
+                if (time == 0) {
+                    return "0:00";
+                }
+
                 return nts.uk.time.parseTime(time(), true).format();
+
             }
 
             isNotsetOrnull(value) {
@@ -378,7 +383,7 @@ module nts.uk.com.view.cps005.b {
                         });
                     });
                 } else if (value === 2) {
-                    
+
                     self.numericItem().numericItemMinus.subscribe(function(data) {
                         self.numericItem().decimalPart.valueHasMutated();
                     })
@@ -467,14 +472,14 @@ module nts.uk.com.view.cps005.b {
                     min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
                     max: maxValue
                 });
-               
+
                 $('#numericItemMax').trigger('change');
                 $('#numericItemMin').trigger('change');
             });
             let init = true;
             self.numericItemMin.subscribe(x => {
                 let maxValue = (Math.pow(10, self.integerPart()) - 1) + ((Math.pow(10, self.decimalPart() || 0) - 1) / Math.pow(10, self.decimalPart() || 0));
-                if(init){
+                if (init) {
                     writeConstraint("NumericItemMin", {
                         mantissaMaxLength: x,
                         min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
@@ -485,13 +490,13 @@ module nts.uk.com.view.cps005.b {
                 }
                 writeConstraint("NumericItemMax", {
                     mantissaMaxLength: x,
-                    min: x ||self.numericItemMinus() == 0 ? 0 : maxValue * (-1) ,
+                    min: x || self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
                     max: maxValue
                 });
-                $('#numericItemMax').trigger('change');                 
+                $('#numericItemMax').trigger('change');
             });
-            self.numericItemMax.subscribe(x =>{
-                if(init){
+            self.numericItemMax.subscribe(x => {
+                if (init) {
                     self.numericItemMin.valueHasMutated();
                 }
             });
@@ -499,9 +504,9 @@ module nts.uk.com.view.cps005.b {
 
 
         checkIntegerEmpty() {
-            if ($("#integerPart").val() == "") {
-                $("#integerPart").focus();
-            }
+//            if ($("#integerPart").val() == "") {
+//                $("#integerPart").focus();
+//            }
         }
     }
     export class TimeItemModel {
@@ -512,8 +517,8 @@ module nts.uk.com.view.cps005.b {
         constructor(data: ITimeItem) {
             let self = this;
             if (!data) return;
-            self.timeItemMin(data.min || null);
-            self.timeItemMax(data.max || null);
+            self.timeItemMin(data.min);
+            self.timeItemMax(data.max);
         }
     }
     export class TimePointItemModel {

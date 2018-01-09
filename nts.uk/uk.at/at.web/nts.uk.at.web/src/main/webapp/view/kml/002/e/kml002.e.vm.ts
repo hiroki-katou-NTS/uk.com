@@ -7,7 +7,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
         checkedTime: KnockoutObservable<boolean>;
         rightItemcolumns: KnockoutObservable<any>;
         methods: KnockoutObservableArray<any>;
-        selectedMethod: any;
+        selectedMethod: KnockoutObservable<number>;
         categoryItems: KnockoutObservableArray<any>;
         categoryItemsTime: KnockoutObservableArray<any>;
         catCode: KnockoutObservable<number>;
@@ -137,12 +137,10 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     $('.method-a').show();
                     $('.method-b').hide();
                     $('.method-c').hide();
-                    self.formulaTimeUnit();
                 } else {
                     $('.method-a').hide();
                     $('.method-b').show();
                     $('.method-c').hide();
-                    self.formulaTime();
                 }
             }
             self.unitSelect.subscribe(function(value) {
@@ -206,19 +204,22 @@ module nts.uk.at.view.kml002.e.viewmodel {
             if (self.currentData != null) {
                 if (self.unitSelect() == 0) {
                     if (self.currentData.calMethodAtr == 0) {
+                        self.formulaTimeUnit();
                         self.checked(self.currentData.timeUnit.actualDisplayAtr == 0 ? false : true);
                         self.bindData(self.currentData.timeUnit.lstTimeUnitFuncs);
                         self.roundingCd(self.currentData.timeUnit.roundingTime),
                         self.selectedProcessing(self.currentData.timeUnit.actualDisplayAtr),
                         self.uPCd(self.currentData.timeUnit.unitPrice)
                     } else {
-                        self.checkedTime(self.currentData.actualDisplayAtrTime);
-                        self.selectedMethod(self.currentData.moneyFunc.calMethodAtr == 0 ? false : true);
+                        self.formulaTime();
+                        self.checkedTime(self.currentData.moneyFunc.actualDisplayAtrTime);
+                        self.selectedMethod(self.currentData.calMethodAtr);// == 0 ? false : true
                         self.catCodeTime(self.currentData.moneyFunc.categoryIndicatorTime == 0 ? +false : +true);
                         self.rightItemsTime.removeAll();
                         self.bindDataMoney(self.currentData.moneyFunc.lstMoney);
                     }
                 } else {
+                    self.rightItemsAmount.removeAll();
                     self.bindDataAmout(self.currentData.moneyFunc.lstMoney);
                     $('.method-a').hide();
                     $('.method-b').hide();
@@ -261,10 +262,10 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         devChange = true;
 
                         if (value) {
-                            self.checked(false);
+                            self.checkedTime(false);
                             return;
                         } else {
-                            self.checked(true);
+                            self.checkedTime(true);
                             return;
                         }
                     })
@@ -320,16 +321,14 @@ module nts.uk.at.view.kml002.e.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             if (self.unitSelect() == 0) {
-                if (self.selectedMethod() == 0) {
-                    $.when(self.formulaTimeUnit()).done(function() {
-                        if (self.allItem().length > 0) {
-                            self.displayItemsRule(_.clone(self.allItem()), self.checked());
-                            self.bindData(self.currentData.timeUnit.lstTimeUnitFuncs);
-                        }
-                    }).fail(function(res) {
-                        dfd.reject(res);
-                    });
-                }
+                $.when(self.formulaTimeUnit()).done(function() {
+                    if (self.allItem().length > 0) {
+                        self.displayItemsRule(_.clone(self.allItem()), self.checked());
+                        self.bindData(self.currentData.timeUnit.lstTimeUnitFuncs);
+                    }
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });                
             } else if (self.unitSelect() == 1) {
                 $.when(self.getData()).done(function() {
                     if (self.allItemAmount().length > 0) {
@@ -496,7 +495,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
                 scheduleAtr: 0,
                 budgetAtr: data.attributeId,
-                unitAtr: 0
+                unitAtr: data.unit
             };
             service.getDailyItems(param).done(function(data) {
                 let temp = [];
@@ -526,13 +525,13 @@ module nts.uk.at.view.kml002.e.viewmodel {
             var data = nts.uk.ui.windows.getShared("KML002_A_DATA");
             var dailyAttendanceAtrs = [];
             dailyAttendanceAtrs.push(DailyAttendanceAtr.DAILY);
-            var param = {
+            var param1 = {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
-                scheduleAtr: 2,
+                scheduleAtr: 6,
                 budgetAtr: data.attributeId,
-                unitAtr: 0
+                unitAtr: data.unit
             };
-            service.getDailyItems(param).done(function(data) {
+            service.getDailyItems(param1).done(function(data) {
                 let temp = [];
                 let items = _.sortBy(data, ['companyId', 'dispOrder']);
                 _.forEach(items, function(item: service.BaseItemsDto) {
@@ -566,12 +565,12 @@ module nts.uk.at.view.kml002.e.viewmodel {
             }
         }
 
-        displayItemsRuleTime(allItemTime: any, category: number, display: boolean) {
+        displayItemsRuleTime(allItemTime: any, category: number, display: number) {
             let self = this;
             let temp = [];
-            if (category == CategoryIndicator.EXTERNAL_BUDGET_RECORD_ITEMS && display) {
+            if (category == CategoryIndicator.EXTERNAL_BUDGET_RECORD_ITEMS && display ==0) {
                 self.itemsTime(_.filter(allItemTime, ['itemType', GrantPeriodicMethod.SCHEDULE]));
-            } else if (category == 0 && display) {
+            } else if (category == 0 && display ==0 ) {
                 self.itemsTime(_.filter(allItemTime, ['itemType', GrantPeriodicMethod.SCHEDULE]));
             } else {
                 self.itemsTime(_.filter(allItemTime, function(item: ItemModel) {
@@ -848,23 +847,23 @@ module nts.uk.at.view.kml002.e.viewmodel {
         }
         bindDataMoney(lstMoney: any) {
             var self = this;
-
+            self.rightItemsTime.removeAll();
             _.forEach(lstMoney, function(item) {
-                var itemCd = "";
-                var realCd = "";
+                var itemCd1 = "";
+                var realCd1 = "";
 
                 if (item.attendanceItemId != null) {
-                    itemCd = item.attendanceItemId + item.dispOrder;
-                    realCd = item.attendanceItemId
+                    itemCd1 = item.attendanceItemId + item.dispOrderTime;
+                    realCd1 = item.attendanceItemId
                 } else if (item.externalBudgetCd != null) {
-                    itemCd = item.externalBudgetCd + item.dispOrder;
-                    realCd = item.externalBudgetCd
+                    itemCd1 = item.externalBudgetCd + item.dispOrderTime;
+                    realCd1= item.externalBudgetCd
                 } else if (item.presetItemId != null) {
-                    itemCd = item.presetItemId + item.dispOrder;
-                    realCd = item.presetItemId
+                    itemCd1 = item.presetItemId + item.dispOrderTime;
+                    realCd1 = item.presetItemId
                 }
 
-                var getItemByCd = _.find(self.allItemTime(), function(o) { return o.code.slice(0, -1) == realCd; });
+                var getItemByCd = _.find(self.allItemTime(), function(o) { return o.code.slice(0, -1) == realCd1; });
                 var dataType = 0;
 
                 if (item.presetItemId != null) {
@@ -876,12 +875,12 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 }
 
                 var itemData = {
-                    code: itemCd,
-                    trueCode: realCd,
+                    code: itemCd1,
+                    trueCode: realCd1,
                     itemType: dataType,
                     operatorAtr: item.operatorAtr == 0 ? nts.uk.resource.getText("KML002_37") : nts.uk.resource.getText("KML002_38"),
                     name: getItemByCd != null ? getItemByCd.name : "",
-                    id: item.dispOrder
+                    id: item.dispOrderTime
                 };
 
                 self.rightItemsTime.push(itemData);
