@@ -13,23 +13,35 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 
 @Stateless
-public class RemoveEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapCommand>{
+public class RemoveEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapCommand> {
 
 	@Inject
 	private EmpFileManagementRepository empFileManagementRepository;
-	
+
 	@Inject
 	private EmployeeDataMngInfoRepository emplRepo;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<EmpAvaOrMapCommand> context) {
 		EmpAvaOrMapCommand command = context.getCommand();
-		Optional<EmployeeDataMngInfo>empOpt = emplRepo.findByEmpId(command.getEmployeeId());
+		Optional<EmployeeDataMngInfo> empOpt = emplRepo.findByEmpId(command.getEmployeeId());
 		if (empOpt.isPresent()) {
-			this.empFileManagementRepository.remove(PersonFileManagement.createFromJavaType(empOpt.get().getPersonId(),
-					command.getFileId(), command.getFileType(), null));
+
+			EmployeeDataMngInfo emp = empOpt.get();
+
+			if (command.isAvatar()) {
+				this.empFileManagementRepository
+						.remove(empFileManagementRepository.getDataByParams(emp.getPersonId(), 0).get(0));
+
+				this.empFileManagementRepository
+						.remove(empFileManagementRepository.getDataByParams(emp.getPersonId(), 3).get(0));
+			} else {
+
+				this.empFileManagementRepository
+						.remove(empFileManagementRepository.getDataByParams(emp.getPersonId(), 1).get(0));
+			}
 		}
-		
+
 	}
 
 }
