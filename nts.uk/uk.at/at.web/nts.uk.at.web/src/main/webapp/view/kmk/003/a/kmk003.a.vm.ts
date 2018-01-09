@@ -64,16 +64,16 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel = new MainSettingModel(self.useHalfDay);
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
                     if (self.isNewMode()) {
-                        self.isLoading(false);
                         self.clearAllError();
+                        self.isLoading(false);
                         self.mainSettingModel.resetData(self.isNewMode());
                         self.isLoading(true);
                     }
                 });
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(() => {
                     if (self.isNewMode()) {
-                        self.isLoading(false);
                         self.clearAllError();
+                        self.isLoading(false);
                         self.mainSettingModel.resetData(self.isNewMode());
                         self.isLoading(true);
                     }
@@ -295,12 +295,12 @@ module nts.uk.at.view.kmk003.a {
                 }
                 // block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
+                // clear all errors
+                self.clearAllError();
 
                 self.isLoading(false);
                 service.findWorktimeSetingInfoByCode(currentCode)
                     .done(worktimeSettingInfo => {
-                        // clear all errors
-                        self.clearAllError();
 
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo);
@@ -317,6 +317,8 @@ module nts.uk.at.view.kmk003.a {
                 if (worktimeCode) {
                     let self = this;
                     let dfd = $.Deferred<void>();
+                    // clear all errors
+                    self.clearAllError();
                     self.isLoading(false);
                     // block ui.
                     _.defer(() => nts.uk.ui.block.invisible());
@@ -324,9 +326,6 @@ module nts.uk.at.view.kmk003.a {
                     service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
                         // enter update mode
                         self.enterUpdateMode();
-
-                        // clear all errors
-                        self.clearAllError();
 
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo);
@@ -478,9 +477,9 @@ module nts.uk.at.view.kmk003.a {
              */
             public enterNewMode(): void {
                 let self = this;
+                self.clearAllError();
                 self.isLoading(false);
                 // clear all errors
-                self.clearAllError();
 
                 // reset data
                 self.mainSettingModel.resetData();
