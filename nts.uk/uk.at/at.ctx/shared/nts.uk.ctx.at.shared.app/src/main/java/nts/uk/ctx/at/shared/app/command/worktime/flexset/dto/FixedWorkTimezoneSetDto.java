@@ -32,6 +32,9 @@ public class FixedWorkTimezoneSetDto implements FixedWorkTimezoneSetGetMemento {
 	
 	/** The work timezone no. */
 	private int workTimezoneNo = 0;
+	
+	/** The employment time frame no. */
+	private int employmentTimeFrameNo = 0;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetGetMemento#getLstWorkingTimezone()
@@ -41,6 +44,15 @@ public class FixedWorkTimezoneSetDto implements FixedWorkTimezoneSetGetMemento {
 		if (CollectionUtil.isEmpty(lstWorkingTimezone)) {
 			return new ArrayList<>();
 		}
+		this.lstWorkingTimezone = this.lstWorkingTimezone.stream().sorted((timezone1, timezone2) -> timezone1
+				.getTimezone().getStart().compareTo(timezone2.getTimezone().getStart())).collect(Collectors.toList());
+
+		employmentTimeFrameNo = 0;
+		this.lstWorkingTimezone.forEach(timezone -> {
+			employmentTimeFrameNo++;
+			timezone.setEmploymentTimeFrameNo(employmentTimeFrameNo);
+		});
+
 		return this.lstWorkingTimezone.stream().map(timezone -> new EmTimeZoneSet(timezone))
 				.collect(Collectors.toList());
 	}

@@ -11,7 +11,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         listSpecialHlFrame: KnockoutObservableArray<any>;
         listAbsenceFrame: KnockoutObservableArray<any>;
         oneDay: KnockoutObservable<WorkTypeSet>;
-
         currentOneDayCls: KnockoutObservable<number>;
         currentMorningCls: KnockoutObservable<number>;
         currentAfternoonCls: KnockoutObservable<number>;
@@ -29,6 +28,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         checkDisabled: KnockoutObservable<boolean> = ko.observable(false);
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
         langId: KnockoutObservable<string> = ko.observable('ja');
+
 
         constructor() {
             var self = this,

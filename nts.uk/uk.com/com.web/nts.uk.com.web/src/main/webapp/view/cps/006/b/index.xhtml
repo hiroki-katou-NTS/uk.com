@@ -51,6 +51,7 @@
 							selectedKey: 'id', 
 							fields: ['itemName'], 
 							placeHolder:'名称で検索…',
+							searchText: '絞り込み',
 							mode: 'igGrid'}" />
 						</div>
 
@@ -254,11 +255,11 @@
 
 										<div class="line_col_2">
 										   <com:ko-if bind=" currentItem().itemTypeState.dataTypeState.numericItemAmount === 1">
-											<span id="B2_25" class='currency'
-												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMin"></span>
+											<span id="B2_25"
+												data-bind="text:genNumber(currentItem().itemTypeState.dataTypeState.numericItemMin,currentItem().itemTypeState.dataTypeState.decimalPart )"></span>
 												<span class="label">～</span>
-											<span id="B2_25" class='currency'
-												data-bind="text:currentItem().itemTypeState.dataTypeState.numericItemMax"></span>	
+											<span id="B2_25"
+												data-bind="text:genNumber(currentItem().itemTypeState.dataTypeState.numericItemMax,currentItem().itemTypeState.dataTypeState.decimalPart )"></span>	
 											</com:ko-if>
 											
 										   <com:ko-if bind=" currentItem().itemTypeState.dataTypeState.numericItemAmount === 0">

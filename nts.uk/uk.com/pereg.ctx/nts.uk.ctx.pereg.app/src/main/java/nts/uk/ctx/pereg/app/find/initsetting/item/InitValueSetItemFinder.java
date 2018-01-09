@@ -73,6 +73,8 @@ public class InitValueSetItemFinder {
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
 
+		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASSYSTEMDATE, GeneralDate.today());
+
 		if (isSetText) {
 
 			this.settingItemMap.setTextForSelectionItem(result);

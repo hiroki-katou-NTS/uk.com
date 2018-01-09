@@ -70,7 +70,7 @@ module nts.uk.com.view.csa005.b {
                 let self = this;
                 let dfd = $.Deferred();
                 service.copyRoleCas005(copyRoleCas005Command).done(function(data){
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_20" }).then(function(){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function(){
                         nts.uk.ui.windows.setShared("closeB", self.newRoleCode()); 
                         nts.uk.ui.windows.close();   
                     });

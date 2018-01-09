@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_WK_RECORD_EXTRA_CON")
-public class KrcmtWorkRecorExtraCon  extends UkJpaEntity implements Serializable {
+public class KrcmtWorkRecordExtraCon  extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -49,7 +49,7 @@ public class KrcmtWorkRecorExtraCon  extends UkJpaEntity implements Serializable
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtWorkRecorExtraCon(String errorAlarmCheckID, int checkItem, int messageBold, String messageColor,
+	public KrcmtWorkRecordExtraCon(String errorAlarmCheckID, int checkItem, int messageBold, String messageColor,
 			int sortOrderBy, int useAtr, String nameWKRecord) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
@@ -61,8 +61,8 @@ public class KrcmtWorkRecorExtraCon  extends UkJpaEntity implements Serializable
 		this.nameWKRecord = nameWKRecord;
 	}
 	
-	public static KrcmtWorkRecorExtraCon toEntity(WorkRecordExtractingCondition domain) {
-		return new KrcmtWorkRecorExtraCon(
+	public static KrcmtWorkRecordExtraCon toEntity(WorkRecordExtractingCondition domain) {
+		return new KrcmtWorkRecordExtraCon(
 				domain.getErrorAlarmCheckID(),
 				domain.getCheckItem().value,
 				domain.getDisplayMessages().isMessageBold()?1:0,

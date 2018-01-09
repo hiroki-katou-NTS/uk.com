@@ -153,6 +153,15 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
+            var handlesEnterKey = (typeof data.enterkey === "function");
+            var onEnterKey = handlesEnterKey ? data.enterkey : $.noop;
+            if (handlesEnterKey) {
+                $input.addClass("enterkey")
+                    .onkey("down", uk.KeyCodes.Enter, e => {
+                        onEnterKey(e);
+                    });
+            }
+            
             $input.on("keyup", (e) => {
                 var code = e.keyCode || e.which;
                 if (!readonly && code.toString() !== '9') {

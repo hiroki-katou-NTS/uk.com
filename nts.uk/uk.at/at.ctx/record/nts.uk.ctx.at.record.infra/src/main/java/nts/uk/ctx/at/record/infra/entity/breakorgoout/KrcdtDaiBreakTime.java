@@ -61,12 +61,14 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 
 	public static List<KrcdtDaiBreakTime> toEntity(BreakTimeOfDailyPerformance breakTime) {
 		return breakTime.getBreakTimeSheets().stream().map(c -> new KrcdtDaiBreakTime(
-				new KrcdtDaiBreakTimePK(breakTime.getEmployeeId(), breakTime.getYmd(), breakTime.getBreakType().value,
-						c.getBreakFrameNo().v()),
-				c.getStartTime().getTimeWithDay().valueAsMinutes(),
-				c.getStartTime().getAfterRoundingTime().valueAsMinutes(), c.getStartTime().getLocationCode().v(),
-				c.getStartTime().getStampSourceInfo().value, c.getEndTime().getTimeWithDay().valueAsMinutes(),
-				c.getEndTime().getAfterRoundingTime().valueAsMinutes(), c.getEndTime().getLocationCode().v(),
-				c.getEndTime().getStampSourceInfo().value)).collect(Collectors.toList());
+				new KrcdtDaiBreakTimePK(breakTime.getEmployeeId(), breakTime.getYmd(), breakTime.getBreakType().value, c.getBreakFrameNo().v()),
+					c.getStartTime() == null || c.getStartTime().getTimeWithDay() == null ? null : c.getStartTime().getTimeWithDay().valueAsMinutes(),
+					c.getStartTime() == null || c.getStartTime().getAfterRoundingTime() == null ? null : c.getStartTime().getAfterRoundingTime().valueAsMinutes(), 
+					c.getStartTime() == null || c.getStartTime().getLocationCode() == null ? null : c.getStartTime().getLocationCode().v(),
+					c.getStartTime() == null ? null : c.getStartTime().getStampSourceInfo().value, 
+					c.getEndTime() == null || c.getEndTime().getTimeWithDay() == null ? null : c.getEndTime().getTimeWithDay().valueAsMinutes(),
+					c.getEndTime() == null || c.getEndTime().getAfterRoundingTime() == null ? null : c.getEndTime().getAfterRoundingTime().valueAsMinutes(), 
+					c.getEndTime() == null || c.getEndTime().getLocationCode() == null ? null : c.getEndTime().getLocationCode().v(),
+					c.getEndTime() == null ? null : c.getEndTime().getStampSourceInfo().value)).collect(Collectors.toList());
 	}
 }

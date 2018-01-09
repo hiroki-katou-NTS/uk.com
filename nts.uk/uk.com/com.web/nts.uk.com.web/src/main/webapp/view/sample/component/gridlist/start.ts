@@ -18,13 +18,16 @@ module nts.uk.ui.gridlist {
                 this.dragItems = ko.observableArray([]);
 
                 for (let i = 1; i < 100; i++) {
-                    this.items.push(new ItemModel('00' + i, '基本給 基本給基本給 基本給基本給 基本給基本給 基本給', "description " + i, i % 3 === 0, "2010/1/1"));
+                    this.items.push(new ItemModel('00' + i, '基本給 基本給', "description " + i, i % 3 === 0, "2010/1/1"));
                     this.dragItems.push(new ItemModel('00' + i, '基本給 ', "description " + i, i % 3 === 0, "2010/1/1"));
                 }
 
                 this.columns = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                    { headerText: '名称', key: 'name', width: 150, columnCssClass: "test" }
+                    { headerText: '名称', key: 'name', width: 150, columnCssClass: "test" },
+                    { headerText: '説明', key: 'description', width: 150 },
+                    { headerText: '説明1', key: 'other1', width: 150 },
+                    { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' }
                 ]);
                 this.currentCode = ko.observable();
                 this.currentCode.subscribe((newValue) => {

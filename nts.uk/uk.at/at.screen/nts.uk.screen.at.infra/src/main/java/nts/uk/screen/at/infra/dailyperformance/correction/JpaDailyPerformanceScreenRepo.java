@@ -14,11 +14,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.Column;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
+import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
@@ -177,13 +181,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final String SELECT_WORKTYPE = " SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId";
 
 	static {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT DISTINCT b.krcmtBusinessTypeSyainPK.businessTypeCode");
-		builderString.append(" FROM KrcmtBusinessTypeSyain b");
-		builderString.append(" WHERE b.krcmtBusinessTypeSyainPK.sId IN :lstSID");
-		builderString.append(" AND b.krcmtBusinessTypeSyainPK.startYmd <= :endYmd");
-		builderString.append(" AND b.krcmtBusinessTypeSyainPK.endYmd >= :startYmd");
-		builderString.append(" ORDER BY b.krcmtBusinessTypeSyainPK.businessTypeCode ASC");
+		StringBuilder builderString = new StringBuilder();		
+		builderString.append("SELECT DISTINCT b.businessTypeCode");
+		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
+		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
+		builderString.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.KrcmtBusinessTypeOfHistoryPK.historyId");
+		builderString.append(" WHERE b.sId IN :lstSID");
+		builderString.append(" AND h.startDate <= :endYmd");
+		builderString.append(" AND h.endDate >= :startYmd");
+		builderString.append(" ORDER BY b.businessTypeCode ASC");
 		SEL_BUSINESS_TYPE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -873,5 +879,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.getList(c -> new CodeName(c.kshmtWorkTypePK.workTypeCode, c.name));
 		}
 	}
-
+	
+	@Override
+	public void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes) {
+		List<AuthorityFomatDailyDto> items = this.findAuthorityFomatDaily(AppContexts.user().companyId(), formatCodes);
+		List<KfnmtAuthorityDailyItem> entitys = items.stream()
+				.map(x -> new KfnmtAuthorityDailyItem(
+						new KfnmtAuthorityDailyItemPK(x.getCompanyId(), x.getDailyPerformanceFormatCode(),
+								x.getAttendanceItemId(), x.getSheetNo()),
+						x.getDisplayOrder(), new BigDecimal(lstHeader.get(x.getAttendanceItemId()))))
+				.collect(Collectors.toList());
+		this.commandProxy().updateAll(entitys);
+	}
 }

@@ -67,7 +67,9 @@ public class JpaCoreTimeSettingSetMemento implements CoreTimeSettingSetMemento {
 	 */
 	@Override
 	public void setMinWorkTime(AttendanceTime minWorkTime) {
-		this.entity.setLeastWorkTime(minWorkTime.valueAsMinutes());
+		if (minWorkTime != null) {
+			this.entity.setLeastWorkTime(minWorkTime.valueAsMinutes());
+		}
 	}
 	
 

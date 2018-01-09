@@ -185,7 +185,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     isAbolition: self.ckbIsAbolition() === true ? 1 : 0,
                     isRequired: self.isRequired(),
                     dataType: self.dataType(),
-                    selectionItemId: self.dataType() === 1? null: (self.currentItem().itemTypeState.dataTypeState !== undefined? self.currentItem().itemTypeState.dataTypeState.typeCode : null),
+                    selectionItemId: self.dataType() === 1 ? null : (self.currentItem().itemTypeState.dataTypeState !== undefined ? self.currentItem().itemTypeState.dataTypeState.typeCode : null),
                     personEmployeeType: self.currentCategory.personEmployeeType
                 },
                 baseDate = moment(new Date()).format('YYYY-MM-DD');
@@ -377,10 +377,24 @@ module nts.uk.com.view.cps006.b.viewmodel {
         }
 
         genTime(time) {
+            
 
-            return nts.uk.time.parseTime(time, false).format();
+            return nts.uk.time.parseTime(time, true).format();
 
 
+        }
+
+
+        genNumber(itemNumber: any, decimalPart: any) {
+            let option : any;
+            if (nts.uk.text.isNullOrEmpty(decimalPart)) {
+                option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 0 });
+               
+            }else{
+               option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: decimalPart });
+                 
+            }
+            return nts.uk.ntsNumber.formatNumber(itemNumber, option);
         }
 
         OpenCDL022Modal() {

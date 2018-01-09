@@ -116,6 +116,9 @@ module kmk003.base.timerange {
             $('#' + startInputId).ntsEditor('validate');
             $('#' + endInputId).ntsEditor('validate');
             
+            if ($('#' + startInputId).ntsError('hasError') || $('#' + endInputId).ntsError('hasError')) {
+                return false;
+            }
             if (startTime >= endTime) {
                 $('#' + elementId).ntsError('set', {messageId:'Msg_770',messageParams:[nts.uk.resource.getText(paramId)]});
                 if (!$('#' + startInputId).parent().hasClass('error')) {
@@ -126,7 +129,7 @@ module kmk003.base.timerange {
                 }
                 return false;
             }
-            return $('#' + startInputId).ntsError('hasError') && $('#' + endInputId).ntsError('hasError');
+            return true;
         }
         
         private convertTimeInput(id: string): number {

@@ -140,11 +140,12 @@ export module viewmodel {
             }else{
                 data.rootAtr = 1;
             }
-            
+            nts.uk.ui.block.grayout();
             service.saveAsExcel(data).done(()=>{
-                console.log(data);    
+                 nts.uk.ui.block.clear();   
             }).fail(function(res: any){
                 nts.uk.ui.dialog.alertError(res.messageId);
+                 nts.uk.ui.block.clear();
             });
         }
     }
