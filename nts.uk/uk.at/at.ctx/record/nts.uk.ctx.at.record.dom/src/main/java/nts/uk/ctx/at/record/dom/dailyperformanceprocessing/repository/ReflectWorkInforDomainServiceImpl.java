@@ -586,7 +586,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 		}
 
-		if (errMesInfos.isEmpty() && stampOutput != null) {
+		if (errMesInfos.isEmpty()) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する
 			// ドメインモデル「日別実績の勤務情報」を更新する - update
 			// WorkInfoOfDailyPerformance
