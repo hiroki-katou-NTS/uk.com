@@ -4,6 +4,9 @@ module nts.uk.at.view.kaf009.b {
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             DATE_FORMAT: string = 'YYYY/MM/DD';
+            screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable( true );
             //kaf000
             kaf000_a: kaf000.a.viewmodel.ScreenModel;
             //current Data
@@ -169,6 +172,9 @@ module nts.uk.at.view.kaf009.b {
                         self.selectedBack.subscribe(value => { $("#inpEndTime1").ntsError("clear"); });
                         self.selectedGo2.subscribe(value => { $("#inpStartTime2").ntsError("clear"); });
                         self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
+                        
+                        //画面モード(表示/編集)
+                        self.editable = ko.observable(detailData.outMode == 0 ? true: false);
                     }).fail(function() {
                         dfd.resolve();
                     });
