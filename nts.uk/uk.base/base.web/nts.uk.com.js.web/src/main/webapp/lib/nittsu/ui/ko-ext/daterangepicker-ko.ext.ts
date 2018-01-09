@@ -143,18 +143,18 @@ module nts.uk.ui.koExtentions {
             
             let validateProcess = function (newText: string, $target: JQuery, isStart: boolean, oldValue: any, result: any){
                 if(nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true){
-                    $target.ntsError('set', getMessage('FND_E_REQ_INPUT', [ isStart ? startName : endName ])); 
+                    $target.ntsError('set', getMessage('FND_E_REQ_INPUT', [ isStart ? startName : endName ]), 'FND_E_REQ_INPUT'); 
                 } else if (!result.isValid) {
-                    $target.ntsError('set', result.errorMessage);
+                    $target.ntsError('set', result.errorMessage, result.errorCode);
                 } else if (!nts.uk.util.isNullOrEmpty(newText)) {
                     let startDate = moment(oldValue.startDate, dateFormat);
                     let endDate = moment(oldValue.endDate, dateFormat);
                     if (endDate.isBefore(startDate)) {
-                        $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]));    
+                        $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]), "FND_E_SPAN_REVERSED");    
                     } else if(dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth"){
                         let maxDate = startDate.add(31, "days");
                         if(endDate.isAfter(maxDate)){
-                            $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]));         
+                            $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]), "FND_E_SPAN_OVER_MONTH");         
                         }
                     } else if (maxRange === "oneYear"){
                         let maxDate = _.cloneDeep(startDate);
@@ -175,7 +175,7 @@ module nts.uk.ui.koExtentions {
                             maxDate = maxDate.add(1, 'year').add(-1, "months");   
                         }
                         if (endDate.isAfter(maxDate)) {
-                            $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]));        
+                            $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]), "FND_E_SPAN_OVER_YEAR");        
                         }
                     }  
                 }    
@@ -210,7 +210,7 @@ module nts.uk.ui.koExtentions {
                 let isStart = $(e.target).hasClass("ntsStartDatePicker");
                 var newText = $(e.target).val();
                 if(nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true){
-                    $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [ isStart ? startName : endName ])); 
+                    $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [ isStart ? startName : endName ]), 'FND_E_REQ_INPUT'); 
                 } else {
                     
                     var validator = new validation.TimeValidator(isStart ? startName : endName, "", 
@@ -218,7 +218,7 @@ module nts.uk.ui.koExtentions {
                     
                     var result = validator.validate(newText);
                     if (!result.isValid) {
-                        $(e.target).ntsError('set', result.errorMessage);
+                        $(e.target).ntsError('set', result.errorMessage, result.errorCode);
                     }    
                 }
             });
