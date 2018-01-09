@@ -236,7 +236,6 @@ module a2 {
                 //============= Convert =============
                 let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne;
                 item.valueChangedNotifier.subscribe(() => {
-                    // TODO: anh Duong check lai cho nay nhe
                     let timeRange: TimePeriod = {
                         startTime: item.start(),
                         endTime: item.end()
