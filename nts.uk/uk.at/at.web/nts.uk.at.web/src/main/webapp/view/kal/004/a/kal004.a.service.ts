@@ -47,8 +47,10 @@ module nts.uk.at.view.kal004.a.service {
                 checkConList : [checkConditionDto1, checkConditionDto2, checkConditionDto3]    
             }            
             let dfd = $.Deferred();
-            dfd.resolve([alarmPatternSettingDto1, alarmPatternSettingDto2, alarmPatternSettingDto3]);
-            return dfd.promise([alarmPatternSettingDto1, alarmPatternSettingDto2, alarmPatternSettingDto3]);
+            let alarmResult = [alarmPatternSettingDto1, alarmPatternSettingDto2, alarmPatternSettingDto3];
+            let alarmResolve = _.sortBy(alarmResult, [function(o) { return o.alarmPatternCD; }]);
+            dfd.resolve(alarmResolve);
+            return dfd.promise(alarmResolve);
             //return nts.uk.request.ajax("at", paths.getAlarmPattern);
         }        
 

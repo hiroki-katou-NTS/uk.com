@@ -115,4 +115,44 @@ module nts.uk.at.view.kal004.share.model {
         }
     }
 
+        
+//Command
+    export class AddAlarmPatternSettingCommand{        
+        alarmPatternCD: string;
+        alarmPatterName: string;
+        alarmPerSet: AlarmPermissionSettingCommand;
+        checkConditonList: Array<CheckConditionCommand>;
+        
+        constructor(alarmPatternCD: string, alarmPatterName: string, alarmPerSet: AlarmPermissionSettingCommand, checkConditonList: Array<CheckConditionCommand>){
+            this.alarmPatternCD = alarmPatternCD;
+            this.alarmPatterName = alarmPatterName;
+            this.alarmPerSet = alarmPerSet;
+            this.checkConditonList = checkConditonList;
+        }
+    }
+    
+    export class AlarmPermissionSettingCommand{
+        authSetting: boolean;
+        roleIds: Array<string>;
+        constructor(authSetting: boolean, roleIds: Array<string>){
+            this.authSetting = authSetting;
+            this.roleIds = roleIds;
+        }
+        
+    }
+    export class CheckConditionCommand{
+        alarmCategory: number;
+        checkConditionCodes: Array<string>;
+        extractPeriod: ExtractionPeriodDailyCommand;
+        
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractPeriod: ExtractionPeriodDailyCommand){
+            this.alarmCategory = alarmCategory;
+            this.checkConditionCodes = checkConditionCodes;
+            this.extractPeriod =  extractPeriod;
+        }
+    }
+    
+    export class ExtractionPeriodDailyCommand{
+        
+    }
 }

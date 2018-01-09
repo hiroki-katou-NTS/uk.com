@@ -123,8 +123,8 @@ module nts.uk.at.view.kal004.a.model {
                         return optItem.GUID == leftItem.GUID;
                 });
                 self.currentCodeListSwap([]);
-                self.checkConditionList(checkSource);
-                self.currentCodeListSwap(currentCodeListSwap);
+                self.checkConditionList( _.sortBy(checkSource, ['category', 'checkConditonCode']));
+                self.currentCodeListSwap( _.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
                 
                 // Tab 2: Period Setting
                 self.periodSetting.listCheckConditionCode(self.currentCodeListSwap());
@@ -134,6 +134,35 @@ module nts.uk.at.view.kal004.a.model {
             }
 
         }
+        
+        public insertAlarm() : void{
+            let self = this;
+            $(".nts-input").trigger("validate");
+            if($(".nts-input").ntsError("hasError")) return ;
+            
+            
+            block.invisible();
+            block.clear();
+        }
+        public updateAlarm() : void{
+            let self = this;
+            $(".nts-input").trigger("validate");
+            if($(".nts-input").ntsError("hasError")) return ;
+            
+            
+            block.invisible();
+            block.clear();            
+        }
+        public removeAlarm() : void{
+            let self = this;
+            if(self.currentCode() !==''){
+                   nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                       
+                   
+                   });
+            
+           }
+        }        
 
                 
     }
