@@ -80,7 +80,7 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     newItemDef;
                 block.invisible();
-
+                
                 newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
 
                 self.checkRequired(newItemDef);
@@ -395,18 +395,24 @@ module nts.uk.com.view.cps005.b {
                     });
         
                     self.numericItem().decimalPart.subscribe(x => {
+                        if(self.numericItem().integerPart() == ""){ return;}
                         let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
                         writeConstraint("NumericItemMin", {
                             mantissaMaxLength: x,
                             min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                             max: maxValue
                         });
-        
-                        $('#numericItemMax').trigger('change');
-                        $('#numericItemMin').trigger('change');
+                        
+                            $('#numericItemMax').trigger('change');
+                            $('#numericItemMin').trigger('change');
+                        
                     });
                     let init = true;
                     self.numericItem().numericItemMin.subscribe(x => {
+                        if(!self.numericItem().integerPart()){                        
+                             $('#integerPart').trigger('change');
+                            return;
+                        }
                         let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, self.numericItem().decimalPart() || 0) - 1) / Math.pow(10, self.numericItem().decimalPart() || 0));
                         if (init) {
                             writeConstraint("NumericItemMin", {
@@ -425,6 +431,11 @@ module nts.uk.com.view.cps005.b {
                         $('#numericItemMax').trigger('change');
                     });
                     self.numericItem().numericItemMax.subscribe(x => {
+                        if(!self.numericItem().integerPart()){
+                            
+                             $('#integerPart').trigger('change');
+                            return;
+                        }
                         if (init) {
                             self.numericItem().numericItemMin.valueHasMutated();
                         }
@@ -508,18 +519,24 @@ module nts.uk.com.view.cps005.b {
             });
 
             self.decimalPart.subscribe(x => {
+                if(self.integerPart() == ""){ return;}
                 let maxValue = (Math.pow(10, self.integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
                 writeConstraint("NumericItemMin", {
                     mantissaMaxLength: x,
                     min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
                     max: maxValue
                 });
-
-                $('#numericItemMax').trigger('change');
-                $('#numericItemMin').trigger('change');
+               
+                    $('#numericItemMax').trigger('change');
+                    $('#numericItemMin').trigger('change');
+                
             });
             let init = true;
             self.numericItemMin.subscribe(x => {
+                if(!self.integerPart()){                            
+                     $('#integerPart').trigger('change');
+                    return;
+                }
                 let maxValue = (Math.pow(10, self.integerPart()) - 1) + ((Math.pow(10, self.decimalPart() || 0) - 1) / Math.pow(10, self.decimalPart() || 0));
                 if (init) {
                     writeConstraint("NumericItemMin", {
@@ -538,6 +555,10 @@ module nts.uk.com.view.cps005.b {
                 $('#numericItemMax').trigger('change');
             });
             self.numericItemMax.subscribe(x => {
+                if(!self.integerPart()){                            
+                     $('#integerPart').trigger('change');
+                    return;
+                }
                 if (init) {
                     self.numericItemMin.valueHasMutated();
                 }
