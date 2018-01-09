@@ -243,6 +243,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             return dfd.promise();
         }
         checkRegister(){
+            $("#inpStartTime1").ntsError("clear"); 
+            $("#inpEndTime1").ntsError("clear"); 
+            $("#inpStartTime2").ntsError("clear");
+            $("#inpEndTime2").ntsError("clear");
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             //return if has error

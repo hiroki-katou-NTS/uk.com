@@ -189,6 +189,10 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                $("#inpStartTime1").ntsError("clear"); 
+                $("#inpEndTime1").ntsError("clear"); 
+                $("#inpStartTime2").ntsError("clear");
+                $("#inpEndTime2").ntsError("clear");
                 nts.uk.ui.block.invisible();
                 let self = this;
                 var promiseResult = self.checkUse();
