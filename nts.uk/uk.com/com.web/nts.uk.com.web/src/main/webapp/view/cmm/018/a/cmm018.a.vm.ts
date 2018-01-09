@@ -72,6 +72,8 @@ module nts.uk.com.view.cmm018.a {
             selectedEmployee: KnockoutObservableArray<vmbase.EmployeeSearchDto>;
             workplaceId: KnockoutObservable<string> = ko.observable("");
             employeeId: KnockoutObservable<string> = ko.observable("");
+            //visableCCG001
+            visibleCCG001: KnockoutObservable<boolean> = ko.observable(true);
             ENDDATE_LATEST: string = '9999/12/31';
             //work place Info
             wpCode: KnockoutObservable<string> = ko.observable("");
@@ -416,6 +418,7 @@ module nts.uk.com.view.cmm018.a {
                 let param: vmbase.ParamDto;
                 if(transferData.screen == 'Application'){//screen Application
                     self.visibleTab(false);
+                    self.visibleCCG001(false);
                     self.tabSelected(vmbase.RootType.PERSON);
                     self.employeeId(transferData.employeeId);
                     param = new vmbase.ParamDto(vmbase.RootType.PERSON,'',self.employeeId());
@@ -425,6 +428,7 @@ module nts.uk.com.view.cmm018.a {
                     });
                 }else{//menu
                     self.visibleTab(true);
+                    self.visibleCCG001(true);
                     self.tabSelected(vmbase.RootType.COMPANY);
                     param = new vmbase.ParamDto(vmbase.RootType.COMPANY,'','');
                     servicebase.getInfoEmLogin().done(function(employeeInfo){

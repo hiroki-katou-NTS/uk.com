@@ -490,7 +490,7 @@ module nts.uk.com.view.cmm007.g {
                 
                 service.saveWorkdayoffFrame(params).done(() => {
                     _self.start_page().done(() => {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                             dfd.resolve();
                             blockUI.clear();
                             $('#work_day_off_name1').focus();

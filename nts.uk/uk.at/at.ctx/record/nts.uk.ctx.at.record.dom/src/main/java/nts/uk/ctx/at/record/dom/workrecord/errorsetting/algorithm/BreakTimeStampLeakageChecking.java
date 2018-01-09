@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
@@ -38,25 +39,25 @@ public class BreakTimeStampLeakageChecking {
 
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 
-					if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((1)))) {
+					if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(1))) {
 						attendanceItemIDList.add(157);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((2)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(2))) {
 						attendanceItemIDList.add(163);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((3)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(3))) {
 						attendanceItemIDList.add(169);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((4)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(4))) {
 						attendanceItemIDList.add(175);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((5)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(5))) {
 						attendanceItemIDList.add(181);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((6)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(6))) {
 						attendanceItemIDList.add(187);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((7)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(7))) {
 						attendanceItemIDList.add(193);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((8)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(8))) {
 						attendanceItemIDList.add(199);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((9)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(9))) {
 						attendanceItemIDList.add(205);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((10)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(10))) {
 						attendanceItemIDList.add(211);
 					}
 
@@ -67,25 +68,25 @@ public class BreakTimeStampLeakageChecking {
 				if (breakTimeSheet.getEndTime().getTimeWithDay() == null) {
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 
-					if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((1)))) {
+					if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(1))) {
 						attendanceItemIDList.add(159);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((2)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(2))) {
 						attendanceItemIDList.add(165);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((3)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(3))) {
 						attendanceItemIDList.add(171);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((4)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(4))) {
 						attendanceItemIDList.add(177);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((5)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(5))) {
 						attendanceItemIDList.add(183);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((6)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(6))) {
 						attendanceItemIDList.add(189);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((7)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(7))) {
 						attendanceItemIDList.add(195);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((8)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(8))) {
 						attendanceItemIDList.add(201);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((9)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(9))) {
 						attendanceItemIDList.add(207);
-					} else if (breakTimeSheet.getBreakFrameNo().equals(new WorkNo((10)))) {
+					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(10))) {
 						attendanceItemIDList.add(213);
 					}
 

@@ -253,7 +253,7 @@ module kcp.share.list {
             self.isShowNoSelectRow = data.isShowNoSelectRow;
             
             // Init data for employment list component.
-            if (data.listType == ListType.EMPLOYMENT && data.isDisplayClosureSelection) {
+            if (data.listType == ListType.EMPLOYMENT) {
                 self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
                 self.selectedClosureId.subscribe(id => {
                     self.reloadEmployment(id);
@@ -261,7 +261,9 @@ module kcp.share.list {
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
-                self.initSelectClosureOption(data);
+                if (data.isDisplayClosureSelection) {
+                    self.initSelectClosureOption(data);
+                }
             }
             self.initGridStyle(data);
             if (data.maxWidth && data.maxWidth <= 350) {
@@ -644,8 +646,12 @@ module kcp.share.list {
                             });
                         })
                         return dfd.promise();
-                    } 
-                    return service.findEmployments(0);
+                    } else {
+                        if (self.selectedClosureId()){
+                            return service.findEmployments(self.selectedClosureId());
+                        }
+                        return service.findAllEmployments();
+                    }
                 case ListType.JOB_TITLE:
                     return service.findJobTitles(this.baseDate());
                 case ListType.Classification:
@@ -744,7 +750,7 @@ module kcp.share.list {
         /**
          * Find Employment list.
          */
-        export function findEmployments(closureId: number): JQueryPromise<Array<UnitModel>> {
+        export function findEmployments(closureId?: number): JQueryPromise<Array<UnitModel>> {
             
             // Find Employment Closure.
             var dfd = $.Deferred<Array<UnitModel>>();
@@ -759,6 +765,10 @@ module kcp.share.list {
                 dfd.resolve([])
             })
             return dfd.promise();
+        }
+        
+        export function findAllEmployments(): JQueryPromise<Array<UnitModel>>{
+            return nts.uk.request.ajax('com', servicePath.findEmployments);
         }
         
         /**

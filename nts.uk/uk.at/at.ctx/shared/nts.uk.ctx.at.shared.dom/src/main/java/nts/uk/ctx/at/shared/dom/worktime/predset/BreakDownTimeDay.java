@@ -59,8 +59,14 @@ public class BreakDownTimeDay extends DomainObject{
 	 * @param morning the morning
 	 * @param afternoon the afternoon
 	 */
-	public BreakDownTimeDay(int oneDay, int morning, int afternoon) {
+	public BreakDownTimeDay(Integer oneDay, Integer morning, Integer afternoon) {
 		super();
+		if (morning == null) {
+			throw new BusinessException("Msg_518", "KMK003_217");
+		}
+		if (afternoon == null) {
+			throw new BusinessException("Msg_518", "KMK003_218");
+		}
 		this.oneDay = new AttendanceTime(oneDay);
 		this.morning = new AttendanceTime(morning);
 		this.afternoon = new AttendanceTime(afternoon);

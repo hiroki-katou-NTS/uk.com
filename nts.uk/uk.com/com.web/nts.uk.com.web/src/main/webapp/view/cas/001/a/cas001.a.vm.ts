@@ -289,9 +289,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', '!!allowPersonRef()');
 
             $("#item_role_table_body").ntsGrid({
-                features: [{ name: 'Resizing' }
+                features: [{ name: 'Resizing' },
+                    {
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: true
+                    }
                 ],
-                ntsFeatures: [{ name: 'CopyPaste' }],
+                //  ntsFeatures: [{ name: 'CopyPaste' }],
 
                 showHeader: true,
 

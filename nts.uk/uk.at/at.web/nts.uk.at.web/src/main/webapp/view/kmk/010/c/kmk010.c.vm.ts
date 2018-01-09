@@ -128,6 +128,7 @@ module nts.uk.at.view.kmk010.c {
 
                    });
                }
+               self.switchNameResource();
            }
            /**
             * function validate domain save
@@ -157,6 +158,19 @@ module nts.uk.at.view.kmk010.c {
            private closeSaveOutsideOTBRDItem(): void {
                nts.uk.ui.windows.close();
            }
+            
+           /**
+             * swtich name for element when change language
+             */
+            private switchNameResource(): string {
+                let self = this;
+                
+                if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) { 
+                    return '#[KMK010_46]';
+                } else {
+                    return '#[KMK010_64]'; 
+                }
+            } 
         }
 
     }
