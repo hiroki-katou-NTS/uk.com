@@ -80,7 +80,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (value) {
 
                     self.getItemList(self.initSettingId(), value);
-
+ 
 
                 } else {
                     return;
@@ -138,6 +138,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
+                    $.fn.hasScrollBar = function() {
+                        return this.get(0).scrollHeight > this.height();
+                    }
+                    if($("#sub-right>table>tbody").hasScrollBar()){
+                        $(".contents-header thead, #sub-right>table>tbody").css("width", "651px");
+                        $("#COL_3").css("width", "257px !important");
+                    }else{
+                        $(".contents-header thead, #sub-right>table>tbody").css("width", "634px");
+                        $("#COL_3").css("width", "240px !important");
+                    }
                 } else {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList([]);

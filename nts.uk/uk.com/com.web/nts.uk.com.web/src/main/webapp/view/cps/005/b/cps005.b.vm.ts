@@ -504,9 +504,9 @@ module nts.uk.com.view.cps005.b {
 
 
         checkIntegerEmpty() {
-            if ($("#integerPart").val() == "") {
-                $("#integerPart").focus();
-            }
+//            if ($("#integerPart").val() == "") {
+//                $("#integerPart").focus();
+//            }
         }
     }
     export class TimeItemModel {

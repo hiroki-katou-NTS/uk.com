@@ -128,17 +128,27 @@ input.ntsSearchBox {
 	width: 265px;
 	/* height: 590px; */
 	float: left;
+	margin-top: -10px;
 }
 
 #sub-right {
 	float: left;
-	width: 645px;
+	width: 634px;
 	margin-left: 30px;
+}
+#sub-right>table>tbody, #sub-right>table>thead{
+	display: block;
+}
+#sub-right>table>tbody{
+    max-height: 360px;       /* Just for the demo          */
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+    width: 634px;
 }
 
 #search_his {
 	margin-top: 38px;
-	margin-bottom: 15px;
+	margin-bottom: 25px;
 }
 
 #history {
@@ -148,7 +158,6 @@ input.ntsSearchBox {
 
 .contents-header {
 	width: 100%;
-	margin-top: 10px !important;
 }
 
 .contents-data {
@@ -171,9 +180,8 @@ input.ntsSearchBox {
 table.contents-data thead, table.contents-data tbody {
 	display: block !important;
 }
-
+    
 table.contents-data tbody {
-	height: 500px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	border: 1px solid #CCC;
@@ -226,20 +234,20 @@ table tr td, table tr th {
 	padding: 0px 0px;
 	font-weight: bold;
 }
+.contents-header thead{
+	width: 634px;
+}
 
 #COL_1 {
-	min-width: 200px !important;
-	max-width: 200px !important;
+	width: 200px !important;
 }
 
 #COL_2 {
-	min-width: 190px !important;
-	max-width: 190px !important;
+	width: 190px !important;
 }
 
 #COL_3 {
-	min-width: 234px !important;
-	max-width: 240px !important;
+	width: 240px !important;
 }
 
 #A2_012 {

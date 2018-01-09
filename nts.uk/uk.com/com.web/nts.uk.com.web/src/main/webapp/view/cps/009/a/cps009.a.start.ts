@@ -13,8 +13,8 @@ module nts.uk.com.view.cps009.a {
             $(".goout").css("display", "none");
             $("#closeBtn").css("visibility", "visible");
         }
-
-
-
+        
+        
+       
     });
 }
