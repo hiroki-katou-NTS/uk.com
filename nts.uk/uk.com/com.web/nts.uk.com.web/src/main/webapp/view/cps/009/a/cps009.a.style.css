@@ -26,8 +26,6 @@
 
 .input-units {
 	width: 209px !important;
-	min-height: 16px !important;
-	max-height: 16px !important;
 }
 
 .sub-input-units {
@@ -36,7 +34,6 @@
 	margin-right: 3px !important;
 	border: 0px !important;
 	text-align: right !important;
-	max-height: 12px !important;
 }
 
 .nts-datepicker-wrapper .ntsDatepicker {
@@ -140,18 +137,15 @@ input.ntsSearchBox {
 	display: block;
 }
 #sub-right>table>tbody{
-    max-height: 375px;       /* Just for the demo          */
-    overflow-y: auto;    /* Trigger vertical scroll    */
+    max-height: 510px;       /* Just for the demo          */
+    overflow-y: scroll;    /* Trigger vertical scroll    */
     overflow-x: hidden;  /* Hide the horizontal scroll */
     width: 634px;
-}
-#sub-right>table>tbody td{
-	height: 24px;
 }
 
 #search_his {
 	margin-top: 38px;
-	margin-bottom: 25px;
+	margin-bottom: 5px;
 }
 
 #history {
@@ -161,6 +155,7 @@ input.ntsSearchBox {
 
 .contents-header {
 	width: 100%;
+	heigth: 650px !important;
 }
 
 .contents-data {
@@ -171,14 +166,8 @@ input.ntsSearchBox {
 .contents-data  td {
 	border: 1px solid #CCC;
 	text-align: left;
-	min-height: 16px !important;
-	max-height: 16px !important;
 }
 
-.contents-data  tr {
-	min-height: 16px !important;
-	max-height: 16px !important;
-}
 
 table.contents-data thead, table.contents-data tbody {
 	display: block !important;
@@ -195,45 +184,30 @@ thead {
 	/* 	height: 35px !important; */
 }
 
-table.contents-data tr {
-	min-height: 16px !important;
-	max-height: 16px !important;
-}
 
 table tr td, table tr th {
 	font-size: 14px;
 	font-family: "DroidSansMono", "Meiryo";
 }
 
-.ui-igcombo-buttonicon, .ui-igcombo-clearicon {
-	top: 20% !important;
-	margin-top: -8px !important;
-	position: inherit !important;
-}
-
 .ui-igcombo-wrapper {
-	position: relative;
-	display: inline-block;
-	overflow: visible;
-	width: 160px;
-	height: 15px;
+	display: block;
+	width: initial;
+	width: auto;
 }
 
 .value {
 	width: 200px !important;
 }
 
-#combox1 {
-	height: 18px;
-	margin-left: 16px;
+/* #combox1 {
 	min-width: 210px !important;
 	max-width: 210px !important;
-}
+} */
 
 .contents-header thead td {
 	border: 1px solid #CCC;
 	text-align: left;
-	height: 35px;
 	padding: 0px 0px;
 	font-weight: bold;
 }
@@ -269,9 +243,8 @@ table tr td, table tr th {
 }
 
 #combo-box {
-	margin-left: 9px;
+/* 	margin-left: 9px; */
 	min-width: 100px !important;
-	height: 20px;
 }
 
 .input-units-1 {
@@ -335,7 +308,6 @@ th>div {
 	top: 0;
 	padding: 3px;
 	color: #000;
-	line-height: 32px;
 	position: absolute;
 	border-left: 1px solid #ccc;
 	background-color: #CFF1A5 !important;
@@ -396,4 +368,7 @@ label[for] {
 } */
 .caret-background caret-right direction-right {
 	margin-top: 90px !important;
+}
+.ui-state-default{
+	border: 1px solid #c5c5c500 !important;;
 }
