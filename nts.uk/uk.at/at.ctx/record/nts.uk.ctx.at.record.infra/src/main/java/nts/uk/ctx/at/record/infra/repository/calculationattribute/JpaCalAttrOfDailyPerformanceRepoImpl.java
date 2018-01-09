@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.infra.repository.calculationattribute;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -34,11 +36,11 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		KrcstDaiCalculationSet calc = this.queryProxy()
 				.find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcstDaiCalculationSet.class).orElse(null);
 		if (calc != null) {
-			KrcstFlexAutoCalSet flexCalc = this.queryProxy().find(calc.flexExcessTimeId, KrcstFlexAutoCalSet.class)
+			KrcstFlexAutoCalSet flexCalc = this.queryProxy().find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class)
 					.orElse(null);
-			KrcstHolAutoCalSet holidayCalc = this.queryProxy().find(calc.holWorkTimeId, KrcstHolAutoCalSet.class)
+			KrcstHolAutoCalSet holidayCalc = this.queryProxy().find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcstHolAutoCalSet.class)
 					.orElse(null);
-			KrcstOtAutoCalSet overtimeCalc = this.queryProxy().find(calc.overTimeWorkId, KrcstOtAutoCalSet.class)
+			KrcstOtAutoCalSet overtimeCalc = this.queryProxy().find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class)
 					.orElse(null);
 			AutoCalculationSetting flex = null;
 			AutoCalHolidaySetting holiday = null;
@@ -76,11 +78,11 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	public void update(CalAttrOfDailyPerformance domain) {
 		KrcstDaiCalculationSet calc = this.queryProxy()
 				.find(new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()), KrcstDaiCalculationSet.class).orElse(null);
-		KrcstFlexAutoCalSet flexCalc = this.queryProxy().find(calc.flexExcessTimeId, KrcstFlexAutoCalSet.class)
+		KrcstFlexAutoCalSet flexCalc = this.queryProxy().find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class)
 				.orElse(null);
-		KrcstHolAutoCalSet holidayCalc = this.queryProxy().find(calc.holWorkTimeId, KrcstHolAutoCalSet.class)
+		KrcstHolAutoCalSet holidayCalc = this.queryProxy().find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcstHolAutoCalSet.class)
 				.orElse(null);
-		KrcstOtAutoCalSet overtimeCalc = this.queryProxy().find(calc.overTimeWorkId, KrcstOtAutoCalSet.class)
+		KrcstOtAutoCalSet overtimeCalc = this.queryProxy().find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class)
 				.orElse(null);
 		calc.bonusPayNormalCalSet = domain.getRasingSalarySetting().getSalaryCalSetting().value;
 		calc.bonusPaySpeCalSet = domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value;

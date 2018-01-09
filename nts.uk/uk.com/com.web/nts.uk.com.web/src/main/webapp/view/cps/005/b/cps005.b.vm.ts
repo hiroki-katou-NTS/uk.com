@@ -285,6 +285,8 @@ module nts.uk.com.view.cps005.b {
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
+                        __viewContext['screenModelB'].isUpdate = true;
+                       
                         if (self.currentItemSelected().fixedAtr() == 1) {
                             self.currentItemSelected().selectionItem().selectionItemName(data.selectionItemName);
                             self.isEnableButtonProceed(false);
