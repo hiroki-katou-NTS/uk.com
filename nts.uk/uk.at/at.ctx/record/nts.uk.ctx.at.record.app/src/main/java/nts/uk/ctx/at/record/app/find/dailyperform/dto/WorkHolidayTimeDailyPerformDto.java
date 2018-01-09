@@ -80,7 +80,8 @@ public class WorkHolidayTimeDailyPerformDto {
 								Finally.of(createTimeWithCalc(c.getHolidayWorkTime())),
 								Finally.of(createTimeWithCalc(c.getTransferTime())),
 								Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
-				Finally.of(holidayMidnightWork.toDomain()));
+				Finally.of(holidayMidnightWork.toDomain()),
+				toAttendanceTime(holidayTimeSpentAtWork));
 	}
 
 	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
