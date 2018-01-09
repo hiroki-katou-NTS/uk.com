@@ -93,7 +93,7 @@ module nts.uk.com.view.cmm007.c {
                 service.updateTempAbsenceFrame(lstDto).done(function(data){
                     _self.getDataByCId().done(() => {
                     });
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         $('#tempAbsenceNo7').focus();
                     });
                 }).fail(function(data) {
