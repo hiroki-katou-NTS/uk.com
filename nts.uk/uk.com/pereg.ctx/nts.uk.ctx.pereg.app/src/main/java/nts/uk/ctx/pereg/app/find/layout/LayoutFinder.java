@@ -303,6 +303,10 @@ public class LayoutFinder {
 	 */
 	private List<PerInfoItemDefDto> validateAuthItem(List<PersonInfoItemAuth> authItems,
 			List<PerInfoItemDefDto> listItemDef, boolean selfBrowsing) {
+		if ( authItems == null ) {
+			return new ArrayList<>();
+		}
+		
 		List<PerInfoItemDefDto> dataInfoItems = new ArrayList<>();
 		for (PerInfoItemDefDto itemDef : listItemDef) {
 			Optional<PersonInfoItemAuth> authItemOpt = authItems.stream()
@@ -316,7 +320,6 @@ public class LayoutFinder {
 			}
 		}
 		return dataInfoItems;
-
 	}
 
 	/**
@@ -575,6 +578,10 @@ public class LayoutFinder {
 	private void checkActionRoleItemData(List<PersonInfoItemAuth> inforAuthItems, LayoutPersonInfoClsDto classItem,
 			boolean selfBrowsing) {
 
+		if ( inforAuthItems == null) {
+			return;
+		}
+		
 		for (Object item : classItem.getItems()) {
 			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 
