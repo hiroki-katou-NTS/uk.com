@@ -131,7 +131,7 @@ module kcp001.a.viewmodel {
                 isDisplayClosureSelection: self.isDisplayClosureSelection(),
                 isDisplayFullClosureOption: self.isDisplayFullClosureOption(),
                 closureSelectionType: self.closureSelectionType(),
-                selectedClosureId: ko.observable(1)
+                selectedClosureId: ko.observable(null)
             };
 
             self.selectionTypeList = ko.observableArray([

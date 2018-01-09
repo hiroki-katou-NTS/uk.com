@@ -43,7 +43,8 @@ module nts.uk.at.view.kmk008.e {
                     selectType: 1,
                     isShowSelectButton: true,
                     isDialog: false,
-                    alreadySettingList: self.alreadySettingList
+                    alreadySettingList: self.alreadySettingList,
+                    systemType:2
                 };
 
                 self.selectedWorkplaceId.subscribe(newValue => {

@@ -1,7 +1,8 @@
 #contents-area {
-	width: 1280px;
+	width: 1290px;
 	height: 100%;
-	overflow-y: hidden !important;
+	/* overflow-y: hidden !important; */
+	overflow-y: inherit !important;
 }
 
 .float-right {
@@ -71,7 +72,7 @@
 
 #content-right {
 	float: left;
-	width: 930px;
+	width: 940px;
 }
 
 #category_grid_container {
@@ -82,6 +83,7 @@
 	margin-top: 10px !important;
 	width: 250px;
 }
+
 .distane {
 	margin-bottom: 5px;
 }
@@ -124,13 +126,13 @@ input.ntsSearchBox {
 
 #sub-left {
 	width: 265px;
-	height: 590px;
+	/* height: 590px; */
 	float: left;
 }
 
 #sub-right {
 	float: left;
-	width: 630px;
+	width: 645px;
 	margin-left: 30px;
 }
 
@@ -179,7 +181,7 @@ table.contents-data tbody {
 
 thead {
 	background-color: #CFF1A5;
-/* 	height: 35px !important; */
+	/* 	height: 35px !important; */
 }
 
 table.contents-data tr {
@@ -287,12 +289,12 @@ table tr td, table tr th {
 
 span.caret-background.caret-right.direction-right {
 	position: fixed !important;
-	margin-top: 50px !important; 
+	margin-top: 50px !important;
 }
 
 .table-container {
 	color: #000;
-/* 	position: relative; */
+	/* 	position: relative; */
 	border: 1px solid #ccc;
 }
 
@@ -363,15 +365,14 @@ label[for] {
 	margin-left: 5px !important;
 }
 
-.ui-dialog ui-corner-all ui-widget ui-widget-content ui-front no-close ui-dialog-buttons ui-draggable ui-resizable{
+.ui-dialog ui-corner-all ui-widget ui-widget-content ui-front no-close ui-dialog-buttons ui-draggable ui-resizable
+	{
 	top: 578.5px !important;
 }
 
 /* div[role]{
 	top: 578.5px !important;
 } */
-
-
-.caret-background caret-right direction-right{
-	margin-top:90px !important;
+.caret-background caret-right direction-right {
+	margin-top: 90px !important;
 }

@@ -145,7 +145,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                         let workType = null, workTime = null, pairShortName = null;
                         workType = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': wPSet.workTypeCode });
                         let workTypeShortName = workType.abbreviationName;
-                        workTime = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'siftCd': wPSet.workTimeCode });
+                        workTime = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wPSet.workTimeCode });
                         let workTimeShortName = workTime ? workTime.abName : null;
                         pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
                         arrPairShortName.push(pairShortName);
@@ -154,10 +154,10 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                             data: {
                                 workTypeCode: workType.workTypeCode,
                                 workTypeName: workType.name,
-                                workTimeCode: workTime ? workTime.siftCd : null,
+                                workTimeCode: workTime ? workTime.workTimeCode : null,
                                 workTimeName: workTime ? workTime.name : null,
-                                startTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.start : '',
-                                endTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.end : '',
+                                startTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.startTime : '',
+                                endTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.endTime : '',
                                 symbolName: null
                             }
                         });
@@ -270,7 +270,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 selectedLinkButton: self.selectedTab() === 'company' ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/ja/index.xhtml").onClosed(() => {
-                let selectedLB = getShared("dataFromJA").selectedLinkButton;
+                let selectedLB: any = ko.observable(getShared("dataFromJA").selectedLinkButton);
                 if (self.selectedTab() == 'company') {
                     $.when(__viewContext.viewModel.viewA.getDataComPattern()).done(() => {
                         self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, selectedLB);

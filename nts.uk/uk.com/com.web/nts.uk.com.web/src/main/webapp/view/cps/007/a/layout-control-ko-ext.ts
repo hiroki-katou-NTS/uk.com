@@ -467,7 +467,7 @@ module nts.custombinding {
                                     }">
                                <div data-bind="if: layoutItemType == LAYOUT_TYPE.ITEM">
                                     <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
-                                            .filter(function(x) { return (__items.length == 1 ? [ITEM_TYPE.SELECTION] : [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION]).indexOf((x.item||{}).dataTypeValue) == -1})
+                                            .filter(function(x) { return (__items.length == 1 ? [ITEM_TYPE.DATE, ITEM_TYPE.SELECTION] : [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION]).indexOf((x.item||{}).dataTypeValue) == -1})
                                             .map(function(x) { return x.itemDefId.replace(/[-_]/g, '') })
                                             .value() }">
                                         <div data-bind="ntsFormLabel: { 

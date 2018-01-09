@@ -105,19 +105,6 @@ public class JpaBasicScheduleSetMemento implements BasicScheduleSetMemento{
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleSetMemento
-	 * #setWorkDayAtr(nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
-	 * WorkdayDivision)
-	 */
-	@Override
-	public void setWorkDayAtr(WorkdayDivision workDayAtr) {
-		this.entity.setWorkingDayAtr(workDayAtr.value);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleSetMemento
 	 * #setWorkScheduleTimeZones(java.util.List)
 	 */
 	@Override
