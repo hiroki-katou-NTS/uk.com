@@ -138,6 +138,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
+                       
 //                    $.fn.hasScrollBar = function() {
 //                        return this.get(0).scrollHeight > this.height();
 //                    }
