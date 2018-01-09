@@ -68,7 +68,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
             self.allItem = ko.observableArray([]);
             self.allItemAmount = ko.observableArray([]);
             self.allItemTime = ko.observableArray([]);
-            self.checked = ko.observable(0);
+            self.checked = ko.observable(1);
             self.checkedTime = ko.observable(1);
             self.uPCd = ko.observable(0);
             self.roundingCd = ko.observable(0);
@@ -254,7 +254,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 if (!devChange) {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_194" }).ifYes(() => {
                         devChange = false;
-                        self.displayItemsRuleTime(self.allItemTime(), self.catCodeTime(), value);
+                        self.displayItemsRuleTime(self.allItemTime(), self.catCodeTime(), value ? 1 : 0);
                         self.rightItemsTime.removeAll();
                         $("#treegridItemsTime").ntsGridList('deselectAll');
                     }).ifNo(() => {
