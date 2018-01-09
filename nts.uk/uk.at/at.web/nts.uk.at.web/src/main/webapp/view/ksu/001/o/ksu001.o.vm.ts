@@ -15,6 +15,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         currentScreen: any = null;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        startDateScreenA: any = null;
+        endDateScreenA: any = null;
 
         constructor() {
             let self = this;
@@ -149,6 +151,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         getWorkTypeTimeAndStartEndDate(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getWorkTypeTimeAndStartEndDate().done(function(data) {
+                //set date for startDate and endDate
+                self.startDateScreenA = data.startDate;
+                self.endDateScreenA = data.endDate;
                 //set data for listWorkType
                 self.listWorkType(data.listWorkType);
                 //set data for listWorkTime
