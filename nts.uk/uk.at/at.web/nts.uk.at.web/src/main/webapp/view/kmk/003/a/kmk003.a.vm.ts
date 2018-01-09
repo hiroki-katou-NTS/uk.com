@@ -498,6 +498,9 @@ module nts.uk.at.view.kmk003.a {
                 $('#inp-worktimecode').focus();
                 
                 self.isLoading(true);
+                
+                //fix ST #5
+                self.selectedTab('tab-1');
             }
 
             /**
