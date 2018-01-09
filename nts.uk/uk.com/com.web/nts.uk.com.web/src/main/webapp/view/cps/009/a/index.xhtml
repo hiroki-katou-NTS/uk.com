@@ -194,13 +194,7 @@
 											<td id="COL_3">#{i18n.getText('CPS009_23')}</td>
 										</tr>
 									</thead>
-								</table>
-
-								<section class="table-container">
-									<div>
-										<table>
-
-											<tbody data-bind="foreach: currentCategory().itemList()">
+									<tbody data-bind="foreach: currentCategory().itemList()">
 												<td id="name" class='input-units-1'
 													data-bind="css:{ 
 											requiredCell: isRequired(), 
@@ -504,9 +498,16 @@
 												</com:ko-if>
 
 											</tbody>
+								</table>
+
+								<!-- <section class="table-container">
+									<div>
+										<table>
+
+											
 										</table>
 									</div>
-								</section>
+								</section> -->
 							</div>
 						</div>
 
