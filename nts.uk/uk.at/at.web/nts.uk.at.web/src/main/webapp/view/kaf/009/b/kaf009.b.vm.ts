@@ -180,6 +180,9 @@ module nts.uk.at.view.kaf009.b {
                     });
                     dfd.resolve();
                 });
+                
+                //フォーカス制御 => 定型理由
+                $('#inpStartTime1').focus();
                 return dfd.promise();
             }
 
@@ -517,6 +520,8 @@ module nts.uk.at.view.kaf009.b {
                         self.workTypeName(childData.selectedWorkTypeName);
                         self.siftCD(childData.selectedWorkTimeCode);
                         self.siftName(childData.selectedWorkTimeName);
+                        //フォーカス制御 => 定型理由
+                        $('#combo-box').focus();
                     }
                 })
             }
