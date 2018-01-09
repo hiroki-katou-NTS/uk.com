@@ -98,7 +98,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				.setParameter("ymd", domain.getYmd()).getSingle();
 		KrcdtDaiPerWorkInfo data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiPerWorkInfo();
 		if(domain != null){
-			if(data.scheduleTimes != null){
+			if(data.scheduleTimes == null){
 				data.scheduleTimes = new ArrayList<>();
 			}
 //			data.krcdtDaiPerWorkInfoPK.employeeId = domain.getEmployeeId();
