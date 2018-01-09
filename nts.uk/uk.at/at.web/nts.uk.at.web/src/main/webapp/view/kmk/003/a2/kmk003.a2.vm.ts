@@ -234,7 +234,10 @@ module a2 {
                 }
 
                 //============= Convert =============
-                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
+                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne;
+                item.valueChangedNotifier.subscribe(() => {
+                    // TODO: bind data
+                });
                 let timeRange: TimePeriod = {
                     startTime: item.start(),
                     endTime: item.end()

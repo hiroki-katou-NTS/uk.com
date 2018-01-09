@@ -85,8 +85,8 @@ module a1 {
             self.isDetailMode = data.isDetailMode;
             self.mainSettingModel = data.mainSettingModel;
             self.predseting = self.mainSettingModel.predetemineTimeSetting;
-            self.timeZoneModelOne = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
-            self.timeZoneModelTwo = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneTwo();
+            self.timeZoneModelOne = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne
+            self.timeZoneModelTwo = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo;
             self.coreTimeSettingModel = self.mainSettingModel.flexWorkSetting.coreTimeSetting;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
