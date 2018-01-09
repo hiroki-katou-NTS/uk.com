@@ -441,7 +441,7 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 
 		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
-		dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
+		//dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
 		//dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
 		screenDto.setComment(dailyPerformanceDto != null && dailyPerformanceDto.getComment() != null
 				? dailyPerformanceDto.getComment() : null);

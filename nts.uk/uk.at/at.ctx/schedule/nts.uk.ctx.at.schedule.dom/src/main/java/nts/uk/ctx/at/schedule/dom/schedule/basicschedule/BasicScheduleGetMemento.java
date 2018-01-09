@@ -59,15 +59,7 @@ public interface BasicScheduleGetMemento {
 	 */
 	public ConfirmedAtr getConfirmedAtr();
 	
-	
-	/**
-	 * Gets the work day atr.
-	 *
-	 * @return the work day atr
-	 */
-	public WorkdayDivision getWorkDayAtr();
-	
-	
+
 	/**
 	 * Gets the work schedule time zones.
 	 *
