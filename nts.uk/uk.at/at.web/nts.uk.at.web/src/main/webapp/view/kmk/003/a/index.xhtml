@@ -149,23 +149,25 @@
 									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
 								</div>
 								</com:ko>
-								<div style="width: 300px"
+								<div style="clear: both">
+									<div style="width: 300px"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
 									comId: 'single-list', items: workTimeSettings,  selectedKey: 'worktimeCode', 
 									fields: ['workTimeName', 'worktimeCode'], mode: 'igGrid'}">
+									</div>
+									<table id="single-list"
+										data-bind="ntsGridList: {
+										name: '#[KMK003_86]',
+										height: 320,
+										width: 300,
+										options: workTimeSettings,
+										optionsValue: 'worktimeCode',
+										columns: columnWorktimeSettings,
+										multiple: false,
+										value: selectedWorkTimeCode
+										}">
+									</table>
 								</div>
-								<table id="single-list"
-									data-bind="ntsGridList: {
-									name: '#[KMK003_86]',
-									height: 320,
-									width: 300,
-									options: workTimeSettings,
-									optionsValue: 'worktimeCode',
-									columns: columnWorktimeSettings,
-									multiple: false,
-									value: selectedWorkTimeCode
-									}">
-								</table>
 							</div>
 						</td>
 						<td class="screen-content-right">
