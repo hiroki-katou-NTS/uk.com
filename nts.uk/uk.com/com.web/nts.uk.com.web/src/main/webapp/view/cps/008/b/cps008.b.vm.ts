@@ -31,16 +31,16 @@ module cps008.b.vm {
                 currentDialog = nts.uk.ui.windows.getSelf();
             $(currentDialog.parent.globalContext).css("overflow", "hidden");
             
-            if (currentDialog.parent.globalContext.innerWidth <= 1260) {
+            if (currentDialog.parent.globalContext.innerWidth <= 1281) {
                 currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 30);
             } else {
-                currentDialog.setWidth(1260);
+                currentDialog.setWidth(1280);
             }
 
-            if (currentDialog.parent.globalContext.innerHeight <= 750) {
+            if (currentDialog.parent.globalContext.innerHeight <= 781) {
                 currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 30);
             } else {
-                currentDialog.setHeight(750);
+                currentDialog.setHeight(780);
             }
 
 
