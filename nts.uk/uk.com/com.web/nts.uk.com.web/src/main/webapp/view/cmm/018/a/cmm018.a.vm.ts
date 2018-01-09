@@ -360,7 +360,7 @@ module nts.uk.com.view.cmm018.a {
                 // Init Fixed Table
                 $("#fixed-table").ntsFixedTable({ height: 550, width: 910 });
                 $("#fixed-tableWp").ntsFixedTable({ height: 550, width: 910 });
-                $("#fixed-tablePs").ntsFixedTable({ height: 550, width: 910 });
+                $("#fixed-tablePs").ntsFixedTable({ height: 530, width: 910 });
             }
             convertEmployeeCcg01ToKcp009(dataList : vmbase.EmployeeSearchDto[]) : void{
                 let self = this;    
