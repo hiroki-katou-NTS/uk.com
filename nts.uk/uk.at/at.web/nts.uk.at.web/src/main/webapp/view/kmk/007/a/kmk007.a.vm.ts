@@ -21,7 +21,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         itemCloseAtr: KnockoutObservableArray<ItemModel>;
         itemListHaftDay: KnockoutObservableArray<ItemModel>;
         itemCalculatorMethod: KnockoutObservableArray<ItemModel>;
-        itemCalculatorMethod1: KnockoutObservableArray<any>;
         enableMethod: KnockoutObservable<boolean>;
         isCreated: KnockoutObservable<boolean>;
         index: KnockoutObservable<number>;
@@ -137,7 +136,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 new ItemModel(2, nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY'), 0),
                 new ItemModel(3, nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION'), 0),
             ]);
-            self.itemCalculatorMethod1 = ko.observableArray(__viewContext.enums.CalculateMethod);
 
             self.roundingRules = ko.observableArray([
                 { code: '0', name: nts.uk.resource.getText('KMK007_19') },
