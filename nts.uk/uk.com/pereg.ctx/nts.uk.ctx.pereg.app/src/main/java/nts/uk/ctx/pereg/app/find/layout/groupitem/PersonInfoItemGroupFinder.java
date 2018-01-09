@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.groupitem.IPersonInfoItemGroupRepository;
@@ -70,7 +71,13 @@ public class PersonInfoItemGroupFinder {
 		} else {
 			List<PerInfoItemDefDto> items = itemDfFinder.getPerInfoItemDefByListId(listItemDfId);
 
-			items.stream().forEach(m -> {
+			items.stream().map(m -> {
+				PerInfoCtgFullDto cat = categoryFinder.getPerInfoCtg(m.getPerInfoCtgId());
+				if (cat.getIsAbolition() == 0) {
+					return m;
+				}
+				return null;
+			}).filter(f -> f != null).forEach(m -> {
 				int catDispOrder = categoryFinder.getDispOrder(m.getPerInfoCtgId());
 				m.setDispOrder(catDispOrder * 100000 + m.getDispOrder());
 			});
