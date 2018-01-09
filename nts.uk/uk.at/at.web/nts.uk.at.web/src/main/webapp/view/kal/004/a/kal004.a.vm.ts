@@ -131,6 +131,7 @@ module nts.uk.at.view.kal004.a.model {
                 
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(currentAlarm.alarmPerSet.roleIds);
+                self.setPermissionModel.selectedRuleCode(currentAlarm.alarmPerSet.authSetting);
             }
 
         }
