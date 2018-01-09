@@ -38,6 +38,7 @@ module nts.uk.com.view.cdl009.a {
                 self.selectedEmps = ko.observableArray([]);
                 // Initial listComponentOption
                 self.treeGrid = {
+                    isMultipleUse: true,
                     isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
