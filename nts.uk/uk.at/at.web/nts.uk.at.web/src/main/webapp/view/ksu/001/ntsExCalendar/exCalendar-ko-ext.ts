@@ -43,16 +43,6 @@ module nts.uk.at.view.ksu001 {
                     $(y).addClass(clazz);
                 });
             } 
-//            else {
-//                _.each($('span.fc-day-number'), (a) => {
-//                    $(a.closest('td')).addClass('color-gray');
-//                });
-//            }
-
-            //set color for header of cell, which is disabled
-//            _.each($('div.fc-content-skeleton thead td:not(.fc-day-top)'), (x) => {
-//                $(x).addClass('fc-day-top color-gray');
-//            });
             
             _.each($('div.fc-content-skeleton thead td'), (x) => {
                 $(x).addClass('fc-day-top color-gray');
