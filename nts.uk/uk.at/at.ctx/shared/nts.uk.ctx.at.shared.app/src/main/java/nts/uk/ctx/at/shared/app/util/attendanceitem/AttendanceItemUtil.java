@@ -214,7 +214,7 @@ public class AttendanceItemUtil {
 		List<T> value = getNotNullListValue(f, object);
 		Map<String, List<ItemValue>> listGroup = groupMapLayout(attendanceItems, layoutIdx, true);
 		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
-		String newExCondition = getExCondition("", object, layout);
+		String newExCondition = getExCondition(extraCondition, object, layout);
 		boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
 		String idxFieldName = layout.setFieldWithIndex();
 		boolean isIndexField = !idxFieldName.isEmpty();
@@ -331,7 +331,7 @@ public class AttendanceItemUtil {
 		T value = ReflectionUtil.getFieldValue(field, attendanceItems);
 		AttendanceItemLayout layout = getLayoutAnnotation(field);
 		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
-		String newExCondition = getExCondition("", attendanceItems, layout);
+		String newExCondition = getExCondition(extraCondition, attendanceItems, layout);
 		needCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
 		if (layout.isList()) {
 			if (value == null) {
@@ -465,8 +465,11 @@ public class AttendanceItemUtil {
 
 	private static <T> String getExCondition(String exCondition, T object, AttendanceItemLayout layout) {
 		String fieldExCondition = getExConditionField(object, layout);
-		if (!exCondition.isEmpty()) {
+		if (!exCondition.isEmpty() && !fieldExCondition.isEmpty()) {
 			return StringUtils.join(exCondition, "-", fieldExCondition);
+		}
+		if(fieldExCondition.isEmpty()){
+			return exCondition;
 		}
 		return fieldExCondition;
 	}
