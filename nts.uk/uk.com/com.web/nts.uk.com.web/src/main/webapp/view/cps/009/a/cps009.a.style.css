@@ -140,10 +140,13 @@ input.ntsSearchBox {
 	display: block;
 }
 #sub-right>table>tbody{
-    max-height: 360px;       /* Just for the demo          */
+    max-height: 375px;       /* Just for the demo          */
     overflow-y: auto;    /* Trigger vertical scroll    */
     overflow-x: hidden;  /* Hide the horizontal scroll */
     width: 634px;
+}
+#sub-right>table>tbody td{
+	height: 24px;
 }
 
 #search_his {
@@ -227,13 +230,14 @@ table tr td, table tr th {
 	max-width: 210px !important;
 }
 
-.contents-header td {
+.contents-header thead td {
 	border: 1px solid #CCC;
 	text-align: left;
 	height: 35px;
 	padding: 0px 0px;
 	font-weight: bold;
 }
+
 .contents-header thead{
 	width: 634px;
 }
@@ -284,6 +288,15 @@ table tr td, table tr th {
 	min-width: 240px;
 	max-width: 240px;
 }
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .ntsControl .nts-input{
+		padding: 3px 10px !important;
+	}
+	.ntsControl .nts-input:focus{
+		padding: 5px 10px !important;
+	}
+}
+
 
 #notdata {
 	min-width: 240px !important;

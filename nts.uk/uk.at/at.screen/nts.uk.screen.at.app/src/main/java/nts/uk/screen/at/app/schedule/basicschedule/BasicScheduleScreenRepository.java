@@ -24,11 +24,13 @@ public interface BasicScheduleScreenRepository {
 	List<BasicScheduleScreenDto> getByListSidAndDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 
 	/**
-	 * Get data from WorkTime and WorkTimeDay
+	 * Get data from WorkTimeSet and WorkTimeSheetSet
 	 * 
+	 * @param companyId
+	 * @param abolitionAtr
 	 * @return
 	 */
-	List<WorkTimeScreenDto> getListWorkTime(String companyId, int displayAtr);
+	List<WorkTimeScreenDto> getListWorkTime(String companyId, int abolitionAtr);
 
 	/**
 	 * Find by companyId and deprecateCls.
@@ -67,12 +69,11 @@ public interface BasicScheduleScreenRepository {
 	 * @return
 	 */
 	List<ComPatternScreenDto> getDataComPattern(String companyId);
-	
+
 	/**
 	 * 
 	 * @param workplaceId
 	 * @return
 	 */
 	List<WkpPatternScreenDto> getDataWkpPattern(String workplaceId);
-
 }

@@ -44,8 +44,4 @@ public class ScBasicScheduleImport {
 	/** The schedule end clock. */
 	// 予定終了時刻2
 	private int scheduleEndClock2;
-	
-	/** The work day atr. */
-	// 稼働日区分
-	private int workDayAtr;
 }

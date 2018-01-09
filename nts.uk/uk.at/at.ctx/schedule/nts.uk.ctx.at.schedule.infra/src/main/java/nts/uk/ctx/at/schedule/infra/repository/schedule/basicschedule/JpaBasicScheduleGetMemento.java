@@ -18,7 +18,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedul
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
@@ -86,14 +85,6 @@ public class JpaBasicScheduleGetMemento implements BasicScheduleGetMemento{
 	@Override
 	public ConfirmedAtr getConfirmedAtr() {
 		return ConfirmedAtr.valueOf(this.entity.getConfirmedAtr());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleGetMemento#getWorkDayAtr()
-	 */
-	@Override
-	public WorkdayDivision getWorkDayAtr() {
-		return WorkdayDivision.valuesOf(this.entity.getWorkingDayAtr());
 	}
 
 	/* (non-Javadoc)
