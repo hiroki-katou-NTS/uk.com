@@ -1,7 +1,7 @@
-module kal004.a.service {
+module nts.uk.at.view.kal004.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-    import share = kal004.share.model;
+    import share = nts.uk.at.view.kal004.share.model;
         var paths = {
             getAlarmPattern: "at/function/alarm/pattern/setting",
             getCheckConditionCode: "at/function/alarm/check/condition/code",

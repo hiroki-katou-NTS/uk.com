@@ -1,49 +1,82 @@
-module kal004.share.model {
-    export interface AlarmPatternSettingDto {
-        alarmPatternCD: string;
-        alarmPatternName: string;
-        alarmPerSet:  AlarmPermissionSettingDto;
-        checkConList: Array<CheckConditionDto>;
-    }    
-    export interface AlarmPermissionSettingDto{
-        authSetting: boolean;
-        roleIds: Array<string>;        
-    }
-    export interface CheckConditionDto{
-        alarmCategory: number;
-        checkConditionCodes: Array<string>;  
-        extractionDailyDto: ExtractionDailyDto; 
-    }
-    
-    export interface AlarmCheckConditonCodeDto{
-        category: EnumConstantDto;
-        checkConditonCode: string;
-        checkConditionName: string;
-        listRoleId: Array<string>;    
-    }
-    export class ModelCheckConditonCode {
-           GUID: string;
-           category: number;
-           categoryName: string;
-           checkConditonCode: string;
-           checkConditionName: string;
-           listRoleId: Array<string>; 
-           constructor(dto : AlarmCheckConditonCodeDto) {
-               this.category = dto.category.value;
-               this.categoryName = dto.category.fieldName;
-               this.checkConditonCode = dto.checkConditonCode;
-               this.checkConditionName = dto.checkConditionName;
-               this.listRoleId = dto.listRoleId;
-               this.GUID = dto.category.value + dto.checkConditonCode;
-           }
-    }
-      export interface EnumConstantDto {
+module nts.uk.at.view.kal004.share.model {
+
+    export interface EnumConstantDto {
         value: number;
         fieldName: string;
         localizedName: string;
-      }  
-    
-    export class ExtractionDailyDto {
+    }
+
+    export interface AlarmPatternSettingDto {
+        alarmPatternCD: string;
+        alarmPatternName: string;
+        alarmPerSet: AlarmPermissionSettingDto;
+        checkConList: Array<CheckConditionDto>;
+    }
+    export interface AlarmPermissionSettingDto {
+        authSetting: boolean;
+        roleIds: Array<string>;
+    }
+
+    export interface CheckConditionDto {
+        alarmCategory: number;
+        checkConditionCodes: Array<string>;
+        extractionDailyDto: ExtractionDailyDto;
+    }
+
+    export class CheckCondition {
+        GUID: string;
+        alarmCategory: number;
+        checkConditionCodes: Array<string>;
+        extractionDailyDto: ExtractionDaily;
+        
+        constructor(dto: CheckConditionDto) {
+            
+        }
+    }
+
+    export interface AlarmCheckConditonCodeDto {
+        category: EnumConstantDto;
+        checkConditonCode: string;
+        checkConditionName: string;
+        listRoleId: Array<string>;
+    }
+    export class ModelCheckConditonCode {
+        GUID: string;
+        category: number;
+        categoryName: string;
+        checkConditonCode: string;
+        checkConditionName: string;
+        listRoleId: Array<string>;
+        constructor(dto: AlarmCheckConditonCodeDto) {
+            this.category = dto.category.value;
+            this.categoryName = dto.category.fieldName;
+            this.checkConditonCode = dto.checkConditonCode;
+            this.checkConditionName = dto.checkConditionName;
+            this.listRoleId = dto.listRoleId;
+            this.GUID = dto.category.value + dto.checkConditonCode;
+        }
+    }
+
+    export interface ExtractionDailyDto {
+        extractionId: string;
+        extractionRange: number;
+        strSpecify: number;
+        strPreviousDay?: number;
+        strMakeToDay?: number;
+        strDay?: number;
+        strPreviousMonth?: number;
+        strCurrentMonth?: number;
+        strMonth?: number;
+        endSpecify: number;
+        endPreviousDay?: number;
+        endMakeToDay?: number;
+        endDay?: number;
+        endPreviousMonth?: number;
+        endCurrentMonth?: number;
+        endMonth?: number;
+    }
+
+    export class ExtractionDaily {
         extractionId: KnockoutObservable<string>;
         extractionRange: KnockoutObservable<number>;
         strSpecify: KnockoutObservable<number>;
@@ -59,33 +92,27 @@ module kal004.share.model {
         endDay: KnockoutObservable<number>;
         endPreviousMonth: KnockoutObservable<number>;
         endCurrentMonth: KnockoutObservable<number>;
-        endMonth: KnockoutObservable<number>;  
+        endMonth: KnockoutObservable<number>;
 
-        constructor(extractionId: string, extractionRange: number, strSpecify: number, strPreviousDay: number, strMakeToDay: number,
-            strDay: number, strPreviousMonth: number, strCurrentMonth: number, strMonth: number, endSpecify: number, endPreviousDay: number,
-            endMakeToDay: number, endDay: number, endPreviousMonth: number, endCurrentMonth: number, endMonth: number)  {
-           
+        constructor(dto: ExtractionDailyDto) {
             var self = this;
-            self.extractionId = ko.observable(extractionId);
-            self.extractionRange = ko.observable(extractionRange);
-            self.strSpecify = ko.observable(strSpecify);
-            self.strPreviousDay = ko.observable(strPreviousDay);
-            self.strMakeToDay = ko.observable(strMakeToDay);
-            self.strDay = ko.observable(strDay);
-            self.strPreviousMonth = ko.observable(strPreviousMonth);
-            self.strCurrentMonth = ko.observable(strCurrentMonth);
-            self.strMonth = ko.observable(strMonth);
-            self.endSpecify = ko.observable(endSpecify);
-            self.endPreviousDay = ko.observable(endPreviousDay);
-            self.endMakeToDay = ko.observable(endMakeToDay);
-            self.endDay = ko.observable(endDay);
-            self.endPreviousMonth = ko.observable(endPreviousMonth);
-            self.endCurrentMonth = ko.observable(endCurrentMonth);
-            self.endMonth = ko.observable(endMonth);
+            self.extractionId = ko.observable(dto.extractionId);
+            self.extractionRange = ko.observable(dto.extractionRange);
+            self.strSpecify = ko.observable(dto.strSpecify);
+            self.strPreviousDay = ko.observable(dto.strPreviousDay);
+            self.strMakeToDay = ko.observable(dto.strMakeToDay);
+            self.strDay = ko.observable(dto.strDay);
+            self.strPreviousMonth = ko.observable(dto.strPreviousMonth);
+            self.strCurrentMonth = ko.observable(dto.strCurrentMonth);
+            self.strMonth = ko.observable(dto.strMonth);
+            self.endSpecify = ko.observable(dto.endSpecify);
+            self.endPreviousDay = ko.observable(dto.endPreviousDay);
+            self.endMakeToDay = ko.observable(dto.endMakeToDay);
+            self.endDay = ko.observable(dto.endDay);
+            self.endPreviousMonth = ko.observable(dto.endPreviousMonth);
+            self.endCurrentMonth = ko.observable(dto.endCurrentMonth);
+            self.endMonth = ko.observable(dto.endMonth);
         }
     }
-    
-    
-    
-    
+
 }

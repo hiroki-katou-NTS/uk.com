@@ -1,4 +1,4 @@
-module kal004.a.model {
+module nts.uk.at.view.kal004.a.model {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
@@ -7,8 +7,8 @@ module kal004.a.model {
     import setShared = nts.uk.ui.windows.setShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
-    import share = kal004.share.model;
-    import service = kal004.a.service;
+    import share = nts.uk.at.view.kal004.share.model;
+    import service = nts.uk.at.view.kal004.a.service;
     export class ScreenModel {
         alarmSource: KnockoutObservableArray<share.AlarmPatternSettingDto>;
         alarmHeader: KnockoutObservableArray<any>;
@@ -16,18 +16,20 @@ module kal004.a.model {
         createMode: KnockoutObservable<boolean>;
         alarmCode: KnockoutObservable<string>;
         alarmName: KnockoutObservable<string>;
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
-        checkConditionList: KnockoutObservableArray<share.ModelCheckConditonCode>;
-        checkHeader: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        currentCodeListSwap: KnockoutObservableArray<any>;
+        
+        // Tab 1
+        checkHeader: KnockoutObservableArray<any>;
         checkSource: Array<share.ModelCheckConditonCode>;
+        checkConditionList: KnockoutObservableArray<share.ModelCheckConditonCode>;
+        currentCodeListSwap: KnockoutObservableArray<share.ModelCheckConditonCode>;
 
-        // SetPermission
-        setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
-
-        // Period setting
+        // Tab 2: Period setting
         periodSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
+        
+        // Tab 3: SetPermission
+        setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
 
         constructor() {
             let self = this;
@@ -102,6 +104,7 @@ module kal004.a.model {
                 self.alarmCode(currentAlarm.alarmPatternCD);
                 self.alarmName(currentAlarm.alarmPatternName);
 
+                // Tab 1
                 let currentCodeListSwap = [];
                 let checkSource = _.cloneDeep(self.checkSource);
 
@@ -122,6 +125,9 @@ module kal004.a.model {
                 self.currentCodeListSwap([]);
                 self.checkConditionList(checkSource);
                 self.currentCodeListSwap(currentCodeListSwap);
+                
+                // Tab 2: Period Setting
+                self.periodSetting.listCheckConditionCode(self.currentCodeListSwap());
                 
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(currentAlarm.alarmPerSet.roleIds);
