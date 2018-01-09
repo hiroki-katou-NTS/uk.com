@@ -20,13 +20,15 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 
 	private static final String REMOVE_BY_EMPLOYEE;
 	
+	private static final String REMOVE_TIME_LEAVING_WORK;
+	
 	private static final String DEL_BY_LIST_KEY;
 
 	private static final String FIND_BY_KEY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a ");
+		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiTemporaryTime a ");
 		builderString.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiTemporaryTimePK.ymd = :ymd ");
@@ -34,8 +36,16 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtTimeLeavingWork a ");
+		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
+		builderString.append("AND a.krcdtTimeLeavingWorkPK.timeLeavingType = :timeLeavingType ");
+		REMOVE_TIME_LEAVING_WORK = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiTemporaryTime a ");
-		builderString.append("WHERE WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeIds ");
+		builderString.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiTemporaryTimePK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 
@@ -49,8 +59,11 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
+		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
+				.setParameter("ymd", ymd).setParameter("timeLeavingType", 0).executeUpdate();
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override
