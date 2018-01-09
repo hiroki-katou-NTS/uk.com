@@ -18,8 +18,12 @@ module nts.uk.com.view.cps009.a {
             $(".ntsControl .nts-input").css("padding-top", "5px !important");
             $(".ntsControl .nts-input").css("padding-bottom", "5px !important");
         });
-       
         
+//        $(".tooltip").hover(() => {
+//            $(this).addClass("tooltiptext");
+//        }, () => {
+//            $(this).removeClass("tooltiptext");
+//        });
        
     });
 }
