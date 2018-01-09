@@ -18,7 +18,7 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 	
 	private final String SELECT= "SELECT c FROM CcgmtTitleMenu c";
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTitleMenu c WHERE c.ccgmtTitleMenuPK.companyID = :companyID AND c.ccgmtTitleMenuPK.titleMenuCD = :titleMenuCD";
-	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.ccgmtTitleMenuPK.companyID = :companyID";
+	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.ccgmtTitleMenuPK.companyID = :companyID order by c.ccgmtTitleMenuPK.titleMenuCD";
 	
 	/**
      * Get list of TitleMenu
