@@ -172,7 +172,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
             self.dateRanger({
-                startDate: moment().add(-1, "M").format("YYYY/MM/DD"),
+                startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
                 endDate: moment().format("YYYY/MM/DD")
             });
         }
@@ -385,7 +385,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
                               return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
-                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), data.value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                        let value: any;
+                        if (String(data.value).indexOf(':') !== -1) {
+                            value = Number(data.value.split(':')[0]) * 60 + Number(data.value.split(':')[1]);
+                        }
+                        else {
+                            value = data.value;
+                        }
+                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                         dataChangeProcess.push(dataMap);
                     }
                 }
@@ -398,7 +405,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
                         return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                     });
-                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), data.value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                    let value: any;
+                    if (String(data.value).indexOf(':') !== -1) {
+                        value = Number(data.value.split(':')[0]) * 60 + Number(data.value.split(':')[1]);
+                    }
+                    else {
+                        value = data.value;
+                    }
+                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                     dataChangeProcess.push(dataMap);
                 }
             });

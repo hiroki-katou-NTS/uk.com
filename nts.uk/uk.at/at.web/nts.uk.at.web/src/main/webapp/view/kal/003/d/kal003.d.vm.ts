@@ -1,34 +1,26 @@
 module nts.uk.at.view.kal003.d.viewmodel {
-    export class ScreenModel {
-        itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
+    import model = kal003.share.model;
 
+    export class ScreenModel {
+        itemList: KnockoutObservableArray<model.ItemModel>;
+        selectedCode: KnockoutObservable<number>;
 
         constructor() {
             var self = this;
+            self.itemList = ko.observableArray(model.getListCategory());
+            self.selectedCode = ko.observable(0);
         }
 
-        startPage(): JQueryPromise<any> {
+        private selectCategory(): void {
             var self = this;
-            self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給')
-            ]);
-            self.selectedCode = ko.observable('1');
+            nts.uk.ui.windows.setShared('outputKAL003d', self.selectedCode());
+            nts.uk.ui.windows.close();
+        }
 
-            var dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
+        private closeWindows(): void {
+            nts.uk.ui.windows.setShared('KAL003dCancel', true);
+            nts.uk.ui.windows.close();
         }
     }
-    class ItemModel {
-        code: string;
-        name: string;
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
 }

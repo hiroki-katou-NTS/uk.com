@@ -13,10 +13,12 @@ module nts.uk.com.view.cmm018.l {
             //Excel出力
             printExcel(){
                 var self = this;
+                nts.uk.ui.block.grayout();
                 service.saveExcel(self.date())
-                .done(function(){})
+                .done(function(){nts.uk.ui.block.clear();})
                 .fail(function(res: any){
-                      nts.uk.ui.dialog.alertError({ messageId: res.messageId});  
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId});  
+                    nts.uk.ui.block.clear();
                 })
             }
         }
