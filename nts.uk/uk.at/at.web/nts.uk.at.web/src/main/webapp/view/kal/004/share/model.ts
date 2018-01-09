@@ -42,7 +42,7 @@ module kal004.share.model {
         localizedName: string;
       }  
     
-    export class ExtractionRangeDto {
+    export class ExtractionDailyDto {
         extractionId: KnockoutObservable<string>;
         extractionRange: KnockoutObservable<number>;
         strSpecify: KnockoutObservable<number>;
