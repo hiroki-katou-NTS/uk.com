@@ -642,6 +642,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
                     }
                 }); 
+            }).ifNo(function(){
+                nts.uk.ui.block.clear();    
             });
         }
 
