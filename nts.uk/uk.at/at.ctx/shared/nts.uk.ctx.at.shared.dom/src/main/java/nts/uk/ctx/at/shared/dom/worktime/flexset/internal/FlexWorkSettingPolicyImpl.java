@@ -73,7 +73,7 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		}
 		
 		// 使用区分 = 使用する AND NOT( 午前終了時刻 >=  コア開始 AND 午後開始時刻 <= コア終了) => Msg_777
-		if (flexWorkSetting.getCoreTimeSetting().getTimesheet().equals(ApplyAtr.USE)
+		if (flexWorkSetting.getCoreTimeSetting().isUseTimeSheet()
 				&& !(predetemineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()
 						.valueAsMinutes() >= flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime()
 								.valueAsMinutes()
@@ -119,8 +119,8 @@ public class FlexWorkSettingPolicyImpl implements FlexWorkSettingPolicy {
 		});
 
 		// validate Msg_516 CoreTimeSetting
-		if (this.predeteminePolicyService.validateOneDay(predetemineTimeSet,
-				flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(),
+		if (flexWorkSetting.getCoreTimeSetting().isUseTimeSheet() && this.predeteminePolicyService.validateOneDay(
+				predetemineTimeSet, flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getStartTime(),
 				flexWorkSetting.getCoreTimeSetting().getCoreTimeSheet().getEndTime())) {
 			throw new BusinessException("Msg_516", "KMK003_157");
 		}

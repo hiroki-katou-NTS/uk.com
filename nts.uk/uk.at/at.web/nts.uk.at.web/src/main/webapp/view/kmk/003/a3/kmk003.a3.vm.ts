@@ -23,6 +23,7 @@ module a3 {
         isFixedMode: KnockoutObservable<boolean>;
         isLoading: KnockoutObservable<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
+        isUseHalfDay: KnockoutObservable<boolean>;
         dataSourceOnedayFixed: KnockoutObservableArray<any>;
         dataSourceMorningFixed: KnockoutObservableArray<any>;
         dataSourceAfternoonFixed: KnockoutObservableArray<any>;
@@ -40,12 +41,13 @@ module a3 {
         * Constructor.
         */
         constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, 
-        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>) {
+        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>, isUseHalfDay: KnockoutObservable<boolean>) {
             let self = this;
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
             self.isLoading = isLoading;
             self.isDetailMode = isDetailMode;
+            self.isUseHalfDay = isUseHalfDay;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
@@ -403,7 +405,7 @@ module a3 {
                      key: "roundingTime",
                      dataSource: self.settingEnum.roundingTime,
                      defaultValue: ko.observable(0),
-                     width: 120,
+                     width: 80,
                      template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
@@ -417,9 +419,11 @@ module a3 {
                  {
                      headerText: nts.uk.resource.getText("KMK003_57"),
                      key: "rounding",
+                     isRoudingColumn: true,
+                     unitAttrName: 'roundingTime',
                      dataSource: self.settingEnum.rounding,
                      defaultValue: ko.observable(0),
-                     width: 150,
+                     width: 180,
                      template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
@@ -536,7 +540,7 @@ module a3 {
                     key: "roundingTime",
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
-                    width: 120,
+                    width: 80,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
@@ -550,9 +554,11 @@ module a3 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_57"),
                     key: "rounding",
+                    isRoudingColumn: true,
+                    unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 150,
+                    width: 180,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
@@ -620,7 +626,8 @@ module a3 {
             var mainSettingModel: MainSettingModel = input.mainModel;
             var isLoading:  KnockoutObservable<boolean> = input.isLoading; 
             var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode);
+            var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay);
             nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
                 screenModel.lstOvertimeWorkFrame = data;
                 screenModel.initDataModel();
