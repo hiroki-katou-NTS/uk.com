@@ -2,6 +2,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     export class ScreenModel {
         dateType: string = 'YYYY/MM/DD';
+        screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
+        //画面モード(表示/編集)
+        editable: KnockoutObservable<boolean> = ko.observable( true );
         isWorkChange:   KnockoutObservable<boolean> = ko.observable(true);
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;
