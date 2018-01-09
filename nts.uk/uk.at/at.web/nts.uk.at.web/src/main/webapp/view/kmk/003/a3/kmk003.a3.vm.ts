@@ -36,6 +36,9 @@ module a3 {
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
         lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
+        
+        //define for 精算順序 primitive value
+        lstSettlementOrder: any[];
 
         /**
         * Constructor.
@@ -56,6 +59,16 @@ module a3 {
                 { code: 1, name: nts.uk.resource.getText("KMK003_143") }
             ]);
             self.lstOvertimeWorkFrame = [];
+            
+            self.lstSettlementOrder = [];
+            //init list order
+            for (let i = 1; i <= 10; i++) {
+                self.lstSettlementOrder.push({
+                    settlementOrder: i,
+                    settlementOrderName: i.toString()
+                });
+            }
+            
             self.dataSourceOvertimeFlow = ko.observableArray([]);
             self.dataSourceOnedayFixed = ko.observableArray([]);
             self.dataSourceMorningFixed = ko.observableArray([]);
@@ -505,16 +518,16 @@ module a3 {
              arraySettingFlex.push({
                  headerText: nts.uk.resource.getText("KMK003_187"),
                  key: "settlementOrder",
-                 dataSource: self.lstOvertimeWorkFrame,
+                 dataSource: self.lstSettlementOrder,
                  defaultValue: ko.observable(1),
                  width: 75,
                  template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
+                                    optionsValue: 'settlementOrder',
                                     visibleItemsCount: 8,
-                                    optionsText: 'overtimeWorkFrName',
+                                    optionsText: 'settlementOrderName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'settlementOrderName', length: 12 }]}">
                                 </div>`
              });
             return arraySettingFlex;
