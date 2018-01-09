@@ -20,17 +20,39 @@ module nts.uk.at.view.kal004.share.model {
     export interface CheckConditionDto {
         alarmCategory: number;
         checkConditionCodes: Array<string>;
-        extractionDailyDto: ExtractionDailyDto;
+        extractionDailyDto?: ExtractionDailyDto;
     }
 
     export class CheckCondition {
         GUID: string;
         alarmCategory: number;
-        checkConditionCodes: Array<string>;
+        categoryName: string;
         extractionDailyDto: ExtractionDaily;
-        
-        constructor(dto: CheckConditionDto) {
-            
+        constructor(alarmCategory: number, categoryName: string, extractionDailyDto?: ExtractionDailyDto) {
+            this.alarmCategory = alarmCategory;
+            this.categoryName = categoryName
+            if (nts.uk.util.isNullOrUndefined(extractionDailyDto)) {
+                this.extractionDailyDto = new ExtractionDaily({
+                    extractionId: "",
+                    extractionRange: 0,
+                    strSpecify: 0,
+                    strPreviousDay: null,
+                    strMakeToDay: null,
+                    strDay: null,
+                    strPreviousMonth: null,
+                    strCurrentMonth: null,
+                    strMonth: null,
+                    endSpecify: 0,
+                    endPreviousDay: null,
+                    endMakeToDay: null,
+                    endDay: null,
+                    endPreviousMonth: null,
+                    endCurrentMonth: null,
+                    endMonth: null
+                });
+            } else {
+                this.extractionDailyDto = new ExtractionDaily(extractionDailyDto);
+            }
         }
     }
 

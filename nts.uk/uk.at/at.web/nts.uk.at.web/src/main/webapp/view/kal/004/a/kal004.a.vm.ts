@@ -11,6 +11,7 @@ module nts.uk.at.view.kal004.a.model {
     import service = nts.uk.at.view.kal004.a.service;
     export class ScreenModel {
         alarmSource: KnockoutObservableArray<share.AlarmPatternSettingDto>;
+        currentAlarm: KnockoutObservable<share.AlarmPatternSettingDto>;
         alarmHeader: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<string>;
         createMode: KnockoutObservable<boolean>;
@@ -73,15 +74,11 @@ module nts.uk.at.view.kal004.a.model {
 
                 service.getAlarmPattern().done((res) => {
                     self.alarmSource(res);
-
-                    self.currentCode.subscribe((newV) => {
-                        self.alarmCodeChange(newV);
-                    });
-
+                    self.initSubscribe();
+                    
                     if (res.length > 0) {
                         self.currentCode(res[0].alarmPatternCD);
                     }
-                    
                 }).fail((error) => {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId });
                 }).always(()=>{
@@ -92,7 +89,19 @@ module nts.uk.at.view.kal004.a.model {
                 dfd.resolve();
             });
            return dfd.promise();
-
+        }
+        
+        private initSubscribe(): void {
+            var self = this;
+            // AlarmPatternSetting
+            self.currentCode.subscribe((newV) => {
+                self.alarmCodeChange(newV);
+            });
+            
+            // Tab 2: Period Setting
+            self.currentCodeListSwap.subscribe((listCode) => {
+                self.periodSetting.listCheckConditionCode(listCode);
+            });
         }
 
         public alarmCodeChange(newV): any {
@@ -100,15 +109,15 @@ module nts.uk.at.view.kal004.a.model {
             if (newV == '') self.createMode(true);
             else {
                 self.createMode(false);
-                let currentAlarm = _.find(self.alarmSource(), function(a) { return a.alarmPatternCD == newV });
-                self.alarmCode(currentAlarm.alarmPatternCD);
-                self.alarmName(currentAlarm.alarmPatternName);
+                self.currentAlarm = _.find(self.alarmSource(), function(a) { return a.alarmPatternCD == newV });
+                self.alarmCode(self.currentAlarm.alarmPatternCD);
+                self.alarmName(self.currentAlarm.alarmPatternName);
 
                 // Tab 1
                 let currentCodeListSwap = [];
                 let checkSource = _.cloneDeep(self.checkSource);
 
-                currentAlarm.checkConList.forEach((x) => {
+                self.currentAlarm.checkConList.forEach((x) => {
                     x.checkConditionCodes.forEach((y) => {
                         let CD = _.find(_.cloneDeep(self.checkSource), { 'category': x.alarmCategory, 'checkConditonCode': y });
                         currentCodeListSwap.push(_.cloneDeep(CD));
@@ -125,13 +134,10 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCodeListSwap([]);
                 self.checkConditionList( _.sortBy(checkSource, ['category', 'checkConditonCode']));
                 self.currentCodeListSwap( _.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
-                
-                // Tab 2: Period Setting
-                self.periodSetting.listCheckConditionCode(self.currentCodeListSwap());
-                
+                                
                 // Tab 3: Permission Setting
-                self.setPermissionModel.listRoleID(currentAlarm.alarmPerSet.roleIds);
-                self.setPermissionModel.selectedRuleCode(currentAlarm.alarmPerSet.authSetting);
+                self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
+                self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting);
             }
 
         }
