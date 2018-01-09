@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum AgeBaseYearAtr {
-	/* 当月 */
+	/**当年 */
 	THIS_MONTH(0),
-	/* 翌月 */
+	/** 翌年 */
 	NEXT_MONTH(1);
 	
 
