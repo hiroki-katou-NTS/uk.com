@@ -35,7 +35,7 @@ module nts.uk.at.view.kmk010.a {
                 self.checkRounding = ko.observable(0);
                 self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number){
                    self.updateSelectUnitRounding(selectUnit); 
-                });               
+                });
             }
 
             /**
