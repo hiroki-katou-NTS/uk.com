@@ -68,7 +68,7 @@ public class CoreTimeSetting extends DomainObject {
 		}
 
 		// 使用区分 = 使用しない AND 最低勤務時間 <= 0
-		if (!this.isUseTimeSheet() && this.minWorkTime.valueAsMinutes() <= ZERO_MINUTES) {
+		if (this.minWorkTime != null && !this.isUseTimeSheet() && this.minWorkTime.valueAsMinutes() <= ZERO_MINUTES) {
 			throw new BusinessException("Msg_776");
 		}
 
