@@ -84,29 +84,20 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 				.orElse(null);
 		KrcstOtAutoCalSet overtimeCalc = this.queryProxy().find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class)
 				.orElse(null);
-		calc.bonusPayNormalCalSet = domain.getRasingSalarySetting().getSalaryCalSetting().value;
-		calc.bonusPaySpeCalSet = domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value;
-		calc.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
-		calc.leaveEarlySet = domain.getLeaveEarlySetting().getLeaveEarly().value;
-		calc.leaveLateSet = domain.getLeaveEarlySetting().getLeaveLate().value;
-		flexCalc.flexExcessLimitSet = domain.getFlexExcessTime().getUpperLimitSetting().value;
-		flexCalc.flexExcessTimeCalAtr = domain.getFlexExcessTime().getCalculationAttr().value;
-		holidayCalc.holWorkTimeCalAtr = domain.getHolidayTimeSetting().getHolidayWorkTime().getCalculationAttr().value;
-		holidayCalc.holWorkTimeLimitSet = domain.getHolidayTimeSetting().getHolidayWorkTime().getUpperLimitSetting().value;
-		holidayCalc.lateNightTimeCalAtr = domain.getHolidayTimeSetting().getLateNightTime().getCalculationAttr().value;
-		holidayCalc.lateNightTimeLimitSet = domain.getHolidayTimeSetting().getLateNightTime().getUpperLimitSetting().value;
-		overtimeCalc.earlyMidOtCalAtr = domain.getOvertimeSetting().getEarlyMidnightOverTime().getCalculationAttr().value;
-		overtimeCalc.earlyMidOtLimitSet = domain.getOvertimeSetting().getEarlyMidnightOverTime().getUpperLimitSetting().value;
-		overtimeCalc.earlyOverTimeCalAtr = domain.getOvertimeSetting().getEarlyOverTime().getCalculationAttr().value;
-		overtimeCalc.earlyOverTimeLimitSet = domain.getOvertimeSetting().getEarlyOverTime().getUpperLimitSetting().value;
-		overtimeCalc.legalMidOtCalAtr = domain.getOvertimeSetting().getLegalMidnightOverTime().getCalculationAttr().value;
-		overtimeCalc.legalMidOtLimitSet = domain.getOvertimeSetting().getLegalMidnightOverTime().getUpperLimitSetting().value;
-		overtimeCalc.legalOverTimeCalAtr = domain.getOvertimeSetting().getLegalOverTime().getCalculationAttr().value;
-		overtimeCalc.legalOverTimeLimitSet = domain.getOvertimeSetting().getLegalOverTime().getUpperLimitSetting().value;
-		overtimeCalc.normalMidOtCalAtr = domain.getOvertimeSetting().getNormalMidnightOverTime().getCalculationAttr().value;
-		overtimeCalc.normalMidOtLimitSet = domain.getOvertimeSetting().getNormalMidnightOverTime().getUpperLimitSetting().value;
-		overtimeCalc.normalOverTimeCalAtr = domain.getOvertimeSetting().getNormalOverTime().getCalculationAttr().value;
-		overtimeCalc.normalOverTimeLimitSet = domain.getOvertimeSetting().getNormalOverTime().getUpperLimitSetting().value;
+		if(domain.getRasingSalarySetting() != null){
+			calc.bonusPayNormalCalSet = domain.getRasingSalarySetting().getSalaryCalSetting().value;
+			calc.bonusPaySpeCalSet = domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value;
+		}
+		if(domain.getDivergenceTime() != null){
+			calc.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
+		}
+		if(domain.getLeaveEarlySetting() != null){
+			calc.leaveEarlySet = domain.getLeaveEarlySetting().getLeaveEarly().value;
+			calc.leaveLateSet = domain.getLeaveEarlySetting().getLeaveLate().value;
+		}
+		setFlexCalcSetting(domain.getFlexExcessTime(), flexCalc);
+		setHolidayCalcSetting(domain.getHolidayTimeSetting(), holidayCalc);
+		setOvertimeCalcSetting(domain.getOvertimeSetting(), overtimeCalc);
 		commandProxy().update(flexCalc);
 		commandProxy().update(holidayCalc);
 		commandProxy().update(overtimeCalc);
@@ -115,37 +106,64 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 	@Override
 	public void add(CalAttrOfDailyPerformance domain) {
-		KrcstFlexAutoCalSet flexCalc = new KrcstFlexAutoCalSet(IdentifierUtil.randomUniqueId(),
-				domain.getFlexExcessTime().getCalculationAttr().value,
-				domain.getFlexExcessTime().getUpperLimitSetting().value);
-		KrcstHolAutoCalSet holidayCalc = new KrcstHolAutoCalSet(IdentifierUtil.randomUniqueId(),
-				domain.getHolidayTimeSetting().getHolidayWorkTime().getCalculationAttr().value,
-				domain.getHolidayTimeSetting().getHolidayWorkTime().getUpperLimitSetting().value,
-				domain.getHolidayTimeSetting().getLateNightTime().getCalculationAttr().value,
-				domain.getHolidayTimeSetting().getLateNightTime().getUpperLimitSetting().value);
-		KrcstOtAutoCalSet overtimeCalc = new KrcstOtAutoCalSet(IdentifierUtil.randomUniqueId(),
-				domain.getOvertimeSetting().getEarlyOverTime().getCalculationAttr().value,
-				domain.getOvertimeSetting().getEarlyOverTime().getUpperLimitSetting().value,
-				domain.getOvertimeSetting().getEarlyMidnightOverTime().getCalculationAttr().value,
-				domain.getOvertimeSetting().getEarlyMidnightOverTime().getUpperLimitSetting().value,
-				domain.getOvertimeSetting().getNormalOverTime().getCalculationAttr().value,
-				domain.getOvertimeSetting().getNormalOverTime().getUpperLimitSetting().value,
-				domain.getOvertimeSetting().getNormalMidnightOverTime().getCalculationAttr().value,
-				domain.getOvertimeSetting().getNormalMidnightOverTime().getUpperLimitSetting().value,
-				domain.getOvertimeSetting().getLegalOverTime().getCalculationAttr().value,
-				domain.getOvertimeSetting().getLegalOverTime().getUpperLimitSetting().value,
-				domain.getOvertimeSetting().getLegalMidnightOverTime().getCalculationAttr().value,
-				domain.getOvertimeSetting().getLegalMidnightOverTime().getUpperLimitSetting().value);
-		KrcstDaiCalculationSet calcSet = new KrcstDaiCalculationSet(
-				new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()), flexCalc.flexExcessTimeId,
-				domain.getRasingSalarySetting().getSalaryCalSetting().value,
-				domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value, holidayCalc.holWorkTimeId,
-				overtimeCalc.overTimeWorkId, domain.getLeaveEarlySetting().getLeaveLate().value,
-				domain.getLeaveEarlySetting().getLeaveEarly().value, domain.getDivergenceTime().getDivergenceTime().value);
+		KrcstFlexAutoCalSet flexCalc = new KrcstFlexAutoCalSet(IdentifierUtil.randomUniqueId());
+		setFlexCalcSetting(domain.getFlexExcessTime(), flexCalc);
+
+		KrcstHolAutoCalSet holidayCalc = new KrcstHolAutoCalSet(IdentifierUtil.randomUniqueId());
+		setHolidayCalcSetting(domain.getHolidayTimeSetting(), holidayCalc);
+
+		KrcstOtAutoCalSet overtimeCalc = new KrcstOtAutoCalSet(IdentifierUtil.randomUniqueId());
+		setOvertimeCalcSetting(domain.getOvertimeSetting(), overtimeCalc);
+		
+		KrcstDaiCalculationSet calcSet = new KrcstDaiCalculationSet(new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()));
+		if(domain.getRasingSalarySetting() != null){
+			calcSet.bonusPayNormalCalSet = domain.getRasingSalarySetting().getSalaryCalSetting().value;
+			calcSet.bonusPaySpeCalSet = domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value;
+		}
+		if(domain.getDivergenceTime() != null){
+			calcSet.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
+		}
+		if(domain.getLeaveEarlySetting() != null){
+			calcSet.leaveEarlySet = domain.getLeaveEarlySetting().getLeaveEarly().value;
+			calcSet.leaveLateSet = domain.getLeaveEarlySetting().getLeaveLate().value;
+		}
 		commandProxy().insert(flexCalc);
 		commandProxy().insert(holidayCalc);
 		commandProxy().insert(overtimeCalc);
 		commandProxy().insert(calcSet);
+	}
+
+	private void setOvertimeCalcSetting(AutoCalOfOverTime domain, KrcstOtAutoCalSet overtimeCalc) {
+		if(domain != null){
+			overtimeCalc.earlyMidOtCalAtr = domain.getEarlyMidnightOverTime() == null ? 1 : domain.getEarlyMidnightOverTime().getCalculationAttr().value;
+			overtimeCalc.earlyMidOtLimitSet = domain.getEarlyMidnightOverTime() == null ? 0 : domain.getEarlyMidnightOverTime().getUpperLimitSetting().value;
+			overtimeCalc.earlyOverTimeCalAtr = domain.getEarlyOverTime() == null ? 1 : domain.getEarlyOverTime().getCalculationAttr().value;
+			overtimeCalc.earlyOverTimeLimitSet = domain.getEarlyOverTime() == null ? 0 : domain.getEarlyOverTime().getUpperLimitSetting().value;
+			overtimeCalc.legalMidOtCalAtr = domain.getLegalMidnightOverTime() == null ? 1 : domain.getLegalMidnightOverTime().getCalculationAttr().value;
+			overtimeCalc.legalMidOtLimitSet = domain.getLegalMidnightOverTime() == null ? 0 : domain.getLegalMidnightOverTime().getUpperLimitSetting().value;
+			overtimeCalc.legalOverTimeCalAtr = domain.getLegalOverTime() == null ? 1 : domain.getLegalOverTime().getCalculationAttr().value;
+			overtimeCalc.legalOverTimeLimitSet = domain.getLegalOverTime() == null ? 0 : domain.getLegalOverTime().getUpperLimitSetting().value;
+			overtimeCalc.normalMidOtCalAtr = domain.getNormalMidnightOverTime() == null ? 1 : domain.getNormalMidnightOverTime().getCalculationAttr().value;
+			overtimeCalc.normalMidOtLimitSet = domain.getNormalMidnightOverTime() == null ? 0 : domain.getNormalMidnightOverTime().getUpperLimitSetting().value;
+			overtimeCalc.normalOverTimeCalAtr = domain.getNormalOverTime() == null ? 1 : domain.getNormalOverTime().getCalculationAttr().value;
+			overtimeCalc.normalOverTimeLimitSet = domain.getNormalOverTime() == null ? 0 : domain.getNormalOverTime().getUpperLimitSetting().value;
+		}
+	}
+
+	private void setFlexCalcSetting(AutoCalculationSetting domain, KrcstFlexAutoCalSet flexCalc) {
+		if(domain != null){
+			flexCalc.flexExcessLimitSet = domain.getUpperLimitSetting().value;
+			flexCalc.flexExcessTimeCalAtr = domain.getCalculationAttr().value;
+		}
+	}
+
+	private void setHolidayCalcSetting(AutoCalHolidaySetting domain, KrcstHolAutoCalSet holidayCalc) {
+		if(domain != null){
+			holidayCalc.holWorkTimeCalAtr = domain.getHolidayWorkTime() == null ? 1 : domain.getHolidayWorkTime().getCalculationAttr().value;
+			holidayCalc.holWorkTimeLimitSet = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getUpperLimitSetting().value;
+			holidayCalc.lateNightTimeCalAtr = domain.getLateNightTime() == null ? 1 : domain.getLateNightTime().getCalculationAttr().value;
+			holidayCalc.lateNightTimeLimitSet = domain.getLateNightTime() == null ? 0 : domain.getLateNightTime().getUpperLimitSetting().value;
+		} 
 	}
 
 	private AutoCalculationSetting newAutoCalcSetting(int calc, int limit) {
