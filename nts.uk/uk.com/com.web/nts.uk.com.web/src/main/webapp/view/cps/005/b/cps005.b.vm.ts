@@ -425,7 +425,7 @@ module nts.uk.com.view.cps005.b {
                         }
                         writeConstraint("NumericItemMax", {
                             mantissaMaxLength: x,
-                            min: x || self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                            min: x ? x : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                             max: maxValue
                         });
                         $('#numericItemMax').trigger('change');
@@ -520,7 +520,7 @@ module nts.uk.com.view.cps005.b {
 
             self.decimalPart.subscribe(x => {
                 if(self.integerPart() == ""){ return;}
-                let maxValue = (Math.pow(10, self.integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
+                let maxValue = Math.pow(10, self.integerPart() || 0) - Math.pow(10, self.decimalPart()*-1 || 0);
                 writeConstraint("NumericItemMin", {
                     mantissaMaxLength: x,
                     min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
@@ -537,7 +537,7 @@ module nts.uk.com.view.cps005.b {
                      $('#integerPart').trigger('change');
                     return;
                 }
-                let maxValue = (Math.pow(10, self.integerPart()) - 1) + ((Math.pow(10, self.decimalPart() || 0) - 1) / Math.pow(10, self.decimalPart() || 0));
+                let maxValue = Math.pow(10, self.integerPart() || 0) - Math.pow(10, self.decimalPart()*-1 || 0);
                 if (init) {
                     writeConstraint("NumericItemMin", {
                         mantissaMaxLength: x,
@@ -549,7 +549,7 @@ module nts.uk.com.view.cps005.b {
                 }
                 writeConstraint("NumericItemMax", {
                     mantissaMaxLength: x,
-                    min: x || self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                    min: x ? x : (self.numericItemMinus() == 0 ? 0 : maxValue * (-1)),
                     max: maxValue
                 });
                 $('#numericItemMax').trigger('change');

@@ -56,8 +56,6 @@ module CPS009Constraint {
                         constraint.valueType = "Decimal";
                         constraint.mantissaMaxLength = dts.numberDecimalPart;
                     }
-
-                    debugger;
                     let max = (Math.pow(10, dts.numberIntegerPart) - Math.pow(10, -(dts.numberDecimalPart || 0)));
 
                     constraint.charType = 'Numeric';
