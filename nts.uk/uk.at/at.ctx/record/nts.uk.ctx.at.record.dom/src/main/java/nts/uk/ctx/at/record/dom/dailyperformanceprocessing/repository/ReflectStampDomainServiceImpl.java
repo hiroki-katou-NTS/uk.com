@@ -149,12 +149,13 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
 					timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID,
 					companyID);
+			// エラーチェック
+			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(), 
+					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
 		}
 
-		// エラーチェック
-		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
-				reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(), 
-				reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
+		
 		
 		return reflectStamp;
 	}
