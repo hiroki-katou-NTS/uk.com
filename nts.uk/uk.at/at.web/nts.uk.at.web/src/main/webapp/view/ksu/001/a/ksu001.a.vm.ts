@@ -69,8 +69,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         //Date time
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/11/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/30'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(null);
+        dtAft: KnockoutObservable<Date> = ko.observable(null);
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -239,6 +239,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // getWorkTypeTimeAndStartEndDate: get data workType-workTime for 2 combo-box of screen O
             // and startDate-endDate of screen A
             $.when(__viewContext.viewModel.viewO.getWorkTypeTimeAndStartEndDate(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
+                self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
+                self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
                 // get state of list workTypeCode
                 // get data for screen A
                 let lstWorkTypeCode = [];
@@ -276,13 +278,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }));
             });
             //get workPlaceName to display A3-1
-            
             self.workplaceId = self.empItems()[0].workplaceId;
+
             let data = {
-                workplaceId:self.workplaceId,
-                baseDate:moment().toISOString()    
+                workplaceId: self.workplaceId,
+                baseDate: moment().toISOString()
             }
-            service.getWorkPlaceById(data).done((wkp)=>{
+            service.getWorkPlaceById(data).done((wkp) => {
                 self.workPlaceNameDisplay(wkp.wkpDisplayName);
             });
             //get data WorkPattern
