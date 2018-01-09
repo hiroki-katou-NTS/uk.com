@@ -128,7 +128,7 @@ public class SelectionFinder {
 				.map(c -> new ComboBoxObject(c.getSelectionID(), c.getSelectionName().toString())).collect(Collectors.toList());
 		} else if(dto.getSelectionItemRefType() == 1) {
 			selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId());
-			return this.comboBoxFactory.getComboBox(selectionItemDto,  baseDateConvert , true);
+			return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDateConvert , true);
 			
 		}
 		return new ArrayList<>();

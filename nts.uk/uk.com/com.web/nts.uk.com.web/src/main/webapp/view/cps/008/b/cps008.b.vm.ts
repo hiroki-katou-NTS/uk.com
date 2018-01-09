@@ -10,43 +10,33 @@ module cps008.b.vm {
         constructor() {
             let self = this,
                 layout = self.layout();
-            
+
             self.start();
 
             var currentDialog = nts.uk.ui.windows.getSelf();
             var doit;
-
             $(currentDialog.parent.globalContext).resize(function() {
-
                 clearTimeout(doit);
                 doit = setTimeout(self.resizedw(), 1000);
-
             });
-
-
         }
 
         resizedw() {
             let self = this,
                 currentDialog = nts.uk.ui.windows.getSelf();
             $(currentDialog.parent.globalContext).css("overflow", "hidden");
-            
-            if (currentDialog.parent.globalContext.innerWidth <= 1260) {
+
+            if (currentDialog.parent.globalContext.innerWidth <= 1281) {
                 currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 30);
             } else {
-                currentDialog.setWidth(1260);
+                currentDialog.setWidth(1280);
             }
 
-            if (currentDialog.parent.globalContext.innerHeight <= 750) {
+            if (currentDialog.parent.globalContext.innerHeight <= 781) {
                 currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 30);
             } else {
-                currentDialog.setHeight(750);
+                currentDialog.setHeight(780);
             }
-
-
-            //currentDialog.setWidth(currentDialog.$dialog.width() <= 1260 ? (currentDialog.parent.globalContext.innerWidth - 20) : 1260);
-            //currentDialog.setHeight(currentDialog.$dialog.height() <= 750 ? (currentDialog.parent.globalContext.innerHeight - 20) : 750);
-
         }
 
         start() {
@@ -57,6 +47,7 @@ module cps008.b.vm {
             layout.id = dto.id;
             layout.code = dto.code;
             layout.name = dto.name;
+            debugger;
             // lấy list items classification ra theo layoutid của maintainece layout truyền từ màn a lên
             // Không có thì gọi service dưới lấy list items classification của new layout rồi truyền vào layout ở view model
 
@@ -82,10 +73,12 @@ module cps008.b.vm {
             if (cls && cls.length) {
                 layout.itemsClassification.removeAll();
                 _.each(cls, x => layout.itemsClassification.push(_.omit(x, ["items"])));
-            } else {
+            } else if (dto.isNewLayout) {
                 service.getData().done((x: ILayout) => {
                     layout.itemsClassification(initData(x.itemsClassification));
                 });
+            }else{
+                 layout.itemsClassification([]);
             }
         }
 
