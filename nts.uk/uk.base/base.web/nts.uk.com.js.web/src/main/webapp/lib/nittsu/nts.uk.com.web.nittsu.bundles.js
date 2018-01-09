@@ -2874,7 +2874,12 @@ var nts;
                     jumpToOtherWebApp.apply(this, arguments);
                     return;
                 }
-                uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                if (data === undefined) {
+                    uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
+                }
+                else {
+                    uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                }
                 window.location.href = resolvePath(path);
             }
             request.jump = jump;
