@@ -121,6 +121,9 @@ module kal004.a.model {
             }
 
         }
+           // Tab 3: Permission Setting
+                self.setPermissionModel.listRoleID(currentAlarm.alarmPerSet.roleIds);
+                
     }
 
 }
