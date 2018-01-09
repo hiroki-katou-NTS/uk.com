@@ -470,9 +470,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 });
 
                 let sortedLst = _.orderBy(array, ['id'], ['asc']);
-                self.itemsAmount(sortedLst);
                 self.allItemAmount(sortedLst);
-                self.listBudget(sortedLst);
                 dfd.resolve();
             })
 
@@ -893,7 +891,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     realCd = item.externalBudgetCd
                 }
 
-                var getItemByCd = _.find(self.allItemAmount(), function(o) { return o.code.slice(0, -1) == realCd; });
+                var getItemByCd = _.find(self.allItemAmount(), function(o) { return o.code == realCd; });
                 var dataType = 0;
 
                 if (item.externalBudgetCd != null) {
