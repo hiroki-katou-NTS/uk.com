@@ -43,7 +43,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
                             perInfoSelectionItem.memo(_perInfoSelectionItem.memo);
                             perInfoSelectionItem.integrationCode(_perInfoSelectionItem.integrationCode);
-                            perInfoSelectionItem.selectionItemClassification(_perInfoSelectionItem.selectionItemClassification === 1 ? true : false);
+                            perInfoSelectionItem.selectionItemClassification(_perInfoSelectionItem.selectionItemClassification === 0 ? true : false);
 
                             let iformat = _perInfoSelectionItem.formatSelection;
                             formatSelection.selectionCode(iformat.selectionCode);
