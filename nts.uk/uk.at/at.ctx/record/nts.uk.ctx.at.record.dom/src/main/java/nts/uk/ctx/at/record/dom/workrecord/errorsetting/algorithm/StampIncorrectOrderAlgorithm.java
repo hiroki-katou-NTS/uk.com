@@ -38,7 +38,7 @@ public class StampIncorrectOrderAlgorithm {
 	public void stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 		
-		if(!timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty() && timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2){
+		if(timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty() && timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2){
 
 			List<Integer> attendanceItemIds = new ArrayList<>();
 	

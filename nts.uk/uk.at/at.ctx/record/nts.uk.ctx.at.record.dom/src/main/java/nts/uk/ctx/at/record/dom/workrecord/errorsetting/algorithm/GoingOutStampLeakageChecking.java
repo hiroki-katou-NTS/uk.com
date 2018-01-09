@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.record.dom.calculationsetting.enums.GoBackOutCorrectionClass;
@@ -65,25 +66,25 @@ public class GoingOutStampLeakageChecking {
 
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 
-					if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((1)))) {
+					if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(1))) {
 						attendanceItemIDList.add(88);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((2)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(2))) {
 						attendanceItemIDList.add(95);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((3)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(3))) {
 						attendanceItemIDList.add(102);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((4)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(4))) {
 						attendanceItemIDList.add(109);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((5)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(5))) {
 						attendanceItemIDList.add(116);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((6)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(6))) {
 						attendanceItemIDList.add(123);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((7)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(7))) {
 						attendanceItemIDList.add(130);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((8)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(8))) {
 						attendanceItemIDList.add(137);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((9)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(9))) {
 						attendanceItemIDList.add(144);
-					} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((10)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(10))) {
 						attendanceItemIDList.add(151);
 					}
 
@@ -101,25 +102,25 @@ public class GoingOutStampLeakageChecking {
 
 					List<Integer> newAttendanceItemIDList = new ArrayList<>();
 
-					if (outingTimeSheet.getComeBack().equals(new WorkNo((1)))) {
+					if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(1))) {
 						newAttendanceItemIDList.add(91);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((2)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(2))) {
 						newAttendanceItemIDList.add(98);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((3)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(3))) {
 						newAttendanceItemIDList.add(105);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((4)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(4))) {
 						newAttendanceItemIDList.add(112);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((5)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(5))) {
 						newAttendanceItemIDList.add(119);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((6)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(6))) {
 						newAttendanceItemIDList.add(126);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((7)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(7))) {
 						newAttendanceItemIDList.add(133);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((8)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(8))) {
 						newAttendanceItemIDList.add(140);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((9)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(9))) {
 						newAttendanceItemIDList.add(147);
-					} else if (outingTimeSheet.getComeBack().equals(new WorkNo((10)))) {
+					} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(10))) {
 						newAttendanceItemIDList.add(154);
 					}
 
