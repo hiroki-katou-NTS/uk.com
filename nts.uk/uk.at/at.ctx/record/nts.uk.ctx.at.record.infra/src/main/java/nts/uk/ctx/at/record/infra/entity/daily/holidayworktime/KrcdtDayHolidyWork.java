@@ -346,7 +346,7 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.pbHoliWorkMidn),new AttendanceTime(this.calcPbHoliWorkMidn)),
 																	StaturoryAtrOfHolidayWork.PublicHolidayWork));
 		
-		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheetList,holiWorkFrameTimeList,Finally.of(new HolidayMidnightWork(holidayWorkMidNightTimeList)));
+		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheetList,holiWorkFrameTimeList,Finally.of(new HolidayMidnightWork(holidayWorkMidNightTimeList)), new AttendanceTime(this.holiWorkBindTime));
 	}
 	
 	
