@@ -20,7 +20,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         itemHodidayAtr: KnockoutObservableArray<ItemModel>;
         itemCloseAtr: KnockoutObservableArray<ItemModel>;
         itemListHaftDay: KnockoutObservableArray<ItemModel>;
-        itemCalculatorMethod: KnockoutObservableArray<ItemModel>;
+        itemCalculatorMethod: KnockoutObservableArray<any>;
         enableMethod: KnockoutObservable<boolean>;
         isCreated: KnockoutObservable<boolean>;
         index: KnockoutObservable<number>;
@@ -28,7 +28,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         checkDisabled: KnockoutObservable<boolean> = ko.observable(false);
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
         langId: KnockoutObservable<string> = ko.observable('ja');
-
 
         constructor() {
             var self = this,
@@ -130,7 +129,12 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             ]);
 
             //出勤率の計算方法
-            self.itemCalculatorMethod = ko.observableArray(__viewContext.enums.CalculateMethod);
+            self.itemCalculatorMethod = ko.observableArray([
+                {code: 0, name: nts.uk.resource.getText('Enum_CalculateMethod_DO_NOT_GO_TO_WORK')},
+                {code: 1, name: nts.uk.resource.getText('Enum_CalculateMethod_MAKE_ATTENDANCE_DAY')},
+                {code: 2, name: nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY')},
+                {code: 3, name: nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION')}
+            ]);
 
             self.roundingRules = ko.observableArray([
                 { code: '0', name: nts.uk.resource.getText('KMK007_19') },
