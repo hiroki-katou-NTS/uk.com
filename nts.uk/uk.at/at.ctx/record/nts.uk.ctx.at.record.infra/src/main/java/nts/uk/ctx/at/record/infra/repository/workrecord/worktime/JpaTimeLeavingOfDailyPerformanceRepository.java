@@ -20,6 +20,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		implements TimeLeavingOfDailyPerformanceRepository {
 
 	private static final String REMOVE_BY_EMPLOYEE;
+	
+	private static final String REMOVE_TIME_LEAVING_WORK;
 
 	private static final String DEL_BY_LIST_KEY;
 
@@ -29,11 +31,19 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a ");
+		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiLeavingWork a ");
 		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtTimeLeavingWork a ");
+		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
+		builderString.append("AND a.krcdtTimeLeavingWorkPK.timeLeavingType = :timeLeavingType ");
+		REMOVE_TIME_LEAVING_WORK = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
@@ -59,8 +69,11 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
+		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
+				.setParameter("ymd", ymd).setParameter("timeLeavingType", 1).executeUpdate();
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override

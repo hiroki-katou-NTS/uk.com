@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,22 +34,22 @@ public class DoubleStampAlgorithm {
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 				// 出勤の二重打刻チェック処理
-				TimeActualStamp attendanceTimeActual = timeLeavingWork.getAttendanceStamp().orElse(null);
+				Optional<TimeActualStamp> attendanceTimeActual = timeLeavingWork.getAttendanceStamp();
 				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, attendanceTimeActual);
 
 				// 退勤の二重打刻チェック処理
-				TimeActualStamp leavingTimeActual = timeLeavingWork.getLeaveStamp().orElse(null);
+				Optional<TimeActualStamp> leavingTimeActual = timeLeavingWork.getLeaveStamp();
 				this.doubleStampCheckProcessing(companyID, employeeID, processingDate, leavingTimeActual);
 			}
 		}
 	}
 
 	private void doubleStampCheckProcessing(String companyID, String employeeID, GeneralDate processingDate,
-			TimeActualStamp timeActualStamp) {
+			Optional<TimeActualStamp> timeActualStamp) {
 
 		List<Integer> attendanceItemIDs = new ArrayList<>();
 
-		if (timeActualStamp != null && timeActualStamp.getNumberOfReflectionStamp() >= 2) {
+		if (timeActualStamp != null && timeActualStamp.isPresent() && timeActualStamp.get().getNumberOfReflectionStamp() >= 2) {
 			createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
 					new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDs);
 		}

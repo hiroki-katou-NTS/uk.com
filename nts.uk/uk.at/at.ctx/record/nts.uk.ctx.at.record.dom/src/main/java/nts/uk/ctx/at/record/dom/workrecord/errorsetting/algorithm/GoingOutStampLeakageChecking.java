@@ -60,7 +60,7 @@ public class GoingOutStampLeakageChecking {
 			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.getOutingTimeSheets();
 
 			for (OutingTimeSheet outingTimeSheet : outingTimeSheets) {
-				if (!outingTimeSheet.getGoOut().isPresent()
+				if (outingTimeSheet.getGoOut() == null || !outingTimeSheet.getGoOut().isPresent()
 						|| !outingTimeSheet.getGoOut().get().getStamp().isPresent()) {
 
 					List<Integer> attendanceItemIDList = new ArrayList<>();
@@ -96,7 +96,7 @@ public class GoingOutStampLeakageChecking {
 					}
 				}
 
-				if (!outingTimeSheet.getComeBack().isPresent()
+				if (outingTimeSheet.getComeBack() == null || !outingTimeSheet.getComeBack().isPresent()
 						|| !outingTimeSheet.getComeBack().get().getStamp().isPresent()) {
 
 					List<Integer> newAttendanceItemIDList = new ArrayList<>();
@@ -176,15 +176,19 @@ public class GoingOutStampLeakageChecking {
 			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
-				if (timeLeavingWork.getAttendanceStamp().isPresent() && timeLeavingWork.getLeaveStamp().isPresent()) {
-					if ((timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
-							&& (timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
-						if ((comeBack.isPresent() && comeBack.get().getStamp().isPresent()
+				if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent() 
+						&& timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()) {
+					if ((timeLeavingWork.getAttendanceStamp().get().getStamp() != null && timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
+							&& (timeLeavingWork.getLeaveStamp().get().getStamp() != null && timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
+						if ((comeBack != null && comeBack.isPresent() 
+								&& comeBack.get().getStamp() != null && comeBack.get().getStamp().isPresent()
 								&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
 										.lessThanOrEqualTo(comeBack.get().getStamp().get().getTimeWithDay())
 								&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 										.greaterThanOrEqualTo(comeBack.get().getStamp().get().getTimeWithDay()))
+								|| comeBack == null
 								|| !comeBack.isPresent()
+								|| (comeBack.isPresent() && comeBack.get().getStamp() == null)
 								|| (comeBack.isPresent() && !comeBack.get().getStamp().isPresent())) {
 							if (timeLeavingWork.getAttendanceStamp().get().getStamp().get()
 									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
@@ -214,15 +218,18 @@ public class GoingOutStampLeakageChecking {
 			List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
 
 			for (TimeLeavingWork leavingWork : leavingWorks) {
-				if (leavingWork.getAttendanceStamp().isPresent() && leavingWork.getLeaveStamp().isPresent()) {
-					if (leavingWork.getAttendanceStamp().get().getStamp().isPresent()
-							&& leavingWork.getLeaveStamp().get().getStamp().isPresent()) {
-						if ((comeBack.isPresent() && comeBack.get().getStamp().isPresent()
+				if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent() 
+						&& leavingWork.getLeaveStamp() != null && leavingWork.getLeaveStamp().isPresent()) {
+					if (leavingWork.getAttendanceStamp().get().getStamp() != null && leavingWork.getAttendanceStamp().get().getStamp().isPresent()
+							&& leavingWork.getLeaveStamp().get().getStamp() != null && leavingWork.getLeaveStamp().get().getStamp().isPresent()) {
+						if ((comeBack != null && comeBack.isPresent() && comeBack.get().getStamp() != null && comeBack.get().getStamp().isPresent()
 								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
 										.lessThanOrEqualTo(comeBack.get().getStamp().get().getTimeWithDay())
 								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 										.greaterThanOrEqualTo(comeBack.get().getStamp().get().getTimeWithDay()))
+								|| comeBack == null
 								|| !comeBack.isPresent()
+								|| (comeBack.isPresent() && comeBack.get().getStamp() == null)
 								|| (comeBack.isPresent() && !comeBack.get().getStamp().isPresent())) {
 							if (leavingWork.getAttendanceStamp().get().getStamp().get()
 									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
@@ -282,16 +289,21 @@ public class GoingOutStampLeakageChecking {
 			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks();
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
-				if (timeLeavingWork.getAttendanceStamp().isPresent()
-						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
-					if ((timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
-							&& (timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
-						if ((goOut.isPresent() && goOut.get().getStamp().isPresent()
+				if (timeLeavingWork.getAttendanceStamp() != null 
+						&& timeLeavingWork.getAttendanceStamp().isPresent()
+						&& timeLeavingWork.getLeaveStamp() != null
+						&& timeLeavingWork.getLeaveStamp().isPresent()) {
+					if ((timeLeavingWork.getAttendanceStamp().get().getStamp() != null && timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
+							&& (timeLeavingWork.getLeaveStamp().get().getStamp() != null && timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
+						if ((goOut != null && goOut.isPresent() && goOut.get().getStamp() != null && goOut.get().getStamp().isPresent()
 								&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
 										.lessThanOrEqualTo(goOut.get().getStamp().get().getTimeWithDay())
 								&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 										.greaterThanOrEqualTo(goOut.get().getStamp().get().getTimeWithDay()))
-								|| !goOut.isPresent() || (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
+								|| goOut == null
+								|| !goOut.isPresent()
+								|| (goOut.isPresent() && goOut.get().getStamp() == null)
+								|| (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
 							if (timeLeavingWork.getAttendanceStamp().get().getStamp().get()
 									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
 									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get()
@@ -318,16 +330,19 @@ public class GoingOutStampLeakageChecking {
 			List<TimeLeavingWork> leavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
 
 			for (TimeLeavingWork leavingWork : leavingWorks) {
-				if (leavingWork.getAttendanceStamp().isPresent()
-						&& leavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
-					if (leavingWork.getAttendanceStamp().get().getStamp() != null
-							&& leavingWork.getLeaveStamp().get().getStamp() != null) {
-						if ((goOut.isPresent() && goOut.get().getStamp().isPresent()
+				if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent()
+						&& leavingWork.getLeaveStamp() != null && leavingWork.getLeaveStamp().isPresent()) {
+					if (leavingWork.getAttendanceStamp().get().getStamp() != null && leavingWork.getAttendanceStamp().get().getStamp().isPresent()
+							&& leavingWork.getLeaveStamp().get().getStamp() != null && leavingWork.getLeaveStamp().get().getStamp().isPresent()) {
+						if ((goOut != null && goOut.isPresent() && goOut.get().getStamp() != null && goOut.get().getStamp().isPresent()
 								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
 										.lessThanOrEqualTo(goOut.get().getStamp().get().getTimeWithDay())
 								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
 										.greaterThanOrEqualTo(goOut.get().getStamp().get().getTimeWithDay()))
-								|| !goOut.isPresent() || (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
+								|| goOut == null
+								|| !goOut.isPresent()
+								|| (goOut.isPresent() && goOut.get().getStamp() == null)
+								|| (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
 							if (leavingWork.getAttendanceStamp().get().getStamp().get()
 									.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT
 									|| leavingWork.getAttendanceStamp().get().getStamp().get()

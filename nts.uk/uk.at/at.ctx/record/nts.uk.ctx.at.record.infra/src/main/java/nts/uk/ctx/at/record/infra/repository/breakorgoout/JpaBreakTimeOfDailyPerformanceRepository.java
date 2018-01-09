@@ -34,7 +34,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a ");
+		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtDaiBreakTime a ");
 		builderString.append("WHERE a.krcdtDaiBreakTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiBreakTimePK.ymd = :ymd ");
