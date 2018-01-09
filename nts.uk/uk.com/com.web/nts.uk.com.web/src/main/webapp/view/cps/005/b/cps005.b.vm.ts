@@ -387,6 +387,46 @@ module nts.uk.com.view.cps005.b {
                     self.numericItem().numericItemMinus.subscribe(function(data) {
                         self.numericItem().decimalPart.valueHasMutated();
                     })
+        
+                    self.numericItem().integerPart.subscribe(x => {
+                        self.numericItem().decimalPart.valueHasMutated();
+                    });
+        
+                    self.numericItem().decimalPart.subscribe(x => {
+                        let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
+                        writeConstraint("NumericItemMin", {
+                            mantissaMaxLength: x,
+                            min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                            max: maxValue
+                        });
+        
+                        $('#numericItemMax').trigger('change');
+                        $('#numericItemMin').trigger('change');
+                    });
+                    let init = true;
+                    self.numericItem().numericItemMin.subscribe(x => {
+                        let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, self.numericItem().decimalPart() || 0) - 1) / Math.pow(10, self.numericItem().decimalPart() || 0));
+                        if (init) {
+                            writeConstraint("NumericItemMin", {
+                                mantissaMaxLength: x,
+                                min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                                max: maxValue
+                            });
+                            init = false;
+                            $('#numericItemMin').trigger('change');
+                        }
+                        writeConstraint("NumericItemMax", {
+                            mantissaMaxLength: x,
+                            min: x || self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                            max: maxValue
+                        });
+                        $('#numericItemMax').trigger('change');
+                    });
+                    self.numericItem().numericItemMax.subscribe(x => {
+                        if (init) {
+                            self.numericItem().numericItemMin.valueHasMutated();
+                        }
+                    });
                 }
             });
             if (data) {
