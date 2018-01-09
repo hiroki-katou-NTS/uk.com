@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +98,9 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				.setParameter("ymd", domain.getYmd()).getSingle();
 		KrcdtDaiPerWorkInfo data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiPerWorkInfo();
 		if(domain != null){
+			if(data.scheduleTimes != null){
+				data.scheduleTimes = new ArrayList<>();
+			}
 //			data.krcdtDaiPerWorkInfoPK.employeeId = domain.getEmployeeId();
 //			data.krcdtDaiPerWorkInfoPK.ymd = domain.getYmd();
 			if(domain.getRecordWorkInformation() != null){
@@ -113,13 +117,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			
 			List<ScheduleTimeSheet> scheduleTimeSheets = domain.getScheduleTimeSheets();
 			scheduleTimeSheets.stream().forEach(c -> {
-				KrcdtWorkScheduleTime item = null;
-				if(data.scheduleTimes != null){
-					item = data.scheduleTimes.stream().filter(x -> 
+				KrcdtWorkScheduleTime item = data.scheduleTimes.stream().filter(x -> 
 					x.krcdtWorkScheduleTimePK.employeeId.equals(domain.getEmployeeId())
 						&& x.krcdtWorkScheduleTimePK.ymd.equals(domain.getYmd()) 
 						&& x.krcdtWorkScheduleTimePK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
-				}
+				
 				if(item != null){
 //					item.krcdtWorkScheduleTimePK.employeeId = domain.getEmployeeId();
 //					item.krcdtWorkScheduleTimePK.ymd = domain.getYmd();
