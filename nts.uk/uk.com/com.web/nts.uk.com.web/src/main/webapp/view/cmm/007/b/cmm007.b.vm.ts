@@ -170,7 +170,7 @@ module nts.uk.com.view.cmm007.b {
                 var params = new SystemResourceCommand(_self.prepareDataToSave());
                 
                 service.saveSysResourceSetting(params).done(function(){
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                         dfd.resolve();
                         blockUI.clear();
                         $('#com_person').focus();

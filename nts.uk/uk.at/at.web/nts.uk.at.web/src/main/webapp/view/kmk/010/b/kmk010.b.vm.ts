@@ -110,7 +110,7 @@ module nts.uk.at.view.kmk010.b {
                         nts.uk.ui.dialog.alertError(error);
                     });
                 }
-
+                self.switchNameResource();
             }
             /**
              * function validate domain save
@@ -133,6 +133,20 @@ module nts.uk.at.view.kmk010.b {
                 return false;
 
             }
+            
+            /**
+             * swtich name for element when change language
+             */
+            private switchNameResource(): string {
+                let self = this;
+                
+                if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) { 
+                    return '#[KMK010_39]';
+                } else {
+                    return '#[KMK010_63]'; 
+                }
+            }
+            
             /**
              * function by click button close dialog
              */
