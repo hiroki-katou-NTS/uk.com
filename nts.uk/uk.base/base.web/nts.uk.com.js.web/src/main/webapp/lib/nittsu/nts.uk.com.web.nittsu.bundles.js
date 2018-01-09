@@ -5,6 +5,7 @@ var nts;
         var KeyCodes;
         (function (KeyCodes) {
             KeyCodes.Tab = 9;
+            KeyCodes.Enter = 13;
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
@@ -4832,6 +4833,15 @@ var nts;
                         return;
                     }
                 };
+                $.fn.onkey = function (command, keyCode, handler) {
+                    var $element = $(this);
+                    $element.on("key" + command, function (e) {
+                        if (e.keyCode === keyCode) {
+                            return handler(e);
+                        }
+                    });
+                    return $element;
+                };
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -6308,6 +6318,14 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+                        var handlesEnterKey = (typeof data.enterkey === "function");
+                        var onEnterKey = handlesEnterKey ? data.enterkey : $.noop;
+                        if (handlesEnterKey) {
+                            $input.addClass("enterkey")
+                                .onkey("down", uk.KeyCodes.Enter, function (e) {
+                                onEnterKey(e);
+                            });
+                        }
                         $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
                             if (!readonly && code.toString() !== '9') {
