@@ -951,7 +951,7 @@ public class ProgramsManager {
 	/**
 	 * KDW007B
 	 */
-	public static final Program KDW007B  = new Program(WebAppId.AT, ProgramIdConsts.KDW007B, "",
+	public static final Program KDW007B  = new Program(WebAppId.AT, ProgramIdConsts.KDW007B, "KDW007_40",
 			"/view/kdw/007/b/index.xhtml");
 	
 	/**

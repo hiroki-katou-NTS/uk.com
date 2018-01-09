@@ -41,8 +41,7 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 							workScheduleTimeZoneImport1.getScheduleStartClock(), 
 							workScheduleTimeZoneImport1.getScheduleEndClock(), 
 							workScheduleTimeZoneImport2.getScheduleStartClock(), 
-							workScheduleTimeZoneImport2.getScheduleEndClock(), 
-							x.getWorkDayAtr());
+							workScheduleTimeZoneImport2.getScheduleEndClock());
 				});
 	}
 

@@ -11,10 +11,16 @@
 			<div class="periodCovered" tabindex="-1">
 				<div class="labelRangeDate" tabindex="-1" 
 					data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
-					<div tabindex="3" id="dateRangePickerPeriod" 
-						data-bind="ntsDateRangePicker: { required: true,showNextPrevious: false, 
-						value: periodDate, maxRange: 'oneMonth'}"></div>
-				</div>
+				<div tabindex="3" id="dateRangePickerPeriod"
+					data-bind="ntsDateRangePicker: { 
+					    required: true,
+						showNextPrevious: false, 
+						value: periodDate,
+						maxRange: 'oneMonth',
+						startName:'#{i18n.getText('KSC001_72')}',
+				        endName:'#{i18n.getText('KSC001_73')}',
+				        name:'#{i18n.getText('KSC001_31')}',}"></div>
+			</div>
 			
 			<div class ="selectionEmployee" tabindex="-1">
 				<div id="employeeSearch"></div>

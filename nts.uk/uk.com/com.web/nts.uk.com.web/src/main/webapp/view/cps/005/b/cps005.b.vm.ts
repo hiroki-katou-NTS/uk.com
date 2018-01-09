@@ -8,6 +8,8 @@ module nts.uk.com.view.cps005.b {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
+
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'];
     export module viewmodel {
         export class ScreenModel {
             currentItemData: KnockoutObservable<ItemDataModel>;
@@ -100,7 +102,7 @@ module nts.uk.com.view.cps005.b {
                         self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
                         self.currentItemData().perInfoItemSelectCode.valueHasMutated();
                     }).fail(error => {
-                        alertError({ messageId: error.message }).then(() =>{
+                        alertError({ messageId: error.message }).then(() => {
                         });
                         block.clear();
 
@@ -324,7 +326,6 @@ module nts.uk.com.view.cps005.b {
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);;
         constructor(data: IPersonInfoItem) {
             let self = this;
-            let dataType: number = 1;
             self.dataType.subscribe(function(value) {
                 self.stringItem(new StringItemModel(null));
                 self.numericItem(new NumericItemModel(null));
@@ -334,9 +335,6 @@ module nts.uk.com.view.cps005.b {
                 self.selectionItem(new SelectionItemModel(null));
                 nts.uk.ui.errors.clearAll();
                 $(document).on("focusin", "#numericItemMin, #numericItemMax", () => { self.numericItem().checkIntegerEmpty(); });
-                $(document).on("blur focusout", "#numericItemMin, #numericItemMax", () => {
-                    self.numericItem().validateMin(dataType);
-                });
                 if (value === 6) {
                     self.selectionItem().selectionItemRefType(2);
                     let baseDate = moment(new Date()).format('YYYY-MM-DD');
@@ -380,9 +378,9 @@ module nts.uk.com.view.cps005.b {
                         });
                     });
                 } else if (value === 2) {
+                    
                     self.numericItem().numericItemMinus.subscribe(function(data) {
-                        dataType = data;
-                        self.numericItem().validateMin(dataType);
+                        self.numericItem().decimalPart.valueHasMutated();
                     })
                 }
             });
@@ -446,7 +444,6 @@ module nts.uk.com.view.cps005.b {
         integerPart: KnockoutObservable<number> = ko.observable(null);
         constructor(data: INumericItem) {
             let self = this;
-            let datatype: number = 1;
             if (!data) return;
             self.numericItemMin(data.numericItemMin || null);
             self.numericItemMax(data.numericItemMax || null);
@@ -455,61 +452,56 @@ module nts.uk.com.view.cps005.b {
             self.decimalPart(data.decimalPart || null);
             self.integerPart(data.integerPart || null);
             $(document).on("focusin", "#numericItemMin, #numericItemMax", () => { self.checkIntegerEmpty(); });
-            $(document).on("blur focusout", "#numericItemMin, #numericItemMax", () => {
-                self.validateMin(datatype);
-            });
             self.numericItemMinus.subscribe(function(data) {
-                datatype = data;
-                self.validateMin(datatype);
+                self.decimalPart.valueHasMutated();
             })
 
+            self.integerPart.subscribe(x => {
+                self.decimalPart.valueHasMutated();
+            });
 
+            self.decimalPart.subscribe(x => {
+                let maxValue = (Math.pow(10, self.integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
+                writeConstraint("NumericItemMin", {
+                    mantissaMaxLength: x,
+                    min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                    max: maxValue
+                });
+               
+                $('#numericItemMax').trigger('change');
+                $('#numericItemMin').trigger('change');
+            });
+            let init = true;
+            self.numericItemMin.subscribe(x => {
+                let maxValue = (Math.pow(10, self.integerPart()) - 1) + ((Math.pow(10, self.decimalPart() || 0) - 1) / Math.pow(10, self.decimalPart() || 0));
+                if(init){
+                    writeConstraint("NumericItemMin", {
+                        mantissaMaxLength: x,
+                        min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                        max: maxValue
+                    });
+                    init = false;
+                    $('#numericItemMin').trigger('change');
+                }
+                writeConstraint("NumericItemMax", {
+                    mantissaMaxLength: x,
+                    min: x ||self.numericItemMinus() == 0 ? 0 : maxValue * (-1) ,
+                    max: maxValue
+                });
+                $('#numericItemMax').trigger('change');                 
+            });
+            self.numericItemMax.subscribe(x =>{
+                if(init){
+                    self.numericItemMin.valueHasMutated();
+                }
+            });
         }
 
-        validateMin(datatype: number) {
-            if ($("#integerPart").val() == "") return;
-            let self = this;
-            let min = self.numericItemMin() ? parseInt(self.numericItemMin().toString()) : undefined;
-            let max = self.numericItemMax() ? parseInt(self.numericItemMax().toString()) : undefined;
-            let milestone = Math.pow(10, self.integerPart());
-            let minMilestone = milestone * (-1) + 1;
-            let maxMilestone = milestone - 1;
-            if (datatype === 1) {
-                if (min < minMilestone || min > maxMilestone) {
-                    $('#numericItemMin').ntsError('set', 'Msg_559');
-                }
-                if (max < minMilestone || max > maxMilestone) {
-                    $('#numericItemMax').ntsError('set', 'Msg_600');
-                }
-                if (max <= min && self.isNumber(max, min)) {
-                    $('#numericItemMax').ntsError('set', 'Msg_598');
-                }
-            }
-            else if (datatype === 0) {
-                if (min < 0) {
-                    $('#numericItemMin').ntsError('set', 'Msg_596');
-                }
-                if (max < 0) {
-                    $('#numericItemMax').ntsError('set', 'Msg_596');
-                }
-                if (min > maxMilestone || min < minMilestone) {
-                    $('#numericItemMin').ntsError('set', 'Msg_559');
-                }
-                if (max > maxMilestone || max < minMilestone) {
-                    $('#numericItemMax').ntsError('set', 'Msg_600');
-                }
-                if (max <= min && self.isNumber(max, min)) {
-                    $('#numericItemMax').ntsError('set', 'Msg_598');
-                }
-            }
-        }
+
         checkIntegerEmpty() {
             if ($("#integerPart").val() == "") {
                 $("#integerPart").focus();
             }
-        }
-        isNumber(min, max) {
-            return !isNaN(min) && !isNaN(max);
         }
     }
     export class TimeItemModel {

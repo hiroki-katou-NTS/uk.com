@@ -12,7 +12,7 @@ import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
  *
  */
 @Value
-public class ListDataInitScreenDto {
+public class DataInitScreenDto {
 	private List<WorkTypeScreenDto> listWorkType;
 	private List<WorkTimeScreenDto> listWorkTime;
 }

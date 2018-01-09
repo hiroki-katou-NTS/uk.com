@@ -183,7 +183,7 @@ module nts.uk.at.view.kaf009.b {
             update() {
                 nts.uk.ui.block.invisible();
                 let self = this;
-                var promiseResult = self.checkBeforeUpdate();
+                var promiseResult = self.checkUse();
                 promiseResult.done((result) => {
                     if (result) {
                         service.updateGoBackDirect(self.getCommand()).done(function() {
@@ -203,59 +203,102 @@ module nts.uk.at.view.kaf009.b {
                     }
                 });
             }
-            
-            
-            checkBeforeUpdate(): JQueryPromise<boolean> {
-                let self = this;
-                let dfd = $.Deferred();
-                //check before Insert 
-                if (self.checkUse()) {
-                    service.checkBeforeChangeGoBackDirect(self.getCommand()).done(function() {
-                        dfd.resolve(true);
-                    }).fail(function(res) {
-                        if (res.messageId == "Msg_297") {
-                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
-                                dfd.resolve(true);
-                            }).ifNo(function() {
-                                nts.uk.ui.block.clear();
-                                dfd.resolve(false);
-                            });
-                        } else if (res.messageId == "Msg_298") {
-                            dfd.reject();
-                            //Chưa có thoi gian thuc nên chưa chưa so sánh các giá trị nhập vào được
-                            $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
-                            $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
-                            if(self.selectedGo2()==1){
-                                $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
-                            }
-                            if(self.selectedBack2()==1){
-                                $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
-                            }
-                        } else{
-                           nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
-                        }
-                    })
-                }
-                return dfd.promise();
-            }
-            
             /**
              * アルゴリズム「直行直帰するチェック」を実行する
              */
-            checkUse(){
+            checkUse(): JQueryPromise<boolean> {
                 let self = this;
-                if (self.selectedGo() == 0 && self.selectedBack()== 0 && self.selectedGo2() == 0 && self.selectedBack2()== 0) {
+                let dfd = $.Deferred();
+
+                if ((!self.useMulti() && self.selectedGo() == 0 && self.selectedBack() == 0)
+                    || (self.useMulti() && self.selectedGo() == 0 && self.selectedBack() == 0 && self.selectedGo2() == 0 && self.selectedBack2() == 0)) {
+                    //直行直帰区分＝なし
                     nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
-                        return true;
+                        self.checkUpdate().done(function(result) {
+                            dfd.resolve(result);
+                        }).fail(function(res) {
+                            dfd.resolve(res);
+                        });
                     }).ifNo(function() {
                         nts.uk.ui.block.clear();
-                        return false;
                     });
                 } else {
-                    return true;
+                    self.checkUpdate().done(function(result) {
+                        dfd.resolve(result);
+                    }).fail(function(res) {
+                        dfd.resolve(res);
+                    });
                 }
-            }
 
+                return dfd.promise();
+            }
+            checkUpdate(): JQueryPromise<boolean> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.checkBeforeChangeGoBackDirect(self.getCommand()).done(function() {
+                    dfd.resolve(true);
+                }).fail(function(res) {
+                    if (res.messageId == "Msg_297") {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_297' }).ifYes(function() {
+                            dfd.resolve(true);
+                        }).ifNo(function() {
+                            let showMsg : boolean = true;
+                            nts.uk.ui.block.clear();
+                            //入力項目を警告「黄色」枠を表示する
+                            if(self.selectedGo() == 1 && !nts.uk.util.isNullOrEmpty(self.timeStart1())){
+                                $('#inpStartTime1').css('background', '#FFFF00');
+                                showMsg = false;
+                            }
+                            if(self.selectedBack()== 1 && !nts.uk.util.isNullOrEmpty(self.timeEnd1())){
+                                $('#inpEndTime1').css('background', '#FFFF00');
+                                showMsg = false;
+                            }
+                            if(self.useMulti()){
+                                if(self.selectedGo2()==1 && !nts.uk.util.isNullOrEmpty(self.timeStart2())){
+                                    $('#inpStartTime2').css('background', '#FFFF00');
+                                    showMsg = false;
+                                }
+                                if(self.selectedBack2()==1 && !nts.uk.util.isNullOrEmpty(self.timeEnd2())){
+                                    $('#inpEndTime2').css('background', '#FFFF00');
+                                    showMsg = false;
+                                }
+                            }
+                            if(showMsg){
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                            }
+                            dfd.resolve(false);
+                        });
+                    } else if (res.messageId == "Msg_298") {
+                        dfd.reject();
+                        let showMsg : boolean = true;
+                        nts.uk.ui.block.clear();
+                        if(self.selectedGo() == 1 && !nts.uk.util.isNullOrEmpty(self.timeStart1())){
+                            $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
+                            showMsg = false;
+                        }
+                        if(self.selectedBack()== 1 && !nts.uk.util.isNullOrEmpty(self.timeEnd1())){
+                            $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
+                            showMsg = false;
+                        }
+                        if(self.useMulti()){
+                            if(self.selectedGo2()==1 && !nts.uk.util.isNullOrEmpty(self.timeStart2())){
+                                $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                                showMsg = false;
+                            }
+                            if(self.selectedBack2()==1 && !nts.uk.util.isNullOrEmpty(self.timeEnd2())){
+                                $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                                showMsg = false;
+                            }
+                        }
+                        if(showMsg){
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                        }
+                    } else{
+                       nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
+                    }
+                });
+                return dfd.promise();
+            }
 
             /**
              * get All Work Location

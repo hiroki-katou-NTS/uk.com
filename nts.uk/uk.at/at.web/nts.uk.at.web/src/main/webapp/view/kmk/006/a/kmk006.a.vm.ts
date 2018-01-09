@@ -123,6 +123,7 @@ module nts.uk.at.view.kmk006.a {
                 self.treeOptionsWkp = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
+                    isMultipleUse: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.multiSelectedWorkplaceId,
                     baseDate: self.baseDateTreeList,
@@ -130,18 +131,21 @@ module nts.uk.at.view.kmk006.a {
                     isShowSelectButton: false,
                     isDialog: false,
                     alreadySettingList: self.wkpAlreadySettingList,
-                    maxRows: 20
+                    maxRows: 20,
+                    systemType: 2
                 };
                 self.treeOptionsWkpTotal = {
                     isShowAlreadySet: false,
                     isMultiSelect: false,
+                    isMultipleUse: true,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.totalSelectedWorkplaceId,
                     baseDate: self.baseDateTreeListTotal,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
-                    maxRows: 10
+                    maxRows: 10,
+                    systemType: 2
                 };
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
                 self.itemJobAutoCalModel = new JobAutoCalSettingModel();
@@ -190,6 +194,7 @@ module nts.uk.at.view.kmk006.a {
                     isShowAlreadySet: true,
                     baseDate: self.baseDateJobList,
                     isMultiSelect: false,
+                    isMultipleUse: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedCode,
@@ -202,6 +207,7 @@ module nts.uk.at.view.kmk006.a {
                     isShowAlreadySet: false,
                     baseDate: self.baseDateJobListTotal,
                     isMultiSelect: false,
+                    isMultipleUse: true,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.totalSelectedCode,
@@ -891,15 +897,16 @@ module nts.uk.at.view.kmk006.a {
                 self.baseDateTreeListTotal(self.inputDate());
                 
                 // Reload table
-                if (emptyBaseDate) {
+                if (!emptyBaseDate) {
                     $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
-
+                        let code = $('#tree-grid').getDataList()[0].workplaceId;
+                        self.totalSelectedWorkplaceId(code);
                     });
     
                     $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
                         let code = $('#jobtitles').getDataList()[0].id;
                         self.totalSelectedCode(code);
-                        self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code);
+                        self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(),  self.totalSelectedCode());
                         // load ready setting
                         self.loadWkpJobAlreadySettingList().done(function() {
     
