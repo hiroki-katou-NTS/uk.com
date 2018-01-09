@@ -3,10 +3,37 @@ module nts.uk.at.view.kal003.share.model {
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
 
+    export function getListCategory(): Array<ItemModel> {
+        return [
+            new ItemModel(0, 'スケジュール日次'),
+            new ItemModel(1, 'スケジュール週次'),
+            new ItemModel(2, 'スケジュール4週'),
+            new ItemModel(3, 'スケジュール月次'),
+            new ItemModel(4, 'スケジュール年間'),
+            new ItemModel(5, '日次'),
+            new ItemModel(6, '週次'),
+            new ItemModel(7, '月次'),
+            new ItemModel(8, '申請承認'),
+            new ItemModel(9, '複数月'),
+            new ItemModel(10, '任意期間'),
+            new ItemModel(11, '年休付与用出勤率'),
+            new ItemModel(12, '３６協定'),
+            new ItemModel(13, '工数チェック')
+        ];
+    }
+
+    export function getListConditionToExtractDaily(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, '全て'),
+            new model.ItemModel(1, '確認済のデータ'),
+            new model.ItemModel(2, '未確認のデータ')
+        ];
+    }
+
     export class AlarmCheckConditionByCategory {
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
-        category: KnockoutObservable<string>;
+        category: KnockoutObservable<number>;
         displayCode: string;
         displayName: string;
         displayCategory: string;
@@ -15,13 +42,13 @@ module nts.uk.at.view.kal003.share.model {
         displayAvailableRoles: KnockoutObservable<string>;
         conditionToExtractDaily: KnockoutObservable<number>;
 
-        constructor(code: string, name: string, category: string, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
+        constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
-            this.category = ko.observable(category);
+            this.category = ko.observable(category.code);
             this.displayCode = code;
             this.displayName = name;
-            this.displayCategory = category;
+            this.displayCategory = category.name;
             this.availableRoles = ko.observableArray(availableRoles);
             this.targetCondition = ko.observable(targetCondition);
             this.conditionToExtractDaily = ko.observable(DATA_CONDITION_TO_EXTRACT.ALL);
@@ -132,15 +159,20 @@ module nts.uk.at.view.kal003.share.model {
                 }
             });
         }
+
     }
 
     export class ItemModel {
         code: number;
         name: string;
+        description: string = "";
 
-        constructor(code: number, name: string) {
+        constructor(code: number, name: string, description?: string) {
             this.code = code;
             this.name = name;
+            if (description) {
+                this.description = description;
+            }
         }
     }
 
@@ -173,24 +205,24 @@ module nts.uk.at.view.kal003.share.model {
     }
     //---------------- KAL003 - B begin----------------//
     //Condition of group (C screen)
-    export interface ICondition{
-        itemCheck:              number;
-        target:                 number;
-        operatorCd:             string;
-        comparisonOperatorId:   number;
-        itemConditionId:        string;
-    
+    export interface ICondition {
+        itemCheck: number;
+        target: number;
+        operatorCd: string;
+        comparisonOperatorId: number;
+        itemConditionId: string;
+
     }
-    export class Condition{
-        itemCheck:              number;
-        target:                 number;
-        operatorCd:             string;
-        comparisonOperatorId:   number;
-        itemConditionId:        string;
+    export class Condition {
+        itemCheck: number;
+        target: number;
+        operatorCd: string;
+        comparisonOperatorId: number;
+        itemConditionId: string;
         constructor(param: ICondition) {
             let self = this;
-            self.itemCheck  = param.itemCheck || 0;
-            self.target     = param.target || 0;
+            self.itemCheck = param.itemCheck || 0;
+            self.target = param.target || 0;
             self.operatorCd = param.operatorCd || '';
             self.comparisonOperatorId = param.comparisonOperatorId || 0;
             self.itemConditionId = param.itemConditionId || '';
@@ -198,12 +230,12 @@ module nts.uk.at.view.kal003.share.model {
     }
     // group condition
     export interface IGroupCondition {
-        groupOperator:      number; //0: OR|1: AND
+        groupOperator: number; //0: OR|1: AND
         groupListCondition: Array<Condition>;// max 3
     }
-    
+
     export class GroupCondition {
-        groupOperator:      KnockoutObservable<number>; //OR|AND B15-3, B17-3
+        groupOperator: KnockoutObservable<number>; //OR|AND B15-3, B17-3
         groupListCondition: KnockoutObservableArray<Condition>;// max 3 item, B16-1 -> B16-4
         constructor(param: IGroupCondition) {
             let self = this;
@@ -211,113 +243,113 @@ module nts.uk.at.view.kal003.share.model {
             self.groupListCondition = ko.observableArray(param.groupListCondition || []);
         }
     }
-    
+
     export interface ICompoundCondition {
-        group1Condition:    GroupCondition;
-        hasGroup2:          boolean; // B17-1
-        group2Condition:    GroupCondition;
+        group1Condition: GroupCondition;
+        hasGroup2: boolean; // B17-1
+        group2Condition: GroupCondition;
         operatorBetweenG1AndG2: number; // B18-2: 0: OR, 1: AND
     }
     export class CompoundCondition {
-        group1Condition:    KnockoutObservable<GroupCondition>;
-        hasGroup2:          KnockoutObservable<boolean>;
-        group2Condition:    KnockoutObservable<GroupCondition>;
+        group1Condition: KnockoutObservable<GroupCondition>;
+        hasGroup2: KnockoutObservable<boolean>;
+        group2Condition: KnockoutObservable<GroupCondition>;
         operatorBetweenG1AndG2: KnockoutObservable<number>;
         constructor(param: ICompoundCondition) {
             let self = this;
-            self.group1Condition    = ko.observable(param.group1Condition);
-            self.hasGroup2          = ko.observable(param.hasGroup2 || false);
-            self.group2Condition    = ko.observable(param.group2Condition);
+            self.group1Condition = ko.observable(param.group1Condition);
+            self.hasGroup2 = ko.observable(param.hasGroup2 || false);
+            self.group2Condition = ko.observable(param.group2Condition);
             self.operatorBetweenG1AndG2 = ko.observable(param.operatorBetweenG1AndG2);
         }
     }
-    
-    
-    
+
+
+
     export interface IErrorAlarmCondition {
-        category:               number;
-        erAlCheckId:            string;
-        checkItem:              number;
-        workTypeRange:          string;
-        workTypeSelections:     Array<string>;
+        category: number;
+        erAlCheckId: string;
+        checkItem: number;
+        workTypeRange: string;
+        workTypeSelections: Array<string>;
         workTimeItemSelections: Array<string>;
-        comparisonOperator:     number;
-        minimumValue:           string;
-        maximumValue:           string;
-        continuousPeriodInput:  string;
+        comparisonOperator: number;
+        minimumValue: string;
+        maximumValue: string;
+        continuousPeriodInput: string;
         workingTimeZoneSelections: Array<string>;
-        color:                  string;
-        message:                string;
-        isBold:                 boolean;
-        compoundCondition :     CompoundCondition;
+        color: string;
+        message: string;
+        isBold: boolean;
+        compoundCondition: CompoundCondition;
     }
-    
+
     export class ErrorAlarmCondition {
-        category:               number;
-        erAlCheckId:            string;
-        checkItem:              KnockoutObservable<number>;
-        workTypeRange:          KnockoutObservable<string>;
-        workTypeSelections:     KnockoutObservableArray<string>;
+        category: number;
+        erAlCheckId: string;
+        checkItem: KnockoutObservable<number>;
+        workTypeRange: KnockoutObservable<string>;
+        workTypeSelections: KnockoutObservableArray<string>;
         workTimeItemSelections: KnockoutObservableArray<string>;
-        comparisonOperator:     KnockoutObservable<number>;
-        minimumValue:           KnockoutObservable<string>;
-        maximumValue:           KnockoutObservable<string>;
-        continuousPeriodInput:  KnockoutObservable<string>;
+        comparisonOperator: KnockoutObservable<number>;
+        minimumValue: KnockoutObservable<string>;
+        maximumValue: KnockoutObservable<string>;
+        continuousPeriodInput: KnockoutObservable<string>;
         workingTimeZoneSelections: KnockoutObservableArray<string>;
-        color:                  KnockoutObservable<string>;
-        message:                KnockoutObservable<string>;
-        isBold:                 KnockoutObservable<boolean>;
-        compoundCondition :     KnockoutObservable<CompoundCondition>;
-        constructor(param : IErrorAlarmCondition) {
+        color: KnockoutObservable<string>;
+        message: KnockoutObservable<string>;
+        isBold: KnockoutObservable<boolean>;
+        compoundCondition: KnockoutObservable<CompoundCondition>;
+        constructor(param: IErrorAlarmCondition) {
             let self = this;
-            self.category               = param.category || 0;
-            self.erAlCheckId            = param.erAlCheckId || '';
-            self.checkItem              = ko.observable(param.checkItem || 0);
-            self.workTypeRange          = ko.observable(param.workTypeRange || '');
-            self.workTypeSelections     = ko.observableArray(param.workTypeSelections || []);
+            self.category = param.category || 0;
+            self.erAlCheckId = param.erAlCheckId || '';
+            self.checkItem = ko.observable(param.checkItem || 0);
+            self.workTypeRange = ko.observable(param.workTypeRange || '');
+            self.workTypeSelections = ko.observableArray(param.workTypeSelections || []);
             self.workTimeItemSelections = ko.observableArray(param.workTimeItemSelections || []);
-            self.comparisonOperator     = ko.observable( param.comparisonOperator || 0);
-            self.minimumValue           = ko.observable(param.minimumValue || '');
-            self.maximumValue           = ko.observable(param.maximumValue || '');
-            self.continuousPeriodInput  = ko.observable(param.continuousPeriodInput || '');
+            self.comparisonOperator = ko.observable(param.comparisonOperator || 0);
+            self.minimumValue = ko.observable(param.minimumValue || '');
+            self.maximumValue = ko.observable(param.maximumValue || '');
+            self.continuousPeriodInput = ko.observable(param.continuousPeriodInput || '');
             self.workingTimeZoneSelections = ko.observableArray(param.workingTimeZoneSelections || []);
-            self.color                  = ko.observable(param.color || '');
-            self.message                = ko.observable(param.message || '');
-            self.isBold                 = ko.observable(param.isBold || false);
-            self.compoundCondition      = ko.observable(param.compoundCondition);
+            self.color = ko.observable(param.color || '');
+            self.message = ko.observable(param.message || '');
+            self.isBold = ko.observable(param.isBold || false);
+            self.compoundCondition = ko.observable(param.compoundCondition);
         }
     }
     export interface IWorkRecordExtractingCondition {
-        errorAlarmCheckID   : string;
-        checkItem           : number;
-        sortOrderBy         : number;
-        useAtr              : boolean;
-        nameWKRecord        : string;
-        errorAlamCondition  : IErrorAlarmCondition;
-        rowId               : number;
+        errorAlarmCheckID: string;
+        checkItem: number;
+        sortOrderBy: number;
+        useAtr: boolean;
+        nameWKRecord: string;
+        errorAlamCondition: IErrorAlarmCondition;
+        rowId: number;
     }
-        
+
     export class WorkRecordExtractingCondition {
-        errorAlarmCheckID   : KnockoutObservable<string>;
-        checkItem           : KnockoutObservable<number>;
-        sortOrderBy         : KnockoutObservable<number>;
-        useAtr              : KnockoutObservable<boolean>;
-        nameWKRecord        : KnockoutObservable<string>;
-        errorAlamCondition  : KnockoutObservable<ErrorAlarmCondition>;
-        rowId               : KnockoutObservable<number>;
-        constructor(param : IWorkRecordExtractingCondition) {
+        errorAlarmCheckID: KnockoutObservable<string>;
+        checkItem: KnockoutObservable<number>;
+        sortOrderBy: KnockoutObservable<number>;
+        useAtr: KnockoutObservable<boolean>;
+        nameWKRecord: KnockoutObservable<string>;
+        errorAlamCondition: KnockoutObservable<ErrorAlarmCondition>;
+        rowId: KnockoutObservable<number>;
+        constructor(param: IWorkRecordExtractingCondition) {
             let self = this;
-            self.errorAlarmCheckID   = ko.observable(param.errorAlarmCheckID || '');
-            self.checkItem           = ko.observable(param.checkItem || 0);
-            self.sortOrderBy         = ko.observable(param.sortOrderBy || 0);
-            self.useAtr              = ko.observable(param.useAtr || false);
-            self.nameWKRecord        = ko.observable(param.nameWKRecord || '');
-            self.errorAlamCondition  = ko.observable(param.errorAlamCondition || null);
-            self.rowId               = ko.observable(param.rowId || 0);
+            self.errorAlarmCheckID = ko.observable(param.errorAlarmCheckID || '');
+            self.checkItem = ko.observable(param.checkItem || 0);
+            self.sortOrderBy = ko.observable(param.sortOrderBy || 0);
+            self.useAtr = ko.observable(param.useAtr || false);
+            self.nameWKRecord = ko.observable(param.nameWKRecord || '');
+            self.errorAlamCondition = ko.observable(param.errorAlamCondition || null);
+            self.rowId = ko.observable(param.rowId || 0);
         }
-        
+
     }
-    
+
     //---------------- KAL003 - B end------------------//
 
 }
