@@ -45,6 +45,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         displayButtonControl: KnockoutObservable<model.DisplayButtonControl> = ko.observable(new model.DisplayButtonControl());
         
         approvalRootState: any = ko.observableArray([]);
+        empEditable: KnockoutObservable<boolean> = ko.observable(true);
+        
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
@@ -115,6 +117,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             if (self.outputDetailCheck() != null) {
                 //※5
                 let user = self.outputDetailCheck().user;
+                switch(user){
+                    case 0: self.empEditable(true); break;
+                    case 1: self.empEditable(false); break;
+                    case 2: self.empEditable(true); break;
+                    default: self.empEditable(false);    
+                }
+                
                 switch(user){                    
                     case 1:{ //承認者 
                         //登録  ×
