@@ -45,7 +45,7 @@
 }
 #date {
 	border: 0px solid #999999 !important;
-	width: 208px !important;
+	width: 200px !important;
 }
 
 #datey {
@@ -55,19 +55,19 @@
 }
 
 #timeItem {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #timePoint {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #number {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #string {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #content-right {
@@ -377,7 +377,6 @@ label[for] {
 .ui-state-default{
 	border: 1px solid #c5c5c500 !important;;
 }
-
 /* Tooltip container */
 /* .tooltip {
     position: relative;
@@ -401,6 +400,6 @@ label[for] {
 } */
 
 /* Show the tooltip text when you mouse over the tooltip container */
-/* .tooltip:hover .tooltiptext {
+.tooltip:hover .tooltiptext {
     visibility: visible;
-} */
+} 
