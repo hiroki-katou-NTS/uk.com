@@ -29,13 +29,14 @@ public class HolidayWorkTimeOfDaily {
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	private List<HolidayWorkFrameTime> holidayWorkFrameTime;
 	private Finally<HolidayMidnightWork> holidayMidNightWork;
-	private AttendanceTime holidayTimeSpentAtWork = new AttendanceTime(0);
+	private AttendanceTime holidayTimeSpentAtWork;
 	
 	public HolidayWorkTimeOfDaily(List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet,List<HolidayWorkFrameTime> holidayWorkFrameTime,
-								   Finally<HolidayMidnightWork> holidayMidNightWork) {
+								   Finally<HolidayMidnightWork> holidayMidNightWork, AttendanceTime holidayTimeSpentAtWork) {
 		this.holidayWorkFrameTimeSheet = holidayWorkFrameTimeSheet;
 		this.holidayWorkFrameTime = holidayWorkFrameTime;
 		this.holidayMidNightWork = holidayMidNightWork;
+		this.holidayTimeSpentAtWork = holidayTimeSpentAtWork;
 	}
 	
 	/**

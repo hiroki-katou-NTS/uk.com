@@ -69,8 +69,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         //Date time
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/11/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/30'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(null);
+        dtAft: KnockoutObservable<Date> = ko.observable(null);
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -239,6 +239,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // getWorkTypeTimeAndStartEndDate: get data workType-workTime for 2 combo-box of screen O
             // and startDate-endDate of screen A
             $.when(__viewContext.viewModel.viewO.getWorkTypeTimeAndStartEndDate(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
+                self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
+                self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
                 // get state of list workTypeCode
                 // get data for screen A
                 let lstWorkTypeCode = [];
@@ -276,13 +278,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }));
             });
             //get workPlaceName to display A3-1
-            
             self.workplaceId = self.empItems()[0].workplaceId;
+
             let data = {
-                workplaceId:self.workplaceId,
-                baseDate:moment().toISOString()    
+                workplaceId: self.workplaceId,
+                baseDate: moment().toISOString()
             }
-            service.getWorkPlaceById(data).done((wkp)=>{
+            service.getWorkPlaceById(data).done((wkp) => {
                 self.workPlaceNameDisplay(wkp.wkpDisplayName);
             });
             //get data WorkPattern
@@ -1008,7 +1010,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTimeCode: itemData.workTimeCode,
                             workTypeCode: itemData.workTypeCode,
                             confirmedAtr: itemData.confirmedAtr,
-                            workDayAtr: itemData.workDayAtr,
                             isIntendedData: true
                         }));
                     }
@@ -1276,9 +1277,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     workTimeCode: arrCell[i].value.workTimeCode,
                     workTypeCode: arrCell[i].value.workTypeCode,
                     //TO-DO 
-                    //set static confirmedAtr= 0, workDayAtr = 0
+                    //set static confirmedAtr= 0
                     confirmedAtr: 0,
-                    workDayAtr: 0,
                     workScheduleTimeZoneSaveCommands: [{
                         scheduleCnt: 1,
                         scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime
@@ -1761,7 +1761,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workTimeCode?: string,
         workTypeCode?: string,
         confirmedAtr?: number,
-        workDayAtr?: number,
         isIntendedData?: boolean,
         scheduleCnt?: number,
         scheduleStartClock?: number,
@@ -1776,7 +1775,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workTimeCode: string;
         workTypeCode: string;
         confirmedAtr: number;
-        workDayAtr: number;
         isIntendedData: boolean;
         scheduleCnt: number;
         scheduleStartClock: number;
@@ -1790,7 +1788,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             this.workTimeCode = params.workTimeCode;
             this.workTypeCode = params.workTypeCode;
             this.confirmedAtr = params.confirmedAtr;
-            this.workDayAtr = params.workDayAtr;
             this.isIntendedData = params.isIntendedData;
             this.scheduleCnt = params.scheduleCnt;
             this.scheduleStartClock = params.scheduleStartClock;

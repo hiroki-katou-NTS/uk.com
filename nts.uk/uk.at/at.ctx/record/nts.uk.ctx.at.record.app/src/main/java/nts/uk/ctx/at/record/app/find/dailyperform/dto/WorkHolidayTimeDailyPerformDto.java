@@ -40,7 +40,7 @@ public class WorkHolidayTimeDailyPerformDto {
 	private Integer holidayTimeSpentAtWork;
 
 	/** 休出枠時間: 休出枠時間 */
-	@AttendanceItemLayout(layout = "D", isList = true, jpPropertyName="休出枠時間", listMaxLength = 10, setFieldWithIndex = "holidayFrameNo")
+	@AttendanceItemLayout(layout = "D", isList = true, jpPropertyName="休出枠時間", listMaxLength = 10, setFieldWithIndex = "holidayFrameNo", needCheckIDWithIndex = true)
 	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
 	
 	public static WorkHolidayTimeDailyPerformDto fromOverTimeWorkDailyPerform(HolidayWorkTimeOfDaily domain){
@@ -80,7 +80,8 @@ public class WorkHolidayTimeDailyPerformDto {
 								Finally.of(createTimeWithCalc(c.getHolidayWorkTime())),
 								Finally.of(createTimeWithCalc(c.getTransferTime())),
 								Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
-				Finally.of(holidayMidnightWork.toDomain()));
+				Finally.of(holidayMidnightWork.toDomain()),
+				toAttendanceTime(holidayTimeSpentAtWork));
 	}
 
 	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
