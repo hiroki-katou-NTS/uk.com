@@ -26,16 +26,16 @@ module cps008.b.vm {
                 currentDialog = nts.uk.ui.windows.getSelf();
             $(currentDialog.parent.globalContext).css("overflow", "hidden");
 
-            if (currentDialog.parent.globalContext.innerWidth <= 1281) {
+            if (currentDialog.parent.globalContext.innerWidth <= 1270) {
                 currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 30);
             } else {
-                currentDialog.setWidth(1280);
+                currentDialog.setWidth(1260);
             }
 
-            if (currentDialog.parent.globalContext.innerHeight <= 781) {
+            if (currentDialog.parent.globalContext.innerHeight <= 775) {
                 currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 30);
             } else {
-                currentDialog.setHeight(780);
+                currentDialog.setHeight(650);
             }
         }
 
@@ -47,7 +47,6 @@ module cps008.b.vm {
             layout.id = dto.id;
             layout.code = dto.code;
             layout.name = dto.name;
-            debugger;
             // lấy list items classification ra theo layoutid của maintainece layout truyền từ màn a lên
             // Không có thì gọi service dưới lấy list items classification của new layout rồi truyền vào layout ở view model
 
