@@ -560,21 +560,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private getDisplayText(dailyPatternValue: DailyPatternValue, currentDate: moment.Moment): OptionDate {
             let self = this;
-            
+
             // Is holiday
-            if (self.isHoliday(currentDate) != null) {
-                return {
-                    start: currentDate.format('YYYY-MM-DD'),
-                    textColor: 'red',
-                    backgroundColor: 'white',
-                    listText: [
-                        self.isHoliday(currentDate).holidayName
-                    ]
-                };                    
-            }
-                                            
-            // Is holiday checked
-            if (self.isHolidaySettingChecked()) {
+            if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
                 return {
                     start: currentDate.format('YYYY-MM-DD'),
                     textColor: 'red',
@@ -813,12 +801,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          * Check if the day is holiday
          * @param: day
          */
-        private isHoliday(day: moment.Moment): any {
+        private isHoliday(day: moment.Moment): boolean {
             let self = this;
-            let result = _.find(self.listHoliday, d => d.date == day.format('YYYY/MM/DD'));                       
+            let result = _.find(self.listHoliday, d => d.date == parseInt(day.format('YYYYMMDD')));
             if (result) {
-                return result;
-            }          
+                return true;
+            }
+            return false;
         }
 
         /**
