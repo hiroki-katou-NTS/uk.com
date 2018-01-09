@@ -454,7 +454,7 @@ module a3 {
                      width: 120,
                      template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -469,7 +469,7 @@ module a3 {
                      width: 120,
                      template:  `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -484,7 +484,7 @@ module a3 {
                      width: 100,
                      template:  `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -508,7 +508,7 @@ module a3 {
                  width: 75,
                  template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -589,7 +589,7 @@ module a3 {
                     width: 80,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
